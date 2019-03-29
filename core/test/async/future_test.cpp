@@ -312,7 +312,7 @@ TEST(Future, ToCallbackSuccess) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<int>& i, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::ledger_exp::optional<int>& i, const std::ledger_exp::optional<api::Error>& error) {
             EXPECT_TRUE(!!i);
             EXPECT_TRUE(!error);
             EXPECT_EQ(i, 42);
@@ -338,7 +338,7 @@ TEST(Future, ToCallbackFailure) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<int>& i, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::ledger_exp::optional<int>& i, const std::ledger_exp::optional<api::Error>& error) {
             EXPECT_FALSE(!!i);
             EXPECT_FALSE(!error);
             EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
@@ -363,7 +363,7 @@ TEST(Future, ExecuteAllThreadPoolOK) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::ledger_exp::optional<std::vector<int>>& x, const std::ledger_exp::optional<api::Error>& error) {
             EXPECT_TRUE(!!x);
             EXPECT_TRUE(!error);
             auto vec = x.value();
@@ -397,7 +397,7 @@ TEST(Future, ExecuteAllSingleThreadOK) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::ledger_exp::optional<std::vector<int>>& x, const std::ledger_exp::optional<api::Error>& error) {
             EXPECT_TRUE(!!x);
             EXPECT_TRUE(!error);
             auto vec = x.value();
@@ -431,7 +431,7 @@ TEST(Future, ExecuteAllSingleThreadFail) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::ledger_exp::optional<std::vector<int>>& x, const std::ledger_exp::optional<api::Error>& error) {
             EXPECT_FALSE(!!x);
             EXPECT_FALSE(!error);
             EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);
@@ -467,7 +467,7 @@ TEST(Future, ExecuteAllThreadPoolFail) {
             this->dispatcher = dispatcher;
         }
 
-        void onCallback(const std::experimental::optional<std::vector<int>>& x, const std::experimental::optional<api::Error>& error) {
+        void onCallback(const std::ledger_exp::optional<std::vector<int>>& x, const std::ledger_exp::optional<api::Error>& error) {
             EXPECT_FALSE(!!x);
             EXPECT_FALSE(!error);
             EXPECT_EQ(error.value().code, api::ErrorCode::RUNTIME_ERROR);

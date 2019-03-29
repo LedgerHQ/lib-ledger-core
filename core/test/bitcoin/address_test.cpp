@@ -81,7 +81,7 @@ TEST(Address, XpubFromBase58String) {
     auto addr = "xpub6Cc939fyHvfB9pPLWd3bSyyQFvgKbwhidca49jGCM5Hz5ypEPGf9JVXB4NBuUfPgoHnMjN6oNgdC9KRqM11RZtL8QLW6rFKziNwHDYhZ6Kx";
     auto config = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP32_P2PKH);
-    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/0'/0'"), config);
+    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, addr, std::ledger_exp::optional<std::string>("44'/0'/0'"), config);
     EXPECT_EQ(xpub->toBase58(), addr);
     EXPECT_EQ(xpub->derive("0/0")->toBase58(), "14NjenDKkGGq1McUgoSkeUHJpW3rrKLbPW");
     EXPECT_EQ(xpub->derive("0/1")->toBase58(), "1Pn6i3cvdGhqbdgNjXHfbaYfiuviPiymXj");
@@ -96,7 +96,7 @@ TEST(Address, XpubFromBase58StringToBech32) {
     auto bech32Address = "bitcoincash:qqufmrqunkr3avkswhn378fjhwl3ueawag9e3htc49";
     auto config = std::make_shared<ledger::core::DynamicObject>();
     config->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
-    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, optional<std::string>("49'/145'/0'"), config);
+    auto xpub = ledger::core::BitcoinLikeExtendedPublicKey::fromBase58(currency, xpubStr, std::ledger_exp::optional<std::string>("49'/145'/0'"), config);
     EXPECT_EQ(xpub->toBase58(), xpubStr);
     EXPECT_EQ(xpub->derive("0/0")->toBase58(), base58Address);
     EXPECT_EQ(xpub->derive("0/0")->toBech32(), bech32Address);

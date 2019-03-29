@@ -50,7 +50,7 @@ TEST(RippleAddress, AddressFromPubKeyAndChainCodeAccountLevel) {
     std::vector<uint8_t> chainCode = hex::toByteArray(
             "abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9");
     auto xpub = ledger::core::RippleLikeExtendedPublicKey::fromRaw(currency,
-                                                                   optional<std::vector<uint8_t >>(),
+                                                                   std::ledger_exp::optional<std::vector<uint8_t >>(),
                                                                    pubKey,
                                                                    chainCode,
                                                                    "44'/144'/0'/0'");
@@ -63,7 +63,7 @@ TEST(RippleAddress, AddressFromPubKeyAndChainCodeAddressLevel) {
     std::vector<uint8_t> chainCode = hex::toByteArray(
             "0f2f1ffcfb379ceaef995d176e362e5b33ec14ba86d50f0facf46c2308f86c98");
     auto xpub = ledger::core::RippleLikeExtendedPublicKey::fromRaw(currency,
-                                                                   optional<std::vector<uint8_t >>(),
+                                                                   std::ledger_exp::optional<std::vector<uint8_t >>(),
                                                                    pubKey,
                                                                    chainCode,
                                                                    "44'/144'/0'/0/0");
@@ -72,7 +72,7 @@ TEST(RippleAddress, AddressFromPubKeyAndChainCodeAddressLevel) {
 
 TEST(RippleAddress, XpubFromBase58String) {
     auto addr = "xpub6DECL9NX5hvkRrq98MRvXCjTP8s84NZUFReEVLizQMVH8epXyoMvncB9DG4d8kY94XPVYqFWtUVaaagZkXvje4AUF3qdd71fJc8KyhRRC8V";
-    auto xpub = ledger::core::RippleLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/144'/0'"));
+    auto xpub = ledger::core::RippleLikeExtendedPublicKey::fromBase58(currency, addr, std::ledger_exp::optional<std::string>("44'/144'/0'"));
     EXPECT_EQ(xpub->toBase58(), addr);
     EXPECT_EQ(xpub->derive("0/0")->toBase58(), "rhnLXhSgTgiPNMuxjkjL4qqR3iajiMxdmQ");
     EXPECT_EQ(xpub->derive("0/1")->toBase58(), "rgnbQkpdM6SR4vjHmxRzdSP7kUoNsgEmy");
