@@ -51,7 +51,7 @@ namespace ledger {
             static std::string encodeWithEIP55(const std::string &address);
 
             static std::vector<uint8_t> decode(const std::string& str,
-                                               const std::shared_ptr<api::DynamicObject> &config) throw(Exception);
+                                               const std::shared_ptr<api::DynamicObject> &config);
             static Try<std::vector<uint8_t>> checkAndDecode(const std::string& str,
                                                             const std::shared_ptr<api::DynamicObject> &config);
 
