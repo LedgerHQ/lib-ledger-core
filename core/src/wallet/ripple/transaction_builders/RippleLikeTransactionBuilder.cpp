@@ -37,6 +37,24 @@
 #include <crypto/SHA512.hpp>
 namespace ledger {
     namespace core {
+        // a helper to read VLE fields
+        uint64_t readLengthPrefix(BytesReader& reader) {
+            // encoding here: https://developers.ripple.com/serialization.html#length-prefixing
+            auto a = reader.readNextByte();
+
+            if (a <= 192) {
+                return a;
+            } else {
+                auto b = reader.readNextByte();
+
+                if (a <= 240) {
+                    return 193 + ((a - 193) << 8) + b;
+                } else {
+                    auto c = reader.readNextByte();
+                    return 12481 + ((a - 241) << 16) + (b << 8) + c;
+                }
+            }
+        }
 
         RippleLikeTransactionBuilder::RippleLikeTransactionBuilder(
                 const std::shared_ptr<api::ExecutionContext> &context,
@@ -210,7 +228,7 @@ namespace ledger {
 
             //1 byte Account Field ID: Type Code = 8, Field Code = 1 (STI_ACCOUNT = 8 type, and Account = 1)
             reader.readNextByte();
-            //20 bytes Acount (hash160 of pubKey without 0x00 prefix)
+            //20 bytes Account (hash160 of pubKey without 0x00 prefix)
             auto accountAddressLength = reader.readNextVarInt();
             auto accountAddressHash = reader.read(accountAddressLength);
             auto accountAddress = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, accountAddressHash, std::vector<uint8_t>({0x00}));
@@ -225,6 +243,5 @@ namespace ledger {
             tx->setReceiver(destAddress);
             return tx;
         }
-
     }
 }
