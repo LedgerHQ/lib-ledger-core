@@ -241,6 +241,48 @@ namespace ledger {
             auto destAddressHash = reader.read(destAddressLength);
             auto destAddress = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, destAddressHash, std::vector<uint8_t>({0x00}));
             tx->setReceiver(destAddress);
+
+            if (reader.readNextByte() == 15) { // STI_ARRAY (Memos); Type Code = 15
+                if (reader.readNextByte() == 9) { // Memos; Field ID = 9
+                    // iterate on array’s items
+                    while (true) {
+                        auto fieldID = reader.readNextByte();
+
+                        if (fieldID == 0xF1) { // end of array
+                            break;
+                        } else if (fieldID == 10) { // STI_OBJECT (Memo); Type Code = 10
+                            api::RippleLikeMemo memo;
+
+                            // iterate on object’s fields
+                            while (true) {
+                                auto memoTypeFieldID = reader.readNextByte();
+                                if (memoTypeFieldID == 12) { // STI_VL (MemoType), 12
+                                    auto typeLen = readLengthPrefix(reader);
+                                    auto type = reader.read(typeLen);
+                                    memo.ty = std::string(type.cbegin(), type.cend());
+                                } else if (memoTypeFieldID == 13) { // STI_VL (MemoData), 13
+                                    auto dataLen = readLengthPrefix(reader);
+                                    auto data = reader.read(dataLen);
+                                    memo.data = std::string(data.cbegin(), data.cend());
+                                } else if (memoTypeFieldID == 14) { // STI_VL (MemoFormat), 14
+                                    auto fmtLen = readLengthPrefix(reader);
+                                    auto fmt = reader.read(fmtLen);
+                                    memo.fmt = std::string(fmt.cbegin(), fmt.cend());
+                                } else if (memoTypeFieldID == 0xE1) { // end of object
+                                    break;
+                                } else { // unknown situation
+                                    // TODO
+                                }
+                            }
+
+                            tx->addMemo(memo);
+                        } else if (fieldID == 0xF1) { // end of array
+                            break;
+                        }
+                    }
+                }
+            }
+
             return tx;
         }
     }
