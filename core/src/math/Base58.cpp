@@ -117,7 +117,7 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::string &address) {
 }
 
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
-                                                  const std::shared_ptr<api::DynamicObject> &config) throw(ledger::core::Exception) {
+                                                  const std::shared_ptr<api::DynamicObject> &config) {
     BigInt intData(0);
     std::vector<uint8_t> prefix;
     auto useBase58Dict = shouldUseNetworkBase58Dictionary(config);
