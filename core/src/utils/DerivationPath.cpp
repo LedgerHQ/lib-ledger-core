@@ -50,7 +50,7 @@ namespace ledger {
 
         }
 
-        std::vector<uint32_t> DerivationPath::parse(const std::string &path){
+        std::vector<uint32_t> DerivationPath::parse(const std::string &path) {
             std::string currentNode = "";
             bool hardened = false;
             bool lastCharWasZero = false;
@@ -115,7 +115,7 @@ namespace ledger {
             return (uint32_t) _path.size();
         }
 
-        uint32_t DerivationPath::getLastChildNum() const{
+        uint32_t DerivationPath::getLastChildNum() const {
             assertIndexIsValid(getDepth() - 1, "ledger::core::DerivationPath::getLastChildNum");
             return _path.back();
         }
