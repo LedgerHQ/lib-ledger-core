@@ -146,12 +146,15 @@ namespace ledger {
             auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&] () {
                 auto bech32 = Bech32Factory::newBech32Instance(currency.bitcoinLikeNetworkParameters.value().Identifier);
                 auto isBech32 = bech32.hasValue() && (bech32.getValue()->getBech32Params().hrp == address.substr(0, bech32.getValue()->getBech32Params().hrp.size()));
-                return isBech32 ? fromBech32(address, currency) : fromBase58(address, currency, derivationPath);
+                return isBech32 ? fromBech32(address, currency, derivationPath) : fromBase58(address, currency, derivationPath);
             });
             return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
         }
 
         std::string BitcoinLikeAddress::toString() {
+            if (_keychainEngine == api::KeychainEngines::BIP173_P2WPKH || _keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
+                return toBech32();
+            }
             return toBase58();
         }
 

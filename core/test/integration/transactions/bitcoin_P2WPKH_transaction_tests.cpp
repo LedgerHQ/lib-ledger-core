@@ -40,6 +40,8 @@ struct BitcoinMakeP2WPKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        //https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki
+        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"84'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
@@ -47,11 +49,17 @@ struct BitcoinMakeP2WPKHTransaction : public BitcoinMakeBaseTransaction {
 };
 
 TEST_F(BitcoinMakeP2WPKHTransaction, CreateStandardP2WPKHWithOneOutput) {
+    auto address = "bc1qshh6mmfq8fucahzxe4zc7pc5zdhk6zkt4uv8md";
     auto builder = tx_builder();
     auto freshAddress = wait(account->getFreshPublicAddresses())[0];
     auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
     auto freshAddressStr = freshAddress->asBitcoinLikeAddress()->toBech32();
+    auto derivationPath = freshAddress->getDerivationPath().value_or("");
+    EXPECT_EQ(derivationPath, "0/0");
+    auto bechAddress = freshAddress->toString();
+    EXPECT_EQ(bechAddress, address);
     EXPECT_EQ(freshAddressStr.substr(0, hrp.size()), hrp);
+    EXPECT_EQ(freshAddressStr, address);
     auto balance = wait(account->getBalance());
     // TODO: send BTC on address bc1qshh6mmfq8fucahzxe4zc7pc5zdhk6zkt4uv8md to implement the rest of tests ?
     EXPECT_EQ(balance->toLong(), 0);
