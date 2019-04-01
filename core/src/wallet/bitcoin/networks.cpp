@@ -63,7 +63,7 @@ namespace ledger {
                     419200
             };
 
-            const api::BitcoinLikeNetworkParameters getNetworkParameters(const std::string &networkName) {
+            const api::BitcoinLikeNetworkParameters getNetworkParameters(const std::string &networkName, int version) {
                 if (networkName == "bitcoin") {
                     static const api::BitcoinLikeNetworkParameters BITCOIN(
                             "btc",
@@ -230,7 +230,7 @@ namespace ledger {
                     );
                     return QTUM;
                 } else if (networkName == "stealthcoin") {
-                    static const api::BitcoinLikeNetworkParameters STEALTHCOIN(
+                    api::BitcoinLikeNetworkParameters STEALTHCOIN(
                             "xst",
                             {0x3E},
                             {0x55},
@@ -243,6 +243,7 @@ namespace ledger {
                             {sigHashType::SIGHASH_ALL},
                             {}
                     );
+                    migrateParameters(STEALTHCOIN, 1, version);
                     return STEALTHCOIN;
                 } else if (networkName == "vertcoin") {
                     static const api::BitcoinLikeNetworkParameters VERTCOIN(
@@ -414,6 +415,25 @@ namespace ledger {
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
             }
+
+            template <> void migrateParameters<1>(api::BitcoinLikeNetworkParameters &params) {}
+
+            template <> void migrateParameters<2>(api::BitcoinLikeNetworkParameters &params) {
+                if (params.Identifier == "xst") {
+                    params.UsesTimestampedTransaction = false;
+                }
+            }
+
+            void migrateParameters(api::BitcoinLikeNetworkParameters &params, int migration) {
+                switch (migration) {
+                    case 1:
+                        migrateParameters<1>(params);
+                    case 2:
+                        migrateParameters<2>(params);
+                    default:
+                        return;
+                }
+            };
 
             const std::vector<api::BitcoinLikeNetworkParameters> ALL
             ({

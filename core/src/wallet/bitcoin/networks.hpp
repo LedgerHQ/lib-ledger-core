@@ -45,7 +45,35 @@ namespace ledger {
     namespace core {
 
         namespace networks {
-            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters getNetworkParameters(const std::string &networkName);
+            // Since version for networks are starting at 1
+            static const int HIGHTEST_PARAMETERS_VERSION = 2;
+
+            extern LIBCORE_EXPORT const api::BitcoinLikeNetworkParameters getNetworkParameters(const std::string &networkName, int version = HIGHTEST_PARAMETERS_VERSION);
+
+            // Since we are not (supposed) to have too many versions, we migrate from the beginning ...
+            // TODO: could be optimized by saving last HIGHTEST_PARAMETERS_VERSION and start from it
+            // or better add a field version to BitcoinLikeNetworkParameters
+            template <int migration>
+            void migrateParameters(api::BitcoinLikeNetworkParameters &params) {
+                // Migration not implemented
+                return;
+            }
+            void migrateParameters(api::BitcoinLikeNetworkParameters &params, int migration);
+
+            static bool migrateParameters(api::BitcoinLikeNetworkParameters &params,
+                                          int currentVersion,
+                                          int targetVersion) {
+                if (targetVersion < 2 || currentVersion < 1) {
+                    return false;
+                }
+                auto previous = migrateParameters(params, currentVersion,  targetVersion - 1);
+                if (currentVersion < targetVersion) {
+                    migrateParameters(params, targetVersion);
+                    return true;
+                }
+                return previous;
+            };
+
             extern LIBCORE_EXPORT const std::vector<api::BitcoinLikeNetworkParameters> ALL;
 
             //BIP115 (ex: Zencash)

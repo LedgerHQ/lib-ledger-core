@@ -159,6 +159,7 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockApi> _block;
             std::string _hash;
             api::Currency _currency;
+            api::BitcoinLikeNetworkParameters _params;
             Option<uint32_t> _timestamp;
             bool _writable;
             bool _isSegwit;
