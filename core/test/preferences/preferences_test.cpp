@@ -324,3 +324,18 @@ TEST_F(PreferencesTest, Clear) {
     preferences->editor()->clear();
     EXPECT_EQ(preferences->getString("string", "none"), "none");
 }
+
+// This test checks that when setting encryption on, already present values are encrypted as well
+// so that we can correctly retrieve them after encryption is set.
+TEST_F(PreferencesTest, RecryptClearValues) {
+    auto preferences = backend->getPreferences("recrypt_clear_values");
+    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+
+    // add a clear record and then turn encryption on
+    preferences->editor()->putString("string", "dawg")->commit();
+    backend->setEncryption(rng, password);
+
+    // now, reading the old value should be okay, too
+    EXPECT_EQ(preferences->getString("string", "none"), "dawg");
+}
