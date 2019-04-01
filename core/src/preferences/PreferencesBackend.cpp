@@ -194,17 +194,47 @@ namespace ledger {
             unsetEncryption();
 
             auto emptySalt = std::string("");
-            auto pref = getPreferences("__core");
-            auto salt = pref->getString(ENCRYPTION_SALT_KEY, emptySalt);
+            auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
+            auto salt = get(saltKey).value_or(emptySalt);
 
             if (salt == emptySalt) {
-                // we don’t have a proper salt; create one and persist it for future use
-                salt = createNewSalt(rng);
-                pref->editor()->putString(ENCRYPTION_SALT_KEY, salt)->commit();
-            }
+                leveldb::WriteBatch batch;
 
-            // create the AES cipher
-            _cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
+                // we don’t have a proper salt; create one
+                salt = createNewSalt(rng);
+
+                // create the AES cipher
+                _cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
+
+                // add the salt to the batch to be written
+                auto saltData = std::vector<uint8_t>(salt.cbegin(), salt.cend());
+                auto noCipher = Option<AESCipher>::NONE;
+                putPreferencesChange(batch, noCipher, PreferencesChange(PreferencesChangeType::PUT_TYPE, saltKey, saltData));
+
+                // iterate through all records already present and update them
+                auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
+                for (it->SeekToFirst(); it->Valid(); it->Next()) {
+                    // read the clear value
+                    auto value = it->value().ToString();
+                    auto plain = std::vector<uint8_t>(std::begin(value), std::end(value));
+
+                    auto keyStr = it->key().ToString();
+                    auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
+
+                    // remove the key and its associated value to prevent duplication
+                    putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, key, {}));
+                    // encrypt
+                    putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::PUT_TYPE, key, plain));
+                }
+
+                // atomic update
+                leveldb::WriteOptions writeOpts;
+                writeOpts.sync = true;
+                _db->Write(writeOpts, &batch);
+            } else {
+                // the salt is already there, just create the AES cipher
+                _cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
+            }
         }
 
         void PreferencesBackend::unsetEncryption() {
@@ -253,7 +283,6 @@ namespace ledger {
 
             // we also need to update the salt
             auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
-            auto saltChange = PreferencesChange(PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes);
             auto noCipher = Option<AESCipher>::NONE;
             putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, saltKey, {}));
             putPreferencesChange(batch, noCipher, PreferencesChange(
