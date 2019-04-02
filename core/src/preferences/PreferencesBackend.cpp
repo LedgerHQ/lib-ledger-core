@@ -131,9 +131,9 @@ namespace ledger {
             auto status = _db->Get(leveldb::ReadOptions(), k, &value);
             if (status.ok()) {
                 if (_cipher.hasValue()) {
-                    auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
+                    auto ciphertext = std::vector<uint8_t>(value.cbegin(), value.cend());
                     auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
-                    auto plaintext = std::string(std::begin(plaindata), std::end(plaindata));
+                    auto plaintext = std::string(plaindata.cbegin(), plaindata.cend());
 
                     return optional<std::string>(plaintext);
                 } else {
@@ -161,9 +161,9 @@ namespace ledger {
                 if (_cipher.hasValue()) {
                     // decrypt the value on the fly
                     auto value = it->value().ToString();
-                    auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
+                    auto ciphertext = std::vector<uint8_t>(value.cbegin(), value.cend());
                     auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
-                    auto plaintext = std::string(std::begin(plaindata), std::end(plaindata));
+                    auto plaintext = std::string(plaindata.cbegin(), plaindata.cbegin());
                     leveldb::Slice slice(plaintext);
 
                     if (!f(it->key(), std::move(slice))) {
@@ -183,7 +183,7 @@ namespace ledger {
 
         std::string PreferencesBackend::createNewSalt(const std::shared_ptr<api::RandomNumberGenerator>& rng) {
             auto bytes = rng->getRandomBytes(128);
-            return std::string(std::begin(bytes), std::end(bytes));
+            return std::string(bytes.begin(), std::end(bytes));
         }
 
         void PreferencesBackend::setEncryption(
@@ -216,7 +216,7 @@ namespace ledger {
                 for (it->SeekToFirst(); it->Valid(); it->Next()) {
                     // read the clear value
                     auto value = it->value().ToString();
-                    auto plain = std::vector<uint8_t>(std::begin(value), std::end(value));
+                    auto plain = std::vector<uint8_t>(value.cbegin(), value.cend());
 
                     auto keyStr = it->key().ToString();
                     auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
@@ -265,7 +265,7 @@ namespace ledger {
             for (it->SeekToFirst(); it->Valid(); it->Next()) {
                 // decrypt with the old cipher
                 auto value = it->value().ToString();
-                auto ciphertext = std::vector<uint8_t>(std::begin(value), std::end(value));
+                auto ciphertext = std::vector<uint8_t>(value.cbegin(), value.cend());
                 auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
 
                 // the key is not encrypted
