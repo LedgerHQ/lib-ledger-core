@@ -164,7 +164,7 @@ namespace ledger {
             auto bigIntLedgerSequence = BigInt::fromHex(hex::toString(ledgerSequence));
             tx->setLedgerSequence(bigIntLedgerSequence);
 
-            //Usefull to compute amounts
+            //Useful to compute amounts
             auto maxAmountBound = std::vector<uint8_t>({0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
             auto bigIntMax = BigInt::fromHex(hex::toString(maxAmountBound));
 
@@ -242,7 +242,7 @@ namespace ledger {
             auto destAddress = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, destAddressHash, std::vector<uint8_t>({0x00}));
             tx->setReceiver(destAddress);
 
-            if (reader.readNextByte() == 15) { // STI_ARRAY (Memos); Type Code = 15
+            if (reader.hasNext() && reader.readNextByte() == 15) { // STI_ARRAY (Memos); Type Code = 15
                 if (reader.readNextByte() == 9) { // Memos; Field ID = 9
                     // iterate on array’s items
                     while (true) {
