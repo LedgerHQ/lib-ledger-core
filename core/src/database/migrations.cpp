@@ -445,7 +445,7 @@ namespace ledger {
 
         template <> void migrate<8>(soci::session& sql) {
             sql << "CREATE TABLE ripple_memos("
-                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid),"
+                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid) ON DELETE CASCADE,"
                    "data VARCHAR(1024),"
                    "fmt VARCHAR(1024),"
                    "ty VARCHAR(1024)"
