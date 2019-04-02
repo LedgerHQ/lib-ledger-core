@@ -31,6 +31,7 @@
 
 #include <gtest/gtest.h>
 #include <ledger/core/crypto/SHA256.hpp>
+#include <ledger/core/crypto/SHA512.hpp>
 #include <ledger/core/crypto/RIPEMD160.hpp>
 #include <ledger/core/utils/hex.h>
 #include <ledger/core/crypto/HMAC.hpp>
@@ -46,11 +47,24 @@ TEST(Digests, SHA256_Strings_to_String) {
     EXPECT_EQ(SHA256::stringToHexHash("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno"), "2ff100b36c386c65a1afc462ad53e25479bec9498ed00aa5a04de584bc25301b");
 }
 
+// Tested with crypto module on NodeJS implementation (SFYL)
+TEST(Digests, SHA512_Strings_to_String) {
+    EXPECT_EQ(SHA512::stringToHexHash("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno"), "90d1bdb9a6cbf9cb0d4a7f185ee0870456f440b81f13f514f4561a08112763523033245875b68209bb1f5d5215bac81e0d69f77374cc44d1be30f58c8b615141");
+}
+
 TEST(Digests, SHA256_bytes_to_String) {
     EXPECT_EQ(SHA256::bytesToHexHash({0x2f, 0xf1, 0x00, 0xb3, 0x6c, 0x38, 0x6c, 0x65, 0xa1, 0xaf, 0xc4, 0x62, 0xad, 0x53,
                                       0xe2, 0x54, 0x79, 0xbe, 0xc9, 0x49, 0x8e, 0xd0, 0x0a, 0xa5, 0xa0, 0x4d, 0xe5, 0x84,
                                       0xbc, 0x25, 0x30, 0x1b}),
               "c21efda7db95c7c642cee4095df44b19a23cc43f72ee5cae87cbd0f32230d2ee");
+}
+
+// Tested with crypto module on NodeJS implementation (SFYL)
+TEST(Digests, SHA512_bytes_to_String) {
+    EXPECT_EQ(SHA512::bytesToHexHash({0x2f, 0xf1, 0x00, 0xb3, 0x6c, 0x38, 0x6c, 0x65, 0xa1, 0xaf, 0xc4, 0x62, 0xad, 0x53,
+                                      0xe2, 0x54, 0x79, 0xbe, 0xc9, 0x49, 0x8e, 0xd0, 0x0a, 0xa5, 0xa0, 0x4d, 0xe5, 0x84,
+                                      0xbc, 0x25, 0x30, 0x1b}),
+              "294b0184be47313f7258f4a01ecba3554ed9c8cdec4e52771e904708449c68fccc74964edb12ecfbd475af128a9d180bdd2489a76508278c7be4f4070684d1e9");
 }
 
 TEST(Digests, RIPEMD160) {

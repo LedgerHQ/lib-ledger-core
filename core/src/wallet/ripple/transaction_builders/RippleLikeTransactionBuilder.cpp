@@ -34,7 +34,7 @@
 #include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
 #include <bytes/BytesReader.h>
 #include <wallet/currencies.hpp>
-
+#include <crypto/SHA512.hpp>
 namespace ledger {
     namespace core {
 
@@ -167,6 +167,13 @@ namespace ledger {
             tx->setSigningPubKey(signingPubKey);
 
             if (isSigned) {
+                // References
+                // https://developers.ripple.com/basic-data-types.html#hashes
+                // https://developers.ripple.com/basic-data-types.html#hash-prefixes
+                auto rawTxSHA512 = SHA512::bytesToBytesHash(vector::concat({0x54, 0x58, 0x4e, 0x00}, rawTransaction));
+                rawTxSHA512.resize(32);
+                tx->setHash(hex::toString(rawTxSHA512));
+
                 //1 byte Signature Field ID:   Type Code = 7, Field Code = 4 (STI_VL = 7 type, and TxnSignature = 4)
                 reader.readNextByte();
                 auto sigLength = reader.readNextVarInt();
