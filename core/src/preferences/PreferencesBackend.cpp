@@ -183,7 +183,7 @@ namespace ledger {
 
         std::string PreferencesBackend::createNewSalt(const std::shared_ptr<api::RandomNumberGenerator>& rng) {
             auto bytes = rng->getRandomBytes(128);
-            return std::string(bytes.begin(), std::end(bytes));
+            return std::string(bytes.begin(), bytes.end());
         }
 
         void PreferencesBackend::setEncryption(
