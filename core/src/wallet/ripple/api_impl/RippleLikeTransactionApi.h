@@ -66,6 +66,7 @@ namespace ledger {
             RippleLikeTransactionApi & setSender(const std::shared_ptr<api::RippleLikeAddress> &sender);
             RippleLikeTransactionApi & setReceiver(const std::shared_ptr<api::RippleLikeAddress> &receiver);
             RippleLikeTransactionApi & setSigningPubKey(const std::vector<uint8_t> &pubKey);
+            RippleLikeTransactionApi & setHash(const std::string &hash);
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<RippleLikeBlockApi> _block;

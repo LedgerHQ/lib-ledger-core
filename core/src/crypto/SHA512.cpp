@@ -1,13 +1,12 @@
 /*
  *
- * SHA256
- * ledger-core
+ * SHA512
  *
- * Created by Pierre Pollastri on 07/12/2016.
+ * Created by El Khalil Bellakrid on 02/04/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,34 +27,36 @@
  * SOFTWARE.
  *
  */
-#include "SHA256.hpp"
+
+
+#include "SHA512.hpp"
 #include "../utils/hex.h"
 #include <openssl/sha.h>
 
 namespace ledger {
     namespace core {
-        std::string SHA256::stringToHexHash(const std::string &input) {
-            return hex::toString(SHA256::stringToBytesHash(input));
+        std::string SHA512::stringToHexHash(const std::string &input) {
+            return hex::toString(stringToBytesHash(input));
         }
 
-        std::string SHA256::bytesToHexHash(const std::vector<uint8_t> &bytes) {
-            return hex::toString(SHA256::bytesToBytesHash(bytes));
+        std::string SHA512::bytesToHexHash(const std::vector<uint8_t> &bytes) {
+            return hex::toString(bytesToBytesHash(bytes));
         }
 
-        std::vector<uint8_t> SHA256::dataToBytesHash(const void *data, size_t size) {
-            uint8_t hash[SHA256_DIGEST_LENGTH];
-            SHA256_CTX sha256;
-            SHA256_Init(&sha256);
-            SHA256_Update(&sha256, data, size);
-            SHA256_Final(hash, &sha256);
-            return std::vector<uint8_t >(hash, hash + SHA256_DIGEST_LENGTH);
+        std::vector<uint8_t> SHA512::dataToBytesHash(const void *data, size_t size) {
+            uint8_t hash[SHA512_DIGEST_LENGTH];
+            SHA512_CTX sha512;
+            SHA512_Init(&sha512);
+            SHA512_Update(&sha512, data, size);
+            SHA512_Final(hash, &sha512);
+            return std::vector<uint8_t >(hash, hash + SHA512_DIGEST_LENGTH);
         }
-        
-        std::vector<uint8_t> SHA256::stringToBytesHash(const std::string &input) {
+
+        std::vector<uint8_t> SHA512::stringToBytesHash(const std::string &input) {
             return dataToBytesHash(input.c_str(), input.size());
         }
 
-        std::vector<uint8_t> SHA256::bytesToBytesHash(const std::vector<uint8_t> &bytes) {
+        std::vector<uint8_t> SHA512::bytesToBytesHash(const std::vector<uint8_t> &bytes) {
             return dataToBytesHash(bytes.data(), bytes.size());
         }
     }

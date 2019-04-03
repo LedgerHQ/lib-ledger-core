@@ -1,13 +1,12 @@
 /*
  *
- * SHA256
- * ledger-core
+ * SHA512
  *
- * Created by Pierre Pollastri on 07/12/2016.
+ * Created by El Khalil Bellakrid on 02/04/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,26 +27,28 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SHA256_HPP
-#define LEDGER_CORE_SHA256_HPP
+
+
+#ifndef LEDGER_CORE_SHA512_H
+#define LEDGER_CORE_SHA512_H
 
 #include <string>
 #include <vector>
 
 namespace ledger {
- namespace core {
-     class SHA256 {
-     public:
-         static std::string stringToHexHash(const std::string& input);
-         static std::string bytesToHexHash(const std::vector<uint8_t>& bytes);
-         static std::vector<uint8_t> stringToBytesHash(const std::string& input);
-         static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
+    namespace core {
+        class SHA512 {
+        public:
+            static std::string stringToHexHash(const std::string& input);
+            static std::string bytesToHexHash(const std::vector<uint8_t>& bytes);
+            static std::vector<uint8_t> stringToBytesHash(const std::string& input);
+            static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
 
-     private:
-         static std::vector<uint8_t> dataToBytesHash(const void *data, size_t size);
-     };
- }
+        private:
+            static std::vector<uint8_t> dataToBytesHash(const void *data, size_t size);
+        };
+    }
 }
 
 
-#endif //LEDGER_CORE_SHA256_HPP
+#endif //LEDGER_CORE_SHA512_H

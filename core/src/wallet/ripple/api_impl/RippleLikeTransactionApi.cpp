@@ -280,5 +280,10 @@ namespace ledger {
             return *this;
         }
 
+        RippleLikeTransactionApi &RippleLikeTransactionApi::setHash(const std::string &hash) {
+            _hash = hash;
+            return *this;
+        }
+
     }
 }
