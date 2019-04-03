@@ -294,8 +294,30 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
     ASSERT_NE(cipherText1, cipherText2);
 }
 
+// This test checks that we can completely unset encryption to go back to a plaintext mode.
 TEST_F(PreferencesTest, ResetEncryption) {
     auto preferences = backend->getPreferences("reset_encryption");
+    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+
+    backend->setEncryption(rng, password);
+
+    preferences
+        ->editor()
+        ->putString("string", "dawg")
+        ->putInt("int", 9246)
+        ->putLong("long", 89356493564)
+        ->commit();
+
+    backend->resetEncryption(rng, password, "");
+
+    ASSERT_EQ(preferences->getString("string", ""), "dawg");
+    ASSERT_EQ(preferences->getInt("int", 0), 9246);
+    ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
+}
+
+TEST_F(PreferencesTest, UnsetEncryption) {
+    auto preferences = backend->getPreferences("my_test_preferences_reencrypted2");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
 
