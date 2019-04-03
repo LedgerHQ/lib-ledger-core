@@ -43,6 +43,29 @@
 
 namespace ledger {
     namespace core {
+        // a helper to write VLE fields
+        bool writeLengthPrefix(BytesWriter& writer, uint64_t size) {
+            // encoding here: https://developers.ripple.com/serialization.html#length-prefixing
+            if (size <= 192) {
+                writer.writeByte(size & 0xFF);
+
+                return true;
+            } else if (size <= 12480) {
+                uint16_t x = 193 + ((((size >> 8) & 0x00FF) - 193) << 8) + (size & 0x00FF);
+                writer.writeByte((x >> 8) & 0xFF);
+                writer.writeByte(x & 0xFF);
+
+                return true;
+            } else if (size <= 918744) {
+                uint32_t x = 12481 + (((size >> 16) & 0x0000FF - 241) << 16) + (size & 0x00FF00) + (size & 0x0000FF);
+                writer.writeByte((x >> 16) & 0xFF);
+                writer.writeByte((x >> 8) & 0xFF);
+                writer.writeByte(x);
+            }
+
+            // cannot have more bytes
+            return false;
+        }
 
         RippleLikeTransactionApi::RippleLikeTransactionApi(const api::Currency &currency) {
             _currency = currency;
@@ -234,6 +257,40 @@ namespace ledger {
             auto receiverHash = _receiver->getHash160();
             writer.writeVarInt(receiverHash.size());
             writer.writeByteArray(receiverHash);
+
+            if (!_memos.empty()) {
+                writer.writeByte(0xF9); // STI_ARRAY (Memos); Type Code = 15, Memos; Field ID = 9
+
+                for (auto& memo : _memos) {
+                    writer.writeByte(0xEA); // STI_OBJECT (Memo); Type Code = 10
+
+                    if (!memo.ty.empty()) {
+                        writer.writeByte(0x7C); // STI_VL (MemoType), 12
+                        auto written = writeLengthPrefix(writer, memo.ty.size());
+                        assert(written);
+                        writer.writeString(memo.ty);
+                    }
+
+                    if (!memo.data.empty()) {
+                        writer.writeByte(0x7D); // STI_VL (MemoData), 13
+                        auto written = writeLengthPrefix(writer, memo.data.size());
+                        assert(written);
+                        writer.writeString(memo.data);
+                    }
+
+                    if (!memo.fmt.empty()) {
+                        writer.writeByte(0x7D); // STI_VL (MemoFormat), 14
+                        auto written = writeLengthPrefix(writer, memo.fmt.size());
+                        assert(written);
+                        writer.writeString(memo.fmt);
+                    }
+
+                    writer.writeByte(0xE1); // end of object
+                }
+
+                writer.writeByte(0xF1); // end of array
+            }
+
             return writer.toByteArray();
         }
 
