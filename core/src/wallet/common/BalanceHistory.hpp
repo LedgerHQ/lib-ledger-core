@@ -43,7 +43,7 @@
 namespace ledger {
     namespace core {
         namespace agnostic {
-            // Get a balance history absade on a time window (inclusive) and currency operations.
+            // Get a balance history based on a time window (inclusive) and currency operations.
             //
             // The Value type variable must be default-constructible and accept addition via the
             // plus (+) and minus (-) operators.
