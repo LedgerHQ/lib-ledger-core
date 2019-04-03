@@ -145,7 +145,7 @@ TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithMemo) {
     // ensure the values are correct
     EXPECT_EQ(tx->getLedgerSequence()->intValue(), 44078641);
     EXPECT_EQ(tx->getSequence()->intValue(), 2);
-    //EXPECT_EQ(tx->getHash(), "BB7B32E859BFA9B9620D62CD89057FD0E0E396416799FCFE71AEB9201372A130");
+    EXPECT_EQ(tx->getHash(), "bb7b32e859bfa9b9620d62cd89057fd0e0e396416799fcfe71aeb9201372a130");
     EXPECT_EQ(tx->getSender()->toBase58(), "rpD73CkdVDYNbpm6r7Cn2ug2C8ZqNVZeeG");
     EXPECT_EQ(tx->getReceiver()->toBase58(), "r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV");
     EXPECT_EQ(tx->getValue()->toLong(), 100000L);
@@ -156,6 +156,6 @@ TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithMemo) {
 
     auto memo = memos[0];
 
-    EXPECT_EQ(memo.data, "726D2D312E322E34");
-    EXPECT_EQ(memo.ty,  "636C69656E74");
+    EXPECT_EQ(memo.data, "rm-1.2.4");
+    EXPECT_EQ(memo.ty,  "client");
 }
