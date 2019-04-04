@@ -54,9 +54,9 @@ namespace ledger {
                 //     l       = 193 + ((byte1 - 193) * 256) + byte2
                 // <=> l - 193 = ((byte1 - 193) * 256) + byte2
                 // <=> byte2 = (l - 193) & 0xFF
-                // <=> byte1 = ((l - 193) >> 8) & 0xFF
+                // <=> byte1 = 193 + ((l - 193) >> 8) & 0xFF
                 size -= 193;
-                writer.writeByte((size >> 8) & 0xFF);
+                writer.writeByte(193 + (size >> 8) & 0xFF);
                 writer.writeByte(size & 0xFF);
 
                 return true;
@@ -65,11 +65,11 @@ namespace ledger {
                 // <=> l - 12481 = ((byte1 - 241) * 65536) + (byte2 * 256) + byte3
                 // <=> byte3 = (l - 12481) & 0xFF
                 // <=> byte2 = ((l - 12481) >> 8) & 0xFF
-                // <=> byte1 = ((l - 12481) >> 16) & 0xFF
+                // <=> byte1 = 241 + ((l - 12481) >> 16) & 0xFF
                 size -= 12481;
-                writer.writeByte((size >> 16) & 0xFF);
+                writer.writeByte(241 + (size >> 16) & 0xFF);
                 writer.writeByte((size >> 8) & 0xFF);
-                writer.writeByte(size);
+                writer.writeByte(size & 0xFF);
             }
 
             // cannot have more bytes
