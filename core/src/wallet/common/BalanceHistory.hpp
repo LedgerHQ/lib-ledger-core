@@ -45,23 +45,25 @@ namespace ledger {
         namespace agnostic {
             // Get a balance history based on a time window (inclusive) and currency operations.
             //
+            // The Op type variable is an operation strategy type that must have two methods
+            // implemented:
+            //
+            //   - date(Operation op) -> std::chrono::system_clock::time_point, date of the operation
+            //   - update_balance(Operation op, Value& sum)
+            //
             // The Value type variable must be default-constructible and accept addition via the
             // plus (+) and minus (-) operators.
             //
             // The OperationIt type variable must implement the pre-increment operator (++it) and
             // be dereferencable with the * operator. It must have a value_type associated
             // type. Finally, it must be comparable with itself.
-            template <typename Value, typename CastValue, typename ValueImpl, typename OperationIt>
+            template <typename Op, typename Value, typename CastValue, typename ValueImpl, typename OperationIt>
             std::vector<std::shared_ptr<CastValue>> getBalanceHistoryFor(
                 std::chrono::system_clock::time_point const& startDate,
                 std::chrono::system_clock::time_point const& endDate,
                 api::TimePeriod precision,
                 OperationIt operationIt,
                 OperationIt operationEnd,
-                std::function<std::chrono::system_clock::time_point (typename OperationIt::value_type&)> opDate,
-                std::function<api::OperationType (typename OperationIt::value_type&)> opType,
-                std::function<Value (typename OperationIt::value_type&)> opValue,
-                std::function<Option<Value> (typename OperationIt::value_type&)> opFees,
                 Value zero
             ) {
                 if (startDate >= endDate) {
@@ -76,7 +78,7 @@ namespace ledger {
 
                 while (lowerDate <= endDate && operationIt != operationEnd) {
                     auto operation = *operationIt;
-                    auto operationDate = opDate(operation);
+                    auto operationDate = Op::date(operation);
 
                     while (operationDate > upperDate && lowerDate < endDate) {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
@@ -85,16 +87,7 @@ namespace ledger {
                     }
 
                     if (operationDate <= upperDate) {
-                        switch (opType(operation)) {
-                            case api::OperationType::RECEIVE: {
-                                sum = sum + opValue(operation);
-                                break;
-                            }
-                            case api::OperationType::SEND: {
-                                sum = sum - (opValue(operation) + opFees(operation).getValueOr(zero));
-                                break;
-                            }
-                        }
+                        Op::update_balance(operation, sum);
                     }
 
                     ++operationIt;

@@ -57,22 +57,36 @@ struct DummyOperation {
     ~DummyOperation() = default;
 };
 
+struct DummyOperationStrategy {
+    static inline system_clock::time_point date(DummyOperation& op) {
+        return op.date;
+    }
+
+    static inline void update_balance(DummyOperation& op, int32_t& sum) {
+        switch (op.ty) {
+            case api::OperationType::RECEIVE:
+                sum += op.amount;
+                break;
+
+            case api::OperationType::SEND:
+                sum -= op.amount;
+                break;
+        }
+    }
+};
+
 TEST(BalanceHistory, ZeroesOutOfRange) {
     // a basic collections of “operations” with nothing
     std::vector<DummyOperation> operations;
     auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
     auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
-    auto balances = agnostic::getBalanceHistoryFor<int32_t, int32_t, int32_t>(
+    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t, int32_t>(
         start,
         end,
         api::TimePeriod::DAY,
         operations.cbegin(),
         operations.cend(),
-        [](DummyOperation& op) { return op.date; },
-        [](DummyOperation& op) { return op.ty; },
-        [](DummyOperation& op) { return op.amount; },
-        [](DummyOperation&)  { return Option<int32_t>(); },
         0
     );
 
@@ -97,16 +111,12 @@ TEST(BalanceHistory, CorrectBalancesPerDay) {
     auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
     auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
-    auto balances = agnostic::getBalanceHistoryFor<int32_t, int32_t, int32_t>(
+    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t, int32_t>(
         start,
         end,
         api::TimePeriod::DAY,
         operations.cbegin(),
         operations.cend(),
-        [](DummyOperation& op) { return op.date; },
-        [](DummyOperation& op) { return op.ty; },
-        [](DummyOperation& op) { return op.amount; },
-        [](DummyOperation&)  { return Option<int32_t>(); },
         0
     );
 
@@ -129,16 +139,12 @@ TEST(BalanceHistory, CorrectBalancesPerDay2) {
     auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
     auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
-    auto balances = agnostic::getBalanceHistoryFor<int32_t, int32_t, int32_t>(
+    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t, int32_t>(
         start,
         end,
         api::TimePeriod::DAY,
         operations.cbegin(),
         operations.cend(),
-        [](DummyOperation& op) { return op.date; },
-        [](DummyOperation& op) { return op.ty; },
-        [](DummyOperation& op) { return op.amount; },
-        [](DummyOperation&)  { return Option<int32_t>(); },
         0
     );
 

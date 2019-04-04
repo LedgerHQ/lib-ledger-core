@@ -102,16 +102,33 @@ namespace ledger {
                 }
             );
 
-            return agnostic::getBalanceHistoryFor<BigInt, api::BigInt, api::BigIntImpl>(
+            // a small type used to pick implementations used by agnostic::getBalanceHistoryFor.
+            struct OperationStrategy {
+                static inline std::chrono::system_clock::time_point date(std::shared_ptr<api::ERC20LikeOperation>& op) {
+                    return op->getTime();
+                }
+
+                static inline void update_balance(std::shared_ptr<api::ERC20LikeOperation>& op, BigInt& sum) {
+                    auto value = BigInt(op->getValue()->toString(10));
+
+                    switch (op->getOperationType()) {
+                        case api::OperationType::RECEIVE:
+                            sum = sum + value;
+                            break;
+
+                        case api::OperationType::SEND:
+                            sum = sum - value;
+                            break;
+                    }
+                }
+            };
+
+            return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::BigInt, api::BigIntImpl>(
                 startDate,
                 endDate,
                 precision,
                 operations.cbegin(),
                 operations.cend(),
-                [](std::shared_ptr<api::ERC20LikeOperation>& op) { return op->getTime(); },
-                [](std::shared_ptr<api::ERC20LikeOperation>& op) { return op->getOperationType(); },
-                [](std::shared_ptr<api::ERC20LikeOperation>& op) { return BigInt(op->getValue()->toString(10)); },
-                [](std::shared_ptr<api::ERC20LikeOperation>&) { return Option<BigInt>(); },
                 BigInt()
             );
         }
