@@ -51,16 +51,25 @@ namespace ledger {
 
                 return true;
             } else if (size <= 12480) {
-                uint16_t x = 193 + ((((size >> 8) & 0x00FF) - 193) << 8) + (size & 0x00FF);
-                writer.writeByte((x >> 8) & 0xFF);
-                writer.writeByte(x & 0xFF);
+                //     l       = 193 + ((byte1 - 193) * 256) + byte2
+                // <=> l - 193 = ((byte1 - 193) * 256) + byte2
+                // <=> byte2 = (l - 193) & 0xFF
+                // <=> byte1 = ((l - 193) >> 8) & 0xFF
+                size -= 193;
+                writer.writeByte((size >> 8) & 0xFF);
+                writer.writeByte(size & 0xFF);
 
                 return true;
             } else if (size <= 918744) {
-                uint32_t x = 12481 + (((size >> 16) & 0x0000FF - 241) << 16) + (size & 0x00FF00) + (size & 0x0000FF);
-                writer.writeByte((x >> 16) & 0xFF);
-                writer.writeByte((x >> 8) & 0xFF);
-                writer.writeByte(x);
+                //     l         = 12481 + ((byte1 - 241) * 65536) + (byte2 * 256) + byte3
+                // <=> l - 12481 = ((byte1 - 241) * 65536) + (byte2 * 256) + byte3
+                // <=> byte3 = (l - 12481) & 0xFF
+                // <=> byte2 = ((l - 12481) >> 8) & 0xFF
+                // <=> byte1 = ((l - 12481) >> 16) & 0xFF
+                size -= 12481;
+                writer.writeByte((size >> 16) & 0xFF);
+                writer.writeByte((size >> 8) & 0xFF);
+                writer.writeByte(size);
             }
 
             // cannot have more bytes

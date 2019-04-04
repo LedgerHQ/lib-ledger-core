@@ -35,6 +35,7 @@
 #include <bytes/BytesReader.h>
 #include <wallet/currencies.hpp>
 #include <crypto/SHA512.hpp>
+
 namespace ledger {
     namespace core {
         // a helper to read VLE fields
