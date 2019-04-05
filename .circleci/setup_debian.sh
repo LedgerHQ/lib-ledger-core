@@ -32,9 +32,6 @@ fi
 echo "========> Install Sqlite"
 apt-get install -y sqlite3 sqlite libsqlite3-dev
 
-echo "========> Install Boost"
-apt-get install -y libboost-all-dev
-
 #if [ "$BUILD_CONFIG" == "Debug" ]; then
     echo "========> Install node"
     curl -sL https://deb.nodesource.com/setup_9.x | bash -
