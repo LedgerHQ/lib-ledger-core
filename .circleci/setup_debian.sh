@@ -21,7 +21,8 @@ if [ "$BUILD_CONFIG" == "Release" ]; then
 fi
 
 echo "========> Install C++ dependencies"
-apt-get install -y g++ make
+apt-get install -y g++-7 make
+update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 export PATH=$HOME/cmake-3.12.3/bin:$PATH
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
