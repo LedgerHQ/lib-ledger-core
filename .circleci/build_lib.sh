@@ -60,16 +60,16 @@ function command_ios {
 
 function command_android {
   echo "Set Android NDK variable"
-  export ANDROID_NDK_r16b=/home/circleci/android-ndk-r16b
+  export ANDROID_NDK_r18b=/home/circleci/android-ndk-r18b
   export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)" || export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
   #Needed for nocodesign toolchains
   echo "command_android with architecture : $ARCH"
   if [ "$ARCH" == "armeabi-v7a" ]; then
-    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-armeabi-v7a-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r18b-api-21-armeabi-v7a-clang-libcxx'
   elif [ "$ARCH" == "arm64-v8a" ]; then
-    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-arm64-v8a-neon-clang-libcxx14'
+    export TOOLCHAIN_NAME='android-ndk-r18b-api-21-arm64-v8a-clang-libcxx'
   else
-    export TOOLCHAIN_NAME='android-ndk-r16b-api-21-x86-clang-libcxx'
+    export TOOLCHAIN_NAME='android-ndk-r18b-api-21-x86-clang-libcxx'
   fi
   #This is useful for SQLCipher/config.guess
   export LIBC=gnu
