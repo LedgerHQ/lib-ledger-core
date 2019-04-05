@@ -59,6 +59,7 @@ sqlite3_session_backend::sqlite3_session_backend(
     int timeout = 0;
     int connection_flags = SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE;
     std::string synchronous, passKey, newPassKey;
+    bool disableEncryption = false;
     std::string const & connectString = parameters.get_connect_string();
     std::string dbname(connectString);
     std::stringstream ssconn(connectString);
@@ -113,6 +114,10 @@ sqlite3_session_backend::sqlite3_session_backend(
         {
             newPassKey = val;
         }
+        else if ("disable_encryption" == key && val == "true")
+        {
+            disableEncryption = true;
+        }
     }
 
     int res = sqlite3_open_v2(dbname.c_str(), &conn_, connection_flags, NULL);
@@ -131,7 +136,8 @@ sqlite3_session_backend::sqlite3_session_backend(
             res = sqlite3_rekey_v2(conn_, dbname.c_str(), newPassKey.c_str(), strlen(newPassKey.c_str()));
             check_sqlite_err(conn_, res, "Failed to change database's password. ");
         }
-        else {
+        else if (disableEncryption)
+        {
             // FIXME: security concerns: maybe we want to sanitize? :D
             // convert back to plain text; this method copies the current database in plaintext
             // mode; once it’s done, we must close the connection, rename the database and re-open
@@ -158,12 +164,15 @@ sqlite3_session_backend::sqlite3_session_backend(
 
                     } else {
                         // old DB removed but cannot rename the new one: bad
+                        throw sqlite3_soci_error("Cannot rename new SQLCipher database", res);
                     }
                 } else {
                     // cannot remove the old database
+                    throw sqlite3_soci_error("Cannot remove old SQLCipher database", res);
                 }
             } else {
                 // likely a still busy database
+                throw sqlite3_soci_error("Cannot close SQLCipher database", res);
             }
         }
     }

@@ -75,7 +75,7 @@ namespace ledger {
                 db_params = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
             } else {
                 // otherwise, decrypt the database back to plain text by providing an empty new key
-                db_params = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + "new_key=\"\" ";
+                db_params = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + "disable_encryption=\"true\" ";
             }
 
             session.close();
