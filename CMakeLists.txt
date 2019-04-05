@@ -17,8 +17,13 @@ mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
 list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+add_definitions(-D_SILENCE_ALL_CXX17_DEPRECATION_WARNINGS)
+
+if(MSVC)
+    add_definitions("/Zc:__cplusplus")
+endif(MSVC)
 
 # Fix LLC-186: Add this flag to avoid crash for 10.10.x version
 # https://stackoverflow.com/questions/41865537/how-does-apples-codesign-utility-decide-which-sha-algorithms-to-sign-a-shared
