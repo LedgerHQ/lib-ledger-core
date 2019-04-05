@@ -33,6 +33,7 @@
 #include <wallet/common/OperationQuery.h>
 #include <api/AmountCallback.hpp>
 #include <utils/Exception.hpp>
+#include <utils/ToCallback.hpp>
 #include <api/ErrorCode.hpp>
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -210,7 +211,7 @@ namespace ledger {
         }
 
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
-            eraseDataSince(date).callback(getMainExecutionContext(), callback);
+            toErrorCodeCallback(eraseDataSince(date), callback);
         }
 
     }

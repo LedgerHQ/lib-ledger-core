@@ -56,6 +56,8 @@
 #include <events/EventPublisher.hpp>
 #include <net/WebSocketClient.h>
 
+#include <stlab/concurrency/future.hpp>
+
 namespace ledger {
     namespace core {
         class BitcoinLikeWalletFactory;
@@ -79,27 +81,26 @@ namespace ledger {
             std::shared_ptr<AbstractWalletFactory> getFactory(const std::string& currencyName) const;
 
             // Fetch wallet
-            Future<int64_t> getWalletCount() const;
-            Future<std::vector<std::shared_ptr<AbstractWallet>>> getWallets(int64_t from, int64_t size);
-            FuturePtr<AbstractWallet> getWallet(const std::string& name);
-            Future<api::ErrorCode> updateWalletConfig(const std::string &name,
+            stlab::future<int32_t> getWalletCount() const;
+            stlab::future<std::vector<std::shared_ptr<AbstractWallet>>> getWallets(int64_t from, int64_t size);
+            stlab::future<std::shared_ptr<AbstractWallet>> getWallet(const std::string& name);
+            stlab::future<void> updateWalletConfig(const std::string &name,
                                                       const std::shared_ptr<api::DynamicObject> &configuration);
-            Future<std::vector<std::string>> getWalletNames(int64_t from, int64_t size) const;
-
+            stlab::future<std::vector<std::string>> getWalletNames(int64_t from, int64_t size) const;
             // Create wallet
-            FuturePtr<AbstractWallet> createWallet(const std::string& name,
+            stlab::future<std::shared_ptr<AbstractWallet>> createWallet(const std::string& name,
                                                    const std::string& currencyName,
                                                    const std::shared_ptr<api::DynamicObject>& configuration);
 
 
             // Delete wallet
-            Future<Unit> deleteWallet(const std::string& name);
+            stlab::future<Unit> deleteWallet(const std::string& name);
 
-            Future<api::Block> getLastBlock(const std::string& currencyName);
-            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
+            stlab::future<api::Block> getLastBlock(const std::string& currencyName);
+            stlab::future<void> eraseDataSince(const std::chrono::system_clock::time_point & date);
 
             // Password management
-            Future<api::ErrorCode> changePassword(
+            stlab::future<void> changePassword(
                 const std::string& oldPassword,
                 const std::string& newPassword
             );
@@ -107,8 +108,8 @@ namespace ledger {
             // Currencies management
             Option<api::Currency> getCurrency(const std::string& name) const;
             const std::vector<api::Currency>& getCurrencies() const;
-            Future<Unit> addCurrency(const api::Currency& currency);
-            Future<Unit> removeCurrency(const std::string& currencyName);
+            stlab::future<void> addCurrency(const api::Currency& currency);
+            stlab::future<void> removeCurrency(const std::string& currencyName);
             static std::shared_ptr<WalletPool> newInstance(
                 const std::string &name,
                 const Option<std::string> &password,
@@ -138,7 +139,7 @@ namespace ledger {
             /// > got destroyed. Consider restarting / exiting your application right after calling
             /// > that function. You are also highly advised to run that function on a code path
             /// > that doesn’t include having lots of objects in memory.
-            Future<api::ErrorCode> freshResetAll();
+            stlab::future<void> freshResetAll();
 
         private:
             WalletPool(

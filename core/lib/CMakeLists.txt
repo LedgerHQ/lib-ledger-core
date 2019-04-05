@@ -5,6 +5,7 @@ include(ExternalProject)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/leveldb")
 
+
 include(ProjectSecp256k1)
 add_subdirectory(bigd)
 add_subdirectory(fmt)
@@ -12,6 +13,11 @@ add_subdirectory(openssl)
 add_subdirectory(ethash)
 add_subdirectory(snappy)
 add_subdirectory(leveldb)
+
+
+set(stlab.testing OFF)
+set(stlab.coroutine OFF)
+add_subdirectory(stlab)
 
 add_subdirectory(spdlog)
 add_subdirectory(sqlcipher)

@@ -124,6 +124,8 @@ target_link_libraries(ledger-core-interface INTERFACE ethash)
 
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
+target_link_libraries(ledger-core-interface INTERFACE stlab)
+
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
         "*.h"

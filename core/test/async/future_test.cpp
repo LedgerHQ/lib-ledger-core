@@ -35,6 +35,10 @@
 #include <iostream>
 #include <async/QtThreadDispatcher.hpp>
 
+#include <stlab/concurrency/default_executor.hpp>
+#include <stlab/concurrency/future.hpp>
+#include <stlab/concurrency/utility.hpp>
+
 #undef foreach
 
 using namespace ledger::core;
@@ -55,6 +59,11 @@ TEST(Future, OnCompleteSuccess) {
     dispatcher->waitUntilStopped();
 }
 
+TEST(Future, OnCompleteSuccess2) {
+    auto f = stlab::async(stlab::default_executor, []() { return "Hello world"; });
+    EXPECT_STREQ(stlab::blocking_get(f), "Hello world");
+}
+
 TEST(Future, OnCompleteFailure) {
     auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
@@ -70,6 +79,21 @@ TEST(Future, OnCompleteFailure) {
     dispatcher->waitUntilStopped();
 }
 
+TEST(Future, OnCompleteFailure2) {
+    auto f = stlab::async(stlab::default_executor, [] ()->std::string {
+        throw std::out_of_range("Not good");
+        return "Hello world";
+        }).recover([](stlab::future<std::string> x) {
+            try {
+                return *x.get_try();
+            }
+            catch (const std::exception & e) {
+                return std::string("Error: ") + e.what();
+            }
+        });
+    EXPECT_EQ(stlab::blocking_get(f), "Error: Not good");
+}
+
 TEST(Future, Map) {
     auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
     auto queue = dispatcher->getSerialExecutionContext("queue");
@@ -82,6 +106,12 @@ TEST(Future, Map) {
         dispatcher->stop();
     });
     dispatcher->waitUntilStopped();
+}
+
+TEST(Future, Map2) {
+    auto f = stlab::async(stlab::default_executor, [] { return "Hello world";})
+        .then([](std::string val) { return val + " from another thread"; });
+    EXPECT_EQ(stlab::blocking_get(f), "Hello world from another thread");
 }
 
 TEST(Future, MapToInt) {

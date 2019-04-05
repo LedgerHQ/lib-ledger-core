@@ -30,12 +30,13 @@
  */
 
 #include "BaseFixture.h"
+#include <stlab/concurrency/utility.hpp>
 
 class AccountCreationTest : public BaseFixture {};
 
 TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfo) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+    auto wallet = stlab::blocking_get(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
     auto address = wait(account->getFreshPublicAddresses())[0]->toString();
     EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");

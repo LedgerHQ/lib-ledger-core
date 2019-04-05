@@ -30,6 +30,7 @@
  */
 
 #include "BaseFixture.h"
+#include <stlab/concurrency/utility.hpp>
 
 class AccountInfoTests : public BaseFixture {
 
@@ -37,7 +38,7 @@ class AccountInfoTests : public BaseFixture {
 
 TEST_F(AccountInfoTests, FirstAccountInfo) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+    auto wallet = stlab::blocking_get(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
@@ -48,7 +49,7 @@ TEST_F(AccountInfoTests, FirstAccountInfo) {
 
 TEST_F(AccountInfoTests, FirstEthAccountInfo) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
+    auto wallet = stlab::blocking_get(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
@@ -60,7 +61,7 @@ TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
     auto config = DynamicObject::newInstance();
     config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
+    auto wallet = stlab::blocking_get(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
@@ -69,7 +70,7 @@ TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
 
 TEST_F(AccountInfoTests, AnotherAccountInfo) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+    auto wallet = stlab::blocking_get(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto info = wait(wallet->getAccountCreationInfo(20));
     EXPECT_EQ(info.index, 20);
     EXPECT_EQ(info.owners[0], "main");

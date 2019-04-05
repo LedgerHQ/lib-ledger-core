@@ -197,11 +197,10 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization)
         auto formatedDate = DateUtils::fromJSON(date);
 
         //Delete account
-        auto code = wait(wallet->eraseDataSince(formatedDate));
-        EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+        EXPECT_NO_THROW(stlab::blocking_get(wallet->eraseDataSince(formatedDate)));
 
         //Check if account was successfully deleted
-        auto newAccountCount = wait(wallet->getAccountCount());
+        auto newAccountCount = stlab::blocking_get(wallet->getAccountCount());
         EXPECT_EQ(newAccountCount, 0);
         {
             soci::session sql(pool->getDatabaseSessionPool()->getPool());
@@ -211,11 +210,10 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, EraseDataSinceAfterSynchronization)
         }
 
         //Delete wallet
-        auto walletCode = wait(pool->eraseDataSince(formatedDate));
-        EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+        EXPECT_NO_THROW(stlab::blocking_get(pool->eraseDataSince(formatedDate)));
 
         //Check if wallet was successfully deleted
-        auto walletCount = wait(pool->getWalletCount());
+        auto walletCount = stlab::blocking_get(pool->getWalletCount());
         EXPECT_EQ(walletCount, 0);
     }
 }

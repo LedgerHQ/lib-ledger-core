@@ -315,7 +315,7 @@ namespace ledger {
                 });
         }
 
-        Future<api::ErrorCode> EthereumLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+        stlab::future<void> EthereumLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point & date) {
                 auto log = logger();
 
                 log->debug(" Start erasing data of account : {}", getAccountUid());
@@ -338,7 +338,7 @@ namespace ledger {
                 }
                 sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(getAccountUid()), soci::use(date);
                 log->debug(" Finish erasing data of account : {}", getAccountUid());
-                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+                return stlab::make_ready_future(stlab::immediate_executor);
 
         }
 

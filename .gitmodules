@@ -22,3 +22,6 @@
 [submodule "core/lib/fmt"]
     path = core/lib/fmt
     url = https://github.com/fmtlib/fmt.git
+[submodule "core/lib/stlab"]
+    path = core/lib/stlab
+    url = https://github.com/teams2ua/libraries.git

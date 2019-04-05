@@ -120,27 +120,20 @@ TEST_F(WalletTests, CreateNonContiguousAccountBis) {
 
 TEST_F(WalletTests, CreateAccountBug) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
-    auto list = [pool, this] () -> Future<Unit> {
-        return pool->getWalletCount().flatMap<std::vector<std::shared_ptr<AbstractWallet>>>(dispatcher->getMainExecutionContext(), [pool] (const int64_t& count) -> Future<std::vector<std::shared_ptr<AbstractWallet>>> {
-            return pool->getWallets(0, count);
-        }).flatMap<Unit>(dispatcher->getMainExecutionContext(), [] (const std::vector<std::shared_ptr<AbstractWallet>>& wallets) -> Future<Unit> {
-            return Future<Unit>::successful(unit);
-        });
-    };
+    auto wallet = stlab::blocking_get(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+
     //Otherwise test takes a long time
     //int LOOP_COUNT = 250;
     int LOOP_COUNT = 5;
     std::function<void (int)> loop;
-    loop = [&loop, &wallet, this, list, LOOP_COUNT] (int index) {
+    loop = [&loop, &wallet, this, LOOP_COUNT] (int index) {
         if (index >= LOOP_COUNT) {
             dispatcher->stop();
             return ;
         }
         auto info = P2PKH_MEDIUM_XPUB_INFO;
         info.index = index;
-        wallet->newAccountWithExtendedKeyInfo(info).onComplete(dispatcher->getMainExecutionContext(), [&loop, index, list, this] (const TryPtr<api::Account>& res) {
-            list().onComplete(dispatcher->getMainExecutionContext(), [res, &loop, list, index] (const Try<Unit>&) {
+        wallet->newAccountWithExtendedKeyInfo(info).onComplete(dispatcher->getMainExecutionContext(), [&loop, index, this] (const TryPtr<api::Account>& res) {
                 if (res.isSuccess()) {
                     res.getValue()->synchronize();
                     loop(index + 1);
@@ -148,7 +141,6 @@ TEST_F(WalletTests, CreateAccountBug) {
                     fmt::print("Failure {}\n", res.getFailure().getMessage());
                     loop(index);
                 }
-            });
         });
     };
     loop(0);
@@ -173,9 +165,8 @@ TEST_F(WalletTests, ChangeWalletConfig) {
         auto newEndpoint = "http://eth-ropsten.explorers.prod.aws.ledger.fr";
         auto config = api::DynamicObject::newInstance();
         config->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, newEndpoint);
-        auto returnCode = wait(pool->updateWalletConfig(walletName, config));
-        EXPECT_EQ(returnCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-        auto wallet = wait(pool->getWallet(walletName));
+        EXPECT_NO_THROW(stlab::blocking_get(pool->updateWalletConfig(walletName, config)));
+        auto wallet = stlab::blocking_get(pool->getWallet(walletName));
         auto walletConfig = wallet->getConfiguration();
         EXPECT_EQ(walletConfig->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), newEndpoint);
         EXPECT_EQ(walletConfig->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);

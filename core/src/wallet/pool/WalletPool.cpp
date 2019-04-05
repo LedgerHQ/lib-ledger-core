@@ -37,6 +37,7 @@
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
 #include <bitcoin/bech32/Bech32Parameters.h>
+#include <stlab/concurrency/default_executor.hpp>
 
 namespace ledger {
     namespace core {
@@ -260,17 +261,17 @@ namespace ledger {
             return nullptr;
         }
 
-        Future<int64_t> WalletPool::getWalletCount() const {
+        stlab::future<int32_t> WalletPool::getWalletCount() const {
             auto self = shared_from_this();
-            return async<int64_t>([=] () -> int64_t {
+            return stlab::async(stlab::default_executor, [=] () -> int32_t {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 return PoolDatabaseHelper::getWalletCount(sql, *self);
             });
         }
 
-        Future<std::vector<std::string>> WalletPool::getWalletNames(int64_t from, int64_t size) const {
+        stlab::future<std::vector<std::string>> WalletPool::getWalletNames(int64_t from, int64_t size) const {
             auto self = shared_from_this();
-            return async<std::vector<std::string>>([=] () -> std::vector<std::string> {
+            return stlab::async(stlab::default_executor, [=] () -> std::vector<std::string> {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 std::vector<WalletDatabaseEntry> entries((size_t) size);
                 auto count = PoolDatabaseHelper::getWallets(sql, *self, from, entries);
@@ -294,9 +295,9 @@ namespace ledger {
             return Option<WalletDatabaseEntry>(entry);
         }
 
-        FuturePtr<AbstractWallet> WalletPool::getWallet(const std::string &name) {
+        stlab::future<std::shared_ptr<AbstractWallet>> WalletPool::getWallet(const std::string &name) {
             auto self = shared_from_this();
-            return async<std::shared_ptr<AbstractWallet>>([=] () {
+            return stlab::async(stlab::default_executor, [=] () {
                 auto entry = getWalletEntryFromDatabase(self, name);
                 if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));
@@ -305,13 +306,13 @@ namespace ledger {
             });
         }
 
-        Future<api::ErrorCode> WalletPool::updateWalletConfig(const std::string &name,
+        stlab::future<void> WalletPool::updateWalletConfig(const std::string &name,
                                                               const std::shared_ptr<api::DynamicObject> &configuration) {
             auto self = shared_from_this();
-            return async<api::ErrorCode>([=] () {
+            return stlab::async(stlab::default_executor, [=] () {
                 auto entry = getWalletEntryFromDatabase(self, name);
                 if (!entry.hasValue()) {
-                    return api::ErrorCode::INVALID_ARGUMENT;
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "There is no wallet " + name);
                 }
                 // Wallet exists, let's update its configuration
                 auto walletEntry = entry.getValue();
@@ -321,7 +322,6 @@ namespace ledger {
                 // No need to check if currency supported (factory non null), because we are supposed to fetch
                 // walletEntry from database, which implies that it was already checked before at creation
                 self->_wallets[walletEntry.uid] = self->getFactory(walletEntry.currencyName)->build(walletEntry);
-                return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
             });
         }
 
@@ -362,9 +362,9 @@ namespace ledger {
             }
         }
 
-        Future<std::vector<std::shared_ptr<AbstractWallet>>> WalletPool::getWallets(int64_t from, int64_t size) {
+        stlab::future<std::vector<std::shared_ptr<AbstractWallet>>> WalletPool::getWallets(int64_t from, int64_t size) {
             auto self = shared_from_this();
-            return async<std::vector<std::shared_ptr<AbstractWallet>>>([=] () {
+            return stlab::async(stlab::default_executor, [=] () {
                 std::vector<WalletDatabaseEntry> entries((size_t) size);
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 auto count = PoolDatabaseHelper::getWallets(sql, *self, from, entries);
@@ -376,9 +376,9 @@ namespace ledger {
             });
         }
 
-        Future<Unit> WalletPool::addCurrency(const api::Currency &currency) {
+        stlab::future<void> WalletPool::addCurrency(const api::Currency &currency) {
             auto self = shared_from_this();
-            return async<Unit>([=] () {
+            return stlab::async(stlab::default_executor, [=] () {
                 auto factory = getFactory(currency.name);
                 if (factory != nullptr) {
                     throw Exception(api::ErrorCode::CURRENCY_ALREADY_EXISTS, fmt::format("Currency '{}' already exists.", currency.name));
@@ -387,13 +387,12 @@ namespace ledger {
                 CurrenciesDatabaseHelper::insertCurrency(sql, currency);
                 _currencies.push_back(currency);
                 createFactory(currency);
-                return unit;
             });
         }
 
-        Future<Unit> WalletPool::removeCurrency(const std::string &currencyName) {
+        stlab::future<void> WalletPool::removeCurrency(const std::string &currencyName) {
             auto self = shared_from_this();
-            return async<Unit>([=] () {
+            return stlab::async(stlab::default_executor, [=] () {
                 auto factory = getFactory(currencyName);
                 if (factory == nullptr) {
                     throw Exception(api::ErrorCode::CURRENCY_NOT_FOUND, fmt::format("Currency '{}' not found.", currencyName));
@@ -410,14 +409,13 @@ namespace ledger {
                     _currencies.erase(cIt);
                 if (fIt != _factories.end())
                     _factories.erase(fIt);
-                return unit;
             });
         }
 
-        FuturePtr<AbstractWallet> WalletPool::createWallet(const std::string &name, const std::string& currencyName,
+        stlab::future<std::shared_ptr<AbstractWallet>> WalletPool::createWallet(const std::string &name, const std::string& currencyName,
                                                            const std::shared_ptr<api::DynamicObject> &configuration) {
             auto self = shared_from_this();
-            return async<std::shared_ptr<AbstractWallet>>([=] () {
+            return stlab::async(stlab::default_executor,[=] () {
                 auto factory = self->getFactory(currencyName);
                 if (factory == nullptr) {
                     throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.");
@@ -457,9 +455,9 @@ namespace ledger {
             return _wsClient;
         }
 
-        Future<api::Block> WalletPool::getLastBlock(const std::string &currencyName) {
+        stlab::future<api::Block> WalletPool::getLastBlock(const std::string &currencyName) {
             auto self = shared_from_this();
-            return async<api::Block>([self, currencyName] () -> api::Block {
+            return stlab::async(stlab::default_executor, [self, currencyName] () -> api::Block {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 auto block = BlockDatabaseHelper::getLastBlock(sql, currencyName);
                 if (block.isEmpty()) {
@@ -469,81 +467,64 @@ namespace ledger {
             });
         }
 
-        Future<api::ErrorCode> WalletPool::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+        stlab::future<void> WalletPool::eraseDataSince(const std::chrono::system_clock::time_point & date) {
             auto self = shared_from_this();
             auto name = getName();
             _logger->debug("Start erasing data of WalletPool : {}",name);
 
-            return getWalletCount().flatMap<std::vector<std::shared_ptr<AbstractWallet>>>(getContext(), [self] (int64_t count) {
-                return self->getWallets(0, count);
-            }).flatMap<api::ErrorCode>(getContext(), [self, date] (const std::vector<std::shared_ptr<AbstractWallet>> &wallets) -> Future<api::ErrorCode>{
-
-                static std::function<Future<api::ErrorCode> (int, const std::vector<std::shared_ptr<AbstractWallet>> &)>  eraseWallet = [date] (int index, const std::vector<std::shared_ptr<AbstractWallet>> &walletsToErase) -> Future<api::ErrorCode> {
-
-                    if (index == walletsToErase.size()) {
-                        return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-                    }
-
-                    return walletsToErase[index]->eraseDataSince(date).flatMap<api::ErrorCode>(ImmediateExecutionContext::INSTANCE,[date, index, walletsToErase] (const api::ErrorCode &errorCode) -> Future<api::ErrorCode> {
-
-                        if (errorCode != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
-                            return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase wallets of WalletPool !"));
+            return getWalletCount()
+                .then([self] (int64_t count) { 
+                    return self->getWallets(0, count);
+                })
+                .then([self, date] (const auto &wallets) {
+                    // create vector of futures
+                    std::vector<stlab::future<void>> futures;
+                    std::transform(
+                        wallets.begin(),
+                        wallets.end(),
+                        std::back_inserter(futures),
+                        [date](const auto & wallet) {return wallet->eraseDataSince(date); });
+                    return stlab::when_all(stlab::default_executor, [] {}, std::make_pair(futures.begin(), futures.end()));
+                })
+                .then([self, name, date] () {
+                    //Erase wallets created after date
+                    soci::session sql(self->getDatabaseSessionPool()->getPool());
+                    soci::rowset<soci::row> wallets = (sql.prepare << "SELECT uid FROM wallets "
+                                                                        "WHERE pool_name = :pool_name AND created_at >= :date ",
+                                                                        soci::use(name), soci::use(date));
+                    for (auto& wallet : wallets) {
+                        if (wallet.get_indicator(0) != soci::i_null) {
+                            self->_wallets.erase(wallet.get<std::string>(0));
                         }
-
-                        return eraseWallet(index + 1, walletsToErase);
-                    });
-                };
-                return eraseWallet(0, wallets);
-
-            }).flatMap<api::ErrorCode>(getContext(), [self, name, date] (const api::ErrorCode &err) {
-
-                if (err != api::ErrorCode::FUTURE_WAS_SUCCESSFULL) {
-                    return Future<api::ErrorCode>::failure(make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to erase wallets of WalletPool !"));
-                }
-
-                //Erase wallets created after date
-                soci::session sql(self->getDatabaseSessionPool()->getPool());
-                soci::rowset<soci::row> wallets = (sql.prepare << "SELECT uid FROM wallets "
-                                                                    "WHERE pool_name = :pool_name AND created_at >= :date ",
-                                                                    soci::use(name), soci::use(date));
-                for (auto& wallet : wallets) {
-                    if (wallet.get_indicator(0) != soci::i_null) {
-                        self->_wallets.erase(wallet.get<std::string>(0));
                     }
-                }
-                sql << "DELETE FROM wallets WHERE pool_name = :pool_name AND created_at >= :date ", soci::use(name), soci::use(date);
-                self->logger()->debug("Finish erasing data of WalletPool : {}",name);
-                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-            });
+                    sql << "DELETE FROM wallets WHERE pool_name = :pool_name AND created_at >= :date ", soci::use(name), soci::use(date);
+                    self->logger()->debug("Finish erasing data of WalletPool : {}",name);
+                });
         }
 
-        Future<api::ErrorCode> WalletPool::changePassword(
+        stlab::future<void> WalletPool::changePassword(
             const std::string& oldPassword,
             const std::string& newPassword
         ) {
             auto self = shared_from_this();
 
-            return async<api::ErrorCode>([=]() {
+            return stlab::async(stlab::default_executor, [=]() {
                 self->getDatabaseSessionPool()->performChangePassword(oldPassword, newPassword);
                 self->_externalPreferencesBackend->resetEncryption(_rng, oldPassword, newPassword);
                 self->_internalPreferencesBackend->resetEncryption(_rng, oldPassword, newPassword);
-                return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
             });
         }
 
-        Future<api::ErrorCode> WalletPool::freshResetAll() {
+        stlab::future<void> WalletPool::freshResetAll() {
             auto self = shared_from_this();
 
-            return Future<api::ErrorCode>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
+            return stlab::async(stlab::default_executor, [=]() {
                 // drop the main database first
                 self->getDatabaseSessionPool()->performDatabaseRollback();
 
                 // then reset preferences
                 _externalPreferencesBackend->clear();
                 _internalPreferencesBackend->clear();
-
-                // and we’re done
-                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
         }
     }

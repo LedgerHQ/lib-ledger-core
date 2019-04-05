@@ -35,6 +35,8 @@
 #include <unordered_set>
 #include <src/wallet/pool/WalletPool.hpp>
 #include <wallet/common/CurrencyBuilder.hpp>
+#include <stlab/concurrency/concurrency.hpp>
+
 
 class WalletPoolTest : public BaseFixture {
 
@@ -80,19 +82,16 @@ TEST_F(WalletPoolTest, AddCurrency) {
         auto firstPool = newDefaultPool();
         bool found = false;
         bool foundInSecond = false;
-        firstPool->addCurrency(wonderCoin).onComplete(dispatcher->getMainExecutionContext(),
-                                                      [&](const Try<Unit> &unit) {
-                                                          for (const auto &currency : firstPool->getCurrencies()) {
-                                                              if (currency.name == "wonder_coin") {
-                                                                  found = true;
-                                                                  EXPECT_EQ(
-                                                                  currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
-                                                                  wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
-                                                              }
-                                                          }
-                                                          dispatcher->stop();
-                                                      });
-        dispatcher->waitUntilStopped();
+        EXPECT_NO_THROW(stlab::blocking_get(firstPool->addCurrency(wonderCoin)));
+        auto currs = firstPool->getCurrencies();
+        for (const auto &currency : firstPool->getCurrencies()) {
+            if (currency.name == "wonder_coin") {
+                found = true;
+                EXPECT_EQ(
+                currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
+                wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
+            }
+        }
         EXPECT_TRUE(found);
     }
     {
@@ -122,26 +121,18 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
         auto firstPool = newDefaultPool();
         bool found = false;
         bool foundInSecond = false;
-        firstPool
-        ->addCurrency(wonderCoin)
-        .onComplete(dispatcher->getMainExecutionContext(),
-          [&](const Try<Unit> &unit) {
-              for (const auto &currency : firstPool->getCurrencies()) {
-                  if (currency.name == "wonder_coin") {
-                      found = true;
-                      EXPECT_EQ(
-                      currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
-                      wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
-                  }
-              }
-              firstPool->removeCurrency(wonderCoin.name).onComplete(dispatcher->getMainExecutionContext(),
-                [&] (const Try<Unit>& result) {
-                    dispatcher->stop();
-                }
-              );
-          });
-        dispatcher->waitUntilStopped();
+
+        EXPECT_NO_THROW(stlab::blocking_get(firstPool->addCurrency(wonderCoin)));
+        for (const auto &currency : firstPool->getCurrencies()) {
+            if (currency.name == "wonder_coin") {
+                found = true;
+                EXPECT_EQ(
+                currency.bitcoinLikeNetworkParameters.value().MessagePrefix,
+                wonderCoin.bitcoinLikeNetworkParameters.value().MessagePrefix);
+            }
+        }
         EXPECT_TRUE(found);
+        EXPECT_NO_THROW(stlab::blocking_get(firstPool->removeCurrency(wonderCoin.name)));
     }
     {
         auto secondPool = newDefaultPool();
@@ -159,15 +150,15 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
 TEST_F(WalletPoolTest, CreateAndGetWallet) {
     {
         auto pool = newDefaultPool();
-        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
-        auto getWallet = wait(pool->getWallet("my_wallet"));
+        auto wallet = stlab::blocking_get(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+        auto getWallet = stlab::blocking_get(pool->getWallet("my_wallet"));
         EXPECT_TRUE(wallet.get() == getWallet.get());
     }
     {
         auto pool = newDefaultPool();
-        auto getWallet = wait(pool->getWallet("my_wallet"));
+        auto getWallet = stlab::blocking_get(pool->getWallet("my_wallet"));
         EXPECT_TRUE(getWallet->getName() == "my_wallet");
-        auto wallets = wait(pool->getWallets(0, 1));
+        auto wallets = stlab::blocking_get(pool->getWallets(0, 1));
         EXPECT_TRUE(wallets.front()->getName() == "my_wallet");
     }
 }

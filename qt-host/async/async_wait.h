@@ -34,6 +34,14 @@
 #include <async/Future.hpp>
 #include <QEventLoop>
 #include "QtThreadPoolExecutionContext.hpp"
+#include <stlab/concurrency/future.hpp>
+#include <stlab/concurrency/utility.hpp>
+
+
+template <typename T>
+T wait(stlab::future<T> f) {
+    return stlab::blocking_get(f);
+}
 
 template <typename T>
 T wait(ledger::core::Future<T> future) {

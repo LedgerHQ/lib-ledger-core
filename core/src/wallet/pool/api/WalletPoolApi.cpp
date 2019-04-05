@@ -38,6 +38,8 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <utils/ToCallback.hpp>
+#include <stlab/concurrency/concurrency.hpp>
 
 namespace ledger {
     namespace core {
@@ -67,22 +69,23 @@ namespace ledger {
                                  const std::shared_ptr<api::DatabaseBackend> &backend,
                                  const std::shared_ptr<api::DynamicObject>& configuration,
                                  const std::shared_ptr<api::WalletPoolCallback> &listener) {
-            auto context = dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name));
-            FuturePtr<WalletPoolApi>::async(context, [=] () {
-                auto pool = ledger::core::WalletPool::newInstance(
-                    name,
-                    Option<std::string>(password),
-                    httpClient,
-                    webSocketClient,
-                    pathResolver,
-                    logPrinter,
-                    dispatcher,
-                    rng,
-                    backend,
-                    configuration
-                );
-                return std::make_shared<WalletPoolApi>(pool);
-            }).callback(dispatcher->getMainExecutionContext(), listener);
+            toCallbackPtr(
+                stlab::async(stlab::default_executor, [=]() {
+                    auto pool = ledger::core::WalletPool::newInstance(
+                        name,
+                        Option<std::string>(password),
+                        httpClient,
+                        webSocketClient,
+                        pathResolver,
+                        logPrinter,
+                        dispatcher,
+                        rng,
+                        backend,
+                        configuration
+                    );
+                    return std::make_shared<WalletPoolApi>(pool);
+                    }),
+                listener);
         }
 
         WalletPoolApi::WalletPoolApi(const std::shared_ptr<ledger::core::WalletPool> &pool) {
@@ -100,57 +103,57 @@ namespace ledger {
         }
 
         void WalletPoolApi::getWalletCount(const std::shared_ptr<api::I32Callback> &callback) {
-            _pool->getWalletCount().map<int32_t>(_pool->getContext(), [] (const int64_t count) {
-                return (int32_t) count;
-            }).callback(_mainContext, callback);
+            toCallback(_pool->getWalletCount(), callback);
         }
 
         void WalletPoolApi::getWallet(const std::string &name, const std::shared_ptr<api::WalletCallback> &callback) {
-            _pool->getWallet(name).callback(_mainContext, callback);
+            toCallbackPtr(_pool->getWallet(name), callback);
         }
 
         void WalletPoolApi::updateWalletConfig(const std::string &name,
                                                const std::shared_ptr<api::DynamicObject> &configuration,
                                                const std::shared_ptr<api::ErrorCodeCallback> &callback) {
-            _pool->updateWalletConfig(name, configuration).callback(_mainContext, callback);
+            toErrorCodeCallback(_pool->updateWalletConfig(name, configuration), callback);
         }
 
         void WalletPoolApi::createWallet(const std::string &name, const api::Currency &currency,
                                          const std::shared_ptr<api::DynamicObject> &configuration,
                                          const std::shared_ptr<api::WalletCallback> &callback) {
-            _pool->createWallet(name, currency.name, configuration).callback(_mainContext, callback);
+            toCallbackPtr(_pool->createWallet(name, currency.name, configuration), callback);
         }
 
         void WalletPoolApi::getCurrencies(const std::shared_ptr<api::CurrencyListCallback> &callback) {
-            auto pool = _pool;
-            Future<std::vector<api::Currency>>::async(_mainContext, [pool] () {
-                auto currencies = pool->getCurrencies();
-                return currencies;
-            }).callback(_mainContext, callback);
+            toCallback(
+                stlab::async(stlab::default_executor, [pool = _pool]() {
+                    auto currencies = pool->getCurrencies();
+                    return currencies;
+                    }),
+                callback);
         }
 
         void
         WalletPoolApi::getCurrency(const std::string &name, const std::shared_ptr<api::CurrencyCallback> &callback) {
             auto pool = _pool;
-            Future<api::Currency>::async(_mainContext, [pool, name] () {
-                auto currency = pool->getCurrency(name);
-                if (currency.isEmpty()) {
-                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' doesn't exist", name);
-                }
-                return currency.getValue();
-            }).callback(_mainContext, callback);
+            toCallback(
+                stlab::async(stlab::default_executor, [pool, name]() {
+                    auto currency = pool->getCurrency(name);
+                    if (currency.isEmpty()) {
+                        throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' doesn't exist", name);
+                    }
+                    return currency.getValue();
+                    }),
+                callback);
         }
 
         void WalletPoolApi::getWallets(int32_t from, int32_t size, const std::shared_ptr<api::WalletListCallback> &callback) {
-            _pool->getWallets(from, size)
-            .map<std::vector<std::shared_ptr<api::Wallet>>>(_pool->getContext(), [] (const std::vector<std::shared_ptr<AbstractWallet>>& wallets) {
-                auto size = wallets.size();
-                std::vector<std::shared_ptr<api::Wallet>> out(size);
-                for (auto i = 0; i < size; i++) {
-                    out[i] = wallets[i];
-                }
-                return out;
-            }).callback(_mainContext, callback);
+            toCallback(
+                _pool->getWallets(from, size)
+                .then([](const std::vector<std::shared_ptr<AbstractWallet>> & wallets) {
+                    std::vector<std::shared_ptr<api::Wallet>> res;
+                    std::transform(wallets.begin(), wallets.end(), std::back_inserter(res), [](auto & x) {return x; });
+                    return res;
+                    }),
+                callback);
         }
 
         std::string WalletPoolApi::getName() {
@@ -167,21 +170,21 @@ namespace ledger {
 
         void WalletPoolApi::getLastBlock(const std::string &currencyName,
                                          const std::shared_ptr<api::BlockCallback> &callback) {
-            _pool->getLastBlock(currencyName).callback(_mainContext, callback);
+            toCallback(_pool->getLastBlock(currencyName), callback);
         }
 
         void WalletPoolApi::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
-            _pool->eraseDataSince(date).callback(_mainContext, callback);
+            toErrorCodeCallback(_pool->eraseDataSince(date), callback);
         }
 
         void WalletPoolApi::freshResetAll(const std::shared_ptr<api::ErrorCodeCallback>& callback) {
-            _pool->freshResetAll().callback(_mainContext, callback);
+            toErrorCodeCallback(_pool->freshResetAll(), callback);
         }
 
         void WalletPoolApi::changePassword(const std::string &oldPassword,
                                            const std::string &newPassword,
                                            const std::shared_ptr<api::ErrorCodeCallback> & callback) {
-            _pool->changePassword(oldPassword, newPassword).callback(_mainContext, callback);
+            toErrorCodeCallback(_pool->changePassword(oldPassword, newPassword), callback);
         }
     }
 }

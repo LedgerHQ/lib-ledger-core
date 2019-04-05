@@ -86,7 +86,7 @@ namespace ledger {
                               const std::string &end,
                               api::TimePeriod precision) override;
 
-            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point &date) override;
+            stlab::future<void> eraseDataSince(const std::chrono::system_clock::time_point &date) override;
 
             bool isSynchronizing() override;
 

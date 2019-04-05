@@ -49,6 +49,7 @@
 #include <api/AccountCallback.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
+#include <stlab/concurrency/future.hpp>
 
 namespace ledger {
     namespace core {
@@ -80,7 +81,7 @@ namespace ledger {
 
             void getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) override;
             Future<int32_t> getNextAccountIndex();
-            Future<int32_t> getAccountCount();
+            stlab::future<int32_t> getAccountCount();
             void getAccountCount(const std::shared_ptr<api::I32Callback> &callback) override;
 
             void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
@@ -119,7 +120,7 @@ namespace ledger {
                                           const std::shared_ptr<api::AccountCallback> &callback) override;
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
-            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
+            stlab::future<void> eraseDataSince(const std::chrono::system_clock::time_point & date);
 
 
             virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;

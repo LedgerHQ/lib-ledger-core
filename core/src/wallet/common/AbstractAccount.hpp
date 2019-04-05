@@ -46,6 +46,7 @@
 #include <api/AmountListCallback.hpp>
 #include <api/ErrorCodeCallback.hpp>
 #include <api/TimePeriod.hpp>
+#include <stlab/concurrency/concurrency.hpp>
 namespace ledger {
     namespace core {
         class AbstractAccount : public DedicatedContext, public api::Account, public std::enable_shared_from_this<AbstractAccount> {
@@ -96,7 +97,7 @@ namespace ledger {
             void emitEventsNow();
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
-            virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
+            virtual stlab::future<void> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
         protected:
             void emitNewOperationEvent(const Operation& operation);
