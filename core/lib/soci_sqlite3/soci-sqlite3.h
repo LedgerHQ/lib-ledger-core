@@ -259,6 +259,7 @@ struct sqlite3_session_backend : details::session_backend
 
     virtual std::string get_backend_name() const { return "sqlite3"; }
 
+    void post_connection(std::string const& dbname, int connection_flags, int timeout, std::string const& synchronous);
     void clean_up();
 
     virtual sqlite3_statement_backend * make_statement_backend();

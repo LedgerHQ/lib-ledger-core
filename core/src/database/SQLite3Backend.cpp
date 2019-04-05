@@ -68,9 +68,18 @@ namespace ledger {
             if (_dbResolvedPath.empty()) {
                 throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
             }
-            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
+
+            std::string db_params;
+            if (!newPassword.empty()) {
+                // change password if a new password is provided
+                db_params = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
+            } else {
+                // otherwise, decrypt the database back to plain text by providing an empty new key
+                db_params = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + "new_key=\"\" ";
+            }
+
             session.close();
-            session.open(*soci::factory_sqlite3(), parameters);
+            session.open(*soci::factory_sqlite3(), db_params);
         }
     }
 }
