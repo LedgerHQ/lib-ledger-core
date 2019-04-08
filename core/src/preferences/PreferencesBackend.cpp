@@ -111,7 +111,7 @@ namespace ledger {
 
             if (change.type == PreferencesChangeType::PUT_TYPE) {
                 if (cipher.hasValue()) {
-                    auto encrypted = encrypt_preferences_change(change, *_cipher);
+                    auto encrypted = encrypt_preferences_change(change, *cipher);
 
                     leveldb::Slice v((const char *)encrypted.data(), encrypted.size());
                     batch.Put(k, v);
@@ -190,109 +190,116 @@ namespace ledger {
             const std::shared_ptr<api::RandomNumberGenerator>& rng,
             const std::string& password
         ) {
-            // disable encryption to check whether we have a salt already persisted
-            unsetEncryption();
-
-            auto emptySalt = std::string("");
-            auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
-            auto salt = get(saltKey).value_or(emptySalt);
-
-            if (salt == emptySalt) {
-                leveldb::WriteBatch batch;
-
-                // we don’t have a proper salt; create one
-                salt = createNewSalt(rng);
-
-                // create the AES cipher
-                _cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
-
-                // add the salt to the batch to be written
-                auto saltData = std::vector<uint8_t>(salt.cbegin(), salt.cend());
-                auto noCipher = Option<AESCipher>::NONE;
-                putPreferencesChange(batch, noCipher, PreferencesChange(PreferencesChangeType::PUT_TYPE, saltKey, saltData));
-
-                // iterate through all records already present and update them
-                auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
-                for (it->SeekToFirst(); it->Valid(); it->Next()) {
-                    // read the clear value
-                    auto value = it->value().ToString();
-                    auto plain = std::vector<uint8_t>(value.cbegin(), value.cend());
-
-                    auto keyStr = it->key().ToString();
-                    auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
-
-                    // remove the key and its associated value to prevent duplication
-                    putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, key, {}));
-                    // encrypt
-                    putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::PUT_TYPE, key, plain));
-                }
-
-                // atomic update
-                leveldb::WriteOptions writeOpts;
-                writeOpts.sync = true;
-                _db->Write(writeOpts, &batch);
-            } else {
-                // the salt is already there, just create the AES cipher
-                _cipher = AESCipher(rng, password, salt, PBKDF2_ITERS);
-            }
+            // setting encryption is akin to resetting with an old password that is empty
+            resetEncryption(rng, "", password);
         }
 
         void PreferencesBackend::unsetEncryption() {
             _cipher = Option<AESCipher>::NONE;
         }
 
-        void PreferencesBackend::resetEncryption(
+        bool PreferencesBackend::resetEncryption(
             const std::shared_ptr<api::RandomNumberGenerator>& rng,
             const std::string& oldPassword,
             const std::string& newPassword
         ) {
-            // turn on encryption with the old password first
-            setEncryption(rng, oldPassword);
+            Option<AESCipher> noCipher;
+            auto newCipher = noCipher;
+            auto salt = getEncryptionSalt();
 
-            // from now on, reading data will use the old password, but we want to persist with a
-            // brand new cipher; create it here
-            auto newSalt = createNewSalt(rng);
-            auto newSaltBytes = std::vector<uint8_t>(newSalt.cbegin(), newSalt.cend());
-            auto newCipher = Option<AESCipher>(AESCipher(rng, newPassword, newSalt, PBKDF2_ITERS));
+            if (oldPassword.empty()) {
+                if (!newPassword.empty()) {
+                    if (salt.empty()) {
+                        salt = createNewSalt(rng);
+                        newCipher = Option<AESCipher>(AESCipher(rng, newPassword, salt, PBKDF2_ITERS));
+                    } else {
+                        // we want to enable encryption with a given password (new) without decrypting the
+                        // data already present
+                        _cipher = Option<AESCipher>(AESCipher(rng, newPassword, salt, PBKDF2_ITERS));
+                        return true;
+                    }
+                } else {
+                    // no old passwond and no new password; do nothing
+                    return true;
+                }
+            } else {
+                if (salt.empty()) {
+                    // trying to decrypt with password but without salt: error
+                    return false;
+                }
+
+                _cipher = Option<AESCipher>(AESCipher(rng, oldPassword, salt, PBKDF2_ITERS));
+
+                if (!newPassword.empty()) {
+                    salt = createNewSalt(rng);
+                    newCipher = Option<AESCipher>(AESCipher(rng, newPassword, salt, PBKDF2_ITERS));
+                }
+            }
+
+            // function to get a value from the DB out of a string; this function is an optimization
+            // so that the branching on _cipher is done once before the loop instead of doing it at
+            // every iteration
+            std::function<std::vector<uint8_t> (std::vector<uint8_t> const&)> readValue;
+
+            if (_cipher.hasValue()) {
+                readValue = [&](std::vector<uint8_t> const& value) {
+                    auto ciphertext = std::vector<uint8_t>(value.cbegin(), value.cend());
+                    return decrypt_preferences_change(ciphertext, *_cipher);
+                };
+            } else {
+                readValue = [&](std::vector<uint8_t> const& value) {
+                    return value;
+                };
+            }
 
             // now we can iterate over all data, decrypt with the “old” cipher, encrypt with the
             // “new” cipher and generate two changes per entry: one that deletes it (to prevent to
             // duplicating it) and one that puts the new encoded one; once the iteration is done,
             // we submit the batch to leveldb and it applies it atomically
-            auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
             leveldb::WriteBatch batch;
+            auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
 
             for (it->SeekToFirst(); it->Valid(); it->Next()) {
-                // decrypt with the old cipher
+                // decrypt with the old cipher, if any
                 auto value = it->value().ToString();
-                auto ciphertext = std::vector<uint8_t>(value.cbegin(), value.cend());
-                auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
+                auto plaindata = std::vector<uint8_t>(value.cbegin(), value.cend());
+                plaindata = readValue(plaindata);
 
-                // the key is not encrypted
+                // the key is never encrypted
                 auto keyStr = it->key().ToString();
                 auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
 
                 // remove the key and its associated value to prevent duplication
                 putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, key, {}));
 
-                // encrypt with the new cipher; in order to do that, we need a PreferencesChange
+                // encrypt with the new cipher (if any); in order to do that, we need a PreferencesChange
                 // to add with the new cipher
                 auto change = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, plaindata);
                 putPreferencesChange(batch, newCipher, change);
             }
 
-            // we also need to update the salt
+            // we also need to update the salt if we are encrypting
             auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
-            auto noCipher = Option<AESCipher>::NONE;
-            putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, saltKey, {}));
-            putPreferencesChange(batch, noCipher, PreferencesChange(
-                PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes
-            ));
+            putPreferencesChange(batch, noCipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, saltKey, {}));
+
+            if (newCipher.hasValue()) {
+                // we put a new salt only if we are encrypting
+                auto newSaltBytes = std::vector<uint8_t>(salt.cbegin(), salt.cend());
+
+                // remove the previous salt
+                // add the new salt
+                putPreferencesChange(batch, noCipher, PreferencesChange(PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes));
+            }
 
             // atomic update
             leveldb::WriteOptions writeOpts;
             writeOpts.sync = true;
             _db->Write(writeOpts, &batch);
+
+            // update the cipher to use with the new one
+            _cipher = newCipher;
+
+            return true;
         }
 
         void PreferencesBackend::clear() {
@@ -316,6 +323,19 @@ namespace ledger {
             }
 
             _db = obtainInstance(_dbName);
+        }
+
+        std::string PreferencesBackend::getEncryptionSalt() {
+            auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
+
+            // move _cipher around to prevent trying to decrypt the salt
+            auto cipher = std::move(_cipher);
+            _cipher = Option<AESCipher>();
+
+            auto salt = get(saltKey).value_or("");
+            _cipher = std::move(cipher);
+
+            return salt;
         }
 
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(
