@@ -50,7 +50,7 @@
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
-#include<wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
+#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 
 #include <api/I32Callback.hpp>
 #include <api/BitcoinLikeOutputListCallback.hpp>
