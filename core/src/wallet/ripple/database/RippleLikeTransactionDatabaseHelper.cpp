@@ -52,7 +52,8 @@ namespace ledger {
                     "FROM ripple_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
                     "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
-                    "WHERE tx.hash = :hash", use(hash));
+                    "WHERE tx.hash = :hash"
+                    "ORDER BY memo.index ASC", use(hash));
 
             for (auto &row : rows) {
                 inflateTransaction(sql, row, tx);
@@ -139,12 +140,16 @@ namespace ledger {
                         use(hexFees),
                         use(tx.confirmations);
 
+                int fieldIndex = 0;
                 for (auto& memo : tx.memos) {
-                    sql << "INSERT INTO ripple_memos VALUES (:tx_uid, :data, :fmt, :ty)",
+                    sql << "INSERT INTO ripple_memos VALUES (:tx_uid, :data, :fmt, :ty, :i)",
                            use(rippleTxUid),
                            use(memo.data),
                            use(memo.fmt),
-                           use(memo.ty);
+                           use(memo.ty),
+                           use(fieldIndex);
+
+                    ++fieldIndex;
                 }
 
                 return rippleTxUid;

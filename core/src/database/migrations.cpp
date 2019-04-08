@@ -448,7 +448,8 @@ namespace ledger {
                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid) ON DELETE CASCADE,"
                    "data VARCHAR(1024),"
                    "fmt VARCHAR(1024),"
-                   "ty VARCHAR(1024)"
+                   "ty VARCHAR(1024),"
+                   "index INTEGER NOT NULL"
                    ")";
         }
 
