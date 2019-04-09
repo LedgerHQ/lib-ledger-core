@@ -218,29 +218,43 @@ namespace ledger {
             auto salt = getEncryptionSalt();
 
             if (oldPassword.empty()) {
+                // password empty means we either want to encrypt a plaintext DB (if there’s no
+                // salt already) or that we want to set encryption on (if a salt is persisted)
                 if (!newPassword.empty()) {
                     if (salt.empty()) {
+                        // no salt, then we want to encrypt a plaintext DB: we only need to set the
+                        // new cipher and leave the decrypting cipher disabled; we’ll also not leave
+                        // this function right away as we need to encrypt the plaintext values
                         salt = createNewSalt(rng);
                         newCipher = Option<AESCipher>(AESCipher(rng, newPassword, salt, PBKDF2_ITERS));
+                        _cipher = noCipher;
                     } else {
-                        // we want to enable encryption with a given password (new) without decrypting the
-                        // data already present
+                        // we want to enable encryption with a given password (new) without
+                        // decrypting the data already present; we don’t need anything besides
+                        // setting the cipher and returning from the function
                         _cipher = Option<AESCipher>(AESCipher(rng, newPassword, salt, PBKDF2_ITERS));
                         return true;
                     }
                 } else {
-                    // no old passwond and no new password; do nothing
+                    // no old password and no new password; do nothing (this is not considered an
+                    // error)
                     return true;
                 }
             } else {
+                // the old password is present; it means that we always want to decrypt data and
+                // change encryption; either we want to got to full plaintext again (empty new
+                // password), or just change encryption); in both cases, we need a salt and to go
+                // on through this function
                 if (salt.empty()) {
-                    // trying to decrypt with password but without salt: error
+                    // trying to decrypt with an old password but without a persisted salt: error
                     return false;
                 }
 
+                // we’ll read with this cipher
                 _cipher = Option<AESCipher>(AESCipher(rng, oldPassword, salt, PBKDF2_ITERS));
 
                 if (!newPassword.empty()) {
+                    // encrypt with the new password if present
                     salt = createNewSalt(rng);
                     newCipher = Option<AESCipher>(AESCipher(rng, newPassword, salt, PBKDF2_ITERS));
                 }
