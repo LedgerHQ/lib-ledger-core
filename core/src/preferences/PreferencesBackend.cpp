@@ -125,13 +125,11 @@ namespace ledger {
         }
 
         optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) {
-            leveldb::Slice k((const char *)key.data(), key.size());
-            std::string value;
+            auto value = getRaw(key);
 
-            auto status = _db->Get(leveldb::ReadOptions(), k, &value);
-            if (status.ok()) {
+            if (value) {
                 if (_cipher.hasValue()) {
-                    auto ciphertext = std::vector<uint8_t>(value.cbegin(), value.cend());
+                    auto ciphertext = std::vector<uint8_t>(value->cbegin(), value->cend());
                     auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
                     auto plaintext = std::string(plaindata.cbegin(), plaindata.cend());
 
@@ -139,6 +137,18 @@ namespace ledger {
                 } else {
                     return optional<std::string>(value);
                 }
+            } else {
+                return optional<std::string>();
+            }
+        }
+
+        optional<std::string> PreferencesBackend::getRaw(const std::vector<uint8_t>& key) const {
+            leveldb::Slice k((const char *)key.data(), key.size());
+            std::string value;
+
+            auto status = _db->Get(leveldb::ReadOptions(), k, &value);
+            if (status.ok()) {
+                return optional<std::string>(value);
             } else {
                 return optional<std::string>();
             }
@@ -327,15 +337,7 @@ namespace ledger {
 
         std::string PreferencesBackend::getEncryptionSalt() {
             auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
-
-            // move _cipher around to prevent trying to decrypt the salt
-            auto cipher = std::move(_cipher);
-            _cipher = Option<AESCipher>();
-
-            auto salt = get(saltKey).value_or("");
-            _cipher = std::move(cipher);
-
-            return salt;
+            return getRaw(saltKey).value_or("");
         }
 
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(

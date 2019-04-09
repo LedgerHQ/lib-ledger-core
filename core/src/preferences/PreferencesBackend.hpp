@@ -126,6 +126,9 @@ namespace ledger {
             std::string _dbName;
             Option<AESCipher> _cipher;
 
+            // Get a raw entry from the key-value store.
+            optional<std::string> getRaw(const std::vector<uint8_t>& key) const;
+
             // Drop a database instance.
             void dropInstance(const std::string &path);
 
