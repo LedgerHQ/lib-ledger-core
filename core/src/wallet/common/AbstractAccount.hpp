@@ -46,6 +46,8 @@
 #include <api/AmountListCallback.hpp>
 #include <api/ErrorCodeCallback.hpp>
 #include <api/TimePeriod.hpp>
+#include <mutex>
+
 namespace ledger {
     namespace core {
         class AbstractAccount : public DedicatedContext, public api::Account, public std::enable_shared_from_this<AbstractAccount> {
@@ -114,6 +116,7 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
             std::weak_ptr<AbstractWallet> _wallet;
             std::shared_ptr<EventPublisher> _publisher;
+            std::mutex _eventsLock;
             std::list<std::shared_ptr<api::Event>> _events;
         };
     }
