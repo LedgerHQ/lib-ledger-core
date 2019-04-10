@@ -50,9 +50,9 @@ jobs:
           name: Setup NDK
           command: |
             apt-get install -y zip unzip
-            wget --quiet https://dl.google.com/android/repository/android-ndk-r16b-linux-x86_64.zip
-            unzip -q android-ndk-r16b-linux-x86_64.zip -d /home/circleci
-            ls -la /home/circleci/android-ndk-r16b
+            wget --quiet https://dl.google.com/android/repository/android-ndk-r18b-linux-x86_64.zip
+            unzip -q android-ndk-r18b-linux-x86_64.zip -d /home/circleci
+            ls -la /home/circleci/android-ndk-r18b
       - run:
           name: Build_Library_android
           command: |
