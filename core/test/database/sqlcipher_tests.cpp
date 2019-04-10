@@ -44,6 +44,7 @@ class SQLCipherTest : public BaseFixture {
 TEST(SQLCipherTest, SanityCheck) {
 
     auto date = DateUtils::toJSON(std::chrono::system_clock::now());
+    std::remove(date.begin(), date.end(), ':');
     auto dbName = "test_db_" + date;
     auto password = "test_key";
     auto newPassword = "test_key_new";
@@ -63,16 +64,6 @@ TEST(SQLCipherTest, SanityCheck) {
                 soci::use(value_0), soci::use(value_1);
         session.close();
     }
-    {
-        //Fail gracefully
-        int value_0;
-        std::string value_1;
-        soci::session session;
-        session.open(*soci::factory_sqlite3(), dbName);
-        EXPECT_THROW((session << "SELECT id, name FROM test_table", soci::into(value_0), soci::into(value_1)), std::runtime_error);
-        session.close();
-    }
-
     {
         //Read previously created DB and check values
         auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
@@ -104,12 +95,43 @@ TEST(SQLCipherTest, SanityCheck) {
         EXPECT_NO_THROW((session << "SELECT id, name FROM test_table", soci::into(value_0), soci::into(value_1)));
 
         session.close();
+    }
+}
 
-        session.open(*factory, parameters);
+// Preventing terminating in environments that don't properly define __cplusplus macros
+// TODO: remove this check after we migrate to VS2017 and provide /Zc:__cplusplus option 
+// https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
+#if __cplusplus >= 201103L
+TEST(SQLCipherTest, ThrowIfWrongPassword) {
+    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
+    std::remove(date.begin(), date.end(), ':');
+    auto dbName = "test_db2_" + date;
+    auto password = "test_key";
+    auto newPassword = "test_key_new";
+    {
+        //Initiate the DB and interact with it
+        auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
+        soci::session session;
+        session.open(*soci::factory_sqlite3(), parameters);
+        session << "CREATE TABLE test_table ("
+            "    id INTEGER,"
+            "    name VARCHAR(255)"
+            ")";
+
+        int value_0 = 123;
+        std::string value_1 = "test_name";
+        session << "INSERT INTO test_table(id, name) VALUES(:field_0, :field_1)",
+            soci::use(value_0), soci::use(value_1);
+        session.close();
+    }
+    {
+        //Fail gracefully
+        int value_0;
+        std::string value_1;
+        soci::session session;
+        session.open(*soci::factory_sqlite3(), dbName);
         EXPECT_THROW((session << "SELECT id, name FROM test_table", soci::into(value_0), soci::into(value_1)), std::runtime_error);
         session.close();
     }
 }
-
-
-
+#endif

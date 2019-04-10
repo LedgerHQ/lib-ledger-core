@@ -29,8 +29,8 @@
  *
  */
 
-#include <gtest/gtest.h>
-#include <ledger/core/api/BigInt.hpp>
+#include "gtest/gtest.h"
+#include "api/BigInt.hpp"
 
 using namespace ledger::core::api;
 

@@ -381,5 +381,66 @@ namespace ledger {
             // ETH currencies
             sql << "DROP TABLE ethereum_currencies";
         }
+
+        template <> void migrate<6>(soci::session& sql) {
+
+            sql << "CREATE TABLE ripple_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "xpub_version VARCHAR(255) NOT NULL,"
+                    "message_prefix VARCHAR(255) NOT NULL,"
+                    "additional_RIPs TEXT"
+                    ")";
+
+            sql << "CREATE TABLE ripple_accounts("
+                    "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "idx INTEGER NOT NULL,"
+                    "address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE ripple_transactions("
+                    "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
+                    "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "fees VARCHAR(255) NOT NULL,"
+                    "confirmations BIGINT NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE ripple_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid),"
+                    "transaction_hash VARCHAR(255) NOT NULL"
+                    ")";
+        }
+        
+        template <> void rollback<6>(soci::session& sql) {
+            sql << "DROP TABLE ripple_operations";
+
+            sql << "DROP TABLE ripple_transactions";
+
+            sql << "DROP TABLE ripple_accounts";
+
+            sql << "DROP TABLE ripple_currencies";
+        }
+
+        template <> void migrate<7>(soci::session& sql) {
+            sql << "CREATE TABLE bech32_parameters("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "hrp VARCHAR(255) NOT NULL,"
+                    "separator VARCHAR(255) NOT NULL,"
+                    "generator VARCHAR(255) NOT NULL,"
+                    "p2wpkh_version VARCHAR(255) NOT NULL,"
+                    "p2wsh_version VARCHAR(255) NOT NULL"
+                    ")";
+        }
+
+        template <> void rollback<7>(soci::session& sql) {
+            sql << "DROP TABLE bech32_parameters";
+        }
     }
 }

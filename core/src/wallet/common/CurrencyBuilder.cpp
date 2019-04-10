@@ -56,8 +56,14 @@ namespace ledger {
             return *this;
         }
 
+        CurrencyBuilder &CurrencyBuilder::forkOfRipple(api::RippleLikeNetworkParameters params) {
+            _type = api::WalletType::RIPPLE;
+            _ripple = params;
+            return *this;
+        }
+
         CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _ethereum.toOptional());
+            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _ethereum.toOptional(), _ripple.toOptional());
         }
 
         CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {

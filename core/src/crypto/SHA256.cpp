@@ -32,28 +32,31 @@
 #include "../utils/hex.h"
 #include <openssl/sha.h>
 
-std::string ledger::core::SHA256::stringToHexHash(const std::string &input) {
-    return hex::toString(stringToBytesHash(input));
-}
+namespace ledger {
+    namespace core {
+        std::string SHA256::stringToHexHash(const std::string &input) {
+            return hex::toString(SHA256::stringToBytesHash(input));
+        }
 
-std::string ledger::core::SHA256::bytesToHexHash(const std::vector<uint8_t> &bytes) {
-    return hex::toString(bytesToBytesHash(bytes));
-}
+        std::string SHA256::bytesToHexHash(const std::vector<uint8_t> &bytes) {
+            return hex::toString(SHA256::bytesToBytesHash(bytes));
+        }
 
-std::vector<uint8_t> ledger::core::SHA256::stringToBytesHash(const std::string &input) {
-    uint8_t hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, input.c_str(), input.size());
-    SHA256_Final(hash, &sha256);
-    return std::vector<uint8_t >(hash, hash + SHA256_DIGEST_LENGTH);
-}
+        std::vector<uint8_t> SHA256::dataToBytesHash(const void *data, size_t size) {
+            uint8_t hash[SHA256_DIGEST_LENGTH];
+            SHA256_CTX sha256;
+            SHA256_Init(&sha256);
+            SHA256_Update(&sha256, data, size);
+            SHA256_Final(hash, &sha256);
+            return std::vector<uint8_t >(hash, hash + SHA256_DIGEST_LENGTH);
+        }
+        
+        std::vector<uint8_t> SHA256::stringToBytesHash(const std::string &input) {
+            return dataToBytesHash(input.c_str(), input.size());
+        }
 
-std::vector<uint8_t> ledger::core::SHA256::bytesToBytesHash(const std::vector<uint8_t> &bytes) {
-    uint8_t hash[SHA256_DIGEST_LENGTH];
-    SHA256_CTX sha256;
-    SHA256_Init(&sha256);
-    SHA256_Update(&sha256, bytes.data(), bytes.size());
-    SHA256_Final(hash, &sha256);
-    return std::vector<uint8_t >(hash, hash + SHA256_DIGEST_LENGTH);
+        std::vector<uint8_t> SHA256::bytesToBytesHash(const std::vector<uint8_t> &bytes) {
+            return dataToBytesHash(bytes.data(), bytes.size());
+        }
+    }
 }

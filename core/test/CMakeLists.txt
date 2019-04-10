@@ -2,8 +2,11 @@ project(ledger_core_tests)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-add_subdirectory(lib/gtest-1.8.0)
+set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE)
+add_subdirectory(lib/googletest)
+
 add_subdirectory(lib/libledger-test)
+add_subdirectory(common)
 add_subdirectory(bytes)
 add_subdirectory(math)
 add_subdirectory(utils)
@@ -18,3 +21,4 @@ add_subdirectory(integration)
 add_subdirectory(database)
 add_subdirectory(events)
 add_subdirectory(parsers)
+add_subdirectory(ripple)

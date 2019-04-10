@@ -32,7 +32,7 @@
 #include <gtest/gtest.h>
 #include <ledger/core/math/Base58.hpp>
 #include <ledger/core/utils/hex.h>
-
+#include <ledger/core/collections/DynamicObject.hpp>
 using namespace ledger::core;
 
 const std::string BitcoinPublicKeyHashPrefix = "00";
@@ -54,15 +54,17 @@ std::vector<std::vector<std::string>> fixtures = {
 };
 
 TEST(Base58, Encode) {
+    auto config = std::make_shared<DynamicObject>();
     for (auto& item : fixtures) {
-        EXPECT_EQ(Base58::encodeWithChecksum(hex::toByteArray(item[0] + item[1])),  item[2]);
+        EXPECT_EQ(Base58::encodeWithChecksum(hex::toByteArray(item[0] + item[1]), config),  item[2]);
     }
 }
 
 TEST(Base58, Decode) {
+    auto config = std::make_shared<DynamicObject>();
     for (auto& item : fixtures) {
         auto data = hex::toByteArray(item[0] + item[1]);
-        auto result = Base58::checkAndDecode(item[2]);
+        auto result = Base58::checkAndDecode(item[2], config);
         EXPECT_TRUE(result.isSuccess());
         EXPECT_EQ(result.getValue(), data);
     }

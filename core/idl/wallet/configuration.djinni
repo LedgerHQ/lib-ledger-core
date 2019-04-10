@@ -1,17 +1,22 @@
 # Available API to use with explorers.
 BlockchainExplorerEngines = interface +c {
     const LEDGER_API: string = "LEDGER_API";
+    const RIPPLE_API: string = "RIPPLE_API";
+    const RIPPLE_NODE: string = "RIPPLE_NODE";
 }
 
 # Available API to use with observers.
 BlockchainObserverEngines = interface +c {
     const LEDGER_API: string = "LEDGER_API";
+    const RIPPLE_NODE: string = "RIPPLE_NODE";
 }
 
 # Available keychains policies.
 KeychainEngines = interface +c {
     const BIP32_P2PKH: string = "BIP32_P2PKH";
     const BIP49_P2SH: string = "BIP49_P2SH";
+    const BIP173_P2WPKH: string = "BIP173_P2WPKH";
+    const BIP173_P2WSH: string = "BIP173_P2WSH";
 }
 
 # Class of constants representing the engines to rely on for synchronization.
@@ -62,8 +67,12 @@ Configuration = interface +c {
     # Sets the API version.
     const BLOCKCHAIN_EXPLORER_VERSION: string = "BLOCKCHAIN_EXPLORER_VERSION";
 
-    # Selects the blockchain observer engine (Ledger's API).
+    # Sets the API port (e.g. for XRP it is 51234)
+    const BLOCKCHAIN_EXPLORER_PORT: string = "BLOCKCHAIN_EXPLORER_PORT";
+
+    # Selects the blockchain observer engine (Ledger's API)
     const BLOCKCHAIN_OBSERVER_ENGINE: string = "BLOCKCHAIN_OBSERVER_ENGINE";
+
     # Selects the blockchain observer engine (Ledger's API; Websocket version).
     const BLOCKCHAIN_OBSERVER_WS_ENDPOINT: string = "BLOCKCHAIN_OBSERVER_WS_ENDPOINT";
     # Selects the synchronization engine.

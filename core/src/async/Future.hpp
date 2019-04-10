@@ -36,13 +36,12 @@
 #include <functional>
 #include <list>
 #include "Deffered.hpp"
-#include "../api/ExecutionContext.hpp"
-#include "ExecutionContext.hpp"
-#include "../utils/Exception.hpp"
-#include "../utils/ImmediateExecutionContext.hpp"
-#include "../traits/callback_traits.hpp"
-#include "../api/Error.hpp"
-#include "../traits/shared_ptr_traits.hpp"
+#include "api/ExecutionContext.hpp"
+#include "utils/Exception.hpp"
+#include "utils/ImmediateExecutionContext.hpp"
+#include "traits/callback_traits.hpp"
+#include "api/Error.hpp"
+#include "traits/shared_ptr_traits.hpp"
 
 namespace ledger {
     namespace core {

@@ -31,6 +31,7 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEEXTENDEDPUBLICKEY_H
 #define LEDGER_CORE_ETHEREUMLIKEEXTENDEDPUBLICKEY_H
 
+#include <common/AbstractExtendedPublicKey.h>
 #include <api/EthereumLikeExtendedPublicKey.hpp>
 #include <crypto/DeterministicPublicKey.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
@@ -41,7 +42,8 @@
 
 namespace ledger {
     namespace core {
-        class EthereumLikeExtendedPublicKey : public api::EthereumLikeExtendedPublicKey {
+        using EthereumExtendedPublicKey = AbstractExtendedPublicKey<api::EthereumLikeNetworkParameters>;
+        class EthereumLikeExtendedPublicKey : public EthereumExtendedPublicKey, public api::EthereumLikeExtendedPublicKey {
         public:
 
             EthereumLikeExtendedPublicKey(const api::Currency& params,
@@ -67,7 +69,19 @@ namespace ledger {
             static std::shared_ptr<EthereumLikeExtendedPublicKey> fromBase58(const api::Currency& currency,
                                                                              const std::string& xpubBase58,
                                                                              const Option<std::string>& path);
-
+        protected:
+            const api::EthereumLikeNetworkParameters &params() const override {
+                return _currency.ethereumLikeNetworkParameters.value();
+            };
+            const DeterministicPublicKey &getKey() const override {
+                return _key;
+            };
+            const DerivationPath &getPath() const override {
+                return _path;
+            };
+            const api::Currency &getCurrency() const override {
+                return _currency;
+            };
         private:
             const api::Currency _currency;
             const DerivationPath _path;

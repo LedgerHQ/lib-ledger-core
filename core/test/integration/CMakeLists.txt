@@ -154,9 +154,17 @@ add_test (NAME ledger-core-integration-WalletTests.GetAccountAfterPoolReopen COM
 add_test (NAME ledger-core-integration-WalletTests.CreateNonContiguousAccount COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.CreateNonContiguousAccount")
 add_test (NAME ledger-core-integration-WalletTests.CreateNonContiguousAccountBis COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.CreateNonContiguousAccountBis")
 add_test (NAME ledger-core-integration-WalletTests.CreateAccountBug COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.CreateAccountBug")
+add_test (NAME ledger-core-integration-WalletTests.ChangeWalletConfig COMMAND ledger-core-integration-tests --gtest_filter="WalletTests.ChangeWalletConfig")
 
 add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="EthereumLikeWalletSynchronization.MediumXpubSynchronization")
 add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.XpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="EthereumLikeWalletSynchronization.XpubSynchronization")
 
-add_test (NAME ledger-core-integration-EthereumMakeTransaction.CreateStandardWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.CreateStandardWithOneOutput")
+add_test (NAME ledger-core-integration-EthereumMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.CreateTx")
 add_test (NAME ledger-core-integration-EthereumMakeTransaction.ParseUnsignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.ParseUnsignedRawTransaction")
+
+add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.MediumXpubSynchronization")
+add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool")
+add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewBlock COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.EmitNewBlock")
+
+add_test (NAME ledger-core-integration-RippleMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.CreateTx")
+add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseSignedRawTransaction")

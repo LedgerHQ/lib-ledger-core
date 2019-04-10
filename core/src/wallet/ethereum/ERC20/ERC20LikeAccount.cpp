@@ -28,21 +28,25 @@
  *
  */
 
-
 #include "ERC20LikeAccount.h"
 #include <math/BigInt.h>
 #include <api_impl/BigIntImpl.hpp>
 #include <api/Amount.hpp>
 #include <api/OperationType.hpp>
+#include <api/TimePeriod.hpp>
 #include <bytes/RLP/RLPStringEncoder.h>
 #include <utils/hex.h>
 #include <math/BigInt.h>
 #include <api/Address.hpp>
+#include <api/ErrorCode.hpp>
+#include <utils/Exception.hpp>
 #include "erc20Tokens.h"
 #include <wallet/common/OperationQuery.h>
+#include <wallet/common/BalanceHistory.hpp>
 #include <soci.h>
 #include <database/soci-date.h>
 #include <database/query/ConditionQueryFilter.h>
+
 using namespace soci;
 
 namespace ledger {
@@ -72,20 +76,86 @@ namespace ledger {
         std::shared_ptr<api::BigInt> ERC20LikeAccount::getBalance() {
             auto result = BigInt::ZERO;
             auto operations = getOperations();
+
             for (auto &op : operations) {
-                if (op->getOperationType() == api::OperationType::RECEIVE) {
-                    result = result + BigInt(op->getValue()->toString(10));
-                } else if (op->getOperationType() == api::OperationType::SEND){
-                    result = result - BigInt(op->getValue()->toString(10));
+                result = accumulateBalanceWithOperation(result, *op);
+            }
+
+            return std::make_shared<api::BigIntImpl>(result);
+        }
+
+        std::vector<std::shared_ptr<api::BigInt>> ERC20LikeAccount::getBalanceHistoryFor(
+            const std::chrono::system_clock::time_point& startDate,
+            const std::chrono::system_clock::time_point& endDate,
+            api::TimePeriod precision
+        ) {
+            auto operations = getOperations();
+            // manually sort by date
+            std::sort(
+                operations.begin(),
+                operations.end(),
+                [](
+                    const std::shared_ptr<api::ERC20LikeOperation>& a,
+                    const std::shared_ptr<api::ERC20LikeOperation>& b
+                ) {
+                    return a->getTime() < b->getTime();
+                }
+            );
+
+            // a small type used to pick implementations used by agnostic::getBalanceHistoryFor.
+            struct OperationStrategy {
+                static inline std::chrono::system_clock::time_point date(std::shared_ptr<api::ERC20LikeOperation>& op) {
+                    return op->getTime();
                 }
 
+                static inline void update_balance(std::shared_ptr<api::ERC20LikeOperation>& op, BigInt& sum) {
+                    auto value = BigInt(op->getValue()->toString(10));
+
+                    switch (op->getOperationType()) {
+                        case api::OperationType::RECEIVE:
+                            sum = sum + value;
+                            break;
+
+                        case api::OperationType::SEND:
+                            sum = sum - value;
+                            break;
+                    }
+                }
+            };
+
+            return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::BigInt, api::BigIntImpl>(
+                startDate,
+                endDate,
+                precision,
+                operations.cbegin(),
+                operations.cend(),
+                BigInt()
+            );
+        }
+
+        BigInt ERC20LikeAccount::accumulateBalanceWithOperation(
+            const BigInt& balance,
+            api::ERC20LikeOperation& op
+        ) {
+            auto ty = op.getOperationType();
+            auto value = BigInt(op.getValue()->toString(10));
+
+            switch (ty) {
+                case api::OperationType::RECEIVE:
+                    return balance + value;
+
+                case api::OperationType::SEND:
+                default:
+                    return balance - value;
             }
-            return std::make_shared<api::BigIntImpl>(result);
         }
 
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
         ERC20LikeAccount::getOperations() {
             auto localAccount = _account.lock();
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
             soci::session sql (localAccount->getWallet()->getDatabase()->getPool());
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
                     " op.type, op.hash, op.nonce, op.value,"
@@ -178,6 +248,9 @@ namespace ledger {
 
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
             auto localAccount = _account.lock();
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
             auto accountUid = localAccount->getAccountUid();
             auto filter = std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", _accountUid, "e");
             auto query = std::make_shared<ERC20OperationQuery>(

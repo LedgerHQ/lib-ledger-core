@@ -34,6 +34,9 @@
 #include <spdlog/sinks/null_sink.h>
 #include "LogPrinterSink.hpp"
 #include "RotatingEncryptableSink.hpp"
+#include "api/PathResolver.hpp"
+#include <memory>
+#include "api/ExecutionContext.hpp"
 
 namespace ledger {
     namespace core {
@@ -46,9 +49,10 @@ namespace ledger {
             bool enabled
         ) {
             if (enabled) {
-                auto logPrinterSink = std::make_shared<LogPrinterSink>(printer);
-                auto rotatingSink = std::make_shared<RotatingEncryptableSink>(context, resolver, name, maxSize, 3);
-                auto logger = spdlog::create(name, {logPrinterSink, rotatingSink});
+                std::vector<spdlog::sink_ptr> sinks;
+                sinks.push_back(std::make_shared<LogPrinterSink>(printer));
+                sinks.push_back(std::make_shared<RotatingEncryptableSink>(context, resolver, name, maxSize, 3));
+                auto logger = std::make_shared<spdlog::logger>(name, begin(sinks), end(sinks));
                 spdlog::drop(name);
 
                 logger->set_level(spdlog::level::trace);

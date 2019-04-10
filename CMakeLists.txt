@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.7)
+cmake_minimum_required(VERSION 3.10)
 project(ledger-core)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -10,7 +10,7 @@ include(UseBackportedModules)
 
 # The project version number.
 set(VERSION_MAJOR   2   CACHE STRING "Project major version number.")
-set(VERSION_MINOR   6   CACHE STRING "Project minor version number.")
+set(VERSION_MINOR   7   CACHE STRING "Project minor version number.")
 set(VERSION_PATCH   0   CACHE STRING "Project patch version number.")
 mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 
@@ -20,30 +20,21 @@ list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Fix LLC-186: Add this flag to avoid crash for 10.10.x version
+# https://stackoverflow.com/questions/41865537/how-does-apples-codesign-utility-decide-which-sha-algorithms-to-sign-a-shared
+# Notes:
+# > This is a "blind" fix, no available 10.10.x macOS machine,
+# > Issue is specific to 10.10.x, 10.9.5 and > 10.10.x are fine
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X version to target for deployment: 10.9" FORCE)
 
 set(CMAKE_MACOSX_RPATH 1)
 
-# SQLCIPHER is used by default
-# TODO: activate SQLCipher for Windows
-# WIP: when activating, windows build fails during configuration
-# step of SQLCipher project (because C compiler's path contains spaces)
-if (NOT MSVC AND NOT MINGW)
-    set(SQLCIPHER TRUE CACHE BOOL "Enable SQLCipher encryption support" FORCE)
-endif()
-
-if (SQLCIPHER)
-    add_definitions("-DSQLCIPHER")
-    add_definitions("-DSQLITE_HAS_CODEC")
-endif()
+add_definitions("-DSQLITE_HAS_CODEC")
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTING OFF CACHE BOOL "iOS build fail otherwise" FORCE)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
-endif()
-
-if(APPLE)
-    set(JAVA_INCLUDE_PATH2 "$ENV{JAVA_HOME}/include" CACHE PATH "")
 endif()
 
 add_subdirectory(doc)

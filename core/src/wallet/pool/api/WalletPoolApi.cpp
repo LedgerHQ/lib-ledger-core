@@ -109,6 +109,12 @@ namespace ledger {
             _pool->getWallet(name).callback(_mainContext, callback);
         }
 
+        void WalletPoolApi::updateWalletConfig(const std::string &name,
+                                               const std::shared_ptr<api::DynamicObject> &configuration,
+                                               const std::shared_ptr<api::ErrorCodeCallback> &callback) {
+            _pool->updateWalletConfig(name, configuration).callback(_mainContext, callback);
+        }
+
         void WalletPoolApi::createWallet(const std::string &name, const api::Currency &currency,
                                          const std::shared_ptr<api::DynamicObject> &configuration,
                                          const std::shared_ptr<api::WalletCallback> &callback) {
@@ -175,12 +181,7 @@ namespace ledger {
         void WalletPoolApi::changePassword(const std::string &oldPassword,
                                            const std::string &newPassword,
                                            const std::shared_ptr<api::ErrorCodeCallback> & callback) {
-            auto pool = _pool;
-            auto result = Future<api::ErrorCode>::async(_mainContext, [pool, oldPassword, newPassword] () {
-                pool->getDatabaseSessionPool()->performChangePassword(oldPassword, newPassword);
-                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-            });
-            result.callback(_mainContext, callback);
+            _pool->changePassword(oldPassword, newPassword).callback(_mainContext, callback);
         }
     }
 }

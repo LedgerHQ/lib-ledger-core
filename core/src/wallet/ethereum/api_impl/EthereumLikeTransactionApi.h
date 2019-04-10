@@ -56,6 +56,7 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeAddress> getSender() override;
             std::shared_ptr<api::Amount> getValue() override;
             std::experimental::optional<std::vector<uint8_t>> getData() override;
+            int32_t getStatus() override;
             std::vector<uint8_t> serialize() override;
             std::chrono::system_clock::time_point getDate() override;
             std::shared_ptr<api::EthereumLikeBlock> getBlock() override;
@@ -67,6 +68,7 @@ namespace ledger {
             EthereumLikeTransactionApi & setNonce(const std::shared_ptr<BigInt>& nonce);
             EthereumLikeTransactionApi & setValue(const std::shared_ptr<BigInt>& value);
             EthereumLikeTransactionApi & setData(const std::vector<uint8_t> &data);
+            EthereumLikeTransactionApi & setStatus(int32_t status);
             EthereumLikeTransactionApi & setReceiver(const std::string &receiver);
         private:
             std::chrono::system_clock::time_point _time;
@@ -79,6 +81,7 @@ namespace ledger {
             std::shared_ptr<api::Amount> _value;
             std::shared_ptr<BigInt> _nonce;
             std::vector<uint8_t> _data;
+            int32_t _status;
             std::shared_ptr<api::EthereumLikeAddress> _receiver;
             std::shared_ptr<api::EthereumLikeAddress> _sender;
             std::vector<uint8_t> _vSignature;

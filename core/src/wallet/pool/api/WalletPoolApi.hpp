@@ -52,6 +52,10 @@ namespace ledger {
 
             void getWallet(const std::string &name, const std::shared_ptr<api::WalletCallback> &callback) override;
 
+            void updateWalletConfig(const std::string &name,
+                                    const std::shared_ptr<api::DynamicObject> &configuration,
+                                    const std::shared_ptr<api::ErrorCodeCallback> &callback) override;
+
             void getWallets(int32_t from, int32_t size, const std::shared_ptr<api::WalletListCallback> &callback) override;
 
             void createWallet(const std::string &name, const api::Currency &currency,

@@ -32,8 +32,6 @@
 #define LEDGER_CORE_P2SHBITCOINLIKEKEYCHAIN_H
 
 #include "CommonBitcoinLikeKeychains.hpp"
-#include "../../../collections/DynamicObject.hpp"
-
 namespace ledger {
     namespace core {
 
@@ -43,11 +41,7 @@ namespace ledger {
                                      const api::Currency &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
-
-            Option<std::string> getHash160DerivationPath(const std::vector<uint8_t> &hash160) const override;
             int32_t getOutputSizeAsSignedTxInput() const override ;
-        private:
-            BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index) override;
         };
     }
 }

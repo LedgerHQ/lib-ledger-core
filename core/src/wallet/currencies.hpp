@@ -32,7 +32,7 @@
 #define LEDGER_CORE_CURRENCIES_HPP
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
+    #if defined(_MSC_VER)
         #include <libcore_export.h>
     #else
         #define LIBCORE_EXPORT
@@ -69,8 +69,9 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::Currency DECRED;
             extern LIBCORE_EXPORT const api::Currency STAKENET;
             extern LIBCORE_EXPORT const api::Currency ETHEREUM;
-            extern LIBCORE_EXPORT const api::Currency ETHEREUM_CLASSIC;
             extern LIBCORE_EXPORT const api::Currency ETHEREUM_ROPSTEN;
+            extern LIBCORE_EXPORT const api::Currency ETHEREUM_CLASSIC;
+            extern LIBCORE_EXPORT const api::Currency RIPPLE;
         };
     }
 }

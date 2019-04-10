@@ -38,7 +38,7 @@ namespace ledger {
                 switch (opcode) {
                     // push value
                     case OP_0                      :
-                        return "0";
+                        return "OP_0";
                     case OP_PUSHDATA1              :
                         return "OP_PUSHDATA1";
                     case OP_PUSHDATA2              :

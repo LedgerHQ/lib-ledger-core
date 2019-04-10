@@ -62,7 +62,6 @@ namespace ledger {
 
         class CommonBitcoinLikeKeychains : public BitcoinLikeKeychain {
         public:
-            
             CommonBitcoinLikeKeychains(const std::shared_ptr<api::DynamicObject> &configuration,
                                      const api::Currency &params, int account,
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
@@ -86,13 +85,16 @@ namespace ledger {
 
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
 
-        protected:
+            Option<std::string> getHash160DerivationPath(const std::vector<uint8_t> &hash160) const override;
 
+        protected:
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;
             uint32_t _observableRange;
+            std::string _keychainEngine;
+
         private:
-            virtual BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index) = 0;
+            BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
             void saveState();
             KeychainPersistentState _state;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;

@@ -1,6 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-
 set(ANDROID_CPP_FEATURES exceptions)
 
 # Automaticall ADD djinni api files to the library
@@ -18,21 +17,7 @@ file(GLOB ledger-core-jni-sources
 
 if (TARGET_JNI)
     message(STATUS "Configure project for JNI")
-#    if(ANDROID)
-#        if (UNIX)
-#            set( JAVA_AWT_INCLUDE_PATH $ENV{JAVA_HOME}/include CACHE PATH "" FORCE)
-#            list(APPEND JAVA_INCLUDE_PATH2 $ENV{JAVA_HOME}/include)
-#            if(ANDROID_OSX)
-#                list(APPEND JAVA_INCLUDE_PATH2 $ENV{JAVA_HOME}/include/darwin)
-#                list(APPEND JAVA_AWT_LIBRARY $ENV{JAVA_HOME}/jre/lib/libjawt.dylib)
-#                list(APPEND JAVA_JVM_LIBRARY $ENV{JAVA_HOME}/jre/lib/server/libjvm.dylib)
-#            else()
-#                list(APPEND JAVA_INCLUDE_PATH2 $ENV{JAVA_HOME}/include/linux)
-#                list(APPEND JAVA_AWT_LIBRARY $ENV{JAVA_HOME}/jre/lib/i386/libjawt.so)
-#                list(APPEND JAVA_JVM_LIBRARY $ENV{JAVA_HOME}/jre/lib/i386/server/libjvm.so)
-#            endif()
-#        endif ()
-#    endif()
+
     if(NOT ANDROID)
         find_package(JNI REQUIRED)
     endif()
@@ -122,13 +107,13 @@ else()
 endif(MINGW OR MSVC)
 
 target_link_libraries(ledger-core-interface INTERFACE crypto)
-if (NOT SQLCIPHER)
-    target_link_libraries(ledger-core-interface INTERFACE sqlite3)
-endif()
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 target_link_libraries(ledger-core-interface INTERFACE leveldb)
+
+target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
+
 
 #Secp256k1
 target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
@@ -137,19 +122,7 @@ add_dependencies(ledger-core-interface INTERFACE secp256k1)
 
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 
-if (SQLCIPHER)
-    #Sqlcipher
-    add_dependencies(ledger-core-interface INTERFACE SQLCipher)
-    target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib/${CMAKE_STATIC_LIBRARY_PREFIX}sqlcipher${CMAKE_STATIC_LIBRARY_SUFFIX}")
-    link_directories("${CMAKE_SOURCE_DIR}/core/lib/sqlcipher/lib")
-    if (UNIX AND NOT APPLE AND NOT ANDROID)
-        target_link_libraries(ledger-core-interface INTERFACE ${CMAKE_DL_LIBS})
-    endif()
-else()
-    #Sqlite
-    target_link_libraries(ledger-core-interface INTERFACE $<TARGET_FILE:sqlite3>)
-    link_directories($<TARGET_FILE_DIR:sqlite3>)
-endif()
+target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
@@ -160,10 +133,10 @@ file(GLOB LEDGER_CORE_API_HEADERS
         "api/*.hpp"
         )
 
-include_directories(ledger-core-interface INTERFACE ../lib/bigd)
+target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 
 if (TARGET_JNI)
-    include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
+    target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
 
@@ -173,18 +146,11 @@ file(GLOB ledger-core-header
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.h")
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.hpp")
 
-target_include_directories(ledger-core-interface INTERFACE ..)
+target_include_directories(ledger-core-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
-target_include_directories(ledger-core-interface INTERFACE ../lib/fmt-3.0.0)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
-if (SQLCIPHER)
-target_include_directories(ledger-core-interface INTERFACE ../lib/sqlcipher/include)
-else()
-target_include_directories(ledger-core-interface INTERFACE ../lib/sqlite3)
-endif()
-target_include_directories(ledger-core-interface INTERFACE ../lib/spdlog/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)

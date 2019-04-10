@@ -83,6 +83,9 @@ namespace ledger {
                     std::weak_ptr<WalletPool> p = pool;
                     synchronizerFactory = Option<EthereumLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
+                        if (!pool) {
+                            throw make_exception(api::ErrorCode::NULL_POINTER, "Pool was released.");
+                        }
                         return std::make_shared<EthereumLikeBlockchainExplorerAccountSynchronizer>(pool, explorer);
                     });
                 }

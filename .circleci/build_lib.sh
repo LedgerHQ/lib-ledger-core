@@ -106,12 +106,8 @@ export POLLY_ROOT=`pwd`/toolchains/polly
 ###
 # Clean
 ###
-echo "=====>Cleaning SQLCipher"
-rm -rf core/lib/sqlcipher || echo "Failed to clean sqlcipher"
 if [ "$1" == "ios" -o "$1" == "android" ]; then
     echo "=====>Cleaning to prepare clean build"
-    echo "=====>Cleaning secp256k1"
-    rm -rf core/lib/secp256k1/include core/lib/secp256k1/src core/lib/secp256k1/tmp core/lib/secp256k1/lib || echo "Failed to clean secp256k1"
     echo "=====>Remove build directory"
     rm -rf ../lib-ledger-core-build
 fi
@@ -156,5 +152,5 @@ if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
     xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
 else
-    make -j6
+    make -j4
 fi

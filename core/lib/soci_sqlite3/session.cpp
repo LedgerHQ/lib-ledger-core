@@ -126,7 +126,6 @@ sqlite3_session_backend::sqlite3_session_backend(
     res = sqlite3_busy_timeout(conn_, timeout * 1000);
     check_sqlite_err(conn_, res, "Failed to set busy timeout for connection. ");
 
-#ifdef SQLCIPHER
     //Set password
     if (!passKey.empty()) {
         res = sqlite3_key_v2(conn_, dbname.c_str(), passKey.c_str(), strlen(passKey.c_str()));
@@ -138,7 +137,6 @@ sqlite3_session_backend::sqlite3_session_backend(
             check_sqlite_err(conn_, res, "Failed to change database's password. ");
         }
     }
-#endif
 }
 
 sqlite3_session_backend::~sqlite3_session_backend()

@@ -38,6 +38,7 @@
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
+#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 #include <bytes/serialization.hpp>
 #include <collections/strings.hpp>
 #include <wallet/common/TrustIndicator.h>
@@ -107,6 +108,11 @@ namespace ledger {
                 auto ethTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.ethereumTransaction.getValue());
                 if (insert) {
                     sql << "INSERT INTO ethereum_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(ethTxUid), use(operation.ethereumTransaction.getValue().hash);
+                }
+            } else if (operation.rippleTransaction.nonEmpty()) {
+                auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.rippleTransaction.getValue());
+                if (insert) {
+                    sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(rippleTxUid), use(operation.rippleTransaction.getValue().hash);
                 }
             }
         }

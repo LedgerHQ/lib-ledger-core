@@ -34,7 +34,7 @@
 
 #include <soci.h>
 #include <iostream>
-#include <src/utils/Exception.hpp>
+#include "utils/Exception.hpp"
 
 namespace ledger {
     namespace core {
@@ -118,6 +118,12 @@ namespace ledger {
 
         template <> void migrate<5>(soci::session& sql);
         template <> void rollback<5>(soci::session& sql);
+
+        template <> void migrate<6>(soci::session& sql);
+        template <> void rollback<6>(soci::session& sql);
+
+        template <> void migrate<7>(soci::session& sql);
+        template <> void rollback<7>(soci::session& sql);
     }
 }
 

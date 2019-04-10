@@ -1,59 +1,61 @@
 @import "../../math/big_int.djinni"
 @import "../../ethereum/addresses.djinni"
-@import "../amount.djinni"
 
 # Representation of ERC20Tokens.
 ERC20Token = record {
     # Name of the currency.
-	name: string;
+    name: string;
     # Symbol representation of the currency.
-	symbol: string;
+    symbol: string;
     # Address of the smart contract for this ERC20.
-	contractAddress: string;
+    contractAddress: string;
     # Maximum number of decimals (used to show the human representation of the currency).
-	numberOfDecimal: i32;
+    numberOfDecimal: i32;
 }
 
 # ERC20-like accounts class.
 ERC20LikeAccount = interface +c {
     # Get an ERC20 token.
-	getToken(): ERC20Token;
+    getToken(): ERC20Token;
     # Get the address of this ERC20 account.
-	getAddress(): string;
+    getAddress(): string;
     # Get the current balance of this ERC20 account.
-	getBalance(): BigInt;
+    getBalance(): BigInt;
+    # Get the balance history of this ERC20 account from a starting date (included) to an ending
+    # date (included).
+    getBalanceHistoryFor(start: date, end: date, period: TimePeriod): list<BigInt>;
     # Get the list of operations performed on this ERC20 account.
-	getOperations(): list<ERC20LikeOperation>;
+    getOperations(): list<ERC20LikeOperation>;
     # Retrieve raw data concerning a transaction of a given amount to a given address.
-	getTransferToAddressData(amount: BigInt, address: string): binary;
-	queryOperations(): OperationQuery;
+    getTransferToAddressData(amount: BigInt, address: string): binary;
+    queryOperations(): OperationQuery;
 }
 
 # Class representing a Ethereum transaction.
 ERC20LikeOperation = interface +c {
-	# Get the hash of the transaction.
-	getHash(): string;
-	# Get the nonce of the transaction : sequence number issued by originating EOA.
-	getNonce(): BigInt;
-	# Get Gas price (in wei).
-	getGasPrice(): BigInt;
-	# Get start gas (in wei) : maximum amount of gas the originator is willing to pay.
-	getGasLimit(): BigInt;
-	# Used gas (in wei) : used gas during this transaction:
-	getUsedGas(): BigInt;
-	# Get source ETH address.
-	getSender(): string;
-	# Get destination ETH address.
-	getReceiver(): string;
-	# Get amount of ether to send.
-	getValue(): BigInt;
-	# Get binary data payload.
-	getData(): binary;
-	# Get the time when the transaction was issued or the time of the block including this
-	# this transaction.
-	getTime(): date;
-	# Get operation type : whether it is a SEND or RECEIVE.
-	getOperationType(): OperationType;
-	# Get opration status : pending or confirmed.
-	getStatus(): i32;
+    # Get the hash of the transaction.
+    getHash(): string;
+    # Get the nonce of the transaction : sequence number issued by originating EOA.
+    getNonce(): BigInt;
+    # Get Gas price (in wei).
+    getGasPrice(): BigInt;
+    # Get start gas (in wei) : maximum amount of gas the originator is willing to pay.
+    getGasLimit(): BigInt;
+    # Used gas (in wei) : used gas during this transaction:
+    getUsedGas(): BigInt;
+    # Get source ETH address.
+    getSender(): string;
+    # Get destination ETH address.
+    getReceiver(): string;
+    # Get amount of ether to send.
+    getValue(): BigInt;
+    # Get binary data payload.
+    getData(): binary;
+    # Get the time when the transaction was issued or the time of the block including this
+    # this transaction.
+    getTime(): date;
+    # Get operation type : whether it is a SEND or RECEIVE.
+    getOperationType(): OperationType;
+    # Get opration status : pending or confirmed.
+    getStatus(): i32;
 }

@@ -35,11 +35,8 @@
 #include <api/DatabaseStatement.hpp>
 #include <api/DatabaseBlob.hpp>
 #include <api/DatabaseResultSet.hpp>
-#ifdef SQLCIPHER
-    #include <sqlcipher/sqlite3.h>
-#else
-    #include <sqlite3.h>
-#endif
+
+#include <sqlite3.h>
 //#include <soci-sqlite3.h>
 #include <database/proxy_backend/soci-proxy.h>
 #include <soci.h>
@@ -198,16 +195,19 @@ public:
     }
 
     void read_all(sqlite3* db) {
-        iterate:
+    iterate:
         int last_result = sqlite3_step(_stmt);
         if (last_result == SQLITE_ROW) {
             _rows.push_back(std::make_shared<ResultRow>(_stmt));
             goto iterate;
-        } else if (last_result != SQLITE_DONE) {
+        }
+        else if (last_result != SQLITE_DONE) {
             throw std::runtime_error(sqlite3_errmsg(db));
         }
         final:
-        _rows.emplace_front(*_rows.begin());
+        if (_rows.size() > 0) {
+            _rows.emplace_front(*_rows.begin());
+        }
         _it = _rows.begin();
     }
 
@@ -372,19 +372,15 @@ public:
     void changePassword(const std::string & oldPassword, const std::string & newPassword) {
         setPassword(oldPassword);
         if (!newPassword.empty()) {
-#ifdef SQLCIPHER
             auto res = sqlite3_rekey_v2(_db, _dbName.c_str(), newPassword.c_str(), strlen(newPassword.c_str()));
             check_sqlite_err(_db, res, "Failed to change database's password. ");
-#endif
         }
     };
 
     void setPassword(const std::string &password) {
         if (!password.empty()) {
-#ifdef SQLCIPHER
             auto res = sqlite3_key_v2(_db, _dbName.c_str(), password.c_str(), strlen(password.c_str()));
             check_sqlite_err(_db, res, "Failed to encrypt database. ");
-#endif
         }
     };
 

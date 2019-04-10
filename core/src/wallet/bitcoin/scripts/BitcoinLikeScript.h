@@ -115,6 +115,10 @@ namespace ledger {
 
             bool isP2SH() const;
 
+            bool isP2WPKH() const;
+
+            bool isP2WSH() const;
+
             Option<BitcoinLikeAddress> parseAddress(const api::Currency &currency) const;
 
             static Try<BitcoinLikeScript> parse(const std::vector<uint8_t> &script,

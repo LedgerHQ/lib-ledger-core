@@ -5,12 +5,10 @@
 /core/lib/secp256k1/lib/
 /core/lib/secp256k1/src/
 /core/lib/secp256k1/tmp/
-/core/lib/sqlcipher/
 .idea/
 build/
 node_modules/
 project/
-
 /api/
 /api/djinni/support-lib/*.Makefile
 /api/djinni/support-lib/*.mk
@@ -26,4 +24,3 @@ compile_commands.json
 install_manifest.txt
 tags
 *.a
-sqlcipher-*/

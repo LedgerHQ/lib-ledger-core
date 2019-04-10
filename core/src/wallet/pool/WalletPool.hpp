@@ -82,6 +82,8 @@ namespace ledger {
             Future<int64_t> getWalletCount() const;
             Future<std::vector<std::shared_ptr<AbstractWallet>>> getWallets(int64_t from, int64_t size);
             FuturePtr<AbstractWallet> getWallet(const std::string& name);
+            Future<api::ErrorCode> updateWalletConfig(const std::string &name,
+                                                      const std::shared_ptr<api::DynamicObject> &configuration);
             Future<std::vector<std::string>> getWalletNames(int64_t from, int64_t size) const;
 
             // Create wallet
@@ -95,6 +97,12 @@ namespace ledger {
 
             Future<api::Block> getLastBlock(const std::string& currencyName);
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
+
+            // Password management
+            Future<api::ErrorCode> changePassword(
+                const std::string& oldPassword,
+                const std::string& newPassword
+            );
 
             // Currencies management
             Option<api::Currency> getCurrency(const std::string& name) const;
@@ -152,6 +160,9 @@ namespace ledger {
 
             void initializeFactories();
             std::shared_ptr<AbstractWallet> buildWallet(const WalletDatabaseEntry& entry);
+
+            static Option<WalletDatabaseEntry> getWalletEntryFromDatabase(const std::shared_ptr<WalletPool> &walletPool,
+                                                                          const std::string &name);
 
             // General
             std::string _poolName;

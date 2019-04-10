@@ -29,8 +29,9 @@
  *
  */
 #include "LogPrinterSink.hpp"
-#include "../api/ExecutionContext.hpp"
-#include "../utils/LambdaRunnable.hpp"
+#include "utils/LambdaRunnable.hpp"
+#include "api/LogPrinter.hpp"
+#include "api/ExecutionContext.hpp"
 
 namespace ledger {
     namespace core {
@@ -40,12 +41,15 @@ namespace ledger {
             set_level(spdlog::level::trace);
         }
 
-        void LogPrinterSink::log(const spdlog::details::log_msg &msg) {
+        void LogPrinterSink::sink_it_(const spdlog::details::log_msg &msg) {
             auto printer = _printer.lock();
             if (!printer)
                 return;
             auto level = msg.level;
-            auto message = msg.formatted.str();
+            
+            fmt::memory_buffer buffer;
+            formatter_->format(msg, buffer);
+            std::string message(buffer.data(), buffer.size());
             printer->getContext()->execute(make_runnable([printer, level, message]() {
                 switch (level) {
                     case spd::level::trace:
@@ -72,7 +76,7 @@ namespace ledger {
             }));
         }
 
-        void LogPrinterSink::flush() {
+        void LogPrinterSink::flush_() {
 
         }
     }

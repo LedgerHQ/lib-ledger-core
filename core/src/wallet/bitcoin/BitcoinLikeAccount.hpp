@@ -150,8 +150,6 @@ namespace ledger {
 
         private:
             std::shared_ptr<BitcoinLikeKeychain> _keychain;
-            std::shared_ptr<Preferences> _internalPreferences;
-            std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
             std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;

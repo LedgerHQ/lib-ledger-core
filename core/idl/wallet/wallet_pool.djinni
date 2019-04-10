@@ -65,6 +65,14 @@ WalletPool = interface +c {
     # @param callback, Callback object returns a Wallet object
     getWallet(name: string, callback: Callback<Wallet>);
 
+    # Update wallet configuration
+    # @param name, string, name of wallet to update
+    # @param configuration, DynamicObject object, configuration object with fields to update
+    # @param callback, Callback object returns the error code, returns ErrorCode::FUTURE_WAS_SUCCESSFULL if everything is fine
+    # > Note: other fields that are not passed in 'configuration' parameter
+    # > that might have been created before remain intact
+    updateWalletConfig(name: string, configuration: DynamicObject, callback: Callback<ErrorCode>);
+
     # Instanciate a new wallet under wallet pool.
     # @param name, string, name of newly created wallet
     # @param currency, Currency object, currency of the wallet
@@ -115,10 +123,10 @@ WalletPool = interface +c {
     # Change Database password.
     #
     # Allow to change password of database holding all informations about
-    # accounts, wallets, transactions ...
+    # accounts, wallets, transactions etc. and the wallet pool preferences.
     #
-    # WARNING: be carefull to have no other instances of WalletPool using
-    # same database
+    # WARNING: be careful to have no other instances of WalletPool using
+    # same database / preferences.
     changePassword(oldPassword: string, newPassword: string, callback: Callback<ErrorCode>);
 }
 

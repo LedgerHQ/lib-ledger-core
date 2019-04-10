@@ -36,10 +36,10 @@
 #include <QObject>
 #include <QMap>
 #include <QMutex>
-#include <src/api/ThreadDispatcher.hpp>
-#include <src/api/Runnable.hpp>
+#include <api/ThreadDispatcher.hpp>
+#include <api/Runnable.hpp>
 #include <QCoreApplication>
-#include <src/api/ExecutionContext.hpp>
+#include <api/ExecutionContext.hpp>
 
 namespace ledger {
     namespace qt {

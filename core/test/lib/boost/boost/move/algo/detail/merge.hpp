@@ -16,6 +16,8 @@
 #include <boost/move/algo/detail/basic_op.hpp>
 #include <boost/move/detail/iterator_traits.hpp>
 #include <boost/move/detail/destruct_n.hpp>
+#include <boost/move/algo/predicate.hpp>
+#include <boost/move/detail/iterator_to_raw_pointer.hpp>
 #include <boost/assert.hpp>
 
 namespace boost {
@@ -181,9 +183,6 @@ void op_merge_left( RandIt buf_first
                            //and all elements from the second half are less)
       op(forward_t(), first1, last1, buf_first);
    }
-   else{
-      buf_first = buf_first;
-   }
 }
 
 // [buf_first, first1) -> buffer
@@ -257,101 +256,6 @@ void swap_merge_right
    op_merge_right(first1, last1, last2, buf_last, comp, swap_op());
 }
 
-template <class BidirIt, class Distance, class Compare>
-void merge_bufferless_ONlogN_recursive
-   (BidirIt first, BidirIt middle, BidirIt last, Distance len1, Distance len2, Compare comp)
-{
-   typedef typename iterator_traits<BidirIt>::size_type size_type;
-   while(1) {
-      //#define MERGE_BUFFERLESS_RECURSIVE_OPT
-      #ifndef MERGE_BUFFERLESS_RECURSIVE_OPT
-      if (len2  == 0) {
-         return;
-      }
-
-      if (!len1) {
-         return;
-      }
-
-      if ((len1 | len2) == 1) {
-         if (comp(*middle, *first))
-            adl_move_swap(*first, *middle);  
-         return;
-      }
-      #else
-      if (len2  == 0) {
-         return;
-      }
-
-      if (!len1) {
-         return;
-      }
-      BidirIt middle_prev = middle; --middle_prev;
-      if(!comp(*middle, *middle_prev))
-         return;
-
-      while(true) {
-         if (comp(*middle, *first))
-            break;
-         ++first;
-         if(--len1 == 1)
-            break;
-      }
-
-      if (len1 == 1 && len2 == 1) {
-         //comp(*middle, *first) == true already tested in the loop
-         adl_move_swap(*first, *middle);  
-         return;
-      }
-      #endif
-
-      BidirIt first_cut = first;
-      BidirIt second_cut = middle;
-      Distance len11 = 0;
-      Distance len22 = 0;
-      if (len1 > len2) {
-         len11 = len1 / 2;
-         first_cut +=  len11;
-         second_cut = lower_bound(middle, last, *first_cut, comp);
-         len22 = size_type(second_cut - middle);
-      }
-      else {
-         len22 = len2 / 2;
-         second_cut += len22;
-         first_cut = upper_bound(first, middle, *second_cut, comp);
-         len11 = size_type(first_cut - first);
-      }
-      BidirIt new_middle = rotate_gcd(first_cut, middle, second_cut);
-
-      //Avoid one recursive call doing a manual tail call elimination on the biggest range
-      const Distance len_internal = len11+len22;
-      if( len_internal < (len1 + len2 - len_internal) ) {
-         merge_bufferless_ONlogN_recursive(first,      first_cut,  new_middle, len11,        len22,        comp);
-         //merge_bufferless_recursive(new_middle, second_cut, last,       len1 - len11, len2 - len22, comp);
-         first = new_middle;
-         middle = second_cut;
-         len1 -= len11;
-         len2 -= len22;
-      }
-      else {
-         //merge_bufferless_recursive(first,      first_cut,  new_middle, len11,        len22,        comp);
-         merge_bufferless_ONlogN_recursive(new_middle, second_cut, last,       len1 - len11, len2 - len22, comp);
-         middle = first_cut;
-         last = new_middle;
-         len1 = len11;
-         len2 = len22;
-      }
-   }
-}
-
-//Complexity: NlogN
-template<class BidirIt, class Compare>
-void merge_bufferless_ONlogN(BidirIt first, BidirIt middle, BidirIt last, Compare comp)
-{
-   merge_bufferless_ONlogN_recursive
-      (first, middle, last, middle - first, last - middle, comp); 
-}
-
 //Complexity: min(len1,len2)^2 + max(len1,len2)
 template<class RandIt, class Compare>
 void merge_bufferless_ON2(RandIt first, RandIt middle, RandIt last, Compare comp)
@@ -359,7 +263,7 @@ void merge_bufferless_ON2(RandIt first, RandIt middle, RandIt last, Compare comp
    if((middle - first) < (last - middle)){
       while(first != middle){
          RandIt const old_last1 = middle;
-         middle = lower_bound(middle, last, *first, comp);
+         middle = boost::movelib::lower_bound(middle, last, *first, comp);
          first = rotate_gcd(first, old_last1, middle);
          if(middle == last){
             break;
@@ -371,7 +275,7 @@ void merge_bufferless_ON2(RandIt first, RandIt middle, RandIt last, Compare comp
    }
    else{
       while(middle != last){
-         RandIt p = upper_bound(first, middle, last[-1], comp);
+         RandIt p = boost::movelib::upper_bound(first, middle, last[-1], comp);
          last = rotate_gcd(p, middle, last);
          middle = p;
          if(middle == first){
@@ -385,75 +289,87 @@ void merge_bufferless_ON2(RandIt first, RandIt middle, RandIt last, Compare comp
    }
 }
 
+static const std::size_t MergeBufferlessONLogNRotationThreshold = 32;
+
+template <class RandIt, class Distance, class Compare>
+void merge_bufferless_ONlogN_recursive
+   (RandIt first, RandIt middle, RandIt last, Distance len1, Distance len2, Compare comp)
+{
+   typedef typename iterator_traits<RandIt>::size_type size_type;
+
+   while(1) {
+      //trivial cases
+      if (!len2) {
+         return;
+      }
+      else if (!len1) {
+         return;
+      }
+      else if (size_type(len1 | len2) == 1u) {
+         if (comp(*middle, *first))
+            adl_move_swap(*first, *middle);  
+         return;
+      }
+      else if(size_type(len1+len2) < MergeBufferlessONLogNRotationThreshold){
+         merge_bufferless_ON2(first, middle, last, comp);
+         return;
+      }
+
+      RandIt first_cut = first;
+      RandIt second_cut = middle;
+      Distance len11 = 0;
+      Distance len22 = 0;
+      if (len1 > len2) {
+         len11 = len1 / 2;
+         first_cut +=  len11;
+         second_cut = boost::movelib::lower_bound(middle, last, *first_cut, comp);
+         len22 = size_type(second_cut - middle);
+      }
+      else {
+         len22 = len2 / 2;
+         second_cut += len22;
+         first_cut = boost::movelib::upper_bound(first, middle, *second_cut, comp);
+         len11 = size_type(first_cut - first);
+      }
+      RandIt new_middle = rotate_gcd(first_cut, middle, second_cut);
+
+      //Avoid one recursive call doing a manual tail call elimination on the biggest range
+      const Distance len_internal = len11+len22;
+      if( len_internal < (len1 + len2 - len_internal) ) {
+         merge_bufferless_ONlogN_recursive(first,      first_cut,  new_middle, len11,        len22,        comp);
+         first = new_middle;
+         middle = second_cut;
+         len1 -= len11;
+         len2 -= len22;
+      }
+      else {
+         merge_bufferless_ONlogN_recursive(new_middle, second_cut, last,       len1 - len11, len2 - len22, comp);
+         middle = first_cut;
+         last = new_middle;
+         len1 = len11;
+         len2 = len22;
+      }
+   }
+}
+
+//Complexity: NlogN
+template<class RandIt, class Compare>
+void merge_bufferless_ONlogN(RandIt first, RandIt middle, RandIt last, Compare comp)
+{
+   merge_bufferless_ONlogN_recursive
+      (first, middle, last, middle - first, last - middle, comp); 
+}
+
 template<class RandIt, class Compare>
 void merge_bufferless(RandIt first, RandIt middle, RandIt last, Compare comp)
 {
-   //#define BOOST_ADAPTIVE_MERGE_NLOGN_MERGE
+   #define BOOST_ADAPTIVE_MERGE_NLOGN_MERGE
    #ifdef BOOST_ADAPTIVE_MERGE_NLOGN_MERGE
    merge_bufferless_ONlogN(first, middle, last, comp);
    #else
    merge_bufferless_ON2(first, middle, last, comp);
    #endif   //BOOST_ADAPTIVE_MERGE_NLOGN_MERGE
 }
-
-template<class Comp>
-struct antistable
-{
-   explicit antistable(Comp &comp)
-      : m_comp(comp)
-   {}
-
-   template<class U, class V>
-   bool operator()(const U &u, const V & v)
-   {  return !m_comp(v, u);  }
-
-   private:
-   antistable & operator=(const antistable &);
-   Comp &m_comp;
-};
-
-template <class Comp>
-class negate
-{
-   public:
-   negate()
-   {}
-
-   explicit negate(Comp comp)
-      : m_comp(comp)
-   {}
-
-   template <class T1, class T2>
-   bool operator()(const T1& l, const T2& r)
-   {
-      return !m_comp(l, r);
-   }
-
-   private:
-   Comp m_comp;
-};
-
-
-template <class Comp>
-class inverse
-{
-   public:
-   inverse()
-   {}
-
-   explicit inverse(Comp comp)
-      : m_comp(comp)
-   {}
-
-   template <class T1, class T2>
-   bool operator()(const T1& l, const T2& r)
-   {
-      return m_comp(r, l);
-   }
-
-   private:
-   Comp m_comp;
-};
 
 // [r_first, r_last) are already in the right part of the destination range.
 template <class Compare, class InputIterator, class InputOutIterator, class Op>
@@ -492,7 +408,7 @@ void swap_merge_with_right_placed
    op_merge_with_right_placed(first, last, dest_first, r_first, r_last, comp, swap_op());
 }
 
-// [r_first, r_last) are already in the right part of the destination range.
+// [first, last) are already in the right part of the destination range.
 template <class Compare, class Op, class BidirIterator, class BidirOutIterator>
 void op_merge_with_left_placed
    ( BidirOutIterator const first, BidirOutIterator last, BidirOutIterator dest_last
@@ -525,7 +441,7 @@ void op_merge_with_left_placed
 
 // @endcond
 
-// [r_first, r_last) are already in the right part of the destination range.
+// [irst, last) are already in the right part of the destination range.
 template <class Compare, class BidirIterator, class BidirOutIterator>
 void merge_with_left_placed
    ( BidirOutIterator const first, BidirOutIterator last, BidirOutIterator dest_last
@@ -557,7 +473,50 @@ void uninitialized_merge_with_right_placed
    typedef typename iterator_traits<InputOutIterator>::value_type value_type;
    InputOutIterator const original_r_first = r_first;
 
-   destruct_n<value_type> d(&*dest_first);
+   destruct_n<value_type, InputOutIterator> d(dest_first);
+
+   while ( first != last && dest_first != original_r_first ) {
+      if (r_first == r_last) {
+         for(; dest_first != original_r_first; ++dest_first, ++first){
+            ::new((iterator_to_raw_pointer)(dest_first)) value_type(::boost::move(*first));
+            d.incr();
+         }
+         d.release();
+         InputOutIterator end = ::boost::move(first, last, original_r_first);
+         BOOST_ASSERT(end == r_last);
+         (void)end;
+         return;
+      }
+      else if (comp(*r_first, *first)) {
+         ::new((iterator_to_raw_pointer)(dest_first)) value_type(::boost::move(*r_first));
+         d.incr();
+         ++r_first;
+      }
+      else {
+         ::new((iterator_to_raw_pointer)(dest_first)) value_type(::boost::move(*first));
+         d.incr();
+         ++first;
+      }
+      ++dest_first;
+   }
+   d.release();
+   merge_with_right_placed(first, last, original_r_first, r_first, r_last, comp);
+}
+
+/*
+// [r_first, r_last) are already in the right part of the destination range.
+// [dest_first, r_first) is uninitialized memory
+template <class Compare, class BidirOutIterator, class BidirIterator>
+void uninitialized_merge_with_left_placed
+   ( BidirOutIterator dest_first, BidirOutIterator r_first, BidirOutIterator r_last
+   , BidirIterator first, BidirIterator last
+   , Compare comp)
+{
+   BOOST_ASSERT((last - first) == (r_last - r_first));
+   typedef typename iterator_traits<BidirOutIterator>::value_type value_type;
+   BidirOutIterator const original_r_last = r_last;
+
+   destruct_n<value_type> d(&*dest_last);
 
    while ( first != last && dest_first != original_r_first ) {
       if (r_first == r_last) {
@@ -566,7 +525,7 @@ void uninitialized_merge_with_right_placed
             d.incr();
          }
          d.release();
-         InputOutIterator end = ::boost::move(first, last, original_r_first);
+         BidirOutIterator end = ::boost::move(first, last, original_r_first);
          BOOST_ASSERT(end == r_last);
          (void)end;
          return;
@@ -586,6 +545,7 @@ void uninitialized_merge_with_right_placed
    d.release();
    merge_with_right_placed(first, last, original_r_first, r_first, r_last, comp);
 }
+*/
 
 }  //namespace movelib {
 }  //namespace boost {
