@@ -117,17 +117,18 @@ namespace ledger {
                 if (tx.block.nonEmpty()) {
                     BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
-
+                auto hexValue = tx.value.toHexString();
+                auto hexFees = tx.fees.toHexString();
                 sql
                         << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations)",
                         use(rippleTxUid),
                         use(tx.hash),
-                        use(tx.value.toHexString()),
+                        use(hexValue),
                         use(blockUid),
                         use(tx.receivedAt),
                         use(tx.sender),
                         use(tx.receiver),
-                        use(tx.fees.toHexString()),
+                        use(hexFees),
                         use(tx.confirmations);
 
                 return rippleTxUid;

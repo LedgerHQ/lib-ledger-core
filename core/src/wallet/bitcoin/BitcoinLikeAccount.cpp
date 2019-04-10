@@ -240,9 +240,9 @@ namespace ledger {
                 //Update account_uid column of bitcoin_outputs table
                 for (auto& o : accountOutputs) {
                     if (o.first->address.nonEmpty()) {
-
+                        auto address = o.first->address.getValue();
                         soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address AND account_uid IS NULL ",
-                                soci::use(o.first->address.getValue()));
+                                soci::use(address));
 
                         for (auto &row : rows) {
                             auto txUid = row.get<std::string>(0);
@@ -251,7 +251,7 @@ namespace ledger {
                             //since now bitcoin_outputs has transaction_uid (accountUid-hash) as primary key
                             if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, txHash)) {
                                 sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address AND transaction_uid = :txUid",
-                                        soci::use(accountUid), soci::use(o.first->address.getValue()), soci::use(txUid);
+                                        soci::use(accountUid), soci::use(address), soci::use(txUid);
                             }
                         }
                     }
@@ -697,8 +697,8 @@ namespace ledger {
                 }
                 getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
             }
-            sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(getAccountUid()), soci::use(date);
-            log->debug(" Finish erasing data of account : {}", getAccountUid());
+            auto accountUid = getAccountUid();
+            sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(accountUid), soci::use(date);
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
         }
 

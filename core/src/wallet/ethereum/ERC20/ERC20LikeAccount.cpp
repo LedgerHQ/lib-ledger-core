@@ -233,15 +233,22 @@ namespace ledger {
                 auto sender = operation->getSender();
                 auto data = hex::toString(operation->getData());
                 auto status = operation->getStatus();
+                auto operationType = api::to_string(operation->getOperationType());
+                auto nonce = operation->getNonce()->toString(16);
+                auto value = operation->getValue()->toString(16);
+                auto time = operation->getTime();
+                auto gasPrice = operation->getGasPrice()->toString(16);
+                auto gasLimit = operation->getGasLimit()->toString(16);
+                auto gasUsed = operation->getUsedGas()->toString(16);
                 sql << "INSERT INTO erc20_operations VALUES("
                         ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
                         ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status"
                         ")"
                         , use(erc20OpUid), use(ethOpUid)
-                        , use(_accountUid), use(api::to_string(operation->getOperationType())), use(hash)
-                        , use(operation->getNonce()->toString(16)), use(operation->getValue()->toString(16)), use(operation->getTime())
+                        , use(_accountUid), use(operationType), use(hash)
+                        , use(nonce), use(value), use(time)
                         , use(sender), use(receiver), use(data)
-                        , use(operation->getGasPrice()->toString(16)), use(operation->getGasLimit()->toString(16)), use(operation->getUsedGas()->toString(16))
+                        , use(gasPrice), use(gasLimit), use(gasUsed)
                         , use(status);
             }
         }

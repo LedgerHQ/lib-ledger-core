@@ -99,13 +99,16 @@ namespace ledger {
                         strGenerator.push_back(bigIntG.toString());
                     }
                     strings::join(strGenerator, generator, separator);
+                    auto P2WPKHVersion = hex::toString(params.P2WPKHVersion);
+                    auto P2WSHVersion = hex::toString(params.P2WSHVersion);
+                    auto generatorStr = generator.str();
                     sql << "INSERT INTO bech32_parameters VALUES(:name, :hrp, :separator, :generator, :p2wpkh_version, :p2wsh_version)",
                             use(params.name),
                             use(params.hrp),
                             use(params.separator),
-                            use(generator.str()),
-                            use(hex::toString(params.P2WPKHVersion)),
-                            use(hex::toString(params.P2WSHVersion));
+                            use(generatorStr),
+                            use(P2WPKHVersion),
+                            use(P2WSHVersion);
                     return true;
                 }
                 return false;
