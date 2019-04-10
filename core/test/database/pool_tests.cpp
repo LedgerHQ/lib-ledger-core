@@ -92,7 +92,7 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto pool = WalletPool::newInstance(
     "my_pool",
-    Option<std::string>::NONE,
+    "",
     nullptr,
     nullptr,
     resolver,

@@ -4,7 +4,6 @@
 #ifndef DJINNI_GENERATED_WALLETPOOL_HPP
 #define DJINNI_GENERATED_WALLETPOOL_HPP
 
-#include "../utils/optional.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -47,7 +46,7 @@ public:
     /**
      * Create a new instance of WalletPool object.
      * @param name, string, name of the wallet pool
-     * @param password, optional string, password to lock wallet pool
+     * @param password, string, password to lock wallet pool (empty string means no password)
      * @param http, HttpClient object, http client used for all calls made by wallet pool (and aggregated wallets)
      * @param webSocketClient, WebSocketClient object, socket through which wallet pool observe and get notified (explorer, DBs ...)
      * @param pathResolver, PathResolver Object, resolve paths to logs, databases, preferences ...
@@ -58,7 +57,7 @@ public:
      * @param configuration, DynamicObject object, desired configuration for this wallet pool
      * @return WalletPool object, instance of WalletPool
      */
-    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::experimental::optional<std::string> & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration);
+    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::string & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration);
 
     /**
      * Return used logger to dump logs in defined log path by PathResolver.

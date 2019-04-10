@@ -2,6 +2,13 @@
 
 > ????/??/??
 
+- Change encoding of passwords in the public interface (wallet pool). Passwords are not optional
+  anymore. This means that:
+    - `Optional::NONE` and `Optional("")` (that were both ambiguity encoding) are now replaced by
+      the empty string.
+    - Because the empty string is used to state _no password_, empty passwords cannot be used
+      anymore. The previous situation was that empty passwords were allowed but transformed into a
+      `Optional::NONE`, which was a bit confusing.
 - Native Segwit support:
     - Implement P2WPKH and P2WSH keychains, references:
         - BIP141: https://github.com/bitcoin/bips/blob/master/bip-0141.mediawiki#P2WSH

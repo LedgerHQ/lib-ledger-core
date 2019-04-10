@@ -74,7 +74,7 @@ namespace ledger {
             std::shared_ptr<DynamicObject> getConfiguration() const;
             std::shared_ptr<api::EventBus> getEventBus() const;
             const std::string& getName() const;
-            const Option<std::string> getPassword() const;
+            const std::string getPassword() const;
 
             std::shared_ptr<AbstractWalletFactory> getFactory(const std::string& currencyName) const;
 
@@ -111,7 +111,7 @@ namespace ledger {
             Future<Unit> removeCurrency(const std::string& currencyName);
             static std::shared_ptr<WalletPool> newInstance(
                 const std::string &name,
-                const Option<std::string> &password,
+                const std::string &password,
                 const std::shared_ptr<api::HttpClient> &httpClient,
                 const std::shared_ptr<api::WebSocketClient> &webSocketClient,
                 const std::shared_ptr<api::PathResolver> &pathResolver,
@@ -143,7 +143,7 @@ namespace ledger {
         private:
             WalletPool(
                 const std::string &name,
-                const Option<std::string> &password,
+                const std::string &password,
                 const std::shared_ptr<api::HttpClient> &httpClient,
                 const std::shared_ptr<api::WebSocketClient> &webSocketClient,
                 const std::shared_ptr<api::PathResolver> &pathResolver,
@@ -166,7 +166,7 @@ namespace ledger {
 
             // General
             std::string _poolName;
-            Option<std::string> _password;
+            std::string _password;
             std::shared_ptr<DynamicObject> _configuration;
 
             // File system management
