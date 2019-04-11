@@ -1,3 +1,5 @@
+@extern "../../ledger-core/idl/core.yaml"
+
 # Main Ripple interface file.
 #
 # This file serves as API entry point and defines everything that can be manipulated from a foreign
@@ -6,10 +8,6 @@
 # You are supposed to add whatever you see fit in this file and then a code generator (using
 # djinni) must be called to both generate the interface files you need to implement (C++) and the
 # foreign languages bindings.
-
-@import "../../core/idl/errors.djinni"
-@import "../../core/idl/math/big_int.djinni"
-@import "../../core/idl/wallet/amount.djinni"
 
 # Ripple network parameters.
 RippleLikeNetworkParameters = record {

@@ -1,0 +1,18 @@
+@import "debug/logger.djinni"
+@import "fs/path_resolver.djinni"
+@import "math/big_int.djinni"
+@import "net/http_client.djinni"
+@import "net/websocket_client.djinni"
+@import "crypto/crypto.djinni"
+@import "math/random.djinni"
+@import "crypto/secp256k1.djinni"
+@import "net/websocket_client.djinni"
+
+LedgerCore = interface +c {
+    # Gets the version of the library as a human readable string.
+    # @return The version of the library (e.g. '1.0.1')
+    static getStringVersion(): string;
+    # Get the integer version of the Library
+    # @return The integer version of the library
+    static getIntVersion(): i32;
+}
