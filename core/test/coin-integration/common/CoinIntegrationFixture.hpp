@@ -70,6 +70,8 @@
 using namespace ledger::core; // don't do this at home. Only for testing contexts
 using namespace ledger::qt;
 
+enum SynchronizationResult {OLD_ACCOUNT, NEW_ACCOUNT};
+
 template <typename Wallet, typename Account>
 class CoinIntegrationFixture : public ::testing::Test {
 public:
@@ -133,6 +135,31 @@ public:
         return std::dynamic_pointer_cast<Account>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
     }
 
+
+    Try<SynchronizationResult> synchronizeAccount(const std::shared_ptr<AbstractAccount>& account) {
+        Promise<SynchronizationResult> p;
+        auto bus = account->synchronize();
+        bus->subscribe(dispatcher->getSerialExecutionContext("callback"),
+                       make_receiver([=](const std::shared_ptr<api::Event> &event) mutable {
+                           if (event->getCode() == api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT) {
+                               p.success(SynchronizationResult::NEW_ACCOUNT);
+                           } else if (event->getCode() == api::EventCode::SYNCHRONIZATION_SUCCEED) {
+                               p.success(SynchronizationResult::OLD_ACCOUNT);
+                           } else if (event->getCode() == api::EventCode::SYNCHRONIZATION_FAILED) {
+                               api::ErrorCode code = api::ErrorCode::UNKNOWN;
+                               std::string reason = "Unknown error";
+                               auto payload = event->getPayload();
+                               if (payload && payload->getString(api::Account::EV_SYNC_ERROR_CODE)) {
+                                   code = api::from_string<api::ErrorCode>(payload->getString(api::Account::EV_SYNC_ERROR_CODE).value());
+                               }
+                               if (payload && payload->getString(api::Account::EV_SYNC_ERROR_MESSAGE)) {
+                                   reason = payload->getString(api::Account::EV_SYNC_ERROR_MESSAGE).value();
+                               }
+                               p.failure(make_exception(code, reason));
+                           }
+                       }));
+        return ::wait(p.getFuture());
+    }
 
     std::shared_ptr<QtThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;
