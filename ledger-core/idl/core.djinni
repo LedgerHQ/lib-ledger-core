@@ -1,12 +1,14 @@
+@import "crypto/crypto.djinni"
+@import "crypto/secp256k1.djinni"
 @import "debug/logger.djinni"
 @import "fs/path_resolver.djinni"
 @import "math/big_int.djinni"
+@import "math/random.djinni"
 @import "net/http_client.djinni"
 @import "net/websocket_client.djinni"
-@import "crypto/crypto.djinni"
-@import "math/random.djinni"
-@import "crypto/secp256k1.djinni"
 @import "net/websocket_client.djinni"
+@import "utils/callback.djinni"
+@import "wallet/amount.djinni"
 
 LedgerCore = interface +c {
     # Gets the version of the library as a human readable string.
