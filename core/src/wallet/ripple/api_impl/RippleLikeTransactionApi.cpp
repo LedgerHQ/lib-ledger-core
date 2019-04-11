@@ -47,7 +47,7 @@ namespace ledger {
         bool writeLengthPrefix(BytesWriter& writer, uint64_t size) {
             // encoding here: https://developers.ripple.com/serialization.html#length-prefixing
             if (size <= 192) {
-                writer.writeByte(size & 0xFF);
+                writer.writeByte(static_cast<uint8_t>(size));
 
                 return true;
             } else if (size <= 12480) {
@@ -56,8 +56,8 @@ namespace ledger {
                 // <=> byte2 = (l - 193) & 0xFF
                 // <=> byte1 = 193 + ((l - 193) >> 8) & 0xFF
                 size -= 193;
-                writer.writeByte(193 + ((size >> 8) & 0xFF));
-                writer.writeByte(size & 0xFF);
+                writer.writeByte(193 + (static_cast<uint8_t>(size >> 8)));
+                writer.writeByte(static_cast<uint8_t>(size));
 
                 return true;
             } else if (size <= 918744) {
@@ -67,9 +67,9 @@ namespace ledger {
                 // <=> byte2 = ((l - 12481) >> 8) & 0xFF
                 // <=> byte1 = 241 + ((l - 12481) >> 16) & 0xFF
                 size -= 12481;
-                writer.writeByte(241 + ((size >> 16) & 0xFF));
-                writer.writeByte((size >> 8) & 0xFF);
-                writer.writeByte(size & 0xFF);
+                writer.writeByte(241 + (static_cast<uint8_t>(size >> 16)));
+                writer.writeByte(static_cast<uint8_t>(size >> 8));
+                writer.writeByte(static_cast<uint8_t>(size));
             }
 
             // cannot have more bytes
