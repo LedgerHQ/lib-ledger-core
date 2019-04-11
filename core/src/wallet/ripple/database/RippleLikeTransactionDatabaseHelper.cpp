@@ -53,7 +53,7 @@ namespace ledger {
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
                     "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
                     "WHERE tx.hash = :hash"
-                    "ORDER BY memo.index ASC", use(hash));
+                    "ORDER BY memo.array_index ASC", use(hash));
 
             for (auto &row : rows) {
                 inflateTransaction(sql, row, tx);

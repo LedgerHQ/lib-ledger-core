@@ -449,7 +449,7 @@ namespace ledger {
                    "data VARCHAR(1024),"
                    "fmt VARCHAR(1024),"
                    "ty VARCHAR(1024),"
-                   "index INTEGER NOT NULL"
+                   "array_index INTEGER NOT NULL"
                    ")";
         }
 
