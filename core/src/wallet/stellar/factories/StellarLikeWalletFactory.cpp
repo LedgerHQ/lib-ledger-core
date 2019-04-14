@@ -33,6 +33,7 @@
 #include <wallet/stellar/StellarLikeWallet.hpp>
 #include "StellarLikeKeychainFactory.hpp"
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -70,6 +71,15 @@ namespace ledger {
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::STELLAR>(const api::Currency& currency,
                 const std::shared_ptr<WalletPool>& pool) {
             return std::make_shared<StellarLikeWalletFactory>(currency, pool);
+        }
+
+        std::shared_ptr<StellarLikeBlockchainExplorer> StellarLikeWalletFactory::getExplorer(const WalletDatabaseEntry& entry) {
+            auto engine = STRING(api::StellarConfiguration::BLOCKCHAIN_EXPLORER_ENGINE, api::StellarConfiguration::HORIZON_EXPLORER_ENGINE);
+            std::shared_ptr<StellarLikeBlockchainExplorer> explorer;
+            if (engine == api::StellarConfiguration::HORIZON_EXPLORER_ENGINE) {
+
+            }
+            return explorer;
         }
 
     }

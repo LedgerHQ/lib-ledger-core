@@ -33,6 +33,7 @@
 #define LEDGER_CORE_STELLARLIKEWALLETFACTORY_HPP
 
 #include <wallet/common/AbstractWalletFactory.hpp>
+#include <wallet/stellar/explorers/StellarLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {
@@ -41,8 +42,8 @@ namespace ledger {
             StellarLikeWalletFactory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-        private:
-
+        protected:
+            std::shared_ptr<StellarLikeBlockchainExplorer> getExplorer(const WalletDatabaseEntry& entry);
         };
     }
 }

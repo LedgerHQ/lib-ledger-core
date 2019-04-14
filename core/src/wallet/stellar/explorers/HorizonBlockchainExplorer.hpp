@@ -45,10 +45,7 @@ namespace ledger {
              // Future<BigInt> getRecommendedFees() override;
              // Future<std::vector<stellar::Operation>> getOperations(const std::string& address, const Option<std::string>& cursor) override;
              // Future<std::vector<stellar::Transaction>> getTransactions(const std::string& address, const Option<std::string>& cursor) override;
-
-        private:
-
-        };
+       };
     }
 }
 

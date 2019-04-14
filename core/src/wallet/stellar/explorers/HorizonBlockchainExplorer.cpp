@@ -36,8 +36,7 @@ namespace ledger {
                                                              const std::shared_ptr<HttpClient>& http,
                                                              const std::shared_ptr<api::DynamicObject>& configuration)
             : StellarLikeBlockchainExplorer(context, http) {
-            std::string toot;
-           toot
+
         }
 
 
