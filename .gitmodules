@@ -1,6 +1,7 @@
 [submodule "djinni"]
     path = djinni
-    url = https://github.com/LedgerHQ/djinni.git
+    url = https://github.com/phaazon/djinni.git
+    branch = feature/high-order-callbacks
 [submodule "toolchains/polly"]
     path = toolchains/polly
     url = https://github.com/ruslo/polly.git
