@@ -114,12 +114,48 @@ TEST_F(RippleMakeTransaction, CreateTx) {
 
 }
 
-
 TEST_F(RippleMakeTransaction, ParseSignedRawTransaction) {
-    //Tx hash af4bb95de86a640b90b2af3c696ef26efe7dd71864cc959d8030b448dd48e756
-    auto strTx = "12000022800000002400000001201B02A2618F6140000000014FB18068400000000000000A73210215A9EE08A4B4747E27F348365F93BEB5897FA7E8776BEDAE2CB56917DCDBBF2F74473045022100F2AB61EC941462D692514BFDDB00BC0D31BA7DA66981193E67A04E90578C18B1022064A2375ECB5A68C22EE3038B783BE6A9E1F2C882A8E8BBEE43C4CFA93B536926811420237754A1727016188A1B7E52F2060F94339D128314DBC4AD4F38B60FA5624D0DDEDDAC209BABBAA9D7";
+    // round-trip
+    //Tx hash AF4BB95DE86A640B90B2AF3C696EF26EFE7DD71864CC959D8030B448DD48E756
+    auto strTx = "12000022800000002400000001201b02a2618f6140000000014fb18068400000000000000a73210215a9ee08a4b4747e27f348365f93beb5897fa7e8776bedae2cb56917dcdbbf2f74473045022100f2ab61ec941462d692514bfddb00bc0d31ba7da66981193e67a04e90578c18b1022064a2375ecb5a68c22ee3038b783be6a9e1f2c882a8e8bbee43c4cfa93b536926811420237754a1727016188a1b7e52f2060f94339d128314dbc4ad4f38b60fa5624d0ddeddac209babbaa9d7";
     auto txBytes = hex::toByteArray(strTx);
     auto tx = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
-    EXPECT_EQ(tx->getHash(), "af4bb95de86a640b90b2af3c696ef26efe7dd71864cc959d8030b448dd48e756");
+
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getLedgerSequence()->intValue(), 44196239);
+    EXPECT_EQ(tx->getSequence()->intValue(), 1);
+    EXPECT_EQ(tx->getHash(), "af4bb95de86a640b90b2af3c696ef26efe7dd71864cc959d8030b448dd48e756");
+    EXPECT_EQ(tx->getSender()->toBase58(), "rsvAf4P8Tx6tBUdWPNesMngXDmbZ2LMVF8");
+    EXPECT_EQ(tx->getReceiver()->toBase58(), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
+    EXPECT_EQ(tx->getValue()->toLong(), 22000000L);
+    EXPECT_EQ(tx->getFees()->toLong(), 10L);
+}
+
+TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithMemo) {
+    // round-trip
+    // TX hash BB7B32E859BFA9B9620D62CD89057FD0E0E396416799FCFE71AEB9201372A130
+    auto strTx = "12000022800000002400000002201b02a096316140000000000186a068400000000000000c732102ed9b4f4e73ea076b90b62ebd4863e71edaf255df611d8268c32fef525a6aa72e74463044022074e53eb13b15cc9b876bbb752913a4aab6dfdb330e83110a54eb2f7eb128f51202205ccf6885a77b2c5af6d5132c1417338447226fce1509e223dfdad613f42748d581140d53c4229ab611e29d3207e87b8a5851b63487978314550fc62003e785dc231a1058a05e56e3f09cf4e6f9ea7c06636c69656e747d08726d2d312e322e34e1f1";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
+
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getLedgerSequence()->intValue(), 44078641);
+    EXPECT_EQ(tx->getSequence()->intValue(), 2);
+    EXPECT_EQ(tx->getHash(), "bb7b32e859bfa9b9620d62cd89057fd0e0e396416799fcfe71aeb9201372a130");
+    EXPECT_EQ(tx->getSender()->toBase58(), "rpD73CkdVDYNbpm6r7Cn2ug2C8ZqNVZeeG");
+    EXPECT_EQ(tx->getReceiver()->toBase58(), "r3kmLJN5D28dHuH8vZNUZpMC43pEHpaocV");
+    EXPECT_EQ(tx->getValue()->toLong(), 100000L);
+    EXPECT_EQ(tx->getFees()->toLong(), 12L);
+
+    auto memos = tx->getMemos();
+    EXPECT_EQ(memos.size(), 1);
+
+    auto memo = memos[0];
+
+    EXPECT_EQ(memo.data, "rm-1.2.4");
+    EXPECT_EQ(memo.ty,  "client");
 }

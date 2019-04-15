@@ -51,6 +51,13 @@ namespace ledger {
             if (_arrayDepth == 0) {
                 _hierarchy.push(_lastKey);
             }
+
+            if (_lastKey == "Memo") {
+                // add a new empty RippleLikeMemo to the transaction (it’ll be filled in later by
+                // the parser)
+                _transaction->memos.push_back(api::RippleLikeMemo());
+            }
+
             return true;
         }
 
@@ -165,6 +172,12 @@ namespace ledger {
                 } else if (_lastKey == "Fee") {
                     BigInt valueBigInt = BigInt::fromString(value);
                     _transaction->fees = value;
+                } else if (_lastKey == "MemoData" && !_transaction->memos.empty()) {
+                    _transaction->memos.back().data = value;
+                } else if (_lastKey == "MemoFormat" && !_transaction->memos.empty()) {
+                    _transaction->memos.back().fmt = value;
+                } else if (_lastKey == "MemoType" && !_transaction->memos.empty()) {
+                    _transaction->memos.back().ty = value;
                 }
                 return true;
             }

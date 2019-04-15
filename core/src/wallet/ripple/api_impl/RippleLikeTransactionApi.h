@@ -35,6 +35,7 @@
 #include <wallet/common/api_impl/OperationApi.h>
 #include <wallet/ripple/api_impl/RippleLikeBlockApi.h>
 
+#include <api/RippleLikeMemo.hpp>
 #include <api/RippleLikeTransaction.hpp>
 #include <api/Amount.hpp>
 #include <api/Currency.hpp>
@@ -67,6 +68,9 @@ namespace ledger {
             RippleLikeTransactionApi & setReceiver(const std::shared_ptr<api::RippleLikeAddress> &receiver);
             RippleLikeTransactionApi & setSigningPubKey(const std::vector<uint8_t> &pubKey);
             RippleLikeTransactionApi & setHash(const std::string &hash);
+            std::vector<api::RippleLikeMemo> getMemos() override;
+            void addMemo(api::RippleLikeMemo const& memo) override;
+
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<RippleLikeBlockApi> _block;
@@ -81,6 +85,7 @@ namespace ledger {
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;
             std::vector<uint8_t> _signingPubKey;
+            std::vector<api::RippleLikeMemo> _memos;
         };
     }
 }
