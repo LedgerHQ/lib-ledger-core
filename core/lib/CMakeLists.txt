@@ -5,6 +5,7 @@ include(ExternalProject)
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/leveldb")
 
+set(BOOST_INCLUDEDIR "${CMAKE_CURRENT_SOURCE_DIR}/../test/lib/boost/")
 include(ProjectSecp256k1)
 add_subdirectory(bigd)
 add_subdirectory(fmt)
