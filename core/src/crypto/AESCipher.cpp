@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include "AESCipher.hpp"
 #include "PBKDF2.hpp"
 #include "AES256.hpp"
@@ -56,6 +57,8 @@ namespace ledger {
 
                 // Create an IVt
                 auto IV = _rng->getRandomBytes(AES256::BLOCK_SIZE);
+                assert(IV.size() == AES256::BLOCK_SIZE);
+
                 // Encrypt
                 auto encrypted = AES256::encrypt(IV, _key, std::vector<uint8_t>(buffer, buffer + read));
                 // Store number of blocks

@@ -84,24 +84,38 @@ namespace ledger {
 
             /// Turn encryption on for all future uses.
             ///
-            /// Data already present in the preferences are not affected.
+            /// This method will set encryption on for all future values that will be persisted.
+            /// If this function is called on a plaintext storage (i.e. first encryption for
+            /// instance), it will also encrypt all data already present.
             void setEncryption(
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::string& password
             );
 
-            /// Turn off encryption.
+            /// Turn off encryption by disabling the use of the internal cipher. Data is left
+            /// untouched.
             ///
-            /// Data already present in the preferences are not affected.
+            /// This method is suitable when you want to get back raw, encrypted data. If you want
+            /// to disable encryption in order to read clear data back without password, consider
+            /// the resetEncryption method instead.
             void unsetEncryption();
 
-            // Reset the encryption with a new password by first decrypting on the
-            // fly with the old password.
-            void resetEncryption(
+            /// Reset the encryption with a new password by first decrypting on the
+            /// fly with the old password the data present.
+            ///
+            /// If the new password is an empty string, after this method is called, the database
+            /// is completely unciphered and no password is required to read from it.
+            ///
+            /// Return true if the reset occurred correctly, false otherwise (e.g. trying to change
+            /// password with an old password but without a proper salt already persisted).
+            bool resetEncryption(
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::string& oldPassword,
                 const std::string& newPassword
             );
+
+            /// Get encryption salt, if any.
+            std::string getEncryptionSalt();
 
             /// Clear all preferences.
             void clear();
@@ -111,6 +125,9 @@ namespace ledger {
             std::shared_ptr<leveldb::DB> _db;
             std::string _dbName;
             Option<AESCipher> _cipher;
+
+            // Get a raw entry from the key-value store.
+            optional<std::string> getRaw(const std::vector<uint8_t>& key) const;
 
             // Drop a database instance.
             void dropInstance(const std::string &path);

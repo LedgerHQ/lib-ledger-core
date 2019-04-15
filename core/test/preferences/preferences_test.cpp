@@ -230,9 +230,10 @@ TEST_F(PreferencesTest, IterateThroughObjectMembers) {
 }
 
 TEST_F(PreferencesTest, EncryptDecrypt) {
-    auto preferences = backend->getPreferences("my_test_preferences_encrypted");
+    auto preferences = backend->getPreferences("encrypt_decrypt");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
+    auto string_array = std::vector<std::string>{ "foo", "bar", "zoo" };
 
     backend->setEncryption(rng, password);
 
@@ -246,14 +247,17 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
         ->putStringArray("string_array", { "foo", "bar", "zoo" })
         ->commit();
 
+    ASSERT_EQ(preferences->getString("string", ""), "dawg");
+    ASSERT_EQ(preferences->getInt("int", 0), 9246);
+    ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
+    ASSERT_EQ(preferences->getStringArray("string_array", std::vector<std::string>()), string_array);
+
     // two things to test:
     //   1. disabling encryption should give us back unreadable data
     //   2. re-enabling encryption; the data should now be correctly read
 
     // (1.)
     backend->unsetEncryption();
-
-    auto string_array = std::vector<std::string>{ "foo", "bar", "zoo" };
 
     // boolean is not tested because its entropy is way too low
     ASSERT_NE(preferences->getString("string", ""), "dawg");
@@ -291,7 +295,7 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
 }
 
 TEST_F(PreferencesTest, ResetEncryption) {
-    auto preferences = backend->getPreferences("my_test_preferences_reencrypted");
+    auto preferences = backend->getPreferences("reset_encryption");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
 
@@ -308,19 +312,35 @@ TEST_F(PreferencesTest, ResetEncryption) {
     ASSERT_EQ(preferences->getInt("int", 0), 9246);
     ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
 
-    backend->resetEncryption(rng, password, "new password!");
+    auto reset = backend->resetEncryption(rng, password, "new password!");
 
+    ASSERT_TRUE(reset);
     ASSERT_EQ(preferences->getString("string", ""), "dawg");
     ASSERT_EQ(preferences->getInt("int", 0), 9246);
     ASSERT_EQ(preferences->getLong("long", 0), 89356493564);
 }
 
 TEST_F(PreferencesTest, Clear) {
-    auto preferences = backend->getPreferences("my_test_preferences_encrypted");
+    auto preferences = backend->getPreferences("clear");
 
     preferences->editor()->putString("string", "dawg")->commit();
     EXPECT_EQ(preferences->getString("string", ""), "dawg");
 
     preferences->editor()->clear();
     EXPECT_EQ(preferences->getString("string", "none"), "none");
+}
+
+// This test checks that when setting encryption on, already present values are encrypted as well
+// so that we can correctly retrieve them after encryption is set.
+TEST_F(PreferencesTest, RecryptClearValues) {
+    auto preferences = backend->getPreferences("recrypt_clear_values");
+    auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
+    auto password = std::string("v3ry_secr3t_p4sSw0rD");
+
+    // add a clear record and then turn encryption on
+    preferences->editor()->putString("string", "dawg")->commit();
+    backend->setEncryption(rng, password);
+
+    // now, reading the old value should be okay, too
+    EXPECT_EQ(preferences->getString("string", "none"), "dawg");
 }
