@@ -101,7 +101,7 @@ fi
 
 }
 
-export JAVA_HOME="/usr/lib/jvm/java-8-openjdk"
+export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
 export POLLY_ROOT=`pwd`/toolchains/polly
 ###
 # Clean
