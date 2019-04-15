@@ -1,6 +1,12 @@
-## 2.7.0 (on-going)
+## 2.8.0 (on-going)
 
-> ????/??/??
+> YYYY/MM/DD
+
+- Change std::experimental::optional to std::ledger_exp::optional
+
+## 2.7.0
+
+> 2019/04/15
 
 - Change encoding of passwords in the public interface (wallet pool). Passwords are not optional
   anymore. This means that:
