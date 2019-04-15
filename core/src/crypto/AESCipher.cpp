@@ -32,6 +32,7 @@
 #include "AESCipher.hpp"
 #include "PBKDF2.hpp"
 #include "AES256.hpp"
+#include <cassert>
 
 namespace ledger {
     namespace core {
