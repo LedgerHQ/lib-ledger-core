@@ -251,6 +251,11 @@ namespace ledger {
             return *this;
         }
 
+        EthereumLikeTransactionApi & EthereumLikeTransactionApi::setSender(const std::string &sender) {
+            _sender = EthereumLikeAddress::fromEIP55(sender, _currency);
+            return *this;
+        }
+
         
     }
 }
