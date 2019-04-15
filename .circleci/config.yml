@@ -6,7 +6,7 @@ dependencies:
 jobs:
   build_linux_release:
     docker:
-      - image: debian:buster
+      - image: debian:stretch
     working_directory: ~/lib-ledger-core
     steps:
       - run:
@@ -83,7 +83,7 @@ jobs:
             . .circleci/deploy.sh
   build_linux_debug:
       docker:
-        - image: debian:buster
+        - image: debian:stretch
       working_directory: ~/lib-ledger-core
       steps:
         - run:
