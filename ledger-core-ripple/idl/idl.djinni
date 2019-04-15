@@ -113,7 +113,7 @@ RippleLikeTransactionBuilder = interface +c {
 	setFees(fees: Amount): RippleLikeTransactionBuilder;
 
 	# Build a transaction from the given builder parameters.
-	build(callback: Callback<RippleLikeTransaction>);
+	build(callback: callback2<void, optional<RippleLikeTransaction>, optional<Error>>);
 
 	# Creates a clone of this builder.
 	# @return A copy of the current builder instance.
@@ -128,8 +128,8 @@ RippleLikeTransactionBuilder = interface +c {
 
 #Class representing a Ripple account
 RippleLikeAccount = interface +c {
-	broadcastRawTransaction(transaction: binary, callback: Callback<string>);
-	broadcastTransaction(transaction: RippleLikeTransaction, callback: Callback<string>);
+	broadcastRawTransaction(transaction: binary, callback: callback2<void, optional<string>, optional<Error>>);
+	broadcastTransaction(transaction: RippleLikeTransaction, callback: callback2<void, optional<string>, optional<Error>>);
 	buildTransaction(): RippleLikeTransactionBuilder;
 }
 
