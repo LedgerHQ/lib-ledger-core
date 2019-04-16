@@ -64,6 +64,8 @@ namespace ledger {
                 _data = tx.inputData;
                 _time = tx.receivedAt;
                 _operationType = operationType;
+
+                _blockHeight = tx.block.hasValue() ? tx.block.getValue().height : 0;
             }
 
             std::string ERC20LikeOperation::getHash() {
@@ -120,6 +122,10 @@ namespace ledger {
 
             int32_t ERC20LikeOperation::getStatus() {
                 return _status;
+            }
+
+            std::experimental::optional<int64_t> ERC20LikeOperation::getBlockHeight() {
+                return _blockHeight == 0 ? Option<int64_t>() : Option<int64_t>(_blockHeight);
             }
     }
 }

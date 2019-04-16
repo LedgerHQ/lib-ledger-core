@@ -86,6 +86,10 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_NE(erc20Accounts.size(), 0);
                 std::cout << "ERC20 Accounts: " << erc20Accounts.size() << std::endl;
 
+                auto erc20Ops = erc20Accounts[0]->getOperations();
+                EXPECT_NE(erc20Ops.size(), 0);
+                EXPECT_NE(erc20Ops[0]->getBlockHeight().value_or(0), 0);
+
                 auto transferData = erc20Accounts[0]->getTransferToAddressData(api::BigInt::fromLong(1), "0xA26FC743509C9f6A6969aD3FE6123327a4b78069");
                 std::cout<<" Transfer Data : "<<hex::toString(transferData)<<std::endl;
 
