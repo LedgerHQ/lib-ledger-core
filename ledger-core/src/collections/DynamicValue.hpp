@@ -32,13 +32,13 @@
 #ifndef LEDGER_CORE_DYNAMICVALUE_HPP
 #define LEDGER_CORE_DYNAMICVALUE_HPP
 
-#include "../api/DynamicType.hpp"
+#include <api/DynamicType.hpp>
 #include <boost/variant.hpp>
-#include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/archives/binary.hpp>
-#include <vector>
+#include <cereal/cereal.hpp>
 #include <utils/optional.hpp>
+#include <vector>
 
 namespace ledger {
     namespace core {

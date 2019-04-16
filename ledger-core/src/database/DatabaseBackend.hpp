@@ -32,10 +32,10 @@
 #ifndef LEDGER_CORE_DATABASEBACKEND_HPP
 #define LEDGER_CORE_DATABASEBACKEND_HPP
 
-#include "../api/DatabaseBackend.hpp"
+#include <api/DatabaseBackend.hpp>
+#include <api/PathResolver.hpp>
 #include <soci.h>
 #include <memory>
-#include "../api/PathResolver.hpp"
 
 namespace ledger {
     namespace core {

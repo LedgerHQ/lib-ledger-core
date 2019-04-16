@@ -1,0 +1,19 @@
+# Enum of different event codes.
+EventCode = enum {
+    # An unknown event code.
+    undefined;
+
+    # A new operation event.
+    new_operation;
+    # A new block event.
+    new_block;
+
+    # Event emitted when a wallet synchronization started.
+    synchronization_started;
+    # Event emitted when a wallet synchronization failed.
+    synchronization_failed;
+    # Event emitted when a wallet synchronization succeeded.
+    synchronization_succeed;
+    # Event emitted when a wallet synchronization succeeded on the previously empty account.
+    synchronization_succeed_on_previously_empty_account;
+}

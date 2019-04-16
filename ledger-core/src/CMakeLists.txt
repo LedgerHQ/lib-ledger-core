@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.12)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(ANDROID_CPP_FEATURES exceptions)
 

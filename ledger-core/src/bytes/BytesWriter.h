@@ -33,8 +33,8 @@
 
 #include <cstdio>
 #include <vector>
-#include "../utils/endian.h"
-#include "../math/BigInt.h"
+#include <math/BigInt.h>
+#include <utils/endian.h>
 
 namespace ledger {
     namespace core {

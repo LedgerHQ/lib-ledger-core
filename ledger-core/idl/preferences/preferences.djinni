@@ -1,0 +1,76 @@
+# Interface for accessing and modifying custom preferences. Preferences are key - value data which will be persisted to
+# the filesystem. They can be local or stored with the Ledger API backend (encrypted by a user secret). This can be used to
+# attach application data to the libledger-core modules (i.e. a wallet pool, a wallet, an account, an operation). This interface
+# is highly inspired by Android SharedPreferences.
+Preferences = interface +c {
+    # Retrieves the value associated with the given key or fallback to the default value.
+    # @return The data associated with the key or fallbackValue.
+    getString(key: string, fallbackValue: string): string;
+    # Retrieves the value associated with the given key or fallback to the default value.
+    # @return The data associated with the key or fallbackValue.
+    getInt(key: string, fallbackValue: i32): i32;
+    # Retrieves the value associated with the given key or fallback to the default value.
+    # @return The data associated with the key or fallbackValue.
+    getLong(key: string, fallbackValue: i64): i64;
+    # Retrieves the value associated with the given key or fallback to the default value.
+    # @return The data associated with the key or fallbackValue.
+    getBoolean(key: string, fallbackValue: bool): bool;
+    # Retrieves the value associated with the given key or fallback to the default value.
+    # @return The data associated with the key or fallbackValue.
+    getStringArray(key: string, fallbackValue: list<string>): list<string>;
+    # Retrieves the value associated with the given key or fallback to the default value.
+    # @return The data associated with the key or fallbackValue.
+    getData(key: string, fallbackValue: binary): binary;
+    # Checks whether the Preferences contains the given key.
+    # @return true the preferences contains the key, false otherwise.
+    contains(key: string): bool;
+
+    # Get a preferences editor in order to add/modify/remove data.
+    # @return An interface for editting preferences.
+    edit(): PreferencesEditor;
+}
+
+# Interface for editting Preferences. All changes to the editor are persisted to the disk only when comitted.
+PreferencesEditor = interface +c {
+    # Sets the value to the given key in the Preferences.
+    # @param key The data key.
+    # @param value The value to store
+    # @return The reference of self in order to chain the call to the editor.
+    putString(key: string, value: string): PreferencesEditor;
+    # Sets the value to the given key in the Preferences.
+    # @param key The data key.
+    # @param value The value to store
+    # @return The reference of self in order to chain the call to the editor.
+    putInt(key: string, value: i32): PreferencesEditor;
+    # Sets the value to the given key in the Preferences.
+    # @param key The data key.
+    # @param value The value to store
+    # @return The reference of self in order to chain the call to the editor.
+    putLong(key: string, value: i64): PreferencesEditor;
+    # Sets the value to the given key in the Preferences.
+    # @param key The data key.
+    # @param value The value to store
+    # @return The reference of self in order to chain the call to the editor.
+    putBoolean(key: string, value: bool): PreferencesEditor;
+    # Sets the value to the given key in the Preferences.
+    # @param key The data key.
+    # @param value The value to store
+    # @return The reference of self in order to chain the call to the editor.
+    putStringArray(key: string, value: list<string>): PreferencesEditor;
+    # Sets the value to the given key in the Preferences.
+    # @param key The data key.
+    # @param value The value to store
+    # @return The reference of self in order to chain the call to the editor.
+    putData(key: string, value: binary): PreferencesEditor;
+
+    # Removes the data associated with the given key.
+    # @param key The key to remove from the Preferences
+    # @return The reference of self in order to chain the call to the editor.
+    remove(key: string): PreferencesEditor;
+
+    # Persists the changes to the Preferences.
+    commit();
+
+    # Clear all preferences.
+    clear();
+}

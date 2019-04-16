@@ -31,15 +31,15 @@
 #ifndef LEDGER_CORE_DYNAMICOBJECT_HPP
 #define LEDGER_CORE_DYNAMICOBJECT_HPP
 
-#include "../api/DynamicArray.hpp"
-#include "../api/DynamicObject.hpp"
-#include "../api/DynamicType.hpp"
+#include <api/DynamicArray.hpp>
+#include <api/DynamicObject.hpp>
+#include <api/DynamicType.hpp>
 #include <cereal/cereal.hpp>
-#include "../collections/collections.hpp"
-#include "DynamicValue.hpp"
-#include "DynamicArray.hpp"
 #include <cereal/types/map.hpp>
 #include <cereal/types/unordered_map.hpp>
+#include <collections/collections.hpp>
+#include <collections/DynamicValue.hpp>
+#include <collections/DynamicArray.hpp>
 
 namespace ledger {
     namespace core {
