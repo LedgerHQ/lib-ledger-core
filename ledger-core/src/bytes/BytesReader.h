@@ -31,11 +31,11 @@
 #ifndef LEDGER_CORE_BYTESREADER_H
 #define LEDGER_CORE_BYTESREADER_H
 
-#include <cstdint>
 #include <array>
+#include <cstdint>
+#include <ledger-core.h>
+#include <math/BigInt.h>
 #include <vector>
-#include "../math/BigInt.h"
-#include "../ledger-core.h"
 
 namespace ledger {
 

@@ -28,7 +28,7 @@ function generate_core_interface {
         --cpp-out $CORE_API_DIR \
         --cpp-namespace ledger::core::api \
         --cpp-optional-template std::experimental::optional \
-        --cpp-optional-header "\"$CORE_DIR/core/src/utils/optional.hpp\"" \
+        --cpp-optional-header "<utils/optional.hpp>" \
         --export-header-name libcore_export \
         --yaml-out $CORE_IDL_DIR \
         --yaml-out-file core.yaml \
