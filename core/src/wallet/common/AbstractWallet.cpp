@@ -162,7 +162,7 @@ namespace ledger {
             return _uid;
         }
 
-        std::shared_ptr<DynamicObject> AbstractWallet::getConfiguration() const {
+        std::shared_ptr<DynamicObject> AbstractWallet::getConfig() const {
             return _configuration;
         }
 
@@ -354,6 +354,10 @@ namespace ledger {
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
 
+        }
+
+        std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
+            return getConfig();
         }
 
     }

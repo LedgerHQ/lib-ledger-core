@@ -7,6 +7,7 @@
 @import "../ethereum/ethereum_like_wallet.djinni"
 @import "../../bitcoin/addresses.djinni"
 @import "currency.djinni"
+@import "../../collections/dynamic.djinni"
 
 # Class of synchronization status constants.
 SynchronizationStatus = interface +c {
@@ -439,4 +440,6 @@ Wallet = interface +c {
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
     eraseDataSince(date: date, callback: Callback<ErrorCode>);
+    # Return wallet's configuration
+    getConfiguration(): DynamicObject;
 }

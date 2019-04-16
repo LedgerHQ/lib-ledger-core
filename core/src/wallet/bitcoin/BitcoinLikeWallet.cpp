@@ -116,7 +116,7 @@ namespace ledger {
                                                                       info.publicKeys[secondOccurence],
                                                                       info.chainCodes[secondOccurence],
                                                                       info.derivations[secondOccurence],
-                                                                      self->getConfiguration());
+                                                                      self->getConfig());
                     result.owners.push_back(*ownersIterator);
                     result.derivations.push_back(info.derivations[secondOccurence]);
                     result.extendedKeys.push_back(xpub->toBase58());
@@ -140,7 +140,7 @@ namespace ledger {
                 auto keychain = self->_keychainFactory->build(
                         index,
                         xpubPath,
-                        getConfiguration(),
+                        getConfig(),
                         info,
                         getAccountInternalPreferences(index),
                         getCurrency()
@@ -219,7 +219,7 @@ namespace ledger {
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfiguration(), entry.xpub,
+            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.xpub,
             getAccountInternalPreferences(entry.index), getCurrency());
             return std::make_shared<BitcoinLikeAccount>(shared_from_this(),
                                                         entry.index,
