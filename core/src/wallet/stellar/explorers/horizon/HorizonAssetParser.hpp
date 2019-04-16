@@ -1,9 +1,8 @@
 /*
  *
- * StellarLikeWalletFactory.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 21/02/2019.
+ * Created by Pierre Pollastri.
  *
  * The MIT License (MIT)
  *
@@ -29,26 +28,36 @@
  *
  */
 
-#ifndef LEDGER_CORE_STELLARLIKEWALLETFACTORY_HPP
-#define LEDGER_CORE_STELLARLIKEWALLETFACTORY_HPP
-
-#include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/stellar/explorers/StellarLikeBlockchainExplorer.hpp>
+#include <rapidjson/reader.h>
+#include <wallet/stellar/stellar.hpp>
 
 namespace ledger {
     namespace core {
-        class StellarLikeWalletFactory : public AbstractWalletFactory {
+
+        class HorizonAssetParser {
         public:
-            StellarLikeWalletFactory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
-            std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
+            typedef stellar::Asset Result;
+            HorizonAssetParser(std::string& lastKey) : _lastKey(lastKey) {};
+            bool Null();
+            bool Bool(bool b);
+            bool Int(int i);
+            bool Uint(unsigned i);
+            bool Int64(int64_t i);
+            bool Uint64(uint64_t i);
+            bool Double(double d);
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+            bool StartObject();
+            bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy);
+            bool EndObject(rapidjson::SizeType memberCount);
+            bool StartArray();
+            bool EndArray(rapidjson::SizeType elementCount);
+            void init(stellar::Asset *asset);
 
-        protected:
-            inline std::shared_ptr<api::ExecutionContext> getContext(const WalletDatabaseEntry& entry);
-
-            std::shared_ptr<StellarLikeBlockchainExplorer> getExplorer(const WalletDatabaseEntry& entry);
+        private:
+            std::string& _lastKey;
+            stellar::Asset* _asset;
         };
+
     }
 }
-
-
-#endif //LEDGER_CORE_STELLARLIKEWALLETFACTORY_HPP

@@ -34,6 +34,7 @@
 #include "StellarLikeKeychainFactory.hpp"
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
+#include <api/StellarConfiguration.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -59,7 +60,7 @@ namespace ledger {
             params.keychainFactory = std::make_shared<StellarLikeKeychainFactory>();
 
             // Configure explorer
-
+            params.blockchainExplorer = getExplorer(entry);
             // Configure observer
 
             // Configure synchronizer
@@ -77,9 +78,14 @@ namespace ledger {
             auto engine = STRING(api::StellarConfiguration::BLOCKCHAIN_EXPLORER_ENGINE, api::StellarConfiguration::HORIZON_EXPLORER_ENGINE);
             std::shared_ptr<StellarLikeBlockchainExplorer> explorer;
             if (engine == api::StellarConfiguration::HORIZON_EXPLORER_ENGINE) {
-
+                //engine = std::make_shared<HorizonBlockchainExplorer>(
+                //                                                      getPool()->getDispatcher()->getSerialExecutionContext("stellar"));
             }
             return explorer;
+        }
+
+        inline std::shared_ptr<api::ExecutionContext> StellarLikeWalletFactory::getContext(const WalletDatabaseEntry& entry) {
+            return getPool()->getDispatcher()->getSerialExecutionContext(fmt::format("stellar:{}", entry.name));
         }
 
     }

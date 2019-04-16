@@ -35,12 +35,14 @@
 #include <api/StellarLikeWallet.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/stellar/factories/StellarLikeKeychainFactory.hpp>
+#include <wallet/stellar/explorers/StellarLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {
 
         struct StellarLikeWalletParams {
             std::shared_ptr<StellarLikeKeychainFactory> keychainFactory;
+            std::shared_ptr<StellarLikeBlockchainExplorer> blockchainExplorer;
         };
 
         class StellarLikeWallet : public virtual api::StellarLikeWallet, public virtual AbstractWallet {

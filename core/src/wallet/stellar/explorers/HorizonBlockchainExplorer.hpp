@@ -35,17 +35,19 @@
 
 namespace ledger {
     namespace core {
-        class HorizonBlockchainExplorer : public StellarLikeBlockchainExplorer, std::enable_shared_from_this<HorizonBlockchainExplorer> {
+        class HorizonBlockchainExplorer : public StellarLikeBlockchainExplorer, public std::enable_shared_from_this<HorizonBlockchainExplorer> {
         public:
             HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                       const std::shared_ptr<HttpClient>& http,
                                       const std::shared_ptr<api::DynamicObject>& configuration);
-             // Future<Option<stellar::Asset>> getAsset(const std::string& assetCode) override;
-             // Future<Option<stellar::Ledger>> getLastLedger() override;
-             // Future<BigInt> getRecommendedFees() override;
-             // Future<std::vector<stellar::Operation>> getOperations(const std::string& address, const Option<std::string>& cursor) override;
-             // Future<std::vector<stellar::Transaction>> getTransactions(const std::string& address, const Option<std::string>& cursor) override;
-       };
+            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string& assetCode)  override;
+            virtual Future<Option<std::shared_ptr<stellar::Ledger>>> getLastLedger()  override;
+            virtual FuturePtr<BigInt> getRecommendedFees()  override;
+            virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string& address, const Option<std::string>& cursor)  override;
+            virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(
+                                                                                               const std::string& address,
+                                                                                               const Option<std::string>& cursor)  override;
+        };
     }
 }
 

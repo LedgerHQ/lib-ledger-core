@@ -69,7 +69,7 @@ namespace ledger {
             FuturePtr<TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
                             Option<std::string> fromBlockHash = Option<std::string>(),
-                            Option<void *> session = Option<void *>()) oBverride;
+                            Option<void *> session = Option<void *>()) override;
 
             FuturePtr<Block> getCurrentBlock() const override;
 
