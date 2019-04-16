@@ -23,3 +23,18 @@
 [submodule "core/lib/fmt"]
     path = core/lib/fmt
     url = https://github.com/fmtlib/fmt.git
+[submodule "ledger-core/lib/spdlog"]
+    path = ledger-core/lib/spdlog
+    url = https://github.com/gabime/spdlog.git
+[submodule "ledger-core/lib/leveldb"]
+    path = ledger-core/lib/leveldb
+    url = https://github.com/LedgerHQ/leveldb.git
+[submodule "ledger-core/lib/ethash"]
+    path = ledger-core/lib/ethash
+    url = https://github.com/LedgerHQ/ethash.git
+[submodule "ledger-core/test/lib/googletest"]
+    path = ledger-core/test/lib/googletest
+    url = https://github.com/google/googletest.git
+[submodule "ledger-core/lib/fmt"]
+    path = ledger-core/lib/fmt
+    url = https://github.com/fmtlib/fmt.git
