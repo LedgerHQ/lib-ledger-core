@@ -45,6 +45,7 @@
 #include <api/BitcoinLikePickingStrategy.hpp>
 #include <api/BitcoinLikeTransactionRequest.hpp>
 #include <api/BitcoinLikePreparedTransaction.hpp>
+#include <api/BigIntListCallback.hpp>
 #include <wallet/bitcoin/types.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
 
@@ -136,6 +137,7 @@ namespace ledger {
 
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
 
+            void getFees(const std::shared_ptr<api::BigIntListCallback> & callback) override ;
         protected:
             bool checkIfWalletIsEmpty();
 

@@ -29,8 +29,9 @@
  *
  */
 
+#include <api/ErrorCode.hpp>
 #include "LedgerApiBitcoinLikeBlockchainExplorer.hpp"
-
+#include <api_impl/BigIntImpl.hpp>
 namespace ledger {
     namespace core {
 
@@ -103,6 +104,31 @@ namespace ledger {
 
         std::string LedgerApiBitcoinLikeBlockchainExplorer::getExplorerVersion() const {
             return _explorerVersion;
+        }
+
+        Future<std::vector<std::shared_ptr<api::BigInt>>> LedgerApiBitcoinLikeBlockchainExplorer::getFees() {
+            bool parseNumbersAsString = true;
+            auto networkId = getNetworkParameters().Identifier;
+            return _http->GET(fmt::format("/blockchain/{}/{}/fees", getExplorerVersion(), networkId))
+                    .json(parseNumbersAsString).map<std::vector<std::shared_ptr<api::BigInt>>>(getExplorerContext(), [networkId] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
+                        if (!json.IsObject()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get fees for {}", networkId);
+                        }
+
+                        // Here we filter fields returned by this endpoint,
+                        // if the field's key is a number (number of confirmations) then it's an acceptable fee
+                        auto isValid = [] (const std::string &field) -> bool {
+                            return !field.empty() && std::find_if(field.begin(), field.end(), [](char c) { return !std::isdigit(c); }) == field.end();
+                        };
+                        std::vector<std::shared_ptr<api::BigInt>> fees;
+                        for (auto& item : json.GetObject()) {
+                            if (item.name.IsString() && item.value.IsString() && isValid(item.name.GetString())){
+                                fees.push_back(std::make_shared<api::BigIntImpl>(BigInt::fromString(item.value.GetString())));
+                            }
+                        }
+                        return fees;
+                    });
         }
 
     }

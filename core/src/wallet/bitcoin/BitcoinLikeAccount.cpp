@@ -702,5 +702,9 @@ namespace ledger {
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
         }
 
+        void BitcoinLikeAccount::getFees(const std::shared_ptr<api::BigIntListCallback> & callback) {
+            return _explorer->getFees().callback(getContext(), callback);;
+        }
+
     }
 }
