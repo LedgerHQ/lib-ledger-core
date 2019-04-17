@@ -126,6 +126,14 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactions) {
     EXPECT_TRUE(result->transactions.size() > 0);
 }
 
+TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetFees) {
+    auto result = wait(explorer->getFees());
+    EXPECT_NE(result.size(), 0);
+    if (result.size() > 1) {
+        EXPECT_GE(result[0], result[1]);
+    }
+}
+
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, EndSession) {
     auto session = wait(explorer->startSession());
     EXPECT_EQ(((std::string *) session)->size(), 36);

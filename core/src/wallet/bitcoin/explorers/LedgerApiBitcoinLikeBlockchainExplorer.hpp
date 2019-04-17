@@ -80,6 +80,7 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> getExplorerContext() const override;
             api::BitcoinLikeNetworkParameters getNetworkParameters() const override;
             std::string getExplorerVersion() const override;
+            Future<std::vector<std::shared_ptr<api::BigInt>>> getFees() override;
         private:
             api::BitcoinLikeNetworkParameters _parameters;
             std::string _explorerVersion;
