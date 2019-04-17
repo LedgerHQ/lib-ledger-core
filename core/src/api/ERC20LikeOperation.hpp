@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_ERC20LIKEOPERATION_HPP
 #define DJINNI_GENERATED_ERC20LIKEOPERATION_HPP
 
+#include "../utils/optional.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -65,6 +66,12 @@ public:
 
     /** Get opration status : pending or confirmed. */
     virtual int32_t getStatus() = 0;
+
+    /**
+     * Get block height on which operation was included.
+     * @return Optional 64-bit integer, height of block in which operation was validated
+     */
+    virtual std::experimental::optional<int64_t> getBlockHeight() = 0;
 };
 
 } } }  // namespace ledger::core::api
