@@ -444,7 +444,9 @@ namespace ledger {
                     tx->setGasLimit(request.gasLimit);
                     tx->setGasPrice(request.gasPrice);
                     tx->setReceiver(request.toAddress);
-                    return explorer->getNonce(self->getKeychain()->getAddress()->toString()).map<std::shared_ptr<api::EthereumLikeTransaction>>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) -> std::shared_ptr<api::EthereumLikeTransaction> {
+                    auto accountAddress = self->getKeychain()->getAddress()->toString();
+                    tx->setSender(accountAddress);
+                    return explorer->getNonce(accountAddress).map<std::shared_ptr<api::EthereumLikeTransaction>>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) -> std::shared_ptr<api::EthereumLikeTransaction> {
                         tx->setNonce(nonce);
                         return tx;
                     });

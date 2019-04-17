@@ -70,6 +70,7 @@ namespace ledger {
             EthereumLikeTransactionApi & setData(const std::vector<uint8_t> &data);
             EthereumLikeTransactionApi & setStatus(int32_t status);
             EthereumLikeTransactionApi & setReceiver(const std::string &receiver);
+            EthereumLikeTransactionApi & setSender(const std::string &sender);
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<EthereumLikeBlockApi> _block;

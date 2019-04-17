@@ -122,7 +122,7 @@ namespace ledger {
                 auto keychain = self->_keychainFactory->build(
                         index,
                         xpubPath,
-                        getConfiguration(),
+                        getConfig(),
                         info,
                         getAccountInternalPreferences(index),
                         getCurrency()
@@ -200,7 +200,7 @@ namespace ledger {
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfiguration(), entry.address,
+            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
             return std::make_shared<EthereumLikeAccount>(shared_from_this(),
                                                         entry.index,

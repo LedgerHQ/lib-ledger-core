@@ -10,9 +10,17 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**
+ * A ripple memo.
+ *
+ * <https://developers.ripple.com/transaction-common-fields.html#memos-field>
+ */
 struct RippleLikeMemo final {
+    /** Data carried by the memo. */
     std::string data;
+    /** Format of the memo. */
     std::string fmt;
+    /** Type of the memo. */
     std::string ty;
 
     RippleLikeMemo(std::string data_,

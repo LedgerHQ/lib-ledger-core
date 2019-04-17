@@ -65,6 +65,9 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xfb98bdd04d82648f25e67041d6e27a866bec0b47");
     auto f = builder->build();
     auto tx = ::wait(f);
+    auto addressList = ::wait(account->getFreshPublicAddresses());
+    EXPECT_EQ(addressList.size(), 1);
+    EXPECT_EQ(addressList[0]->toString(), tx->getSender()->toEIP55());
     auto serializedTx = tx->serialize();
     auto parsedTx = EthereumLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
     auto serializedParsedTx = parsedTx->serialize();

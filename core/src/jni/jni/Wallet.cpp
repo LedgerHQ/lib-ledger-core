@@ -9,6 +9,7 @@
 #include "BitcoinLikeWallet.hpp"
 #include "BlockCallback.hpp"
 #include "Currency.hpp"
+#include "DynamicObject.hpp"
 #include "ErrorCodeCallback.hpp"
 #include "EventBus.hpp"
 #include "ExtendedKeyAccountCreationInfo.hpp"
@@ -278,6 +279,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1eraseDa
         ref->eraseDataSince(::djinni::Date::toCpp(jniEnv, j_date),
                             ::djinni_generated::ErrorCodeCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1getConfiguration(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        auto r = ref->getConfiguration();
+        return ::djinni::release(::djinni_generated::DynamicObject::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated
