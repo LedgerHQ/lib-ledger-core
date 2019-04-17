@@ -32,6 +32,7 @@
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
 #include <set>
+#include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
@@ -230,5 +231,30 @@ TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
 
             dispatcher->waitUntilStopped();
         }
+    }
+}
+
+TEST_F(BitcoinLikeWalletSynchronization, BTCParsingAndSerialization) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("testnet_wallet", "bitcoin", DynamicObject::newInstance()));
+    {
+        auto strTx = "0100000001c76ec87ab18aa0398a2cbfa68625576fdc3bf276b467fc016010ad675678157d010000006b483045022100e0c4a6449841f4a435b23dc2cd4a6c26a8e12e25783dbd02072332c794012ca202202246876625e726ef9a89f854d59d2aee1787c9807d82d953732e56dbc296657001210212b8ae5848c5ce1422643aed011c9b1cbb7da9a5feba0cad0c130a11e8c4091dffffffff02400d03000000000017a914b800848ce7130e91d55422e1f3d72e813dc250e187b9dc2b00000000001976a9140265b33d266d56c25416d493ccb42992faa3f24a88ac00000000";
+        auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
+        EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+    }
+}
+
+TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("testnet_wallet", "stealthcoin", DynamicObject::newInstance()));
+    {
+        auto strTx = "01000000ae71115b01f9d2e90eef51048962392b2ac2cbe476aacb06d750e0794aeb5da5a2afaf19da000000006b483045022100be2faab00cc32a4f6f0249d70f3b6d1fc66bf50dcd6ae011d0287a4a581e5c7a02203cd71132619de1e8a1a84c481529f32d4e29b495f835d5b0da7655203a0a7dda01210269568d231762330f7aed9cf0acfb2512f2d7889eb18adb778589ab5cca66fb3dffffffff0200127a00000000001976a914b4949cd1e6c07826ceee84929a7c6babcccc5ec388ac6094b500000000001976a91417cb2228c292d617f98f4b89b448650e0a480e0788ac00000000";
+        auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
+        EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+    }
+    {
+        auto strTx = "020000000182e7df21c65cf7e3639317a49574ba258379a2b5441fbde9e0f62155721b108301000000494830450221009e07fe210eac41865fe249ae1133162309f73d3ce27c1ebabc64cc2f3bd8beaa02201a47870fb4f706852eab758e25d5d32a0c021ed1b22ecf793b6e0aaa26ee34a901ffffffff02000000000000000000e230922c000000002321037b513a37787fcc91f78f667c3dbf7d22576cfcc4e533c33f243a21f5dcc3d89eac00000000";
+        auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
+        EXPECT_EQ(hex::toString(tx->serialize()), strTx);
     }
 }

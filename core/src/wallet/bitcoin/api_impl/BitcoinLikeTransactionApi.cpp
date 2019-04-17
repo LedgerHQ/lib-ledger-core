@@ -48,6 +48,7 @@ namespace ledger {
                                                              uint64_t currentBlockHeight) :
                 _currency(currency), _isSegwit(isSegwit), _currentBlockHeight(currentBlockHeight) {
             _version = 1;
+            _params = currency.bitcoinLikeNetworkParameters.value();
             _writable = true;
         }
 
@@ -138,7 +139,7 @@ namespace ledger {
         }
 
         optional<std::vector<uint8_t>> BitcoinLikeTransactionApi::getWitness() {
-            bool isDecred =  _currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr";
+            bool isDecred =  _params.Identifier == "dcr";
             BytesWriter witness;
 
             //Decred has a special witness with nb of witnesses and no stack size,
@@ -175,8 +176,10 @@ namespace ledger {
         }
 
         api::EstimatedSize BitcoinLikeTransactionApi::getEstimatedSize() {
-            return estimateSize(getInputs().size(), getOutputs().size(),
-                                _currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, _isSegwit);
+            return estimateSize(getInputs().size(),
+                                getOutputs().size(),
+                                _params.UsesTimestampedTransaction,
+                                _isSegwit);
         }
 
         bool BitcoinLikeTransactionApi::isWriteable() const {
@@ -243,6 +246,8 @@ namespace ledger {
 
         BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setVersion(uint32_t version) {
             _version = version;
+            // Update params
+            _params = networks::getNetworkParameters(_currency.name, _version);
             return *this;
         }
 
@@ -262,8 +267,7 @@ namespace ledger {
         }
 
         void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {
-
-            auto &additionalBIPs = _currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
+            auto &additionalBIPs = _params.AdditionalBIPs;
             auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
             auto zipParameters = _currentBlockHeight > networks::ZIP_SAPLING_PARAMETERS.blockHeight ?
                                  networks::ZIP_SAPLING_PARAMETERS : networks::ZIP143_PARAMETERS;
@@ -286,7 +290,7 @@ namespace ledger {
                 writer.writeLeValue<int32_t>(_version);
             }
 
-            if (_currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction) {
+            if (_params.UsesTimestampedTransaction) {
                 auto ts = getTimestamp();
                 if (!ts)
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing transaction timestamp");
@@ -314,7 +318,7 @@ namespace ledger {
                 writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
 
                 //Decred has only a tree field
-                if (_currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr") {
+                if (_params.Identifier == "dcr") {
                     writer.writeByteArray({0x00});
                     writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
                     return;
@@ -353,7 +357,7 @@ namespace ledger {
                 writer.writeLeValue<uint64_t>(static_cast<const uint64_t>(output->getValue()->toLong()));
 
                 //Decred has a version of script
-                if (_currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr") {
+                if (_params.Identifier == "dcr") {
                     writer.writeByteArray({0x00, 0x00});
                 }
 
@@ -365,7 +369,7 @@ namespace ledger {
 
         void BitcoinLikeTransactionApi::serializeEpilogue(BytesWriter &writer) {
             auto witness = getWitness();
-            auto isDecred =  _currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr";
+            auto isDecred =  _params.Identifier == "dcr";
 
             //Decred has witness after lockTime
             if (!isDecred) {
@@ -376,7 +380,7 @@ namespace ledger {
 
             //TODO: activate when LedgerJS not adding expiryHeight and extraData to transaction
             /*
-            auto &additionalBIPs = _currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
+            auto &additionalBIPs = _params.AdditionalBIPs;
             auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
             if (it != additionalBIPs.end() && _currentBlockHeight > networks::ZIP143_PARAMETERS.blockHeight) {
                 //TODO: Feature request: set Expiry height
@@ -417,17 +421,14 @@ namespace ledger {
                                                        const std::vector<uint8_t> &rawTransaction,
                                                        std::experimental::optional<int32_t> currentBlockHeight,
                                                        bool isSigned) {
-
-            auto isDecred = currency.bitcoinLikeNetworkParameters.value().Identifier == "dcr";
-            HashAlgorithm hashAlgorithm(currency.bitcoinLikeNetworkParameters.value().Identifier);
-
             BytesReader reader(rawTransaction);
-
             // Parse version
             auto version = reader.readNextLeUint();
-
+            auto params = networks::getNetworkParameters(currency.name, version);
+            auto isDecred = params.Identifier == "dcr";
+            HashAlgorithm hashAlgorithm(params.Identifier);
             //Parse additionalBIPs if there are any
-            auto &additionalBIPs = currency.bitcoinLikeNetworkParameters.value().AdditionalBIPs;
+            auto &additionalBIPs = params.AdditionalBIPs;
             auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
             auto zipParameters = currentBlockHeight.value_or(0) > networks::ZIP_SAPLING_PARAMETERS.blockHeight ?
                                  networks::ZIP_SAPLING_PARAMETERS : networks::ZIP143_PARAMETERS;
@@ -442,7 +443,7 @@ namespace ledger {
             }
 
             // Parse timestamp
-            auto usesTimeStamp = currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction;
+            auto usesTimeStamp = params.UsesTimestampedTransaction;
             uint32_t timeStamp = 0;
             if (usesTimeStamp) {
                 timeStamp = reader.readNextLeUint();
@@ -490,13 +491,16 @@ namespace ledger {
                             //Get address from signed script
                             auto sigSize = localReader.readNextVarInt();
                             auto sig = localReader.read(sigSize);
-                            auto pubKeySize = localReader.readNextVarInt();
-                            auto pubKey = localReader.read(pubKeySize);
-                            pubKeys.push_back(pubKey);
-                            BitcoinLikeAddress localAddress(currency,
-                                                            HASH160::hash(pubKey, hashAlgorithm),
-                                                            api::KeychainEngines::BIP32_P2PKH);
-                            address = localAddress.toBase58();
+                            // For example XST, sometimes does not have pubKey in signature ... (e.g. 6a1e7109ce7cae649c2f79200c946622f97ea6c86b2366cbbb7a512acdb3c1c2)
+                            if (scriptSize - sigSize > 1) {
+                                auto pubKeySize = localReader.readNextVarInt();
+                                auto pubKey = localReader.read(pubKeySize);
+                                pubKeys.push_back(pubKey);
+                                BitcoinLikeAddress localAddress(currency,
+                                                                HASH160::hash(pubKey, hashAlgorithm),
+                                                                api::KeychainEngines::BIP32_P2PKH);
+                                address = localAddress.toBase58();
+                            }
                             output.script = hex::toString(scriptSig);
                         } else if (isSigned && isSegwit && !scriptSig.empty()) {
                             //Get address from redeem script
@@ -596,7 +600,7 @@ namespace ledger {
 
                           auto publicKeyHash160 = HASH160::hash(pubKey);
                           script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
-                          BitcoinLikeAddress address(currency, HASH160::hash(script), currency.bitcoinLikeNetworkParameters.value().P2SHVersion);
+                          BitcoinLikeAddress address(currency, HASH160::hash(script), _params.P2SHVersion);
                           preparedInputs[index].output.address = address.toBase58();
                          */
                         //Get script sig
