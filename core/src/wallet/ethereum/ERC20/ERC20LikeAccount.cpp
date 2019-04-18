@@ -145,7 +145,6 @@ namespace ledger {
                     return balance + value;
 
                 case api::OperationType::SEND:
-                default:
                     return balance - value;
             }
         }
