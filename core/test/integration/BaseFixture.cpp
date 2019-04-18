@@ -107,10 +107,10 @@ void BaseFixture::TearDown() {
     resolver->clean();
 }
 
-std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
+std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolName, const std::string &password) {
     return WalletPool::newInstance(
             poolName,
-            "test",
+            password,
             http,
             ws,
             resolver,

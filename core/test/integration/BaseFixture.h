@@ -88,7 +88,7 @@ class BaseFixture : public ::testing::Test {
 public:
     void SetUp() override;
     void TearDown() override;
-    std::shared_ptr<WalletPool> newDefaultPool(std::string poolName = "my_ppol");
+    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "my_ppol", const std::string &password = "test");
     void createWallet(const std::shared_ptr<WalletPool>& pool,
                       const std::string& walletName,
                       const std::string& currencyName,
