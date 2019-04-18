@@ -41,9 +41,9 @@
 
 namespace ledger {
     namespace core {
-        using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<EthereumLikeBlockchainExplorerTransaction, EthereumLikeBlockchainExplorer::TransactionsBulk, EthereumLikeTransactionsParser, EthereumLikeTransactionsBulkParser, EthereumLikeBlockParser, api::EthereumLikeNetworkParameters>;
+        using LedgerApiEthBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<EthereumLikeBlockchainExplorerTransaction, EthereumLikeBlockchainExplorer::TransactionsBulk, EthereumLikeTransactionsParser, EthereumLikeTransactionsBulkParser, EthereumLikeBlockParser, api::EthereumLikeNetworkParameters>;
         class LedgerApiEthereumLikeBlockchainExplorer : public EthereumLikeBlockchainExplorer,
-                                                        public LedgerApiBlockchainExplorer,
+                                                        public LedgerApiEthBlockchainExplorer,
                                                         public DedicatedContext,
                                                         public std::enable_shared_from_this<LedgerApiEthereumLikeBlockchainExplorer>{
         public:
@@ -53,6 +53,8 @@ namespace ledger {
                                            const std::shared_ptr<api::DynamicObject>& configuration);
             Future<std::shared_ptr<BigInt>> getNonce(const std::string &address) override;
             Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) override;
+            Future<std::shared_ptr<BigInt>> getGasPrice() override;
+            Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(const std::string &address) override;
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
@@ -73,6 +75,7 @@ namespace ledger {
             std::string getExplorerVersion() const override;
 
         private:
+            Future<std::shared_ptr<BigInt>> getHelper(const std::string &url, const std::string &field);
             api::EthereumLikeNetworkParameters _parameters;
             std::string _explorerVersion;
         };

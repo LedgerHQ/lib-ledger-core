@@ -32,6 +32,7 @@
 #include "EthereumLikeAccount.h"
 #include "EthereumLikeWallet.h"
 #include <api/ERC20Token.hpp>
+#include <api_impl/BigIntImpl.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
@@ -429,6 +430,19 @@ namespace ledger {
         EthereumLikeAccount::getERC20Accounts() {
                 return _erc20LikeAccounts;
         }
+
+        void EthereumLikeAccount::getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) {
+            _explorer->getGasPrice().mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<api::BigIntImpl>(*gasPrice);
+            }).callback(getContext(), callback);
+        }
+
+        void EthereumLikeAccount::getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
+            _explorer->getEstimatedGasLimit(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<api::BigIntImpl>(*gasPrice);
+            }).callback(getContext(), callback);
+        }
+
         std::shared_ptr<api::EthereumLikeTransactionBuilder> EthereumLikeAccount::buildTransaction() {
 
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
