@@ -45,6 +45,7 @@ namespace ledger {
             ERC20LikeOperation(const std::string &accountAddress,
                                const std::string &operationUid,
                                const Operation &operation,
+                               const ERC20Transaction &erc20Tx,
                                const api::Currency &currency);
 
             ERC20LikeOperation() : _blockHeight(0){};
