@@ -129,6 +129,10 @@ namespace ledger {
         // add ripple’s memo field
         template <> void migrate<8>(soci::session& sql);
         template <> void rollback<8>(soci::session& sql);
+
+        // Migrate input_data from VARCHAR(255) to TEXT
+        template <> void migrate<9>(soci::session& sql);
+        template <> void rollback<9>(soci::session& sql);
     }
 }
 
