@@ -78,10 +78,11 @@ namespace ledger {
                 _pathResolver
             );
 
+            _rng = rng;
             // Encrypt the preferences, if needed
             if (!_password.empty()) {
-                _externalPreferencesBackend->setEncryption(rng, _password);
-                _internalPreferencesBackend->setEncryption(rng, _password);
+                _externalPreferencesBackend->setEncryption(_rng, _password);
+                _internalPreferencesBackend->setEncryption(_rng, _password);
             }
 
             // Logger management
