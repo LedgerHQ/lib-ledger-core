@@ -106,6 +106,8 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>> getNonce(const std::string &address) = 0;
             virtual Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) = 0;
+            virtual Future<std::shared_ptr<BigInt>> getGasPrice() = 0;
+            virtual Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(const std::string &address) = 0;
         };
     }
 }

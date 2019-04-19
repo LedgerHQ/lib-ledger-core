@@ -30,7 +30,7 @@
 
 
 #include "LedgerApiEthereumLikeBlockchainExplorer.h"
-
+#include <api_impl/BigIntImpl.hpp>
 namespace ledger {
     namespace core {
 
@@ -84,6 +84,26 @@ namespace ledger {
 
                         return std::make_shared<BigInt>(balance);
                     });
+        }
+
+        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getHelper(const std::string &url, const std::string &field) {
+            bool parseNumbersAsString = true;
+            auto networkId = getNetworkParameters().Identifier;
+            return _http->GET(url).json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [field, networkId] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
+                        if (!json.IsObject() || !json.GetObject().HasMember(field.c_str()) || !json.GetObject()[field.c_str()].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
+                        }
+                        return std::make_shared<BigInt>(json.GetObject()[field.c_str()].GetString());
+                    });
+        }
+
+        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getGasPrice() {
+            return getHelper(fmt::format("/blockchain/{}/{}/fees", getExplorerVersion(), getNetworkParameters().Identifier), "gas_price");
+        }
+
+        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
+            return getHelper(fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit", getExplorerVersion(), getNetworkParameters().Identifier, address), "estimated_gas_limit");
         }
 
         Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {

@@ -39,7 +39,7 @@
 #include <api/EthereumLikeTransactionBuilder.hpp>
 #include <api/StringCallback.hpp>
 #include <api/Event.hpp>
-
+#include <api/BigIntCallback.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
@@ -101,6 +101,10 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override ;
 
             std::vector<std::shared_ptr<api::ERC20LikeAccount>> getERC20Accounts() override ;
+
+            void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
+
+            void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
         private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
             std::shared_ptr<EthereumLikeKeychain> _keychain;

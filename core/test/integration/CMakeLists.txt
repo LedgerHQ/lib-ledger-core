@@ -110,6 +110,8 @@ add_test (NAME ledger-core-integration-LedgerApiBitcoinLikeBlockchainExplorerTes
 add_test (NAME ledger-core-integration-LedgerApiBitcoinLikeBlockchainExplorerTests.GetTransactions COMMAND ledger-core-integration-tests --gtest_filter="LedgerApiBitcoinLikeBlockchainExplorerTests.GetTransactions")
 add_test (NAME ledger-core-integration-LedgerApiBitcoinLikeBlockchainExplorerTests.GetFees COMMAND ledger-core-integration-tests --gtest_filter="LedgerApiBitcoinLikeBlockchainExplorerTests.GetFees")
 add_test (NAME ledger-core-integration-LedgerApiBitcoinLikeBlockchainExplorerTests.EndSession COMMAND ledger-core-integration-tests --gtest_filter="LedgerApiBitcoinLikeBlockchainExplorerTests.EndSession")
+add_test (NAME ledger-core-integration-LedgerApiEthereumLikeBlockchainExplorerTests.GetGasPrice COMMAND ledger-core-integration-tests --gtest_filter="LedgerApiEthereumLikeBlockchainExplorerTests.GetGasPrice")
+add_test (NAME ledger-core-integration-LedgerApiEthereumLikeBlockchainExplorerTests.GetEstimatedGasLimit COMMAND ledger-core-integration-tests --gtest_filter="LedgerApiEthereumLikeBlockchainExplorerTests.GetEstimatedGasLimit")
 add_test (NAME ledger-core-integration-WalletPoolTest.InitializeCurrencies COMMAND ledger-core-integration-tests --gtest_filter="WalletPoolTest.InitializeCurrencies")
 add_test (NAME ledger-core-integration-WalletPoolTest.AddCurrency COMMAND ledger-core-integration-tests --gtest_filter="WalletPoolTest.AddCurrency")
 add_test (NAME ledger-core-integration-WalletPoolTest.RemoveCurrency COMMAND ledger-core-integration-tests --gtest_filter="WalletPoolTest.RemoveCurrency")

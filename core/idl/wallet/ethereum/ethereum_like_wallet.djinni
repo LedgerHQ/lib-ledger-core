@@ -121,4 +121,12 @@ EthereumLikeAccount = interface +c {
     buildTransaction(): EthereumLikeTransactionBuilder;
     # Get the list of ERC20 accounts associated with this Ethereum account.
     getERC20Accounts(): list<ERC20LikeAccount>;
+    # Get gas price from network
+    # Note: same note as for getFees method on BitcoinLikeAccount
+    getGasPrice(callback: Callback<BigInt>);
+    # Get estimated gas limit to set so the transaction will succeed
+    # The passed address could be EOA or contract
+    # This estimation is based on X last incoming txs (to address) that succeeded
+    # Note: same note as for getFees method on BitcoinLikeAccount
+    getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
 }

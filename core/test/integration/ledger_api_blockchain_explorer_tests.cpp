@@ -31,16 +31,19 @@
 
 #include <gtest/gtest.h>
 #include <wallet/bitcoin/networks.hpp>
+#include <wallet/ethereum/ethereumNetworks.hpp>
 #include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/ethereum/explorers/LedgerApiEthereumLikeBlockchainExplorer.h>
 #include "BaseFixture.h"
 
-class LedgerApiBitcoinLikeBlockchainExplorerTests : public BaseFixture {
+template <typename CurrencyExplorer, typename NetworkParameters>
+class LedgerApiBlockchainExplorerTests : public BaseFixture {
 public:
     void SetUp() override {
         BaseFixture::SetUp();
         auto worker = dispatcher->getSerialExecutionContext("worker");
-        auto client = std::make_shared<HttpClient>("http://api.ledgerwallet.com", http, worker);
-        explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(worker, client, networks::getNetworkParameters("bitcoin"), api::DynamicObject::newInstance());
+        auto client = std::make_shared<HttpClient>(explorerEndpoint, http, worker);
+        explorer = std::make_shared<CurrencyExplorer>(worker, client, params, api::DynamicObject::newInstance());
         logger = ledger::core::logger::create("test_logs",
                                               dispatcher->getSerialExecutionContext("logger"),
                                               resolver,
@@ -48,9 +51,18 @@ public:
                                               2000000000
         );
     }
-
+    NetworkParameters params;
+    std::string explorerEndpoint;
     std::shared_ptr<spdlog::logger> logger;
-    std::shared_ptr<LedgerApiBitcoinLikeBlockchainExplorer> explorer;
+    std::shared_ptr<CurrencyExplorer> explorer;
+};
+
+class LedgerApiBitcoinLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiBitcoinLikeBlockchainExplorer, api::BitcoinLikeNetworkParameters> {
+public:
+    LedgerApiBitcoinLikeBlockchainExplorerTests() {
+        params = networks::getNetworkParameters("bitcoin");
+        explorerEndpoint = "http://api.ledgerwallet.com";
+    }
 };
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, StartSession) {
@@ -138,4 +150,23 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, EndSession) {
     auto session = wait(explorer->startSession());
     EXPECT_EQ(((std::string *) session)->size(), 36);
     auto u = wait(explorer->killSession(session));
+}
+
+class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiEthereumLikeBlockchainExplorer, api::EthereumLikeNetworkParameters> {
+public:
+    LedgerApiEthereumLikeBlockchainExplorerTests() {
+        params = networks::getEthLikeNetworkParameters("ethereum_ropsten");
+        explorerEndpoint = "http://eth-ropsten.explorers.dev.aws.ledger.fr";
+    }
+};
+
+
+TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GetGasPrice) {
+    auto result = wait(explorer->getGasPrice());
+    EXPECT_NE(result->toUint64(), 0);
+}
+
+TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, GetEstimatedGasLimit) {
+    auto result = wait(explorer->getEstimatedGasLimit("0x57e8ba2a915285f984988282ab9346c1336a4e11"));
+    EXPECT_GE(result->toUint64(), 10000);
 }
