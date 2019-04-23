@@ -243,6 +243,8 @@ namespace ledger {
                                 sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
                                 break;
                             }
+                            default:
+                                break;
                         }
                     }
                     operationsCount += 1;

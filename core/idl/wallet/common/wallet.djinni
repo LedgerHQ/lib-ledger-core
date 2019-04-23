@@ -43,6 +43,7 @@ DerivationPath = interface +c {
 OperationType = enum {
     send;
     receive;
+    none;
 }
 
 # Level of trust for transactions.
