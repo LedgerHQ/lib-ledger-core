@@ -48,18 +48,14 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        //http://eth01.explorer.theory.rbx.ledger.fr:8104
-        //http://eth01.explorer.theory.rbx.ledger.fr:21000
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.dev.aws.ledger.fr");
-        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-mainnet.explorers.prod.aws.ledger.fr");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_VAULT);
-
+            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 if (event->getCode() == api::EventCode::NEW_OPERATION) {
                     auto uid = event->getPayload()->getString(

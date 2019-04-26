@@ -112,6 +112,21 @@ TEST_F(EthereumKeychains, EthereumChildAddressValidationFromPubKeyAndChainCode) 
 
 }
 
+TEST_F(EthereumKeychains, EthereumExoticDerivationPaths) {
+    auto path = "444'/60'/14'/5'";
+    auto pubKey = "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa";
+    auto chainCode = "224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0";
+    auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
+                                                                        optional<std::vector<uint8_t >>(),
+                                                                        hex::toByteArray(pubKey),
+                                                                        hex::toByteArray(chainCode),
+                                                                        path);
+    auto address = "0x25Faa357D783C1A9B1eE9403f6969AC65E6F3ae3";
+    auto derive0 = ethXpub->derive("16");
+    EXPECT_EQ(derive0->toEIP55(), address);
+
+}
+
 const std::vector<std::vector<std::string>> derivationTestData = {
         {
                 "44'/<coin_type>'/<account>'/<node>/<address>",
@@ -147,6 +162,20 @@ const std::vector<std::vector<std::string>> derivationTestData = {
                 "04d2ee4bb49221f9f1662e4791748e68354c26d7d5290ad518c86c4d714c785e6533e0286d3803b0ddde3287eb6f31f77792fdf7323f76152c14069805f23121d2",
                 "ddf5a9cf1fdf4746a4495cf36328c7e2af31d18dd0a8f8302f3e13c900f4bfb9",
                 "0x390De614378307a6d85cD0e68460378A745295b1"
+        },
+        {
+                "44'/60'/14'/5'/16",
+                "44'/60'/14'/5'",
+                "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa",
+                "224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0",
+                "0x7e07C3526cc4D847e847a58854BFb1544BD10Cb3"
+        },
+        {
+                "44'/60'/0'/0'",
+                "44'/60'/0'/0'",
+                "04d2ee4bb49221f9f1662e4791748e68354c26d7d5290ad518c86c4d714c785e6533e0286d3803b0ddde3287eb6f31f77792fdf7323f76152c14069805f23121d2",
+                "ddf5a9cf1fdf4746a4495cf36328c7e2af31d18dd0a8f8302f3e13c900f4bfb9",
+                "0x390De614378307a6d85cD0e68460378A745295b1"
         }
 
 };
@@ -162,7 +191,7 @@ TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
         auto expectedAddress = elem[4];
 
         auto config = DynamicObject::newInstance();
-        config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,derivationScheme);
+        config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
         auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
                                                                             optional<std::vector<uint8_t >>(),
                                                                             hex::toByteArray(publicKey),
