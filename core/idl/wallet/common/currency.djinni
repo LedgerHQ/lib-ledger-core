@@ -1,6 +1,7 @@
 @import "../../bitcoin/addresses.djinni"
 @import "../../ethereum/addresses.djinni"
 @import "../../ripple/addresses.djinni"
+@import "../../tezos/addresses.djinni"
 
 # Enum listing supported cryptocurrencies' families.
 WalletType = enum {
@@ -12,6 +13,8 @@ WalletType = enum {
     ripple;
     # A Monero-like wallet.
     monero;
+    # A Tezos-like wallet.
+    tezos;
 }
 
 # Structure of cryptocurrency unit.
@@ -43,6 +46,8 @@ Currency = record {
     bitcoinLikeNetworkParameters: optional<BitcoinLikeNetworkParameters>;
     # Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
     ethereumLikeNetworkParameters: optional<EthereumLikeNetworkParameters>;
-    #Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
+    #Optional RippleLikeNetworkParameters, for more details refer to RippleLikeNetworkParameters doc
     rippleLikeNetworkParameters: optional<RippleLikeNetworkParameters>;
+    #Optional TezosLikeNetworkParameters, for more details refer to TezosLikeNetworkParameters doc
+    tezosLikeNetworkParameters: optional<TezosLikeNetworkParameters>;
 }

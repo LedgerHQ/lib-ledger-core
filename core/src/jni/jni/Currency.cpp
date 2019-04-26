@@ -7,6 +7,7 @@
 #include "EthereumLikeNetworkParameters.hpp"
 #include "Marshal.hpp"
 #include "RippleLikeNetworkParameters.hpp"
+#include "TezosLikeNetworkParameters.hpp"
 #include "WalletType.hpp"
 
 namespace djinni_generated {
@@ -25,13 +26,14 @@ auto Currency::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<J
                                                            ::djinni::get(::djinni::List<::djinni_generated::CurrencyUnit>::fromCpp(jniEnv, c.units)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::fromCpp(jniEnv, c.bitcoinLikeNetworkParameters)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::fromCpp(jniEnv, c.ethereumLikeNetworkParameters)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::fromCpp(jniEnv, c.rippleLikeNetworkParameters)))};
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::fromCpp(jniEnv, c.rippleLikeNetworkParameters)),
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::TezosLikeNetworkParameters>::fromCpp(jniEnv, c.tezosLikeNetworkParameters)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto Currency::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 9);
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<Currency>::get();
     return {::djinni_generated::WalletType::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_walletType)),
@@ -41,7 +43,8 @@ auto Currency::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::List<::djinni_generated::CurrencyUnit>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_units)),
             ::djinni::Optional<std::experimental::optional, ::djinni_generated::BitcoinLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_bitcoinLikeNetworkParameters)),
             ::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_ethereumLikeNetworkParameters)),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_rippleLikeNetworkParameters))};
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_rippleLikeNetworkParameters)),
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::TezosLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_tezosLikeNetworkParameters))};
 }
 
 }  // namespace djinni_generated
