@@ -62,8 +62,14 @@ namespace ledger {
             return *this;
         }
 
+        CurrencyBuilder& CurrencyBuilder::forkOfTezos(api::TezosLikeNetworkParameters params) {
+            _type = api::WalletType::TEZOS;
+            _tezos = params;
+            return *this;
+        }
+
         CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _ethereum.toOptional(), _ripple.toOptional());
+            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _ethereum.toOptional(), _ripple.toOptional(), _tezos.toOptional());
         }
 
         CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {

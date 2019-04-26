@@ -16,6 +16,7 @@ namespace ledger { namespace core { namespace api {
 struct BitcoinLikeNetworkParameters;
 struct EthereumLikeNetworkParameters;
 struct RippleLikeNetworkParameters;
+struct TezosLikeNetworkParameters;
 
 /** All available blockchain networks parameters. */
 class LIBCORE_EXPORT Networks {
@@ -30,6 +31,9 @@ public:
 
     /** The Ripple network parameters. */
     static RippleLikeNetworkParameters ripple();
+
+    /** The Tezos network parameters. */
+    static TezosLikeNetworkParameters tezos();
 };
 
 } } }  // namespace ledger::core::api

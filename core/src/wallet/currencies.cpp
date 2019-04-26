@@ -32,6 +32,7 @@
 #include "bitcoin/networks.hpp"
 #include "ethereum/ethereumNetworks.hpp"
 #include "ripple/rippleNetworks.h"
+#include "tezos/tezosNetworks.h"
 #include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {
@@ -281,6 +282,14 @@ namespace ledger {
                             .unit("drop", 0, "drop")
                             .unit("XRP", 6, "XRP");
 
+            const api::Currency TEZOS =
+                    Currency("tezos")
+                            .bip44(1729)
+                            .forkOfTezos(networks::getTezosLikeNetworkParameters("tezos"))
+                            .paymentUri("tezos")
+                            .unit("mXTZ", 0, "mXTZ")
+                            .unit("XTZ", 3, "XTZ");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -308,7 +317,8 @@ namespace ledger {
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
                 ETHEREUM_CLASSIC,
-                RIPPLE
+                RIPPLE,
+                TEZOS
             });
         }
     }

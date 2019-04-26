@@ -47,13 +47,14 @@ namespace ledger {
         }
 
         std::vector<uint8_t> HashAlgorithm::stringToBytesHash(const std::string &input) const {
-            if (_identifier == "dcr") {
+            if (_identifier == "dcr" || _identifier == "xtz") {
                 return BLAKE::stringToBytesHash(input);
             }
             return SHA256::stringToBytesHash(input);
         }
 
         std::vector<uint8_t> HashAlgorithm::bytesToBytesHash(const std::vector<uint8_t> &bytes) const {
+            //if (_identifier == "dcr" || _identifier == "xtz") {
             if (_identifier == "dcr") {
                 return BLAKE::bytesToBytesHash(bytes);
             }
