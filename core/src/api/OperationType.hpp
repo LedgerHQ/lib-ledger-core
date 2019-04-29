@@ -20,6 +20,7 @@ namespace ledger { namespace core { namespace api {
 enum class OperationType : int {
     SEND,
     RECEIVE,
+    NONE,
 };
 LIBCORE_EXPORT  std::string to_string(const OperationType& operationType);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const OperationType &o);

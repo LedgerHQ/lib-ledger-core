@@ -99,60 +99,67 @@ namespace ledger {
         }
 
         int EthereumLikeAccount::putTransaction(soci::session &sql,
-                                               const EthereumLikeBlockchainExplorerTransaction &transaction) {
-                auto wallet = getWallet();
-                if (wallet == nullptr) {
-                        throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
-                }
+                                                const EthereumLikeBlockchainExplorerTransaction &transaction) {
+            auto wallet = getWallet();
+            if (wallet == nullptr) {
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
+            }
 
-                if (transaction.block.nonEmpty())
-                        putBlock(sql, transaction.block.getValue());
+            if (transaction.block.nonEmpty())
+                putBlock(sql, transaction.block.getValue());
 
-                int result = 0x00;
 
-                Operation operation;
-                inflateOperation(operation, wallet, transaction);
-                std::vector<std::string> senders{transaction.sender};
-                operation.senders = std::move(senders);
-                std::vector<std::string> receivers{transaction.receiver};
-                operation.recipients = std::move(receivers);
-                operation.fees = transaction.gasPrice * transaction.gasUsed.getValueOr(BigInt::ZERO);
-                operation.trust = std::make_shared<TrustIndicator>();
-                operation.date = transaction.receivedAt;
+            int result = 0x00;
 
-                if (_accountAddress == transaction.sender) {
-                    operation.amount = transaction.value;
-                    operation.type = api::OperationType::SEND;
-                    operation.refreshUid();
-                    OperationDatabaseHelper::putOperation(sql, operation);
-                    updateERC20Accounts(sql, operation);
-                    result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
-                }
+            Operation operation;
+            inflateOperation(operation, wallet, transaction);
+            std::vector<std::string> senders{transaction.sender};
+            operation.senders = std::move(senders);
+            std::vector<std::string> receivers{transaction.receiver};
+            operation.recipients = std::move(receivers);
+            operation.fees = transaction.gasPrice * transaction.gasUsed.getValueOr(BigInt::ZERO);
+            operation.trust = std::make_shared<TrustIndicator>();
+            operation.date = transaction.receivedAt;
 
-                if (_accountAddress == transaction.receiver) {
-                    operation.amount = transaction.value;
-                    operation.type = api::OperationType::RECEIVE;
-                    operation.refreshUid();
-                    OperationDatabaseHelper::putOperation(sql, operation);
-                    updateERC20Accounts(sql, operation);
-                    result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
-                }
+            auto updateOperation = [&] (soci::session &sql, Operation &operation, api::OperationType ty) {
+                operation.amount = transaction.value;
+                operation.type = ty;
+                operation.refreshUid();
+                OperationDatabaseHelper::putOperation(sql, operation);
+                updateERC20Accounts(sql, operation);
+            };
 
-                return result;
+            if (_accountAddress == transaction.sender) {
+                updateOperation(sql, operation, api::OperationType::SEND);
+                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
+            }
+
+            if (_accountAddress == transaction.receiver) {
+                updateOperation(sql, operation, api::OperationType::RECEIVE);
+                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
+            }
+
+            // Case of parent transaction not belonging to account, but having side effect (transfer events)
+            // concerning account address
+            if (!result && !transaction.erc20Transactions.empty()) {
+                updateOperation(sql, operation, api::OperationType::NONE);
+                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
+            }
+
+            return result;
         }
 
         void EthereumLikeAccount::updateERC20Accounts(soci::session &sql,
                                                       const Operation &operation) {
             auto transaction = operation.ethereumTransaction.getValue();
-            auto accountAddress = (operation.type == api::OperationType::SEND)? transaction.sender : transaction.receiver;
-            auto removeIt = std::remove_if(transaction.erc20Transactions.begin(), transaction.erc20Transactions.end(), [&accountAddress](const ERC20Transaction &erc20Tx) -> bool {
-                return erc20Tx.from != accountAddress && erc20Tx.to != accountAddress;
-            });
-            transaction.erc20Transactions.erase(removeIt, transaction.erc20Transactions.end());
+            // No need filter because erc20 transfer events sent by explorer
+            // are only the ones concerning current account
             if (!transaction.erc20Transactions.empty()) {
                 for (auto &erc20Tx : transaction.erc20Transactions) {
                     auto erc20ContractAddress = erc20Tx.contractAddress;
-                    erc20Tx.type = (erc20Tx.from == accountAddress) ? api::OperationType::SEND : api::OperationType::RECEIVE;
+                    erc20Tx.type = (erc20Tx.from == _accountAddress) ?
+                                   api::OperationType::SEND : (erc20Tx.to == _accountAddress) ?
+                                                              api::OperationType::RECEIVE : api::OperationType::NONE;
                     auto count = 0;
                     sql << "SELECT COUNT(*) FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(erc20ContractAddress), soci::into(count);
                     api::ERC20Token erc20Token;
@@ -169,7 +176,7 @@ namespace ledger {
                     }
 
                     auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20Token.contractAddress, erc20Tx.type);
-                    auto erc20Operation = std::make_shared<ERC20LikeOperation>(accountAddress, erc20OperationUid, operation, erc20Tx, getWallet()->getCurrency());
+                    auto erc20Operation = std::make_shared<ERC20LikeOperation>(_accountAddress, erc20OperationUid, operation, erc20Tx, getWallet()->getCurrency());
                     auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20Token.contractAddress);
 
                     auto erc20OpCount = 0;
@@ -180,7 +187,7 @@ namespace ledger {
                     for (auto& account : _erc20LikeAccounts) {
                         auto erc20Account = std::static_pointer_cast<ERC20LikeAccount>(account);
                         if (erc20Account->getToken().contractAddress == erc20Token.contractAddress &&
-                            erc20Account->getAddress() == accountAddress) {
+                            erc20Account->getAddress() == _accountAddress) {
                             //Update account
                             erc20Account->putOperation(sql, erc20Operation, newOperation);
                             needNewAccount = false;
@@ -191,7 +198,7 @@ namespace ledger {
                     if (needNewAccount) {
                         auto newAccount = std::make_shared<ERC20LikeAccount>(erc20AccountUid,
                                                                              erc20Token,
-                                                                             accountAddress,
+                                                                             _accountAddress,
                                                                              getWallet()->getCurrency(),
                                                                              std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
                         _erc20LikeAccounts.push_back(newAccount);
@@ -307,6 +314,8 @@ namespace ledger {
                                     sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
                                     break;
                                 }
+                                default:
+                                    break;
                             }
                         }
                         operationsCount += 1;

@@ -119,6 +119,8 @@ namespace ledger {
                         case api::OperationType::SEND:
                             sum = sum - value;
                             break;
+                        default:
+                            break;
                     }
                 }
             };
@@ -146,6 +148,8 @@ namespace ledger {
 
                 case api::OperationType::SEND:
                     return balance - value;
+                default:
+                    return balance;
             }
         }
 
