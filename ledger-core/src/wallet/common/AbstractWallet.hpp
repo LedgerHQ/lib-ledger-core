@@ -31,24 +31,21 @@
 #ifndef LEDGER_CORE_ABSTRACTWALLET_HPP
 #define LEDGER_CORE_ABSTRACTWALLET_HPP
 
-#include "api/Wallet.hpp"
-#include <api/Currency.hpp>
 #include <api/Account.hpp>
-#include <preferences/Preferences.hpp>
-#include <async/DedicatedContext.hpp>
-#include <events/EventPublisher.hpp>
-#include <debug/logger.hpp>
-#include <api/WalletType.hpp>
-#include <database/DatabaseSessionPool.hpp>
-#include <collections/DynamicObject.hpp>
-#include <utils/DerivationScheme.hpp>
 #include <api/AccountCreationInfo.hpp>
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
-#include <api/AccountCreationInfoCallback.hpp>
-#include <api/ExtendedKeyAccountCreationInfoCallback.hpp>
-#include <api/AccountCallback.hpp>
 #include <api/Block.hpp>
-#include <api/BlockCallback.hpp>
+#include <api/Currency.hpp>
+#include <api/Error.hpp>
+#include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <api/Wallet.hpp>
+#include <api/WalletType.hpp>
+#include <async/DedicatedContext.hpp>
+#include <collections/DynamicObject.hpp>
+#include <database/DatabaseSessionPool.hpp>
+#include <debug/logger.hpp>
+#include <events/EventPublisher.hpp>
+#include <preferences/Preferences.hpp>
+#include <utils/DerivationScheme.hpp>
 
 namespace ledger {
     namespace core {
@@ -78,10 +75,11 @@ namespace ledger {
             const api::Currency& getCurrency() const;
             std::string getName() override;
 
-            void getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) override;
+            void getNextAccountIndex(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback) override;
+
             Future<int32_t> getNextAccountIndex();
             Future<int32_t> getAccountCount();
-            void getAccountCount(const std::shared_ptr<api::I32Callback> &callback) override;
+            void getAccountCount(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)>& callback) override;
 
             void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
             Future<api::Block> getLastBlock();

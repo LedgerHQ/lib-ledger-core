@@ -38,13 +38,7 @@
 #include <wallet/common/Amount.h>
 #include <events/EventPublisher.hpp>
 #include <api/Block.hpp>
-#include <api/BlockCallback.hpp>
-#include <api/BitcoinLikeAccount.hpp>
-#include <api/EthereumLikeAccount.hpp>
-#include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
-#include <api/AmountListCallback.hpp>
-#include <api/ErrorCodeCallback.hpp>
 #include <api/TimePeriod.hpp>
 #include <mutex>
 
@@ -58,13 +52,8 @@ namespace ledger {
             int32_t getIndex() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             std::shared_ptr<api::Logger> getLogger() override;
-            bool isInstanceOfBitcoinLikeAccount() override;
-            bool isInstanceOfEthereumLikeAccount() override;
-            bool isInstanceOfRippleLikeAccount() override;
             api::WalletType getWalletType() override;
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
-            std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
-            std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override;
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getInternalPreferences() const;
@@ -75,18 +64,22 @@ namespace ledger {
             virtual std::shared_ptr<AbstractWallet> getWallet();
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
-            void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
+            void getLastBlock(const std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)>& callback) override;
+
             Future<api::Block> getLastBlock();
 
-            void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+            void getBalance(const std::function<void(std::shared_ptr<api::Amount>, std::experimental::optional<api::Error>)>& callback) override;
             virtual FuturePtr<Amount> getBalance() = 0;
 
-            void getFreshPublicAddresses(const std::shared_ptr<api::AddressListCallback> &callback) override;
+            void getFreshPublicAddresses(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Address>>>, std::experimental::optional<api::Error>)>& callback) override;
             virtual Future<AddressList> getFreshPublicAddresses() = 0;
-            void getBalanceHistory(const std::string & start,
-                                   const std::string & end,
-                                   api::TimePeriod precision,
-                                   const std::shared_ptr<api::AmountListCallback> & callback) override;
+
+            void getBalanceHistory(
+                const std::string& start,
+                const std::string& end,
+                api::TimePeriod period,
+                const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)>& callback
+            ) override;
             virtual Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string & start,
                                                                                    const std::string & end,
                                                                                    api::TimePeriod precision) = 0;
@@ -97,7 +90,10 @@ namespace ledger {
 
             void emitEventsNow();
 
-            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
+            void eraseDataSince(
+                const std::chrono::system_clock::time_point& date,
+                const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)>& callback
+            ) override;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
         protected:

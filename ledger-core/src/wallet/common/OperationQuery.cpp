@@ -29,14 +29,10 @@
  *
  */
 #include "OperationQuery.h"
-#include <api/OperationListCallback.hpp>
 #include "Operation.h"
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 #include <database/soci-number.h>
-#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
-#include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
-#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -106,7 +102,7 @@ namespace ledger {
             return shared_from_this();
         }
 
-        void OperationQuery::execute(const std::shared_ptr<api::OperationListCallback> &callback) {
+        void OperationQuery::execute(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Operation>>>, std::experimental::optional<api::Error>)>& callback) {
            execute().callback(_mainContext, callback);
         }
 

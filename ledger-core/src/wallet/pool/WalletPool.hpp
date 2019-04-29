@@ -40,7 +40,6 @@
 #include <api/ThreadDispatcher.hpp>
 #include <api/RandomNumberGenerator.hpp>
 #include <api/DatabaseBackend.hpp>
-#include <api/WalletPoolCallback.hpp>
 
 #include <memory>
 #include <unordered_map>
