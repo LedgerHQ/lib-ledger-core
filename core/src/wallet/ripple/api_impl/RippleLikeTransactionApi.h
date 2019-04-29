@@ -68,9 +68,10 @@ namespace ledger {
             RippleLikeTransactionApi & setReceiver(const std::shared_ptr<api::RippleLikeAddress> &receiver);
             RippleLikeTransactionApi & setSigningPubKey(const std::vector<uint8_t> &pubKey);
             RippleLikeTransactionApi & setHash(const std::string &hash);
+            RippleLikeTransactionApi & setDestinationTag(uint32_t tag);
             std::vector<api::RippleLikeMemo> getMemos() override;
             void addMemo(api::RippleLikeMemo const& memo) override;
-
+            std::experimental::optional<int64_t> getDestinationTag() override;
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<RippleLikeBlockApi> _block;
@@ -86,6 +87,7 @@ namespace ledger {
             std::vector<uint8_t> _sSignature;
             std::vector<uint8_t> _signingPubKey;
             std::vector<api::RippleLikeMemo> _memos;
+            Option<int64_t> _destinationTag;
         };
     }
 }

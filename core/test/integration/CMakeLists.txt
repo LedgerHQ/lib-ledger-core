@@ -173,3 +173,5 @@ add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewBl
 
 add_test (NAME ledger-core-integration-RippleMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.CreateTx")
 add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseSignedRawTransaction")
+add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransactionWithMemo COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseSignedRawTransactionWithMemo")
+add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransactionWithDestinationTag COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseSignedRawTransactionWithDestinationTag")

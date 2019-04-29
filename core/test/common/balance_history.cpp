@@ -71,6 +71,9 @@ struct DummyOperationStrategy {
             case api::OperationType::SEND:
                 sum -= op.amount;
                 break;
+
+            case api::OperationType::NONE:
+                break;
         }
     }
 };

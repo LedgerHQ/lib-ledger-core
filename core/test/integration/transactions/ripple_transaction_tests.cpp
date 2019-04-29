@@ -82,6 +82,8 @@ TEST_F(RippleMakeTransaction, CreateTx) {
     builder->sendToAddress(api::Amount::fromLong(currency, 220000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
     auto f = builder->build();
     auto tx = ::wait(f);
+    auto destTag = tx->getDestinationTag();
+    EXPECT_EQ(destTag.value_or(0), 0);
     auto serializedTx = tx->serialize();
     auto parsedTx = RippleLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
     auto serializedParsedTx = parsedTx->serialize();
@@ -158,4 +160,24 @@ TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithMemo) {
 
     EXPECT_EQ(memo.data, "rm-1.2.4");
     EXPECT_EQ(memo.ty,  "client");
+}
+
+TEST_F(RippleMakeTransaction, ParseSignedRawTransactionWithDestinationTag) {
+    // round-trip
+    // TX hash 9A52BD8B76BE2FADCEEE9AFFA6413689F47C82EE9A39DC641AAD26F468533459
+    auto strTx = "1200002280000000240004AA082EA2DE6F1F201B02CB941361400000004E21388068400000000000000C732102ECC1E3A8A7DD1F1BB768A1D59749E543669AFABBE50C9E488AEC70501C58F629744630440220382671F591917C2D626769D78AF18B7AACA96C064CF83CA8D9184D1689FBAB05022054C98645EB4A7A26244663418482728822E0A5242977D82690FD8C2193A5B8D88114D5EDB1787948D73CE6DC97887A7426043C3134A08314D3A0F1993876211F413D4EDF0A70CEE0C8212DB8";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = api::RippleLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::RIPPLE, txBytes);
+
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getLedgerSequence()->intValue(), 46896119);
+    EXPECT_EQ(tx->getSequence()->intValue(), 305672);
+    EXPECT_EQ(tx->getHash(), "9a52bd8b76be2fadceee9affa6413689f47c82ee9a39dc641aad26f468533459");
+    EXPECT_EQ(tx->getSender()->toBase58(), "rLW9gnQo7BQhU6igk5keqYnH3TVrCxGRzm");
+    EXPECT_EQ(tx->getReceiver()->toBase58(), "rLHzPsX6oXkzU2qL12kHCH8G8cnZv1rBJh");
+    EXPECT_EQ(tx->getValue()->toLong(), 1310800000L);
+    EXPECT_EQ(tx->getFees()->toLong(), 12L);
+    EXPECT_EQ(tx->getDestinationTag().value_or(0), 2732486431);
 }

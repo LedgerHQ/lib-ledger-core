@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_RIPPLELIKETRANSACTION_HPP
 #define DJINNI_GENERATED_RIPPLELIKETRANSACTION_HPP
 
+#include "../utils/optional.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -80,6 +81,9 @@ public:
 
     /** Add a memo to a transaction. */
     virtual void addMemo(const RippleLikeMemo & memo) = 0;
+
+    /** An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account */
+    virtual std::experimental::optional<int64_t> getDestinationTag() = 0;
 };
 
 } } }  // namespace ledger::core::api

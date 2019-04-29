@@ -65,6 +65,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1setDestinationTag(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_tag)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setDestinationTag(::djinni::I64::toCpp(jniEnv, j_tag));
+        return ::djinni::release(::djinni_generated::RippleLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
