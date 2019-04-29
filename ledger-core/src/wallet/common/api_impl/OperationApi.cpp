@@ -32,10 +32,6 @@
 #include <wallet/common/Amount.h>
 #include "../AbstractAccount.hpp"
 #include <wallet/common/Amount.h>
-#include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
-#include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
-#include <wallet/ripple/api_impl/RippleLikeOperation.h>
-
 
 namespace ledger {
     namespace core {
@@ -76,26 +72,7 @@ namespace ledger {
             return _backend.walletType;
         }
 
-        bool OperationApi::isInstanceOfBitcoinLikeOperation() {
-            return _backend.walletType == api::WalletType::BITCOIN;
-        }
-
-        bool OperationApi::isInstanceOfEthereumLikeOperation() {
-            return _backend.walletType == api::WalletType::ETHEREUM;
-        }
-
-        bool OperationApi::isInstanceOfRippleLikeOperation() {
-            return _backend.walletType == api::WalletType::RIPPLE;
-        }
-
         bool OperationApi::isComplete() {
-            if (_backend.walletType == api::WalletType::BITCOIN) {
-                return _backend.bitcoinTransaction.nonEmpty();
-            } else if (_backend.walletType == api::WalletType::ETHEREUM) {
-                return _backend.ethereumTransaction.nonEmpty();
-            } else if (_backend.walletType == api::WalletType::RIPPLE) {
-                return _backend.rippleTransaction.nonEmpty();
-            }
             return false;
         }
 
@@ -122,27 +99,6 @@ namespace ledger {
 
         std::shared_ptr<api::Amount> OperationApi::getAmount() {
             return std::make_shared<Amount>(_account->getWallet()->getCurrency(), 0, getBackend().amount);
-        }
-
-        std::shared_ptr<api::BitcoinLikeOperation> OperationApi::asBitcoinLikeOperation() {
-            if (getWalletType() != api::WalletType::BITCOIN) {
-                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Bitcoin type.");
-            }
-            return std::make_shared<BitcoinLikeOperation>(shared_from_this());
-        }
-
-        std::shared_ptr<api::EthereumLikeOperation> OperationApi::asEthereumLikeOperation() {
-            if (getWalletType() != api::WalletType::ETHEREUM) {
-                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ethereum type.");
-            }
-            return std::make_shared<EthereumLikeOperation>(shared_from_this());
-        }
-
-        std::shared_ptr<api::RippleLikeOperation> OperationApi::asRippleLikeOperation() {
-            if (getWalletType() != api::WalletType::RIPPLE) {
-                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ethereum type.");
-            }
-            return std::make_shared<RippleLikeOperation>(shared_from_this());
         }
 
         const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {

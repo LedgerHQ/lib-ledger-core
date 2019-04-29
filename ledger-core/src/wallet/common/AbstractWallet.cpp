@@ -154,7 +154,7 @@ namespace ledger {
             });
         }
 
-        void AbstractWallet::getNextAccountIndex(const std::shared_ptr<api::I32Callback> &callback) {
+        void AbstractWallet::getNextAccountIndex(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<Error>)>& callback)
             getNextAccountIndex().callback(getMainExecutionContext(), callback);
         }
 
@@ -182,7 +182,7 @@ namespace ledger {
             });
         }
 
-        void AbstractWallet::getAccountCount(const std::shared_ptr<api::I32Callback> &callback) {
+        void AbstractWallet::getAccountCount(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)>& callback) {
             getAccountCount().callback(getMainExecutionContext(), callback);
         }
 
@@ -343,7 +343,7 @@ namespace ledger {
                 soci::rowset<soci::row> accounts = (sql.prepare << "SELECT idx FROM accounts "
                                                                     "WHERE wallet_uid = :wallet_uid AND created_at >= :date",
                                                                     soci::use(uid), soci::use(date));
-                
+
                 for (auto& account : accounts) {
                     if (account.get_indicator(0) != soci::i_null) {
                         self->_accounts.erase(account.get<int32_t>(0));

@@ -60,7 +60,7 @@ namespace ledger {
             std::shared_ptr<api::OperationQuery> complete() override;
             std::shared_ptr<api::OperationQuery> partial() override;
 
-            void execute(const std::shared_ptr<api::OperationListCallback> &callback) override;
+            void execute(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Operation>>>, std::experimental::optional<api::Error>)>& callback) override;
             Future<std::vector<std::shared_ptr<api::Operation>>> execute();
 
             std::shared_ptr<OperationQuery> registerAccount(const  std::shared_ptr<AbstractAccount>& account);

@@ -34,7 +34,6 @@
 
 namespace ledger {
     namespace core {
-
         void Operation::refreshUid() {
             if (bitcoinTransaction.nonEmpty()) {
                 uid = OperationDatabaseHelper::createUid(accountUid, bitcoinTransaction.getValue().hash, type);
@@ -46,6 +45,5 @@ namespace ledger {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Cannot refresh uid of an incomplete operation.");
             }
         }
-
     }
 }
