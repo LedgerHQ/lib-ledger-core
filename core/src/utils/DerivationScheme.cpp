@@ -77,6 +77,23 @@ namespace ledger {
                 }
                 _scheme.push_back(node);
             }
+
+            // Account & node level both should be set to be used by keychain.
+            // Account level always comes before node level
+            auto itAccountLevel = std::find_if(_scheme.begin(), _scheme.end(), [](const DerivationSchemeNode &node) {return node.level == DerivationSchemeLevel::ACCOUNT_INDEX;});
+            auto itNodeLevel = std::find_if(itAccountLevel, _scheme.end(), [](const DerivationSchemeNode &node) {return node.level == DerivationSchemeLevel::NODE;});
+            if (itNodeLevel == _scheme.end() && _scheme.size() <= 5) {
+                static std::vector<DerivationSchemeLevel> schemeLevel {DerivationSchemeLevel::UNDEFINED,
+                                                                       DerivationSchemeLevel::COIN_TYPE,
+                                                                       DerivationSchemeLevel::ACCOUNT_INDEX,
+                                                                       DerivationSchemeLevel::NODE,
+                                                                       DerivationSchemeLevel::ADDRESS_INDEX};
+                for (size_t i = 0; i < _scheme.size(); i++ ) {
+                    if (_scheme[i].level == DerivationSchemeLevel::UNDEFINED) {
+                        _scheme[i].level = schemeLevel[i];
+                    }
+                }
+            }
         }
 
         DerivationScheme::DerivationScheme(const std::vector<DerivationSchemeNode> &nodes) {

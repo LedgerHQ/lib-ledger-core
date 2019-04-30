@@ -76,6 +76,12 @@ api::AccountCreationInfo ETH_KEYS_INFO_VAULT(
         {hex::toByteArray("81F18B05DF5F54E5602A968D39AED1ED4EDC146F5971C4E84AA8273376B05D49")}
 );
 
+api::AccountCreationInfo ETH_KEYS_INFO_LIVE(
+        0, {"main"}, {"44'/60'/14'/5'"},
+        {hex::toByteArray("04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa")},
+        {hex::toByteArray("224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0")}
+);
+
 api::AccountCreationInfo XRP_KEYS_INFO(
         0, {"main"}, {"44'/144'/0'"},
         {hex::toByteArray("024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed")},
