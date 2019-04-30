@@ -351,7 +351,7 @@ Account = interface +c {
     # @return WalletType object
     getWalletType(): WalletType;
     # Get event bus through which account is notified on synchronization status.
-    # @return EventBus object
+    # @return nventBus object
     getEventBus(): EventBus;
     # Start observing blockchain on which account synchronizes and send/receive transactions.
     startBlockchainObservation();

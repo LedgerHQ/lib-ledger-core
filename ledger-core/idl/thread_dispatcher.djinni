@@ -1,0 +1,57 @@
+#Class representing a runnable object
+#A runnable, needs a specific execution context (refer to ExecutionContext) to run
+Runnable = interface +c {
+    #Trigger runnable execution
+    run();
+}
+
+#Class representing a lock, for thread safety purposes
+Lock = interface +j +n +o {
+    #Acquire lock by thread calling this method,
+    #If Lock already acquired by another thread, execution of calling thread should be blocked
+    #until the other thread call the unlock method
+    lock();
+
+    #Try to acquire lock
+    #If Lock already aquired by another thread, method returns false for calling thread
+    #without blocking its execution
+    #@return bool, return true if Lock acquire by calling thread, false otherwise
+    tryLock(): bool;
+
+    #Release Lock ownership by calling thread
+    unlock();
+}
+
+#Class representing context in which tasks get executed
+ExecutionContext = interface +j +o +n {
+    #Execute a given runnable
+    #@param runnalbe, Runnable object
+    execute(runnable: Runnable);
+
+    #Execute a given runnable with a delay
+    #@param runnalbe, Runnable object
+    #@param millis, 64 bits integer, delay in milli-seconds
+    delay(runnable: Runnable, millis: i64);
+}
+
+#Class representing a thread dispatcher
+ThreadDispatcher = interface +j +o +n {
+    #Get an execution context where tasks are executed sequentially
+    #@param name, string, name of execution context to retrieve
+    #@return ExecutionContext object
+    getSerialExecutionContext(name: string): ExecutionContext;
+
+    #Get an execution context where tasks are executed in parallel thanks to a thread pool
+    #where a system of inter-thread communication was designed
+    #@param name, string, name of execution context to retrieve
+    #@return ExecutionContext object
+    getThreadPoolExecutionContext(name: string): ExecutionContext;
+
+    #Get main execution context (generally where tasks that should never get blocked are executed)
+    #@return ExecutionContext object
+    getMainExecutionContext(): ExecutionContext;
+
+    #Get lock to handle multithreading
+    #@return Lock object
+    newLock(): Lock;
+}

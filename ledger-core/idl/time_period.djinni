@@ -1,0 +1,5 @@
+TimePeriod = enum {
+    day;
+    week;
+    month;
+}

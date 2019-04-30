@@ -28,15 +28,12 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEADDRESS_H
-#define LEDGER_CORE_RIPPLELIKEADDRESS_H
-
+#pragma once
 
 #include <api/RippleLikeAddress.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
-#include "../utils/optional.hpp"
-#include <wallet/common/AbstractAddress.h>
+#include <core/utils/optional.hpp>
+#include <core/wallet/AbstractAddress.h>
 
 namespace ledger {
     namespace core {
@@ -67,6 +64,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEADDRESS_H

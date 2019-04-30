@@ -28,18 +28,17 @@
  *
  */
 
-
 #include "RippleLikeAddress.h"
-#include <utils/Exception.hpp>
-#include <math/Base58.hpp>
-#include <collections/vector.hpp>
-#include <utils/hex.h>
-#include <crypto/Keccak.h>
+#include <core/collections/DynamicObject.hpp>
+#include <core/collections/vector.hpp>
+#include <core/crypto/Keccak.h>
+#include <core/math/Base58.hpp>
+#include <core/utils/Exception.hpp>
+#include <core/utils/hex.h>
 #include <wallet/ripple/rippleNetworks.h>
-#include <collections/DynamicObject.hpp>
+
 namespace ledger {
     namespace core {
-
         RippleLikeAddress::RippleLikeAddress(const ledger::core::api::Currency &currency,
                                              const std::vector<uint8_t> &hash160,
                                              const std::vector<uint8_t> &version,
