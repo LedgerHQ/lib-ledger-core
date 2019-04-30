@@ -33,14 +33,15 @@
 #define LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
 
 #include <memory>
-#include "RippleLikeAddress.h"
-#include <common/AbstractExtendedPublicKey.h>
 #include <api/RippleLikeExtendedPublicKey.hpp>
-#include <crypto/DeterministicPublicKey.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
-#include <utils/Option.hpp>
-#include <utils/DerivationPath.hpp>
-#include <api/Currency.hpp>
+#include <core/AbstractExtendedPublicKey.h>
+#include <core/crypto/DeterministicPublicKey.hpp>
+#include <core/utils/Option.hpp>
+#include <core/utils/DerivationPath.hpp>
+#include <core/api/Currency.hpp>
+
+#include "RippleLikeAddress.h"
 
 namespace ledger {
     namespace core {

@@ -1,0 +1,107 @@
+@import "amount.djinni"
+@import "error.djinni"
+@import "events.djinni"
+@import "logger.djinni"
+@import "operation.djinni"
+@import "preferences.djinni"
+@import "time_period.djinni"
+
+# Class representing an account.
+Account = interface +c {
+    # Key of the synchronization duration time in the synchronize event payload.
+    # The value is stored in a int 64 time expressed in miliseconds.
+    const EV_SYNC_DURATION_MS: string = "EV_SYNC_DURATION_MS";
+
+    # Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
+    const EV_SYNC_ERROR_CODE: string = "EV_SYNC_ERROR_CODE";
+
+    const EV_SYNC_ERROR_CODE_INT: string = "EV_SYNC_ERROR_CODE_INT";
+
+    # Key of the synchronization error message. The message is stored as a string.
+    const EV_SYNC_ERROR_MESSAGE: string = "EV_SYNC_ERROR_MESSAGE";
+
+    #TODO
+    const EV_NEW_BLOCK_CURRENCY_NAME: string = "EV_NEW_BLOCK_CURRENCY_NAME";
+
+    const EV_NEW_BLOCK_HASH: string = "EV_NEW_BLOCK_HASH";
+
+    const EV_NEW_BLOCK_HEIGHT: string = "EV_NEW_BLOCK_HEIGHT";
+
+    #TODO
+    const EV_NEW_OP_WALLET_NAME: string = "EV_NEW_OP_WALLET_NAME";
+
+    const EV_NEW_OP_ACCOUNT_INDEX: string = "EV_NEW_OP_ACCOUNT_INDEX";
+
+    const EV_NEW_OP_UID: string = "EV_NEW_OP_UID";
+
+    # Get index of account in user's wallet
+    # 32-bit integer
+    getIndex(): i32;
+
+    # Get the list of all operations.
+    queryOperations(): OperationQuery;
+
+    # Get balance of account.
+    # @param callback, if getBalacne, Callback returning an Amount object which represents account's balance
+    getBalance(callback: callback2<void, optional<Amount>, optional<Error>>);
+
+    # Get balance of account at a precise interval with a certain granularity.
+    # @param start, lower bound of search range
+    # @param end, upper bound of search range
+    # @param precision, granularity at which we want results
+    # @param callback, ListCallback returning a list of Amount object which represents account's balance
+    getBalanceHistory(
+        start: string,
+        end: string,
+        period: TimePeriod,
+        callback: callback2<void, optional<list<Amount>>, optional<Error>>
+    );
+
+    # Get synchronization status of account.
+    # @return bool
+    isSynchronizing(): bool;
+
+    # Start synchronization of account.
+    # @return EventBus, handler will be notified of synchronization outcome
+    synchronize(): EventBus;
+
+    # Return account's preferences.
+    # @return Preferences object
+    getPreferences(): Preferences;
+
+    # Return account's logger which provides all needed (e.g. database) logs.
+    # @return Logger Object
+    getLogger(): Logger;
+
+    # Return operation for a specific operation.
+    # @param uid, string of operation id
+    getOperationPreferences(uid: string): Preferences;
+
+    #TODO
+    getFreshPublicAddresses(callback: callback2[void, optional<list<Address>>, optional<Error>>);
+
+    # Get event bus through which account is notified on synchronization status.
+    # @return EventBus object
+    getEventBus(): EventBus;
+
+    # Start observing blockchain on which account synchronizes and send/receive transactions.
+    startBlockchainObservation();
+
+    # Stop observing blockchain.
+    stopBlockchainObservation();
+
+    # Get account's observation status.
+    # @return boolean
+    isObservingBlockchain(): bool;
+
+    # Get Last block of blockchain on which account operates.
+    # @param callback, Callback returning, if getLastBlock succeeds, a Block object
+    getLastBlock(callback: callback2<void, optional<Block>, optional<Error>>);
+
+    # Get the key used to generate the account.
+    getRestoreKey(): string;
+
+    # Erase data (in user's DB) relative to wallet since given date.
+    # @param date, start date of data deletion
+    eraseDataSince(date: date, callback: callback2<void, optional<ErrorCode>, optional<Error>>);
+}

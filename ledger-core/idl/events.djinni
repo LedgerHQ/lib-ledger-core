@@ -1,0 +1,94 @@
+@import "dynamic.djinni"
+@import "thread_dispatcher.djinni"
+
+# Enum of different event codes.
+EventCode = enum {
+    # An unknown event code.
+    undefined;
+
+    # A new operation event.
+    new_operation;
+
+    # A new block event.
+    new_block;
+
+    # Event emitted when a wallet synchronization started.
+    synchronization_started;
+
+    # Event emitted when a wallet synchronization failed.
+    synchronization_failed;
+
+    # Event emitted when a wallet synchronization succeeded.
+    synchronization_succeed;
+
+    # Event emitted when a wallet synchronization succeeded on the previously empty account.
+    synchronization_succeed_on_previously_empty_account;
+}
+
+# Class representing an event.
+Event = interface +c {
+    # Get event code (for more details, please refer to EventCode enum).
+    # @return EventCode enum entry
+    getCode(): EventCode;
+
+    # Get payload of event.
+    # @return DynamicObject object
+    getPayload(): DynamicObject;
+
+    # Tell whether the event is a sticky one.
+    # @return bool
+    isSticky(): bool;
+
+    # If event is sticky, return sticky tag.
+    # @return 32 bits integer
+    getStickyTag(): i32;
+
+    # Create a new instance of Event class.
+    # @param code, EventCode enum entry
+    # @param payload, DynamicObject object
+    # @return Event instance
+    static newInstance(code: EventCode, payload: DynamicObject): Event;
+}
+
+# Class respresenting an event receiver.
+EventReceiver = interface +j +o +n +s {
+    # Method triggered when an event occurs.
+    # @param event, Event object that triggers this method
+    onEvent(event: Event);
+}
+
+# Class representing an event bus through which a receiver gets notified.
+EventBus = interface +c {
+    # Subscribe an event receiver to the event bus.
+    # @param context, ExecutionContext object, execution context in which receiver will be notified
+    # @param reveiver, EventReceiver object, receiver that event bu will notify
+    subscribe(context: ExecutionContext, receiver: EventReceiver);
+
+    # Unsubscribe an event receiver from the event bus.
+    # @param receiver, EventReceiver object, receiver to unsubscribe
+    unsubscribe(receiver: EventReceiver);
+}
+
+# Class representing an event publisher.
+EventPublisher = interface +c {
+    # Get event bus through which publisher broadcast its events.
+    # @return EventBus object
+    getEventBus(): EventBus;
+
+    # Broadcast an event through eventbus (to all subscribed receivers to this EventBus).
+    # @param event, Event object
+    post(event: Event);
+
+    # Same as post method but with an sticky event.
+    # @param event, Event object
+    # @param tag, 32 bits integer, tag of sticky event
+    postSticky(event: Event, tag: i32);
+
+    # Relay an event to another EventBus (other than EventPublisher's event bus).
+    # @param bus, EventBus object, through which we want to broadcast EventPublisher's event to EventPublisher's receiver
+    relay(bus: EventBus);
+
+    # Create a new instance of EventPublisher class.
+    # @param context, executionContext object, context in which event publisher broadcast its events
+    static newInstance(context: ExecutionContext): EventPublisher;
+}
