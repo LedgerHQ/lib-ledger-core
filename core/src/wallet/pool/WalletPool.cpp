@@ -179,6 +179,9 @@ namespace ledger {
                 case api::WalletType::MONERO:
                     _factories.push_back(make_factory<api::WalletType::MONERO>(currency, shared_from_this()));
                     break;
+                case api::WalletType::TEZOS:
+                    _factories.push_back(make_factory<api::WalletType::TEZOS>(currency, shared_from_this()));
+                    break;
             }
         }
 
