@@ -25,6 +25,8 @@ public:
     static std::string const RIPPLE_API;
 
     static std::string const RIPPLE_NODE;
+
+    static std::string const TEZOS_NODE;
 };
 
 } } }  // namespace ledger::core::api

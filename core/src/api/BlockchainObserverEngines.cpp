@@ -9,4 +9,6 @@ std::string const BlockchainObserverEngines::LEDGER_API = {"LEDGER_API"};
 
 std::string const BlockchainObserverEngines::RIPPLE_NODE = {"RIPPLE_NODE"};
 
+std::string const BlockchainObserverEngines::TEZOS_NODE = {"TEZOS_NODE"};
+
 } } }  // namespace ledger::core::api
