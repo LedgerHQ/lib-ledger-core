@@ -37,6 +37,7 @@
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
+#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -185,6 +186,7 @@ namespace ledger {
                 case (api::WalletType::BITCOIN): return inflateBitcoinLikeTransaction(sql, accountUid, operation);
                 case (api::WalletType::ETHEREUM): return inflateEthereumLikeTransaction(sql, operation);
                 case (api::WalletType::RIPPLE): return inflateRippleLikeTransaction(sql, operation);
+                case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
             }
         }
@@ -203,6 +205,14 @@ namespace ledger {
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM ripple_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
             RippleLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().rippleTransaction.getValue());
+        }
+
+        void OperationQuery::inflateTezosLikeTransaction(soci::session &sql, OperationApi &operation) {
+            TezosLikeBlockchainExplorerTransaction tx;
+            operation.getBackend().tezosTransaction = Option<TezosLikeBlockchainExplorerTransaction>(tx);
+            std::string transactionHash;
+            sql << "SELECT transaction_hash FROM tezos_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            TezosLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().tezosTransaction.getValue());
         }
 
         void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation) {

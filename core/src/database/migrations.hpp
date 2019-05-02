@@ -137,6 +137,10 @@ namespace ledger {
         // Add block_height column to erc20_operations table
         template <> void migrate<10>(soci::session& sql);
         template <> void rollback<10>(soci::session& sql);
+
+        // Tezos Support
+        template <> void migrate<11>(soci::session& sql);
+        template <> void rollback<11>(soci::session& sql);
     }
 }
 

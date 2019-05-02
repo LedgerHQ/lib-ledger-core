@@ -118,7 +118,22 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                         use(RIPs);
                 break;
             }
-            case api::WalletType::MONERO:break; // TODO INSERT MONERO NETWORK PARAMS
+            case api::WalletType::TEZOS: {
+                auto &params = currency.tezosLikeNetworkParameters.value();
+                std::stringstream additionalTIPs;
+                std::string separator(";");
+                strings::join(params.AdditionalTIPs, additionalTIPs, separator);
+                auto TIPs = additionalTIPs.str();
+                auto xpubVersion = hex::toString(params.XPUBVersion);
+                sql << "INSERT INTO tezos_currencies VALUES(:name, :identifier, :xpub, :prefix, :additionalTIPs)",
+                        use(currency.name),
+                        use(params.Identifier),
+                        use(xpubVersion),
+                        use(params.MessagePrefix),
+                        use(TIPs);
+                break; // TODO INSERT MONERO NETWORK PARAMS
+            }
+            case api::WalletType::MONERO:break;
         }
         inserted = true;
     }
@@ -200,7 +215,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 }
 
                 break;
-            };
+            }
             case api::WalletType::RIPPLE: {
                 rowset<row> ripple_rows = (sql.prepare << "SELECT ripple_currencies.xpub_version,"
                         " ripple_currencies.message_prefix, ripple_currencies.identifier,"
@@ -217,7 +232,24 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 }
 
                 break;
-            };
+            }
+            case api::WalletType::TEZOS: {
+                rowset<row> tezos_rows = (sql.prepare << "SELECT tezos_currencies.xpub_version,"
+                        " tezos_currencies.message_prefix, tezos_currencies.identifier,"
+                        " tezos_currencies.additional_TIPs "
+                        " FROM tezos_currencies "
+                        " WHERE tezos_currencies.name = :currency_name", use(currency.name));
+                for (auto &tezos_row : tezos_rows) {
+                    api::TezosLikeNetworkParameters params;
+                    params.XPUBVersion = hex::toByteArray(tezos_row.get<std::string>(0));
+                    params.MessagePrefix = tezos_row.get<std::string>(1);
+                    params.Identifier = tezos_row.get<std::string>(2);
+                    params.AdditionalTIPs = strings::split(tezos_row.get<std::string>(3), ",");
+                    currency.tezosLikeNetworkParameters = params;
+                }
+
+                break;
+            }
             case api::WalletType::MONERO:break;
         }
         getAllUnits(sql, currency);
