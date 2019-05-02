@@ -494,6 +494,8 @@ namespace ledger {
                                 sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
                                 break;
                             }
+                            case api::OperationType::NONE:
+                                break;
                         }
                     }
                     operationsCount += 1;

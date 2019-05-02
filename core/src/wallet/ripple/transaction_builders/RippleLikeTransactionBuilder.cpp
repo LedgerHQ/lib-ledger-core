@@ -106,6 +106,10 @@ namespace ledger {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::RippleLikeTransactionBuilder> RippleLikeTransactionBuilder::setDestinationTag(int64_t tag) {
+            _request.destinationTag = tag;
+            return shared_from_this();
+        }
         void RippleLikeTransactionBuilder::build(const std::shared_ptr<api::RippleLikeTransactionCallback> &callback) {
             build().callback(_context, callback);
         }
@@ -157,6 +161,14 @@ namespace ledger {
             auto sequence = reader.read(4);
             auto bigIntSequence = BigInt::fromHex(hex::toString(sequence));
             tx->setSequence(bigIntSequence);
+
+            auto destinationTagCode = reader.peek();
+            if (destinationTagCode == 0x2E) {
+                //1 byte Destination tag:   Type Code = 2, Field Code = 14
+                reader.readNextByte();
+                auto bigIntTag = BigInt::fromHex(hex::toString(reader.read(4)));
+                tx->setDestinationTag(static_cast<const uint32_t>(bigIntTag.toUint64()));
+            }
 
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             reader.read(2);

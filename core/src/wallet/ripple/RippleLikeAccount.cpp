@@ -407,6 +407,10 @@ namespace ledger {
                     tx->addMemo(memo);
                 }
 
+                if (request.destinationTag.hasValue()) {
+                    tx->setDestinationTag(request.destinationTag.getValue());
+                }
+
                 return explorer->getSequence(accountAddress->toString()).mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &sequence) -> std::shared_ptr<api::RippleLikeTransaction> {
                     tx->setSequence(BigInt(sequence->toString()) + BigInt("1"));
                     return tx;

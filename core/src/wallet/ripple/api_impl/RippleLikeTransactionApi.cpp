@@ -194,6 +194,13 @@ namespace ledger {
             auto sequence = _sequence->toString(16);
             writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_sequence->intValue()));
 
+            if (_destinationTag.hasValue()) {
+                //1 byte Destination tag:   Type Code = 2, Field Code = 14
+                writer.writeByte(0x2E);
+                //4 bytes Destination tag
+                writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_destinationTag.getValue()));
+            }
+
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             writer.writeByteArray({0x20, 0x1B});
             //LastLedgerSequence
@@ -349,6 +356,15 @@ namespace ledger {
         RippleLikeTransactionApi &RippleLikeTransactionApi::setHash(const std::string &hash) {
             _hash = hash;
             return *this;
+        }
+
+        RippleLikeTransactionApi &RippleLikeTransactionApi::setDestinationTag(uint32_t tag) {
+            _destinationTag = tag;
+            return *this;
+        }
+
+        std::experimental::optional<int64_t> RippleLikeTransactionApi::getDestinationTag() {
+            return _destinationTag.toOptional();
         }
 
         std::vector<api::RippleLikeMemo> RippleLikeTransactionApi::getMemos() {
