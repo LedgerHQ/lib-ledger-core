@@ -1,6 +1,7 @@
 @import "amount.djinni"
+@import "currency.djinni"
 @import "error.djinni"
-@import "trust_level.djinni"
+@import "trust.djinni"
 
 OperationOrderKey = enum {
     date;
@@ -96,4 +97,58 @@ OperationQuery = interface +c {
     # Execute query to retrieve operations.
     # @param callback, if execute method succeed, return a list of Operation objects
     execute(callback: callback2<void, optional<list<Operation>>, optional<Error>>);
+}
+
+# Class representing an operation.
+Operation = interface +c {
+    # Get id's operation.
+    # @return string
+    getUid(): string;
+
+    # Get account's index in user's wallet.
+    # @return 32-bit integer
+    getAccountIndex(): i32;
+
+    # Get type of operation.
+    # @return OperationType object (for more details refer to OperationType)
+    getOperationType(): OperationType;
+
+    # Return date on which operation was issued.
+    # @return date object
+    getDate(): date;
+
+    # Get senders of operation.
+    # @return List of string, list of all senders
+    getSenders(): list<string>;
+
+    # Get recipients of operation.
+    # @return List of string, list of all recipients
+    getRecipients(): list<string>;
+
+    # Get amount of operation.
+    # @return Amount object
+    getAmount(): Amount;
+
+    # Get fees of operation.
+    # @return Optional Amount object
+    getFees(): optional<Amount>;
+
+    # Get preferences of operation.
+    # @return Prefences object
+    getPreferences(): Preferences;
+
+    # Get trust indicator of operation.
+    # @return TrustIndicator object
+    getTrust(): TrustIndicator;
+
+    # Get block height on which operation was included.
+    # @return Optional 64-bit integer, height of block in which operation was validated
+    getBlockHeight(): optional<i64>;
+
+    # Tells if the operation is complete.
+    # @return boolean
+    isComplete(): bool;
+
+    # Get the currency this operation is about.
+    getCurrency(): Currency;
 }
