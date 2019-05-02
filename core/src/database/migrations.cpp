@@ -570,5 +570,50 @@ namespace ledger {
         template <> void rollback<10>(soci::session& sql) {
             // not supported in standard ways by SQLite :(
         }
+
+        template <> void migrate<11>(soci::session& sql) {
+            sql << "CREATE TABLE tezos_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "xpub_version VARCHAR(255) NOT NULL,"
+                    "message_prefix VARCHAR(255) NOT NULL,"
+                    "additional_TIPs TEXT"
+                    ")";
+
+            sql << "CREATE TABLE tezos_accounts("
+                    "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "idx INTEGER NOT NULL,"
+                    "address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE tezos_transactions("
+                    "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
+                    "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "fees VARCHAR(255) NOT NULL,"
+                    "confirmations BIGINT NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE tezos_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES tezos_transactions(transaction_uid),"
+                    "transaction_hash VARCHAR(255) NOT NULL"
+                    ")";
+        }
+
+        template <> void rollback<11>(soci::session& sql) {
+            sql << "DROP TABLE tezos_operations";
+
+            sql << "DROP TABLE tezos_transactions";
+
+            sql << "DROP TABLE tezos_accounts";
+
+            sql << "DROP TABLE tezos_currencies";
+        }
     }
 }
