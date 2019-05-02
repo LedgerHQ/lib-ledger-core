@@ -14,3 +14,11 @@ TrustLevel = enum {
     untrusted;
     dropped;
 }
+
+# The trust indicator of an operation.
+TrustIndicator = interface +c {
+    getTrustWeight(): i32;
+    getTrustLevel(): TrustLevel;
+    getConflictingOperationUids(): list<string>;
+    getOrigin(): string;
+}
