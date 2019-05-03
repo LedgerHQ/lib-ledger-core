@@ -148,6 +148,22 @@ namespace ledger {
             });
         }
 
+        static DerivationScheme getAccountScheme(DerivationScheme &scheme) {
+            auto accountScheme = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX);
+            // To handle all exotic paths we should avoid private derivations
+            // So if node or/and address level are hardened, then they are included in account's derivation path
+            auto path = scheme.getPath();
+            auto hardenedDepth = path.getDepth();
+            while (hardenedDepth) {
+                if (path.isHardened(hardenedDepth - 1)) {
+                    break;
+                }
+                hardenedDepth --;
+            }
+            auto lastHardenedScheme = scheme.getSchemeToDepth(hardenedDepth);
+            return accountScheme.getPath().getDepth() > lastHardenedScheme.getPath().getDepth() ? accountScheme : lastHardenedScheme;
+        }
+
         Future<api::ExtendedKeyAccountCreationInfo>
         EthereumLikeWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<EthereumLikeWallet>(shared_from_this());
@@ -159,8 +175,7 @@ namespace ledger {
                 auto keychainEngine = self->getConfiguration()->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
                 if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
                     keychainEngine == api::KeychainEngines::BIP49_P2SH) {
-                    auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-                    info.derivations.push_back(xpubPath.toString());
+                    info.derivations.push_back(getAccountScheme(scheme).getPath().toString());
                     info.owners.push_back(std::string("main"));
                 } else {
                     throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "No implementation found found for keychain {}", keychainEngine);
@@ -179,9 +194,7 @@ namespace ledger {
                 for (auto i = 0; i < length; i++) {
                     DerivationPath path(info.derivations[i]);
                     auto owner = info.owners[i];
-                    //result.derivations.push_back(path.getParent().toString());
                     result.derivations.push_back(path.toString());
-                    //result.owners.push_back(owner);
                     result.owners.push_back(owner);
                 }
                 return result;
@@ -199,7 +212,7 @@ namespace ledger {
             EthereumLikeAccountDatabaseHelper::queryAccount(sql, accountUid, entry);
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
-            auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+            auto xpubPath = getAccountScheme(scheme).getPath();
             auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
             return std::make_shared<EthereumLikeAccount>(shared_from_this(),

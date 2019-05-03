@@ -89,7 +89,9 @@ namespace ledger {
                                                                        DerivationSchemeLevel::NODE,
                                                                        DerivationSchemeLevel::ADDRESS_INDEX};
                 for (size_t i = 0; i < _scheme.size(); i++ ) {
-                    if (_scheme[i].level == DerivationSchemeLevel::UNDEFINED) {
+                    // We don't set twice a level
+                    auto it = std::find_if(_scheme.begin() + i, _scheme.end(), [&](const DerivationSchemeNode &node){return node.level == schemeLevel[i];});
+                    if (it == _scheme.end() && _scheme[i].level == DerivationSchemeLevel::UNDEFINED) {
                         _scheme[i].level = schemeLevel[i];
                     }
                 }
@@ -133,6 +135,13 @@ namespace ledger {
                     return DerivationScheme(scheme);
                 }
                 it++;
+            }
+            return *this;
+        }
+
+        DerivationScheme DerivationScheme::getSchemeToDepth(size_t depth) {
+            if (depth <= _scheme.size()) {
+                return DerivationScheme(std::vector<DerivationSchemeNode>(_scheme.begin(), _scheme.begin() + depth));
             }
             return *this;
         }
