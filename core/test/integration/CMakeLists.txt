@@ -189,3 +189,6 @@ add_test (NAME ledger-core-integration-RippleMakeTransaction.CreateTx COMMAND le
 add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseSignedRawTransaction")
 add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransactionWithMemo COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseSignedRawTransactionWithMemo")
 add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransactionWithDestinationTag COMMAND ledger-core-integration-tests --gtest_filter="RippleMakeTransaction.ParseSignedRawTransactionWithDestinationTag")
+
+add_test (NAME ledger-core-integration-TezosMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter="TezosMakeTransaction.CreateTx")
+add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="TezosMakeTransaction.ParseSignedRawTransaction")
