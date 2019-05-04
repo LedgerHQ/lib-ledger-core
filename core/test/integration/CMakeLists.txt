@@ -169,6 +169,7 @@ add_test (NAME ledger-core-integration-EthereumMakeTransaction.ParseUnsignedRawT
 
 add_test (NAME ledger-core-integration-EthereumKeychains.KeychainDerivation COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.KeychainDerivation")
 add_test (NAME ledger-core-integration-EthereumKeychains.EthereumAddressValidation COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumAddressValidation")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumEmptyAddressValidation COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumEmptyAddressValidation")
 add_test (NAME ledger-core-integration-EthereumKeychains.EthereumAddressValidationFromXpub COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumAddressValidationFromXpub")
 add_test (NAME ledger-core-integration-EthereumKeychains.EthereumChildAddressValidationFromPubKeyAndChainCode COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumChildAddressValidationFromPubKeyAndChainCode")
 add_test (NAME ledger-core-integration-EthereumKeychains.EthereumExoticDerivationPaths COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumExoticDerivationPaths")

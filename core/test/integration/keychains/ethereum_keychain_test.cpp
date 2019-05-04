@@ -81,6 +81,11 @@ TEST_F(EthereumKeychains, EthereumAddressValidation) {
 
 }
 
+TEST_F(EthereumKeychains, EthereumEmptyAddressValidation) {
+    auto ethAddress = ledger::core::EthereumLikeAddress::fromEIP55("", ledger::core::currencies::ETHEREUM);
+    EXPECT_EQ(ethAddress->toEIP55(), "0x");
+}
+
 
 TEST_F(EthereumKeychains, EthereumAddressValidationFromXpub) {
     auto extKey = ledger::core::EthereumLikeExtendedPublicKey::fromBase58(ETHEREUM_DATA.currency,
