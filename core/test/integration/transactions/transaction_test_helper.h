@@ -43,6 +43,9 @@
 #include <wallet/ripple/RippleLikeWallet.h>
 #include <wallet/ripple/RippleLikeAccount.h>
 #include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
+#include <wallet/tezos/TezosLikeWallet.h>
+#include <wallet/tezos/TezosLikeAccount.h>
+#include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 #include "../BaseFixture.h"
 
 
@@ -58,7 +61,10 @@ struct TransactionTestData {
                                                        const std::shared_ptr<AbstractWallet>& )> inflate_eth;
 
     std::function<std::shared_ptr<RippleLikeAccount> (const std::shared_ptr<WalletPool>&,
-                                                        const std::shared_ptr<AbstractWallet>& )> inflate_xrp;
+                                                      const std::shared_ptr<AbstractWallet>& )> inflate_xrp;
+
+    std::function<std::shared_ptr<TezosLikeAccount> (const std::shared_ptr<WalletPool>&,
+                                                     const std::shared_ptr<AbstractWallet>& )> inflate_xtz;
 };
 
 struct BitcoinMakeBaseTransaction : public BaseFixture {
@@ -159,6 +165,41 @@ struct RippleMakeBaseTransaction : public BaseFixture {
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;
     std::shared_ptr<RippleLikeAccount> account;
+    api::Currency currency;
+    TransactionTestData testData;
+
+protected:
+    virtual void SetUpConfig() = 0;
+};
+
+struct TezosMakeBaseTransaction : public BaseFixture {
+
+    void SetUp() override {
+        BaseFixture::SetUp();
+        SetUpConfig();
+        recreate();
+    }
+
+    void recreate() {
+        pool = newDefaultPool();
+        wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        account = testData.inflate_xtz(pool, wallet);
+        currency = wallet->getCurrency();
+    }
+
+    void TearDown() override {
+        BaseFixture::TearDown();
+        pool = nullptr;
+        wallet = nullptr;
+        account = nullptr;
+    }
+
+    std::shared_ptr<TezosLikeTransactionBuilder> tx_builder() {
+        return std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(account->buildTransaction());
+    }
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<TezosLikeAccount> account;
     api::Currency currency;
     TransactionTestData testData;
 
