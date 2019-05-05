@@ -117,19 +117,7 @@ namespace ledger {
         bool TezosLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length,
                                                    bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
-
                 std::string number(str, length);
-                BigInt value = BigInt::fromString(number);
-                if (_lastKey == "confirmations") {
-                    _transaction->confirmations = value.toUint64();
-                } else if (_lastKey == "block_height") {
-                    TezosLikeBlockchainExplorer::Block block;
-                    BigInt valueBigInt = BigInt::fromString(number);
-                    block.height = valueBigInt.toUint64();
-                    block.currencyName = currencies::TEZOS.name;
-                    _transaction->block = block;
-                }
-
                 return true;
             }
         }
@@ -141,7 +129,13 @@ namespace ledger {
 
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
-                } else if (_lastKey == "date" && currentObject != "transaction") {
+                } else if (_lastKey == "block_hash") {
+                    TezosLikeBlockchainExplorer::Block block;
+                    BigInt valueBigInt = BigInt::fromString(value);
+                    block.height = valueBigInt.toUint64();
+                    block.currencyName = currencies::TEZOS.name;
+                    _transaction->block = block;
+                } else if (_lastKey == "timestamp") {
                     auto pos = value.find('+');
                     if (pos != std::string::npos && pos > 0) {
                         value = value.substr(0, pos);
@@ -155,14 +149,14 @@ namespace ledger {
                     if (_transaction->block.hasValue()) {
                         _transaction->block.getValue().time = date;
                     }
-                } else if (_lastKey == "Account" && (currentObject == "tx" || currentObject == "transaction")) {
+                } else if (_lastKey == "src") {
                     _transaction->sender = value;
-                } else if (_lastKey == "Destination") {
+                } else if (_lastKey == "destination") {
                     _transaction->receiver = value;
-                } else if (_lastKey == "Amount") {
+                } else if (_lastKey == "amount") {
                     BigInt valueBigInt = BigInt::fromString(value);
                     _transaction->value = valueBigInt;
-                } else if (_lastKey == "Fee") {
+                } else if (_lastKey == "fee") {
                     BigInt valueBigInt = BigInt::fromString(value);
                     _transaction->fees = value;
                 }

@@ -54,51 +54,39 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get balance of 1 address from Tezos Node, but got {} addresses", addresses.size());
             }
+            bool parseNumbersAsString = true;
             std::string addressesStr = addresses[0]->toBase58();
-            return getAccountInfo(addressesStr, "Balance", FieldTypes::StringType);
+            return _http->GET(fmt::format("balance/{}", addressesStr))
+                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [addressesStr](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsArray() && json.Size() == 1 && json[0].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
+                        }
+                        auto info = json[0].GetString();
+                        return std::make_shared<BigInt>(info);
+                    });
         }
 
         Future<std::shared_ptr<BigInt>>
         NodeTezosLikeBlockchainExplorer::getFees() {
-            NodeTezosLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("fee");
-            auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            return _http->GET("head")
                     .json().mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
-                        //Is there a result field ?
-                        if (!json.IsObject() || !json.HasMember("result") ||
-                            !json["result"].IsObject()) {
+                        //Is there a fees field ?
+                        if (!json.IsObject() || !json.HasMember("fees") ||
+                            !json["fees"].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get fees from network, no (or malformed) field \"result\" in response");
                         }
-
-                        auto resultObj = json["result"].GetObject();
-                        //Is there a drops field ?
-                        if (!resultObj.HasMember("drops") || !resultObj["drops"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get fees from network, no (or malformed) field \"drops\" in response");
-                        }
-
-                        //Is there a base_fee field ?
-                        auto dropObj = resultObj["drops"].GetObject();
-                        if (!dropObj.HasMember("base_fee") || !dropObj["base_fee"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get fees from network, no (or malformed) field \"base_fee\" in response");
-                        }
-
-                        auto fees = dropObj["base_fee"].GetString();
+                        auto fees = json["fees"].GetString();
                         return std::make_shared<BigInt>(fees);
                     });
         }
 
         Future<String>
         NodeTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
-            NodeTezosLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("submit");
-            bodyRequest.pushParameter("tx_blob", hex::toString(transaction));
-            auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            //injection/operation
+            return _http->GET("")
                     .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
                         auto &json = *std::get<1>(result);
                         if (!json.IsObject() || !json.HasMember("result") ||
@@ -123,12 +111,7 @@ namespace ledger {
         }
 
         Future<Bytes> NodeTezosLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
-            NodeTezosLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("tx");
-            bodyRequest.pushParameter("trasnaction", transactionHash);
-            bodyRequest.pushParameter("binary", "true");
-            auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            return _http->GET("")
                     .json().template map<Bytes>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> Bytes {
                         auto &json = *std::get<1>(result);
                         if (!json.IsObject() || !json.HasMember("result") ||
@@ -156,11 +139,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Tezos Node, but got {} addresses", addresses.size());
             }
-            NodeTezosLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("account_tx");
-            bodyRequest.pushParameter("account", addresses[0]);
-            auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            return _http->GET(fmt::format("operations/{}?type=Transaction", addresses[0]))
                     .template json<TransactionsBulk, Exception>(
                             LedgerApiParser<TransactionsBulk, TezosLikeTransactionsBulkParser>())
                     .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](
@@ -179,11 +158,7 @@ namespace ledger {
         }
 
         FuturePtr<Block> NodeTezosLikeBlockchainExplorer::getCurrentBlock() const {
-            NodeTezosLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("block");
-            bodyRequest.pushParameter("block_height", std::string("validated"));
-            auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            return _http->GET("head")
                     .template json<Block, Exception>(LedgerApiParser<Block, TezosLikeBlockParser>())
                     .template mapPtr<Block>(getExplorerContext(),
                                             [](const Either<Exception, std::shared_ptr<Block>> &result) {
@@ -214,61 +189,6 @@ namespace ledger {
 
         std::string NodeTezosLikeBlockchainExplorer::getExplorerVersion() const {
             return "";
-        }
-
-
-        Future<std::shared_ptr<BigInt>>
-        NodeTezosLikeBlockchainExplorer::getAccountInfo(const std::string &address,
-                                                         const std::string &key,
-                                                         FieldTypes type) {
-            NodeTezosLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("account_info");
-            bodyRequest.pushParameter("account", address);
-            bodyRequest.pushParameter("block_height", std::string("validated"));
-            auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
-                    .json().mapPtr<BigInt>(getContext(), [address, key, type](const HttpRequest::JsonResult &result) {
-                        auto &json = *std::get<1>(result);
-                        //Is there a result field ?
-                        if (!json.IsObject() || !json.HasMember("result") ||
-                            !json["result"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"result\" in response",
-                                                 key, address);
-                        }
-
-                        //Is there an account_data field ?
-                        auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("account_data") || !resultObj["account_data"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"account_data\" in response",
-                                                 key, address);
-                        }
-
-                        //Is there an field with key name ?
-                        auto accountObj = resultObj["account_data"].GetObject();
-                        switch(type) {
-                            case FieldTypes::NumberType : {
-                                if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsUint64()) {
-                                    throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",
-                                                         key, address, key);
-                                }
-
-                                auto balance = accountObj[key.c_str()].GetUint64();
-                                return std::make_shared<BigInt>((int64_t)balance);
-                            }
-                            case FieldTypes::StringType : {
-                                if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsString()) {
-                                    throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",
-                                                         key, address, key);
-                                }
-
-                                auto balance = accountObj[key.c_str()].GetString();
-                                return std::make_shared<BigInt>(balance);
-                            }
-                        }
-
-                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Failed to get {} which has an unkown field type",
-                                             key);
-                    });
         }
     }
 }

@@ -42,7 +42,7 @@ namespace ledger {
             TezosLikeBlockParser(std::string &lastKey) : _lastKey(lastKey) {};
 
             bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                if (getLastKey() == "block_height") {
+                if (getLastKey() == "level") {
                     std::string number(str, length);
                     BigInt value = BigInt::fromString(number);
                     _block->height = value.toUint64();
@@ -52,9 +52,9 @@ namespace ledger {
 
             bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 std::string value = std::string(str, length);
-                if (getLastKey() == "block_hash") {
+                if (getLastKey() == "hash") {
                     _block->hash = value;
-                } else if (getLastKey() == "time") {
+                } else if (getLastKey() == "timestamp") {
                     _block->time = DateUtils::fromJSON(value);
                 }
                 return true;

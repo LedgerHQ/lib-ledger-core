@@ -85,10 +85,10 @@ TezosLikeAccount = interface +c {
 }
 
 TezosConfigurationDefaults = interface +c {
-	const TEZOS_DEFAULT_API_ENDPOINT: string = "https://data.tezos.com";
+	const TEZOS_DEFAULT_API_ENDPOINT: string = "https://api6.tzscan.io";
+	const TEZOS_DEFAULT_API_VERSION: string = "v3";
 	const TEZOS_OBSERVER_NODE_ENDPOINT_S2: string = "https://s2.tezos.com";
 	const TEZOS_OBSERVER_NODE_ENDPOINT_S3: string = "https://s3.tezos.com";
 	const TEZOS_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.tezos.com";
 	const TEZOS_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.tezos.com";
-	const TEZOS_DEFAULT_PORT: string = "51234";
 }
