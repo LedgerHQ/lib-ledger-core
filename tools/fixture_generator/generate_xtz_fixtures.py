@@ -24,16 +24,15 @@ def getHashs(txsHash):
     # Node: mainnet-node.tzscan.io
 
     #   https://api6.tzscan.io/v3/operations/tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK?type=Transaction
-    syncUrl = "https://api6.tzscan.io/v3/" + address
+    syncUrl = "https://api6.tzscan.io/v3/operations/" + address + "?type=Transaction"
+
     #Get txs related to address
-    params = "{\"params\":[{\"type\":\"Transaction\"}]}"
-    call = requests.post(syncUrl, params)
+    call = requests.post(syncUrl)
     bytes = call.content
     text = bytes.decode('utf8')
-    response = json.loads(text)
-    transactions = response['result']['transactions']
+    transactions = json.loads(text)
     for i in range(len(transactions)) :
-        hash = transactions[i]['tx']['hash']
+        hash = transactions[i]['hash']
         txsHash.append(hash)
 
     return txsHash
@@ -45,7 +44,7 @@ def getTxs(hashs):
     for i in range(len(hashs)):
         bytes = requests.post(url + hashs[i]).content
         text = bytes.decode('utf8')
-        tx = json.loads(text)['result']
+        tx = json.loads(text)
         txs.append(tx)
     return txs
 
@@ -89,7 +88,7 @@ def makeCPP(namespace, txs):
     newLines.append("\t\tnamespace "+namespace+" {\n")
     apiCalls = []
     apiCalls.append("core::api::AccountCreationInfo XPUB_INFO(\n")
-    apiCalls.append('        0, {"xtz"}, {"44\'/144\'/0\'"}, \n')
+    apiCalls.append('        0, {"xtz"}, {"44\'/1729\'/0\'"}, \n')
     apiCalls.append('{ledger::core::hex::toByteArray("' + pubKey + '")} , {ledger::core::hex::toByteArray("' + chainCode + '")}\n')
     apiCalls.append(');\n')
     apiCalls.append("std::shared_ptr<core::"+classPrefix+"LikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {\n")

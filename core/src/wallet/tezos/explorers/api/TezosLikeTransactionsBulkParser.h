@@ -49,7 +49,7 @@ namespace ledger {
             };
 
             bool StartArray() {
-                if (_depth >= 1 || getLastKey() == "transactions") {
+                if (_depth >= 1 || getLastKey() == "") {
                     _depth += 1;
                 }
 
@@ -62,9 +62,6 @@ namespace ledger {
 
             bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 std::string value = std::string(str, length);
-                if (_depth == 0 && getLastKey() == "marker") {
-                    _bulk->marker = value;
-                }
                 PROXY_PARSE_TXS(String, str, length, copy)
             }
 

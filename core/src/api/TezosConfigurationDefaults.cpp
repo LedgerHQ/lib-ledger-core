@@ -5,7 +5,9 @@
 
 namespace ledger { namespace core { namespace api {
 
-std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT = {"https://data.tezos.com"};
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT = {"https://api6.tzscan.io"};
+
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION = {"v3"};
 
 std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_NODE_ENDPOINT_S2 = {"https://s2.tezos.com"};
 
@@ -14,7 +16,5 @@ std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_NODE_ENDPOINT_S3 = 
 std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_WS_ENDPOINT_S2 = {"wss://s2.tezos.com"};
 
 std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_WS_ENDPOINT_S3 = {"wss://s3.tezos.com"};
-
-std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_PORT = {"51234"};
 
 } } }  // namespace ledger::core::api

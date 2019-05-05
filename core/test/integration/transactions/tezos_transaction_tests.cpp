@@ -79,7 +79,7 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 
     builder->setFees(api::Amount::fromLong(currency, 10));
-    builder->sendToAddress(api::Amount::fromLong(currency, 220000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
+    builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
     auto f = builder->build();
     auto tx = ::wait(f);
     auto serializedTx = tx->serialize();
@@ -124,8 +124,6 @@ TEST_F(TezosMakeTransaction, ParseSignedRawTransaction) {
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 
     // ensure the values are correct
-    EXPECT_EQ(tx->getLedgerSequence()->intValue(), 44196239);
-    EXPECT_EQ(tx->getSequence()->intValue(), 1);
     EXPECT_EQ(tx->getHash(), "af4bb95de86a640b90b2af3c696ef26efe7dd71864cc959d8030b448dd48e756");
     EXPECT_EQ(tx->getSender()->toBase58(), "rsvAf4P8Tx6tBUdWPNesMngXDmbZ2LMVF8");
     EXPECT_EQ(tx->getReceiver()->toBase58(), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");

@@ -21,6 +21,8 @@ public:
 
     static std::string const TEZOS_DEFAULT_API_ENDPOINT;
 
+    static std::string const TEZOS_DEFAULT_API_VERSION;
+
     static std::string const TEZOS_OBSERVER_NODE_ENDPOINT_S2;
 
     static std::string const TEZOS_OBSERVER_NODE_ENDPOINT_S3;
@@ -28,8 +30,6 @@ public:
     static std::string const TEZOS_OBSERVER_WS_ENDPOINT_S2;
 
     static std::string const TEZOS_OBSERVER_WS_ENDPOINT_S3;
-
-    static std::string const TEZOS_DEFAULT_PORT;
 };
 
 } } }  // namespace ledger::core::api
