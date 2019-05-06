@@ -134,6 +134,11 @@ namespace ledger {
                 _status = status;
                 return *this;
             };
+
+            ERC20LikeOperation &setBlockHeight(int64_t blockHeight) {
+                _blockHeight = blockHeight;
+                return *this;
+            }
             
         private:
             std::string _uid;
