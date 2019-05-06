@@ -158,7 +158,7 @@ namespace ledger {
                 if (path.isHardened(hardenedDepth - 1)) {
                     break;
                 }
-                hardenedDepth --;
+                hardenedDepth--;
             }
             auto lastHardenedScheme = scheme.getSchemeToDepth(hardenedDepth);
             return accountScheme.getPath().getDepth() > lastHardenedScheme.getPath().getDepth() ? accountScheme : lastHardenedScheme;

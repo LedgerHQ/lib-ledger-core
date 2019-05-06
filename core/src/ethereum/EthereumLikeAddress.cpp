@@ -86,7 +86,7 @@ namespace ledger {
                                                                             const api::Currency &currency,
                                                                             const Option<std::string> &derivationPath) {
             std::vector<uint8_t> keccack256;
-            if (!address.empty()) {
+            if (address.length() > 2) {
                 //Remove 0x
                 auto tmpAddress = address.substr(2, address.length() - 2);
                 keccack256 = hex::toByteArray(tmpAddress);

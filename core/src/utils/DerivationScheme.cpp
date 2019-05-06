@@ -139,7 +139,7 @@ namespace ledger {
             return *this;
         }
 
-        DerivationScheme DerivationScheme::getSchemeToDepth(size_t depth) {
+        DerivationScheme DerivationScheme::getSchemeToDepth(size_t depth) const {
             if (depth <= _scheme.size()) {
                 return DerivationScheme(std::vector<DerivationSchemeNode>(_scheme.begin(), _scheme.begin() + depth));
             }
