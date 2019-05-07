@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_TEZOSLIKETRANSACTION_HPP
 #define DJINNI_GENERATED_TEZOSLIKETRANSACTION_HPP
 
+#include "../utils/optional.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -20,6 +21,7 @@
 namespace ledger { namespace core { namespace api {
 
 class Amount;
+class BigInt;
 class TezosLikeAddress;
 
 /**Class representing a Tezos transaction */
@@ -58,6 +60,15 @@ public:
 
     /** Get Signing public Key */
     virtual std::vector<uint8_t> getSigningPubKey() = 0;
+
+    virtual std::shared_ptr<BigInt> getCounter() = 0;
+
+    virtual std::shared_ptr<Amount> getGasLimit() = 0;
+
+    virtual std::shared_ptr<Amount> getStorageLimit() = 0;
+
+    /** Get hash of block in which tx is included */
+    virtual std::experimental::optional<std::string> getBlockHash() = 0;
 };
 
 } } }  // namespace ledger::core::api

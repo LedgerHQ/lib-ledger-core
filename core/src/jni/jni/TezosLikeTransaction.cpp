@@ -3,6 +3,7 @@
 
 #include "TezosLikeTransaction.hpp"  // my header
 #include "Amount.hpp"
+#include "BigInt.hpp"
 #include "Marshal.hpp"
 #include "TezosLikeAddress.hpp"
 
@@ -117,6 +118,46 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppP
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
         auto r = ref->getSigningPubKey();
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1getCounter(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
+        auto r = ref->getCounter();
+        return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1getGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
+        auto r = ref->getGasLimit();
+        return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1getStorageLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
+        auto r = ref->getStorageLimit();
+        return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1getBlockHash(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
+        auto r = ref->getBlockHash();
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
