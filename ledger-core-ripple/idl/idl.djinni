@@ -1,5 +1,8 @@
 @extern "../../ledger-core/idl/core.yaml"
 
+@import "addresses.djinni"
+@import "memo.djinni"
+
 # Main Ripple interface file.
 #
 # This file serves as API entry point and defines everything that can be manipulated from a foreign

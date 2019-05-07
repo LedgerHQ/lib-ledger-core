@@ -28,14 +28,11 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEOPERATION_H
-#define LEDGER_CORE_RIPPLELIKEOPERATION_H
-
+#pragma once
 
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
-#include <wallet/common/api_impl/OperationApi.h>
+#include <core/api_impl/OperationApi.h>
 
 namespace ledger {
     namespace core {
@@ -50,5 +47,3 @@ namespace ledger {
 
     }
 }
-
-#endif //LEDGER_CORE_RIPPLELIKEOPERATION_H

@@ -28,30 +28,26 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEBLOCKCHAINEXPLORER_H
-#define LEDGER_CORE_RIPPLELIKEBLOCKCHAINEXPLORER_H
-
+#pragma once
 
 #include <string>
 
-#include <api/DynamicObject.hpp>
-#include <api/ExecutionContext.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <api/RippleLikeMemo.hpp>
-#include <async/DedicatedContext.hpp>
-#include <collections/DynamicObject.hpp>
-#include <math/BigInt.h>
-#include <net/HttpClient.hpp>
-#include <utils/ConfigurationMatchable.h>
-#include <utils/Option.hpp>
-#include <wallet/common/Block.h>
-#include <wallet/common/explorers/AbstractBlockchainExplorer.h>
+#include <core/api/DynamicObject.hpp>
+#include <core/api/ExecutionContext.hpp>
+#include <core/async/DedicatedContext.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/math/BigInt.h>
+#include <core/net/HttpClient.hpp>
+#include <core/utils/ConfigurationMatchable.h>
+#include <core/utils/Option.hpp>
+#include <core/wallet/Block.h>
+#include <core/wallet/explorers/AbstractBlockchainExplorer.h>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
 namespace ledger {
     namespace core {
-
         struct RippleLikeBlockchainExplorerTransaction {
             std::string hash;
             std::chrono::system_clock::time_point receivedAt;
@@ -100,6 +96,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEBLOCKCHAINEXPLORER_H

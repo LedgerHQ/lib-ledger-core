@@ -33,7 +33,7 @@
 #define LEDGER_CORE_RIPPLELIKEBLOCKAPI_H
 
 #include <api/RippleLikeBlock.hpp>
-#include <wallet/common/Block.h>
+#include <core/wallet/Block.h>
 
 namespace ledger {
     namespace core {

@@ -1,4 +1,5 @@
 @import "amount.djinni"
+@import "block.djinni"
 @import "error.djinni"
 @import "events.djinni"
 @import "logger.djinni"
@@ -78,7 +79,7 @@ Account = interface +c {
     getOperationPreferences(uid: string): Preferences;
 
     #TODO
-    getFreshPublicAddresses(callback: callback2[void, optional<list<Address>>, optional<Error>>);
+    getFreshPublicAddresses(callback: callback2<void, optional<list<Address>>, optional<Error>>);
 
     # Get event bus through which account is notified on synchronization status.
     # @return EventBus object
@@ -104,4 +105,30 @@ Account = interface +c {
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
     eraseDataSince(date: date, callback: callback2<void, optional<ErrorCode>, optional<Error>>);
+}
+
+# Structure of informations needed for account creation.
+AccountCreationInfo = record {
+    # 32-bit integer, index of account in user's wallet.
+    index: i32;
+
+    # List of string, account's owners.
+    owners: list<string>;
+
+    # List of string, list of account's derivations.
+    derivations: list<string>;
+
+    # List of 32 bytes, list of public keys owning the account.
+    publicKeys: list<binary>;
+
+    #TODO
+    chainCodes: list<binary>;
+}
+
+#TODO
+ExtendedKeyAccountCreationInfo = record {
+    index: i32;
+    owners: list<string>;
+    derivations: list<string>;
+    extendedKeys: list<string>;
 }

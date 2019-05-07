@@ -28,14 +28,12 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKETRANSACTIONDATABASEHELPER_H
-#define LEDGER_CORE_RIPPLELIKETRANSACTIONDATABASEHELPER_H
-
+#pragma once
 
 #include <string>
 #include <soci.h>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
+
+#include <explorers/RippleLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
@@ -61,5 +59,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONDATABASEHELPER_H

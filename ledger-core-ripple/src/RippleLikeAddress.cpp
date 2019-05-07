@@ -28,14 +28,14 @@
  *
  */
 
-#include "RippleLikeAddress.h"
 #include <core/collections/DynamicObject.hpp>
 #include <core/collections/vector.hpp>
 #include <core/crypto/Keccak.h>
 #include <core/math/Base58.hpp>
 #include <core/utils/Exception.hpp>
 #include <core/utils/hex.h>
-#include <wallet/ripple/rippleNetworks.h>
+#include <rippleNetworks.h>
+#include <RippleLikeAddress.h>
 
 namespace ledger {
     namespace core {

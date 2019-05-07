@@ -1,4 +1,4 @@
-@import "../math/big_int.djinni"
+@extern "../../ledger-core/idl/core.yaml"
 
 RippleLikeNetworkParameters = record {
 	Identifier: string;

@@ -28,18 +28,15 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKETRANSACTIONAPI_H
-#define LEDGER_CORE_RIPPLELIKETRANSACTIONAPI_H
-
-#include <wallet/common/api_impl/OperationApi.h>
-#include <wallet/ripple/api_impl/RippleLikeBlockApi.h>
+#pragma once
 
 #include <api/RippleLikeMemo.hpp>
 #include <api/RippleLikeTransaction.hpp>
-#include <api/Amount.hpp>
-#include <api/Currency.hpp>
-#include <math/BigInt.h>
+#include <api_impl/RippleLikeBlockApi.h>
+#include <core/api/Amount.hpp>
+#include <core/api/Currency.hpp>
+#include <core/api_impl/OperationApi.h>
+#include <core/math/BigInt.h>
 
 namespace ledger {
     namespace core {
@@ -89,6 +86,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKETRANSACTIONAPI_H

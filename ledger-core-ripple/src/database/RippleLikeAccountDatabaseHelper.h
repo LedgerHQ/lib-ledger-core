@@ -28,28 +28,29 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEACCOUNTDATABASEHELPER_H
-#define LEDGER_CORE_RIPPLELIKEACCOUNTDATABASEHELPER_H
+#pragma once
 
 #include <string>
 
 #include <soci.h>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseEntry.h>
+#include <database/RippleLikeAccountDatabaseEntry.h>
 
 namespace ledger {
     namespace core {
         class RippleLikeAccountDatabaseHelper {
         public:
-            static void createAccount(soci::session& sql,
-                                      const std::string walletUid,
-                                      int32_t index,
-                                      const std::string& address);
-            static bool queryAccount(soci::session& sql,
-                                     const std::string& accountUid,
-                                     RippleLikeAccountDatabaseEntry& entry);
+            static void createAccount(
+                soci::session& sql,
+                const std::string walletUid,
+                int32_t index,
+                const std::string& address
+            );
+
+            static bool queryAccount(
+                soci::session& sql,
+                const std::string& accountUid,
+                RippleLikeAccountDatabaseEntry& entry
+            );
         };
     }
 }
-
-#endif //LEDGER_CORE_RIPPLELIKEACCOUNTDATABASEHELPER_H

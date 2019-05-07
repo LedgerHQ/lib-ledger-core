@@ -28,9 +28,8 @@
  *
  */
 
-
-#include "RippleLikeBlockchainExplorerAccountSynchronizer.h"
-#include <wallet/ripple/RippleLikeAccount.h>
+#include <synchronizers/RippleLikeBlockchainExplorerAccountSynchronizer.h>
+#include <RippleLikeAccount.h>
 
 namespace ledger {
     namespace core {

@@ -151,6 +151,7 @@ endif ()
 
 target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(ledger-core-ripple-interface INTERFACE ../../ledger-core/src)
+target_include_directories(ledger-core-ripple-interface INTERFACE ../../ledger-core/src/core/api)
 target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/bigd)
 target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/soci/core)

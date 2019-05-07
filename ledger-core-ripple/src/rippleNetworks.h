@@ -28,8 +28,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_RIPPLENETWORKS_H
-#define LEDGER_CORE_RIPPLENETWORKS_H
+#pragma once
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER) && _MSC_VER <= 1900
@@ -40,6 +39,7 @@
 #endif
 
 #include <api/RippleLikeNetworkParameters.hpp>
+
 namespace ledger {
     namespace core {
         namespace networks {
@@ -63,4 +63,3 @@ namespace ledger {
         }
     }
 }
-#endif //LEDGER_CORE_RIPPLENETWORKS_H

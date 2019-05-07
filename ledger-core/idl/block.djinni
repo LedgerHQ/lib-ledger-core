@@ -1,0 +1,18 @@
+# Structure of a block in the blockchain.
+Block = record {
+    # String, block's hash.
+    blockHash: string;
+
+    # String, id of block (usually height of block).
+    uid: string;
+
+    # Date on which block was mined.
+    time: date;
+
+    # String, currency's name of blockchain the block belongs to.
+    currencyName: string;
+
+    # 64-bit integer, height of block in the blockchain.
+    height: i64;
+}
+
