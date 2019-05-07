@@ -37,16 +37,18 @@
 #include <tezos/TezosLikeAddress.h>
 #include <bytes/BytesWriter.h>
 #include <bytes/BytesReader.h>
-#include <bytes/RLP/RLPListEncoder.h>
-#include <bytes/RLP/RLPStringEncoder.h>
 #include <utils/hex.h>
 #include <api_impl/BigIntImpl.hpp>
+#include <wallet/tezos/tezosNetworks.h>
+#include <math/Base58.hpp>
+#include <bytes/zarith/zarith.h>
 
 namespace ledger {
     namespace core {
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const api::Currency &currency) {
             _currency = currency;
+            _block = std::make_shared<TezosLikeBlockApi>(Block{});
         }
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) {
@@ -95,6 +97,25 @@ namespace ledger {
             return _time;
         }
 
+        std::shared_ptr<api::BigInt> TezosLikeTransactionApi::getCounter() {
+            if (!_counter) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::getCounter: Invalid Counter");
+            }
+            return std::make_shared<api::BigIntImpl>(*_counter);
+        }
+
+        std::shared_ptr<api::Amount> TezosLikeTransactionApi::getGasLimit() {
+            return _gasLimit;
+        }
+
+        std::shared_ptr<api::Amount> TezosLikeTransactionApi::getStorageLimit() {
+            return _storage;
+        }
+
+        std::experimental::optional<std::string> TezosLikeTransactionApi::getBlockHash() {
+            return _block->getHash();
+        }
+
         std::vector<uint8_t> TezosLikeTransactionApi::getSigningPubKey() {
             return _signingPubKey;
         }
@@ -136,6 +157,58 @@ namespace ledger {
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
             BytesWriter writer;
 
+            // Watermark: Generic-Operation
+            writer.writeByte(OperationTag::OPERATION_TAG_GENERIC);
+
+            // Block Hash
+            auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", params.Identifier);
+            auto decoded = Base58::checkAndDecode(_block->getHash(), config);
+            auto blockHash = decoded.getValue();
+            // Remove 2 first bytes (of version)
+            writer.writeByteArray(std::vector<uint8_t>{blockHash.begin() + 2, blockHash.end()});
+
+            // Operation Tag
+            writer.writeByte(OperationTag::OPERATION_TAG_TRANSACTION);
+
+            // Set Sender
+            // Originated
+            writer.writeByte(0x00);
+            // Curve Code
+            writer.writeByte(CurveTag::Secp256k1);
+            // sender hash160
+            writer.writeByteArray(_sender->getHash160());
+
+            // Fee
+            auto bigIntFess = BigInt::fromString(_fees->toBigInt()->toString(10));
+            writer.writeByteArray(zarith::zSerialize(bigIntFess.toByteArray()));
+
+            // Counter
+            writer.writeByteArray(zarith::zSerialize(_counter->toByteArray()));
+
+            // Gas Limit
+            auto bigIntGasLimit = BigInt::fromString(_gasLimit->toBigInt()->toString(10));
+            writer.writeByteArray(zarith::zSerialize(bigIntGasLimit.toByteArray()));
+
+            // Storage Limit
+            auto bigIntStorageLimit = BigInt::fromString(_storage->toBigInt()->toString(10));
+            writer.writeByteArray(zarith::zSerialize(bigIntStorageLimit.toByteArray()));
+
+            // Amount
+            auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
+            writer.writeByteArray(zarith::zSerialize(bigIntValue.toByteArray()));
+
+            // Set Receiver
+            // Originated
+            writer.writeByte(0x00);
+            // Curve Code
+            writer.writeByte(CurveTag::Secp256k1);
+            // sender hash160
+            writer.writeByteArray(_receiver->getHash160());
+
+            // Additional parameters
+            writer.writeByte(0x00);
             return writer.toByteArray();
         }
 
@@ -176,6 +249,35 @@ namespace ledger {
 
         TezosLikeTransactionApi &TezosLikeTransactionApi::setHash(const std::string &hash) {
             _hash = hash;
+            return *this;
+        }
+
+        TezosLikeTransactionApi &TezosLikeTransactionApi::setBlockHash(const std::string &blockHash) {
+            _block->setHash(blockHash);
+            return *this;
+        }
+
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setGasLimit(const std::shared_ptr<BigInt> &gasLimit) {
+            if (!gasLimit) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setGasLimit: Invalid Gas Limit");
+            }
+            _gasLimit = std::make_shared<Amount>(_currency, 0, *gasLimit);
+            return *this;
+        }
+
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setCounter(const std::shared_ptr<BigInt> &counter) {
+            if (!counter) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setCounter: Invalid Counter");
+            }
+            _counter = counter;
+            return *this;
+        }
+
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setStorage(const std::shared_ptr<BigInt>& storage) {
+            if (!storage) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setStorage: Invalid Storage");
+            }
+            _storage = std::make_shared<Amount>(_currency, 0, *storage);
             return *this;
         }
     }

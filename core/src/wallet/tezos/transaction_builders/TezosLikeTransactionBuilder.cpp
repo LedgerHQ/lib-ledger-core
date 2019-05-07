@@ -34,6 +34,7 @@
 #include <api/TezosLikeTransactionCallback.hpp>
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <bytes/BytesReader.h>
+#include <bytes/zarith/zarith.h>
 #include <wallet/currencies.hpp>
 #include <crypto/SHA512.hpp>
 
@@ -117,6 +118,54 @@ namespace ledger {
                                                          bool isSigned) {
             auto tx = std::make_shared<TezosLikeTransactionApi>(currencies::TEZOS);
             BytesReader reader(rawTransaction);
+            // Watermark: Generic-Operation
+            reader.readNextByte();
+
+            // Block Hash
+            auto blockHash = reader.read(32);
+            tx->setBlockHash(hex::toString(blockHash));
+
+            // Operation Tag
+            auto OpTag = reader.readNextByte();
+            // TODO: switch case on Operation tag to know which one we are dealing with (for the moment only transaction one handled)
+
+            // Get Sender
+            // Originated
+            auto isSenderOriginated = reader.readNextByte();
+            // Curve Code
+            auto senderCurveCode = reader.readNextByte();
+            // TODO: switch case on Operation
+            // sender hash160
+            auto senderHash160 = reader.read(20);
+            tx->setSender(TezosLikeAddress::fromBase58(hex::toString(senderHash160), currency));
+
+            // Fee
+            tx->setFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+
+            // Counter
+            tx->setCounter(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+
+            // Gas Limit
+            tx->setGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+
+            // Storage Limit
+            tx->setStorage(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+
+            // Amount
+            tx->setValue(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+
+            // Get Receiver
+            // Originated
+            auto isReceiverOriginated = reader.readNextByte();
+            // Curve Code
+            auto receiverCurveCode = reader.readNextByte();
+            // TODO: switch case on Operation
+            // sender hash160
+            auto receiverHash160 = reader.read(20);
+            tx->setReceiver(TezosLikeAddress::fromBase58(hex::toString(receiverHash160), currency));
+
+            // Additional parameters
+            auto haveAdditionalParams = reader.readNextByte();
             return tx;
         }
     }

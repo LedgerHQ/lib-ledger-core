@@ -42,6 +42,22 @@
 
 namespace ledger {
     namespace core {
+        // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
+        enum OperationTag {
+            OPERATION_TAG_NONE = -1,
+            OPERATION_TAG_GENERIC = 3,
+            OPERATION_TAG_PROPOSAL = 5,
+            OPERATION_TAG_BALLOT = 6,
+            OPERATION_TAG_REVEAL = 7,
+            OPERATION_TAG_TRANSACTION = 8,
+            OPERATION_TAG_ORIGINATION = 9,
+            OPERATION_TAG_DELEGATION = 10,
+        };
+        enum CurveTag {
+            Ed25519,
+            Secp256k1,
+            P256,
+        };
         class TezosLikeTransactionApi : public api::TezosLikeTransaction {
         public:
             explicit TezosLikeTransactionApi(const api::Currency &currency);
@@ -62,6 +78,14 @@ namespace ledger {
 
             std::chrono::system_clock::time_point getDate() override;
 
+            std::shared_ptr<api::BigInt> getCounter() override;
+
+            std::shared_ptr<api::Amount> getGasLimit() override ;
+
+            std::shared_ptr<api::Amount> getStorageLimit() override;
+
+            std::experimental::optional<std::string> getBlockHash() override;
+
             void setSignature(const std::vector<uint8_t> &rSignature, const std::vector<uint8_t> &sSignature) override;
 
             void setDERSignature(const std::vector<uint8_t> &signature) override;
@@ -80,12 +104,23 @@ namespace ledger {
 
             TezosLikeTransactionApi &setHash(const std::string &hash);
 
+            TezosLikeTransactionApi &setBlockHash(const std::string &blockHash);
+
+            TezosLikeTransactionApi & setGasLimit(const std::shared_ptr<BigInt>& gasLimit);
+            
+            TezosLikeTransactionApi & setCounter(const std::shared_ptr<BigInt>& counter);
+
+            TezosLikeTransactionApi & setStorage(const std::shared_ptr<BigInt>& storage);
+
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlockApi> _block;
             std::string _hash;
             api::Currency _currency;
             std::shared_ptr<api::Amount> _fees;
+            std::shared_ptr<api::Amount> _gasLimit;
+            std::shared_ptr<api::Amount> _storage;
+            std::shared_ptr<BigInt> _counter;
             std::shared_ptr<api::Amount> _value;
             std::shared_ptr<api::TezosLikeAddress> _receiver;
             std::shared_ptr<api::TezosLikeAddress> _sender;
