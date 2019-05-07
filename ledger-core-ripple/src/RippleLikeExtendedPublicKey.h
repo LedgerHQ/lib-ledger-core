@@ -28,11 +28,10 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
-#define LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H
+#pragma once
 
 #include <memory>
+
 #include <api/RippleLikeExtendedPublicKey.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <core/AbstractExtendedPublicKey.h>
@@ -40,8 +39,7 @@
 #include <core/utils/Option.hpp>
 #include <core/utils/DerivationPath.hpp>
 #include <core/api/Currency.hpp>
-
-#include "RippleLikeAddress.h"
+#include <RippleLikeAddress.h>
 
 namespace ledger {
     namespace core {
@@ -94,6 +92,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H

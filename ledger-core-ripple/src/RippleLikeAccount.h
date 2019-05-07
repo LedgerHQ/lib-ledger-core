@@ -28,26 +28,21 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEACCOUNT_H
-#define LEDGER_CORE_RIPPLELIKEACCOUNT_H
-
+#pragma once
 
 #include <time.h>
+
 #include <api/RippleLikeAccount.hpp>
 #include <api/RippleLikeTransactionBuilder.hpp>
-#include <core/api/AddressListCallback.hpp>
 #include <core/api/Address.hpp>
-#include <core/api/StringCallback.hpp>
 #include <core/api/Event.hpp>
-
-#include <wallet/common/AbstractWallet.hpp>
-#include <wallet/common/AbstractAccount.hpp>
-#include <wallet/common/Amount.h>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
-#include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
-#include <wallet/ripple/keychains/RippleLikeKeychain.h>
+#include <core/wallet/AbstractWallet.hpp>
+#include <core/wallet/AbstractAccount.hpp>
+#include <core/wallet/Amount.h>
+#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <synchronizers/RippleLikeAccountSynchronizer.h>
+#include <observers/RippleLikeBlockchainObserver.h>
+#include <keychains/RippleLikeKeychain.h>
 
 namespace ledger {
     namespace core {
@@ -124,5 +119,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_RIPPLELIKEACCOUNT_H

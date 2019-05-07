@@ -32,7 +32,7 @@
 #ifndef LEDGER_CORE_RIPPLELIKEWALLET_H
 #define LEDGER_CORE_RIPPLELIKEWALLET_H
 
-#include <wallet/common/AbstractWallet.hpp>
+#include <core/wallet/AbstractWallet.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
 #include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>

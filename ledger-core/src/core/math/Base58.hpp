@@ -31,12 +31,13 @@
 #ifndef LEDGER_CORE_BASE58_HPP
 #define LEDGER_CORE_BASE58_HPP
 
-#include <vector>
-#include <string>
-#include "../utils/Try.hpp"
-#include "../utils/Exception.hpp"
-#include <api/DynamicObject.hpp>
 #include <memory>
+#include <string>
+#include <vector>
+
+#include <core/api/DynamicObject.hpp>
+#include <core/utils/Try.hpp>
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
