@@ -190,5 +190,33 @@ namespace ledger {
         std::string NodeTezosLikeBlockchainExplorer::getExplorerVersion() const {
             return "";
         }
+
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
+            // TODO: replace with final call
+            // return getHelper(fmt::format("/contract/{}/estimate-gas-limit", getExplorerVersion(), getNetworkParameters().Identifier, address), "estimated_gas_limit");
+            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("10300"));
+        }
+
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
+            // TODO: replace with final call
+            // return getHelper(fmt::format("/contract/{}/storage", getExplorerVersion(), getNetworkParameters().Identifier, address), "storage");
+            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("300"));
+        }
+
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
+            // TODO: replace with final call
+            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("0"));
+            /*
+            bool parseNumbersAsString = true;
+            return _http->GET(fmt::format("/contract/{}/counter", address))
+                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [address] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
+                        if (!json.IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get counter for {}", address);
+                        }
+                        return std::make_shared<BigInt>(json.GetString());
+                    });
+            */
+        }
     }
 }

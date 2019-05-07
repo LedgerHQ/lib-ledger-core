@@ -52,8 +52,11 @@ namespace ledger {
         }
 
         std::vector<uint8_t> TezosLikeAddress::getVersion() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
-                                 "TezosLikeAddress::getVersion is not implemented yet");
+            return _version;
+        }
+
+        std::vector<uint8_t> TezosLikeAddress::getHash160() {
+            return _hash160;
         }
 
         api::TezosLikeNetworkParameters TezosLikeAddress::getNetworkParameters() {

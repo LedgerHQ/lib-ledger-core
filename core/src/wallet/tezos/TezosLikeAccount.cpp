@@ -181,6 +181,19 @@ namespace ledger {
             return query;
         }
 
+        void TezosLikeAccount::getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
+            _explorer->getEstimatedGasLimit(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<api::BigIntImpl>(*gasLimit);
+            }).callback(getContext(), callback);
+        }
+
+        void TezosLikeAccount::getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
+            _explorer->getStorage(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &storage) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<api::BigIntImpl>(*storage);
+            }).callback(getContext(), callback);
+        }
+
+
         Future<AbstractAccount::AddressList> TezosLikeAccount::getFreshPublicAddresses() {
             auto keychain = getKeychain();
             return async<AbstractAccount::AddressList>([=]() -> AbstractAccount::AddressList {
@@ -382,8 +395,15 @@ namespace ledger {
                 tx->setSender(accountAddress);
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey(accountAddress->toString()).getValue());
-                //TODO
-                return Future<std::shared_ptr<api::TezosLikeTransaction>>::failure(Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "TezosLikeAccount::buildTransaction not implemented yet"));
+                return explorer->getCounter(request.toAddress).mapPtr<api::TezosLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) {
+                    tx->setCounter(nonce);
+                    return tx;
+                }).flatMapPtr<Block>(self->getContext(), [explorer] (const std::shared_ptr<api::TezosLikeTransaction> &transaction) {
+                    return explorer->getCurrentBlock();
+                }).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::shared_ptr<Block> &block) {
+                    tx->setBlockHash(block->hash);
+                    return tx;
+                });
             };
             return std::make_shared<TezosLikeTransactionBuilder>(getContext(),
                                                                  getWallet()->getCurrency(),

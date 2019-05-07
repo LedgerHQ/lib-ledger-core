@@ -104,9 +104,7 @@ namespace ledger {
                                                const Option<std::string> &path) {
             auto &params = currency.tezosLikeNetworkParameters.value();
             DeterministicPublicKey k = TezosExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
-            return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k,
-                                                                              DerivationPath(path.getValueOr("m")));
-
+            return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, DerivationPath(path.getValueOr("m")));
         }
 
     }

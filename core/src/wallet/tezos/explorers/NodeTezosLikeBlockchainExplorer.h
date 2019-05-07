@@ -87,6 +87,14 @@ namespace ledger {
 
             std::string getExplorerVersion() const override;
 
+            Future<std::shared_ptr<BigInt>>
+            getEstimatedGasLimit(const std::string &address) override;
+
+            Future<std::shared_ptr<BigInt>>
+            getStorage(const std::string &address) override;
+
+            Future<std::shared_ptr<BigInt>> getCounter(const std::string &address) override;
+
         private:
             api::TezosLikeNetworkParameters _parameters;
         };
