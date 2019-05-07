@@ -18,11 +18,14 @@ TezosLikeAddress = interface +c {
 	# Gets the version of the address.
 	# @return The version of the address
 	getVersion(): binary;
+	# Gets the raw hash160 of the public key
+	# @return The 20 bytes of the public key hash160
+	getHash160(): binary;
 	# Gets the network parameters used for serializing the address.
 	# @return The network parameters of the address
 	getNetworkParameters(): TezosLikeNetworkParameters;
-	# Encodes keccak with respect to EIP55.
-	# @return The EIP55 encoding
+	# Encodes to Base58.
+	# @return The Base58 encoding
 	toBase58(): string;
 }
 

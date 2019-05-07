@@ -30,6 +30,16 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy_native_1getHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeAddress>(nativeRef);
+        auto r = ref->getHash160();
+        return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy_native_1getNetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

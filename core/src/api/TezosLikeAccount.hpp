@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -17,6 +18,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class BigIntCallback;
 class StringCallback;
 class TezosLikeTransaction;
 class TezosLikeTransactionBuilder;
@@ -31,6 +33,22 @@ public:
     virtual void broadcastTransaction(const std::shared_ptr<TezosLikeTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
     virtual std::shared_ptr<TezosLikeTransactionBuilder> buildTransaction() = 0;
+
+    /**
+     * Get needed storage to proceed a tx
+     * @param address to which we want to send tx
+     * @return needed storage to interact with address/contract
+     * Note: same note as for getGasPrice method on EthereumLikeAccount
+     */
+    virtual void getStorage(const std::string & address, const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /**
+     * Get estimated gas limit to set so the transaction will succeed
+     * The passed address could be implicit address or contract
+     * This estimation is based on X last incoming txs (to address) that succeeded
+     * Note: same note as for getFees method on BitcoinLikeAccount
+     */
+    virtual void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<BigIntCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

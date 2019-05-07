@@ -90,6 +90,15 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>>
             getFees() = 0;
+
+            virtual Future<std::shared_ptr<BigInt>>
+            getEstimatedGasLimit(const std::string &address) = 0;
+
+            virtual Future<std::shared_ptr<BigInt>>
+            getStorage(const std::string &address) = 0;
+
+            virtual Future<std::shared_ptr<BigInt>>
+            getCounter(const std::string &address) = 0;
         };
     }
 }

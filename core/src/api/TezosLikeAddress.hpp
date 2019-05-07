@@ -31,14 +31,20 @@ public:
     virtual std::vector<uint8_t> getVersion() = 0;
 
     /**
+     * Gets the raw hash160 of the public key
+     * @return The 20 bytes of the public key hash160
+     */
+    virtual std::vector<uint8_t> getHash160() = 0;
+
+    /**
      * Gets the network parameters used for serializing the address.
      * @return The network parameters of the address
      */
     virtual TezosLikeNetworkParameters getNetworkParameters() = 0;
 
     /**
-     * Encodes keccak with respect to EIP55.
-     * @return The EIP55 encoding
+     * Encodes to Base58.
+     * @return The Base58 encoding
      */
     virtual std::string toBase58() = 0;
 };

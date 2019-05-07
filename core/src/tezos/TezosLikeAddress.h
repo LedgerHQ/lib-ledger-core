@@ -47,6 +47,8 @@ namespace ledger {
 
             std::vector<uint8_t> getVersion() override;
 
+            std::vector<uint8_t> getHash160() override;
+
             api::TezosLikeNetworkParameters getNetworkParameters() override;
 
             std::string toBase58() override;

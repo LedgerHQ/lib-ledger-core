@@ -24,6 +24,11 @@ TezosLikeTransaction = interface +c {
 	getDate(): date;
 	# Get Signing public Key
 	getSigningPubKey(): binary;
+	getCounter(): BigInt;
+	getGasLimit(): Amount;
+	getStorageLimit(): Amount;
+	# Get hash of block in which tx is included
+	getBlockHash(): optional<string>;
 }
 
 #Class representing a Tezos Operation
@@ -82,6 +87,16 @@ TezosLikeAccount = interface +c {
 	broadcastRawTransaction(transaction: binary, callback: Callback<string>);
 	broadcastTransaction(transaction: TezosLikeTransaction, callback: Callback<string>);
 	buildTransaction(): TezosLikeTransactionBuilder;
+	# Get needed storage to proceed a tx
+	# @param address to which we want to send tx
+	# @return needed storage to interact with address/contract
+	# Note: same note as for getGasPrice method on EthereumLikeAccount
+	getStorage(address: string, callback: Callback<BigInt>);
+	# Get estimated gas limit to set so the transaction will succeed
+	# The passed address could be implicit address or contract
+	# This estimation is based on X last incoming txs (to address) that succeeded
+	# Note: same note as for getFees method on BitcoinLikeAccount
+	getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
 }
 
 TezosConfigurationDefaults = interface +c {

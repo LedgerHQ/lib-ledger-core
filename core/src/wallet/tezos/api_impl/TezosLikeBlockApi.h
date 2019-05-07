@@ -47,6 +47,11 @@ namespace ledger {
 
             std::chrono::system_clock::time_point getTime() override;
 
+            TezosLikeBlockApi &setHash(const std::string &blockHash) {
+                _block.hash = blockHash;
+                return *this;
+            };
+
         private:
             Block _block;
         };

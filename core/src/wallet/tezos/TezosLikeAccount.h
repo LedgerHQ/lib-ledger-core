@@ -38,7 +38,7 @@
 #include <api/TezosLikeTransactionBuilder.hpp>
 #include <api/StringCallback.hpp>
 #include <api/Event.hpp>
-
+#include <api/BigIntCallback.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
@@ -107,6 +107,9 @@ namespace ledger {
             std::shared_ptr<api::TezosLikeTransactionBuilder> buildTransaction() override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
+
+            void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
+            void getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override;
 
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
