@@ -29,6 +29,7 @@
  */
 
 #include <gtest/gtest.h>
+#include <vector>
 #include <ledger/core/bytes/BytesWriter.h>
 #include <ledger/core/bytes/zarith/zarith.h>
 #include <ledger/core/utils/hex.h>
@@ -38,10 +39,52 @@ using namespace std;
 using namespace ledger::core;
 
 TEST(ZarithTests, ParseCases) {
-    auto result = zarith::zSerialize(hex::toByteArray("04fa"));
-    EXPECT_EQ(hex::toString(result), "fa09");
-    result = zarith::zSerialize(hex::toByteArray("27d8"));
-    EXPECT_EQ(hex::toString(resultBis), "d84f");
-    result = zarith::zSerialize(hex::toByteArray("02540be400"));
-    EXPECT_EQ(hex::toString(resultBisBis), "80c8afa025");
+    auto res = zarith::zSerialize(hex::toByteArray("04fa"));
+    EXPECT_EQ(hex::toString(res), "fa09");
+
+    res = zarith::zParse(hex::toByteArray("fa09"));
+    EXPECT_EQ(hex::toString(res), "04fa");
+
+    res = zarith::zSerialize(hex::toByteArray("27d8"));
+    EXPECT_EQ(hex::toString(res), "d84f");
+
+    res = zarith::zParse(hex::toByteArray("d84f"));
+    EXPECT_EQ(hex::toString(res), "27d8");
+
+    res = zarith::zSerialize(hex::toByteArray("02540be400"));
+    EXPECT_EQ(hex::toString(res), "80c8afa025");
+
+    res = zarith::zParse(hex::toByteArray("80c8afa025"));
+    EXPECT_EQ(hex::toString(res), "02540be400");
+
+    res = zarith::zSerialize(hex::toByteArray("2710"));
+    EXPECT_EQ(hex::toString(res), "904e");
+
+    res = zarith::zParse(hex::toByteArray("904e"));
+    EXPECT_EQ(hex::toString(res), "2710");
+
+    res = zarith::zSerialize(hex::toByteArray("115"));
+    EXPECT_EQ(hex::toString(res), "9502");
+
+    res = zarith::zSerialize(hex::toByteArray("3b9aca00"));
+    EXPECT_EQ(hex::toString(res), "8094ebdc03");
+
+    res = zarith::zParse(hex::toByteArray("8094ebdc03"));
+    EXPECT_EQ(hex::toString(res), "3b9aca00");
+
+
+    res = zarith::zSerialize(hex::toByteArray("add9"));
+    EXPECT_EQ(hex::toString(res), "d9db02");
+
+    res = zarith::zParse(hex::toByteArray("d9db02"));
+    EXPECT_EQ(hex::toString(res), "add9");
+
+    res = zarith::zSerialize(hex::toByteArray("b204d6f302540be400"));
+    EXPECT_EQ(hex::toString(res), "80c8afa0a5e0bceb84e402");
+
+    res = zarith::zParse(hex::toByteArray("80c8afa0a5e0bceb84e402"));
+    EXPECT_EQ(hex::toString(res), "b204d6f302540be400");
+
+    res = zarith::zParse(hex::toByteArray("d84f9502"));
+    EXPECT_EQ(hex::toString(res), "27d8");
 }
