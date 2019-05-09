@@ -59,7 +59,7 @@ namespace ledger {
             DerivationPath p(path);
             auto key = _derive(0, p.toVector(), _key);
             return std::make_shared<TezosLikeAddress>(_currency, key.getPublicKeyHash160(),
-                                                      std::vector<uint8_t>({0x06, 0xA1, 0x9F}),
+                                                      _currency.tezosLikeNetworkParameters.value().ImplicitPrefix,
                                                       optional<std::string>((_path + p).toString()));
         }
 

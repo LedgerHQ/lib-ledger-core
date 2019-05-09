@@ -16,6 +16,8 @@ auto TezosLikeNetworkParameters::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.Identifier)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.MessagePrefix)),
                                                            ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.XPUBVersion)),
+                                                           ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.ImplicitPrefix)),
+                                                           ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c.OriginatedPrefix)),
                                                            ::djinni::get(::djinni::List<::djinni::String>::fromCpp(jniEnv, c.AdditionalTIPs)),
                                                            ::djinni::get(::djinni::I64::fromCpp(jniEnv, c.TimestampDelay)))};
     ::djinni::jniExceptionCheck(jniEnv);
@@ -23,12 +25,14 @@ auto TezosLikeNetworkParameters::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::
 }
 
 auto TezosLikeNetworkParameters::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 6);
+    ::djinni::JniLocalScope jscope(jniEnv, 8);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<TezosLikeNetworkParameters>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_Identifier)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_MessagePrefix)),
             ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_XPUBVersion)),
+            ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_ImplicitPrefix)),
+            ::djinni::Binary::toCpp(jniEnv, (jbyteArray)jniEnv->GetObjectField(j, data.field_OriginatedPrefix)),
             ::djinni::List<::djinni::String>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_AdditionalTIPs)),
             ::djinni::I64::toCpp(jniEnv, jniEnv->GetLongField(j, data.field_TimestampDelay))};
 }

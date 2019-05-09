@@ -116,17 +116,16 @@ TEST_F(TezosMakeTransaction, CreateTx) {
 
 TEST_F(TezosMakeTransaction, ParseSignedRawTransaction) {
     // round-trip
-    //Tx hash AF4BB95DE86A640B90B2AF3C696EF26EFE7DD71864CC959D8030B448DD48E756
-    auto strTx = "12000022800000002400000001201b02a2618f6140000000014fb18068400000000000000a73210215a9ee08a4b4747e27f348365f93beb5897fa7e8776bedae2cb56917dcdbbf2f74473045022100f2ab61ec941462d692514bfddb00bc0d31ba7da66981193e67a04e90578c18b1022064a2375ecb5a68c22ee3038b783be6a9e1f2c882a8e8bbee43c4cfa93b536926811420237754a1727016188a1b7e52f2060f94339d128314dbc4ad4f38b60fa5624d0ddeddac209babbaa9d7";
+    auto strTx = "032cd54a6d49c82da8807044a41f8670cf31832cb12c151fe2f605407bcdf558960800018bd703c4a2d91b8f1d79455be9b99c2693e931fdfa0901d84f950280c8afa0250001d2e495a7ab40156d0a7c35b73d2530a3470fc87000";
     auto txBytes = hex::toByteArray(strTx);
     auto tx = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::TEZOS, txBytes);
 
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 
     // ensure the values are correct
-    EXPECT_EQ(tx->getHash(), "af4bb95de86a640b90b2af3c696ef26efe7dd71864cc959d8030b448dd48e756");
-    EXPECT_EQ(tx->getSender()->toBase58(), "rsvAf4P8Tx6tBUdWPNesMngXDmbZ2LMVF8");
-    EXPECT_EQ(tx->getReceiver()->toBase58(), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
-    EXPECT_EQ(tx->getValue()->toLong(), 22000000L);
-    EXPECT_EQ(tx->getFees()->toLong(), 10L);
+    //EXPECT_EQ(tx->getHash(), "opBQwjhyCEcH5JxUtthPxh7m7sBxGKnCzVYwUcR7xr7MGwotZnW");
+    EXPECT_EQ(tx->getSender()->toBase58(), "tz1YPSCGWXwBdTncK2aCctSZAXWvGsGwVJqU");
+    EXPECT_EQ(tx->getReceiver()->toBase58(), "tz1es8RjqHUD483BN9APWtvCzgjTFVGeMh3y");
+    EXPECT_EQ(tx->getValue()->toLong(), 10000000000L);
+    EXPECT_EQ(tx->getFees()->toLong(), 1274L);
 }

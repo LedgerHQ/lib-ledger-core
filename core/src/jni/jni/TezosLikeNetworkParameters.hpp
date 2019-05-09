@@ -26,10 +26,12 @@ private:
     friend ::djinni::JniClass<TezosLikeNetworkParameters>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/TezosLikeNetworkParameters") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;[BLjava/util/ArrayList;J)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;[B[B[BLjava/util/ArrayList;J)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
     const jfieldID field_MessagePrefix { ::djinni::jniGetFieldID(clazz.get(), "MessagePrefix", "Ljava/lang/String;") };
     const jfieldID field_XPUBVersion { ::djinni::jniGetFieldID(clazz.get(), "XPUBVersion", "[B") };
+    const jfieldID field_ImplicitPrefix { ::djinni::jniGetFieldID(clazz.get(), "ImplicitPrefix", "[B") };
+    const jfieldID field_OriginatedPrefix { ::djinni::jniGetFieldID(clazz.get(), "OriginatedPrefix", "[B") };
     const jfieldID field_AdditionalTIPs { ::djinni::jniGetFieldID(clazz.get(), "AdditionalTIPs", "Ljava/util/ArrayList;") };
     const jfieldID field_TimestampDelay { ::djinni::jniGetFieldID(clazz.get(), "TimestampDelay", "J") };
 };
