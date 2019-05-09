@@ -28,11 +28,9 @@
  *
  */
 
+#pragma once
 
-#ifndef LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H
-#define LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H
-
-#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
+#include <core/wallet/synchronizers/AbstractAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
@@ -43,5 +41,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H

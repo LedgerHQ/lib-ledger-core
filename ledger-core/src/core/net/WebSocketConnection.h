@@ -29,13 +29,13 @@
  *
  */
 
-#ifndef LEDGER_CORE_WEBSOCKETCONNECTION_H
-#define LEDGER_CORE_WEBSOCKETCONNECTION_H
+#pragma once
 
 #include <string>
-#include <api/WebSocketConnection.hpp>
-#include <api/WebSocketClient.hpp>
-#include "WebSocketClient.h"
+
+#include <core/api/WebSocketConnection.hpp>
+#include <core/api/WebSocketClient.hpp>
+#include <WebSocketClient.h>
 
 namespace ledger {
     namespace core {
@@ -53,6 +53,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_WEBSOCKETCONNECTION_H

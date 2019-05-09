@@ -28,38 +28,37 @@
  *
  */
 
-
-#include "RippleLikeAccount.h"
-#include "RippleLikeWallet.h"
-#include <async/Future.hpp>
-#include <wallet/common/database/OperationDatabaseHelper.h>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
-#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
-#include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
-#include <events/Event.hpp>
-#include <math/Base58.hpp>
-#include <utils/Option.hpp>
-#include <utils/DateUtils.hpp>
-
-#include <database/soci-number.h>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
+#include <core/async/Future.hpp>
+#include <core/database/soci-date.h>
+#include <core/database/soci-number.h>
+#include <core/database/soci-option.h>
+#include <core/events/Event.hpp>
+#include <core/math/Base58.hpp>
+#include <core/utils/Option.hpp>
+#include <core/utils/DateUtils.hpp>
+#include <core/wallet/database/OperationDatabaseHelper.h>
+#include <core/wallet/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
+#include <core/wallet/database/BlockDatabaseHelper.h>
+#include <core/wallet/pool/database/CurrenciesDatabaseHelper.hpp>
+#include <database/RippleLikeAccountDatabaseHelper.h>
+#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <transaction_builders/RippleLikeTransactionBuilder.h>
+#include <database/RippleLikeTransactionDatabaseHelper.h>
+#include <api_impl/RippleLikeTransactionApi.h>
+#include <RippleLikeAccount.h>
+#include <RippleLikeWallet.h>
 
 namespace ledger {
     namespace core {
-
-        RippleLikeAccount::RippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
-                                             int32_t index,
-                                             const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
-                                             const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
-                                             const std::shared_ptr<RippleLikeAccountSynchronizer> &synchronizer,
-                                             const std::shared_ptr<RippleLikeKeychain> &keychain) : AbstractAccount(
-                wallet, index) {
+        RippleLikeAccount::RippleLikeAccount(
+            const std::shared_ptr<AbstractWallet> &wallet,
+            int32_t index,
+            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
+            const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
+            const std::shared_ptr<RippleLikeAccountSynchronizer> &synchronizer,
+            const std::shared_ptr<RippleLikeKeychain> &keychain) : AbstractAccount(
+                wallet, index
+        ) {
             _explorer = explorer;
             _observer = observer;
             _synchronizer = synchronizer;
@@ -363,17 +362,22 @@ namespace ledger {
             return _keychain->getRestoreKey();
         }
 
-        void RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                                        const std::shared_ptr<api::StringCallback> &callback) {
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(),
-                                                                     [](const String &seq) -> std::string {
-                                                                         //TODO: optimistic update
-                                                                         return seq.str();
-                                                                     }).callback(getContext(), callback);
+        void RippleLikeAccount::broadcastRawTransaction(
+            const std::vector<uint8_t> & transaction,
+            const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::api::Error>)> & callback
+        ) {
+            _explorer->pushTransaction(transaction)
+                .map<std::string>(getContext(), [](const String &seq) -> std::string {
+                    //TODO: optimistic update
+                    return seq.str();
+                })
+                .callback(getContext(), callback);
         }
 
-        void RippleLikeAccount::broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction,
-                                                     const std::shared_ptr<api::StringCallback> &callback) {
+        void RippleLikeAccount::broadcastTransaction(
+            const std::shared_ptr<api::RippleLikeTransaction> & transaction,
+            const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::api::Error>)> & callback
+        ) {
             broadcastRawTransaction(transaction->serialize(), callback);
         }
 

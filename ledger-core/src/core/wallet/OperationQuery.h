@@ -28,23 +28,24 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPERATIONQUERY_H
-#define LEDGER_CORE_OPERATIONQUERY_H
 
-#include <api/OperationQuery.hpp>
-#include <api/OperationOrderKey.hpp>
-#include <database/query/QueryBuilder.h>
-#include <database/DatabaseSessionPool.hpp>
-#include <async/DedicatedContext.hpp>
-#include "Operation.h"
-#include "../common/api_impl/OperationApi.h"
-#include "AbstractAccount.hpp"
+#pragma once
+
 #include <unordered_map>
-#include "api_impl/OperationApi.h"
+
+#include <core/api/OperationOrderKey.hpp>
+#include <core/api/OperationQuery.hpp>
+#include <core/database/DatabaseSessionPool.hpp>
+#include <core/database/query/QueryBuilder.h>
+#include <core/api_impl/OperationApi.h>
+#include <core/async/DedicatedContext.hpp>
+#include <core/wallet/AbstractAccount.hpp>
+#include <core/wallet/Operation.h>
 
 namespace ledger {
     namespace core {
         class AbstractAccount;
+
         class OperationQuery : public api::OperationQuery, public std::enable_shared_from_this<OperationQuery>,
                                public DedicatedContext {
         public:
@@ -60,7 +61,9 @@ namespace ledger {
             std::shared_ptr<api::OperationQuery> complete() override;
             std::shared_ptr<api::OperationQuery> partial() override;
 
-            void execute(const std::shared_ptr<api::OperationListCallback> &callback) override;
+            void execute(
+                const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Operation>>>, std::experimental::optional<api::Error>)> & callback
+            ) override;
             Future<std::vector<std::shared_ptr<api::Operation>>> execute();
 
             std::shared_ptr<OperationQuery> registerAccount(const  std::shared_ptr<AbstractAccount>& account);
@@ -84,6 +87,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_OPERATIONQUERY_H

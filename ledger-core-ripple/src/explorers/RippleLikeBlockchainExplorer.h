@@ -44,7 +44,7 @@
 #include <core/utils/Option.hpp>
 #include <core/wallet/Block.h>
 #include <core/wallet/explorers/AbstractBlockchainExplorer.h>
-#include <wallet/ripple/keychains/RippleLikeKeychain.h>
+#include <keychains/RippleLikeKeychain.h>
 
 namespace ledger {
     namespace core {

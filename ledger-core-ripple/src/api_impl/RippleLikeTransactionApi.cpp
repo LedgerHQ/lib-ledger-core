@@ -28,18 +28,17 @@
  *
  */
 
-
-#include <api_impl/BigIntImpl.hpp>
-#include <core/wallet/Amount.h>
-#include <core/wallet/AbstractAccount.hpp>
-#include <core/wallet/AbstractWallet.hpp>
+#include <api_impl/RippleLikeTransactionApi.h>
+#include <core/api_impl/BigIntImpl.hpp>
 #include <core/bytes/BytesWriter.h>
 #include <core/bytes/BytesReader.h>
 #include <core/bytes/RLP/RLPListEncoder.h>
 #include <core/bytes/RLP/RLPStringEncoder.h>
 #include <core/utils/hex.h>
+#include <core/wallet/Amount.h>
+#include <core/wallet/AbstractAccount.hpp>
+#include <core/wallet/AbstractWallet.hpp>
 #include <RippleLikeAddress.h>
-#include <RippleLikeTransactionApi.h>
 
 namespace ledger {
     namespace core {

@@ -29,12 +29,11 @@
  *
  */
 
-#ifndef LEDGER_CORE_WEBSOCKETCLIENT_H
-#define LEDGER_CORE_WEBSOCKETCLIENT_H
+#pragma once
 
-#include <api/WebSocketClient.hpp>
-#include <api/WebSocketConnection.hpp>
-#include <async/Future.hpp>
+#include <core/api/WebSocketClient.hpp>
+#include <core/api/WebSocketConnection.hpp>
+#include <core/async/Future.hpp>
 
 namespace ledger {
     namespace core {
@@ -44,9 +43,11 @@ namespace ledger {
             RECEIVE,
             CLOSE
         };
+
         using WebSocketEventHandler = std::function<void (WebSocketEventType,
                                                           const std::shared_ptr<WebSocketConnection>& connection,
                                                           const Option<std::string>& message, Option<api::ErrorCode>)>;
+
         class WebSocketClient {
         public:
             WebSocketClient(const std::shared_ptr<api::WebSocketClient>& client);
@@ -56,6 +57,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_WEBSOCKETCLIENT_H

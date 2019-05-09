@@ -106,7 +106,9 @@ namespace ledger {
             return shared_from_this();
         }
 
-        void OperationQuery::execute(const std::shared_ptr<api::OperationListCallback> &callback) {
+        void OperationQuery::execute(
+            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Operation>>>, std::experimental::optional<api::Error>)> & callback
+        ) {
            execute().callback(_mainContext, callback);
         }
 

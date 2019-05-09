@@ -57,7 +57,7 @@ namespace ledger {
             Option<Block> block;
             std::string currencyName;
             api::OperationType type;
-            std::shared_ptr<TrustIndicator> trust;
+            std::shared_ptr<api::TrustIndicator> trust;
 
             Operation() {};
             virtual ~Operation();

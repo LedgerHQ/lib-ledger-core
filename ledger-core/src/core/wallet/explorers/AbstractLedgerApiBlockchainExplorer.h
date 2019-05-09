@@ -28,24 +28,22 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_ABSTRACTLEDGERAPIBLOCKCHAINEXPLORER_H
-#define LEDGER_CORE_ABSTRACTLEDGERAPIBLOCKCHAINEXPLORER_H
+#pragma once
 
 #include <fmt/format.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
-#include <api/Configuration.hpp>
-#include <utils/hex.h>
-#include <net/HttpClient.hpp>
-#include <wallet/common/explorers/LedgerApiParser.hpp>
-#include <wallet/common/Block.h>
-#include <utils/JSONUtils.h>
 #include <sstream>
+
+#include <core/api/Configuration.hpp>
+#include <core/net/HttpClient.hpp>
+#include <core/utils/JSONUtils.h>
+#include <core/utils/hex.h>
+#include <core/wallet/explorers/LedgerApiParser.hpp>
+#include <core/wallet/Block.h>
 
 namespace ledger {
     namespace core {
-
         //TODO: remove TransactionsParser and TransactionsBulkParser from template when refactoring them (common interface)
         template <typename BlockchainExplorerTransaction, typename TransactionsBulk, typename TransactionsParser, typename TransactionsBulkParser, typename BlockParser, typename NetworkParameters>
         class AbstractLedgerApiBlockchainExplorer {
@@ -166,6 +164,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_ABSTRACTLEDGERAPIBLOCKCHAINEXPLORER_H

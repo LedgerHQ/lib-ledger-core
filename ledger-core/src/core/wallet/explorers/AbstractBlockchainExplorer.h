@@ -28,19 +28,17 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_ABSTRACTBLOCKCHAINEXPLORER_H
-#define LEDGER_CORE_ABSTRACTBLOCKCHAINEXPLORER_H
+#pragma once
 
 #include <string>
 #include <chrono>
 #include <vector>
 
-#include <async/Future.hpp>
-#include <collections/collections.hpp>
-#include <utils/optional.hpp>
-#include <utils/Option.hpp>
-#include <wallet/common/Block.h>
+#include <core/async/Future.hpp>
+#include <core/collections/collections.hpp>
+#include <core/utils/optional.hpp>
+#include <core/utils/Option.hpp>
+#include <core/wallet/Block.h>
 
 namespace ledger {
     namespace core {
@@ -66,6 +64,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_ABSTRACTBLOCKCHAINEXPLORER_H

@@ -28,21 +28,21 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_PROGRESSNOTIFIER_H
-#define LEDGER_CORE_PROGRESSNOTIFIER_H
 
-#include <api/ExecutionContext.hpp>
+#pragma once
+
 #include <functional>
-#include <utils/Option.hpp>
-#include <utils/Exception.hpp>
 #include <list>
-#include <async/Future.hpp>
-#include <async/Promise.hpp>
 #include <mutex>
+
+#include <core/api/ExecutionContext.hpp>
+#include <core/async/Future.hpp>
+#include <core/async/Promise.hpp>
+#include <core/utils/Exception.hpp>
+#include <core/utils/Option.hpp>
 
 namespace ledger {
     namespace core {
-
         using ProgressHandler = std::function<void (const std::string&, double)>;
 
         template <typename T>
@@ -93,6 +93,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_PROGRESSNOTIFIER_H

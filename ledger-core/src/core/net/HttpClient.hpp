@@ -45,9 +45,9 @@
 #include <core/async/Future.hpp>
 #include <core/async/Promise.hpp>
 #include <core/debug/logger.hpp>
+#include <core/net/HttpUrlConnectionInputStream.hpp>
 #include <core/utils/Either.hpp>
 #include <core/utils/optional.hpp>
-#include <core/netHttpUrlConnectionInputStream.hpp>
 #include <core/utils/Option.hpp>
 
 namespace ledger {

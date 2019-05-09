@@ -28,28 +28,21 @@
  *
  */
 
-
-#include "RippleLikeWallet.h"
-
-#include "RippleLikeAccount.h"
-
 #include <algorithm>
 
-#include <async/wait.h>
-#include <api/ErrorCode.hpp>
-#include <api/AccountCallback.hpp>
-#include <api/ConfigurationDefaults.hpp>
-#include <api/KeychainEngines.hpp>
-
-#include <ripple/RippleLikeExtendedPublicKey.h>
-
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-
+#include <core/async/wait.h>
+#include <core/api/ErrorCode.hpp>
+#include <core/api/AccountCallback.hpp>
+#include <core/api/ConfigurationDefaults.hpp>
+#include <core/api/KeychainEngines.hpp>
+#include <core/wallet/database/AccountDatabaseHelper.h>
+#include <database/RippleLikeAccountDatabaseHelper.h>
+#include <RippleLikeWallet.h>
+#include <RippleLikeAccount.h>
+#include <RippleLikeExtendedPublicKey.h>
 
 namespace ledger {
     namespace core {
-
         const api::WalletType RippleLikeWallet::type = api::WalletType::ETHEREUM;
 
         RippleLikeWallet::RippleLikeWallet(const std::string &name,
@@ -235,6 +228,5 @@ namespace ledger {
         std::shared_ptr<RippleLikeBlockchainExplorer> RippleLikeWallet::getBlockchainExplorer() {
             return _explorer;
         }
-
     }
 }
