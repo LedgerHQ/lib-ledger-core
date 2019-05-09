@@ -28,29 +28,25 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEKEYCHAIN_H
-#define LEDGER_CORE_RIPPLELIKEKEYCHAIN_H
-
+#pragma once
 
 #include <string>
 #include <vector>
-#include <utils/DerivationScheme.hpp>
-#include <utils/Option.hpp>
-#include <preferences/Preferences.hpp>
-#include <api/Configuration.hpp>
-#include <api/DynamicObject.hpp>
-#include <api/Currency.hpp>
-#include <api/AccountCreationInfo.hpp>
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
+
 #include <api/RippleLikeExtendedPublicKey.hpp>
-#include <ripple/RippleLikeAddress.h>
+#include <core/api/AccountCreationInfo.hpp>
+#include <core/api/Configuration.hpp>
+#include <core/api/Currency.hpp>
+#include <core/api/DynamicObject.hpp>
+#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <core/preferences/Preferences.hpp>
+#include <core/utils/DerivationScheme.hpp>
+#include <core/utils/Option.hpp>
+#include <RippleLikeAddress.h>
 
 namespace ledger {
     namespace core {
-
         class RippleLikeKeychain {
-
         public:
             using Address = std::shared_ptr<RippleLikeAddress>;
 
@@ -121,6 +117,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEKEYCHAIN_H

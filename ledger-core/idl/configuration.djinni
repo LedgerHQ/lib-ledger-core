@@ -1,0 +1,106 @@
+# Available API to use with explorers.
+BlockchainExplorerEngines = interface +c {
+    const LEDGER_API: string = "LEDGER_API";
+    const RIPPLE_API: string = "RIPPLE_API";
+    const RIPPLE_NODE: string = "RIPPLE_NODE";
+}
+
+# Available API to use with observers.
+BlockchainObserverEngines = interface +c {
+    const LEDGER_API: string = "LEDGER_API";
+    const RIPPLE_NODE: string = "RIPPLE_NODE";
+}
+
+# Available keychains policies.
+KeychainEngines = interface +c {
+    const BIP32_P2PKH: string = "BIP32_P2PKH";
+    const BIP49_P2SH: string = "BIP49_P2SH";
+    const BIP173_P2WPKH: string = "BIP173_P2WPKH";
+    const BIP173_P2WSH: string = "BIP173_P2WSH";
+}
+
+# Class of constants representing the engines to rely on for synchronization.
+SynchronizerEngines = interface +c {
+    # String, rely on blockchain explorers to synchronize,
+    # For example to consider a transaction valid, it should, first, be included in a block,
+    # then spent UTXOs by this transaction, should be 'valid' through the whole blockchain.
+    const BLOCKCHAIN_EXPLORER: string = "BLOCKCHAIN_EXPLORER";
+
+    #String, rely on Simplified Payment Verification (SPV or light client) to verify transactions,
+    #To be valid, a transaction only needs to be included in a block (no need for a check through whole blockchain)
+    const SPV: string = "SPV";
+}
+
+# Available synchronization mechanisms.
+SynchronizationEngines = interface +c {
+    # Synchronize via blockchain explorers.
+    const BLOCKCHAIN_EXPLORER_SYNCHRONIZATION: string = "BLOCKCHAIN_EXPLORER_SYNCHRONIZATION";
+}
+
+# Default values you might want to use if you don’t know what values you should use.
+ConfigurationDefaults = interface +c {
+    # The default Ledger API endpoint for the explorers.
+    const BLOCKCHAIN_DEFAULT_API_ENDPOINT: string = "https://explorers.api.live.ledger.com";
+
+    # The default Ledger API endpoint for the observers.
+    const BLOCKCHAIN_OBSERVER_WS_ENDPOINT: string = "wss://ws.ledgerwallet.com/blockchain/v2/{}/ws";
+
+    # The default derivation scheme for BIP44 derivation.
+    const BIP44_DERIVATION_SCHEME: string = "44'/<coin_type>'/<account>'/<node>/<address>";
+
+    # Default keychain policy.
+    const DEFAULT_KEYCHAIN: string = "BIP32_P2PKH";
+
+    # Default trust limit (block height).
+    const DEFAULT_TRUST_LIMIT: i32 = 3;
+}
+
+# Overall configuration.
+Configuration = interface +c {
+    # Selects the keychain engine (P2PKH, P2SH...).
+    const KEYCHAIN_ENGINE: string = "KEYCHAIN_ENGINE";
+
+    # Sets the derivation scheme for the KEYCHAIN (defaults 44'/<coin_type>'/<account>'/<node>/<address>).
+    const KEYCHAIN_DERIVATION_SCHEME: string = "KEYCHAIN_DERIVATION_SCHEME";
+
+    # Sets the observable range for HD keychains (BIP32 based).
+    const KEYCHAIN_OBSERVABLE_RANGE: string = "KEYCHAIN_OBSERVABLE_RANGE";
+
+    # Selects the blockchain explorer engine (Ledger's API, Electrum server, RPC):
+    const BLOCKCHAIN_EXPLORER_ENGINE: string = "BLOCKCHAIN_EXPLORER_ENGINE";
+
+    # Sets the API endpoint for API based engine (Ledger's API).
+    const BLOCKCHAIN_EXPLORER_API_ENDPOINT: string = "BLOCKCHAIN_EXPLORER_API_ENDPOINT";
+
+    # Sets the API version.
+    const BLOCKCHAIN_EXPLORER_VERSION: string = "BLOCKCHAIN_EXPLORER_VERSION";
+
+    # Sets the API port (e.g. for XRP it is 51234)
+    const BLOCKCHAIN_EXPLORER_PORT: string = "BLOCKCHAIN_EXPLORER_PORT";
+
+    # Selects the blockchain observer engine (Ledger's API)
+    const BLOCKCHAIN_OBSERVER_ENGINE: string = "BLOCKCHAIN_OBSERVER_ENGINE";
+
+    # Selects the blockchain observer engine (Ledger's API; Websocket version).
+    const BLOCKCHAIN_OBSERVER_WS_ENDPOINT: string = "BLOCKCHAIN_OBSERVER_WS_ENDPOINT";
+
+    # Selects the synchronization engine.
+    const SYNCHRONIZATION_ENGINE: string = "SYNCHRONIZATION_ENGINE";
+
+    # Sets the half batch size (default: 20).
+    const SYNCHRONIZATION_HALF_BATCH_SIZE: string = "SYNCHRONIZATION_HALF_BATCH_SIZE";
+
+    # Operation trust.
+    const TRUST_LIMIT: string = "TRUST_LIMIT";
+}
+
+# Configuration of wallet pools.
+PoolConfiguration = interface +c {
+    # Name to use for the database.
+    const DATABASE_NAME: string = "DATABASE_NAME";
+
+    # Enable internal logging.
+    #
+    # Set to true by default.
+    const ENABLE_INTERNAL_LOGGING: string = "ENABLE_INTERNAL_LOGGING";
+}

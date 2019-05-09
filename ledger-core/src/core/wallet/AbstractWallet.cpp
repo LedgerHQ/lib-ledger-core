@@ -119,10 +119,6 @@ namespace ledger {
             return _name;
         }
 
-        std::shared_ptr<api::BitcoinLikeWallet> AbstractWallet::asBitcoinLikeWallet() {
-            return asInstanceOf<BitcoinLikeWallet>();
-        }
-
         std::shared_ptr<api::ExecutionContext> AbstractWallet::getMainExecutionContext() const {
             return _mainExecutionContext;
         }

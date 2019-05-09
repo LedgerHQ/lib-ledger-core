@@ -1,0 +1,39 @@
+@import "error.djinni"
+
+# A connection to a Web Socket.
+WebSocketConnection = interface +c {
+    # Callback to call upon successful connection.
+    # @param connectionId, the ID of the Web Socket connection
+    onConnect(connectionId: i32);
+
+    # Callback to call upon successful disconnection.
+    onClose();
+
+    # Callback to call upon each incoming message.
+    # @param data, the attached data to the input message
+    onMessage(data: string);
+
+    # Callback to call when a Web Socket error occurs.
+    # @param code, the error code
+    # @param message, a description of the reason of the error
+    onError(code: ErrorCode, message: string);
+
+    getConnectionId(): i32;
+}
+
+# A connected client via Web Socket.
+WebSocketClient = interface +j +o +n {
+    # Connect to a given URL via a Web Socket connection.
+    # @param url, the URL to connect to
+    # @connection, the Web Socket connection to use
+    connect(url: string, connection: WebSocketConnection);
+
+    # Send a message to a given client.
+    # @connection, the Web Socket connection to use
+    # @data, the message to send
+    send(connection: WebSocketConnection, data: string);
+
+    # Disconnect a client.
+    # @connection, the Web Socket connection to use
+    disconnect(connection: WebSocketConnection);
+}

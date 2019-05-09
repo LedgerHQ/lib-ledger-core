@@ -28,13 +28,12 @@
  *
  */
 
-
-#include "RippleLikeTransactionDatabaseHelper.h"
-#include <database/soci-option.h>
-#include <database/soci-date.h>
-#include <database/soci-number.h>
-#include <crypto/SHA256.hpp>
-#include <wallet/common/database/BlockDatabaseHelper.h>
+#include <core/database/soci-option.h>
+#include <core/database/soci-date.h>
+#include <core/database/soci-number.h>
+#include <core/crypto/SHA256.hpp>
+#include <core/wallet/database/BlockDatabaseHelper.h>
+#include <RippleLikeTransactionDatabaseHelper.h>
 
 using namespace soci;
 

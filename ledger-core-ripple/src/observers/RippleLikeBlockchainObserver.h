@@ -28,29 +28,24 @@
  *
  */
 
+#pragma once
 
-#ifndef LEDGER_CORE_RIPPLELIKEBLOCKCHAINOBSERVER_H
-#define LEDGER_CORE_RIPPLELIKEBLOCKCHAINOBSERVER_H
-
-
+#include <spdlog/logger.h>
 #include <string>
 #include <list>
 
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
+#include <explorers/RippleLikeBlockchainExplorer.h>
 
-#include <utils/ConfigurationMatchable.h>
-#include <async/DedicatedContext.hpp>
 
-#include <api/ExecutionContext.hpp>
-#include <api/Currency.hpp>
-#include <api/DynamicObject.hpp>
-
-#include <net/WebSocketClient.h>
-#include <net/WebSocketConnection.h>
-
-#include <spdlog/logger.h>
-#include <wallet/common/observers/AbstractBlockchainObserver.h>
-#include <wallet/common/observers/AbstractLedgerApiBlockchainObserver.h>
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/Currency.hpp>
+#include <core/api/DynamicObject.hpp>
+#include <core/async/DedicatedContext.hpp>
+#include <core/net/WebSocketClient.h>
+#include <core/net/WebSocketConnection.h>
+#include <core/utils/ConfigurationMatchable.h>
+#include <core/wallet/observers/AbstractBlockchainObserver.h>
+#include <core/wallet/observers/AbstractLedgerApiBlockchainObserver.h>
 
 namespace ledger {
     namespace core {
@@ -79,7 +74,6 @@ namespace ledger {
 
         protected:
             void putTransaction(const RippleLikeBlockchainExplorerTransaction &tx) override;
-
             void putBlock(const RippleLikeBlockchainExplorer::Block &block) override;
 
             const api::Currency &getCurrency() const {
@@ -90,30 +84,19 @@ namespace ledger {
                 return _configuration;
             };
 
-        private:
-            api::Currency _currency;
-            std::shared_ptr<api::DynamicObject> _configuration;
-
-
-        protected:
             void onStart() override;
-
             void onStop() override;
 
         private:
             void connect() override;
-
             void reconnect() override;
-
             void onMessage(const std::string &message) override;
+            std::shared_ptr<spdlog::logger> logger() const override;
 
-        private:
-            std::shared_ptr<spdlog::logger> logger() const override ;
+            api::Currency _currency;
+            std::shared_ptr<api::DynamicObject> _configuration;
             std::shared_ptr<WebSocketClient> _client;
             WebSocketEventHandler _handler;
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEBLOCKCHAINOBSERVER_H

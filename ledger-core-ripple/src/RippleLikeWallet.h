@@ -33,18 +33,16 @@
 #define LEDGER_CORE_RIPPLELIKEWALLET_H
 
 #include <core/wallet/AbstractWallet.hpp>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
-#include <wallet/ripple/factories/RippleLikeWalletFactory.h>
-#include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
+#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <observers/RippleLikeBlockchainObserver.h>
+#include <synchronizers/RippleLikeAccountSynchronizer.h>
+#include <factories/RippleLikeWalletFactory.h>
+#include <factories/RippleLikeKeychainFactory.h>
 
 namespace ledger {
     namespace core {
         class RippleLikeWallet : public AbstractWallet {
         public:
-            static const api::WalletType type;
-
             RippleLikeWallet(
                     const std::string &name,
                     const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,

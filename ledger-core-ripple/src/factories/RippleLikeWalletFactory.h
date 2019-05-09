@@ -28,20 +28,16 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_RIPPLELIKEWALLETFACTORY_H
-#define LEDGER_CORE_RIPPLELIKEWALLETFACTORY_H
-
+#pragma once
 
 #include <functional>
 
-#include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
-#include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
-
-#include <api/Currency.hpp>
+#include <core/wallet/AbstractWalletFactory.hpp>
+#include <core/api/Currency.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <factories/RippleLikeKeychainFactory.h>
+#include <observers/RippleLikeBlockchainObserver.h>
+#include <synchronizers/RippleLikeAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
@@ -68,9 +64,5 @@ namespace ledger {
             std::unordered_map<std::string, std::shared_ptr<RippleLikeKeychainFactory>> _keychainFactories;
 
         };
-
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEWALLETFACTORY_H

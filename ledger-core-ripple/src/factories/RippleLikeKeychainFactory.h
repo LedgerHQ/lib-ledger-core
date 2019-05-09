@@ -28,18 +28,13 @@
  *
  */
 
+#pragma once
 
-#ifndef LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H
-#define LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H
-
-
-#include <collections/DynamicObject.hpp>
-
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
-#include <api/Currency.hpp>
-
-#include <wallet/ripple/keychains/RippleLikeKeychain.h>
-#include <preferences/Preferences.hpp>
+#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <core/api/Currency.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/preferences/Preferences.hpp>
+#include <keychains/RippleLikeKeychain.h>
 
 namespace ledger {
     namespace core {
@@ -60,6 +55,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEKEYCHAINFACTORY_H

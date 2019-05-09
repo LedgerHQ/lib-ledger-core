@@ -24,3 +24,6 @@ compile_commands.json
 install_manifest.txt
 tags
 *.a
+/ledger-core/idl/core.yaml
+/ledger-core/src/core/api
+/ledger-core-ripple/src/api
