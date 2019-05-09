@@ -7,6 +7,10 @@ TezosLikeNetworkParameters = record {
 	MessagePrefix: string;
 	# Version of the Extended Public Key standard.
 	XPUBVersion: binary;
+	# Prefix useful during implicit address construction from pubKey hash
+	ImplicitPrefix: binary;
+	# Prefix useful during originated address construction from pubKey hash
+	OriginatedPrefix: binary;
 	# Addition TIPs enabled for this network.
 	AdditionalTIPs: list<string>;
 	# Delay applied to all timestamps. Used to debounce transactions.

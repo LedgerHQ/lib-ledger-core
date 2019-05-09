@@ -137,19 +137,19 @@ namespace ledger {
                         result.push_back(byte);
                     }
 
-                    if (shouldStop) {
-                        break;
-                    }
-
                     // Update
                     id++;
                     delay = id / 7;
                     offset++;
                     offset %= 7;
+
+                    if (shouldStop) {
+                        break;
+                    }
                 }
 
                 // Update bytes reader
-                auto max = std::max<unsigned long>(id + delay, data.size());
+                auto max = std::min<unsigned long>(id + delay, data.size());
                 reader.read(max);
 
                 // Little endianess

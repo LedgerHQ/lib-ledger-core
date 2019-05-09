@@ -78,19 +78,16 @@ namespace ledger {
         FuturePtr<ledger::core::api::Account>
         TezosLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
             if (info.chainCodes.size() != 1 || info.publicKeys.size() != 1 || info.owners.size() != 1)
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                     "Account creation info are inconsistent (only one public key is needed)");
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (only one public key is needed)");
             auto self = getSelf();
             return async<api::ExtendedKeyAccountCreationInfo>([self, info]() -> api::ExtendedKeyAccountCreationInfo {
                 if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
                     info.publicKeys.size() != info.owners.size())
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                         "Account creation info are inconsistent (size of arrays differs)");
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
                 api::ExtendedKeyAccountCreationInfo result;
 
                 if (info.chainCodes[0].size() != 32 || info.publicKeys[0].size() != 33)
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                         "Account creation info are inconsistent (contains invalid public key(s))");
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
                 DerivationPath occurencePath(info.derivations[0]);
 
                 auto xpub = TezosLikeExtendedPublicKey::fromRaw(
@@ -105,19 +102,16 @@ namespace ledger {
                 result.extendedKeys.push_back(xpub->toBase58());
                 result.index = info.index;
                 return result;
-            }).flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(),
-                                                                    [self](const api::ExtendedKeyAccountCreationInfo &info) -> Future<std::shared_ptr<ledger::core::api::Account>> {
-                                                                        return self->newAccountWithExtendedKeyInfo(
-                                                                                info);
-                                                                    });
+            }).flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(), [self](const api::ExtendedKeyAccountCreationInfo &info) {
+                return self->newAccountWithExtendedKeyInfo(info);
+            });
         }
 
         FuturePtr<ledger::core::api::Account>
         TezosLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
 
             if (info.extendedKeys.empty()) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                     "Empty extended keys passed to newAccountWithExtendedKeyInfo");
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Empty extended keys passed to newAccountWithExtendedKeyInfo");
             }
 
             auto self = getSelf();
@@ -138,20 +132,20 @@ namespace ledger {
                 soci::transaction tr(sql);
                 auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
                 if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index))
-                    throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS,
-                                         "Account {}, for wallet '{}', already exists", index, self->getWalletUid());
+                    throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {}, for wallet '{}', already exists", index, self->getWalletUid());
                 AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index);
-                TezosLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index,
-                                                              info.extendedKeys[info.extendedKeys.size() - 1]);
+                TezosLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, info.extendedKeys[info.extendedKeys.size() - 1]);
                 tr.commit();
-                auto account = std::static_pointer_cast<api::Account>(std::make_shared<TezosLikeAccount>(
-                        self->shared_from_this(),
-                        index,
-                        self->_explorer,
-                        self->_observer,
-                        self->_synchronizerFactory(),
-                        keychain
-                ));
+                auto account = std::static_pointer_cast<api::Account>(
+                        std::make_shared<TezosLikeAccount>(
+                                self->shared_from_this(),
+                                index,
+                                self->_explorer,
+                                self->_observer,
+                                self->_synchronizerFactory(),
+                                keychain
+                        )
+                );
                 self->addAccountInstanceToInstanceCache(std::dynamic_pointer_cast<AbstractAccount>(account));
                 return account;
             });
@@ -185,29 +179,21 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> TezosLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<TezosLikeWallet>(shared_from_this());
-            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(),
-                                                                                                 [self, accountIndex](
-                                                                                                         const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
-                                                                                                     api::AccountCreationInfo result;
-                                                                                                     result.index = accountIndex;
-                                                                                                     auto length = info.derivations.size();
-                                                                                                     for (auto i = 0;
-                                                                                                          i <
-                                                                                                          length; i++) {
-                                                                                                         DerivationPath path(
-                                                                                                                 info.derivations[i]);
-                                                                                                         auto owner = info.owners[i];
-                                                                                                         result.derivations.push_back(
-                                                                                                                 path.getParent().toString());
-                                                                                                         result.derivations.push_back(
-                                                                                                                 path.toString());
-                                                                                                         result.owners.push_back(
-                                                                                                                 owner);
-                                                                                                         result.owners.push_back(
-                                                                                                                 owner);
-                                                                                                     }
-                                                                                                     return result;
-                                                                                                 });
+            return getExtendedKeyAccountCreationInfo(accountIndex)
+                    .map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) {
+                        api::AccountCreationInfo result;
+                        result.index = accountIndex;
+                        auto length = info.derivations.size();
+                        for (auto i = 0; i < length; i++) {
+                             DerivationPath path(info.derivations[i]);
+                             auto owner = info.owners[i];
+                             result.derivations.push_back(path.getParent().toString());
+                             result.derivations.push_back(path.toString());
+                             result.owners.push_back(owner);
+                             result.owners.push_back(owner);
+                        }
+                        return result;
+            });
         }
 
         std::shared_ptr<TezosLikeWallet> TezosLikeWallet::getSelf() {

@@ -19,6 +19,10 @@ struct TezosLikeNetworkParameters final {
     std::string MessagePrefix;
     /** Version of the Extended Public Key standard. */
     std::vector<uint8_t> XPUBVersion;
+    /** Prefix useful during implicit address construction from pubKey hash */
+    std::vector<uint8_t> ImplicitPrefix;
+    /** Prefix useful during originated address construction from pubKey hash */
+    std::vector<uint8_t> OriginatedPrefix;
     /** Addition TIPs enabled for this network. */
     std::vector<std::string> AdditionalTIPs;
     /** Delay applied to all timestamps. Used to debounce transactions. */
@@ -27,11 +31,15 @@ struct TezosLikeNetworkParameters final {
     TezosLikeNetworkParameters(std::string Identifier_,
                                std::string MessagePrefix_,
                                std::vector<uint8_t> XPUBVersion_,
+                               std::vector<uint8_t> ImplicitPrefix_,
+                               std::vector<uint8_t> OriginatedPrefix_,
                                std::vector<std::string> AdditionalTIPs_,
                                int64_t TimestampDelay_)
     : Identifier(std::move(Identifier_))
     , MessagePrefix(std::move(MessagePrefix_))
     , XPUBVersion(std::move(XPUBVersion_))
+    , ImplicitPrefix(std::move(ImplicitPrefix_))
+    , OriginatedPrefix(std::move(OriginatedPrefix_))
     , AdditionalTIPs(std::move(AdditionalTIPs_))
     , TimestampDelay(std::move(TimestampDelay_))
     {}
@@ -40,6 +48,8 @@ struct TezosLikeNetworkParameters final {
        this->Identifier = cpy.Identifier;
        this->MessagePrefix = cpy.MessagePrefix;
        this->XPUBVersion = cpy.XPUBVersion;
+       this->ImplicitPrefix = cpy.ImplicitPrefix;
+       this->OriginatedPrefix = cpy.OriginatedPrefix;
        this->AdditionalTIPs = cpy.AdditionalTIPs;
        this->TimestampDelay = cpy.TimestampDelay;
     }
@@ -51,6 +61,8 @@ struct TezosLikeNetworkParameters final {
        this->Identifier = cpy.Identifier;
        this->MessagePrefix = cpy.MessagePrefix;
        this->XPUBVersion = cpy.XPUBVersion;
+       this->ImplicitPrefix = cpy.ImplicitPrefix;
+       this->OriginatedPrefix = cpy.OriginatedPrefix;
        this->AdditionalTIPs = cpy.AdditionalTIPs;
        this->TimestampDelay = cpy.TimestampDelay;
        return *this;
@@ -58,12 +70,12 @@ struct TezosLikeNetworkParameters final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalTIPs, TimestampDelay);
+        archive(Identifier, MessagePrefix, XPUBVersion, ImplicitPrefix, OriginatedPrefix, AdditionalTIPs, TimestampDelay);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, MessagePrefix, XPUBVersion, AdditionalTIPs, TimestampDelay);
+        archive(Identifier, MessagePrefix, XPUBVersion, ImplicitPrefix, OriginatedPrefix, AdditionalTIPs, TimestampDelay);
     }
 };
 

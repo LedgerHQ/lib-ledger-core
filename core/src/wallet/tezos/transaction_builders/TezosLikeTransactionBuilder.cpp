@@ -37,6 +37,7 @@
 #include <bytes/zarith/zarith.h>
 #include <wallet/currencies.hpp>
 #include <crypto/SHA512.hpp>
+#include <math/Base58.hpp>
 
 namespace ledger {
     namespace core {
@@ -116,14 +117,20 @@ namespace ledger {
         TezosLikeTransactionBuilder::parseRawTransaction(const api::Currency &currency,
                                                          const std::vector<uint8_t> &rawTransaction,
                                                          bool isSigned) {
-            auto tx = std::make_shared<TezosLikeTransactionApi>(currencies::TEZOS);
+            auto params = currency.tezosLikeNetworkParameters.value();
+            auto tx = std::make_shared<TezosLikeTransactionApi>(currency);
             BytesReader reader(rawTransaction);
             // Watermark: Generic-Operation
             reader.readNextByte();
 
             // Block Hash
-            auto blockHash = reader.read(32);
-            tx->setBlockHash(hex::toString(blockHash));
+            auto blockHashBytes = reader.read(32);
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", params.Identifier);
+            // Magic bytes (or version ?)
+            std::vector<uint8_t> blockPrefix {0x01, 0x34};
+            auto blockHash = Base58::encodeWithChecksum(vector::concat(blockPrefix, blockHashBytes), config);
+            tx->setBlockHash(blockHash);
 
             // Operation Tag
             auto OpTag = reader.readNextByte();
@@ -137,7 +144,10 @@ namespace ledger {
             // TODO: switch case on Operation
             // sender hash160
             auto senderHash160 = reader.read(20);
-            tx->setSender(TezosLikeAddress::fromBase58(hex::toString(senderHash160), currency));
+            tx->setSender(std::make_shared<TezosLikeAddress>(currency,
+                                                             senderHash160,
+                                                             isSenderOriginated ? params.OriginatedPrefix : params.ImplicitPrefix,
+                                                             Option<std::string>()));
 
             // Fee
             tx->setFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
@@ -162,7 +172,10 @@ namespace ledger {
             // TODO: switch case on Operation
             // sender hash160
             auto receiverHash160 = reader.read(20);
-            tx->setReceiver(TezosLikeAddress::fromBase58(hex::toString(receiverHash160), currency));
+            tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                               receiverHash160,
+                                                               isReceiverOriginated ? params.OriginatedPrefix : params.ImplicitPrefix,
+                                                               Option<std::string>()));
 
             // Additional parameters
             auto haveAdditionalParams = reader.readNextByte();
