@@ -3,7 +3,7 @@ include(ExternalProject)
 #set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/leveldb")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}/core/lib/protobuf/cmake/cmake")
 
 
 include(ProjectSecp256k1)
@@ -34,5 +34,11 @@ set(SOCI_SHARED OFF CACHE BOOL "USE ONLY STATIC" FORCE)
 
 add_subdirectory(soci)
 add_subdirectory(soci_sqlite3)
+
+set(protobuf_BUILD_TESTS OFF CACHE BOOL "No test for protobuf")
+set(protobuf_BUILD_PROTOC_BINARIES OFF CACHE BOOL "Protoc is installed separatly, to simplify cross-compilation")
+set(protobuf_WITH_ZLIB OFF CACHE BOOL "Do not compress messages")
+set(protobuf_MSVC_STATIC_RUNTIME OFF CACHE BOOL "Dynamic runtime for MSVC" FORCE)
+add_subdirectory(protobuf/cmake)
 
 #add_subdirectory(soci_mysql)

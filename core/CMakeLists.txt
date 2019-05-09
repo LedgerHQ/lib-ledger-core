@@ -1,3 +1,5 @@
+add_executable(protobuf::protoc IMPORTED)
+set_property(TARGET protobuf::protoc PROPERTY IMPORTED_LOCATION protoc)
 add_subdirectory(lib)
 add_subdirectory(src)
 

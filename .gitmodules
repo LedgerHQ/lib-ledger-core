@@ -22,3 +22,6 @@
 [submodule "core/lib/fmt"]
     path = core/lib/fmt
     url = https://github.com/fmtlib/fmt.git
+[submodule "core/lib/protobuf"]
+    path = core/lib/protobuf
+    url = https://github.com/protocolbuffers/protobuf.git

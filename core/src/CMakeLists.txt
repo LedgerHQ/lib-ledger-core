@@ -9,6 +9,9 @@ file(GLOB ledger-core-djinni-api-sources
         )
 list(APPEND ledger-core-sources ${ledger-core-djinni-api-sources})
 
+set(PATH_TO_PROTO ${CMAKE_CURRENT_SOURCE_DIR}/../proto)
+file(GLOB ProtoFiles "${PATH_TO_PROTO}/*.proto")
+
 file(GLOB ledger-core-jni-sources
         "jni/*.cpp"
         "jni/*.hpp"
@@ -34,6 +37,17 @@ list(REMOVE_ITEM SRC_FILES dummy.cpp)
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
 add_library(ledger-core-interface INTERFACE)
+
+find_package(protobuf REQUIRED)
+add_library(ledger-core-proto STATIC)
+protobuf_generate(
+        LANGUAGE CPP
+        TARGET ledger-core-proto
+        APPEND_PATH ${PATH_TO_PROTO}
+        PROTOS ${ProtoFiles})
+
+target_link_libraries(ledger-core-proto PRIVATE libprotobuf)
+target_link_libraries(ledger-core-interface INTERFACE ledger-core-proto)
 
 target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
 target_compile_definitions(ledger-core-interface INTERFACE
