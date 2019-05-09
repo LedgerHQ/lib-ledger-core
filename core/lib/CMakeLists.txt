@@ -3,6 +3,7 @@ include(ExternalProject)
 #set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/leveldb")
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}/core/lib/protobuf/cmake/cmake")
 
 
