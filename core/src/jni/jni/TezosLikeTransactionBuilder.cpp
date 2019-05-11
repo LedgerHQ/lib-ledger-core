@@ -3,6 +3,7 @@
 
 #include "TezosLikeTransactionBuilder.hpp"  // my header
 #include "Amount.hpp"
+#include "BigInt.hpp"
 #include "Currency.hpp"
 #include "Marshal.hpp"
 #include "TezosLikeTransaction.hpp"
@@ -50,6 +51,26 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransactionBuilder>(nativeRef);
         auto r = ref->setFees(::djinni_generated::Amount::toCpp(jniEnv, j_fees));
+        return ::djinni::release(::djinni_generated::TezosLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasLimit)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setGasLimit(::djinni_generated::Amount::toCpp(jniEnv, j_gasLimit));
+        return ::djinni::release(::djinni_generated::TezosLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setStorageLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_storageLimit)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setStorageLimit(::djinni_generated::BigInt::toCpp(jniEnv, j_storageLimit));
         return ::djinni::release(::djinni_generated::TezosLikeTransactionBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

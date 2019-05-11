@@ -52,6 +52,7 @@
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/ripple/RippleLikeAccount.h>
+#include <wallet/tezos/TezosLikeAccount.h>
 #include <api/BitcoinLikeOperation.hpp>
 #include <api/BitcoinLikeTransaction.hpp>
 #include <api/BitcoinLikeInput.hpp>
@@ -81,6 +82,7 @@ extern api::AccountCreationInfo ETH_KEYS_INFO_VAULT;
 extern api::AccountCreationInfo ETH_KEYS_INFO_LIVE;
 extern api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
 extern api::AccountCreationInfo XRP_KEYS_INFO;
+extern api::AccountCreationInfo XTZ_KEYS_INFO;
 extern const std::string TX_1;
 extern const std::string TX_2;
 extern const std::string TX_3;
@@ -114,15 +116,18 @@ public:
                                                                  int32_t index,
                                                                  const api::AccountCreationInfo &info);
     std::shared_ptr<EthereumLikeAccount> createEthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                                 int32_t index,
-                                                                 const api::ExtendedKeyAccountCreationInfo& info);
-
-    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                                                                   int32_t index,
-                                                                   const api::AccountCreationInfo &info);
-    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                    int32_t index,
                                                                    const api::ExtendedKeyAccountCreationInfo& info);
+
+    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                               int32_t index,
+                                                               const api::AccountCreationInfo &info);
+    std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                               int32_t index,
+                                                               const api::ExtendedKeyAccountCreationInfo& info);
+    std::shared_ptr<TezosLikeAccount> createTezosLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                             int32_t index,
+                                                             const api::AccountCreationInfo &info);
 
     std::shared_ptr<QtThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;

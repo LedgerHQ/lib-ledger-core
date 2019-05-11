@@ -78,7 +78,9 @@ TEST_F(TezosMakeTransaction, CreateTx) {
 
     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 
-    builder->setFees(api::Amount::fromLong(currency, 10));
+    builder->setFees(api::Amount::fromLong(currency, 250));
+    builder->setGasLimit(api::Amount::fromLong(currency, 10000));
+    builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
     builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
     auto f = builder->build();
     auto tx = ::wait(f);
