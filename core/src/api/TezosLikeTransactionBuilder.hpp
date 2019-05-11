@@ -19,6 +19,7 @@
 namespace ledger { namespace core { namespace api {
 
 class Amount;
+class BigInt;
 class TezosLikeTransaction;
 class TezosLikeTransactionCallback;
 struct Currency;
@@ -47,6 +48,19 @@ public:
      * @return A reference on the same builder in order to chain calls.
      */
     virtual std::shared_ptr<TezosLikeTransactionBuilder> setFees(const std::shared_ptr<Amount> & fees) = 0;
+
+    /**
+     * Set gas limit the originator is not willing to exceed.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<TezosLikeTransactionBuilder> setGasLimit(const std::shared_ptr<Amount> & gasLimit) = 0;
+
+    /**
+     * Set storage limit the originator is not willing to exceed.
+     * Reference : https://tezos.gitlab.io/zeronet/whitedoc/michelson.html
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<TezosLikeTransactionBuilder> setStorageLimit(const std::shared_ptr<BigInt> & storageLimit) = 0;
 
     /** Build a transaction from the given builder parameters. */
     virtual void build(const std::shared_ptr<TezosLikeTransactionCallback> & callback) = 0;

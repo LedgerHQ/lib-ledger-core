@@ -390,6 +390,8 @@ namespace ledger {
                 auto tx = std::make_shared<TezosLikeTransactionApi>(self->getWallet()->getCurrency());
                 tx->setValue(request.value);
                 tx->setFees(request.fees);
+                tx->setGasLimit(request.gasLimit);
+                tx->setStorage(request.storageLimit);
                 auto address = self->getKeychain()->getAddress();
                 auto accountAddress = std::dynamic_pointer_cast<TezosLikeAddress>(address);
                 tx->setSender(accountAddress);
