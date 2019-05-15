@@ -28,14 +28,14 @@
  * SOFTWARE.
  *
  */
-#include "LogPrinterSink.hpp"
-#include "utils/LambdaRunnable.hpp"
-#include "api/LogPrinter.hpp"
-#include "api/ExecutionContext.hpp"
+
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/LogPrinter.hpp>
+#include <core/debug/LogPrinterSink.hpp>
+#include <core/utils/LambdaRunnable.hpp>
 
 namespace ledger {
     namespace core {
-
         LogPrinterSink::LogPrinterSink(const std::shared_ptr<api::LogPrinter> &printer) {
             _printer = printer;
             set_level(spdlog::level::trace);
@@ -46,7 +46,7 @@ namespace ledger {
             if (!printer)
                 return;
             auto level = msg.level;
-            
+
             fmt::memory_buffer buffer;
             formatter_->format(msg, buffer);
             std::string message(buffer.data(), buffer.size());
@@ -77,7 +77,6 @@ namespace ledger {
         }
 
         void LogPrinterSink::flush_() {
-
         }
     }
 }

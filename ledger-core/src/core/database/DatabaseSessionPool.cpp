@@ -29,8 +29,8 @@
  *
  */
 
-#include "DatabaseSessionPool.hpp"
-#include "migrations.hpp"
+#include <core/database/DatabaseSessionPool.hpp>
+#include <core/database/migrations.hpp>
 
 namespace ledger {
     namespace core {

@@ -28,11 +28,11 @@
  *
  */
 
+#include <core/crypto/HashAlgorithm.h>
+#include <core/crypto/SHA256.hpp>
+#include <core/crypto/BLAKE.h>
+#include <core/utils/hex.h>
 
-#include "HashAlgorithm.h"
-#include "SHA256.hpp"
-#include "BLAKE.h"
-#include <utils/hex.h>
 namespace ledger {
     namespace core {
         HashAlgorithm::HashAlgorithm(const std::string &networkIdentifier): _identifier(networkIdentifier)
@@ -59,6 +59,5 @@ namespace ledger {
             }
             return SHA256::bytesToBytesHash(bytes);
         }
-
     }
 }

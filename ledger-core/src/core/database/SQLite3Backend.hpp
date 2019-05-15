@@ -1,12 +1,13 @@
 /*
  *
- * BLAKE
+ * SQLite3Backend
+ * ledger-core
  *
- * Created by El Khalil Bellakrid on 18/09/2018.
+ * Created by Pierre Pollastri on 20/12/2016.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +28,37 @@
  * SOFTWARE.
  *
  */
+#ifndef LEDGER_CORE_SQLITE3BACKEND_HPP
+#define LEDGER_CORE_SQLITE3BACKEND_HPP
 
-#pragma once
-
-#include <vector>
-#include <string>
+#include "DatabaseBackend.hpp"
+#include <memory>
 
 namespace ledger {
-    namespace core {
-        class BLAKE {
-        public:
-            static std::vector<uint8_t> blake256(const std::vector<uint8_t>& data);
-            static std::vector<uint8_t> blake224(const std::vector<uint8_t>& data);
-            static std::vector<uint8_t> stringToBytesHash(const std::string& input);
-            static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
-        };
-    }
+ namespace core {
+     class SQLite3Backend : public DatabaseBackend {
+     public:
+         SQLite3Backend();
+         int32_t getConnectionPoolSize() override;
+
+         void init(const std::shared_ptr<api::PathResolver> &resolver,
+                   const std::string &dbName,
+                   const std::string &password,
+                   soci::session &session) override;
+
+         void setPassword(const std::string &password,
+                          soci::session &session) override;
+
+         void changePassword(const std::string & oldPassword,
+                             const std::string & newPassword,
+                             soci::session &session) override;
+
+     private:
+         // Resolved path to db
+         std::string _dbResolvedPath;
+     };
+ }
 }
+
+
+#endif //LEDGER_CORE_SQLITE3BACKEND_HPP

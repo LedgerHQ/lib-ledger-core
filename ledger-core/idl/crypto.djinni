@@ -1,0 +1,17 @@
+# Helper class for commonly used crypto algorithms.
+HashAlgorithmHelper = interface +j +n +o {
+    # RACE Integrity Primitives Evaluation Message Digest (used in Bitcoin).
+    # @param data in bytes, message to hash
+    # @return 160 bits hashed message
+    ripemd160(data: binary): binary;
+
+    # Secure Hash Algorithm (used in Bitcoin).
+    # @param data in bytes, message to hash
+    # @return 256 bits hashed message
+    sha256(data: binary): binary;
+
+    # Hash algorithm used in ethereum.
+    # @param data in bytes, message to hash
+    # @return 256 bits hashed message
+    keccak256(data: binary): binary;
+}

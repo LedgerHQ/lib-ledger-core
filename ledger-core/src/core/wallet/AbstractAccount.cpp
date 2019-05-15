@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
+
 #include <core/api/ErrorCode.hpp>
 #include <core/events/Event.hpp>
 #include <core/utils/Exception.hpp>
 #include <core/wallet/AbstractAccount.hpp>
+#include <core/wallet/AccountDatabaseHelper.h>
+#include <core/wallet/BlockDatabaseHelper.h>
 #include <core/wallet/OperationQuery.h>
-#include <core/wallet/database/AccountDatabaseHelper.h>
-#include <core/wallet/database/BlockDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -136,7 +137,7 @@ namespace ledger {
         void AbstractAccount::getBalanceHistory(
             const std::string & start,
             const std::string & end,
-            TimePeriod period,
+            api::TimePeriod period,
             const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)> & callback
         ) {
             getBalanceHistory(start, end, precision).callback(getMainExecutionContext(), callback);

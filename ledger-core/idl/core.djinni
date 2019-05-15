@@ -2,8 +2,10 @@
 @import "address.djinni"
 @import "amount.djinni"
 @import "configuration.djinni"
+@import "crypto.djinni"
 @import "currency.djinni"
 @import "database.djinni"
+@import "derivation.djinni"
 @import "dynamic.djinni"
 @import "error.djinni"
 @import "events.djinni"
@@ -14,8 +16,19 @@
 @import "operation.djinni"
 @import "path_resolver.djinni"
 @import "preferences.djinni"
+@import "secp256k1.djinni"
 @import "time_period.djinni"
 @import "thread_dispatcher.djinni"
 @import "trust.djinni"
 @import "wallet.djinni"
 @import "websocket_client.djinni"
+
+LedgerCore = interface +c {
+    # Gets the version of the library as a human readable string.
+    # @return The version of the library (e.g. '1.0.1')
+    static getStringVersion(): string;
+
+    # Get the integer version of the Library
+    # @return The integer version of the library
+    static getIntVersion(): i32;
+}

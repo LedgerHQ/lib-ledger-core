@@ -28,14 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_EXCEPTION_HPP
-#define LEDGER_CORE_EXCEPTION_HPP
+
+#pragma once
 
 #include <exception>
 #include <string>
-#include "../api/ErrorCode.hpp"
-#include "../api/Error.hpp"
-#include "../utils/Option.hpp"
+#include <core/api/ErrorCode.hpp>
+#include <core/api/Error.hpp>
+#include <core/utils/Option.hpp>
 #include <memory>
 #include <fmt/format.h>
 #include <iostream>
@@ -86,6 +86,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_EXCEPTION_HPP

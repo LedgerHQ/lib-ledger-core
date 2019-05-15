@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_ABSTRACTADDRESS_H
-#define LEDGER_CORE_ABSTRACTADDRESS_H
+#pragma once
 
 #include <core/api/Address.hpp>
 #include <core/api/Currency.hpp>
@@ -38,7 +37,6 @@
 
 namespace ledger {
     namespace core {
-
         class AbstractAddress : public api::Address, public std::enable_shared_from_this<AbstractAddress> {
         public:
             explicit AbstractAddress(const api::Currency& currency, const Option<std::string>& path);
@@ -49,9 +47,6 @@ namespace ledger {
         private:
             api::Currency _currency;
             Option<std::string> _path;
-
         };
     }
 }
-
-#endif //LEDGER_CORE_ABSTRACTADDRESS_H

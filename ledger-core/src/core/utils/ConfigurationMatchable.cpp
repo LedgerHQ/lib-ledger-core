@@ -28,8 +28,9 @@
  * SOFTWARE.
  *
  */
-#include <api/DynamicType.hpp>
-#include "ConfigurationMatchable.h"
+
+#include <core/api/DynamicType.hpp>
+#include <core/utils/ConfigurationMatchable.h>
 
 ledger::core::ConfigurationMatchable::ConfigurationMatchable(const std::vector<std::string> &matchableKeys)
         : _matchableKeys(matchableKeys) {

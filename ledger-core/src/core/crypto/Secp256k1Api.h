@@ -2,10 +2,9 @@
 // Created by PIERRE POLLASTRI on 25/08/2017.
 //
 
-#ifndef LEDGER_CORE_SECP256K1API_H
-#define LEDGER_CORE_SECP256K1API_H
+#pragma once
 
-#include <api/Secp256k1.hpp>
+#include <core/api/Secp256k1.hpp>
 #include <include/secp256k1.h>
 
 namespace ledger {
@@ -24,6 +23,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_SECP256K1API_H

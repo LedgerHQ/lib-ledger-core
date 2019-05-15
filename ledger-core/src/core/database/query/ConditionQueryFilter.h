@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CONDITIONQUERYFILTER_H
-#define LEDGER_CORE_CONDITIONQUERYFILTER_H
 
-#include "QueryFilter.h"
+#pragma once
+
 #include <fmt/format.h>
-#include <api/Amount.hpp>
+
+#include <core/api/Amount.hpp>
+#include <core/database/query/QueryFilter.h>
 
 namespace ledger {
     namespace core {
@@ -106,6 +107,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_CONDITIONQUERYFILTER_H

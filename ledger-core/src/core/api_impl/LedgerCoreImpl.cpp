@@ -28,9 +28,10 @@
  * SOFTWARE.
  *
  */
-#include "LedgerCoreImpl.hpp"
-#include "api/LedgerCore.hpp"
-#include "ledger-core.h"
+
+#include <core/api/LedgerCore.hpp>
+#include <core/api_impl/LedgerCoreImpl.hpp>
+#include <core/ledger-core.h>
 
 std::string ledger::core::api::LedgerCore::getStringVersion() {
     return ledger::core::LIB_STRING_VERSION;

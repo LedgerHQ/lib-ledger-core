@@ -28,15 +28,15 @@
  * SOFTWARE.
  *
  */
-#include "SECP256k1Point.hpp"
-#include "../utils/Exception.hpp"
-#include <utils/VectorUtils.h>
+
+#include <core/crypto/SECP256k1Point.hpp>
+#include <core/debug/Benchmarker.h>
+#include <core/utils/Exception.hpp>
+#include <core/utils/VectorUtils.h>
 #include <include/secp256k1.h>
-#include <debug/Benchmarker.h>
 
 namespace ledger {
     namespace core {
-
         SECP256k1Point::SECP256k1Point(const std::vector<uint8_t> &p) : SECP256k1Point() {
             _pubKey = new secp256k1_pubkey();
             if (secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size()) == -1)
@@ -106,6 +106,5 @@ namespace ledger {
             if (_pubKey == nullptr)
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Public key is null, cannot do any computation on the point.");
         }
-
     }
 }

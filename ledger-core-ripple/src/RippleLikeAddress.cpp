@@ -34,21 +34,22 @@
 #include <core/math/Base58.hpp>
 #include <core/utils/Exception.hpp>
 #include <core/utils/hex.h>
-#include <rippleNetworks.h>
 #include <RippleLikeAddress.h>
+#include <RippleNetworks.h>
 
 namespace ledger {
     namespace core {
-        RippleLikeAddress::RippleLikeAddress(const ledger::core::api::Currency &currency,
-                                             const std::vector<uint8_t> &hash160,
-                                             const std::vector<uint8_t> &version,
-                                             const Option<std::string> &derivationPath) :
-                _params(currency.rippleLikeNetworkParameters.value()),
-                _derivationPath(derivationPath),
-                _hash160(hash160),
-                _version(version),
-                AbstractAddress(currency, derivationPath) {
-
+        RippleLikeAddress::RippleLikeAddress(
+            const ledger::core::api::Currency &currency,
+            const std::vector<uint8_t> &hash160,
+            const std::vector<uint8_t> &version,
+            const Option<std::string> &derivationPath
+        ) :
+            _params(networks::getRippleLikeNetworkParameters("ripple")),
+            _derivationPath(derivationPath),
+            _hash160(hash160),
+            _version(version),
+            AbstractAddress(currency, derivationPath) {
         }
 
         std::vector<uint8_t> RippleLikeAddress::getVersion() {
@@ -91,7 +92,7 @@ namespace ledger {
         std::shared_ptr<RippleLikeAddress> RippleLikeAddress::fromBase58(const std::string &address,
                                                                          const api::Currency &currency,
                                                                          const Option<std::string> &derivationPath) {
-            auto& params = currency.rippleLikeNetworkParameters.value();
+            auto params = networks::getRippleLikeNetworkParameters("ripple");
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
             config->putString("base58Dictionary", networks::RIPPLE_DIGITS);

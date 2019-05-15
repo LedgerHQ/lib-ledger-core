@@ -29,14 +29,15 @@
  *
  */
 
-#include "logger.hpp"
+#include <memory>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/null_sink.h>
-#include "LogPrinterSink.hpp"
-#include "RotatingEncryptableSink.hpp"
-#include "api/PathResolver.hpp"
-#include <memory>
-#include "api/ExecutionContext.hpp"
+
+#include <core/debug/logger.hpp>
+#include <core/debug/LogPrinterSink.hpp>
+#include <core/debug/RotatingEncryptableSink.hpp>
+#include <core/api/PathResolver.hpp>
+#include <core/api/ExecutionContext.hpp>
 
 namespace ledger {
     namespace core {

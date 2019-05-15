@@ -1,12 +1,13 @@
 /*
  *
- * rippleNetworks
+ * Benchmarker
+ * ledger-core
  *
- * Created by El Khalil Bellakrid on 05/01/2019.
+ * Created by Pierre Pollastri on 01/08/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,31 +28,40 @@
  * SOFTWARE.
  *
  */
-
-#include <core/utils/Exception.hpp>
-#include <RippleNetworks.h>
+#include "Benchmarker.h"
+#include <utils/DateUtils.hpp>
+#include <utils/DurationUtils.h>
 
 namespace ledger {
     namespace core {
-        namespace networks {
-            const std::string RIPPLE_DIGITS = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
-            const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName) {
-                if (networkName == "ripple") {
-                    static const api::RippleLikeNetworkParameters RIPPLE(
-                            "xrp",
-                            "XRP signed message:\n",
-                            {0x04, 0x88, 0xB2, 0x1E},
-                            {},
-                            0
-                    );
-                    return RIPPLE;
-                }
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
-            }
-            const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE
-                    ({
-                             getRippleLikeNetworkParameters("ripple")
-                     });
+
+        Benchmarker::Benchmarker(const std::string &name, const std::shared_ptr<spdlog::logger> &logger) {
+            _name = name;
+            _logger = logger;
         }
+
+        Benchmarker &Benchmarker::start() {
+            _startDate = std::chrono::steady_clock::now();
+            if (_logger) {
+                _logger->info("{} started.", _name);
+            }
+            return *this;
+        }
+
+        Benchmarker &Benchmarker::stop() {
+            _stopDate = std::chrono::steady_clock::now();
+            if (_logger) {
+                _logger->info("{} took {}.", _name, DurationUtils::formatDuration(getDuration()));
+            } else {
+                fmt::print("{} took {}.\n", _name, DurationUtils::formatDuration(getDuration()));
+            }
+            return *this;
+        }
+
+        std::chrono::steady_clock::duration Benchmarker::getDuration() const {
+            return _stopDate - _startDate;
+        }
+
+
     }
 }

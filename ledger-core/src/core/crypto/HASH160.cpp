@@ -28,8 +28,10 @@
  * SOFTWARE.
  *
  */
-#include "HASH160.hpp"
-#include <crypto/BLAKE.h>
+
+#include <core/crypto/BLAKE.h>
+#include <core/crypto/HASH160.hpp>
+
 std::vector<uint8_t> ledger::core::HASH160::hash(const std::vector<uint8_t> &data, const HashAlgorithm &hashAlgorithm) {
     return RIPEMD160::hash(hashAlgorithm.bytesToBytesHash(data));
 }

@@ -1,9 +1,9 @@
 /*
  *
- * DateParser
+ * AccountDatabaseHelper
  * ledger-core
  *
- * Created by Pierre Pollastri on 11/04/2017.
+ * Created by Pierre Pollastri on 29/05/2017.
  *
  * The MIT License (MIT)
  *
@@ -31,23 +31,26 @@
 
 #pragma once
 
-#include <chrono>
+#include <list>
 #include <string>
+#include <soci.h>
 
-#include <core/api/TimePeriod.hpp>
+#include <core/api/Block.hpp>
+#include <core/utils/Option.hpp>
 
 namespace ledger {
     namespace core {
-        class DateUtils {
+        class AccountDatabaseHelper {
         public:
-            static std::chrono::system_clock::time_point fromJSON(const std::string& str);
-            static std::string formatDateFromJSON(const std::string& str);
-            static std::string toJSON(const std::chrono::system_clock::time_point& date);
-            static std::chrono::system_clock::time_point now();
-            static std::chrono::system_clock::time_point incrementDate(
-                const std::chrono::system_clock::time_point &date,
-                api::TimePeriod precision
-            );
+            static bool accountExists(soci::session& sql, const std::string& walletUid, int32_t index);
+            static int32_t getAccountsCount(soci::session& sql, const std::string& walletUid);
+            static void createAccount(soci::session& sql, const std::string& walletUid, int32_t index);
+            static void removeAccount(soci::session& sql, const std::string& walletUid, int32_t index);
+            static std::string createAccountUid(const std::string& walletUid, int32_t accountIndex);
+            static std::string createERC20AccountUid(const std::string &ethAccountUid, const std::string &contractAddress);
+            static int32_t computeNextAccountIndex(soci::session& sql, const std::string& walletUid);
+            static std::list<int32_t>& getAccountsIndexes(soci::session& sql, const std::string& walletUid, int32_t from, int32_t count, std::list<int32_t>& out);
+            static Option<api::Block> getLastBlockWithOperations(soci::session &sql, const std::string &accountUid);
         };
     }
 }

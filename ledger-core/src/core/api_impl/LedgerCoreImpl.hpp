@@ -28,14 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_LEDGERCOREIMPL_HPP
-#define LEDGER_CORE_LEDGERCOREIMPL_HPP
 
-#include "api/LedgerCore.hpp"
+#pragma once
+
+#include <core/api/LedgerCore.hpp>
 
 class LedgerCoreImpl {
-
 };
-
-
-#endif //LEDGER_CORE_LEDGERCOREIMPL_HPP

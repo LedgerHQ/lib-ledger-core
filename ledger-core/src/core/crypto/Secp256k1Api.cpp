@@ -2,14 +2,13 @@
 // Created by PIERRE POLLASTRI on 25/08/2017.
 //
 
-#include "Secp256k1Api.h"
-#include "utils/Exception.hpp"
-#include "utils/hex.h"
-#include "include/secp256k1.h"
+#include <core/crypto/Secp256k1Api.h>
+#include <core/utils/Exception.hpp>
+#include <core/utils/hex.h>
+#include <include/secp256k1.h>
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<api::Secp256k1> ledger::core::api::Secp256k1::createInstance() {
             return std::make_shared<Secp256k1Api>();
         }

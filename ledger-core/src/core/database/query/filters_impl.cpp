@@ -29,15 +29,15 @@
  *
  */
 
-#include "ConditionQueryFilter.h"
-#include <utils/DateUtils.hpp>
 #include <cereal/external/base64.hpp>
-#include <api/TrustLevel.hpp>
-#include <api/OperationType.hpp>
+
+#include <core/database/query/ConditionQueryFilter.h>
+#include <core/utils/DateUtils.hpp>
+#include <core/api/TrustLevel.hpp>
+#include <core/api/OperationType.hpp>
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<api::QueryFilter> api::QueryFilter::accountEq(const std::string &accountUid) {
             return std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", accountUid, "o");
         }
@@ -186,6 +186,5 @@ namespace ledger {
                                                                              OperationType type) {
             return std::make_shared<ConditionQueryFilter<std::string>>("type", "<>", api::to_string(type), "o");
         }
-
     }
 }
