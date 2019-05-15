@@ -132,12 +132,6 @@ target_link_libraries(ledger-core-ripple-interface INTERFACE ethash)
 target_link_libraries(ledger-core-ripple-interface INTERFACE ${SQLITE_LIB})
 
 file(
-    GLOB_RECURSE LEDGER_CORE_HEADERS
-    "*.hpp"
-    "*.h"
-)
-
-file(
     GLOB LEDGER_CORE_API_HEADERS
     "api/*.hpp"
 )
