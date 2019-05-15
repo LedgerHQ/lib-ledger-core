@@ -1,5 +1,10 @@
 @import "../math/big_int.djinni"
 
+TezosCurve = enum {
+	ed25519;
+	secp256k1;
+}
+
 TezosLikeNetworkParameters = record {
 	# Name of the network.
 	Identifier: string;

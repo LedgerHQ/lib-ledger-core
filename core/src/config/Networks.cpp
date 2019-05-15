@@ -70,6 +70,17 @@ namespace ledger {
                 );
             }
 
+            TezosLikeNetworkParameters Networks::tezos() {
+                return TezosLikeNetworkParameters(
+                        "xtz",
+                        "XTZ signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {0x06, 0xA1, 0x9F},
+                        {0x02, 0x5A, 0x79},
+                        {},
+                        0
+                );
+            }
         }
     }
 }

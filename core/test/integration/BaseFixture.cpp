@@ -95,8 +95,8 @@ api::AccountCreationInfo XRP_KEYS_INFO(
 );
 
 api::AccountCreationInfo XTZ_KEYS_INFO(
-        0, {"main"}, {"44'/1729'/0'"},
-        {hex::toByteArray("039ea82278f0057b8b041a146f810aa2d84b8ffdfaef3e625624706ad13e12b717")},
+        0, {"main"}, {"44'/1729'/0'/0'"},
+        {hex::toByteArray("02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d")},
         {hex::toByteArray("abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9")}
 );
 

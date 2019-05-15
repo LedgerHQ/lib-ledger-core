@@ -32,6 +32,7 @@
 #ifndef LEDGER_CORE_ZARITH_H
 #define LEDGER_CORE_ZARITH_H
 
+#include <algorithm>
 #include <vector>
 #include <bytes/BytesReader.h>
 #include <utils/hex.h>
