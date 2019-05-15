@@ -39,6 +39,7 @@
 #include <utils/Option.hpp>
 #include <utils/DerivationPath.hpp>
 #include <api/Currency.hpp>
+#include <api/TezosCurve.hpp>
 
 namespace ledger {
     namespace core {
@@ -49,7 +50,8 @@ namespace ledger {
 
             TezosLikeExtendedPublicKey(const api::Currency &params,
                                        const DeterministicPublicKey &key,
-                                       const DerivationPath &path = DerivationPath("m/"));
+                                       const DerivationPath &path = DerivationPath("m/"),
+                                       api::TezosCurve curve = api::TezosCurve::SECP256K1);
 
             std::shared_ptr<api::TezosLikeAddress> derive(const std::string &path) override;
 
@@ -93,6 +95,7 @@ namespace ledger {
             const api::Currency _currency;
             const DerivationPath _path;
             const DeterministicPublicKey _key;
+            api::TezosCurve _curve;
 
         };
     }

@@ -33,41 +33,39 @@
 #include <ledger/core/api/TezosLikeExtendedPublicKey.hpp>
 #include <ledger/core/tezos/TezosLikeAddress.h>
 #include <ledger/core/utils/optional.hpp>
+#include <ledger/core/collections/DynamicObject.hpp>
+#include <ledger/core/api/DynamicObject.hpp>
 #include <ledger/core/api/Networks.hpp>
 #include <wallet/currencies.hpp>
 #include <api/Address.hpp>
 #include <tezos/TezosLikeExtendedPublicKey.h>
 #include <utils/hex.h>
+#include <api/Configuration.hpp>
+#include <crypto/HASH160.hpp>
+#include <ledger/core/crypto/BLAKE.h>
 
 using namespace ledger::core::api;
 using namespace ledger::core;
 
 const Currency currency = currencies::TEZOS;
+TEST(TezosAddress, AddressFromEd25519PubKey) {
+    // Decode a pubKey prefixed with edpk
+    // 451bde832454ba73e6e0de313fcf5d1565ec51080edc73bb19287b8e0ab2122b
+    auto expectedResult = "tz1dtmCcU7Ng29oWrEc5xJcrQfMnKgoqT7mn";
+    auto xpub = "edpkuAfEJCEatRgFpRGg3gn3FdWniLXBoubARreRwuVZPWufkgDBvR";
+    auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currency, xpub, Option<std::string>("44'/1729'/0'/0'"));
+    EXPECT_EQ(zPub->derive("")->toBase58(), expectedResult);
+}
 
-TEST(TezosAddress, AddressFromPubKeyAndChainCodeAccountLevel) {
-    std::vector<uint8_t> pubKey = hex::toByteArray(
-            "039ea82278f0057b8b041a146f810aa2d84b8ffdfaef3e625624706ad13e12b717");
-    std::vector<uint8_t> chainCode = hex::toByteArray(
-            "abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9");
-    auto xpub = ledger::core::TezosLikeExtendedPublicKey::fromRaw(currency,
+TEST(TezosAddress, AddressFromSecp256k1PubKey) {
+    std::vector<uint8_t> pubKey = hex::toByteArray("02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d");
+    std::vector<uint8_t> chainCode = hex::toByteArray("");
+    auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromRaw(currency,
                                                                   optional<std::vector<uint8_t >>(),
                                                                   pubKey,
                                                                   chainCode,
                                                                   "44'/1729'/0'/0'");
-    EXPECT_EQ(xpub->derive("")->toBase58(), "tz1fmeh1DSskufrsi4qWxsfGPyhVdNtXNu78");
-}
-
-TEST(TezosAddress, AddressFromPubKeyAndChainCodeAddressLevel) {
-    std::vector<uint8_t> pubKey = hex::toByteArray(
-            "03c5ee21cd4a30b5b8436a6b17047aceac5ed4e69ab5f96bde2af897ff80cefab1");
-    std::vector<uint8_t> chainCode = hex::toByteArray(
-            "0f2f1ffcfb379ceaef995d176e362e5b33ec14ba86d50f0facf46c2308f86c98");
-    auto xpub = ledger::core::TezosLikeExtendedPublicKey::fromRaw(currency,
-                                                                  optional<std::vector<uint8_t >>(),
-                                                                  pubKey,
-                                                                  chainCode,
-                                                                  "44'/1729'/0'/0/0");
-    EXPECT_EQ(xpub->derive("")->toBase58(), "tz1fg4HVCAihzSwE52kEWusAJjwx4PZo9xUe");
+    EXPECT_EQ(zPub->derive("")->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
 }
 
 TEST(TezosAddress, XpubFromBase58String) {
@@ -75,10 +73,9 @@ TEST(TezosAddress, XpubFromBase58String) {
     auto xpub = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currency, addr,
                                                                      optional<std::string>("44'/1729'/0'"));
     EXPECT_EQ(xpub->toBase58(), addr);
-    EXPECT_EQ(xpub->derive("0/0")->toBase58(), "tz1NiNDBJu6GbfXmc6FGntQws42rQwZz1tQv");
-    EXPECT_EQ(xpub->derive("0/1")->toBase58(), "tz1LK7HXcFFwSiincroJ1z2jU2NkWzwMBSkk");
-    EXPECT_EQ(xpub->derive("0/2")->toBase58(), "tz1QLnKNH4kJQ5scwzGKAyVdhX6Jk13uEGAW");
-    EXPECT_EQ(xpub->derive("0/3")->toBase58(), "tz1TQyTC6rvmNYGuyZqJxmdLnwWsRvJVpkR2");
+    EXPECT_EQ(xpub->derive("0/0")->toBase58(), "tz1hQ2ZpmNfiUuRf28yUJqNteVwX7fXWbmvk");
+    EXPECT_EQ(xpub->derive("0/1")->toBase58(), "tz1hQ2ZpmNfiUuRf28yUJqNteVwX7fXWbmvk");
+    EXPECT_EQ(xpub->derive("0/2")->toBase58(), "tz1hQ2ZpmNfiUuRf28yUJqNteVwX7fXWbmvk");
 }
 
 
