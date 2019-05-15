@@ -29,11 +29,10 @@
  *
  */
 
-#ifndef LEDGER_CORE_DERIVATIONPATHAPI_H
-#define LEDGER_CORE_DERIVATIONPATHAPI_H
+#pragma once
 
-#include <api/DerivationPath.hpp>
-#include <utils/DerivationPath.hpp>
+#include <core/api/DerivationPath.hpp>
+#include <core/utils/DerivationPath.hpp>
 
 namespace ledger {
     namespace core {
@@ -59,6 +58,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_DERIVATIONPATHAPI_H

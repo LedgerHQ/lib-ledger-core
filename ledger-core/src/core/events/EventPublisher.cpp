@@ -28,14 +28,14 @@
  * SOFTWARE.
  *
  */
-#include <collections/DynamicObject.hpp>
-#include "EventPublisher.hpp"
-#include "EventBus.hpp"
-#include "Event.hpp"
+
+#include <core/collections/DynamicObject.hpp>
+#include <core/events/EventPublisher.hpp>
+#include <core/events/EventBus.hpp>
+#include <core/events/Event.hpp>
 
 namespace ledger {
     namespace core {
-
         class EventReceiver : public api::EventReceiver {
         public:
             EventReceiver(const std::shared_ptr<EventPublisher>& publisher) : _publisher(publisher) {

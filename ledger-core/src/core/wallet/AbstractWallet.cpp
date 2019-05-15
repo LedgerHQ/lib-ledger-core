@@ -28,17 +28,19 @@
  * SOFTWARE.
  *
  */
-#include "AbstractWallet.hpp"
-#include <wallet/pool/WalletPool.hpp>
-#include <debug/LoggerApi.hpp>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include "AbstractAccount.hpp"
-#include <async/algorithm.h>
-#include <wallet/common/database/BlockDatabaseHelper.h>
-#include <database/soci-number.h>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
-#include <async/DedicatedContext.hpp>
+
+#include <core/async/DedicatedContext.hpp>
+#include <core/async/algorithm.h>
+#include <core/database/soci-number.h>
+#include <core/database/soci-date.h>
+#include <core/database/soci-option.h>
+#include <core/debug/LoggerApi.hpp>
+#include <core/wallet/AbstractAccount.hpp>
+#include <core/wallet/AbstractWallet.hpp>
+#include <core/wallet/database/AccountDatabaseHelper.h>
+#include <core/wallet/database/BlockDatabaseHelper.h>
+#include <core/wallet/pool/WalletPool.hpp>
+
 namespace ledger {
     namespace core {
         AbstractWallet::AbstractWallet(const std::string &walletName,
@@ -351,6 +353,5 @@ namespace ledger {
             });
 
         }
-
     }
 }

@@ -28,18 +28,19 @@
  * SOFTWARE.
  *
  */
-#include "DerivationPath.hpp"
-#include <string>
-#include <cstdlib>
-#include "collections/vector.hpp"
-#include <sstream>
-#include "fmt/format.h"
-#include "collections/strings.hpp"
+
 #include <algorithm>
+#include <cstdlib>
+#include <sstream>
+#include <string>
+#include <fmt/format.h>
+
+#include <core/utils/DerivationPath.hpp>
+#include <core/collections/vector.hpp>
+#include <core/collections/strings.hpp>
 
 namespace ledger {
     namespace core {
-
         static const auto HARD_BIT = 0x80000000;
 
         DerivationPath::DerivationPath(const std::string &path) : DerivationPath(parse(path)) {
@@ -220,7 +221,5 @@ namespace ledger {
             this->_path = path._path;
             return *this;
         }
-
-
     }
 }

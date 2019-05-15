@@ -28,14 +28,14 @@
  * SOFTWARE.
  *
  */
-#include "DatabaseBackend.hpp"
-#include "SQLite3Backend.hpp"
-#include <api/DatabaseEngine.hpp>
-#include "ProxyBackend.hpp"
+
+#include <core/api/DatabaseEngine.hpp>
+#include <core/database/DatabaseBackend.hpp>
+#include <core/database/SQLite3Backend.hpp>
+#include <core/database/ProxyBackend.hpp>
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getSqlite3Backend() {
             return std::make_shared<SQLite3Backend>();
         }

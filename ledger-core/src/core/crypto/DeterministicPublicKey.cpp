@@ -28,24 +28,22 @@
  * SOFTWARE.
  *
  */
-#include <debug/Benchmarker.h>
-#include "../bytes/BytesWriter.h"
-#include "DeterministicPublicKey.hpp"
-#include "RIPEMD160.hpp"
-#include "../utils/Exception.hpp"
-#include "HMAC.hpp"
-#include "../math/BigInt.h"
-#include "SECP256k1Point.hpp"
-#include "../bytes/BytesWriter.h"
-#include "HASH160.hpp"
-#include "HashAlgorithm.h"
 
-#include "Keccak.h"
-#include <api/Secp256k1.hpp>
+#include <core/api/Secp256k1.hpp>
+#include <core/bytes/BytesWriter.h>
+#include <core/crypto/DeterministicPublicKey.hpp>
+#include <core/crypto/HASH160.hpp>
+#include <core/crypto/HMAC.hpp>
+#include <core/crypto/HashAlgorithm.h>
+#include <core/crypto/Keccak.h>
+#include <core/crypto/RIPEMD160.hpp>
+#include <core/crypto/SECP256k1Point.hpp>
+#include <core/debug/Benchmarker.h>
+#include <core/math/BigInt.h>
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
-
         static auto N = BigInt::fromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFEBAAEDCE6AF48A03BBFD25E8CD0364141");
 
         DeterministicPublicKey::DeterministicPublicKey(const std::vector<uint8_t> &publicKey,
@@ -55,8 +53,6 @@ namespace ledger {
         {
 
         }
-
-
 
         uint32_t DeterministicPublicKey::getFingerprint() const {
             auto hash160 = getPublicKeyHash160();
@@ -135,6 +131,5 @@ namespace ledger {
         ) {
 
         }
-
     }
 }

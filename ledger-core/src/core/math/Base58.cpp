@@ -28,14 +28,16 @@
  * SOFTWARE.
  *
  */
-#include "Base58.hpp"
-#include "BigInt.h"
-#include <sstream>
-#include "../collections/vector.hpp"
-#include <crypto/HashAlgorithm.h>
-#include <utils/hex.h>
+
 #include <functional>
-#include <crypto/Keccak.h>
+#include <sstream>
+
+#include <core/collections/vector.hpp>
+#include <core/crypto/HashAlgorithm.h>
+#include <core/crypto/Keccak.h>
+#include <core/math/Base58.hpp>
+#include <core/math/BigInt.h>
+#include <core/utils/hex.h>
 
 using namespace ledger::core;
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";

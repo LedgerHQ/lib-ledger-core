@@ -28,9 +28,8 @@
  *
  */
 
-
-#include "RLPStringEncoder.h"
-#include <utils/hex.h>
+#include <core/bytes/RLP/RLPStringEncoder.h>
+#include <core/utils/hex.h>
 
 /*
  * Reursive Length Prefix String Encoder
@@ -44,7 +43,6 @@ namespace ledger {
         }
 
         RLPStringEncoder::RLPStringEncoder(const std::vector<uint8_t> &data) : _data(data){
-
         }
 
         std::vector<uint8_t> RLPStringEncoder::encode() {

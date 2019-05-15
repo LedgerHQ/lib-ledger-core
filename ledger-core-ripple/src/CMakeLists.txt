@@ -37,6 +37,9 @@ link_directories(${CMAKE_BINARY_DIR}/lib)
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
 
+# TEMPORARY HACK: add ledger-core files to the project, too
+file(GLOB_RECURSE CORE_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../ledger-core/src/core/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../../ledger-core/src/core/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../ledger-core/src/core/*.hpp)
+
 # Interface library used to hold shared properties
 add_library(ledger-core-ripple-interface INTERFACE)
 
@@ -52,6 +55,7 @@ if(IS_IOS GREATER_EQUAL 0)
     add_library(ledger-core-ripple SHARED
         ${ledger-core-ripple-sources}
         ${SRC_FILES}
+        ${CORE_SRC_FILES}
         ${HEADERS_FILES})
     target_link_libraries(ledger-core-ripple PUBLIC ledger-core-ripple-interface)
     set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
@@ -90,6 +94,7 @@ else()
     add_library(ledger-core-ripple-obj OBJECT
         ${ledger-core-ripple-sources}
         ${SRC_FILES}
+        ${CORE_SRC_FILES}
         ${HEADERS_FILES})
     target_link_libraries(ledger-core-ripple-obj PUBLIC ledger-core-ripple-interface)
 
@@ -123,9 +128,9 @@ target_link_libraries(ledger-core-ripple-interface INTERFACE spdlog)
 
 
 #Secp256k1
-target_link_libraries(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
-link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
-add_dependencies(ledger-core-ripple-interface INTERFACE secp256k1)
+#target_link_libraries(ledger-core-ripple-interface INTERFACE "../lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
+#link_directories("../lib/secp256k1/lib")
+#add_dependencies(ledger-core-ripple-interface INTERFACE secp256k1)
 
 target_link_libraries(ledger-core-ripple-interface INTERFACE ethash)
 

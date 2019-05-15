@@ -35,7 +35,7 @@
 
 #include <core/api/WebSocketConnection.hpp>
 #include <core/api/WebSocketClient.hpp>
-#include <WebSocketClient.h>
+#include <core/net/WebSocketClient.h>
 
 namespace ledger {
     namespace core {

@@ -28,13 +28,13 @@
  * SOFTWARE.
  *
  */
-#include "QueryFilter.h"
-#include <utils/Exception.hpp>
-#include "CompoundQueryFilter.h"
+
+#include <core/database/query/CompoundQueryFilter.h>
+#include <core/database/query/QueryFilter.h>
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<api::QueryFilter> QueryFilter::op_and(const std::shared_ptr<api::QueryFilter> &filter) {
             return link(filter, QueryFilterOperator::OP_AND);
         }

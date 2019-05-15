@@ -84,11 +84,11 @@ namespace ledger {
             const api::Currency &getCurrency() const override {
                 return _currency;
             };
+
         private:
             const api::Currency _currency;
             const DerivationPath _path;
             const DeterministicPublicKey _key;
-
         };
     }
 }

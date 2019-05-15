@@ -1,12 +1,13 @@
 /*
  *
- * BLAKE
+ * VectorUtils
+ * ledger-core
  *
- * Created by El Khalil Bellakrid on 18/09/2018.
+ * Created by Pierre Pollastri on 03/08/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,20 +28,4 @@
  * SOFTWARE.
  *
  */
-
-#pragma once
-
-#include <vector>
-#include <string>
-
-namespace ledger {
-    namespace core {
-        class BLAKE {
-        public:
-            static std::vector<uint8_t> blake256(const std::vector<uint8_t>& data);
-            static std::vector<uint8_t> blake224(const std::vector<uint8_t>& data);
-            static std::vector<uint8_t> stringToBytesHash(const std::string& input);
-            static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
-        };
-    }
-}
+#include "VectorUtils.h"

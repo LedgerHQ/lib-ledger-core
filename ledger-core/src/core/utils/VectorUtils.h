@@ -1,12 +1,13 @@
 /*
  *
- * rippleNetworks
+ * VectorUtils
+ * ledger-core
  *
- * Created by El Khalil Bellakrid on 05/01/2019.
+ * Created by Pierre Pollastri on 03/08/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,31 +28,35 @@
  * SOFTWARE.
  *
  */
+#ifndef LEDGER_CORE_VECTORUTILS_H
+#define LEDGER_CORE_VECTORUTILS_H
 
-#include <core/utils/Exception.hpp>
-#include <RippleNetworks.h>
+#include <vector>
 
 namespace ledger {
     namespace core {
-        namespace networks {
-            const std::string RIPPLE_DIGITS = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
-            const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName) {
-                if (networkName == "ripple") {
-                    static const api::RippleLikeNetworkParameters RIPPLE(
-                            "xrp",
-                            "XRP signed message:\n",
-                            {0x04, 0x88, 0xB2, 0x1E},
-                            {},
-                            0
-                    );
-                    return RIPPLE;
+        class VectorUtils {
+        public:
+            template <typename T>
+            static void padOnLeft(std::vector<T>& vector, T elem, std::size_t length) {
+                if (vector.size() < length) {
+                    auto maxPadAddress = length - vector.size();
+                    std::vector<T> result(length);
+                    auto j = 0;
+                    for (auto i = 0; i < length; i++) {
+                        if (i < maxPadAddress) {
+                            result[i] = elem;
+                        } else {
+                            result[i] = vector[j];
+                            j += 1;
+                        }
+                    }
+                    result.swap(vector);
                 }
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
             }
-            const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE
-                    ({
-                             getRippleLikeNetworkParameters("ripple")
-                     });
-        }
+        };
     }
 }
+
+
+#endif //LEDGER_CORE_VECTORUTILS_H

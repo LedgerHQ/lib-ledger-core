@@ -28,18 +28,13 @@
  * SOFTWARE.
  *
  */
-#include "OperationApi.h"
-#include <wallet/common/Amount.h>
-#include "../AbstractAccount.hpp"
-#include <wallet/common/Amount.h>
-#include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
-#include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
-#include <wallet/ripple/api_impl/RippleLikeOperation.h>
 
+#include <core/api_impl/OperationApi.h>
+#include <core/wallet/AbstractAccount.hpp>
+#include <core/wallet/Amount.h>
 
 namespace ledger {
     namespace core {
-
         OperationApi::OperationApi(const std::shared_ptr<AbstractAccount> &account) {
             _account = account;
         }

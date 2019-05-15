@@ -29,13 +29,12 @@
  *
  */
 
-#include "WebSocketClient.h"
-#include <async/Promise.hpp>
-#include "WebSocketConnection.h"
+#include <core/net/WebSocketClient.h>
+#include <core/net/WebSocketConnection.h>
+#include <core/async/Promise.hpp>
 
 namespace ledger {
     namespace core {
-
         WebSocketClient::WebSocketClient(const std::shared_ptr<api::WebSocketClient> &client) {
             _client = client;
         }

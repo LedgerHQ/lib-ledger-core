@@ -28,8 +28,9 @@
  * SOFTWARE.
  *
  */
-#include <collections/DynamicObject.hpp>
-#include "Event.hpp"
+
+#include <core/collections/DynamicObject.hpp>
+#include <core/events/Event.hpp>
 
 ledger::core::api::EventCode ledger::core::Event::getCode() {
     return _code;
