@@ -39,6 +39,7 @@
 #include <database/soci-option.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
+#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 #include <bytes/serialization.hpp>
 #include <collections/strings.hpp>
 #include <wallet/common/TrustIndicator.h>
@@ -117,6 +118,12 @@ namespace ledger {
                 auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
                     sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(rippleTxUid), use(operationValue.hash);
+                }
+            } else if (operation.tezosTransaction.nonEmpty()) {
+                auto operationValue = operation.tezosTransaction.getValue();
+                auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
+                if (insert) {
+                    sql << "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(tezosTxUid), use(operationValue.hash);
                 }
             }
         }
