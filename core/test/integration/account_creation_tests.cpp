@@ -67,7 +67,7 @@ TEST_F(AccountCreationTest, ChangePassword) {
         EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     }
 
-    pool->changePassword(oldPassword, newPassword);
+    wait(pool->changePassword(oldPassword, newPassword));
     {
         auto wallet = wait(pool->getWallet("my_wallet"));
         auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->getAccount(0)));

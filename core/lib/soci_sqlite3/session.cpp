@@ -25,30 +25,85 @@ using namespace sqlite_api;
 namespace // anonymous
 {
 
-// helper function for hardcoded queries
-void execute_hardcoded(sqlite_api::sqlite3* conn, char const* const query, char const* const errMsg)
-{
-    char *zErrMsg = 0;
-    int const res = sqlite3_exec(conn, query, 0, 0, &zErrMsg);
-    if (res != SQLITE_OK)
+    // helper function for hardcoded queries
+    void execute_hardcoded(sqlite_api::sqlite3* conn, char const* const query, char const* const errMsg)
     {
-        std::ostringstream ss;
-        ss << errMsg << " " << zErrMsg;
-        sqlite3_free(zErrMsg);
-        throw sqlite3_soci_error(ss.str(), res);
+        char *zErrMsg = 0;
+        int const res = sqlite3_exec(conn, query, 0, 0, &zErrMsg);
+        if (res != SQLITE_OK)
+        {
+            std::ostringstream ss;
+            ss << errMsg << " " << zErrMsg;
+            sqlite3_free(zErrMsg);
+            throw sqlite3_soci_error(ss.str(), res);
+        }
     }
-}
 
-void check_sqlite_err(sqlite_api::sqlite3* conn, int res, char const* const errMsg)
-{
-    if (SQLITE_OK != res)
+    void check_sqlite_err(sqlite_api::sqlite3* conn, int res, char const* const errMsg)
     {
-        const char *zErrMsg = sqlite3_errmsg(conn);
-        std::ostringstream ss;
-        ss << errMsg << zErrMsg;
-        throw sqlite3_soci_error(ss.str(), res);
+        if (SQLITE_OK != res)
+        {
+            const char *zErrMsg = sqlite3_errmsg(conn);
+            std::ostringstream ss;
+            ss << errMsg << zErrMsg;
+            throw sqlite3_soci_error(ss.str(), res);
+        }
     }
-}
+
+    void post_connection_helper(sqlite_api::sqlite3* conn, const std::string &dbname, int connection_flags, int timeout, const std::string &synchronous)
+    {
+        int res = sqlite3_open_v2(dbname.c_str(), &conn, connection_flags, NULL);
+        check_sqlite_err(conn, res, "Cannot establish connection to the database. ");
+
+        if (!synchronous.empty())
+        {
+            std::string const query("pragma synchronous=" + synchronous);
+            std::string const errMsg("Query failed: " + query);
+            execute_hardcoded(conn, query.c_str(), errMsg.c_str());
+        }
+
+        res = sqlite3_busy_timeout(conn, timeout * 1000);
+        check_sqlite_err(conn, res, "Failed to set busy timeout for connection. ");
+    }
+    
+    void sqlcipher_export(sqlite_api::sqlite3* conn,
+                          int flags,
+                          int timeout,
+                          const std::string &synchronous,
+                          const std::string &exportQuery,
+                          const std::string &dbName,
+                          const std::string &newDbName,
+                          const std::string &msgError,
+                          const std::string &newPassKey)
+    {
+        execute_hardcoded(conn, exportQuery.c_str(), msgError.c_str());
+        auto r = sqlite3_close_v2(conn);
+
+        if (r == SQLITE_OK) {
+            // correctly closed, rename the file
+            if (std::remove(dbName.c_str()) == 0) {
+                if (std::rename(newDbName.c_str(), dbName.c_str()) == 0) {
+                    r = sqlite3_open_v2(dbName.c_str(), &conn, flags, NULL);
+                    check_sqlite_err(conn, r, "Cannot establish connection to the database. ");
+                    post_connection_helper(conn, dbName, flags, timeout, synchronous);
+
+                    if (!newPassKey.empty()) {
+                        r = sqlite3_key_v2(conn, dbName.c_str(), newPassKey.c_str(), strlen(newPassKey.c_str()));
+                        check_sqlite_err(conn, r, "Cannot establish connection to the database with newly set password. ");
+                    }
+                } else {
+                    // old DB removed but cannot rename the new one: bad
+                    throw sqlite3_soci_error("Cannot rename new SQLCipher database", r);
+                }
+            } else {
+                // cannot remove the old database
+                throw sqlite3_soci_error("Cannot remove old SQLCipher database", r);
+            }
+        } else {
+            // likely a still busy database
+            throw sqlite3_soci_error("Cannot close SQLCipher database", r);
+        }
+    }
 
 } // namespace anonymous
 
@@ -125,16 +180,27 @@ sqlite3_session_backend::sqlite3_session_backend(
     post_connection(dbname, connection_flags, timeout, synchronous);
 
     //Set password
-    if (!passKey.empty())
+    if (!passKey.empty() || !newPassKey.empty())
     {
-        res = sqlite3_key_v2(conn_, dbname.c_str(), passKey.c_str(), strlen(passKey.c_str()));
-        check_sqlite_err(conn_, res, "Failed to encrypt database. ");
+        if (!passKey.empty()){
+            res = sqlite3_key_v2(conn_, dbname.c_str(), passKey.c_str(), strlen(passKey.c_str()));
+            check_sqlite_err(conn_, res, "Failed to encrypt database. ");
+        }
 
-        if (!newPassKey.empty())
-        {
+        if (!passKey.empty() && !newPassKey.empty()) {
             //Set new password
             res = sqlite3_rekey_v2(conn_, dbname.c_str(), newPassKey.c_str(), strlen(newPassKey.c_str()));
             check_sqlite_err(conn_, res, "Failed to change database's password. ");
+        }
+        else if (!newPassKey.empty()) {
+            std::string const dbNameEncrypted = dbname + ".encrypt";
+            std::string const query(
+                            "ATTACH DATABASE '" + dbNameEncrypted + "' AS encrypted KEY '" + newPassKey +"';"
+                            "SELECT sqlcipher_export('encrypted');"
+                            "DETACH DATABASE encrypted;"
+            );
+            std::string const errMsg("Unable to enable encryption");
+            sqlcipher_export(conn_, connection_flags, timeout, synchronous, query, dbname,  dbNameEncrypted, errMsg, newPassKey);
         }
         else if (disableEncryption)
         {
@@ -150,30 +216,7 @@ sqlite3_session_backend::sqlite3_session_backend(
                 "DETACH DATABASE plaintext;"
             );
             std::string const errMsg("Unable to disabling encryption");
-
-            execute_hardcoded(conn_, query.c_str(), errMsg.c_str());
-            auto r = sqlite3_close(conn_);
-
-            if (r == SQLITE_OK) {
-                // correctly closed, rename the file
-                if (std::remove(dbname.c_str()) == 0) {
-                    if (std::rename(dbnamePlain.c_str(), dbname.c_str()) == 0) {
-                        res = sqlite3_open_v2(dbname.c_str(), &conn_, connection_flags, NULL);
-                        check_sqlite_err(conn_, res, "Cannot establish connection to the database. ");
-                        post_connection(dbname, connection_flags, timeout, synchronous);
-
-                    } else {
-                        // old DB removed but cannot rename the new one: bad
-                        throw sqlite3_soci_error("Cannot rename new SQLCipher database", res);
-                    }
-                } else {
-                    // cannot remove the old database
-                    throw sqlite3_soci_error("Cannot remove old SQLCipher database", res);
-                }
-            } else {
-                // likely a still busy database
-                throw sqlite3_soci_error("Cannot close SQLCipher database", res);
-            }
+            sqlcipher_export(conn_, connection_flags, timeout, synchronous, query, dbname, dbnamePlain, errMsg, newPassKey);
         }
     }
 }
@@ -200,18 +243,7 @@ void sqlite3_session_backend::rollback()
 
 void sqlite3_session_backend::post_connection(std::string const& dbname, int connection_flags, int timeout, std::string const& synchronous)
 {
-    int res = sqlite3_open_v2(dbname.c_str(), &conn_, connection_flags, NULL);
-    check_sqlite_err(conn_, res, "Cannot establish connection to the database. ");
-
-    if (!synchronous.empty())
-    {
-        std::string const query("pragma synchronous=" + synchronous);
-        std::string const errMsg("Query failed: " + query);
-        execute_hardcoded(conn_, query.c_str(), errMsg.c_str());
-    }
-
-    res = sqlite3_busy_timeout(conn_, timeout * 1000);
-    check_sqlite_err(conn_, res, "Failed to set busy timeout for connection. ");
+    post_connection_helper(conn_, dbname, connection_flags, timeout, synchronous);
 }
 
 void sqlite3_session_backend::clean_up()

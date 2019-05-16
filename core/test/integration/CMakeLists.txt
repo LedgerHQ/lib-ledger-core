@@ -53,6 +53,7 @@ add_test (NAME ledger-core-integration-AccountBlockchainObservationTests.AutoRec
 add_test (NAME ledger-core-integration-AccountBlockchainObservationTests.EmitNewBlock COMMAND ledger-core-integration-tests --gtest_filter="AccountBlockchainObservationTests.EmitNewBlock")
 add_test (NAME ledger-core-integration-AccountCreationTest.CreateBitcoinAccountWithInfo COMMAND ledger-core-integration-tests --gtest_filter="AccountCreationTest.CreateBitcoinAccountWithInfo")
 add_test (NAME ledger-core-integration-AccountCreationTest.CreateBitcoinAccountWithInfoOnExistingWallet COMMAND ledger-core-integration-tests --gtest_filter="AccountCreationTest.CreateBitcoinAccountWithInfoOnExistingWallet")
+add_test (NAME ledger-core-integration-AccountCreationTest.ChangePassword COMMAND ledger-core-integration-tests --gtest_filter="AccountCreationTest.ChangePassword")
 add_test (NAME ledger-core-integration-AccountInfoTests.FirstAccountInfo COMMAND ledger-core-integration-tests --gtest_filter="AccountInfoTests.FirstAccountInfo")
 add_test (NAME ledger-core-integration-AccountInfoTests.AnotherAccountInfo COMMAND ledger-core-integration-tests --gtest_filter="AccountInfoTests.AnotherAccountInfo")
 add_test (NAME ledger-core-integration-AccountsPublicInterfaceTest.GetAddressOnEmptyAccount COMMAND ledger-core-integration-tests --gtest_filter="AccountsPublicInterfaceTest.GetAddressOnEmptyAccount")
