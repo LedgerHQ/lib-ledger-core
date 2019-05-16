@@ -598,6 +598,8 @@ namespace ledger {
                     "sender VARCHAR(255) NOT NULL,"
                     "receiver VARCHAR(255) NOT NULL,"
                     "fees VARCHAR(255) NOT NULL,"
+                    "gas_limit VARCHAR(255) NOT NULL,"
+                    "storage_limit VARCHAR(255) NOT NULL,"
                     "confirmations BIGINT NOT NULL"
                     ")";
 

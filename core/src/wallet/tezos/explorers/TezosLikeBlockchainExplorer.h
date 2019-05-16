@@ -55,6 +55,8 @@ namespace ledger {
             std::chrono::system_clock::time_point receivedAt;
             BigInt value;
             BigInt fees;
+            BigInt gas_limit;
+            BigInt storage_limit;
             std::string receiver;
             std::string sender;
             Option<Block> block;
@@ -65,14 +67,16 @@ namespace ledger {
             }
 
             TezosLikeBlockchainExplorerTransaction(const TezosLikeBlockchainExplorerTransaction &cpy) {
-                this->block = cpy.block;
                 this->hash = cpy.hash;
                 this->receivedAt = cpy.receivedAt;
-                this->confirmations = cpy.confirmations;
+                this->value = cpy.value;
                 this->fees = cpy.fees;
+                this->gas_limit = cpy.gas_limit;
+                this->storage_limit = cpy.storage_limit;
                 this->receiver = cpy.receiver;
                 this->sender = cpy.sender;
-                this->value = cpy.value;
+                this->block = cpy.block;
+                this->confirmations = cpy.confirmations;
             }
 
         };

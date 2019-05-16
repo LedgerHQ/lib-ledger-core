@@ -48,17 +48,13 @@ namespace ledger {
         }
 
         bool TezosLikeTransactionParser::StartObject() {
-            if (_arrayDepth == 0) {
-                _hierarchy.push(_lastKey);
-            }
+            _hierarchy.push(_lastKey);
             return true;
         }
 
         bool TezosLikeTransactionParser::EndObject(rapidjson::SizeType memberCount) {
             auto &currentObject = _hierarchy.top();
-            if (_arrayDepth == 0) {
-                _hierarchy.pop();
-            }
+            _hierarchy.pop();
             return true;
         }
 
@@ -118,6 +114,11 @@ namespace ledger {
                                                    bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
                 std::string number(str, length);
+                if (_lastKey == "amount") {
+                    _transaction->value = BigInt::fromString(number);
+                } else if (_lastKey == "fee") {
+                    _transaction->fees = BigInt::fromString(number);
+                }
                 return true;
             }
         }
@@ -149,16 +150,14 @@ namespace ledger {
                     if (_transaction->block.hasValue()) {
                         _transaction->block.getValue().time = date;
                     }
-                } else if (_lastKey == "src") {
+                } else if (currentObject == "src" && _lastKey == "tz") {
                     _transaction->sender = value;
-                } else if (_lastKey == "destination") {
+                } else if (currentObject == "destination" && _lastKey == "tz") {
                     _transaction->receiver = value;
-                } else if (_lastKey == "amount") {
-                    BigInt valueBigInt = BigInt::fromString(value);
-                    _transaction->value = valueBigInt;
-                } else if (_lastKey == "fee") {
-                    BigInt valueBigInt = BigInt::fromString(value);
-                    _transaction->fees = value;
+                } else if (_lastKey == "gas_limit") {
+                    _transaction->gas_limit = BigInt::fromString(value);
+                } else if (_lastKey == "storage_limit") {
+                    _transaction->storage_limit = BigInt::fromString(value);
                 }
                 return true;
             }
