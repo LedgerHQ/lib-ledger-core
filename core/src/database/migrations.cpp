@@ -600,7 +600,8 @@ namespace ledger {
                     "fees VARCHAR(255) NOT NULL,"
                     "gas_limit VARCHAR(255) NOT NULL,"
                     "storage_limit VARCHAR(255) NOT NULL,"
-                    "confirmations BIGINT NOT NULL"
+                    "confirmations BIGINT NOT NULL,"
+                    "type VARCHAR(255) NOT NULL"
                     ")";
 
             sql << "CREATE TABLE tezos_operations("

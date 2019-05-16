@@ -4,16 +4,18 @@
 
 #Class representing a Tezos transaction
 TezosLikeTransaction = interface +c {
+	# Get type of operation (transaction, reveal ... cf TezosOperationTag)
+	getType(): i8;
 	# Get the hash of the transaction.
 	getHash(): string;
 	# Get Fees (in drop)
 	getFees(): Amount;
-	# Get destination XRP address
-	getReceiver(): TezosLikeAddress;
-	# Get XRP sender address
+	# Get destination XTZ. address
+	getReceiver(): optional<TezosLikeAddress>;
+	# Get XTZ. sender address
 	getSender(): TezosLikeAddress;
-	# Get amount of XRP to send
-	getValue(): Amount;
+	# Get amount of XTZ to send
+	getValue(): optional<Amount>;
 	# Serialize the transaction to its raw format.
 	serialize(): binary;
 	# Set signature of transaction, when a signature is set serialize method gives back serialized Tx

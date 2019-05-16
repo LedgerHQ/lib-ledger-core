@@ -42,6 +42,8 @@
 #include <wallet/tezos/tezosNetworks.h>
 #include <math/Base58.hpp>
 #include <bytes/zarith/zarith.h>
+#include <api/TezosCurve.hpp>
+#include <tezos/TezosLikeExtendedPublicKey.h>
 
 namespace ledger {
     namespace core {
@@ -49,6 +51,7 @@ namespace ledger {
         TezosLikeTransactionApi::TezosLikeTransactionApi(const api::Currency &currency) {
             _currency = currency;
             _block = std::make_shared<TezosLikeBlockApi>(Block{});
+            _type = TezosOperationTag::OPERATION_TAG_TRANSACTION;
         }
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) {
@@ -71,6 +74,13 @@ namespace ledger {
             _receiver = TezosLikeAddress::fromBase58(tx.receiver, _currency);
             _sender = TezosLikeAddress::fromBase58(tx.sender, _currency);
 
+            _type = tx.type;
+
+            _revealedPubKey = tx.publicKey;
+        }
+
+        int8_t TezosLikeTransactionApi::getType() {
+            return _type;
         }
 
         std::string TezosLikeTransactionApi::getHash() {
@@ -158,7 +168,7 @@ namespace ledger {
             BytesWriter writer;
 
             // Watermark: Generic-Operation
-            writer.writeByte(OperationTag::OPERATION_TAG_GENERIC);
+            writer.writeByte(TezosOperationTag::OPERATION_TAG_GENERIC);
 
             // Block Hash
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
@@ -170,13 +180,14 @@ namespace ledger {
             writer.writeByteArray(std::vector<uint8_t>{blockHash.begin() + 2, blockHash.end()});
 
             // Operation Tag
-            writer.writeByte(OperationTag::OPERATION_TAG_TRANSACTION);
+            writer.writeByte(_type);
 
             // Set Sender
             // Originated
-            writer.writeByte(0x00);
+            auto isSenderOriginated = _sender->toBase58().find("KT1") == 0;
+            writer.writeByte(static_cast<uint8_t>(isSenderOriginated));
             // Curve Code
-            writer.writeByte(CurveTag::Secp256k1);
+            writer.writeByte(static_cast<uint8_t>(_senderCurve));
             // sender hash160
             writer.writeByteArray(_sender->getHash160());
 
@@ -195,20 +206,45 @@ namespace ledger {
             auto bigIntStorageLimit = BigInt::fromString(_storage->toBigInt()->toString(10));
             writer.writeByteArray(zarith::zSerialize(bigIntStorageLimit.toByteArray()));
 
-            // Amount
-            auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
-            writer.writeByteArray(zarith::zSerialize(bigIntValue.toByteArray()));
+            switch(_type) {
+                case TezosOperationTag::OPERATION_TAG_REVEAL: {
+                    if (!_signingPubKey.empty()) {
+                        if (_signingPubKey.size() == 32) {
+                            // Then it's ED25519
+                            writer.writeByte(0x00);
+                        } else { // TODO: find better, will be an issue when supporting p256
+                            writer.writeByte(0x01);
+                        }
+                        writer.writeByteArray(_signingPubKey);
+                    } else if (!_revealedPubKey.empty()) {
+                        auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
+                        writer.writeByte(0x00);
+                        writer.writeByteArray(pKey->derivePublicKey(""));
+                    }
+                    break;
+                }
+                case TezosOperationTag::OPERATION_TAG_TRANSACTION: {
+                    // Amount
+                    auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
+                    writer.writeByteArray(zarith::zSerialize(bigIntValue.toByteArray()));
 
-            // Set Receiver
-            // Originated
-            writer.writeByte(0x00);
-            // Curve Code
-            writer.writeByte(CurveTag::Secp256k1);
-            // sender hash160
-            writer.writeByteArray(_receiver->getHash160());
+                    // Set Receiver
+                    // Originated
+                    auto isReceiverOriginated = _receiver->toBase58().find("KT1") == 0;
+                    writer.writeByte(static_cast<uint8_t>(isReceiverOriginated));
+                    // Curve Code
+                    writer.writeByte(static_cast<uint8_t>(_senderCurve));
+                    // sender hash160
+                    writer.writeByteArray(_receiver->getHash160());
 
-            // Additional parameters
-            writer.writeByte(0x00);
+                    // Additional parameters
+                    writer.writeByte(0x00);
+                    break;
+                }
+                default:
+                    break;
+            }
+
             return writer.toByteArray();
         }
 
@@ -231,13 +267,15 @@ namespace ledger {
         }
 
         TezosLikeTransactionApi &
-        TezosLikeTransactionApi::setSender(const std::shared_ptr<api::TezosLikeAddress> &sender) {
+        TezosLikeTransactionApi::setSender(const std::shared_ptr<api::TezosLikeAddress> &sender, api::TezosCurve curve) {
+            _senderCurve = curve;
             _sender = sender;
             return *this;
         }
 
         TezosLikeTransactionApi &
-        TezosLikeTransactionApi::setReceiver(const std::shared_ptr<api::TezosLikeAddress> &receiver) {
+        TezosLikeTransactionApi::setReceiver(const std::shared_ptr<api::TezosLikeAddress> &receiver, api::TezosCurve curve) {
+            _receiverCurve = curve;
             _receiver = receiver;
             return *this;
         }
@@ -278,6 +316,11 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setStorage: Invalid Storage");
             }
             _storage = std::make_shared<Amount>(_currency, 0, *storage);
+            return *this;
+        }
+
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setType(TezosOperationTag type) {
+            _type = type;
             return *this;
         }
     }

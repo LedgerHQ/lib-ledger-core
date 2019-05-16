@@ -25,6 +25,7 @@ class BitcoinLikeOperation;
 class EthereumLikeOperation;
 class Preferences;
 class RippleLikeOperation;
+class TezosLikeOperation;
 class TrustIndicator;
 enum class OperationType;
 enum class WalletType;
@@ -118,6 +119,12 @@ public:
      *@return RippleLikeOperation object
      */
     virtual std::shared_ptr<RippleLikeOperation> asRippleLikeOperation() = 0;
+
+    /**
+     *Convert operation as Tezos operation
+     *@return TezosLikeOperation object
+     */
+    virtual std::shared_ptr<TezosLikeOperation> asTezosLikeOperation() = 0;
 
     virtual bool isInstanceOfBitcoinLikeOperation() = 0;
 

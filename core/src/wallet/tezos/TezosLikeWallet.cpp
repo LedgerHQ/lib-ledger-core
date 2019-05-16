@@ -44,7 +44,7 @@
 
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
-
+#include <api/TezosCurve.hpp>
 
 namespace ledger {
     namespace core {
@@ -95,7 +95,8 @@ namespace ledger {
                         Option<std::vector<uint8_t>>(),
                         info.publicKeys[0],
                         info.chainCodes[0],
-                        info.derivations[0]
+                        info.derivations[0],
+                        api::TezosCurve::SECP256K1
                 );
                 result.owners.push_back(info.owners[0]);
                 result.derivations.push_back(info.derivations[0]);

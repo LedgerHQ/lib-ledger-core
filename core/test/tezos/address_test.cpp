@@ -57,6 +57,13 @@ TEST(TezosAddress, AddressFromEd25519PubKey) {
     EXPECT_EQ(zPub->derive("")->toBase58(), expectedResult);
 }
 
+TEST(TezosAddress, AddressFromEd25519PublicKey) {
+    // Decode a pubKey prefixed with edpk
+    auto xpub = "edpkuySiX9Qi89G5aRaynPxLMqtrrjsMGZAGCUn7u2kBgYH5uxCwEy";
+    auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currency, xpub, Option<std::string>("44'/1729'/0'/0'"));
+    EXPECT_EQ(zPub->derive("")->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
+}
+
 TEST(TezosAddress, AddressFromSecp256k1PubKey) {
     std::vector<uint8_t> pubKey = hex::toByteArray("02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d");
     std::vector<uint8_t> chainCode = hex::toByteArray("");
@@ -64,7 +71,8 @@ TEST(TezosAddress, AddressFromSecp256k1PubKey) {
                                                                   optional<std::vector<uint8_t >>(),
                                                                   pubKey,
                                                                   chainCode,
-                                                                  "44'/1729'/0'/0'");
+                                                                  "44'/1729'/0'/0'",
+                                                                  api::TezosCurve::SECP256K1);
     EXPECT_EQ(zPub->derive("")->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
 }
 

@@ -50,8 +50,8 @@ namespace ledger {
 
             TezosLikeExtendedPublicKey(const api::Currency &params,
                                        const DeterministicPublicKey &key,
-                                       const DerivationPath &path = DerivationPath("m/"),
-                                       api::TezosCurve curve = api::TezosCurve::SECP256K1);
+                                       api::TezosCurve curve,
+                                       const DerivationPath &path = DerivationPath("m/"));
 
             std::shared_ptr<api::TezosLikeAddress> derive(const std::string &path) override;
 
@@ -69,7 +69,8 @@ namespace ledger {
                                                                        const optional<std::vector<uint8_t>> &parentPublicKey,
                                                                        const std::vector<uint8_t> &publicKey,
                                                                        const std::vector<uint8_t> &chainCode,
-                                                                       const std::string &path);
+                                                                       const std::string &path,
+                                                                       api::TezosCurve curve);
 
             static std::shared_ptr<TezosLikeExtendedPublicKey> fromBase58(const api::Currency &currency,
                                                                           const std::string &xpubBase58,

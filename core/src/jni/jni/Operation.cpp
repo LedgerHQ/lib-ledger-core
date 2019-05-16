@@ -10,6 +10,7 @@
 #include "OperationType.hpp"
 #include "Preferences.hpp"
 #include "RippleLikeOperation.hpp"
+#include "TezosLikeOperation.hpp"
 #include "TrustIndicator.hpp"
 #include "WalletType.hpp"
 
@@ -165,6 +166,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1a
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
         auto r = ref->asRippleLikeOperation();
         return ::djinni::release(::djinni_generated::RippleLikeOperation::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1asTezosLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->asTezosLikeOperation();
+        return ::djinni::release(::djinni_generated::TezosLikeOperation::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

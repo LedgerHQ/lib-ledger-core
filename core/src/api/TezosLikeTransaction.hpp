@@ -29,19 +29,22 @@ class LIBCORE_EXPORT TezosLikeTransaction {
 public:
     virtual ~TezosLikeTransaction() {}
 
+    /** Get type of operation (transaction, reveal ... cf TezosOperationTag) */
+    virtual int8_t getType() = 0;
+
     /** Get the hash of the transaction. */
     virtual std::string getHash() = 0;
 
     /** Get Fees (in drop) */
     virtual std::shared_ptr<Amount> getFees() = 0;
 
-    /** Get destination XRP address */
+    /** Get destination XTZ. address */
     virtual std::shared_ptr<TezosLikeAddress> getReceiver() = 0;
 
-    /** Get XRP sender address */
+    /** Get XTZ. sender address */
     virtual std::shared_ptr<TezosLikeAddress> getSender() = 0;
 
-    /** Get amount of XRP to send */
+    /** Get amount of XTZ to send */
     virtual std::shared_ptr<Amount> getValue() = 0;
 
     /** Serialize the transaction to its raw format. */
