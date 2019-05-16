@@ -46,6 +46,7 @@
 #include <wallet/common/Block.h>
 #include <wallet/common/explorers/AbstractBlockchainExplorer.h>
 #include <wallet/tezos/keychains/TezosLikeKeychain.h>
+#include <wallet/tezos/TezosOperationTag.h>
 
 namespace ledger {
     namespace core {
@@ -61,7 +62,8 @@ namespace ledger {
             std::string sender;
             Option<Block> block;
             uint64_t confirmations;
-
+            TezosOperationTag type;
+            std::string publicKey;
             TezosLikeBlockchainExplorerTransaction() {
                 confirmations = 0;
             }
@@ -77,6 +79,8 @@ namespace ledger {
                 this->sender = cpy.sender;
                 this->block = cpy.block;
                 this->confirmations = cpy.confirmations;
+                this->type = cpy.type;
+                this->publicKey = cpy.publicKey;
             }
 
         };

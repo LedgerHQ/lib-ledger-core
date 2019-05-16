@@ -39,30 +39,18 @@
 #include <api/Amount.hpp>
 #include <api/Currency.hpp>
 #include <math/BigInt.h>
+#include <wallet/tezos/TezosOperationTag.h>
 
 namespace ledger {
     namespace core {
         // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
-        enum OperationTag {
-            OPERATION_TAG_NONE = -1,
-            OPERATION_TAG_GENERIC = 3,
-            OPERATION_TAG_PROPOSAL = 5,
-            OPERATION_TAG_BALLOT = 6,
-            OPERATION_TAG_REVEAL = 7,
-            OPERATION_TAG_TRANSACTION = 8,
-            OPERATION_TAG_ORIGINATION = 9,
-            OPERATION_TAG_DELEGATION = 10,
-        };
-        enum CurveTag {
-            Ed25519,
-            Secp256k1,
-            P256,
-        };
         class TezosLikeTransactionApi : public api::TezosLikeTransaction {
         public:
             explicit TezosLikeTransactionApi(const api::Currency &currency);
 
             explicit TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
+
+            int8_t getType() override;
 
             std::string getHash() override;
 
@@ -96,9 +84,9 @@ namespace ledger {
 
             TezosLikeTransactionApi &setValue(const std::shared_ptr<BigInt> &value);
 
-            TezosLikeTransactionApi &setSender(const std::shared_ptr<api::TezosLikeAddress> &sender);
+            TezosLikeTransactionApi &setSender(const std::shared_ptr<api::TezosLikeAddress> &sender, api::TezosCurve curve = api::TezosCurve::ED25519);
 
-            TezosLikeTransactionApi &setReceiver(const std::shared_ptr<api::TezosLikeAddress> &receiver);
+            TezosLikeTransactionApi &setReceiver(const std::shared_ptr<api::TezosLikeAddress> &receiver, api::TezosCurve curve = api::TezosCurve::ED25519);
 
             TezosLikeTransactionApi &setSigningPubKey(const std::vector<uint8_t> &pubKey);
 
@@ -112,6 +100,8 @@ namespace ledger {
 
             TezosLikeTransactionApi & setStorage(const std::shared_ptr<BigInt>& storage);
 
+            TezosLikeTransactionApi & setType(TezosOperationTag type);
+
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlockApi> _block;
@@ -123,10 +113,14 @@ namespace ledger {
             std::shared_ptr<BigInt> _counter;
             std::shared_ptr<api::Amount> _value;
             std::shared_ptr<api::TezosLikeAddress> _receiver;
+            api::TezosCurve _receiverCurve;
             std::shared_ptr<api::TezosLikeAddress> _sender;
+            api::TezosCurve _senderCurve;
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;
             std::vector<uint8_t> _signingPubKey;
+            TezosOperationTag _type;
+            std::string _revealedPubKey;
         };
     }
 }

@@ -35,6 +35,8 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
 #include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
 #include <wallet/ripple/api_impl/RippleLikeOperation.h>
+#include <wallet/tezos/api_impl/TezosLikeOperation.h>
+#include <api/WalletType.hpp>
 
 
 namespace ledger {
@@ -140,9 +142,16 @@ namespace ledger {
 
         std::shared_ptr<api::RippleLikeOperation> OperationApi::asRippleLikeOperation() {
             if (getWalletType() != api::WalletType::RIPPLE) {
-                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ethereum type.");
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ripple type.");
             }
             return std::make_shared<RippleLikeOperation>(shared_from_this());
+        }
+
+        std::shared_ptr<api::TezosLikeOperation> OperationApi::asTezosLikeOperation() {
+            if (getWalletType() != api::WalletType::TEZOS) {
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Tezos type.");
+            }
+            return std::make_shared<TezosLikeOperation>(shared_from_this());
         }
 
         const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {

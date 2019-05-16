@@ -44,14 +44,14 @@ namespace ledger {
         using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<TezosLikeBlockchainExplorerTransaction, TezosLikeBlockchainExplorer::TransactionsBulk, TezosLikeTransactionsParser, TezosLikeTransactionsBulkParser, TezosLikeBlockParser, api::TezosLikeNetworkParameters>;
 
         class NodeTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
-                                                 public LedgerApiBlockchainExplorer,
-                                                 public DedicatedContext,
-                                                 public std::enable_shared_from_this<NodeTezosLikeBlockchainExplorer> {
+                                                public LedgerApiBlockchainExplorer,
+                                                public DedicatedContext,
+                                                public std::enable_shared_from_this<NodeTezosLikeBlockchainExplorer> {
         public:
             NodeTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
-                                             const std::shared_ptr<HttpClient> &http,
-                                             const api::TezosLikeNetworkParameters &parameters,
-                                             const std::shared_ptr<api::DynamicObject> &configuration);
+                                            const std::shared_ptr<HttpClient> &http,
+                                            const api::TezosLikeNetworkParameters &parameters,
+                                            const std::shared_ptr<api::DynamicObject> &configuration);
 
             Future<std::shared_ptr<BigInt>>
             getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) override;

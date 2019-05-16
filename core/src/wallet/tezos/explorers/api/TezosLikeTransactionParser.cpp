@@ -158,6 +158,20 @@ namespace ledger {
                     _transaction->gas_limit = BigInt::fromString(value);
                 } else if (_lastKey == "storage_limit") {
                     _transaction->storage_limit = BigInt::fromString(value);
+                } else if (_lastKey == "kind") {
+                    static std::unordered_map<std::string, TezosOperationTag> opTags {
+                            std::make_pair("reveal", TezosOperationTag::OPERATION_TAG_REVEAL),
+                            std::make_pair("transaction", TezosOperationTag::OPERATION_TAG_TRANSACTION),
+                            std::make_pair("origination", TezosOperationTag::OPERATION_TAG_ORIGINATION),
+                            std::make_pair("delegation", TezosOperationTag::OPERATION_TAG_DELEGATION),
+                    };
+                    if (opTags.count(value)) {
+                        _transaction->type = opTags[value];
+                    } else {
+                        _transaction->type = TezosOperationTag::OPERATION_TAG_NONE;
+                    }
+                } else if (_lastKey == "public_key") {
+                    _transaction->publicKey = value;
                 }
                 return true;
             }

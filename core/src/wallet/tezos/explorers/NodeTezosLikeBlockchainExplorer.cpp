@@ -139,22 +139,26 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Tezos Node, but got {} addresses", addresses.size());
             }
-            return _http->GET(fmt::format("operations/{}?type=Transaction", addresses[0]))
-                    .template json<TransactionsBulk, Exception>(
-                            LedgerApiParser<TransactionsBulk, TezosLikeTransactionsBulkParser>())
-                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](
-                            const Either<Exception, std::shared_ptr<TransactionsBulk>> &result) {
-                        if (result.isLeft()) {
-                            if (fromBlockHash.isEmpty()) {
+            using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
+            auto self = shared_from_this();
+            std::vector<std::string> txTypes {"Transaction", "Reveal"};
+            static std::function<FuturePtr<TransactionsBulk> (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type)> getTransactionsOfType = [=] (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type) -> FuturePtr<TransactionsBulk> {
+                return self->_http->GET(fmt::format("operations/{}?type={}", addresses[0], txTypes[type]))
+                        .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TezosLikeTransactionsBulkParser>())
+                        .template flatMapPtr<TransactionsBulk>(self->getExplorerContext(), [=](const EitherTransactionsBulk &result) {
+                            if (result.isLeft()) {
                                 throw result.getLeft();
                             } else {
-                                throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND,
-                                                     "Unable to find block with hash {}", fromBlockHash.getValue());
+                                txsBulk->transactions.insert(txsBulk->transactions.end(), result.getRight()->transactions.begin(), result.getRight()->transactions.end());
+                                if (type < txTypes.size() - 1) {
+                                    return getTransactionsOfType(txsBulk, type + 1);
+                                }
+                                return FuturePtr<TransactionsBulk>::successful(txsBulk);
                             }
-                        } else {
-                            return result.getRight();
-                        }
-                    });
+                        });
+            };
+            auto transactionsBulk = std::make_shared<TransactionsBulk>();
+            return getTransactionsOfType(transactionsBulk, 0);
         }
 
         FuturePtr<Block> NodeTezosLikeBlockchainExplorer::getCurrentBlock() const {

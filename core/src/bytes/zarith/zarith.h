@@ -150,8 +150,8 @@ namespace ledger {
                 }
 
                 // Update bytes reader
-                auto max = std::min<unsigned long>(id + delay, data.size());
-                reader.read(max);
+                auto min = std::min<unsigned long>(id + delay, data.size());
+                reader.read(min);
 
                 // Little endianess
                 std::reverse(result.begin(), result.end());

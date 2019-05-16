@@ -35,6 +35,7 @@
 #include <api/TezosLikeNetworkParameters.hpp>
 #include "../utils/optional.hpp"
 #include <wallet/common/AbstractAddress.h>
+#include <api/TezosCurve.hpp>
 
 namespace ledger {
     namespace core {
@@ -57,7 +58,8 @@ namespace ledger {
 
             std::string toString() override;
 
-            static std::shared_ptr<AbstractAddress> parse(const std::string &address, const api::Currency &currency,
+            static std::shared_ptr<AbstractAddress> parse(const std::string &address,
+                                                          const api::Currency &currency,
                                                           const Option<std::string> &derivationPath = Option<std::string>());
 
             static std::shared_ptr<TezosLikeAddress> fromBase58(const std::string &address,

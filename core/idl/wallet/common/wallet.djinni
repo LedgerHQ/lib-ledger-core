@@ -129,6 +129,9 @@ Operation = interface +c {
     #Convert operation as Ripple operation
     #@return RippleLikeOperation object
     asRippleLikeOperation(): RippleLikeOperation;
+    #Convert operation as Tezos operation
+    #@return TezosLikeOperation object
+    asTezosLikeOperation(): TezosLikeOperation;
     isInstanceOfBitcoinLikeOperation(): bool;
     # Same as isInstanceOfBitcoinLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;

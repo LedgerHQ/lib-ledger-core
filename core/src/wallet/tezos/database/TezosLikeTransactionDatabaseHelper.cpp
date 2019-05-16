@@ -46,7 +46,7 @@ namespace ledger {
                                                                       TezosLikeBlockchainExplorerTransaction &tx) {
 
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
-                    " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, "
+                    " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, "
                     "block.height, block.hash, block.time, block.currency_name "
                     "FROM tezos_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
@@ -72,12 +72,13 @@ namespace ledger {
             tx.gas_limit = BigInt::fromHex(row.get<std::string>(6));
             tx.storage_limit = BigInt::fromHex(row.get<std::string>(7));
             tx.confirmations = get_number<uint64_t>(row, 8);
-            if (row.get_indicator(9) != i_null) {
+            tx.type = XTZOperationTag::from_string(row.get<std::string>(9));
+            if (row.get_indicator(10) != i_null) {
                 TezosLikeBlockchainExplorer::Block block;
-                block.height = get_number<uint64_t>(row, 9);
-                block.hash = row.get<std::string>(10);
-                block.time = row.get<std::chrono::system_clock::time_point>(11);
-                block.currencyName = row.get<std::string>(12);
+                block.height = get_number<uint64_t>(row, 10);
+                block.hash = row.get<std::string>(11);
+                block.time = row.get<std::chrono::system_clock::time_point>(12);
+                block.currencyName = row.get<std::string>(13);
                 tx.block = block;
             }
 
@@ -123,8 +124,9 @@ namespace ledger {
                 auto hexFees = tx.fees.toHexString();
                 auto hexGasLimit = tx.gas_limit.toHexString();
                 auto hexStorageLimit = tx.storage_limit.toHexString();
+                auto type = XTZOperationTag::to_string(tx.type);
                 sql
-                        << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations)",
+                        << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations, :type)",
                         use(tezosTxUid),
                         use(tx.hash),
                         use(hexValue),
@@ -135,7 +137,8 @@ namespace ledger {
                         use(hexFees),
                         use(hexGasLimit),
                         use(hexStorageLimit),
-                        use(tx.confirmations);
+                        use(tx.confirmations),
+                        use(type);
 
                 return tezosTxUid;
             }

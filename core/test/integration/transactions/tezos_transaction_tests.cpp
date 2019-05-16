@@ -131,3 +131,31 @@ TEST_F(TezosMakeTransaction, ParseSignedRawTransaction) {
     EXPECT_EQ(tx->getValue()->toLong(), 10000000000L);
     EXPECT_EQ(tx->getFees()->toLong(), 1274L);
 }
+
+TEST_F(TezosMakeTransaction, ParseSignedRawRevealTransaction) {
+    // round-trip
+    auto strTx = "03a43f08f2b1d38e7c2762fc1b123b3ab772ae34669c2b541a0f7e96a104341e94070000d2e495a7ab40156d0a7c35b73d2530a3470fc870ea0902904e0000cda3081bd81219ec494b29068dcfd19e427fed9a66abcdc9e9e99ca6478f60e9";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::TEZOS, txBytes);
+
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getSender()->toBase58(), "tz1es8RjqHUD483BN9APWtvCzgjTFVGeMh3y");
+    EXPECT_EQ(tx->getValue()->toLong(), 0L);
+    EXPECT_EQ(tx->getFees()->toLong(), 1258L);
+}
+
+TEST_F(TezosMakeTransaction, ParseSignedRawOriginationTransaction) {
+    // round-trip
+    auto strTx = "03a43f08f2b1d38e7c2762fc1b123b3ab772ae34669c2b541a0f7e96a104341e94090000d2e495a7ab40156d0a7c35b73d2530a3470fc870920903f44e950200d2e495a7ab40156d0a7c35b73d2530a3470fc8708094ebdc03ffff0000";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::TEZOS, txBytes);
+
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getSender()->toBase58(), "tz1es8RjqHUD483BN9APWtvCzgjTFVGeMh3y");
+    EXPECT_EQ(tx->getValue()->toLong(), 0L);
+    EXPECT_EQ(tx->getFees()->toLong(), 1258L);
+}
