@@ -167,6 +167,15 @@ add_test (NAME ledger-core-integration-EthereumLikeWalletSynchronization.XpubSyn
 add_test (NAME ledger-core-integration-EthereumMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.CreateTx")
 add_test (NAME ledger-core-integration-EthereumMakeTransaction.ParseUnsignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter="EthereumMakeTransaction.ParseUnsignedRawTransaction")
 
+add_test (NAME ledger-core-integration-EthereumKeychains.KeychainDerivation COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.KeychainDerivation")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumAddressValidation COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumAddressValidation")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumEmptyAddressValidation COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumEmptyAddressValidation")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumAddressValidationFromXpub COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumAddressValidationFromXpub")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumChildAddressValidationFromPubKeyAndChainCode COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumChildAddressValidationFromPubKeyAndChainCode")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumExoticDerivationPaths COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumExoticDerivationPaths")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumAddressValidationFromPubKeyAndChainCode COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumAddressValidationFromPubKeyAndChainCode")
+add_test (NAME ledger-core-integration-EthereumKeychains.EthereumDerivationSchemes COMMAND ledger-core-integration-tests --gtest_filter="EthereumKeychains.EthereumDerivationSchemes")
+
 add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.MediumXpubSynchronization")
 add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool")
 add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewBlock COMMAND ledger-core-integration-tests --gtest_filter="RippleLikeWalletSynchronization.EmitNewBlock")

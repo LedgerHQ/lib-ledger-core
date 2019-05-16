@@ -82,20 +82,24 @@ namespace ledger {
             return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
         }
 
-        std::shared_ptr<EthereumLikeAddress> EthereumLikeAddress::fromEIP55(const std::string& address,
-                                                                            const api::Currency& currency,
-                                                                            const Option<std::string>& derivationPath) {
-            //Remove 0x
-            auto tmpAddress = address.substr(2, address.length() - 2);
-            auto keccack256 = hex::toByteArray(tmpAddress);
-            //Now we only accept addresses that are EIP55 compliant
-            //If client want to use all lower/upper cased address
-            //they should decide if those addresses are valid or not
-            //N.B.: Live and Vault will validate these addresses and
-            //warn that this address was not validated from our side
-            if (tmpAddress.size() != 40 || address != Base58::encodeWithEIP55(keccack256)) {
-                throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
+        std::shared_ptr<EthereumLikeAddress> EthereumLikeAddress::fromEIP55(const std::string &address,
+                                                                            const api::Currency &currency,
+                                                                            const Option<std::string> &derivationPath) {
+            std::vector<uint8_t> keccack256;
+            if (address.length() > 2) {
+                //Remove 0x
+                auto tmpAddress = address.substr(2, address.length() - 2);
+                keccack256 = hex::toByteArray(tmpAddress);
+                //Now we only accept addresses that are EIP55 compliant
+                //If client want to use all lower/upper cased address
+                //they should decide if those addresses are valid or not
+                //N.B.: Live and Vault will validate these addresses and
+                //warn that this address was not validated from our side
+                if (tmpAddress.size() != 40 || address != Base58::encodeWithEIP55(keccack256)) {
+                    throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
+                }
             }
+
             return std::make_shared<ledger::core::EthereumLikeAddress>(currency, keccack256, derivationPath);
         }
     }

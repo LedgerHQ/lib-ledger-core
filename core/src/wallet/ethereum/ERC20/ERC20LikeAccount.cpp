@@ -163,7 +163,7 @@ namespace ledger {
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
                     " op.type, op.hash, op.nonce, op.value,"
                     " op.date, op.sender, op.receiver, op.input_data,"
-                    " op.gas_price, op.gas_limit, op.gas_used, op.status"
+                    " op.gas_price, op.gas_limit, op.gas_used, op.status, op.block_height"
                     " FROM erc20_operations AS op"
                     " WHERE op.account_uid = :account_uid", soci::use(_accountUid));
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
@@ -189,6 +189,8 @@ namespace ledger {
                 op->setUsedGas(BigInt::fromHex(row.get<std::string>(13)));
                 auto status = row.get<int32_t>(14);
                 op->setStatus(status);
+                auto blockHeight = row.get<long long>(15);
+                op->setBlockHeight(blockHeight);
                 result.emplace_back(op);
             }
             return result;
@@ -243,16 +245,17 @@ namespace ledger {
                 auto gasPrice = operation->getGasPrice()->toString(16);
                 auto gasLimit = operation->getGasLimit()->toString(16);
                 auto gasUsed = operation->getUsedGas()->toString(16);
+                auto blockHeight = operation->getBlockHeight().value_or(0);
                 sql << "INSERT INTO erc20_operations VALUES("
                         ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
-                        ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status"
+                        ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status, :block_height"
                         ")"
                         , use(erc20OpUid), use(ethOpUid)
                         , use(_accountUid), use(operationType), use(hash)
                         , use(nonce), use(value), use(time)
                         , use(sender), use(receiver), use(data)
                         , use(gasPrice), use(gasLimit), use(gasUsed)
-                        , use(status);
+                        , use(status), use(blockHeight);
             }
         }
 

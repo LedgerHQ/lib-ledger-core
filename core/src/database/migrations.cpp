@@ -562,5 +562,13 @@ namespace ledger {
             sql << "DROP TABLE erc20_operations";
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
         }
+
+        template <> void migrate<10>(soci::session& sql) {
+            sql << "ALTER TABLE erc20_operations ADD COLUMN block_height BIGINT";
+        }
+
+        template <> void rollback<10>(soci::session& sql) {
+            // not supported in standard ways by SQLite :(
+        }
     }
 }
