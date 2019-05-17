@@ -32,11 +32,22 @@
 #ifndef LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEENTRY_H
 #define LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEENTRY_H
 #include <string>
+#include <utils/Option.hpp>
+
 namespace ledger {
     namespace core {
+        struct TezosLikeOriginatedAccountDatabaseEntry {
+            std::string uid;
+            std::string address;
+            bool spendable;
+            bool delegatable;
+            Option<std::string> publicKey;
+        };
+
         struct TezosLikeAccountDatabaseEntry {
             int32_t index;
             std::string address;
+            std::vector<TezosLikeOriginatedAccountDatabaseEntry> originatedAccounts;
         };
     }
 }

@@ -139,11 +139,15 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Tezos Node, but got {} addresses", addresses.size());
             }
+            std::string params;
+            if (fromBlockHash.hasValue()) {
+                params = "&block_hash=" + fromBlockHash.getValue();
+            }
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             auto self = shared_from_this();
             std::vector<std::string> txTypes {"Transaction", "Reveal", "Origination"};
             static std::function<FuturePtr<TransactionsBulk> (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type)> getTransactionsOfType = [=] (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type) -> FuturePtr<TransactionsBulk> {
-                return self->_http->GET(fmt::format("operations/{}?type={}", addresses[0], txTypes[type]))
+                return self->_http->GET(fmt::format("operations/{}?type={}{}", addresses[0], txTypes[type], params))
                         .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TezosLikeTransactionsBulkParser>())
                         .template flatMapPtr<TransactionsBulk>(self->getExplorerContext(), [=](const EitherTransactionsBulk &result) {
                             if (result.isLeft()) {

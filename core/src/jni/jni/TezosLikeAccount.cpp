@@ -5,6 +5,7 @@
 #include "BigIntCallback.hpp"
 #include "Marshal.hpp"
 #include "StringCallback.hpp"
+#include "TezosLikeOriginatedAccount.hpp"
 #include "TezosLikeTransaction.hpp"
 #include "TezosLikeTransactionBuilder.hpp"
 
@@ -71,6 +72,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
         ref->getEstimatedGasLimit(::djinni::String::toCpp(jniEnv, j_address),
                                   ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getOriginatedAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeAccount>(nativeRef);
+        auto r = ref->getOriginatedAccounts();
+        return ::djinni::release(::djinni::List<::djinni_generated::TezosLikeOriginatedAccount>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

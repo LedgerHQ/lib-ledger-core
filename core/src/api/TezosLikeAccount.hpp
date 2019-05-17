@@ -20,6 +20,7 @@ namespace ledger { namespace core { namespace api {
 
 class BigIntCallback;
 class StringCallback;
+class TezosLikeOriginatedAccount;
 class TezosLikeTransaction;
 class TezosLikeTransactionBuilder;
 
@@ -49,6 +50,9 @@ public:
      * Note: same note as for getFees method on BitcoinLikeAccount
      */
     virtual void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /** Get originated accounts by current account */
+    virtual std::vector<std::shared_ptr<TezosLikeOriginatedAccount>> getOriginatedAccounts() = 0;
 };
 
 } } }  // namespace ledger::core::api

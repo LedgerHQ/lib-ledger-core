@@ -45,6 +45,7 @@ namespace ledger {
             static bool queryAccount(soci::session& sql,
                                      const std::string& accountUid,
                                      TezosLikeAccountDatabaseEntry& entry);
+            static std::string createOriginatedAccountUid(const std::string &xtzAccountUid, const std::string &originatedAddress);
         };
     }
 }

@@ -123,6 +123,25 @@ TezosLikeAccount = interface +c {
 	# This estimation is based on X last incoming txs (to address) that succeeded
 	# Note: same note as for getFees method on BitcoinLikeAccount
 	getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
+	# Get originated accounts by current account
+	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
+}
+
+# Class representing originated accounts
+TezosLikeOriginatedAccount = interface +c {
+	# Get address of originated account (prefixed with KT)
+	getAddress(): string;
+	# Get publicKey of originated account
+	# Could be empty if not yet revealed
+	getPublicKey(): optional<string>;
+	# Know if possible to spend from this account
+	# By default originations from libcore set it to true
+	isSpendable(): bool;
+	# Know if possible to delegate from this account
+	# By default originations from libcore set it to true
+	isDelegatable(): bool;
+	# Get related operations to account
+	queryOperations(): OperationQuery;
 }
 
 TezosConfigurationDefaults = interface +c {

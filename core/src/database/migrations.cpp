@@ -609,9 +609,21 @@ namespace ledger {
                     "transaction_uid VARCHAR(255) NOT NULL REFERENCES tezos_transactions(transaction_uid),"
                     "transaction_hash VARCHAR(255) NOT NULL"
                     ")";
+
+            // Originated accounts
+            sql << "CREATE TABLE tezos_originated_accounts("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "tezos_account_uid VARCHAR(255) NOT NULL REFERENCES tezos_accounts(uid) ON DELETE CASCADE,"
+                    "address VARCHAR(255) NOT NULL,"
+                    "spendable INTEGER NOT NULL,"
+                    "delegatable INTEGER NOT NULL,"
+                    "public_key VARCHAR(255) NOT NULL"
+                    ")";
         }
 
         template <> void rollback<11>(soci::session& sql) {
+            sql << "DROP TABLE tezos_originated_accounts";
+
             sql << "DROP TABLE tezos_operations";
 
             sql << "DROP TABLE tezos_transactions";

@@ -51,6 +51,18 @@
 namespace ledger {
     namespace core {
 
+        struct TezosLikeBlockchainExplorerOriginatedAccount {
+
+            TezosLikeBlockchainExplorerOriginatedAccount(const std::string &a = "") : address(a) {
+                spendable = false;
+                delegatable = false;
+            };
+
+            std::string address;
+            bool spendable;
+            bool delegatable;
+        };
+
         struct TezosLikeBlockchainExplorerTransaction {
             std::string hash;
             std::chrono::system_clock::time_point receivedAt;
@@ -64,6 +76,7 @@ namespace ledger {
             uint64_t confirmations;
             api::TezosOperationTag type;
             std::string publicKey;
+            std::vector<TezosLikeBlockchainExplorerOriginatedAccount> originatedAccounts;
             TezosLikeBlockchainExplorerTransaction() {
                 confirmations = 0;
             }
@@ -81,6 +94,7 @@ namespace ledger {
                 this->confirmations = cpy.confirmations;
                 this->type = cpy.type;
                 this->publicKey = cpy.publicKey;
+                this->originatedAccounts = cpy.originatedAccounts;
             }
 
         };
