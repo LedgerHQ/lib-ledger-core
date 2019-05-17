@@ -74,21 +74,6 @@ namespace ledger {
             _originatedAccountsEntries = originatedAccounts;
         }
 
-
-        FuturePtr<TezosLikeBlockchainExplorerTransaction> TezosLikeAccount::getTransaction(const std::string &hash) {
-            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-            return async<std::shared_ptr<TezosLikeBlockchainExplorerTransaction>>(
-                    [=]() -> std::shared_ptr<TezosLikeBlockchainExplorerTransaction> {
-                        auto tx = std::make_shared<TezosLikeBlockchainExplorerTransaction>();
-                        soci::session sql(self->getWallet()->getDatabase()->getPool());
-                        if (!TezosLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, *tx)) {
-                            throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found",
-                                                 hash);
-                        }
-                        return tx;
-                    });
-        }
-
         void TezosLikeAccount::inflateOperation(Operation &out,
                                                 const std::shared_ptr<const AbstractWallet> &wallet,
                                                 const TezosLikeBlockchainExplorerTransaction &tx) {
@@ -105,7 +90,9 @@ namespace ledger {
         }
 
         int TezosLikeAccount::putTransaction(soci::session &sql,
-                                             const TezosLikeBlockchainExplorerTransaction &transaction) {
+                                             const TezosLikeBlockchainExplorerTransaction &transaction,
+                                             const std::string &originatedAccountUid,
+                                             const std::string &originatedAccountAddress) {
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -127,6 +114,25 @@ namespace ledger {
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
 
+
+            // Check if it's an operation related to an originated account
+            // It can be the case if we are putting transaction operations
+            // for originated account.
+            if (!originatedAccountUid.empty() && !originatedAccountAddress.empty()) {
+                operation.accountUid = originatedAccountUid;
+                operation.amount = transaction.value;
+                operation.type = transaction.receiver == originatedAccountAddress ? api::OperationType::RECEIVE : api::OperationType::SEND;
+                operation.refreshUid();
+                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                    // Update publicKey field for originated account
+                    if (transaction.type == api::TezosOperationTag::OPERATION_TAG_REVEAL && transaction.publicKey.hasValue()) {
+                        TezosLikeAccountDatabaseHelper::updatePubKeyField(sql, originatedAccountUid, transaction.publicKey.getValue());
+                    }
+                    emitNewOperationEvent(operation);
+                }
+                result = FLAG_NEW_TRANSACTION;
+                return result;
+            }
 
             if (_accountAddress == transaction.sender) {
                 operation.amount = transaction.value;
@@ -159,31 +165,30 @@ namespace ledger {
 
         void TezosLikeAccount::updateOriginatedAccounts(soci::session &sql, const Operation &operation) {
             auto transaction = operation.tezosTransaction.getValue();
-            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this()) ;
-            for (auto &originatedAccount : transaction.originatedAccounts) {
-                // If account in DB then it's already in _originatedAccounts
-                auto count = 0;
-                sql << "SELECT COUNT(*) FROM tezos_originated_accounts WHERE address = :originated_address", soci::use(originatedAccount.address), soci::into(count);
-                if (count == 0) {
-                    std::string pubKey;
-                    int spendable = originatedAccount.spendable, delegatable = originatedAccount.delegatable;
-                    auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), originatedAccount.address);
-                    sql << "INSERT INTO tezos_originated_accounts VALUES(:uid, :tezos_account_uid, :address, :spendable, :delegatable, :public_key)",
-                            use(originatedAccountUid),
-                            use(getAccountUid()),
-                            use(originatedAccount.address),
-                            use(spendable),
-                            use(delegatable),
-                            use(pubKey);
+            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            // If account in DB then it's already in _originatedAccounts
+            auto count = 0;
+            auto origAccount = transaction.originatedAccount.getValue();
+            sql << "SELECT COUNT(*) FROM tezos_originated_accounts WHERE address = :originated_address", soci::use(origAccount.address), soci::into(count);
+            if (count == 0) {
+                std::string pubKey;
+                int spendable = origAccount.spendable, delegatable = origAccount.delegatable;
+                auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), origAccount.address);
+                sql << "INSERT INTO tezos_originated_accounts VALUES(:uid, :tezos_account_uid, :address, :spendable, :delegatable, :public_key)",
+                        use(originatedAccountUid),
+                        use(getAccountUid()),
+                        use(origAccount.address),
+                        use(spendable),
+                        use(delegatable),
+                        use(pubKey);
 
-                    _originatedAccounts.emplace_back(
-                            std::make_shared<TezosLikeOriginatedAccount>(originatedAccountUid,
-                                                                         originatedAccount.address,
-                                                                         self,
-                                                                         originatedAccount.spendable,
-                                                                         originatedAccount.delegatable)
-                    );
-                }
+                _originatedAccounts.emplace_back(
+                        std::make_shared<TezosLikeOriginatedAccount>(originatedAccountUid,
+                                                                     origAccount.address,
+                                                                     self,
+                                                                     origAccount.spendable,
+                                                                     origAccount.delegatable)
+                );
             }
         }
         
@@ -320,6 +325,8 @@ namespace ledger {
                                 sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
                                 break;
                             }
+                            default:
+                                break;
                         }
                     }
                     operationsCount += 1;
@@ -391,26 +398,58 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
-                api::EventCode code;
-                auto payload = std::make_shared<DynamicObject>();
-                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                        DateUtils::now() - startTime).count();
-                payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
-                if (result.isSuccess()) {
-                    code = api::EventCode::SYNCHRONIZATION_SUCCEED;
-                } else {
-                    code = api::EventCode::SYNCHRONIZATION_FAILED;
-                    payload->putString(api::Account::EV_SYNC_ERROR_CODE,
-                                       api::to_string(result.getFailure().getErrorCode()));
-                    payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
-                    payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
-                }
-                eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
-                std::lock_guard<std::mutex> lock(self->_synchronizationLock);
-                self->_currentSyncEventBus = nullptr;
+            future.flatMap<Unit>(getContext(), [self] (const Try<Unit> &result) {
+                        // Synchronize originated accounts ...
+                        // Notes: We should rid of this part by implementing support for fetching
+                        // txs for multiple addresses
+                        // Hint: we could add originated accounts to keychain as
+                        // managedAccounts and getAllObservableAddresses will return them as well
+                        if (self->_originatedAccounts.empty() || result.isFailure()) {
+                            return Future<Unit>::successful(result.getValue());
+                        }
 
-            });
+                        using TxsBulk = TezosLikeBlockchainExplorer::TransactionsBulk;
+                        static std::function<Future<Unit> (size_t)> getTxs = [self] (size_t id) -> Future<Unit> {
+                            std::vector<std::string> addresses{self->_originatedAccounts[id]->getAddress()};
+                            // TODO: Get info of last fetched block
+                            // For the moment we start synchro from the beginning
+                            return self->_explorer->getTransactions(addresses).flatMap<Unit>(self->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
+                                auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(self->getAccountUid(), addresses[0]);
+                                vector::map<int, TezosLikeBlockchainExplorerTransaction>(bulk->transactions, [=] (const TezosLikeBlockchainExplorerTransaction &tx) {
+                                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                    return self->putTransaction(sql, tx, uid, addresses[0]);
+                                });
+
+                                if (id == self->_originatedAccounts.size() - 1) {
+                                    return Future<Unit>::successful(Unit());
+                                }
+
+                                return getTxs(id + 1);
+                            }).recover(self->getContext(), [self] (const Exception& ex) -> Unit {
+                                throw ex;
+                            });
+                        };
+                        return getTxs(0);
+                    })
+                    .onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+                        api::EventCode code;
+                        auto payload = std::make_shared<DynamicObject>();
+                        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                DateUtils::now() - startTime).count();
+                        payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                        if (result.isSuccess()) {
+                            code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                        } else {
+                            code = api::EventCode::SYNCHRONIZATION_FAILED;
+                            payload->putString(api::Account::EV_SYNC_ERROR_CODE,
+                                               api::to_string(result.getFailure().getErrorCode()));
+                            payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
+                            payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
+                        }
+                        eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                        std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                        self->_currentSyncEventBus = nullptr;
+                    });
             return eventPublisher->getEventBus();
         }
 

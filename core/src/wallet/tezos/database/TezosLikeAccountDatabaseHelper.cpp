@@ -79,5 +79,9 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}", xtzAccountUid, originatedAddress));
         }
 
+        void TezosLikeAccountDatabaseHelper::updatePubKeyField(soci::session &sql, const std::string &accountUid, const std::string &pubKey) {
+            sql << "UPDATE tezos_originated_accounts SET public_key = :public_key WHERE uid = :uid", use(pubKey), use(accountUid);
+        }
+
     }
 }

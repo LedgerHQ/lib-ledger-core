@@ -67,13 +67,14 @@ namespace ledger {
                              const std::shared_ptr<TezosLikeKeychain> &keychain,
                              const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedAccounts = std::vector<TezosLikeOriginatedAccountDatabaseEntry>());
 
-            FuturePtr<TezosLikeBlockchainExplorerTransaction> getTransaction(const std::string &hash);
-
             void inflateOperation(Operation &out,
                                   const std::shared_ptr<const AbstractWallet> &wallet,
                                   const TezosLikeBlockchainExplorerTransaction &tx);
 
-            int putTransaction(soci::session &sql, const TezosLikeBlockchainExplorerTransaction &transaction);
+            int putTransaction(soci::session &sql,
+                               const TezosLikeBlockchainExplorerTransaction &transaction,
+                               const std::string &originatedAccountUid = "",
+                               const std::string &originatedAccountAddress = "");
 
             void updateOriginatedAccounts(soci::session &sql, const Operation &operation);
 
