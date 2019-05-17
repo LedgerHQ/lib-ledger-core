@@ -77,6 +77,9 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                 auto balance = wait(account->getBalance());
+                EXPECT_NE(balance->toLong(), 0L);
+                auto originatedAccounts = account->getOriginatedAccounts();
+                EXPECT_EQ(originatedAccounts.size(), 2);
                 dispatcher->stop();
             });
 

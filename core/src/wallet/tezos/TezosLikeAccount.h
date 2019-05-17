@@ -46,9 +46,12 @@
 #include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.h>
 #include <wallet/tezos/observers/TezosLikeBlockchainObserver.h>
 #include <wallet/tezos/keychains/TezosLikeKeychain.h>
+#include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
+//#include <wallet/tezos/delegation/TezosLikeOriginatedAccount.h>
 
 namespace ledger {
     namespace core {
+        class TezosLikeOriginatedAccount;
         class TezosLikeAccount : public api::TezosLikeAccount, public AbstractAccount {
         public:
 
@@ -57,11 +60,12 @@ namespace ledger {
             static const int FLAG_TRANSACTION_UPDATED = 0x01 << 1;
 
             TezosLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
-                              int32_t index,
-                              const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
-                              const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
-                              const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
-                              const std::shared_ptr<TezosLikeKeychain> &keychain);
+                             int32_t index,
+                             const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
+                             const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
+                             const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
+                             const std::shared_ptr<TezosLikeKeychain> &keychain,
+                             const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedAccounts = std::vector<TezosLikeOriginatedAccountDatabaseEntry>());
 
             FuturePtr<TezosLikeBlockchainExplorerTransaction> getTransaction(const std::string &hash);
 
@@ -70,6 +74,8 @@ namespace ledger {
                                   const TezosLikeBlockchainExplorerTransaction &tx);
 
             int putTransaction(soci::session &sql, const TezosLikeBlockchainExplorerTransaction &transaction);
+
+            void updateOriginatedAccounts(soci::session &sql, const Operation &operation);
 
             bool putBlock(soci::session &sql, const TezosLikeBlockchainExplorer::Block &block);
 
@@ -109,7 +115,12 @@ namespace ledger {
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
             void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
+
             void getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override;
+
+            void recoverOriginatedAccounts();
+
+            std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> getOriginatedAccounts() override;
 
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
@@ -120,6 +131,8 @@ namespace ledger {
             std::shared_ptr<TezosLikeBlockchainObserver> _observer;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
+            std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
+            std::vector<TezosLikeOriginatedAccountDatabaseEntry> _originatedAccountsEntries;
         };
     }
 }

@@ -215,7 +215,8 @@ namespace ledger {
                                                       _explorer,
                                                       _observer,
                                                       _synchronizerFactory(),
-                                                      keychain);
+                                                      keychain,
+                                                      entry.originatedAccounts);
         }
 
         std::shared_ptr<TezosLikeBlockchainExplorer> TezosLikeWallet::getBlockchainExplorer() {
