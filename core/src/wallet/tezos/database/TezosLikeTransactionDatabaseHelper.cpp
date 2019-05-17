@@ -30,12 +30,13 @@
 
 
 #include "TezosLikeTransactionDatabaseHelper.h"
+#include <api/enum_from_string.hpp>
 #include <database/soci-option.h>
 #include <database/soci-date.h>
 #include <database/soci-number.h>
 #include <crypto/SHA256.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-
+#include <api/TezosOperationTag.hpp>
 using namespace soci;
 
 namespace ledger {
@@ -72,7 +73,7 @@ namespace ledger {
             tx.gas_limit = BigInt::fromHex(row.get<std::string>(6));
             tx.storage_limit = BigInt::fromHex(row.get<std::string>(7));
             tx.confirmations = get_number<uint64_t>(row, 8);
-            tx.type = XTZOperationTag::from_string(row.get<std::string>(9));
+            tx.type = api::from_string<api::TezosOperationTag>(row.get<std::string>(9));
             if (row.get_indicator(10) != i_null) {
                 TezosLikeBlockchainExplorer::Block block;
                 block.height = get_number<uint64_t>(row, 10);
@@ -94,8 +95,9 @@ namespace ledger {
         }
 
         std::string TezosLikeTransactionDatabaseHelper::createTezosTransactionUid(const std::string &accountUid,
-                                                                                  const std::string &txHash) {
-            auto result = SHA256::stringToHexHash(fmt::format("uid:{}+{}", accountUid, txHash));
+                                                                                  const std::string &txHash,
+                                                                                  api::TezosOperationTag type) {
+            auto result = SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", accountUid, txHash, api::to_string(type)));
             return result;
         }
 
@@ -106,7 +108,7 @@ namespace ledger {
                 return block.getUid();
             });
 
-            auto tezosTxUid = createTezosTransactionUid(accountUid, tx.hash);
+            auto tezosTxUid = createTezosTransactionUid(accountUid, tx.hash, tx.type);
 
             if (transactionExists(sql, tezosTxUid)) {
                 // UPDATE (we only update block information)
@@ -124,7 +126,7 @@ namespace ledger {
                 auto hexFees = tx.fees.toHexString();
                 auto hexGasLimit = tx.gas_limit.toHexString();
                 auto hexStorageLimit = tx.storage_limit.toHexString();
-                auto type = XTZOperationTag::to_string(tx.type);
+                auto type = api::to_string(tx.type);
                 sql
                         << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations, :type)",
                         use(tezosTxUid),

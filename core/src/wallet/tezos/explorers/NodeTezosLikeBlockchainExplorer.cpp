@@ -141,7 +141,7 @@ namespace ledger {
             }
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             auto self = shared_from_this();
-            std::vector<std::string> txTypes {"Transaction", "Reveal"};
+            std::vector<std::string> txTypes {"Transaction", "Reveal", "Origination"};
             static std::function<FuturePtr<TransactionsBulk> (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type)> getTransactionsOfType = [=] (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type) -> FuturePtr<TransactionsBulk> {
                 return self->_http->GET(fmt::format("operations/{}?type={}", addresses[0], txTypes[type]))
                         .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TezosLikeTransactionsBulkParser>())

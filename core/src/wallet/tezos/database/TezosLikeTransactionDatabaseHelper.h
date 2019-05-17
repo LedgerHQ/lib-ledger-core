@@ -34,7 +34,7 @@
 #include <string>
 #include <soci.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-
+#include <api/TezosOperationTag.hpp>
 namespace ledger {
     namespace core {
         class TezosLikeTransactionDatabaseHelper {
@@ -51,7 +51,8 @@ namespace ledger {
                                           const std::string &tezosTxUid);
 
             static std::string createTezosTransactionUid(const std::string &accountUid,
-                                                          const std::string &txHash);
+                                                         const std::string &txHash,
+                                                         api::TezosOperationTag type);
 
             static std::string putTransaction(soci::session &sql,
                                               const std::string &accountUid,

@@ -34,7 +34,7 @@
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <bytes/zarith/zarith.h>
 #include <math/Base58.hpp>
-#include <wallet/tezos/TezosOperationTag.h>
+#include <api/TezosOperationTag.hpp>
 #include <api/TezosCurve.hpp>
 
 namespace ledger {
@@ -60,6 +60,12 @@ namespace ledger {
             _request = cpy._request;
             _context = cpy._context;
             _logger = cpy._logger;
+        }
+
+        std::shared_ptr<api::TezosLikeTransactionBuilder>
+        TezosLikeTransactionBuilder::setType(api::TezosOperationTag type) {
+            _request.type = type;
+            return shared_from_this();
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder>
@@ -144,7 +150,7 @@ namespace ledger {
 
             // Operation Tag
             auto OpTag = reader.readNextByte();
-            tx->setType(static_cast<TezosOperationTag>(OpTag));
+            tx->setType(static_cast<api::TezosOperationTag>(OpTag));
 
             // Get Sender
             // Originated
@@ -171,7 +177,7 @@ namespace ledger {
             tx->setStorage(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
             switch (OpTag) {
-                case TezosOperationTag::OPERATION_TAG_REVEAL: {
+                case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL): {
                     auto curveCode = reader.readNextByte();
                     std::vector<uint8_t> pubKey;
                     switch (curveCode) {
@@ -190,7 +196,7 @@ namespace ledger {
                                                                        Option<std::string>()));
                     break;
                 }
-                case TezosOperationTag::OPERATION_TAG_TRANSACTION: {
+                case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_TRANSACTION): {
                     // Amount
                     tx->setValue(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
@@ -199,7 +205,7 @@ namespace ledger {
                     auto isReceiverOriginated = reader.readNextByte();
                     // Curve Code
                     auto receiverCurveCode = reader.readNextByte();
-                    // sender hash160
+                    // receiver hash160
                     auto receiverHash160 = reader.read(20);
                     tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                        receiverHash160,
@@ -212,6 +218,24 @@ namespace ledger {
                         auto sizeAdditionals = reader.readNextBeUint();
                         auto additionals = reader.read(sizeAdditionals);
                     }
+                    break;
+                }
+                case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_ORIGINATION): {
+                    tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
+                    tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                                       std::vector<uint8_t>(),
+                                                                       std::vector<uint8_t>(),
+                                                                       Option<std::string>()));
+                    auto managerCurveCode = reader.readNextByte();
+                    // manager hash160
+                    auto managerHash160 = reader.read(20);
+                    if (managerHash160 != senderHash160) {
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Origination error: Manager is diffrent from sender");
+                    }
+                    // Balance
+                    tx->setBalance(BigInt::fromHex(hex::toString(zarith::zParse(reader))));
+                    // Is spendable? Is delegatable? Presence of delegate block? Presence of script block?
+                    reader.read(4);
                     break;
                 }
                 default:

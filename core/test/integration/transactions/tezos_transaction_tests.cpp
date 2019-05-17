@@ -157,5 +157,5 @@ TEST_F(TezosMakeTransaction, ParseSignedRawOriginationTransaction) {
     // ensure the values are correct
     EXPECT_EQ(tx->getSender()->toBase58(), "tz1es8RjqHUD483BN9APWtvCzgjTFVGeMh3y");
     EXPECT_EQ(tx->getValue()->toLong(), 0L);
-    EXPECT_EQ(tx->getFees()->toLong(), 1258L);
+    EXPECT_EQ(tx->getFees()->toLong(), 1170L);
 }

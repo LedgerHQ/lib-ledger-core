@@ -36,6 +36,7 @@
 #include <api/Currency.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/Amount.hpp>
+#include <api/TezosOperationTag.hpp>
 
 #include <wallet/common/Amount.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
@@ -51,12 +52,14 @@ namespace ledger {
         struct TezosLikeTransactionBuildRequest {
             TezosLikeTransactionBuildRequest() {
                 wipe = false;
+                type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
             };
             std::string toAddress;
             std::shared_ptr<BigInt> value;
             std::shared_ptr<BigInt> fees;
             std::shared_ptr<BigInt> gasLimit;
             std::shared_ptr<BigInt> storageLimit;
+            api::TezosOperationTag type;
             bool wipe;
         };
 
@@ -74,6 +77,8 @@ namespace ledger {
                                                  const TezosLikeTransactionBuildFunction &buildFunction);
 
             TezosLikeTransactionBuilder(const TezosLikeTransactionBuilder &cpy);
+
+            std::shared_ptr<api::TezosLikeTransactionBuilder> setType(api::TezosOperationTag type) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder> sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                                             const std::string &address) override;

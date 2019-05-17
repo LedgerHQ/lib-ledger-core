@@ -8,6 +8,7 @@
 #include "Marshal.hpp"
 #include "TezosLikeTransaction.hpp"
 #include "TezosLikeTransactionCallback.hpp"
+#include "TezosOperationTag.hpp"
 
 namespace djinni_generated {
 
@@ -22,6 +23,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024Cpp
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         delete reinterpret_cast<::djinni::CppProxyHandle<::ledger::core::api::TezosLikeTransactionBuilder>*>(nativeRef);
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_type)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setType(::djinni_generated::TezosOperationTag::toCpp(jniEnv, j_type));
+        return ::djinni::release(::djinni_generated::TezosLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1sendToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address)
