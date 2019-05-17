@@ -46,6 +46,7 @@ namespace ledger {
                                      const std::string& accountUid,
                                      TezosLikeAccountDatabaseEntry& entry);
             static std::string createOriginatedAccountUid(const std::string &xtzAccountUid, const std::string &originatedAddress);
+            static void updatePubKeyField(soci::session &sql, const std::string &accountUid, const std::string &pubKey);
         };
     }
 }

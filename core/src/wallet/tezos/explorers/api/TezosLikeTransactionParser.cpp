@@ -83,10 +83,10 @@ namespace ledger {
 
         bool TezosLikeTransactionParser::Bool(bool b) {
             PROXY_PARSE(Bool, b) {
-                if (_lastKey == "spendable" && !_transaction->originatedAccounts.empty()) {
-                    _transaction->originatedAccounts.back().spendable = b;
-                } else if (_lastKey == "delegatable" && !_transaction->originatedAccounts.empty()) {
-                    _transaction->originatedAccounts.back().delegatable = b;
+                if (_lastKey == "spendable" && _transaction->originatedAccount.hasValue()) {
+                    _transaction->originatedAccount.getValue().spendable = b;
+                } else if (_lastKey == "delegatable" && _transaction->originatedAccount.hasValue()) {
+                    _transaction->originatedAccount.getValue().delegatable = b;
                 }
                 return true;
             }
@@ -161,7 +161,7 @@ namespace ledger {
                 } else if (currentObject == "destination" && _lastKey == "tz") {
                     _transaction->receiver = value;
                 } else if (currentObject == "tz1" && _lastKey == "tz") {
-                    _transaction->originatedAccounts.emplace_back(TezosLikeBlockchainExplorerOriginatedAccount(value));
+                    _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount(value);
                 } else if (_lastKey == "gas_limit") {
                     _transaction->gas_limit = BigInt::fromString(value);
                 } else if (_lastKey == "storage_limit") {

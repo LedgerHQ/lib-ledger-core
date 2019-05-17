@@ -601,7 +601,9 @@ namespace ledger {
                     "gas_limit VARCHAR(255) NOT NULL,"
                     "storage_limit VARCHAR(255) NOT NULL,"
                     "confirmations BIGINT NOT NULL,"
-                    "type VARCHAR(255) NOT NULL"
+                    "type VARCHAR(255) NOT NULL,"
+                    "public_key VARCHAR(255) NOT NULL,"
+                    "originated_account VARCHAR(255) NOT NULL" // address:spendable:originated
                     ")";
 
             sql << "CREATE TABLE tezos_operations("

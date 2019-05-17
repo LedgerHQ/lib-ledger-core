@@ -143,26 +143,34 @@ namespace ledger {
             if (fromBlockHash.hasValue()) {
                 params = "&block_hash=" + fromBlockHash.getValue();
             }
-            using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             auto self = shared_from_this();
-            std::vector<std::string> txTypes {"Transaction", "Reveal", "Origination"};
-            static std::function<FuturePtr<TransactionsBulk> (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type)> getTransactionsOfType = [=] (const std::shared_ptr<TransactionsBulk> &txsBulk, size_t type) -> FuturePtr<TransactionsBulk> {
-                return self->_http->GET(fmt::format("operations/{}?type={}{}", addresses[0], txTypes[type], params))
+            using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
+            static std::vector<std::string> txTypes {"Transaction", "Reveal", "Origination"};
+            // Note: we should get rid of this if we tweak explorer
+            // to have all type of operations at once
+            static std::function<FuturePtr<TransactionsBulk> (const std::string address,
+                                                              const std::string &params,
+                                                              const std::shared_ptr<TransactionsBulk> &txsBulk,
+                                                              size_t type)> getTransactionsOfType = [self] (const std::string &address,
+                                                                                                            const std::string &parameters,
+                                                                                                            const std::shared_ptr<TransactionsBulk> &txsBulk,
+                                                                                                            size_t type) -> FuturePtr<TransactionsBulk> {
+                return self->_http->GET(fmt::format("operations/{}?type={}{}", address, txTypes[type], parameters))
                         .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TezosLikeTransactionsBulkParser>())
                         .template flatMapPtr<TransactionsBulk>(self->getExplorerContext(), [=](const EitherTransactionsBulk &result) {
                             if (result.isLeft()) {
                                 throw result.getLeft();
                             } else {
                                 txsBulk->transactions.insert(txsBulk->transactions.end(), result.getRight()->transactions.begin(), result.getRight()->transactions.end());
-                                if (type < txTypes.size() - 1) {
-                                    return getTransactionsOfType(txsBulk, type + 1);
+                                if (type == txTypes.size() - 1) {
+                                    return FuturePtr<TransactionsBulk>::successful(txsBulk);
                                 }
-                                return FuturePtr<TransactionsBulk>::successful(txsBulk);
+                                return getTransactionsOfType(address, parameters, txsBulk, type + 1);
                             }
                         });
             };
             auto transactionsBulk = std::make_shared<TransactionsBulk>();
-            return getTransactionsOfType(transactionsBulk, 0);
+            return getTransactionsOfType(addresses[0], params, transactionsBulk, 0);
         }
 
         FuturePtr<Block> NodeTezosLikeBlockchainExplorer::getCurrentBlock() const {
