@@ -31,6 +31,7 @@
 
 #include "TezosLikeTransactionParser.h"
 #include <wallet/currencies.hpp>
+#include <api/TezosOperationTag.hpp>
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
@@ -159,16 +160,16 @@ namespace ledger {
                 } else if (_lastKey == "storage_limit") {
                     _transaction->storage_limit = BigInt::fromString(value);
                 } else if (_lastKey == "kind") {
-                    static std::unordered_map<std::string, TezosOperationTag> opTags {
-                            std::make_pair("reveal", TezosOperationTag::OPERATION_TAG_REVEAL),
-                            std::make_pair("transaction", TezosOperationTag::OPERATION_TAG_TRANSACTION),
-                            std::make_pair("origination", TezosOperationTag::OPERATION_TAG_ORIGINATION),
-                            std::make_pair("delegation", TezosOperationTag::OPERATION_TAG_DELEGATION),
+                    static std::unordered_map<std::string, api::TezosOperationTag> opTags {
+                            std::make_pair("reveal", api::TezosOperationTag::OPERATION_TAG_REVEAL),
+                            std::make_pair("transaction", api::TezosOperationTag::OPERATION_TAG_TRANSACTION),
+                            std::make_pair("origination", api::TezosOperationTag::OPERATION_TAG_ORIGINATION),
+                            std::make_pair("delegation", api::TezosOperationTag::OPERATION_TAG_DELEGATION),
                     };
                     if (opTags.count(value)) {
                         _transaction->type = opTags[value];
                     } else {
-                        _transaction->type = TezosOperationTag::OPERATION_TAG_NONE;
+                        _transaction->type = api::TezosOperationTag::OPERATION_TAG_NONE;
                     }
                 } else if (_lastKey == "public_key") {
                     _transaction->publicKey = value;

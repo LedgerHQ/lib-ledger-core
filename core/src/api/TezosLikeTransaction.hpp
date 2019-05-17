@@ -23,6 +23,7 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 class BigInt;
 class TezosLikeAddress;
+enum class TezosOperationTag;
 
 /**Class representing a Tezos transaction */
 class LIBCORE_EXPORT TezosLikeTransaction {
@@ -30,7 +31,7 @@ public:
     virtual ~TezosLikeTransaction() {}
 
     /** Get type of operation (transaction, reveal ... cf TezosOperationTag) */
-    virtual int8_t getType() = 0;
+    virtual TezosOperationTag getType() = 0;
 
     /** Get the hash of the transaction. */
     virtual std::string getHash() = 0;

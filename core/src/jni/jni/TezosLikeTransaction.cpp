@@ -6,6 +6,7 @@
 #include "BigInt.hpp"
 #include "Marshal.hpp"
 #include "TezosLikeAddress.hpp"
+#include "TezosOperationTag.hpp"
 
 namespace djinni_generated {
 
@@ -22,13 +23,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jbyte JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1getType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1getType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
         auto r = ref->getType();
-        return ::djinni::release(::djinni::I8::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni_generated::TezosOperationTag::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

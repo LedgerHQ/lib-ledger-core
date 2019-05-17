@@ -39,8 +39,7 @@
 #include <api/Amount.hpp>
 #include <api/Currency.hpp>
 #include <math/BigInt.h>
-#include <wallet/tezos/TezosOperationTag.h>
-
+#include <api/TezosOperationTag.hpp>
 namespace ledger {
     namespace core {
         // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
@@ -50,7 +49,7 @@ namespace ledger {
 
             explicit TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
 
-            int8_t getType() override;
+            api::TezosOperationTag getType() override;
 
             std::string getHash() override;
 
@@ -100,7 +99,9 @@ namespace ledger {
 
             TezosLikeTransactionApi & setStorage(const std::shared_ptr<BigInt>& storage);
 
-            TezosLikeTransactionApi & setType(TezosOperationTag type);
+            TezosLikeTransactionApi & setType(api::TezosOperationTag type);
+
+            TezosLikeTransactionApi & setBalance(const BigInt &balance);
 
         private:
             std::chrono::system_clock::time_point _time;
@@ -119,8 +120,9 @@ namespace ledger {
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;
             std::vector<uint8_t> _signingPubKey;
-            TezosOperationTag _type;
+            api::TezosOperationTag _type;
             std::string _revealedPubKey;
+            BigInt _balance;
         };
     }
 }

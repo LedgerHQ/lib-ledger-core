@@ -22,11 +22,18 @@ class Amount;
 class BigInt;
 class TezosLikeTransaction;
 class TezosLikeTransactionCallback;
+enum class TezosOperationTag;
 struct Currency;
 
 class LIBCORE_EXPORT TezosLikeTransactionBuilder {
 public:
     virtual ~TezosLikeTransactionBuilder() {}
+
+    /**
+     * Set type of operation (transaction, origination, reveal ...)
+     * Default operation is "transaction" type
+     */
+    virtual std::shared_ptr<TezosLikeTransactionBuilder> setType(TezosOperationTag type) = 0;
 
     /**
      * Send funds to the given address. This method can be called multiple times to send to multiple addresses.

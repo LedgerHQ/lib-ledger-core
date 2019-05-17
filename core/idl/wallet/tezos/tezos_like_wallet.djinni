@@ -2,10 +2,24 @@
 @import "../amount.djinni"
 @import "../../tezos/addresses.djinni"
 
+TezosOperationTag = enum {
+	OPERATION_TAG_NONE;
+	OPERATION_TAG_NONE1;
+	OPERATION_TAG_NONE2;
+	OPERATION_TAG_GENERIC;
+	OPERATION_TAG_NONE4;
+	OPERATION_TAG_PROPOSAL;
+	OPERATION_TAG_BALLOT;
+	OPERATION_TAG_REVEAL;
+	OPERATION_TAG_TRANSACTION;
+	OPERATION_TAG_ORIGINATION;
+	OPERATION_TAG_DELEGATION;
+}
+
 #Class representing a Tezos transaction
 TezosLikeTransaction = interface +c {
 	# Get type of operation (transaction, reveal ... cf TezosOperationTag)
-	getType(): i8;
+	getType(): TezosOperationTag;
 	# Get the hash of the transaction.
 	getHash(): string;
 	# Get Fees (in drop)
@@ -55,6 +69,9 @@ TezosLikeBlock = interface +c {
 
 TezosLikeTransactionBuilder = interface +c {
 
+	# Set type of operation (transaction, origination, reveal ...)
+	# Default operation is "transaction" type
+	setType(type: TezosOperationTag): TezosLikeTransactionBuilder;
 	# Send funds to the given address. This method can be called multiple times to send to multiple addresses.
 	# @param amount The value to send
 	# @param address Address of the recipient

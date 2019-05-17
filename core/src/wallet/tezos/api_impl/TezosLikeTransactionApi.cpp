@@ -51,7 +51,7 @@ namespace ledger {
         TezosLikeTransactionApi::TezosLikeTransactionApi(const api::Currency &currency) {
             _currency = currency;
             _block = std::make_shared<TezosLikeBlockApi>(Block{});
-            _type = TezosOperationTag::OPERATION_TAG_TRANSACTION;
+            _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
         }
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) {
@@ -79,7 +79,7 @@ namespace ledger {
             _revealedPubKey = tx.publicKey;
         }
 
-        int8_t TezosLikeTransactionApi::getType() {
+        api::TezosOperationTag TezosLikeTransactionApi::getType() {
             return _type;
         }
 
@@ -168,7 +168,7 @@ namespace ledger {
             BytesWriter writer;
 
             // Watermark: Generic-Operation
-            writer.writeByte(TezosOperationTag::OPERATION_TAG_GENERIC);
+            writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
 
             // Block Hash
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
@@ -180,7 +180,7 @@ namespace ledger {
             writer.writeByteArray(std::vector<uint8_t>{blockHash.begin() + 2, blockHash.end()});
 
             // Operation Tag
-            writer.writeByte(_type);
+            writer.writeByte(static_cast<uint8_t>(_type));
 
             // Set Sender
             // Originated
@@ -207,7 +207,7 @@ namespace ledger {
             writer.writeByteArray(zarith::zSerialize(bigIntStorageLimit.toByteArray()));
 
             switch(_type) {
-                case TezosOperationTag::OPERATION_TAG_REVEAL: {
+                case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
                     if (!_signingPubKey.empty()) {
                         if (_signingPubKey.size() == 32) {
                             // Then it's ED25519
@@ -223,7 +223,7 @@ namespace ledger {
                     }
                     break;
                 }
-                case TezosOperationTag::OPERATION_TAG_TRANSACTION: {
+                case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
                     // Amount
                     auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
                     writer.writeByteArray(zarith::zSerialize(bigIntValue.toByteArray()));
@@ -238,6 +238,21 @@ namespace ledger {
                     writer.writeByteArray(_receiver->getHash160());
 
                     // Additional parameters
+                    writer.writeByte(0x00);
+                    break;
+                }
+                case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
+                    writer.writeByte(static_cast<uint8_t >(_senderCurve));
+                    writer.writeByteArray(_sender->getHash160());
+                    // Balance
+                    writer.writeByteArray(zarith::zSerialize(_balance.toByteArray()));
+                    // Is spendable ?
+                    writer.writeByte(0xFF);
+                    // Is delegatable ?
+                    writer.writeByte(0xFF);
+                    // Presence of field "delegate" ?
+                    writer.writeByte(0x00);
+                    // Presence of field "script" ?
                     writer.writeByte(0x00);
                     break;
                 }
@@ -319,8 +334,13 @@ namespace ledger {
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setType(TezosOperationTag type) {
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setType(api::TezosOperationTag type) {
             _type = type;
+            return *this;
+        }
+
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setBalance(const BigInt &balance) {
+            _balance = balance;
             return *this;
         }
     }

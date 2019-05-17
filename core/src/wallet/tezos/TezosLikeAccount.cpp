@@ -49,6 +49,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <api/TezosLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
@@ -397,14 +398,22 @@ namespace ledger {
                 tx->setSender(accountAddress);
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey(accountAddress->toString()).getValue());
+                tx->setType(request.type);
                 return explorer->getCounter(request.toAddress).mapPtr<api::TezosLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) {
                     tx->setCounter(nonce);
                     return tx;
                 }).flatMapPtr<Block>(self->getContext(), [explorer] (const std::shared_ptr<api::TezosLikeTransaction> &transaction) {
                     return explorer->getCurrentBlock();
-                }).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::shared_ptr<Block> &block) {
+                }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx] (const std::shared_ptr<Block> &block) {
                     tx->setBlockHash(block->hash);
-                    return tx;
+                    if (tx->getType() == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
+                        std::vector<TezosLikeKeychain::Address> listAddresses{self->_keychain->getAddress()};
+                        return explorer->getBalance(listAddresses).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::shared_ptr<BigInt> &balance) {
+                            tx->setBalance(*balance);
+                            return tx;
+                        });
+                    }
+                    return FuturePtr<api::TezosLikeTransaction>::successful(tx);
                 });
             };
             return std::make_shared<TezosLikeTransactionBuilder>(getContext(),
