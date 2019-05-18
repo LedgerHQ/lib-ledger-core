@@ -59,6 +59,7 @@ namespace ledger {
             bool isInstanceOfBitcoinLikeOperation() override;
             bool isInstanceOfEthereumLikeOperation() override;
             bool isInstanceOfRippleLikeOperation() override;
+            bool isInstanceOfTezosLikeOperation() override;
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();

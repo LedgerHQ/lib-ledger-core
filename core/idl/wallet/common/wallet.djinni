@@ -132,11 +132,14 @@ Operation = interface +c {
     #Convert operation as Tezos operation
     #@return TezosLikeOperation object
     asTezosLikeOperation(): TezosLikeOperation;
+    # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
     isInstanceOfBitcoinLikeOperation(): bool;
-    # Same as isInstanceOfBitcoinLikeOperation for ethereum.
+    # Same as isInstanceOfEthereumLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;
-    # Same as isInstanceOfBitcoinLikeOperation for ripple.
+    # Same as isInstanceOfRippleLikeOperation for ripple.
     isInstanceOfRippleLikeOperation(): bool;
+    # Same as isInstanceOfTezosLikeOperation for tezos.
+    isInstanceOfTezosLikeOperation(): bool;
     # Tells if the operation is complete.
     # @return boolean
     isComplete(): bool;

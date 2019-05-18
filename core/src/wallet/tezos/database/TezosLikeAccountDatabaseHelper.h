@@ -33,7 +33,7 @@
 #define LEDGER_CORE_TEZOSLIKEACCOUNTDATABASEHELPER_H
 #include <soci.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
-
+#include <wallet/common/Operation.h>
 namespace ledger {
     namespace core {
         class TezosLikeAccountDatabaseHelper {
@@ -47,6 +47,14 @@ namespace ledger {
                                      TezosLikeAccountDatabaseEntry& entry);
             static std::string createOriginatedAccountUid(const std::string &xtzAccountUid, const std::string &originatedAddress);
             static void updatePubKeyField(soci::session &sql, const std::string &accountUid, const std::string &pubKey);
+            static void addOriginatedAccountOperation(soci::session &sql,
+                                                      const std::string &opUid,
+                                                      const std::string &tezosTxUid,
+                                                      const std::string &originatedAccountUid);
+            static size_t queryOperations(soci::session &sql,
+                                          const std::string &accountUid,
+                                          std::vector<Operation> &operations,
+                                          std::function<bool(const std::string &address)> filter);
         };
     }
 }

@@ -38,6 +38,8 @@
 #include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 #include <iostream>
 #include <api/BlockchainExplorerEngines.hpp>
+#include <wallet/tezos/api_impl/TezosLikeOperation.h>
+#include <wallet/tezos/delegation/TezosLikeOriginatedAccount.h>
 using namespace std;
 
 class TezosLikeWalletSynchronization : public BaseFixture {
@@ -78,8 +80,14 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
                 auto balance = wait(account->getBalance());
                 EXPECT_NE(balance->toLong(), 0L);
+
                 auto originatedAccounts = account->getOriginatedAccounts();
-                EXPECT_EQ(originatedAccounts.size(), 2);
+                EXPECT_GE(originatedAccounts.size(), 2);
+
+                for (auto &origAccount : originatedAccounts) {
+                    auto origOps = wait(std::dynamic_pointer_cast<OperationQuery>(origAccount->queryOperations()->complete())->execute());
+                    EXPECT_GE(origOps.size(), 3);
+                }
                 dispatcher->stop();
             });
 
@@ -89,6 +97,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             dispatcher->waitUntilStopped();
 
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            EXPECT_NE(ops.size(), 0);
         }
     }
 }

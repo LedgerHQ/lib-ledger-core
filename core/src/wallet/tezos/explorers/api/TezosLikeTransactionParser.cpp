@@ -123,7 +123,11 @@ namespace ledger {
                 if (_lastKey == "amount") {
                     _transaction->value = BigInt::fromString(number);
                 } else if (_lastKey == "fee") {
-                    _transaction->fees = BigInt::fromString(number);
+                    _transaction->fees = _transaction->fees + BigInt::fromString(number);
+                } else if (_lastKey == "op_level" && _transaction->block.hasValue()) {
+                    _transaction->block.getValue().height = BigInt::fromString(number).toUint64();
+                } else if (_lastKey == "burn_tez") {
+                    _transaction->fees = _transaction->fees + BigInt::fromString(number);
                 }
                 return true;
             }
@@ -138,8 +142,7 @@ namespace ledger {
                     _transaction->hash = value;
                 } else if (_lastKey == "block_hash") {
                     TezosLikeBlockchainExplorer::Block block;
-                    BigInt valueBigInt = BigInt::fromString(value);
-                    block.height = valueBigInt.toUint64();
+                    block.hash = value;
                     block.currencyName = currencies::TEZOS.name;
                     _transaction->block = block;
                 } else if (_lastKey == "timestamp") {

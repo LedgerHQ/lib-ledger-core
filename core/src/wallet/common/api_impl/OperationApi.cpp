@@ -90,6 +90,10 @@ namespace ledger {
             return _backend.walletType == api::WalletType::RIPPLE;
         }
 
+        bool OperationApi::isInstanceOfTezosLikeOperation() {
+            return _backend.walletType == api::WalletType::TEZOS;
+        }
+
         bool OperationApi::isComplete() {
             if (_backend.walletType == api::WalletType::BITCOIN) {
                 return _backend.bitcoinTransaction.nonEmpty();
@@ -97,6 +101,8 @@ namespace ledger {
                 return _backend.ethereumTransaction.nonEmpty();
             } else if (_backend.walletType == api::WalletType::RIPPLE) {
                 return _backend.rippleTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::TEZOS) {
+                return _backend.tezosTransaction.nonEmpty();
             }
             return false;
         }

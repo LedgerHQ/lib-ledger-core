@@ -212,7 +212,7 @@ namespace ledger {
             operation.getBackend().tezosTransaction = Option<TezosLikeBlockchainExplorerTransaction>(tx);
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM tezos_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            TezosLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().tezosTransaction.getValue());
+            TezosLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().uid, operation.getBackend().tezosTransaction.getValue());
         }
 
         void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation) {
