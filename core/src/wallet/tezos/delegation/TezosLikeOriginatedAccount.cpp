@@ -35,7 +35,6 @@
 
 namespace ledger {
     namespace core {
-        class TezosLikeAccount;
         TezosLikeOriginatedAccount::TezosLikeOriginatedAccount(const std::string &uid,
                                                                const std::string &address,
                                                                const std::shared_ptr<TezosLikeAccount> &originatorAccount,
@@ -76,9 +75,8 @@ namespace ledger {
             if (!localAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
-            auto accountUid = localAccount->getAccountUid();
-            auto filter = std::make_shared<ConditionQueryFilter<std::string>>("account_uid", "=", _accountUid, "e");
-            auto query = std::make_shared<OperationQuery>(
+            auto filter = std::make_shared<ConditionQueryFilter<std::string>>("originated_account_uid", "=", _accountUid, "orig_op");
+            auto query = std::make_shared<TezosOriginatedOperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
                     localAccount->getWallet()->getContext(),

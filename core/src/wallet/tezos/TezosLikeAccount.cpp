@@ -53,6 +53,7 @@
 #include <utils/Option.hpp>
 #include <utils/DateUtils.hpp>
 #include <collections/vector.hpp>
+#include <database/query/ConditionQueryFilter.h>
 
 using namespace soci;
 
@@ -119,15 +120,17 @@ namespace ledger {
             // It can be the case if we are putting transaction operations
             // for originated account.
             if (!originatedAccountUid.empty() && !originatedAccountAddress.empty()) {
-                operation.accountUid = originatedAccountUid;
                 operation.amount = transaction.value;
-                operation.type = transaction.receiver == originatedAccountAddress ? api::OperationType::RECEIVE : api::OperationType::SEND;
+                operation.type = transaction.sender == originatedAccountAddress ? api::OperationType::SEND : api::OperationType::RECEIVE;
                 operation.refreshUid();
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     // Update publicKey field for originated account
                     if (transaction.type == api::TezosOperationTag::OPERATION_TAG_REVEAL && transaction.publicKey.hasValue()) {
                         TezosLikeAccountDatabaseHelper::updatePubKeyField(sql, originatedAccountUid, transaction.publicKey.getValue());
                     }
+                    // Add originated account ops
+                    auto tezosTxUid = TezosLikeTransactionDatabaseHelper::createTezosTransactionUid(operation.accountUid, transaction.hash, transaction.type);
+                    TezosLikeAccountDatabaseHelper::addOriginatedAccountOperation(sql, operation.uid, tezosTxUid, originatedAccountUid);
                     emitNewOperationEvent(operation);
                 }
                 result = FLAG_NEW_TRANSACTION;
@@ -220,8 +223,10 @@ namespace ledger {
         }
 
         std::shared_ptr<api::OperationQuery> TezosLikeAccount::queryOperations() {
-            auto query = std::make_shared<OperationQuery>(
-                    api::QueryFilter::accountEq(getAccountUid()),
+            auto originatedFilter = std::make_shared<ConditionQueryFilter<std::string>>("uid", "IS NULL", "", "orig_op");
+            auto headFilter = api::QueryFilter::accountEq(getAccountUid())->op_and(originatedFilter);
+            auto query = std::make_shared<TezosOperationQuery>(
+                    headFilter,
                     getWallet()->getDatabase(),
                     getWallet()->getContext(),
                     getWallet()->getMainExecutionContext()
@@ -297,7 +302,7 @@ namespace ledger {
                 };
 
                 //Get operations related to an account
-                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                TezosLikeAccountDatabaseHelper::queryOperations(sql, uid, operations, filter);
 
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);

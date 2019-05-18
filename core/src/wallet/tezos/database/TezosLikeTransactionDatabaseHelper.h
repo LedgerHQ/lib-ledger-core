@@ -35,12 +35,14 @@
 #include <soci.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 #include <api/TezosOperationTag.hpp>
+#include <api/OperationType.hpp>
 namespace ledger {
     namespace core {
         class TezosLikeTransactionDatabaseHelper {
         public:
             static bool getTransactionByHash(soci::session &sql,
                                              const std::string &hash,
+                                             const std::string &operationUid, // different ops can belong to same tx
                                              TezosLikeBlockchainExplorerTransaction &tx);
 
             static bool inflateTransaction(soci::session &sql,

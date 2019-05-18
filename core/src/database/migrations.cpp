@@ -621,6 +621,12 @@ namespace ledger {
                     "delegatable INTEGER NOT NULL,"
                     "public_key VARCHAR(255) NOT NULL"
                     ")";
+
+            sql << "CREATE TABLE tezos_originated_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES tezos_transactions(transaction_uid),"
+                    "originated_account_uid VARCHAR(255) NOT NULL REFERENCES tezos_originated_accounts(uid) ON DELETE CASCADE"
+                    ")";
         }
 
         template <> void rollback<11>(soci::session& sql) {

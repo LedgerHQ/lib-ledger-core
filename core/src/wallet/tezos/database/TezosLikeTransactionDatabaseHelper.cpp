@@ -45,6 +45,7 @@ namespace ledger {
 
         bool TezosLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
                                                                       const std::string &hash,
+                                                                      const std::string &operationUid,
                                                                       TezosLikeBlockchainExplorerTransaction &tx) {
 
             rowset<row> rows = (sql.prepare << "SELECT tx.hash, tx.value, tx.time, "
@@ -52,7 +53,8 @@ namespace ledger {
                     "block.height, block.hash, block.time, block.currency_name "
                     "FROM tezos_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
-                    "WHERE tx.hash = :hash", use(hash));
+                    "LEFT JOIN tezos_operations AS xtz_ops ON xtz_ops.transaction_uid = tx.transaction_uid "
+                    "WHERE tx.hash = :hash AND xtz_ops.uid = :uid", use(hash), use(operationUid));
 
             for (auto &row : rows) {
                 inflateTransaction(sql, row, tx);
