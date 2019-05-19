@@ -161,7 +161,7 @@ namespace ledger {
                     }
                 } else if (currentObject == "src" && _lastKey == "tz") {
                     _transaction->sender = value;
-                } else if (currentObject == "destination" && _lastKey == "tz") {
+                } else if ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz") {
                     _transaction->receiver = value;
                 } else if (currentObject == "tz1" && _lastKey == "tz") {
                     _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount(value);

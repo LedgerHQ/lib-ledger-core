@@ -145,7 +145,7 @@ namespace ledger {
             }
             auto self = shared_from_this();
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
-            static std::vector<std::string> txTypes {"Transaction", "Reveal", "Origination"};
+            static std::vector<std::string> txTypes {"Transaction", "Reveal", "Origination", "Delegation"};
             // Note: we should get rid of this if we tweak explorer
             // to have all type of operations at once
             static std::function<FuturePtr<TransactionsBulk> (const std::string address,
@@ -162,7 +162,9 @@ namespace ledger {
                                 throw result.getLeft();
                             } else {
                                 txsBulk->transactions.insert(txsBulk->transactions.end(), result.getRight()->transactions.begin(), result.getRight()->transactions.end());
-                                if (type == txTypes.size() - 1) {
+                                // Only originated accounts can delegate
+                                auto isOriginated = address.find("KT") == 0;
+                                if (type == txTypes.size() - 1 || (type == txTypes.size() - 2 && !isOriginated)) {
                                     return FuturePtr<TransactionsBulk>::successful(txsBulk);
                                 }
                                 return getTransactionsOfType(address, parameters, txsBulk, type + 1);

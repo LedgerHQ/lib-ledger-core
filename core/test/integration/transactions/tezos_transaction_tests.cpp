@@ -118,7 +118,7 @@ TEST_F(TezosMakeTransaction, CreateTx) {
 
 TEST_F(TezosMakeTransaction, ParseSignedRawTransaction) {
     // round-trip
-    auto strTx = "032cd54a6d49c82da8807044a41f8670cf31832cb12c151fe2f605407bcdf558960800018bd703c4a2d91b8f1d79455be9b99c2693e931fdfa0901d84f950280c8afa0250001d2e495a7ab40156d0a7c35b73d2530a3470fc87000";
+    auto strTx = "032cd54a6d49c82da8807044a41f8670cf31832cb12c151fe2f605407bcdf558960800008bd703c4a2d91b8f1d79455be9b99c2693e931fdfa0901d84f950280c8afa0250000d2e495a7ab40156d0a7c35b73d2530a3470fc87000";
     auto txBytes = hex::toByteArray(strTx);
     auto tx = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::TEZOS, txBytes);
 
@@ -130,6 +130,8 @@ TEST_F(TezosMakeTransaction, ParseSignedRawTransaction) {
     EXPECT_EQ(tx->getReceiver()->toBase58(), "tz1es8RjqHUD483BN9APWtvCzgjTFVGeMh3y");
     EXPECT_EQ(tx->getValue()->toLong(), 10000000000L);
     EXPECT_EQ(tx->getFees()->toLong(), 1274L);
+    EXPECT_EQ(tx->getGasLimit()->toLong(), 10200L);
+    EXPECT_EQ(tx->getStorageLimit()->toLong(), 277L);
 }
 
 TEST_F(TezosMakeTransaction, ParseSignedRawRevealTransaction) {
@@ -144,6 +146,8 @@ TEST_F(TezosMakeTransaction, ParseSignedRawRevealTransaction) {
     EXPECT_EQ(tx->getSender()->toBase58(), "tz1es8RjqHUD483BN9APWtvCzgjTFVGeMh3y");
     EXPECT_EQ(tx->getValue()->toLong(), 0L);
     EXPECT_EQ(tx->getFees()->toLong(), 1258L);
+    EXPECT_EQ(tx->getGasLimit()->toLong(), 10000L);
+    EXPECT_EQ(tx->getStorageLimit()->toLong(), 0L);
 }
 
 TEST_F(TezosMakeTransaction, ParseSignedRawOriginationTransaction) {
@@ -158,4 +162,23 @@ TEST_F(TezosMakeTransaction, ParseSignedRawOriginationTransaction) {
     EXPECT_EQ(tx->getSender()->toBase58(), "tz1es8RjqHUD483BN9APWtvCzgjTFVGeMh3y");
     EXPECT_EQ(tx->getValue()->toLong(), 0L);
     EXPECT_EQ(tx->getFees()->toLong(), 1170L);
+    EXPECT_EQ(tx->getGasLimit()->toLong(), 10100L);
+    EXPECT_EQ(tx->getStorageLimit()->toLong(), 277L);
+}
+
+TEST_F(TezosMakeTransaction, ParseSignedRawDelegationTransaction) {
+    // round-trip
+    auto strTx = "037d8d230a91d1fb8391727f37a1bfeb332b7f249c78315ea4ae934e2103a826630a01d315f72434520d43d415f0dff4632519501d2d9400890902f44e00ff008bd703c4a2d91b8f1d79455be9b99c2693e931fd";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::TEZOS, txBytes);
+
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getSender()->toBase58(), "KT1TptTRYx2BEYetm61ABjkBdfHXQ2SQrXo8");
+    EXPECT_EQ(tx->getReceiver()->toBase58(), "tz1YPSCGWXwBdTncK2aCctSZAXWvGsGwVJqU");
+    EXPECT_EQ(tx->getValue()->toLong(), 0L);
+    EXPECT_EQ(tx->getFees()->toLong(), 1161L);
+    EXPECT_EQ(tx->getGasLimit()->toLong(), 10100L);
+    EXPECT_EQ(tx->getStorageLimit()->toLong(), 0L);
 }

@@ -86,6 +86,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
                 for (auto &origAccount : originatedAccounts) {
                     auto origOps = wait(std::dynamic_pointer_cast<OperationQuery>(origAccount->queryOperations()->complete())->execute());
+                    std::cout<<">>> Nb of originated ops: "<<origOps.size()<<std::endl;
                     EXPECT_GE(origOps.size(), 3);
                 }
                 dispatcher->stop();
@@ -97,6 +98,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             dispatcher->waitUntilStopped();
 
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            std::cout<<">>> Nb of ops: "<<ops.size()<<std::endl;
             EXPECT_NE(ops.size(), 0);
         }
     }
