@@ -32,6 +32,10 @@
 #include "TezosLikeOriginatedAccount.h"
 #include <database/query/ConditionQueryFilter.h>
 #include <api/ErrorCode.hpp>
+#include <wallet/currencies.hpp>
+#include <wallet/common/BalanceHistory.hpp>
+#include <api/Operation.hpp>
+#include <api/OperationOrderKey.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,8 +62,99 @@ namespace ledger {
             return _address;
         }
 
-        std::experimental::optional<std::string> TezosLikeOriginatedAccount::getPublicKey(){
+        std::experimental::optional<std::string> TezosLikeOriginatedAccount::getPublicKey() {
             return _publicKey.toOptional();
+        }
+
+        void TezosLikeOriginatedAccount::getBalance(const std::shared_ptr<api::AmountCallback> & callback) {
+            auto localAccount = _originatorAccount.lock();
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
+            getBalance(localAccount->getContext()).callback(localAccount->getContext(), callback);
+        }
+
+        FuturePtr<api::Amount> TezosLikeOriginatedAccount::getBalance(const std::shared_ptr<api::ExecutionContext>& context) {
+            return std::dynamic_pointer_cast<OperationQuery>(queryOperations()->complete())->execute().mapPtr<api::Amount>(context, [] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
+                auto result = BigInt::ZERO;
+                for (auto &op : ops) {
+                    auto ty = op->getOperationType();
+                    auto value = BigInt(op->getAmount()->toString());
+                    switch (ty) {
+                        case api::OperationType::RECEIVE:
+                            result = result + value;
+                            break;
+                        case api::OperationType::SEND: {
+                            auto fees = BigInt(op->getFees()->toString());
+                            result = result - (value + fees);
+                            break;
+                        }
+                        default:
+                            break;
+                    }
+                }
+                return std::make_shared<Amount>(currencies::TEZOS, 0, result);
+            });
+        }
+
+
+        void TezosLikeOriginatedAccount::getBalanceHistory(const std::chrono::system_clock::time_point & start,
+                                                           const std::chrono::system_clock::time_point & end,
+                                                           api::TimePeriod period,
+                                                           const std::shared_ptr<api::AmountListCallback> & callback) {
+            auto localAccount = _originatorAccount.lock();
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
+            getBalanceHistory(localAccount->getContext(), start, end, period).callback(localAccount->getContext(), callback);
+        }
+
+        Future<std::vector<std::shared_ptr<api::Amount>>>
+        TezosLikeOriginatedAccount::getBalanceHistory(const std::shared_ptr<api::ExecutionContext>& context,
+                                                      const std::chrono::system_clock::time_point & start,
+                                                      const std::chrono::system_clock::time_point & end,
+                                                      api::TimePeriod period) {
+            bool descending = false;
+            return std::dynamic_pointer_cast<OperationQuery>(queryOperations()->addOrder(api::OperationOrderKey::DATE, descending)->complete())->execute().map<std::vector<std::shared_ptr<api::Amount>>>(context, [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
+                struct OperationStrategy {
+
+                    static inline std::chrono::system_clock::time_point date(std::shared_ptr<api::Operation>& op) {
+                        return op->getDate();
+                    }
+
+                    static inline std::shared_ptr<api::Amount> value_constructor(const BigInt& v) {
+                        return std::make_shared<Amount>(currencies::TEZOS, 0, v);
+                    }
+
+                    static inline void update_balance(std::shared_ptr<api::Operation>& op, BigInt& sum) {
+                        auto value = BigInt(op->getAmount()->toString());
+                        switch (op->getOperationType()) {
+                            case api::OperationType::RECEIVE:
+                                sum = sum + value;
+                                break;
+
+                            case api::OperationType::SEND: {
+                                auto fees = BigInt(op->getFees()->toString());
+                                sum = sum - (value + fees);
+                                break;
+                            }
+
+                            default:
+                                break;
+                        }
+                    }
+                };
+
+                return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::Amount>(
+                        start,
+                        end,
+                        period,
+                        ops.cbegin(),
+                        ops.cend(),
+                        BigInt::ZERO
+                );
+
+            });
         }
 
         bool TezosLikeOriginatedAccount::isSpendable() {

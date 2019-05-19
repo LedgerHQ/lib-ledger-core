@@ -38,6 +38,10 @@
 #include <utils/Option.hpp>
 #include <wallet/tezos/TezosLikeAccount.h>
 #include <wallet/common/OperationQuery.h>
+#include <api/Amount.hpp>
+#include <api/AmountCallback.hpp>
+#include <api/AmountListCallback.hpp>
+#include <api/TimePeriod.hpp>
 namespace ledger {
     namespace core {
         class TezosOriginatedOperationQuery : public OperationQuery {
@@ -74,6 +78,19 @@ namespace ledger {
             std::string getAddress() override;
 
             std::experimental::optional<std::string> getPublicKey() override;
+
+            void getBalance(const std::shared_ptr<api::AmountCallback> & callback) override;
+            FuturePtr<api::Amount> getBalance(const std::shared_ptr<api::ExecutionContext>& context);
+
+            void getBalanceHistory(const std::chrono::system_clock::time_point & start,
+                                   const std::chrono::system_clock::time_point & end,
+                                   api::TimePeriod period,
+                                   const std::shared_ptr<api::AmountListCallback> & callback) override;
+
+            Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::shared_ptr<api::ExecutionContext>& context,
+                                                                                const std::chrono::system_clock::time_point & start,
+                                                                                const std::chrono::system_clock::time_point & end,
+                                                                                api::TimePeriod period);
 
             bool isSpendable() override;
 
