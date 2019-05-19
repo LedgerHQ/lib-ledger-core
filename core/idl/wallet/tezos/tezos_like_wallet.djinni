@@ -134,6 +134,10 @@ TezosLikeOriginatedAccount = interface +c {
 	# Get publicKey of originated account
 	# Could be empty if not yet revealed
 	getPublicKey(): optional<string>;
+	# Get balance of originated account
+	getBalance(callback: Callback<Amount>);
+	# Get balance history of originated account
+	getBalanceHistory(start: date, end: date, period: TimePeriod, callback: ListCallback<Amount>);
 	# Know if possible to spend from this account
 	# By default originations from libcore set it to true
 	isSpendable(): bool;

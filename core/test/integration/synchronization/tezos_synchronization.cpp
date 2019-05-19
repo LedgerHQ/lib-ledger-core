@@ -86,8 +86,15 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
                 for (auto &origAccount : originatedAccounts) {
                     auto origOps = wait(std::dynamic_pointer_cast<OperationQuery>(origAccount->queryOperations()->complete())->execute());
-                    std::cout<<">>> Nb of originated ops: "<<origOps.size()<<std::endl;
                     EXPECT_GE(origOps.size(), 3);
+                    std::cout<<">>> Nb of originated ops: "<<origOps.size()<<std::endl;
+                    auto origBalance = wait(std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(origAccount)->getBalance(dispatcher->getMainExecutionContext()));
+                    EXPECT_NE(origBalance->toLong(), 0L);
+                    std::cout<<">>> Originated Balance: "<<origBalance->toString()<<std::endl;
+                    auto fromDate = DateUtils::fromJSON("2019-02-01T13:38:23Z");
+                    auto toDate = DateUtils::now();
+                    auto balanceHistory = wait(std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(origAccount)->getBalanceHistory(dispatcher->getMainExecutionContext(), fromDate, toDate, api::TimePeriod::MONTH));
+                    EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), origBalance->toLong());
                 }
                 dispatcher->stop();
             });

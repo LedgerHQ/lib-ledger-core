@@ -108,6 +108,10 @@ namespace ledger {
                     return op->getTime();
                 }
 
+                static inline std::shared_ptr<api::BigInt> value_constructor(const BigInt& v) {
+                    return std::make_shared<api::BigIntImpl>(v);
+                }
+
                 static inline void update_balance(std::shared_ptr<api::ERC20LikeOperation>& op, BigInt& sum) {
                     auto value = BigInt(op->getValue()->toString(10));
 
@@ -125,7 +129,7 @@ namespace ledger {
                 }
             };
 
-            return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::BigInt, api::BigIntImpl>(
+            return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::BigInt>(
                 startDate,
                 endDate,
                 precision,

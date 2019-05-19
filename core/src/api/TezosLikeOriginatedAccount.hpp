@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_TEZOSLIKEORIGINATEDACCOUNT_HPP
 
 #include "../utils/optional.hpp"
+#include <chrono>
 #include <memory>
 #include <string>
 #ifndef LIBCORE_EXPORT
@@ -17,7 +18,10 @@
 
 namespace ledger { namespace core { namespace api {
 
+class AmountCallback;
+class AmountListCallback;
 class OperationQuery;
+enum class TimePeriod;
 
 /** Class representing originated accounts */
 class LIBCORE_EXPORT TezosLikeOriginatedAccount {
@@ -32,6 +36,12 @@ public:
      * Could be empty if not yet revealed
      */
     virtual std::experimental::optional<std::string> getPublicKey() = 0;
+
+    /** Get balance of originated account */
+    virtual void getBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /** Get balance history of originated account */
+    virtual void getBalanceHistory(const std::chrono::system_clock::time_point & start, const std::chrono::system_clock::time_point & end, TimePeriod period, const std::shared_ptr<AmountListCallback> & callback) = 0;
 
     /**
      * Know if possible to spend from this account
