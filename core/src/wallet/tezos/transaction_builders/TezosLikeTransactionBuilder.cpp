@@ -155,10 +155,19 @@ namespace ledger {
             // Get Sender
             // Originated
             auto isSenderOriginated = reader.readNextByte();
-            // Curve Code
-            auto senderCurveCode = reader.readNextByte();
             // sender hash160
-            auto senderHash160 = reader.read(20);
+            std::vector<uint8_t> senderHash160;
+            if (isSenderOriginated) {
+                // Then we read 20 bytes of publicKey hash
+                senderHash160 = reader.read(20);
+                // ... and padding
+                reader.readNextByte();
+            } else {
+                // Otherwise first curve code ...
+                auto senderCurveCode = reader.readNextByte();
+                // then hash160 ...
+                senderHash160 = reader.read(20);
+            }
             tx->setSender(std::make_shared<TezosLikeAddress>(currency,
                                                              senderHash160,
                                                              isSenderOriginated ? params.OriginatedPrefix : params.ImplicitPrefix,
@@ -203,10 +212,19 @@ namespace ledger {
                     // Get Receiver
                     // Originated
                     auto isReceiverOriginated = reader.readNextByte();
-                    // Curve Code
-                    auto receiverCurveCode = reader.readNextByte();
-                    // receiver hash160
-                    auto receiverHash160 = reader.read(20);
+                    std::vector<uint8_t> receiverHash160;
+                    if (!isReceiverOriginated) {
+                        // Curve code
+                        auto receiverCurveCode = reader.readNextByte();
+                        // 20 bytes of publicKey hash
+                        receiverHash160 = reader.read(20);
+                    } else {
+                        // 20 bytes of publicKey hash
+                        receiverHash160 = reader.read(20);
+                        // Padding
+                        reader.readNextByte();
+                    }
+
                     tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                        receiverHash160,
                                                                        isReceiverOriginated ? params.OriginatedPrefix : params.ImplicitPrefix,
@@ -236,6 +254,21 @@ namespace ledger {
                     tx->setBalance(BigInt::fromHex(hex::toString(zarith::zParse(reader))));
                     // Is spendable? Is delegatable? Presence of delegate block? Presence of script block?
                     reader.read(4);
+                    break;
+                }
+                case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_DELEGATION): {
+                    tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
+                    auto hasDelegationData = reader.readNextByte();
+                    if (hasDelegationData) {
+                        // Curve Code
+                        auto delegateCurveCode = reader.readNextByte();
+                        // Delegate hash160
+                        auto delegateHash160 = reader.read(20);
+                        tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
+                                                                           delegateHash160,
+                                                                           params.ImplicitPrefix, // can't delegate to originated account (TBC)
+                                                                           Option<std::string>()));
+                    }
                     break;
                 }
                 default:
