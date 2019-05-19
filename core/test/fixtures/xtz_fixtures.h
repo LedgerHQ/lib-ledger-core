@@ -42,9 +42,6 @@ namespace ledger {
 			extern const std::string TX_6;
 			extern const std::string TX_7;
 			extern const std::string TX_8;
-			extern const std::string TX_9;
-			extern const std::string TX_10;
-			extern const std::string TX_11;
 
 			std::shared_ptr<core::TezosLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet);
 		}

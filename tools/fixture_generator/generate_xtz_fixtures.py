@@ -16,37 +16,22 @@ namespace = str(arguments[0])
 address = (arguments[1])
 pubKey = (arguments[2])
 chainCode = (arguments[3])
+opTypes = ["Transaction", "Reveal", "Origination", "Delegation"]
 
-def getHashs(txsHash):
+def getTransactions():
     # Explorers:
     #   https://api.alphanet.tzscan.io/
     #   https://api6.tzscan.io/v3
     # Node: mainnet-node.tzscan.io
-
-    #   https://api6.tzscan.io/v3/operations/tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK?type=Transaction
-    syncUrl = "https://api6.tzscan.io/v3/operations/" + address + "?type=Transaction"
-
-    #Get txs related to address
-    call = requests.post(syncUrl)
-    bytes = call.content
-    text = bytes.decode('utf8')
-    transactions = json.loads(text)
-    for i in range(len(transactions)) :
-        hash = transactions[i]['hash']
-        txsHash.append(hash)
-
-    return txsHash
-
-def getTxs(hashs):
-    #https://api6.tzscan.io/v3/operation/opTKKomay8tM3PDm3EGm9poSRkhGb7WVv67uFFWyfFEG4KUDG1o
-    txs = []
-    url = "https://api6.tzscan.io/v3/operation/"
-    for i in range(len(hashs)):
-        bytes = requests.post(url + hashs[i]).content
+    transactions = []
+    for i in range(len(opTypes)):
+        syncUrl = "https://api6.tzscan.io/v3/operations/" + address + "?type=" + opTypes[i]
+        #Get txs related to address
+        call = requests.post(syncUrl)
+        bytes = call.content
         text = bytes.decode('utf8')
-        tx = json.loads(text)
-        txs.append(tx)
-    return txs
+        transactions = transactions + json.loads(text)
+    return transactions
 
 start = time.time()
 
@@ -113,13 +98,13 @@ def makeCPP(namespace, txs):
         file.close()
 
 
-makeH(namespace, getTxs(getHashs([])))
+makeH(namespace, getTransactions())
 
 end = time.time()
 
 print("make H over after "+str(end-start))
 
-makeCPP(namespace, getTxs(getHashs([])))
+makeCPP(namespace, getTransactions())
 
 end2 = time.time()
 
