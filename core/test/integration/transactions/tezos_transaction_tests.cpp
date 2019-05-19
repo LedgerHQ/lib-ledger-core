@@ -61,8 +61,6 @@ TEST_F(TezosMakeTransaction, CreateTx) {
         EXPECT_EQ(event->getCode(),
                   api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-        auto balance = wait(account->getBalance());
-        std::cout << "Balance: " << balance->toString() << std::endl;
         auto txBuilder = std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(account->buildTransaction());
         dispatcher->stop();
     });

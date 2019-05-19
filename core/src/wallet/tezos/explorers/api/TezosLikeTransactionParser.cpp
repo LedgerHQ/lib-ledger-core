@@ -169,7 +169,7 @@ namespace ledger {
                     _transaction->gas_limit = BigInt::fromString(value);
                 } else if (_lastKey == "storage_limit") {
                     _transaction->storage_limit = BigInt::fromString(value);
-                } else if (_lastKey == "kind") {
+                } else if (_lastKey == "kind" && _transaction->type == api::TezosOperationTag::OPERATION_TAG_NONE) {
                     static std::unordered_map<std::string, api::TezosOperationTag> opTags {
                             std::make_pair("reveal", api::TezosOperationTag::OPERATION_TAG_REVEAL),
                             std::make_pair("transaction", api::TezosOperationTag::OPERATION_TAG_TRANSACTION),
