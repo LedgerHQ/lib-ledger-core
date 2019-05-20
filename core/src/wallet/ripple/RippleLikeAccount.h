@@ -35,6 +35,7 @@
 
 #include <time.h>
 #include <api/AddressListCallback.hpp>
+#include <api/AmountCallback.hpp>
 #include <api/Address.hpp>
 #include <api/RippleLikeAccount.hpp>
 #include <api/RippleLikeTransactionBuilder.hpp>
@@ -110,6 +111,11 @@ namespace ledger {
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
+            void getFees(const std::shared_ptr<api::AmountCallback> & callback) override;
+            FuturePtr<api::Amount> getFees();
+
+            void getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) override;
+            FuturePtr<api::Amount> getBaseReserve();
         private:
             std::shared_ptr<RippleLikeAccount> getSelf();
 

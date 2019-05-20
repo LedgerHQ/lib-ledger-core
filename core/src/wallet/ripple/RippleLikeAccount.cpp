@@ -424,5 +424,29 @@ namespace ledger {
                                                                   buildFunction);
         }
 
+        void RippleLikeAccount::getFees(const std::shared_ptr<api::AmountCallback> & callback) {
+            getFees().callback(getContext(), callback);
+        }
+
+        FuturePtr<api::Amount> RippleLikeAccount::getFees() {
+            auto self = shared_from_this();
+            return _explorer->getFees().mapPtr<api::Amount>(getContext(), [self] (const std::shared_ptr<BigInt> &fees) {
+                // Fees in drops
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *fees);
+            });
+        }
+
+        void RippleLikeAccount::getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) {
+            getBaseReserve().callback(getContext(), callback);
+        }
+
+        FuturePtr<api::Amount> RippleLikeAccount::getBaseReserve() {
+            auto self = shared_from_this();
+            return _explorer->getBaseReserve().mapPtr<api::Amount>(getContext(), [self] (const std::shared_ptr<BigInt> &reserve) {
+                // Reserve in XRPs
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *reserve);
+            });
+        }
+
     }
 }

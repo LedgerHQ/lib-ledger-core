@@ -49,7 +49,7 @@ RippleLikeOperation = interface +c {
     getTransaction(): RippleLikeTransaction;
 }
 
-#Class representing Bitcoin block
+#Class representing Ripple block
 RippleLikeBlock = interface +c {
     #Hash of block
     #@return string representing hash of this block
@@ -105,6 +105,15 @@ RippleLikeAccount = interface +c {
     broadcastRawTransaction(transaction: binary, callback: Callback<string>);
     broadcastTransaction(transaction: RippleLikeTransaction, callback: Callback<string>);
     buildTransaction(): RippleLikeTransactionBuilder;
+    # Get fees from network
+    # Note: it would have been better to have this method on RippleLikeWallet
+    # but since RippleLikeWallet is not used anywhere, it's better to keep all
+    # specific methods under the same specific class so it will be easy to segratate
+    # when the right time comes !
+    getFees(callback: Callback<Amount>);
+    # Get base reserve (dust to leave on an XRP account) from network
+    # Note: same note as above
+    getBaseReserve(callback: Callback<Amount>);
 }
 
 RippleConfigurationDefaults = interface +c {

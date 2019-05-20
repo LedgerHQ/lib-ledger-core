@@ -92,6 +92,11 @@ namespace ledger {
             throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getFees method for Ripple API");
         }
 
+        Future<std::shared_ptr<BigInt>>
+        ApiRippleLikeBlockchainExplorer::getBaseReserve() {
+            throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Missing implementation of getBaseReserve method for Ripple API");
+        }
+
         Future<void *> ApiRippleLikeBlockchainExplorer::startSession() {
             return Future<void *>::successful(new std::string("", 0));
         }
