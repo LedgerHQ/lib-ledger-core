@@ -69,7 +69,7 @@ function command_android {
   elif [ "$ARCH" == "arm64-v8a" ]; then
     export TOOLCHAIN_NAME='android-ndk-r18b-api-21-arm64-v8a-clang-libcxx'
   else
-    export TOOLCHAIN_NAME='android-ndk-r18b-api-21-x86-clang-libcxx'
+    export TOOLCHAIN_NAME='android-ndk-r18b-api-21-x86-64-clang-libcxx'
   fi
   #This is useful for SQLCipher/config.guess
   export LIBC=gnu
