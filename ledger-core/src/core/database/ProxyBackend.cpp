@@ -29,12 +29,11 @@
  *
  */
 
+#include <core/database/proxy_backend/soci-proxy.h>
 #include "ProxyBackend.hpp"
-#include <database/proxy_backend/soci-proxy.h>
 
 namespace ledger {
     namespace core {
-
         ProxyBackend::ProxyBackend(const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) :
             DatabaseBackend(), _engine(engine), _factory(soci::factory_proxy(engine)) {
         }

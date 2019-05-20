@@ -28,13 +28,13 @@
  * SOFTWARE.
  *
  */
+
+#include <core/utils/DateUtils.hpp>
+#include <core/utils/DurationUtils.h>
 #include "Benchmarker.h"
-#include <utils/DateUtils.hpp>
-#include <utils/DurationUtils.h>
 
 namespace ledger {
     namespace core {
-
         Benchmarker::Benchmarker(const std::string &name, const std::shared_ptr<spdlog::logger> &logger) {
             _name = name;
             _logger = logger;
@@ -61,7 +61,5 @@ namespace ledger {
         std::chrono::steady_clock::duration Benchmarker::getDuration() const {
             return _stopDate - _startDate;
         }
-
-
     }
 }

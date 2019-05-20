@@ -140,7 +140,7 @@ namespace ledger {
             api::TimePeriod period,
             const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)> & callback
         ) {
-            getBalanceHistory(start, end, precision).callback(getMainExecutionContext(), callback);
+            getBalanceHistory(start, end, period).callback(getMainExecutionContext(), callback);
         }
 
         std::shared_ptr<api::EventBus> AbstractAccount::getEventBus() {

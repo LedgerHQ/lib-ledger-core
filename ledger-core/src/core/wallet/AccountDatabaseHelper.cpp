@@ -28,19 +28,20 @@
  * SOFTWARE.
  *
  */
-#include "AccountDatabaseHelper.h"
-#include <crypto/SHA256.hpp>
+
 #include <fmt/format.h>
 #include <list>
-#include <database/soci-date.h>
-#include <database/soci-number.h>
-#include <utils/DateUtils.hpp>
+
+#include <core/database/soci-date.h>
+#include <core/database/soci-number.h>
+#include <core/crypto/SHA256.hpp>
+#include <core/utils/DateUtils.hpp>
+#include "AccountDatabaseHelper.h"
 
 using namespace soci;
 
 namespace ledger {
     namespace core {
-
         std::string AccountDatabaseHelper::createAccountUid(const std::string &walletUid, int32_t accountIndex) {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}", walletUid, accountIndex));
         }
@@ -121,7 +122,5 @@ namespace ledger {
             }
             return Option<api::Block>();
         }
-
-
     }
 }

@@ -28,15 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CALLBACK_TRAITS_HPP
-#define LEDGER_CORE_CALLBACK_TRAITS_HPP
+
+#pragma once
 
 #include <cstddef>
 #include <type_traits>
 
 namespace ledger {
     namespace core {
-
         template<typename, typename T>
         struct has_on_callback_method {
             static_assert(
@@ -67,5 +66,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_CALLBACK_TRAITS_HPP

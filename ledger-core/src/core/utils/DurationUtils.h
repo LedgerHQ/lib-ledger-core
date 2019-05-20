@@ -1,13 +1,13 @@
 /*
  *
- * AbstractAddress.cpp
+ * DurationUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 14/05/2018.
+ * Created by Pierre Pollastri on 01/08/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,21 +28,35 @@
  * SOFTWARE.
  *
  */
+#ifndef LEDGER_CORE_DURATIONUTILS_H
+#define LEDGER_CORE_DURATIONUTILS_H
 
-#include "AbstractAddress.h"
+#include <cstdint>
+#include "DateUtils.hpp"
+#include <ctime>
+#include <chrono>
+#include <sstream>
+#include <fmt/format.h>
 
 namespace ledger {
     namespace core {
-        AbstractAddress::AbstractAddress(const api::Currency &currency, const Option<std::string>& path)
-                : _currency(currency), _path(path) {
-        }
-
-        api::Currency AbstractAddress::getCurrency() {
-            return _currency;
-        }
-
-        optional<std::string> AbstractAddress::getDerivationPath() {
-            return _path.toOptional();
-        }
+        class DurationUtils {
+        public:
+            template <typename D>
+            static std::string formatDuration(const D& duration) {
+                std::stringstream ss;
+                auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+                auto hours = ms / (60 * 60 * 1000);
+                ms = ms % (60 * 60 * 1000);
+                auto minutes = ms / (60 * 1000);
+                ms = ms % (60 * 1000);
+                auto seconds = ms / 1000;
+                ms = ms % 1000;
+                return fmt::format("{}:{}:{}.{}", hours, minutes, seconds, ms);
+            }
+        };
     }
 }
+
+
+#endif //LEDGER_CORE_DURATIONUTILS_H

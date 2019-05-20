@@ -28,12 +28,12 @@
  * SOFTWARE.
  *
  */
+
+#include <core/utils/Exception.hpp>
 #include "Amount.h"
-#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
-
         Amount::Amount(const api::Currency &currency, int32_t unitIndex, BigInt &&value) {
             _currency = currency;
             _unitIndex = unitIndex;

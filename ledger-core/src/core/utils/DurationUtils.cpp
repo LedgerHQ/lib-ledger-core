@@ -1,9 +1,9 @@
 /*
  *
- * AbstractWalletFactory
+ * DurationUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 16/05/2017.
+ * Created by Pierre Pollastri on 01/08/2017.
  *
  * The MIT License (MIT)
  *
@@ -28,31 +28,12 @@
  * SOFTWARE.
  *
  */
-
-#pragma once
-
-#include <memory>
-#include <core/wallet/pool/database/WalletDatabaseEntry.hpp>
-#include <core/wallet/AbstractWallet.hpp>
+#include "DurationUtils.h"
 
 namespace ledger {
     namespace core {
-        class AbstractWalletFactory {
-        public:
-            AbstractWalletFactory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
-            virtual std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry& entry) = 0;
-            const api::Currency& getCurrency() const;
-            virtual ~AbstractWalletFactory() {};
 
-        protected:
-            std::shared_ptr<WalletPool> getPool() const;
 
-        private:
-            api::Currency _currency;
-            std::weak_ptr<WalletPool> _pool;
-        };
 
-        template <api::WalletType>
-        std::shared_ptr<AbstractWalletFactory> make_factory(const api::Currency& currency, const std::shared_ptr<WalletPool>& pool);
     }
 }

@@ -28,15 +28,14 @@
  * SOFTWARE.
  *
  */
+
+#include <core/wallet/BlockDatabaseHelper.h>
 #include "Block.h"
-#include "database/BlockDatabaseHelper.h"
 
 namespace ledger {
     namespace core {
-
         std::string Block::getUid() const {
             return BlockDatabaseHelper::createBlockUid(*this);
         }
-
     }
 }

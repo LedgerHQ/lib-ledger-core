@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPERATIONDATABASEHELPER_H
-#define LEDGER_CORE_OPERATIONDATABASEHELPER_H
 
-#include <api/OperationType.hpp>
-#include <wallet/common/Operation.h>
+#pragma once
+
 #include <soci.h>
 #include <string>
+
+#include <core/api/OperationType.hpp>
+#include <core/wallet/Operation.h>
 
 namespace ledger {
     namespace core {
@@ -56,6 +57,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_OPERATIONDATABASEHELPER_H
