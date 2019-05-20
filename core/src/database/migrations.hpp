@@ -133,6 +133,10 @@ namespace ledger {
         // Migrate input_data from VARCHAR(255) to TEXT
         template <> void migrate<9>(soci::session& sql);
         template <> void rollback<9>(soci::session& sql);
+
+        // Add block_height column to erc20_operations table
+        template <> void migrate<10>(soci::session& sql);
+        template <> void rollback<10>(soci::session& sql);
     }
 }
 
