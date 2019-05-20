@@ -28,9 +28,11 @@
  * SOFTWARE.
  *
  */
-#include "SQLite3Backend.hpp"
+
 #include <soci-sqlite3.h>
-#include <utils/Exception.hpp>
+
+#include <core/database/SQLite3Backend.hpp>
+#include <core/utils/Exception.hpp>
 
 using namespace soci;
 

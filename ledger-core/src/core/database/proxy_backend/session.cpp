@@ -1,9 +1,9 @@
 /*
  *
- * AbstractAddress.cpp
+ * session.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 14/05/2018.
+ * Created by Pierre Pollastri on 14/11/2018.
  *
  * The MIT License (MIT)
  *
@@ -29,20 +29,46 @@
  *
  */
 
-#include "AbstractAddress.h"
+#include "soci-proxy.h"
 
-namespace ledger {
-    namespace core {
-        AbstractAddress::AbstractAddress(const api::Currency &currency, const Option<std::string>& path)
-                : _currency(currency), _path(path) {
-        }
+using namespace soci;
+using namespace ledger::core;
 
-        api::Currency AbstractAddress::getCurrency() {
-            return _currency;
-        }
+proxy_session_backend::proxy_session_backend(const std::shared_ptr<ledger::core::api::DatabaseConnection> &connection) {
+    SP_PRINT("CREATE NEW DB SESSION " << this)
+    _conn = connection;
+}
 
-        optional<std::string> AbstractAddress::getDerivationPath() {
-            return _path.toOptional();
-        }
-    }
+proxy_session_backend::~proxy_session_backend() {
+    SP_PRINT("DELETE DB SESSION " << this)
+    _conn->close();
+}
+
+void proxy_session_backend::begin() {
+    _conn->begin();
+}
+
+void proxy_session_backend::commit() {
+    _conn->commit();
+}
+
+void proxy_session_backend::rollback() {
+    _conn->rollback();
+}
+
+void proxy_session_backend::clean_up() {
+    SP_PRINT("CLEANUP SESSION " << this)
+    _conn->close();
+}
+
+proxy_statement_backend *proxy_session_backend::make_statement_backend() {
+   return new proxy_statement_backend(*this);
+}
+
+proxy_rowid_backend *proxy_session_backend::make_rowid_backend() {
+    throw make_exception(api::ErrorCode::DATABASE_EXCEPTION , "ROWID is not supported by database backend");
+}
+
+proxy_blob_backend *proxy_session_backend::make_blob_backend() {
+    return new proxy_blob_backend(_conn->newBlob());
 }

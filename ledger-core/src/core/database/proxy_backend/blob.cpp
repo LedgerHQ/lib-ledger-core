@@ -1,9 +1,9 @@
 /*
  *
- * AbstractAddress.cpp
+ * blob.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 14/05/2018.
+ * Created by Pierre Pollastri on 03/12/2018.
  *
  * The MIT License (MIT)
  *
@@ -29,20 +29,32 @@
  *
  */
 
-#include "AbstractAddress.h"
+#include "soci-proxy.h"
 
-namespace ledger {
-    namespace core {
-        AbstractAddress::AbstractAddress(const api::Currency &currency, const Option<std::string>& path)
-                : _currency(currency), _path(path) {
-        }
+using namespace ledger::core;
+using namespace soci;
 
-        api::Currency AbstractAddress::getCurrency() {
-            return _currency;
-        }
 
-        optional<std::string> AbstractAddress::getDerivationPath() {
-            return _path.toOptional();
-        }
-    }
+std::size_t proxy_blob_backend::get_len() {
+    return static_cast<size_t>(_backend->size());
+}
+
+std::size_t proxy_blob_backend::read(std::size_t offset, char *buf, std::size_t toRead) {
+    std::vector<uint8_t> buffer = _backend->read(static_cast<int64_t>(offset), static_cast<int64_t>(toRead));
+    std::copy(std::begin(buffer), std::end(buffer), buf);
+    return buffer.size();
+}
+
+std::size_t proxy_blob_backend::write(std::size_t offset, char const *buf, std::size_t toWrite) {
+    const std::vector<uint8_t> data((uint8_t *)buf, (uint8_t *)(buf + toWrite));
+    return static_cast<size_t>(_backend->write(static_cast<int64_t>(offset), data));
+}
+
+std::size_t proxy_blob_backend::append(char const *buf, std::size_t toWrite) {
+    const std::vector<uint8_t> data((uint8_t *)buf, (uint8_t *)(buf + toWrite));
+    return static_cast<size_t>(_backend->append(data));
+}
+
+void proxy_blob_backend::trim(std::size_t newLen) {
+    _backend->trim(static_cast<int64_t>(newLen));
 }

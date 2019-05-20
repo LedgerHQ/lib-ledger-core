@@ -1,9 +1,9 @@
 /*
  *
- * AbstractAddress.cpp
+ * factory.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 14/05/2018.
+ * Created by Pierre Pollastri on 14/11/2018.
  *
  * The MIT License (MIT)
  *
@@ -29,20 +29,28 @@
  *
  */
 
-#include "AbstractAddress.h"
+#include "soci-proxy.h"
+#include <connection-parameters.h>
 
-namespace ledger {
-    namespace core {
-        AbstractAddress::AbstractAddress(const api::Currency &currency, const Option<std::string>& path)
-                : _currency(currency), _path(path) {
-        }
+using namespace soci;
+using namespace ledger::core;
 
-        api::Currency AbstractAddress::getCurrency() {
-            return _currency;
-        }
+proxy_session_backend* proxy_backend_factory::make_session(const soci::connection_parameters &parameters) const {
+    auto pool = get_pool(parameters);
+    return new proxy_session_backend(pool->getConnection());
+}
 
-        optional<std::string> AbstractAddress::getDerivationPath() {
-            return _path.toOptional();
-        }
-    }
+proxy_backend_factory::~proxy_backend_factory() {}
+
+const std::shared_ptr<api::DatabaseEngine>& proxy_backend_factory::getEngine() const {
+    return _engine;
+}
+
+std::shared_ptr<ledger::core::api::DatabaseConnectionPool>
+proxy_backend_factory::get_pool(connection_parameters const &parameters) const {
+    return _engine->connect(parameters.get_connect_string());
+}
+
+SOCI_PROXY_DECL backend_factory const* soci::factory_proxy(const std::shared_ptr<api::DatabaseEngine>& engine) {
+    return new proxy_backend_factory(engine);
 }

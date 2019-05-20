@@ -28,14 +28,15 @@
  * SOFTWARE.
  *
  */
-#include "DerivationScheme.hpp"
-#include "collections/collections.hpp"
-#include "boost/lexical_cast.hpp"
+
+#include <boost/lexical_cast.hpp>
 #include <sstream>
+
+#include <core/collections/collections.hpp>
+#include "DerivationScheme.hpp"
 
 namespace ledger {
     namespace core {
-
         DerivationScheme::DerivationScheme(const std::string &scheme) {
             auto segments = strings::split(scheme, "/");
             if (segments.size() == 0) {
@@ -218,7 +219,5 @@ namespace ledger {
             }
             return -1;
         }
-
-
     }
 }

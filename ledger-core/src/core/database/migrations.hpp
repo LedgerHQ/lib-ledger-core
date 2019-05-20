@@ -29,12 +29,12 @@
  *
  */
 
-#ifndef LEDGER_CORE_MIGRATIONS_HPP
-#define LEDGER_CORE_MIGRATIONS_HPP
+#pragma once
 
 #include <soci.h>
 #include <iostream>
-#include "utils/Exception.hpp"
+
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -131,5 +131,3 @@ namespace ledger {
         template <> void rollback<8>(soci::session& sql);
     }
 }
-
-#endif //LEDGER_CORE_MIGRATIONS_HPP
