@@ -28,8 +28,9 @@
  * SOFTWARE.
  *
  */
-#include "Exception.hpp"
+
 #include <sstream>
+#include <core/utils/Exception.hpp>
 
 const ledger::core::optional<ledger::core::api::Error> ledger::core::Exception::NO_CORE_ERROR;
 

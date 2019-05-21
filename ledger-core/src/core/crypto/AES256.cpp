@@ -28,10 +28,11 @@
  * SOFTWARE.
  *
  */
-#include "AES256.hpp"
-#include <openssl/aes.h>
 #include <cstdio>
 #include <cstring>
+#include <openssl/aes.h>
+
+#include <core/crypto/AES256.hpp>
 
 const uint32_t ledger::core::AES256::BLOCK_SIZE = AES_BLOCK_SIZE;
 

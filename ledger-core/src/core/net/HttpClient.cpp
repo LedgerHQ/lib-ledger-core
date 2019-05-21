@@ -28,11 +28,11 @@
  * SOFTWARE.
  *
  */
-#include "HttpClient.hpp"
+
+#include <core/net/HttpClient.hpp>
 
 namespace ledger {
     namespace core {
-
         HttpClient::HttpClient(const std::string &baseUrl, const std::shared_ptr<api::HttpClient> &client,
                                const std::shared_ptr<api::ExecutionContext> &context) {
             _baseUrl = baseUrl;
@@ -200,6 +200,4 @@ namespace ledger {
             return _promise.getFuture();
         }
     }
-
-
 }

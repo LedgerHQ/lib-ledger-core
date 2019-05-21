@@ -28,10 +28,9 @@
  *
  */
 
-
-#include "RLPDecoder.h"
-#include "RLPStringEncoder.h"
-#include "RLPListEncoder.h"
+#include <core/bytes/RLP/RLPDecoder.h>
+#include <core/bytes/RLP/RLPStringEncoder.h>
+#include <core/bytes/RLP/RLPListEncoder.h>
 
 /*
  * Reursive Length Prefix Decoder
@@ -40,7 +39,6 @@
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<RLPEncoder> RLPDecoder::decode(const std::vector<uint8_t> &data,
                                                        std::shared_ptr<RLPEncoder> &parent) {
             std::shared_ptr<RLPEncoder> result;
@@ -140,6 +138,5 @@ namespace ledger {
                 return (last + toInteger(subBytes))*256;
             }
         }
-
     }
 }

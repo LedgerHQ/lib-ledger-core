@@ -28,12 +28,5 @@
  * SOFTWARE.
  *
  */
-#include "DurationUtils.h"
 
-namespace ledger {
-    namespace core {
-
-
-
-    }
-}
+#include <core/utils/DurationUtils.h>

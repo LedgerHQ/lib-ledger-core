@@ -28,9 +28,11 @@
  * SOFTWARE.
  *
  */
-#include "SHA256.hpp"
-#include "../utils/hex.h"
+
 #include <openssl/sha.h>
+
+#include <core/crypto/SHA256.hpp>
+#include <core/utils/hex.h>
 
 namespace ledger {
     namespace core {
@@ -50,7 +52,7 @@ namespace ledger {
             SHA256_Final(hash, &sha256);
             return std::vector<uint8_t >(hash, hash + SHA256_DIGEST_LENGTH);
         }
-        
+
         std::vector<uint8_t> SHA256::stringToBytesHash(const std::string &input) {
             return dataToBytesHash(input.c_str(), input.size());
         }

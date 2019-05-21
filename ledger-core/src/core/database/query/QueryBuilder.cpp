@@ -28,12 +28,12 @@
  * SOFTWARE.
  *
  */
-#include "QueryBuilder.h"
 #include <fmt/format.h>
+
+#include <core/database/query/QueryBuilder.h>
 
 namespace ledger {
     namespace core {
-
         soci::details::prepare_temp_type QueryBuilder::execute(soci::session &sql) {
             std::stringstream query;
             query << "SELECT " << _keys << " FROM " << _table<< " AS " << _output;
@@ -132,6 +132,5 @@ namespace ledger {
             _outerJoins.emplace_back(Option<LeftOuterJoin>(std::make_tuple(table, condition)));
             return *this;
         }
-
     }
 }

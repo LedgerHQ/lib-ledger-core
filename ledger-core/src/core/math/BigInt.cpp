@@ -29,18 +29,15 @@
  *
  */
 
-#include "BigInt.h"
+#include <algorithm>
 #include <cstdlib>
 #include <iostream>
-#include <algorithm>
-#include "../collections/collections.hpp"
 
-
-#include <cstdlib>
+#include <core/math/BigInt.h>
+#include <core/collections/collections.hpp>
 
 namespace ledger {
     namespace core {
-
         const BigInt BigInt::ZERO = BigInt(0);
         const BigInt BigInt::ONE = BigInt(1);
         const BigInt BigInt::TEN = BigInt(10);
@@ -371,6 +368,5 @@ namespace ledger {
             _negative = mov._negative;
             mov._bigd = nullptr;
         }
-
     }
 }

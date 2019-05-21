@@ -28,14 +28,13 @@
  * SOFTWARE.
  *
  */
-#include "URI.hpp"
-#include <regex>
 #include <boost/lexical_cast.hpp>
+#include <regex>
+
+#include <core/net/URI.hpp>
 
 namespace ledger {
     namespace core {
-
-
         URI::URI(const String &uri) {
             std::regex ex("(http|https)://([^/ :]+):?([^/ ]*)(/?[^ #?]*)\\x3f?([^ #]*)#?([^ ]*)");
             std::cmatch what;
@@ -73,6 +72,5 @@ namespace ledger {
         const String &URI::getFragment() const {
             return _fragment;
         }
-
     }
 }

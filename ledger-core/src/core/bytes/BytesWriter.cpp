@@ -29,9 +29,10 @@
  *
  */
 
-#include "BytesWriter.h"
 #include <algorithm>
-#include "../utils/endian.h"
+
+#include <core/bytes/BytesWriter.h>
+#include <core/utils/endian.h>
 
 namespace ledger {
     namespace core {

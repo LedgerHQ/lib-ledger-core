@@ -28,9 +28,8 @@
  *
  */
 
-
-#include "RLPListEncoder.h"
-#include "RLPStringEncoder.h"
+#include <core/bytes/RLP/RLPListEncoder.h>
+#include <core/bytes/RLP/RLPStringEncoder.h>
 
 /*
  * Reursive Length Prefix List Encoder
@@ -39,7 +38,6 @@
 
 namespace ledger {
     namespace core {
-
         RLPListEncoder::RLPListEncoder(const std::shared_ptr<RLPListEncoder> &child) {
             if(child) {
                 _children.push_back(child);

@@ -29,9 +29,10 @@
  *
  */
 
-#include "HMAC.hpp"
 #include <openssl/hmac.h>
 #include <openssl/sha.h>
+
+#include <core/crypto/HMAC.hpp>
 
 std::vector<uint8_t> ledger::core::HMAC::sha256(const std::vector<uint8_t>& key,
                                                     const std::vector<uint8_t>& data) {

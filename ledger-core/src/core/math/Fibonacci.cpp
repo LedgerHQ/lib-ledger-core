@@ -29,7 +29,7 @@
  *
  */
 
-#include "Fibonacci.h"
+#include <core/math/Fibonacci.h>
 
 int32_t ledger::core::Fibonacci::compute(int n) {
     return _compute(0, 1, n);

@@ -29,7 +29,7 @@
  *
  */
 
-#include "migrations.hpp"
+#include <core/database/migrations.hpp>
 
 namespace ledger {
     namespace core {

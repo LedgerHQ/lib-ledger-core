@@ -28,13 +28,12 @@
  * SOFTWARE.
  *
  */
-#include "hex.h"
 
+#include <core/utils/hex.h>
 
 namespace ledger {
     namespace core {
         namespace hex {
-
             std::vector<uint8_t> toByteArray(const std::string &str) {
                 std::vector<uint8_t> bytes(str.length() / 2 + str.length() % 2);
                 auto offset = str.length() % 2 != 0 ? 1 : 0;

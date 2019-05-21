@@ -28,14 +28,14 @@
  * SOFTWARE.
  *
  */
+
 #include <cstdint>
 #include <iostream>
-#include "endian.h"
+#include <core/utils/endian.h>
 
 namespace ledger {
     namespace core {
         namespace endianness {
-
             Endianness getSystemEndianness() {
                 short int number = 0x1;
                 char *numPtr = (char *) &number;
@@ -89,7 +89,6 @@ namespace ledger {
                 swapToEndianness(data, sizeof(i), getSystemEndianness(), endianness);
                 return (const void *)data;
             }
-
         }
     }
 }

@@ -28,4 +28,5 @@
  * SOFTWARE.
  *
  */
+
 #include "DedicatedContext.hpp"

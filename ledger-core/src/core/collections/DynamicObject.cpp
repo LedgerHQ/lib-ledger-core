@@ -29,13 +29,14 @@
  *
  */
 
-#include "DynamicObject.hpp"
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 #include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/set.hpp>
 #include <cereal/types/memory.hpp>
-#include <boost/iostreams/device/array.hpp>
-#include <boost/iostreams/stream.hpp>
+
+#include <core/collections/DynamicObject.hpp>
 
 namespace ledger {
     namespace core {

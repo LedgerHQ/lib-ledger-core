@@ -28,7 +28,7 @@
  * SOFTWARE.
  *
  */
-#include "EventBus.hpp"
+#include <core/events/EventBus.hpp>
 
 void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::ExecutionContext> &context,
                                        const std::shared_ptr<ledger::core::api::EventReceiver> &receiver) {
@@ -49,7 +49,7 @@ void ledger::core::EventBus::subscribe(const std::shared_ptr<ledger::core::api::
             if (r == local_receiver)
                 return unit;
         }
-        
+
         // Post all sticky event to the receiver
         //local_receiver is moved below when pushed in _subscribers, we need a new local_receiver
         //lambda passed to Future<Unit>::async

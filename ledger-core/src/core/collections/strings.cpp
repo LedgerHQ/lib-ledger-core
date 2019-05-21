@@ -28,15 +28,15 @@
  * SOFTWARE.
  *
  */
-#include "strings.hpp"
+
 #include <boost/algorithm/string.hpp>
-#include "String.hpp"
-#include "String.hpp"
+
+#include <core/collections/strings.hpp>
+#include <core/collections/String.hpp>
 
 namespace ledger {
     namespace core {
         namespace strings {
-
             bool startsWith(const std::string& str, const std::string& prefix) {
                 return boost::starts_with(str, prefix);
             }

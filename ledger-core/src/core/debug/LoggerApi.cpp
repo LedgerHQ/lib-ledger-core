@@ -28,7 +28,8 @@
  * SOFTWARE.
  *
  */
-#include "LoggerApi.hpp"
+
+#include <core/debug/LoggerApi.hpp>
 
 void ledger::core::LoggerApi::d(const std::string &tag, const std::string &message) {
     auto i = _logger.lock();

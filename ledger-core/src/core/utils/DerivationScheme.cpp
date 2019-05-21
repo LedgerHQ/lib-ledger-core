@@ -33,7 +33,7 @@
 #include <sstream>
 
 #include <core/collections/collections.hpp>
-#include "DerivationScheme.hpp"
+#include <core/utils/DerivationScheme.hpp>
 
 namespace ledger {
     namespace core {

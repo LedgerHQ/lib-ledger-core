@@ -28,7 +28,8 @@
  * SOFTWARE.
  *
  */
-#include "LoggerStreamBuffer.h"
+
+#include <core/debug/LoggerStreamBuffer.h>
 
 int ledger::core::LoggerStreamBuffer::overflow(int c) {
     if (c == '\n') {

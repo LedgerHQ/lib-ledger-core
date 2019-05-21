@@ -28,4 +28,5 @@
  * SOFTWARE.
  *
  */
-#include "VectorUtils.h"
+
+#include <core/utils/VectorUtils.h>

@@ -29,12 +29,12 @@
  *
  */
 
-#include "DynamicValue.hpp"
-
-#include "DynamicObject.hpp"
-#include "DynamicArray.hpp"
 #include <cereal/types/memory.hpp>
-#include "../utils/hex.h"
+
+#include <core/collections/DynamicValue.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/collections/DynamicArray.hpp>
+#include <core/utils/hex.h>
 
 namespace ledger {
     namespace core {

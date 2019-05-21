@@ -28,16 +28,18 @@
  * SOFTWARE.
  *
  */
-#include "DynamicArray.hpp"
-#include <iterator>
-#include "DynamicObject.hpp"
-#include "DynamicValue.hpp"
+
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
 #include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/set.hpp>
 #include <cereal/types/memory.hpp>
-#include <boost/iostreams/device/array.hpp>
-#include <boost/iostreams/stream.hpp>
+#include <iterator>
+
+#include <core/collections/DynamicArray.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/collections/DynamicValue.hpp>
 
 namespace ledger {
     namespace core {

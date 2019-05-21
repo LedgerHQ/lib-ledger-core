@@ -28,12 +28,12 @@
  * SOFTWARE.
  *
  */
-#include "PBKDF2.hpp"
 #include <openssl/evp.h>
+
+#include <core/crypto/PBKDF2.hpp>
 
 namespace ledger {
     namespace core {
-
         std::vector<uint8_t>
         PBKDF2::derive(const std::vector<uint8_t> &key, const std::vector<uint8_t> &salt, uint32_t iter,
                        size_t outLength) {

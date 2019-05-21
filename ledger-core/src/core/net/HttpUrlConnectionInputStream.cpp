@@ -28,13 +28,13 @@
  * SOFTWARE.
  *
  */
-#include "HttpUrlConnectionInputStream.hpp"
-#include "../utils/Exception.hpp"
-#include "../api/HttpReadBodyResult.hpp"
+
+#include <core/api/HttpReadBodyResult.hpp>
+#include <core/net/HttpUrlConnectionInputStream.hpp>
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
-
         HttpUrlConnectionInputStream::HttpUrlConnectionInputStream(
                 const std::shared_ptr<api::HttpUrlConnection> &connection) {
             _connection = connection;

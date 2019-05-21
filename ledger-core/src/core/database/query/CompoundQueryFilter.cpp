@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#include "CompoundQueryFilter.h"
+
 #include <fmt/format.h>
+
+#include <core/database/query/CompoundQueryFilter.h>
 
 namespace ledger {
     namespace core {
-
         CompoundQueryFilter::CompoundQueryFilter(const std::shared_ptr<api::QueryFilter> &filters) {
             _children = std::static_pointer_cast<QueryFilter>(filters);
         }

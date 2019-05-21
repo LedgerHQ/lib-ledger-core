@@ -29,9 +29,9 @@
  *
  */
 
-#include "AESCipher.hpp"
-#include "PBKDF2.hpp"
-#include "AES256.hpp"
+#include <core/crypto/AESCipher.hpp>
+#include <core/crypto/PBKDF2.hpp>
+#include <core/crypto/AES256.hpp>
 
 namespace ledger {
     namespace core {

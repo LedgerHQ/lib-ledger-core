@@ -28,7 +28,8 @@
  * SOFTWARE.
  *
  */
-#include "LambdaRunnable.hpp"
+
+#include <core/utils/LambdaRunnable.hpp>
 
 namespace ledger {
     namespace core {
