@@ -29,9 +29,10 @@
  *
  */
 
- #include "soci-proxy.h"
+#include "soci-proxy.h"
 #include <soci.h>
-#include <utils/Try.hpp>
+
+#include <core/utils/Try.hpp>
 
 using namespace soci;
 using namespace ledger::core;
@@ -108,4 +109,3 @@ void proxy_standard_into_type_backend::post_fetch(bool gotData, bool calledFromF
 void proxy_standard_into_type_backend::clean_up() {
     // Do nothing again
 }
-

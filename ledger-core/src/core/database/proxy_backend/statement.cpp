@@ -29,15 +29,14 @@
  *
  */
 
-#include "soci-proxy.h"
-#include <utils/Exception.hpp>
-#include <utils/Try.hpp>
 #include <iostream>
+
+#include <core/database/proxy_backend/soci-proxy.h>
+#include <core/utils/Exception.hpp>
+#include <core/utils/Try.hpp>
 
 using namespace soci;
 using namespace ledger::core;
-
-
 
 void proxy_statement_backend::alloc() {
  // Do nothing
