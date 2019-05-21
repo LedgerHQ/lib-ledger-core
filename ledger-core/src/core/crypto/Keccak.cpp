@@ -29,12 +29,13 @@
  *
  */
 
-#include "Keccak.h"
 #include <libethash/sha3.h>
 #include <libethash/ethash.h>
+
+#include <core/crypto/Keccak.h>
+
 namespace ledger {
     namespace core {
-
         std::vector<uint8_t> Keccak::keccak256(const std::vector<uint8_t> &input) {
             ethash_h256_t result;
             SHA3_256(&result, input.data(), input.size());

@@ -28,9 +28,10 @@
  * SOFTWARE.
  *
  */
-#include "ImmediateExecutionContext.hpp"
-#include "../api/Runnable.hpp"
-#include "Exception.hpp"
+
+#include <core/api/Runnable.hpp>
+#include <core/utils/Exception.hpp>
+#include <core/utils/ImmediateExecutionContext.hpp>
 
 std::shared_ptr<ledger::core::ImmediateExecutionContext> ledger::core::ImmediateExecutionContext::INSTANCE = std::make_shared<ledger::core::ImmediateExecutionContext>();
 

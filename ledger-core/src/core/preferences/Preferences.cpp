@@ -28,12 +28,12 @@
  * SOFTWARE.
  *
  */
-#include "Preferences.hpp"
-#include "../bytes/BytesReader.h"
+
+#include <core/bytes/BytesReader.h>
+#include <core/preferences/Preferences.hpp>
 
 namespace ledger {
     namespace core {
-
         Preferences::Preferences(PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix) : _backend(backend) {
             _keyPrefix = keyPrefix;
         }

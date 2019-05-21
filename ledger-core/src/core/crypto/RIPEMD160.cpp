@@ -28,9 +28,11 @@
  * SOFTWARE.
  *
  */
-#include "RIPEMD160.hpp"
-#include <openssl/ripemd.h>
+
 #include <cstdint>
+#include <openssl/ripemd.h>
+
+#include <core/crypto/RIPEMD160.hpp>
 
 std::vector<uint8_t> ledger::core::RIPEMD160::hash(const std::vector<uint8_t> &data) {
     std::vector<uint8_t> hash;

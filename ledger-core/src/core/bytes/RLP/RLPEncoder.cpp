@@ -28,8 +28,7 @@
  *
  */
 
-
-#include "RLPEncoder.h"
+#include <core/bytes/RLP/RLPEncoder.h>
 
 /*
  * Reursive Length Prefix Encoder
@@ -38,7 +37,6 @@
 
 namespace ledger {
     namespace core {
-
         std::vector<uint8_t> RLPEncoder::encodeLength(uint32_t length, uint8_t offset, BytesWriter &out) {
             if (length < 56) {
                 out.writeVarInt(length + offset);

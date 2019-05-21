@@ -28,6 +28,5 @@
  * SOFTWARE.
  *
  */
-#include "vector.hpp"
 
-
+#include <core/collections/vector.hpp>

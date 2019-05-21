@@ -28,11 +28,10 @@
  * SOFTWARE.
  *
  */
-#include "LambdaEventReceiver.hpp"
+#include <core/events/LambdaEventReceiver.hpp>
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void (const std::shared_ptr<api::Event> &)> f) {
             return std::make_shared<LambdaEventReceiver>(f);
         }

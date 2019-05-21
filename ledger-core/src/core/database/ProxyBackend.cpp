@@ -30,7 +30,7 @@
  */
 
 #include <core/database/proxy_backend/soci-proxy.h>
-#include "ProxyBackend.hpp"
+#include <core/database/ProxyBackend.hpp>
 
 namespace ledger {
     namespace core {

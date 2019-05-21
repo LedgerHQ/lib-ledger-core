@@ -28,10 +28,10 @@
  *
  */
 
-
-#include "SHA512.hpp"
-#include "../utils/hex.h"
 #include <openssl/sha.h>
+
+#include <core/crypto/SHA512.hpp>
+#include <core/utils/hex.h>
 
 namespace ledger {
     namespace core {

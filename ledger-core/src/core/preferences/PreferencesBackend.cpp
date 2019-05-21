@@ -29,13 +29,14 @@
  *
  */
 
-#include "PreferencesBackend.hpp"
-#include "../utils/Exception.hpp"
-#include "../utils/LambdaRunnable.hpp"
-#include <leveldb/write_batch.h>
 #include <cstring>
-#include <leveldb/env.h>
 #include <iterator>
+#include <leveldb/env.h>
+#include <leveldb/write_batch.h>
+
+#include <core/preferences/PreferencesBackend.hpp>
+#include <core/utils/Exception.hpp>
+#include <core/utils/LambdaRunnable.hpp>
 
 namespace ledger {
     namespace core {

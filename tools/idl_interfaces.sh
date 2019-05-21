@@ -15,7 +15,7 @@ fi
 function generate_core_interface {
     CORE_DIR=$1 # Ledger Core library directory
     CORE_IDL_DIR=$CORE_DIR/idl
-    CORE_API_DIR=$CORE_DIR/src/core/api
+    CORE_API_DIR=$CORE_DIR/inc/core/api
 
     echo -e "Generating ledger-core API"
 
@@ -39,7 +39,7 @@ function generate_subcore_interface {
     CORE_DIR=$1 # Ledger Core library directory
     SUBCORE_DIR=$2 # Sub Core library directory
     SUBCORE_NAME=$(basename $2)
-    SUBCORE_API_DIR=$SUBCORE_DIR/src/api
+    SUBCORE_API_DIR=$SUBCORE_DIR/inc/api
 
     echo -e "Generating $SUBCORE_NAME API"
 

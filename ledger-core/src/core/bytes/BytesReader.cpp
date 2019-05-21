@@ -29,17 +29,15 @@
  *
  */
 
-#include "BytesReader.h"
-#include "../utils/endian.h"
+#include <algorithm>
 #include <fmt/format.h>
 #include <sstream>
-#include <algorithm>
 
+#include <core/bytes/BytesReader.h>
+#include <core/utils/endian.h>
 
 namespace ledger {
-
     namespace core {
-
         BytesReader::BytesReader(const std::vector<uint8_t> &data, unsigned long offset, unsigned long length) {
             _bytes = data;
             _offset = offset;
@@ -214,7 +212,5 @@ namespace ledger {
                 seek(1, Seek::CUR);
             }
         }
-
-
     }
 }

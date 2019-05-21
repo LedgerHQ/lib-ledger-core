@@ -35,7 +35,7 @@ link_directories(${CMAKE_BINARY_DIR}/lib)
 
 # Add files to compile to the project
 file(GLOB_RECURSE SRC_FILES *.cpp)
-file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
+file(GLOB_RECURSE HEADERS_FILES ../inc/*.{h,hpp})
 
 # Interface library used to hold shared properties
 add_library(ledger-core-interface INTERFACE)
@@ -123,7 +123,6 @@ target_link_libraries(ledger-core-interface INTERFACE leveldb)
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
-
 #Secp256k1
 target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
 link_directories("${CMAKE_SOURCE_DIR}/lib/secp256k1/lib")
@@ -133,11 +132,7 @@ target_link_libraries(ledger-core-interface INTERFACE ethash)
 
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
-file(
-    GLOB LEDGER_CORE_API_HEADERS
-    "api/*.hpp"
-)
-
+target_include_directories(ledger-core-interface INTERFACE ../inc)
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 
 if (TARGET_JNI)
@@ -160,4 +155,3 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
 target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
 
 install(TARGETS ledger-core DESTINATION "lib")
-install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

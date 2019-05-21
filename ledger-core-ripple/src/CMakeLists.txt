@@ -37,9 +37,6 @@ link_directories(${CMAKE_BINARY_DIR}/lib)
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
 
-# TEMPORARY HACK: add ledger-core files to the project, too
-file(GLOB_RECURSE CORE_SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/../../ledger-core/src/core/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/../../ledger-core/src/core/*.h ${CMAKE_CURRENT_SOURCE_DIR}/../../ledger-core/src/core/*.hpp)
-
 # Interface library used to hold shared properties
 add_library(ledger-core-ripple-interface INTERFACE)
 
@@ -126,11 +123,10 @@ target_link_libraries(ledger-core-ripple-interface INTERFACE leveldb)
 target_compile_definitions(ledger-core-ripple-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-ripple-interface INTERFACE spdlog)
 
-
 #Secp256k1
-#target_link_libraries(ledger-core-ripple-interface INTERFACE "../lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
-#link_directories("../lib/secp256k1/lib")
-#add_dependencies(ledger-core-ripple-interface INTERFACE secp256k1)
+target_link_libraries(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
+link_directories("${CMAKE_SOURCE_DIR}/lib/secp256k1/lib")
+add_dependencies(ledger-core-ripple-interface INTERFACE secp256k1)
 
 target_link_libraries(ledger-core-ripple-interface INTERFACE ethash)
 
@@ -149,20 +145,18 @@ if (TARGET_JNI)
 endif ()
 
 target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(ledger-core-ripple-interface INTERFACE ../../ledger-core/src)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../../ledger-core/src/core/api)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/bigd)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/rapidjson/include)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/soci/core)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/soci_sqlite3)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/openssl/include)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/openssl/crypto/blake)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/leveldb/include)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/boost)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/cereal/)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/date/)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/secp256k1)
-target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/ethash/src)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/bigd)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/rapidjson/include)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/soci/core)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/soci_sqlite3)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/openssl/include)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/openssl/crypto/blake)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/leveldb/include)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/boost)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/cereal/)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/date/)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/secp256k1)
+#target_include_directories(ledger-core-ripple-interface INTERFACE ../lib/ethash/src)
 
 install(TARGETS ledger-core-ripple DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core-ripple")

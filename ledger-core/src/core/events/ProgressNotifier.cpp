@@ -28,4 +28,5 @@
  * SOFTWARE.
  *
  */
-#include "ProgressNotifier.h"
+
+#include <core/events/ProgressNotifier.h>

@@ -29,9 +29,8 @@
  *
  */
 
-#include "soci-proxy.h"
 #include <soci.h>
-
+#include <core/database/proxy_backend/soci-proxy.h>
 #include <core/utils/Try.hpp>
 
 using namespace soci;

@@ -28,9 +28,9 @@
  *
  */
 
-
-#include "BLAKE.h"
 #include <blake256.h>
+
+#include <core/crypto/BLAKE.h>
 
 namespace ledger {
     namespace core {

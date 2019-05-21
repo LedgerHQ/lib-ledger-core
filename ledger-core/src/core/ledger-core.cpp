@@ -29,8 +29,9 @@
  *
  */
 
-#include "ledger-core.h"
 #include <boost/preprocessor.hpp>
+
+#include <core/ledger-core.h>
 
 namespace ledger {
     namespace core {

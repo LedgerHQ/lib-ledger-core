@@ -28,12 +28,12 @@
  * SOFTWARE.
  *
  */
-#include "PreferencesEditor.hpp"
-#include "../bytes/BytesWriter.h"
+
+#include <core/bytes/BytesWriter.h>
+#include <core/preferences/PreferencesEditor.hpp>
 
 namespace ledger {
     namespace core {
-
         std::shared_ptr<api::PreferencesEditor>
         PreferencesEditor::putString(const std::string &key, const std::string &value) {
             PreferencesChange change;
