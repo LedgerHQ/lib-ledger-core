@@ -46,9 +46,9 @@
 #include <core/api/PathResolver.hpp>
 #include <core/api/RandomNumberGenerator.hpp>
 #include <core/crypto/AESCipher.hpp>
+#include <core/preferences/Preferences.hpp>
 #include <core/utils/Option.hpp>
 #include <core/utils/optional.hpp>
-#include <Preferences.hpp>
 
 namespace ledger {
     namespace core {

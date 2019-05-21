@@ -28,20 +28,21 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_TRY_HPP
-#define LEDGER_CORE_TRY_HPP
+
+#pragma once
 
 #ifdef TARGET_JNI
 #include <jni/jni/djinni_support.hpp>
 #endif
 
-#include <functional>
-#include "optional.hpp"
-#include "Option.hpp"
-#include "Exception.hpp"
-#include <typeinfo>
-#include <stdexcept>
 #include <boost/exception/diagnostic_information.hpp>
+#include <functional>
+#include <stdexcept>
+#include <typeinfo>
+
+#include <core/utils/optional.hpp>
+#include <core/utils/Option.hpp>
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -163,6 +164,3 @@ namespace ledger {
         }
     }
 }
-
-
-#endif //LEDGER_CORE_TRY_HPP
