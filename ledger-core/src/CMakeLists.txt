@@ -8,7 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Automatically add API files to the library
 file(
     GLOB ledger-core-api-sources
-    "api/*"
+    "${CMAKE_SOURCE_DIR}/inc/core/api/*.cpp"
 )
 list(APPEND ledger-core-sources ${ledger-core-api-sources})
 
