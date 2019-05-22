@@ -80,6 +80,7 @@ namespace ledger {
 
             _rng = rng;
             // Encrypt the preferences, if needed
+            _password = password;
             if (!_password.empty()) {
                 _externalPreferencesBackend->setEncryption(_rng, _password);
                 _internalPreferencesBackend->setEncryption(_rng, _password);
