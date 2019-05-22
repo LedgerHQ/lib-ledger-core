@@ -1,0 +1,25 @@
+syntax = "proto3";
+package lib_core_proto;
+
+enum LibCoreRequestType {
+    GET_VERSION = 0;
+    BITCOIN_REQUEST = 1;
+    ETHEREUM_REQUEST = 2;
+    XRP_REQUEST = 3;
+}
+
+message LibCoreRequest {
+    LibCoreRequestType request_type = 1;
+    bytes request_body = 2;
+}
+
+message LibCoreResponse {
+    bytes response_body = 1;
+    string error = 2;
+}
+
+message GetVersionResponse {
+    int32 major = 1;
+    int32 minor = 2;
+    int32 patch = 3;
+}

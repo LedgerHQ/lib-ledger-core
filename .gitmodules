@@ -25,3 +25,6 @@
 [submodule "core/lib/protobuf"]
     path = core/lib/protobuf
     url = https://github.com/protocolbuffers/protobuf.git
+[submodule "core/lib/ubinder"]
+	path = core/lib/ubinder
+	url = https://github.com/teams2ua/ubinder.git

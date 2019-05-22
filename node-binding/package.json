@@ -1,0 +1,19 @@
+{
+  "name": "key_store_node",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "configure": "node-gyp configure",
+    "debug": "node-gyp rebuild --debug"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "google-protobuf": "^3.7.1",
+    "nan": "^2.13.2",
+    "npm": "^6.9.0"
+  }
+}

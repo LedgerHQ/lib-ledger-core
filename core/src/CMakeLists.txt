@@ -46,7 +46,9 @@ protobuf_generate(
         APPEND_PATH ${PATH_TO_PROTO}
         PROTOS ${ProtoFiles})
 
-target_link_libraries(ledger-core-proto PRIVATE libprotobuf)
+target_link_libraries(ledger-core-interface INTERFACE ubinder_wrapper)
+
+target_link_libraries(ledger-core-proto PUBLIC libprotobuf)
 target_link_libraries(ledger-core-interface INTERFACE ledger-core-proto)
 
 target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
@@ -169,6 +171,7 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/includ
 target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/boost)
+target_include_directories(ledger-core-interface INTERFACE ../test/lib/asio/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)

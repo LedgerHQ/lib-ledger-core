@@ -90,8 +90,6 @@ namespace ledger {
 
             Future<JsonResult> json(bool parseNumbersAsString = false) const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
-
-
         private:
             api::HttpMethod _method;
             std::string _url;
