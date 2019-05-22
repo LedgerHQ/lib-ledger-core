@@ -281,6 +281,16 @@ namespace ledger {
                             .unit("drop", 0, "drop")
                             .unit("XRP", 6, "XRP");
 
+            const api::Currency NAVCOIN =
+                    Currency("navcoin")
+                            .forkOfBitcoin(networks::getNetworkParameters("navcoin"))
+                            .bip44(130)
+                            .paymentUri("navcoin")
+                            .unit("navoshi", 0, "navoshi")
+                            .unit("navcoin", 8, "NAV")
+                            .unit("milli-navcoin", 5, "mNAV")
+                            .unit("micro-navcoin", 2, "μNAV");
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -308,7 +318,8 @@ namespace ledger {
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
                 ETHEREUM_CLASSIC,
-                RIPPLE
+                RIPPLE,
+                NAVCOIN
             });
         }
     }

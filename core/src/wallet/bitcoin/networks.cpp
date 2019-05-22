@@ -410,6 +410,21 @@ namespace ledger {
                             {}
                     );
                     return STAKENET;
+                } else if (networkName == "navcoin") {
+                    static const api::BitcoinLikeNetworkParameters NAVCOIN(
+                            "nav",
+                            {0x35},
+                            {0x55},
+                            {0x04, 0x88, 0xB2, 0x1E},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "NavCoin Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return NAVCOIN;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -439,6 +454,7 @@ namespace ledger {
                 getNetworkParameters("pivx"),
                 getNetworkParameters("clubcoin"),
                 getNetworkParameters("decred"),
+                getNetworkParameters("navcoin"),
                 getNetworkParameters("stakenet")
             });
         }
