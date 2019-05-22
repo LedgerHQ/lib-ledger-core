@@ -36,19 +36,22 @@
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <core/api/Currency.hpp>
 #include <core/crypto/DeterministicPublicKey.hpp>
+#include <core/key/ExtendedPublicKey.h>
 #include <core/utils/DerivationPath.hpp>
 #include <core/utils/Option.hpp>
 #include <RippleLikeAddress.h>
 
 namespace ledger {
     namespace core {
-        using RippleExtendedPublicKey = AbstractExtendedPublicKey<api::RippleLikeNetworkParameters>;
+        using RippleExtendedPublicKey = ExtendedPublicKey<api::RippleLikeNetworkParameters>;
+
         class RippleLikeExtendedPublicKey : public RippleExtendedPublicKey, public api::RippleLikeExtendedPublicKey {
         public:
-
-            RippleLikeExtendedPublicKey(const api::Currency& params,
-                                        const DeterministicPublicKey& key,
-                                        const DerivationPath& path = DerivationPath("m/"));
+            RippleLikeExtendedPublicKey(
+                const api::Currency& params,
+                const DeterministicPublicKey& key,
+                const DerivationPath& path = DerivationPath("m/")
+            );
 
             std::shared_ptr<api::RippleLikeAddress> derive(const std::string & path) override ;
             std::shared_ptr<RippleLikeExtendedPublicKey> derive(const DerivationPath &path);
@@ -60,37 +63,41 @@ namespace ledger {
 
             std::string getRootPath() override ;
 
-            static std::shared_ptr<RippleLikeExtendedPublicKey> fromRaw(const api::Currency& params,
-                                                                          const optional<std::vector<uint8_t>>& parentPublicKey,
-                                                                          const std::vector<uint8_t>& publicKey,
-                                                                          const std::vector<uint8_t> &chainCode,
-                                                                          const std::string& path);
+            static std::shared_ptr<RippleLikeExtendedPublicKey> fromRaw(
+                const api::Currency& params,
+                const optional<std::vector<uint8_t>>& parentPublicKey,
+                const std::vector<uint8_t>& publicKey,
+                const std::vector<uint8_t> &chainCode,
+                const std::string& path
+            );
 
-            static std::shared_ptr<RippleLikeExtendedPublicKey> fromBase58(const api::Currency& currency,
-                                                                             const std::string& xpubBase58,
-                                                                             const Option<std::string>& path);
+            static std::shared_ptr<RippleLikeExtendedPublicKey> fromBase58(
+                const api::Currency& currency,
+                const std::string& xpubBase58,
+                const Option<std::string>& path
+            );
 
         protected:
             const api::RippleLikeNetworkParameters &params() const override {
                 return _currency.rippleLikeNetworkParameters.value();
             };
+
             const DeterministicPublicKey &getKey() const override {
                 return _key;
             };
+
             const DerivationPath &getPath() const override {
                 return _path;
             };
+
             const api::Currency &getCurrency() const override {
                 return _currency;
             };
+
         private:
             const api::Currency _currency;
             const DerivationPath _path;
             const DeterministicPublicKey _key;
-
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEEXTENDEDPUBLICKEY_H

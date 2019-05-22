@@ -121,6 +121,7 @@ target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_SOURCE
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/../ledger-core/inc")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/bigd")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/boost")
+target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/cereal")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/fmt/include")
 
 install(TARGETS ledger-core-ripple DESTINATION "lib")
