@@ -29,27 +29,28 @@
  */
 
 
-#include "RippleLikeAddress.h"
-#include <utils/Exception.hpp>
-#include <math/Base58.hpp>
-#include <collections/vector.hpp>
-#include <utils/hex.h>
-#include <crypto/Keccak.h>
-#include <wallet/ripple/rippleNetworks.h>
-#include <collections/DynamicObject.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/collections/vector.hpp>
+#include <core/crypto/Keccak.h>
+#include <core/math/Base58.hpp>
+#include <core/utils/Exception.hpp>
+#include <core/utils/hex.h>
+#include <RippleNetworks.h>
+#include <RippleLikeAddress.h>
+
 namespace ledger {
     namespace core {
-
-        RippleLikeAddress::RippleLikeAddress(const ledger::core::api::Currency &currency,
-                                             const std::vector<uint8_t> &hash160,
-                                             const std::vector<uint8_t> &version,
-                                             const Option<std::string> &derivationPath) :
-                _params(currency.rippleLikeNetworkParameters.value()),
-                _derivationPath(derivationPath),
-                _hash160(hash160),
-                _version(version),
-                AbstractAddress(currency, derivationPath) {
-
+        RippleLikeAddress::RippleLikeAddress(
+            const ledger::core::api::Currency &currency,
+            const std::vector<uint8_t> &hash160,
+            const std::vector<uint8_t> &version,
+            const Option<std::string> &derivationPath
+        ) :
+            _params(getRippleLikeNetworkParameters("ripple")),
+            _derivationPath(derivationPath),
+            _hash160(hash160),
+            _version(version),
+            AbstractAddress(currency, derivationPath) {
         }
 
         std::vector<uint8_t> RippleLikeAddress::getVersion() {
@@ -81,17 +82,22 @@ namespace ledger {
         }
 
         std::shared_ptr<AbstractAddress>
-        RippleLikeAddress::parse(const std::string &address, const api::Currency &currency,
-                                 const Option<std::string> &derivationPath) {
+        RippleLikeAddress::parse(
+            const std::string &address, const api::Currency &currency,
+            const Option<std::string> &derivationPath
+        ) {
             auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&]() {
                 return fromBase58(address, currency, derivationPath);
             });
+
             return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
         }
 
-        std::shared_ptr<RippleLikeAddress> RippleLikeAddress::fromBase58(const std::string &address,
-                                                                         const api::Currency &currency,
-                                                                         const Option<std::string> &derivationPath) {
+        std::shared_ptr<RippleLikeAddress> RippleLikeAddress::fromBase58(
+            const std::string &address,
+            const api::Currency &currency,
+            const Option<std::string> &derivationPath
+        ) {
             auto& params = currency.rippleLikeNetworkParameters.value();
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
