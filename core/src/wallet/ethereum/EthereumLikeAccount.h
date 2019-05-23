@@ -48,7 +48,7 @@
 #include <wallet/ethereum/observers/EthereumLikeBlockchainObserver.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
-
+#include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
 namespace ledger {
     namespace core {
         class EthereumLikeAccount : public api::EthereumLikeAccount, public AbstractAccount {
@@ -60,11 +60,11 @@ namespace ledger {
             static const int FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION = 0x01 << 2; // When a tx from other account creates side effects on current account
 
             EthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
-                               int32_t index,
-                               const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
-                               const std::shared_ptr<EthereumLikeBlockchainObserver>& observer,
-                               const std::shared_ptr<EthereumLikeAccountSynchronizer>& synchronizer,
-                               const std::shared_ptr<EthereumLikeKeychain>& keychain);
+                                int32_t index,
+                                const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
+                                const std::shared_ptr<EthereumLikeBlockchainObserver>& observer,
+                                const std::shared_ptr<EthereumLikeAccountSynchronizer>& synchronizer,
+                                const std::shared_ptr<EthereumLikeKeychain>& keychain);
 
             FuturePtr<EthereumLikeBlockchainExplorerTransaction> getTransaction(const std::string& hash);
             void inflateOperation(Operation &out,
@@ -106,6 +106,9 @@ namespace ledger {
             void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
 
             void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
+
+            void addERC20Accounts(soci::session &sql,
+                                  const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);
         private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
             std::shared_ptr<EthereumLikeKeychain> _keychain;
@@ -118,6 +121,7 @@ namespace ledger {
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             uint64_t _currentBlockHeight;
+            std::vector<ERC20LikeAccountDatabaseEntry> erc20Entries;
             std::vector<std::shared_ptr<api::ERC20LikeAccount> >_erc20LikeAccounts;
         };
     }

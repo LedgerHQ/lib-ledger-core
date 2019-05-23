@@ -55,10 +55,6 @@ api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO(
 api::ExtendedKeyAccountCreationInfo ETH_XPUB_INFO(
         0, {"main"}, {"44'/60'/0'"}, {"xpub6E3C4qRJgptBznysvYD9JW7BNXQXvjhNBHYqASZKeF6konKuAH5bAm9Q9444SBasXSAB56BjjYnGCg9z1RYZzcEJeMxe6g4Ppgw8Q7Fo8fh"}
 );
-//xpub6EswUg1PkDcQqx6xKrwxdVnnf5Wmi7nX6A9KjpufdCrzxMzwqNnnwmGFWnsWzsz3Es8nCqCjGJAGHdP3b8jMSfWmzPWskqrfzHuYbrSFYif
-api::ExtendedKeyAccountCreationInfo ETH_ROPSTEN_XPUB_INFO(
-        0, {"main"}, {"44'/60'/0'"}, {"0x3ad0bd678b6e4767c62dfb843449396936a1e952"}
-);
 
 api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO(
         0, {"main"}, {"44'/60'/0'"}, {"xpub6EswUg1PkDcQqx6xKrwxdVnnf5Wmi7nX6A9KjpufdCrzxMzwqNnnwmGFWnsWzsz3Es8nCqCjGJAGHdP3b8jMSfWmzPWskqrfzHuYbrSFYif"}
@@ -77,9 +73,9 @@ api::AccountCreationInfo ETH_KEYS_INFO_VAULT(
 );
 
 api::AccountCreationInfo ETH_KEYS_INFO_LIVE(
-        0, {"main"}, {"44'/60'/14'/5'"},
-        {hex::toByteArray("04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa")},
-        {hex::toByteArray("224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0")}
+        0, {"main"}, {"44'/60'/0'/0/0"},
+        {hex::toByteArray("046596fcbe77efedf05755dc7ee2f58748d57254defb098191e5867fcd1fb5e05624bbac4307fa0ee7f297fe0b1f27d46cd59242d12588101692767f9d2de3b6b7")},
+        {hex::toByteArray("2a224ce46d853d381a68c6b819dabc7d00b14aaa538b6d472963820a48092cff")}
 );
 
 api::AccountCreationInfo XRP_KEYS_INFO(

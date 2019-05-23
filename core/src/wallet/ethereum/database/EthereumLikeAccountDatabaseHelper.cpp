@@ -53,13 +53,48 @@ namespace ledger {
         bool EthereumLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
                                                              const std::string &accountUid,
                                                              EthereumLikeAccountDatabaseEntry &entry) {
-            rowset<row> rows = (sql.prepare << "SELECT idx, address FROM ethereum_accounts WHERE uid = :uid", use(accountUid));
+            rowset<row> rows = (sql.prepare << "SELECT eth.idx, eth.address, "
+                    "erc20.uid, erc20.contract_address "
+                    "FROM ethereum_accounts AS eth "
+                    "LEFT JOIN erc20_accounts AS erc20 ON erc20.ethereum_account_uid = eth.uid"
+                    " WHERE eth.uid = :uid", use(accountUid));
             for (auto& row : rows) {
-                entry.index = row.get<int32_t>(0);
-                entry.address = row.get<std::string>(1);
-                return true;
+                if (entry.address.empty()) {
+                    entry.index = row.get<int32_t>(0);
+                    entry.address = row.get<std::string>(1);
+                }
+                if (row.get_indicator(2) != i_null) {
+                    ERC20LikeAccountDatabaseEntry erc20Entry;
+                    erc20Entry.uid = row.get<std::string>(2);
+                    erc20Entry.contractAddress = row.get<std::string>(3);
+                    entry.erc20Accounts.emplace_back(erc20Entry);
+                }
             }
-            return false;
+            return !entry.address.empty();
+        }
+
+        api::ERC20Token EthereumLikeAccountDatabaseHelper::getOrCreateERC20Token(soci::session &sql,
+                                                                                 const std::string &contractAddress) {
+            api::ERC20Token erc20Token;
+            auto count = 0;
+            sql << "SELECT COUNT(*) FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(contractAddress), soci::into(count);
+            if (count > 0) {
+                soci::rowset<soci::row> rows = (sql.prepare << "SELECT name, symbol, number_of_decimal FROM erc20_tokens WHERE contract_address = :contract_address", soci::use(contractAddress));
+                for (auto& row : rows) {
+                    auto name = row.get<std::string>(0);
+                    auto symbol = row.get<std::string>(1);
+                    auto numberOfDecimals = row.get<int32_t>(2);
+                    erc20Token = api::ERC20Token(name, symbol, contractAddress, numberOfDecimals);
+                }
+            } else {
+                erc20Token = api::ERC20Token("UNKNOWN_TOKEN", "UNKNOWN", contractAddress, 0);
+                sql << "INSERT INTO erc20_tokens VALUES(:contract_address, :name, :symbol, :number_of_decimal)",
+                        use(erc20Token.contractAddress),
+                        use(erc20Token.name),
+                        use(erc20Token.symbol),
+                        use(erc20Token.numberOfDecimal);
+            }
+            return erc20Token;
         }
 
     }

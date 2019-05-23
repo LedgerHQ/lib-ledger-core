@@ -44,69 +44,78 @@ class EthereumLikeWalletSynchronization : public BaseFixture {
 };
 
 TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
-    auto pool = newDefaultPool();
+    auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
+    auto erc20Count = 0;
     {
-        auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-mainnet.explorers.prod.aws.ledger.fr");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
-        std::set<std::string> emittedOperations;
+        auto pool = newDefaultPool();
         {
-            auto nextIndex = wait(wallet->getNextAccountIndex());
-            EXPECT_EQ(nextIndex, 0);
+            auto configuration = DynamicObject::newInstance();
+            configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-mainnet.explorers.prod.aws.ledger.fr");
+            auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
+            std::set<std::string> emittedOperations;
+            {
+                auto nextIndex = wait(wallet->getNextAccountIndex());
+                EXPECT_EQ(nextIndex, 0);
 
-            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
+                auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
+                auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                    if (event->getCode() == api::EventCode::NEW_OPERATION) {
+                        auto uid = event->getPayload()->getString(
+                                api::Account::EV_NEW_OP_UID).value();
+                        EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
+                    }
+                });
 
-            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+                pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
-            receiver.reset();
-            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
-                fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
-                    return;
-                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-                EXPECT_EQ(event->getCode(),
-                          api::EventCode::SYNCHRONIZATION_SUCCEED);
+                receiver.reset();
+                receiver = make_receiver([=, &erc20Count](const std::shared_ptr<api::Event> &event) {
+                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                    if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                        return;
+                    EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                    EXPECT_EQ(event->getCode(),
+                              api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-                auto balance = wait(account->getBalance());
-                auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
+                    auto balance = wait(account->getBalance());
+                    auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
 
-                auto erc20Accounts = account->getERC20Accounts();
-                EXPECT_NE(erc20Accounts.size(), 0);
-                std::cout << "ERC20 Accounts: " << erc20Accounts.size() << std::endl;
+                    auto erc20Accounts = account->getERC20Accounts();
+                    erc20Count = erc20Accounts.size();
+                    EXPECT_NE(erc20Count, 0);
+                    std::cout << "ERC20 Accounts: " << erc20Count << std::endl;
 
-                auto erc20Ops = erc20Accounts[0]->getOperations();
-                EXPECT_NE(erc20Ops.size(), 0);
-                EXPECT_NE(erc20Ops[0]->getBlockHeight().value_or(0), 0);
+                    auto erc20Ops = erc20Accounts[0]->getOperations();
+                    EXPECT_NE(erc20Ops.size(), 0);
+                    EXPECT_NE(erc20Ops[0]->getBlockHeight().value_or(0), 0);
 
-                auto transferData = erc20Accounts[0]->getTransferToAddressData(api::BigInt::fromLong(1), "0xA26FC743509C9f6A6969aD3FE6123327a4b78069");
-                std::cout<<" Transfer Data : "<<hex::toString(transferData)<<std::endl;
+                    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
+                    std::cout << "ERC20 Operations: " << operations.size() << std::endl;
+                    EXPECT_NE(operations.size(), 0);
 
-                auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
-                std::cout << "ERC20 Operations: " << operations.size() << std::endl;
-                EXPECT_NE(operations.size(), 0);
+                    dispatcher->stop();
+                });
 
-                dispatcher->stop();
-            });
+                auto restoreKey = account->getRestoreKey();
+                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
-            auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+                dispatcher->waitUntilStopped();
 
-            dispatcher->waitUntilStopped();
+                auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Ops: " << ops.size() << std::endl;
 
-            auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-            std::cout << "Ops: " << ops.size() << std::endl;
-
-            auto block = wait(account->getLastBlock());
-            auto blockHash = block.blockHash;
+                auto block = wait(account->getLastBlock());
+                auto blockHash = block.blockHash;
+            }
         }
+    }
+    // Recover account
+    {
+        auto pool = newDefaultPool();
+        auto wallet = wait(pool->getWallet(walletName));
+        auto account = std::dynamic_pointer_cast<EthereumLikeAccount>(wait(wallet->getAccount(0)));
+        EXPECT_EQ(account->getERC20Accounts().size(), erc20Count);
     }
 }
 

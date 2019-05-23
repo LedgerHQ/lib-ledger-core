@@ -36,6 +36,7 @@
 
 #include <soci.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
+#include <api/ERC20Token.hpp>
 
 namespace ledger {
     namespace core {
@@ -52,6 +53,7 @@ namespace ledger {
             static bool queryAccount(soci::session& sql,
                                      const std::string& accountUid,
                                      EthereumLikeAccountDatabaseEntry& entry);
+            static api::ERC20Token getOrCreateERC20Token(soci::session &sql, const std::string &contractAddress);
         };
     }
 }

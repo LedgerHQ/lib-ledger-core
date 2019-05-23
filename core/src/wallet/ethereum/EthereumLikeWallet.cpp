@@ -215,12 +215,15 @@ namespace ledger {
             auto xpubPath = getAccountScheme(scheme).getPath();
             auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
-            return std::make_shared<EthereumLikeAccount>(shared_from_this(),
-                                                        entry.index,
-                                                        _explorer,
-                                                        _observer,
-                                                        _synchronizerFactory(),
-                                                        keychain);
+
+            auto account = std::make_shared<EthereumLikeAccount>(shared_from_this(),
+                                                                 entry.index,
+                                                                 _explorer,
+                                                                 _observer,
+                                                                 _synchronizerFactory(),
+                                                                 keychain);
+            account->addERC20Accounts(sql, entry.erc20Accounts);
+            return account;
         }
 
         std::shared_ptr<EthereumLikeBlockchainExplorer> EthereumLikeWallet::getBlockchainExplorer() {

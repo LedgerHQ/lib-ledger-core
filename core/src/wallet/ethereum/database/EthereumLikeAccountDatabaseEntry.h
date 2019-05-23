@@ -33,12 +33,18 @@
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNTDATABASEENTRY_H
 
 #include <string>
-
+#include <vector>
 namespace ledger {
     namespace core {
+        struct ERC20LikeAccountDatabaseEntry {
+            std::string contractAddress;
+            std::string uid;
+        };
+
         struct EthereumLikeAccountDatabaseEntry {
             int32_t index;
             std::string address;
+            std::vector<ERC20LikeAccountDatabaseEntry> erc20Accounts;
         };
     }
 }
