@@ -32,13 +32,14 @@
 
 #include <api/RippleLikeAddress.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
+#include <core/address/Address.h>
 #include <core/api/Currency.hpp>
 #include <core/utils/Option.hpp>
 #include <core/utils/optional.hpp>
 
 namespace ledger {
     namespace core {
-        class RippleLikeAddress : public api::RippleLikeAddress {
+        class RippleLikeAddress : public Address, public api::RippleLikeAddress {
         public:
             RippleLikeAddress(const ledger::core::api::Currency &currency,
                               const std::vector<uint8_t>& hash160,
@@ -49,8 +50,7 @@ namespace ledger {
             api::RippleLikeNetworkParameters getNetworkParameters() override;
             std::string toBase58() override;
 
-            optional<std::string> getDerivationPath();
-            std::string toString();
+            std::string toString() override;
 
             static std::shared_ptr<RippleLikeAddress> parse(
                 const std::string& address,
@@ -68,7 +68,6 @@ namespace ledger {
             const std::vector<uint8_t> _version;
             const std::vector<uint8_t> _hash160;
             const api::RippleLikeNetworkParameters _params;
-            const Option<std::string> _derivationPath;
         };
     }
 }

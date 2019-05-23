@@ -28,7 +28,6 @@
  *
  */
 
-
 #include <core/collections/DynamicObject.hpp>
 #include <core/collections/vector.hpp>
 #include <core/crypto/Keccak.h>
@@ -46,11 +45,10 @@ namespace ledger {
             const std::vector<uint8_t> &version,
             const Option<std::string> &derivationPath
         ) :
-            _params(getRippleLikeNetworkParameters("ripple")),
-            _derivationPath(derivationPath),
+            _params(networks::getRippleLikeNetworkParameters(currency.name)),
             _hash160(hash160),
             _version(version),
-            AbstractAddress(currency, derivationPath) {
+            Address(currency, derivationPath) {
         }
 
         std::vector<uint8_t> RippleLikeAddress::getVersion() {
@@ -73,24 +71,21 @@ namespace ledger {
             return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
         }
 
-        std::experimental::optional<std::string> RippleLikeAddress::getDerivationPath() {
-            return _derivationPath.toOptional();
-        }
-
         std::string RippleLikeAddress::toString() {
             return toBase58();
         }
 
-        std::shared_ptr<AbstractAddress>
+        std::shared_ptr<RippleLikeAddress>
         RippleLikeAddress::parse(
-            const std::string &address, const api::Currency &currency,
+            const std::string &address,
+            const api::Currency &currency,
             const Option<std::string> &derivationPath
         ) {
-            auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&]() {
+            auto result = Try<std::shared_ptr<RippleLikeAddress>>::from([&]() {
                 return fromBase58(address, currency, derivationPath);
             });
 
-            return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
+            return result.toOption().getValueOr(nullptr);
         }
 
         std::shared_ptr<RippleLikeAddress> RippleLikeAddress::fromBase58(
@@ -98,7 +93,7 @@ namespace ledger {
             const api::Currency &currency,
             const Option<std::string> &derivationPath
         ) {
-            auto& params = currency.rippleLikeNetworkParameters.value();
+            auto params = networks::getRippleLikeNetworkParameters(currency.name);
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
             config->putString("base58Dictionary", networks::RIPPLE_DIGITS);
