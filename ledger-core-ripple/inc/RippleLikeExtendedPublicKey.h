@@ -78,21 +78,13 @@ namespace ledger {
             );
 
         protected:
-            const api::RippleLikeNetworkParameters &params() const override {
-                return _currency.rippleLikeNetworkParameters.value();
-            };
+            const api::RippleLikeNetworkParameters params() const override;
 
-            const DeterministicPublicKey &getKey() const override {
-                return _key;
-            };
+            const DeterministicPublicKey& getKey() const override;
 
-            const DerivationPath &getPath() const override {
-                return _path;
-            };
+            const DerivationPath& getPath() const override;
 
-            const api::Currency &getCurrency() const override {
-                return _currency;
-            };
+            const api::Currency& getCurrency() const override;
 
         private:
             const api::Currency _currency;
