@@ -1,6 +1,6 @@
 /*
  *
- * AbstractExtendedPublicKey
+ * ExtendedPublicKey
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -46,8 +46,7 @@
 namespace ledger {
     namespace core {
         template <class NetworkParameters>
-        class AbstractExtendedPublicKey {
-
+        class ExtendedPublicKey {
         public:
             static inline DeterministicPublicKey _derive(int index, const std::vector<uint32_t>& childNums, const DeterministicPublicKey& key) {
                 if (index >= childNums.size()) {
@@ -133,10 +132,10 @@ namespace ledger {
             }
 
         protected:
-            virtual const NetworkParameters &params() const = 0;
-            virtual const DeterministicPublicKey &getKey() const = 0;
-            virtual const DerivationPath &getPath() const = 0;
-            virtual const api::Currency &getCurrency() const = 0;
+            virtual const NetworkParameters params() const = 0;
+            virtual const DeterministicPublicKey& getKey() const = 0;
+            virtual const DerivationPath& getPath() const = 0;
+            virtual const api::Currency& getCurrency() const = 0;
         };
     }
 }
