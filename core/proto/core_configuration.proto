@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ledger.core;
+
+message DatabaseConfiguration {
+    string db_name = 1;
+    string user_name = 2;
+    string password = 3;
+}
+
+message LibCoreConfigution {
+    string working_dir = 1;
+    DatabaseConfiguration database_config = 2;
+    bool enable_internal_logging = 3;
+}

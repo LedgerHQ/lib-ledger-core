@@ -1,0 +1,31 @@
+syntax = "proto3";
+package ledger.core.bitcoin;
+import "common/amount.proto";
+
+enum KeychainEngine {
+    BIP32_P2PKH = 0;
+    BIP49_P2SH = 1;
+    BIP173_P2WPKH = 2;
+    BIP173_P2WSH = 3;
+}
+
+message LedgerExplorerConfig {
+    uint32 version = 1;
+    string endpoint = 2;
+    uint32 port = 3;
+}
+
+// This values can be set at any time
+message AccountSettings {
+    string name = 1;
+    LedgerExplorerConfig explorer = 2;
+    uint32 trust_level = 3;
+    Amount dust_threshold = 4;
+}
+
+// This values can be set only at creation time
+message AccountConfiguration {
+    KeychainEngine keychain_engine = 1;
+    string xpub_path = 2;
+    AccountSettings setting = 3;
+}

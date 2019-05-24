@@ -1,0 +1,8 @@
+syntax = "proto3";
+package ledger.core;
+import "common/unit.proto"
+
+message Amount {
+    string value = 1;
+    Unit unit = 2;
+}

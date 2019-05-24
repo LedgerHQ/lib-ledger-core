@@ -1,0 +1,7 @@
+syntax = "proto3";
+package ledger.core;
+
+message Unit {
+    string name = 1;
+    int32 magnitude = 2;
+}

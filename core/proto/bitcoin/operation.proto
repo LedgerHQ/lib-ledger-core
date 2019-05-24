@@ -1,0 +1,16 @@
+syntax = "proto3";
+package ledger.core.bitcoin;
+import "common/amount.proto"
+
+
+message Operation {
+    enum OperationType {
+        SEND = 0;
+        RECEIVE = 1;
+    }
+    Amount amount = 1;
+    Amount fee = 2;
+    repeated string receivers = 3;
+    repeated string senders = 4;
+    OperationType operation_type = 5;
+}

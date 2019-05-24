@@ -1,19 +1,20 @@
 syntax = "proto3";
-package lib_core_proto;
+package ledger.core;
 
-enum LibCoreRequestType {
+enum CoreRequestType {
     GET_VERSION = 0;
-    BITCOIN_REQUEST = 1;
-    ETHEREUM_REQUEST = 2;
-    XRP_REQUEST = 3;
+    SET_CONFIGURATION = 1;
+    BITCOIN_REQUEST = 2;
+    ETHEREUM_REQUEST = 3;
+    XRP_REQUEST = 4;
 }
 
-message LibCoreRequest {
+message CoreRequest {
     LibCoreRequestType request_type = 1;
     bytes request_body = 2;
 }
 
-message LibCoreResponse {
+message CoreResponse {
     bytes response_body = 1;
     string error = 2;
 }

@@ -1,0 +1,89 @@
+syntax = "proto3";
+package ledger.core.bitcoin;
+
+import "bitcoin/account.proto";
+import "bitcoin/account_config.proto";
+import "bitcoin/currency.proto";
+import "bitcoin/wallet.proto";
+import "common/amount.proto";
+
+// GET_WALLETS
+// GetWalletRequest is empty
+message GetWalletsResponse {
+    repeated Wallet wallets = 1;
+}
+
+// CREATE_WALLET
+message CreateWalletRequest {
+    string name = 1;
+    string currency_name = 2;
+}
+
+message CreateWalletResponse {
+    Wallet wallet = 1;
+}
+
+// GET_ACCOUNTS
+message GetAccountsRequest {
+    string wallet_uid = 1;
+}
+
+message GetAccountsResponse {
+    repeated Account accounts = 1;
+}
+
+// CREATE_ACCOUNT
+message CreateAccountRequest {
+    string xpub = 1;
+    uint32 index = 2;
+    AccountConfiguration config = 3;
+}
+
+message CreateAccountResponse {
+    string Account = 1;
+}
+
+// SYNC_ACCOUNT
+message SyncAccountRequest {
+    string acc_uid = 1;
+}
+
+message SyncAccountResponse {
+    bool new_acc = 1;
+}
+
+// GET_BALANCE
+message GetBalanceRequest {
+    string acc_uid = 1;
+}
+
+message GetBalanceResponse {
+    Amount amount = 1;
+}
+
+// GET_OPERATIONS
+message GetOperationsRequest {
+    string acc_uid = 1;
+}
+
+message GetOperationsResponse {
+    repeated Operation operations = 1;
+}
+
+enum RequestType {
+    SET_ACCOUNT_SETTINGS = 0;   // send AccountSetting
+    SET_WALLET_SETTINGS = 1;    // send WalletSetting
+    SET_CURRENCY_SETTINGS = 2;  // send CurrencySetting
+    GET_WALLETS = 3;
+    CREATE_WALLET = 4;
+    GET_ACCOUNTS = 5;
+    CREATE_ACCOUNT = 6;
+    SYNC_ACCOUNT = 7;
+    GET_ACCOUNT_BALANCE = 8;
+    GET_OPERATIONS = 9;
+}
+
+message Request {
+    BitcoinLikeRequestType type = 1;
+    bytes submessage = 2;
+}
