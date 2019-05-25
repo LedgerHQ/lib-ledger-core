@@ -40,14 +40,14 @@ TezosLikeAddress = interface +c {
 
 # The xPUB definition for Tezos.
 TezosLikeExtendedPublicKey = interface +c {
-    # Derive an address from an xPUB and a path.
+	# Derive an address from an xPUB and a path.
 	derive(path: string): TezosLikeAddress;
-    # Derive a public key from an xPUB and a path.
+	# Derive a public key from an xPUB and a path.
 	derivePublicKey(path: string): binary;
-    # Derive a shorten version of a public key (SHA256 + RIPEMD160) from an xPUB and a path.
+	# Derive a shorten version of a public key (SHA256 + RIPEMD160) from an xPUB and a path.
 	deriveHash160(path: string): binary;
-    # Get the xPUB in base 58.
+	# Get the xPUB in base 58.
 	toBase58(): string;
-    # Get the root path of the xPUB.
+	# Get the root path of the xPUB.
 	getRootPath(): string;
 }

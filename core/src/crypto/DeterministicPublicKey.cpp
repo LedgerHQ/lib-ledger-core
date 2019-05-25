@@ -90,12 +90,7 @@ namespace ledger {
         }
 
         std::vector<uint8_t> DeterministicPublicKey::getPublicKeyBlake2b(bool isED25519) const {
-            auto key = _key;
-            if (!isED25519) {
-                //Remove 0x02
-                key.erase(key.begin());
-            }
-            return BLAKE::blake2b(key, 20);
+            return BLAKE::blake2b(_key, 20, !isED25519);
         }
 
         const std::vector<uint8_t>& DeterministicPublicKey::getPublicKey() const {

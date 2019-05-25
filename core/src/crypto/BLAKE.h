@@ -43,7 +43,7 @@ namespace ledger {
         public:
             static std::vector<uint8_t> blake256(const std::vector<uint8_t>& data);
             static std::vector<uint8_t> blake224(const std::vector<uint8_t>& data);
-            static std::vector<uint8_t> blake2b(const std::vector<uint8_t>& data, size_t outLength = BLAKE2B_OUTBYTES);
+            static std::vector<uint8_t> blake2b(const std::vector<uint8_t>& data, size_t outLength = BLAKE2B_OUTBYTES, size_t offset = 0);
             static std::vector<uint8_t> stringToBytesHash(const std::string& input);
             static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
         };
