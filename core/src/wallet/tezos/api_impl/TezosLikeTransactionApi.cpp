@@ -194,18 +194,18 @@ namespace ledger {
 
             // Fee
             auto bigIntFess = BigInt::fromString(_fees->toBigInt()->toString(10));
-            writer.writeByteArray(zarith::zSerialize(bigIntFess.toByteArray()));
+            writer.writeByteArray(zarith::zSerializeNumber(bigIntFess.toByteArray()));
 
             // Counter
-            writer.writeByteArray(zarith::zSerialize(_counter->toByteArray()));
+            writer.writeByteArray(zarith::zSerializeNumber(_counter->toByteArray()));
 
             // Gas Limit
             auto bigIntGasLimit = BigInt::fromString(_gasLimit->toBigInt()->toString(10));
-            writer.writeByteArray(zarith::zSerialize(bigIntGasLimit.toByteArray()));
+            writer.writeByteArray(zarith::zSerializeNumber(bigIntGasLimit.toByteArray()));
 
             // Storage Limit
             auto bigIntStorageLimit = BigInt::fromString(_storage->toBigInt()->toString(10));
-            writer.writeByteArray(zarith::zSerialize(bigIntStorageLimit.toByteArray()));
+            writer.writeByteArray(zarith::zSerializeNumber(bigIntStorageLimit.toByteArray()));
 
             switch(_type) {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
@@ -227,7 +227,7 @@ namespace ledger {
                 case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
                     // Amount
                     auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
-                    writer.writeByteArray(zarith::zSerialize(bigIntValue.toByteArray()));
+                    writer.writeByteArray(zarith::zSerializeNumber(bigIntValue.toByteArray()));
 
                     // Set Receiver
                     // Originated
@@ -246,7 +246,7 @@ namespace ledger {
                     writer.writeByte(static_cast<uint8_t >(_senderCurve));
                     writer.writeByteArray(_sender->getHash160());
                     // Balance
-                    writer.writeByteArray(zarith::zSerialize(_balance.toByteArray()));
+                    writer.writeByteArray(zarith::zSerializeNumber(_balance.toByteArray()));
                     // Is spendable ?
                     writer.writeByte(0xFF);
                     // Is delegatable ?

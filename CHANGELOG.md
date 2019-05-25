@@ -1,64 +1,55 @@
 ## 2.8.0 (on-going)
 
 ### Tezos Integration:
+
 #### Keychain:
-- Tezos key derivation is based on Edward's curve (https://github.com/satoshilabs/slips/blob/master/slip-0010.md), 
-we don't have public derivations and since Libcore does not support private ones, only derivation scheme which is supported right now is `44'/<coin_type>'/<account_index>'/<node_index>'`,
-- Hence, resulting "derived" address from a keychain is directly a hash of the public key, 
-- Used hashing algorithm is `Blake2b`,
+
+- Tezos key derivation is based on [Edward's curve](https://github.com/satoshilabs/slips/blob/master/slip-0010.md),
+so normal (public) derivations are not supported, this is why the only derivation scheme which is supported now is `44'/<coin_type>'/<account_index>'/<node_index>'`,
+- As a consequence of absence of derivation, resulting "derived" address from a keychain is a hash of the public key. 
+- Used hashing algorithm is [`Blake2b`](https://github.com/openssl/openssl/blob/master/crypto/blake2/blake2b.c).
 - We support construction of accounts from both `Secp256k1` (`Base58`) extended public keys (prefixed with `xpub`) or from `Ed25519` (`Base58`) extended public keys (prefixed with `edpk`).
-#### Wallet logic: 
-- Originated accounts are considered as sub-accounts of implicit accounts that originated them,
+
+#### Wallet logic:
+ 
+- Originated accounts are considered as sub-accounts of implicit accounts that originated them.
+
 #### Explorer:
-- The explorer used by the default (for the moment) is Tzscan (used endpoint: https://api6.tzscan.io/v3),
-- **TODO**: we still miss some endpoints or could improve some others: 
-	- Missing endpoints to : 
-		- Get storage limit,
-		- Get gas limit, 
-		- Get counter,
-		- Get and push raw transactions,
-	- Improvements:
-		- Improve call to get txs related to an address: can have an exposed call to get all types of operations at once, for the moment we have to specify type as parameter for the `GET` request,
-		- TBD: have a call to query operations from list of addresses (could be useful to sync implicit accounts and originated accounts).
+
+- The current default explorer used is Tzscan (used endpoint: https://api6.tzscan.io/v3).
+
 #### Synchronizer:
-- Synchronization of originated accounts comes right after the originator's account is synced, 
-#### Observer:
-- **TODO**: Implement WS from backend side,
+
+- Synchronization of originated accounts comes right after the originator's account is synced.
+
 #### Transactions:
-- For the moment we only support `Transaction`, `Reveal`, `Origination` and `Delegation` operations, those are the ones relevant for us,
- - Parsing and serialization of transaction is based on Zarith encoder/decoder (for more details refer to: http://tezos.gitlab.io/master/api/p2p.html#n-t 
- implementation is located here : `core/src/bytes/zarith`),
- - In Tezos, it is possible to have multiple operations in one transaction (e.g. `Reveal` + `Origination` or `Reveal` + `Transaction` ...), 
+
+- For the moment we only support `Transaction`, `Reveal`, `Origination` and `Delegation` operations, those are the ones relevant for us.
+- Parsing and serialization of transaction is based on Zarith encoder/decoder (for more details refer to: http://tezos.gitlab.io/master/api/p2p.html#n-t 
+ implementation is located here : `core/src/bytes/zarith`).
+- In Tezos, it is possible to have multiple operations in one transaction (e.g. `Reveal` + `Origination` or `Reveal` + `Transaction` ...), 
  since each operation has it's own properties (fees, gas limit, storage limit ...) that user should set, so we probably won't handle multi-operation transactions.
  This will be discussed with Libcore's users (e.g. Live team) to see if it is relevant to support multi-operation transactions.
- - **TODO**: 
- 	- Handle parsing/serialization of signed transactions,
- 	- Handle remaining types of operations,
- 	- TBD: handle multi-operation transaction,
-#### Delegation:	
-- To delegate simply build a `Delegation` transaction with address to which delegate as receiver.  
+ 	
+#### Delegation:
+	
+- To delegate simply build a `Delegation` transaction with address to which delegate as receiver.
+  
 #### Parameters:
-- BIP44 Coin type : `1729`,
+
+- BIP44 Coin type : `1729`.
 - Used address prefixes: 
-	- Implicit (prefix `tz1`): `{0x06, 0xA1, 0x9F}`,
-	- Originated (prefix `KT1`): `{0x02, 0x5A, 0x79}`,
+	- Implicit (prefix `tz1`): `{0x06, 0xA1, 0x9F}`.
+	- Originated (prefix `KT1`): `{0x02, 0x5A, 0x79}`.
 - Default explorer's endpoint: https://api6.tzscan.io/v3
+
 #### Tests:
+
 - Added tests:
-	- Address derivation: `core/test/tezos`,
-	- Zarith encoder: `core/test/bytes/zarith.cpp`,
-	- Account creation and synchronization: `core/test/integration/synchronization/tezos_synchronization.cpp`,
-	- Transaction construction: `core/test/integration/transactions/tezos_transaction_tests.cpp`,
-- TODO: 
-	- Still need to test:
-		- Broadcast of signed transactions,
-		- Test E2E, 
-#### References:
-- https://gitlab.com/tezos
-- http://tezos.gitlab.io/master/index.html
-- https://github.com/obsidiansystems/ledger-app-tezos
-- https://gitlab.com/tezos/tezos/merge_requests/994
-- https://tzscan.io/api
+	- Address derivation: `core/test/tezos`.
+	- Zarith encoder: `core/test/bytes/zarith.cpp`.
+	- Account creation and synchronization: `core/test/integration/synchronization/tezos_synchronization.cpp`.
+	- Transaction construction: `core/test/integration/transactions/tezos_transaction_tests.cpp`.
 
 ## 2.7.0 
 

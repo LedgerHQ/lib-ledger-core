@@ -54,11 +54,11 @@ namespace ledger {
             return hash;
         }
 
-        std::vector<uint8_t> BLAKE::blake2b(const std::vector<uint8_t>& data, size_t outLength) {
+        std::vector<uint8_t> BLAKE::blake2b(const std::vector<uint8_t>& data, size_t outLength, size_t offset) {
             std::vector<uint8_t> hash(outLength);
             BLAKE2B_CTX blakeState;
             BLAKE2b_Init_default(&blakeState, outLength);
-            BLAKE2b_Update(&blakeState, data.data(), data.size());
+            BLAKE2b_Update(&blakeState, data.data() + offset, (data.size() - offset));
             BLAKE2b_Final(hash.data(), &blakeState);
             return hash;
         }

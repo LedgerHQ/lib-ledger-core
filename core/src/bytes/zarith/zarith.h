@@ -52,37 +52,33 @@ namespace ledger {
              * LE:              02 db d9      00000010 11011011 11011001
              * Drop 1st bit:            (0)0000010 (1)1011011 (1)1011001  == (I)
             */
-            static std::vector<uint8_t> zSerialize(const std::vector<uint8_t> &inputData) {
-                // Reverse because result corresponds to Little Endian
-                std::vector<uint8_t> data{inputData};
-                std::reverse(data.begin(), data.end());
-
+            static std::vector<uint8_t> zSerializeNumber(const std::vector<uint8_t> &inputData) {
                 std::vector<uint8_t> result;
-                size_t id = 0, delay = 0; // delay is used when offset > 7
+                size_t id = inputData.size() - 1, delay = 0; // delay is used when offset > 7
                 uint8_t offset = 0;
-                while (id - delay < data.size()) {
-                    auto byte = data[id - delay];
+                while (id + delay >= 0 && id + delay < inputData.size()) {
+                    auto byte = inputData[id + delay];
 
                     // We shift current byte
                     byte <<= offset;
 
                     // Take shifted bits from previous byte
-                    byte |= id - delay > 0 ? data[id - delay - 1] >> (7 - (offset - 1)) : 0x00;
+                    byte |= id + delay < inputData.size() - 1 ? inputData[id + delay + 1] >> (7 - (offset - 1)) : 0x00;
 
                     // This boolean will let us know if shifting last byte of inputData
                     // will generate a new byte (with remaining shifted bytes)
-                    bool isLast = data[id - delay] == data.back();
-                    bool needAdditionalByte = isLast && data[id - delay] >> (7 - offset);
+                    bool isFirst = id + delay == 0;
+                    bool needAdditionalByte = isFirst && inputData[id + delay] >> (7 - offset);
 
                     // We set first bit to 1 to know that there is a coming byte
-                    if (!isLast || needAdditionalByte) {
+                    if (!isFirst || needAdditionalByte) {
                         byte |= 0x80;
                     }
 
                     // Push to result modified byte
                     result.push_back(byte);
                     if (needAdditionalByte) {
-                        result.push_back(data[id - delay] >> (7 - offset));
+                        result.push_back(inputData[id + delay] >> (7 - offset));
                     }
 
                     // Update offset: if offset % 7 == 0 then following byte
@@ -91,9 +87,9 @@ namespace ledger {
 
                     // If we shifted with [id/7] > 7 then we have a "delay"
                     // meaning that we should read values from "delayed" byte
-                    delay = id / 7;
+                    delay = ((inputData.size() - 1) - id) / 7;
 
-                    id++;
+                    id--;
                 }
                 return result;
             };
