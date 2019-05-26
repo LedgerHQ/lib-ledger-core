@@ -31,6 +31,7 @@
 #include "../BaseFixture.h"
 #include "../../fixtures/xtz_fixtures.h"
 #include <api/KeychainEngines.hpp>
+#include <api/TezosLikeOriginatedAccount.hpp>
 #include "transaction_test_helper.h"
 #include <utils/hex.h>
 #include <utils/DateUtils.hpp>
@@ -61,7 +62,6 @@ TEST_F(TezosMakeTransaction, CreateTx) {
         EXPECT_EQ(event->getCode(),
                   api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-        auto txBuilder = std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(account->buildTransaction());
         dispatcher->stop();
     });
 
@@ -104,6 +104,22 @@ TEST_F(TezosMakeTransaction, CreateTx) {
         EXPECT_EQ(result, false);
     }
 
+    auto originatedAccounts = account->getOriginatedAccounts();
+    EXPECT_GT(originatedAccounts.size(), 0);
+
+    auto txBuilder = std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(originatedAccounts[0]->buildTransaction());
+    txBuilder->setFees(api::Amount::fromLong(currency, 250));
+    txBuilder->setGasLimit(api::Amount::fromLong(currency, 10000));
+    txBuilder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
+    txBuilder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
+    auto originatedTx = ::wait(txBuilder->build());
+    EXPECT_EQ(originatedTx->getSender()->toBase58(), "KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd");
+    EXPECT_EQ(originatedTx->getReceiver()->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
+
+    auto serializedOriginatedTx = originatedTx->serialize();
+    auto parsedOriginatedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedOriginatedTx);
+    EXPECT_EQ(serializedOriginatedTx, parsedOriginatedTx->serialize());
+
     //Delete wallet
     auto walletCode = wait(pool->eraseDataSince(formatedDate));
     EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
@@ -111,7 +127,6 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     //Check if wallet was successfully deleted
     auto walletCount = wait(pool->getWalletCount());
     EXPECT_EQ(walletCount, 0);
-
 }
 
 TEST_F(TezosMakeTransaction, ParseSignedRawTransaction) {

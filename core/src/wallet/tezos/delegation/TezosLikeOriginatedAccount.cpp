@@ -184,5 +184,9 @@ namespace ledger {
         void TezosLikeOriginatedAccount::setPublicKey(const std::string &publicKey) {
             _publicKey = publicKey;
         }
+
+        std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeOriginatedAccount::buildTransaction() {
+            return _originatorAccount.lock()->buildTransaction(_address);
+        }
     }
 }

@@ -6,6 +6,7 @@
 #include "AmountListCallback.hpp"
 #include "Marshal.hpp"
 #include "OperationQuery.hpp"
+#include "TezosLikeTransactionBuilder.hpp"
 #include "TimePeriod.hpp"
 
 namespace djinni_generated {
@@ -91,6 +92,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeOriginatedAccount_00024C
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeOriginatedAccount>(nativeRef);
         auto r = ref->queryOperations();
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeOriginatedAccount_00024CppProxy_native_1buildTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeOriginatedAccount>(nativeRef);
+        auto r = ref->buildTransaction();
+        return ::djinni::release(::djinni_generated::TezosLikeTransactionBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
