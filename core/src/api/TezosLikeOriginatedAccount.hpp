@@ -21,6 +21,7 @@ namespace ledger { namespace core { namespace api {
 class AmountCallback;
 class AmountListCallback;
 class OperationQuery;
+class TezosLikeTransactionBuilder;
 enum class TimePeriod;
 
 /** Class representing originated accounts */
@@ -57,6 +58,9 @@ public:
 
     /** Get related operations to account */
     virtual std::shared_ptr<OperationQuery> queryOperations() = 0;
+
+    /** Get builder to construct transaction on originated account */
+    virtual std::shared_ptr<TezosLikeTransactionBuilder> buildTransaction() = 0;
 };
 
 } } }  // namespace ledger::core::api

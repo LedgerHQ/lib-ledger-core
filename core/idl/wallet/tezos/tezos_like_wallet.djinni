@@ -146,6 +146,8 @@ TezosLikeOriginatedAccount = interface +c {
 	isDelegatable(): bool;
 	# Get related operations to account
 	queryOperations(): OperationQuery;
+	# Get builder to construct transaction on originated account
+	buildTransaction(): TezosLikeTransactionBuilder;
 }
 
 TezosConfigurationDefaults = interface +c {

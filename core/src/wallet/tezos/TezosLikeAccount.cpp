@@ -65,14 +65,12 @@ namespace ledger {
                                            const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
                                            const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                                            const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
-                                           const std::shared_ptr<TezosLikeKeychain> &keychain,
-                                           const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedAccounts) : AbstractAccount(wallet, index) {
+                                           const std::shared_ptr<TezosLikeKeychain> &keychain) : AbstractAccount(wallet, index) {
             _explorer = explorer;
             _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
             _accountAddress = keychain->getAddress()->toString();
-            _originatedAccountsEntries = originatedAccounts;
         }
 
         void TezosLikeAccount::inflateOperation(Operation &out,
@@ -247,26 +245,8 @@ namespace ledger {
             }).callback(getContext(), callback);
         }
 
-        void TezosLikeAccount::recoverOriginatedAccounts() {
-            if (_originatedAccountsEntries.empty()) return;
-            // Create if needed recovered originated accounts
-            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-            auto recovered = vector::map<std::shared_ptr<api::TezosLikeOriginatedAccount>, TezosLikeOriginatedAccountDatabaseEntry>(_originatedAccountsEntries, [self] (const TezosLikeOriginatedAccountDatabaseEntry &entry) {
-                return std::make_shared<TezosLikeOriginatedAccount>(entry.uid,
-                                                                    entry.address,
-                                                                    self,
-                                                                    entry.spendable,
-                                                                    entry.delegatable,
-                                                                    entry.publicKey);
-            });
-            _originatedAccounts = vector::concat(_originatedAccounts , recovered);
-            // Empty recovered originated accounts
-            _originatedAccountsEntries.clear();
-        }
-
         std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>>
         TezosLikeAccount::getOriginatedAccounts() {
-            recoverOriginatedAccounts();
             return _originatedAccounts;
         }
 
@@ -383,7 +363,6 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EventBus> TezosLikeAccount::synchronize() {
-            recoverOriginatedAccounts();
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
                 return _currentSyncEventBus;
@@ -493,8 +472,12 @@ namespace ledger {
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction() {
+            return buildTransaction(std::dynamic_pointer_cast<TezosLikeAddress>(getKeychain()->getAddress())->toString());
+        }
+
+        std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction(const std::string &senderAddress) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-            auto buildFunction = [self](const TezosLikeTransactionBuildRequest &request,
+            auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
                                         const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::TezosLikeTransaction>> {
                 auto currency = self->getWallet()->getCurrency();
                 auto tx = std::make_shared<TezosLikeTransactionApi>(self->getWallet()->getCurrency());
@@ -502,11 +485,10 @@ namespace ledger {
                 tx->setFees(request.fees);
                 tx->setGasLimit(request.gasLimit);
                 tx->setStorage(request.storageLimit);
-                auto address = self->getKeychain()->getAddress();
-                auto accountAddress = std::dynamic_pointer_cast<TezosLikeAddress>(address);
+                auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, self->getWallet()->getCurrency());
                 tx->setSender(accountAddress);
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
-                tx->setSigningPubKey(self->getKeychain()->getPublicKey(accountAddress->toString()).getValue());
+                tx->setSigningPubKey(self->getKeychain()->getPublicKey(senderAddress).getValue());
                 tx->setType(request.type);
                 return explorer->getCounter(request.toAddress).mapPtr<api::TezosLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) {
                     tx->setCounter(nonce);
@@ -530,6 +512,18 @@ namespace ledger {
                                                                  _explorer,
                                                                  logger(),
                                                                  buildFunction);
+        }
+
+        void TezosLikeAccount::addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries) {
+            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            for (auto &originatedEntry : originatedEntries) {
+                auto newOriginatedAccount = std::make_shared<TezosLikeOriginatedAccount>(originatedEntry.uid,
+                                                                                    originatedEntry.address,
+                                                                                    self, originatedEntry.spendable,
+                                                                                    originatedEntry.delegatable,
+                                                                                    originatedEntry.publicKey);
+                _originatedAccounts.push_back(newOriginatedAccount);
+            }
         }
 
     }

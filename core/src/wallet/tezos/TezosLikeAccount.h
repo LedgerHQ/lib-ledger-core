@@ -86,8 +86,7 @@ namespace ledger {
                              const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
                              const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                              const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
-                             const std::shared_ptr<TezosLikeKeychain> &keychain,
-                             const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedAccounts = std::vector<TezosLikeOriginatedAccountDatabaseEntry>());
+                             const std::shared_ptr<TezosLikeKeychain> &keychain);
 
             void inflateOperation(Operation &out,
                                   const std::shared_ptr<const AbstractWallet> &wallet,
@@ -134,6 +133,7 @@ namespace ledger {
                                       const std::shared_ptr<api::StringCallback> &callback) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder> buildTransaction() override;
+            std::shared_ptr<api::TezosLikeTransactionBuilder> buildTransaction(const std::string &senderAddress);
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
@@ -141,9 +141,9 @@ namespace ledger {
 
             void getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override;
 
-            void recoverOriginatedAccounts();
-
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> getOriginatedAccounts() override;
+
+            void addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries);
 
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
@@ -155,7 +155,6 @@ namespace ledger {
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
-            std::vector<TezosLikeOriginatedAccountDatabaseEntry> _originatedAccountsEntries;
         };
     }
 }

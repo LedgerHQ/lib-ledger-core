@@ -100,6 +100,8 @@ namespace ledger {
 
             void setPublicKey(const std::string &publicKey);
 
+            std::shared_ptr<api::TezosLikeTransactionBuilder> buildTransaction() override;
+
         private:
             std::string _accountUid;
             std::string _address;
