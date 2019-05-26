@@ -47,12 +47,12 @@ namespace ledger {
 
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
                     " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
-                    "block.height, block.hash, block.time, block.currency_name "
+                    "block.height, block.hash, block.time, block.currency_name, "
                     "memo.data, memo.fmt, memo.ty "
                     "FROM ripple_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
                     "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
-                    "WHERE tx.hash = :hash"
+                    "WHERE tx.hash = :hash "
                     "ORDER BY memo.array_index ASC", use(hash));
 
             for (auto &row : rows) {
@@ -82,11 +82,15 @@ namespace ledger {
                 tx.block = block;
             }
 
-            tx.memos.push_back(api::RippleLikeMemo(
-                row.get<std::string>(11),
-                row.get<std::string>(12),
-                row.get<std::string>(13)
-            ));
+            if (row.get_indicator(11) != i_null &&
+                    row.get_indicator(12) != i_null &&
+                    row.get_indicator(13) != i_null) {
+                tx.memos.push_back(api::RippleLikeMemo(
+                        row.get<std::string>(11),
+                        row.get<std::string>(12),
+                        row.get<std::string>(13)
+                ));
+            }
 
             return true;
         }

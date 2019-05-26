@@ -33,6 +33,8 @@
 #include <api/RippleConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
 #include <rapidjson/document.h>
+#include <wallet/currencies.hpp>
+
 namespace ledger {
     namespace core {
         NodeRippleLikeBlockchainExplorer::NodeRippleLikeBlockchainExplorer(
@@ -65,35 +67,70 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getFees() {
+            return getServerInfo("base_fee_xrp", FieldTypes::NumberType);
+        }
+
+        Future<std::shared_ptr<BigInt>>
+        NodeRippleLikeBlockchainExplorer::getBaseReserve() {
+            return getServerInfo("reserve_base_xrp", FieldTypes::StringType);
+        }
+
+        Future<std::shared_ptr<BigInt>>
+        NodeRippleLikeBlockchainExplorer::getServerInfo(const std::string &field, FieldTypes type) {
             NodeRippleLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("fee");
+            bodyRequest.setMethod("server_info");
             auto requestBody = bodyRequest.getString();
+            bool parseNumberAsString = type == FieldTypes::StringType;
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
-                    .json().mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
+                    .json(parseNumberAsString).mapPtr<BigInt>(getContext(), [field, type](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a result field ?
                         if (!json.IsObject() || !json.HasMember("result") ||
                             !json["result"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get fees from network, no (or malformed) field \"result\" in response");
+                                                 "Failed to get base reserve from network, no (or malformed) field \"result\" in response");
                         }
 
+                        //Is there an info field ?
                         auto resultObj = json["result"].GetObject();
-                        //Is there a drops field ?
-                        if (!resultObj.HasMember("drops") || !resultObj["drops"].IsObject()) {
+                        if (!resultObj.HasMember("info") || !resultObj["info"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get fees from network, no (or malformed) field \"drops\" in response");
+                                                 "Failed to get base reserve from network, no (or malformed) field \"info\" in response");
                         }
 
-                        //Is there a base_fee field ?
-                        auto dropObj = resultObj["drops"].GetObject();
-                        if (!dropObj.HasMember("base_fee") || !dropObj["base_fee"].IsString()) {
+                        //Is there a validated_ledger field ?
+                        auto infoObj = resultObj["info"].GetObject();
+                        if (!infoObj.HasMember("validated_ledger") || !infoObj["validated_ledger"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get fees from network, no (or malformed) field \"base_fee\" in response");
+                                                 "Failed to get base reserve from network, no (or malformed) field \"validated_ledger\" in response");
                         }
 
-                        auto fees = dropObj["base_fee"].GetString();
-                        return std::make_shared<BigInt>(fees);
+                        switch (type) {
+                            case FieldTypes::StringType: {
+                                //Is there a reserve_base_xrp field ?
+                                auto reserveObj = infoObj["validated_ledger"].GetObject();
+                                if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsString()) {
+                                    throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                         fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", field));
+                                }
+
+                                auto value = reserveObj[field.c_str()].GetString();
+                                return std::make_shared<BigInt>(value);
+                            }
+                            case FieldTypes::NumberType: {
+                                //Is there a reserve_base_xrp field ?
+                                auto reserveObj = infoObj["validated_ledger"].GetObject();
+                                if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsDouble()) {
+                                    throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                         fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", field));
+                                }
+
+                                auto value = reserveObj[field.c_str()].GetDouble();
+                                return std::make_shared<BigInt>(static_cast<unsigned int>(value * pow(10, currencies::RIPPLE.units[1].numberOfDecimal)));
+                            }
+                        }
+
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Failed to get {} which has an unkown field type", field);
                     });
         }
 
