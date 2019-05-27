@@ -1,6 +1,7 @@
 @import "account.djinni"
 @import "address.djinni"
 @import "amount.djinni"
+@import "block.djinni"
 @import "configuration.djinni"
 @import "crypto.djinni"
 @import "currency.djinni"

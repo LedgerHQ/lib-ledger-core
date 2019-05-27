@@ -304,7 +304,7 @@ namespace ledger {
             return false;
         }
 
-        BigInt BigInt::pow(unsigned short p) const {
+        BigInt BigInt::pow_u(unsigned short p) const {
             BigInt result;
             bdPower(result._bigd, _bigd, p);
             result._negative = isNegative() && (p % 2 != 0 || p == 0);
@@ -367,6 +367,71 @@ namespace ledger {
             _bigd = mov._bigd;
             _negative = mov._negative;
             mov._bigd = nullptr;
+        }
+
+        std::shared_ptr<api::BigInt> BigInt::add(
+            std::shared_ptr<api::BigInt> const& i
+        ) {
+            auto result = this->operator+(*std::dynamic_pointer_cast<BigInt>(i));
+            return std::make_shared<BigInt>(result);
+        }
+
+        std::shared_ptr<api::BigInt> BigInt::subtract(
+            std::shared_ptr<api::BigInt> const& i
+        ) {
+            auto result = this->operator-(*std::dynamic_pointer_cast<BigInt>(i));
+            return std::make_shared<BigInt>(result);
+        }
+
+        std::shared_ptr<api::BigInt> BigInt::multiply(
+            std::shared_ptr<api::BigInt> const& i
+        ) {
+            auto result = this->operator*(*std::dynamic_pointer_cast<BigInt>(i));
+            return std::make_shared<BigInt>(result);
+        }
+
+        std::shared_ptr<api::BigInt> BigInt::divide(
+            std::shared_ptr<api::BigInt> const& i
+        ) {
+            auto result = this->operator/(*std::dynamic_pointer_cast<BigInt>(i));
+            return std::make_shared<BigInt>(result);
+        }
+
+        std::vector<std::shared_ptr<api::BigInt>> BigInt::divideAndRemainder(
+            std::shared_ptr<api::BigInt> const& i
+        ) {
+            auto res1 = std::make_shared<BigInt>(this->operator/(*std::dynamic_pointer_cast<BigInt>(i)));
+            auto res2 = std::make_shared<BigInt>(this->operator+(*std::dynamic_pointer_cast<BigInt>(i)));
+            return std::vector<std::shared_ptr<api::BigInt>>({res1, res2});
+        }
+
+        std::shared_ptr<api::BigInt> BigInt::pow(int32_t exponent) {
+            BigInt x = pow_u(static_cast<unsigned short>(exponent));
+            return std::make_shared<BigInt>(x);
+        }
+
+        std::string BigInt::toDecimalString(
+            int32_t precision,
+            std::string const& decimalSeparator,
+            std::string const& thousandSeparator
+        ) {
+            return "";
+        }
+
+        int32_t BigInt::intValue() {
+            return toInt();
+        }
+
+        int32_t BigInt::compare(std::shared_ptr<api::BigInt> const& i) {
+            return compare(*std::dynamic_pointer_cast<BigInt>(i));
+        }
+
+        std::string BigInt::toString(int32_t radix) {
+            if (radix == 10) {
+                return toString();
+            } else {
+                return toHexString();
+            }
         }
     }
 }
