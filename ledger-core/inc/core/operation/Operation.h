@@ -37,10 +37,10 @@
 #include <string>
 #include <vector>
 
-#include <core/api/Block.h>
+#include <core/api/Block.hpp>
 #include <core/api/Operation.hpp>
 #include <core/api/OperationType.hpp>
-#include <core/api/TrustIndicator.h>
+#include <core/api/TrustIndicator.hpp>
 #include <core/math/BigInt.h>
 #include <core/utils/Option.hpp>
 
@@ -55,10 +55,10 @@ namespace ledger {
             std::vector<std::string> recipients;
             BigInt amount;
             Option<BigInt> fees;
-            Option<Block> block;
+            Option<api::Block> block;
             std::string currencyName;
             api::OperationType type;
-            std::shared_ptr<TrustIndicator> trust;
+            std::shared_ptr<api::TrustIndicator> trust;
 
             Operation() = default;
             virtual ~Operation() = default;

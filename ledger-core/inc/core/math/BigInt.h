@@ -43,6 +43,8 @@
 #include <vector>
 #include <bigd.h>
 #include <memory>
+
+#include <core/api/BigInt.hpp>
 #include <core/utils/endian.h>
 
 namespace ledger {
@@ -51,22 +53,25 @@ namespace ledger {
          * Helper class used to deal with really big integers.
          * @headerfile BigInt.h <ledger/core/math/BigInt.h>
          */
-        class BigInt {
-
+        class BigInt : public api::BigInt {
         public:
             static LIBCORE_EXPORT const BigInt ZERO;
             static LIBCORE_EXPORT const BigInt ONE;
             static LIBCORE_EXPORT const BigInt TEN;
+
             typedef unsigned int SimpleInt;
             typedef unsigned long DoubleInt;
+
             /**
              * Available digits for conversion to and from strings.
              */
             static LIBCORE_EXPORT const std::string DIGITS;
+
             /**
              * The maximum radix available for conversion to and from strings.
              */
             static LIBCORE_EXPORT const int MIN_RADIX;
+
             /**
              * The minimum radix available for conversion to and from strings.
              */
@@ -78,17 +83,20 @@ namespace ledger {
              * @return An instance of BigInt
              */
             static LIBCORE_EXPORT BigInt* from_hex(const std::string& str);
+
             /**
             * Creates a new BigInt from the given hexadecimal encoded string.
             * @param str The number encoded in hexadecimal (e.g. "E0A1B3")
             */
             static LIBCORE_EXPORT BigInt fromHex(const std::string& str);
+
             /**
              * Creates a new BigInt from the given decimal encoded string.
              * @param str The number encoded in decimal (e.g. "125")
              * @return
              */
             static LIBCORE_EXPORT BigInt* from_dec(const std::string& str);
+
             /**
             * Creates a new BigInt from the given decimal encoded string.
             * @param str The number encoded in decimal (e.g. "125")
@@ -104,9 +112,6 @@ namespace ledger {
               result.assignScalar<T>(value);
               return result;
             }
-
-        private:
-            BigInt(const std::string& str, int radix);
 
         public:
             BigInt();
@@ -132,12 +137,15 @@ namespace ledger {
             explicit BigInt(unsigned int value);
             explicit BigInt(unsigned long long value);
             explicit BigInt(int64_t value);
+
             /**
              * Initializes a new BigInt with the given string representation.
              * @param str
              * @return
              */
             BigInt(const std::string& str);
+
+            virtual ~BigInt();
 
             /**
              * Converts the BigInt to int
@@ -196,7 +204,7 @@ namespace ledger {
 
             int compare(const BigInt&) const;
 
-            BigInt pow(unsigned short p) const;
+            BigInt pow_u(unsigned short p) const;
 
             unsigned long getBitSize() const;
             bool isNegative() const;
@@ -216,9 +224,30 @@ namespace ledger {
                 return *this;
             }
 
-            virtual ~BigInt();
+            // API implementation
+            std::shared_ptr<ledger::core::api::BigInt> add(std::shared_ptr<ledger::core::api::BigInt> const& i) override;
+            std::shared_ptr<ledger::core::api::BigInt> subtract(std::shared_ptr<ledger::core::api::BigInt> const& i) override;
+            std::shared_ptr<ledger::core::api::BigInt> multiply(std::shared_ptr<ledger::core::api::BigInt> const& i) override;
+            std::shared_ptr<ledger::core::api::BigInt> divide(std::shared_ptr<ledger::core::api::BigInt> const& i) override;
+            std::vector<std::shared_ptr<ledger::core::api::BigInt>> divideAndRemainder(std::shared_ptr<ledger::core::api::BigInt> const& i) override;
+
+            std::shared_ptr<ledger::core::api::BigInt> pow(int32_t exponent) override;
+
+            std::string toDecimalString(
+                int32_t precision,
+                std::string const& decimalSeparator,
+                std::string const& thousandSeparator
+            ) override;
+
+            int32_t intValue() override;
+
+            int32_t compare(std::shared_ptr<ledger::core::api::BigInt> const& i) override;
+
+            std::string toString(int32_t radix) override;
 
         private:
+            BigInt(const std::string& str, int radix);
+
             BIGD _bigd;
             bool _negative;
         };
