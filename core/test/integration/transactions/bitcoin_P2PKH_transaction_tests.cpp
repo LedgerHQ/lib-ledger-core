@@ -199,9 +199,16 @@ TEST_F(ZCASHMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 
 TEST_F(ZCASHMakeP2PKHTransaction, ParseSignedRawTransaction) {
     //Tx hash 4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70
+    auto hash = "4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70";
     auto strTx = "0100000001f8355b0761296d28e29bd39833fe8c6558120037498dfdedabf41890e65c68dc010000006b483045022100a13ae06b36e3d4e90c7b9265bfff296b98d79c9970d7ef4964eb26d23ab44a5f022024155e86bde7a2322b1395d904c5fa007a925bc02f7d60623bde56a8b09bbb680121032d1d22333719a013313e538557971639f8c167fa5be8089dd2e996d704fb580cffffffff02a0860100000000001976a91407c4358a95e07e570d67857e12086fd6b1ee873688acf24f1600000000001976a9143c1a6afff1941911e0b524ffcd2a15de6e68b6d188ac00000000";
     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(currency, hex::toByteArray(strTx), 0);
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+    EXPECT_EQ(tx->getHash(), hash);
+    EXPECT_GT(tx->getInputs().size(), 0);
+    EXPECT_EQ(tx->getInputs()[0]->getAddress().value_or(""), "t1MepQJABxoWarqMvgBHGiFprtuvA47Hiv8");
+    EXPECT_GT(tx->getOutputs().size(), 0);
+    EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), "t1JafnXdJDUUjLnTfbvuEBdCARKLvqmj5jb");
+    EXPECT_EQ(tx->getOutputs()[1]->getAddress().value_or(""), "t1PMQCQ36ccBJeEdFXJh4nnU34rPyDimANE");
 }
 
 //TODO: activate when adding expiryHeight and extraData to serialized transaction (refer to BitcoinLikeTransactionApi::serializeEpilogue)

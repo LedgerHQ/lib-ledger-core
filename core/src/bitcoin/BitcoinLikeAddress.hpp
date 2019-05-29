@@ -77,6 +77,15 @@ namespace ledger {
                                              const std::string &derivationPath,
                                              const std::string &keychainEngine);
 
+            static std::vector<uint8_t> fromPublicKeyToHash160(const std::vector<uint8_t> &pubKey,
+                                                               const std::vector<uint8_t> &pubKeyHash160,
+                                                               const api::Currency &currency,
+                                                               const std::string &keychainEngine);
+
+            static std::vector<uint8_t> fromPublicKeyToHash160(const std::vector<uint8_t> &pubKey,
+                                                               const api::Currency &currency,
+                                                               const std::string &keychainEngine);
+
 
         private:
             const std::vector<uint8_t> _hash160;

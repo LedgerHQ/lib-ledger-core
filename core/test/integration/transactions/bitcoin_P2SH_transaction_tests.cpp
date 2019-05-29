@@ -88,9 +88,16 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithWipeToAddress) {
 
 TEST_F(BitcoinMakeP2SHTransaction, ParseSignedRawTransaction) {
     //Tx hash 93ae1990d10745e3ab4bf742d4b06bd513e7a26384617a17525851e4e3ed7038
+    auto hash = "93ae1990d10745e3ab4bf742d4b06bd513e7a26384617a17525851e4e3ed7038";
     auto strTx = "0100000000010182815d16259062c4bc08c4fb3aa985444b7208197cf676212f1b3da93782e19f0100000017160014e4fae08faaa8469c5756fda7fbfde46922a4e7b2ffffffff0280f0fa020000000017a91428242bc4e7266060e084fab55fb70916b605d0b3870f4a9b040000000017a91401445204b7063c76c702501899334d6f7499806d870248304502210085a85a2dec818ece4748c0c9d71640a5703a5eec9112dd58183b048c6a9961cf02201dd0beabc1c3500f75849a046deab9e2d2ce388fff6cb92693508f5ea406471d012103d2f424cd1f60e96241a968b9da3c3f6b780f90538bdf306350b9607c279ad48600000000";
     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(currency, hex::toByteArray(strTx), 0);
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+    EXPECT_EQ(tx->getHash(), hash);
+    EXPECT_GT(tx->getInputs().size(), 0);
+    EXPECT_EQ(tx->getInputs()[0]->getAddress().value_or(""), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+    EXPECT_GT(tx->getOutputs().size(), 0);
+    EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+    EXPECT_EQ(tx->getOutputs()[1]->getAddress().value_or(""), "2MsMvWTbPMg4eiSudDa5i7y8XNC8fLCok3c");
 }
 
 

@@ -33,7 +33,7 @@
 #include "../BaseFixture.h"
 #include <set>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-
+#include <api/KeychainEngines.hpp>
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 };
@@ -41,14 +41,16 @@ class BitcoinLikeWalletSynchronization : public BaseFixture {
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool();
     {
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
-                                              api::DynamicObject::newInstance()));
+                                              configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
+            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2WPKH_MEDIUM_XPUB_INFO);
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 if (event->getCode() == api::EventCode::NEW_OPERATION) {
