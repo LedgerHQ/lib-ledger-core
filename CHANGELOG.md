@@ -1,4 +1,8 @@
-## 2.8.0 (on-going)
+## 3.0.0 (on-going)
+
+- Use direct call to `balanceOf` on ERC20 to get balance in tokens of an account.
+
+## 2.8.0
 
 ### Tezos Integration:
 

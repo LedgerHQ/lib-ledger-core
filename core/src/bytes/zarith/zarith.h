@@ -54,47 +54,53 @@ namespace ledger {
             */
             static std::vector<uint8_t> zSerializeNumber(const std::vector<uint8_t> &inputData) {
                 std::vector<uint8_t> result;
-                size_t id = inputData.size() - 1, delay = 0; // delay is used when offset > 7
-                uint8_t offset = 0;
-                while (id + delay >= 0 && id + delay < inputData.size()) {
-                    auto byte = inputData[id + delay];
+                size_t id = inputData.size() - 1;
+                uint32_t offset = 0;
+                bool needAdditionalByte = false;
+                while (id >= 0 && id < inputData.size()) {
+                    auto byte = inputData[id];
 
                     // We shift current byte
                     byte <<= offset;
 
                     // Take shifted bits from previous byte
-                    byte |= id + delay < inputData.size() - 1 ? inputData[id + delay + 1] >> (7 - (offset - 1)) : 0x00;
+                    byte |= id < inputData.size() - 1 ? inputData[id + 1] >> (7 - (offset - 1)) : 0x00;
 
                     // This boolean will let us know if shifting last byte of inputData
                     // will generate a new byte (with remaining shifted bytes)
-                    bool isFirst = id + delay == 0;
-                    bool needAdditionalByte = isFirst && inputData[id + delay] >> (7 - offset);
+                    bool isFirst = id == 0;
+                    needAdditionalByte = isFirst && inputData[id] >> (7 - offset);
 
                     // We set first bit to 1 to know that there is a coming byte
-                    if (!isFirst || needAdditionalByte) {
-                        byte |= 0x80;
-                    }
+                    byte |= 0x80;
 
                     // Push to result modified byte
                     result.push_back(byte);
-                    if (needAdditionalByte) {
-                        result.push_back(inputData[id + delay] >> (7 - offset));
+
+                    // Update offset
+                    offset = (offset + 1) % 8;
+
+                    // Update index if not a period or first iteration
+                    if (offset != 0) {
+                        id --;
                     }
-
-                    // Update offset: if offset % 7 == 0 then following byte
-                    // is not shifted i.e. offset = 0
-                    offset = offset > 0 && !(offset % 7) ? 0 : offset + 1;
-
-                    // If we shifted with [id/7] > 7 then we have a "delay"
-                    // meaning that we should read values from "delayed" byte
-                    delay = ((inputData.size() - 1) - id) / 7;
-
-                    id--;
                 }
+
+                if (needAdditionalByte) {
+                    if (offset != 0) {
+                        id ++;
+                    }
+                    offset = (offset - 1) % 8;
+                    result.push_back(inputData[id] >> (7 - offset));
+                } else {
+                    result[result.size() - 1] &= 0x7F;
+                }
+
+
                 return result;
             };
 
-            static std::vector<uint8_t> zParse(const std::vector<uint8_t> &inputData, bool forceContinue = false) {
+            static std::vector<uint8_t> zParse(const std::vector<uint8_t> &inputData) {
                 // Reverse because result corresponds to Little Endian
                 BytesReader bytesReader(inputData);
                 return zParse(bytesReader);
@@ -102,7 +108,7 @@ namespace ledger {
 
             // The mode where we force parser to continue parsing even when finding
             // a null bit was made just for testing purpose
-            static  std::vector<uint8_t> zParse(BytesReader &reader, bool forceContinue = false) {
+            static  std::vector<uint8_t> zParse(BytesReader &reader) {
                 // We get bytes to parse without altering
                 // bytes reader's state
                 auto cursor = reader.getCursor();
@@ -115,14 +121,14 @@ namespace ledger {
                 uint8_t offset = 0;
                 while (id + delay < data.size()) {
                     auto byte = data[id + delay];
-                    auto isLast = byte == data.back();
+                    auto isLast = id + delay == data.size() - 1;
 
                     // We should stop reading if most significant bit is null
-                    auto shouldStop = !forceContinue && !(byte & 0x80);
+                    auto shouldStop = !(byte & 0x80);
 
                     // Mask last bit, which is here just to let us
                     // know if there is more data to read
-                    byte &= 0x7F;
+                    byte &= data[id + delay] & 0x7F;
 
                     // Shift to retrieve only bits of original byte
                     byte >>= offset;

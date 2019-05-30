@@ -56,7 +56,8 @@ namespace ledger {
                                          const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                                          const std::shared_ptr<TezosLikeKeychainFactory> &keychainFactory,
                                          const TezosLikeAccountSynchronizerFactory &synchronizer,
-                                         const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
+                                         const std::shared_ptr<WalletPool> &pool,
+                                         const api::Currency &network,
                                          const std::shared_ptr<DynamicObject> &configuration,
                                          const DerivationScheme &scheme
         )

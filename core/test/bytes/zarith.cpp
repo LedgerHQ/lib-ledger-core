@@ -72,7 +72,6 @@ TEST(ZarithTests, ParseCases) {
     res = zarith::zParse(hex::toByteArray("8094ebdc03"));
     EXPECT_EQ(hex::toString(res), "3b9aca00");
 
-
     res = zarith::zSerializeNumber(hex::toByteArray("add9"));
     EXPECT_EQ(hex::toString(res), "d9db02");
 
@@ -87,4 +86,16 @@ TEST(ZarithTests, ParseCases) {
 
     res = zarith::zParse(hex::toByteArray("d84f9502"));
     EXPECT_EQ(hex::toString(res), "27d8");
+
+    res = zarith::zSerializeNumber(hex::toByteArray("ff00000000000001"));
+    EXPECT_EQ(hex::toString(res), "8180808080808080ff01");
+
+    res = zarith::zParse(hex::toByteArray("8180808080808080ff01"));
+    EXPECT_EQ(hex::toString(res), "ff00000000000001");
+
+    res = zarith::zSerializeNumber(hex::toByteArray("0100ff000000000000000000000001"));
+    EXPECT_EQ(hex::toString(res), "81808080808080808080808080e0bf8001");
+
+    res = zarith::zParse(hex::toByteArray("81808080808080808080808080e0bf8001"));
+    EXPECT_EQ(hex::toString(res), "0100ff000000000000000000000001");
 }
