@@ -101,7 +101,7 @@ namespace ledger {
                 putBlock(sql, transaction.block.getValue());
             }
 
-            int result = FLAG_TRANSACTION_UPDATED;
+            int result = FLAG_TRANSACTION_IGNORED;
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
@@ -131,7 +131,7 @@ namespace ledger {
                     TezosLikeAccountDatabaseHelper::addOriginatedAccountOperation(sql, operation.uid, tezosTxUid, originatedAccountUid);
                     emitNewOperationEvent(operation);
                 }
-                result = FLAG_NEW_TRANSACTION;
+                result = static_cast<int>(transaction.type);
                 return result;
             }
 
@@ -145,7 +145,7 @@ namespace ledger {
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                     updateOriginatedAccounts(sql, operation);
                 }
-                result = FLAG_NEW_TRANSACTION;
+                result = static_cast<int>(transaction.type);
             }
 
             if (_accountAddress == transaction.receiver) {
@@ -158,7 +158,7 @@ namespace ledger {
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                     updateOriginatedAccounts(sql, operation);
                 }
-                result = FLAG_NEW_TRANSACTION;
+                result = static_cast<int>(transaction.type);
             }
 
             return result;
