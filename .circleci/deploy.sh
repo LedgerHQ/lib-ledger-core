@@ -5,4 +5,8 @@ if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" ==
 	aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ --acl public-read && \
 	aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION;
 	cd -
+	# Publish JAR
+	cd build-jar
+	export JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
+	sbt publish
 fi

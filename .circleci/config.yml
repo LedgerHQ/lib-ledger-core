@@ -47,6 +47,10 @@ jobs:
           command: |
             . .circleci/copy_artifacts.sh target_jni
       - run:
+          name: Publish_jar
+          command: |
+            . .circleci/prepare_jar.sh
+      - run:
           name: Setup NDK
           command: |
             apt-get install -y zip unzip
@@ -150,6 +154,10 @@ jobs:
           name: Copy_Artifacts_jni
           command: |
             . .circleci/copy_artifacts.sh target_jni
+      - run:
+          name: Publish_jar
+          command: |
+            . .circleci/prepare_jar.sh
       - run:
           name: Build_Library_ios_x86
           command: |
