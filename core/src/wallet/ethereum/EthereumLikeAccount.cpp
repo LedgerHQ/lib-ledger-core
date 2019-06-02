@@ -455,25 +455,25 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder> EthereumLikeAccount::buildTransaction() {
-
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
-
-                auto getTransaction = [self] (const std::string& hash) -> FuturePtr<EthereumLikeBlockchainExplorerTransaction> {
-                    return self->getTransaction(hash);
-                };
-
                 auto buildFunction = [self] (const EthereumLikeTransactionBuildRequest& request, const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::EthereumLikeTransaction>> {
-                    auto tx = std::make_shared<EthereumLikeTransactionApi>(self->getWallet()->getCurrency());
-                    tx->setValue(request.value);
-                    tx->setData(request.inputData);
-                    tx->setGasLimit(request.gasLimit);
-                    tx->setGasPrice(request.gasPrice);
-                    tx->setReceiver(request.toAddress);
-                    auto accountAddress = self->getKeychain()->getAddress()->toString();
-                    tx->setSender(accountAddress);
-                    return explorer->getNonce(accountAddress).map<std::shared_ptr<api::EthereumLikeTransaction>>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) -> std::shared_ptr<api::EthereumLikeTransaction> {
-                        tx->setNonce(nonce);
-                        return tx;
+                    // Check if balance is sufficient
+                    return self->getBalance().flatMapPtr<api::EthereumLikeTransaction>(self->getContext(), [self, request, explorer](const std::shared_ptr<Amount> &balance) {
+                        if (BigInt(balance->toString()) < *request.value + *(request.gasLimit) * *(request.gasPrice)) {
+                            throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+                        }
+                        auto tx = std::make_shared<EthereumLikeTransactionApi>(self->getWallet()->getCurrency());
+                        tx->setValue(request.value);
+                        tx->setData(request.inputData);
+                        tx->setGasLimit(request.gasLimit);
+                        tx->setGasPrice(request.gasPrice);
+                        tx->setReceiver(request.toAddress);
+                        auto accountAddress = self->getKeychain()->getAddress()->toString();
+                        tx->setSender(accountAddress);
+                        return explorer->getNonce(accountAddress).map<std::shared_ptr<api::EthereumLikeTransaction>>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) -> std::shared_ptr<api::EthereumLikeTransaction> {
+                            tx->setNonce(nonce);
+                            return tx;
+                        });
                     });
                 };
 
