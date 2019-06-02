@@ -2,7 +2,7 @@ name := "scala-lib-core"
 
 organization := "co.ledger"
 
-version := "0.1.0-SNAPSHOT"
+version := ""
 
 scalaVersion := "2.12.8"
 

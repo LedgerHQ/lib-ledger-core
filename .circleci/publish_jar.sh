@@ -18,6 +18,12 @@ cp .circleci/build.sbt $JAR_BUILD_DIR
 
 cd $JAR_BUILD_DIR
 if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ]; then
+	if [[ $LIB_VERSION == *"-rc-"* ]]; then
+		JAR_VERSION="$LIB_VERSION"-SNAPSHOT
+	else
+		JAR_VERSION=$LIB_VERSION
+	fi
+	sed "s/version := \"\"/version := \""$JAR_VERSION"\"/" build.sbt
 	sbt publish
 fi
 
