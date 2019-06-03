@@ -77,6 +77,10 @@ jobs:
           name: Copy_Artifacts_Android_arm64-v8a
           command: |
             . .circleci/copy_artifacts.sh android arm64-v8a
+      - persist_to_workspace:
+          root: ~/lib-ledger-core-artifacts
+          paths:
+            - linux/jni/libledger-core_jni.so
       - deploy:
           name: Deploy_Artifacts
           command: |
@@ -174,6 +178,10 @@ jobs:
           name: Copy_Artifacts_ios_arm64
           command: |
             . .circleci/copy_artifacts.sh ios arm64
+      - persist_to_workspace:
+          root: ~/lib-ledger-core-artifacts
+          paths:
+            - macos/jni/libledger-core_jni.dylib
       - deploy:
           name: Deploy_Artifacts
           command: |
@@ -206,6 +214,26 @@ jobs:
           command: |
               cd ../lib-ledger-core-build
               ctest
+  publish_jar:
+    macos:
+      xcode: "10.0.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+    - attach_workspace:
+        at: ~/lib-ledger-core-artifacts
+    - checkout
+    - run:
+        name: Setup
+        command: |
+          . .circleci/setup_macos.sh Release
+    - run:
+        name: Submodule_Initialization
+        command: |
+          . .circleci/init_submodules.sh
+    - run:
+        name: Publish_jar
+        command: |
+          . .circleci/publish_jar.sh
   generate_doc:
     docker:
       - image: circleci/buildpack-deps:stretch
@@ -252,6 +280,13 @@ workflows:
               only: /.*/
       - build_linux_debug
       - build_macos_debug
+      - publish_jar:
+          requires:
+            - build_linux_release
+            - build_macos_release
+          filters:
+            tags:
+              only: /.*/
   documentation:
     jobs:
       - generate_doc:

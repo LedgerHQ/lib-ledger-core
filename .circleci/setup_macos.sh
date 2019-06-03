@@ -20,6 +20,9 @@ export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
 if [ "$BUILD_CONFIG" == "Release" ]; then
 	brew install awscli
+	echo "========> Install sbt"
+	brew install sbt
+	sbt sbtVersion
 fi
 
 echo "========> Install C++ dependencies"
