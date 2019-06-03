@@ -1,6 +1,7 @@
 @import "account.djinni"
 @import "block.djinni"
 @import "currency.djinni"
+@import "dynamic.djinni"
 @import "error.djinni"
 @import "logger.djinni"
 @import "preferences.djinni"
@@ -109,4 +110,7 @@ Wallet = interface +c {
         date: date,
         callback: callback2<void, optional<ErrorCode>, optional<Error>>
     );
+
+    # Return wallet's configuration
+    getConfiguration(): DynamicObject;
 }

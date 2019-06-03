@@ -128,6 +128,7 @@ target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURC
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/leveldb/include")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/rapidjson/include")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/secp256k1")
+target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/soci/core")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/spdlog/include")
 
 install(TARGETS ledger-core-ripple DESTINATION "lib")
