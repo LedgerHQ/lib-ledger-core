@@ -64,6 +64,11 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     builder->setGasLimit(api::Amount::fromLong(currency, 20000000));
     builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xfb98bdd04d82648f25e67041d6e27a866bec0b47");
     auto f = builder->build();
+    EXPECT_THROW(::wait(f), ledger::core::Exception);
+    builder->setGasPrice(api::Amount::fromLong(currency, 0));
+    builder->setGasLimit(api::Amount::fromLong(currency, 0));
+    builder->sendToAddress(api::Amount::fromLong(currency, 0), "0xfb98bdd04d82648f25e67041d6e27a866bec0b47");
+    f = builder->build();
     auto tx = ::wait(f);
     auto addressList = ::wait(account->getFreshPublicAddresses());
     EXPECT_EQ(addressList.size(), 1);
