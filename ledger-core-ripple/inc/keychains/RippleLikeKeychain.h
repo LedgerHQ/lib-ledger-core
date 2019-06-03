@@ -32,15 +32,16 @@
 
 #include <string>
 #include <vector>
+
+#include <api/RippleLikeExtendedPublicKey.hpp>
+#include <core/api/AccountCreationInfo.hpp>
+#include <core/api/Configuration.hpp>
+#include <core/api/Currency.hpp>
+#include <core/api/DynamicObject.hpp>
+#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <core/preferences/Preferences.hpp>
 #include <core/utils/DerivationScheme.hpp>
 #include <core/utils/Option.hpp>
-#include <core/preferences/Preferences.hpp>
-#include <core/api/Configuration.hpp>
-#include <core/api/DynamicObject.hpp>
-#include <core/api/Currency.hpp>
-#include <core/api/AccountCreationInfo.hpp>
-#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
-#include <api/RippleLikeExtendedPublicKey.hpp>
 #include <RippleLikeAddress.h>
 
 namespace ledger {
