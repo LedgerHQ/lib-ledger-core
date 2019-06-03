@@ -1,6 +1,6 @@
 /*
  *
- * RippleLikeBlockApi
+ * RippleLikeBlock
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -35,9 +35,9 @@
 
 namespace ledger {
     namespace core {
-        class RippleLikeBlockApi : public api::RippleLikeBlock {
+        class RippleLikeBlock : public api::RippleLikeBlock {
         public:
-            RippleLikeBlockApi(const api::Block& block);
+            RippleLikeBlock(const api::Block& block);
 
             std::string getHash() override;
 

@@ -1,6 +1,6 @@
 /*
  *
- * RippleLikeBlockApi
+ * RippleLikeBlock
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -32,19 +32,19 @@
 
 namespace ledger {
     namespace core {
-        RippleLikeBlockApi::RippleLikeBlockApi(const api::Block& block) {
+        RippleLikeBlock::RippleLikeBlock(const api::Block& block) {
             _block = block;
         }
 
-        std::string RippleLikeBlockApi::getHash() {
+        std::string RippleLikeBlock::getHash() {
             return _block.blockHash;
         }
 
-        int64_t RippleLikeBlockApi::getHeight() {
+        int64_t RippleLikeBlock::getHeight() {
             return _block.height;
         }
 
-        std::chrono::system_clock::time_point RippleLikeBlockApi::getTime() {
+        std::chrono::system_clock::time_point RippleLikeBlock::getTime() {
             return _block.time;
         }
     }
