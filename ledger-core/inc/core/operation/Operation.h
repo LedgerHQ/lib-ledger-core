@@ -46,7 +46,31 @@
 
 namespace ledger {
     namespace core {
-        struct Operation {
+        class AbstractAccount;
+
+        struct Operation : api::Operation, std::enable_shared_from_this<Operation> {
+            Operation() = default;
+            Operation(std::shared_ptr<AbstractAccount> const& account);
+
+            virtual ~Operation() = default;
+
+            virtual void refreshUid() = 0;
+
+            std::string getUid() override;
+            int32_t getAccountIndex() override;
+            api::OperationType getOperationType() override;
+            std::chrono::system_clock::time_point getDate() override;
+            std::vector<std::string> getSenders() override;
+            std::vector<std::string> getRecipients() override;
+            std::shared_ptr<api::Amount> getAmount() override;
+            std::shared_ptr<api::Amount> getFees() override;
+            std::shared_ptr<api::Preferences> getPreferences() override;
+            std::shared_ptr<api::TrustIndicator> getTrust() override;
+            optional<int64_t> getBlockHeight() override;
+            std::shared_ptr<AbstractAccount> const& getAccount() const;
+
+            api::Currency getCurrency() override;
+
             std::string uid;
             std::string accountUid;
             std::string walletUid;
@@ -59,11 +83,7 @@ namespace ledger {
             std::string currencyName;
             api::OperationType type;
             std::shared_ptr<api::TrustIndicator> trust;
-
-            Operation() = default;
-            virtual ~Operation() = default;
-
-            virtual void refreshUid() = 0;
+            std::shared_ptr<AbstractAccount> _account;
         };
     }
 }
