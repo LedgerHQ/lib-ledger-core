@@ -34,7 +34,7 @@ if [ "$TARGET" == "ios" ]; then
 		PATH_TO_LIB=../lib-ledger-core-build/core/src/Release-iphonesimulator
 	fi
 elif [ "$TARGET" == "android" ]; then
-	if [ "$ARCH" == "armeabi-v7a" -o "$ARCH" == "arm64-v8a" ]; then
+	if [ "$ARCH" == "armeabi-v7a" -o "$ARCH" == "arm64-v8a" -o "$ARCH" == "x86_64" ]; then
 		export BUILD_TYPE=android/${ARCH}
 	else
 		export BUILD_TYPE=android/x86
