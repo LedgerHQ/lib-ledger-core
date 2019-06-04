@@ -70,6 +70,12 @@ message GetOperationsResponse {
     repeated Operation operations = 1;
 }
 
+message SetAccountSettingsRequest {
+    string acc_uid = 1;
+    AccountSetting settings = 2;
+}
+
+
 enum RequestType {
     SET_ACCOUNT_SETTINGS = 0;   // send AccountSetting
     SET_WALLET_SETTINGS = 1;    // send WalletSetting
