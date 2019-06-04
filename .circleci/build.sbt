@@ -2,7 +2,7 @@ name := "scala-lib-core"
 
 organization := "co.ledger"
 
-version := ""
+version := sys.env.getOrElse("JAR_VERSION", "")
 
 scalaVersion := "2.12.8"
 
