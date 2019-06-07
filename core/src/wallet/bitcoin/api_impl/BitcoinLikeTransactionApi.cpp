@@ -36,6 +36,7 @@
 #include <wallet/bitcoin/scripts/BitcoinLikeScript.h>
 #include <wallet/bitcoin/networks.hpp>
 #include <crypto/HASH160.hpp>
+#include <crypto/SHA512.hpp>
 #include <math/Base58.hpp>
 #include <api/KeychainEngines.hpp>
 
@@ -256,6 +257,11 @@ namespace ledger {
             return *this;
         }
 
+        BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setHash(const std::string &hash) {
+            _hash = hash;
+            return *this;
+        }
+
         std::vector<uint8_t> BitcoinLikeTransactionApi::serializeOutputs() {
             BytesWriter writer;
             serializeOutputs(writer);
@@ -452,6 +458,7 @@ namespace ledger {
             // Parse segwit marker and flag
             bool isSegwit = false;
             auto marker = reader.peek();
+            auto offsetToMarker = reader.getCursor();
             if (marker == 0x00) {
                 isSegwit = true;
                 marker = reader.readNextByte();
@@ -517,7 +524,7 @@ namespace ledger {
                         } else {
                             auto parsedAddress = parsedScript.getValue().parseAddress(currency);
                             if (parsedAddress.hasValue()) {
-                                address = parsedAddress.getValue().toBase58();
+                                address = parsedAddress.getValue().toString();
                             }
                             output.script = hex::toString(parsedScript.getValue().serialize());
                         }
@@ -527,8 +534,7 @@ namespace ledger {
                 output.address = address;
                 output.transactionHash = previousTxHash;
                 output.index = outputIndex;
-                preparedInputs.emplace_back(
-                        BitcoinLikePreparedInput(sequence, address, previousTxHash, outputIndex, pubKeys, output));
+                preparedInputs.emplace_back(BitcoinLikePreparedInput(sequence, address, previousTxHash, outputIndex, pubKeys, output));
             }
 
             // Parse outputs
@@ -547,7 +553,7 @@ namespace ledger {
                 if (parsedScript.isSuccess()) {
                     auto parsedAddress = parsedScript.getValue().parseAddress(currency);
                     if (parsedAddress.hasValue())
-                        output.address = Option<std::string>(parsedAddress.getValue().toBase58());
+                        output.address = Option<std::string>(parsedAddress.getValue().toString());
                 }
                 output.script = hex::toString(lockScript);
                 tx->addOutput(std::shared_ptr<BitcoinLikeOutputApi>(new BitcoinLikeOutputApi(
@@ -563,6 +569,13 @@ namespace ledger {
                 reader.read(4);
                 //Number of inputs
                 reader.readNextVarInt();
+            }
+
+            //This will usefull to computes tx hash (txID)
+            std::vector<uint8_t> modifTx(rawTransaction.begin(), rawTransaction.begin() + reader.getCursor());
+            // Remove marker and flag if segwit
+            if (isSegwit) {
+                modifTx.erase(modifTx.begin() + offsetToMarker, modifTx.begin() + offsetToMarker + 2);
             }
 
             //Get witness if needed
@@ -592,17 +605,7 @@ namespace ledger {
                         auto scriptSig = reader.read(scriptSigSize);
                         auto pubKeySize = reader.readNextVarInt();
                         auto pubKey = reader.read(pubKeySize);
-                        //Get address
-                        /*
-                         * //Hash160 of public key
-                         *
-                          std::vector<uint8_t> script = {0x00, 0x14};
 
-                          auto publicKeyHash160 = HASH160::hash(pubKey);
-                          script.insert(script.end(), publicKeyHash160.begin(), publicKeyHash160.end());
-                          BitcoinLikeAddress address(currency, HASH160::hash(script), _params.P2SHVersion);
-                          preparedInputs[index].output.address = address.toBase58();
-                         */
                         //Get script sig
                         BytesWriter writer;
                         writer.writeVarInt(scriptSigSize);
@@ -610,6 +613,22 @@ namespace ledger {
                         writer.writeVarInt(pubKeySize);
                         writer.writeByteArray(pubKey);
                         preparedInputs[index].output.script = hex::toString(writer.toByteArray());
+
+                        // Get address, if not recovered yet
+                        // This is only possible in case of BIP173_P2WPKH or BIP173_P2WSH
+                        // For BIP32_P2PKH it is recovered from scriptPubKey (see above)
+                        // For BIP49_P2SH it is recovered from redeemScript (see above)
+                        // Note: Decred does not support segwit
+                        auto outAddress = preparedInputs[index].address;
+                        if (isSegwit && preparedInputs[index].address.empty()) {
+                            // Get keychain engine
+                            // BIP173_P2WPKH script : <sig> <pubKey> (with <pubKey>.size() == 33)
+                            // BIP173_P2WSH script : <sig> <witness>
+                            auto keychain = pubKey.size() == 33 ? api::KeychainEngines::BIP173_P2WPKH : api::KeychainEngines::BIP173_P2WSH;
+                            // Get hash160 to construct address
+                            auto hash160 = BitcoinLikeAddress::fromPublicKeyToHash160(pubKey, currency, keychain);
+                            preparedInputs[index].address = BitcoinLikeAddress(currency, hash160, keychain).toString();
+                        }
                     }
                 }
             }
@@ -617,8 +636,22 @@ namespace ledger {
 
             //Decred has lockTime before witness
             if (!isDecred) {
-                tx->setLockTime(reader.readNextLeUint());
+                auto timelock = reader.read(4);
+                modifTx = vector::concat(modifTx, timelock);
+
+                BytesReader timelockReader(timelock);
+                tx->setLockTime(timelockReader.readNextLeUint());
             }
+
+            if (isSigned) {
+                auto modifTxStr = hex::toString(modifTx);
+                // Double hash
+                auto doubleHash = SHA256::bytesToBytesHash(SHA256::bytesToBytesHash(modifTx));
+                // To little endian
+                std::reverse(doubleHash.begin(), doubleHash.end());
+                tx->setHash(hex::toString(doubleHash));
+            }
+
 
             //Finally append inputs to tx
             for (auto i = 0; i < inputsCount; i++) {

@@ -167,14 +167,14 @@ namespace ledger {
             if (_configuration.isSigned) {
                 return _configuration.keychainEngine == api::KeychainEngines::BIP173_P2WPKH;
             }
-            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[2].sizeEqualsTo(20));
+            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[1].sizeEqualsTo(20));
         }
 
         bool BitcoinLikeScript::isP2WSH() const {
             if (_configuration.isSigned) {
                 return _configuration.keychainEngine == api::KeychainEngines::BIP173_P2WSH;
             }
-            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[2].sizeEqualsTo(32));
+            return (size() == 2 && (*this)[0].isEqualTo(btccore::OP_0) && (*this)[1].sizeEqualsTo(32));
         }
 
         std::size_t BitcoinLikeScript::size() const {

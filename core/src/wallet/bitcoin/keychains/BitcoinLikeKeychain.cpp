@@ -100,9 +100,9 @@ namespace ledger {
         bool BitcoinLikeKeychain::isSegwit() const {
             //TODO: find a better way to know whether it's segwit or not
             auto keychainEngine = _configuration->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::KeychainEngines::BIP32_P2PKH);
-            return (keychainEngine == api::KeychainEngines::BIP49_P2SH ||
+            return keychainEngine == api::KeychainEngines::BIP49_P2SH ||
                     keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
-                    keychainEngine == api::KeychainEngines::BIP173_P2WSH) ? true : false;
+                    keychainEngine == api::KeychainEngines::BIP173_P2WSH;
         }
     }
 }

@@ -120,6 +120,8 @@ namespace ledger {
 
             BitcoinLikeTransactionApi &setTimestamp(uint32_t timestamp);
 
+            BitcoinLikeTransactionApi &setHash(const std::string &hash);
+
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
                                                                                     const std::vector<uint8_t> &rawTransaction,
