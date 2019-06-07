@@ -33,7 +33,7 @@
   preferences.
 - Some Windows-related fix (compilers, mostly).
 - [fmt](https://github.com/fmtlib/fmt) is now a submodule of ours.
-- Allow using compact pub keys for ethereum accounts
+- Allow using compact pub keys for ethereum accounts.
 
 ## 2.6.0
 

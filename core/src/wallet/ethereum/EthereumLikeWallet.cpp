@@ -85,7 +85,8 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
                 api::ExtendedKeyAccountCreationInfo result;
 
-                if (info.chainCodes[0].size() != 32 || (info.publicKeys[0].size() != 65 && info.publicKeys[0].size() != 33))
+                auto pkSize = info.publicKeys[0].size();
+                if (info.chainCodes[0].size() != 32 || pkSize != 65 && pkSize != 33)
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
                 DerivationPath occurencePath(info.derivations[0]);
 
