@@ -116,6 +116,8 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         auto wallet = wait(pool->getWallet(walletName));
         auto account = std::dynamic_pointer_cast<EthereumLikeAccount>(wait(wallet->getAccount(0)));
         EXPECT_EQ(account->getERC20Accounts().size(), erc20Count);
+
+        wait(pool->freshResetAll());
     }
 }
 
