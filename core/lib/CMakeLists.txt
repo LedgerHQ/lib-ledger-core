@@ -41,6 +41,7 @@ set(protobuf_WITH_ZLIB OFF CACHE BOOL "Do not compress messages")
 set(protobuf_MSVC_STATIC_RUNTIME OFF CACHE BOOL "Dynamic runtime for MSVC" FORCE)
 add_subdirectory(protobuf/cmake)
 
+set(ubinder_BUILDING_WRAPPER ON CACHE BOOL "Don't build ubinder, just include headers" FORCE)
 add_subdirectory(ubinder)
 
 #add_subdirectory(soci_mysql)
