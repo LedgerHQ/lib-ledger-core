@@ -28,16 +28,16 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SOCI_NUMBER_H
-#define LEDGER_CORE_SOCI_NUMBER_H
+
+#pragma once
 
 #include <soci.h>
 #include <boost/lexical_cast.hpp>
-#include <utils/Exception.hpp>
-#include <math/BigInt.h>
+
+#include <core/math/BigInt.h>
+#include <core/utils/Exception.hpp>
 
 namespace soci {
-
     template <>
     struct type_conversion<ledger::core::BigInt> {
         typedef long long base_type;
@@ -48,7 +48,6 @@ namespace soci {
         static void to_base(ledger::core::BigInt const & in, base_type & out, indicator & ind) {
             out = (base_type)in.toUint64();
         }
-
     };
 
     template<typename T>
@@ -64,8 +63,4 @@ namespace soci {
             case dt_unsigned_long_long: return (T) row.get<unsigned long long>(pos);
         }
     };
-
 }
-
-
-#endif //LEDGER_CORE_SOCI_NUMBER_H

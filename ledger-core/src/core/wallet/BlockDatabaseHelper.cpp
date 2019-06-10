@@ -40,19 +40,19 @@ using namespace soci;
 
 namespace ledger {
     namespace core {
-        bool BlockDatabaseHelper::putBlock(soci::session &sql, const Block &block) {
-            if (!blockExists(sql, block.hash, block.currencyName)) {
+        bool BlockDatabaseHelper::putBlock(soci::session &sql, const api::Block &block) {
+            if (!blockExists(sql, block.blockHash, block.currencyName)) {
                 auto uid = createBlockUid(block);
                 sql << "INSERT INTO blocks VALUES(:uid, :hash, :height, :time, :currency_name)",
-                        use(uid), use(block.hash), use(block.height), use(block.time), use(block.currencyName);
+                        use(uid), use(block.blockHash), use(block.height), use(block.time), use(block.currencyName);
                 return true;
             }
             return false;
         }
 
 
-        std::string BlockDatabaseHelper::createBlockUid(const Block &block) {
-            return createBlockUid(block.hash, block.currencyName);
+        std::string BlockDatabaseHelper::createBlockUid(const api::Block &block) {
+            return createBlockUid(block.blockHash, block.currencyName);
         }
 
         bool BlockDatabaseHelper::blockExists(soci::session &sql, const std::string &blockHash,
