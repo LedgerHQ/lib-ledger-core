@@ -1,6 +1,6 @@
 syntax = "proto3";
 package ledger.core.bitcoin;
-import "common/amount.proto";
+import "bitcoin/account_config.proto";
 
 // This values can be changed at any time
 message WalletSetting {

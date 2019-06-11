@@ -3,8 +3,8 @@ package ledger.core.bitcoin;
 
 import "bitcoin/account.proto";
 import "bitcoin/account_config.proto";
-import "bitcoin/currency.proto";
 import "bitcoin/wallet.proto";
+import "bitcoin/operation.proto";
 import "common/amount.proto";
 
 // GET_WALLETS
@@ -72,7 +72,7 @@ message GetOperationsResponse {
 
 message SetAccountSettingsRequest {
     string acc_uid = 1;
-    AccountSetting settings = 2;
+    AccountSettings settings = 2;
 }
 
 
@@ -90,6 +90,6 @@ enum RequestType {
 }
 
 message Request {
-    BitcoinLikeRequestType type = 1;
+    RequestType type = 1;
     bytes submessage = 2;
 }

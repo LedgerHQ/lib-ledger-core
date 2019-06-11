@@ -1,6 +1,5 @@
 syntax = "proto3";
 package ledger.core.bitcoin;
-import "common/unit.proto";
 import "common/currency.proto";
 
 message Currency {
