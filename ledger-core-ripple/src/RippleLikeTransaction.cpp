@@ -93,8 +93,8 @@ namespace ledger {
 
             _currency = currency;
 
-            _fees = std::make_shared<Amount>(_currency, 0, tx.fees);
-            _value = std::make_shared<Amount>(_currency, 0, tx.value);
+            _fees = std::make_shared<Amount>(_currency, 0, tx->fees);
+            _value = std::make_shared<Amount>(_currency, 0, tx->value);
 
             _receiver = RippleLikeAddress::fromBase58(tx->receiver, _currency);
             _sender = RippleLikeAddress::fromBase58(tx->sender, _currency);

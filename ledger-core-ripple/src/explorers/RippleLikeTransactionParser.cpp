@@ -130,7 +130,7 @@ namespace ledger {
                     RippleLikeBlockchainExplorer::Block block;
                     BigInt valueBigInt = BigInt::fromString(number);
                     block.height = valueBigInt.toUint64();
-                    block.currencyName = currencies::RIPPLE.name;
+                    block.currencyName = "ripple";
                     _transaction->block = block;
                 }
 
