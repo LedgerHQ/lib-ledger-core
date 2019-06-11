@@ -10,7 +10,7 @@ enum CoreRequestType {
 }
 
 message CoreRequest {
-    LibCoreRequestType request_type = 1;
+    CoreRequestType request_type = 1;
     bytes request_body = 2;
 }
 
