@@ -106,7 +106,7 @@ namespace ledger {
 
                 PROXY_PARSE_RIPPLE_WS(String, str, length, copy) {
                     if (getLastKey() == "ledger_hash") {
-                        _result->block.hash = value;
+                        _result->block.blockHash = value;
                     }
                     return true;
                 }

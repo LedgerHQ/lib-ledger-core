@@ -36,6 +36,7 @@
 #include <core/api/Currency.hpp>
 #include <core/math/BigInt.h>
 #include <core/operation/Operation.h>
+#include <explorers/RippleLikeBlockchainExplorer.h>
 #include <RippleLikeBlock.h>
 
 namespace ledger {
