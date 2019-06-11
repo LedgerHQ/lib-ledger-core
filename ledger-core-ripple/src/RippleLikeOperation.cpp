@@ -33,8 +33,10 @@
 
 namespace ledger {
     namespace core {
-        RippleLikeOperation::RippleLikeOperation(const std::shared_ptr<Operation>& baseOp) {
-            _transaction = std::make_shared<RippleLikeTransaction>(baseOp);
+        RippleLikeOperation::RippleLikeOperation(
+            std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
+            api::Currency const & currency
+        ): _transaction(std::make_shared<RippleLikeTransaction>(tx, currency)) {
         }
 
         std::shared_ptr<api::RippleLikeTransaction> RippleLikeOperation::getTransaction() {

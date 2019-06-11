@@ -32,14 +32,16 @@
 
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
-#include <core/operation/Operation.h>
 
 namespace ledger {
     namespace core {
         class RippleLikeOperation : public api::RippleLikeOperation {
         public:
-            RippleLikeOperation(const std::shared_ptr<Operation>& baseOp);
-            std::shared_ptr<api::RippleLikeTransaction> getTransaction();
+            RippleLikeOperation(
+                std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
+                api::Currency const & currency
+            );
+            std::shared_ptr<api::RippleLikeTransaction> getTransaction() override;
 
         private:
             std::shared_ptr<api::RippleLikeTransaction> _transaction;
