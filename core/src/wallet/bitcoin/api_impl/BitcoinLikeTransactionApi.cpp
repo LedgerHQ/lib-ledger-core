@@ -222,25 +222,16 @@ namespace ledger {
             fixedSize += BytesWriter().writeVarInt(outputCount).toByteArray().size(); // Number of outputs
             fixedSize += 4; // Timelock
 
-            minSize = fixedSize;
-            maxSize = fixedSize;
-
-            // Outputs size
-            minSize += 32 * outputCount;
-            maxSize += 34 * outputCount;
-
-            fixedSize = fixedSize + (34 * outputCount);
             if (useSegwit) {
                 fixedSize += 2; // Flag and marker size (one byte each)
-                size_t noWitness, maxWitness, minWitness = 0;
-                noWitness = fixedSize + (59 * inputCount);
-                minWitness = noWitness + (106 * inputCount);
-                maxWitness = noWitness + (108 * inputCount);
-                minSize += (noWitness * 3 + minWitness) / 4;
-                maxSize += (noWitness * 3 + maxWitness) / 4;
+                size_t noWitness = fixedSize + 59 * inputCount + 34 * outputCount;
+                size_t minWitness = noWitness + (106 * inputCount);
+                size_t maxWitness = noWitness + (108 * inputCount);
+                minSize = (noWitness * 3 + minWitness) / 4;
+                maxSize = (noWitness * 3 + maxWitness) / 4;
             } else {
-                minSize += 146 * inputCount;
-                maxSize += 148 * inputCount;
+                minSize = fixedSize + 146 * inputCount + 32 * outputCount;
+                maxSize = fixedSize + 148 * inputCount + 34 * outputCount;
             }
             return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
         }
