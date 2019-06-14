@@ -76,6 +76,12 @@ RippleLikeTransaction = interface +c {
 	getLedgerSequence(): BigInt;
 	# Get Signing public Key
 	getSigningPubKey(): binary;
+  # Get all memos associated with the transaction.
+  getMemos(): list<RippleLikeMemo>;
+  # Add a memo to a transaction.
+  addMemo(memo: RippleLikeMemo);
+  # An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account
+  getDestinationTag(): optional<i64>;
 }
 
 #Class representing a Ripple Operation
@@ -134,6 +140,15 @@ RippleLikeAccount = interface +c {
 	broadcastRawTransaction(transaction: binary, callback: callback2<void, optional<string>, optional<Error>>);
 	broadcastTransaction(transaction: RippleLikeTransaction, callback: callback2<void, optional<string>, optional<Error>>);
 	buildTransaction(): RippleLikeTransactionBuilder;
+  # Get fees from network
+  # Note: it would have been better to have this method on RippleLikeWallet
+  # but since RippleLikeWallet is not used anywhere, it's better to keep all
+  # specific methods under the same specific class so it will be easy to segratate
+  # when the right time comes !
+  getFees(callback: callback2<void, optional<Amount>, optional<Error>>);
+  # Get base reserve (dust to leave on an XRP account) from network
+  # Note: same note as above
+  getBaseReserve(callback: callback2<void, optional<Amount>, optional<Error>>);
 }
 
 RippleConfigurationDefaults = interface +c {
