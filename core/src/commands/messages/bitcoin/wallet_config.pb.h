@@ -51,26 +51,29 @@ struct TableStruct_bitcoin_2fwallet_5fconfig_2eproto {
 void AddDescriptors_bitcoin_2fwallet_5fconfig_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class WalletSetting;
 class WalletSettingDefaultTypeInternal;
 extern WalletSettingDefaultTypeInternal _WalletSetting_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::bitcoin::WalletSetting* Arena::CreateMaybeMessage<::ledger::core::bitcoin::WalletSetting>(Arena*);
+template<> ::ledger::core::message::bitcoin::WalletSetting* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::WalletSetting>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 
 // ===================================================================
 
 class WalletSetting :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.WalletSetting) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.WalletSetting) */ {
  public:
   WalletSetting();
   virtual ~WalletSetting();
@@ -164,21 +167,21 @@ class WalletSetting :
 
   // accessors -------------------------------------------------------
 
-  // .ledger.core.bitcoin.AccountConfiguration default_account_configuration = 1;
+  // .ledger.core.message.bitcoin.AccountConfiguration default_account_configuration = 1;
   bool has_default_account_configuration() const;
   void clear_default_account_configuration();
   static const int kDefaultAccountConfigurationFieldNumber = 1;
-  const ::ledger::core::bitcoin::AccountConfiguration& default_account_configuration() const;
-  ::ledger::core::bitcoin::AccountConfiguration* release_default_account_configuration();
-  ::ledger::core::bitcoin::AccountConfiguration* mutable_default_account_configuration();
-  void set_allocated_default_account_configuration(::ledger::core::bitcoin::AccountConfiguration* default_account_configuration);
+  const ::ledger::core::message::bitcoin::AccountConfiguration& default_account_configuration() const;
+  ::ledger::core::message::bitcoin::AccountConfiguration* release_default_account_configuration();
+  ::ledger::core::message::bitcoin::AccountConfiguration* mutable_default_account_configuration();
+  void set_allocated_default_account_configuration(::ledger::core::message::bitcoin::AccountConfiguration* default_account_configuration);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.WalletSetting)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.WalletSetting)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::ledger::core::bitcoin::AccountConfiguration* default_account_configuration_;
+  ::ledger::core::message::bitcoin::AccountConfiguration* default_account_configuration_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2fwallet_5fconfig_2eproto;
 };
@@ -193,33 +196,33 @@ class WalletSetting :
 #endif  // __GNUC__
 // WalletSetting
 
-// .ledger.core.bitcoin.AccountConfiguration default_account_configuration = 1;
+// .ledger.core.message.bitcoin.AccountConfiguration default_account_configuration = 1;
 inline bool WalletSetting::has_default_account_configuration() const {
   return this != internal_default_instance() && default_account_configuration_ != nullptr;
 }
-inline const ::ledger::core::bitcoin::AccountConfiguration& WalletSetting::default_account_configuration() const {
-  const ::ledger::core::bitcoin::AccountConfiguration* p = default_account_configuration_;
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.WalletSetting.default_account_configuration)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::bitcoin::AccountConfiguration*>(
-      &::ledger::core::bitcoin::_AccountConfiguration_default_instance_);
+inline const ::ledger::core::message::bitcoin::AccountConfiguration& WalletSetting::default_account_configuration() const {
+  const ::ledger::core::message::bitcoin::AccountConfiguration* p = default_account_configuration_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.WalletSetting.default_account_configuration)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::bitcoin::AccountConfiguration*>(
+      &::ledger::core::message::bitcoin::_AccountConfiguration_default_instance_);
 }
-inline ::ledger::core::bitcoin::AccountConfiguration* WalletSetting::release_default_account_configuration() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.WalletSetting.default_account_configuration)
+inline ::ledger::core::message::bitcoin::AccountConfiguration* WalletSetting::release_default_account_configuration() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.WalletSetting.default_account_configuration)
   
-  ::ledger::core::bitcoin::AccountConfiguration* temp = default_account_configuration_;
+  ::ledger::core::message::bitcoin::AccountConfiguration* temp = default_account_configuration_;
   default_account_configuration_ = nullptr;
   return temp;
 }
-inline ::ledger::core::bitcoin::AccountConfiguration* WalletSetting::mutable_default_account_configuration() {
+inline ::ledger::core::message::bitcoin::AccountConfiguration* WalletSetting::mutable_default_account_configuration() {
   
   if (default_account_configuration_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::bitcoin::AccountConfiguration>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::bitcoin::AccountConfiguration>(GetArenaNoVirtual());
     default_account_configuration_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.WalletSetting.default_account_configuration)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.WalletSetting.default_account_configuration)
   return default_account_configuration_;
 }
-inline void WalletSetting::set_allocated_default_account_configuration(::ledger::core::bitcoin::AccountConfiguration* default_account_configuration) {
+inline void WalletSetting::set_allocated_default_account_configuration(::ledger::core::message::bitcoin::AccountConfiguration* default_account_configuration) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::google::protobuf::MessageLite*>(default_account_configuration_);
@@ -235,7 +238,7 @@ inline void WalletSetting::set_allocated_default_account_configuration(::ledger:
     
   }
   default_account_configuration_ = default_account_configuration;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.WalletSetting.default_account_configuration)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.WalletSetting.default_account_configuration)
 }
 
 #ifdef __GNUC__
@@ -245,6 +248,7 @@ inline void WalletSetting::set_allocated_default_account_configuration(::ledger:
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 

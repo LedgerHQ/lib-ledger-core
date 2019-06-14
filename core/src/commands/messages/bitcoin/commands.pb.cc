@@ -24,6 +24,7 @@ extern PROTOBUF_INTERNAL_EXPORT_bitcoin_2fwallet_2eproto ::google::protobuf::int
 extern PROTOBUF_INTERNAL_EXPORT_common_2famount_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_Amount_common_2famount_2eproto;
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class GetWalletsResponseDefaultTypeInternal {
  public:
@@ -86,17 +87,18 @@ class RequestDefaultTypeInternal {
   ::google::protobuf::internal::ExplicitlyConstructed<Request> _instance;
 } _Request_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 static void InitDefaultsGetWalletsResponse_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_GetWalletsResponse_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::GetWalletsResponse();
+    void* ptr = &::ledger::core::message::bitcoin::_GetWalletsResponse_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::GetWalletsResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::GetWalletsResponse::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::GetWalletsResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_GetWalletsResponse_bitcoin_2fcommands_2eproto =
@@ -107,11 +109,11 @@ static void InitDefaultsCreateWalletRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_CreateWalletRequest_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::CreateWalletRequest();
+    void* ptr = &::ledger::core::message::bitcoin::_CreateWalletRequest_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::CreateWalletRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::CreateWalletRequest::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::CreateWalletRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_CreateWalletRequest_bitcoin_2fcommands_2eproto =
@@ -121,11 +123,11 @@ static void InitDefaultsCreateWalletResponse_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_CreateWalletResponse_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::CreateWalletResponse();
+    void* ptr = &::ledger::core::message::bitcoin::_CreateWalletResponse_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::CreateWalletResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::CreateWalletResponse::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::CreateWalletResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_CreateWalletResponse_bitcoin_2fcommands_2eproto =
@@ -136,11 +138,11 @@ static void InitDefaultsGetAccountsRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_GetAccountsRequest_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::GetAccountsRequest();
+    void* ptr = &::ledger::core::message::bitcoin::_GetAccountsRequest_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::GetAccountsRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::GetAccountsRequest::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::GetAccountsRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_GetAccountsRequest_bitcoin_2fcommands_2eproto =
@@ -150,11 +152,11 @@ static void InitDefaultsGetAccountsResponse_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_GetAccountsResponse_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::GetAccountsResponse();
+    void* ptr = &::ledger::core::message::bitcoin::_GetAccountsResponse_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::GetAccountsResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::GetAccountsResponse::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::GetAccountsResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_GetAccountsResponse_bitcoin_2fcommands_2eproto =
@@ -165,11 +167,11 @@ static void InitDefaultsCreateAccountRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_CreateAccountRequest_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::CreateAccountRequest();
+    void* ptr = &::ledger::core::message::bitcoin::_CreateAccountRequest_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::CreateAccountRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::CreateAccountRequest::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::CreateAccountRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_CreateAccountRequest_bitcoin_2fcommands_2eproto =
@@ -180,11 +182,11 @@ static void InitDefaultsCreateAccountResponse_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_CreateAccountResponse_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::CreateAccountResponse();
+    void* ptr = &::ledger::core::message::bitcoin::_CreateAccountResponse_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::CreateAccountResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::CreateAccountResponse::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::CreateAccountResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_CreateAccountResponse_bitcoin_2fcommands_2eproto =
@@ -194,11 +196,11 @@ static void InitDefaultsSyncAccountRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_SyncAccountRequest_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::SyncAccountRequest();
+    void* ptr = &::ledger::core::message::bitcoin::_SyncAccountRequest_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::SyncAccountRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::SyncAccountRequest::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::SyncAccountRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_SyncAccountRequest_bitcoin_2fcommands_2eproto =
@@ -208,11 +210,11 @@ static void InitDefaultsSyncAccountResponse_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_SyncAccountResponse_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::SyncAccountResponse();
+    void* ptr = &::ledger::core::message::bitcoin::_SyncAccountResponse_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::SyncAccountResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::SyncAccountResponse::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::SyncAccountResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_SyncAccountResponse_bitcoin_2fcommands_2eproto =
@@ -222,11 +224,11 @@ static void InitDefaultsGetBalanceRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_GetBalanceRequest_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::GetBalanceRequest();
+    void* ptr = &::ledger::core::message::bitcoin::_GetBalanceRequest_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::GetBalanceRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::GetBalanceRequest::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::GetBalanceRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_GetBalanceRequest_bitcoin_2fcommands_2eproto =
@@ -236,11 +238,11 @@ static void InitDefaultsGetBalanceResponse_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_GetBalanceResponse_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::GetBalanceResponse();
+    void* ptr = &::ledger::core::message::bitcoin::_GetBalanceResponse_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::GetBalanceResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::GetBalanceResponse::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::GetBalanceResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_GetBalanceResponse_bitcoin_2fcommands_2eproto =
@@ -251,11 +253,11 @@ static void InitDefaultsGetOperationsRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_GetOperationsRequest_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::GetOperationsRequest();
+    void* ptr = &::ledger::core::message::bitcoin::_GetOperationsRequest_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::GetOperationsRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::GetOperationsRequest::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::GetOperationsRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_GetOperationsRequest_bitcoin_2fcommands_2eproto =
@@ -265,11 +267,11 @@ static void InitDefaultsGetOperationsResponse_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_GetOperationsResponse_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::GetOperationsResponse();
+    void* ptr = &::ledger::core::message::bitcoin::_GetOperationsResponse_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::GetOperationsResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::GetOperationsResponse::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::GetOperationsResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_GetOperationsResponse_bitcoin_2fcommands_2eproto =
@@ -280,11 +282,11 @@ static void InitDefaultsSetAccountSettingsRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_SetAccountSettingsRequest_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::SetAccountSettingsRequest();
+    void* ptr = &::ledger::core::message::bitcoin::_SetAccountSettingsRequest_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::SetAccountSettingsRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::SetAccountSettingsRequest::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::SetAccountSettingsRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_SetAccountSettingsRequest_bitcoin_2fcommands_2eproto =
@@ -295,11 +297,11 @@ static void InitDefaultsRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_Request_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::Request();
+    void* ptr = &::ledger::core::message::bitcoin::_Request_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::Request();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::Request::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::Request::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_Request_bitcoin_2fcommands_2eproto =
@@ -329,135 +331,135 @@ constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descr
 
 const ::google::protobuf::uint32 TableStruct_bitcoin_2fcommands_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetWalletsResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetWalletsResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetWalletsResponse, wallets_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetWalletsResponse, wallets_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateWalletRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateWalletRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateWalletRequest, name_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateWalletRequest, currency_name_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateWalletRequest, name_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateWalletRequest, currency_name_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateWalletResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateWalletResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateWalletResponse, wallet_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateWalletResponse, wallet_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetAccountsRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetAccountsRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetAccountsRequest, wallet_uid_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetAccountsRequest, wallet_uid_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetAccountsResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetAccountsResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetAccountsResponse, accounts_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetAccountsResponse, accounts_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateAccountRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateAccountRequest, xpub_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateAccountRequest, index_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateAccountRequest, config_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountRequest, xpub_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountRequest, index_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountRequest, config_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateAccountResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::CreateAccountResponse, account_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountResponse, account_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::SyncAccountRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SyncAccountRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::SyncAccountRequest, acc_uid_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SyncAccountRequest, acc_uid_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::SyncAccountResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SyncAccountResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::SyncAccountResponse, new_acc_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SyncAccountResponse, new_acc_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetBalanceRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetBalanceRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetBalanceRequest, acc_uid_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetBalanceRequest, acc_uid_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetBalanceResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetBalanceResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetBalanceResponse, amount_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetBalanceResponse, amount_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetOperationsRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetOperationsRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetOperationsRequest, acc_uid_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetOperationsRequest, acc_uid_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetOperationsResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetOperationsResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::GetOperationsResponse, operations_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::GetOperationsResponse, operations_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::SetAccountSettingsRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SetAccountSettingsRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::SetAccountSettingsRequest, acc_uid_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::SetAccountSettingsRequest, settings_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SetAccountSettingsRequest, acc_uid_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SetAccountSettingsRequest, settings_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::Request, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Request, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::Request, type_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::Request, submessage_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Request, type_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Request, submessage_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::ledger::core::bitcoin::GetWalletsResponse)},
-  { 6, -1, sizeof(::ledger::core::bitcoin::CreateWalletRequest)},
-  { 13, -1, sizeof(::ledger::core::bitcoin::CreateWalletResponse)},
-  { 19, -1, sizeof(::ledger::core::bitcoin::GetAccountsRequest)},
-  { 25, -1, sizeof(::ledger::core::bitcoin::GetAccountsResponse)},
-  { 31, -1, sizeof(::ledger::core::bitcoin::CreateAccountRequest)},
-  { 39, -1, sizeof(::ledger::core::bitcoin::CreateAccountResponse)},
-  { 45, -1, sizeof(::ledger::core::bitcoin::SyncAccountRequest)},
-  { 51, -1, sizeof(::ledger::core::bitcoin::SyncAccountResponse)},
-  { 57, -1, sizeof(::ledger::core::bitcoin::GetBalanceRequest)},
-  { 63, -1, sizeof(::ledger::core::bitcoin::GetBalanceResponse)},
-  { 69, -1, sizeof(::ledger::core::bitcoin::GetOperationsRequest)},
-  { 75, -1, sizeof(::ledger::core::bitcoin::GetOperationsResponse)},
-  { 81, -1, sizeof(::ledger::core::bitcoin::SetAccountSettingsRequest)},
-  { 88, -1, sizeof(::ledger::core::bitcoin::Request)},
+  { 0, -1, sizeof(::ledger::core::message::bitcoin::GetWalletsResponse)},
+  { 6, -1, sizeof(::ledger::core::message::bitcoin::CreateWalletRequest)},
+  { 13, -1, sizeof(::ledger::core::message::bitcoin::CreateWalletResponse)},
+  { 19, -1, sizeof(::ledger::core::message::bitcoin::GetAccountsRequest)},
+  { 25, -1, sizeof(::ledger::core::message::bitcoin::GetAccountsResponse)},
+  { 31, -1, sizeof(::ledger::core::message::bitcoin::CreateAccountRequest)},
+  { 39, -1, sizeof(::ledger::core::message::bitcoin::CreateAccountResponse)},
+  { 45, -1, sizeof(::ledger::core::message::bitcoin::SyncAccountRequest)},
+  { 51, -1, sizeof(::ledger::core::message::bitcoin::SyncAccountResponse)},
+  { 57, -1, sizeof(::ledger::core::message::bitcoin::GetBalanceRequest)},
+  { 63, -1, sizeof(::ledger::core::message::bitcoin::GetBalanceResponse)},
+  { 69, -1, sizeof(::ledger::core::message::bitcoin::GetOperationsRequest)},
+  { 75, -1, sizeof(::ledger::core::message::bitcoin::GetOperationsResponse)},
+  { 81, -1, sizeof(::ledger::core::message::bitcoin::SetAccountSettingsRequest)},
+  { 88, -1, sizeof(::ledger::core::message::bitcoin::Request)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_GetWalletsResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_CreateWalletRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_CreateWalletResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_GetAccountsRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_GetAccountsResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_CreateAccountRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_CreateAccountResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_SyncAccountRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_SyncAccountResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_GetBalanceRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_GetBalanceResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_GetOperationsRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_GetOperationsResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_SetAccountSettingsRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_Request_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_GetWalletsResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_CreateWalletRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_CreateWalletResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_GetAccountsRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_GetAccountsResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_CreateAccountRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_CreateAccountResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_SyncAccountRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_SyncAccountResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_GetBalanceRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_GetBalanceResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_GetOperationsRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_GetOperationsResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_SetAccountSettingsRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_Request_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_bitcoin_2fcommands_2eproto = {
@@ -467,45 +469,47 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_bitcoin_2fcommands_2eproto[] =
-  "\n\026bitcoin/commands.proto\022\023ledger.core.bi"
-  "tcoin\032\025bitcoin/account.proto\032\034bitcoin/ac"
-  "count_config.proto\032\024bitcoin/wallet.proto"
-  "\032\027bitcoin/operation.proto\032\023common/amount"
-  ".proto\"B\n\022GetWalletsResponse\022,\n\007wallets\030"
-  "\001 \003(\0132\033.ledger.core.bitcoin.Wallet\":\n\023Cr"
-  "eateWalletRequest\022\014\n\004name\030\001 \001(\t\022\025\n\rcurre"
-  "ncy_name\030\002 \001(\t\"C\n\024CreateWalletResponse\022+"
-  "\n\006wallet\030\001 \001(\0132\033.ledger.core.bitcoin.Wal"
-  "let\"(\n\022GetAccountsRequest\022\022\n\nwallet_uid\030"
-  "\001 \001(\t\"E\n\023GetAccountsResponse\022.\n\010accounts"
-  "\030\001 \003(\0132\034.ledger.core.bitcoin.Account\"n\n\024"
-  "CreateAccountRequest\022\014\n\004xpub\030\001 \001(\t\022\r\n\005in"
-  "dex\030\002 \001(\r\0229\n\006config\030\003 \001(\0132).ledger.core."
+  "\n\026bitcoin/commands.proto\022\033ledger.core.me"
+  "ssage.bitcoin\032\025bitcoin/account.proto\032\034bi"
+  "tcoin/account_config.proto\032\024bitcoin/wall"
+  "et.proto\032\027bitcoin/operation.proto\032\023commo"
+  "n/amount.proto\"J\n\022GetWalletsResponse\0224\n\007"
+  "wallets\030\001 \003(\0132#.ledger.core.message.bitc"
+  "oin.Wallet\":\n\023CreateWalletRequest\022\014\n\004nam"
+  "e\030\001 \001(\t\022\025\n\rcurrency_name\030\002 \001(\t\"K\n\024Create"
+  "WalletResponse\0223\n\006wallet\030\001 \001(\0132#.ledger."
+  "core.message.bitcoin.Wallet\"(\n\022GetAccoun"
+  "tsRequest\022\022\n\nwallet_uid\030\001 \001(\t\"M\n\023GetAcco"
+  "untsResponse\0226\n\010accounts\030\001 \003(\0132$.ledger."
+  "core.message.bitcoin.Account\"v\n\024CreateAc"
+  "countRequest\022\014\n\004xpub\030\001 \001(\t\022\r\n\005index\030\002 \001("
+  "\r\022A\n\006config\030\003 \001(\01321.ledger.core.message."
   "bitcoin.AccountConfiguration\"(\n\025CreateAc"
   "countResponse\022\017\n\007Account\030\001 \001(\t\"%\n\022SyncAc"
   "countRequest\022\017\n\007acc_uid\030\001 \001(\t\"&\n\023SyncAcc"
   "ountResponse\022\017\n\007new_acc\030\001 \001(\010\"$\n\021GetBala"
-  "nceRequest\022\017\n\007acc_uid\030\001 \001(\t\"9\n\022GetBalanc"
-  "eResponse\022#\n\006amount\030\001 \001(\0132\023.ledger.core."
-  "Amount\"\'\n\024GetOperationsRequest\022\017\n\007acc_ui"
-  "d\030\001 \001(\t\"K\n\025GetOperationsResponse\0222\n\noper"
-  "ations\030\001 \003(\0132\036.ledger.core.bitcoin.Opera"
-  "tion\"d\n\031SetAccountSettingsRequest\022\017\n\007acc"
-  "_uid\030\001 \001(\t\0226\n\010settings\030\002 \001(\0132$.ledger.co"
-  "re.bitcoin.AccountSettings\"M\n\007Request\022.\n"
-  "\004type\030\001 \001(\0162 .ledger.core.bitcoin.Reques"
-  "tType\022\022\n\nsubmessage\030\002 \001(\014*\344\001\n\013RequestTyp"
-  "e\022\030\n\024SET_ACCOUNT_SETTINGS\020\000\022\027\n\023SET_WALLE"
-  "T_SETTINGS\020\001\022\031\n\025SET_CURRENCY_SETTINGS\020\002\022"
-  "\017\n\013GET_WALLETS\020\003\022\021\n\rCREATE_WALLET\020\004\022\020\n\014G"
-  "ET_ACCOUNTS\020\005\022\022\n\016CREATE_ACCOUNT\020\006\022\020\n\014SYN"
-  "C_ACCOUNT\020\007\022\027\n\023GET_ACCOUNT_BALANCE\020\010\022\022\n\016"
-  "GET_OPERATIONS\020\tb\006proto3"
+  "nceRequest\022\017\n\007acc_uid\030\001 \001(\t\"H\n\022GetBalanc"
+  "eResponse\0222\n\006amount\030\001 \001(\0132\".ledger.core."
+  "message.common.Amount\"\'\n\024GetOperationsRe"
+  "quest\022\017\n\007acc_uid\030\001 \001(\t\"S\n\025GetOperationsR"
+  "esponse\022:\n\noperations\030\001 \003(\0132&.ledger.cor"
+  "e.message.bitcoin.Operation\"l\n\031SetAccoun"
+  "tSettingsRequest\022\017\n\007acc_uid\030\001 \001(\t\022>\n\010set"
+  "tings\030\002 \001(\0132,.ledger.core.message.bitcoi"
+  "n.AccountSettings\"U\n\007Request\0226\n\004type\030\001 \001"
+  "(\0162(.ledger.core.message.bitcoin.Request"
+  "Type\022\022\n\nsubmessage\030\002 \001(\014*\344\001\n\013RequestType"
+  "\022\030\n\024SET_ACCOUNT_SETTINGS\020\000\022\027\n\023SET_WALLET"
+  "_SETTINGS\020\001\022\031\n\025SET_CURRENCY_SETTINGS\020\002\022\017"
+  "\n\013GET_WALLETS\020\003\022\021\n\rCREATE_WALLET\020\004\022\020\n\014GE"
+  "T_ACCOUNTS\020\005\022\022\n\016CREATE_ACCOUNT\020\006\022\020\n\014SYNC"
+  "_ACCOUNT\020\007\022\027\n\023GET_ACCOUNT_BALANCE\020\010\022\022\n\016G"
+  "ET_OPERATIONS\020\tb\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_bitcoin_2fcommands_2eproto = {
   false, InitDefaults_bitcoin_2fcommands_2eproto, 
   descriptor_table_protodef_bitcoin_2fcommands_2eproto,
-  "bitcoin/commands.proto", &assign_descriptors_table_bitcoin_2fcommands_2eproto, 1344,
+  "bitcoin/commands.proto", &assign_descriptors_table_bitcoin_2fcommands_2eproto, 1423,
 };
 
 void AddDescriptors_bitcoin_2fcommands_2eproto() {
@@ -524,6 +528,7 @@ void AddDescriptors_bitcoin_2fcommands_2eproto() {
 static bool dynamic_init_dummy_bitcoin_2fcommands_2eproto = []() { AddDescriptors_bitcoin_2fcommands_2eproto(); return true; }();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 const ::google::protobuf::EnumDescriptor* RequestType_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&assign_descriptors_table_bitcoin_2fcommands_2eproto);
@@ -566,14 +571,14 @@ const int GetWalletsResponse::kWalletsFieldNumber;
 GetWalletsResponse::GetWalletsResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.GetWalletsResponse)
 }
 GetWalletsResponse::GetWalletsResponse(const GetWalletsResponse& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr),
       wallets_(from.wallets_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.GetWalletsResponse)
 }
 
 void GetWalletsResponse::SharedCtor() {
@@ -582,7 +587,7 @@ void GetWalletsResponse::SharedCtor() {
 }
 
 GetWalletsResponse::~GetWalletsResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.GetWalletsResponse)
   SharedDtor();
 }
 
@@ -599,7 +604,7 @@ const GetWalletsResponse& GetWalletsResponse::default_instance() {
 
 
 void GetWalletsResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.GetWalletsResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.GetWalletsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -621,13 +626,13 @@ const char* GetWalletsResponse::_InternalParse(const char* begin, const char* en
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // repeated .ledger.core.bitcoin.Wallet wallets = 1;
+      // repeated .ledger.core.message.bitcoin.Wallet wallets = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         do {
           ptr = ::google::protobuf::io::ReadSize(ptr, &size);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-          parser_till_end = ::ledger::core::bitcoin::Wallet::_InternalParse;
+          parser_till_end = ::ledger::core::message::bitcoin::Wallet::_InternalParse;
           object = msg->add_wallets();
           if (size > end - ptr) goto len_delim_till_end;
           ptr += size;
@@ -661,13 +666,13 @@ bool GetWalletsResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.GetWalletsResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .ledger.core.bitcoin.Wallet wallets = 1;
+      // repeated .ledger.core.message.bitcoin.Wallet wallets = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -690,10 +695,10 @@ bool GetWalletsResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.GetWalletsResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.GetWalletsResponse)
   return false;
 #undef DO_
 }
@@ -701,11 +706,11 @@ failure:
 
 void GetWalletsResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.GetWalletsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Wallet wallets = 1;
+  // repeated .ledger.core.message.bitcoin.Wallet wallets = 1;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->wallets_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -718,16 +723,16 @@ void GetWalletsResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.GetWalletsResponse)
 }
 
 ::google::protobuf::uint8* GetWalletsResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.GetWalletsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Wallet wallets = 1;
+  // repeated .ledger.core.message.bitcoin.Wallet wallets = 1;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->wallets_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
@@ -739,12 +744,12 @@ void GetWalletsResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.GetWalletsResponse)
   return target;
 }
 
 size_t GetWalletsResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.GetWalletsResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.GetWalletsResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -756,7 +761,7 @@ size_t GetWalletsResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Wallet wallets = 1;
+  // repeated .ledger.core.message.bitcoin.Wallet wallets = 1;
   {
     unsigned int count = static_cast<unsigned int>(this->wallets_size());
     total_size += 1UL * count;
@@ -773,22 +778,22 @@ size_t GetWalletsResponse::ByteSizeLong() const {
 }
 
 void GetWalletsResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.GetWalletsResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.GetWalletsResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const GetWalletsResponse* source =
       ::google::protobuf::DynamicCastToGenerated<GetWalletsResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.GetWalletsResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.GetWalletsResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.GetWalletsResponse)
     MergeFrom(*source);
   }
 }
 
 void GetWalletsResponse::MergeFrom(const GetWalletsResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.GetWalletsResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.GetWalletsResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -798,14 +803,14 @@ void GetWalletsResponse::MergeFrom(const GetWalletsResponse& from) {
 }
 
 void GetWalletsResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.GetWalletsResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.GetWalletsResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetWalletsResponse::CopyFrom(const GetWalletsResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.GetWalletsResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.GetWalletsResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -847,7 +852,7 @@ const int CreateWalletRequest::kCurrencyNameFieldNumber;
 CreateWalletRequest::CreateWalletRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.CreateWalletRequest)
 }
 CreateWalletRequest::CreateWalletRequest(const CreateWalletRequest& from)
   : ::google::protobuf::Message(),
@@ -861,7 +866,7 @@ CreateWalletRequest::CreateWalletRequest(const CreateWalletRequest& from)
   if (from.currency_name().size() > 0) {
     currency_name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.currency_name_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.CreateWalletRequest)
 }
 
 void CreateWalletRequest::SharedCtor() {
@@ -872,7 +877,7 @@ void CreateWalletRequest::SharedCtor() {
 }
 
 CreateWalletRequest::~CreateWalletRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.CreateWalletRequest)
   SharedDtor();
 }
 
@@ -891,7 +896,7 @@ const CreateWalletRequest& CreateWalletRequest::default_instance() {
 
 
 void CreateWalletRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.CreateWalletRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.CreateWalletRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -919,7 +924,7 @@ const char* CreateWalletRequest::_InternalParse(const char* begin, const char* e
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.CreateWalletRequest.name");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.CreateWalletRequest.name");
         object = msg->mutable_name();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -935,7 +940,7 @@ const char* CreateWalletRequest::_InternalParse(const char* begin, const char* e
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.CreateWalletRequest.currency_name");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.CreateWalletRequest.currency_name");
         object = msg->mutable_currency_name();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -974,7 +979,7 @@ bool CreateWalletRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.CreateWalletRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -988,7 +993,7 @@ bool CreateWalletRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->name().data(), static_cast<int>(this->name().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.CreateWalletRequest.name"));
+            "ledger.core.message.bitcoin.CreateWalletRequest.name"));
         } else {
           goto handle_unusual;
         }
@@ -1003,7 +1008,7 @@ bool CreateWalletRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->currency_name().data(), static_cast<int>(this->currency_name().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.CreateWalletRequest.currency_name"));
+            "ledger.core.message.bitcoin.CreateWalletRequest.currency_name"));
         } else {
           goto handle_unusual;
         }
@@ -1022,10 +1027,10 @@ bool CreateWalletRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.CreateWalletRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.CreateWalletRequest)
   return false;
 #undef DO_
 }
@@ -1033,7 +1038,7 @@ failure:
 
 void CreateWalletRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.CreateWalletRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1042,7 +1047,7 @@ void CreateWalletRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateWalletRequest.name");
+      "ledger.core.message.bitcoin.CreateWalletRequest.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->name(), output);
   }
@@ -1052,7 +1057,7 @@ void CreateWalletRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->currency_name().data(), static_cast<int>(this->currency_name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateWalletRequest.currency_name");
+      "ledger.core.message.bitcoin.CreateWalletRequest.currency_name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->currency_name(), output);
   }
@@ -1061,12 +1066,12 @@ void CreateWalletRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.CreateWalletRequest)
 }
 
 ::google::protobuf::uint8* CreateWalletRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.CreateWalletRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1075,7 +1080,7 @@ void CreateWalletRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateWalletRequest.name");
+      "ledger.core.message.bitcoin.CreateWalletRequest.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->name(), target);
@@ -1086,7 +1091,7 @@ void CreateWalletRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->currency_name().data(), static_cast<int>(this->currency_name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateWalletRequest.currency_name");
+      "ledger.core.message.bitcoin.CreateWalletRequest.currency_name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->currency_name(), target);
@@ -1096,12 +1101,12 @@ void CreateWalletRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.CreateWalletRequest)
   return target;
 }
 
 size_t CreateWalletRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.CreateWalletRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.CreateWalletRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1133,22 +1138,22 @@ size_t CreateWalletRequest::ByteSizeLong() const {
 }
 
 void CreateWalletRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.CreateWalletRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.CreateWalletRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const CreateWalletRequest* source =
       ::google::protobuf::DynamicCastToGenerated<CreateWalletRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.CreateWalletRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.CreateWalletRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.CreateWalletRequest)
     MergeFrom(*source);
   }
 }
 
 void CreateWalletRequest::MergeFrom(const CreateWalletRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.CreateWalletRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.CreateWalletRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -1165,14 +1170,14 @@ void CreateWalletRequest::MergeFrom(const CreateWalletRequest& from) {
 }
 
 void CreateWalletRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.CreateWalletRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.CreateWalletRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void CreateWalletRequest::CopyFrom(const CreateWalletRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.CreateWalletRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.CreateWalletRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1204,15 +1209,15 @@ void CreateWalletRequest::InternalSwap(CreateWalletRequest* other) {
 // ===================================================================
 
 void CreateWalletResponse::InitAsDefaultInstance() {
-  ::ledger::core::bitcoin::_CreateWalletResponse_default_instance_._instance.get_mutable()->wallet_ = const_cast< ::ledger::core::bitcoin::Wallet*>(
-      ::ledger::core::bitcoin::Wallet::internal_default_instance());
+  ::ledger::core::message::bitcoin::_CreateWalletResponse_default_instance_._instance.get_mutable()->wallet_ = const_cast< ::ledger::core::message::bitcoin::Wallet*>(
+      ::ledger::core::message::bitcoin::Wallet::internal_default_instance());
 }
 class CreateWalletResponse::HasBitSetters {
  public:
-  static const ::ledger::core::bitcoin::Wallet& wallet(const CreateWalletResponse* msg);
+  static const ::ledger::core::message::bitcoin::Wallet& wallet(const CreateWalletResponse* msg);
 };
 
-const ::ledger::core::bitcoin::Wallet&
+const ::ledger::core::message::bitcoin::Wallet&
 CreateWalletResponse::HasBitSetters::wallet(const CreateWalletResponse* msg) {
   return *msg->wallet_;
 }
@@ -1229,18 +1234,18 @@ const int CreateWalletResponse::kWalletFieldNumber;
 CreateWalletResponse::CreateWalletResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.CreateWalletResponse)
 }
 CreateWalletResponse::CreateWalletResponse(const CreateWalletResponse& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   if (from.has_wallet()) {
-    wallet_ = new ::ledger::core::bitcoin::Wallet(*from.wallet_);
+    wallet_ = new ::ledger::core::message::bitcoin::Wallet(*from.wallet_);
   } else {
     wallet_ = nullptr;
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.CreateWalletResponse)
 }
 
 void CreateWalletResponse::SharedCtor() {
@@ -1250,7 +1255,7 @@ void CreateWalletResponse::SharedCtor() {
 }
 
 CreateWalletResponse::~CreateWalletResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.CreateWalletResponse)
   SharedDtor();
 }
 
@@ -1268,7 +1273,7 @@ const CreateWalletResponse& CreateWalletResponse::default_instance() {
 
 
 void CreateWalletResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.CreateWalletResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.CreateWalletResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -1293,12 +1298,12 @@ const char* CreateWalletResponse::_InternalParse(const char* begin, const char* 
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // .ledger.core.bitcoin.Wallet wallet = 1;
+      // .ledger.core.message.bitcoin.Wallet wallet = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        parser_till_end = ::ledger::core::bitcoin::Wallet::_InternalParse;
+        parser_till_end = ::ledger::core::message::bitcoin::Wallet::_InternalParse;
         object = msg->mutable_wallet();
         if (size > end - ptr) goto len_delim_till_end;
         ptr += size;
@@ -1330,13 +1335,13 @@ bool CreateWalletResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.CreateWalletResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .ledger.core.bitcoin.Wallet wallet = 1;
+      // .ledger.core.message.bitcoin.Wallet wallet = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -1359,10 +1364,10 @@ bool CreateWalletResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.CreateWalletResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.CreateWalletResponse)
   return false;
 #undef DO_
 }
@@ -1370,11 +1375,11 @@ failure:
 
 void CreateWalletResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.CreateWalletResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.bitcoin.Wallet wallet = 1;
+  // .ledger.core.message.bitcoin.Wallet wallet = 1;
   if (this->has_wallet()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, HasBitSetters::wallet(this), output);
@@ -1384,16 +1389,16 @@ void CreateWalletResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.CreateWalletResponse)
 }
 
 ::google::protobuf::uint8* CreateWalletResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.CreateWalletResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.bitcoin.Wallet wallet = 1;
+  // .ledger.core.message.bitcoin.Wallet wallet = 1;
   if (this->has_wallet()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
@@ -1404,12 +1409,12 @@ void CreateWalletResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.CreateWalletResponse)
   return target;
 }
 
 size_t CreateWalletResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.CreateWalletResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.CreateWalletResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1421,7 +1426,7 @@ size_t CreateWalletResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .ledger.core.bitcoin.Wallet wallet = 1;
+  // .ledger.core.message.bitcoin.Wallet wallet = 1;
   if (this->has_wallet()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
@@ -1434,41 +1439,41 @@ size_t CreateWalletResponse::ByteSizeLong() const {
 }
 
 void CreateWalletResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.CreateWalletResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.CreateWalletResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const CreateWalletResponse* source =
       ::google::protobuf::DynamicCastToGenerated<CreateWalletResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.CreateWalletResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.CreateWalletResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.CreateWalletResponse)
     MergeFrom(*source);
   }
 }
 
 void CreateWalletResponse::MergeFrom(const CreateWalletResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.CreateWalletResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.CreateWalletResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.has_wallet()) {
-    mutable_wallet()->::ledger::core::bitcoin::Wallet::MergeFrom(from.wallet());
+    mutable_wallet()->::ledger::core::message::bitcoin::Wallet::MergeFrom(from.wallet());
   }
 }
 
 void CreateWalletResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.CreateWalletResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.CreateWalletResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void CreateWalletResponse::CopyFrom(const CreateWalletResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.CreateWalletResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.CreateWalletResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1509,7 +1514,7 @@ const int GetAccountsRequest::kWalletUidFieldNumber;
 GetAccountsRequest::GetAccountsRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.GetAccountsRequest)
 }
 GetAccountsRequest::GetAccountsRequest(const GetAccountsRequest& from)
   : ::google::protobuf::Message(),
@@ -1519,7 +1524,7 @@ GetAccountsRequest::GetAccountsRequest(const GetAccountsRequest& from)
   if (from.wallet_uid().size() > 0) {
     wallet_uid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.wallet_uid_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.GetAccountsRequest)
 }
 
 void GetAccountsRequest::SharedCtor() {
@@ -1529,7 +1534,7 @@ void GetAccountsRequest::SharedCtor() {
 }
 
 GetAccountsRequest::~GetAccountsRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.GetAccountsRequest)
   SharedDtor();
 }
 
@@ -1547,7 +1552,7 @@ const GetAccountsRequest& GetAccountsRequest::default_instance() {
 
 
 void GetAccountsRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.GetAccountsRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.GetAccountsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -1574,7 +1579,7 @@ const char* GetAccountsRequest::_InternalParse(const char* begin, const char* en
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.GetAccountsRequest.wallet_uid");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.GetAccountsRequest.wallet_uid");
         object = msg->mutable_wallet_uid();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -1613,7 +1618,7 @@ bool GetAccountsRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.GetAccountsRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -1627,7 +1632,7 @@ bool GetAccountsRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->wallet_uid().data(), static_cast<int>(this->wallet_uid().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.GetAccountsRequest.wallet_uid"));
+            "ledger.core.message.bitcoin.GetAccountsRequest.wallet_uid"));
         } else {
           goto handle_unusual;
         }
@@ -1646,10 +1651,10 @@ bool GetAccountsRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.GetAccountsRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.GetAccountsRequest)
   return false;
 #undef DO_
 }
@@ -1657,7 +1662,7 @@ failure:
 
 void GetAccountsRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.GetAccountsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1666,7 +1671,7 @@ void GetAccountsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->wallet_uid().data(), static_cast<int>(this->wallet_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.GetAccountsRequest.wallet_uid");
+      "ledger.core.message.bitcoin.GetAccountsRequest.wallet_uid");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->wallet_uid(), output);
   }
@@ -1675,12 +1680,12 @@ void GetAccountsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.GetAccountsRequest)
 }
 
 ::google::protobuf::uint8* GetAccountsRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.GetAccountsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1689,7 +1694,7 @@ void GetAccountsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->wallet_uid().data(), static_cast<int>(this->wallet_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.GetAccountsRequest.wallet_uid");
+      "ledger.core.message.bitcoin.GetAccountsRequest.wallet_uid");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->wallet_uid(), target);
@@ -1699,12 +1704,12 @@ void GetAccountsRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.GetAccountsRequest)
   return target;
 }
 
 size_t GetAccountsRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.GetAccountsRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.GetAccountsRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1729,22 +1734,22 @@ size_t GetAccountsRequest::ByteSizeLong() const {
 }
 
 void GetAccountsRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.GetAccountsRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.GetAccountsRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const GetAccountsRequest* source =
       ::google::protobuf::DynamicCastToGenerated<GetAccountsRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.GetAccountsRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.GetAccountsRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.GetAccountsRequest)
     MergeFrom(*source);
   }
 }
 
 void GetAccountsRequest::MergeFrom(const GetAccountsRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.GetAccountsRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.GetAccountsRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -1757,14 +1762,14 @@ void GetAccountsRequest::MergeFrom(const GetAccountsRequest& from) {
 }
 
 void GetAccountsRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.GetAccountsRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.GetAccountsRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetAccountsRequest::CopyFrom(const GetAccountsRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.GetAccountsRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.GetAccountsRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1809,14 +1814,14 @@ const int GetAccountsResponse::kAccountsFieldNumber;
 GetAccountsResponse::GetAccountsResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.GetAccountsResponse)
 }
 GetAccountsResponse::GetAccountsResponse(const GetAccountsResponse& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr),
       accounts_(from.accounts_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.GetAccountsResponse)
 }
 
 void GetAccountsResponse::SharedCtor() {
@@ -1825,7 +1830,7 @@ void GetAccountsResponse::SharedCtor() {
 }
 
 GetAccountsResponse::~GetAccountsResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.GetAccountsResponse)
   SharedDtor();
 }
 
@@ -1842,7 +1847,7 @@ const GetAccountsResponse& GetAccountsResponse::default_instance() {
 
 
 void GetAccountsResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.GetAccountsResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.GetAccountsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -1864,13 +1869,13 @@ const char* GetAccountsResponse::_InternalParse(const char* begin, const char* e
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // repeated .ledger.core.bitcoin.Account accounts = 1;
+      // repeated .ledger.core.message.bitcoin.Account accounts = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         do {
           ptr = ::google::protobuf::io::ReadSize(ptr, &size);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-          parser_till_end = ::ledger::core::bitcoin::Account::_InternalParse;
+          parser_till_end = ::ledger::core::message::bitcoin::Account::_InternalParse;
           object = msg->add_accounts();
           if (size > end - ptr) goto len_delim_till_end;
           ptr += size;
@@ -1904,13 +1909,13 @@ bool GetAccountsResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.GetAccountsResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .ledger.core.bitcoin.Account accounts = 1;
+      // repeated .ledger.core.message.bitcoin.Account accounts = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -1933,10 +1938,10 @@ bool GetAccountsResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.GetAccountsResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.GetAccountsResponse)
   return false;
 #undef DO_
 }
@@ -1944,11 +1949,11 @@ failure:
 
 void GetAccountsResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.GetAccountsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Account accounts = 1;
+  // repeated .ledger.core.message.bitcoin.Account accounts = 1;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->accounts_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -1961,16 +1966,16 @@ void GetAccountsResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.GetAccountsResponse)
 }
 
 ::google::protobuf::uint8* GetAccountsResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.GetAccountsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Account accounts = 1;
+  // repeated .ledger.core.message.bitcoin.Account accounts = 1;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->accounts_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
@@ -1982,12 +1987,12 @@ void GetAccountsResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.GetAccountsResponse)
   return target;
 }
 
 size_t GetAccountsResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.GetAccountsResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.GetAccountsResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1999,7 +2004,7 @@ size_t GetAccountsResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Account accounts = 1;
+  // repeated .ledger.core.message.bitcoin.Account accounts = 1;
   {
     unsigned int count = static_cast<unsigned int>(this->accounts_size());
     total_size += 1UL * count;
@@ -2016,22 +2021,22 @@ size_t GetAccountsResponse::ByteSizeLong() const {
 }
 
 void GetAccountsResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.GetAccountsResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.GetAccountsResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const GetAccountsResponse* source =
       ::google::protobuf::DynamicCastToGenerated<GetAccountsResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.GetAccountsResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.GetAccountsResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.GetAccountsResponse)
     MergeFrom(*source);
   }
 }
 
 void GetAccountsResponse::MergeFrom(const GetAccountsResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.GetAccountsResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.GetAccountsResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -2041,14 +2046,14 @@ void GetAccountsResponse::MergeFrom(const GetAccountsResponse& from) {
 }
 
 void GetAccountsResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.GetAccountsResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.GetAccountsResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetAccountsResponse::CopyFrom(const GetAccountsResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.GetAccountsResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.GetAccountsResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2077,15 +2082,15 @@ void GetAccountsResponse::InternalSwap(GetAccountsResponse* other) {
 // ===================================================================
 
 void CreateAccountRequest::InitAsDefaultInstance() {
-  ::ledger::core::bitcoin::_CreateAccountRequest_default_instance_._instance.get_mutable()->config_ = const_cast< ::ledger::core::bitcoin::AccountConfiguration*>(
-      ::ledger::core::bitcoin::AccountConfiguration::internal_default_instance());
+  ::ledger::core::message::bitcoin::_CreateAccountRequest_default_instance_._instance.get_mutable()->config_ = const_cast< ::ledger::core::message::bitcoin::AccountConfiguration*>(
+      ::ledger::core::message::bitcoin::AccountConfiguration::internal_default_instance());
 }
 class CreateAccountRequest::HasBitSetters {
  public:
-  static const ::ledger::core::bitcoin::AccountConfiguration& config(const CreateAccountRequest* msg);
+  static const ::ledger::core::message::bitcoin::AccountConfiguration& config(const CreateAccountRequest* msg);
 };
 
-const ::ledger::core::bitcoin::AccountConfiguration&
+const ::ledger::core::message::bitcoin::AccountConfiguration&
 CreateAccountRequest::HasBitSetters::config(const CreateAccountRequest* msg) {
   return *msg->config_;
 }
@@ -2104,7 +2109,7 @@ const int CreateAccountRequest::kConfigFieldNumber;
 CreateAccountRequest::CreateAccountRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.CreateAccountRequest)
 }
 CreateAccountRequest::CreateAccountRequest(const CreateAccountRequest& from)
   : ::google::protobuf::Message(),
@@ -2115,12 +2120,12 @@ CreateAccountRequest::CreateAccountRequest(const CreateAccountRequest& from)
     xpub_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.xpub_);
   }
   if (from.has_config()) {
-    config_ = new ::ledger::core::bitcoin::AccountConfiguration(*from.config_);
+    config_ = new ::ledger::core::message::bitcoin::AccountConfiguration(*from.config_);
   } else {
     config_ = nullptr;
   }
   index_ = from.index_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.CreateAccountRequest)
 }
 
 void CreateAccountRequest::SharedCtor() {
@@ -2133,7 +2138,7 @@ void CreateAccountRequest::SharedCtor() {
 }
 
 CreateAccountRequest::~CreateAccountRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.CreateAccountRequest)
   SharedDtor();
 }
 
@@ -2152,7 +2157,7 @@ const CreateAccountRequest& CreateAccountRequest::default_instance() {
 
 
 void CreateAccountRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.CreateAccountRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.CreateAccountRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2184,7 +2189,7 @@ const char* CreateAccountRequest::_InternalParse(const char* begin, const char* 
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.CreateAccountRequest.xpub");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.CreateAccountRequest.xpub");
         object = msg->mutable_xpub();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -2202,12 +2207,12 @@ const char* CreateAccountRequest::_InternalParse(const char* begin, const char* 
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         break;
       }
-      // .ledger.core.bitcoin.AccountConfiguration config = 3;
+      // .ledger.core.message.bitcoin.AccountConfiguration config = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        parser_till_end = ::ledger::core::bitcoin::AccountConfiguration::_InternalParse;
+        parser_till_end = ::ledger::core::message::bitcoin::AccountConfiguration::_InternalParse;
         object = msg->mutable_config();
         if (size > end - ptr) goto len_delim_till_end;
         ptr += size;
@@ -2243,7 +2248,7 @@ bool CreateAccountRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.CreateAccountRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -2257,7 +2262,7 @@ bool CreateAccountRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->xpub().data(), static_cast<int>(this->xpub().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.CreateAccountRequest.xpub"));
+            "ledger.core.message.bitcoin.CreateAccountRequest.xpub"));
         } else {
           goto handle_unusual;
         }
@@ -2277,7 +2282,7 @@ bool CreateAccountRequest::MergePartialFromCodedStream(
         break;
       }
 
-      // .ledger.core.bitcoin.AccountConfiguration config = 3;
+      // .ledger.core.message.bitcoin.AccountConfiguration config = 3;
       case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (26 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -2300,10 +2305,10 @@ bool CreateAccountRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.CreateAccountRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.CreateAccountRequest)
   return false;
 #undef DO_
 }
@@ -2311,7 +2316,7 @@ failure:
 
 void CreateAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.CreateAccountRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2320,7 +2325,7 @@ void CreateAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->xpub().data(), static_cast<int>(this->xpub().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateAccountRequest.xpub");
+      "ledger.core.message.bitcoin.CreateAccountRequest.xpub");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->xpub(), output);
   }
@@ -2330,7 +2335,7 @@ void CreateAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->index(), output);
   }
 
-  // .ledger.core.bitcoin.AccountConfiguration config = 3;
+  // .ledger.core.message.bitcoin.AccountConfiguration config = 3;
   if (this->has_config()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       3, HasBitSetters::config(this), output);
@@ -2340,12 +2345,12 @@ void CreateAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.CreateAccountRequest)
 }
 
 ::google::protobuf::uint8* CreateAccountRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.CreateAccountRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2354,7 +2359,7 @@ void CreateAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->xpub().data(), static_cast<int>(this->xpub().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateAccountRequest.xpub");
+      "ledger.core.message.bitcoin.CreateAccountRequest.xpub");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->xpub(), target);
@@ -2365,7 +2370,7 @@ void CreateAccountRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->index(), target);
   }
 
-  // .ledger.core.bitcoin.AccountConfiguration config = 3;
+  // .ledger.core.message.bitcoin.AccountConfiguration config = 3;
   if (this->has_config()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
@@ -2376,12 +2381,12 @@ void CreateAccountRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.CreateAccountRequest)
   return target;
 }
 
 size_t CreateAccountRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.CreateAccountRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.CreateAccountRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2400,7 +2405,7 @@ size_t CreateAccountRequest::ByteSizeLong() const {
         this->xpub());
   }
 
-  // .ledger.core.bitcoin.AccountConfiguration config = 3;
+  // .ledger.core.message.bitcoin.AccountConfiguration config = 3;
   if (this->has_config()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
@@ -2420,22 +2425,22 @@ size_t CreateAccountRequest::ByteSizeLong() const {
 }
 
 void CreateAccountRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.CreateAccountRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.CreateAccountRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const CreateAccountRequest* source =
       ::google::protobuf::DynamicCastToGenerated<CreateAccountRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.CreateAccountRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.CreateAccountRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.CreateAccountRequest)
     MergeFrom(*source);
   }
 }
 
 void CreateAccountRequest::MergeFrom(const CreateAccountRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.CreateAccountRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.CreateAccountRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -2446,7 +2451,7 @@ void CreateAccountRequest::MergeFrom(const CreateAccountRequest& from) {
     xpub_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.xpub_);
   }
   if (from.has_config()) {
-    mutable_config()->::ledger::core::bitcoin::AccountConfiguration::MergeFrom(from.config());
+    mutable_config()->::ledger::core::message::bitcoin::AccountConfiguration::MergeFrom(from.config());
   }
   if (from.index() != 0) {
     set_index(from.index());
@@ -2454,14 +2459,14 @@ void CreateAccountRequest::MergeFrom(const CreateAccountRequest& from) {
 }
 
 void CreateAccountRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.CreateAccountRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.CreateAccountRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void CreateAccountRequest::CopyFrom(const CreateAccountRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.CreateAccountRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.CreateAccountRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2505,7 +2510,7 @@ const int CreateAccountResponse::kAccountFieldNumber;
 CreateAccountResponse::CreateAccountResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.CreateAccountResponse)
 }
 CreateAccountResponse::CreateAccountResponse(const CreateAccountResponse& from)
   : ::google::protobuf::Message(),
@@ -2515,7 +2520,7 @@ CreateAccountResponse::CreateAccountResponse(const CreateAccountResponse& from)
   if (from.account().size() > 0) {
     account_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.account_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.CreateAccountResponse)
 }
 
 void CreateAccountResponse::SharedCtor() {
@@ -2525,7 +2530,7 @@ void CreateAccountResponse::SharedCtor() {
 }
 
 CreateAccountResponse::~CreateAccountResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.CreateAccountResponse)
   SharedDtor();
 }
 
@@ -2543,7 +2548,7 @@ const CreateAccountResponse& CreateAccountResponse::default_instance() {
 
 
 void CreateAccountResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.CreateAccountResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.CreateAccountResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2570,7 +2575,7 @@ const char* CreateAccountResponse::_InternalParse(const char* begin, const char*
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.CreateAccountResponse.Account");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.CreateAccountResponse.Account");
         object = msg->mutable_account();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -2609,7 +2614,7 @@ bool CreateAccountResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.CreateAccountResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -2623,7 +2628,7 @@ bool CreateAccountResponse::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->account().data(), static_cast<int>(this->account().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.CreateAccountResponse.Account"));
+            "ledger.core.message.bitcoin.CreateAccountResponse.Account"));
         } else {
           goto handle_unusual;
         }
@@ -2642,10 +2647,10 @@ bool CreateAccountResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.CreateAccountResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.CreateAccountResponse)
   return false;
 #undef DO_
 }
@@ -2653,7 +2658,7 @@ failure:
 
 void CreateAccountResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.CreateAccountResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2662,7 +2667,7 @@ void CreateAccountResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->account().data(), static_cast<int>(this->account().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateAccountResponse.Account");
+      "ledger.core.message.bitcoin.CreateAccountResponse.Account");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->account(), output);
   }
@@ -2671,12 +2676,12 @@ void CreateAccountResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.CreateAccountResponse)
 }
 
 ::google::protobuf::uint8* CreateAccountResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.CreateAccountResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2685,7 +2690,7 @@ void CreateAccountResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->account().data(), static_cast<int>(this->account().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.CreateAccountResponse.Account");
+      "ledger.core.message.bitcoin.CreateAccountResponse.Account");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->account(), target);
@@ -2695,12 +2700,12 @@ void CreateAccountResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.CreateAccountResponse)
   return target;
 }
 
 size_t CreateAccountResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.CreateAccountResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.CreateAccountResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2725,22 +2730,22 @@ size_t CreateAccountResponse::ByteSizeLong() const {
 }
 
 void CreateAccountResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.CreateAccountResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.CreateAccountResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const CreateAccountResponse* source =
       ::google::protobuf::DynamicCastToGenerated<CreateAccountResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.CreateAccountResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.CreateAccountResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.CreateAccountResponse)
     MergeFrom(*source);
   }
 }
 
 void CreateAccountResponse::MergeFrom(const CreateAccountResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.CreateAccountResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.CreateAccountResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -2753,14 +2758,14 @@ void CreateAccountResponse::MergeFrom(const CreateAccountResponse& from) {
 }
 
 void CreateAccountResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.CreateAccountResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.CreateAccountResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void CreateAccountResponse::CopyFrom(const CreateAccountResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.CreateAccountResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.CreateAccountResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -2802,7 +2807,7 @@ const int SyncAccountRequest::kAccUidFieldNumber;
 SyncAccountRequest::SyncAccountRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.SyncAccountRequest)
 }
 SyncAccountRequest::SyncAccountRequest(const SyncAccountRequest& from)
   : ::google::protobuf::Message(),
@@ -2812,7 +2817,7 @@ SyncAccountRequest::SyncAccountRequest(const SyncAccountRequest& from)
   if (from.acc_uid().size() > 0) {
     acc_uid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.acc_uid_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.SyncAccountRequest)
 }
 
 void SyncAccountRequest::SharedCtor() {
@@ -2822,7 +2827,7 @@ void SyncAccountRequest::SharedCtor() {
 }
 
 SyncAccountRequest::~SyncAccountRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.SyncAccountRequest)
   SharedDtor();
 }
 
@@ -2840,7 +2845,7 @@ const SyncAccountRequest& SyncAccountRequest::default_instance() {
 
 
 void SyncAccountRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.SyncAccountRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.SyncAccountRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -2867,7 +2872,7 @@ const char* SyncAccountRequest::_InternalParse(const char* begin, const char* en
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.SyncAccountRequest.acc_uid");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.SyncAccountRequest.acc_uid");
         object = msg->mutable_acc_uid();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -2906,7 +2911,7 @@ bool SyncAccountRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.SyncAccountRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -2920,7 +2925,7 @@ bool SyncAccountRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.SyncAccountRequest.acc_uid"));
+            "ledger.core.message.bitcoin.SyncAccountRequest.acc_uid"));
         } else {
           goto handle_unusual;
         }
@@ -2939,10 +2944,10 @@ bool SyncAccountRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.SyncAccountRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.SyncAccountRequest)
   return false;
 #undef DO_
 }
@@ -2950,7 +2955,7 @@ failure:
 
 void SyncAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.SyncAccountRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2959,7 +2964,7 @@ void SyncAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.SyncAccountRequest.acc_uid");
+      "ledger.core.message.bitcoin.SyncAccountRequest.acc_uid");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->acc_uid(), output);
   }
@@ -2968,12 +2973,12 @@ void SyncAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.SyncAccountRequest)
 }
 
 ::google::protobuf::uint8* SyncAccountRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.SyncAccountRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -2982,7 +2987,7 @@ void SyncAccountRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.SyncAccountRequest.acc_uid");
+      "ledger.core.message.bitcoin.SyncAccountRequest.acc_uid");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->acc_uid(), target);
@@ -2992,12 +2997,12 @@ void SyncAccountRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.SyncAccountRequest)
   return target;
 }
 
 size_t SyncAccountRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.SyncAccountRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.SyncAccountRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -3022,22 +3027,22 @@ size_t SyncAccountRequest::ByteSizeLong() const {
 }
 
 void SyncAccountRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.SyncAccountRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.SyncAccountRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const SyncAccountRequest* source =
       ::google::protobuf::DynamicCastToGenerated<SyncAccountRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.SyncAccountRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.SyncAccountRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.SyncAccountRequest)
     MergeFrom(*source);
   }
 }
 
 void SyncAccountRequest::MergeFrom(const SyncAccountRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.SyncAccountRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.SyncAccountRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -3050,14 +3055,14 @@ void SyncAccountRequest::MergeFrom(const SyncAccountRequest& from) {
 }
 
 void SyncAccountRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.SyncAccountRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.SyncAccountRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void SyncAccountRequest::CopyFrom(const SyncAccountRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.SyncAccountRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.SyncAccountRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3099,14 +3104,14 @@ const int SyncAccountResponse::kNewAccFieldNumber;
 SyncAccountResponse::SyncAccountResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.SyncAccountResponse)
 }
 SyncAccountResponse::SyncAccountResponse(const SyncAccountResponse& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   new_acc_ = from.new_acc_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.SyncAccountResponse)
 }
 
 void SyncAccountResponse::SharedCtor() {
@@ -3114,7 +3119,7 @@ void SyncAccountResponse::SharedCtor() {
 }
 
 SyncAccountResponse::~SyncAccountResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.SyncAccountResponse)
   SharedDtor();
 }
 
@@ -3131,7 +3136,7 @@ const SyncAccountResponse& SyncAccountResponse::default_instance() {
 
 
 void SyncAccountResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.SyncAccountResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.SyncAccountResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -3181,7 +3186,7 @@ bool SyncAccountResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.SyncAccountResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -3212,10 +3217,10 @@ bool SyncAccountResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.SyncAccountResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.SyncAccountResponse)
   return false;
 #undef DO_
 }
@@ -3223,7 +3228,7 @@ failure:
 
 void SyncAccountResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.SyncAccountResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -3236,12 +3241,12 @@ void SyncAccountResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.SyncAccountResponse)
 }
 
 ::google::protobuf::uint8* SyncAccountResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.SyncAccountResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -3254,12 +3259,12 @@ void SyncAccountResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.SyncAccountResponse)
   return target;
 }
 
 size_t SyncAccountResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.SyncAccountResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.SyncAccountResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -3282,22 +3287,22 @@ size_t SyncAccountResponse::ByteSizeLong() const {
 }
 
 void SyncAccountResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.SyncAccountResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.SyncAccountResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const SyncAccountResponse* source =
       ::google::protobuf::DynamicCastToGenerated<SyncAccountResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.SyncAccountResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.SyncAccountResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.SyncAccountResponse)
     MergeFrom(*source);
   }
 }
 
 void SyncAccountResponse::MergeFrom(const SyncAccountResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.SyncAccountResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.SyncAccountResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -3309,14 +3314,14 @@ void SyncAccountResponse::MergeFrom(const SyncAccountResponse& from) {
 }
 
 void SyncAccountResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.SyncAccountResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.SyncAccountResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void SyncAccountResponse::CopyFrom(const SyncAccountResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.SyncAccountResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.SyncAccountResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3357,7 +3362,7 @@ const int GetBalanceRequest::kAccUidFieldNumber;
 GetBalanceRequest::GetBalanceRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.GetBalanceRequest)
 }
 GetBalanceRequest::GetBalanceRequest(const GetBalanceRequest& from)
   : ::google::protobuf::Message(),
@@ -3367,7 +3372,7 @@ GetBalanceRequest::GetBalanceRequest(const GetBalanceRequest& from)
   if (from.acc_uid().size() > 0) {
     acc_uid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.acc_uid_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.GetBalanceRequest)
 }
 
 void GetBalanceRequest::SharedCtor() {
@@ -3377,7 +3382,7 @@ void GetBalanceRequest::SharedCtor() {
 }
 
 GetBalanceRequest::~GetBalanceRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.GetBalanceRequest)
   SharedDtor();
 }
 
@@ -3395,7 +3400,7 @@ const GetBalanceRequest& GetBalanceRequest::default_instance() {
 
 
 void GetBalanceRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.GetBalanceRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.GetBalanceRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -3422,7 +3427,7 @@ const char* GetBalanceRequest::_InternalParse(const char* begin, const char* end
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.GetBalanceRequest.acc_uid");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.GetBalanceRequest.acc_uid");
         object = msg->mutable_acc_uid();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -3461,7 +3466,7 @@ bool GetBalanceRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.GetBalanceRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -3475,7 +3480,7 @@ bool GetBalanceRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.GetBalanceRequest.acc_uid"));
+            "ledger.core.message.bitcoin.GetBalanceRequest.acc_uid"));
         } else {
           goto handle_unusual;
         }
@@ -3494,10 +3499,10 @@ bool GetBalanceRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.GetBalanceRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.GetBalanceRequest)
   return false;
 #undef DO_
 }
@@ -3505,7 +3510,7 @@ failure:
 
 void GetBalanceRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.GetBalanceRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -3514,7 +3519,7 @@ void GetBalanceRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.GetBalanceRequest.acc_uid");
+      "ledger.core.message.bitcoin.GetBalanceRequest.acc_uid");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->acc_uid(), output);
   }
@@ -3523,12 +3528,12 @@ void GetBalanceRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.GetBalanceRequest)
 }
 
 ::google::protobuf::uint8* GetBalanceRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.GetBalanceRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -3537,7 +3542,7 @@ void GetBalanceRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.GetBalanceRequest.acc_uid");
+      "ledger.core.message.bitcoin.GetBalanceRequest.acc_uid");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->acc_uid(), target);
@@ -3547,12 +3552,12 @@ void GetBalanceRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.GetBalanceRequest)
   return target;
 }
 
 size_t GetBalanceRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.GetBalanceRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.GetBalanceRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -3577,22 +3582,22 @@ size_t GetBalanceRequest::ByteSizeLong() const {
 }
 
 void GetBalanceRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.GetBalanceRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.GetBalanceRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const GetBalanceRequest* source =
       ::google::protobuf::DynamicCastToGenerated<GetBalanceRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.GetBalanceRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.GetBalanceRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.GetBalanceRequest)
     MergeFrom(*source);
   }
 }
 
 void GetBalanceRequest::MergeFrom(const GetBalanceRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.GetBalanceRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.GetBalanceRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -3605,14 +3610,14 @@ void GetBalanceRequest::MergeFrom(const GetBalanceRequest& from) {
 }
 
 void GetBalanceRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.GetBalanceRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.GetBalanceRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetBalanceRequest::CopyFrom(const GetBalanceRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.GetBalanceRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.GetBalanceRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3642,15 +3647,15 @@ void GetBalanceRequest::InternalSwap(GetBalanceRequest* other) {
 // ===================================================================
 
 void GetBalanceResponse::InitAsDefaultInstance() {
-  ::ledger::core::bitcoin::_GetBalanceResponse_default_instance_._instance.get_mutable()->amount_ = const_cast< ::ledger::core::Amount*>(
-      ::ledger::core::Amount::internal_default_instance());
+  ::ledger::core::message::bitcoin::_GetBalanceResponse_default_instance_._instance.get_mutable()->amount_ = const_cast< ::ledger::core::message::common::Amount*>(
+      ::ledger::core::message::common::Amount::internal_default_instance());
 }
 class GetBalanceResponse::HasBitSetters {
  public:
-  static const ::ledger::core::Amount& amount(const GetBalanceResponse* msg);
+  static const ::ledger::core::message::common::Amount& amount(const GetBalanceResponse* msg);
 };
 
-const ::ledger::core::Amount&
+const ::ledger::core::message::common::Amount&
 GetBalanceResponse::HasBitSetters::amount(const GetBalanceResponse* msg) {
   return *msg->amount_;
 }
@@ -3667,18 +3672,18 @@ const int GetBalanceResponse::kAmountFieldNumber;
 GetBalanceResponse::GetBalanceResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.GetBalanceResponse)
 }
 GetBalanceResponse::GetBalanceResponse(const GetBalanceResponse& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   if (from.has_amount()) {
-    amount_ = new ::ledger::core::Amount(*from.amount_);
+    amount_ = new ::ledger::core::message::common::Amount(*from.amount_);
   } else {
     amount_ = nullptr;
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.GetBalanceResponse)
 }
 
 void GetBalanceResponse::SharedCtor() {
@@ -3688,7 +3693,7 @@ void GetBalanceResponse::SharedCtor() {
 }
 
 GetBalanceResponse::~GetBalanceResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.GetBalanceResponse)
   SharedDtor();
 }
 
@@ -3706,7 +3711,7 @@ const GetBalanceResponse& GetBalanceResponse::default_instance() {
 
 
 void GetBalanceResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.GetBalanceResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.GetBalanceResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -3731,12 +3736,12 @@ const char* GetBalanceResponse::_InternalParse(const char* begin, const char* en
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // .ledger.core.Amount amount = 1;
+      // .ledger.core.message.common.Amount amount = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        parser_till_end = ::ledger::core::Amount::_InternalParse;
+        parser_till_end = ::ledger::core::message::common::Amount::_InternalParse;
         object = msg->mutable_amount();
         if (size > end - ptr) goto len_delim_till_end;
         ptr += size;
@@ -3768,13 +3773,13 @@ bool GetBalanceResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.GetBalanceResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .ledger.core.Amount amount = 1;
+      // .ledger.core.message.common.Amount amount = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -3797,10 +3802,10 @@ bool GetBalanceResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.GetBalanceResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.GetBalanceResponse)
   return false;
 #undef DO_
 }
@@ -3808,11 +3813,11 @@ failure:
 
 void GetBalanceResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.GetBalanceResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.Amount amount = 1;
+  // .ledger.core.message.common.Amount amount = 1;
   if (this->has_amount()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, HasBitSetters::amount(this), output);
@@ -3822,16 +3827,16 @@ void GetBalanceResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.GetBalanceResponse)
 }
 
 ::google::protobuf::uint8* GetBalanceResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.GetBalanceResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.Amount amount = 1;
+  // .ledger.core.message.common.Amount amount = 1;
   if (this->has_amount()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
@@ -3842,12 +3847,12 @@ void GetBalanceResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.GetBalanceResponse)
   return target;
 }
 
 size_t GetBalanceResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.GetBalanceResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.GetBalanceResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -3859,7 +3864,7 @@ size_t GetBalanceResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .ledger.core.Amount amount = 1;
+  // .ledger.core.message.common.Amount amount = 1;
   if (this->has_amount()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
@@ -3872,41 +3877,41 @@ size_t GetBalanceResponse::ByteSizeLong() const {
 }
 
 void GetBalanceResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.GetBalanceResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.GetBalanceResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const GetBalanceResponse* source =
       ::google::protobuf::DynamicCastToGenerated<GetBalanceResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.GetBalanceResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.GetBalanceResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.GetBalanceResponse)
     MergeFrom(*source);
   }
 }
 
 void GetBalanceResponse::MergeFrom(const GetBalanceResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.GetBalanceResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.GetBalanceResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.has_amount()) {
-    mutable_amount()->::ledger::core::Amount::MergeFrom(from.amount());
+    mutable_amount()->::ledger::core::message::common::Amount::MergeFrom(from.amount());
   }
 }
 
 void GetBalanceResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.GetBalanceResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.GetBalanceResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetBalanceResponse::CopyFrom(const GetBalanceResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.GetBalanceResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.GetBalanceResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -3947,7 +3952,7 @@ const int GetOperationsRequest::kAccUidFieldNumber;
 GetOperationsRequest::GetOperationsRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.GetOperationsRequest)
 }
 GetOperationsRequest::GetOperationsRequest(const GetOperationsRequest& from)
   : ::google::protobuf::Message(),
@@ -3957,7 +3962,7 @@ GetOperationsRequest::GetOperationsRequest(const GetOperationsRequest& from)
   if (from.acc_uid().size() > 0) {
     acc_uid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.acc_uid_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.GetOperationsRequest)
 }
 
 void GetOperationsRequest::SharedCtor() {
@@ -3967,7 +3972,7 @@ void GetOperationsRequest::SharedCtor() {
 }
 
 GetOperationsRequest::~GetOperationsRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.GetOperationsRequest)
   SharedDtor();
 }
 
@@ -3985,7 +3990,7 @@ const GetOperationsRequest& GetOperationsRequest::default_instance() {
 
 
 void GetOperationsRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.GetOperationsRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.GetOperationsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -4012,7 +4017,7 @@ const char* GetOperationsRequest::_InternalParse(const char* begin, const char* 
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.GetOperationsRequest.acc_uid");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.GetOperationsRequest.acc_uid");
         object = msg->mutable_acc_uid();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -4051,7 +4056,7 @@ bool GetOperationsRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.GetOperationsRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -4065,7 +4070,7 @@ bool GetOperationsRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.GetOperationsRequest.acc_uid"));
+            "ledger.core.message.bitcoin.GetOperationsRequest.acc_uid"));
         } else {
           goto handle_unusual;
         }
@@ -4084,10 +4089,10 @@ bool GetOperationsRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.GetOperationsRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.GetOperationsRequest)
   return false;
 #undef DO_
 }
@@ -4095,7 +4100,7 @@ failure:
 
 void GetOperationsRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.GetOperationsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -4104,7 +4109,7 @@ void GetOperationsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.GetOperationsRequest.acc_uid");
+      "ledger.core.message.bitcoin.GetOperationsRequest.acc_uid");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->acc_uid(), output);
   }
@@ -4113,12 +4118,12 @@ void GetOperationsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.GetOperationsRequest)
 }
 
 ::google::protobuf::uint8* GetOperationsRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.GetOperationsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -4127,7 +4132,7 @@ void GetOperationsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.GetOperationsRequest.acc_uid");
+      "ledger.core.message.bitcoin.GetOperationsRequest.acc_uid");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->acc_uid(), target);
@@ -4137,12 +4142,12 @@ void GetOperationsRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.GetOperationsRequest)
   return target;
 }
 
 size_t GetOperationsRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.GetOperationsRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.GetOperationsRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -4167,22 +4172,22 @@ size_t GetOperationsRequest::ByteSizeLong() const {
 }
 
 void GetOperationsRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.GetOperationsRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.GetOperationsRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const GetOperationsRequest* source =
       ::google::protobuf::DynamicCastToGenerated<GetOperationsRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.GetOperationsRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.GetOperationsRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.GetOperationsRequest)
     MergeFrom(*source);
   }
 }
 
 void GetOperationsRequest::MergeFrom(const GetOperationsRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.GetOperationsRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.GetOperationsRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -4195,14 +4200,14 @@ void GetOperationsRequest::MergeFrom(const GetOperationsRequest& from) {
 }
 
 void GetOperationsRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.GetOperationsRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.GetOperationsRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetOperationsRequest::CopyFrom(const GetOperationsRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.GetOperationsRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.GetOperationsRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4247,14 +4252,14 @@ const int GetOperationsResponse::kOperationsFieldNumber;
 GetOperationsResponse::GetOperationsResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.GetOperationsResponse)
 }
 GetOperationsResponse::GetOperationsResponse(const GetOperationsResponse& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr),
       operations_(from.operations_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.GetOperationsResponse)
 }
 
 void GetOperationsResponse::SharedCtor() {
@@ -4263,7 +4268,7 @@ void GetOperationsResponse::SharedCtor() {
 }
 
 GetOperationsResponse::~GetOperationsResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.GetOperationsResponse)
   SharedDtor();
 }
 
@@ -4280,7 +4285,7 @@ const GetOperationsResponse& GetOperationsResponse::default_instance() {
 
 
 void GetOperationsResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.GetOperationsResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.GetOperationsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -4302,13 +4307,13 @@ const char* GetOperationsResponse::_InternalParse(const char* begin, const char*
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // repeated .ledger.core.bitcoin.Operation operations = 1;
+      // repeated .ledger.core.message.bitcoin.Operation operations = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         do {
           ptr = ::google::protobuf::io::ReadSize(ptr, &size);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-          parser_till_end = ::ledger::core::bitcoin::Operation::_InternalParse;
+          parser_till_end = ::ledger::core::message::bitcoin::Operation::_InternalParse;
           object = msg->add_operations();
           if (size > end - ptr) goto len_delim_till_end;
           ptr += size;
@@ -4342,13 +4347,13 @@ bool GetOperationsResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.GetOperationsResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // repeated .ledger.core.bitcoin.Operation operations = 1;
+      // repeated .ledger.core.message.bitcoin.Operation operations = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -4371,10 +4376,10 @@ bool GetOperationsResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.GetOperationsResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.GetOperationsResponse)
   return false;
 #undef DO_
 }
@@ -4382,11 +4387,11 @@ failure:
 
 void GetOperationsResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.GetOperationsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Operation operations = 1;
+  // repeated .ledger.core.message.bitcoin.Operation operations = 1;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->operations_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -4399,16 +4404,16 @@ void GetOperationsResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.GetOperationsResponse)
 }
 
 ::google::protobuf::uint8* GetOperationsResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.GetOperationsResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Operation operations = 1;
+  // repeated .ledger.core.message.bitcoin.Operation operations = 1;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->operations_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
@@ -4420,12 +4425,12 @@ void GetOperationsResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.GetOperationsResponse)
   return target;
 }
 
 size_t GetOperationsResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.GetOperationsResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.GetOperationsResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -4437,7 +4442,7 @@ size_t GetOperationsResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .ledger.core.bitcoin.Operation operations = 1;
+  // repeated .ledger.core.message.bitcoin.Operation operations = 1;
   {
     unsigned int count = static_cast<unsigned int>(this->operations_size());
     total_size += 1UL * count;
@@ -4454,22 +4459,22 @@ size_t GetOperationsResponse::ByteSizeLong() const {
 }
 
 void GetOperationsResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.GetOperationsResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.GetOperationsResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const GetOperationsResponse* source =
       ::google::protobuf::DynamicCastToGenerated<GetOperationsResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.GetOperationsResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.GetOperationsResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.GetOperationsResponse)
     MergeFrom(*source);
   }
 }
 
 void GetOperationsResponse::MergeFrom(const GetOperationsResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.GetOperationsResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.GetOperationsResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -4479,14 +4484,14 @@ void GetOperationsResponse::MergeFrom(const GetOperationsResponse& from) {
 }
 
 void GetOperationsResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.GetOperationsResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.GetOperationsResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetOperationsResponse::CopyFrom(const GetOperationsResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.GetOperationsResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.GetOperationsResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4515,15 +4520,15 @@ void GetOperationsResponse::InternalSwap(GetOperationsResponse* other) {
 // ===================================================================
 
 void SetAccountSettingsRequest::InitAsDefaultInstance() {
-  ::ledger::core::bitcoin::_SetAccountSettingsRequest_default_instance_._instance.get_mutable()->settings_ = const_cast< ::ledger::core::bitcoin::AccountSettings*>(
-      ::ledger::core::bitcoin::AccountSettings::internal_default_instance());
+  ::ledger::core::message::bitcoin::_SetAccountSettingsRequest_default_instance_._instance.get_mutable()->settings_ = const_cast< ::ledger::core::message::bitcoin::AccountSettings*>(
+      ::ledger::core::message::bitcoin::AccountSettings::internal_default_instance());
 }
 class SetAccountSettingsRequest::HasBitSetters {
  public:
-  static const ::ledger::core::bitcoin::AccountSettings& settings(const SetAccountSettingsRequest* msg);
+  static const ::ledger::core::message::bitcoin::AccountSettings& settings(const SetAccountSettingsRequest* msg);
 };
 
-const ::ledger::core::bitcoin::AccountSettings&
+const ::ledger::core::message::bitcoin::AccountSettings&
 SetAccountSettingsRequest::HasBitSetters::settings(const SetAccountSettingsRequest* msg) {
   return *msg->settings_;
 }
@@ -4541,7 +4546,7 @@ const int SetAccountSettingsRequest::kSettingsFieldNumber;
 SetAccountSettingsRequest::SetAccountSettingsRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.SetAccountSettingsRequest)
 }
 SetAccountSettingsRequest::SetAccountSettingsRequest(const SetAccountSettingsRequest& from)
   : ::google::protobuf::Message(),
@@ -4552,11 +4557,11 @@ SetAccountSettingsRequest::SetAccountSettingsRequest(const SetAccountSettingsReq
     acc_uid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.acc_uid_);
   }
   if (from.has_settings()) {
-    settings_ = new ::ledger::core::bitcoin::AccountSettings(*from.settings_);
+    settings_ = new ::ledger::core::message::bitcoin::AccountSettings(*from.settings_);
   } else {
     settings_ = nullptr;
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.SetAccountSettingsRequest)
 }
 
 void SetAccountSettingsRequest::SharedCtor() {
@@ -4567,7 +4572,7 @@ void SetAccountSettingsRequest::SharedCtor() {
 }
 
 SetAccountSettingsRequest::~SetAccountSettingsRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   SharedDtor();
 }
 
@@ -4586,7 +4591,7 @@ const SetAccountSettingsRequest& SetAccountSettingsRequest::default_instance() {
 
 
 void SetAccountSettingsRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -4617,7 +4622,7 @@ const char* SetAccountSettingsRequest::_InternalParse(const char* begin, const c
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.bitcoin.SetAccountSettingsRequest.acc_uid");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.SetAccountSettingsRequest.acc_uid");
         object = msg->mutable_acc_uid();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -4628,12 +4633,12 @@ const char* SetAccountSettingsRequest::_InternalParse(const char* begin, const c
         ptr += size;
         break;
       }
-      // .ledger.core.bitcoin.AccountSettings settings = 2;
+      // .ledger.core.message.bitcoin.AccountSettings settings = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        parser_till_end = ::ledger::core::bitcoin::AccountSettings::_InternalParse;
+        parser_till_end = ::ledger::core::message::bitcoin::AccountSettings::_InternalParse;
         object = msg->mutable_settings();
         if (size > end - ptr) goto len_delim_till_end;
         ptr += size;
@@ -4669,7 +4674,7 @@ bool SetAccountSettingsRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -4683,14 +4688,14 @@ bool SetAccountSettingsRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.bitcoin.SetAccountSettingsRequest.acc_uid"));
+            "ledger.core.message.bitcoin.SetAccountSettingsRequest.acc_uid"));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // .ledger.core.bitcoin.AccountSettings settings = 2;
+      // .ledger.core.message.bitcoin.AccountSettings settings = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (18 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -4713,10 +4718,10 @@ bool SetAccountSettingsRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   return false;
 #undef DO_
 }
@@ -4724,7 +4729,7 @@ failure:
 
 void SetAccountSettingsRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -4733,12 +4738,12 @@ void SetAccountSettingsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.SetAccountSettingsRequest.acc_uid");
+      "ledger.core.message.bitcoin.SetAccountSettingsRequest.acc_uid");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->acc_uid(), output);
   }
 
-  // .ledger.core.bitcoin.AccountSettings settings = 2;
+  // .ledger.core.message.bitcoin.AccountSettings settings = 2;
   if (this->has_settings()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, HasBitSetters::settings(this), output);
@@ -4748,12 +4753,12 @@ void SetAccountSettingsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.SetAccountSettingsRequest)
 }
 
 ::google::protobuf::uint8* SetAccountSettingsRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -4762,13 +4767,13 @@ void SetAccountSettingsRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->acc_uid().data(), static_cast<int>(this->acc_uid().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.bitcoin.SetAccountSettingsRequest.acc_uid");
+      "ledger.core.message.bitcoin.SetAccountSettingsRequest.acc_uid");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->acc_uid(), target);
   }
 
-  // .ledger.core.bitcoin.AccountSettings settings = 2;
+  // .ledger.core.message.bitcoin.AccountSettings settings = 2;
   if (this->has_settings()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
@@ -4779,12 +4784,12 @@ void SetAccountSettingsRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   return target;
 }
 
 size_t SetAccountSettingsRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -4803,7 +4808,7 @@ size_t SetAccountSettingsRequest::ByteSizeLong() const {
         this->acc_uid());
   }
 
-  // .ledger.core.bitcoin.AccountSettings settings = 2;
+  // .ledger.core.message.bitcoin.AccountSettings settings = 2;
   if (this->has_settings()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
@@ -4816,22 +4821,22 @@ size_t SetAccountSettingsRequest::ByteSizeLong() const {
 }
 
 void SetAccountSettingsRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const SetAccountSettingsRequest* source =
       ::google::protobuf::DynamicCastToGenerated<SetAccountSettingsRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.SetAccountSettingsRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.SetAccountSettingsRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.SetAccountSettingsRequest)
     MergeFrom(*source);
   }
 }
 
 void SetAccountSettingsRequest::MergeFrom(const SetAccountSettingsRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -4842,19 +4847,19 @@ void SetAccountSettingsRequest::MergeFrom(const SetAccountSettingsRequest& from)
     acc_uid_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.acc_uid_);
   }
   if (from.has_settings()) {
-    mutable_settings()->::ledger::core::bitcoin::AccountSettings::MergeFrom(from.settings());
+    mutable_settings()->::ledger::core::message::bitcoin::AccountSettings::MergeFrom(from.settings());
   }
 }
 
 void SetAccountSettingsRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void SetAccountSettingsRequest::CopyFrom(const SetAccountSettingsRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.SetAccountSettingsRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.SetAccountSettingsRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -4898,7 +4903,7 @@ const int Request::kSubmessageFieldNumber;
 Request::Request()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.Request)
 }
 Request::Request(const Request& from)
   : ::google::protobuf::Message(),
@@ -4909,7 +4914,7 @@ Request::Request(const Request& from)
     submessage_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.submessage_);
   }
   type_ = from.type_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.Request)
 }
 
 void Request::SharedCtor() {
@@ -4920,7 +4925,7 @@ void Request::SharedCtor() {
 }
 
 Request::~Request() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.Request)
   SharedDtor();
 }
 
@@ -4938,7 +4943,7 @@ const Request& Request::default_instance() {
 
 
 void Request::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.Request)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.Request)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -4961,11 +4966,11 @@ const char* Request::_InternalParse(const char* begin, const char* end, void* ob
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // .ledger.core.bitcoin.RequestType type = 1;
+      // .ledger.core.message.bitcoin.RequestType type = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
         ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
-        msg->set_type(static_cast<::ledger::core::bitcoin::RequestType>(val));
+        msg->set_type(static_cast<::ledger::core::message::bitcoin::RequestType>(val));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         break;
       }
@@ -5012,20 +5017,20 @@ bool Request::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.Request)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .ledger.core.bitcoin.RequestType type = 1;
+      // .ledger.core.message.bitcoin.RequestType type = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (8 & 0xFF)) {
           int value = 0;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_type(static_cast< ::ledger::core::bitcoin::RequestType >(value));
+          set_type(static_cast< ::ledger::core::message::bitcoin::RequestType >(value));
         } else {
           goto handle_unusual;
         }
@@ -5055,10 +5060,10 @@ bool Request::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.Request)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.Request)
   return false;
 #undef DO_
 }
@@ -5066,11 +5071,11 @@ failure:
 
 void Request::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.Request)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.bitcoin.RequestType type = 1;
+  // .ledger.core.message.bitcoin.RequestType type = 1;
   if (this->type() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->type(), output);
@@ -5086,16 +5091,16 @@ void Request::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.Request)
 }
 
 ::google::protobuf::uint8* Request::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.Request)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.bitcoin.RequestType type = 1;
+  // .ledger.core.message.bitcoin.RequestType type = 1;
   if (this->type() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->type(), target);
@@ -5112,12 +5117,12 @@ void Request::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.Request)
   return target;
 }
 
 size_t Request::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.Request)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.Request)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -5136,7 +5141,7 @@ size_t Request::ByteSizeLong() const {
         this->submessage());
   }
 
-  // .ledger.core.bitcoin.RequestType type = 1;
+  // .ledger.core.message.bitcoin.RequestType type = 1;
   if (this->type() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
@@ -5148,22 +5153,22 @@ size_t Request::ByteSizeLong() const {
 }
 
 void Request::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.Request)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.Request)
   GOOGLE_DCHECK_NE(&from, this);
   const Request* source =
       ::google::protobuf::DynamicCastToGenerated<Request>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.Request)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.Request)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.Request)
     MergeFrom(*source);
   }
 }
 
 void Request::MergeFrom(const Request& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.Request)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.Request)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -5179,14 +5184,14 @@ void Request::MergeFrom(const Request& from) {
 }
 
 void Request::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.Request)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.Request)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Request::CopyFrom(const Request& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.Request)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.Request)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -5216,54 +5221,55 @@ void Request::InternalSwap(Request* other) {
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::GetWalletsResponse* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::GetWalletsResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::GetWalletsResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::GetWalletsResponse* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::GetWalletsResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::GetWalletsResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::CreateWalletRequest* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::CreateWalletRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::CreateWalletRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::CreateWalletRequest* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::CreateWalletRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::CreateWalletRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::CreateWalletResponse* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::CreateWalletResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::CreateWalletResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::CreateWalletResponse* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::CreateWalletResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::CreateWalletResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::GetAccountsRequest* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::GetAccountsRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::GetAccountsRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::GetAccountsRequest* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::GetAccountsRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::GetAccountsRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::GetAccountsResponse* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::GetAccountsResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::GetAccountsResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::GetAccountsResponse* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::GetAccountsResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::GetAccountsResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::CreateAccountRequest* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::CreateAccountRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::CreateAccountRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::CreateAccountRequest* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::CreateAccountRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::CreateAccountRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::CreateAccountResponse* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::CreateAccountResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::CreateAccountResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::CreateAccountResponse* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::CreateAccountResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::CreateAccountResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::SyncAccountRequest* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::SyncAccountRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::SyncAccountRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::SyncAccountRequest* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::SyncAccountRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::SyncAccountRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::SyncAccountResponse* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::SyncAccountResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::SyncAccountResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::SyncAccountResponse* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::SyncAccountResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::SyncAccountResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::GetBalanceRequest* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::GetBalanceRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::GetBalanceRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::GetBalanceRequest* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::GetBalanceRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::GetBalanceRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::GetBalanceResponse* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::GetBalanceResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::GetBalanceResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::GetBalanceResponse* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::GetBalanceResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::GetBalanceResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::GetOperationsRequest* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::GetOperationsRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::GetOperationsRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::GetOperationsRequest* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::GetOperationsRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::GetOperationsRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::GetOperationsResponse* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::GetOperationsResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::GetOperationsResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::GetOperationsResponse* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::GetOperationsResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::GetOperationsResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::SetAccountSettingsRequest* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::SetAccountSettingsRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::SetAccountSettingsRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::SetAccountSettingsRequest* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::SetAccountSettingsRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::SetAccountSettingsRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::Request* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::Request >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::Request >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::Request* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::Request >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::Request >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

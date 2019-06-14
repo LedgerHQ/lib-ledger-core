@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ledger.core.bitcoin;
+package ledger.core.message.bitcoin;
 
 import "bitcoin/account.proto";
 import "bitcoin/account_config.proto";
@@ -58,7 +58,7 @@ message GetBalanceRequest {
 }
 
 message GetBalanceResponse {
-    Amount amount = 1;
+    common.Amount amount = 1;
 }
 
 // GET_OPERATIONS

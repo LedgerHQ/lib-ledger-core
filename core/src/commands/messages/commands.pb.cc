@@ -18,6 +18,7 @@
 
 namespace ledger {
 namespace core {
+namespace message {
 class CoreRequestDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<CoreRequest> _instance;
@@ -30,17 +31,18 @@ class GetVersionResponseDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<GetVersionResponse> _instance;
 } _GetVersionResponse_default_instance_;
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 static void InitDefaultsCoreRequest_commands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_CoreRequest_default_instance_;
-    new (ptr) ::ledger::core::CoreRequest();
+    void* ptr = &::ledger::core::message::_CoreRequest_default_instance_;
+    new (ptr) ::ledger::core::message::CoreRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::CoreRequest::InitAsDefaultInstance();
+  ::ledger::core::message::CoreRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_CoreRequest_commands_2eproto =
@@ -50,11 +52,11 @@ static void InitDefaultsCoreResponse_commands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_CoreResponse_default_instance_;
-    new (ptr) ::ledger::core::CoreResponse();
+    void* ptr = &::ledger::core::message::_CoreResponse_default_instance_;
+    new (ptr) ::ledger::core::message::CoreResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::CoreResponse::InitAsDefaultInstance();
+  ::ledger::core::message::CoreResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_CoreResponse_commands_2eproto =
@@ -64,11 +66,11 @@ static void InitDefaultsGetVersionResponse_commands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_GetVersionResponse_default_instance_;
-    new (ptr) ::ledger::core::GetVersionResponse();
+    void* ptr = &::ledger::core::message::_GetVersionResponse_default_instance_;
+    new (ptr) ::ledger::core::message::GetVersionResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::GetVersionResponse::InitAsDefaultInstance();
+  ::ledger::core::message::GetVersionResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_GetVersionResponse_commands_2eproto =
@@ -86,38 +88,38 @@ constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descr
 
 const ::google::protobuf::uint32 TableStruct_commands_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::CoreRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::CoreRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::CoreRequest, request_type_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::CoreRequest, request_body_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::CoreRequest, request_type_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::CoreRequest, request_body_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::CoreResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::CoreResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::CoreResponse, response_body_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::CoreResponse, error_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::CoreResponse, response_body_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::CoreResponse, error_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::GetVersionResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::GetVersionResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::GetVersionResponse, major_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::GetVersionResponse, minor_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::GetVersionResponse, patch_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::GetVersionResponse, major_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::GetVersionResponse, minor_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::GetVersionResponse, patch_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::ledger::core::CoreRequest)},
-  { 7, -1, sizeof(::ledger::core::CoreResponse)},
-  { 14, -1, sizeof(::ledger::core::GetVersionResponse)},
+  { 0, -1, sizeof(::ledger::core::message::CoreRequest)},
+  { 7, -1, sizeof(::ledger::core::message::CoreResponse)},
+  { 14, -1, sizeof(::ledger::core::message::GetVersionResponse)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_CoreRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_CoreResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_GetVersionResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_CoreRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_CoreResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_GetVersionResponse_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_commands_2eproto = {
@@ -127,21 +129,21 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_commands_2eproto[] =
-  "\n\016commands.proto\022\013ledger.core\"W\n\013CoreReq"
-  "uest\0222\n\014request_type\030\001 \001(\0162\034.ledger.core"
-  ".CoreRequestType\022\024\n\014request_body\030\002 \001(\014\"4"
-  "\n\014CoreResponse\022\025\n\rresponse_body\030\001 \001(\014\022\r\n"
-  "\005error\030\002 \001(\t\"A\n\022GetVersionResponse\022\r\n\005ma"
-  "jor\030\001 \001(\005\022\r\n\005minor\030\002 \001(\005\022\r\n\005patch\030\003 \001(\005*"
-  "u\n\017CoreRequestType\022\017\n\013GET_VERSION\020\000\022\025\n\021S"
-  "ET_CONFIGURATION\020\001\022\023\n\017BITCOIN_REQUEST\020\002\022"
-  "\024\n\020ETHEREUM_REQUEST\020\003\022\017\n\013XRP_REQUEST\020\004b\006"
-  "proto3"
+  "\n\016commands.proto\022\023ledger.core.message\"_\n"
+  "\013CoreRequest\022:\n\014request_type\030\001 \001(\0162$.led"
+  "ger.core.message.CoreRequestType\022\024\n\014requ"
+  "est_body\030\002 \001(\014\"4\n\014CoreResponse\022\025\n\rrespon"
+  "se_body\030\001 \001(\014\022\r\n\005error\030\002 \001(\t\"A\n\022GetVersi"
+  "onResponse\022\r\n\005major\030\001 \001(\005\022\r\n\005minor\030\002 \001(\005"
+  "\022\r\n\005patch\030\003 \001(\005*u\n\017CoreRequestType\022\017\n\013GE"
+  "T_VERSION\020\000\022\025\n\021SET_CONFIGURATION\020\001\022\023\n\017BI"
+  "TCOIN_REQUEST\020\002\022\024\n\020ETHEREUM_REQUEST\020\003\022\017\n"
+  "\013XRP_REQUEST\020\004b\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_commands_2eproto = {
   false, InitDefaults_commands_2eproto, 
   descriptor_table_protodef_commands_2eproto,
-  "commands.proto", &assign_descriptors_table_commands_2eproto, 366,
+  "commands.proto", &assign_descriptors_table_commands_2eproto, 382,
 };
 
 void AddDescriptors_commands_2eproto() {
@@ -155,6 +157,7 @@ void AddDescriptors_commands_2eproto() {
 static bool dynamic_init_dummy_commands_2eproto = []() { AddDescriptors_commands_2eproto(); return true; }();
 namespace ledger {
 namespace core {
+namespace message {
 const ::google::protobuf::EnumDescriptor* CoreRequestType_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&assign_descriptors_table_commands_2eproto);
   return file_level_enum_descriptors_commands_2eproto[0];
@@ -189,7 +192,7 @@ const int CoreRequest::kRequestBodyFieldNumber;
 CoreRequest::CoreRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.CoreRequest)
 }
 CoreRequest::CoreRequest(const CoreRequest& from)
   : ::google::protobuf::Message(),
@@ -200,7 +203,7 @@ CoreRequest::CoreRequest(const CoreRequest& from)
     request_body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.request_body_);
   }
   request_type_ = from.request_type_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.CoreRequest)
 }
 
 void CoreRequest::SharedCtor() {
@@ -211,7 +214,7 @@ void CoreRequest::SharedCtor() {
 }
 
 CoreRequest::~CoreRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.CoreRequest)
   SharedDtor();
 }
 
@@ -229,7 +232,7 @@ const CoreRequest& CoreRequest::default_instance() {
 
 
 void CoreRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.CoreRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.CoreRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -252,11 +255,11 @@ const char* CoreRequest::_InternalParse(const char* begin, const char* end, void
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // .ledger.core.CoreRequestType request_type = 1;
+      // .ledger.core.message.CoreRequestType request_type = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
         ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
-        msg->set_request_type(static_cast<::ledger::core::CoreRequestType>(val));
+        msg->set_request_type(static_cast<::ledger::core::message::CoreRequestType>(val));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         break;
       }
@@ -303,20 +306,20 @@ bool CoreRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.CoreRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .ledger.core.CoreRequestType request_type = 1;
+      // .ledger.core.message.CoreRequestType request_type = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (8 & 0xFF)) {
           int value = 0;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_request_type(static_cast< ::ledger::core::CoreRequestType >(value));
+          set_request_type(static_cast< ::ledger::core::message::CoreRequestType >(value));
         } else {
           goto handle_unusual;
         }
@@ -346,10 +349,10 @@ bool CoreRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.CoreRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.CoreRequest)
   return false;
 #undef DO_
 }
@@ -357,11 +360,11 @@ failure:
 
 void CoreRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.CoreRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.CoreRequestType request_type = 1;
+  // .ledger.core.message.CoreRequestType request_type = 1;
   if (this->request_type() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->request_type(), output);
@@ -377,16 +380,16 @@ void CoreRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.CoreRequest)
 }
 
 ::google::protobuf::uint8* CoreRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.CoreRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.CoreRequestType request_type = 1;
+  // .ledger.core.message.CoreRequestType request_type = 1;
   if (this->request_type() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->request_type(), target);
@@ -403,12 +406,12 @@ void CoreRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.CoreRequest)
   return target;
 }
 
 size_t CoreRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.CoreRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.CoreRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -427,7 +430,7 @@ size_t CoreRequest::ByteSizeLong() const {
         this->request_body());
   }
 
-  // .ledger.core.CoreRequestType request_type = 1;
+  // .ledger.core.message.CoreRequestType request_type = 1;
   if (this->request_type() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->request_type());
@@ -439,22 +442,22 @@ size_t CoreRequest::ByteSizeLong() const {
 }
 
 void CoreRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.CoreRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.CoreRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const CoreRequest* source =
       ::google::protobuf::DynamicCastToGenerated<CoreRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.CoreRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.CoreRequest)
     MergeFrom(*source);
   }
 }
 
 void CoreRequest::MergeFrom(const CoreRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.CoreRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.CoreRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -470,14 +473,14 @@ void CoreRequest::MergeFrom(const CoreRequest& from) {
 }
 
 void CoreRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.CoreRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.CoreRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void CoreRequest::CopyFrom(const CoreRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.CoreRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.CoreRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -521,7 +524,7 @@ const int CoreResponse::kErrorFieldNumber;
 CoreResponse::CoreResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.CoreResponse)
 }
 CoreResponse::CoreResponse(const CoreResponse& from)
   : ::google::protobuf::Message(),
@@ -535,7 +538,7 @@ CoreResponse::CoreResponse(const CoreResponse& from)
   if (from.error().size() > 0) {
     error_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.error_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.CoreResponse)
 }
 
 void CoreResponse::SharedCtor() {
@@ -546,7 +549,7 @@ void CoreResponse::SharedCtor() {
 }
 
 CoreResponse::~CoreResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.CoreResponse)
   SharedDtor();
 }
 
@@ -565,7 +568,7 @@ const CoreResponse& CoreResponse::default_instance() {
 
 
 void CoreResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.CoreResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.CoreResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -608,7 +611,7 @@ const char* CoreResponse::_InternalParse(const char* begin, const char* end, voi
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.CoreResponse.error");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.CoreResponse.error");
         object = msg->mutable_error();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -647,7 +650,7 @@ bool CoreResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.CoreResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -672,7 +675,7 @@ bool CoreResponse::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->error().data(), static_cast<int>(this->error().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.CoreResponse.error"));
+            "ledger.core.message.CoreResponse.error"));
         } else {
           goto handle_unusual;
         }
@@ -691,10 +694,10 @@ bool CoreResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.CoreResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.CoreResponse)
   return false;
 #undef DO_
 }
@@ -702,7 +705,7 @@ failure:
 
 void CoreResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.CoreResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -717,7 +720,7 @@ void CoreResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->error().data(), static_cast<int>(this->error().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.CoreResponse.error");
+      "ledger.core.message.CoreResponse.error");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->error(), output);
   }
@@ -726,12 +729,12 @@ void CoreResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.CoreResponse)
 }
 
 ::google::protobuf::uint8* CoreResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.CoreResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -747,7 +750,7 @@ void CoreResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->error().data(), static_cast<int>(this->error().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.CoreResponse.error");
+      "ledger.core.message.CoreResponse.error");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->error(), target);
@@ -757,12 +760,12 @@ void CoreResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.CoreResponse)
   return target;
 }
 
 size_t CoreResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.CoreResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.CoreResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -794,22 +797,22 @@ size_t CoreResponse::ByteSizeLong() const {
 }
 
 void CoreResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.CoreResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.CoreResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const CoreResponse* source =
       ::google::protobuf::DynamicCastToGenerated<CoreResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.CoreResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.CoreResponse)
     MergeFrom(*source);
   }
 }
 
 void CoreResponse::MergeFrom(const CoreResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.CoreResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.CoreResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -826,14 +829,14 @@ void CoreResponse::MergeFrom(const CoreResponse& from) {
 }
 
 void CoreResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.CoreResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.CoreResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void CoreResponse::CopyFrom(const CoreResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.CoreResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.CoreResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -879,7 +882,7 @@ const int GetVersionResponse::kPatchFieldNumber;
 GetVersionResponse::GetVersionResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.GetVersionResponse)
 }
 GetVersionResponse::GetVersionResponse(const GetVersionResponse& from)
   : ::google::protobuf::Message(),
@@ -888,7 +891,7 @@ GetVersionResponse::GetVersionResponse(const GetVersionResponse& from)
   ::memcpy(&major_, &from.major_,
     static_cast<size_t>(reinterpret_cast<char*>(&patch_) -
     reinterpret_cast<char*>(&major_)) + sizeof(patch_));
-  // @@protoc_insertion_point(copy_constructor:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.GetVersionResponse)
 }
 
 void GetVersionResponse::SharedCtor() {
@@ -898,7 +901,7 @@ void GetVersionResponse::SharedCtor() {
 }
 
 GetVersionResponse::~GetVersionResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.GetVersionResponse)
   SharedDtor();
 }
 
@@ -915,7 +918,7 @@ const GetVersionResponse& GetVersionResponse::default_instance() {
 
 
 void GetVersionResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.GetVersionResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.GetVersionResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -981,7 +984,7 @@ bool GetVersionResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.GetVersionResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -1038,10 +1041,10 @@ bool GetVersionResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.GetVersionResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.GetVersionResponse)
   return false;
 #undef DO_
 }
@@ -1049,7 +1052,7 @@ failure:
 
 void GetVersionResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.GetVersionResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1072,12 +1075,12 @@ void GetVersionResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.GetVersionResponse)
 }
 
 ::google::protobuf::uint8* GetVersionResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.GetVersionResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1100,12 +1103,12 @@ void GetVersionResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.GetVersionResponse)
   return target;
 }
 
 size_t GetVersionResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.GetVersionResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.GetVersionResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1144,22 +1147,22 @@ size_t GetVersionResponse::ByteSizeLong() const {
 }
 
 void GetVersionResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.GetVersionResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.GetVersionResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const GetVersionResponse* source =
       ::google::protobuf::DynamicCastToGenerated<GetVersionResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.GetVersionResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.GetVersionResponse)
     MergeFrom(*source);
   }
 }
 
 void GetVersionResponse::MergeFrom(const GetVersionResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.GetVersionResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.GetVersionResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -1177,14 +1180,14 @@ void GetVersionResponse::MergeFrom(const GetVersionResponse& from) {
 }
 
 void GetVersionResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.GetVersionResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.GetVersionResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void GetVersionResponse::CopyFrom(const GetVersionResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.GetVersionResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.GetVersionResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1213,18 +1216,19 @@ void GetVersionResponse::InternalSwap(GetVersionResponse* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::ledger::core::CoreRequest* Arena::CreateMaybeMessage< ::ledger::core::CoreRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::CoreRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::CoreRequest* Arena::CreateMaybeMessage< ::ledger::core::message::CoreRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::CoreRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::CoreResponse* Arena::CreateMaybeMessage< ::ledger::core::CoreResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::CoreResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::CoreResponse* Arena::CreateMaybeMessage< ::ledger::core::message::CoreResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::CoreResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::GetVersionResponse* Arena::CreateMaybeMessage< ::ledger::core::GetVersionResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::GetVersionResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::GetVersionResponse* Arena::CreateMaybeMessage< ::ledger::core::message::GetVersionResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::GetVersionResponse >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

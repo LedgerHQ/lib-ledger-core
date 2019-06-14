@@ -51,23 +51,29 @@ struct TableStruct_common_2fcurrency_2eproto {
 void AddDescriptors_common_2fcurrency_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 class Currency;
 class CurrencyDefaultTypeInternal;
 extern CurrencyDefaultTypeInternal _Currency_default_instance_;
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::Currency* Arena::CreateMaybeMessage<::ledger::core::Currency>(Arena*);
+template<> ::ledger::core::message::common::Currency* Arena::CreateMaybeMessage<::ledger::core::message::common::Currency>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 
 // ===================================================================
 
 class Currency :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.Currency) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.common.Currency) */ {
  public:
   Currency();
   virtual ~Currency();
@@ -161,16 +167,16 @@ class Currency :
 
   // accessors -------------------------------------------------------
 
-  // repeated .ledger.core.Unit units = 3;
+  // repeated .ledger.core.message.common.Unit units = 3;
   int units_size() const;
   void clear_units();
   static const int kUnitsFieldNumber = 3;
-  ::ledger::core::Unit* mutable_units(int index);
-  ::google::protobuf::RepeatedPtrField< ::ledger::core::Unit >*
+  ::ledger::core::message::common::Unit* mutable_units(int index);
+  ::google::protobuf::RepeatedPtrField< ::ledger::core::message::common::Unit >*
       mutable_units();
-  const ::ledger::core::Unit& units(int index) const;
-  ::ledger::core::Unit* add_units();
-  const ::google::protobuf::RepeatedPtrField< ::ledger::core::Unit >&
+  const ::ledger::core::message::common::Unit& units(int index) const;
+  ::ledger::core::message::common::Unit* add_units();
+  const ::google::protobuf::RepeatedPtrField< ::ledger::core::message::common::Unit >&
       units() const;
 
   // string name = 1;
@@ -201,12 +207,12 @@ class Currency :
   ::std::string* release_identifier();
   void set_allocated_identifier(::std::string* identifier);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.Currency)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.common.Currency)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::RepeatedPtrField< ::ledger::core::Unit > units_;
+  ::google::protobuf::RepeatedPtrField< ::ledger::core::message::common::Unit > units_;
   ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr identifier_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
@@ -228,41 +234,41 @@ inline void Currency::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Currency::name() const {
-  // @@protoc_insertion_point(field_get:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_get:ledger.core.message.common.Currency.name)
   return name_.GetNoArena();
 }
 inline void Currency::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_set:ledger.core.message.common.Currency.name)
 }
 #if LANG_CXX11
 inline void Currency::set_name(::std::string&& value) {
   
   name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.common.Currency.name)
 }
 #endif
 inline void Currency::set_name(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.common.Currency.name)
 }
 inline void Currency::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.common.Currency.name)
 }
 inline ::std::string* Currency::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.common.Currency.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Currency::release_name() {
-  // @@protoc_insertion_point(field_release:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_release:ledger.core.message.common.Currency.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -273,7 +279,7 @@ inline void Currency::set_allocated_name(::std::string* name) {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.Currency.name)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.common.Currency.name)
 }
 
 // string identifier = 2;
@@ -281,41 +287,41 @@ inline void Currency::clear_identifier() {
   identifier_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Currency::identifier() const {
-  // @@protoc_insertion_point(field_get:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_get:ledger.core.message.common.Currency.identifier)
   return identifier_.GetNoArena();
 }
 inline void Currency::set_identifier(const ::std::string& value) {
   
   identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_set:ledger.core.message.common.Currency.identifier)
 }
 #if LANG_CXX11
 inline void Currency::set_identifier(::std::string&& value) {
   
   identifier_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.common.Currency.identifier)
 }
 #endif
 inline void Currency::set_identifier(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.common.Currency.identifier)
 }
 inline void Currency::set_identifier(const char* value, size_t size) {
   
   identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.common.Currency.identifier)
 }
 inline ::std::string* Currency::mutable_identifier() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.common.Currency.identifier)
   return identifier_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Currency::release_identifier() {
-  // @@protoc_insertion_point(field_release:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_release:ledger.core.message.common.Currency.identifier)
   
   return identifier_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -326,33 +332,33 @@ inline void Currency::set_allocated_identifier(::std::string* identifier) {
     
   }
   identifier_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), identifier);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.Currency.identifier)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.common.Currency.identifier)
 }
 
-// repeated .ledger.core.Unit units = 3;
+// repeated .ledger.core.message.common.Unit units = 3;
 inline int Currency::units_size() const {
   return units_.size();
 }
-inline ::ledger::core::Unit* Currency::mutable_units(int index) {
-  // @@protoc_insertion_point(field_mutable:ledger.core.Currency.units)
+inline ::ledger::core::message::common::Unit* Currency::mutable_units(int index) {
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.common.Currency.units)
   return units_.Mutable(index);
 }
-inline ::google::protobuf::RepeatedPtrField< ::ledger::core::Unit >*
+inline ::google::protobuf::RepeatedPtrField< ::ledger::core::message::common::Unit >*
 Currency::mutable_units() {
-  // @@protoc_insertion_point(field_mutable_list:ledger.core.Currency.units)
+  // @@protoc_insertion_point(field_mutable_list:ledger.core.message.common.Currency.units)
   return &units_;
 }
-inline const ::ledger::core::Unit& Currency::units(int index) const {
-  // @@protoc_insertion_point(field_get:ledger.core.Currency.units)
+inline const ::ledger::core::message::common::Unit& Currency::units(int index) const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.common.Currency.units)
   return units_.Get(index);
 }
-inline ::ledger::core::Unit* Currency::add_units() {
-  // @@protoc_insertion_point(field_add:ledger.core.Currency.units)
+inline ::ledger::core::message::common::Unit* Currency::add_units() {
+  // @@protoc_insertion_point(field_add:ledger.core.message.common.Currency.units)
   return units_.Add();
 }
-inline const ::google::protobuf::RepeatedPtrField< ::ledger::core::Unit >&
+inline const ::google::protobuf::RepeatedPtrField< ::ledger::core::message::common::Unit >&
 Currency::units() const {
-  // @@protoc_insertion_point(field_list:ledger.core.Currency.units)
+  // @@protoc_insertion_point(field_list:ledger.core.message.common.Currency.units)
   return units_;
 }
 
@@ -362,6 +368,8 @@ Currency::units() const {
 
 // @@protoc_insertion_point(namespace_scope)
 
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 

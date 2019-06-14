@@ -2,7 +2,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
-#include "messages.pb.h"
+#include "commands.pb.h"
 #include "ubinder/wrapper_interface.h"
 #include "ubinder/function_types.h"
 #include "ubinder/cpp_wrapper.hpp"
@@ -26,16 +26,16 @@ namespace ledger {
             std::unique_ptr<BitcoinLikeCommandProcessor> _bitcoinLikeProcessor;
             std::shared_ptr<WalletPool> _walletPool;
         private:
-            Future<lib_core_proto::LibCoreResponse> processRequest(lib_core_proto::LibCoreRequest&& request);
+            Future<message::CoreResponse> processRequest(message::CoreRequest&& request);
         };
 
         static ubinder::CppWrapper<ledger::core::LibCoreCommands> CppWrapperInstance;
 
-        void OnRequestFunc(const void* request, const char* data, size_t dataSize) {
+        void OnRequestFunc(uint64_t request, const char* data, size_t dataSize) {
             CppWrapperInstance.onRequest(request, data, dataSize);
         }
 
-        void OnResponseFunc(const void* request, const char* data, size_t dataSize) {
+        void OnResponseFunc(uint64_t request, const char* data, size_t dataSize) {
             CppWrapperInstance.onResponse(request, data, dataSize);
         }
 

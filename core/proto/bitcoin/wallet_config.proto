@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ledger.core.bitcoin;
+package ledger.core.message.bitcoin;
 import "bitcoin/account_config.proto";
 
 // This values can be changed at any time

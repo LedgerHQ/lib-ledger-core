@@ -19,21 +19,25 @@
 extern PROTOBUF_INTERNAL_EXPORT_common_2funit_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Unit_common_2funit_2eproto;
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 class CurrencyDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<Currency> _instance;
 } _Currency_default_instance_;
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 static void InitDefaultsCurrency_common_2fcurrency_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_Currency_default_instance_;
-    new (ptr) ::ledger::core::Currency();
+    void* ptr = &::ledger::core::message::common::_Currency_default_instance_;
+    new (ptr) ::ledger::core::message::common::Currency();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::Currency::InitAsDefaultInstance();
+  ::ledger::core::message::common::Currency::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_Currency_common_2fcurrency_2eproto =
@@ -50,20 +54,20 @@ constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descr
 
 const ::google::protobuf::uint32 TableStruct_common_2fcurrency_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Currency, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Currency, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Currency, name_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Currency, identifier_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Currency, units_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Currency, name_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Currency, identifier_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Currency, units_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::ledger::core::Currency)},
+  { 0, -1, sizeof(::ledger::core::message::common::Currency)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_Currency_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::common::_Currency_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_common_2fcurrency_2eproto = {
@@ -73,15 +77,16 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_common_2fcurrency_2eproto[] =
-  "\n\025common/currency.proto\022\013ledger.core\032\021co"
-  "mmon/unit.proto\"N\n\010Currency\022\014\n\004name\030\001 \001("
-  "\t\022\022\n\nidentifier\030\002 \001(\t\022 \n\005units\030\003 \003(\0132\021.l"
-  "edger.core.Unitb\006proto3"
+  "\n\025common/currency.proto\022\032ledger.core.mes"
+  "sage.common\032\021common/unit.proto\"]\n\010Curren"
+  "cy\022\014\n\004name\030\001 \001(\t\022\022\n\nidentifier\030\002 \001(\t\022/\n\005"
+  "units\030\003 \003(\0132 .ledger.core.message.common"
+  ".Unitb\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_common_2fcurrency_2eproto = {
   false, InitDefaults_common_2fcurrency_2eproto, 
   descriptor_table_protodef_common_2fcurrency_2eproto,
-  "common/currency.proto", &assign_descriptors_table_common_2fcurrency_2eproto, 143,
+  "common/currency.proto", &assign_descriptors_table_common_2fcurrency_2eproto, 173,
 };
 
 void AddDescriptors_common_2fcurrency_2eproto() {
@@ -96,6 +101,8 @@ void AddDescriptors_common_2fcurrency_2eproto() {
 static bool dynamic_init_dummy_common_2fcurrency_2eproto = []() { AddDescriptors_common_2fcurrency_2eproto(); return true; }();
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 
 // ===================================================================
 
@@ -117,7 +124,7 @@ const int Currency::kUnitsFieldNumber;
 Currency::Currency()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.Currency)
+  // @@protoc_insertion_point(constructor:ledger.core.message.common.Currency)
 }
 Currency::Currency(const Currency& from)
   : ::google::protobuf::Message(),
@@ -132,7 +139,7 @@ Currency::Currency(const Currency& from)
   if (from.identifier().size() > 0) {
     identifier_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.identifier_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.Currency)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.common.Currency)
 }
 
 void Currency::SharedCtor() {
@@ -143,7 +150,7 @@ void Currency::SharedCtor() {
 }
 
 Currency::~Currency() {
-  // @@protoc_insertion_point(destructor:ledger.core.Currency)
+  // @@protoc_insertion_point(destructor:ledger.core.message.common.Currency)
   SharedDtor();
 }
 
@@ -162,7 +169,7 @@ const Currency& Currency::default_instance() {
 
 
 void Currency::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.Currency)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.common.Currency)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -191,7 +198,7 @@ const char* Currency::_InternalParse(const char* begin, const char* end, void* o
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.Currency.name");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.common.Currency.name");
         object = msg->mutable_name();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -207,7 +214,7 @@ const char* Currency::_InternalParse(const char* begin, const char* end, void* o
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.Currency.identifier");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.common.Currency.identifier");
         object = msg->mutable_identifier();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -218,13 +225,13 @@ const char* Currency::_InternalParse(const char* begin, const char* end, void* o
         ptr += size;
         break;
       }
-      // repeated .ledger.core.Unit units = 3;
+      // repeated .ledger.core.message.common.Unit units = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
         do {
           ptr = ::google::protobuf::io::ReadSize(ptr, &size);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-          parser_till_end = ::ledger::core::Unit::_InternalParse;
+          parser_till_end = ::ledger::core::message::common::Unit::_InternalParse;
           object = msg->add_units();
           if (size > end - ptr) goto len_delim_till_end;
           ptr += size;
@@ -262,7 +269,7 @@ bool Currency::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.Currency)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.common.Currency)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -276,7 +283,7 @@ bool Currency::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->name().data(), static_cast<int>(this->name().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.Currency.name"));
+            "ledger.core.message.common.Currency.name"));
         } else {
           goto handle_unusual;
         }
@@ -291,14 +298,14 @@ bool Currency::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->identifier().data(), static_cast<int>(this->identifier().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.Currency.identifier"));
+            "ledger.core.message.common.Currency.identifier"));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // repeated .ledger.core.Unit units = 3;
+      // repeated .ledger.core.message.common.Unit units = 3;
       case 3: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (26 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -321,10 +328,10 @@ bool Currency::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.Currency)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.common.Currency)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.Currency)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.common.Currency)
   return false;
 #undef DO_
 }
@@ -332,7 +339,7 @@ failure:
 
 void Currency::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.Currency)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.common.Currency)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -341,7 +348,7 @@ void Currency::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Currency.name");
+      "ledger.core.message.common.Currency.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->name(), output);
   }
@@ -351,12 +358,12 @@ void Currency::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->identifier().data(), static_cast<int>(this->identifier().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Currency.identifier");
+      "ledger.core.message.common.Currency.identifier");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->identifier(), output);
   }
 
-  // repeated .ledger.core.Unit units = 3;
+  // repeated .ledger.core.message.common.Unit units = 3;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->units_size()); i < n; i++) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
@@ -369,12 +376,12 @@ void Currency::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.Currency)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.common.Currency)
 }
 
 ::google::protobuf::uint8* Currency::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.Currency)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.common.Currency)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -383,7 +390,7 @@ void Currency::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Currency.name");
+      "ledger.core.message.common.Currency.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->name(), target);
@@ -394,13 +401,13 @@ void Currency::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->identifier().data(), static_cast<int>(this->identifier().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Currency.identifier");
+      "ledger.core.message.common.Currency.identifier");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->identifier(), target);
   }
 
-  // repeated .ledger.core.Unit units = 3;
+  // repeated .ledger.core.message.common.Unit units = 3;
   for (unsigned int i = 0,
       n = static_cast<unsigned int>(this->units_size()); i < n; i++) {
     target = ::google::protobuf::internal::WireFormatLite::
@@ -412,12 +419,12 @@ void Currency::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.Currency)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.common.Currency)
   return target;
 }
 
 size_t Currency::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.Currency)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.common.Currency)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -429,7 +436,7 @@ size_t Currency::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // repeated .ledger.core.Unit units = 3;
+  // repeated .ledger.core.message.common.Unit units = 3;
   {
     unsigned int count = static_cast<unsigned int>(this->units_size());
     total_size += 1UL * count;
@@ -460,22 +467,22 @@ size_t Currency::ByteSizeLong() const {
 }
 
 void Currency::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.Currency)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.common.Currency)
   GOOGLE_DCHECK_NE(&from, this);
   const Currency* source =
       ::google::protobuf::DynamicCastToGenerated<Currency>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.Currency)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.common.Currency)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.Currency)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.common.Currency)
     MergeFrom(*source);
   }
 }
 
 void Currency::MergeFrom(const Currency& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.Currency)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.common.Currency)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -493,14 +500,14 @@ void Currency::MergeFrom(const Currency& from) {
 }
 
 void Currency::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.Currency)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.common.Currency)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Currency::CopyFrom(const Currency& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.Currency)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.common.Currency)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -531,12 +538,14 @@ void Currency::InternalSwap(Currency* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::ledger::core::Currency* Arena::CreateMaybeMessage< ::ledger::core::Currency >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::Currency >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::common::Currency* Arena::CreateMaybeMessage< ::ledger::core::message::common::Currency >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::common::Currency >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

@@ -19,21 +19,25 @@
 extern PROTOBUF_INTERNAL_EXPORT_common_2funit_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_Unit_common_2funit_2eproto;
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 class AmountDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<Amount> _instance;
 } _Amount_default_instance_;
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 static void InitDefaultsAmount_common_2famount_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_Amount_default_instance_;
-    new (ptr) ::ledger::core::Amount();
+    void* ptr = &::ledger::core::message::common::_Amount_default_instance_;
+    new (ptr) ::ledger::core::message::common::Amount();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::Amount::InitAsDefaultInstance();
+  ::ledger::core::message::common::Amount::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_Amount_common_2famount_2eproto =
@@ -50,19 +54,19 @@ constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descr
 
 const ::google::protobuf::uint32 TableStruct_common_2famount_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Amount, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Amount, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Amount, value_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Amount, unit_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Amount, value_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Amount, unit_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::ledger::core::Amount)},
+  { 0, -1, sizeof(::ledger::core::message::common::Amount)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_Amount_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::common::_Amount_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_common_2famount_2eproto = {
@@ -72,14 +76,15 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_common_2famount_2eproto[] =
-  "\n\023common/amount.proto\022\013ledger.core\032\021comm"
-  "on/unit.proto\"8\n\006Amount\022\r\n\005value\030\001 \001(\t\022\037"
-  "\n\004unit\030\002 \001(\0132\021.ledger.core.Unitb\006proto3"
+  "\n\023common/amount.proto\022\032ledger.core.messa"
+  "ge.common\032\021common/unit.proto\"G\n\006Amount\022\r"
+  "\n\005value\030\001 \001(\t\022.\n\004unit\030\002 \001(\0132 .ledger.cor"
+  "e.message.common.Unitb\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_common_2famount_2eproto = {
   false, InitDefaults_common_2famount_2eproto, 
   descriptor_table_protodef_common_2famount_2eproto,
-  "common/amount.proto", &assign_descriptors_table_common_2famount_2eproto, 119,
+  "common/amount.proto", &assign_descriptors_table_common_2famount_2eproto, 149,
 };
 
 void AddDescriptors_common_2famount_2eproto() {
@@ -94,19 +99,21 @@ void AddDescriptors_common_2famount_2eproto() {
 static bool dynamic_init_dummy_common_2famount_2eproto = []() { AddDescriptors_common_2famount_2eproto(); return true; }();
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 
 // ===================================================================
 
 void Amount::InitAsDefaultInstance() {
-  ::ledger::core::_Amount_default_instance_._instance.get_mutable()->unit_ = const_cast< ::ledger::core::Unit*>(
-      ::ledger::core::Unit::internal_default_instance());
+  ::ledger::core::message::common::_Amount_default_instance_._instance.get_mutable()->unit_ = const_cast< ::ledger::core::message::common::Unit*>(
+      ::ledger::core::message::common::Unit::internal_default_instance());
 }
 class Amount::HasBitSetters {
  public:
-  static const ::ledger::core::Unit& unit(const Amount* msg);
+  static const ::ledger::core::message::common::Unit& unit(const Amount* msg);
 };
 
-const ::ledger::core::Unit&
+const ::ledger::core::message::common::Unit&
 Amount::HasBitSetters::unit(const Amount* msg) {
   return *msg->unit_;
 }
@@ -124,7 +131,7 @@ const int Amount::kUnitFieldNumber;
 Amount::Amount()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.Amount)
+  // @@protoc_insertion_point(constructor:ledger.core.message.common.Amount)
 }
 Amount::Amount(const Amount& from)
   : ::google::protobuf::Message(),
@@ -135,11 +142,11 @@ Amount::Amount(const Amount& from)
     value_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.value_);
   }
   if (from.has_unit()) {
-    unit_ = new ::ledger::core::Unit(*from.unit_);
+    unit_ = new ::ledger::core::message::common::Unit(*from.unit_);
   } else {
     unit_ = nullptr;
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.Amount)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.common.Amount)
 }
 
 void Amount::SharedCtor() {
@@ -150,7 +157,7 @@ void Amount::SharedCtor() {
 }
 
 Amount::~Amount() {
-  // @@protoc_insertion_point(destructor:ledger.core.Amount)
+  // @@protoc_insertion_point(destructor:ledger.core.message.common.Amount)
   SharedDtor();
 }
 
@@ -169,7 +176,7 @@ const Amount& Amount::default_instance() {
 
 
 void Amount::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.Amount)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.common.Amount)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -200,7 +207,7 @@ const char* Amount::_InternalParse(const char* begin, const char* end, void* obj
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.Amount.value");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.common.Amount.value");
         object = msg->mutable_value();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -211,12 +218,12 @@ const char* Amount::_InternalParse(const char* begin, const char* end, void* obj
         ptr += size;
         break;
       }
-      // .ledger.core.Unit unit = 2;
+      // .ledger.core.message.common.Unit unit = 2;
       case 2: {
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        parser_till_end = ::ledger::core::Unit::_InternalParse;
+        parser_till_end = ::ledger::core::message::common::Unit::_InternalParse;
         object = msg->mutable_unit();
         if (size > end - ptr) goto len_delim_till_end;
         ptr += size;
@@ -252,7 +259,7 @@ bool Amount::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.Amount)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.common.Amount)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -266,14 +273,14 @@ bool Amount::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->value().data(), static_cast<int>(this->value().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.Amount.value"));
+            "ledger.core.message.common.Amount.value"));
         } else {
           goto handle_unusual;
         }
         break;
       }
 
-      // .ledger.core.Unit unit = 2;
+      // .ledger.core.message.common.Unit unit = 2;
       case 2: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (18 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -296,10 +303,10 @@ bool Amount::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.Amount)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.common.Amount)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.Amount)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.common.Amount)
   return false;
 #undef DO_
 }
@@ -307,7 +314,7 @@ failure:
 
 void Amount::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.Amount)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.common.Amount)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -316,12 +323,12 @@ void Amount::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->value().data(), static_cast<int>(this->value().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Amount.value");
+      "ledger.core.message.common.Amount.value");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->value(), output);
   }
 
-  // .ledger.core.Unit unit = 2;
+  // .ledger.core.message.common.Unit unit = 2;
   if (this->has_unit()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       2, HasBitSetters::unit(this), output);
@@ -331,12 +338,12 @@ void Amount::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.Amount)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.common.Amount)
 }
 
 ::google::protobuf::uint8* Amount::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.Amount)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.common.Amount)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -345,13 +352,13 @@ void Amount::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->value().data(), static_cast<int>(this->value().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Amount.value");
+      "ledger.core.message.common.Amount.value");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->value(), target);
   }
 
-  // .ledger.core.Unit unit = 2;
+  // .ledger.core.message.common.Unit unit = 2;
   if (this->has_unit()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
@@ -362,12 +369,12 @@ void Amount::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.Amount)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.common.Amount)
   return target;
 }
 
 size_t Amount::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.Amount)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.common.Amount)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -386,7 +393,7 @@ size_t Amount::ByteSizeLong() const {
         this->value());
   }
 
-  // .ledger.core.Unit unit = 2;
+  // .ledger.core.message.common.Unit unit = 2;
   if (this->has_unit()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
@@ -399,22 +406,22 @@ size_t Amount::ByteSizeLong() const {
 }
 
 void Amount::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.Amount)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.common.Amount)
   GOOGLE_DCHECK_NE(&from, this);
   const Amount* source =
       ::google::protobuf::DynamicCastToGenerated<Amount>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.Amount)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.common.Amount)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.Amount)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.common.Amount)
     MergeFrom(*source);
   }
 }
 
 void Amount::MergeFrom(const Amount& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.Amount)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.common.Amount)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -425,19 +432,19 @@ void Amount::MergeFrom(const Amount& from) {
     value_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.value_);
   }
   if (from.has_unit()) {
-    mutable_unit()->::ledger::core::Unit::MergeFrom(from.unit());
+    mutable_unit()->::ledger::core::message::common::Unit::MergeFrom(from.unit());
   }
 }
 
 void Amount::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.Amount)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.common.Amount)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Amount::CopyFrom(const Amount& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.Amount)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.common.Amount)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -466,12 +473,14 @@ void Amount::InternalSwap(Amount* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::ledger::core::Amount* Arena::CreateMaybeMessage< ::ledger::core::Amount >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::Amount >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::common::Amount* Arena::CreateMaybeMessage< ::ledger::core::message::common::Amount >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::common::Amount >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

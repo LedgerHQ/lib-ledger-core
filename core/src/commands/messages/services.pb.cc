@@ -19,6 +19,7 @@
 extern PROTOBUF_INTERNAL_EXPORT_services_2eproto ::google::protobuf::internal::SCCInfo<0> scc_info_HttpRequest_HeadersEntry_DoNotUse_services_2eproto;
 namespace ledger {
 namespace core {
+namespace message {
 class ServiceRequestDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<ServiceRequest> _instance;
@@ -39,17 +40,18 @@ class HttpResponseDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<HttpResponse> _instance;
 } _HttpResponse_default_instance_;
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 static void InitDefaultsServiceRequest_services_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_ServiceRequest_default_instance_;
-    new (ptr) ::ledger::core::ServiceRequest();
+    void* ptr = &::ledger::core::message::_ServiceRequest_default_instance_;
+    new (ptr) ::ledger::core::message::ServiceRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::ServiceRequest::InitAsDefaultInstance();
+  ::ledger::core::message::ServiceRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_ServiceRequest_services_2eproto =
@@ -59,11 +61,11 @@ static void InitDefaultsServiceResponse_services_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_ServiceResponse_default_instance_;
-    new (ptr) ::ledger::core::ServiceResponse();
+    void* ptr = &::ledger::core::message::_ServiceResponse_default_instance_;
+    new (ptr) ::ledger::core::message::ServiceResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::ServiceResponse::InitAsDefaultInstance();
+  ::ledger::core::message::ServiceResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_ServiceResponse_services_2eproto =
@@ -73,10 +75,10 @@ static void InitDefaultsHttpRequest_HeadersEntry_DoNotUse_services_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_HttpRequest_HeadersEntry_DoNotUse_default_instance_;
-    new (ptr) ::ledger::core::HttpRequest_HeadersEntry_DoNotUse();
+    void* ptr = &::ledger::core::message::_HttpRequest_HeadersEntry_DoNotUse_default_instance_;
+    new (ptr) ::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse();
   }
-  ::ledger::core::HttpRequest_HeadersEntry_DoNotUse::InitAsDefaultInstance();
+  ::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_HttpRequest_HeadersEntry_DoNotUse_services_2eproto =
@@ -86,11 +88,11 @@ static void InitDefaultsHttpRequest_services_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_HttpRequest_default_instance_;
-    new (ptr) ::ledger::core::HttpRequest();
+    void* ptr = &::ledger::core::message::_HttpRequest_default_instance_;
+    new (ptr) ::ledger::core::message::HttpRequest();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::HttpRequest::InitAsDefaultInstance();
+  ::ledger::core::message::HttpRequest::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_HttpRequest_services_2eproto =
@@ -101,11 +103,11 @@ static void InitDefaultsHttpResponse_services_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_HttpResponse_default_instance_;
-    new (ptr) ::ledger::core::HttpResponse();
+    void* ptr = &::ledger::core::message::_HttpResponse_default_instance_;
+    new (ptr) ::ledger::core::message::HttpResponse();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::HttpResponse::InitAsDefaultInstance();
+  ::ledger::core::message::HttpResponse::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_HttpResponse_services_2eproto =
@@ -125,59 +127,59 @@ constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descr
 
 const ::google::protobuf::uint32 TableStruct_services_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::ServiceRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::ServiceRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::ServiceRequest, type_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::ServiceRequest, request_body_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::ServiceRequest, type_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::ServiceRequest, request_body_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::ServiceResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::ServiceResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::ServiceResponse, error_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::ServiceResponse, response_body_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest_HeadersEntry_DoNotUse, _has_bits_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest_HeadersEntry_DoNotUse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::ServiceResponse, error_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::ServiceResponse, response_body_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse, _has_bits_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest_HeadersEntry_DoNotUse, key_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest_HeadersEntry_DoNotUse, value_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse, key_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse, value_),
   0,
   1,
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest, method_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest, url_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest, headers_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpRequest, body_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest, method_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest, url_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest, headers_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpRequest, body_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpResponse, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpResponse, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpResponse, code_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::HttpResponse, body_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpResponse, code_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::HttpResponse, body_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::ledger::core::ServiceRequest)},
-  { 7, -1, sizeof(::ledger::core::ServiceResponse)},
-  { 14, 21, sizeof(::ledger::core::HttpRequest_HeadersEntry_DoNotUse)},
-  { 23, -1, sizeof(::ledger::core::HttpRequest)},
-  { 32, -1, sizeof(::ledger::core::HttpResponse)},
+  { 0, -1, sizeof(::ledger::core::message::ServiceRequest)},
+  { 7, -1, sizeof(::ledger::core::message::ServiceResponse)},
+  { 14, 21, sizeof(::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse)},
+  { 23, -1, sizeof(::ledger::core::message::HttpRequest)},
+  { 32, -1, sizeof(::ledger::core::message::HttpResponse)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_ServiceRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_ServiceResponse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_HttpRequest_HeadersEntry_DoNotUse_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_HttpRequest_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_HttpResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_ServiceRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_ServiceResponse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_HttpRequest_HeadersEntry_DoNotUse_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_HttpRequest_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_HttpResponse_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_services_2eproto = {
@@ -187,22 +189,23 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_services_2eproto[] =
-  "\n\016services.proto\022\013ledger.core\"U\n\016Service"
-  "Request\022-\n\004type\030\001 \001(\0162\037.ledger.core.Serv"
-  "iceRequestType\022\024\n\014request_body\030\002 \001(\014\"7\n\017"
-  "ServiceResponse\022\r\n\005error\030\001 \001(\t\022\025\n\rrespon"
-  "se_body\030\002 \001(\014\"\240\001\n\013HttpRequest\022\016\n\006method\030"
-  "\001 \001(\t\022\013\n\003url\030\002 \001(\t\0226\n\007headers\030\003 \003(\0132%.le"
-  "dger.core.HttpRequest.HeadersEntry\022\014\n\004bo"
-  "dy\030\004 \001(\t\032.\n\014HeadersEntry\022\013\n\003key\030\001 \001(\t\022\r\n"
-  "\005value\030\002 \001(\t:\0028\001\"*\n\014HttpResponse\022\014\n\004code"
-  "\030\001 \001(\005\022\014\n\004body\030\002 \001(\t*\"\n\022ServiceRequestTy"
-  "pe\022\014\n\010HTTP_REQ\020\000b\006proto3"
+  "\n\016services.proto\022\023ledger.core.message\"]\n"
+  "\016ServiceRequest\0225\n\004type\030\001 \001(\0162\'.ledger.c"
+  "ore.message.ServiceRequestType\022\024\n\014reques"
+  "t_body\030\002 \001(\014\"7\n\017ServiceResponse\022\r\n\005error"
+  "\030\001 \001(\t\022\025\n\rresponse_body\030\002 \001(\014\"\250\001\n\013HttpRe"
+  "quest\022\016\n\006method\030\001 \001(\t\022\013\n\003url\030\002 \001(\t\022>\n\007he"
+  "aders\030\003 \003(\0132-.ledger.core.message.HttpRe"
+  "quest.HeadersEntry\022\014\n\004body\030\004 \001(\t\032.\n\014Head"
+  "ersEntry\022\013\n\003key\030\001 \001(\t\022\r\n\005value\030\002 \001(\t:\0028\001"
+  "\"*\n\014HttpResponse\022\014\n\004code\030\001 \001(\005\022\014\n\004body\030\002"
+  " \001(\t*\"\n\022ServiceRequestType\022\014\n\010HTTP_REQ\020\000"
+  "b\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_services_2eproto = {
   false, InitDefaults_services_2eproto, 
   descriptor_table_protodef_services_2eproto,
-  "services.proto", &assign_descriptors_table_services_2eproto, 424,
+  "services.proto", &assign_descriptors_table_services_2eproto, 448,
 };
 
 void AddDescriptors_services_2eproto() {
@@ -216,6 +219,7 @@ void AddDescriptors_services_2eproto() {
 static bool dynamic_init_dummy_services_2eproto = []() { AddDescriptors_services_2eproto(); return true; }();
 namespace ledger {
 namespace core {
+namespace message {
 const ::google::protobuf::EnumDescriptor* ServiceRequestType_descriptor() {
   ::google::protobuf::internal::AssignDescriptors(&assign_descriptors_table_services_2eproto);
   return file_level_enum_descriptors_services_2eproto[0];
@@ -246,7 +250,7 @@ const int ServiceRequest::kRequestBodyFieldNumber;
 ServiceRequest::ServiceRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.ServiceRequest)
 }
 ServiceRequest::ServiceRequest(const ServiceRequest& from)
   : ::google::protobuf::Message(),
@@ -257,7 +261,7 @@ ServiceRequest::ServiceRequest(const ServiceRequest& from)
     request_body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.request_body_);
   }
   type_ = from.type_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.ServiceRequest)
 }
 
 void ServiceRequest::SharedCtor() {
@@ -268,7 +272,7 @@ void ServiceRequest::SharedCtor() {
 }
 
 ServiceRequest::~ServiceRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.ServiceRequest)
   SharedDtor();
 }
 
@@ -286,7 +290,7 @@ const ServiceRequest& ServiceRequest::default_instance() {
 
 
 void ServiceRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.ServiceRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.ServiceRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -309,11 +313,11 @@ const char* ServiceRequest::_InternalParse(const char* begin, const char* end, v
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // .ledger.core.ServiceRequestType type = 1;
+      // .ledger.core.message.ServiceRequestType type = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 8) goto handle_unusual;
         ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
-        msg->set_type(static_cast<::ledger::core::ServiceRequestType>(val));
+        msg->set_type(static_cast<::ledger::core::message::ServiceRequestType>(val));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         break;
       }
@@ -360,20 +364,20 @@ bool ServiceRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.ServiceRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .ledger.core.ServiceRequestType type = 1;
+      // .ledger.core.message.ServiceRequestType type = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (8 & 0xFF)) {
           int value = 0;
           DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
                    int, ::google::protobuf::internal::WireFormatLite::TYPE_ENUM>(
                  input, &value)));
-          set_type(static_cast< ::ledger::core::ServiceRequestType >(value));
+          set_type(static_cast< ::ledger::core::message::ServiceRequestType >(value));
         } else {
           goto handle_unusual;
         }
@@ -403,10 +407,10 @@ bool ServiceRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.ServiceRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.ServiceRequest)
   return false;
 #undef DO_
 }
@@ -414,11 +418,11 @@ failure:
 
 void ServiceRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.ServiceRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.ServiceRequestType type = 1;
+  // .ledger.core.message.ServiceRequestType type = 1;
   if (this->type() != 0) {
     ::google::protobuf::internal::WireFormatLite::WriteEnum(
       1, this->type(), output);
@@ -434,16 +438,16 @@ void ServiceRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.ServiceRequest)
 }
 
 ::google::protobuf::uint8* ServiceRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.ServiceRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.ServiceRequestType type = 1;
+  // .ledger.core.message.ServiceRequestType type = 1;
   if (this->type() != 0) {
     target = ::google::protobuf::internal::WireFormatLite::WriteEnumToArray(
       1, this->type(), target);
@@ -460,12 +464,12 @@ void ServiceRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.ServiceRequest)
   return target;
 }
 
 size_t ServiceRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.ServiceRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.ServiceRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -484,7 +488,7 @@ size_t ServiceRequest::ByteSizeLong() const {
         this->request_body());
   }
 
-  // .ledger.core.ServiceRequestType type = 1;
+  // .ledger.core.message.ServiceRequestType type = 1;
   if (this->type() != 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::EnumSize(this->type());
@@ -496,22 +500,22 @@ size_t ServiceRequest::ByteSizeLong() const {
 }
 
 void ServiceRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.ServiceRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.ServiceRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const ServiceRequest* source =
       ::google::protobuf::DynamicCastToGenerated<ServiceRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.ServiceRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.ServiceRequest)
     MergeFrom(*source);
   }
 }
 
 void ServiceRequest::MergeFrom(const ServiceRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.ServiceRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.ServiceRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -527,14 +531,14 @@ void ServiceRequest::MergeFrom(const ServiceRequest& from) {
 }
 
 void ServiceRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.ServiceRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.ServiceRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void ServiceRequest::CopyFrom(const ServiceRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.ServiceRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.ServiceRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -578,7 +582,7 @@ const int ServiceResponse::kResponseBodyFieldNumber;
 ServiceResponse::ServiceResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.ServiceResponse)
 }
 ServiceResponse::ServiceResponse(const ServiceResponse& from)
   : ::google::protobuf::Message(),
@@ -592,7 +596,7 @@ ServiceResponse::ServiceResponse(const ServiceResponse& from)
   if (from.response_body().size() > 0) {
     response_body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.response_body_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.ServiceResponse)
 }
 
 void ServiceResponse::SharedCtor() {
@@ -603,7 +607,7 @@ void ServiceResponse::SharedCtor() {
 }
 
 ServiceResponse::~ServiceResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.ServiceResponse)
   SharedDtor();
 }
 
@@ -622,7 +626,7 @@ const ServiceResponse& ServiceResponse::default_instance() {
 
 
 void ServiceResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.ServiceResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.ServiceResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -650,7 +654,7 @@ const char* ServiceResponse::_InternalParse(const char* begin, const char* end, 
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.ServiceResponse.error");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.ServiceResponse.error");
         object = msg->mutable_error();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -704,7 +708,7 @@ bool ServiceResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.ServiceResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -718,7 +722,7 @@ bool ServiceResponse::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->error().data(), static_cast<int>(this->error().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.ServiceResponse.error"));
+            "ledger.core.message.ServiceResponse.error"));
         } else {
           goto handle_unusual;
         }
@@ -748,10 +752,10 @@ bool ServiceResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.ServiceResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.ServiceResponse)
   return false;
 #undef DO_
 }
@@ -759,7 +763,7 @@ failure:
 
 void ServiceResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.ServiceResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -768,7 +772,7 @@ void ServiceResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->error().data(), static_cast<int>(this->error().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.ServiceResponse.error");
+      "ledger.core.message.ServiceResponse.error");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->error(), output);
   }
@@ -783,12 +787,12 @@ void ServiceResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.ServiceResponse)
 }
 
 ::google::protobuf::uint8* ServiceResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.ServiceResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -797,7 +801,7 @@ void ServiceResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->error().data(), static_cast<int>(this->error().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.ServiceResponse.error");
+      "ledger.core.message.ServiceResponse.error");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->error(), target);
@@ -814,12 +818,12 @@ void ServiceResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.ServiceResponse)
   return target;
 }
 
 size_t ServiceResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.ServiceResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.ServiceResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -851,22 +855,22 @@ size_t ServiceResponse::ByteSizeLong() const {
 }
 
 void ServiceResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.ServiceResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.ServiceResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const ServiceResponse* source =
       ::google::protobuf::DynamicCastToGenerated<ServiceResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.ServiceResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.ServiceResponse)
     MergeFrom(*source);
   }
 }
 
 void ServiceResponse::MergeFrom(const ServiceResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.ServiceResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.ServiceResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -883,14 +887,14 @@ void ServiceResponse::MergeFrom(const ServiceResponse& from) {
 }
 
 void ServiceResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.ServiceResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.ServiceResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void ServiceResponse::CopyFrom(const ServiceResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.ServiceResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.ServiceResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -949,11 +953,11 @@ bool HttpRequest_HeadersEntry_DoNotUse::_ParseMap(const char* begin, const char*
   DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
     parser.key().data(), static_cast<int>(parser.key().length()),
     ::google::protobuf::internal::WireFormatLite::PARSE,
-    "ledger.core.HttpRequest.HeadersEntry.key"));
+    "ledger.core.message.HttpRequest.HeadersEntry.key"));
   DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
     parser.value().data(), static_cast<int>(parser.value().length()),
     ::google::protobuf::internal::WireFormatLite::PARSE,
-    "ledger.core.HttpRequest.HeadersEntry.value"));
+    "ledger.core.message.HttpRequest.HeadersEntry.value"));
 #undef DO_
   return true;
 }
@@ -978,7 +982,7 @@ const int HttpRequest::kBodyFieldNumber;
 HttpRequest::HttpRequest()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(constructor:ledger.core.message.HttpRequest)
 }
 HttpRequest::HttpRequest(const HttpRequest& from)
   : ::google::protobuf::Message(),
@@ -997,7 +1001,7 @@ HttpRequest::HttpRequest(const HttpRequest& from)
   if (from.body().size() > 0) {
     body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.body_);
   }
-  // @@protoc_insertion_point(copy_constructor:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.HttpRequest)
 }
 
 void HttpRequest::SharedCtor() {
@@ -1009,7 +1013,7 @@ void HttpRequest::SharedCtor() {
 }
 
 HttpRequest::~HttpRequest() {
-  // @@protoc_insertion_point(destructor:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(destructor:ledger.core.message.HttpRequest)
   SharedDtor();
 }
 
@@ -1029,7 +1033,7 @@ const HttpRequest& HttpRequest::default_instance() {
 
 
 void HttpRequest::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.HttpRequest)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.HttpRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -1059,7 +1063,7 @@ const char* HttpRequest::_InternalParse(const char* begin, const char* end, void
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.HttpRequest.method");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.HttpRequest.method");
         object = msg->mutable_method();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -1075,7 +1079,7 @@ const char* HttpRequest::_InternalParse(const char* begin, const char* end, void
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.HttpRequest.url");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.HttpRequest.url");
         object = msg->mutable_url();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -1093,7 +1097,7 @@ const char* HttpRequest::_InternalParse(const char* begin, const char* end, void
           ptr = ::google::protobuf::io::ReadSize(ptr, &size);
           GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
           parser_till_end = ::google::protobuf::internal::SlowMapEntryParser;
-          auto parse_map = ::ledger::core::HttpRequest_HeadersEntry_DoNotUse::_ParseMap;
+          auto parse_map = ::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse::_ParseMap;
           ctx->extra_parse_data().payload.clear();
           ctx->extra_parse_data().parse_map = parse_map;
           object = &msg->headers_;
@@ -1110,7 +1114,7 @@ const char* HttpRequest::_InternalParse(const char* begin, const char* end, void
         if (static_cast<::google::protobuf::uint8>(tag) != 34) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.HttpRequest.body");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.HttpRequest.body");
         object = msg->mutable_body();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -1149,7 +1153,7 @@ bool HttpRequest::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.HttpRequest)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -1163,7 +1167,7 @@ bool HttpRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->method().data(), static_cast<int>(this->method().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.HttpRequest.method"));
+            "ledger.core.message.HttpRequest.method"));
         } else {
           goto handle_unusual;
         }
@@ -1178,7 +1182,7 @@ bool HttpRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->url().data(), static_cast<int>(this->url().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.HttpRequest.url"));
+            "ledger.core.message.HttpRequest.url"));
         } else {
           goto handle_unusual;
         }
@@ -1200,11 +1204,11 @@ bool HttpRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             parser.key().data(), static_cast<int>(parser.key().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.HttpRequest.HeadersEntry.key"));
+            "ledger.core.message.HttpRequest.HeadersEntry.key"));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             parser.value().data(), static_cast<int>(parser.value().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.HttpRequest.HeadersEntry.value"));
+            "ledger.core.message.HttpRequest.HeadersEntry.value"));
         } else {
           goto handle_unusual;
         }
@@ -1219,7 +1223,7 @@ bool HttpRequest::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->body().data(), static_cast<int>(this->body().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.HttpRequest.body"));
+            "ledger.core.message.HttpRequest.body"));
         } else {
           goto handle_unusual;
         }
@@ -1238,10 +1242,10 @@ bool HttpRequest::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.HttpRequest)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.HttpRequest)
   return false;
 #undef DO_
 }
@@ -1249,7 +1253,7 @@ failure:
 
 void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.HttpRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1258,7 +1262,7 @@ void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->method().data(), static_cast<int>(this->method().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpRequest.method");
+      "ledger.core.message.HttpRequest.method");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->method(), output);
   }
@@ -1268,7 +1272,7 @@ void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->url().data(), static_cast<int>(this->url().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpRequest.url");
+      "ledger.core.message.HttpRequest.url");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->url(), output);
   }
@@ -1284,11 +1288,11 @@ void HttpRequest::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), static_cast<int>(p->first.length()),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "ledger.core.HttpRequest.HeadersEntry.key");
+          "ledger.core.message.HttpRequest.HeadersEntry.key");
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->second.data(), static_cast<int>(p->second.length()),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "ledger.core.HttpRequest.HeadersEntry.value");
+          "ledger.core.message.HttpRequest.HeadersEntry.value");
       }
     };
 
@@ -1327,7 +1331,7 @@ void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->body().data(), static_cast<int>(this->body().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpRequest.body");
+      "ledger.core.message.HttpRequest.body");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       4, this->body(), output);
   }
@@ -1336,12 +1340,12 @@ void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.HttpRequest)
 }
 
 ::google::protobuf::uint8* HttpRequest::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.HttpRequest)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1350,7 +1354,7 @@ void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->method().data(), static_cast<int>(this->method().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpRequest.method");
+      "ledger.core.message.HttpRequest.method");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->method(), target);
@@ -1361,7 +1365,7 @@ void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->url().data(), static_cast<int>(this->url().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpRequest.url");
+      "ledger.core.message.HttpRequest.url");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->url(), target);
@@ -1378,11 +1382,11 @@ void HttpRequest::SerializeWithCachedSizes(
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->first.data(), static_cast<int>(p->first.length()),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "ledger.core.HttpRequest.HeadersEntry.key");
+          "ledger.core.message.HttpRequest.HeadersEntry.key");
         ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
           p->second.data(), static_cast<int>(p->second.length()),
           ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-          "ledger.core.HttpRequest.HeadersEntry.value");
+          "ledger.core.message.HttpRequest.HeadersEntry.value");
       }
     };
 
@@ -1421,7 +1425,7 @@ void HttpRequest::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->body().data(), static_cast<int>(this->body().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpRequest.body");
+      "ledger.core.message.HttpRequest.body");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         4, this->body(), target);
@@ -1431,12 +1435,12 @@ void HttpRequest::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.HttpRequest)
   return target;
 }
 
 size_t HttpRequest::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.HttpRequest)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.HttpRequest)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1489,22 +1493,22 @@ size_t HttpRequest::ByteSizeLong() const {
 }
 
 void HttpRequest::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.HttpRequest)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.HttpRequest)
   GOOGLE_DCHECK_NE(&from, this);
   const HttpRequest* source =
       ::google::protobuf::DynamicCastToGenerated<HttpRequest>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.HttpRequest)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.HttpRequest)
     MergeFrom(*source);
   }
 }
 
 void HttpRequest::MergeFrom(const HttpRequest& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.HttpRequest)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.HttpRequest)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -1526,14 +1530,14 @@ void HttpRequest::MergeFrom(const HttpRequest& from) {
 }
 
 void HttpRequest::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.HttpRequest)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.HttpRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void HttpRequest::CopyFrom(const HttpRequest& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.HttpRequest)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.HttpRequest)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1581,7 +1585,7 @@ const int HttpResponse::kBodyFieldNumber;
 HttpResponse::HttpResponse()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(constructor:ledger.core.message.HttpResponse)
 }
 HttpResponse::HttpResponse(const HttpResponse& from)
   : ::google::protobuf::Message(),
@@ -1592,7 +1596,7 @@ HttpResponse::HttpResponse(const HttpResponse& from)
     body_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.body_);
   }
   code_ = from.code_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.HttpResponse)
 }
 
 void HttpResponse::SharedCtor() {
@@ -1603,7 +1607,7 @@ void HttpResponse::SharedCtor() {
 }
 
 HttpResponse::~HttpResponse() {
-  // @@protoc_insertion_point(destructor:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(destructor:ledger.core.message.HttpResponse)
   SharedDtor();
 }
 
@@ -1621,7 +1625,7 @@ const HttpResponse& HttpResponse::default_instance() {
 
 
 void HttpResponse::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.HttpResponse)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.HttpResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -1656,7 +1660,7 @@ const char* HttpResponse::_InternalParse(const char* begin, const char* end, voi
         if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.HttpResponse.body");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.HttpResponse.body");
         object = msg->mutable_body();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -1695,7 +1699,7 @@ bool HttpResponse::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.HttpResponse)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -1722,7 +1726,7 @@ bool HttpResponse::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->body().data(), static_cast<int>(this->body().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.HttpResponse.body"));
+            "ledger.core.message.HttpResponse.body"));
         } else {
           goto handle_unusual;
         }
@@ -1741,10 +1745,10 @@ bool HttpResponse::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.HttpResponse)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.HttpResponse)
   return false;
 #undef DO_
 }
@@ -1752,7 +1756,7 @@ failure:
 
 void HttpResponse::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.HttpResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1766,7 +1770,7 @@ void HttpResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->body().data(), static_cast<int>(this->body().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpResponse.body");
+      "ledger.core.message.HttpResponse.body");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       2, this->body(), output);
   }
@@ -1775,12 +1779,12 @@ void HttpResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.HttpResponse)
 }
 
 ::google::protobuf::uint8* HttpResponse::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.HttpResponse)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -1794,7 +1798,7 @@ void HttpResponse::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->body().data(), static_cast<int>(this->body().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.HttpResponse.body");
+      "ledger.core.message.HttpResponse.body");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         2, this->body(), target);
@@ -1804,12 +1808,12 @@ void HttpResponse::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.HttpResponse)
   return target;
 }
 
 size_t HttpResponse::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.HttpResponse)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.HttpResponse)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -1841,22 +1845,22 @@ size_t HttpResponse::ByteSizeLong() const {
 }
 
 void HttpResponse::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.HttpResponse)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.HttpResponse)
   GOOGLE_DCHECK_NE(&from, this);
   const HttpResponse* source =
       ::google::protobuf::DynamicCastToGenerated<HttpResponse>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.HttpResponse)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.HttpResponse)
     MergeFrom(*source);
   }
 }
 
 void HttpResponse::MergeFrom(const HttpResponse& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.HttpResponse)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.HttpResponse)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -1872,14 +1876,14 @@ void HttpResponse::MergeFrom(const HttpResponse& from) {
 }
 
 void HttpResponse::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.HttpResponse)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.HttpResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void HttpResponse::CopyFrom(const HttpResponse& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.HttpResponse)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.HttpResponse)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -1908,24 +1912,25 @@ void HttpResponse::InternalSwap(HttpResponse* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::ledger::core::ServiceRequest* Arena::CreateMaybeMessage< ::ledger::core::ServiceRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::ServiceRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::ServiceRequest* Arena::CreateMaybeMessage< ::ledger::core::message::ServiceRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::ServiceRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::ServiceResponse* Arena::CreateMaybeMessage< ::ledger::core::ServiceResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::ServiceResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::ServiceResponse* Arena::CreateMaybeMessage< ::ledger::core::message::ServiceResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::ServiceResponse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::HttpRequest_HeadersEntry_DoNotUse* Arena::CreateMaybeMessage< ::ledger::core::HttpRequest_HeadersEntry_DoNotUse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::HttpRequest_HeadersEntry_DoNotUse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse* Arena::CreateMaybeMessage< ::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::HttpRequest* Arena::CreateMaybeMessage< ::ledger::core::HttpRequest >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::HttpRequest >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::HttpRequest* Arena::CreateMaybeMessage< ::ledger::core::message::HttpRequest >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::HttpRequest >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::HttpResponse* Arena::CreateMaybeMessage< ::ledger::core::HttpResponse >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::HttpResponse >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::HttpResponse* Arena::CreateMaybeMessage< ::ledger::core::message::HttpResponse >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::HttpResponse >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

@@ -52,6 +52,7 @@ struct TableStruct_bitcoin_2faccount_5fconfig_2eproto {
 void AddDescriptors_bitcoin_2faccount_5fconfig_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class AccountConfiguration;
 class AccountConfigurationDefaultTypeInternal;
@@ -63,17 +64,19 @@ class LedgerExplorerConfig;
 class LedgerExplorerConfigDefaultTypeInternal;
 extern LedgerExplorerConfigDefaultTypeInternal _LedgerExplorerConfig_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::bitcoin::AccountConfiguration* Arena::CreateMaybeMessage<::ledger::core::bitcoin::AccountConfiguration>(Arena*);
-template<> ::ledger::core::bitcoin::AccountSettings* Arena::CreateMaybeMessage<::ledger::core::bitcoin::AccountSettings>(Arena*);
-template<> ::ledger::core::bitcoin::LedgerExplorerConfig* Arena::CreateMaybeMessage<::ledger::core::bitcoin::LedgerExplorerConfig>(Arena*);
+template<> ::ledger::core::message::bitcoin::AccountConfiguration* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::AccountConfiguration>(Arena*);
+template<> ::ledger::core::message::bitcoin::AccountSettings* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::AccountSettings>(Arena*);
+template<> ::ledger::core::message::bitcoin::LedgerExplorerConfig* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::LedgerExplorerConfig>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 
 enum KeychainEngine {
@@ -102,7 +105,7 @@ inline bool KeychainEngine_Parse(
 // ===================================================================
 
 class LedgerExplorerConfig :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.LedgerExplorerConfig) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.LedgerExplorerConfig) */ {
  public:
   LedgerExplorerConfig();
   virtual ~LedgerExplorerConfig();
@@ -222,7 +225,7 @@ class LedgerExplorerConfig :
   ::google::protobuf::uint32 port() const;
   void set_port(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.LedgerExplorerConfig)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.LedgerExplorerConfig)
  private:
   class HasBitSetters;
 
@@ -236,7 +239,7 @@ class LedgerExplorerConfig :
 // -------------------------------------------------------------------
 
 class AccountSettings :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.AccountSettings) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.AccountSettings) */ {
  public:
   AccountSettings();
   virtual ~AccountSettings();
@@ -344,23 +347,23 @@ class AccountSettings :
   ::std::string* release_name();
   void set_allocated_name(::std::string* name);
 
-  // .ledger.core.bitcoin.LedgerExplorerConfig explorer = 2;
+  // .ledger.core.message.bitcoin.LedgerExplorerConfig explorer = 2;
   bool has_explorer() const;
   void clear_explorer();
   static const int kExplorerFieldNumber = 2;
-  const ::ledger::core::bitcoin::LedgerExplorerConfig& explorer() const;
-  ::ledger::core::bitcoin::LedgerExplorerConfig* release_explorer();
-  ::ledger::core::bitcoin::LedgerExplorerConfig* mutable_explorer();
-  void set_allocated_explorer(::ledger::core::bitcoin::LedgerExplorerConfig* explorer);
+  const ::ledger::core::message::bitcoin::LedgerExplorerConfig& explorer() const;
+  ::ledger::core::message::bitcoin::LedgerExplorerConfig* release_explorer();
+  ::ledger::core::message::bitcoin::LedgerExplorerConfig* mutable_explorer();
+  void set_allocated_explorer(::ledger::core::message::bitcoin::LedgerExplorerConfig* explorer);
 
-  // .ledger.core.Amount dust_threshold = 4;
+  // .ledger.core.message.common.Amount dust_threshold = 4;
   bool has_dust_threshold() const;
   void clear_dust_threshold();
   static const int kDustThresholdFieldNumber = 4;
-  const ::ledger::core::Amount& dust_threshold() const;
-  ::ledger::core::Amount* release_dust_threshold();
-  ::ledger::core::Amount* mutable_dust_threshold();
-  void set_allocated_dust_threshold(::ledger::core::Amount* dust_threshold);
+  const ::ledger::core::message::common::Amount& dust_threshold() const;
+  ::ledger::core::message::common::Amount* release_dust_threshold();
+  ::ledger::core::message::common::Amount* mutable_dust_threshold();
+  void set_allocated_dust_threshold(::ledger::core::message::common::Amount* dust_threshold);
 
   // uint32 trust_level = 3;
   void clear_trust_level();
@@ -368,14 +371,14 @@ class AccountSettings :
   ::google::protobuf::uint32 trust_level() const;
   void set_trust_level(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.AccountSettings)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.AccountSettings)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr name_;
-  ::ledger::core::bitcoin::LedgerExplorerConfig* explorer_;
-  ::ledger::core::Amount* dust_threshold_;
+  ::ledger::core::message::bitcoin::LedgerExplorerConfig* explorer_;
+  ::ledger::core::message::common::Amount* dust_threshold_;
   ::google::protobuf::uint32 trust_level_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2faccount_5fconfig_2eproto;
@@ -383,7 +386,7 @@ class AccountSettings :
 // -------------------------------------------------------------------
 
 class AccountConfiguration :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.AccountConfiguration) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.AccountConfiguration) */ {
  public:
   AccountConfiguration();
   virtual ~AccountConfiguration();
@@ -491,28 +494,28 @@ class AccountConfiguration :
   ::std::string* release_xpub_path();
   void set_allocated_xpub_path(::std::string* xpub_path);
 
-  // .ledger.core.bitcoin.AccountSettings setting = 3;
+  // .ledger.core.message.bitcoin.AccountSettings setting = 3;
   bool has_setting() const;
   void clear_setting();
   static const int kSettingFieldNumber = 3;
-  const ::ledger::core::bitcoin::AccountSettings& setting() const;
-  ::ledger::core::bitcoin::AccountSettings* release_setting();
-  ::ledger::core::bitcoin::AccountSettings* mutable_setting();
-  void set_allocated_setting(::ledger::core::bitcoin::AccountSettings* setting);
+  const ::ledger::core::message::bitcoin::AccountSettings& setting() const;
+  ::ledger::core::message::bitcoin::AccountSettings* release_setting();
+  ::ledger::core::message::bitcoin::AccountSettings* mutable_setting();
+  void set_allocated_setting(::ledger::core::message::bitcoin::AccountSettings* setting);
 
-  // .ledger.core.bitcoin.KeychainEngine keychain_engine = 1;
+  // .ledger.core.message.bitcoin.KeychainEngine keychain_engine = 1;
   void clear_keychain_engine();
   static const int kKeychainEngineFieldNumber = 1;
-  ::ledger::core::bitcoin::KeychainEngine keychain_engine() const;
-  void set_keychain_engine(::ledger::core::bitcoin::KeychainEngine value);
+  ::ledger::core::message::bitcoin::KeychainEngine keychain_engine() const;
+  void set_keychain_engine(::ledger::core::message::bitcoin::KeychainEngine value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.AccountConfiguration)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.AccountConfiguration)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr xpub_path_;
-  ::ledger::core::bitcoin::AccountSettings* setting_;
+  ::ledger::core::message::bitcoin::AccountSettings* setting_;
   int keychain_engine_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2faccount_5fconfig_2eproto;
@@ -533,13 +536,13 @@ inline void LedgerExplorerConfig::clear_version() {
   version_ = 0u;
 }
 inline ::google::protobuf::uint32 LedgerExplorerConfig::version() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.LedgerExplorerConfig.version)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.LedgerExplorerConfig.version)
   return version_;
 }
 inline void LedgerExplorerConfig::set_version(::google::protobuf::uint32 value) {
   
   version_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.LedgerExplorerConfig.version)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.LedgerExplorerConfig.version)
 }
 
 // string endpoint = 2;
@@ -547,41 +550,41 @@ inline void LedgerExplorerConfig::clear_endpoint() {
   endpoint_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& LedgerExplorerConfig::endpoint() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
   return endpoint_.GetNoArena();
 }
 inline void LedgerExplorerConfig::set_endpoint(const ::std::string& value) {
   
   endpoint_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
 }
 #if LANG_CXX11
 inline void LedgerExplorerConfig::set_endpoint(::std::string&& value) {
   
   endpoint_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
 }
 #endif
 inline void LedgerExplorerConfig::set_endpoint(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   endpoint_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
 }
 inline void LedgerExplorerConfig::set_endpoint(const char* value, size_t size) {
   
   endpoint_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
 }
 inline ::std::string* LedgerExplorerConfig::mutable_endpoint() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
   return endpoint_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* LedgerExplorerConfig::release_endpoint() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
   
   return endpoint_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -592,7 +595,7 @@ inline void LedgerExplorerConfig::set_allocated_endpoint(::std::string* endpoint
     
   }
   endpoint_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), endpoint);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.LedgerExplorerConfig.endpoint)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.LedgerExplorerConfig.endpoint)
 }
 
 // uint32 port = 3;
@@ -600,13 +603,13 @@ inline void LedgerExplorerConfig::clear_port() {
   port_ = 0u;
 }
 inline ::google::protobuf::uint32 LedgerExplorerConfig::port() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.LedgerExplorerConfig.port)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.LedgerExplorerConfig.port)
   return port_;
 }
 inline void LedgerExplorerConfig::set_port(::google::protobuf::uint32 value) {
   
   port_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.LedgerExplorerConfig.port)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.LedgerExplorerConfig.port)
 }
 
 // -------------------------------------------------------------------
@@ -618,41 +621,41 @@ inline void AccountSettings::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& AccountSettings::name() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountSettings.name)
   return name_.GetNoArena();
 }
 inline void AccountSettings::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.AccountSettings.name)
 }
 #if LANG_CXX11
 inline void AccountSettings::set_name(::std::string&& value) {
   
   name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.AccountSettings.name)
 }
 #endif
 inline void AccountSettings::set_name(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.AccountSettings.name)
 }
 inline void AccountSettings::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.AccountSettings.name)
 }
 inline ::std::string* AccountSettings::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountSettings.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* AccountSettings::release_name() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountSettings.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -663,10 +666,10 @@ inline void AccountSettings::set_allocated_name(::std::string* name) {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.AccountSettings.name)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountSettings.name)
 }
 
-// .ledger.core.bitcoin.LedgerExplorerConfig explorer = 2;
+// .ledger.core.message.bitcoin.LedgerExplorerConfig explorer = 2;
 inline bool AccountSettings::has_explorer() const {
   return this != internal_default_instance() && explorer_ != nullptr;
 }
@@ -676,29 +679,29 @@ inline void AccountSettings::clear_explorer() {
   }
   explorer_ = nullptr;
 }
-inline const ::ledger::core::bitcoin::LedgerExplorerConfig& AccountSettings::explorer() const {
-  const ::ledger::core::bitcoin::LedgerExplorerConfig* p = explorer_;
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.AccountSettings.explorer)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::bitcoin::LedgerExplorerConfig*>(
-      &::ledger::core::bitcoin::_LedgerExplorerConfig_default_instance_);
+inline const ::ledger::core::message::bitcoin::LedgerExplorerConfig& AccountSettings::explorer() const {
+  const ::ledger::core::message::bitcoin::LedgerExplorerConfig* p = explorer_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountSettings.explorer)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::bitcoin::LedgerExplorerConfig*>(
+      &::ledger::core::message::bitcoin::_LedgerExplorerConfig_default_instance_);
 }
-inline ::ledger::core::bitcoin::LedgerExplorerConfig* AccountSettings::release_explorer() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.AccountSettings.explorer)
+inline ::ledger::core::message::bitcoin::LedgerExplorerConfig* AccountSettings::release_explorer() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountSettings.explorer)
   
-  ::ledger::core::bitcoin::LedgerExplorerConfig* temp = explorer_;
+  ::ledger::core::message::bitcoin::LedgerExplorerConfig* temp = explorer_;
   explorer_ = nullptr;
   return temp;
 }
-inline ::ledger::core::bitcoin::LedgerExplorerConfig* AccountSettings::mutable_explorer() {
+inline ::ledger::core::message::bitcoin::LedgerExplorerConfig* AccountSettings::mutable_explorer() {
   
   if (explorer_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::bitcoin::LedgerExplorerConfig>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::bitcoin::LedgerExplorerConfig>(GetArenaNoVirtual());
     explorer_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.AccountSettings.explorer)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountSettings.explorer)
   return explorer_;
 }
-inline void AccountSettings::set_allocated_explorer(::ledger::core::bitcoin::LedgerExplorerConfig* explorer) {
+inline void AccountSettings::set_allocated_explorer(::ledger::core::message::bitcoin::LedgerExplorerConfig* explorer) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete explorer_;
@@ -714,7 +717,7 @@ inline void AccountSettings::set_allocated_explorer(::ledger::core::bitcoin::Led
     
   }
   explorer_ = explorer;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.AccountSettings.explorer)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountSettings.explorer)
 }
 
 // uint32 trust_level = 3;
@@ -722,42 +725,42 @@ inline void AccountSettings::clear_trust_level() {
   trust_level_ = 0u;
 }
 inline ::google::protobuf::uint32 AccountSettings::trust_level() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.AccountSettings.trust_level)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountSettings.trust_level)
   return trust_level_;
 }
 inline void AccountSettings::set_trust_level(::google::protobuf::uint32 value) {
   
   trust_level_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.AccountSettings.trust_level)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.AccountSettings.trust_level)
 }
 
-// .ledger.core.Amount dust_threshold = 4;
+// .ledger.core.message.common.Amount dust_threshold = 4;
 inline bool AccountSettings::has_dust_threshold() const {
   return this != internal_default_instance() && dust_threshold_ != nullptr;
 }
-inline const ::ledger::core::Amount& AccountSettings::dust_threshold() const {
-  const ::ledger::core::Amount* p = dust_threshold_;
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.AccountSettings.dust_threshold)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::Amount*>(
-      &::ledger::core::_Amount_default_instance_);
+inline const ::ledger::core::message::common::Amount& AccountSettings::dust_threshold() const {
+  const ::ledger::core::message::common::Amount* p = dust_threshold_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountSettings.dust_threshold)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::common::Amount*>(
+      &::ledger::core::message::common::_Amount_default_instance_);
 }
-inline ::ledger::core::Amount* AccountSettings::release_dust_threshold() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.AccountSettings.dust_threshold)
+inline ::ledger::core::message::common::Amount* AccountSettings::release_dust_threshold() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountSettings.dust_threshold)
   
-  ::ledger::core::Amount* temp = dust_threshold_;
+  ::ledger::core::message::common::Amount* temp = dust_threshold_;
   dust_threshold_ = nullptr;
   return temp;
 }
-inline ::ledger::core::Amount* AccountSettings::mutable_dust_threshold() {
+inline ::ledger::core::message::common::Amount* AccountSettings::mutable_dust_threshold() {
   
   if (dust_threshold_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::Amount>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::common::Amount>(GetArenaNoVirtual());
     dust_threshold_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.AccountSettings.dust_threshold)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountSettings.dust_threshold)
   return dust_threshold_;
 }
-inline void AccountSettings::set_allocated_dust_threshold(::ledger::core::Amount* dust_threshold) {
+inline void AccountSettings::set_allocated_dust_threshold(::ledger::core::message::common::Amount* dust_threshold) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::google::protobuf::MessageLite*>(dust_threshold_);
@@ -773,25 +776,25 @@ inline void AccountSettings::set_allocated_dust_threshold(::ledger::core::Amount
     
   }
   dust_threshold_ = dust_threshold;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.AccountSettings.dust_threshold)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountSettings.dust_threshold)
 }
 
 // -------------------------------------------------------------------
 
 // AccountConfiguration
 
-// .ledger.core.bitcoin.KeychainEngine keychain_engine = 1;
+// .ledger.core.message.bitcoin.KeychainEngine keychain_engine = 1;
 inline void AccountConfiguration::clear_keychain_engine() {
   keychain_engine_ = 0;
 }
-inline ::ledger::core::bitcoin::KeychainEngine AccountConfiguration::keychain_engine() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.AccountConfiguration.keychain_engine)
-  return static_cast< ::ledger::core::bitcoin::KeychainEngine >(keychain_engine_);
+inline ::ledger::core::message::bitcoin::KeychainEngine AccountConfiguration::keychain_engine() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountConfiguration.keychain_engine)
+  return static_cast< ::ledger::core::message::bitcoin::KeychainEngine >(keychain_engine_);
 }
-inline void AccountConfiguration::set_keychain_engine(::ledger::core::bitcoin::KeychainEngine value) {
+inline void AccountConfiguration::set_keychain_engine(::ledger::core::message::bitcoin::KeychainEngine value) {
   
   keychain_engine_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.AccountConfiguration.keychain_engine)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.AccountConfiguration.keychain_engine)
 }
 
 // string xpub_path = 2;
@@ -799,41 +802,41 @@ inline void AccountConfiguration::clear_xpub_path() {
   xpub_path_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& AccountConfiguration::xpub_path() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
   return xpub_path_.GetNoArena();
 }
 inline void AccountConfiguration::set_xpub_path(const ::std::string& value) {
   
   xpub_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
 }
 #if LANG_CXX11
 inline void AccountConfiguration::set_xpub_path(::std::string&& value) {
   
   xpub_path_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
 }
 #endif
 inline void AccountConfiguration::set_xpub_path(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   xpub_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
 }
 inline void AccountConfiguration::set_xpub_path(const char* value, size_t size) {
   
   xpub_path_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
 }
 inline ::std::string* AccountConfiguration::mutable_xpub_path() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
   return xpub_path_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* AccountConfiguration::release_xpub_path() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
   
   return xpub_path_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -844,10 +847,10 @@ inline void AccountConfiguration::set_allocated_xpub_path(::std::string* xpub_pa
     
   }
   xpub_path_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), xpub_path);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.AccountConfiguration.xpub_path)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
 }
 
-// .ledger.core.bitcoin.AccountSettings setting = 3;
+// .ledger.core.message.bitcoin.AccountSettings setting = 3;
 inline bool AccountConfiguration::has_setting() const {
   return this != internal_default_instance() && setting_ != nullptr;
 }
@@ -857,29 +860,29 @@ inline void AccountConfiguration::clear_setting() {
   }
   setting_ = nullptr;
 }
-inline const ::ledger::core::bitcoin::AccountSettings& AccountConfiguration::setting() const {
-  const ::ledger::core::bitcoin::AccountSettings* p = setting_;
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.AccountConfiguration.setting)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::bitcoin::AccountSettings*>(
-      &::ledger::core::bitcoin::_AccountSettings_default_instance_);
+inline const ::ledger::core::message::bitcoin::AccountSettings& AccountConfiguration::setting() const {
+  const ::ledger::core::message::bitcoin::AccountSettings* p = setting_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountConfiguration.setting)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::bitcoin::AccountSettings*>(
+      &::ledger::core::message::bitcoin::_AccountSettings_default_instance_);
 }
-inline ::ledger::core::bitcoin::AccountSettings* AccountConfiguration::release_setting() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.AccountConfiguration.setting)
+inline ::ledger::core::message::bitcoin::AccountSettings* AccountConfiguration::release_setting() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountConfiguration.setting)
   
-  ::ledger::core::bitcoin::AccountSettings* temp = setting_;
+  ::ledger::core::message::bitcoin::AccountSettings* temp = setting_;
   setting_ = nullptr;
   return temp;
 }
-inline ::ledger::core::bitcoin::AccountSettings* AccountConfiguration::mutable_setting() {
+inline ::ledger::core::message::bitcoin::AccountSettings* AccountConfiguration::mutable_setting() {
   
   if (setting_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::bitcoin::AccountSettings>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::bitcoin::AccountSettings>(GetArenaNoVirtual());
     setting_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.AccountConfiguration.setting)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountConfiguration.setting)
   return setting_;
 }
-inline void AccountConfiguration::set_allocated_setting(::ledger::core::bitcoin::AccountSettings* setting) {
+inline void AccountConfiguration::set_allocated_setting(::ledger::core::message::bitcoin::AccountSettings* setting) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete setting_;
@@ -895,7 +898,7 @@ inline void AccountConfiguration::set_allocated_setting(::ledger::core::bitcoin:
     
   }
   setting_ = setting;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.AccountConfiguration.setting)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountConfiguration.setting)
 }
 
 #ifdef __GNUC__
@@ -909,16 +912,17 @@ inline void AccountConfiguration::set_allocated_setting(::ledger::core::bitcoin:
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::ledger::core::bitcoin::KeychainEngine> : ::std::true_type {};
+template <> struct is_proto_enum< ::ledger::core::message::bitcoin::KeychainEngine> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::bitcoin::KeychainEngine>() {
-  return ::ledger::core::bitcoin::KeychainEngine_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::message::bitcoin::KeychainEngine>() {
+  return ::ledger::core::message::bitcoin::KeychainEngine_descriptor();
 }
 
 }  // namespace protobuf

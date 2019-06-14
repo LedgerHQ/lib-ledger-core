@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ledger.core.bitcoin;
+package ledger.core.message.bitcoin;
 
 message Wallet {
     string uid = 1;

@@ -51,23 +51,29 @@ struct TableStruct_common_2famount_2eproto {
 void AddDescriptors_common_2famount_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 class Amount;
 class AmountDefaultTypeInternal;
 extern AmountDefaultTypeInternal _Amount_default_instance_;
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::Amount* Arena::CreateMaybeMessage<::ledger::core::Amount>(Arena*);
+template<> ::ledger::core::message::common::Amount* Arena::CreateMaybeMessage<::ledger::core::message::common::Amount>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 
 // ===================================================================
 
 class Amount :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.Amount) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.common.Amount) */ {
  public:
   Amount();
   virtual ~Amount();
@@ -175,22 +181,22 @@ class Amount :
   ::std::string* release_value();
   void set_allocated_value(::std::string* value);
 
-  // .ledger.core.Unit unit = 2;
+  // .ledger.core.message.common.Unit unit = 2;
   bool has_unit() const;
   void clear_unit();
   static const int kUnitFieldNumber = 2;
-  const ::ledger::core::Unit& unit() const;
-  ::ledger::core::Unit* release_unit();
-  ::ledger::core::Unit* mutable_unit();
-  void set_allocated_unit(::ledger::core::Unit* unit);
+  const ::ledger::core::message::common::Unit& unit() const;
+  ::ledger::core::message::common::Unit* release_unit();
+  ::ledger::core::message::common::Unit* mutable_unit();
+  void set_allocated_unit(::ledger::core::message::common::Unit* unit);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.Amount)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.common.Amount)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr value_;
-  ::ledger::core::Unit* unit_;
+  ::ledger::core::message::common::Unit* unit_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_common_2famount_2eproto;
 };
@@ -210,41 +216,41 @@ inline void Amount::clear_value() {
   value_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Amount::value() const {
-  // @@protoc_insertion_point(field_get:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_get:ledger.core.message.common.Amount.value)
   return value_.GetNoArena();
 }
 inline void Amount::set_value(const ::std::string& value) {
   
   value_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_set:ledger.core.message.common.Amount.value)
 }
 #if LANG_CXX11
 inline void Amount::set_value(::std::string&& value) {
   
   value_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.common.Amount.value)
 }
 #endif
 inline void Amount::set_value(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   value_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.common.Amount.value)
 }
 inline void Amount::set_value(const char* value, size_t size) {
   
   value_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.common.Amount.value)
 }
 inline ::std::string* Amount::mutable_value() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.common.Amount.value)
   return value_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Amount::release_value() {
-  // @@protoc_insertion_point(field_release:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_release:ledger.core.message.common.Amount.value)
   
   return value_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -255,36 +261,36 @@ inline void Amount::set_allocated_value(::std::string* value) {
     
   }
   value_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.Amount.value)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.common.Amount.value)
 }
 
-// .ledger.core.Unit unit = 2;
+// .ledger.core.message.common.Unit unit = 2;
 inline bool Amount::has_unit() const {
   return this != internal_default_instance() && unit_ != nullptr;
 }
-inline const ::ledger::core::Unit& Amount::unit() const {
-  const ::ledger::core::Unit* p = unit_;
-  // @@protoc_insertion_point(field_get:ledger.core.Amount.unit)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::Unit*>(
-      &::ledger::core::_Unit_default_instance_);
+inline const ::ledger::core::message::common::Unit& Amount::unit() const {
+  const ::ledger::core::message::common::Unit* p = unit_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.common.Amount.unit)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::common::Unit*>(
+      &::ledger::core::message::common::_Unit_default_instance_);
 }
-inline ::ledger::core::Unit* Amount::release_unit() {
-  // @@protoc_insertion_point(field_release:ledger.core.Amount.unit)
+inline ::ledger::core::message::common::Unit* Amount::release_unit() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.common.Amount.unit)
   
-  ::ledger::core::Unit* temp = unit_;
+  ::ledger::core::message::common::Unit* temp = unit_;
   unit_ = nullptr;
   return temp;
 }
-inline ::ledger::core::Unit* Amount::mutable_unit() {
+inline ::ledger::core::message::common::Unit* Amount::mutable_unit() {
   
   if (unit_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::Unit>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::common::Unit>(GetArenaNoVirtual());
     unit_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.Amount.unit)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.common.Amount.unit)
   return unit_;
 }
-inline void Amount::set_allocated_unit(::ledger::core::Unit* unit) {
+inline void Amount::set_allocated_unit(::ledger::core::message::common::Unit* unit) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::google::protobuf::MessageLite*>(unit_);
@@ -300,7 +306,7 @@ inline void Amount::set_allocated_unit(::ledger::core::Unit* unit) {
     
   }
   unit_ = unit;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.Amount.unit)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.common.Amount.unit)
 }
 
 #ifdef __GNUC__
@@ -309,6 +315,8 @@ inline void Amount::set_allocated_unit(::ledger::core::Unit* unit) {
 
 // @@protoc_insertion_point(namespace_scope)
 
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 

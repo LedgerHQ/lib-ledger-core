@@ -52,20 +52,23 @@ struct TableStruct_bitcoin_2foperation_2eproto {
 void AddDescriptors_bitcoin_2foperation_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class Operation;
 class OperationDefaultTypeInternal;
 extern OperationDefaultTypeInternal _Operation_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::bitcoin::Operation* Arena::CreateMaybeMessage<::ledger::core::bitcoin::Operation>(Arena*);
+template<> ::ledger::core::message::bitcoin::Operation* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::Operation>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 
 enum Operation_OperationType {
@@ -92,7 +95,7 @@ inline bool Operation_OperationType_Parse(
 // ===================================================================
 
 class Operation :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.Operation) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.Operation) */ {
  public:
   Operation();
   virtual ~Operation();
@@ -256,39 +259,39 @@ class Operation :
   const ::google::protobuf::RepeatedPtrField<::std::string>& senders() const;
   ::google::protobuf::RepeatedPtrField<::std::string>* mutable_senders();
 
-  // .ledger.core.Amount amount = 1;
+  // .ledger.core.message.common.Amount amount = 1;
   bool has_amount() const;
   void clear_amount();
   static const int kAmountFieldNumber = 1;
-  const ::ledger::core::Amount& amount() const;
-  ::ledger::core::Amount* release_amount();
-  ::ledger::core::Amount* mutable_amount();
-  void set_allocated_amount(::ledger::core::Amount* amount);
+  const ::ledger::core::message::common::Amount& amount() const;
+  ::ledger::core::message::common::Amount* release_amount();
+  ::ledger::core::message::common::Amount* mutable_amount();
+  void set_allocated_amount(::ledger::core::message::common::Amount* amount);
 
-  // .ledger.core.Amount fee = 2;
+  // .ledger.core.message.common.Amount fee = 2;
   bool has_fee() const;
   void clear_fee();
   static const int kFeeFieldNumber = 2;
-  const ::ledger::core::Amount& fee() const;
-  ::ledger::core::Amount* release_fee();
-  ::ledger::core::Amount* mutable_fee();
-  void set_allocated_fee(::ledger::core::Amount* fee);
+  const ::ledger::core::message::common::Amount& fee() const;
+  ::ledger::core::message::common::Amount* release_fee();
+  ::ledger::core::message::common::Amount* mutable_fee();
+  void set_allocated_fee(::ledger::core::message::common::Amount* fee);
 
-  // .ledger.core.bitcoin.Operation.OperationType operation_type = 5;
+  // .ledger.core.message.bitcoin.Operation.OperationType operation_type = 5;
   void clear_operation_type();
   static const int kOperationTypeFieldNumber = 5;
-  ::ledger::core::bitcoin::Operation_OperationType operation_type() const;
-  void set_operation_type(::ledger::core::bitcoin::Operation_OperationType value);
+  ::ledger::core::message::bitcoin::Operation_OperationType operation_type() const;
+  void set_operation_type(::ledger::core::message::bitcoin::Operation_OperationType value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.Operation)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.Operation)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::RepeatedPtrField<::std::string> receivers_;
   ::google::protobuf::RepeatedPtrField<::std::string> senders_;
-  ::ledger::core::Amount* amount_;
-  ::ledger::core::Amount* fee_;
+  ::ledger::core::message::common::Amount* amount_;
+  ::ledger::core::message::common::Amount* fee_;
   int operation_type_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2foperation_2eproto;
@@ -304,33 +307,33 @@ class Operation :
 #endif  // __GNUC__
 // Operation
 
-// .ledger.core.Amount amount = 1;
+// .ledger.core.message.common.Amount amount = 1;
 inline bool Operation::has_amount() const {
   return this != internal_default_instance() && amount_ != nullptr;
 }
-inline const ::ledger::core::Amount& Operation::amount() const {
-  const ::ledger::core::Amount* p = amount_;
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Operation.amount)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::Amount*>(
-      &::ledger::core::_Amount_default_instance_);
+inline const ::ledger::core::message::common::Amount& Operation::amount() const {
+  const ::ledger::core::message::common::Amount* p = amount_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.amount)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::common::Amount*>(
+      &::ledger::core::message::common::_Amount_default_instance_);
 }
-inline ::ledger::core::Amount* Operation::release_amount() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Operation.amount)
+inline ::ledger::core::message::common::Amount* Operation::release_amount() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Operation.amount)
   
-  ::ledger::core::Amount* temp = amount_;
+  ::ledger::core::message::common::Amount* temp = amount_;
   amount_ = nullptr;
   return temp;
 }
-inline ::ledger::core::Amount* Operation::mutable_amount() {
+inline ::ledger::core::message::common::Amount* Operation::mutable_amount() {
   
   if (amount_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::Amount>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::common::Amount>(GetArenaNoVirtual());
     amount_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Operation.amount)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Operation.amount)
   return amount_;
 }
-inline void Operation::set_allocated_amount(::ledger::core::Amount* amount) {
+inline void Operation::set_allocated_amount(::ledger::core::message::common::Amount* amount) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::google::protobuf::MessageLite*>(amount_);
@@ -346,36 +349,36 @@ inline void Operation::set_allocated_amount(::ledger::core::Amount* amount) {
     
   }
   amount_ = amount;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Operation.amount)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Operation.amount)
 }
 
-// .ledger.core.Amount fee = 2;
+// .ledger.core.message.common.Amount fee = 2;
 inline bool Operation::has_fee() const {
   return this != internal_default_instance() && fee_ != nullptr;
 }
-inline const ::ledger::core::Amount& Operation::fee() const {
-  const ::ledger::core::Amount* p = fee_;
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Operation.fee)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::Amount*>(
-      &::ledger::core::_Amount_default_instance_);
+inline const ::ledger::core::message::common::Amount& Operation::fee() const {
+  const ::ledger::core::message::common::Amount* p = fee_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.fee)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::common::Amount*>(
+      &::ledger::core::message::common::_Amount_default_instance_);
 }
-inline ::ledger::core::Amount* Operation::release_fee() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Operation.fee)
+inline ::ledger::core::message::common::Amount* Operation::release_fee() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Operation.fee)
   
-  ::ledger::core::Amount* temp = fee_;
+  ::ledger::core::message::common::Amount* temp = fee_;
   fee_ = nullptr;
   return temp;
 }
-inline ::ledger::core::Amount* Operation::mutable_fee() {
+inline ::ledger::core::message::common::Amount* Operation::mutable_fee() {
   
   if (fee_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::Amount>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::common::Amount>(GetArenaNoVirtual());
     fee_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Operation.fee)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Operation.fee)
   return fee_;
 }
-inline void Operation::set_allocated_fee(::ledger::core::Amount* fee) {
+inline void Operation::set_allocated_fee(::ledger::core::message::common::Amount* fee) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::google::protobuf::MessageLite*>(fee_);
@@ -391,7 +394,7 @@ inline void Operation::set_allocated_fee(::ledger::core::Amount* fee) {
     
   }
   fee_ = fee;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Operation.fee)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Operation.fee)
 }
 
 // repeated string receivers = 3;
@@ -402,64 +405,64 @@ inline void Operation::clear_receivers() {
   receivers_.Clear();
 }
 inline const ::std::string& Operation::receivers(int index) const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.receivers)
   return receivers_.Get(index);
 }
 inline ::std::string* Operation::mutable_receivers(int index) {
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Operation.receivers)
   return receivers_.Mutable(index);
 }
 inline void Operation::set_receivers(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.receivers)
   receivers_.Mutable(index)->assign(value);
 }
 #if LANG_CXX11
 inline void Operation::set_receivers(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.receivers)
   receivers_.Mutable(index)->assign(std::move(value));
 }
 #endif
 inline void Operation::set_receivers(int index, const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   receivers_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Operation.receivers)
 }
 inline void Operation::set_receivers(int index, const char* value, size_t size) {
   receivers_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Operation.receivers)
 }
 inline ::std::string* Operation::add_receivers() {
-  // @@protoc_insertion_point(field_add_mutable:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_add_mutable:ledger.core.message.bitcoin.Operation.receivers)
   return receivers_.Add();
 }
 inline void Operation::add_receivers(const ::std::string& value) {
   receivers_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_add:ledger.core.message.bitcoin.Operation.receivers)
 }
 #if LANG_CXX11
 inline void Operation::add_receivers(::std::string&& value) {
   receivers_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_add:ledger.core.message.bitcoin.Operation.receivers)
 }
 #endif
 inline void Operation::add_receivers(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   receivers_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_add_char:ledger.core.message.bitcoin.Operation.receivers)
 }
 inline void Operation::add_receivers(const char* value, size_t size) {
   receivers_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_add_pointer:ledger.core.message.bitcoin.Operation.receivers)
 }
 inline const ::google::protobuf::RepeatedPtrField<::std::string>&
 Operation::receivers() const {
-  // @@protoc_insertion_point(field_list:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_list:ledger.core.message.bitcoin.Operation.receivers)
   return receivers_;
 }
 inline ::google::protobuf::RepeatedPtrField<::std::string>*
 Operation::mutable_receivers() {
-  // @@protoc_insertion_point(field_mutable_list:ledger.core.bitcoin.Operation.receivers)
+  // @@protoc_insertion_point(field_mutable_list:ledger.core.message.bitcoin.Operation.receivers)
   return &receivers_;
 }
 
@@ -471,79 +474,79 @@ inline void Operation::clear_senders() {
   senders_.Clear();
 }
 inline const ::std::string& Operation::senders(int index) const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.senders)
   return senders_.Get(index);
 }
 inline ::std::string* Operation::mutable_senders(int index) {
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Operation.senders)
   return senders_.Mutable(index);
 }
 inline void Operation::set_senders(int index, const ::std::string& value) {
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.senders)
   senders_.Mutable(index)->assign(value);
 }
 #if LANG_CXX11
 inline void Operation::set_senders(int index, ::std::string&& value) {
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.senders)
   senders_.Mutable(index)->assign(std::move(value));
 }
 #endif
 inline void Operation::set_senders(int index, const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   senders_.Mutable(index)->assign(value);
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Operation.senders)
 }
 inline void Operation::set_senders(int index, const char* value, size_t size) {
   senders_.Mutable(index)->assign(
     reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Operation.senders)
 }
 inline ::std::string* Operation::add_senders() {
-  // @@protoc_insertion_point(field_add_mutable:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_add_mutable:ledger.core.message.bitcoin.Operation.senders)
   return senders_.Add();
 }
 inline void Operation::add_senders(const ::std::string& value) {
   senders_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_add:ledger.core.message.bitcoin.Operation.senders)
 }
 #if LANG_CXX11
 inline void Operation::add_senders(::std::string&& value) {
   senders_.Add(std::move(value));
-  // @@protoc_insertion_point(field_add:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_add:ledger.core.message.bitcoin.Operation.senders)
 }
 #endif
 inline void Operation::add_senders(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   senders_.Add()->assign(value);
-  // @@protoc_insertion_point(field_add_char:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_add_char:ledger.core.message.bitcoin.Operation.senders)
 }
 inline void Operation::add_senders(const char* value, size_t size) {
   senders_.Add()->assign(reinterpret_cast<const char*>(value), size);
-  // @@protoc_insertion_point(field_add_pointer:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_add_pointer:ledger.core.message.bitcoin.Operation.senders)
 }
 inline const ::google::protobuf::RepeatedPtrField<::std::string>&
 Operation::senders() const {
-  // @@protoc_insertion_point(field_list:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_list:ledger.core.message.bitcoin.Operation.senders)
   return senders_;
 }
 inline ::google::protobuf::RepeatedPtrField<::std::string>*
 Operation::mutable_senders() {
-  // @@protoc_insertion_point(field_mutable_list:ledger.core.bitcoin.Operation.senders)
+  // @@protoc_insertion_point(field_mutable_list:ledger.core.message.bitcoin.Operation.senders)
   return &senders_;
 }
 
-// .ledger.core.bitcoin.Operation.OperationType operation_type = 5;
+// .ledger.core.message.bitcoin.Operation.OperationType operation_type = 5;
 inline void Operation::clear_operation_type() {
   operation_type_ = 0;
 }
-inline ::ledger::core::bitcoin::Operation_OperationType Operation::operation_type() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Operation.operation_type)
-  return static_cast< ::ledger::core::bitcoin::Operation_OperationType >(operation_type_);
+inline ::ledger::core::message::bitcoin::Operation_OperationType Operation::operation_type() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.operation_type)
+  return static_cast< ::ledger::core::message::bitcoin::Operation_OperationType >(operation_type_);
 }
-inline void Operation::set_operation_type(::ledger::core::bitcoin::Operation_OperationType value) {
+inline void Operation::set_operation_type(::ledger::core::message::bitcoin::Operation_OperationType value) {
   
   operation_type_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Operation.operation_type)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.operation_type)
 }
 
 #ifdef __GNUC__
@@ -553,16 +556,17 @@ inline void Operation::set_operation_type(::ledger::core::bitcoin::Operation_Ope
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::ledger::core::bitcoin::Operation_OperationType> : ::std::true_type {};
+template <> struct is_proto_enum< ::ledger::core::message::bitcoin::Operation_OperationType> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::bitcoin::Operation_OperationType>() {
-  return ::ledger::core::bitcoin::Operation_OperationType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::message::bitcoin::Operation_OperationType>() {
+  return ::ledger::core::message::bitcoin::Operation_OperationType_descriptor();
 }
 
 }  // namespace protobuf

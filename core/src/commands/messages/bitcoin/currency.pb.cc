@@ -19,23 +19,25 @@
 extern PROTOBUF_INTERNAL_EXPORT_common_2fcurrency_2eproto ::google::protobuf::internal::SCCInfo<1> scc_info_Currency_common_2fcurrency_2eproto;
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class CurrencyDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<Currency> _instance;
 } _Currency_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 static void InitDefaultsCurrency_bitcoin_2fcurrency_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::bitcoin::_Currency_default_instance_;
-    new (ptr) ::ledger::core::bitcoin::Currency();
+    void* ptr = &::ledger::core::message::bitcoin::_Currency_default_instance_;
+    new (ptr) ::ledger::core::message::bitcoin::Currency();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::bitcoin::Currency::InitAsDefaultInstance();
+  ::ledger::core::message::bitcoin::Currency::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<1> scc_info_Currency_bitcoin_2fcurrency_2eproto =
@@ -52,19 +54,19 @@ constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descr
 
 const ::google::protobuf::uint32 TableStruct_bitcoin_2fcurrency_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::Currency, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Currency, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::Currency, general_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::bitcoin::Currency, bip44_coin_type_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Currency, general_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Currency, bip44_coin_type_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::ledger::core::bitcoin::Currency)},
+  { 0, -1, sizeof(::ledger::core::message::bitcoin::Currency)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::bitcoin::_Currency_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::bitcoin::_Currency_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_bitcoin_2fcurrency_2eproto = {
@@ -74,15 +76,16 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_bitcoin_2fcurrency_2eproto[] =
-  "\n\026bitcoin/currency.proto\022\023ledger.core.bi"
-  "tcoin\032\025common/currency.proto\"K\n\010Currency"
-  "\022&\n\007general\030\001 \001(\0132\025.ledger.core.Currency"
-  "\022\027\n\017bip44_coin_type\030\002 \001(\rb\006proto3"
+  "\n\026bitcoin/currency.proto\022\033ledger.core.me"
+  "ssage.bitcoin\032\025common/currency.proto\"Z\n\010"
+  "Currency\0225\n\007general\030\001 \001(\0132$.ledger.core."
+  "message.common.Currency\022\027\n\017bip44_coin_ty"
+  "pe\030\002 \001(\rb\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_bitcoin_2fcurrency_2eproto = {
   false, InitDefaults_bitcoin_2fcurrency_2eproto, 
   descriptor_table_protodef_bitcoin_2fcurrency_2eproto,
-  "bitcoin/currency.proto", &assign_descriptors_table_bitcoin_2fcurrency_2eproto, 153,
+  "bitcoin/currency.proto", &assign_descriptors_table_bitcoin_2fcurrency_2eproto, 176,
 };
 
 void AddDescriptors_bitcoin_2fcurrency_2eproto() {
@@ -97,20 +100,21 @@ void AddDescriptors_bitcoin_2fcurrency_2eproto() {
 static bool dynamic_init_dummy_bitcoin_2fcurrency_2eproto = []() { AddDescriptors_bitcoin_2fcurrency_2eproto(); return true; }();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 
 // ===================================================================
 
 void Currency::InitAsDefaultInstance() {
-  ::ledger::core::bitcoin::_Currency_default_instance_._instance.get_mutable()->general_ = const_cast< ::ledger::core::Currency*>(
-      ::ledger::core::Currency::internal_default_instance());
+  ::ledger::core::message::bitcoin::_Currency_default_instance_._instance.get_mutable()->general_ = const_cast< ::ledger::core::message::common::Currency*>(
+      ::ledger::core::message::common::Currency::internal_default_instance());
 }
 class Currency::HasBitSetters {
  public:
-  static const ::ledger::core::Currency& general(const Currency* msg);
+  static const ::ledger::core::message::common::Currency& general(const Currency* msg);
 };
 
-const ::ledger::core::Currency&
+const ::ledger::core::message::common::Currency&
 Currency::HasBitSetters::general(const Currency* msg) {
   return *msg->general_;
 }
@@ -128,19 +132,19 @@ const int Currency::kBip44CoinTypeFieldNumber;
 Currency::Currency()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(constructor:ledger.core.message.bitcoin.Currency)
 }
 Currency::Currency(const Currency& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   if (from.has_general()) {
-    general_ = new ::ledger::core::Currency(*from.general_);
+    general_ = new ::ledger::core::message::common::Currency(*from.general_);
   } else {
     general_ = nullptr;
   }
   bip44_coin_type_ = from.bip44_coin_type_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.Currency)
 }
 
 void Currency::SharedCtor() {
@@ -152,7 +156,7 @@ void Currency::SharedCtor() {
 }
 
 Currency::~Currency() {
-  // @@protoc_insertion_point(destructor:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(destructor:ledger.core.message.bitcoin.Currency)
   SharedDtor();
 }
 
@@ -170,7 +174,7 @@ const Currency& Currency::default_instance() {
 
 
 void Currency::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.bitcoin.Currency)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.bitcoin.Currency)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -196,12 +200,12 @@ const char* Currency::_InternalParse(const char* begin, const char* end, void* o
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // .ledger.core.Currency general = 1;
+      // .ledger.core.message.common.Currency general = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        parser_till_end = ::ledger::core::Currency::_InternalParse;
+        parser_till_end = ::ledger::core::message::common::Currency::_InternalParse;
         object = msg->mutable_general();
         if (size > end - ptr) goto len_delim_till_end;
         ptr += size;
@@ -240,13 +244,13 @@ bool Currency::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.bitcoin.Currency)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // .ledger.core.Currency general = 1;
+      // .ledger.core.message.common.Currency general = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
@@ -282,10 +286,10 @@ bool Currency::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.bitcoin.Currency)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.bitcoin.Currency)
   return false;
 #undef DO_
 }
@@ -293,11 +297,11 @@ failure:
 
 void Currency::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.bitcoin.Currency)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.Currency general = 1;
+  // .ledger.core.message.common.Currency general = 1;
   if (this->has_general()) {
     ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
       1, HasBitSetters::general(this), output);
@@ -312,16 +316,16 @@ void Currency::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.bitcoin.Currency)
 }
 
 ::google::protobuf::uint8* Currency::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.bitcoin.Currency)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // .ledger.core.Currency general = 1;
+  // .ledger.core.message.common.Currency general = 1;
   if (this->has_general()) {
     target = ::google::protobuf::internal::WireFormatLite::
       InternalWriteMessageToArray(
@@ -337,12 +341,12 @@ void Currency::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.bitcoin.Currency)
   return target;
 }
 
 size_t Currency::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.bitcoin.Currency)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.bitcoin.Currency)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -354,7 +358,7 @@ size_t Currency::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // .ledger.core.Currency general = 1;
+  // .ledger.core.message.common.Currency general = 1;
   if (this->has_general()) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::MessageSize(
@@ -374,29 +378,29 @@ size_t Currency::ByteSizeLong() const {
 }
 
 void Currency::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.bitcoin.Currency)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.bitcoin.Currency)
   GOOGLE_DCHECK_NE(&from, this);
   const Currency* source =
       ::google::protobuf::DynamicCastToGenerated<Currency>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.bitcoin.Currency)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.bitcoin.Currency)
     MergeFrom(*source);
   }
 }
 
 void Currency::MergeFrom(const Currency& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.bitcoin.Currency)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.bitcoin.Currency)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
   if (from.has_general()) {
-    mutable_general()->::ledger::core::Currency::MergeFrom(from.general());
+    mutable_general()->::ledger::core::message::common::Currency::MergeFrom(from.general());
   }
   if (from.bip44_coin_type() != 0) {
     set_bip44_coin_type(from.bip44_coin_type());
@@ -404,14 +408,14 @@ void Currency::MergeFrom(const Currency& from) {
 }
 
 void Currency::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.bitcoin.Currency)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.bitcoin.Currency)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Currency::CopyFrom(const Currency& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.bitcoin.Currency)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.bitcoin.Currency)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -440,12 +444,13 @@ void Currency::InternalSwap(Currency* other) {
 
 // @@protoc_insertion_point(namespace_scope)
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::ledger::core::bitcoin::Currency* Arena::CreateMaybeMessage< ::ledger::core::bitcoin::Currency >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::bitcoin::Currency >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::bitcoin::Currency* Arena::CreateMaybeMessage< ::ledger::core::message::bitcoin::Currency >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::bitcoin::Currency >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

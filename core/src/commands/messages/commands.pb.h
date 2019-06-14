@@ -51,6 +51,7 @@ struct TableStruct_commands_2eproto {
 void AddDescriptors_commands_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 class CoreRequest;
 class CoreRequestDefaultTypeInternal;
 extern CoreRequestDefaultTypeInternal _CoreRequest_default_instance_;
@@ -60,17 +61,19 @@ extern CoreResponseDefaultTypeInternal _CoreResponse_default_instance_;
 class GetVersionResponse;
 class GetVersionResponseDefaultTypeInternal;
 extern GetVersionResponseDefaultTypeInternal _GetVersionResponse_default_instance_;
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::CoreRequest* Arena::CreateMaybeMessage<::ledger::core::CoreRequest>(Arena*);
-template<> ::ledger::core::CoreResponse* Arena::CreateMaybeMessage<::ledger::core::CoreResponse>(Arena*);
-template<> ::ledger::core::GetVersionResponse* Arena::CreateMaybeMessage<::ledger::core::GetVersionResponse>(Arena*);
+template<> ::ledger::core::message::CoreRequest* Arena::CreateMaybeMessage<::ledger::core::message::CoreRequest>(Arena*);
+template<> ::ledger::core::message::CoreResponse* Arena::CreateMaybeMessage<::ledger::core::message::CoreResponse>(Arena*);
+template<> ::ledger::core::message::GetVersionResponse* Arena::CreateMaybeMessage<::ledger::core::message::GetVersionResponse>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 
 enum CoreRequestType {
   GET_VERSION = 0,
@@ -99,7 +102,7 @@ inline bool CoreRequestType_Parse(
 // ===================================================================
 
 class CoreRequest :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.CoreRequest) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.CoreRequest) */ {
  public:
   CoreRequest();
   virtual ~CoreRequest();
@@ -207,13 +210,13 @@ class CoreRequest :
   ::std::string* release_request_body();
   void set_allocated_request_body(::std::string* request_body);
 
-  // .ledger.core.CoreRequestType request_type = 1;
+  // .ledger.core.message.CoreRequestType request_type = 1;
   void clear_request_type();
   static const int kRequestTypeFieldNumber = 1;
-  ::ledger::core::CoreRequestType request_type() const;
-  void set_request_type(::ledger::core::CoreRequestType value);
+  ::ledger::core::message::CoreRequestType request_type() const;
+  void set_request_type(::ledger::core::message::CoreRequestType value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.CoreRequest)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.CoreRequest)
  private:
   class HasBitSetters;
 
@@ -226,7 +229,7 @@ class CoreRequest :
 // -------------------------------------------------------------------
 
 class CoreResponse :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.CoreResponse) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.CoreResponse) */ {
  public:
   CoreResponse();
   virtual ~CoreResponse();
@@ -348,7 +351,7 @@ class CoreResponse :
   ::std::string* release_error();
   void set_allocated_error(::std::string* error);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.CoreResponse)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.CoreResponse)
  private:
   class HasBitSetters;
 
@@ -361,7 +364,7 @@ class CoreResponse :
 // -------------------------------------------------------------------
 
 class GetVersionResponse :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.GetVersionResponse) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.GetVersionResponse) */ {
  public:
   GetVersionResponse();
   virtual ~GetVersionResponse();
@@ -473,7 +476,7 @@ class GetVersionResponse :
   ::google::protobuf::int32 patch() const;
   void set_patch(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.GetVersionResponse)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.GetVersionResponse)
  private:
   class HasBitSetters;
 
@@ -495,18 +498,18 @@ class GetVersionResponse :
 #endif  // __GNUC__
 // CoreRequest
 
-// .ledger.core.CoreRequestType request_type = 1;
+// .ledger.core.message.CoreRequestType request_type = 1;
 inline void CoreRequest::clear_request_type() {
   request_type_ = 0;
 }
-inline ::ledger::core::CoreRequestType CoreRequest::request_type() const {
-  // @@protoc_insertion_point(field_get:ledger.core.CoreRequest.request_type)
-  return static_cast< ::ledger::core::CoreRequestType >(request_type_);
+inline ::ledger::core::message::CoreRequestType CoreRequest::request_type() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.CoreRequest.request_type)
+  return static_cast< ::ledger::core::message::CoreRequestType >(request_type_);
 }
-inline void CoreRequest::set_request_type(::ledger::core::CoreRequestType value) {
+inline void CoreRequest::set_request_type(::ledger::core::message::CoreRequestType value) {
   
   request_type_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.CoreRequest.request_type)
+  // @@protoc_insertion_point(field_set:ledger.core.message.CoreRequest.request_type)
 }
 
 // bytes request_body = 2;
@@ -514,41 +517,41 @@ inline void CoreRequest::clear_request_body() {
   request_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& CoreRequest::request_body() const {
-  // @@protoc_insertion_point(field_get:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_get:ledger.core.message.CoreRequest.request_body)
   return request_body_.GetNoArena();
 }
 inline void CoreRequest::set_request_body(const ::std::string& value) {
   
   request_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_set:ledger.core.message.CoreRequest.request_body)
 }
 #if LANG_CXX11
 inline void CoreRequest::set_request_body(::std::string&& value) {
   
   request_body_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.CoreRequest.request_body)
 }
 #endif
 inline void CoreRequest::set_request_body(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   request_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.CoreRequest.request_body)
 }
 inline void CoreRequest::set_request_body(const void* value, size_t size) {
   
   request_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.CoreRequest.request_body)
 }
 inline ::std::string* CoreRequest::mutable_request_body() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.CoreRequest.request_body)
   return request_body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* CoreRequest::release_request_body() {
-  // @@protoc_insertion_point(field_release:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_release:ledger.core.message.CoreRequest.request_body)
   
   return request_body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -559,7 +562,7 @@ inline void CoreRequest::set_allocated_request_body(::std::string* request_body)
     
   }
   request_body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), request_body);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.CoreRequest.request_body)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.CoreRequest.request_body)
 }
 
 // -------------------------------------------------------------------
@@ -571,41 +574,41 @@ inline void CoreResponse::clear_response_body() {
   response_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& CoreResponse::response_body() const {
-  // @@protoc_insertion_point(field_get:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_get:ledger.core.message.CoreResponse.response_body)
   return response_body_.GetNoArena();
 }
 inline void CoreResponse::set_response_body(const ::std::string& value) {
   
   response_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_set:ledger.core.message.CoreResponse.response_body)
 }
 #if LANG_CXX11
 inline void CoreResponse::set_response_body(::std::string&& value) {
   
   response_body_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.CoreResponse.response_body)
 }
 #endif
 inline void CoreResponse::set_response_body(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   response_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.CoreResponse.response_body)
 }
 inline void CoreResponse::set_response_body(const void* value, size_t size) {
   
   response_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.CoreResponse.response_body)
 }
 inline ::std::string* CoreResponse::mutable_response_body() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.CoreResponse.response_body)
   return response_body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* CoreResponse::release_response_body() {
-  // @@protoc_insertion_point(field_release:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_release:ledger.core.message.CoreResponse.response_body)
   
   return response_body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -616,7 +619,7 @@ inline void CoreResponse::set_allocated_response_body(::std::string* response_bo
     
   }
   response_body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), response_body);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.CoreResponse.response_body)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.CoreResponse.response_body)
 }
 
 // string error = 2;
@@ -624,41 +627,41 @@ inline void CoreResponse::clear_error() {
   error_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& CoreResponse::error() const {
-  // @@protoc_insertion_point(field_get:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_get:ledger.core.message.CoreResponse.error)
   return error_.GetNoArena();
 }
 inline void CoreResponse::set_error(const ::std::string& value) {
   
   error_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_set:ledger.core.message.CoreResponse.error)
 }
 #if LANG_CXX11
 inline void CoreResponse::set_error(::std::string&& value) {
   
   error_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.CoreResponse.error)
 }
 #endif
 inline void CoreResponse::set_error(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   error_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.CoreResponse.error)
 }
 inline void CoreResponse::set_error(const char* value, size_t size) {
   
   error_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.CoreResponse.error)
 }
 inline ::std::string* CoreResponse::mutable_error() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.CoreResponse.error)
   return error_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* CoreResponse::release_error() {
-  // @@protoc_insertion_point(field_release:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_release:ledger.core.message.CoreResponse.error)
   
   return error_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -669,7 +672,7 @@ inline void CoreResponse::set_allocated_error(::std::string* error) {
     
   }
   error_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), error);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.CoreResponse.error)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.CoreResponse.error)
 }
 
 // -------------------------------------------------------------------
@@ -681,13 +684,13 @@ inline void GetVersionResponse::clear_major() {
   major_ = 0;
 }
 inline ::google::protobuf::int32 GetVersionResponse::major() const {
-  // @@protoc_insertion_point(field_get:ledger.core.GetVersionResponse.major)
+  // @@protoc_insertion_point(field_get:ledger.core.message.GetVersionResponse.major)
   return major_;
 }
 inline void GetVersionResponse::set_major(::google::protobuf::int32 value) {
   
   major_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.GetVersionResponse.major)
+  // @@protoc_insertion_point(field_set:ledger.core.message.GetVersionResponse.major)
 }
 
 // int32 minor = 2;
@@ -695,13 +698,13 @@ inline void GetVersionResponse::clear_minor() {
   minor_ = 0;
 }
 inline ::google::protobuf::int32 GetVersionResponse::minor() const {
-  // @@protoc_insertion_point(field_get:ledger.core.GetVersionResponse.minor)
+  // @@protoc_insertion_point(field_get:ledger.core.message.GetVersionResponse.minor)
   return minor_;
 }
 inline void GetVersionResponse::set_minor(::google::protobuf::int32 value) {
   
   minor_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.GetVersionResponse.minor)
+  // @@protoc_insertion_point(field_set:ledger.core.message.GetVersionResponse.minor)
 }
 
 // int32 patch = 3;
@@ -709,13 +712,13 @@ inline void GetVersionResponse::clear_patch() {
   patch_ = 0;
 }
 inline ::google::protobuf::int32 GetVersionResponse::patch() const {
-  // @@protoc_insertion_point(field_get:ledger.core.GetVersionResponse.patch)
+  // @@protoc_insertion_point(field_get:ledger.core.message.GetVersionResponse.patch)
   return patch_;
 }
 inline void GetVersionResponse::set_patch(::google::protobuf::int32 value) {
   
   patch_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.GetVersionResponse.patch)
+  // @@protoc_insertion_point(field_set:ledger.core.message.GetVersionResponse.patch)
 }
 
 #ifdef __GNUC__
@@ -728,16 +731,17 @@ inline void GetVersionResponse::set_patch(::google::protobuf::int32 value) {
 
 // @@protoc_insertion_point(namespace_scope)
 
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::ledger::core::CoreRequestType> : ::std::true_type {};
+template <> struct is_proto_enum< ::ledger::core::message::CoreRequestType> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::CoreRequestType>() {
-  return ::ledger::core::CoreRequestType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::message::CoreRequestType>() {
+  return ::ledger::core::message::CoreRequestType_descriptor();
 }
 
 }  // namespace protobuf

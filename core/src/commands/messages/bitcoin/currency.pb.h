@@ -51,26 +51,29 @@ struct TableStruct_bitcoin_2fcurrency_2eproto {
 void AddDescriptors_bitcoin_2fcurrency_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class Currency;
 class CurrencyDefaultTypeInternal;
 extern CurrencyDefaultTypeInternal _Currency_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::bitcoin::Currency* Arena::CreateMaybeMessage<::ledger::core::bitcoin::Currency>(Arena*);
+template<> ::ledger::core::message::bitcoin::Currency* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::Currency>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 
 // ===================================================================
 
 class Currency :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.Currency) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.Currency) */ {
  public:
   Currency();
   virtual ~Currency();
@@ -164,14 +167,14 @@ class Currency :
 
   // accessors -------------------------------------------------------
 
-  // .ledger.core.Currency general = 1;
+  // .ledger.core.message.common.Currency general = 1;
   bool has_general() const;
   void clear_general();
   static const int kGeneralFieldNumber = 1;
-  const ::ledger::core::Currency& general() const;
-  ::ledger::core::Currency* release_general();
-  ::ledger::core::Currency* mutable_general();
-  void set_allocated_general(::ledger::core::Currency* general);
+  const ::ledger::core::message::common::Currency& general() const;
+  ::ledger::core::message::common::Currency* release_general();
+  ::ledger::core::message::common::Currency* mutable_general();
+  void set_allocated_general(::ledger::core::message::common::Currency* general);
 
   // uint32 bip44_coin_type = 2;
   void clear_bip44_coin_type();
@@ -179,12 +182,12 @@ class Currency :
   ::google::protobuf::uint32 bip44_coin_type() const;
   void set_bip44_coin_type(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.Currency)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.Currency)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::ledger::core::Currency* general_;
+  ::ledger::core::message::common::Currency* general_;
   ::google::protobuf::uint32 bip44_coin_type_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2fcurrency_2eproto;
@@ -200,33 +203,33 @@ class Currency :
 #endif  // __GNUC__
 // Currency
 
-// .ledger.core.Currency general = 1;
+// .ledger.core.message.common.Currency general = 1;
 inline bool Currency::has_general() const {
   return this != internal_default_instance() && general_ != nullptr;
 }
-inline const ::ledger::core::Currency& Currency::general() const {
-  const ::ledger::core::Currency* p = general_;
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Currency.general)
-  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::Currency*>(
-      &::ledger::core::_Currency_default_instance_);
+inline const ::ledger::core::message::common::Currency& Currency::general() const {
+  const ::ledger::core::message::common::Currency* p = general_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Currency.general)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::common::Currency*>(
+      &::ledger::core::message::common::_Currency_default_instance_);
 }
-inline ::ledger::core::Currency* Currency::release_general() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Currency.general)
+inline ::ledger::core::message::common::Currency* Currency::release_general() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Currency.general)
   
-  ::ledger::core::Currency* temp = general_;
+  ::ledger::core::message::common::Currency* temp = general_;
   general_ = nullptr;
   return temp;
 }
-inline ::ledger::core::Currency* Currency::mutable_general() {
+inline ::ledger::core::message::common::Currency* Currency::mutable_general() {
   
   if (general_ == nullptr) {
-    auto* p = CreateMaybeMessage<::ledger::core::Currency>(GetArenaNoVirtual());
+    auto* p = CreateMaybeMessage<::ledger::core::message::common::Currency>(GetArenaNoVirtual());
     general_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Currency.general)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Currency.general)
   return general_;
 }
-inline void Currency::set_allocated_general(::ledger::core::Currency* general) {
+inline void Currency::set_allocated_general(::ledger::core::message::common::Currency* general) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete reinterpret_cast< ::google::protobuf::MessageLite*>(general_);
@@ -242,7 +245,7 @@ inline void Currency::set_allocated_general(::ledger::core::Currency* general) {
     
   }
   general_ = general;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Currency.general)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Currency.general)
 }
 
 // uint32 bip44_coin_type = 2;
@@ -250,13 +253,13 @@ inline void Currency::clear_bip44_coin_type() {
   bip44_coin_type_ = 0u;
 }
 inline ::google::protobuf::uint32 Currency::bip44_coin_type() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Currency.bip44_coin_type)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Currency.bip44_coin_type)
   return bip44_coin_type_;
 }
 inline void Currency::set_bip44_coin_type(::google::protobuf::uint32 value) {
   
   bip44_coin_type_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Currency.bip44_coin_type)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Currency.bip44_coin_type)
 }
 
 #ifdef __GNUC__
@@ -266,6 +269,7 @@ inline void Currency::set_bip44_coin_type(::google::protobuf::uint32 value) {
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 

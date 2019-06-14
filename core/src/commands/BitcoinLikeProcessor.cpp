@@ -1,7 +1,6 @@
 #include "BitcoinLikeProcessor.h"
 #include <memory>
 #include <string>
-#include "bitcoin_like.pb.h"
 #include "api/DynamicObject.hpp"
 #include "api/Account.hpp"
 #include "api/AccountCallback.hpp"
@@ -25,7 +24,7 @@
 
 namespace ledger {
 namespace core {
-    using namespace bitcoinlike_proto;
+    using namespace message::bitcoin;
 
     BitcoinLikeCommandProcessor::BitcoinLikeCommandProcessor(const std::shared_ptr<WalletPool>& walletPool)
         : _walletPool(walletPool) {
@@ -33,13 +32,13 @@ namespace core {
     }
 
     Future<std::string> BitcoinLikeCommandProcessor::processRequest(const std::string& request) {
-        BitcoinLikeRequest req;
+        Request req;
         if (!req.ParseFromString(request)) {
             throw std::runtime_error("Can't parse BitcoinLikeRequest");
         }
         switch (req.type())
         {
-        case BitcoinLikeRequestType::CREATE_ACCOUNT: {
+        case RequestType::CREATE_ACCOUNT: {
             CreateAccountRequest createAcc;
             if (!createAcc.ParseFromString(req.submessage())) {
                 throw std::runtime_error("Can't parse bitcoin CreateAccountRequest");
@@ -49,7 +48,7 @@ namespace core {
                     return createAccResp.SerializeAsString();
                 });
         }
-        case BitcoinLikeRequestType::SYNC: {
+        case RequestType::SYNC_ACCOUNT: {
             SyncAccountRequest syncAcc;
             if (!syncAcc.ParseFromString(req.submessage())) {
                 throw std::runtime_error("Can't parse bitcoin SyncAccountRequest");
@@ -59,7 +58,7 @@ namespace core {
                     return syncAccResp.SerializeAsString();
                 });
         }
-        case BitcoinLikeRequestType::GET_BALANCE: {
+        case RequestType::GET_ACCOUNT_BALANCE: {
             GetBalanceRequest getBalance;
             if (!getBalance.ParseFromString(req.submessage())) {
                 throw std::runtime_error("Can't parse bitcoin GetBalanceRequest");
@@ -79,7 +78,7 @@ namespace core {
 
     Future<CreateAccountResponse> BitcoinLikeCommandProcessor::processRequest(const CreateAccountRequest& req) {
         auto walletConfig = api::DynamicObject::newInstance();
-        if (req.config().is_segwit()) {
+        if (req.config().keychain_engine() == KeychainEngine::BIP49_P2SH) {
             walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
         }
         else {
@@ -95,8 +94,8 @@ namespace core {
             })
             .map<CreateAccountResponse>(_walletPool->getContext(), [this](const std::shared_ptr<api::Account> & acc) {
                 CreateAccountResponse resp;
-                resp.set_acc_uid("blablalba");
-                _accounts[resp.acc_uid()] = acc;
+                resp.set_account("blablalba");
+                _accounts[resp.account()] = acc;
                 return resp;
             });
     }
@@ -177,7 +176,8 @@ namespace core {
         auto amountCallback = std::make_shared<AmountCallback>(
             [res](const std::string& amount ) {
                 GetBalanceResponse resp;
-                resp.set_balance(amount);
+                message::common::Amount* amnt = resp.mutable_amount();
+                amnt->set_value(amount);
                 res->complete(resp);
             },
             [res](const api::Error& err) {

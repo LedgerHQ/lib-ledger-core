@@ -50,26 +50,29 @@ struct TableStruct_bitcoin_2fwallet_2eproto {
 void AddDescriptors_bitcoin_2fwallet_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class Wallet;
 class WalletDefaultTypeInternal;
 extern WalletDefaultTypeInternal _Wallet_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::bitcoin::Wallet* Arena::CreateMaybeMessage<::ledger::core::bitcoin::Wallet>(Arena*);
+template<> ::ledger::core::message::bitcoin::Wallet* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::Wallet>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 
 // ===================================================================
 
 class Wallet :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.Wallet) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.Wallet) */ {
  public:
   Wallet();
   virtual ~Wallet();
@@ -191,7 +194,7 @@ class Wallet :
   ::std::string* release_name();
   void set_allocated_name(::std::string* name);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.Wallet)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.Wallet)
  private:
   class HasBitSetters;
 
@@ -217,41 +220,41 @@ inline void Wallet::clear_uid() {
   uid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Wallet::uid() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Wallet.uid)
   return uid_.GetNoArena();
 }
 inline void Wallet::set_uid(const ::std::string& value) {
   
   uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Wallet.uid)
 }
 #if LANG_CXX11
 inline void Wallet::set_uid(::std::string&& value) {
   
   uid_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Wallet.uid)
 }
 #endif
 inline void Wallet::set_uid(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Wallet.uid)
 }
 inline void Wallet::set_uid(const char* value, size_t size) {
   
   uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Wallet.uid)
 }
 inline ::std::string* Wallet::mutable_uid() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Wallet.uid)
   return uid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Wallet::release_uid() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Wallet.uid)
   
   return uid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -262,7 +265,7 @@ inline void Wallet::set_allocated_uid(::std::string* uid) {
     
   }
   uid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), uid);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Wallet.uid)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Wallet.uid)
 }
 
 // string name = 2;
@@ -270,41 +273,41 @@ inline void Wallet::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Wallet::name() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Wallet.name)
   return name_.GetNoArena();
 }
 inline void Wallet::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Wallet.name)
 }
 #if LANG_CXX11
 inline void Wallet::set_name(::std::string&& value) {
   
   name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Wallet.name)
 }
 #endif
 inline void Wallet::set_name(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Wallet.name)
 }
 inline void Wallet::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Wallet.name)
 }
 inline ::std::string* Wallet::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Wallet.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Wallet::release_name() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Wallet.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -315,7 +318,7 @@ inline void Wallet::set_allocated_name(::std::string* name) {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Wallet.name)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Wallet.name)
 }
 
 #ifdef __GNUC__
@@ -325,6 +328,7 @@ inline void Wallet::set_allocated_name(::std::string* name) {
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 

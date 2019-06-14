@@ -50,26 +50,29 @@ struct TableStruct_bitcoin_2faccount_2eproto {
 void AddDescriptors_bitcoin_2faccount_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 class Account;
 class AccountDefaultTypeInternal;
 extern AccountDefaultTypeInternal _Account_default_instance_;
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::bitcoin::Account* Arena::CreateMaybeMessage<::ledger::core::bitcoin::Account>(Arena*);
+template<> ::ledger::core::message::bitcoin::Account* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::Account>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 namespace bitcoin {
 
 // ===================================================================
 
 class Account :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.bitcoin.Account) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.Account) */ {
  public:
   Account();
   virtual ~Account();
@@ -211,7 +214,7 @@ class Account :
   ::google::protobuf::uint32 index() const;
   void set_index(::google::protobuf::uint32 value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.bitcoin.Account)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.Account)
  private:
   class HasBitSetters;
 
@@ -239,41 +242,41 @@ inline void Account::clear_uid() {
   uid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Account::uid() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.uid)
   return uid_.GetNoArena();
 }
 inline void Account::set_uid(const ::std::string& value) {
   
   uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.uid)
 }
 #if LANG_CXX11
 inline void Account::set_uid(::std::string&& value) {
   
   uid_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Account.uid)
 }
 #endif
 inline void Account::set_uid(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Account.uid)
 }
 inline void Account::set_uid(const char* value, size_t size) {
   
   uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Account.uid)
 }
 inline ::std::string* Account::mutable_uid() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Account.uid)
   return uid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Account::release_uid() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Account.uid)
   
   return uid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -284,7 +287,7 @@ inline void Account::set_allocated_uid(::std::string* uid) {
     
   }
   uid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), uid);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Account.uid)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Account.uid)
 }
 
 // string name = 2;
@@ -292,41 +295,41 @@ inline void Account::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Account::name() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.name)
   return name_.GetNoArena();
 }
 inline void Account::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.name)
 }
 #if LANG_CXX11
 inline void Account::set_name(::std::string&& value) {
   
   name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Account.name)
 }
 #endif
 inline void Account::set_name(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Account.name)
 }
 inline void Account::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Account.name)
 }
 inline ::std::string* Account::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Account.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Account::release_name() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Account.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -337,7 +340,7 @@ inline void Account::set_allocated_name(::std::string* name) {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Account.name)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Account.name)
 }
 
 // uint32 index = 3;
@@ -345,13 +348,13 @@ inline void Account::clear_index() {
   index_ = 0u;
 }
 inline ::google::protobuf::uint32 Account::index() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Account.index)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.index)
   return index_;
 }
 inline void Account::set_index(::google::protobuf::uint32 value) {
   
   index_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Account.index)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.index)
 }
 
 // string xpub = 4;
@@ -359,41 +362,41 @@ inline void Account::clear_xpub() {
   xpub_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Account::xpub() const {
-  // @@protoc_insertion_point(field_get:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.xpub)
   return xpub_.GetNoArena();
 }
 inline void Account::set_xpub(const ::std::string& value) {
   
   xpub_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.xpub)
 }
 #if LANG_CXX11
 inline void Account::set_xpub(::std::string&& value) {
   
   xpub_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Account.xpub)
 }
 #endif
 inline void Account::set_xpub(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   xpub_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Account.xpub)
 }
 inline void Account::set_xpub(const char* value, size_t size) {
   
   xpub_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Account.xpub)
 }
 inline ::std::string* Account::mutable_xpub() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Account.xpub)
   return xpub_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Account::release_xpub() {
-  // @@protoc_insertion_point(field_release:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Account.xpub)
   
   return xpub_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -404,7 +407,7 @@ inline void Account::set_allocated_xpub(::std::string* xpub) {
     
   }
   xpub_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), xpub);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Account.xpub)
 }
 
 #ifdef __GNUC__
@@ -414,6 +417,7 @@ inline void Account::set_allocated_xpub(::std::string* xpub) {
 // @@protoc_insertion_point(namespace_scope)
 
 }  // namespace bitcoin
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 

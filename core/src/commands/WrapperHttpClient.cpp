@@ -9,7 +9,7 @@
 
 namespace ledger {
     namespace core {
-        using namespace services_proto;
+        using namespace message;
 
         struct HttpUrlConnection : public api::HttpUrlConnection {
             int32_t statusCode;

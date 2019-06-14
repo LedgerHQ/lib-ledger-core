@@ -5,7 +5,7 @@
 #include "async/Future.hpp"
 #include "utils/Try.hpp"
 #include "BitcoinLikeProcessor.h"
-#include "messages.pb.h"
+#include "commands.pb.h"
 #include "PathResolver.hpp"
 #include "ThreadDispatcher.hpp"
 #include "LogPrinter.hpp"
@@ -16,7 +16,7 @@
 
 namespace ledger {
     namespace core {
-        using namespace lib_core_proto;
+        using namespace message;
 
         LibCoreCommands::LibCoreCommands() 
             : _executionContext(std::make_shared<AsioExecutionContext>()) {
@@ -48,12 +48,12 @@ namespace ledger {
                     config);
                 _bitcoinLikeProcessor = std::make_unique<BitcoinLikeCommandProcessor>(_walletPool);
             });
-            LibCoreRequest request;
+            CoreRequest request;
             if (data.size() > 0) {
                 request.ParseFromArray(&data[0], data.size());
             }
             return processRequest(std::move(request))
-                .onComplete(_executionContext, [cb{ std::move(callback) }](const Try<LibCoreResponse>& t) -> void {
+                .onComplete(_executionContext, [cb{ std::move(callback) }](const Try<CoreResponse>& t) -> void {
                     if (t.isSuccess()) {
                         auto& val = t.getValue();
                         std::vector<uint8_t> data(val.ByteSize());
@@ -63,7 +63,7 @@ namespace ledger {
                         cb(std::move(data));
                     }
                     else {
-                        LibCoreResponse response;
+                        CoreResponse response;
                         response.set_error(t.getFailure().getMessage());
                         std::vector<uint8_t> data(response.ByteSize());
                         if (data.size() > 0) {
@@ -78,32 +78,32 @@ namespace ledger {
 
         }
 
-        Future<LibCoreResponse> LibCoreCommands::processRequest(LibCoreRequest&& request) {
+        Future<CoreResponse> LibCoreCommands::processRequest(CoreRequest&& request) {
             
             switch (request.request_type())
             {
-            case LibCoreRequestType::GET_VERSION: {
-                LibCoreResponse resp;
+            case CoreRequestType::GET_VERSION: {
+                CoreResponse resp;
                 GetVersionResponse getVersion;
                 getVersion.set_major(VERSION_MAJOR);
                 getVersion.set_minor(VERSION_MINOR);
                 getVersion.set_patch(VERSION_PATCH);
                 resp.set_response_body(getVersion.SerializeAsString());
-                return Future<LibCoreResponse>::successful(resp);
+                return Future<CoreResponse>::successful(resp);
             }
-            case LibCoreRequestType::BITCOIN_REQUEST: {
+            case CoreRequestType::BITCOIN_REQUEST: {
                 return _bitcoinLikeProcessor->processRequest(request.request_body())
-                    .map<LibCoreResponse>(_walletPool->getContext(), [](const std::string& buff) {
-                        LibCoreResponse resp;
+                    .map<CoreResponse>(_walletPool->getContext(), [](const std::string& buff) {
+                        CoreResponse resp;
                         resp.set_response_body(buff);
                         std::string temp_debub = resp.SerializeAsString();
                         return resp;
                     });
             }
             default:
-                LibCoreResponse resp;
+                CoreResponse resp;
                 resp.set_error("unknown message type");
-                return Future<LibCoreResponse>::successful(resp);
+                return Future<CoreResponse>::successful(resp);
             }
         }
     }

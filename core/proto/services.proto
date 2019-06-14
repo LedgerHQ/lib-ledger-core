@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ledger.core;
+package ledger.core.message;
 
 enum ServiceRequestType {
     HTTP_REQ = 0;

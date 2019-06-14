@@ -27,7 +27,7 @@ endif ()
 
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
-file(GLOB_RECURSE SRC_FILES *.cpp)
+file(GLOB_RECURSE SRC_FILES *.cpp *.cc)
 file(GLOB_RECURSE HEADERS_FILES *.h *.hpp)
 list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM SRC_FILES dummy.cpp)
@@ -127,6 +127,7 @@ add_dependencies(ledger-core-interface INTERFACE secp256k1)
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
+target_link_libraries(ledger-core-interface INTERFACE libprotobuf libprotobuf-lite)
 
 file(GLOB_RECURSE LEDGER_CORE_HEADERS
         "*.hpp"
@@ -151,6 +152,7 @@ file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/c
 file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/core FILES_MATCHING PATTERN "*.hpp")
 
 target_include_directories(ledger-core-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(ledger-core-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/commands/messages)
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)

@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ledger.core.bitcoin;
+package ledger.core.message.bitcoin;
 import "common/amount.proto";
 
 enum KeychainEngine {
@@ -20,7 +20,7 @@ message AccountSettings {
     string name = 1;
     LedgerExplorerConfig explorer = 2;
     uint32 trust_level = 3;
-    Amount dust_threshold = 4;
+    common.Amount dust_threshold = 4;
 }
 
 // This values can be set only at creation time

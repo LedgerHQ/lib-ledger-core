@@ -18,21 +18,25 @@
 
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 class UnitDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<Unit> _instance;
 } _Unit_default_instance_;
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 static void InitDefaultsUnit_common_2funit_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::_Unit_default_instance_;
-    new (ptr) ::ledger::core::Unit();
+    void* ptr = &::ledger::core::message::common::_Unit_default_instance_;
+    new (ptr) ::ledger::core::message::common::Unit();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::Unit::InitAsDefaultInstance();
+  ::ledger::core::message::common::Unit::InitAsDefaultInstance();
 }
 
 ::google::protobuf::internal::SCCInfo<0> scc_info_Unit_common_2funit_2eproto =
@@ -48,19 +52,19 @@ constexpr ::google::protobuf::ServiceDescriptor const** file_level_service_descr
 
 const ::google::protobuf::uint32 TableStruct_common_2funit_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Unit, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Unit, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Unit, name_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::Unit, magnitude_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Unit, name_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::common::Unit, magnitude_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::ledger::core::Unit)},
+  { 0, -1, sizeof(::ledger::core::message::common::Unit)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::_Unit_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::common::_Unit_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_common_2funit_2eproto = {
@@ -70,14 +74,14 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 };
 
 const char descriptor_table_protodef_common_2funit_2eproto[] =
-  "\n\021common/unit.proto\022\013ledger.core\"\'\n\004Unit"
-  "\022\014\n\004name\030\001 \001(\t\022\021\n\tmagnitude\030\002 \001(\005b\006proto"
-  "3"
+  "\n\021common/unit.proto\022\032ledger.core.message"
+  ".common\"\'\n\004Unit\022\014\n\004name\030\001 \001(\t\022\021\n\tmagnitu"
+  "de\030\002 \001(\005b\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_common_2funit_2eproto = {
   false, InitDefaults_common_2funit_2eproto, 
   descriptor_table_protodef_common_2funit_2eproto,
-  "common/unit.proto", &assign_descriptors_table_common_2funit_2eproto, 81,
+  "common/unit.proto", &assign_descriptors_table_common_2funit_2eproto, 96,
 };
 
 void AddDescriptors_common_2funit_2eproto() {
@@ -91,6 +95,8 @@ void AddDescriptors_common_2funit_2eproto() {
 static bool dynamic_init_dummy_common_2funit_2eproto = []() { AddDescriptors_common_2funit_2eproto(); return true; }();
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 
 // ===================================================================
 
@@ -108,7 +114,7 @@ const int Unit::kMagnitudeFieldNumber;
 Unit::Unit()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.Unit)
+  // @@protoc_insertion_point(constructor:ledger.core.message.common.Unit)
 }
 Unit::Unit(const Unit& from)
   : ::google::protobuf::Message(),
@@ -119,7 +125,7 @@ Unit::Unit(const Unit& from)
     name_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.name_);
   }
   magnitude_ = from.magnitude_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.Unit)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.common.Unit)
 }
 
 void Unit::SharedCtor() {
@@ -130,7 +136,7 @@ void Unit::SharedCtor() {
 }
 
 Unit::~Unit() {
-  // @@protoc_insertion_point(destructor:ledger.core.Unit)
+  // @@protoc_insertion_point(destructor:ledger.core.message.common.Unit)
   SharedDtor();
 }
 
@@ -148,7 +154,7 @@ const Unit& Unit::default_instance() {
 
 
 void Unit::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.Unit)
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.common.Unit)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -176,7 +182,7 @@ const char* Unit::_InternalParse(const char* begin, const char* end, void* objec
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.Unit.name");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.common.Unit.name");
         object = msg->mutable_name();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -222,7 +228,7 @@ bool Unit::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.Unit)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.common.Unit)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -236,7 +242,7 @@ bool Unit::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->name().data(), static_cast<int>(this->name().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.Unit.name"));
+            "ledger.core.message.common.Unit.name"));
         } else {
           goto handle_unusual;
         }
@@ -268,10 +274,10 @@ bool Unit::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.Unit)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.common.Unit)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.Unit)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.common.Unit)
   return false;
 #undef DO_
 }
@@ -279,7 +285,7 @@ failure:
 
 void Unit::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.Unit)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.common.Unit)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -288,7 +294,7 @@ void Unit::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Unit.name");
+      "ledger.core.message.common.Unit.name");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->name(), output);
   }
@@ -302,12 +308,12 @@ void Unit::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.Unit)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.common.Unit)
 }
 
 ::google::protobuf::uint8* Unit::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.Unit)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.common.Unit)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -316,7 +322,7 @@ void Unit::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->name().data(), static_cast<int>(this->name().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.Unit.name");
+      "ledger.core.message.common.Unit.name");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->name(), target);
@@ -331,12 +337,12 @@ void Unit::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.Unit)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.common.Unit)
   return target;
 }
 
 size_t Unit::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.Unit)
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.common.Unit)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -368,22 +374,22 @@ size_t Unit::ByteSizeLong() const {
 }
 
 void Unit::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.Unit)
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.common.Unit)
   GOOGLE_DCHECK_NE(&from, this);
   const Unit* source =
       ::google::protobuf::DynamicCastToGenerated<Unit>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.Unit)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.common.Unit)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.Unit)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.common.Unit)
     MergeFrom(*source);
   }
 }
 
 void Unit::MergeFrom(const Unit& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.Unit)
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.common.Unit)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -399,14 +405,14 @@ void Unit::MergeFrom(const Unit& from) {
 }
 
 void Unit::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.Unit)
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.common.Unit)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
 void Unit::CopyFrom(const Unit& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.Unit)
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.common.Unit)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
@@ -435,12 +441,14 @@ void Unit::InternalSwap(Unit* other) {
 
 
 // @@protoc_insertion_point(namespace_scope)
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> PROTOBUF_NOINLINE ::ledger::core::Unit* Arena::CreateMaybeMessage< ::ledger::core::Unit >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::Unit >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::common::Unit* Arena::CreateMaybeMessage< ::ledger::core::message::common::Unit >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::common::Unit >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

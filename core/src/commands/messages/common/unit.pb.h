@@ -50,23 +50,29 @@ struct TableStruct_common_2funit_2eproto {
 void AddDescriptors_common_2funit_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 class Unit;
 class UnitDefaultTypeInternal;
 extern UnitDefaultTypeInternal _Unit_default_instance_;
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::Unit* Arena::CreateMaybeMessage<::ledger::core::Unit>(Arena*);
+template<> ::ledger::core::message::common::Unit* Arena::CreateMaybeMessage<::ledger::core::message::common::Unit>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
+namespace common {
 
 // ===================================================================
 
 class Unit :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.Unit) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.common.Unit) */ {
  public:
   Unit();
   virtual ~Unit();
@@ -180,7 +186,7 @@ class Unit :
   ::google::protobuf::int32 magnitude() const;
   void set_magnitude(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.Unit)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.common.Unit)
  private:
   class HasBitSetters;
 
@@ -206,41 +212,41 @@ inline void Unit::clear_name() {
   name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& Unit::name() const {
-  // @@protoc_insertion_point(field_get:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_get:ledger.core.message.common.Unit.name)
   return name_.GetNoArena();
 }
 inline void Unit::set_name(const ::std::string& value) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_set:ledger.core.message.common.Unit.name)
 }
 #if LANG_CXX11
 inline void Unit::set_name(::std::string&& value) {
   
   name_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.common.Unit.name)
 }
 #endif
 inline void Unit::set_name(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.common.Unit.name)
 }
 inline void Unit::set_name(const char* value, size_t size) {
   
   name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.common.Unit.name)
 }
 inline ::std::string* Unit::mutable_name() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.common.Unit.name)
   return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* Unit::release_name() {
-  // @@protoc_insertion_point(field_release:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_release:ledger.core.message.common.Unit.name)
   
   return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -251,7 +257,7 @@ inline void Unit::set_allocated_name(::std::string* name) {
     
   }
   name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.Unit.name)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.common.Unit.name)
 }
 
 // int32 magnitude = 2;
@@ -259,13 +265,13 @@ inline void Unit::clear_magnitude() {
   magnitude_ = 0;
 }
 inline ::google::protobuf::int32 Unit::magnitude() const {
-  // @@protoc_insertion_point(field_get:ledger.core.Unit.magnitude)
+  // @@protoc_insertion_point(field_get:ledger.core.message.common.Unit.magnitude)
   return magnitude_;
 }
 inline void Unit::set_magnitude(::google::protobuf::int32 value) {
   
   magnitude_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.Unit.magnitude)
+  // @@protoc_insertion_point(field_set:ledger.core.message.common.Unit.magnitude)
 }
 
 #ifdef __GNUC__
@@ -274,6 +280,8 @@ inline void Unit::set_magnitude(::google::protobuf::int32 value) {
 
 // @@protoc_insertion_point(namespace_scope)
 
+}  // namespace common
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 

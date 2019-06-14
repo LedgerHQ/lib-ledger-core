@@ -1,8 +1,8 @@
 syntax = "proto3";
-package ledger.core.bitcoin;
+package ledger.core.message.bitcoin;
 import "common/currency.proto";
 
 message Currency {
-    ledger.core.Currency general = 1;
+    common.Currency general = 1;
     uint32 bip44_coin_type = 2;
 }

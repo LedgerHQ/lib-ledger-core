@@ -54,6 +54,7 @@ struct TableStruct_services_2eproto {
 void AddDescriptors_services_2eproto();
 namespace ledger {
 namespace core {
+namespace message {
 class HttpRequest;
 class HttpRequestDefaultTypeInternal;
 extern HttpRequestDefaultTypeInternal _HttpRequest_default_instance_;
@@ -69,19 +70,21 @@ extern ServiceRequestDefaultTypeInternal _ServiceRequest_default_instance_;
 class ServiceResponse;
 class ServiceResponseDefaultTypeInternal;
 extern ServiceResponseDefaultTypeInternal _ServiceResponse_default_instance_;
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::HttpRequest* Arena::CreateMaybeMessage<::ledger::core::HttpRequest>(Arena*);
-template<> ::ledger::core::HttpRequest_HeadersEntry_DoNotUse* Arena::CreateMaybeMessage<::ledger::core::HttpRequest_HeadersEntry_DoNotUse>(Arena*);
-template<> ::ledger::core::HttpResponse* Arena::CreateMaybeMessage<::ledger::core::HttpResponse>(Arena*);
-template<> ::ledger::core::ServiceRequest* Arena::CreateMaybeMessage<::ledger::core::ServiceRequest>(Arena*);
-template<> ::ledger::core::ServiceResponse* Arena::CreateMaybeMessage<::ledger::core::ServiceResponse>(Arena*);
+template<> ::ledger::core::message::HttpRequest* Arena::CreateMaybeMessage<::ledger::core::message::HttpRequest>(Arena*);
+template<> ::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse* Arena::CreateMaybeMessage<::ledger::core::message::HttpRequest_HeadersEntry_DoNotUse>(Arena*);
+template<> ::ledger::core::message::HttpResponse* Arena::CreateMaybeMessage<::ledger::core::message::HttpResponse>(Arena*);
+template<> ::ledger::core::message::ServiceRequest* Arena::CreateMaybeMessage<::ledger::core::message::ServiceRequest>(Arena*);
+template<> ::ledger::core::message::ServiceResponse* Arena::CreateMaybeMessage<::ledger::core::message::ServiceResponse>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
 namespace core {
+namespace message {
 
 enum ServiceRequestType {
   HTTP_REQ = 0,
@@ -106,7 +109,7 @@ inline bool ServiceRequestType_Parse(
 // ===================================================================
 
 class ServiceRequest :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.ServiceRequest) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.ServiceRequest) */ {
  public:
   ServiceRequest();
   virtual ~ServiceRequest();
@@ -214,13 +217,13 @@ class ServiceRequest :
   ::std::string* release_request_body();
   void set_allocated_request_body(::std::string* request_body);
 
-  // .ledger.core.ServiceRequestType type = 1;
+  // .ledger.core.message.ServiceRequestType type = 1;
   void clear_type();
   static const int kTypeFieldNumber = 1;
-  ::ledger::core::ServiceRequestType type() const;
-  void set_type(::ledger::core::ServiceRequestType value);
+  ::ledger::core::message::ServiceRequestType type() const;
+  void set_type(::ledger::core::message::ServiceRequestType value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.ServiceRequest)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.ServiceRequest)
  private:
   class HasBitSetters;
 
@@ -233,7 +236,7 @@ class ServiceRequest :
 // -------------------------------------------------------------------
 
 class ServiceResponse :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.ServiceResponse) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.ServiceResponse) */ {
  public:
   ServiceResponse();
   virtual ~ServiceResponse();
@@ -355,7 +358,7 @@ class ServiceResponse :
   ::std::string* release_response_body();
   void set_allocated_response_body(::std::string* response_body);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.ServiceResponse)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.ServiceResponse)
  private:
   class HasBitSetters;
 
@@ -392,7 +395,7 @@ static bool _ParseMap(const char* begin, const char* end, void* object, ::google
 // -------------------------------------------------------------------
 
 class HttpRequest :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.HttpRequest) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.HttpRequest) */ {
  public:
   HttpRequest();
   virtual ~HttpRequest();
@@ -538,7 +541,7 @@ class HttpRequest :
   ::std::string* release_body();
   void set_allocated_body(::std::string* body);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.HttpRequest)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.HttpRequest)
  private:
   class HasBitSetters;
 
@@ -558,7 +561,7 @@ class HttpRequest :
 // -------------------------------------------------------------------
 
 class HttpResponse :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.HttpResponse) */ {
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.HttpResponse) */ {
  public:
   HttpResponse();
   virtual ~HttpResponse();
@@ -672,7 +675,7 @@ class HttpResponse :
   ::google::protobuf::int32 code() const;
   void set_code(::google::protobuf::int32 value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.HttpResponse)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.HttpResponse)
  private:
   class HasBitSetters;
 
@@ -693,18 +696,18 @@ class HttpResponse :
 #endif  // __GNUC__
 // ServiceRequest
 
-// .ledger.core.ServiceRequestType type = 1;
+// .ledger.core.message.ServiceRequestType type = 1;
 inline void ServiceRequest::clear_type() {
   type_ = 0;
 }
-inline ::ledger::core::ServiceRequestType ServiceRequest::type() const {
-  // @@protoc_insertion_point(field_get:ledger.core.ServiceRequest.type)
-  return static_cast< ::ledger::core::ServiceRequestType >(type_);
+inline ::ledger::core::message::ServiceRequestType ServiceRequest::type() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.ServiceRequest.type)
+  return static_cast< ::ledger::core::message::ServiceRequestType >(type_);
 }
-inline void ServiceRequest::set_type(::ledger::core::ServiceRequestType value) {
+inline void ServiceRequest::set_type(::ledger::core::message::ServiceRequestType value) {
   
   type_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.ServiceRequest.type)
+  // @@protoc_insertion_point(field_set:ledger.core.message.ServiceRequest.type)
 }
 
 // bytes request_body = 2;
@@ -712,41 +715,41 @@ inline void ServiceRequest::clear_request_body() {
   request_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& ServiceRequest::request_body() const {
-  // @@protoc_insertion_point(field_get:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_get:ledger.core.message.ServiceRequest.request_body)
   return request_body_.GetNoArena();
 }
 inline void ServiceRequest::set_request_body(const ::std::string& value) {
   
   request_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_set:ledger.core.message.ServiceRequest.request_body)
 }
 #if LANG_CXX11
 inline void ServiceRequest::set_request_body(::std::string&& value) {
   
   request_body_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.ServiceRequest.request_body)
 }
 #endif
 inline void ServiceRequest::set_request_body(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   request_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.ServiceRequest.request_body)
 }
 inline void ServiceRequest::set_request_body(const void* value, size_t size) {
   
   request_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.ServiceRequest.request_body)
 }
 inline ::std::string* ServiceRequest::mutable_request_body() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.ServiceRequest.request_body)
   return request_body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* ServiceRequest::release_request_body() {
-  // @@protoc_insertion_point(field_release:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_release:ledger.core.message.ServiceRequest.request_body)
   
   return request_body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -757,7 +760,7 @@ inline void ServiceRequest::set_allocated_request_body(::std::string* request_bo
     
   }
   request_body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), request_body);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.ServiceRequest.request_body)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.ServiceRequest.request_body)
 }
 
 // -------------------------------------------------------------------
@@ -769,41 +772,41 @@ inline void ServiceResponse::clear_error() {
   error_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& ServiceResponse::error() const {
-  // @@protoc_insertion_point(field_get:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_get:ledger.core.message.ServiceResponse.error)
   return error_.GetNoArena();
 }
 inline void ServiceResponse::set_error(const ::std::string& value) {
   
   error_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_set:ledger.core.message.ServiceResponse.error)
 }
 #if LANG_CXX11
 inline void ServiceResponse::set_error(::std::string&& value) {
   
   error_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.ServiceResponse.error)
 }
 #endif
 inline void ServiceResponse::set_error(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   error_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.ServiceResponse.error)
 }
 inline void ServiceResponse::set_error(const char* value, size_t size) {
   
   error_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.ServiceResponse.error)
 }
 inline ::std::string* ServiceResponse::mutable_error() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.ServiceResponse.error)
   return error_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* ServiceResponse::release_error() {
-  // @@protoc_insertion_point(field_release:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_release:ledger.core.message.ServiceResponse.error)
   
   return error_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -814,7 +817,7 @@ inline void ServiceResponse::set_allocated_error(::std::string* error) {
     
   }
   error_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), error);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.ServiceResponse.error)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.ServiceResponse.error)
 }
 
 // bytes response_body = 2;
@@ -822,41 +825,41 @@ inline void ServiceResponse::clear_response_body() {
   response_body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& ServiceResponse::response_body() const {
-  // @@protoc_insertion_point(field_get:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_get:ledger.core.message.ServiceResponse.response_body)
   return response_body_.GetNoArena();
 }
 inline void ServiceResponse::set_response_body(const ::std::string& value) {
   
   response_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_set:ledger.core.message.ServiceResponse.response_body)
 }
 #if LANG_CXX11
 inline void ServiceResponse::set_response_body(::std::string&& value) {
   
   response_body_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.ServiceResponse.response_body)
 }
 #endif
 inline void ServiceResponse::set_response_body(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   response_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.ServiceResponse.response_body)
 }
 inline void ServiceResponse::set_response_body(const void* value, size_t size) {
   
   response_body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.ServiceResponse.response_body)
 }
 inline ::std::string* ServiceResponse::mutable_response_body() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.ServiceResponse.response_body)
   return response_body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* ServiceResponse::release_response_body() {
-  // @@protoc_insertion_point(field_release:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_release:ledger.core.message.ServiceResponse.response_body)
   
   return response_body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -867,7 +870,7 @@ inline void ServiceResponse::set_allocated_response_body(::std::string* response
     
   }
   response_body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), response_body);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.ServiceResponse.response_body)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.ServiceResponse.response_body)
 }
 
 // -------------------------------------------------------------------
@@ -881,41 +884,41 @@ inline void HttpRequest::clear_method() {
   method_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& HttpRequest::method() const {
-  // @@protoc_insertion_point(field_get:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_get:ledger.core.message.HttpRequest.method)
   return method_.GetNoArena();
 }
 inline void HttpRequest::set_method(const ::std::string& value) {
   
   method_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_set:ledger.core.message.HttpRequest.method)
 }
 #if LANG_CXX11
 inline void HttpRequest::set_method(::std::string&& value) {
   
   method_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.HttpRequest.method)
 }
 #endif
 inline void HttpRequest::set_method(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   method_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.HttpRequest.method)
 }
 inline void HttpRequest::set_method(const char* value, size_t size) {
   
   method_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.HttpRequest.method)
 }
 inline ::std::string* HttpRequest::mutable_method() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.HttpRequest.method)
   return method_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* HttpRequest::release_method() {
-  // @@protoc_insertion_point(field_release:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_release:ledger.core.message.HttpRequest.method)
   
   return method_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -926,7 +929,7 @@ inline void HttpRequest::set_allocated_method(::std::string* method) {
     
   }
   method_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), method);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.HttpRequest.method)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.HttpRequest.method)
 }
 
 // string url = 2;
@@ -934,41 +937,41 @@ inline void HttpRequest::clear_url() {
   url_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& HttpRequest::url() const {
-  // @@protoc_insertion_point(field_get:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_get:ledger.core.message.HttpRequest.url)
   return url_.GetNoArena();
 }
 inline void HttpRequest::set_url(const ::std::string& value) {
   
   url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_set:ledger.core.message.HttpRequest.url)
 }
 #if LANG_CXX11
 inline void HttpRequest::set_url(::std::string&& value) {
   
   url_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.HttpRequest.url)
 }
 #endif
 inline void HttpRequest::set_url(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.HttpRequest.url)
 }
 inline void HttpRequest::set_url(const char* value, size_t size) {
   
   url_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.HttpRequest.url)
 }
 inline ::std::string* HttpRequest::mutable_url() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.HttpRequest.url)
   return url_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* HttpRequest::release_url() {
-  // @@protoc_insertion_point(field_release:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_release:ledger.core.message.HttpRequest.url)
   
   return url_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -979,7 +982,7 @@ inline void HttpRequest::set_allocated_url(::std::string* url) {
     
   }
   url_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), url);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.HttpRequest.url)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.HttpRequest.url)
 }
 
 // map<string, string> headers = 3;
@@ -991,12 +994,12 @@ inline void HttpRequest::clear_headers() {
 }
 inline const ::google::protobuf::Map< ::std::string, ::std::string >&
 HttpRequest::headers() const {
-  // @@protoc_insertion_point(field_map:ledger.core.HttpRequest.headers)
+  // @@protoc_insertion_point(field_map:ledger.core.message.HttpRequest.headers)
   return headers_.GetMap();
 }
 inline ::google::protobuf::Map< ::std::string, ::std::string >*
 HttpRequest::mutable_headers() {
-  // @@protoc_insertion_point(field_mutable_map:ledger.core.HttpRequest.headers)
+  // @@protoc_insertion_point(field_mutable_map:ledger.core.message.HttpRequest.headers)
   return headers_.MutableMap();
 }
 
@@ -1005,41 +1008,41 @@ inline void HttpRequest::clear_body() {
   body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& HttpRequest::body() const {
-  // @@protoc_insertion_point(field_get:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_get:ledger.core.message.HttpRequest.body)
   return body_.GetNoArena();
 }
 inline void HttpRequest::set_body(const ::std::string& value) {
   
   body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_set:ledger.core.message.HttpRequest.body)
 }
 #if LANG_CXX11
 inline void HttpRequest::set_body(::std::string&& value) {
   
   body_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.HttpRequest.body)
 }
 #endif
 inline void HttpRequest::set_body(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.HttpRequest.body)
 }
 inline void HttpRequest::set_body(const char* value, size_t size) {
   
   body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.HttpRequest.body)
 }
 inline ::std::string* HttpRequest::mutable_body() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.HttpRequest.body)
   return body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* HttpRequest::release_body() {
-  // @@protoc_insertion_point(field_release:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_release:ledger.core.message.HttpRequest.body)
   
   return body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1050,7 +1053,7 @@ inline void HttpRequest::set_allocated_body(::std::string* body) {
     
   }
   body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), body);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.HttpRequest.body)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.HttpRequest.body)
 }
 
 // -------------------------------------------------------------------
@@ -1062,13 +1065,13 @@ inline void HttpResponse::clear_code() {
   code_ = 0;
 }
 inline ::google::protobuf::int32 HttpResponse::code() const {
-  // @@protoc_insertion_point(field_get:ledger.core.HttpResponse.code)
+  // @@protoc_insertion_point(field_get:ledger.core.message.HttpResponse.code)
   return code_;
 }
 inline void HttpResponse::set_code(::google::protobuf::int32 value) {
   
   code_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.HttpResponse.code)
+  // @@protoc_insertion_point(field_set:ledger.core.message.HttpResponse.code)
 }
 
 // string body = 2;
@@ -1076,41 +1079,41 @@ inline void HttpResponse::clear_body() {
   body_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline const ::std::string& HttpResponse::body() const {
-  // @@protoc_insertion_point(field_get:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_get:ledger.core.message.HttpResponse.body)
   return body_.GetNoArena();
 }
 inline void HttpResponse::set_body(const ::std::string& value) {
   
   body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_set:ledger.core.message.HttpResponse.body)
 }
 #if LANG_CXX11
 inline void HttpResponse::set_body(::std::string&& value) {
   
   body_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.HttpResponse.body)
 }
 #endif
 inline void HttpResponse::set_body(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.HttpResponse.body)
 }
 inline void HttpResponse::set_body(const char* value, size_t size) {
   
   body_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.HttpResponse.body)
 }
 inline ::std::string* HttpResponse::mutable_body() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.HttpResponse.body)
   return body_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 inline ::std::string* HttpResponse::release_body() {
-  // @@protoc_insertion_point(field_release:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_release:ledger.core.message.HttpResponse.body)
   
   return body_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -1121,7 +1124,7 @@ inline void HttpResponse::set_allocated_body(::std::string* body) {
     
   }
   body_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), body);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.HttpResponse.body)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.HttpResponse.body)
 }
 
 #ifdef __GNUC__
@@ -1138,16 +1141,17 @@ inline void HttpResponse::set_allocated_body(::std::string* body) {
 
 // @@protoc_insertion_point(namespace_scope)
 
+}  // namespace message
 }  // namespace core
 }  // namespace ledger
 
 namespace google {
 namespace protobuf {
 
-template <> struct is_proto_enum< ::ledger::core::ServiceRequestType> : ::std::true_type {};
+template <> struct is_proto_enum< ::ledger::core::message::ServiceRequestType> : ::std::true_type {};
 template <>
-inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::ServiceRequestType>() {
-  return ::ledger::core::ServiceRequestType_descriptor();
+inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::message::ServiceRequestType>() {
+  return ::ledger::core::message::ServiceRequestType_descriptor();
 }
 
 }  // namespace protobuf

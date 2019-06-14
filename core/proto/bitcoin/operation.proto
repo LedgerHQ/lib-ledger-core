@@ -1,5 +1,5 @@
 syntax = "proto3";
-package ledger.core.bitcoin;
+package ledger.core.message.bitcoin;
 import "common/amount.proto";
 
 
@@ -8,8 +8,8 @@ message Operation {
         SEND = 0;
         RECEIVE = 1;
     }
-    Amount amount = 1;
-    Amount fee = 2;
+    common.Amount amount = 1;
+    common.Amount fee = 2;
     repeated string receivers = 3;
     repeated string senders = 4;
     OperationType operation_type = 5;
