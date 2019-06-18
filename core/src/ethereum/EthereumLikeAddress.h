@@ -55,7 +55,8 @@ namespace ledger {
                                                           const Option<std::string>& derivationPath = Option<std::string>());
             static std::shared_ptr<EthereumLikeAddress> fromEIP55(const std::string& address,
                                                                   const api::Currency& currency,
-                                                                  const Option<std::string>& derivationPath = Option<std::string>());
+                                                                  const Option<std::string>& derivationPath = Option<std::string>(),
+                                                                  bool skipEIP55Check = false);
         private:
             const std::vector<uint8_t> _keccak256;
             const api::EthereumLikeNetworkParameters _params;

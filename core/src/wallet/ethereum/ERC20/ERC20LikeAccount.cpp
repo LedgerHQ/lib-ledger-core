@@ -256,6 +256,13 @@ namespace ledger {
                         , use(sender), use(receiver), use(data)
                         , use(gasPrice), use(gasLimit), use(gasUsed)
                         , use(status), use(blockHeight);
+            } else {
+                // Update status
+                auto status = operation->getStatus();
+                auto ethOpUid = operation->getOperationUid();
+                sql << "UPDATE INTO erc20_operations SET status =: code WHERE uid = :uid"
+                        , use(status)
+                        , use(ethOpUid);
             }
         }
 

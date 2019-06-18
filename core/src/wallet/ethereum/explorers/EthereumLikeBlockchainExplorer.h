@@ -76,6 +76,7 @@ namespace ledger {
             EthereumLikeBlockchainExplorerTransaction() {
                 nonce = 0;
                 confirmations = 0;
+                status = 0;
             }
 
             EthereumLikeBlockchainExplorerTransaction(const EthereumLikeBlockchainExplorerTransaction &cpy) {

@@ -91,6 +91,10 @@ namespace ledger {
             bool isObservingBlockchain() override ;
             std::string getRestoreKey() override ;
 
+            static EthereumLikeBlockchainExplorerTransaction getETHLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<EthereumLikeAccount> &account,
+                                                                                                     const std::string &txHash,
+                                                                                                     const std::vector<uint8_t> &rawTx);
+
             void broadcastRawTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<api::StringCallback> & callback) override;
 
             void broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
