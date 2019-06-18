@@ -1,12 +1,12 @@
 /*
  *
- * EthereumLikeOperation
+ * InternalTransaction
  *
- * Created by El Khalil Bellakrid on 14/07/2018.
+ * Created by El Khalil Bellakrid on 15/07/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2018 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,27 +29,29 @@
  */
 
 
-#ifndef LEDGER_CORE_ETHEREUMLIKEOPERATION_H
-#define LEDGER_CORE_ETHEREUMLIKEOPERATION_H
+#pragma once
 
-#include <api/EthereumLikeOperation.hpp>
-#include <api/EthereumLikeTransaction.hpp>
-#include <wallet/common/api_impl/OperationApi.h>
+#include "EthereumLikeTransactionApi.h"
+
 #include <api/InternalTransaction.hpp>
+#include <api/BigInt.hpp>
+#include <api/OperationType.hpp>
+#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 
 namespace ledger {
     namespace core {
-        class EthereumLikeOperation : public api::EthereumLikeOperation {
+        class InternalTransaction : public api::InternalTransaction {
         public:
-            EthereumLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
-            std::shared_ptr<api::EthereumLikeTransaction> getTransaction() override;
-            std::vector<std::shared_ptr<api::InternalTransaction>> getInternalTransactions() override;
+            InternalTransaction(const InternalTx &internalTx);
+            std::shared_ptr<api::BigInt> getGasLimit() override;
+            std::shared_ptr<api::BigInt> getUsedGas() override;
+            std::string getSender() override;
+            std::string getReceiver() override;
+            std::shared_ptr<api::BigInt> getValue() override;
+            std::vector<uint8_t> getData() override;
+            api::OperationType getOperationType() override;
         private:
-            std::shared_ptr<api::EthereumLikeTransaction> _transaction;
-            std::vector<std::shared_ptr<api::InternalTransaction>> _internalTxs;
+            InternalTx _internalTx;
         };
-
     }
 }
-
-#endif //LEDGER_CORE_ETHEREUMLIKEOPERATION_H

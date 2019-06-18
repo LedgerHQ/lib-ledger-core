@@ -141,6 +141,10 @@ namespace ledger {
         // Tezos Support
         template <> void migrate<11>(soci::session& sql);
         template <> void rollback<11>(soci::session& sql);
+
+        // Add internal transactions for ETH
+        template <> void migrate<12>(soci::session& sql);
+        template <> void rollback<12>(soci::session& sql);
     }
 }
 
