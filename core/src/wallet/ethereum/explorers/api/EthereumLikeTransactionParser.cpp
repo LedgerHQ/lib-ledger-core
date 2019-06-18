@@ -63,10 +63,10 @@ namespace ledger {
                 EthereumLikeBlockchainExplorer::Block block;
                 _transaction->block = Option<EthereumLikeBlockchainExplorer::Block>(block);
                 _blockParser.init(&_transaction->block.getValue());
-            }
-
-            if (currentObject == "list" && _arrayDepth == 1) {
+            } else if (currentObject == "list" && _arrayDepth == 1) {
                 _transaction->erc20Transactions.emplace_back(ERC20Transaction());
+            } else if (currentObject == "actions") {
+                _transaction->internalTransactions.emplace_back(InternalTx());
             }
 
             return true;
@@ -137,24 +137,31 @@ namespace ledger {
 
         bool EthereumLikeTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
-
-                //TODO: this is temporary solution
-                if (currentObject == "actions") {
-                    return true;
-                }
-
                 std::string number(str, length);
                 BigInt value = BigInt::fromString(number);
+                bool isInternalTx = currentObject == "actions" && !_transaction->internalTransactions.empty();
                 if (_lastKey == "gas_used") {
-                    _transaction->gasUsed = Option<BigInt>(value);
+                    if (isInternalTx) {
+                        _transaction->internalTransactions.back().gasUsed = Option<BigInt>(value);
+                    } else {
+                        _transaction->gasUsed = Option<BigInt>(value);
+                    }
                 }  else if (_lastKey == "gas") {
-                    _transaction->gasLimit = value;
+                    if (isInternalTx) {
+                        _transaction->internalTransactions.back().gasLimit = value;
+                    } else {
+                        _transaction->gasLimit = value;
+                    }
                 } else if (_lastKey == "gas_price") {
                     _transaction->gasPrice = value;
                 } else if (_lastKey == "confirmations") {
                     _transaction->confirmations = value.toUint64();
                 } else if (_lastKey == "value") {
-                    _transaction->value = value;
+                    if (isInternalTx) {
+                        _transaction->internalTransactions.back().value = value;
+                    } else {
+                        _transaction->value = value;
+                    }
                 } else if (_lastKey == "status") {
                     _transaction->status = value.toUint64();
                 } else if (_lastKey == "count" && !_transaction->erc20Transactions.empty()) {
@@ -166,12 +173,6 @@ namespace ledger {
 
         bool EthereumLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(String, str, length, copy) {
-
-                //TODO: this is temporary solution
-                if (currentObject == "actions") {
-                    return true;
-                }
-
                 std::string value(str, length);
 
                 auto fromStringToBytes = [] (const std::string &data) -> std::vector<uint8_t> {
@@ -188,19 +189,26 @@ namespace ledger {
                     value = Base58::encodeWithEIP55(value);
                 }
 
+                bool isInternalTx = currentObject == "actions" && !_transaction->internalTransactions.empty();
+                bool isERC20Event = currentObject == "list" && !_transaction->erc20Transactions.empty();
+
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
                 } else if (_lastKey == "received_at") {
                     _transaction->receivedAt = DateUtils::fromJSON(value);
                 } else if (_lastKey == "to") {
-                    if (currentObject == "list" && !_transaction->erc20Transactions.empty()) {
+                    if (isERC20Event) {
                         _transaction->erc20Transactions.back().to = value;
+                    } else if (isInternalTx) {
+                        _transaction->internalTransactions.back().to = value;
                     } else {
                         _transaction->receiver = value;
                     }
                 } else if (_lastKey == "from") {
-                    if (currentObject == "list" && !_transaction->erc20Transactions.empty()) {
+                    if (isERC20Event) {
                         _transaction->erc20Transactions.back().from = value;
+                    } else if (isInternalTx) {
+                        _transaction->internalTransactions.back().from = value;
                     } else {
                         _transaction->sender = value;
                     }
@@ -212,7 +220,11 @@ namespace ledger {
                     }
                     _transaction->nonce = result;
                 } else if (_lastKey == "input") {
-                    _transaction->inputData = fromStringToBytes(value);
+                    if (isInternalTx) {
+                        _transaction->internalTransactions.back().inputData = fromStringToBytes(value);
+                    } else {
+                        _transaction->inputData = fromStringToBytes(value);
+                    }
                 } else if (_lastKey == "contract" && !_transaction->erc20Transactions.empty()) {
                     _transaction->erc20Transactions.back().contractAddress = value;
                 }

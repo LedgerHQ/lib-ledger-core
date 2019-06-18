@@ -127,6 +127,7 @@ namespace ledger {
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
                 updateERC20Accounts(sql, operation);
+                updateInternalTransactions(sql, operation);
             };
 
             if (_accountAddress == transaction.sender) {
@@ -141,7 +142,7 @@ namespace ledger {
 
             // Case of parent transaction not belonging to account, but having side effect (transfer events)
             // concerning account address
-            if (!result && !transaction.erc20Transactions.empty()) {
+            if (!result && (!transaction.erc20Transactions.empty() || !transaction.internalTransactions.empty())) {
                 updateOperation(sql, operation, api::OperationType::NONE);
                 result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
             }
@@ -209,6 +210,42 @@ namespace ledger {
                     EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
                 }
                 newAccount->putOperation(sql, erc20Operation, newOperation);
+            }
+        }
+
+        void EthereumLikeAccount::updateInternalTransactions(soci::session &sql,
+                                                             const Operation &operation) {
+            auto transaction = operation.ethereumTransaction.getValue();
+            for (auto &internalTx : transaction.internalTransactions) {
+                // Since explorer is considering also wrapping tx as an internal action,
+                // we must filter it by considering that only internal action with same data,
+                // sender and receiver, is the one representing/corresponding to wrapping tx
+                if (internalTx.from != transaction.sender || internalTx.to != transaction.receiver ||
+                    hex::toString(internalTx.inputData )!= hex::toString(transaction.inputData)) {
+                    auto type = internalTx.from == _accountAddress ? api::OperationType::SEND :
+                                internalTx.to == _accountAddress ? api::OperationType::RECEIVE :
+                                api::OperationType::NONE;
+
+                    auto internalTxUid = OperationDatabaseHelper::createUid(operation.uid, fmt::format("{}-{}", internalTx.from, hex::toString(internalTx.inputData)), type);
+                    auto actionCount = 0;
+                    sql << "SELECT COUNT(*) FROM internal_operations WHERE uid = :uid", soci::use(internalTxUid), soci::into(actionCount);
+                    if (actionCount == 0) {
+                        auto value = internalTx.value.toHexString();
+                        auto gasLimit = internalTx.gasLimit.toHexString();
+                        auto gasUsed = internalTx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
+                        auto inputData = hex::toString(internalTx.inputData);
+                        sql << "INSERT INTO internal_operations VALUES(:uid, :eth_op_uid, :type, :value, :sender, :receiver, :gas_limit, :gas_used, :input_data)",
+                                soci::use(internalTxUid),
+                                soci::use(operation.uid),
+                                soci::use(api::to_string(type)),
+                                soci::use(value),
+                                soci::use(internalTx.from),
+                                soci::use(internalTx.to),
+                                soci::use(gasLimit),
+                                soci::use(gasUsed),
+                                soci::use(inputData);
+                    }
+                }
             }
         }
 

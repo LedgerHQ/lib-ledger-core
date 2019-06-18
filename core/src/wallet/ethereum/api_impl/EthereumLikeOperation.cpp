@@ -31,15 +31,44 @@
 
 #include "EthereumLikeOperation.h"
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
+#include <wallet/ethereum/api_impl/InternalTransaction.h>
+#include <session.h>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/ethereum/api_impl/InternalTransaction.h>
+#include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
+#include <api/OperationType.hpp>
 
 namespace ledger {
     namespace core {
 
         EthereumLikeOperation::EthereumLikeOperation(const std::shared_ptr<OperationApi>& baseOp) {
             _transaction = std::make_shared<EthereumLikeTransactionApi>(baseOp);
+            soci::session sql(baseOp->getAccount()->getWallet()->getDatabase()->getPool());
+            auto uid = baseOp->getUid();
+            soci::rowset<soci::row> internalTxRows = (sql.prepare <<
+                                                    "SELECT type, value, sender, "
+                                                    "receiver, gas_limit, gas_used, input_data "
+                                                    "FROM internal_operations WHERE ethereum_operation_uid = :uid ", soci::use(uid));
+            for (auto &row : internalTxRows) {
+                InternalTx internalTx;
+                internalTx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
+                internalTx.value = BigInt::fromHex(row.get<std::string>(1));
+                internalTx.from = row.get<std::string>(2);
+                internalTx.to = row.get<std::string>(3);
+                internalTx.gasLimit = BigInt::fromHex(row.get<std::string>(4));
+                internalTx.gasUsed = BigInt::fromHex(row.get<std::string>(5));
+                internalTx.inputData = hex::toByteArray(row.get<std::string>(6));
+                _internalTxs.push_back(std::make_shared<InternalTransaction>(internalTx));
+            }
         }
+
         std::shared_ptr<api::EthereumLikeTransaction> EthereumLikeOperation::getTransaction() {
             return _transaction;
+        }
+
+        std::vector<std::shared_ptr<api::InternalTransaction>>
+        EthereumLikeOperation::getInternalTransactions() {
+            return _internalTxs;
         }
     }
 }
