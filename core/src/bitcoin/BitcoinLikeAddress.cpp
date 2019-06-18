@@ -152,6 +152,10 @@ namespace ledger {
         }
 
         std::string BitcoinLikeAddress::toString() {
+            return getStringAddress();
+        }
+
+        std::string BitcoinLikeAddress::getStringAddress() const {
             if (_keychainEngine == api::KeychainEngines::BIP173_P2WPKH || _keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
                 return toBech32();
             }

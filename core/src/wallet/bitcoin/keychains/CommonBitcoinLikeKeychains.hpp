@@ -85,8 +85,6 @@ namespace ledger {
 
             Option<std::vector<uint8_t>> getPublicKey(const std::string &address) const override;
 
-            Option<std::string> getHash160DerivationPath(const std::vector<uint8_t> &hash160) const override;
-
         protected:
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _internalNodeXpub;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _publicNodeXpub;

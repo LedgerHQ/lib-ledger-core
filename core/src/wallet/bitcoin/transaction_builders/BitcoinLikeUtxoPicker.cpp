@@ -93,7 +93,7 @@ namespace ledger {
                 }
                 auto script = std::dynamic_pointer_cast<BitcoinLikeScriptApi>(std::get<1>(output))->getScript();
                 auto address = script.parseAddress(getCurrency()).map<std::string>([] (const BitcoinLikeAddress& addr) {
-                    return addr.toBase58();
+                    return addr.getStringAddress();
                 });
                 BitcoinLikeBlockchainExplorerOutput out;
                 out.index = static_cast<uint64_t>(outputIndex);
@@ -109,7 +109,7 @@ namespace ledger {
                 } else {
                     auto addressFromScript = script.parseAddress(getCurrency());
                     if (addressFromScript.nonEmpty())
-                        out.address = addressFromScript.getValue().toBase58();
+                        out.address = addressFromScript.getValue().toString();
                 }
                 outputIndex += 1;
                 buddy->transaction->addOutput(std::make_shared<BitcoinLikeOutputApi>(out, getCurrency(), derivationPath));
