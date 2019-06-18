@@ -136,7 +136,7 @@ namespace ledger {
                                                    std::size_t outputCount,
                                                    bool hasTimestamp,
                                                    bool useSegwit,
-                                                   bool isNativeSegwit
+                                                   bool isNativeSegwit = false
             );
 
         private:

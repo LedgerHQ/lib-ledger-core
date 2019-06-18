@@ -210,7 +210,7 @@ namespace ledger {
 
         api::EstimatedSize
         BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount, std::size_t outputCount, bool hasTimestamp,
-                                                bool useSegwit, bool isNativeSegwit = false) {
+                                                bool useSegwit, bool isNativeSegwit) {
             // TODO Handle outputs and input for multisig P2SH
             size_t maxSize, minSize, fixedSize = 0;
 
