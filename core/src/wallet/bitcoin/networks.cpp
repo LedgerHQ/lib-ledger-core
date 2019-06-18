@@ -411,6 +411,21 @@ namespace ledger {
                             {}
                     );
                     return STAKENET;
+                } else if (networkName == "terracoin") {
+                    static const api::BitcoinLikeNetworkParameters TERRACOIN(
+                            "trc",
+                            {0x00},
+                            {0x05},
+                            {0x04, 0x88, 0xB2, 0x1E},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "DarkCoin Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return TERRACOIN;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -459,7 +474,8 @@ namespace ledger {
                 getNetworkParameters("pivx"),
                 getNetworkParameters("clubcoin"),
                 getNetworkParameters("decred"),
-                getNetworkParameters("stakenet")
+                getNetworkParameters("stakenet"),
+                getNetworkParameters("terracoin")
             });
         }
     }

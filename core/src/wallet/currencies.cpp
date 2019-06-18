@@ -239,6 +239,14 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("stakenet", 8, "XSN");
 
+            const api::Currency TERRACOIN =
+                    Currency("terracoin")
+                            .forkOfBitcoin(networks::getNetworkParameters("terracoin"))
+                            .bip44(83)
+                            .paymentUri("stakenet")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("terracoin", 8, "TRC");
+
             //Reference for ETH coinTypes: https://github.com/LedgerHQ/ledger-live-common/blob/b0196ae9031447f41f8e641f0ec5d3e2b72be83c/src/data/cryptocurrencies.js
             const api::Currency ETHEREUM =
                     Currency("ethereum")
@@ -305,6 +313,7 @@ namespace ledger {
                 CLUBCOIN,
                 DECRED,
                 STAKENET,
+		TERRACOIN,
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
                 ETHEREUM_CLASSIC,
