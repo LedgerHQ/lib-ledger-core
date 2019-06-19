@@ -123,8 +123,8 @@ namespace ledger {
             if (transactionExists(sql, ethTxUid)) {
                 // UPDATE (we only update block information)
                 if (tx.block.nonEmpty()) {
-                    sql << "UPDATE ethereum_transactions SET block_uid = :uid WHERE hash = :tx_hash",
-                            use(blockUid), use(tx.hash);
+                    sql << "UPDATE ethereum_transactions SET block_uid = :uid AND status = :code WHERE hash = :tx_hash",
+                            use(blockUid), use(tx.status), use(tx.hash);
                 }
                 return ethTxUid;
             } else {

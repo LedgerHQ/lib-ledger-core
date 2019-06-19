@@ -406,12 +406,62 @@ namespace ledger {
                 return _keychain->getRestoreKey();
         }
 
+        EthereumLikeBlockchainExplorerTransaction EthereumLikeAccount::getETHLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<EthereumLikeAccount> &account,
+                                                                                                               const std::string &txHash,
+                                                                                                               const std::vector<uint8_t> &rawTx) {
+            auto tx = EthereumLikeTransactionBuilder::parseRawSignedTransaction(account->getWallet()->getCurrency(), rawTx);
+            EthereumLikeBlockchainExplorerTransaction txExplorer;
+            // It is an optimistic so it should be successful (but tx could fail e.g. out of gas error but it will be updated when sync again )
+            auto sender = account->getKeychain()->getAddress()->toString();
+            txExplorer.status = 1;
+            txExplorer.hash = txHash;
+            txExplorer.gasLimit = BigInt(tx->getGasLimit()->toString());
+            txExplorer.gasPrice = BigInt(tx->getGasPrice()->toString());
+            txExplorer.value = BigInt(tx->getValue()->toString());
+            txExplorer.sender = sender;
+            txExplorer.receiver = tx->getReceiver()->toEIP55();
+            txExplorer.receivedAt = std::chrono::system_clock::now();
+            txExplorer.inputData = tx->getData().value_or(std::vector<uint8_t>());
+            // Create ERC20 Ops
+            auto strInputData = hex::toString(txExplorer.inputData);
+            // 136 / 2 => 68 bytes = 4 bytes for transfer method ID (0xa9059cbb) + 32 bytes for receiver address + 32 bytes for amount
+            if (strInputData.size() == 136 && strInputData.find(erc20Tokens::ERC20MethodsID.at("transfer")) != std::string::npos) {
+                ERC20Transaction erc20Tx;
+
+                erc20Tx.from = sender;
+
+                BytesReader reader(txExplorer.inputData);
+                reader.read(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")).size());
+
+                // Get rid of leading zeros
+                auto skipEIP55Check = true;
+                //auto toAddress = BigInt::fromHex(hex::toString(reader.read(32))).toHexString();
+                erc20Tx.to = EthereumLikeAddress::fromEIP55(
+                        "0x" + BigInt::fromHex(hex::toString(reader.read(32))).toHexString(),
+                        account->getWallet()->getCurrency(), Option<std::string>(""), skipEIP55Check)
+                        ->toEIP55();
+                erc20Tx.value = BigInt::fromHex(hex::toString(reader.read(32)));
+                erc20Tx.type = api::OperationType::SEND;
+                erc20Tx.contractAddress = tx->getReceiver()->toEIP55();
+                txExplorer.erc20Transactions.push_back(erc20Tx);
+            }
+            return txExplorer;
+        }
+
         void EthereumLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> & transaction,
                                                           const std::shared_ptr<api::StringCallback> & callback) {
-                _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& seq) -> std::string {
-                    //TODO: optimistic update
-                    return seq.str();
-                }).callback(getContext(), callback);
+            auto self = getSelf();
+            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
+                auto txHash = seq.str();
+                auto optimisticUpdate = Try<int>::from([&] () -> int {
+                    auto txExplorer = getETHLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
+                    //Store in DB
+                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    return self->putTransaction(sql, txExplorer);
+                });
+
+                return txHash;
+            }).callback(getContext(), callback);
         }
 
         void EthereumLikeAccount::broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
