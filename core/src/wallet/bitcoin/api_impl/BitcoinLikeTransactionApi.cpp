@@ -210,7 +210,7 @@ namespace ledger {
 
         api::EstimatedSize
         BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount, std::size_t outputCount, bool hasTimestamp,
-                                                bool useSegwit) {
+                                                bool useSegwit, bool isNativeSegwit) {
             // TODO Handle outputs and input for multisig P2SH
             size_t maxSize, minSize, fixedSize = 0;
 
@@ -222,25 +222,21 @@ namespace ledger {
             fixedSize += BytesWriter().writeVarInt(outputCount).toByteArray().size(); // Number of outputs
             fixedSize += 4; // Timelock
 
-            minSize = fixedSize;
-            maxSize = fixedSize;
-
-            // Outputs size
-            minSize += 32 * outputCount;
-            maxSize += 34 * outputCount;
-
-            fixedSize = fixedSize + (34 * outputCount);
             if (useSegwit) {
-                fixedSize += 2; // Flag and marker size (one byte each)
-                size_t noWitness, maxWitness, minWitness = 0;
-                noWitness = fixedSize + (59 * inputCount);
-                minWitness = noWitness + (106 * inputCount);
-                maxWitness = noWitness + (108 * inputCount);
-                minSize += (noWitness * 3 + minWitness) / 4;
-                maxSize += (noWitness * 3 + maxWitness) / 4;
+                // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
+                // P2SH: 32 PrevTxHash + 4 Index + 23 scriptPubKey + 4 sequence
+                size_t inputSize = isNativeSegwit ? 41 : 63;
+                size_t noWitness = fixedSize + inputSize * inputCount + 34 * outputCount;
+                
+                // Include flag and marker size (one byte each)
+                size_t minWitness = noWitness + (106 * inputCount) + 2;
+                size_t maxWitness = noWitness + (108 * inputCount) + 2;
+                
+                minSize = (noWitness * 3 + minWitness) / 4;
+                maxSize = (noWitness * 3 + maxWitness) / 4;
             } else {
-                minSize += 146 * inputCount;
-                maxSize += 148 * inputCount;
+                minSize = fixedSize + 146 * inputCount + 32 * outputCount;
+                maxSize = fixedSize + 148 * inputCount + 34 * outputCount;
             }
             return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
         }

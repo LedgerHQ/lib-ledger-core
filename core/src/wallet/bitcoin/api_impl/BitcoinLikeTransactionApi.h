@@ -135,7 +135,8 @@ namespace ledger {
             static api::EstimatedSize estimateSize(std::size_t inputCount,
                                                    std::size_t outputCount,
                                                    bool hasTimestamp,
-                                                   bool useSegwit
+                                                   bool useSegwit,
+                                                   bool isNativeSegwit = false
             );
 
         private:
