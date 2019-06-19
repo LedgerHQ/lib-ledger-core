@@ -227,13 +227,6 @@ namespace ledger {
             return Option<std::vector<uint8_t>>(_xpub->derivePublicKey(path));
         }
 
-        Option<std::string>
-        CommonBitcoinLikeKeychains::getHash160DerivationPath(const std::vector<uint8_t> &hash160) const {
-            const auto& params = getCurrency().bitcoinLikeNetworkParameters.value();
-            BitcoinLikeAddress address(getCurrency(), hash160, _keychainEngine);
-            return getAddressDerivationPath(address.toBase58());
-        }
-
         BitcoinLikeKeychain::Address CommonBitcoinLikeKeychains::derive(KeyPurpose purpose, off_t index) {
             auto currency = getCurrency();
             auto iPurpose = (purpose == KeyPurpose::RECEIVE) ? 0 : 1;

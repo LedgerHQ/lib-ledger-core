@@ -70,6 +70,15 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                 EXPECT_EQ(event->getCode(),
                           api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                auto balance = wait(account->getBalance())->toString();
+                auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
+                auto txBuilder = account->buildTransaction(false);
+                auto tx = wait(std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(txBuilder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), 2000), destination)
+                                                                                                    ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF)
+                                                                                                    ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
+                                       ->build());
+                EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
+
                 dispatcher->stop();
             });
 

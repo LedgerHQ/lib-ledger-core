@@ -61,6 +61,7 @@ namespace ledger {
             virtual optional<std::string> getDerivationPath() override;
 
             std::string toString() override;
+            std::string getStringAddress() const;
 
             static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
                                                           const Option<std::string>& derivationPath = Option<std::string>());
