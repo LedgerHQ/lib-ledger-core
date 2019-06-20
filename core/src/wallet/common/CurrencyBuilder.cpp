@@ -71,6 +71,7 @@ namespace ledger {
         CurrencyBuilder &CurrencyBuilder::forkOfStellar(const api::StellarLikeNetworkParameters &params) {
             _type = api::WalletType::STELLAR;
             _stellar = params;
+
             return *this;
         }
 
@@ -78,6 +79,7 @@ namespace ledger {
             return api::Currency(
                     _type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(),
                     _ethereum.toOptional(), _ripple.toOptional(), _tezos.toOptional(), _stellar.toOptional()
+
                     );
         }
 

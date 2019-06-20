@@ -95,7 +95,7 @@ public:
     virtual std::shared_ptr<WalletPool> newPool(std::string poolName = "my_pool") {
         return WalletPool::newInstance(
                 poolName,
-                Option<std::string>(),
+                "",
                 http,
                 ws,
                 resolver,

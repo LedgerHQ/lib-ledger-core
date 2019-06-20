@@ -354,9 +354,6 @@ namespace ledger {
 
         }
 
-        std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
-            return getConfig();
-
         bool AbstractWallet::isInstanceOfStellarLikeWallet() {
             return getWalletType() == api::WalletType::STELLAR;
         }
@@ -373,5 +370,10 @@ namespace ledger {
         void AbstractWallet::updateBalanceCache(size_t accountIndex, Amount balance) {
             _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
         }
+
+        std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
+            return getConfig();
+        }
+
     }
 }

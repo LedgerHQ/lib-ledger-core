@@ -19,20 +19,20 @@
 
 #include "asio/detail/config.hpp"
 
-#if defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)
-# include <experimental/string_view>
+#if __has_include(<string_view>)
+#include <string_view>
 #else // defined(ASIO_HAS_EXPERIMENTAL_STRING_VIEW)
-# include <string_view>
+#include <experimental/string_view>
 #endif // defined(ASIO_HAS_EXPERIMENTAL_STRING_VIEW)
 
 namespace asio {
 
-#if defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)
-using std::experimental::basic_string_view;
-using std::experimental::string_view;
-#else // defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)
+#if __has_include(<string_view>)
 using std::basic_string_view;
 using std::string_view;
+#else // defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)
+using std::experimental::basic_string_view;
+using std::experimental::string_view;
 #endif // defined(ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW)
 
 } // namespace asio

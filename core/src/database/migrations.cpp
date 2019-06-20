@@ -778,5 +778,6 @@ namespace ledger {
             // Stellar operations
             sql << "DROP TABLE stellar_operations";
         }
+
     }
 }

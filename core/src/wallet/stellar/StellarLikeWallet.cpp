@@ -75,7 +75,7 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
                 }
                 params.keychain = self->_params.keychainFactory->build(
-                        info.index, path, self->getConfiguration(),
+                                                                       info.index, path, std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
                         info, self->getAccountInternalPreferences(info.index), self->getCurrency()
                         );
                 return std::make_shared<StellarLikeAccount>(self, params);

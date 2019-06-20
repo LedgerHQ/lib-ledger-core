@@ -9,6 +9,7 @@ DEST_IOS_OBJCPP=$DEST/ios/Sources/objcpp
 DEST_ANDROID=$DEST/android/src/main/java/com/ledger/reactnative
 DEST_ANDROID_JAVA_IFACE=$DEST/android/src/main/java/co/ledger/core
 CORE_CPP_API=$DEST/ios/Sources/include
+
 # prune export directories
 rm -r $DEST_IOS
 rm -r $DEST_IOS_OBJC
