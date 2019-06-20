@@ -45,9 +45,9 @@ namespace ledger {
 
 
         BitcoinLikeTransactionApi::BitcoinLikeTransactionApi(const api::Currency &currency,
-                                                             bool isSegwit,
+                                                             const std::string &keychainEngine,
                                                              uint64_t currentBlockHeight) :
-                _currency(currency), _isSegwit(isSegwit), _currentBlockHeight(currentBlockHeight) {
+                _currency(currency), _keychainEngine(keychainEngine), _currentBlockHeight(currentBlockHeight) {
             _version = 1;
             _params = currency.bitcoinLikeNetworkParameters.value();
             _writable = true;
@@ -145,7 +145,7 @@ namespace ledger {
 
             //Decred has a special witness with nb of witnesses and no stack size,
             //and additional fields: amount, block height, block index
-            if (_isSegwit && !isDecred) {
+            if (BitcoinLikeKeychain::isSegwit(_keychainEngine) && !isDecred) {
                 for (auto &input : _inputs) {
                     auto scriptSig = input->getScriptSig();
                     if (!scriptSig.empty()) {
@@ -179,8 +179,8 @@ namespace ledger {
         api::EstimatedSize BitcoinLikeTransactionApi::getEstimatedSize() {
             return estimateSize(getInputs().size(),
                                 getOutputs().size(),
-                                _params.UsesTimestampedTransaction,
-                                _isSegwit);
+                                _currency,
+                                _keychainEngine);
         }
 
         bool BitcoinLikeTransactionApi::isWriteable() const {
@@ -209,22 +209,26 @@ namespace ledger {
         }
 
         api::EstimatedSize
-        BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount, std::size_t outputCount, bool hasTimestamp,
-                                                bool useSegwit, bool isNativeSegwit) {
+        BitcoinLikeTransactionApi::estimateSize(std::size_t inputCount,
+                                                std::size_t outputCount,
+                                                const api::Currency &currency,
+                                                const std::string &keychainEngine) {
             // TODO Handle outputs and input for multisig P2SH
             size_t maxSize, minSize, fixedSize = 0;
 
             // Fixed size computation
             fixedSize = 4; // Transaction version
-            if (hasTimestamp)
+            if (currency.bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction)
                 fixedSize += 4; // Timestamp
             fixedSize += BytesWriter().writeVarInt(inputCount).toByteArray().size(); // Number of inputs
             fixedSize += BytesWriter().writeVarInt(outputCount).toByteArray().size(); // Number of outputs
             fixedSize += 4; // Timelock
 
-            if (useSegwit) {
+            auto isSegwit = BitcoinLikeKeychain::isSegwit(keychainEngine);
+            if (isSegwit) {
                 // Native Segwit: 32 PrevTxHash + 4 Index + 1 null byte + 4 sequence
                 // P2SH: 32 PrevTxHash + 4 Index + 23 scriptPubKey + 4 sequence
+                auto isNativeSegwit = BitcoinLikeKeychain::isNativeSegwit(keychainEngine);
                 size_t inputSize = isNativeSegwit ? 41 : 63;
                 size_t noWitness = fixedSize + inputSize * inputCount + 34 * outputCount;
                 
@@ -299,7 +303,7 @@ namespace ledger {
                 writer.writeLeValue<uint32_t>(ts.value());
             }
 
-            if (_isSegwit) {
+            if (BitcoinLikeKeychain::isSegwit(_keychainEngine)) {
                 //write marker
                 writer.writeByte(0x00);
                 //write flag
@@ -327,10 +331,11 @@ namespace ledger {
                 }
 
                 auto scriptSig = input->getScriptSig();
-                if (!_isSegwit && scriptSig.size() > 0) {
+                auto isSegwit = BitcoinLikeKeychain::isSegwit(_keychainEngine);
+                if (!isSegwit && scriptSig.size() > 0) {
                     writer.writeVarInt(scriptSig.size());
                     writer.writeByteArray(scriptSig);
-                } else if (_isSegwit && scriptSig.size() > 1) {
+                } else if (isSegwit && scriptSig.size() > 1) {
                     auto pubKeys = input->getPublicKeys();
                     if (!pubKeys.empty()) {
                         //TODO: handle multi-sig
@@ -461,7 +466,8 @@ namespace ledger {
                 auto flag = reader.readNextByte();
             }
 
-            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, isSegwit, currentBlockHeight.value_or(0));
+            auto keychainEngine = isSegwit ? api::KeychainEngines::BIP49_P2SH : api::KeychainEngines::BIP32_P2PKH;
+            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, keychainEngine, currentBlockHeight.value_or(0));
             tx->setVersion(version);
             if (usesTimeStamp) {
                 tx->setTimestamp(timeStamp);
