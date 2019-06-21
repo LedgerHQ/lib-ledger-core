@@ -132,4 +132,8 @@ EthereumLikeAccount = interface +c {
     # This estimation is based on X last incoming txs (to address) that succeeded
     # Note: same note as above
     getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
+    # Get balance of ERC20 token
+    # The passed address is an ERC20 account
+    # Note: same note as above
+    getERC20Balance(erc20Address: string, callback: Callback<BigInt>);
 }

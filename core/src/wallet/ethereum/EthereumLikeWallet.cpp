@@ -86,7 +86,7 @@ namespace ledger {
                 api::ExtendedKeyAccountCreationInfo result;
 
                 auto pkSize = info.publicKeys[0].size();
-                if (info.chainCodes[0].size() != 32 || pkSize != 65 && pkSize != 33)
+                if (info.chainCodes[0].size() != 32 || (pkSize != 65 && pkSize != 33))
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
                 DerivationPath occurencePath(info.derivations[0]);
 

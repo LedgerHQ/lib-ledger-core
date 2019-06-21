@@ -17,7 +17,7 @@
 
 namespace ledger { namespace core { namespace api {
 
-/**Class representing Bitcoin block */
+/**Class representing Ripple block */
 class LIBCORE_EXPORT RippleLikeBlock {
 public:
     virtual ~RippleLikeBlock() {}

@@ -490,6 +490,17 @@ namespace ledger {
             }).callback(getContext(), callback);
         }
 
+        FuturePtr<api::BigInt> EthereumLikeAccount::getERC20Balance(const std::string & erc20Address) {
+            return _explorer->getERC20Balance(_keychain->getAddress()->toEIP55(), erc20Address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &erc20Balance) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<api::BigIntImpl>(*erc20Balance);
+            });
+        }
+
+        void EthereumLikeAccount::getERC20Balance(const std::string & erc20Address,
+                                                  const std::shared_ptr<api::BigIntCallback> & callback) {
+            getERC20Balance(erc20Address).callback(getContext(), callback);
+        }
+
         void EthereumLikeAccount::addERC20Accounts(soci::session &sql,
                                                    const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries) {
             auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());

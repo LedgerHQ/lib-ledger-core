@@ -42,6 +42,7 @@
 #include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <database/soci-number.h>
+#include <api/BinaryCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -74,7 +75,8 @@ namespace ledger {
                              const std::shared_ptr<EthereumLikeAccount> &parentAccount);
             api::ERC20Token getToken() override ;
             std::string getAddress() override ;
-            std::shared_ptr<api::BigInt> getBalance() override ;
+            FuturePtr<api::BigInt> getBalance();
+            void getBalance(const std::shared_ptr<api::BigIntCallback> & callback) override ;
 
             std::vector<std::shared_ptr<api::BigInt>> getBalanceHistoryFor(
                 const std::chrono::system_clock::time_point& startDate,
@@ -90,11 +92,18 @@ namespace ledger {
 
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> getOperations() override ;
 
-            std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
-                                                          const std::string & address) override ;
+            Future<std::vector<uint8_t>> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
+                                                                  const std::string &address);
+
+            void getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
+                                          const std::string &address,
+                                          const std::shared_ptr<api::BinaryCallback> &data) override;
+
             std::shared_ptr<api::OperationQuery> queryOperations() override ;
             void putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation = false);
         private:
+            std::shared_ptr<api::ExecutionContext> getContext();
+
             api::ERC20Token _token;
             std::string _accountAddress;
             api::Currency _parentCurrency;

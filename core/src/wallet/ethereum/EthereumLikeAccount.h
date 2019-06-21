@@ -110,6 +110,8 @@ namespace ledger {
             void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
 
             void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
+            FuturePtr<api::BigInt> getERC20Balance(const std::string & erc20Address);
+            void getERC20Balance(const std::string & erc20Address, const std::shared_ptr<api::BigIntCallback> & callback) override;
 
             void addERC20Accounts(soci::session &sql,
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);

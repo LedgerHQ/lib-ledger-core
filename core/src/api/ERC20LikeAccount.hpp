@@ -5,7 +5,6 @@
 #define DJINNI_GENERATED_ERC20LIKEACCOUNT_HPP
 
 #include <chrono>
-#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
@@ -20,6 +19,8 @@
 namespace ledger { namespace core { namespace api {
 
 class BigInt;
+class BigIntCallback;
+class BinaryCallback;
 class ERC20LikeOperation;
 class OperationQuery;
 enum class TimePeriod;
@@ -37,7 +38,7 @@ public:
     virtual std::string getAddress() = 0;
 
     /** Get the current balance of this ERC20 account. */
-    virtual std::shared_ptr<BigInt> getBalance() = 0;
+    virtual void getBalance(const std::shared_ptr<BigIntCallback> & callback) = 0;
 
     /**
      * Get the balance history of this ERC20 account from a starting date (included) to an ending
@@ -49,7 +50,7 @@ public:
     virtual std::vector<std::shared_ptr<ERC20LikeOperation>> getOperations() = 0;
 
     /** Retrieve raw data concerning a transaction of a given amount to a given address. */
-    virtual std::vector<uint8_t> getTransferToAddressData(const std::shared_ptr<BigInt> & amount, const std::string & address) = 0;
+    virtual void getTransferToAddressData(const std::shared_ptr<BigInt> & amount, const std::string & address, const std::shared_ptr<BinaryCallback> & data) = 0;
 
     virtual std::shared_ptr<OperationQuery> queryOperations() = 0;
 };

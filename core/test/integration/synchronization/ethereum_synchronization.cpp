@@ -51,7 +51,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-mainnet.explorers.prod.aws.ledger.fr");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-mainnet.explorers.dev.aws.ledger.fr");
             auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
             std::set<std::string> emittedOperations;
             {
@@ -90,6 +90,14 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     EXPECT_NE(erc20Ops.size(), 0);
                     EXPECT_NE(erc20Ops[0]->getBlockHeight().value_or(0), 0);
 
+                    auto erc20Balance = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
+                    auto erc20BalanceFromAccount = wait(account->getERC20Balance(erc20Accounts[0]->getToken().contractAddress));
+                    EXPECT_EQ(erc20Balance->toString(10), erc20BalanceFromAccount->toString(10));
+
+                    auto amountToSend = std::make_shared<api::BigIntImpl>(BigInt::fromString("10"));
+                    auto transferData = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getTransferToAddressData(amountToSend, "0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43"));
+                    EXPECT_GT(transferData.size(), 0);
+                    
                     auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
                     std::cout << "ERC20 Operations: " << operations.size() << std::endl;
                     EXPECT_NE(operations.size(), 0);
@@ -165,10 +173,11 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 auto erc20Accounts = account->getERC20Accounts();
                 EXPECT_EQ(erc20Accounts.size(), 1);
                 EXPECT_EQ(erc20Accounts[0]->getOperations().size(),1);
-                EXPECT_EQ(erc20Accounts[0]->getBalance()->intValue(), 2500);
+                auto erc20Balance = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
+                EXPECT_EQ(erc20Balance->intValue(), 2500);
                 auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
-                std::cout << "ERC20 balance: " << erc20Accounts[0]->getBalance()->toString(10) << std::endl;
+                std::cout << "ERC20 balance: " << erc20Balance->toString(10) << std::endl;
                 auto erc20Ops = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
                 EXPECT_EQ(erc20Accounts[0]->getOperations().size(), erc20Ops.size());
                 EXPECT_EQ(erc20Ops[0]->isComplete(), true);
