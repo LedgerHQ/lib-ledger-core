@@ -230,14 +230,14 @@ namespace ledger {
         }
 
         void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation) {
+            auto status = operation->getStatus();
+            auto erc20OpUid = operation->getOperationUid();
             if (newOperation) {
-                auto erc20OpUid = operation->getOperationUid();
                 auto ethOpUid = operation->getETHOperationUid();
                 auto hash = operation->getHash();
                 auto receiver = operation->getReceiver();
                 auto sender = operation->getSender();
                 auto data = hex::toString(operation->getData());
-                auto status = operation->getStatus();
                 auto operationType = api::to_string(operation->getOperationType());
                 auto nonce = operation->getNonce()->toString(16);
                 auto value = operation->getValue()->toString(16);
@@ -258,11 +258,9 @@ namespace ledger {
                         , use(status), use(blockHeight);
             } else {
                 // Update status
-                auto status = operation->getStatus();
-                auto ethOpUid = operation->getOperationUid();
-                sql << "UPDATE INTO erc20_operations SET status =: code WHERE uid = :uid"
+                sql << "UPDATE erc20_operations SET status =: code WHERE uid = :uid"
                         , use(status)
-                        , use(ethOpUid);
+                        , use(erc20OpUid);
             }
         }
 
