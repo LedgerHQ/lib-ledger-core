@@ -21,7 +21,7 @@ if (TARGET_JNI)
     if(NOT ANDROID)
         find_package(JNI REQUIRED)
     endif()
-    list(APPEND ledger-core-sources ${ledger-core-jni-sources})
+#    list(APPEND ledger-core-sources ${ledger-core-jni-sources})
     add_definitions(-DTARGET_JNI=1)
 endif ()
 
@@ -35,6 +35,9 @@ list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
 add_library(ledger-core-interface INTERFACE)
 
+if (ANDROID)
+    target_link_libraries(ledger-core-interface INTERFACE log)
+endif()
 target_link_libraries(ledger-core-interface INTERFACE libprotobuf)
 
 target_link_libraries(ledger-core-interface INTERFACE ubinder_wrapper)

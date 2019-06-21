@@ -1,13 +1,15 @@
 const binding = require('bindings')('lib-core-node')
-const messages = require('./messages/messages_pb.js')
-const btc_messages = require('./messages/bitcoin_like_pb.js')
+const commands = require('./messages/commands_pb.js')
+
+const btc_messages = require('./messages/bitcoin/commands_pb.js')
 const services = require('./messages/services_pb.js')
 const https = require('https');
 const URL = require('url').URL;
+const ubinder = require('../core/lib/ubinder/src/node/ubinder');
 
-function OnRequest(req, callback, args) {
-    console.log("OnRequest")
-    var serviceReq = services.ServiceRequest.deserializeBinary(req);
+
+function OnRequest(data, callback) {
+    var serviceReq = services.ServiceRequest.deserializeBinary(data);
     if (serviceReq.getType() == services.ServiceRequestType.HTTP_REQ) {
         var httpReq = services.HttpRequest.deserializeBinary(serviceReq.getRequestBody());
         const method = httpReq.getMethod();
@@ -42,50 +44,49 @@ function OnRequest(req, callback, args) {
                 data += chunk;
             });
 
-            // The whole response has been received. Print out the result.
             resp.on('end', () => {
-                console.log("finished receiving data");
                 respMessage.setBody(data);
                 serviceResp.setResponseBody(respMessage.serializeBinary());
-                callback(serviceResp.serializeBinary(), args);
+                callback(serviceResp.serializeBinary());
             });
         }).on("error", (err) => {
-            console.log("Error: " + err.message);
             var serviceResp = new services.ServiceResponse();
             serviceResp.setError(err.message);
-            callback(serviceResp.serializeBinary(), args);
+            callback(serviceResp.serializeBinary());
         }).end();
     }
 }
 
-function OnNotification(notification) {
-    
+function OnNotification(data) {
+    console.log("OnNotification");
 }
 
-register = function () {
-    binding.registerLib(OnRequest, OnNotification);
-}
+
+callbacker = new ubinder.Callbacker(binding, OnRequest, OnNotification)
+
 
 createGetVersionRequest = function() {
-    var req = new messages.LibCoreRequest();
-    req.setRequestType(messages.LibCoreRequestType.GET_VERSION);
+    var req = new commands.CoreRequest();
+    req.setRequestType(commands.CoreRequestType.GET_VERSION);
     return req;
 }
 
 createBitcoinCreateAccountRequest = function() {
     var createAccReq = new btc_messages.CreateAccountRequest();
     var accConfig = new btc_messages.AccountConfiguration();
-    accConfig.setIsSegwit(true);
-    accConfig.setCurrency("btc");
-    createAccReq.setName("my account1");
+    var accSettings = new btc_messages.AccountSettings();
+    
+    accSettings.setName("my account1");
+    accConfig.setKeychainEngine(btc_messages.BIP32_P2WSH);
+    accConfig.setSettings(accSettings);
     createAccReq.setXpub("xpub6CQRBg1k8KN2yZfWUywHt9dtDSEFfHhwhBrEjzuHj5YBV2p81NEviAhEhGzYpC5AzwuL6prM2wc1oyMQ8hmsCKqrWwHrjcboQvkBctC1JTq");
     createAccReq.setIndex(0);
     createAccReq.setConfig(accConfig);
-    var btcReq = new btc_messages.BitcoinLikeRequest();
-    btcReq.setType(btc_messages.BitcoinLikeRequestType.CREATE_ACCOUNT);
+    var btcReq = new btc_messages.Request();
+    btcReq.setType(btc_messages.RequestType.CREATE_ACCOUNT);
     btcReq.setSubmessage(createAccReq.serializeBinary());
-    var req = new messages.LibCoreRequest();
-    req.setRequestType(messages.LibCoreRequestType.BITCOIN_REQUEST);
+    var req = new commands.CoreRequest();
+    req.setRequestType(commands.CoreRequestType.BITCOIN_REQUEST);
     req.setRequestBody(btcReq.serializeBinary());
     return req;
 }
@@ -93,11 +94,11 @@ createBitcoinCreateAccountRequest = function() {
 createSyncAccountRequest = function(uid) {
     var syncReq = new btc_messages.SyncAccountRequest();
     syncReq.setAccUid(uid);
-    var btcReq = new btc_messages.BitcoinLikeRequest();
-    btcReq.setType(btc_messages.BitcoinLikeRequestType.SYNC);
+    var btcReq = new btc_messages.Request();
+    btcReq.setType(btc_messages.RequestType.SYNC_ACCOUNT);
     btcReq.setSubmessage(syncReq.serializeBinary());
-    var req = new messages.LibCoreRequest();
-    req.setRequestType(messages.LibCoreRequestType.BITCOIN_REQUEST);
+    var req = new commands.CoreRequest();
+    req.setRequestType(commands.CoreRequestType.BITCOIN_REQUEST);
     req.setRequestBody(btcReq.serializeBinary());
     return req;
 }
@@ -105,55 +106,51 @@ createSyncAccountRequest = function(uid) {
 createGetBalanceRequest = function(uid) {
     var balanceReq = new btc_messages.GetBalanceRequest()
     balanceReq.setAccUid(uid);
-    var btcReq = new btc_messages.BitcoinLikeRequest();
-    btcReq.setType(btc_messages.BitcoinLikeRequestType.GET_BALANCE);
+    var btcReq = new btc_messages.Request();
+    btcReq.setType(btc_messages.RequestType.GET_BALANCE);
     btcReq.setSubmessage(balanceReq.serializeBinary());
-    var req = new messages.LibCoreRequest();
-    req.setRequestType(messages.LibCoreRequestType.BITCOIN_REQUEST);
+    var req = new commands.CoreRequest();
+    req.setRequestType(commands.CoreRequestType.BITCOIN_REQUEST);
     req.setRequestBody(btcReq.serializeBinary());
     return req;
 }
 
-sendRequest = function(req) {
-    return new Promise((resolve, reject) => {
-        var msg = req.serializeBinary();
-        binding.sendRequest(msg, 
-            function(data){
-                var resp = messages.LibCoreResponse.deserializeBinary(data);
-                if (resp.getError()=='') {
-                    resolve(resp.getResponseBody());
-                }else {
-                    reject(new Error(resp.getError()));
-                }
-            });        
-        });
-}
-
 async function createAndSyncAccount() {
-    var createAccResp = btc_messages.CreateAccountResponse.deserializeBinary(await sendRequest(createBitcoinCreateAccountRequest()));
-    var accUid = createAccResp.getAccUid()
-    console.log("Account was created :" + accUid);
-    var syncResp = btc_messages.SyncAccountResponse.deserializeBinary(await sendRequest(createSyncAccountRequest(accUid)));
+    var data = await callbacker.sendRequest(createBitcoinCreateAccountRequest().serializeBinary())
+    var resp = commands.CoreResponse.deserializeBinary(data);
+    if (resp.getError()) {
+        throw resp.getError();
+    }
+    var createAccResp = btc_messages.CreateAccountResponse.deserializeBinary(resp.getResponseBody());
+    var account = createAccResp.getCreatedAccount();
+    console.log("Account was created :" + account.getUid());
+    var syncResp = btc_messages.SyncAccountResponse.deserializeBinary(await callbacker.sendRequest(createSyncAccountRequest(account.getUid()).serializeBinary()));
     console.log("Sync finished");
-    var balanceResp = btc_messages.GetBalanceResponse.deserializeBinary(await sendRequest(createGetBalanceRequest(accUid)));
+    var balanceResp = btc_messages.GetBalanceResponse.deserializeBinary(await callbacker.sendRequest(createGetBalanceRequest(account.getUid()).serializeBinary()));
     console.log("Balance = " + balanceResp.getBalance());
+    return 1;
 }
 
 run_test = function() {
-    register();
-    versionReq = createGetVersionRequest();                 
-    /*
-    sendRequest(versionReq)
-        .then((resp)=>{
-            var versionResp = messages.GetVersionResponse.deserializeBinary(resp);
-            console.log("lib-core version: " + versionResp.getMajor() + "." + versionResp.getMinor() + "." + versionResp.getPatch())
-        })
-        .catch((err)=> console.log(err));
-    */
     try {
-        createAndSyncAccount();
+        versionReq = createGetVersionRequest();
+        console.log("GetVersionRequest " + versionReq);
+        callbacker.sendRequest(versionReq)
+            .then((data) => {
+                var resp = commands.CoreResponse.deserializeBinary(data);
+                if (resp.error) {
+                    console.log(resp.error);
+                    throw resp.error;
+                }
+                var versionResp = commands.GetVersionResponse.deserializeBinary(resp.getResponseBody());
+                console.log("lib-core version: " + versionResp.getMajor() + "." + versionResp.getMinor() + "." + versionResp.getPatch())
+            })
+            .catch((err)=> console.log(err));
+        createAndSyncAccount()
+            .then((data)=>console.log(data))
+            .catch((e)=>console.log(e));
     }
     catch (error) {
-        console.log(error.message());
+        console.log(error.message);
     }
 }

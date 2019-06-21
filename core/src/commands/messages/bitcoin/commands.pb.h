@@ -1000,26 +1000,21 @@ class CreateAccountResponse :
 
   // accessors -------------------------------------------------------
 
-  // string Account = 1;
-  void clear_account();
-  static const int kAccountFieldNumber = 1;
-  const ::std::string& account() const;
-  void set_account(const ::std::string& value);
-  #if LANG_CXX11
-  void set_account(::std::string&& value);
-  #endif
-  void set_account(const char* value);
-  void set_account(const char* value, size_t size);
-  ::std::string* mutable_account();
-  ::std::string* release_account();
-  void set_allocated_account(::std::string* account);
+  // .ledger.core.message.bitcoin.Account created_account = 1;
+  bool has_created_account() const;
+  void clear_created_account();
+  static const int kCreatedAccountFieldNumber = 1;
+  const ::ledger::core::message::bitcoin::Account& created_account() const;
+  ::ledger::core::message::bitcoin::Account* release_created_account();
+  ::ledger::core::message::bitcoin::Account* mutable_created_account();
+  void set_allocated_created_account(::ledger::core::message::bitcoin::Account* created_account);
 
   // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.CreateAccountResponse)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr account_;
+  ::ledger::core::message::bitcoin::Account* created_account_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2fcommands_2eproto;
 };
@@ -2390,57 +2385,49 @@ inline void CreateAccountRequest::set_allocated_config(::ledger::core::message::
 
 // CreateAccountResponse
 
-// string Account = 1;
-inline void CreateAccountResponse::clear_account() {
-  account_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+// .ledger.core.message.bitcoin.Account created_account = 1;
+inline bool CreateAccountResponse::has_created_account() const {
+  return this != internal_default_instance() && created_account_ != nullptr;
 }
-inline const ::std::string& CreateAccountResponse::account() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.CreateAccountResponse.Account)
-  return account_.GetNoArena();
+inline const ::ledger::core::message::bitcoin::Account& CreateAccountResponse::created_account() const {
+  const ::ledger::core::message::bitcoin::Account* p = created_account_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.CreateAccountResponse.created_account)
+  return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::bitcoin::Account*>(
+      &::ledger::core::message::bitcoin::_Account_default_instance_);
 }
-inline void CreateAccountResponse::set_account(const ::std::string& value) {
+inline ::ledger::core::message::bitcoin::Account* CreateAccountResponse::release_created_account() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.CreateAccountResponse.created_account)
   
-  account_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.CreateAccountResponse.Account)
+  ::ledger::core::message::bitcoin::Account* temp = created_account_;
+  created_account_ = nullptr;
+  return temp;
 }
-#if LANG_CXX11
-inline void CreateAccountResponse::set_account(::std::string&& value) {
+inline ::ledger::core::message::bitcoin::Account* CreateAccountResponse::mutable_created_account() {
   
-  account_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.CreateAccountResponse.Account)
+  if (created_account_ == nullptr) {
+    auto* p = CreateMaybeMessage<::ledger::core::message::bitcoin::Account>(GetArenaNoVirtual());
+    created_account_ = p;
+  }
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.CreateAccountResponse.created_account)
+  return created_account_;
 }
-#endif
-inline void CreateAccountResponse::set_account(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  
-  account_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.CreateAccountResponse.Account)
-}
-inline void CreateAccountResponse::set_account(const char* value, size_t size) {
-  
-  account_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.CreateAccountResponse.Account)
-}
-inline ::std::string* CreateAccountResponse::mutable_account() {
-  
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.CreateAccountResponse.Account)
-  return account_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CreateAccountResponse::release_account() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.CreateAccountResponse.Account)
-  
-  return account_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CreateAccountResponse::set_allocated_account(::std::string* account) {
-  if (account != nullptr) {
+inline void CreateAccountResponse::set_allocated_created_account(::ledger::core::message::bitcoin::Account* created_account) {
+  ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
+  if (message_arena == nullptr) {
+    delete reinterpret_cast< ::google::protobuf::MessageLite*>(created_account_);
+  }
+  if (created_account) {
+    ::google::protobuf::Arena* submessage_arena = nullptr;
+    if (message_arena != submessage_arena) {
+      created_account = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, created_account, submessage_arena);
+    }
     
   } else {
     
   }
-  account_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), account);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.CreateAccountResponse.Account)
+  created_account_ = created_account;
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.CreateAccountResponse.created_account)
 }
 
 // -------------------------------------------------------------------

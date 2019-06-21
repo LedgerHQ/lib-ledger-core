@@ -537,7 +537,7 @@ proto.ledger.core.message.bitcoin.AccountConfiguration.toObject = function(inclu
   var f, obj = {
     keychainEngine: jspb.Message.getFieldWithDefault(msg, 1, 0),
     xpubPath: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    setting: (f = msg.getSetting()) && proto.ledger.core.message.bitcoin.AccountSettings.toObject(includeInstance, f)
+    settings: (f = msg.getSettings()) && proto.ledger.core.message.bitcoin.AccountSettings.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -585,7 +585,7 @@ proto.ledger.core.message.bitcoin.AccountConfiguration.deserializeBinaryFromRead
     case 3:
       var value = new proto.ledger.core.message.bitcoin.AccountSettings;
       reader.readMessage(value,proto.ledger.core.message.bitcoin.AccountSettings.deserializeBinaryFromReader);
-      msg.setSetting(value);
+      msg.setSettings(value);
       break;
     default:
       reader.skipField();
@@ -630,7 +630,7 @@ proto.ledger.core.message.bitcoin.AccountConfiguration.serializeBinaryToWriter =
       f
     );
   }
-  f = message.getSetting();
+  f = message.getSettings();
   if (f != null) {
     writer.writeMessage(
       3,
@@ -672,17 +672,17 @@ proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.setXpubPath = f
 
 
 /**
- * optional AccountSettings setting = 3;
+ * optional AccountSettings settings = 3;
  * @return {?proto.ledger.core.message.bitcoin.AccountSettings}
  */
-proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.getSetting = function() {
+proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.getSettings = function() {
   return /** @type{?proto.ledger.core.message.bitcoin.AccountSettings} */ (
     jspb.Message.getWrapperField(this, proto.ledger.core.message.bitcoin.AccountSettings, 3));
 };
 
 
 /** @param {?proto.ledger.core.message.bitcoin.AccountSettings|undefined} value */
-proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.setSetting = function(value) {
+proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.setSettings = function(value) {
   jspb.Message.setWrapperField(this, 3, value);
 };
 
@@ -690,8 +690,8 @@ proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.setSetting = fu
 /**
  * Clears the message field making it undefined.
  */
-proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.clearSetting = function() {
-  this.setSetting(undefined);
+proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.clearSettings = function() {
+  this.setSettings(undefined);
 };
 
 
@@ -699,7 +699,7 @@ proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.clearSetting = 
  * Returns whether this field is set.
  * @return {boolean}
  */
-proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.hasSetting = function() {
+proto.ledger.core.message.bitcoin.AccountConfiguration.prototype.hasSettings = function() {
   return jspb.Message.getField(this, 3) != null;
 };
 

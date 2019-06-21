@@ -27,5 +27,5 @@ message AccountSettings {
 message AccountConfiguration {
     KeychainEngine keychain_engine = 1;
     string xpub_path = 2;
-    AccountSettings setting = 3;
+    AccountSettings settings = 3;
 }

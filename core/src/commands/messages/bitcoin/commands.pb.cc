@@ -189,8 +189,9 @@ static void InitDefaultsCreateAccountResponse_bitcoin_2fcommands_2eproto() {
   ::ledger::core::message::bitcoin::CreateAccountResponse::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<0> scc_info_CreateAccountResponse_bitcoin_2fcommands_2eproto =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsCreateAccountResponse_bitcoin_2fcommands_2eproto}, {}};
+::google::protobuf::internal::SCCInfo<1> scc_info_CreateAccountResponse_bitcoin_2fcommands_2eproto =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsCreateAccountResponse_bitcoin_2fcommands_2eproto}, {
+      &scc_info_Account_bitcoin_2faccount_2eproto.base,}};
 
 static void InitDefaultsSyncAccountRequest_bitcoin_2fcommands_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
@@ -374,7 +375,7 @@ const ::google::protobuf::uint32 TableStruct_bitcoin_2fcommands_2eproto::offsets
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountResponse, account_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::CreateAccountResponse, created_account_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::SyncAccountRequest, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -484,32 +485,33 @@ const char descriptor_table_protodef_bitcoin_2fcommands_2eproto[] =
   "core.message.bitcoin.Account\"v\n\024CreateAc"
   "countRequest\022\014\n\004xpub\030\001 \001(\t\022\r\n\005index\030\002 \001("
   "\r\022A\n\006config\030\003 \001(\01321.ledger.core.message."
-  "bitcoin.AccountConfiguration\"(\n\025CreateAc"
-  "countResponse\022\017\n\007Account\030\001 \001(\t\"%\n\022SyncAc"
-  "countRequest\022\017\n\007acc_uid\030\001 \001(\t\"&\n\023SyncAcc"
-  "ountResponse\022\017\n\007new_acc\030\001 \001(\010\"$\n\021GetBala"
-  "nceRequest\022\017\n\007acc_uid\030\001 \001(\t\"H\n\022GetBalanc"
-  "eResponse\0222\n\006amount\030\001 \001(\0132\".ledger.core."
-  "message.common.Amount\"\'\n\024GetOperationsRe"
-  "quest\022\017\n\007acc_uid\030\001 \001(\t\"S\n\025GetOperationsR"
-  "esponse\022:\n\noperations\030\001 \003(\0132&.ledger.cor"
-  "e.message.bitcoin.Operation\"l\n\031SetAccoun"
-  "tSettingsRequest\022\017\n\007acc_uid\030\001 \001(\t\022>\n\010set"
-  "tings\030\002 \001(\0132,.ledger.core.message.bitcoi"
-  "n.AccountSettings\"U\n\007Request\0226\n\004type\030\001 \001"
-  "(\0162(.ledger.core.message.bitcoin.Request"
-  "Type\022\022\n\nsubmessage\030\002 \001(\014*\344\001\n\013RequestType"
-  "\022\030\n\024SET_ACCOUNT_SETTINGS\020\000\022\027\n\023SET_WALLET"
-  "_SETTINGS\020\001\022\031\n\025SET_CURRENCY_SETTINGS\020\002\022\017"
-  "\n\013GET_WALLETS\020\003\022\021\n\rCREATE_WALLET\020\004\022\020\n\014GE"
-  "T_ACCOUNTS\020\005\022\022\n\016CREATE_ACCOUNT\020\006\022\020\n\014SYNC"
-  "_ACCOUNT\020\007\022\027\n\023GET_ACCOUNT_BALANCE\020\010\022\022\n\016G"
-  "ET_OPERATIONS\020\tb\006proto3"
+  "bitcoin.AccountConfiguration\"V\n\025CreateAc"
+  "countResponse\022=\n\017created_account\030\001 \001(\0132$"
+  ".ledger.core.message.bitcoin.Account\"%\n\022"
+  "SyncAccountRequest\022\017\n\007acc_uid\030\001 \001(\t\"&\n\023S"
+  "yncAccountResponse\022\017\n\007new_acc\030\001 \001(\010\"$\n\021G"
+  "etBalanceRequest\022\017\n\007acc_uid\030\001 \001(\t\"H\n\022Get"
+  "BalanceResponse\0222\n\006amount\030\001 \001(\0132\".ledger"
+  ".core.message.common.Amount\"\'\n\024GetOperat"
+  "ionsRequest\022\017\n\007acc_uid\030\001 \001(\t\"S\n\025GetOpera"
+  "tionsResponse\022:\n\noperations\030\001 \003(\0132&.ledg"
+  "er.core.message.bitcoin.Operation\"l\n\031Set"
+  "AccountSettingsRequest\022\017\n\007acc_uid\030\001 \001(\t\022"
+  ">\n\010settings\030\002 \001(\0132,.ledger.core.message."
+  "bitcoin.AccountSettings\"U\n\007Request\0226\n\004ty"
+  "pe\030\001 \001(\0162(.ledger.core.message.bitcoin.R"
+  "equestType\022\022\n\nsubmessage\030\002 \001(\014*\344\001\n\013Reque"
+  "stType\022\030\n\024SET_ACCOUNT_SETTINGS\020\000\022\027\n\023SET_"
+  "WALLET_SETTINGS\020\001\022\031\n\025SET_CURRENCY_SETTIN"
+  "GS\020\002\022\017\n\013GET_WALLETS\020\003\022\021\n\rCREATE_WALLET\020\004"
+  "\022\020\n\014GET_ACCOUNTS\020\005\022\022\n\016CREATE_ACCOUNT\020\006\022\020"
+  "\n\014SYNC_ACCOUNT\020\007\022\027\n\023GET_ACCOUNT_BALANCE\020"
+  "\010\022\022\n\016GET_OPERATIONS\020\tb\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_bitcoin_2fcommands_2eproto = {
   false, InitDefaults_bitcoin_2fcommands_2eproto, 
   descriptor_table_protodef_bitcoin_2fcommands_2eproto,
-  "bitcoin/commands.proto", &assign_descriptors_table_bitcoin_2fcommands_2eproto, 1423,
+  "bitcoin/commands.proto", &assign_descriptors_table_bitcoin_2fcommands_2eproto, 1469,
 };
 
 void AddDescriptors_bitcoin_2fcommands_2eproto() {
@@ -2498,13 +2500,26 @@ void CreateAccountRequest::InternalSwap(CreateAccountRequest* other) {
 // ===================================================================
 
 void CreateAccountResponse::InitAsDefaultInstance() {
+  ::ledger::core::message::bitcoin::_CreateAccountResponse_default_instance_._instance.get_mutable()->created_account_ = const_cast< ::ledger::core::message::bitcoin::Account*>(
+      ::ledger::core::message::bitcoin::Account::internal_default_instance());
 }
 class CreateAccountResponse::HasBitSetters {
  public:
+  static const ::ledger::core::message::bitcoin::Account& created_account(const CreateAccountResponse* msg);
 };
 
+const ::ledger::core::message::bitcoin::Account&
+CreateAccountResponse::HasBitSetters::created_account(const CreateAccountResponse* msg) {
+  return *msg->created_account_;
+}
+void CreateAccountResponse::clear_created_account() {
+  if (GetArenaNoVirtual() == nullptr && created_account_ != nullptr) {
+    delete created_account_;
+  }
+  created_account_ = nullptr;
+}
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CreateAccountResponse::kAccountFieldNumber;
+const int CreateAccountResponse::kCreatedAccountFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CreateAccountResponse::CreateAccountResponse()
@@ -2516,9 +2531,10 @@ CreateAccountResponse::CreateAccountResponse(const CreateAccountResponse& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  account_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.account().size() > 0) {
-    account_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.account_);
+  if (from.has_created_account()) {
+    created_account_ = new ::ledger::core::message::bitcoin::Account(*from.created_account_);
+  } else {
+    created_account_ = nullptr;
   }
   // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.CreateAccountResponse)
 }
@@ -2526,7 +2542,7 @@ CreateAccountResponse::CreateAccountResponse(const CreateAccountResponse& from)
 void CreateAccountResponse::SharedCtor() {
   ::google::protobuf::internal::InitSCC(
       &scc_info_CreateAccountResponse_bitcoin_2fcommands_2eproto.base);
-  account_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  created_account_ = nullptr;
 }
 
 CreateAccountResponse::~CreateAccountResponse() {
@@ -2535,7 +2551,7 @@ CreateAccountResponse::~CreateAccountResponse() {
 }
 
 void CreateAccountResponse::SharedDtor() {
-  account_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (this != internal_default_instance()) delete created_account_;
 }
 
 void CreateAccountResponse::SetCachedSize(int size) const {
@@ -2553,7 +2569,10 @@ void CreateAccountResponse::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  account_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (GetArenaNoVirtual() == nullptr && created_account_ != nullptr) {
+    delete created_account_;
+  }
+  created_account_ = nullptr;
   _internal_metadata_.Clear();
 }
 
@@ -2570,20 +2589,17 @@ const char* CreateAccountResponse::_InternalParse(const char* begin, const char*
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // string Account = 1;
+      // .ledger.core.message.bitcoin.Account created_account = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.CreateAccountResponse.Account");
-        object = msg->mutable_account();
-        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto string_till_end;
-        }
-        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        parser_till_end = ::ledger::core::message::bitcoin::Account::_InternalParse;
+        object = msg->mutable_created_account();
+        if (size > end - ptr) goto len_delim_till_end;
         ptr += size;
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ctx->ParseExactRange(
+            {parser_till_end, object}, ptr - size, ptr));
         break;
       }
       default: {
@@ -2601,10 +2617,6 @@ const char* CreateAccountResponse::_InternalParse(const char* begin, const char*
     }  // switch
   }  // while
   return ptr;
-string_till_end:
-  static_cast<::std::string*>(object)->clear();
-  static_cast<::std::string*>(object)->reserve(size);
-  goto len_delim_till_end;
 len_delim_till_end:
   return ctx->StoreAndTailCall(ptr, end, {_InternalParse, msg},
                                {parser_till_end, object}, size);
@@ -2620,15 +2632,11 @@ bool CreateAccountResponse::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // string Account = 1;
+      // .ledger.core.message.bitcoin.Account created_account = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_account()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->account().data(), static_cast<int>(this->account().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.message.bitcoin.CreateAccountResponse.Account"));
+          DO_(::google::protobuf::internal::WireFormatLite::ReadMessage(
+               input, mutable_created_account()));
         } else {
           goto handle_unusual;
         }
@@ -2662,14 +2670,10 @@ void CreateAccountResponse::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string Account = 1;
-  if (this->account().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->account().data(), static_cast<int>(this->account().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.message.bitcoin.CreateAccountResponse.Account");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->account(), output);
+  // .ledger.core.message.bitcoin.Account created_account = 1;
+  if (this->has_created_account()) {
+    ::google::protobuf::internal::WireFormatLite::WriteMessageMaybeToArray(
+      1, HasBitSetters::created_account(this), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2685,15 +2689,11 @@ void CreateAccountResponse::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string Account = 1;
-  if (this->account().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->account().data(), static_cast<int>(this->account().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.message.bitcoin.CreateAccountResponse.Account");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->account(), target);
+  // .ledger.core.message.bitcoin.Account created_account = 1;
+  if (this->has_created_account()) {
+    target = ::google::protobuf::internal::WireFormatLite::
+      InternalWriteMessageToArray(
+        1, HasBitSetters::created_account(this), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -2717,11 +2717,11 @@ size_t CreateAccountResponse::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string Account = 1;
-  if (this->account().size() > 0) {
+  // .ledger.core.message.bitcoin.Account created_account = 1;
+  if (this->has_created_account()) {
     total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->account());
+      ::google::protobuf::internal::WireFormatLite::MessageSize(
+        *created_account_);
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -2751,9 +2751,8 @@ void CreateAccountResponse::MergeFrom(const CreateAccountResponse& from) {
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.account().size() > 0) {
-
-    account_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.account_);
+  if (from.has_created_account()) {
+    mutable_created_account()->::ledger::core::message::bitcoin::Account::MergeFrom(from.created_account());
   }
 }
 
@@ -2782,8 +2781,7 @@ void CreateAccountResponse::Swap(CreateAccountResponse* other) {
 void CreateAccountResponse::InternalSwap(CreateAccountResponse* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
-  account_.Swap(&other->account_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
+  swap(created_account_, other->created_account_);
 }
 
 ::google::protobuf::Metadata CreateAccountResponse::GetMetadata() const {

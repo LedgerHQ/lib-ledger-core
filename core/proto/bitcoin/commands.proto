@@ -40,7 +40,7 @@ message CreateAccountRequest {
 }
 
 message CreateAccountResponse {
-    string Account = 1;
+    Account created_account = 1;
 }
 
 // SYNC_ACCOUNT

@@ -94,8 +94,9 @@ namespace core {
             })
             .map<CreateAccountResponse>(_walletPool->getContext(), [this](const std::shared_ptr<api::Account> & acc) {
                 CreateAccountResponse resp;
-                resp.set_account("blablalba");
-                _accounts[resp.account()] = acc;
+                resp.mutable_created_account()->set_index(acc->getIndex());
+                resp.mutable_created_account()->set_uid("change_me");
+                _accounts["change_me"] = acc;
                 return resp;
             });
     }

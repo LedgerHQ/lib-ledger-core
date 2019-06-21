@@ -12,6 +12,7 @@
 #include "wallet/pool/WalletPool.hpp"
 #include "WrapperHttpClient.hpp"
 #include "wallet/pool/WalletPool.hpp"
+#include "ubinder/wrapper_interface.h"
 
 
 namespace ledger {
@@ -108,3 +109,27 @@ namespace ledger {
         }
     }
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+WRAPPER_EXPORT     
+    void initWrapper(
+        ::RequestResponse sendRequest,
+        ::RequestResponse sendResponse,
+        ::Notification sendNotification,
+        ::RequestResponse* onRequest,
+        ::RequestResponse* onResponse,
+        ::Notification* onNotification) {
+        ledger::core::CppWrapperInstance.sendRequest = sendRequest;
+        ledger::core::CppWrapperInstance.sendResponse = sendResponse;
+        ledger::core::CppWrapperInstance.sendNotification = sendNotification;
+        *onRequest = &ledger::core::OnRequestFunc;
+        *onResponse = &ledger::core::OnResponseFunc;
+        *onNotification = &ledger::core::OnNotificationFunc;
+    }
+    
+#ifdef __cplusplus
+}
+#endif

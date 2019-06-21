@@ -3,7 +3,6 @@
 #include <functional>
 #include <memory>
 #include "commands.pb.h"
-#include "ubinder/wrapper_interface.h"
 #include "ubinder/function_types.h"
 #include "ubinder/cpp_wrapper.hpp"
 #include "async/Future.hpp"
@@ -31,11 +30,11 @@ namespace ledger {
 
         static ubinder::CppWrapper<ledger::core::LibCoreCommands> CppWrapperInstance;
 
-        void OnRequestFunc(uint64_t request, const char* data, size_t dataSize) {
+        void OnRequestFunc(uint32_t request, const char* data, size_t dataSize) {
             CppWrapperInstance.onRequest(request, data, dataSize);
         }
 
-        void OnResponseFunc(uint64_t request, const char* data, size_t dataSize) {
+        void OnResponseFunc(uint32_t request, const char* data, size_t dataSize) {
             CppWrapperInstance.onResponse(request, data, dataSize);
         }
 
@@ -45,20 +44,3 @@ namespace ledger {
     }
 }
 
-
-extern "C" {
-    void initWrapper(
-        ::RequestResponse sendRequest,
-        ::RequestResponse sendResponse,
-        ::Notification sendNotification,
-        ::RequestResponse* onRequest,
-        ::RequestResponse* onResponse,
-        ::Notification* onNotification) {
-        ledger::core::CppWrapperInstance.sendRequest = sendRequest;
-        ledger::core::CppWrapperInstance.sendResponse = sendResponse;
-        ledger::core::CppWrapperInstance.sendNotification = sendNotification;
-        *onRequest = &ledger::core::OnRequestFunc;
-        *onResponse = &ledger::core::OnResponseFunc;
-        *onNotification = &ledger::core::OnNotificationFunc;
-    }
-}

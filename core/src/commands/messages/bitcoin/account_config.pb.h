@@ -494,14 +494,14 @@ class AccountConfiguration :
   ::std::string* release_xpub_path();
   void set_allocated_xpub_path(::std::string* xpub_path);
 
-  // .ledger.core.message.bitcoin.AccountSettings setting = 3;
-  bool has_setting() const;
-  void clear_setting();
-  static const int kSettingFieldNumber = 3;
-  const ::ledger::core::message::bitcoin::AccountSettings& setting() const;
-  ::ledger::core::message::bitcoin::AccountSettings* release_setting();
-  ::ledger::core::message::bitcoin::AccountSettings* mutable_setting();
-  void set_allocated_setting(::ledger::core::message::bitcoin::AccountSettings* setting);
+  // .ledger.core.message.bitcoin.AccountSettings settings = 3;
+  bool has_settings() const;
+  void clear_settings();
+  static const int kSettingsFieldNumber = 3;
+  const ::ledger::core::message::bitcoin::AccountSettings& settings() const;
+  ::ledger::core::message::bitcoin::AccountSettings* release_settings();
+  ::ledger::core::message::bitcoin::AccountSettings* mutable_settings();
+  void set_allocated_settings(::ledger::core::message::bitcoin::AccountSettings* settings);
 
   // .ledger.core.message.bitcoin.KeychainEngine keychain_engine = 1;
   void clear_keychain_engine();
@@ -515,7 +515,7 @@ class AccountConfiguration :
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::internal::ArenaStringPtr xpub_path_;
-  ::ledger::core::message::bitcoin::AccountSettings* setting_;
+  ::ledger::core::message::bitcoin::AccountSettings* settings_;
   int keychain_engine_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2faccount_5fconfig_2eproto;
@@ -850,55 +850,55 @@ inline void AccountConfiguration::set_allocated_xpub_path(::std::string* xpub_pa
   // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountConfiguration.xpub_path)
 }
 
-// .ledger.core.message.bitcoin.AccountSettings setting = 3;
-inline bool AccountConfiguration::has_setting() const {
-  return this != internal_default_instance() && setting_ != nullptr;
+// .ledger.core.message.bitcoin.AccountSettings settings = 3;
+inline bool AccountConfiguration::has_settings() const {
+  return this != internal_default_instance() && settings_ != nullptr;
 }
-inline void AccountConfiguration::clear_setting() {
-  if (GetArenaNoVirtual() == nullptr && setting_ != nullptr) {
-    delete setting_;
+inline void AccountConfiguration::clear_settings() {
+  if (GetArenaNoVirtual() == nullptr && settings_ != nullptr) {
+    delete settings_;
   }
-  setting_ = nullptr;
+  settings_ = nullptr;
 }
-inline const ::ledger::core::message::bitcoin::AccountSettings& AccountConfiguration::setting() const {
-  const ::ledger::core::message::bitcoin::AccountSettings* p = setting_;
-  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountConfiguration.setting)
+inline const ::ledger::core::message::bitcoin::AccountSettings& AccountConfiguration::settings() const {
+  const ::ledger::core::message::bitcoin::AccountSettings* p = settings_;
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountConfiguration.settings)
   return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::bitcoin::AccountSettings*>(
       &::ledger::core::message::bitcoin::_AccountSettings_default_instance_);
 }
-inline ::ledger::core::message::bitcoin::AccountSettings* AccountConfiguration::release_setting() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountConfiguration.setting)
+inline ::ledger::core::message::bitcoin::AccountSettings* AccountConfiguration::release_settings() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountConfiguration.settings)
   
-  ::ledger::core::message::bitcoin::AccountSettings* temp = setting_;
-  setting_ = nullptr;
+  ::ledger::core::message::bitcoin::AccountSettings* temp = settings_;
+  settings_ = nullptr;
   return temp;
 }
-inline ::ledger::core::message::bitcoin::AccountSettings* AccountConfiguration::mutable_setting() {
+inline ::ledger::core::message::bitcoin::AccountSettings* AccountConfiguration::mutable_settings() {
   
-  if (setting_ == nullptr) {
+  if (settings_ == nullptr) {
     auto* p = CreateMaybeMessage<::ledger::core::message::bitcoin::AccountSettings>(GetArenaNoVirtual());
-    setting_ = p;
+    settings_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountConfiguration.setting)
-  return setting_;
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountConfiguration.settings)
+  return settings_;
 }
-inline void AccountConfiguration::set_allocated_setting(::ledger::core::message::bitcoin::AccountSettings* setting) {
+inline void AccountConfiguration::set_allocated_settings(::ledger::core::message::bitcoin::AccountSettings* settings) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
-    delete setting_;
+    delete settings_;
   }
-  if (setting) {
+  if (settings) {
     ::google::protobuf::Arena* submessage_arena = nullptr;
     if (message_arena != submessage_arena) {
-      setting = ::google::protobuf::internal::GetOwnedMessage(
-          message_arena, setting, submessage_arena);
+      settings = ::google::protobuf::internal::GetOwnedMessage(
+          message_arena, settings, submessage_arena);
     }
     
   } else {
     
   }
-  setting_ = setting;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountConfiguration.setting)
+  settings_ = settings;
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountConfiguration.settings)
 }
 
 #ifdef __GNUC__

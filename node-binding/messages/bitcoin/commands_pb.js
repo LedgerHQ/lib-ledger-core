@@ -1311,7 +1311,7 @@ proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.toObject = fun
  */
 proto.ledger.core.message.bitcoin.CreateAccountResponse.toObject = function(includeInstance, msg) {
   var f, obj = {
-    account: jspb.Message.getFieldWithDefault(msg, 1, "")
+    createdAccount: (f = msg.getCreatedAccount()) && bitcoin_account_pb.Account.toObject(includeInstance, f)
   };
 
   if (includeInstance) {
@@ -1349,8 +1349,9 @@ proto.ledger.core.message.bitcoin.CreateAccountResponse.deserializeBinaryFromRea
     var field = reader.getFieldNumber();
     switch (field) {
     case 1:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setAccount(value);
+      var value = new bitcoin_account_pb.Account;
+      reader.readMessage(value,bitcoin_account_pb.Account.deserializeBinaryFromReader);
+      msg.setCreatedAccount(value);
       break;
     default:
       reader.skipField();
@@ -1381,28 +1382,47 @@ proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.serializeBinar
  */
 proto.ledger.core.message.bitcoin.CreateAccountResponse.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getAccount();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getCreatedAccount();
+  if (f != null) {
+    writer.writeMessage(
       1,
-      f
+      f,
+      bitcoin_account_pb.Account.serializeBinaryToWriter
     );
   }
 };
 
 
 /**
- * optional string Account = 1;
- * @return {string}
+ * optional Account created_account = 1;
+ * @return {?proto.ledger.core.message.bitcoin.Account}
  */
-proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.getAccount = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
+proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.getCreatedAccount = function() {
+  return /** @type{?proto.ledger.core.message.bitcoin.Account} */ (
+    jspb.Message.getWrapperField(this, bitcoin_account_pb.Account, 1));
 };
 
 
-/** @param {string} value */
-proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.setAccount = function(value) {
-  jspb.Message.setProto3StringField(this, 1, value);
+/** @param {?proto.ledger.core.message.bitcoin.Account|undefined} value */
+proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.setCreatedAccount = function(value) {
+  jspb.Message.setWrapperField(this, 1, value);
+};
+
+
+/**
+ * Clears the message field making it undefined.
+ */
+proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.clearCreatedAccount = function() {
+  this.setCreatedAccount(undefined);
+};
+
+
+/**
+ * Returns whether this field is set.
+ * @return {boolean}
+ */
+proto.ledger.core.message.bitcoin.CreateAccountResponse.prototype.hasCreatedAccount = function() {
+  return jspb.Message.getField(this, 1) != null;
 };
 
 
