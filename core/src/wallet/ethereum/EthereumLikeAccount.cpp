@@ -520,11 +520,18 @@ namespace ledger {
                 auto buildFunction = [self] (const EthereumLikeTransactionBuildRequest& request, const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::EthereumLikeTransaction>> {
                     // Check if balance is sufficient
                     return self->getBalance().flatMapPtr<api::EthereumLikeTransaction>(self->getContext(), [self, request, explorer](const std::shared_ptr<Amount> &balance) {
-                        if (BigInt(balance->toString()) < *request.value + *(request.gasLimit) * *(request.gasPrice)) {
+                        // Check if all needed values are set
+                        if (!request.gasLimit || !request.gasPrice || (!request.value && !request.wipe)) {
+                            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Missing mandatory informations (e.g. gasLimit, gasPrice or value).");
+                        }
+                        // Check for balance
+                        auto maxPossibleAmountToSend = BigInt(balance->toString()) - *(request.gasLimit) * *(request.gasPrice);
+                        auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
+                        if (maxPossibleAmountToSend < amountToSend) {
                             throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                         }
                         auto tx = std::make_shared<EthereumLikeTransactionApi>(self->getWallet()->getCurrency());
-                        tx->setValue(request.value);
+                        tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
                         tx->setData(request.inputData);
                         tx->setGasLimit(request.gasLimit);
                         tx->setGasPrice(request.gasPrice);
