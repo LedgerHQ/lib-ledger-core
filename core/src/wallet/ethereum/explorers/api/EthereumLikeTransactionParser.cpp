@@ -139,7 +139,7 @@ namespace ledger {
             PROXY_PARSE(RawNumber, str, length, copy) {
 
                 //TODO: this is temporary solution
-                if (currentObject == "trace_actions") {
+                if (currentObject == "actions") {
                     return true;
                 }
 
@@ -168,7 +168,7 @@ namespace ledger {
             PROXY_PARSE(String, str, length, copy) {
 
                 //TODO: this is temporary solution
-                if (currentObject == "trace_actions") {
+                if (currentObject == "actions") {
                     return true;
                 }
 
