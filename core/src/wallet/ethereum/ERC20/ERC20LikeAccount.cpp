@@ -69,19 +69,19 @@ namespace ledger {
         }
 
         std::string ERC20LikeAccount::getAddress() {
-
             return _accountAddress;
         }
 
-        std::shared_ptr<api::BigInt> ERC20LikeAccount::getBalance() {
-            auto result = BigInt::ZERO;
-            auto operations = getOperations();
-
-            for (auto &op : operations) {
-                result = accumulateBalanceWithOperation(result, *op);
+        FuturePtr<api::BigInt> ERC20LikeAccount::getBalance() {
+            auto parentAccount = _account.lock();
+            if (!parentAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
             }
+            return parentAccount->getERC20Balance(_token.contractAddress);
+        }
 
-            return std::make_shared<api::BigIntImpl>(result);
+        void ERC20LikeAccount::getBalance(const std::shared_ptr<api::BigIntCallback> & callback) {
+            getBalance().callback(getContext(), callback);
         }
 
         std::vector<std::shared_ptr<api::BigInt>> ERC20LikeAccount::getBalanceHistoryFor(
@@ -196,37 +196,45 @@ namespace ledger {
             return result;
         }
 
-        std::vector<uint8_t> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
-                                                                        const std::string & address) {
+        Future<std::vector<uint8_t>> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
+                                                                                const std::string & address) {
             if (! api::Address::isValid(address, _parentCurrency)) {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
-            auto balance = getBalance();
-            if ( amount->compare(balance) > 0) {
-                throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-            }
-
-            BytesWriter writer;
-            writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
-
-            auto toUint256Format = [=](const std::string &hexInput) -> std::string {
-                if (hexInput.size() > 64) {
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid argument passed to toUint256Format");
-                }
-                auto hexOutput = hexInput;
-                while (hexOutput.size() != 64) {
-                    hexOutput = "00" + hexOutput;
+            return getBalance().map<std::vector<uint8_t>>(getContext(), [amount, address] (const std::shared_ptr<api::BigInt> &balance) {
+                if ( amount->compare(balance) > 0) {
+                    throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                 }
 
-                return hexOutput;
-            };
+                BytesWriter writer;
+                writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
 
-            writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
+                auto toUint256Format = [=](const std::string &hexInput) -> std::string {
+                    if (hexInput.size() > 64) {
+                        throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid argument passed to toUint256Format");
+                    }
+                    auto hexOutput = hexInput;
+                    while (hexOutput.size() != 64) {
+                        hexOutput = "00" + hexOutput;
+                    }
 
-            BigInt bigAmount(amount->toString(10));
-            writer.writeByteArray(hex::toByteArray(toUint256Format(bigAmount.toHexString())));
+                    return hexOutput;
+                };
 
-            return writer.toByteArray();
+                writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
+
+                BigInt bigAmount(amount->toString(10));
+                writer.writeByteArray(hex::toByteArray(toUint256Format(bigAmount.toHexString())));
+
+                return writer.toByteArray();
+            });
+        }
+
+        void ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
+                                                        const std::string &address,
+                                                        const std::shared_ptr<api::BinaryCallback> &data) {
+            auto context = _account.lock()->getContext();
+            getTransferToAddressData(amount, address).callback(context, data);
         }
 
         void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation) {
@@ -258,7 +266,7 @@ namespace ledger {
                         , use(status), use(blockHeight);
             } else {
                 // Update status
-                sql << "UPDATE erc20_operations SET status =: code WHERE uid = :uid"
+                sql << "UPDATE erc20_operations SET status = :code WHERE uid = :uid"
                         , use(status)
                         , use(erc20OpUid);
             }
@@ -279,6 +287,14 @@ namespace ledger {
             );
             query->registerAccount(localAccount);
             return query;
+        }
+
+        std::shared_ptr<api::ExecutionContext> ERC20LikeAccount::getContext() {
+            auto parentAccount = _account.lock();
+            if (!parentAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
+            }
+            return parentAccount->getContext();
         }
 
     }

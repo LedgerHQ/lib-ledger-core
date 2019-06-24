@@ -55,6 +55,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) override;
             Future<std::shared_ptr<BigInt>> getGasPrice() override;
             Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(const std::string &address) override;
+            Future<std::shared_ptr<BigInt>> getERC20Balance(const std::string &address, const std::string &erc20Address) override;
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
@@ -75,7 +76,8 @@ namespace ledger {
             std::string getExplorerVersion() const override;
 
         private:
-            Future<std::shared_ptr<BigInt>> getHelper(const std::string &url, const std::string &field);
+            Future<std::shared_ptr<BigInt>> getHelper(const std::string &url,
+                                                      const std::string &field);
             api::EthereumLikeNetworkParameters _parameters;
             std::string _explorerVersion;
         };
