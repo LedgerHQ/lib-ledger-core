@@ -260,12 +260,16 @@ TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
     auto wallet = wait(pool->createWallet("testnet_wallet", "stealthcoin", DynamicObject::newInstance()));
     {
         auto strTx = "01000000ae71115b01f9d2e90eef51048962392b2ac2cbe476aacb06d750e0794aeb5da5a2afaf19da000000006b483045022100be2faab00cc32a4f6f0249d70f3b6d1fc66bf50dcd6ae011d0287a4a581e5c7a02203cd71132619de1e8a1a84c481529f32d4e29b495f835d5b0da7655203a0a7dda01210269568d231762330f7aed9cf0acfb2512f2d7889eb18adb778589ab5cca66fb3dffffffff0200127a00000000001976a914b4949cd1e6c07826ceee84929a7c6babcccc5ec388ac6094b500000000001976a91417cb2228c292d617f98f4b89b448650e0a480e0788ac00000000";
+        auto txHash = "38fcb406a0110c50465edb482bab8d6100e7f9fa7e3ae01e48145c60fd51d00b";
         auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
         EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+        EXPECT_EQ(tx->getHash(), txHash);
     }
     {
-        auto strTx = "020000000182e7df21c65cf7e3639317a49574ba258379a2b5441fbde9e0f62155721b108301000000494830450221009e07fe210eac41865fe249ae1133162309f73d3ce27c1ebabc64cc2f3bd8beaa02201a47870fb4f706852eab758e25d5d32a0c021ed1b22ecf793b6e0aaa26ee34a901ffffffff02000000000000000000e230922c000000002321037b513a37787fcc91f78f667c3dbf7d22576cfcc4e533c33f243a21f5dcc3d89eac00000000";
+        auto strTx = "020000000162cd1e8fd9fe9e07a27c969a4fdc74adcb3d01f8b62b918998bc7971070fb1000100000048473044022071051379723e794e5e1f4931755106b6c5fa0ab0b1f8e5fc1a77241d14c428c6022020748197e9d00b379307e0eb2a22d419815faaf96e342ba86d8931b05ac03ab701ffffffff02000000000000000000977ae027000000002321032ce5cc649a30eb4f052bc2ff2080c53781ddb0881a4469f77e060c91d32671f5ac00000000";
+        auto txHash = "c7578a4909c7000403df354ec8ce4a8a7f9074c935c45491f74783fd1cc03c0e";
         auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
         EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+        EXPECT_EQ(tx->getHash(), txHash);
     }
 }

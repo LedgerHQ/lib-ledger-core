@@ -469,6 +469,7 @@ namespace ledger {
 
             // Parse inputs
             std::vector<BitcoinLikePreparedInput> preparedInputs;
+            std::vector<std::vector<uint8_t>> scriptSigs;
             auto inputsCount = reader.readNextVarInt();
             for (auto index = 0; index < inputsCount; index++) {
                 //Previous Tx Hash in LE
@@ -489,6 +490,15 @@ namespace ledger {
                     auto scriptSig = reader.read(scriptSize);
                     auto parsedScript = ledger::core::BitcoinLikeScript::parse(scriptSig);
                     if (parsedScript.isSuccess()) {
+
+                        // Useful to remove script sigs from rawTx to compute txHash (e.g. XST)
+                        {
+                            BytesWriter localWriter;
+                            localWriter.writeVarInt(scriptSize);
+                            localWriter.writeByteArray(scriptSig);
+                            scriptSigs.emplace_back(localWriter.toByteArray());
+                        }
+
                         BytesReader localReader(scriptSig);
                         if (isSigned && !isSegwit) {
                             //Get address from signed script
@@ -569,6 +579,24 @@ namespace ledger {
 
             //This will usefull to computes tx hash (txID)
             std::vector<uint8_t> modifTx(rawTransaction.begin(), rawTransaction.begin() + reader.getCursor());
+
+            // For XST we should remove the script sigs
+            // Reference: https://github.com/StealthSend/Stealth/commit/5be35d6c2c500b32ed82e5d6913d66d18a4b0a7f#diff-e8db9b851adc2422aadfffca88f14c91R566
+            if (params.Identifier == "xst" && !usesTimeStamp) {
+                auto strRawTx = hex::toString(modifTx);
+                auto removeScriptSig = [] (std::string &rawTx, const std::string &scriptSig) {
+                    size_t pos = rawTx.find(scriptSig);
+                    if (pos != std::string::npos) {
+                        rawTx.erase(pos, scriptSig.length());
+                        rawTx.insert(pos, "00");
+                    }
+                };
+                for (auto &scriptSig : scriptSigs) {
+                    removeScriptSig(strRawTx, hex::toString(scriptSig));
+                }
+                modifTx = hex::toByteArray(strRawTx);
+            }
+
             // Remove marker and flag if segwit
             if (isSegwit) {
                 modifTx.erase(modifTx.begin() + offsetToMarker, modifTx.begin() + offsetToMarker + 2);
