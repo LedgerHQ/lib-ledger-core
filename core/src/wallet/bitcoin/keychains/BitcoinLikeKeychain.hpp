@@ -87,12 +87,17 @@ namespace ledger {
             std::shared_ptr<api::DynamicObject> getConfiguration() const;
             const DerivationScheme& getDerivationScheme() const;
             const DerivationScheme& getFullDerivationScheme() const;
+            std::string getKeychainEngine() const;
             bool isSegwit() const;
+            bool isNativeSegwit() const;
 
             virtual std::string getRestoreKey() const = 0;
             virtual int32_t getObservableRangeSize() const = 0;
             virtual bool contains(const std::string& address) const = 0;
             virtual int32_t getOutputSizeAsSignedTxInput() const = 0;
+
+            static bool isSegwit(const std::string &keychainEngine);
+            static bool isNativeSegwit(const std::string &keychainEngine);
         protected:
             std::shared_ptr<Preferences> getPreferences() const;
             DerivationScheme& getDerivationScheme();
