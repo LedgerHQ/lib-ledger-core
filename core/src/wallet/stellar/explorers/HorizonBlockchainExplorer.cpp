@@ -48,8 +48,8 @@ namespace ledger {
         }
 
         Future<Option<std::shared_ptr<stellar::Asset>>> HorizonBlockchainExplorer::getAsset(const std::string& assetCode) {
-          //http->GET(fmt::format("/assets?asset_code={}", assetCode))
-          //  .template json<std::vector<stellar::Asset>, Exception>(HorizonApiParser<AssetVectorParser::Result, AssetVectorParser>());
+          http->GET(fmt::format("/assets?asset_code={}", assetCode))
+          .template json<std::vector<stellar::Asset>, Exception>(HorizonApiParser<AssetVectorParser::Result, AssetVectorParser>());
         }
 
         Future<Option<std::shared_ptr<stellar::Ledger>>> HorizonBlockchainExplorer::getLastLedger() {
