@@ -156,50 +156,62 @@ namespace ledger {
             // are only the ones concerning current account
             if (!transaction.erc20Transactions.empty()) {
                 for (auto &erc20Tx : transaction.erc20Transactions) {
-                    auto erc20ContractAddress = erc20Tx.contractAddress;
                     erc20Tx.type = (erc20Tx.from == _accountAddress) ?
                                    api::OperationType::SEND : (erc20Tx.to == _accountAddress) ?
                                                               api::OperationType::RECEIVE : api::OperationType::NONE;
 
-                    auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20ContractAddress, erc20Tx.type);
-                    auto erc20Operation = std::make_shared<ERC20LikeOperation>(_accountAddress, erc20OperationUid, operation, erc20Tx, getWallet()->getCurrency());
-                    auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20ContractAddress);
-
-                    auto erc20OpCount = 0;
-                    sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
-                    auto newOperation = erc20OpCount == 0;
-                    //Check if account already exists
-                    auto needNewAccount = true;
-                    for (auto& account : _erc20LikeAccounts) {
-                        auto erc20Account = std::static_pointer_cast<ERC20LikeAccount>(account);
-                        if (erc20Account->getToken().contractAddress == erc20ContractAddress &&
-                            erc20Account->getAddress() == _accountAddress) {
-                            //Update account
-                            erc20Account->putOperation(sql, erc20Operation, newOperation);
-                            needNewAccount = false;
-                        }
-                    }
-
-                    //Create a new account
-                    if (needNewAccount) {
-                        auto erc20Token = EthereumLikeAccountDatabaseHelper::getOrCreateERC20Token(sql, erc20ContractAddress);
-                        auto newAccount = std::make_shared<ERC20LikeAccount>(erc20AccountUid,
-                                                                             erc20Token,
-                                                                             _accountAddress,
-                                                                             getWallet()->getCurrency(),
-                                                                             std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
-                        _erc20LikeAccounts.push_back(newAccount);
-                        //Persist erc20 account
-                        int erc20AccountCount = 0;
-                        sql << "SELECT COUNT(*) FROM erc20_accounts WHERE uid = :uid", soci::use(erc20AccountUid), soci::into(erc20AccountCount);
-                        if (erc20AccountCount == 0) {
-                            EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
-                        }
-                        newAccount->putOperation(sql, erc20Operation, newOperation);
+                    updateERC20Operation(sql, operation, erc20Tx);
+                    // Handle ERC20 self-transactions
+                    if (erc20Tx.to == _accountAddress) {
+                        erc20Tx.type = api::OperationType::RECEIVE;
+                        updateERC20Operation(sql, operation, erc20Tx);
                     }
                 }
             }
         }
+
+        void EthereumLikeAccount::updateERC20Operation(soci::session &sql,
+                                                       const Operation &operation,
+                                                       const ERC20Transaction &erc20Tx) {
+            auto erc20ContractAddress = erc20Tx.contractAddress;
+            auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20ContractAddress, erc20Tx.type);
+            auto erc20Operation = std::make_shared<ERC20LikeOperation>(_accountAddress, erc20OperationUid, operation, erc20Tx, getWallet()->getCurrency());
+            auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20ContractAddress);
+
+            auto erc20OpCount = 0;
+            sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
+            auto newOperation = erc20OpCount == 0;
+            //Check if account already exists
+            auto needNewAccount = true;
+            for (auto& account : _erc20LikeAccounts) {
+                auto erc20Account = std::static_pointer_cast<ERC20LikeAccount>(account);
+                if (erc20Account->getToken().contractAddress == erc20ContractAddress &&
+                    erc20Account->getAddress() == _accountAddress) {
+                    //Update account
+                    erc20Account->putOperation(sql, erc20Operation, newOperation);
+                    needNewAccount = false;
+                }
+            }
+
+            //Create a new account
+            if (needNewAccount) {
+                auto erc20Token = EthereumLikeAccountDatabaseHelper::getOrCreateERC20Token(sql, erc20ContractAddress);
+                auto newAccount = std::make_shared<ERC20LikeAccount>(erc20AccountUid,
+                                                                     erc20Token,
+                                                                     _accountAddress,
+                                                                     getWallet()->getCurrency(),
+                                                                     std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
+                _erc20LikeAccounts.push_back(newAccount);
+                //Persist erc20 account
+                int erc20AccountCount = 0;
+                sql << "SELECT COUNT(*) FROM erc20_accounts WHERE uid = :uid", soci::use(erc20AccountUid), soci::into(erc20AccountCount);
+                if (erc20AccountCount == 0) {
+                    EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
+                }
+                newAccount->putOperation(sql, erc20Operation, newOperation);
+            }
+        }
+
         bool EthereumLikeAccount::putBlock(soci::session& sql,
                                            const EthereumLikeBlockchainExplorer::Block& block) {
                 Block abstractBlock;
