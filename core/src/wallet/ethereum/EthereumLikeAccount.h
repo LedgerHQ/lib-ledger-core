@@ -72,6 +72,9 @@ namespace ledger {
                                   const EthereumLikeBlockchainExplorerTransaction &tx);
             int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction &transaction);
             void updateERC20Accounts(soci::session &sql, const Operation &operation);
+            void updateERC20Operation(soci::session &sql,
+                                      const Operation &operation,
+                                      const ERC20Transaction &erc20Tx);
             bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<EthereumLikeKeychain> getKeychain() const;
