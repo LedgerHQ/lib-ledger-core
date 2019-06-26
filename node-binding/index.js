@@ -58,11 +58,11 @@ function OnRequest(data, callback) {
 }
 
 function OnNotification(data) {
-    console.log("OnNotification");
+
 }
 
 
-callbacker = new ubinder.Callbacker(binding, OnRequest, OnNotification)
+callbacker = new ubinder.Callbacker(binding, OnNotification, OnRequest)
 
 
 createGetVersionRequest = function() {
@@ -107,7 +107,7 @@ createGetBalanceRequest = function(uid) {
     var balanceReq = new btc_messages.GetBalanceRequest()
     balanceReq.setAccUid(uid);
     var btcReq = new btc_messages.Request();
-    btcReq.setType(btc_messages.RequestType.GET_BALANCE);
+    btcReq.setType(btc_messages.RequestType.GET_ACCOUNT_BALANCE);
     btcReq.setSubmessage(balanceReq.serializeBinary());
     var req = new commands.CoreRequest();
     req.setRequestType(commands.CoreRequestType.BITCOIN_REQUEST);
@@ -115,42 +115,35 @@ createGetBalanceRequest = function(uid) {
     return req;
 }
 
-async function createAndSyncAccount() {
-    var data = await callbacker.sendRequest(createBitcoinCreateAccountRequest().serializeBinary())
-    var resp = commands.CoreResponse.deserializeBinary(data);
-    if (resp.getError()) {
-        throw resp.getError();
-    }
+async function createAndSyncAccount(outputFunction) {
+    //await callbacker.sendRequest(createSetSettingsRequest().serializeBinary())
+    var resp = commands.CoreResponse.deserializeBinary(await callbacker.sendRequest(createBitcoinCreateAccountRequest().serializeBinary()));
+    if (resp.getError()) throw resp.getError();
     var createAccResp = btc_messages.CreateAccountResponse.deserializeBinary(resp.getResponseBody());
     var account = createAccResp.getCreatedAccount();
-    console.log("Account was created :" + account.getUid());
+    outputFunction("Account was created :" + account.getUid());
     var syncResp = btc_messages.SyncAccountResponse.deserializeBinary(await callbacker.sendRequest(createSyncAccountRequest(account.getUid()).serializeBinary()));
-    console.log("Sync finished");
+    outputFunction("Sync finished");
     var balanceResp = btc_messages.GetBalanceResponse.deserializeBinary(await callbacker.sendRequest(createGetBalanceRequest(account.getUid()).serializeBinary()));
-    console.log("Balance = " + balanceResp.getBalance());
-    return 1;
+    outputFunction("Balance = " + balanceResp.getAmount());
 }
 
-run_test = function() {
+run_test = function(outputFunction) {
     try {
         versionReq = createGetVersionRequest();
-        console.log("GetVersionRequest " + versionReq);
         callbacker.sendRequest(versionReq)
             .then((data) => {
                 var resp = commands.CoreResponse.deserializeBinary(data);
-                if (resp.error) {
-                    console.log(resp.error);
-                    throw resp.error;
-                }
+                if (resp.error) throw resp.error;
                 var versionResp = commands.GetVersionResponse.deserializeBinary(resp.getResponseBody());
-                console.log("lib-core version: " + versionResp.getMajor() + "." + versionResp.getMinor() + "." + versionResp.getPatch())
+                outputFunction("lib-core version: " + versionResp.getMajor() + "." + versionResp.getMinor() + "." + versionResp.getPatch())
             })
-            .catch((err)=> console.log(err));
-        createAndSyncAccount()
-            .then((data)=>console.log(data))
-            .catch((e)=>console.log(e));
+            .catch((err)=> outputFunction(err));
+        createAndSyncAccount(outputFunction)
+            .then((data)=>outputFunction(data))
+            .catch((e)=>outputFunction(e));
     }
     catch (error) {
-        console.log(error.message);
+        outputFunction(error.message);
     }
 }
