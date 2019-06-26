@@ -32,6 +32,7 @@
 #include "../BaseFixture.h"
 #include <set>
 #include <api/KeychainEngines.hpp>
+#include <api/EthereumLikeTransaction.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
@@ -79,7 +80,6 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                               api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                     auto balance = wait(account->getBalance());
-                    auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
 
                     auto erc20Accounts = account->getERC20Accounts();
                     erc20Count = erc20Accounts.size();
@@ -101,6 +101,15 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
                     std::cout << "ERC20 Operations: " << operations.size() << std::endl;
                     EXPECT_NE(operations.size(), 0);
+
+                    int64_t gasPrice = 20, gasLimit = 200;
+                    auto currency = account->getWallet()->getCurrency();
+                    auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
+                    txBuilder->setGasPrice(api::Amount::fromLong(currency, 20));
+                    txBuilder->setGasLimit(api::Amount::fromLong(currency, 200));
+                    txBuilder->wipeToAddress("0xfb98bdd04d82648f25e67041d6e27a866bec0b47");
+                    auto tx = wait(txBuilder->build());
+                    EXPECT_EQ(tx->getValue()->toLong(), balance->toLong() - (gasLimit * gasPrice));
 
                     dispatcher->stop();
                 });
