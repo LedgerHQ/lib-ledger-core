@@ -64,6 +64,7 @@ namespace ledger {
             _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
+            _coinType = scheme.getCoinType() ? scheme.getCoinType() : network.bip44CoinType;
         }
 
         bool EthereumLikeWallet::isSynchronizing() {
@@ -116,7 +117,7 @@ namespace ledger {
 
             auto self = getSelf();
             auto scheme = getDerivationScheme();
-            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(info.index);
+            scheme.setCoinType(_coinType).setAccountIndex(info.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             auto index = info.index;
             return async<std::shared_ptr<api::Account> >([=] () -> std::shared_ptr<api::Account> {
@@ -172,7 +173,7 @@ namespace ledger {
                 api::ExtendedKeyAccountCreationInfo info;
                 info.index = accountIndex;
                 auto scheme = self->getDerivationScheme();
-                scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(accountIndex);;
+                scheme.setCoinType(self->_coinType).setAccountIndex(accountIndex);
                 auto keychainEngine = self->getConfiguration()->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
                 if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
                     keychainEngine == api::KeychainEngines::BIP49_P2SH) {
@@ -212,7 +213,7 @@ namespace ledger {
             EthereumLikeAccountDatabaseEntry entry;
             EthereumLikeAccountDatabaseHelper::queryAccount(sql, accountUid, entry);
             auto scheme = getDerivationScheme();
-            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
+            scheme.setCoinType(_coinType).setAccountIndex(entry.index);
             auto xpubPath = getAccountScheme(scheme).getPath();
             auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
