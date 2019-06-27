@@ -739,7 +739,9 @@
 #   if (__cplusplus >= 201103)
 #    if __has_include(<experimental/string_view>)
 #     define ASIO_HAS_STD_STRING_VIEW 1
-#     define ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW 1
+#     if __clang_major__ < 7
+#      define ASIO_HAS_STD_EXPERIMENTAL_STRING_VIEW 1
+#     endif
 #    endif // __has_include(<experimental/string_view>)
 #   endif // (__cplusplus >= 201103)
 #  endif // defined(__clang__)

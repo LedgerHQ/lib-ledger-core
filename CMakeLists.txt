@@ -20,6 +20,9 @@ list(APPEND INCLUDE_DIRECTORIES core/test/include/)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+# Setup BOOST
+set(BOOST_INCLUDEDIR "${CMAKE_CURRENT_SOURCE_DIR}/core/lib/boost/")
+
 # Fix LLC-186: Add this flag to avoid crash for 10.10.x version
 # https://stackoverflow.com/questions/41865537/how-does-apples-codesign-utility-decide-which-sha-algorithms-to-sign-a-shared
 # Notes:
