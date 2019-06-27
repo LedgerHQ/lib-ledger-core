@@ -1,1 +1,0 @@
-#error "#include <boost/context/all.hpp> is no longer supported by boost_context."
