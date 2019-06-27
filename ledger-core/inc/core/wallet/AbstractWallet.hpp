@@ -31,25 +31,21 @@
 
 #pragma once
 
-#include "api/Wallet.hpp"
-#include <api/Currency.hpp>
-#include <api/Account.hpp>
-#include <preferences/Preferences.hpp>
-#include <async/DedicatedContext.hpp>
-#include <events/EventPublisher.hpp>
-#include <debug/logger.hpp>
-#include <api/WalletType.hpp>
-#include <database/DatabaseSessionPool.hpp>
-#include <collections/DynamicObject.hpp>
-#include <utils/DerivationScheme.hpp>
-#include <api/AccountCreationInfo.hpp>
-#include <api/ExtendedKeyAccountCreationInfo.hpp>
-#include <api/AccountCreationInfoCallback.hpp>
-#include <api/ExtendedKeyAccountCreationInfoCallback.hpp>
-#include <api/AccountCallback.hpp>
-#include <api/Block.hpp>
-#include <api/BlockCallback.hpp>
-#include <api/DynamicObject.hpp>
+#include <core/api/Account.hpp>
+#include <core/api/AccountCreationInfo.hpp>
+#include <core/api/Block.hpp>
+#include <core/api/BlockCallback.hpp>
+#include <core/api/Currency.hpp>
+#include <core/api/DynamicObject.hpp>
+#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <core/api/Wallet.hpp>
+#include <core/async/DedicatedContext.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/database/DatabaseSessionPool.hpp>
+#include <core/debug/logger.hpp>
+#include <core/events/EventPublisher.hpp>
+#include <core/utils/DerivationScheme.hpp>
+#include <core/preferences/Preferences.hpp>
 
 namespace ledger {
     namespace core {
