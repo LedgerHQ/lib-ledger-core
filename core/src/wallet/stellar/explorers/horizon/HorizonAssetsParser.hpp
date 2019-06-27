@@ -1,8 +1,9 @@
 /*
  *
+ * HorizonAssetsParser.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri.
+ * Created by Pierre Pollastri on 25/06/2019.
  *
  * The MIT License (MIT)
  *
@@ -28,19 +29,18 @@
  *
  */
 
-#ifndef LEDGER_CORE_HORIZONASSETPARSER_HPP
-#define LEDGER_CORE_HORIZONASSETPARSER_HPP
+#ifndef LEDGER_CORE_HORIZONASSETSPARSER_HPP
+#define LEDGER_CORE_HORIZONASSETSPARSER_HPP
 
 #include <rapidjson/reader.h>
 #include <wallet/stellar/stellar.hpp>
+#include "HorizonAssetParser.hpp"
 
 namespace ledger {
     namespace core {
-
-        class HorizonAssetParser {
+        class HorizonAssetsParser {
         public:
-            typedef stellar::Asset Result;
-            HorizonAssetParser(std::string& lastKey) : _lastKey(lastKey) {};
+            HorizonAssetsParser(std::string& lastKey) : _lastKey(lastKey), _assetParser(lastKey) {};
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -55,14 +55,16 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            void init(stellar::Asset *asset);
+            void init(std::vector<stellar::Asset> *assets);
 
         private:
             std::string& _lastKey;
-            stellar::Asset* _asset;
-        };
+            HorizonAssetParser _assetParser;
+            std::vector<stellar::Asset>* _assets;
 
+        };
     }
 }
 
-#endif //LEDGER_CORE_HORIZONASSETPARSER_HPP
+
+#endif //LEDGER_CORE_HORIZONASSETSPARSER_HPP

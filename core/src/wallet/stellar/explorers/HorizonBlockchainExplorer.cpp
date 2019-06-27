@@ -32,13 +32,12 @@
 #include <utils/Exception.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/stellar/explorers/horizon/HorizonApiParser.hpp>
-#include <utils/SingleObjectJsonSaxParser.hpp>
-#include "horizon/HorizonAssetParser.hpp"
+#include "horizon/HorizonAssetsParser.hpp"
 #include "horizon/HorizonApiParser.hpp"
 
 namespace ledger {
     namespace core {
-        using AssetVectorParser = SingleObjectJsonSaxParser<HorizonAssetParser, std::vector<HorizonAssetParser::Result>>;
+        using AssetVectorParser = HorizonApiParser<std::vector<stellar::Asset>, HorizonAssetsParser>;
 
         HorizonBlockchainExplorer::HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                                              const std::shared_ptr<HttpClient>& http,
@@ -49,7 +48,7 @@ namespace ledger {
 
         Future<Option<std::shared_ptr<stellar::Asset>>> HorizonBlockchainExplorer::getAsset(const std::string& assetCode) {
           http->GET(fmt::format("/assets?asset_code={}", assetCode))
-          .template json<std::vector<stellar::Asset>, Exception>(HorizonApiParser<AssetVectorParser::Result, AssetVectorParser>());
+          .template json<std::vector<stellar::Asset>, Exception>(AssetVectorParser());
         }
 
         Future<Option<std::shared_ptr<stellar::Ledger>>> HorizonBlockchainExplorer::getLastLedger() {
