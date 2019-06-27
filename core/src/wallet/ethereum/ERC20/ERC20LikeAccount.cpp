@@ -240,6 +240,7 @@ namespace ledger {
         void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation) {
             auto status = operation->getStatus();
             auto erc20OpUid = operation->getOperationUid();
+            auto gasUsed = operation->getUsedGas()->toString(16);
             if (newOperation) {
                 auto ethOpUid = operation->getETHOperationUid();
                 auto hash = operation->getHash();
@@ -252,7 +253,6 @@ namespace ledger {
                 auto time = operation->getTime();
                 auto gasPrice = operation->getGasPrice()->toString(16);
                 auto gasLimit = operation->getGasLimit()->toString(16);
-                auto gasUsed = operation->getUsedGas()->toString(16);
                 auto blockHeight = operation->getBlockHeight().value_or(0);
                 sql << "INSERT INTO erc20_operations VALUES("
                         ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
@@ -265,9 +265,10 @@ namespace ledger {
                         , use(gasPrice), use(gasLimit), use(gasUsed)
                         , use(status), use(blockHeight);
             } else {
-                // Update status
-                sql << "UPDATE erc20_operations SET status = :code WHERE uid = :uid"
+                // Update
+                sql << "UPDATE erc20_operations SET status = :code , gas_used = :gas WHERE uid = :uid"
                         , use(status)
+                        , use(gasUsed)
                         , use(erc20OpUid);
             }
         }
