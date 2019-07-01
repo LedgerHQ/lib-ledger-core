@@ -55,8 +55,8 @@ namespace ledger {
                     session.set_log_stream(_logger);
             }
 
-            // Migrate database
-            performDatabaseMigration();
+            // Setup database
+            performDatabaseMigrationSetup();
         }
 
         DatabaseSessionPool::~DatabaseSessionPool() {
@@ -83,16 +83,17 @@ namespace ledger {
             return _pool;
         }
 
-        void DatabaseSessionPool::performDatabaseMigration() {
+        void DatabaseSessionPool::performDatabaseMigrationSetup() {
             soci::session sql(getPool());
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            //migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+
             tr.commit();
         }
 
-        void DatabaseSessionPool::performDatabaseRollback() {
+        void DatabaseSessionPool::performDatabaseMigrationUnsetup() {
             soci::session sql(getPool());
             int version = getDatabaseMigrationVersion(sql);
 
