@@ -61,8 +61,12 @@ namespace ledger {
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 8;
 
-            void performDatabaseMigration();
-            void performDatabaseRollback();
+            /// Install the required data / schemas in the database to allow coins to register.
+            void performDatabaseMigrationSetup();
+
+            /// Uninstall the data / schemas from the database that allow coins to register.
+            void performDatabaseMigrationUnsetup();
+
             void performChangePassword(const std::string &oldPassword,
                                        const std::string &newPassword);
 
