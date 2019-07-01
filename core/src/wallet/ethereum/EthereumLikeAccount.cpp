@@ -429,6 +429,7 @@ namespace ledger {
             txExplorer.hash = txHash;
             txExplorer.gasLimit = BigInt(tx->getGasLimit()->toString());
             txExplorer.gasPrice = BigInt(tx->getGasPrice()->toString());
+            txExplorer.gasUsed = BigInt::ZERO; // Tx is not mined yet so ...(This will updated at next synchro)
             txExplorer.value = BigInt(tx->getValue()->toString());
             txExplorer.sender = sender;
             txExplorer.receiver = tx->getReceiver()->toEIP55();
