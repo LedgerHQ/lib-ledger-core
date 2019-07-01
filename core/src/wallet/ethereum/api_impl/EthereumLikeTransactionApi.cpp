@@ -140,22 +140,12 @@ namespace ledger {
             reader.readNextByte();
             //R length
             auto rSize = reader.readNextVarInt();
-            if (rSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _rSignature = reader.read(rSize - 1);
-            } else {
-                _rSignature = reader.read(rSize);
-            }
+            _rSignature = reader.read(rSize);
             //Nb of elements for S
             reader.readNextByte();
             //S length
             auto sSize = reader.readNextVarInt();
-            if (sSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _sSignature = reader.read(sSize - 1);
-            } else {
-                _sSignature = reader.read(sSize);
-            }
+            _sSignature = reader.read(sSize);
         }
 
         void EthereumLikeTransactionApi::setVSignature(const std::vector<uint8_t> & vSignature) {
@@ -164,8 +154,6 @@ namespace ledger {
 
         std::vector<uint8_t> EthereumLikeTransactionApi::serialize() {
             //Construct RLP object from tx
-            //TODO:  need forEIP155 ?
-            bool forEIP155 = true;
             RLPListEncoder txList;
             std::vector<uint8_t> empty;
             if (_nonce->toUint64() == 0) {
@@ -189,9 +177,10 @@ namespace ledger {
             txList.append(_data);
 
             if (!_rSignature.empty() && !_sSignature.empty()) {
+                // Get rid of leading null bytes
                 txList.append(_vSignature);
-                txList.append(_rSignature);
-                txList.append(_sSignature);
+                txList.append(BigInt(_rSignature, false).toHexString());
+                txList.append(BigInt(_sSignature, false).toHexString());
             } else {
                 txList.append(hex::toByteArray(_currency.ethereumLikeNetworkParameters.value().ChainID));
                 txList.append(empty);
