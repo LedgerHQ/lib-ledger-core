@@ -1,14 +1,15 @@
 #include "AsioExecutionContext.hpp"
-#include "CommandProcessor.h"
+#include "commands/CommandProcessor.h"
 #include "ledger-core.h"
 #include "collections/DynamicObject.hpp"
 #include "async/Future.hpp"
 #include "utils/Try.hpp"
-#include "BitcoinLikeProcessor.h"
+#include "commands/BitcoinLikeProcessor.h"
 #include "commands.pb.h"
-#include "PathResolver.hpp"
-#include "ThreadDispatcher.hpp"
-#include "LogPrinter.hpp"
+#include "core_configuration.pb.h"
+#include "commands/PathResolver.hpp"
+#include "commands/ThreadDispatcher.hpp"
+#include "commands/LogPrinter.hpp"
 #include "wallet/pool/WalletPool.hpp"
 #include "WrapperHttpClient.hpp"
 #include "wallet/pool/WalletPool.hpp"
@@ -21,34 +22,16 @@ namespace ledger {
 
         LibCoreCommands::LibCoreCommands() 
             : _executionContext(std::make_shared<AsioExecutionContext>()) {
+            _httpClient = std::make_shared<WrapperHttpClient>([this](std::vector<uint8_t>&& req, std::function<void(std::vector<uint8_t>&&)>&& callback) {
+                CppWrapperInstance.SendRequest(std::move(req), std::move(callback));
+                });
+            _pathResolver = std::make_shared<PathResolver>();
+            _threadDispathcher = std::make_shared<ThreadDispatcher>(_executionContext);
+            _logPrinter = std::make_shared<LogPrinter>(_executionContext);
         }
 
         void LibCoreCommands::OnRequest(std::vector<uint8_t>&& data, std::function<void(std::vector<uint8_t>&&)>&& callback) {
-            std::call_once(_startExecutionContext, [this]() {
-                _executionContext->start();
-                auto httpClient = std::make_shared<WrapperHttpClient>([this](std::vector<uint8_t>&& req, std::function<void(std::vector<uint8_t>&&)>&& callback) {
-                    CppWrapperInstance.SendRequest(std::move(req), std::move(callback));
-                    });
-                auto pathResolver = std::make_shared<PathResolver>();
-                auto threadDispathcher = std::make_shared<ThreadDispatcher>(_executionContext);
-                auto logPrinter = std::make_shared<LogPrinter>(_executionContext);
-                auto config = api::DynamicObject::newInstance();
-                auto dbBackend = api::DatabaseBackend::getSqlite3Backend();
-                std::string password;
-                // we use wallet pool as a container for all services
-                _walletPool = WalletPool::newInstance(
-                    "cmd-wallet",
-                    password,
-                    httpClient,
-                    nullptr,
-                    pathResolver,
-                    logPrinter,
-                    threadDispathcher,
-                    nullptr,
-                    dbBackend,
-                    config);
-                _bitcoinLikeProcessor = std::make_unique<BitcoinLikeCommandProcessor>(_walletPool);
-            });
+            std::call_once(_startExecutionContext, [this]() { _executionContext->start(); });
             CoreRequest request;
             if (data.size() > 0) {
                 request.ParseFromArray(&data[0], data.size());
@@ -80,7 +63,6 @@ namespace ledger {
         }
 
         Future<CoreResponse> LibCoreCommands::processRequest(CoreRequest&& request) {
-            
             switch (request.request_type())
             {
             case CoreRequestType::GET_VERSION: {
@@ -91,6 +73,37 @@ namespace ledger {
                 getVersion.set_patch(VERSION_PATCH);
                 resp.set_response_body(getVersion.SerializeAsString());
                 return Future<CoreResponse>::successful(resp);
+            }
+            case CoreRequestType::SET_CONFIGURATION: {
+                LibCoreConfiguration newConfiguration;
+                if (!newConfiguration.ParseFromString(request.request_body())) {
+                    CoreResponse resp;
+                    resp.set_error("Can't parse configuration message");
+                    return Future<CoreResponse>::successful(resp);
+                }
+                _pathResolver->setWorkingDir(newConfiguration.working_dir());
+                auto config = api::DynamicObject::newInstance();
+                auto dbBackend = api::DatabaseBackend::getSqlite3Backend();
+                std::string password;
+                if (!_walletPool) {
+                    _walletPool = WalletPool::newInstance(
+                        "cmd-wallet",
+                        password,
+                        _httpClient,
+                        nullptr,
+                        _pathResolver,
+                        _logPrinter,
+                        _threadDispathcher,
+                        nullptr,
+                        dbBackend,
+                        config);
+                    _bitcoinLikeProcessor = std::make_unique<BitcoinLikeCommandProcessor>(_walletPool);
+                    CoreResponse resp;
+                    return Future<CoreResponse>::successful(resp);
+                }
+                else {
+                    //_walletPool->updateWalletConfig()
+                }
             }
             case CoreRequestType::BITCOIN_REQUEST: {
                 return _bitcoinLikeProcessor->processRequest(request.request_body())

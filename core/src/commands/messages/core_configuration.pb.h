@@ -54,16 +54,16 @@ namespace message {
 class DatabaseConfiguration;
 class DatabaseConfigurationDefaultTypeInternal;
 extern DatabaseConfigurationDefaultTypeInternal _DatabaseConfiguration_default_instance_;
-class LibCoreConfigution;
-class LibCoreConfigutionDefaultTypeInternal;
-extern LibCoreConfigutionDefaultTypeInternal _LibCoreConfigution_default_instance_;
+class LibCoreConfiguration;
+class LibCoreConfigurationDefaultTypeInternal;
+extern LibCoreConfigurationDefaultTypeInternal _LibCoreConfiguration_default_instance_;
 }  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
 template<> ::ledger::core::message::DatabaseConfiguration* Arena::CreateMaybeMessage<::ledger::core::message::DatabaseConfiguration>(Arena*);
-template<> ::ledger::core::message::LibCoreConfigution* Arena::CreateMaybeMessage<::ledger::core::message::LibCoreConfigution>(Arena*);
+template<> ::ledger::core::message::LibCoreConfiguration* Arena::CreateMaybeMessage<::ledger::core::message::LibCoreConfiguration>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
@@ -222,25 +222,25 @@ class DatabaseConfiguration :
 };
 // -------------------------------------------------------------------
 
-class LibCoreConfigution :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.LibCoreConfigution) */ {
+class LibCoreConfiguration :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.LibCoreConfiguration) */ {
  public:
-  LibCoreConfigution();
-  virtual ~LibCoreConfigution();
+  LibCoreConfiguration();
+  virtual ~LibCoreConfiguration();
 
-  LibCoreConfigution(const LibCoreConfigution& from);
+  LibCoreConfiguration(const LibCoreConfiguration& from);
 
-  inline LibCoreConfigution& operator=(const LibCoreConfigution& from) {
+  inline LibCoreConfiguration& operator=(const LibCoreConfiguration& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  LibCoreConfigution(LibCoreConfigution&& from) noexcept
-    : LibCoreConfigution() {
+  LibCoreConfiguration(LibCoreConfiguration&& from) noexcept
+    : LibCoreConfiguration() {
     *this = ::std::move(from);
   }
 
-  inline LibCoreConfigution& operator=(LibCoreConfigution&& from) noexcept {
+  inline LibCoreConfiguration& operator=(LibCoreConfiguration&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -252,34 +252,34 @@ class LibCoreConfigution :
   static const ::google::protobuf::Descriptor* descriptor() {
     return default_instance().GetDescriptor();
   }
-  static const LibCoreConfigution& default_instance();
+  static const LibCoreConfiguration& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const LibCoreConfigution* internal_default_instance() {
-    return reinterpret_cast<const LibCoreConfigution*>(
-               &_LibCoreConfigution_default_instance_);
+  static inline const LibCoreConfiguration* internal_default_instance() {
+    return reinterpret_cast<const LibCoreConfiguration*>(
+               &_LibCoreConfiguration_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     1;
 
-  void Swap(LibCoreConfigution* other);
-  friend void swap(LibCoreConfigution& a, LibCoreConfigution& b) {
+  void Swap(LibCoreConfiguration* other);
+  friend void swap(LibCoreConfiguration& a, LibCoreConfiguration& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline LibCoreConfigution* New() const final {
-    return CreateMaybeMessage<LibCoreConfigution>(nullptr);
+  inline LibCoreConfiguration* New() const final {
+    return CreateMaybeMessage<LibCoreConfiguration>(nullptr);
   }
 
-  LibCoreConfigution* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<LibCoreConfigution>(arena);
+  LibCoreConfiguration* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<LibCoreConfiguration>(arena);
   }
   void CopyFrom(const ::google::protobuf::Message& from) final;
   void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const LibCoreConfigution& from);
-  void MergeFrom(const LibCoreConfigution& from);
+  void CopyFrom(const LibCoreConfiguration& from);
+  void MergeFrom(const LibCoreConfiguration& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -301,7 +301,7 @@ class LibCoreConfigution :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(LibCoreConfigution* other);
+  void InternalSwap(LibCoreConfiguration* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return nullptr;
@@ -346,7 +346,7 @@ class LibCoreConfigution :
   bool enable_internal_logging() const;
   void set_enable_internal_logging(bool value);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(class_scope:ledger.core.message.LibCoreConfiguration)
  private:
   class HasBitSetters;
 
@@ -529,94 +529,94 @@ inline void DatabaseConfiguration::set_allocated_password(::std::string* passwor
 
 // -------------------------------------------------------------------
 
-// LibCoreConfigution
+// LibCoreConfiguration
 
 // string working_dir = 1;
-inline void LibCoreConfigution::clear_working_dir() {
+inline void LibCoreConfiguration::clear_working_dir() {
   working_dir_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& LibCoreConfigution::working_dir() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.LibCoreConfigution.working_dir)
+inline const ::std::string& LibCoreConfiguration::working_dir() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.LibCoreConfiguration.working_dir)
   return working_dir_.GetNoArena();
 }
-inline void LibCoreConfigution::set_working_dir(const ::std::string& value) {
+inline void LibCoreConfiguration::set_working_dir(const ::std::string& value) {
   
   working_dir_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.message.LibCoreConfigution.working_dir)
+  // @@protoc_insertion_point(field_set:ledger.core.message.LibCoreConfiguration.working_dir)
 }
 #if LANG_CXX11
-inline void LibCoreConfigution::set_working_dir(::std::string&& value) {
+inline void LibCoreConfiguration::set_working_dir(::std::string&& value) {
   
   working_dir_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.LibCoreConfigution.working_dir)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.LibCoreConfiguration.working_dir)
 }
 #endif
-inline void LibCoreConfigution::set_working_dir(const char* value) {
+inline void LibCoreConfiguration::set_working_dir(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   working_dir_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.message.LibCoreConfigution.working_dir)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.LibCoreConfiguration.working_dir)
 }
-inline void LibCoreConfigution::set_working_dir(const char* value, size_t size) {
+inline void LibCoreConfiguration::set_working_dir(const char* value, size_t size) {
   
   working_dir_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.LibCoreConfigution.working_dir)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.LibCoreConfiguration.working_dir)
 }
-inline ::std::string* LibCoreConfigution::mutable_working_dir() {
+inline ::std::string* LibCoreConfiguration::mutable_working_dir() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.LibCoreConfigution.working_dir)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.LibCoreConfiguration.working_dir)
   return working_dir_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* LibCoreConfigution::release_working_dir() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.LibCoreConfigution.working_dir)
+inline ::std::string* LibCoreConfiguration::release_working_dir() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.LibCoreConfiguration.working_dir)
   
   return working_dir_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void LibCoreConfigution::set_allocated_working_dir(::std::string* working_dir) {
+inline void LibCoreConfiguration::set_allocated_working_dir(::std::string* working_dir) {
   if (working_dir != nullptr) {
     
   } else {
     
   }
   working_dir_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), working_dir);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.LibCoreConfigution.working_dir)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.LibCoreConfiguration.working_dir)
 }
 
 // .ledger.core.message.DatabaseConfiguration database_config = 2;
-inline bool LibCoreConfigution::has_database_config() const {
+inline bool LibCoreConfiguration::has_database_config() const {
   return this != internal_default_instance() && database_config_ != nullptr;
 }
-inline void LibCoreConfigution::clear_database_config() {
+inline void LibCoreConfiguration::clear_database_config() {
   if (GetArenaNoVirtual() == nullptr && database_config_ != nullptr) {
     delete database_config_;
   }
   database_config_ = nullptr;
 }
-inline const ::ledger::core::message::DatabaseConfiguration& LibCoreConfigution::database_config() const {
+inline const ::ledger::core::message::DatabaseConfiguration& LibCoreConfiguration::database_config() const {
   const ::ledger::core::message::DatabaseConfiguration* p = database_config_;
-  // @@protoc_insertion_point(field_get:ledger.core.message.LibCoreConfigution.database_config)
+  // @@protoc_insertion_point(field_get:ledger.core.message.LibCoreConfiguration.database_config)
   return p != nullptr ? *p : *reinterpret_cast<const ::ledger::core::message::DatabaseConfiguration*>(
       &::ledger::core::message::_DatabaseConfiguration_default_instance_);
 }
-inline ::ledger::core::message::DatabaseConfiguration* LibCoreConfigution::release_database_config() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.LibCoreConfigution.database_config)
+inline ::ledger::core::message::DatabaseConfiguration* LibCoreConfiguration::release_database_config() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.LibCoreConfiguration.database_config)
   
   ::ledger::core::message::DatabaseConfiguration* temp = database_config_;
   database_config_ = nullptr;
   return temp;
 }
-inline ::ledger::core::message::DatabaseConfiguration* LibCoreConfigution::mutable_database_config() {
+inline ::ledger::core::message::DatabaseConfiguration* LibCoreConfiguration::mutable_database_config() {
   
   if (database_config_ == nullptr) {
     auto* p = CreateMaybeMessage<::ledger::core::message::DatabaseConfiguration>(GetArenaNoVirtual());
     database_config_ = p;
   }
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.LibCoreConfigution.database_config)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.LibCoreConfiguration.database_config)
   return database_config_;
 }
-inline void LibCoreConfigution::set_allocated_database_config(::ledger::core::message::DatabaseConfiguration* database_config) {
+inline void LibCoreConfiguration::set_allocated_database_config(::ledger::core::message::DatabaseConfiguration* database_config) {
   ::google::protobuf::Arena* message_arena = GetArenaNoVirtual();
   if (message_arena == nullptr) {
     delete database_config_;
@@ -632,21 +632,21 @@ inline void LibCoreConfigution::set_allocated_database_config(::ledger::core::me
     
   }
   database_config_ = database_config;
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.LibCoreConfigution.database_config)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.LibCoreConfiguration.database_config)
 }
 
 // bool enable_internal_logging = 3;
-inline void LibCoreConfigution::clear_enable_internal_logging() {
+inline void LibCoreConfiguration::clear_enable_internal_logging() {
   enable_internal_logging_ = false;
 }
-inline bool LibCoreConfigution::enable_internal_logging() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.LibCoreConfigution.enable_internal_logging)
+inline bool LibCoreConfiguration::enable_internal_logging() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.LibCoreConfiguration.enable_internal_logging)
   return enable_internal_logging_;
 }
-inline void LibCoreConfigution::set_enable_internal_logging(bool value) {
+inline void LibCoreConfiguration::set_enable_internal_logging(bool value) {
   
   enable_internal_logging_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.message.LibCoreConfigution.enable_internal_logging)
+  // @@protoc_insertion_point(field_set:ledger.core.message.LibCoreConfiguration.enable_internal_logging)
 }
 
 #ifdef __GNUC__

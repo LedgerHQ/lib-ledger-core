@@ -1,1 +1,1 @@
-require('./index.js'); run_test(console.log);
+require('./index.js'); run_test();

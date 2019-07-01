@@ -7,7 +7,7 @@ message DatabaseConfiguration {
     string password = 3;
 }
 
-message LibCoreConfigution {
+message LibCoreConfiguration {
     string working_dir = 1;
     DatabaseConfiguration database_config = 2;
     bool enable_internal_logging = 3;

@@ -24,10 +24,10 @@ class DatabaseConfigurationDefaultTypeInternal {
  public:
   ::google::protobuf::internal::ExplicitlyConstructed<DatabaseConfiguration> _instance;
 } _DatabaseConfiguration_default_instance_;
-class LibCoreConfigutionDefaultTypeInternal {
+class LibCoreConfigurationDefaultTypeInternal {
  public:
-  ::google::protobuf::internal::ExplicitlyConstructed<LibCoreConfigution> _instance;
-} _LibCoreConfigution_default_instance_;
+  ::google::protobuf::internal::ExplicitlyConstructed<LibCoreConfiguration> _instance;
+} _LibCoreConfiguration_default_instance_;
 }  // namespace message
 }  // namespace core
 }  // namespace ledger
@@ -45,24 +45,24 @@ static void InitDefaultsDatabaseConfiguration_core_5fconfiguration_2eproto() {
 ::google::protobuf::internal::SCCInfo<0> scc_info_DatabaseConfiguration_core_5fconfiguration_2eproto =
     {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 0, InitDefaultsDatabaseConfiguration_core_5fconfiguration_2eproto}, {}};
 
-static void InitDefaultsLibCoreConfigution_core_5fconfiguration_2eproto() {
+static void InitDefaultsLibCoreConfiguration_core_5fconfiguration_2eproto() {
   GOOGLE_PROTOBUF_VERIFY_VERSION;
 
   {
-    void* ptr = &::ledger::core::message::_LibCoreConfigution_default_instance_;
-    new (ptr) ::ledger::core::message::LibCoreConfigution();
+    void* ptr = &::ledger::core::message::_LibCoreConfiguration_default_instance_;
+    new (ptr) ::ledger::core::message::LibCoreConfiguration();
     ::google::protobuf::internal::OnShutdownDestroyMessage(ptr);
   }
-  ::ledger::core::message::LibCoreConfigution::InitAsDefaultInstance();
+  ::ledger::core::message::LibCoreConfiguration::InitAsDefaultInstance();
 }
 
-::google::protobuf::internal::SCCInfo<1> scc_info_LibCoreConfigution_core_5fconfiguration_2eproto =
-    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsLibCoreConfigution_core_5fconfiguration_2eproto}, {
+::google::protobuf::internal::SCCInfo<1> scc_info_LibCoreConfiguration_core_5fconfiguration_2eproto =
+    {{ATOMIC_VAR_INIT(::google::protobuf::internal::SCCInfoBase::kUninitialized), 1, InitDefaultsLibCoreConfiguration_core_5fconfiguration_2eproto}, {
       &scc_info_DatabaseConfiguration_core_5fconfiguration_2eproto.base,}};
 
 void InitDefaults_core_5fconfiguration_2eproto() {
   ::google::protobuf::internal::InitSCC(&scc_info_DatabaseConfiguration_core_5fconfiguration_2eproto.base);
-  ::google::protobuf::internal::InitSCC(&scc_info_LibCoreConfigution_core_5fconfiguration_2eproto.base);
+  ::google::protobuf::internal::InitSCC(&scc_info_LibCoreConfiguration_core_5fconfiguration_2eproto.base);
 }
 
 ::google::protobuf::Metadata file_level_metadata_core_5fconfiguration_2eproto[2];
@@ -79,22 +79,22 @@ const ::google::protobuf::uint32 TableStruct_core_5fconfiguration_2eproto::offse
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::DatabaseConfiguration, user_name_),
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::DatabaseConfiguration, password_),
   ~0u,  // no _has_bits_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfigution, _internal_metadata_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfiguration, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfigution, working_dir_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfigution, database_config_),
-  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfigution, enable_internal_logging_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfiguration, working_dir_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfiguration, database_config_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::LibCoreConfiguration, enable_internal_logging_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::ledger::core::message::DatabaseConfiguration)},
-  { 8, -1, sizeof(::ledger::core::message::LibCoreConfigution)},
+  { 8, -1, sizeof(::ledger::core::message::LibCoreConfiguration)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
   reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_DatabaseConfiguration_default_instance_),
-  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_LibCoreConfigution_default_instance_),
+  reinterpret_cast<const ::google::protobuf::Message*>(&::ledger::core::message::_LibCoreConfiguration_default_instance_),
 };
 
 ::google::protobuf::internal::AssignDescriptorsTable assign_descriptors_table_core_5fconfiguration_2eproto = {
@@ -107,15 +107,16 @@ const char descriptor_table_protodef_core_5fconfiguration_2eproto[] =
   "\n\030core_configuration.proto\022\023ledger.core."
   "message\"M\n\025DatabaseConfiguration\022\017\n\007db_n"
   "ame\030\001 \001(\t\022\021\n\tuser_name\030\002 \001(\t\022\020\n\010password"
-  "\030\003 \001(\t\"\217\001\n\022LibCoreConfigution\022\023\n\013working"
-  "_dir\030\001 \001(\t\022C\n\017database_config\030\002 \001(\0132*.le"
-  "dger.core.message.DatabaseConfiguration\022"
-  "\037\n\027enable_internal_logging\030\003 \001(\010b\006proto3"
+  "\030\003 \001(\t\"\221\001\n\024LibCoreConfiguration\022\023\n\013worki"
+  "ng_dir\030\001 \001(\t\022C\n\017database_config\030\002 \001(\0132*."
+  "ledger.core.message.DatabaseConfiguratio"
+  "n\022\037\n\027enable_internal_logging\030\003 \001(\010b\006prot"
+  "o3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_core_5fconfiguration_2eproto = {
   false, InitDefaults_core_5fconfiguration_2eproto, 
   descriptor_table_protodef_core_5fconfiguration_2eproto,
-  "core_configuration.proto", &assign_descriptors_table_core_5fconfiguration_2eproto, 280,
+  "core_configuration.proto", &assign_descriptors_table_core_5fconfiguration_2eproto, 282,
 };
 
 void AddDescriptors_core_5fconfiguration_2eproto() {
@@ -576,31 +577,31 @@ void DatabaseConfiguration::InternalSwap(DatabaseConfiguration* other) {
 
 // ===================================================================
 
-void LibCoreConfigution::InitAsDefaultInstance() {
-  ::ledger::core::message::_LibCoreConfigution_default_instance_._instance.get_mutable()->database_config_ = const_cast< ::ledger::core::message::DatabaseConfiguration*>(
+void LibCoreConfiguration::InitAsDefaultInstance() {
+  ::ledger::core::message::_LibCoreConfiguration_default_instance_._instance.get_mutable()->database_config_ = const_cast< ::ledger::core::message::DatabaseConfiguration*>(
       ::ledger::core::message::DatabaseConfiguration::internal_default_instance());
 }
-class LibCoreConfigution::HasBitSetters {
+class LibCoreConfiguration::HasBitSetters {
  public:
-  static const ::ledger::core::message::DatabaseConfiguration& database_config(const LibCoreConfigution* msg);
+  static const ::ledger::core::message::DatabaseConfiguration& database_config(const LibCoreConfiguration* msg);
 };
 
 const ::ledger::core::message::DatabaseConfiguration&
-LibCoreConfigution::HasBitSetters::database_config(const LibCoreConfigution* msg) {
+LibCoreConfiguration::HasBitSetters::database_config(const LibCoreConfiguration* msg) {
   return *msg->database_config_;
 }
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int LibCoreConfigution::kWorkingDirFieldNumber;
-const int LibCoreConfigution::kDatabaseConfigFieldNumber;
-const int LibCoreConfigution::kEnableInternalLoggingFieldNumber;
+const int LibCoreConfiguration::kWorkingDirFieldNumber;
+const int LibCoreConfiguration::kDatabaseConfigFieldNumber;
+const int LibCoreConfiguration::kEnableInternalLoggingFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
-LibCoreConfigution::LibCoreConfigution()
+LibCoreConfiguration::LibCoreConfiguration()
   : ::google::protobuf::Message(), _internal_metadata_(nullptr) {
   SharedCtor();
-  // @@protoc_insertion_point(constructor:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(constructor:ledger.core.message.LibCoreConfiguration)
 }
-LibCoreConfigution::LibCoreConfigution(const LibCoreConfigution& from)
+LibCoreConfiguration::LibCoreConfiguration(const LibCoreConfiguration& from)
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
@@ -614,39 +615,39 @@ LibCoreConfigution::LibCoreConfigution(const LibCoreConfigution& from)
     database_config_ = nullptr;
   }
   enable_internal_logging_ = from.enable_internal_logging_;
-  // @@protoc_insertion_point(copy_constructor:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(copy_constructor:ledger.core.message.LibCoreConfiguration)
 }
 
-void LibCoreConfigution::SharedCtor() {
+void LibCoreConfiguration::SharedCtor() {
   ::google::protobuf::internal::InitSCC(
-      &scc_info_LibCoreConfigution_core_5fconfiguration_2eproto.base);
+      &scc_info_LibCoreConfiguration_core_5fconfiguration_2eproto.base);
   working_dir_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&database_config_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&enable_internal_logging_) -
       reinterpret_cast<char*>(&database_config_)) + sizeof(enable_internal_logging_));
 }
 
-LibCoreConfigution::~LibCoreConfigution() {
-  // @@protoc_insertion_point(destructor:ledger.core.message.LibCoreConfigution)
+LibCoreConfiguration::~LibCoreConfiguration() {
+  // @@protoc_insertion_point(destructor:ledger.core.message.LibCoreConfiguration)
   SharedDtor();
 }
 
-void LibCoreConfigution::SharedDtor() {
+void LibCoreConfiguration::SharedDtor() {
   working_dir_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete database_config_;
 }
 
-void LibCoreConfigution::SetCachedSize(int size) const {
+void LibCoreConfiguration::SetCachedSize(int size) const {
   _cached_size_.Set(size);
 }
-const LibCoreConfigution& LibCoreConfigution::default_instance() {
-  ::google::protobuf::internal::InitSCC(&::scc_info_LibCoreConfigution_core_5fconfiguration_2eproto.base);
+const LibCoreConfiguration& LibCoreConfiguration::default_instance() {
+  ::google::protobuf::internal::InitSCC(&::scc_info_LibCoreConfiguration_core_5fconfiguration_2eproto.base);
   return *internal_default_instance();
 }
 
 
-void LibCoreConfigution::Clear() {
-// @@protoc_insertion_point(message_clear_start:ledger.core.message.LibCoreConfigution)
+void LibCoreConfiguration::Clear() {
+// @@protoc_insertion_point(message_clear_start:ledger.core.message.LibCoreConfiguration)
   ::google::protobuf::uint32 cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
@@ -661,9 +662,9 @@ void LibCoreConfigution::Clear() {
 }
 
 #if GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-const char* LibCoreConfigution::_InternalParse(const char* begin, const char* end, void* object,
+const char* LibCoreConfiguration::_InternalParse(const char* begin, const char* end, void* object,
                   ::google::protobuf::internal::ParseContext* ctx) {
-  auto msg = static_cast<LibCoreConfigution*>(object);
+  auto msg = static_cast<LibCoreConfiguration*>(object);
   ::google::protobuf::int32 size; (void)size;
   int depth; (void)depth;
   ::google::protobuf::uint32 tag;
@@ -678,7 +679,7 @@ const char* LibCoreConfigution::_InternalParse(const char* begin, const char* en
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.message.LibCoreConfigution.working_dir");
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.LibCoreConfiguration.working_dir");
         object = msg->mutable_working_dir();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
@@ -733,11 +734,11 @@ len_delim_till_end:
                                {parser_till_end, object}, size);
 }
 #else  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
-bool LibCoreConfigution::MergePartialFromCodedStream(
+bool LibCoreConfiguration::MergePartialFromCodedStream(
     ::google::protobuf::io::CodedInputStream* input) {
 #define DO_(EXPRESSION) if (!PROTOBUF_PREDICT_TRUE(EXPRESSION)) goto failure
   ::google::protobuf::uint32 tag;
-  // @@protoc_insertion_point(parse_start:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(parse_start:ledger.core.message.LibCoreConfiguration)
   for (;;) {
     ::std::pair<::google::protobuf::uint32, bool> p = input->ReadTagWithCutoffNoLastTag(127u);
     tag = p.first;
@@ -751,7 +752,7 @@ bool LibCoreConfigution::MergePartialFromCodedStream(
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->working_dir().data(), static_cast<int>(this->working_dir().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.message.LibCoreConfigution.working_dir"));
+            "ledger.core.message.LibCoreConfiguration.working_dir"));
         } else {
           goto handle_unusual;
         }
@@ -794,18 +795,18 @@ bool LibCoreConfigution::MergePartialFromCodedStream(
     }
   }
 success:
-  // @@protoc_insertion_point(parse_success:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(parse_success:ledger.core.message.LibCoreConfiguration)
   return true;
 failure:
-  // @@protoc_insertion_point(parse_failure:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(parse_failure:ledger.core.message.LibCoreConfiguration)
   return false;
 #undef DO_
 }
 #endif  // GOOGLE_PROTOBUF_ENABLE_EXPERIMENTAL_PARSER
 
-void LibCoreConfigution::SerializeWithCachedSizes(
+void LibCoreConfiguration::SerializeWithCachedSizes(
     ::google::protobuf::io::CodedOutputStream* output) const {
-  // @@protoc_insertion_point(serialize_start:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(serialize_start:ledger.core.message.LibCoreConfiguration)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -814,7 +815,7 @@ void LibCoreConfigution::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->working_dir().data(), static_cast<int>(this->working_dir().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.message.LibCoreConfigution.working_dir");
+      "ledger.core.message.LibCoreConfiguration.working_dir");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       1, this->working_dir(), output);
   }
@@ -834,12 +835,12 @@ void LibCoreConfigution::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
   }
-  // @@protoc_insertion_point(serialize_end:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(serialize_end:ledger.core.message.LibCoreConfiguration)
 }
 
-::google::protobuf::uint8* LibCoreConfigution::InternalSerializeWithCachedSizesToArray(
+::google::protobuf::uint8* LibCoreConfiguration::InternalSerializeWithCachedSizesToArray(
     ::google::protobuf::uint8* target) const {
-  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(serialize_to_array_start:ledger.core.message.LibCoreConfiguration)
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
@@ -848,7 +849,7 @@ void LibCoreConfigution::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->working_dir().data(), static_cast<int>(this->working_dir().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.message.LibCoreConfigution.working_dir");
+      "ledger.core.message.LibCoreConfiguration.working_dir");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         1, this->working_dir(), target);
@@ -870,12 +871,12 @@ void LibCoreConfigution::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
   }
-  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(serialize_to_array_end:ledger.core.message.LibCoreConfiguration)
   return target;
 }
 
-size_t LibCoreConfigution::ByteSizeLong() const {
-// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.LibCoreConfigution)
+size_t LibCoreConfiguration::ByteSizeLong() const {
+// @@protoc_insertion_point(message_byte_size_start:ledger.core.message.LibCoreConfiguration)
   size_t total_size = 0;
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -911,23 +912,23 @@ size_t LibCoreConfigution::ByteSizeLong() const {
   return total_size;
 }
 
-void LibCoreConfigution::MergeFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.LibCoreConfigution)
+void LibCoreConfiguration::MergeFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_merge_from_start:ledger.core.message.LibCoreConfiguration)
   GOOGLE_DCHECK_NE(&from, this);
-  const LibCoreConfigution* source =
-      ::google::protobuf::DynamicCastToGenerated<LibCoreConfigution>(
+  const LibCoreConfiguration* source =
+      ::google::protobuf::DynamicCastToGenerated<LibCoreConfiguration>(
           &from);
   if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(generalized_merge_from_cast_fail:ledger.core.message.LibCoreConfiguration)
     ::google::protobuf::internal::ReflectionOps::Merge(from, this);
   } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.LibCoreConfigution)
+  // @@protoc_insertion_point(generalized_merge_from_cast_success:ledger.core.message.LibCoreConfiguration)
     MergeFrom(*source);
   }
 }
 
-void LibCoreConfigution::MergeFrom(const LibCoreConfigution& from) {
-// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.LibCoreConfigution)
+void LibCoreConfiguration::MergeFrom(const LibCoreConfiguration& from) {
+// @@protoc_insertion_point(class_specific_merge_from_start:ledger.core.message.LibCoreConfiguration)
   GOOGLE_DCHECK_NE(&from, this);
   _internal_metadata_.MergeFrom(from._internal_metadata_);
   ::google::protobuf::uint32 cached_has_bits = 0;
@@ -945,29 +946,29 @@ void LibCoreConfigution::MergeFrom(const LibCoreConfigution& from) {
   }
 }
 
-void LibCoreConfigution::CopyFrom(const ::google::protobuf::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.LibCoreConfigution)
+void LibCoreConfiguration::CopyFrom(const ::google::protobuf::Message& from) {
+// @@protoc_insertion_point(generalized_copy_from_start:ledger.core.message.LibCoreConfiguration)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-void LibCoreConfigution::CopyFrom(const LibCoreConfigution& from) {
-// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.LibCoreConfigution)
+void LibCoreConfiguration::CopyFrom(const LibCoreConfiguration& from) {
+// @@protoc_insertion_point(class_specific_copy_from_start:ledger.core.message.LibCoreConfiguration)
   if (&from == this) return;
   Clear();
   MergeFrom(from);
 }
 
-bool LibCoreConfigution::IsInitialized() const {
+bool LibCoreConfiguration::IsInitialized() const {
   return true;
 }
 
-void LibCoreConfigution::Swap(LibCoreConfigution* other) {
+void LibCoreConfiguration::Swap(LibCoreConfiguration* other) {
   if (other == this) return;
   InternalSwap(other);
 }
-void LibCoreConfigution::InternalSwap(LibCoreConfigution* other) {
+void LibCoreConfiguration::InternalSwap(LibCoreConfiguration* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
   working_dir_.Swap(&other->working_dir_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
@@ -976,7 +977,7 @@ void LibCoreConfigution::InternalSwap(LibCoreConfigution* other) {
   swap(enable_internal_logging_, other->enable_internal_logging_);
 }
 
-::google::protobuf::Metadata LibCoreConfigution::GetMetadata() const {
+::google::protobuf::Metadata LibCoreConfiguration::GetMetadata() const {
   ::google::protobuf::internal::AssignDescriptors(&::assign_descriptors_table_core_5fconfiguration_2eproto);
   return ::file_level_metadata_core_5fconfiguration_2eproto[kIndexInFileMessages];
 }
@@ -991,8 +992,8 @@ namespace protobuf {
 template<> PROTOBUF_NOINLINE ::ledger::core::message::DatabaseConfiguration* Arena::CreateMaybeMessage< ::ledger::core::message::DatabaseConfiguration >(Arena* arena) {
   return Arena::CreateInternal< ::ledger::core::message::DatabaseConfiguration >(arena);
 }
-template<> PROTOBUF_NOINLINE ::ledger::core::message::LibCoreConfigution* Arena::CreateMaybeMessage< ::ledger::core::message::LibCoreConfigution >(Arena* arena) {
-  return Arena::CreateInternal< ::ledger::core::message::LibCoreConfigution >(arena);
+template<> PROTOBUF_NOINLINE ::ledger::core::message::LibCoreConfiguration* Arena::CreateMaybeMessage< ::ledger::core::message::LibCoreConfiguration >(Arena* arena) {
+  return Arena::CreateInternal< ::ledger::core::message::LibCoreConfiguration >(arena);
 }
 }  // namespace protobuf
 }  // namespace google

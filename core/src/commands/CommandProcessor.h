@@ -13,6 +13,10 @@ namespace ledger {
 
         class AsioExecutionContext;
         class BitcoinLikeCommandProcessor;
+        class LogPrinter;
+        class PathResolver;
+        class ThreadDispatcher;
+        class WrapperHttpClient;
         
         class LibCoreCommands {
         public:
@@ -22,6 +26,10 @@ namespace ledger {
         private:
             std::shared_ptr<AsioExecutionContext> _executionContext;
             std::once_flag _startExecutionContext;
+            std::shared_ptr<WrapperHttpClient> _httpClient;
+            std::shared_ptr<PathResolver> _pathResolver;
+            std::shared_ptr<ThreadDispatcher> _threadDispathcher;
+            std::shared_ptr<LogPrinter> _logPrinter;
             std::unique_ptr<BitcoinLikeCommandProcessor> _bitcoinLikeProcessor;
             std::shared_ptr<WalletPool> _walletPool;
         private:
@@ -43,4 +51,3 @@ namespace ledger {
         }
     }
 }
-

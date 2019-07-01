@@ -81,6 +81,9 @@ namespace core {
         if (req.config().keychain_engine() == KeychainEngine::BIP49_P2SH) {
             walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
         }
+        else if (req.config().keychain_engine() == KeychainEngine::BIP173_P2WSH){
+            walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WSH);
+        }
         else {
             walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP32_P2PKH);
         }
@@ -95,8 +98,11 @@ namespace core {
             .map<CreateAccountResponse>(_walletPool->getContext(), [this](const std::shared_ptr<api::Account> & acc) {
                 CreateAccountResponse resp;
                 resp.mutable_created_account()->set_index(acc->getIndex());
-                resp.mutable_created_account()->set_uid("change_me");
-                _accounts["change_me"] = acc;
+                std::string uid("change_me");
+                resp.mutable_created_account()->set_uid(uid);
+                _accounts[uid] = acc;
+                std::string x = resp.SerializeAsString();
+                std::cout << x << std::endl;
                 return resp;
             });
     }
@@ -179,6 +185,7 @@ namespace core {
                 GetBalanceResponse resp;
                 message::common::Amount* amnt = resp.mutable_amount();
                 amnt->set_value(amount);
+                std::string x = resp.SerializeAsString();
                 res->complete(resp);
             },
             [res](const api::Error& err) {
