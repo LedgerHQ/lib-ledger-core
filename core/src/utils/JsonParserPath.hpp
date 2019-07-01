@@ -34,34 +34,66 @@
 
 #include <string>
 #include <list>
-#include <variant>
+#include <boost/variant.hpp>
 
 namespace ledger {
     namespace core {
 
-        enum class JsonParserPathNodeType {ARRAY, OBJECT};
+        enum class JsonParserPathNodeType {OBJECT, ARRAY, VALUE};
 
-        //using JsonParserPathNode = std::variant<int /* array index */, std::string /* */>;
+        struct JsonParserPathValue {};
 
         struct JsonParserPathNode {
             JsonParserPathNodeType type;
-            std::string key;
-            int index;
+            boost::variant<int /* index in array */, std::string /* key in object */> content;
 
+            const std::string& key() const {
+                return boost::get<std::string>(content);
+            }
+
+            int index() const {
+                return boost::get<int>(content);
+            }
+
+            JsonParserPathNode(JsonParserPathNodeType t) : type(t) {}
+            JsonParserPathNode(JsonParserPathNodeType t, int index) : type(t), content(index) {}
+            JsonParserPathNode(JsonParserPathNodeType t, std::string key) : type(t), content(key) {}
         };
 
+        enum class JsonParserPathMatcherFilter {WILDCARD, EXACT};
+
+        struct JsonParserPathMatcherElement {
+            JsonParserPathMatcherFilter filter;
+            JsonParserPathNode node;
+
+            JsonParserPathMatcherElement(
+                    JsonParserPathMatcherFilter f,
+                    const JsonParserPathNode& n) : filter(f), node(n) {};
+        };
+
+        class JsonParserPathMatcher {
+        public:
+            JsonParserPathMatcher(const std::string& filter);
+            const std::list<JsonParserPathMatcherElement>& getElements() const;
+            std::string toString() const;
+        private:
+            std::list<JsonParserPathMatcherElement> _elements;
+        };
+
+
         class JsonParserPath {
+        public:
             JsonParserPath();
             /**
              * Matches the current path to a given path string representation.
-             * e.g "/my_array/-/name" { "my_array" : [ {"name": ****} }
-             * e.g "/my_array/1/name" { "my_array" : [ {***}, {"name": ****} }
+             * e.g "/my_array[]/name" { "my_array" : [ {"name": ****} }
+             * e.g "/my_array[1]/name" { "my_array" : [ {***}, {"name": ****} }
              * e.g "/foo/bar" { "foo" : {bar: ***} }
              * e.g "/foo/\*" { "foo" : {bar: ***} }
              * @param path
              * @return
              */
-            bool match(const std::string& path) const;
+            bool match(const JsonParserPathMatcher& matcher) const;
 
             /**
              * Marks the beginning of an array
@@ -79,6 +111,10 @@ namespace ledger {
              * Marks the end of an object.
              */
             void endObject();
+            /**
+             * Marks the encounter of a value
+             */
+             void value();
 
             /**
              * Record the given key.
@@ -92,7 +128,13 @@ namespace ledger {
              */
             std::string toString() const;
 
+            inline const JsonParserPathNode& getCurrent() const;
+            inline const JsonParserPathNode& getParent() const;
+
         private:
+            inline JsonParserPathNode& getCurrent();
+            inline JsonParserPathNode& getParent();
+
             std::list<JsonParserPathNode> _path;
             std::string _lastKey;
         };
