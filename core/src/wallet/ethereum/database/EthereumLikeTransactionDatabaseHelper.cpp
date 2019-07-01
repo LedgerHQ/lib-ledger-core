@@ -121,10 +121,11 @@ namespace ledger {
             auto ethTxUid = createEthereumTransactionUid(accountUid, tx.hash);
 
             if (transactionExists(sql, ethTxUid)) {
-                // UPDATE (we only update block information)
+                // UPDATE
                 if (tx.block.nonEmpty()) {
-                    sql << "UPDATE ethereum_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash",
-                            use(blockUid), use(tx.status), use(tx.hash);
+                    auto gasUsed = tx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
+                    sql << "UPDATE ethereum_transactions SET block_uid = :uid, status = :code, gas_used = :gas WHERE hash = :tx_hash",
+                            use(blockUid), use(tx.status), use(gasUsed), use(tx.hash);
                 }
                 return ethTxUid;
             } else {
