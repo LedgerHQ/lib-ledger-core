@@ -102,10 +102,10 @@ namespace ledger {
 
         template <int version, typename T>
         bool migrate2(soci::session& sql, int currentVersion) {
-            bool previousResult = migrate2<version - 1>(sql, currentVersion);
+            bool previousResult = migrate2<version - 1, T>(sql, currentVersion);
 
             if (currentVersion < version) {
-                migrate2<version>(sql);
+                migrate2<version, T>(sql);
                 sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::coinID), soci::use(version);
 
                 return true;
@@ -200,31 +200,30 @@ namespace ledger {
         ///     See <https://github.com/satoshilabs/slips/blob/master/slip-0044.md> to correctly
         ///     implement this function.
         template <int version, typename T>
-        class Migration final {
-          Migration() = default;
-          ~Migration() = default;
-
+        struct Migration final {
           /// Advance the migration system up to migrationNumber.
-          void migrate(soci::session& sql, int currentVersion) {
-              migrate2<version, T>(sql, currentVersion);
+          static void migrate(soci::session& sql, int currentVersion) {
+              Migration<version - 1, T>::migrate(sql, currentVersion);
+
+              if (currentVersion < version) {
+                  migrate2<version, T>(sql);
+                  sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::coinID), soci::use(version);
+              }
           }
 
           /// Rollback from migrationNumber.
-          void rollback(soci::session& sql, int currentVersion) {
+          static void rollback(soci::session& sql, int currentVersion) {
               rollback2<version, T>(sql, currentVersion);
           }
         };
 
         template <typename T>
-        class Migration<0, T> final {
-          Migration() = default;
-          ~Migration() = default;
-
-           void migrate(soci::session& sql, int currentVersion) {
+        struct Migration<0, T> final {
+           static void migrate(soci::session& sql, int currentVersion) {
                sql << "INSERT INTO __database_meta__(id, version) VALUES(:id, 0)", soci::use(T::coinID);
            }
 
-           void rollback(soci::session& sql, int currentVersion) {
+           static void rollback(soci::session& sql, int currentVersion) {
              sql << "DELETE FROM __database_meta__ where id = :id", soci::use(T::coinID);
            }
         };
@@ -242,7 +241,7 @@ namespace ledger {
 
         /// The Core tag type.
         struct CoreMigration {
-            const int coinID = -1;
+            static const int coinID = -1;
         };
 
         // migrations
