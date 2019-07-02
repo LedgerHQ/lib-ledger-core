@@ -179,8 +179,8 @@ namespace ledger {
             if (!_rSignature.empty() && !_sSignature.empty()) {
                 // Get rid of leading null bytes
                 txList.append(_vSignature);
-                txList.append(BigInt(_rSignature, false).toHexString());
-                txList.append(BigInt(_sSignature, false).toHexString());
+                txList.append(hex::toByteArray(BigInt(_rSignature, false).toHexString()));
+                txList.append(hex::toByteArray(BigInt(_sSignature, false).toHexString()));
             } else {
                 txList.append(hex::toByteArray(_currency.ethereumLikeNetworkParameters.value().ChainID));
                 txList.append(empty);
