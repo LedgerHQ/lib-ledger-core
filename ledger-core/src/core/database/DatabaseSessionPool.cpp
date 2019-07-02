@@ -88,7 +88,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            //migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::migrate(sql, version);
 
             tr.commit();
         }
