@@ -118,30 +118,30 @@ TEST(JsonParserPath, MatchPaths) {
     path.startObject();
     path.key("bar");
     path.value();
-    EXPECT_TRUE(path.match(m_1));
+    EXPECT_TRUE(path.root().match(m_1));
     path.key("topaz");
     path.startArray();
     path.startObject();
     path.key("rare");
     path.value();
-    EXPECT_TRUE(path.match(m_2));
+    EXPECT_TRUE(path.root().match(m_2));
     path.endObject();
     path.startObject();
     path.key("useful");
     path.value();
-    EXPECT_TRUE(path.match(m_3));
+    EXPECT_TRUE(path.root().match(m_3));
     path.endObject();
-    EXPECT_TRUE(path.match(m_4));
+    EXPECT_TRUE(path.root().match(m_4));
     path.endArray();
-    EXPECT_TRUE(path.match(m_5));
+    EXPECT_TRUE(path.root().match(m_5));
     path.key("malachite");
     path.startArray();
     path.value();
-    EXPECT_TRUE(path.match(m_6));
+    EXPECT_TRUE(path.root().match(m_6));
     path.endArray();
-    EXPECT_TRUE(path.match(m_7));
+    EXPECT_TRUE(path.root().match(m_7));
     path.endObject();
-    EXPECT_TRUE(path.match(m_8));
+    EXPECT_TRUE(path.root().match(m_8));
     path.endObject();
 
 }

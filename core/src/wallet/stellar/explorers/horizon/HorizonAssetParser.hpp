@@ -33,6 +33,7 @@
 
 #include <rapidjson/reader.h>
 #include <wallet/stellar/stellar.hpp>
+#include <utils/JsonParserPath.hpp>
 
 namespace ledger {
     namespace core {
@@ -40,7 +41,7 @@ namespace ledger {
         class HorizonAssetParser {
         public:
             typedef stellar::Asset Result;
-            HorizonAssetParser(std::string& lastKey) : _lastKey(lastKey) {};
+            HorizonAssetParser(JsonParserPathView&& path) : _path(path) {};
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -58,7 +59,7 @@ namespace ledger {
             void init(stellar::Asset *asset);
 
         private:
-            std::string& _lastKey;
+            JsonParserPathView _path;
             stellar::Asset* _asset;
         };
 

@@ -32,15 +32,15 @@
 #define HORIZON_API_PARSER_HPP
 
 #include <rapidjson/reader.h>
+#include <utils/JsonParserPath.hpp>
 
 namespace ledger {
     namespace core {
         template <class ResultType, class Parser>
         class HorizonApiParser {
         public:
-            HorizonApiParser() : _parser(_lastKey) {
+            HorizonApiParser() :_path(), _parser(_path.root()) {
                 _statusCode = 0;
-                _depth = 0;
                 _result = std::make_shared<ResultType>();
                 _parser.init(_result.get());
             }
@@ -49,66 +49,77 @@ namespace ledger {
                 _statusCode(cpy._statusCode),
                 _errorTitle(cpy._errorTitle),
                 _errorDetails(cpy._errorTitle),
-                _depth(cpy._depth),
                 _result(cpy._result),
-                _lastKey(cpy._lastKey),
-                _parser(_lastKey) {
+                _path(cpy._path),
+                _parser(_path.root()) {
                 _parser.init(_result.get());
             }
 
             bool Null() {
-               return delegate([&] () {
+                _path.value();
+                return delegate([&] () {
                    _parser.Null();
-               });
+                });
             }
 
             bool Bool(bool b) {
-               return delegate([&] () {
+                _path.value();
+                return delegate([&] () {
                     _parser.Bool(b);
-               });
+                });
             }
 
             bool Int(int i) {
+                _path.value();
                 return delegate([&] () {
                     _parser.Int(i);
                 });
             }
 
             bool Uint(unsigned i) {
+                _path.value();
                 return delegate([&] () {
                    _parser.Uint(i);
                 });
             }
 
             bool Int64(int64_t i) {
+                _path.value();
                 return delegate([&] () {
                    _parser.Int64(i);
                 });
             }
 
             bool Uint64(uint64_t i) {
+                _path.value();
                 return delegate([&] () {
                    _parser.Uint64(i);
                 });
             }
 
             bool Double(double d) {
+                _path.value();
                 return delegate([&] () {
                    _parser.Double(d);
                 });
             }
 
             bool RawNumber(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) {
+                _path.value();
                 return delegate([&] () {
                     _parser.RawNumber(str, length, copy);
                 });
             }
 
             bool String(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) {
-                if (_depth == 1 && isFailure() && _lastKey == "title") {
+                static JsonParserPathMatcher titlePath("/title");
+                static JsonParserPathMatcher detailsPath("/details");
+                _path.value();
+
+                if (_path.view(0).match(titlePath)) {
                     _errorTitle = std::string(str, length);
-                } else if (_depth == 1 && isFailure() && _lastKey == "details") {
-                    _errorTitle = std::string(str, length);
+                } else if (_path.view(0).match(detailsPath)) {
+                    _errorDetails = std::string(str, length);
                 }
                 return delegate([&] () {
                     _parser.String(str, length, copy);
@@ -116,14 +127,14 @@ namespace ledger {
             }
 
             bool StartObject() {
-                _depth += 1;
+                _path.startObject();
                 return delegate([&] () {
                     _parser.StartObject();
                 });
             }
 
             bool Key(const rapidjson::Reader::Ch* str, rapidjson::SizeType length, bool copy) {
-                _lastKey = std::string(str, length);
+                _path.key(std::string(str, length));
                 delegate([&] () {
                     _parser.Key(str, length, copy);
                 });
@@ -131,7 +142,7 @@ namespace ledger {
             }
 
             bool EndObject(rapidjson::SizeType memberCount) {
-                _depth -= 1;
+                _path.endObject();
                 delegate([&] () {
                     _parser.EndObject(memberCount);
                 });
@@ -139,7 +150,7 @@ namespace ledger {
             }
 
             bool StartArray() {
-                _depth += 1;
+                _path.startArray();
                 delegate([&] () {
                     _parser.StartArray();
                 });
@@ -147,7 +158,7 @@ namespace ledger {
             }
 
             bool EndArray(rapidjson::SizeType elementCount) {
-                _depth -= 1;
+                _path.endArray();
                 delegate([&] () {
                     _parser.EndArray(elementCount);
                 });
@@ -192,11 +203,10 @@ namespace ledger {
         private:
             Parser _parser;
             std::shared_ptr<ResultType> _result;
-            uint32_t _depth;
             uint32_t _statusCode;
             std::string _errorTitle;
             std::string _errorDetails;
-            std::string _lastKey;
+            JsonParserPath _path;
             Option<Exception> _exception;
         };
     }

@@ -80,10 +80,11 @@ namespace ledger {
             std::list<JsonParserPathMatcherElement> _elements;
         };
 
+        class JsonParserPath;
 
-        class JsonParserPath {
+        class JsonParserPathView {
         public:
-            JsonParserPath();
+
             /**
              * Matches the current path to a given path string representation.
              * e.g "/my_array[]/name" { "my_array" : [ {"name": ****} }
@@ -92,8 +93,23 @@ namespace ledger {
              * e.g "/foo/\*" { "foo" : {bar: ***} }
              * @param path
              * @return
-             */
-            bool match(const JsonParserPathMatcher& matcher) const;
+            */
+            bool match(const JsonParserPathMatcher &matcher) const;
+
+            JsonParserPathView view(int depth);
+
+        private:
+            JsonParserPathView(JsonParserPath* owner, int depth) : _owner(owner), _depth(depth) {};
+
+            JsonParserPath* _owner;
+            int _depth;
+            friend class JsonParserPath;
+        };
+
+        class JsonParserPath {
+        public:
+            JsonParserPath();
+
 
             /**
              * Marks the beginning of an array
@@ -131,13 +147,23 @@ namespace ledger {
             inline const JsonParserPathNode& getCurrent() const;
             inline const JsonParserPathNode& getParent() const;
 
+            JsonParserPathView view();
+            JsonParserPathView view(int depth);
+            JsonParserPathView root() { return view(0); };
+
         private:
+            bool match(const JsonParserPathMatcher& matcher, int depth) const;
+            friend bool JsonParserPathView::match(const JsonParserPathMatcher &) const;
+
             inline JsonParserPathNode& getCurrent();
             inline JsonParserPathNode& getParent();
 
             std::list<JsonParserPathNode> _path;
+            std::vector<JsonParserPathView> _views;
             std::string _lastKey;
         };
+
+
     }
 }
 

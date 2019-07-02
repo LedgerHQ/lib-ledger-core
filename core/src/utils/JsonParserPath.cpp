@@ -30,6 +30,7 @@
  */
 
 #include "JsonParserPath.hpp"
+#include <utils/Exception.hpp>
 #include <sstream>
 #include <string>
 #include <boost/lexical_cast.hpp>
@@ -95,11 +96,11 @@ namespace ledger {
             return ss.str();
         }
 
-        bool JsonParserPath::match(const JsonParserPathMatcher& matcher) const {
-            if (_path.size() != matcher.getElements().size())
+        bool JsonParserPath::match(const JsonParserPathMatcher& matcher, int depth) const {
+            if ((_path.size() - depth) != matcher.getElements().size())
                 return false;
-
             auto node = _path.begin();
+            std::advance(node, depth);
             const JsonParserPathNode *parent = nullptr;
             auto element = matcher.getElements().begin();
             while (node != _path.end()) {
@@ -233,5 +234,29 @@ namespace ledger {
             }
             return ss.str();
         }
+
+        bool JsonParserPathView::match(const JsonParserPathMatcher &matcher) const {
+            return _owner->match(matcher, _depth);
+        }
+
+        JsonParserPathView JsonParserPathView::view(int depth) {
+            return JsonParserPathView(_owner, _depth + 1);
+        }
+
+        JsonParserPathView JsonParserPath::view() {
+            if (_path.empty())  {
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Attempt to create a view at an invalid range");
+            }
+            return {this, (int)_path.size() - 1};
+        }
+
+        JsonParserPathView JsonParserPath::view(int depth) {
+            if (depth < 0 || depth >= _path.size())  {
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Attempt to create a view at an invalid range");
+            }
+            return  {this, 0};
+        }
+
+
     }
 }
