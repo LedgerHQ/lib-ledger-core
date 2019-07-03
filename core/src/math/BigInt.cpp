@@ -34,7 +34,7 @@
 #include <iostream>
 #include <algorithm>
 #include "../collections/collections.hpp"
-
+#include <boost/multiprecision/cpp_dec_float.hpp>
 
 #include <cstdlib>
 
@@ -411,5 +411,12 @@ namespace ledger {
 
             return std::all_of(it, end, [](char c) { return isdigit(c); });
         }
+
+        BigInt BigInt::fromFloatString(const std::string &str, int scaleFactor) {
+            boost::multiprecision::cpp_dec_float_50 f(str);
+            
+            return BigInt();
+        }
+
     }
 }

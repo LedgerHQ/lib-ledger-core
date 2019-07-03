@@ -100,6 +100,14 @@ namespace ledger {
 
             static LIBCORE_EXPORT BigInt fromString(const std::string& str);
 
+            /**
+             * Creates a new BigInt from the given floating number string.
+             * @param str The number to decode
+             * @param scaleFactor The power of ten to apply on float representation to get the integer version.
+             * @return
+             */
+            static LIBCORE_EXPORT BigInt fromFloatString(const std::string& str, int scaleFactor);
+
             template <typename T>
             static BigInt fromScalar(T value) {
               BigInt result;

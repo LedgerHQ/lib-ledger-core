@@ -50,7 +50,7 @@ namespace ledger {
             StellarLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                           const std::shared_ptr<HttpClient>& httpClient
                                           ) : DedicatedContext(context), http(httpClient) {};
-            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string& assetCode) = 0;
+            virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string& assetCode, const std::string& assetIssuer) = 0;
             virtual Future<Option<std::shared_ptr<stellar::Ledger>>> getLastLedger() = 0;
             virtual FuturePtr<BigInt> getRecommendedFees() = 0;
             virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string& address, const Option<std::string>& cursor) = 0;

@@ -84,7 +84,7 @@ namespace ledger {
 
         class JsonParserPathView {
         public:
-
+            JsonParserPathView() {};
             /**
              * Matches the current path to a given path string representation.
              * e.g "/my_array[]/name" { "my_array" : [ {"name": ****} }
@@ -97,6 +97,7 @@ namespace ledger {
             bool match(const JsonParserPathMatcher &matcher) const;
 
             JsonParserPathView view(int depth);
+            std::string toString() const;
 
         private:
             JsonParserPathView(JsonParserPath* owner, int depth) : _owner(owner), _depth(depth) {};
@@ -143,6 +144,11 @@ namespace ledger {
              * @return
              */
             std::string toString() const;
+            /**
+            * Transform this object ot its string representation.
+            * @return
+            */
+            std::string toString(int depth) const;
 
             inline const JsonParserPathNode& getCurrent() const;
             inline const JsonParserPathNode& getParent() const;
@@ -158,7 +164,6 @@ namespace ledger {
             inline JsonParserPathNode& getParent();
 
             std::list<JsonParserPathNode> _path;
-            std::vector<JsonParserPathView> _views;
             std::string _lastKey;
         };
 

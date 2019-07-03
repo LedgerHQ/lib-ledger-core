@@ -41,7 +41,6 @@ namespace ledger {
     namespace core {
         class HorizonAssetsParser {
         public:
-            HorizonAssetsParser(JsonParserPathView&& path) : _path(path), _assetParser(path.view(2)) {};
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -56,12 +55,13 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            void init(std::vector<stellar::Asset> *assets);
+            void init(std::vector<std::shared_ptr<stellar::Asset>> *assets);
+            void setPathView(const JsonParserPathView& path);
 
         private:
             JsonParserPathView _path;
             HorizonAssetParser _assetParser;
-            std::vector<stellar::Asset>* _assets;
+            std::vector<std::shared_ptr<stellar::Asset>>* _assets;
 
         };
     }

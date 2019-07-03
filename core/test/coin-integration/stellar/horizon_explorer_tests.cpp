@@ -29,3 +29,24 @@
  *
  */
 
+#include "StellarFixture.hpp"
+#include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
+#include <collections/DynamicObject.hpp>
+
+static const auto BASE_URL = "https://horizon-testnet.stellar.org";
+
+TEST_F(StellarFixture, GetAsset) {
+    auto pool = newPool();
+    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+            pool->getHttpClient(BASE_URL),
+            std::make_shared<DynamicObject>()
+            );
+    auto asset = wait(explorer->getAsset("YY2", "GDDZFMRDTCIN5FS77SA6MHM5YUC6ZNKHFONPBSPZPIAGTXH7SMBGY4CH")).getValue();
+    EXPECT_EQ(asset->type, "credit_alphanum4");
+    EXPECT_EQ(asset->flags.authImmutable, false);
+    EXPECT_EQ(asset->flags.authRequired, false);
+    EXPECT_EQ(asset->flags.authRevocable, false);
+    EXPECT_EQ(asset->code, "YY2");
+    EXPECT_EQ(asset->issuer, "GDDZFMRDTCIN5FS77SA6MHM5YUC6ZNKHFONPBSPZPIAGTXH7SMBGY4CH");
+}

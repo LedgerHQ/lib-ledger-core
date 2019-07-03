@@ -72,10 +72,14 @@ namespace ledger {
             _lastKey = key;
         }
 
-        std::string JsonParserPath::toString() const {
+        std::string JsonParserPath::toString(int depth) const {
             std::stringstream ss;
             const JsonParserPathNode *parent = nullptr;
+            auto iterations = 0;
             for (const auto& node : _path) {
+                iterations += 1;
+                if (iterations - 1 < depth)
+                    continue;
                 switch (node.type) {
                     case JsonParserPathNodeType::OBJECT:
                         ss << "/";
@@ -94,6 +98,10 @@ namespace ledger {
                 parent = &node;
             }
             return ss.str();
+        }
+
+        std::string JsonParserPath::toString() const {
+            return toString(0);
         }
 
         bool JsonParserPath::match(const JsonParserPathMatcher& matcher, int depth) const {
@@ -249,7 +257,11 @@ namespace ledger {
         }
 
         JsonParserPathView JsonParserPathView::view(int depth) {
-            return JsonParserPathView(_owner, _depth + 1);
+            return JsonParserPathView(_owner, depth + _depth);
+        }
+
+        std::string JsonParserPathView::toString() const {
+            return _owner->toString(_depth);
         }
 
         JsonParserPathView JsonParserPath::view() {
@@ -260,10 +272,7 @@ namespace ledger {
         }
 
         JsonParserPathView JsonParserPath::view(int depth) {
-            if (depth < 0 || depth >= _path.size())  {
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Attempt to create a view at an invalid range");
-            }
-            return  {this, 0};
+            return  {this, depth};
         }
 
 

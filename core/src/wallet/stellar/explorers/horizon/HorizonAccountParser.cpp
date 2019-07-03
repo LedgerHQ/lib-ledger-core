@@ -1,9 +1,9 @@
 /*
  *
- * BigDecimal
+ * HorizonAccountParser.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri.
+ * Created by Pierre Pollastri on 04/07/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,15 +29,12 @@
  *
  */
 
-#ifndef LEDGER_CORE_BIGDECIMAL_HPP
-#define LEDGER_CORE_BIGDECIMAL_HPP
+#include "HorizonAccountParser.hpp"
 
 namespace ledger {
     namespace core {
-        class BigDecimal {
 
-        };
+
+
     }
 }
-
-#endif // LEDGER_CORE_BIGDECIMAL_HPP

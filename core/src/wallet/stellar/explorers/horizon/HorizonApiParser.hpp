@@ -39,10 +39,13 @@ namespace ledger {
         template <class ResultType, class Parser>
         class HorizonApiParser {
         public:
-            HorizonApiParser() :_path(), _parser(_path.root()) {
+            using Result = ResultType;
+
+            HorizonApiParser() : _contentMatcher("/_embedded") {
                 _statusCode = 0;
                 _result = std::make_shared<ResultType>();
                 _parser.init(_result.get());
+                _parser.setPathView(_path.view(2));
             }
 
             HorizonApiParser(const HorizonApiParser<ResultType, Parser>& cpy) :
@@ -51,8 +54,9 @@ namespace ledger {
                 _errorDetails(cpy._errorTitle),
                 _result(cpy._result),
                 _path(cpy._path),
-                _parser(_path.root()) {
+                _contentMatcher("/_embedded") {
                 _parser.init(_result.get());
+                _parser.setPathView(_path.view(2));
             }
 
             bool Null() {
@@ -192,7 +196,7 @@ namespace ledger {
 
         private:
             bool delegate(std::function<void ()>&& fn) {
-                if (!isFailure()) {
+                if (!isFailure() && _path.match(_contentMatcher, 0)) {
                     _exception = Try<Unit>::from([&] () {
                         fn();
                         return unit;
@@ -202,6 +206,7 @@ namespace ledger {
             }
         private:
             Parser _parser;
+            JsonParserPathMatcher _contentMatcher;
             std::shared_ptr<ResultType> _result;
             uint32_t _statusCode;
             std::string _errorTitle;

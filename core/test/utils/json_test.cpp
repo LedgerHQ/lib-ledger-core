@@ -149,3 +149,32 @@ TEST(JsonParserPath, MatchPaths) {
     path.endObject();
 
 }
+
+TEST(JsonParserPath, MatchViews) {
+    JsonParserPathMatcher m_1("/topaz[*]/rare");
+    JsonParserPathMatcher m_2("/useful");
+
+
+    JsonParserPath path;
+
+    // { "foo" : { "bar": 12, "topaz": [ {"rare" : 4}, {"useful" : 0 } ], "malachite": [ 13 ] } }
+    path.startObject();
+    path.key("foo");
+    path.startObject();
+    path.key("bar");
+    path.value();
+    path.key("topaz");
+    path.startArray();
+    path.startObject();
+    path.key("rare");
+    path.value();
+    EXPECT_TRUE(path.view(2).match(m_1));
+    path.endObject();
+    path.startObject();
+    path.key("useful");
+    path.value();
+    EXPECT_TRUE(path.view(6).match(m_2));
+    path.endObject();
+    path.endArray();
+    path.endObject();
+}

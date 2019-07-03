@@ -31,67 +31,87 @@
 
 #include "HorizonAssetsParser.hpp"
 
+using namespace ledger::core;
+
+const static JsonParserPathMatcher ASSET_MATCHER("/records[*]/?");
+const static JsonParserPathMatcher ASSET_ARRAY_MATCHER("/records[*]/");
+
+#define DELEGATE(x, ...) \
+    if (_path.match(ASSET_MATCHER)) { \
+    _assetParser.x(__VA_ARGS__); \
+    } \
+    return true; \
+
 namespace ledger {
     namespace core {
 
         bool HorizonAssetsParser::Null() {
-            return true;
+            DELEGATE(Null)
         }
 
         bool HorizonAssetsParser::Bool(bool b) {
-            return true;
+            DELEGATE(Bool, b)
         }
 
         bool HorizonAssetsParser::Int(int i) {
-            return true;
+            DELEGATE(Int, i)
         }
 
         bool HorizonAssetsParser::Uint(unsigned i) {
-            return true;
+            DELEGATE(Uint, i)
         }
 
         bool HorizonAssetsParser::Int64(int64_t i) {
-            return true;
+            DELEGATE(Int64, i)
         }
 
         bool HorizonAssetsParser::Uint64(uint64_t i) {
-            return true;
+            DELEGATE(Uint64, i)
         }
 
         bool HorizonAssetsParser::Double(double d) {
-            return true;
+            DELEGATE(Double, d)
         }
 
         bool HorizonAssetsParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            return true;
+            DELEGATE(RawNumber, str, length, copy)
         }
 
         bool HorizonAssetsParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            return true;
+            DELEGATE(String, str, length, copy)
         }
 
         bool HorizonAssetsParser::StartObject() {
-            return true;
+            if (_path.match(ASSET_ARRAY_MATCHER)) {
+                _assets->emplace_back(std::make_shared<stellar::Asset>());
+                _assetParser.init(_assets->back().get());
+            }
+            DELEGATE(StartObject)
         }
 
         bool HorizonAssetsParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            return true;
+            DELEGATE(Key, str, length, copy)
         }
 
         bool HorizonAssetsParser::EndObject(rapidjson::SizeType memberCount) {
-            return true;
+            DELEGATE(EndObject, memberCount)
         }
 
         bool HorizonAssetsParser::StartArray() {
-            return true;
+            DELEGATE(StartArray)
         }
 
         bool HorizonAssetsParser::EndArray(rapidjson::SizeType elementCount) {
-            return true;
+            DELEGATE(EndArray, elementCount)
         }
 
-        void HorizonAssetsParser::init(std::vector<stellar::Asset> *assets) {
+        void HorizonAssetsParser::init(std::vector<std::shared_ptr<stellar::Asset>> *assets) {
             _assets = assets;
+        }
+
+        void HorizonAssetsParser::setPathView(const JsonParserPathView &path) {
+            _path = path;
+            _assetParser.setPathView(_path.view(4));
         }
     }
 }

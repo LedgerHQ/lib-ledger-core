@@ -53,10 +53,10 @@ namespace ledger {
             };
 
             struct Balance {
-                BigDecimal value;
-                Option<BigDecimal> limit;
-                Option<BigDecimal> buyingLiabilities;
-                Option<BigDecimal> sellingLiabilities;
+                BigInt value;
+                Option<BigInt> limit;
+                Option<BigInt> buyingLiabilities;
+                Option<BigInt> sellingLiabilities;
                 std::string assetType;
                 uint64_t lastModifiedLedger;
                 Option<std::string> assetCode;
@@ -97,9 +97,7 @@ namespace ledger {
                 std::string type;
                 std::string code;
                 std::string issuer;
-                BigDecimal amountIssued;
                 Flags flags;
-                std::string pagingToken;
             };
 
             enum class OperationType : uint8_t  {CREATE_ACCOUNT = 0, PAYMENT = 1, PATH_PAYMENT = 2, MANAGER_OFFER = 3, CREATE_PASSIVE_OFFER = 4, SET_OPTIONS = 5,
@@ -121,7 +119,7 @@ namespace ledger {
                 std::chrono::system_clock::time_point createdAt;
                 std::string sourceAccount;
                 std::string sourceAccountSequence;
-                BigDecimal feePaid;
+                BigInt feePaid;
                 std::vector<Operation> operations;
                 XDRData  envelope;
                 XDRData result;

@@ -39,3 +39,4 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
 
     account->synchronize();
 }
+
