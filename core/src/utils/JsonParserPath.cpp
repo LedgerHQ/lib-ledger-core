@@ -97,13 +97,15 @@ namespace ledger {
         }
 
         bool JsonParserPath::match(const JsonParserPathMatcher& matcher, int depth) const {
-            if ((_path.size() - depth) != matcher.getElements().size())
+            if ((_path.size() - depth) < matcher.getElements().size())
                 return false;
             auto node = _path.begin();
             std::advance(node, depth);
             const JsonParserPathNode *parent = nullptr;
             auto element = matcher.getElements().begin();
             while (node != _path.end()) {
+                if (element->filter == JsonParserPathMatcherFilter::MATCH_ALL)
+                    return true;
                 if (node->type != element->node.type)
                     return false;
                 if (node->type == JsonParserPathNodeType::VALUE &&
@@ -178,7 +180,7 @@ namespace ledger {
                             JsonParserPathMatcherFilter::EXACT,
                             JsonParserPathNode(JsonParserPathNodeType::VALUE, i)
                     ));
-                } else {
+                } else if (s != "?") {
                     _elements.emplace_back(JsonParserPathMatcherElement(
                             JsonParserPathMatcherFilter::EXACT,
                             JsonParserPathNode(JsonParserPathNodeType::VALUE, s)
@@ -187,7 +189,14 @@ namespace ledger {
                 offset = 0;
             };
             for (auto& c : filter) {
-                if (c == '/') {
+                if (_elements.size() > 0 && _elements.back().filter == JsonParserPathMatcherFilter::MATCH_ALL)
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "? digit can only be put at the end of the filter string");
+                if (c == '?') {
+                    _elements.emplace_back(JsonParserPathMatcherElement(
+                            JsonParserPathMatcherFilter::MATCH_ALL,
+                            JsonParserPathNode(JsonParserPathNodeType::VALUE)
+                    ));
+                } else if (c == '/') {
                     emplace_value();
                     _elements.emplace_back(JsonParserPathMatcherElement(
                             JsonParserPathMatcherFilter::EXACT,

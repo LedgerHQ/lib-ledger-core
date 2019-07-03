@@ -101,7 +101,9 @@ TEST(JsonParserPath, ToStringObjectsAndArray) {
 TEST(JsonParserPath, MatchPaths) {
     JsonParserPathMatcher m_1("/foo/bar");
     JsonParserPathMatcher m_2("/foo/topaz[*]/rare");
+    JsonParserPathMatcher m_2_bis("/foo/topaz?");
     JsonParserPathMatcher m_3("/foo/topaz[1]/useful");
+    JsonParserPathMatcher m_3_wrong("/foo/topas[1]/useful");
     JsonParserPathMatcher m_4("/foo/topaz[1]");
     JsonParserPathMatcher m_5("/foo/*");
     JsonParserPathMatcher m_6("/*/malachite[*]");
@@ -125,11 +127,13 @@ TEST(JsonParserPath, MatchPaths) {
     path.key("rare");
     path.value();
     EXPECT_TRUE(path.root().match(m_2));
+    EXPECT_TRUE(path.root().match(m_2_bis));
     path.endObject();
     path.startObject();
     path.key("useful");
     path.value();
     EXPECT_TRUE(path.root().match(m_3));
+    EXPECT_FALSE(path.root().match(m_3_wrong));
     path.endObject();
     EXPECT_TRUE(path.root().match(m_4));
     path.endArray();

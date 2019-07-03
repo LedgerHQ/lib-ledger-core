@@ -60,7 +60,7 @@ namespace ledger {
             JsonParserPathNode(JsonParserPathNodeType t, std::string key) : type(t), content(key) {}
         };
 
-        enum class JsonParserPathMatcherFilter {WILDCARD, EXACT};
+        enum class JsonParserPathMatcherFilter {WILDCARD, EXACT, MATCH_ALL};
 
         struct JsonParserPathMatcherElement {
             JsonParserPathMatcherFilter filter;
@@ -151,10 +151,9 @@ namespace ledger {
             JsonParserPathView view(int depth);
             JsonParserPathView root() { return view(0); };
 
-        private:
             bool match(const JsonParserPathMatcher& matcher, int depth) const;
-            friend bool JsonParserPathView::match(const JsonParserPathMatcher &) const;
 
+        private:
             inline JsonParserPathNode& getCurrent();
             inline JsonParserPathNode& getParent();
 
