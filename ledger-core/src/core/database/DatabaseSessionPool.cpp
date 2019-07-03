@@ -99,6 +99,8 @@ namespace ledger {
 
             soci::transaction tr(sql);
             rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::rollback(sql, version);
+
             tr.commit();
         }
 

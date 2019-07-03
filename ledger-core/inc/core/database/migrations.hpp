@@ -165,29 +165,6 @@ namespace ledger {
         /// implementation doesn’t.
         template <int version, typename T>
         void rollback2(soci::session& sql, int currentVersion) {
-            if (currentVersion == version) {
-                // we’re in sync with the database; perform the rollback normally
-                rollback2<version, T>(sql);
-
-                if (version >= 0) {
-                    // after rolling back this migration, we won’t have anything left, so we only
-                    // update the version for > 0
-                    if (version != 0) {
-                        auto prevVersion = version - 1;
-                        sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::coinID), soci::use(prevVersion);
-                    }
-
-                    rollback2<version - 1, T>(sql, currentVersion - 1);
-                }
-            } else if (currentVersion < version) {
-                // we’re trying to rollback a migration that hasn’t been applied; try the previous
-                // rollback
-                rollback2<version - 1, T>(sql, currentVersion);
-            } else {
-                // we’re trying to rollback a migration but we have missed some others; apply the
-                // next ones first
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Missing rollback migrations: {} to {}", version + 1, currentVersion);
-            }
         }
 
         /// Migration system.
@@ -213,7 +190,29 @@ namespace ledger {
 
           /// Rollback from migrationNumber.
           static void rollback(soci::session& sql, int currentVersion) {
-              rollback2<version, T>(sql, currentVersion);
+              if (currentVersion == version) {
+                  // we’re in sync with the database; perform the rollback normally
+                  rollback2<version, T>(sql);
+
+                  if (version >= 0) {
+                      // after rolling back this migration, we won’t have anything left, so we only
+                      // update the version for > 0
+                      if (version != 0) {
+                          auto prevVersion = version - 1;
+                          sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::coinID), soci::use(prevVersion);
+                      }
+
+                      Migration<version - 1, T>::rollback(sql, currentVersion - 1);
+                  }
+              } else if (currentVersion < version) {
+                  // we’re trying to rollback a migration that hasn’t been applied; try the previous
+                  // rollback
+                  Migration<version - 1, T>::rollback(sql, currentVersion);
+              } else {
+                  // we’re trying to rollback a migration but we have missed some others; apply the
+                  // next ones first
+                  throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Missing rollback migrations: {} to {}", version + 1, currentVersion);
+              }
           }
         };
 
