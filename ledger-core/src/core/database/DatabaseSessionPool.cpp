@@ -88,7 +88,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::migrate(sql, version);
+            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::forward(sql, version);
 
             tr.commit();
         }
@@ -98,8 +98,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
-            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::rollback(sql, version);
+            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::backward(sql, version);
 
             tr.commit();
         }
