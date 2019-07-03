@@ -33,6 +33,8 @@
 
 namespace ledger {
     namespace core {
+        int const CoreMigration::coinID = -1;
+
         void setupMigrations(soci::session& sql) {
             sql << "CREATE TABLE __database_meta__("
                 "id INT PRIMARY KEY NOT NULL,"
