@@ -241,7 +241,7 @@ namespace ledger {
 
         /// The Core tag type.
         struct CoreMigration {
-            static const int coinID = -1;
+            static int const coinID;
         };
 
         // migrations
