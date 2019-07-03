@@ -123,5 +123,4 @@ namespace ledger {
     }
 }
 
-
 #endif //LEDGER_CORE_ABSTRACTBLOCKPARSER_H
