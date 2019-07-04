@@ -85,7 +85,7 @@ namespace ledger {
 
         void DatabaseSessionPool::performDatabaseMigrationSetup() {
             soci::session sql(getPool());
-            int version = getDatabaseMigrationVersion(sql);
+            int version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
             soci::transaction tr(sql);
             Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::forward(sql, version);
@@ -95,7 +95,7 @@ namespace ledger {
 
         void DatabaseSessionPool::performDatabaseMigrationUnsetup() {
             soci::session sql(getPool());
-            int version = getDatabaseMigrationVersion(sql);
+            int version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
             soci::transaction tr(sql);
             Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::backward(sql, version);
