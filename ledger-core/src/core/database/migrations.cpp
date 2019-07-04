@@ -46,20 +46,6 @@ namespace ledger {
             sql << "DROP TABLE __database_meta__";
         }
 
-        int getDatabaseMigrationVersion(soci::session& sql) {
-            int version = -1;
-
-            try {
-                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = 0", soci::into(version));
-                st.execute();
-                st.fetch();
-            } catch (...) {
-                // if we cannot find the version, it stays set to -1
-            }
-
-            return version;
-        }
-
         // FIXME: those migrations are commented out as they need to be migrated to their
         // ledger-core-<coin> equivalent
 

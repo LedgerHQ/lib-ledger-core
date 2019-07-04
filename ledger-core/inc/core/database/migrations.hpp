@@ -42,30 +42,11 @@ namespace ledger {
         ///
         /// The coinID trait is required on T.
         template <typename T>
-        int getDatabaseMigrationVersion2(soci::session& sql) {
+        int getDatabaseMigrationVersion(soci::session& sql) {
             int version = -1;
 
             try {
                 soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = :id", soci::use(T::coinID), soci::into(version));
-                st.execute();
-                st.fetch();
-            } catch (...) {
-                // if we cannot find the version, it stays set to -1
-            }
-
-            return version;
-        }
-
-        /// Get the current database migration version.
-        int getDatabaseMigrationVersion(soci::session& sql);
-
-        template <typename T>
-        int getDatabaseMigrationVersion2(soci::session& sql, T& migrationSystem) {
-            int version = -1;
-            auto coinID = migrationSystem.getCoinID();
-
-            try {
-                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = :coin_id", soci::use(coinID), soci::into(version));
                 st.execute();
                 st.fetch();
             } catch (...) {
