@@ -160,8 +160,9 @@ namespace ledger {
 
             if (_address.empty()) {
 
+                auto coinType = _fullScheme.getCoinType() ? _fullScheme.getCoinType() : getCurrency().bip44CoinType;
                 _localPath = getDerivationScheme()
-                        .setCoinType(getCurrency().bip44CoinType)
+                        .setCoinType(coinType)
                         .getPath().toString();
 
                 auto cacheKey = fmt::format("path:{}", _localPath);
@@ -171,13 +172,13 @@ namespace ledger {
                             .getSchemeFrom(DerivationSchemeLevel::NODE);
                     auto p = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
                             .shift(1)
-                            .setCoinType(getCurrency().bip44CoinType)
+                            .setCoinType(coinType)
                             .getPath()
                             .toString() : "";
 
                     auto localNodeScheme = getDerivationScheme()
                             .getSchemeTo(DerivationSchemeLevel::NODE)
-                            .setCoinType(getCurrency().bip44CoinType);
+                            .setCoinType(coinType);
                     // If node level is hardened we don't derive according to it since private
                     // derivation are not supported 
                     auto xpub = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());

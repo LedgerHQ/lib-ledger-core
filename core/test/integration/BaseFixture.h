@@ -79,6 +79,7 @@ extern api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO;
 extern api::AccountCreationInfo ETH_KEYS_INFO;
 extern api::AccountCreationInfo ETH_KEYS_INFO_VAULT;
 extern api::AccountCreationInfo ETH_KEYS_INFO_LIVE;
+extern api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
 extern api::AccountCreationInfo XRP_KEYS_INFO;
 extern const std::string TX_1;
 extern const std::string TX_2;
