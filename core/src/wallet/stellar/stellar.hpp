@@ -33,8 +33,8 @@
 
 #include <utils/Option.hpp>
 #include <cstdint>
-#include <math/BigDecimal.hpp>
 #include <unordered_map>
+#include <math/BigInt.h>
 #include <chrono>
 
 namespace ledger {
