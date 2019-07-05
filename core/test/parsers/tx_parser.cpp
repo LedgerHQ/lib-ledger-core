@@ -14,7 +14,7 @@ struct TestBlock {
 struct TestParser : AbstractBlockParser<TestBlock> {
     typedef TestBlock Result;
 
-    TestParser(std::string const& lastKey) : _lastKey(lastKey) {}
+    TestParser(std::string& lastKey) : _lastKey(lastKey) {}
     ~TestParser() = default;
 
     bool Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
@@ -23,7 +23,7 @@ struct TestParser : AbstractBlockParser<TestBlock> {
     }
 
 protected:
-    std::string _lastKey;
+    std::string& _lastKey;
 
     std::string& getLastKey() override {
         return _lastKey;
