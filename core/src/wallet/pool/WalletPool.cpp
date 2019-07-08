@@ -68,12 +68,12 @@ namespace ledger {
 
             // Preferences management
             _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
-                fmt::format("/{}/preferences.db", _poolName),
+                fmt::format("/{}__preferences.db", _poolName),
                 getContext(),
                 _pathResolver
             );
             _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
-                fmt::format("/{}/__preferences__.db", _poolName),
+                fmt::format("/{}__preferences__.db", _poolName),
                 getContext(),
                 _pathResolver
             );

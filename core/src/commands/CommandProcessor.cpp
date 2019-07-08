@@ -87,7 +87,7 @@ namespace ledger {
                 std::string password;
                 if (!_walletPool) {
                     _walletPool = WalletPool::newInstance(
-                        "cmd-wallet",
+                        "cmd",
                         password,
                         _httpClient,
                         nullptr,
