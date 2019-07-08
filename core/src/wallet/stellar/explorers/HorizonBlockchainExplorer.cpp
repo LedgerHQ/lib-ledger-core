@@ -34,10 +34,12 @@
 #include <wallet/stellar/explorers/horizon/HorizonApiParser.hpp>
 #include "horizon/HorizonAssetsParser.hpp"
 #include "horizon/HorizonApiParser.hpp"
+#include "horizon/HorizonAccountParser.hpp"
 
 namespace ledger {
     namespace core {
         using AssetVectorParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Asset>>, HorizonAssetsParser>;
+        using AccountParser = HorizonApiParser<stellar::Account, HorizonAccountParser, false>;
 
         HorizonBlockchainExplorer::HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                                              const std::shared_ptr<HttpClient>& http,
@@ -77,6 +79,18 @@ namespace ledger {
         Future<std::vector<std::shared_ptr<stellar::Transaction>>> HorizonBlockchainExplorer::getTransactions(const std::string& address,
                                                                   const Option<std::string>& cursor) {
 
+        }
+
+        Future<std::shared_ptr<stellar::Account>>
+        HorizonBlockchainExplorer::getAccount(const std::string &accountId) const {
+            return http->GET(fmt::format("/accounts/{}", accountId))
+                    .template json<AccountParser::Result, Exception>(AccountParser())
+                    .map<std::shared_ptr<stellar::Account>>(getContext(), [] (const AccountParser::Response& result) -> std::shared_ptr<stellar::Account> {
+                        if (result.isLeft()) {
+                            throw result.getLeft();
+                        }
+                       return result.getRight();
+                    });
         }
 
     }

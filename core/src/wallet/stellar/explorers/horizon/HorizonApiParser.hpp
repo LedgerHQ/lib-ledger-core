@@ -36,19 +36,20 @@
 
 namespace ledger {
     namespace core {
-        template <class ResultType, class Parser>
+        template <class ResultType, class Parser, bool HasEmbedded = true>
         class HorizonApiParser {
         public:
             using Result = ResultType;
+            using Response = Either<Exception, std::shared_ptr<ResultType>>;
 
             HorizonApiParser() : _contentMatcher("/_embedded") {
                 _statusCode = 0;
                 _result = std::make_shared<ResultType>();
                 _parser.init(_result.get());
-                _parser.setPathView(_path.view(2));
+                _parser.setPathView(_path.view(HasEmbedded ? 2 : 0));
             }
 
-            HorizonApiParser(const HorizonApiParser<ResultType, Parser>& cpy) :
+            HorizonApiParser(const HorizonApiParser<ResultType, Parser, HasEmbedded>& cpy) :
                 _statusCode(cpy._statusCode),
                 _errorTitle(cpy._errorTitle),
                 _errorDetails(cpy._errorTitle),
@@ -56,7 +57,7 @@ namespace ledger {
                 _path(cpy._path),
                 _contentMatcher("/_embedded") {
                 _parser.init(_result.get());
-                _parser.setPathView(_path.view(2));
+                _parser.setPathView(_path.view(HasEmbedded ? 2 : 0));
             }
 
             bool Null() {
@@ -196,7 +197,7 @@ namespace ledger {
 
         private:
             bool delegate(std::function<void ()>&& fn) {
-                if (!isFailure() && _path.match(_contentMatcher, 0)) {
+                if ((!HasEmbedded && !isFailure()) || (!isFailure() && _path.match(_contentMatcher, 0))) {
                     _exception = Try<Unit>::from([&] () {
                         fn();
                         return unit;

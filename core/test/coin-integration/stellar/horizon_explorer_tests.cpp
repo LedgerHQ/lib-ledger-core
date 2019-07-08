@@ -34,6 +34,8 @@
 #include <collections/DynamicObject.hpp>
 
 static const auto BASE_URL = "https://horizon-testnet.stellar.org";
+static const auto MAINNET_URL = "https://horizon.stellar.org";
+
 
 TEST_F(StellarFixture, GetAsset) {
     auto pool = newPool();
@@ -49,4 +51,28 @@ TEST_F(StellarFixture, GetAsset) {
     EXPECT_EQ(asset->flags.authRevocable, false);
     EXPECT_EQ(asset->code, "YY2");
     EXPECT_EQ(asset->issuer, "GDDZFMRDTCIN5FS77SA6MHM5YUC6ZNKHFONPBSPZPIAGTXH7SMBGY4CH");
+}
+
+TEST_F(StellarFixture, GetAccount) {
+    auto pool = newPool();
+    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+            pool->getHttpClient(MAINNET_URL),
+            std::make_shared<DynamicObject>()
+    );
+    auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
+    auto account = wait(explorer->getAccount(accountId));
+    EXPECT_EQ(account->accountId, accountId);
+    EXPECT_TRUE(!account->sequence.empty());
+    EXPECT_TRUE(!account->flags.authImmutable);
+    EXPECT_TRUE(!account->flags.authRevocable);
+    EXPECT_TRUE(!account->flags.authRequired);
+    bool foundBalance = false;
+    for (const auto& balance : account->balances) {
+        if (balance.assetType == "native") {
+            EXPECT_TRUE(balance.value > BigInt::ZERO);
+            foundBalance = true;
+        }
+    }
+    EXPECT_TRUE(foundBalance);
 }

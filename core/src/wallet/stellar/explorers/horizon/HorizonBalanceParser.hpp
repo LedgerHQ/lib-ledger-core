@@ -1,9 +1,9 @@
 /*
  *
- * HorizonAccountParser.hpp
+ * HorizonBalanceParser.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 04/07/2019.
+ * Created by Pierre Pollastri on 08/07/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,18 +29,16 @@
  *
  */
 
-#ifndef LEDGER_CORE_HORIZONACCOUNTPARSER_HPP
-#define LEDGER_CORE_HORIZONACCOUNTPARSER_HPP
+#ifndef LEDGER_CORE_HORIZONBALANCEPARSER_HPP
+#define LEDGER_CORE_HORIZONBALANCEPARSER_HPP
 
-#include <rapidjson/reader.h>
 #include <wallet/stellar/stellar.hpp>
 #include <utils/JsonParserPath.hpp>
-#include "HorizonFlagsParser.hpp"
-#include "HorizonBalanceParser.hpp"
+#include <rapidjson/reader.h>
 
 namespace ledger {
     namespace core {
-        class HorizonAccountParser {
+        class HorizonBalanceParser {
         public:
             bool Null();
             bool Bool(bool b);
@@ -56,17 +54,15 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            void init(stellar::Account *account);
+            void init(stellar::Balance *balance);
             void setPathView(const JsonParserPathView& path);
 
         private:
+            stellar::Balance *_balance;
             JsonParserPathView _path;
-            stellar::Account *_account;
-            HorizonFlagsParser _flagsParser;
-            HorizonBalanceParser _balancesParser;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_HORIZONACCOUNTPARSER_HPP
+#endif //LEDGER_CORE_HORIZONBALANCEPARSER_HPP

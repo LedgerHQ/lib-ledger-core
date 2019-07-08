@@ -57,6 +57,7 @@ namespace ledger {
             virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(
                                                                                                const std::string& address,
                                                                                                const Option<std::string>& cursor) = 0;
+            virtual Future<std::shared_ptr<stellar::Account>> getAccount(const std::string& accountId) const = 0;
 
         protected:
             std::shared_ptr<HttpClient> http;

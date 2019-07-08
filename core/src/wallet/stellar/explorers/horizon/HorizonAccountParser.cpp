@@ -31,10 +31,96 @@
 
 #include "HorizonAccountParser.hpp"
 
+using namespace ledger::core;
+
+static const JsonParserPathMatcher ACCOUNT_ID_MATCHER("/account_id");
+static const JsonParserPathMatcher SEQUENCE_MATCHER("/sequence");
+static const JsonParserPathMatcher FLAGS_MATCHER("/flags/?");
+static const JsonParserPathMatcher BALANCES_MATCHER("/balances[*]/?");
+static const JsonParserPathMatcher BALANCES_OBJECT_MATCHER("/balances[*]/");
+static const JsonParserPathMatcher SUBENTRY_COUNT_MATCHER("/subentry_count");
+
+
 namespace ledger {
     namespace core {
 
+        bool HorizonAccountParser::Null() {
+            return true;
+        }
 
+        bool HorizonAccountParser::Bool(bool b) {
+            return true;
+        }
 
+        bool HorizonAccountParser::Int(int i) {
+            return true;
+        }
+
+        bool HorizonAccountParser::Uint(unsigned i) {
+            return true;
+        }
+
+        bool HorizonAccountParser::Int64(int64_t i) {
+            return true;
+        }
+
+        bool HorizonAccountParser::Uint64(uint64_t i) {
+            return true;
+        }
+
+        bool HorizonAccountParser::Double(double d) {
+            return true;
+        }
+
+        bool HorizonAccountParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+
+            return true;
+        }
+
+        bool HorizonAccountParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+            auto t = _path.toString();
+            if (_path.match(ACCOUNT_ID_MATCHER)) {
+                _account->accountId = std::string(str, length);
+            } else if (_path.match(SEQUENCE_MATCHER)) {
+                _account->sequence = std::string(str, length);
+            } else if (_path.match(BALANCES_MATCHER)) {
+                _balancesParser.String(str, length, copy);
+            }
+            return true;
+        }
+
+        bool HorizonAccountParser::StartObject() {
+            if (_path.match(BALANCES_OBJECT_MATCHER)) {
+                _account->balances.emplace_back(stellar::Balance());
+                _balancesParser.init(&_account->balances.back());
+            }
+            return true;
+        }
+
+        bool HorizonAccountParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+            return true;
+        }
+
+        bool HorizonAccountParser::EndObject(rapidjson::SizeType memberCount) {
+            return true;
+        }
+
+        bool HorizonAccountParser::StartArray() {
+            return true;
+        }
+
+        bool HorizonAccountParser::EndArray(rapidjson::SizeType elementCount) {
+            return true;
+        }
+
+        void HorizonAccountParser::init(stellar::Account *account) {
+            _account = account;
+        }
+
+        void HorizonAccountParser::setPathView(const JsonParserPathView &path) {
+            _path = path;
+            _flagsParser.setPathView(_path.view(2));
+            _balancesParser.setPathView(_path.view(4));
+        }
     }
 }

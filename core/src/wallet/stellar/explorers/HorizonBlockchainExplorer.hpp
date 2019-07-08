@@ -47,6 +47,8 @@ namespace ledger {
             virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(
                                                                                                const std::string& address,
                                                                                                const Option<std::string>& cursor)  override;
+
+            Future<std::shared_ptr<stellar::Account>> getAccount(const std::string &accountId) const override;
         };
     }
 }

@@ -42,7 +42,6 @@ namespace ledger {
         namespace stellar {
 
             using XDRData = std::vector<uint8_t>;
-            enum class SignerType {ED25519_PUBLIC_KEY, SHA256_HASH, PREAUTH_TX};
 
             struct Ledger {
                 std::string   hash;
@@ -54,25 +53,12 @@ namespace ledger {
 
             struct Balance {
                 BigInt value;
-                Option<BigInt> limit;
                 Option<BigInt> buyingLiabilities;
                 Option<BigInt> sellingLiabilities;
                 std::string assetType;
                 uint64_t lastModifiedLedger;
                 Option<std::string> assetCode;
                 Option<std::string> assetIssuer;
-            };
-
-            struct Signer {
-                int32_t weight;
-                std::string key;
-                SignerType type;
-            };
-
-            struct Thresholds {
-                uint32_t low;
-                uint32_t mid;
-                uint32_t high;
             };
 
             struct Flags {
@@ -85,10 +71,7 @@ namespace ledger {
                 std::string accountId;
                 std::string sequence;
                 uint32_t subentryCount;
-                Option<std::string> inflationDestination;
                 std::vector<Balance> balances;
-                std::vector<Signer> signers;
-                Thresholds thresholds;
                 std::unordered_map<std::string, std::string> data;
                 Flags flags;
              };
