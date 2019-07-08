@@ -32,14 +32,16 @@
 #include <utils/Exception.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/stellar/explorers/horizon/HorizonApiParser.hpp>
-#include "horizon/HorizonAssetsParser.hpp"
 #include "horizon/HorizonApiParser.hpp"
 #include "horizon/HorizonAccountParser.hpp"
+#include "horizon/HorizonLedgerParser.hpp"
+#include "horizon/HorizonAssetParser.hpp"
 
 namespace ledger {
     namespace core {
         using AssetVectorParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Asset>>, HorizonAssetsParser>;
         using AccountParser = HorizonApiParser<stellar::Account, HorizonAccountParser, false>;
+        using LedgersParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Ledger>>, HorizonLedgersParser>;
 
         HorizonBlockchainExplorer::HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                                              const std::shared_ptr<HttpClient>& http,
@@ -63,8 +65,17 @@ namespace ledger {
                   });
         }
 
-        Future<Option<std::shared_ptr<stellar::Ledger>>> HorizonBlockchainExplorer::getLastLedger() {
-
+        Future<std::shared_ptr<stellar::Ledger>> HorizonBlockchainExplorer::getLastLedger() {
+            return http->GET("/ledgers?order=desc&limit=1")
+                    .template json<LedgersParser::Result, Exception>(LedgersParser())
+                    .map<std::shared_ptr<stellar::Ledger>>(getContext(), [] (const LedgersParser::Response& result) -> std::shared_ptr<stellar::Ledger> {
+                        if (result.isLeft()) {
+                            throw result.getLeft();
+                        }
+                        if (result.getRight()->empty())
+                            throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Unable to fetch last ledger (empty response)");
+                        return result.getRight()->front();
+                    });
         }
 
         FuturePtr<BigInt> HorizonBlockchainExplorer::getRecommendedFees() {

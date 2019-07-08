@@ -35,6 +35,7 @@
 #include <wallet/stellar/stellar.hpp>
 #include <utils/JsonParserPath.hpp>
 #include "HorizonFlagsParser.hpp"
+#include "HorizonArrayParser.hpp"
 
 namespace ledger {
     namespace core {
@@ -42,7 +43,6 @@ namespace ledger {
         class HorizonAssetParser {
         public:
             typedef stellar::Asset Result;
-
             bool Null();
             bool Bool(bool b);
             bool Int(int i);
@@ -65,6 +65,8 @@ namespace ledger {
             stellar::Asset* _asset;
             HorizonFlagsParser _flagsParser;
         };
+
+        using HorizonAssetsParser = HorizonArrayParser<HorizonAssetParser, stellar::Asset>;
 
     }
 }

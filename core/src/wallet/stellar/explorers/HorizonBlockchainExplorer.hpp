@@ -41,7 +41,7 @@ namespace ledger {
                                       const std::shared_ptr<HttpClient>& http,
                                       const std::shared_ptr<api::DynamicObject>& configuration);
             virtual Future<Option<std::shared_ptr<stellar::Asset>>> getAsset(const std::string& assetCode, const std::string& assetIssuer)  override;
-            virtual Future<Option<std::shared_ptr<stellar::Ledger>>> getLastLedger()  override;
+            virtual Future<std::shared_ptr<stellar::Ledger>> getLastLedger()  override;
             virtual FuturePtr<BigInt> getRecommendedFees()  override;
             virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string& address, const Option<std::string>& cursor)  override;
             virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(

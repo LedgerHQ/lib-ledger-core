@@ -1,9 +1,9 @@
 /*
  *
- * HorizonAssetsParser.hpp
+ * HorizonLedgerParser.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 25/06/2019.
+ * Created by Pierre Pollastri on 08/07/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,17 +29,17 @@
  *
  */
 
-#ifndef LEDGER_CORE_HORIZONASSETSPARSER_HPP
-#define LEDGER_CORE_HORIZONASSETSPARSER_HPP
+#ifndef LEDGER_CORE_HORIZONLEDGERPARSER_HPP
+#define LEDGER_CORE_HORIZONLEDGERPARSER_HPP
 
 #include <rapidjson/reader.h>
-#include <wallet/stellar/stellar.hpp>
-#include "HorizonAssetParser.hpp"
 #include <utils/JsonParserPath.hpp>
+#include <wallet/stellar/stellar.hpp>
+#include "HorizonArrayParser.hpp"
 
 namespace ledger {
     namespace core {
-        class HorizonAssetsParser {
+        class HorizonLedgerParser {
         public:
             bool Null();
             bool Bool(bool b);
@@ -55,17 +55,17 @@ namespace ledger {
             bool EndObject(rapidjson::SizeType memberCount);
             bool StartArray();
             bool EndArray(rapidjson::SizeType elementCount);
-            void init(std::vector<std::shared_ptr<stellar::Asset>> *assets);
+            void init(stellar::Ledger *ledger);
             void setPathView(const JsonParserPathView& path);
 
         private:
+            stellar::Ledger *_ledger;
             JsonParserPathView _path;
-            HorizonAssetParser _assetParser;
-            std::vector<std::shared_ptr<stellar::Asset>>* _assets;
-
         };
+
+        using HorizonLedgersParser = HorizonArrayParser< HorizonLedgerParser, stellar::Ledger>;
     }
 }
 
 
-#endif //LEDGER_CORE_HORIZONASSETSPARSER_HPP
+#endif //LEDGER_CORE_HORIZONLEDGERPARSER_HPP

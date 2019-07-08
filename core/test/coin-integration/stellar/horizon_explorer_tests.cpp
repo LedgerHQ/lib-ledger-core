@@ -32,6 +32,7 @@
 #include "StellarFixture.hpp"
 #include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
 #include <collections/DynamicObject.hpp>
+#include <utils/DateUtils.hpp>
 
 static const auto BASE_URL = "https://horizon-testnet.stellar.org";
 static const auto MAINNET_URL = "https://horizon.stellar.org";
@@ -75,4 +76,19 @@ TEST_F(StellarFixture, GetAccount) {
         }
     }
     EXPECT_TRUE(foundBalance);
+}
+
+
+TEST_F(StellarFixture, GetLastLedger) {
+    auto pool = newPool();
+    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+            pool->getHttpClient(BASE_URL),
+            std::make_shared<DynamicObject>()
+    );
+    auto ledger = wait(explorer->getLastLedger());
+    auto t = DateUtils::toJSON(ledger->time);
+    EXPECT_TRUE(!ledger->hash.empty());
+    EXPECT_TRUE(ledger->height > 69859L);
+    EXPECT_TRUE(ledger->time > DateUtils::fromJSON("2015-07-16T23:49:00Z"));
 }

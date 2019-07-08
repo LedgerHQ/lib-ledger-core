@@ -45,10 +45,8 @@ namespace ledger {
 
             struct Ledger {
                 std::string   hash;
-                std::string   previousHash;
-                std::string   pagingToken;
-                std::uint32_t transactionCount;
-                std::uint32_t successfulTransactionCount;
+                uint64_t height;
+                std::chrono::system_clock::time_point time;
             };
 
             struct Balance {
