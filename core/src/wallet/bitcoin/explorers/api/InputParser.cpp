@@ -33,7 +33,6 @@
 
 namespace ledger {
     namespace core {
-
         bool InputParser::Null() {
             return true;
         }

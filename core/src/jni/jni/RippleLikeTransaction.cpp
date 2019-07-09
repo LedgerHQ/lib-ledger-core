@@ -6,6 +6,7 @@
 #include "BigInt.hpp"
 #include "Marshal.hpp"
 #include "RippleLikeAddress.hpp"
+#include "RippleLikeMemo.hpp"
 
 namespace djinni_generated {
 
@@ -138,6 +139,35 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_RippleLikeTransaction_00024Cpp
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransaction>(nativeRef);
         auto r = ref->getSigningPubKey();
         return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1getMemos(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransaction>(nativeRef);
+        auto r = ref->getMemos();
+        return ::djinni::release(::djinni::List<::djinni_generated::RippleLikeMemo>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1addMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_memo)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransaction>(nativeRef);
+        ref->addMemo(::djinni_generated::RippleLikeMemo::toCpp(jniEnv, j_memo));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransaction_00024CppProxy_native_1getDestinationTag(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransaction>(nativeRef);
+        auto r = ref->getDestinationTag();
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::I64>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

@@ -18,6 +18,11 @@ ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 
 if [ "$BUILD_CONFIG" == "Release" ]; then
     apt-get install -y awscli
+	echo "========> Install sbt"
+	curl -L -o sbt-1.2.8.deb https://dl.bintray.com/sbt/debian/sbt-1.2.8.deb
+	dpkg -i sbt-1.2.8.deb
+	rm sbt-1.2.8.deb
+	sbt sbtVersion
 fi
 
 echo "========> Install C++ dependencies"
@@ -32,16 +37,12 @@ fi
 echo "========> Install Sqlite"
 apt-get install -y sqlite3 sqlite libsqlite3-dev
 
-echo "========> Install Boost"
-apt-get install -y libboost-all-dev
+echo "========> Install node"
+curl -sL https://deb.nodesource.com/setup_9.x | bash -
+apt-get install -y nodejs
 
-#if [ "$BUILD_CONFIG" == "Debug" ]; then
-    echo "========> Install node"
-    curl -sL https://deb.nodesource.com/setup_9.x | bash -
-    apt-get install -y nodejs
-    echo "========> Install yarn"
-    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-    apt-get update && apt-get install -y yarn
-#fi
+echo "========> Install yarn"
+curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+apt-get update && apt-get install -y yarn
 

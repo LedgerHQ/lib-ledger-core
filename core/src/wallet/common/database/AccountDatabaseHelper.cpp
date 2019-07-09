@@ -51,8 +51,9 @@ namespace ledger {
 
         void AccountDatabaseHelper::createAccount(soci::session &sql, const std::string &walletUid, int32_t index) {
             auto uid = createAccountUid(walletUid, index);
+            auto now = DateUtils::now();
             sql << "INSERT INTO accounts VALUES(:uid, :idx, :wallet_uid, :now)", use(uid), use(index), use(walletUid),
-                    use(DateUtils::now());
+                    use(now);
         }
 
         void AccountDatabaseHelper::removeAccount(soci::session &sql, const std::string &walletUid, int32_t index) {

@@ -22,6 +22,7 @@ class Amount;
 class RippleLikeTransaction;
 class RippleLikeTransactionCallback;
 struct Currency;
+struct RippleLikeMemo;
 
 class LIBCORE_EXPORT RippleLikeTransactionBuilder {
 public:
@@ -47,6 +48,15 @@ public:
      * @return A reference on the same builder in order to chain calls.
      */
     virtual std::shared_ptr<RippleLikeTransactionBuilder> setFees(const std::shared_ptr<Amount> & fees) = 0;
+
+    /**
+     * Add a memo.
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<RippleLikeTransactionBuilder> addMemo(const RippleLikeMemo & memo) = 0;
+
+    /** An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account */
+    virtual std::shared_ptr<RippleLikeTransactionBuilder> setDestinationTag(int64_t tag) = 0;
 
     /** Build a transaction from the given builder parameters. */
     virtual void build(const std::shared_ptr<RippleLikeTransactionCallback> & callback) = 0;

@@ -37,6 +37,7 @@
 #include <api/DynamicObject.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
+#include <api/Operation.hpp>
 #include <async/DedicatedContext.hpp>
 #include <collections/DynamicObject.hpp>
 #include <math/BigInt.h>
@@ -50,8 +51,11 @@ namespace ledger {
     namespace core {
 
         struct ERC20Transaction {
+            std::string from;
+            std::string to;
             std::string contractAddress;
             BigInt value;
+            api::OperationType type;
         };
 
         struct EthereumLikeBlockchainExplorerTransaction {
@@ -68,10 +72,11 @@ namespace ledger {
             uint64_t confirmations;
             std::vector<uint8_t> inputData;
             uint64_t status;
-            Option<ERC20Transaction> erc20;
+            std::vector<ERC20Transaction> erc20Transactions;
             EthereumLikeBlockchainExplorerTransaction() {
                 nonce = 0;
                 confirmations = 0;
+                status = 0;
             }
 
             EthereumLikeBlockchainExplorerTransaction(const EthereumLikeBlockchainExplorerTransaction &cpy) {
@@ -88,7 +93,7 @@ namespace ledger {
                 this->nonce = cpy.nonce;
                 this->value = cpy.value;
                 this->status = cpy.status;
-                this->erc20 = cpy.erc20;
+                this->erc20Transactions = cpy.erc20Transactions;
             }
 
         };
@@ -102,6 +107,9 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>> getNonce(const std::string &address) = 0;
             virtual Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) = 0;
+            virtual Future<std::shared_ptr<BigInt>> getGasPrice() = 0;
+            virtual Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(const std::string &address) = 0;
+            virtual Future<std::shared_ptr<BigInt>> getERC20Balance(const std::string &address, const std::string &erc20Address) = 0;
         };
     }
 }

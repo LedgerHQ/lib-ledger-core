@@ -130,7 +130,7 @@ namespace ledger {
                 auto keychain = self->_keychainFactory->build(
                         index,
                         xpubPath,
-                        getConfiguration(),
+                        getConfig(),
                         info,
                         getAccountInternalPreferences(index),
                         getCurrency()
@@ -186,29 +186,18 @@ namespace ledger {
 
         Future<api::AccountCreationInfo> RippleLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<RippleLikeWallet>(shared_from_this());
-            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(),
-                                                                                                 [self, accountIndex](
-                                                                                                         const api::ExtendedKeyAccountCreationInfo info) -> api::AccountCreationInfo {
-                                                                                                     api::AccountCreationInfo result;
-                                                                                                     result.index = accountIndex;
-                                                                                                     auto length = info.derivations.size();
-                                                                                                     for (auto i = 0;
-                                                                                                          i <
-                                                                                                          length; i++) {
-                                                                                                         DerivationPath path(
-                                                                                                                 info.derivations[i]);
-                                                                                                         auto owner = info.owners[i];
-                                                                                                         result.derivations.push_back(
-                                                                                                                 path.getParent().toString());
-                                                                                                         result.derivations.push_back(
-                                                                                                                 path.toString());
-                                                                                                         result.owners.push_back(
-                                                                                                                 owner);
-                                                                                                         result.owners.push_back(
-                                                                                                                 owner);
-                                                                                                     }
-                                                                                                     return result;
-                                                                                                 });
+            return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) {
+                api::AccountCreationInfo result;
+                result.index = accountIndex;
+                auto length = info.derivations.size();
+                for (auto i = 0; i < length; i++) {
+                    DerivationPath path(info.derivations[i]);
+                    auto owner = info.owners[i];
+                    result.derivations.push_back(path.toString());
+                    result.owners.push_back(owner);
+                 }
+                 return result;
+            });
         }
 
         std::shared_ptr<RippleLikeWallet> RippleLikeWallet::getSelf() {
@@ -222,7 +211,7 @@ namespace ledger {
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfiguration(), entry.address,
+            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
             return std::make_shared<RippleLikeAccount>(shared_from_this(),
                                                        entry.index,

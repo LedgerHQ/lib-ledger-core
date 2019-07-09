@@ -70,3 +70,19 @@ TEST_F(BitcoinMakeP2WPKHTransaction, CreateStandardP2WPKHWithOneOutput) {
     auto parsedTx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(mockTx), 0);
     EXPECT_EQ(mockTx, hex::toString(parsedTx->serialize()));
 }
+
+TEST_F(BitcoinMakeP2WPKHTransaction, ParseSignedTx) {
+    auto hash = "c3dd55c86d02ad9d4b0e748c219fd15b79f21c6d5e38f5fe84a453a7f9e37494";
+    auto sender = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
+    std::vector<std::string> receivers {"bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86", "bc1qry3crfssh8w6guajms7upclgqsfac4fs4g7nwj"};
+
+    auto signedTx = "0100000000010154302828c224cb00c797038d4cbc9e06b5a38d832e879c67de523bd714a8c37c0000000000ffffff00021027000000000000160014bd6df7f5fd8b7d0e1f8dc2873d29277162508c01e82f010000000000160014192381a610b9dda473b2dc3dc0e3e80413dc553002483045022100dc57387b377550476a04f3147d915e57e396ab5ce41f8629f0aebd0f9a472876022025920a6a9d80aa6b31aedd10dfbd16d0b2eb8e449a93b70059e0cec7ac2a40ca012102fbba978d75f5fc4e7987840b78033e0e4797c7776c070037422616e622f8e6dc00000000";
+    auto parsedTx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(signedTx), 0);
+    EXPECT_EQ(signedTx, hex::toString(parsedTx->serialize()));
+    EXPECT_EQ(parsedTx->getHash(), hash);
+    EXPECT_GT(parsedTx->getInputs().size(), 0);
+    EXPECT_EQ(parsedTx->getInputs()[0]->getAddress().value_or(""), sender);
+    EXPECT_GT(parsedTx->getOutputs().size(), 0);
+    EXPECT_EQ(parsedTx->getOutputs()[0]->getAddress().value_or(""), receivers[0]);
+    EXPECT_EQ(parsedTx->getOutputs()[1]->getAddress().value_or(""), receivers[1]);
+}

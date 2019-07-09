@@ -165,11 +165,10 @@ namespace ledger {
 
             auto computeAmountWithFees = [&] (int addedOutputCount) -> BigInt {
                 auto outputCount = buddy->request.outputs.size() + addedOutputCount;
-                auto size = BitcoinLikeTransactionApi::estimateSize(
-                        inputCount,
-                        outputCount,
-                        getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction, (buddy->keychain)->isSegwit()
-                );
+                auto size = BitcoinLikeTransactionApi::estimateSize(inputCount,
+                                                                    outputCount,
+                                                                    getCurrency(),
+                                                                    buddy->keychain->getKeychainEngine());
                 buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount,  buddy->request.outputs.size() + addedOutputCount);
                 buddy->logger->debug("Estimated size {} <> {}", size.Min, size.Max);
                 return buddy->outputAmount + (*buddy->request.feePerByte * BigInt(size.Max));
@@ -222,13 +221,15 @@ namespace ledger {
             int64_t longTermFees = DEFAULT_FALLBACK_FEE;
 
             //Compute cost of change
-            auto fixedSize = BitcoinLikeTransactionApi::estimateSize(0, 0,
-                                                                     getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction,
-                                                                     (buddy->keychain)->isSegwit());
+            auto fixedSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                     0,
+                                                                     getCurrency(),
+                                                                     buddy->keychain->getKeychainEngine());
             //Size of only 1 output (without fixed size)
-            auto oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0, 1,
-                                                                         getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction,
-                                                                         (buddy->keychain)->isSegwit()).Max - fixedSize.Max;
+            auto oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                         1,
+                                                                         getCurrency(),
+                                                                         buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
             //Size 1 signed UTXO (signed input)
             auto signedUTXOSize = buddy->keychain->getOutputSizeAsSignedTxInput();
 
@@ -435,13 +436,15 @@ namespace ledger {
                                                                                                                   const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
                                                                                                                   const BigInt &aggregatedAmount) {
             //Tx fixed size
-            auto fixedSize = BitcoinLikeTransactionApi::estimateSize(0, 0,
-                                                                     getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction,
-                                                                     (buddy->keychain)->isSegwit());
+            auto fixedSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                     0,
+                                                                     getCurrency(),
+                                                                     buddy->keychain->getKeychainEngine());
             //Size of one output (without fixed size)
-            auto oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0, 1,
-                                                                         getCurrency().bitcoinLikeNetworkParameters.value().UsesTimestampedTransaction,
-                                                                         (buddy->keychain)->isSegwit()).Max - fixedSize.Max;
+            auto oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
+                                                                         1,
+                                                                         getCurrency(),
+                                                                         buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
             //Size of UTXO as signed input in tx
             auto signedUTXOSize = buddy->keychain->getOutputSizeAsSignedTxInput();
 

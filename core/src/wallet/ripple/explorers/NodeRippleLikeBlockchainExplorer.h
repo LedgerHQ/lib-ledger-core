@@ -125,6 +125,12 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getFees() override;
 
+            Future<std::shared_ptr<BigInt>>
+            getBaseReserve() override;
+
+            Future<std::shared_ptr<BigInt>>
+            getServerInfo(const std::string &field, FieldTypes type);
+
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
 
             Future<void *> startSession() override;

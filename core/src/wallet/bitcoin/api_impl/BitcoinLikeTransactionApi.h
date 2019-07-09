@@ -40,7 +40,7 @@
 #include "BitcoinLikeBlockApi.h"
 #include <api/EstimatedSize.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
-
+#include <api/KeychainEngines.hpp>
 namespace ledger {
     namespace core {
 
@@ -78,7 +78,8 @@ namespace ledger {
 
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
-            explicit BitcoinLikeTransactionApi(const api::Currency &currency, bool isSegwit = false,
+            explicit BitcoinLikeTransactionApi(const api::Currency &currency,
+                                               const std::string &keychainEngine = api::KeychainEngines::BIP32_P2PKH,
                                                uint64_t currentBlockHeight = 0);
 
             explicit BitcoinLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
@@ -120,6 +121,8 @@ namespace ledger {
 
             BitcoinLikeTransactionApi &setTimestamp(uint32_t timestamp);
 
+            BitcoinLikeTransactionApi &setHash(const std::string &hash);
+
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
                                                                                     const std::vector<uint8_t> &rawTransaction,
@@ -132,9 +135,8 @@ namespace ledger {
 
             static api::EstimatedSize estimateSize(std::size_t inputCount,
                                                    std::size_t outputCount,
-                                                   bool hasTimestamp,
-                                                   bool useSegwit
-            );
+                                                   const api::Currency &currency,
+                                                   const std::string &keychainEngine);
 
         private:
             inline bool isWriteable() const;
@@ -159,9 +161,10 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockApi> _block;
             std::string _hash;
             api::Currency _currency;
+            api::BitcoinLikeNetworkParameters _params;
             Option<uint32_t> _timestamp;
             bool _writable;
-            bool _isSegwit;
+            std::string _keychainEngine;
             uint64_t _currentBlockHeight;
         };
     }

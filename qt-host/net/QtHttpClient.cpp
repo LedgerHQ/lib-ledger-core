@@ -92,7 +92,7 @@ namespace ledger {
                 switch (request->getMethod()) {
                     case core::api::HttpMethod::POST: {
                         auto body = request->getBody();
-                        reply = self->_manager.put(r, QByteArray((char *) body.data(), (int) body.size()));
+                        reply = self->_manager.post(r, QByteArray((char *) body.data(), (int) body.size()));
                         break;
                     }
                     case core::api::HttpMethod::GET:

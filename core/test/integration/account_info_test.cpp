@@ -56,6 +56,17 @@ TEST_F(AccountInfoTests, FirstEthAccountInfo) {
     //api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>"
 }
 
+TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "ripple", DynamicObject::newInstance()));
+    auto info = wait(wallet->getNextAccountCreationInfo());
+    EXPECT_EQ(info.index, 0);
+    EXPECT_EQ(info.owners.size(), 1);
+    EXPECT_EQ(info.derivations.size(), 1);
+    EXPECT_EQ(info.owners[0], "main");
+    EXPECT_EQ(info.derivations[0], "44'/144'/0'");
+}
+
 TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
     auto config = DynamicObject::newInstance();
     config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");

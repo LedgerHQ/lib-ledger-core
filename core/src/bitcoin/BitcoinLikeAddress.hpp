@@ -61,6 +61,7 @@ namespace ledger {
             virtual optional<std::string> getDerivationPath() override;
 
             std::string toString() override;
+            std::string getStringAddress() const;
 
             static std::shared_ptr<AbstractAddress> parse(const std::string& address, const api::Currency& currency,
                                                           const Option<std::string>& derivationPath = Option<std::string>());
@@ -76,6 +77,15 @@ namespace ledger {
                                              const api::Currency &currency,
                                              const std::string &derivationPath,
                                              const std::string &keychainEngine);
+
+            static std::vector<uint8_t> fromPublicKeyToHash160(const std::vector<uint8_t> &pubKey,
+                                                               const std::vector<uint8_t> &pubKeyHash160,
+                                                               const api::Currency &currency,
+                                                               const std::string &keychainEngine);
+
+            static std::vector<uint8_t> fromPublicKeyToHash160(const std::vector<uint8_t> &pubKey,
+                                                               const api::Currency &currency,
+                                                               const std::string &keychainEngine);
 
 
         private:

@@ -57,6 +57,8 @@ namespace ledger {
             std::shared_ptr<BigInt> fees;
             BigInt sequence;
             bool wipe;
+            std::vector<api::RippleLikeMemo> memos;
+            Option<int64_t> destinationTag;
         };
 
         using RippleLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::RippleLikeTransaction>>(
@@ -81,6 +83,10 @@ namespace ledger {
             std::shared_ptr<api::RippleLikeTransactionBuilder> wipeToAddress(const std::string &address) override;
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> setFees(const std::shared_ptr<api::Amount> & fees) override;
+
+            std::shared_ptr<api::RippleLikeTransactionBuilder> addMemo(const api::RippleLikeMemo& memo) override;
+
+            std::shared_ptr<api::RippleLikeTransactionBuilder> setDestinationTag(int64_t tag) override;
 
             void build(const std::shared_ptr<api::RippleLikeTransactionCallback> &callback) override;
 

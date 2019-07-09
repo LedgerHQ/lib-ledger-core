@@ -81,14 +81,15 @@ namespace ledger {
                 strings::join(operation.recipients, recipients, separator);
                 auto sndrs = senders.str();
                 auto rcvrs = recipients.str();
-
+                auto hexAmount = operation.amount.toHexString();
+                auto hexFees = operation.fees.getValueOr(BigInt::ZERO).toHexString();
                 sql << "INSERT INTO operations VALUES("
                             ":uid, :accout_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
                             ":fees, :block_uid, :currency_name, :trust"
                         ")"
                         , use(operation.uid), use(operation.accountUid), use(operation.walletUid), use(type), use(operation.date)
-                        , use(sndrs), use(rcvrs), use(operation.amount.toHexString())
-                        , use(operation.fees.getValueOr(BigInt::ZERO).toHexString()), use(blockUid)
+                        , use(sndrs), use(rcvrs), use(hexAmount)
+                        , use(hexFees), use(blockUid)
                         , use(operation.currencyName), use(serializedTrust);
 
                 updateCurrencyOperation(sql, operation, newOperation);
@@ -101,18 +102,21 @@ namespace ledger {
         void
         OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql, const Operation &operation, bool insert) {
             if (operation.bitcoinTransaction.nonEmpty()) {
-                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.bitcoinTransaction.getValue());
+                auto operationValue = operation.bitcoinTransaction.getValue();
+                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert)
-                    sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(btcTxUid), use(operation.bitcoinTransaction.getValue().hash);
+                    sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(btcTxUid), use(operationValue.hash);
             } else if (operation.ethereumTransaction.nonEmpty()) {
-                auto ethTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.ethereumTransaction.getValue());
+                auto operationValue = operation.ethereumTransaction.getValue();
+                auto ethTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
-                    sql << "INSERT INTO ethereum_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(ethTxUid), use(operation.ethereumTransaction.getValue().hash);
+                    sql << "INSERT INTO ethereum_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(ethTxUid), use(operationValue.hash);
                 }
             } else if (operation.rippleTransaction.nonEmpty()) {
-                auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operation.rippleTransaction.getValue());
+                auto operationValue = operation.rippleTransaction.getValue();
+                auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
-                    sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(rippleTxUid), use(operation.rippleTransaction.getValue().hash);
+                    sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(rippleTxUid), use(operationValue.hash);
                 }
             }
         }

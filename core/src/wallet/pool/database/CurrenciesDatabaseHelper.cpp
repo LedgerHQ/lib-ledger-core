@@ -47,10 +47,11 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
     soci::into(count);
     bool inserted = false;
     if (count == 0) {
+        auto currencyType = api::to_string(currency.walletType);
         // Insert currency
         sql << "INSERT INTO currencies VALUES(:name, :type, :bip44, :uri)",
             use(currency.name),
-            use(api::to_string(currency.walletType)),
+            use(currencyType),
             use(currency.bip44CoinType),
             use(currency.paymentUriScheme);
 
@@ -63,20 +64,24 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 std::string separator(";");
                 strings::join(params.AdditionalBIPs, additionalBIPs, separator);
                 auto BIPs = additionalBIPs.str();
-
+                auto hexP2PKHVersion = hex::toString(params.P2PKHVersion);
+                auto hexP2SHVersion = hex::toString(params.P2SHVersion);
+                auto hexXPUBVersion = hex::toString(params.XPUBVersion);
+                auto feePolicy = api::to_string(params.FeePolicy);
+                auto sigHash = hex::toString(params.SigHash);
                 sql
                 << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType, :additionalBIPs)",
                 use(currency.name),
                 use(params.Identifier),
-                use(hex::toString(params.P2PKHVersion)),
-                use(hex::toString(params.P2SHVersion)),
-                use(hex::toString(params.XPUBVersion)),
+                use(hexP2PKHVersion),
+                use(hexP2SHVersion),
+                use(hexXPUBVersion),
                 use(params.DustAmount),
-                use(api::to_string(params.FeePolicy)),
+                use(feePolicy),
                 use(params.MessagePrefix),
                 use(params.UsesTimestampedTransaction ? 1 : 0),
                 use(params.TimestampDelay),
-                use(hex::toString(params.SigHash)),
+                use(sigHash),
                 use(BIPs);
                 break;
             }
@@ -87,12 +92,12 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 std::string separator(";");
                 strings::join(params.AdditionalEIPs, additionalEIPs, separator);
                 auto EIPs = additionalEIPs.str();
-
+                auto xpubVersion = hex::toString(params.XPUBVersion);
                 sql << "INSERT INTO ethereum_currencies VALUES(:name, :identifier, :chainID, :xpub, :prefix, :additionalBIPs)",
                         use(currency.name),
                         use(params.Identifier),
                         use(params.ChainID),
-                        use(hex::toString(params.XPUBVersion)),
+                        use(xpubVersion),
                         use(params.MessagePrefix),
                         use(EIPs);
                 break;
@@ -104,11 +109,11 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 std::string separator(";");
                 strings::join(params.AdditionalRIPs, additionalRIPs, separator);
                 auto RIPs = additionalRIPs.str();
-
+                auto xpubVersion = hex::toString(params.XPUBVersion);
                 sql << "INSERT INTO ripple_currencies VALUES(:name, :identifier, :xpub, :prefix, :additionalRIPs)",
                         use(currency.name),
                         use(params.Identifier),
-                        use(hex::toString(params.XPUBVersion)),
+                        use(xpubVersion),
                         use(params.MessagePrefix),
                         use(RIPs);
                 break;

@@ -57,6 +57,11 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
 
+            auto fees = wait(account->getFees());
+            EXPECT_GT(fees->toLong(), 0L);
+            auto baseReserve = wait(account->getBaseReserve());
+            EXPECT_GT(baseReserve->toLong(), 0L);
+
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 if (event->getCode() == api::EventCode::NEW_OPERATION) {
                     auto uid = event->getPayload()->getString(

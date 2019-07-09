@@ -88,7 +88,6 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
             std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
             BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
-            api::BitcoinLikeNetworkParameters _network;
         };
     }
 }

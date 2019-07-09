@@ -175,8 +175,7 @@ namespace ledger {
                 buddy->logger = account->logger();
                 buddy->startDate = DateUtils::now();
                 buddy->wallet = account->getWallet();
-                buddy->configuration = std::static_pointer_cast<AbstractAccount>(account)->getWallet()
-                        ->getConfiguration();
+                buddy->configuration = std::static_pointer_cast<AbstractAccount>(account)->getWallet()->getConfig();
                 buddy->halfBatchSize = (uint32_t) buddy->configuration
                         ->getInt(api::Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE)
                         .value_or(10);

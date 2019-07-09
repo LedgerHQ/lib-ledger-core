@@ -65,9 +65,8 @@ namespace ledger {
                 _blockParser.init(&_transaction->block.getValue());
             }
 
-            if (currentObject == "transfer_events") {
-                ERC20Transaction erc20Transaction;
-                _transaction->erc20 = Option<ERC20Transaction>(erc20Transaction);
+            if (currentObject == "list" && _arrayDepth == 1) {
+                _transaction->erc20Transactions.emplace_back(ERC20Transaction());
             }
 
             return true;
@@ -140,7 +139,7 @@ namespace ledger {
             PROXY_PARSE(RawNumber, str, length, copy) {
 
                 //TODO: this is temporary solution
-                if (currentObject == "trace_actions") {
+                if (currentObject == "actions") {
                     return true;
                 }
 
@@ -158,8 +157,8 @@ namespace ledger {
                     _transaction->value = value;
                 } else if (_lastKey == "status") {
                     _transaction->status = value.toUint64();
-                } else if (_lastKey == "count") {
-                    _transaction->erc20.getValue().value = value;
+                } else if (_lastKey == "count" && !_transaction->erc20Transactions.empty()) {
+                    _transaction->erc20Transactions.back().value = value;
                 }
                 return true;
             }
@@ -169,7 +168,7 @@ namespace ledger {
             PROXY_PARSE(String, str, length, copy) {
 
                 //TODO: this is temporary solution
-                if (currentObject == "trace_actions") {
+                if (currentObject == "actions") {
                     return true;
                 }
 
@@ -194,9 +193,17 @@ namespace ledger {
                 } else if (_lastKey == "received_at") {
                     _transaction->receivedAt = DateUtils::fromJSON(value);
                 } else if (_lastKey == "to") {
-                    _transaction->receiver = value;
+                    if (currentObject == "list" && !_transaction->erc20Transactions.empty()) {
+                        _transaction->erc20Transactions.back().to = value;
+                    } else {
+                        _transaction->receiver = value;
+                    }
                 } else if (_lastKey == "from") {
-                    _transaction->sender = value;
+                    if (currentObject == "list" && !_transaction->erc20Transactions.empty()) {
+                        _transaction->erc20Transactions.back().from = value;
+                    } else {
+                        _transaction->sender = value;
+                    }
                 } else if (_lastKey == "nonce") {
                     uint64_t result = 0;
                     auto nonce = fromStringToBytes(value);
@@ -206,8 +213,8 @@ namespace ledger {
                     _transaction->nonce = result;
                 } else if (_lastKey == "input") {
                     _transaction->inputData = fromStringToBytes(value);
-                } else if (_lastKey == "contract") {
-                    _transaction->erc20.getValue().contractAddress = value;
+                } else if (_lastKey == "contract" && !_transaction->erc20Transactions.empty()) {
+                    _transaction->erc20Transactions.back().contractAddress = value;
                 }
                 return true;
             }

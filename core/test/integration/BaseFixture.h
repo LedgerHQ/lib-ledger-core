@@ -69,6 +69,7 @@ using namespace ledger::core; // Only do that for testing
 using namespace ledger::qt; // Djeez
 
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
+extern api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO;
 extern api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO;
@@ -77,6 +78,8 @@ extern api::ExtendedKeyAccountCreationInfo ETH_ROPSTEN_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO;
 extern api::AccountCreationInfo ETH_KEYS_INFO;
 extern api::AccountCreationInfo ETH_KEYS_INFO_VAULT;
+extern api::AccountCreationInfo ETH_KEYS_INFO_LIVE;
+extern api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
 extern api::AccountCreationInfo XRP_KEYS_INFO;
 extern const std::string TX_1;
 extern const std::string TX_2;
@@ -88,7 +91,7 @@ class BaseFixture : public ::testing::Test {
 public:
     void SetUp() override;
     void TearDown() override;
-    std::shared_ptr<WalletPool> newDefaultPool(std::string poolName = "my_ppol");
+    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "my_ppol", const std::string &password = "test");
     void createWallet(const std::shared_ptr<WalletPool>& pool,
                       const std::string& walletName,
                       const std::string& currencyName,

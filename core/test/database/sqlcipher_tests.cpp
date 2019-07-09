@@ -40,9 +40,7 @@ using namespace ledger::core;
 class SQLCipherTest : public BaseFixture {
 };
 
-
 TEST(SQLCipherTest, SanityCheck) {
-
     auto date = DateUtils::toJSON(std::chrono::system_clock::now());
     std::remove(date.begin(), date.end(), ':');
     auto dbName = "test_db_" + date;
@@ -99,7 +97,7 @@ TEST(SQLCipherTest, SanityCheck) {
 }
 
 // Preventing terminating in environments that don't properly define __cplusplus macros
-// TODO: remove this check after we migrate to VS2017 and provide /Zc:__cplusplus option 
+// TODO: remove this check after we migrate to VS2017 and provide /Zc:__cplusplus option
 // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
 #if __cplusplus >= 201103L
 TEST(SQLCipherTest, ThrowIfWrongPassword) {
@@ -135,3 +133,48 @@ TEST(SQLCipherTest, ThrowIfWrongPassword) {
     }
 }
 #endif
+
+TEST(SQLCipherTest, DisableEncryption) {
+    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
+    std::remove(date.begin(), date.end(), ':');
+    auto dbName = "test_db_" + date;
+    auto password = "test_key";
+    auto newPassword = "test_key_new";
+    {
+        //Initiate the DB and interact with it
+        auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
+        soci::session session;
+        session.open(*soci::factory_sqlite3(), parameters);
+        session << "CREATE TABLE test_table ("
+                "    id INTEGER,"
+                "    name VARCHAR(255)"
+                ")";
+
+        int value_0 = 123;
+        std::string value_1 = "test_name";
+        session << "INSERT INTO test_table(id, name) VALUES(:field_0, :field_1)",
+                soci::use(value_0), soci::use(value_1);
+        session.close();
+    }
+
+    {
+        //Remove encryption
+        auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password) + "disable_encryption=\"true\" ";
+        soci::session session;
+        session.open(*soci::factory_sqlite3(), parameters);
+        session.close();
+    }
+
+    {
+        //Read previously created DB and check values (without encryption)
+        auto parameters = fmt::format("dbname=\"{}\" ", dbName);
+        soci::session session;
+        session.open(*soci::factory_sqlite3(), parameters);
+        int value_0;
+        std::string value_1;
+        session << "SELECT id, name FROM test_table", soci::into(value_0), soci::into(value_1);
+        EXPECT_EQ(value_0, 123);
+        EXPECT_EQ(value_1, "test_name");
+        session.close();
+    }
+}

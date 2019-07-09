@@ -36,6 +36,7 @@
 #include <vector>
 
 #include <api/Error.hpp>
+#include <api/BigInt.hpp>
 #include <async/Future.hpp>
 #include <collections/collections.hpp>
 #include <math/BigInt.h>
@@ -107,6 +108,8 @@ namespace ledger {
             typedef ledger::core::Block Block;
             BitcoinLikeBlockchainExplorer(const std::shared_ptr<api::DynamicObject>& configuration,
                                           const std::vector<std::string> &matchableKeys);
+
+            virtual Future<std::vector<std::shared_ptr<api::BigInt>>> getFees() = 0;
 
         };
     }

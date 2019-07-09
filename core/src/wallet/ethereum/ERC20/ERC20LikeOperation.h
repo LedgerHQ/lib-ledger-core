@@ -45,9 +45,10 @@ namespace ledger {
             ERC20LikeOperation(const std::string &accountAddress,
                                const std::string &operationUid,
                                const Operation &operation,
+                               const ERC20Transaction &erc20Tx,
                                const api::Currency &currency);
 
-            ERC20LikeOperation() {};
+            ERC20LikeOperation() : _blockHeight(0){};
             
             std::string getHash() override;
             std::shared_ptr<api::BigInt> getNonce() override;
@@ -63,7 +64,7 @@ namespace ledger {
             std::string getOperationUid();
             std::string getETHOperationUid();
             int32_t getStatus() override ;
-
+            std::experimental::optional<int64_t> getBlockHeight() override;
             ERC20LikeOperation &setHash(const std::string &hash) {
                 _hash = hash;
                 return *this;
@@ -133,6 +134,11 @@ namespace ledger {
                 _status = status;
                 return *this;
             };
+
+            ERC20LikeOperation &setBlockHeight(int64_t blockHeight) {
+                _blockHeight = blockHeight;
+                return *this;
+            }
             
         private:
             std::string _uid;
@@ -149,6 +155,7 @@ namespace ledger {
             std::chrono::system_clock::time_point _time;
             api::OperationType _operationType;
             int32_t _status;
+            int64_t _blockHeight;
         };
 
     }

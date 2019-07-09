@@ -33,6 +33,7 @@
 
 #include "DatabaseBackend.hpp"
 #include <memory>
+#include <soci-sqlite3.h>
 
 namespace ledger {
  namespace core {

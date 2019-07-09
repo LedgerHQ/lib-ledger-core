@@ -43,6 +43,38 @@
 
 namespace ledger {
     namespace core {
+        // a helper to write VLE fields
+        bool writeLengthPrefix(BytesWriter& writer, uint64_t size) {
+            // encoding here: https://developers.ripple.com/serialization.html#length-prefixing
+            if (size <= 192) {
+                writer.writeByte(static_cast<uint8_t>(size));
+
+                return true;
+            } else if (size <= 12480) {
+                //     l       = 193 + ((byte1 - 193) * 256) + byte2
+                // <=> l - 193 = ((byte1 - 193) * 256) + byte2
+                // <=> byte2 = (l - 193) & 0xFF
+                // <=> byte1 = 193 + ((l - 193) >> 8) & 0xFF
+                size -= 193;
+                writer.writeByte(193 + (static_cast<uint8_t>(size >> 8)));
+                writer.writeByte(static_cast<uint8_t>(size));
+
+                return true;
+            } else if (size <= 918744) {
+                //     l         = 12481 + ((byte1 - 241) * 65536) + (byte2 * 256) + byte3
+                // <=> l - 12481 = ((byte1 - 241) * 65536) + (byte2 * 256) + byte3
+                // <=> byte3 = (l - 12481) & 0xFF
+                // <=> byte2 = ((l - 12481) >> 8) & 0xFF
+                // <=> byte1 = 241 + ((l - 12481) >> 16) & 0xFF
+                size -= 12481;
+                writer.writeByte(241 + (static_cast<uint8_t>(size >> 16)));
+                writer.writeByte(static_cast<uint8_t>(size >> 8));
+                writer.writeByte(static_cast<uint8_t>(size));
+            }
+
+            // cannot have more bytes
+            return false;
+        }
 
         RippleLikeTransactionApi::RippleLikeTransactionApi(const api::Currency &currency) {
             _currency = currency;
@@ -162,6 +194,13 @@ namespace ledger {
             auto sequence = _sequence->toString(16);
             writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_sequence->intValue()));
 
+            if (_destinationTag.hasValue()) {
+                //1 byte Destination tag:   Type Code = 2, Field Code = 14
+                writer.writeByte(0x2E);
+                //4 bytes Destination tag
+                writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_destinationTag.getValue()));
+            }
+
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             writer.writeByteArray({0x20, 0x1B});
             //LastLedgerSequence
@@ -234,6 +273,40 @@ namespace ledger {
             auto receiverHash = _receiver->getHash160();
             writer.writeVarInt(receiverHash.size());
             writer.writeByteArray(receiverHash);
+
+            if (!_memos.empty()) {
+                writer.writeByte(0xF9); // STI_ARRAY (Memos); Type Code = 15, Memos; Field ID = 9
+
+                for (auto& memo : _memos) {
+                    writer.writeByte(0xEA); // STI_OBJECT (Memo); Type Code = 10
+
+                    if (!memo.ty.empty()) {
+                        writer.writeByte(0x7C); // STI_VL (MemoType), 12
+                        auto written = writeLengthPrefix(writer, memo.ty.size());
+                        assert(written);
+                        writer.writeString(memo.ty);
+                    }
+
+                    if (!memo.data.empty()) {
+                        writer.writeByte(0x7D); // STI_VL (MemoData), 13
+                        auto written = writeLengthPrefix(writer, memo.data.size());
+                        assert(written);
+                        writer.writeString(memo.data);
+                    }
+
+                    if (!memo.fmt.empty()) {
+                        writer.writeByte(0x7D); // STI_VL (MemoFormat), 14
+                        auto written = writeLengthPrefix(writer, memo.fmt.size());
+                        assert(written);
+                        writer.writeString(memo.fmt);
+                    }
+
+                    writer.writeByte(0xE1); // end of object
+                }
+
+                writer.writeByte(0xF1); // end of array
+            }
+
             return writer.toByteArray();
         }
 
@@ -285,5 +358,21 @@ namespace ledger {
             return *this;
         }
 
+        RippleLikeTransactionApi &RippleLikeTransactionApi::setDestinationTag(uint32_t tag) {
+            _destinationTag = tag;
+            return *this;
+        }
+
+        std::experimental::optional<int64_t> RippleLikeTransactionApi::getDestinationTag() {
+            return _destinationTag.toOptional();
+        }
+
+        std::vector<api::RippleLikeMemo> RippleLikeTransactionApi::getMemos() {
+            return _memos;
+        }
+
+        void RippleLikeTransactionApi::addMemo(api::RippleLikeMemo const& memo) {
+            _memos.push_back(memo);
+        }
     }
 }

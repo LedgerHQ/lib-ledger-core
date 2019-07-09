@@ -81,6 +81,11 @@ TEST_F(EthereumKeychains, EthereumAddressValidation) {
 
 }
 
+TEST_F(EthereumKeychains, EthereumEmptyAddressValidation) {
+    auto ethAddress = ledger::core::EthereumLikeAddress::fromEIP55("", ledger::core::currencies::ETHEREUM);
+    EXPECT_EQ(ethAddress->toEIP55(), "0x");
+}
+
 
 TEST_F(EthereumKeychains, EthereumAddressValidationFromXpub) {
     auto extKey = ledger::core::EthereumLikeExtendedPublicKey::fromBase58(ETHEREUM_DATA.currency,
@@ -108,6 +113,21 @@ TEST_F(EthereumKeychains, EthereumChildAddressValidationFromPubKeyAndChainCode) 
                                                                         path);
     auto address = "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA";
     auto derive0 = ethXpub->derive("0/0");
+    EXPECT_EQ(derive0->toEIP55(), address);
+
+}
+
+TEST_F(EthereumKeychains, EthereumExoticDerivationPaths) {
+    auto path = "444'/60'/14'/5'";
+    auto pubKey = "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa";
+    auto chainCode = "224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0";
+    auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
+                                                                        optional<std::vector<uint8_t >>(),
+                                                                        hex::toByteArray(pubKey),
+                                                                        hex::toByteArray(chainCode),
+                                                                        path);
+    auto address = "0x25Faa357D783C1A9B1eE9403f6969AC65E6F3ae3";
+    auto derive0 = ethXpub->derive("16");
     EXPECT_EQ(derive0->toEIP55(), address);
 
 }
@@ -147,6 +167,20 @@ const std::vector<std::vector<std::string>> derivationTestData = {
                 "04d2ee4bb49221f9f1662e4791748e68354c26d7d5290ad518c86c4d714c785e6533e0286d3803b0ddde3287eb6f31f77792fdf7323f76152c14069805f23121d2",
                 "ddf5a9cf1fdf4746a4495cf36328c7e2af31d18dd0a8f8302f3e13c900f4bfb9",
                 "0x390De614378307a6d85cD0e68460378A745295b1"
+        },
+        {
+                "44'/60'/14'/5'/16",
+                "44'/60'/14'/5'",
+                "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa",
+                "224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0",
+                "0x7e07C3526cc4D847e847a58854BFb1544BD10Cb3"
+        },
+        {
+                "44'/60'/0'/0'",
+                "44'/60'/0'/0'",
+                "04d2ee4bb49221f9f1662e4791748e68354c26d7d5290ad518c86c4d714c785e6533e0286d3803b0ddde3287eb6f31f77792fdf7323f76152c14069805f23121d2",
+                "ddf5a9cf1fdf4746a4495cf36328c7e2af31d18dd0a8f8302f3e13c900f4bfb9",
+                "0x390De614378307a6d85cD0e68460378A745295b1"
         }
 
 };
@@ -162,7 +196,7 @@ TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
         auto expectedAddress = elem[4];
 
         auto config = DynamicObject::newInstance();
-        config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,derivationScheme);
+        config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
         auto ethXpub = ledger::core::EthereumLikeExtendedPublicKey::fromRaw(ledger::core::currencies::ETHEREUM,
                                                                             optional<std::vector<uint8_t >>(),
                                                                             hex::toByteArray(publicKey),
@@ -172,4 +206,60 @@ TEST_F(EthereumKeychains, EthereumAddressValidationFromPubKeyAndChainCode) {
         EXPECT_EQ(derivedAddress->toEIP55(), expectedAddress);
     }
 
+}
+
+struct DerivationSchemeTestData {
+    std::vector<std::string> equivalentDerivationSchemes;
+    std::string pubKey;
+    std::string chainCode;
+    std::string expectedAddress;
+};
+const std::vector<DerivationSchemeTestData> derivationSchemeTestData = {
+        {
+                {"44'/<coin_type>'/<account>'/<node>/<address>", "44'/<coin_type>'/<account>'/<node>/0", "44'/<coin_type>'/<account>'/0/0"},
+                "040e1af27e710bfb0edf6d77396b3eb4412ee9c69baa270b10bc29e5bca7c39c0b3cc0010502bf3c4e33a5c078fa6abf6477095c880547ef8206d26c6af0b8490a",
+                "c21d26fdd1d0aeb15a18274e8294ce2e7e0d2c4a374943bbe45ed02f8b5edb17",
+                "0xAc6603e97e774Cd34603293b69bBBB1980acEeaA"
+        },
+        {
+                {"44'/60'/0'/<node>/<account>", "44'/60'/0'/0/<account>"},
+                "04d1dc4a3180fe2d56a1f02a68b053e59022ce5e107eae879ebef66a46d4ffe04dc3994facd376abcbab49c421599824a2600ee30e8520878e65581f598e2c497a",
+                "2d560fcaaedb929eea27d316dec7961eee884259e6483fdf192704db7582ca14",
+                "0xAc6603e97e774Cd34603293b69bBBB1980acEeaA"
+        },
+        {
+                {"44'/60'/14'/5'/16"},
+                "04b82b5c9394ba9b3575e425f09955901a92c1bd2b9e301aede6a1ab9f118290030c6e093d70add73af6b29444d525aab35201e8806ad4dcd4924dedb5afabb9fa",
+                "224eb6e0384eb6193e355195bc76d5bbf2210eb1e9f61b9c826a3a2db18355f0",
+                "0x25Faa357D783C1A9B1eE9403f6969AC65E6F3ae3"
+        },
+        {
+                {"44'/<coin_type>'/<account>'/<node>'","44'/60'/<account>'/<node>'", "44'/60'/0'/<node>'","44'/60'/<account>'/0'","44'/60'/0'/0'"},
+                "04d2ee4bb49221f9f1662e4791748e68354c26d7d5290ad518c86c4d714c785e6533e0286d3803b0ddde3287eb6f31f77792fdf7323f76152c14069805f23121d2",
+                "ddf5a9cf1fdf4746a4495cf36328c7e2af31d18dd0a8f8302f3e13c900f4bfb9",
+                "0x390De614378307a6d85cD0e68460378A745295b1"
+        }
+
+};
+
+TEST_F(EthereumKeychains, EthereumDerivationSchemes) {
+    auto pool = newDefaultPool();
+    auto configuration = DynamicObject::newInstance();
+    {
+        for (auto &elem : derivationSchemeTestData) {
+            auto derivationSchemes = elem.equivalentDerivationSchemes;
+            for (auto &scheme : derivationSchemes) {
+                configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,scheme);
+                auto wallet = wait(pool->createWallet(scheme, "ethereum", configuration));
+                //Create account as Live does
+                api::AccountCreationInfo info = wait(wallet->getNextAccountCreationInfo());
+                info.publicKeys.push_back(hex::toByteArray(elem.pubKey));
+                info.chainCodes.push_back(hex::toByteArray(elem.chainCode));
+                auto account = createEthereumLikeAccount(wallet, info.index, info);
+                auto addresses = wait(account->getFreshPublicAddresses());
+                EXPECT_GT(addresses.size(), 0);
+                EXPECT_EQ(addresses[0]->toString(), elem.expectedAddress);
+            }
+        }
+    }
 }

@@ -35,8 +35,27 @@
 #include <bytes/BytesReader.h>
 #include <wallet/currencies.hpp>
 #include <crypto/SHA512.hpp>
+
 namespace ledger {
     namespace core {
+        // a helper to read VLE fields
+        uint64_t readLengthPrefix(BytesReader& reader) {
+            // encoding here: https://developers.ripple.com/serialization.html#length-prefixing
+            auto a = reader.readNextByte();
+
+            if (a <= 192) {
+                return a;
+            } else {
+                auto b = reader.readNextByte();
+
+                if (a <= 240) {
+                    return 193 + ((a - 193) << 8) + b;
+                } else {
+                    auto c = reader.readNextByte();
+                    return 12481 + ((a - 241) << 16) + (b << 8) + c;
+                }
+            }
+        }
 
         RippleLikeTransactionBuilder::RippleLikeTransactionBuilder(
                 const std::shared_ptr<api::ExecutionContext> &context,
@@ -81,6 +100,16 @@ namespace ledger {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::RippleLikeTransactionBuilder>
+        RippleLikeTransactionBuilder::addMemo(const api::RippleLikeMemo& memo) {
+            _request.memos.push_back(memo);
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::RippleLikeTransactionBuilder> RippleLikeTransactionBuilder::setDestinationTag(int64_t tag) {
+            _request.destinationTag = tag;
+            return shared_from_this();
+        }
         void RippleLikeTransactionBuilder::build(const std::shared_ptr<api::RippleLikeTransactionCallback> &callback) {
             build().callback(_context, callback);
         }
@@ -133,6 +162,14 @@ namespace ledger {
             auto bigIntSequence = BigInt::fromHex(hex::toString(sequence));
             tx->setSequence(bigIntSequence);
 
+            auto destinationTagCode = reader.peek();
+            if (destinationTagCode == 0x2E) {
+                //1 byte Destination tag:   Type Code = 2, Field Code = 14
+                reader.readNextByte();
+                auto bigIntTag = BigInt::fromHex(hex::toString(reader.read(4)));
+                tx->setDestinationTag(static_cast<const uint32_t>(bigIntTag.toUint64()));
+            }
+
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             reader.read(2);
             //LastLedgerSequence
@@ -140,7 +177,7 @@ namespace ledger {
             auto bigIntLedgerSequence = BigInt::fromHex(hex::toString(ledgerSequence));
             tx->setLedgerSequence(bigIntLedgerSequence);
 
-            //Usefull to compute amounts
+            //Useful to compute amounts
             auto maxAmountBound = std::vector<uint8_t>({0x40, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00});
             auto bigIntMax = BigInt::fromHex(hex::toString(maxAmountBound));
 
@@ -204,7 +241,7 @@ namespace ledger {
 
             //1 byte Account Field ID: Type Code = 8, Field Code = 1 (STI_ACCOUNT = 8 type, and Account = 1)
             reader.readNextByte();
-            //20 bytes Acount (hash160 of pubKey without 0x00 prefix)
+            //20 bytes Account (hash160 of pubKey without 0x00 prefix)
             auto accountAddressLength = reader.readNextVarInt();
             auto accountAddressHash = reader.read(accountAddressLength);
             auto accountAddress = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, accountAddressHash, std::vector<uint8_t>({0x00}));
@@ -217,8 +254,47 @@ namespace ledger {
             auto destAddressHash = reader.read(destAddressLength);
             auto destAddress = std::make_shared<RippleLikeAddress>(currencies::RIPPLE, destAddressHash, std::vector<uint8_t>({0x00}));
             tx->setReceiver(destAddress);
+
+            if (reader.hasNext() && reader.readNextByte() == 0xF9) { // STI_ARRAY (Memos); Type Code = 15, Memos; Field ID = 9
+                // iterate on array’s items
+                while (true) {
+                    auto fieldID = reader.readNextByte();
+                    if (fieldID == 0xF1) { // end of array
+                        break;
+                    } else if (fieldID == 0xEA) { // STI_OBJECT (Memo); Type Code = 10
+                        api::RippleLikeMemo memo;
+
+                        // iterate on object’s fields
+                        while (true) {
+                            auto memoTypeFieldID = reader.readNextByte();
+
+                            if (memoTypeFieldID == 0x7C) { // STI_VL (MemoType), 12
+                                auto typeLen = readLengthPrefix(reader);
+                                auto type = reader.read(typeLen);
+                                memo.ty = std::string(type.cbegin(), type.cend());
+                            } else if (memoTypeFieldID == 0x7D) { // STI_VL (MemoData), 13
+                                auto dataLen = readLengthPrefix(reader);
+                                auto data = reader.read(dataLen);
+                                memo.data = std::string(data.cbegin(), data.cend());
+                            } else if (memoTypeFieldID == 0x7E) { // STI_VL (MemoFormat), 14
+                                auto fmtLen = readLengthPrefix(reader);
+                                auto fmt = reader.read(fmtLen);
+                                memo.fmt = std::string(fmt.cbegin(), fmt.cend());
+                            } else if (memoTypeFieldID == 0xE1) { // end of object
+                                break;
+                            } else { // unknown situation
+                                // TODO
+                            }
+                        }
+
+                        tx->addMemo(memo);
+                    } else if (fieldID == 0xF1) { // end of array
+                        break;
+                    }
+                }
+            }
+
             return tx;
         }
-
     }
 }

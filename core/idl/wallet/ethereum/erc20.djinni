@@ -20,14 +20,14 @@ ERC20LikeAccount = interface +c {
     # Get the address of this ERC20 account.
     getAddress(): string;
     # Get the current balance of this ERC20 account.
-    getBalance(): BigInt;
+    getBalance(callback: Callback<BigInt>);
     # Get the balance history of this ERC20 account from a starting date (included) to an ending
     # date (included).
     getBalanceHistoryFor(start: date, end: date, period: TimePeriod): list<BigInt>;
     # Get the list of operations performed on this ERC20 account.
     getOperations(): list<ERC20LikeOperation>;
     # Retrieve raw data concerning a transaction of a given amount to a given address.
-    getTransferToAddressData(amount: BigInt, address: string): binary;
+    getTransferToAddressData(amount: BigInt, address: string, data: Callback<binary>);
     queryOperations(): OperationQuery;
 }
 
@@ -58,4 +58,7 @@ ERC20LikeOperation = interface +c {
     getOperationType(): OperationType;
     # Get opration status : pending or confirmed.
     getStatus(): i32;
+    # Get block height on which operation was included.
+    # @return Optional 64-bit integer, height of block in which operation was validated
+    getBlockHeight(): optional<i64>;
 }

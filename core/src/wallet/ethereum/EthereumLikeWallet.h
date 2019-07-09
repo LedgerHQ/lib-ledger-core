@@ -84,6 +84,7 @@ namespace ledger {
             std::shared_ptr<EthereumLikeKeychainFactory> _keychainFactory;
             EthereumLikeAccountSynchronizerFactory _synchronizerFactory;
             api::EthereumLikeNetworkParameters _network;
+            int _coinType;
         };        
     }
 }

@@ -81,7 +81,8 @@ namespace ledger {
                     // after rolling back this migration, we won’t have anything left, so we only
                     // update the version for > 0
                     if (version != 0) {
-                        sql << "UPDATE __database_meta__ SET version = :version", soci::use(version - 1);
+                        auto prevVersion = version - 1;
+                        sql << "UPDATE __database_meta__ SET version = :version", soci::use(prevVersion);
                     }
 
                     rollback<version - 1>(sql, currentVersion - 1);
@@ -124,6 +125,18 @@ namespace ledger {
 
         template <> void migrate<7>(soci::session& sql);
         template <> void rollback<7>(soci::session& sql);
+
+        // add ripple’s memo field
+        template <> void migrate<8>(soci::session& sql);
+        template <> void rollback<8>(soci::session& sql);
+
+        // Migrate input_data from VARCHAR(255) to TEXT
+        template <> void migrate<9>(soci::session& sql);
+        template <> void rollback<9>(soci::session& sql);
+
+        // Add block_height column to erc20_operations table
+        template <> void migrate<10>(soci::session& sql);
+        template <> void rollback<10>(soci::session& sql);
     }
 }
 

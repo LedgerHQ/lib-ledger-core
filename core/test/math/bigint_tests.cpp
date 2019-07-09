@@ -34,6 +34,14 @@
 
 using namespace ledger::core;
 
+TEST(BigInt, DiscardIllFormed) {
+    EXPECT_THROW(BigInt::fromString("1.1"), std::invalid_argument);
+    EXPECT_THROW(BigInt::fromString("1e3"), std::invalid_argument);
+    EXPECT_THROW(BigInt::fromString("1e+3"), std::invalid_argument);
+    EXPECT_THROW(BigInt::fromString("1e-3"), std::invalid_argument);
+    EXPECT_THROW(BigInt::fromString("-1.3"), std::invalid_argument);
+}
+
 TEST(BigInt, InitializeWithIntValue) {
     auto value = BigInt(12);
     EXPECT_EQ(value.toInt(), 12);

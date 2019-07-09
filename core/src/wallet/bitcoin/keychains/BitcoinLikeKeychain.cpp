@@ -97,12 +97,28 @@ namespace ledger {
             return _fullScheme;
         }
 
+        std::string BitcoinLikeKeychain::getKeychainEngine() const {
+            return _configuration->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::KeychainEngines::BIP32_P2PKH);
+        }
+
         bool BitcoinLikeKeychain::isSegwit() const {
             //TODO: find a better way to know whether it's segwit or not
-            auto keychainEngine = _configuration->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::KeychainEngines::BIP32_P2PKH);
-            return (keychainEngine == api::KeychainEngines::BIP49_P2SH ||
-                    keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
-                    keychainEngine == api::KeychainEngines::BIP173_P2WSH) ? true : false;
+            return isSegwit(_configuration->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::KeychainEngines::BIP32_P2PKH));
+        }
+
+        bool BitcoinLikeKeychain::isNativeSegwit() const {
+            return isNativeSegwit(_configuration->getString(api::Configuration::KEYCHAIN_ENGINE).value_or(api::KeychainEngines::BIP32_P2PKH));
+        }
+
+        bool BitcoinLikeKeychain::isSegwit(const std::string &keychainEngine) {
+            return keychainEngine == api::KeychainEngines::BIP49_P2SH ||
+                   keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
+                   keychainEngine == api::KeychainEngines::BIP173_P2WSH;
+        }
+
+        bool BitcoinLikeKeychain::isNativeSegwit(const std::string &keychainEngine) {
+            return keychainEngine == api::KeychainEngines::BIP173_P2WPKH ||
+                   keychainEngine == api::KeychainEngines::BIP173_P2WSH;
         }
     }
 }

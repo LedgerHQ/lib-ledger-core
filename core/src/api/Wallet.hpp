@@ -23,6 +23,7 @@ class AccountCreationInfoCallback;
 class AccountListCallback;
 class BitcoinLikeWallet;
 class BlockCallback;
+class DynamicObject;
 class ErrorCodeCallback;
 class EventBus;
 class ExtendedKeyAccountCreationInfoCallback;
@@ -185,6 +186,9 @@ public:
      * @param date, start date of data deletion
      */
     virtual void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
+
+    /** Return wallet's configuration */
+    virtual std::shared_ptr<DynamicObject> getConfiguration() = 0;
 };
 
 } } }  // namespace ledger::core::api

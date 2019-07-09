@@ -47,10 +47,13 @@ namespace ledger {
 
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
                     " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
-                    "block.height, block.hash, block.time, block.currency_name "
+                    "block.height, block.hash, block.time, block.currency_name, "
+                    "memo.data, memo.fmt, memo.ty "
                     "FROM ripple_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
-                    "WHERE tx.hash = :hash", use(hash));
+                    "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
+                    "WHERE tx.hash = :hash "
+                    "ORDER BY memo.array_index ASC", use(hash));
 
             for (auto &row : rows) {
                 inflateTransaction(sql, row, tx);
@@ -77,6 +80,16 @@ namespace ledger {
                 block.time = row.get<std::chrono::system_clock::time_point>(9);
                 block.currencyName = row.get<std::string>(10);
                 tx.block = block;
+            }
+
+            if (row.get_indicator(11) != i_null &&
+                    row.get_indicator(12) != i_null &&
+                    row.get_indicator(13) != i_null) {
+                tx.memos.push_back(api::RippleLikeMemo(
+                        row.get<std::string>(11),
+                        row.get<std::string>(12),
+                        row.get<std::string>(13)
+                ));
             }
 
             return true;
@@ -117,18 +130,31 @@ namespace ledger {
                 if (tx.block.nonEmpty()) {
                     BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
-
+                auto hexValue = tx.value.toHexString();
+                auto hexFees = tx.fees.toHexString();
                 sql
                         << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations)",
                         use(rippleTxUid),
                         use(tx.hash),
-                        use(tx.value.toHexString()),
+                        use(hexValue),
                         use(blockUid),
                         use(tx.receivedAt),
                         use(tx.sender),
                         use(tx.receiver),
-                        use(tx.fees.toHexString()),
+                        use(hexFees),
                         use(tx.confirmations);
+
+                int fieldIndex = 0;
+                for (auto& memo : tx.memos) {
+                    sql << "INSERT INTO ripple_memos VALUES (:tx_uid, :data, :fmt, :ty, :i)",
+                           use(rippleTxUid),
+                           use(memo.data),
+                           use(memo.fmt),
+                           use(memo.ty),
+                           use(fieldIndex);
+
+                    ++fieldIndex;
+                }
 
                 return rippleTxUid;
             }

@@ -40,6 +40,7 @@ namespace ledger {
             ERC20LikeOperation::ERC20LikeOperation(const std::string &accountAddress,
                                                    const std::string &operationUid,
                                                    const Operation &operation,
+                                                   const ERC20Transaction &erc20Tx,
                                                    const api::Currency &currency) {
 
                 auto& tx = operation.ethereumTransaction.getValue();
@@ -51,19 +52,13 @@ namespace ledger {
                 _gasLimit = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasLimit));
                 _gasUsed = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.gasUsed.getValue()));
                 _status = tx.status;
-                auto operationType = operation.type;
-                if ( operationType == api::OperationType::SEND) {
-                    _receiver = tx.receiver;
-                    _sender = accountAddress;
-                } else {
-                    _receiver = accountAddress;
-                    _sender = tx.sender;
-                }
-
-                _value = std::make_shared<api::BigIntImpl>(api::BigIntImpl(tx.erc20.getValue().value));
+                _receiver = erc20Tx.to;
+                _sender = erc20Tx.from;
+                _value = std::make_shared<api::BigIntImpl>(api::BigIntImpl(erc20Tx.value));
                 _data = tx.inputData;
                 _time = tx.receivedAt;
-                _operationType = operationType;
+                _operationType = erc20Tx.type;
+                _blockHeight = tx.block.hasValue() ? tx.block.getValue().height : 0;
             }
 
             std::string ERC20LikeOperation::getHash() {
@@ -120,6 +115,10 @@ namespace ledger {
 
             int32_t ERC20LikeOperation::getStatus() {
                 return _status;
+            }
+
+            std::experimental::optional<int64_t> ERC20LikeOperation::getBlockHeight() {
+                return _blockHeight == 0 ? Option<int64_t>() : Option<int64_t>(_blockHeight);
             }
     }
 }

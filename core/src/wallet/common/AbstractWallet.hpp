@@ -49,6 +49,7 @@
 #include <api/AccountCallback.hpp>
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
+#include <api/DynamicObject.hpp>
 
 namespace ledger {
     namespace core {
@@ -121,6 +122,7 @@ namespace ledger {
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
 
+            std::shared_ptr<api::DynamicObject> getConfiguration() override;
 
             virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;
             virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo& info) = 0;
@@ -138,7 +140,7 @@ namespace ledger {
             virtual std::shared_ptr<DatabaseSessionPool> getDatabase() const;
             virtual std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
             virtual std::string getWalletUid() const;
-            virtual std::shared_ptr<DynamicObject> getConfiguration() const;
+            virtual std::shared_ptr<DynamicObject> getConfig() const;
             virtual const DerivationScheme& getDerivationScheme() const;
 
         protected:

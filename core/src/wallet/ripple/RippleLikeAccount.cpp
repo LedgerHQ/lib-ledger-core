@@ -243,6 +243,8 @@ namespace ledger {
                                 sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
                                 break;
                             }
+                            default:
+                                break;
                         }
                     }
                     operationsCount += 1;
@@ -284,9 +286,10 @@ namespace ledger {
                         "BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>(
                         "state", savedState.getValue())->commit();
             }
+            auto accountUid = getAccountUid();
             sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
-                    getAccountUid()), soci::use(date);
-            log->debug(" Finish erasing data of account : {}", getAccountUid());
+                    accountUid), soci::use(date);
+            log->debug(" Finish erasing data of account : {}", accountUid);
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
         }
@@ -380,6 +383,7 @@ namespace ledger {
 
             auto self = std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
 
+            // TODO: rm this
             auto getTransaction = [self](
                     const std::string &hash) -> FuturePtr<RippleLikeBlockchainExplorerTransaction> {
                 return self->getTransaction(hash);
@@ -398,6 +402,15 @@ namespace ledger {
                 BigInt ledgerSequence((int64_t)self->_currentLedgerSequence);
                 tx->setLedgerSequence(ledgerSequence);
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey(accountAddress->toString()).getValue());
+
+                for (auto& memo : request.memos) {
+                    tx->addMemo(memo);
+                }
+
+                if (request.destinationTag.hasValue()) {
+                    tx->setDestinationTag(request.destinationTag.getValue());
+                }
+
                 return explorer->getSequence(accountAddress->toString()).mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &sequence) -> std::shared_ptr<api::RippleLikeTransaction> {
                     tx->setSequence(BigInt(sequence->toString()) + BigInt("1"));
                     return tx;
@@ -409,6 +422,30 @@ namespace ledger {
                                                                   _explorer,
                                                                   logger(),
                                                                   buildFunction);
+        }
+
+        void RippleLikeAccount::getFees(const std::shared_ptr<api::AmountCallback> & callback) {
+            getFees().callback(getContext(), callback);
+        }
+
+        FuturePtr<api::Amount> RippleLikeAccount::getFees() {
+            auto self = shared_from_this();
+            return _explorer->getFees().mapPtr<api::Amount>(getContext(), [self] (const std::shared_ptr<BigInt> &fees) {
+                // Fees in drops
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *fees);
+            });
+        }
+
+        void RippleLikeAccount::getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) {
+            getBaseReserve().callback(getContext(), callback);
+        }
+
+        FuturePtr<api::Amount> RippleLikeAccount::getBaseReserve() {
+            auto self = shared_from_this();
+            return _explorer->getBaseReserve().mapPtr<api::Amount>(getContext(), [self] (const std::shared_ptr<BigInt> &reserve) {
+                // Reserve in XRPs
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *reserve);
+            });
         }
 
     }

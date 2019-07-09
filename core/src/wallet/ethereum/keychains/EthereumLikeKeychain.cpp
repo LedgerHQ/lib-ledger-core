@@ -160,26 +160,30 @@ namespace ledger {
 
             if (_address.empty()) {
 
+                auto coinType = _fullScheme.getCoinType() ? _fullScheme.getCoinType() : getCurrency().bip44CoinType;
                 _localPath = getDerivationScheme()
-                        .setAccountIndex(getAccountIndex())
-                        .setCoinType(getCurrency().bip44CoinType)
-                        .setNode(0)
-                        .setAddressIndex(0).getPath().toString();
+                        .setCoinType(coinType)
+                        .getPath().toString();
 
                 auto cacheKey = fmt::format("path:{}", _localPath);
                 _address = getPreferences()->getString(cacheKey, "");
                 if (_address.empty()) {
-                    auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
-                            .setAccountIndex(getAccountIndex())
-                            .setCoinType(getCurrency().bip44CoinType)
-                            .setNode(0)
-                            .setAddressIndex(0).getPath().toString();
+                    auto nodeScheme = getDerivationScheme()
+                            .getSchemeFrom(DerivationSchemeLevel::NODE);
+                    auto p = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
+                            .shift(1)
+                            .setCoinType(coinType)
+                            .getPath()
+                            .toString() : "";
 
-                    auto localNodeScheme = getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
-                            .setAccountIndex(getAccountIndex())
-                            .setCoinType(getCurrency().bip44CoinType)
-                            .setNode(0);
-                    auto xpub = std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
+                    auto localNodeScheme = getDerivationScheme()
+                            .getSchemeTo(DerivationSchemeLevel::NODE)
+                            .setCoinType(coinType);
+                    // If node level is hardened we don't derive according to it since private
+                    // derivation are not supported 
+                    auto xpub = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ? std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) : std::static_pointer_cast<EthereumLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
+                    auto strScheme = localNodeScheme.getPath().toString();
+
                     _address = xpub->derive(p)->toEIP55();
                     // Feed path -> address cache
                     // Feed address -> path cache

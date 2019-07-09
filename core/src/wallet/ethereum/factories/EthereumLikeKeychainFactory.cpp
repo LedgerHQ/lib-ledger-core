@@ -56,10 +56,9 @@ namespace ledger {
                 if (xpub.isFailure()) {
                     throw xpub.getFailure();
                 } else {
-                    auto keychain = std::make_shared<EthereumLikeKeychain>(
+                    return std::make_shared<EthereumLikeKeychain>(
                             configuration, currency, index, xpub.getValue(), accountPreferences
                     );
-                    return keychain;
                 }
 
             } else {

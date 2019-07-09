@@ -29,7 +29,6 @@
  *
  */
 #include "SQLite3Backend.hpp"
-#include <soci-sqlite3.h>
 #include <utils/Exception.hpp>
 
 using namespace soci;
@@ -68,9 +67,18 @@ namespace ledger {
             if (_dbResolvedPath.empty()) {
                 throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
             }
-            auto parameters = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword) + fmt::format("new_key=\"{}\" ", newPassword);
+
+            auto db_params = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", oldPassword);
+            if (!newPassword.empty()) {
+                // change password if a new password is provided
+                db_params += fmt::format("new_key=\"{}\" ", newPassword);
+            } else {
+                // otherwise, decrypt the database back to plain text by providing an empty new key
+                db_params += "disable_encryption=\"true\" ";
+            }
+
             session.close();
-            session.open(*soci::factory_sqlite3(), parameters);
+            session.open(*soci::factory_sqlite3(), db_params);
         }
     }
 }

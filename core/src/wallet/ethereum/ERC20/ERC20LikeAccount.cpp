@@ -69,19 +69,19 @@ namespace ledger {
         }
 
         std::string ERC20LikeAccount::getAddress() {
-
             return _accountAddress;
         }
 
-        std::shared_ptr<api::BigInt> ERC20LikeAccount::getBalance() {
-            auto result = BigInt::ZERO;
-            auto operations = getOperations();
-
-            for (auto &op : operations) {
-                result = accumulateBalanceWithOperation(result, *op);
+        FuturePtr<api::BigInt> ERC20LikeAccount::getBalance() {
+            auto parentAccount = _account.lock();
+            if (!parentAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
             }
+            return parentAccount->getERC20Balance(_token.contractAddress);
+        }
 
-            return std::make_shared<api::BigIntImpl>(result);
+        void ERC20LikeAccount::getBalance(const std::shared_ptr<api::BigIntCallback> & callback) {
+            getBalance().callback(getContext(), callback);
         }
 
         std::vector<std::shared_ptr<api::BigInt>> ERC20LikeAccount::getBalanceHistoryFor(
@@ -119,6 +119,8 @@ namespace ledger {
                         case api::OperationType::SEND:
                             sum = sum - value;
                             break;
+                        default:
+                            break;
                     }
                 }
             };
@@ -145,8 +147,9 @@ namespace ledger {
                     return balance + value;
 
                 case api::OperationType::SEND:
-                default:
                     return balance - value;
+                default:
+                    return balance;
             }
         }
 
@@ -160,7 +163,7 @@ namespace ledger {
             soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
                     " op.type, op.hash, op.nonce, op.value,"
                     " op.date, op.sender, op.receiver, op.input_data,"
-                    " op.gas_price, op.gas_limit, op.gas_used, op.status"
+                    " op.gas_price, op.gas_limit, op.gas_used, op.status, op.block_height"
                     " FROM erc20_operations AS op"
                     " WHERE op.account_uid = :account_uid", soci::use(_accountUid));
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
@@ -186,63 +189,87 @@ namespace ledger {
                 op->setUsedGas(BigInt::fromHex(row.get<std::string>(13)));
                 auto status = row.get<int32_t>(14);
                 op->setStatus(status);
+                auto blockHeight = row.get<long long>(15);
+                op->setBlockHeight(blockHeight);
                 result.emplace_back(op);
             }
             return result;
         }
 
-        std::vector<uint8_t> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
-                                                                        const std::string & address) {
+        Future<std::vector<uint8_t>> ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
+                                                                                const std::string & address) {
             if (! api::Address::isValid(address, _parentCurrency)) {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
-            auto balance = getBalance();
-            if ( amount->compare(balance) > 0) {
-                throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-            }
-
-            BytesWriter writer;
-            writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
-
-            auto toUint256Format = [=](const std::string &hexInput) -> std::string {
-                if (hexInput.size() > 64) {
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid argument passed to toUint256Format");
-                }
-                auto hexOutput = hexInput;
-                while (hexOutput.size() != 64) {
-                    hexOutput = "00" + hexOutput;
+            return getBalance().map<std::vector<uint8_t>>(getContext(), [amount, address] (const std::shared_ptr<api::BigInt> &balance) {
+                if ( amount->compare(balance) > 0) {
+                    throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                 }
 
-                return hexOutput;
-            };
+                BytesWriter writer;
+                writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
 
-            writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
+                auto toUint256Format = [=](const std::string &hexInput) -> std::string {
+                    if (hexInput.size() > 64) {
+                        throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid argument passed to toUint256Format");
+                    }
+                    auto hexOutput = hexInput;
+                    while (hexOutput.size() != 64) {
+                        hexOutput = "00" + hexOutput;
+                    }
 
-            BigInt bigAmount(amount->toString(10));
-            writer.writeByteArray(hex::toByteArray(toUint256Format(bigAmount.toHexString())));
+                    return hexOutput;
+                };
 
-            return writer.toByteArray();
+                writer.writeByteArray(hex::toByteArray(toUint256Format(address.substr(2,address.size() - 2))));
+
+                BigInt bigAmount(amount->toString(10));
+                writer.writeByteArray(hex::toByteArray(toUint256Format(bigAmount.toHexString())));
+
+                return writer.toByteArray();
+            });
+        }
+
+        void ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
+                                                        const std::string &address,
+                                                        const std::shared_ptr<api::BinaryCallback> &data) {
+            auto context = _account.lock()->getContext();
+            getTransferToAddressData(amount, address).callback(context, data);
         }
 
         void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation) {
+            auto status = operation->getStatus();
+            auto erc20OpUid = operation->getOperationUid();
+            auto gasUsed = operation->getUsedGas()->toString(16);
             if (newOperation) {
-                auto erc20OpUid = operation->getOperationUid();
                 auto ethOpUid = operation->getETHOperationUid();
                 auto hash = operation->getHash();
                 auto receiver = operation->getReceiver();
                 auto sender = operation->getSender();
                 auto data = hex::toString(operation->getData());
-                auto status = operation->getStatus();
+                auto operationType = api::to_string(operation->getOperationType());
+                auto nonce = operation->getNonce()->toString(16);
+                auto value = operation->getValue()->toString(16);
+                auto time = operation->getTime();
+                auto gasPrice = operation->getGasPrice()->toString(16);
+                auto gasLimit = operation->getGasLimit()->toString(16);
+                auto blockHeight = operation->getBlockHeight().value_or(0);
                 sql << "INSERT INTO erc20_operations VALUES("
                         ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
-                        ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status"
+                        ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status, :block_height"
                         ")"
                         , use(erc20OpUid), use(ethOpUid)
-                        , use(_accountUid), use(api::to_string(operation->getOperationType())), use(hash)
-                        , use(operation->getNonce()->toString(16)), use(operation->getValue()->toString(16)), use(operation->getTime())
+                        , use(_accountUid), use(operationType), use(hash)
+                        , use(nonce), use(value), use(time)
                         , use(sender), use(receiver), use(data)
-                        , use(operation->getGasPrice()->toString(16)), use(operation->getGasLimit()->toString(16)), use(operation->getUsedGas()->toString(16))
-                        , use(status);
+                        , use(gasPrice), use(gasLimit), use(gasUsed)
+                        , use(status), use(blockHeight);
+            } else {
+                // Update
+                sql << "UPDATE erc20_operations SET status = :code , gas_used = :gas WHERE uid = :uid"
+                        , use(status)
+                        , use(gasUsed)
+                        , use(erc20OpUid);
             }
         }
 
@@ -261,6 +288,14 @@ namespace ledger {
             );
             query->registerAccount(localAccount);
             return query;
+        }
+
+        std::shared_ptr<api::ExecutionContext> ERC20LikeAccount::getContext() {
+            auto parentAccount = _account.lock();
+            if (!parentAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
+            }
+            return parentAccount->getContext();
         }
 
     }

@@ -38,6 +38,10 @@ api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
 );
 
+api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO(
+        0, {"main"}, {"84'/0'/0'"}, {"xpub6CMeLkY9TzXyLYXPWMXB5LWtprVABb6HwPEPXnEgESMNrSUBsvhXNsA7zKS1ZRKhUyQG4HjZysEP8v7gDNU4J6PvN5yLx4meEm3mpEapLMN"}
+);
+
 api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO(
         0, {"main", "main"}, {"44'/0'/0'", "44'/0'"},
         {hex::toByteArray("0437bc83a377ea025e53eafcd18f299268d1cecae89b4f15401926a0f8b006c0f7ee1b995047b3e15959c5d10dd1563e22a2e6e4be9572aa7078e32f317677a901"), hex::toByteArray("04fb60043afe80ee1aeb0160e2aafc94690fb4427343e8d4bf410105b1121f7a44a311668fa80a7a341554a4ef5262bc6ebd8cc981b8b600dafd40f7682edb5b3b")},
@@ -55,10 +59,6 @@ api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO(
 api::ExtendedKeyAccountCreationInfo ETH_XPUB_INFO(
         0, {"main"}, {"44'/60'/0'"}, {"xpub6E3C4qRJgptBznysvYD9JW7BNXQXvjhNBHYqASZKeF6konKuAH5bAm9Q9444SBasXSAB56BjjYnGCg9z1RYZzcEJeMxe6g4Ppgw8Q7Fo8fh"}
 );
-//xpub6EswUg1PkDcQqx6xKrwxdVnnf5Wmi7nX6A9KjpufdCrzxMzwqNnnwmGFWnsWzsz3Es8nCqCjGJAGHdP3b8jMSfWmzPWskqrfzHuYbrSFYif
-api::ExtendedKeyAccountCreationInfo ETH_ROPSTEN_XPUB_INFO(
-        0, {"main"}, {"44'/60'/0'"}, {"0x3ad0bd678b6e4767c62dfb843449396936a1e952"}
-);
 
 api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO(
         0, {"main"}, {"44'/60'/0'"}, {"xpub6EswUg1PkDcQqx6xKrwxdVnnf5Wmi7nX6A9KjpufdCrzxMzwqNnnwmGFWnsWzsz3Es8nCqCjGJAGHdP3b8jMSfWmzPWskqrfzHuYbrSFYif"}
@@ -74,6 +74,18 @@ api::AccountCreationInfo ETH_KEYS_INFO_VAULT(
         0, {"main"}, {"44'/1'/0'"},
         {hex::toByteArray("045650BE990F3CD39DF6CBAEBB8C06646727B1629509F993883681AE815EE1F3F76CC4628A600F15806D8A25AE164C061BF5EAB3A01BD8A7E8DB3BAAC07629DC67")},
         {hex::toByteArray("81F18B05DF5F54E5602A968D39AED1ED4EDC146F5971C4E84AA8273376B05D49")}
+);
+
+api::AccountCreationInfo ETH_KEYS_INFO_LIVE(
+        0, {"main"}, {"44'/60'/0'/0/0"},
+        {hex::toByteArray("046596fcbe77efedf05755dc7ee2f58748d57254defb098191e5867fcd1fb5e05624bbac4307fa0ee7f297fe0b1f27d46cd59242d12588101692767f9d2de3b6b7")},
+        {hex::toByteArray("2a224ce46d853d381a68c6b819dabc7d00b14aaa538b6d472963820a48092cff")}
+);
+
+api::AccountCreationInfo ETC_KEYS_INFO_LIVE(
+        0, {"main"}, {"44'/60'/0'/0/0"},
+        {hex::toByteArray("0408b2ddef4cb4af62412ea70cce188ba1318651bb9c0ad599b2714d245109212fb2c79871ec5d35f479ee502c3d7a927908301823f6152823d37da9bd4cb31de7")},
+        {hex::toByteArray("2a224ce46d853d381a68c6b819dabc7d00b14aaa538b6d472963820a48092cff")}
 );
 
 api::AccountCreationInfo XRP_KEYS_INFO(
@@ -107,10 +119,10 @@ void BaseFixture::TearDown() {
     resolver->clean();
 }
 
-std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
+std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolName, const std::string &password) {
     return WalletPool::newInstance(
             poolName,
-            Option<std::string>("test"),
+            password,
             http,
             ws,
             resolver,

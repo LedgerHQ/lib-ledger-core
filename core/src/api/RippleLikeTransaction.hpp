@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_RIPPLELIKETRANSACTION_HPP
 #define DJINNI_GENERATED_RIPPLELIKETRANSACTION_HPP
 
+#include "../utils/optional.hpp"
 #include <chrono>
 #include <cstdint>
 #include <memory>
@@ -22,6 +23,7 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 class BigInt;
 class RippleLikeAddress;
+struct RippleLikeMemo;
 
 /**
  * TODO: to be more accurate, all RippleLikeBlock classes should be renamed as RippleLikeLedger,
@@ -73,6 +75,15 @@ public:
 
     /** Get Signing public Key */
     virtual std::vector<uint8_t> getSigningPubKey() = 0;
+
+    /** Get all memos associated with the transaction. */
+    virtual std::vector<RippleLikeMemo> getMemos() = 0;
+
+    /** Add a memo to a transaction. */
+    virtual void addMemo(const RippleLikeMemo & memo) = 0;
+
+    /** An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account */
+    virtual std::experimental::optional<int64_t> getDestinationTag() = 0;
 };
 
 } } }  // namespace ledger::core::api

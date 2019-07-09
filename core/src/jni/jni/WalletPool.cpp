@@ -43,7 +43,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPool_newInstance(JNIEnv* jn
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::WalletPool::newInstance(::djinni::String::toCpp(jniEnv, j_name),
-                                                              ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, j_password),
+                                                              ::djinni::String::toCpp(jniEnv, j_password),
                                                               ::djinni_generated::HttpClient::toCpp(jniEnv, j_httpClient),
                                                               ::djinni_generated::WebSocketClient::toCpp(jniEnv, j_webSocketClient),
                                                               ::djinni_generated::PathResolver::toCpp(jniEnv, j_pathResolver),

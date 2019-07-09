@@ -17,6 +17,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class AmountCallback;
 class RippleLikeTransaction;
 class RippleLikeTransactionBuilder;
 class StringCallback;
@@ -31,6 +32,21 @@ public:
     virtual void broadcastTransaction(const std::shared_ptr<RippleLikeTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
     virtual std::shared_ptr<RippleLikeTransactionBuilder> buildTransaction() = 0;
+
+    /**
+     * Get fees from network
+     * Note: it would have been better to have this method on RippleLikeWallet
+     * but since RippleLikeWallet is not used anywhere, it's better to keep all
+     * specific methods under the same specific class so it will be easy to segratate
+     * when the right time comes !
+     */
+    virtual void getFees(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /**
+     * Get base reserve (dust to leave on an XRP account) from network
+     * Note: same note as above
+     */
+    virtual void getBaseReserve(const std::shared_ptr<AmountCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api
