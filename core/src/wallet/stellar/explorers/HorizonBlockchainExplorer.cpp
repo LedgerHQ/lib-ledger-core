@@ -38,11 +38,13 @@
 #include "horizon/HorizonAssetParser.hpp"
 #include "horizon/HorizonTransactionParser.hpp"
 #include "horizon/HorizonOperationParser.hpp"
+#include "horizon/HorizonFeeStatsParser.hpp"
 
 namespace ledger {
     namespace core {
         using AssetsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Asset>>, HorizonAssetsParser>;
         using AccountParser = HorizonApiParser<stellar::Account, HorizonAccountParser, false>;
+        using FeeStatsParser = HorizonApiParser<stellar::FeeStats, HorizonFeeStatsParser, false>;
         using LedgersParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Ledger>>, HorizonLedgersParser>;
         using TransactionsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Transaction>>, HorizonTransactionsParser>;
         using OperationsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Operation>>, HorizonOperationsParser>;
@@ -82,8 +84,15 @@ namespace ledger {
                     });
         }
 
-        FuturePtr<BigInt> HorizonBlockchainExplorer::getRecommendedFees() {
-
+        FuturePtr<stellar::FeeStats> HorizonBlockchainExplorer::getRecommendedFees() {
+            return http->GET("/fee_stats")
+                    .template json<FeeStatsParser::Result, Exception>(FeeStatsParser())
+                    .map<std::shared_ptr<stellar::FeeStats>>(getContext(), [] (const FeeStatsParser::Response& result) -> std::shared_ptr<stellar::FeeStats> {
+                        if (result.isLeft()) {
+                            throw result.getLeft();
+                        }
+                        return result.getRight();
+                    });
         }
 
         Future<std::vector<std::shared_ptr<stellar::Operation>>> HorizonBlockchainExplorer::getOperations(const std::string& address,

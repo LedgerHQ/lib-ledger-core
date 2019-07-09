@@ -49,6 +49,14 @@ namespace ledger {
                 std::chrono::system_clock::time_point time;
             };
 
+            struct FeeStats {
+                std::string lastLedger;
+                BigInt lastBaseFee;
+                BigInt modeAcceptedFee;
+                BigInt minAccepted;
+                BigInt maxFee;
+            };
+
             struct Balance {
                 BigInt value;
                 Option<BigInt> buyingLiabilities;

@@ -333,8 +333,8 @@ namespace ledger {
             return rhs < *this;
         }
 
-        bool BigInt::operator>=(const BigInt &) const {
-            return false;
+        bool BigInt::operator>=(const BigInt &rhs) const {
+            return rhs == *this || rhs < *this;
         }
 
         BigInt BigInt::pow(unsigned short p) const {

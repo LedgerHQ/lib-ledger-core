@@ -117,7 +117,6 @@ TEST_F(StellarFixture, GetTransactions) {
     EXPECT_EQ(tx->pagingToken, "98448948301160448");
 }
 
-
 TEST_F(StellarFixture, GetOperations) {
     auto pool = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
@@ -153,5 +152,22 @@ TEST_F(StellarFixture, GetOperations) {
         EXPECT_EQ(op->amount, BigInt::fromFloatString("2.0000000", 7));
         EXPECT_EQ(op->createdAt, DateUtils::fromJSON("2019-03-14T10:27:05Z"));
         EXPECT_EQ(op->type, stellar::OperationType::PAYMENT);
+        EXPECT_EQ(op->asset.type, "native");
     }
+}
+
+TEST_F(StellarFixture, GetRecommendedFees) {
+    auto pool = newPool();
+    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+            pool->getHttpClient(MAINNET_URL),
+            std::make_shared<DynamicObject>()
+    );
+    auto fees = wait(explorer->getRecommendedFees());
+    auto t = fees->maxFee.toString();
+    EXPECT_TRUE(!fees->lastLedger.empty());
+    EXPECT_TRUE(fees->lastBaseFee >= BigInt(100));
+    EXPECT_TRUE(fees->modeAcceptedFee >= BigInt(100));
+    EXPECT_TRUE(fees->minAccepted >= BigInt(100));
+    EXPECT_TRUE(fees->maxFee >= BigInt(100));
 }

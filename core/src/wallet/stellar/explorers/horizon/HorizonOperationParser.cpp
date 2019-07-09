@@ -110,6 +110,8 @@ namespace ledger {
                 _operation->pagingToken = std::string(str, length);
             } else if (_path.match(TRANSACTION_HASH_MATCHER)) {
                 _operation->transactionHash = std::string(str, length);
+            } else {
+                _assetParser.String(str, length, copy);
             }
             return true;
         }
