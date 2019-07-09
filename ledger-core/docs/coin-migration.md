@@ -12,7 +12,35 @@ the application team as it just gives an interface to other coins.
 
 For the purpose of this document, we will consider the migration of a coin called `abrac (ABC)`
 
-## Preamble
+<!-- vim-markdown-toc GFM -->
+
+* [Overall architecture](#overall-architecture)
+* [Migration foreword](#migration-foreword)
+* [Setting up a new project](#setting-up-a-new-project)
+  * [Create a new Ledger Core Coin project](#create-a-new-ledger-core-coin-project)
+  * [Generate the public API](#generate-the-public-api)
+  * [Configure and compile your library](#configure-and-compile-your-library)
+* [Migrating the database system](#migrating-the-database-system)
+* [Wallet pool migration](#wallet-pool-migration)
+
+<!-- vim-markdown-toc -->
+
+## Overall architecture
+
+The new architecture is rather simple.
+
+  - **Ledger Core** is the name of the team.
+  - `lib-ledger-core` is both the name of our git repository but also the legacy library, containing
+    all coins gathered in the same binary.
+  - `ledger-core` is the new abstract Core library. It is completely coin-agnostic and lots of
+    features from `lib-ledger-core` has been either removed or moved somewhere else.
+  - `ledger-core-<coin-name>` is a library that provides Core support for `<coin-name>`. For
+    instance, `ledger-core-ripple` provides the Ripple blockchain via the our Core library.
+  - `ledger-core-factories` is a special library that lists all currently supported coins. It is
+    not necessarily mandatory in order to use the Core library but highly recommended to get started
+    with minimal amount of effort.
+
+## Migration foreword
 
 Before doing anything else, you need to know a script exists to automate **a lot** of things for
 you. We strongly advise you to add the `tools/` path to your `PATH` variable:
@@ -87,7 +115,7 @@ make -j8
 
 And here you are!
 
-## Migrate the database system
+## Migrating the database system
 
 One of the most important aspect in a coin integration is the persistence. Persistent objects are
 usually stored in a database. Currently, you can choose the way you want to store your objects but
@@ -123,5 +151,50 @@ should follow the same conventions to handle your migrations, that are:
   - When you need a new migration, all you have to do is to create a new pair of functions by
     incrementing the `N` value and change the `currentVersion` static variable to match the latest,
     expected version.
+
+## Wallet pool migration
+
+The *wallet pool* has been a very coupled type. It has bindings and links to several other types
+and objects:
+
+  - The *pool name*.
+  - The *password* used to encrypt the whole wallet pool and subsequent wallets.
+  - A *configuration* object, which is some kind of dynamic local storage that exists only when the
+    wallet pool lives.
+  - A *path resolver*, used to resolve paths used internally.
+  - An *http engine*, used to provide HTTP connection to clients.
+  - A set of connected HTTP clients.
+  - A WebSocket, connected client.
+  - An internal and external *preference* system, allowing to store data in a local storage used to
+    customize the wallet application.
+  - A *database* usable by coin backends to store various data.
+  - A *logger*.
+  - A *thread dispatcher*.
+  - A *random number generator*.
+  - List of *currencies* currently available in the wallet application.
+  - An *event publisher*.
+  - Some other data regarding block and event synchronizations.
+  - List of *wallets*. Those are abstract wallets and you shouldn’t try to use them directly.
+
+Factories used to be in the wallet pool but they were removed to make the abstract code completely
+coin-agnostic. They now live in the `ledger-core-factories` project.
+
+The wallet pool is now a simple object used to share lots of scarce resources, like HTTP
+connections, and other important data between coins. Wallets are created and stored via a wallet
+pool, but their creation is not handled directly through the wallet pool.
+
+Currencies are abstract objects used to represent each coin metadata. It contains:
+
+  - Name of the coin.
+  - Unique ID (integer) representing the coin. (SLIP-0044).
+    See [this](https://github.com/satoshilabs/slips/blob/master/slip-0044.md) for further details.
+  - Payment URI scheme.
+  - List of currency units, which each contains:
+    - Name of the currency unit.
+    - Code name of the currency (short name, typically on three letters).
+    - Number of decimals.
+
+Currencies used to hold network parameters but they don’t anymore. The idea is that they must
+remain coin-agnostic.
 
 [soci]: https://github.com/SOCI/soci
