@@ -91,16 +91,15 @@ function add_to_cmake_params {
 }
 
 function execute_commands {
-if [ "$1" == "ios" -o "$1" == "android" ]; then
-    command_$1
-else
-  local cmd
-  for cmd;do
-    echo $cmd
-    command_$cmd
-  done
-fi
-
+    if [ "$1" == "ios" -o "$1" == "android" ]; then
+        command_$1
+    else
+        local cmd
+        for cmd;do
+            echo $cmd
+            command_$cmd
+        done
+    fi
 }
 
 export JAVA_HOME="/usr/lib/jvm/java-11-openjdk-amd64/"
@@ -128,14 +127,14 @@ echo "======> CMake config for $unamestr in $BUILD_CONFIG mode"
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
     if [ "$unamestr" == "Linux" ]; then
-    add_to_cmake_params "-DCMAKE_PREFIX=$HOME"
+        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug"
     elif [ "$unamestr" == "Darwin" ]; then
         version=`ls /usr/local/Cellar/qt | grep 5.`
         echo "====> Get qt5 version"
         echo $version
         export PATH="/usr/local/Cellar/qt/$version/bin:$PATH"
         echo $PATH
-    add_to_cmake_params -DCMAKE_INSTALL_PREFIX="/usr/local/Cellar/qt/$version" -DCMAKE_PREFIX_PATH="/usr/local/Cellar/qt/$version"
+        add_to_cmake_params -DCMAKE_INSTALL_PREFIX="/usr/local/Cellar/qt/$version" -DCMAKE_PREFIX_PATH="/usr/local/Cellar/qt/$version"
     fi
 fi
 
