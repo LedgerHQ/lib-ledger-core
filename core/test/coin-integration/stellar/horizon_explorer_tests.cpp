@@ -114,4 +114,44 @@ TEST_F(StellarFixture, GetTransactions) {
     EXPECT_EQ(tx->feePaid, BigInt(100));
     EXPECT_EQ(tx->memoType, "none");
     EXPECT_EQ(tx->memo, "");
+    EXPECT_EQ(tx->pagingToken, "98448948301160448");
+}
+
+
+TEST_F(StellarFixture, GetOperations) {
+    auto pool = newPool();
+    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+            pool->getHttpClient(MAINNET_URL),
+            std::make_shared<DynamicObject>()
+    );
+    auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
+    auto operations = wait(explorer->getOperations(accountId, Option<std::string>::NONE));
+    EXPECT_TRUE(operations.size() >= 5);
+
+    {
+        const auto& op = operations[0];
+        EXPECT_TRUE(op->transactionSuccessful);
+        EXPECT_EQ(op->transactionHash, "93645afbd9f1c60f364e5acf77acd542883549262e84fd813f7cfefd4dc5bad6");
+        EXPECT_EQ(op->id, "98448948301160449");
+        EXPECT_EQ(op->pagingToken, "98448948301160449");
+        EXPECT_EQ(op->from, "GBV4ZDEPNQ2FKSPKGJP2YKDAIZWQ2XKRQD4V4ACH3TCTFY6KPY3OAVS7");
+        EXPECT_EQ(op->to, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
+        EXPECT_EQ(op->amount, BigInt::fromFloatString("180.0038671", 7));
+        EXPECT_EQ(op->createdAt, DateUtils::fromJSON("2019-03-14T10:08:27Z"));
+        EXPECT_EQ(op->type, stellar::OperationType::CREATE_ACCOUNT);
+    }
+
+    {
+        const auto& op = operations[2];
+        EXPECT_TRUE(op->transactionSuccessful);
+        EXPECT_EQ(op->transactionHash, "90d93ad920779c48c02e227a953276534d93cb972f3dd21c0963c99fd99e5278");
+        EXPECT_EQ(op->id, "98449854539276289");
+        EXPECT_EQ(op->pagingToken, "98449854539276289");
+        EXPECT_EQ(op->from, "GB6TMMOCZSFFVXUXPV6FATTGQN6NKV74I2LTBB6LR7GEWLTN2IGZ6L6X");
+        EXPECT_EQ(op->to, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
+        EXPECT_EQ(op->amount, BigInt::fromFloatString("2.0000000", 7));
+        EXPECT_EQ(op->createdAt, DateUtils::fromJSON("2019-03-14T10:27:05Z"));
+        EXPECT_EQ(op->type, stellar::OperationType::PAYMENT);
+    }
 }

@@ -43,6 +43,7 @@ static const JsonParserPathMatcher ACCOUNT_SEQUENCE_MATCHER("/source_account_seq
 static const JsonParserPathMatcher FEE_MATCHER("/fee_paid");
 static const JsonParserPathMatcher MEMO_TYPE_MATCHER("/memo_type");
 static const JsonParserPathMatcher MEMO_MATCHER("/memo");
+static const JsonParserPathMatcher PAGING_TOKEN_MATCHER("/paging_token");
 
 namespace ledger {
     namespace core {
@@ -103,6 +104,8 @@ namespace ledger {
                 _transaction->memoType = std::string(str, length);
             } else if (_path.match(ACCOUNT_SEQUENCE_MATCHER)) {
                 _transaction->sourceAccountSequence = BigInt::fromString(std::string(str, length));
+            } else if (_path.match(PAGING_TOKEN_MATCHER)) {
+                _transaction->pagingToken = std::string(str, length);
             }
             return true;
         }

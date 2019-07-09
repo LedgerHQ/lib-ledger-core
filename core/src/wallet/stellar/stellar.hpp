@@ -85,10 +85,16 @@ namespace ledger {
                                                  CHANGE_TRUST = 6, ALLOW_TRUST = 7, ACCOUNT_MERGE = 8, INFLATION = 9, MANAGE_DATA = 10, BUMP_SEQUENCE = 11};
 
             struct Operation {
-                uint64_t id;
-                Option<std::string> pagingToken;
+                std::string id;
+                std::string pagingToken;
                 bool transactionSuccessful;
                 OperationType type;
+                Asset asset;
+                BigInt amount;
+                std::string from;
+                std::string to;
+                std::string transactionHash;
+                std::chrono::system_clock::time_point createdAt;
             };
 
             struct Transaction {
@@ -101,6 +107,7 @@ namespace ledger {
                 BigInt feePaid;
                 std::string memoType;
                 std::string memo;
+                std::string pagingToken;
             };
         }
     }

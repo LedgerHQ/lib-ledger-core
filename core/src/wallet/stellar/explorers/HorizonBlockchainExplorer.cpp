@@ -37,6 +37,7 @@
 #include "horizon/HorizonLedgerParser.hpp"
 #include "horizon/HorizonAssetParser.hpp"
 #include "horizon/HorizonTransactionParser.hpp"
+#include "horizon/HorizonOperationParser.hpp"
 
 namespace ledger {
     namespace core {
@@ -44,6 +45,7 @@ namespace ledger {
         using AccountParser = HorizonApiParser<stellar::Account, HorizonAccountParser, false>;
         using LedgersParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Ledger>>, HorizonLedgersParser>;
         using TransactionsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Transaction>>, HorizonTransactionsParser>;
+        using OperationsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Operation>>, HorizonOperationsParser>;
 
         HorizonBlockchainExplorer::HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                                              const std::shared_ptr<HttpClient>& http,
@@ -86,7 +88,15 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<stellar::Operation>>> HorizonBlockchainExplorer::getOperations(const std::string& address,
                                                               const Option<std::string>& cursor) {
-
+            auto cursorParam = cursor.isEmpty() ? "" : fmt::format("&cursor={}", cursor.getValue());
+            return http->GET(fmt::format("/accounts/{}/operations?limit=50&order=asc&include_failed{}", address, cursorParam))
+                    .template json<OperationsParser::Result, Exception>(OperationsParser())
+                    .map<std::vector<std::shared_ptr<stellar::Operation>>>(getContext(), [] (const OperationsParser::Response& response) -> std::vector<std::shared_ptr<stellar::Operation>> {
+                        if (response.isLeft()) {
+                            throw response.getLeft();
+                        }
+                        return *response.getRight();
+                    });
         }
 
         Future<std::vector<std::shared_ptr<stellar::Transaction>>> HorizonBlockchainExplorer::getTransactions(const std::string& address,
