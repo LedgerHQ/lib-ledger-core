@@ -36,12 +36,14 @@
 #include "horizon/HorizonAccountParser.hpp"
 #include "horizon/HorizonLedgerParser.hpp"
 #include "horizon/HorizonAssetParser.hpp"
+#include "horizon/HorizonTransactionParser.hpp"
 
 namespace ledger {
     namespace core {
-        using AssetVectorParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Asset>>, HorizonAssetsParser>;
+        using AssetsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Asset>>, HorizonAssetsParser>;
         using AccountParser = HorizonApiParser<stellar::Account, HorizonAccountParser, false>;
         using LedgersParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Ledger>>, HorizonLedgersParser>;
+        using TransactionsParser = HorizonApiParser<std::vector<std::shared_ptr<stellar::Transaction>>, HorizonTransactionsParser>;
 
         HorizonBlockchainExplorer::HorizonBlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
                                                              const std::shared_ptr<HttpClient>& http,
@@ -52,8 +54,8 @@ namespace ledger {
 
         Future<Option<std::shared_ptr<stellar::Asset>>> HorizonBlockchainExplorer::getAsset(const std::string& assetCode, const std::string& assetIssuer) {
           return http->GET(fmt::format("/assets?asset_code={}&asset_issuer={}", assetCode, assetIssuer))
-          .template json<AssetVectorParser::Result, Exception>(AssetVectorParser())
-                  .map<Option<std::shared_ptr<stellar::Asset>>>(getContext(), [] (const Either<Exception, std::shared_ptr<AssetVectorParser::Result>>& assets) -> Option<std::shared_ptr<stellar::Asset>> {
+          .template json<AssetsParser::Result, Exception>(AssetsParser())
+                  .map<Option<std::shared_ptr<stellar::Asset>>>(getContext(), [] (const Either<Exception, std::shared_ptr<AssetsParser::Result>>& assets) -> Option<std::shared_ptr<stellar::Asset>> {
                     if (assets.isLeft()) {
                         throw assets.getLeft();
                     }
@@ -90,6 +92,15 @@ namespace ledger {
         Future<std::vector<std::shared_ptr<stellar::Transaction>>> HorizonBlockchainExplorer::getTransactions(const std::string& address,
                                                                   const Option<std::string>& cursor) {
 
+            auto cursorParam = cursor.isEmpty() ? "" : fmt::format("&cursor={}", cursor.getValue());
+            return http->GET(fmt::format("/accounts/{}/transactions?limit=50&order=asc&include_failed{}", address, cursorParam))
+                    .template json<TransactionsParser ::Result, Exception>(TransactionsParser())
+                    .map<std::vector<std::shared_ptr<stellar::Transaction>>>(getContext(), [] (const TransactionsParser::Response& response) -> std::vector<std::shared_ptr<stellar::Transaction>> {
+                        if (response.isLeft()) {
+                            throw response.getLeft();
+                        }
+                        return *response.getRight();
+                    });
         }
 
         Future<std::shared_ptr<stellar::Account>>

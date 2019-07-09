@@ -92,3 +92,26 @@ TEST_F(StellarFixture, GetLastLedger) {
     EXPECT_TRUE(ledger->height > 69859L);
     EXPECT_TRUE(ledger->time > DateUtils::fromJSON("2015-07-16T23:49:00Z"));
 }
+
+
+TEST_F(StellarFixture, GetTransactions) {
+    auto pool = newPool();
+    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+            pool->getHttpClient(MAINNET_URL),
+            std::make_shared<DynamicObject>()
+    );
+    auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
+    auto transactions = wait(explorer->getTransactions(accountId, Option<std::string>::NONE));
+    EXPECT_TRUE(transactions.size() >= 5);
+    const auto& tx = transactions.front();
+    EXPECT_EQ(tx->hash, "93645afbd9f1c60f364e5acf77acd542883549262e84fd813f7cfefd4dc5bad6");
+    EXPECT_EQ(tx->successful, true);
+    EXPECT_EQ(tx->ledger, 22921932UL);
+    EXPECT_EQ(tx->createdAt, DateUtils::fromJSON("2019-03-14T10:08:27Z"));
+    EXPECT_EQ(tx->sourceAccount, "GBV4ZDEPNQ2FKSPKGJP2YKDAIZWQ2XKRQD4V4ACH3TCTFY6KPY3OAVS7");
+    EXPECT_EQ(tx->sourceAccountSequence, BigInt::fromString("48320671297607800"));
+    EXPECT_EQ(tx->feePaid, BigInt(100));
+    EXPECT_EQ(tx->memoType, "none");
+    EXPECT_EQ(tx->memo, "");
+}

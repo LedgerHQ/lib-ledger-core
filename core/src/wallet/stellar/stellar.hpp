@@ -92,23 +92,15 @@ namespace ledger {
             };
 
             struct Transaction {
-                std::string id;
-                Option<std::string> pagingToken;
                 bool successful;
                 std::string hash;
                 uint64_t ledger;
                 std::chrono::system_clock::time_point createdAt;
                 std::string sourceAccount;
-                std::string sourceAccountSequence;
+                BigInt sourceAccountSequence;
                 BigInt feePaid;
-                std::vector<Operation> operations;
-                XDRData  envelope;
-                XDRData result;
-                XDRData resultMeta;
-                XDRData feeMeta;
                 std::string memoType;
                 std::string memo;
-                std::vector<std::string> signatures;
             };
         }
     }
