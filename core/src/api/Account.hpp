@@ -29,6 +29,7 @@ class EventBus;
 class Logger;
 class OperationQuery;
 class Preferences;
+class RippleLikeAccount;
 enum class TimePeriod;
 enum class WalletType;
 
@@ -120,16 +121,19 @@ public:
     virtual std::shared_ptr<Preferences> getOperationPreferences(const std::string & uid) = 0;
 
     /**
-     * Turn the account into an Bitcoin one, allowing operations to be performerd on the Bitcoin
+     * Turn the account into an Bitcoin one, allowing operations to be performed on the Bitcoin
      * network.
      */
     virtual std::shared_ptr<BitcoinLikeAccount> asBitcoinLikeAccount() = 0;
 
     /**
-     * Turn the account into an Ethereum one, allowing operations to be performerd on the Ethereum
+     * Turn the account into an Ethereum one, allowing operations to be performrd on the Ethereum
      * network.
      */
     virtual std::shared_ptr<EthereumLikeAccount> asEthereumLikeAccount() = 0;
+
+    /** Turn the account into a Ripple one, allowing operations to be performed on the Ripple network. */
+    virtual std::shared_ptr<RippleLikeAccount> asRippleLikeAccount() = 0;
 
     /**
      * Check if account is a Bitcoin one.
