@@ -320,12 +320,14 @@ Account = interface +c {
     # Return operation for a specific operation.
     # @param uid, string of operation id
     getOperationPreferences(uid: string): Preferences;
-    # Turn the account into an Bitcoin one, allowing operations to be performerd on the Bitcoin
+    # Turn the account into an Bitcoin one, allowing operations to be performed on the Bitcoin
     # network.
     asBitcoinLikeAccount() : BitcoinLikeAccount;
-    # Turn the account into an Ethereum one, allowing operations to be performerd on the Ethereum
+    # Turn the account into an Ethereum one, allowing operations to be performrd on the Ethereum
     # network.
     asEthereumLikeAccount() : EthereumLikeAccount;
+    # Turn the account into a Ripple one, allowing operations to be performed on the Ripple network.
+    asRippleLikeAccount(): RippleLikeAccount;
     # Check if account is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeAccount(): bool;
