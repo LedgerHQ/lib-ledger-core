@@ -36,6 +36,7 @@
 #include <api/Currency.hpp>
 #include <api/BitcoinLikeFeePolicy.hpp>
 #include <collections/strings.hpp>
+#include <database/soci-number.h>
 
 using namespace soci;
 
@@ -276,11 +277,18 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
             }
             case api::WalletType::MONERO:break;
             case api::WalletType::STELLAR: {
-                rowset<row> stellar_rows = (sql.prepare << "SELECT identifier,  FROM stellar_currencies "
+                rowset<row> stellar_rows = (sql.prepare << "SELECT identifier, address_version, base_reserve,"
+                                                           "base_fee, additional_SEPs FROM stellar_currencies "
                                                            "WHERE name = :name"
                         , use(currency.name));
                 for (auto& stellar_row : stellar_rows) {
-
+                    api::StellarLikeNetworkParameters params;
+                    params.Identifier = stellar_row.get<std::string>(0);
+                    params.Version = hex::toByteArray(stellar_row.get<std::string>(1));
+                    params.BaseFee = soci::get_number<int64_t>(stellar_row, 2);
+                    params.BaseReserve = soci::get_number<int64_t>(stellar_row, 3);
+                    params.AdditionalSEPs = strings::split(stellar_row.get<std::string>(4), ",");
+                    currency.stellarLikeNetworkParameters = params;
                 }
                 break;
             }

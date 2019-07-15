@@ -1,13 +1,13 @@
 /*
  *
- * soci
+ * StellarLikeAccountSynchronizer.h
  * ledger-core
  *
- * Created by Pierre Pollastri on 02/06/2017.
+ * Created by Pierre Pollastri on 10/07/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,36 +28,20 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SOCI_OPTION_H
-#define LEDGER_CORE_SOCI_OPTION_H
 
-#include <type-conversion-traits.h>
-#include <utils/Option.hpp>
-namespace soci {
-    template <typename T>
-    struct type_conversion<ledger::core::Option<T>> {
-        typedef typename type_conversion<T>::base_type base_type;
+#ifndef LEDGER_CORE_STELLARLIKEACCOUNTSYNCHRONIZER_H
+#define LEDGER_CORE_STELLARLIKEACCOUNTSYNCHRONIZER_H
 
-        static void from_base(base_type const & in, indicator ind, ledger::core::Option<T> & out) {
-            if (ind == i_null) {
-                out = ledger::core::Option<T>();
-            } else {
-                T tmp = T();
-                type_conversion<T>::from_base(in, ind, tmp);
-                out = ledger::core::Option<T>(tmp);
-            }
-        }
+#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
 
-        static void to_base(ledger::core::Option<T> const & in, base_type & out, indicator & ind) {
-            if (!in.isEmpty()) {
-                type_conversion<T>::to_base(in.getValue(), out, ind);
-            } else {
-                ind = i_null;
-            }
-        }
+namespace ledger {
+    namespace core {
 
-    };
+        class StellarLikeAccount;
+        class StellarLikeAccountSynchronizer : public AbstractAccountSynchronizer<StellarLikeAccount> {
+
+        };
+    }
 }
 
-
-#endif //LEDGER_CORE_SOCI_OPTION_H
+#endif //LEDGER_CORE_STELLARLIKEACCOUNTSYNCHRONIZER_H

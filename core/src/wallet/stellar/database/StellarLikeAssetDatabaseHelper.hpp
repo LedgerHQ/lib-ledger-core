@@ -1,13 +1,13 @@
 /*
  *
- * soci
+ * StellarLikeAssetDatabaseHelper.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 02/06/2017.
+ * Created by Pierre Pollastri on 12/07/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,36 +28,26 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SOCI_OPTION_H
-#define LEDGER_CORE_SOCI_OPTION_H
 
-#include <type-conversion-traits.h>
-#include <utils/Option.hpp>
-namespace soci {
-    template <typename T>
-    struct type_conversion<ledger::core::Option<T>> {
-        typedef typename type_conversion<T>::base_type base_type;
+#ifndef LEDGER_CORE_STELLARLIKEASSETDATABASEHELPER_HPP
+#define LEDGER_CORE_STELLARLIKEASSETDATABASEHELPER_HPP
 
-        static void from_base(base_type const & in, indicator ind, ledger::core::Option<T> & out) {
-            if (ind == i_null) {
-                out = ledger::core::Option<T>();
-            } else {
-                T tmp = T();
-                type_conversion<T>::from_base(in, ind, tmp);
-                out = ledger::core::Option<T>(tmp);
-            }
-        }
+#include <soci.h>
+#include <wallet/stellar/stellar.hpp>
 
-        static void to_base(ledger::core::Option<T> const & in, base_type & out, indicator & ind) {
-            if (!in.isEmpty()) {
-                type_conversion<T>::to_base(in.getValue(), out, ind);
-            } else {
-                ind = i_null;
-            }
-        }
+namespace ledger {
+    namespace core {
+        class StellarLikeAssetDatabaseHelper {
+        public:
+            StellarLikeAssetDatabaseHelper() = delete;
 
-    };
+            static std::string createAssetUid(const std::string& type, const Option<std::string>& code, const Option<std::string>&issuer);
+
+            static bool putAsset(soci::session& sql, const std::string& type, const Option<std::string>& code, const Option<std::string>&issuer);
+
+        };
+    }
 }
 
 
-#endif //LEDGER_CORE_SOCI_OPTION_H
+#endif //LEDGER_CORE_STELLARLIKEASSETDATABASEHELPER_HPP

@@ -32,6 +32,10 @@
 #include "StellarLikeWallet.hpp"
 #include <async/Promise.hpp>
 #include "StellarLikeAccount.hpp"
+#include "explorers/HorizonBlockchainExplorer.hpp"
+#include "synchronizers/StellarLikeBlockchainExplorerAccountSynchronizer.hpp"
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include "database/StellarLikeAccountDatabaseHelper.hpp"
 
 namespace ledger {
     namespace core {
@@ -69,16 +73,29 @@ namespace ledger {
         StellarLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
             auto self = getSelf();
             return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
-                StellarLikeAccountParams params;
                 DerivationPath path(info.derivations[0]);
                 if (info.publicKeys.size() < 1) {
                     throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
                 }
-                params.keychain = self->_params.keychainFactory->build(
-                                                                       info.index, path, std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
-                        info, self->getAccountInternalPreferences(info.index), self->getCurrency()
-                        );
-                return std::make_shared<StellarLikeAccount>(self, params);
+                soci::session sql(getDatabase()->getPool());
+                {
+                    if (AccountDatabaseHelper::accountExists(sql, getWalletUid(), info.index)) {
+                        throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Account {} already exists", info.index);
+                    }
+                    auto keychain = self->_params.keychainFactory->build(
+                            info.index, path, std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
+                            info, self->getAccountInternalPreferences(info.index), self->getCurrency()
+                    );
+                    soci::transaction tr(sql);
+                    AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index);
+                    stellar::Account account;
+                    account.accountIndex = info.index;
+                    account.accountId = keychain->getAddress()->toString();
+                    account.subentryCount = 0;
+                    StellarLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index, account);
+                    tr.commit();
+                }
+                return self->createAccountInstance(sql, AccountDatabaseHelper::createAccountUid(self->getWalletUid(), info.index));
             });
         }
 
@@ -102,7 +119,21 @@ namespace ledger {
 
         std::shared_ptr<AbstractAccount>
         StellarLikeWallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            stellar::Account account;
+            StellarLikeAccountDatabaseHelper::getAccount(sql, accountUid, account);
+
+            StellarLikeAccountParams params;
+            params.index = account.accountIndex;
+            auto scheme = getDerivationScheme();
+            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(account.accountIndex);
+            auto path = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+            params.keychain = _params.keychainFactory->restore(
+                    account.accountIndex, path, std::dynamic_pointer_cast<DynamicObject>(getConfiguration()),
+                    account.accountId, getAccountInternalPreferences(account.accountIndex), getCurrency()
+            );
+            params.explorer = _params.blockchainExplorer;
+            params.synchronizer = _params.accountSynchronizer;
+            return std::make_shared<StellarLikeAccount>(getSelf(), params);
         }
 
         std::shared_ptr<StellarLikeWallet> StellarLikeWallet::getSelf() {

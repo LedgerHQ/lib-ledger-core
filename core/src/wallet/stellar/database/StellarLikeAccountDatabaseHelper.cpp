@@ -1,0 +1,114 @@
+/*
+ *
+ * StellarLikeAccountDatabaseHelper.cpp
+ * ledger-core
+ *
+ * Created by Pierre Pollastri on 11/07/2019.
+ *
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Ledger
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ */
+
+#include "StellarLikeAccountDatabaseHelper.hpp"
+#include <boost-tuple.h>
+#include <boost/tuple/tuple.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include "StellarLikeAssetDatabaseHelper.hpp"
+#include <fmt/format.h>
+#include <crypto/SHA256.hpp>
+#include <database/soci-option.h>
+#include <database/soci-number.h>
+
+using namespace soci;
+using namespace boost::tuples;
+
+namespace ledger {
+    namespace core {
+
+
+        bool StellarLikeAccountDatabaseHelper::getAccount(soci::session &sql, const std::string &accountUid,
+                                                          stellar::Account& out) {
+            rowset<row> rows = (sql.prepare <<
+                    "SELECT address, idx, sequence FROM stellar_accounts WHERE uid = :uid", use(accountUid));
+
+            for (const auto& row : rows) {
+                out.accountId = row.get<std::string>(0);
+                out.accountIndex = soci::get_number<uint32_t>(row, 1);
+                out.sequence = row.get<std::string>(2);
+                return true;
+            }
+
+            return false;
+        }
+
+        void StellarLikeAccountDatabaseHelper::putAccount(soci::session &sql, const std::string &walletUid,
+                                                          int32_t accountIndex, const stellar::Account &in) {
+            auto accountUid = AccountDatabaseHelper::createAccountUid(walletUid, accountIndex);
+            sql << "UPDATE stellar_accounts SET sequence = :sequence WHERE uid = :uid", use(in.sequence), use(accountUid);
+            for (const auto& balance : in.balances) {
+                putAccountBalance(sql, accountUid, balance);
+            }
+        }
+
+        bool StellarLikeAccountDatabaseHelper::putAccountBalance(soci::session &sql, const std::string &accountUid,
+                                                                 const stellar::Balance& balance) {
+            auto assetUid = StellarLikeAssetDatabaseHelper::createAssetUid(balance.assetType, balance.assetCode, balance.assetIssuer);
+            auto balanceUid = StellarLikeAccountDatabaseHelper::createAccountBalanceUid(accountUid, assetUid);
+            int32_t count = -1;
+
+            sql << "SELECT COUNT(*) FROM stellar_account_balances WHERE uid = :uid", use(balanceUid), into(count);
+
+            auto sellingLiabilities = balance.sellingLiabilities.map<std::string>([] (const BigInt& i) { return i.toString(); });
+            auto buyingLiabilities = balance.buyingLiabilities.map<std::string>([] (const BigInt& i) { return i.toString(); });
+
+            if (count == 0) {
+                sql << "INSERT INTO stellar_account_balances VALUES (:uid, :account_uid, :asset_uid, :amount, :bl, :sl)",
+                       use(balanceUid), use(accountUid), use(assetUid), use(balance.value.toString()), use(buyingLiabilities),
+                       use(sellingLiabilities);
+            } else {
+                sql << "UPDATE stellar_account_balances SET "
+                       "amout = :amount,"
+                       "buying_liabilities = :bl,"
+                       "selling_liabilities = :sl "
+                       "WHERE uid = :uid", use(balance.value.toString()), use(buyingLiabilities), use(sellingLiabilities),
+                       use(balanceUid);
+            }
+
+            return count == 0;
+        }
+
+        std::string
+        StellarLikeAccountDatabaseHelper::createAccountBalanceUid(const std::string &accountUid,
+                                                                  const std::string &assetUid) {
+            return SHA256::stringToHexHash(fmt::format("{}::{}",  accountUid, assetUid));
+        }
+
+        void StellarLikeAccountDatabaseHelper::createAccount(soci::session &sql, const std::string &walletUid,
+                                                             int32_t accountIndex, const stellar::Account &in) {
+            auto accountUid = AccountDatabaseHelper::createAccountUid(walletUid, accountIndex);
+            sql << "INSERT INTO stellar_accounts VALUES (:uid, :wallet_uid, :idx, :address, :sequence)",
+                    use(accountUid), use(walletUid), use(accountIndex), use(in.accountId), use(in.sequence);
+        }
+
+    }
+}

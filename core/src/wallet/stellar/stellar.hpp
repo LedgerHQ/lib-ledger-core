@@ -71,10 +71,12 @@ namespace ledger {
                 bool authImmutable;
                 bool authRequired;
                 bool authRevocable;
+
             };
 
             struct Account {
                 std::string accountId;
+                uint32_t accountIndex;
                 std::string sequence;
                 uint32_t subentryCount;
                 std::vector<Balance> balances;
@@ -117,6 +119,9 @@ namespace ledger {
                 std::string memo;
                 std::string pagingToken;
             };
+
+            using OperationVector = std::vector<std::shared_ptr<Operation>>;
+            using TransactionVector = std::vector<std::shared_ptr<Transaction>>;
         }
     }
 }

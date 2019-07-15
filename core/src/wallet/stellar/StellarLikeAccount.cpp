@@ -31,6 +31,9 @@
 
 #include "StellarLikeAccount.hpp"
 #include <wallet/stellar/StellarLikeWallet.hpp>
+#include <utils/DateUtils.hpp>
+#include <events/Event.hpp>
+#include "database/StellarLikeAccountDatabaseHelper.hpp"
 
 namespace ledger {
     namespace core {
@@ -42,11 +45,55 @@ namespace ledger {
         }
 
         bool StellarLikeAccount::isSynchronizing() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            return _params.synchronizer->isSynchronizing();
         }
 
         std::shared_ptr<api::EventBus> StellarLikeAccount::synchronize() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            std::lock_guard<std::mutex> lock(_synchronizationLock);
+
+            if (_currentSyncEventBus != nullptr)
+                return _currentSyncEventBus;
+
+            auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+
+            _currentSyncEventBus = eventPublisher->getEventBus();
+            auto self = std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
+            auto synchronizer = _params.synchronizer;
+            auto future = synchronizer->synchronize(self)->getFuture();
+
+            //Update current block height (needed to compute trust level)
+            _params.explorer->getLastLedger().onComplete(getContext(),
+                                                    [self](const TryPtr<stellar::Ledger> &l) mutable {
+                                                        if (l.isSuccess()) {
+                                                            self->_currentLedgerHeight = l.getValue()->height;
+                                                        }
+                                                    });
+
+            auto startTime = DateUtils::now();
+            eventPublisher->postSticky(
+                    std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
+                    0);
+            future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+                api::EventCode code;
+                auto payload = std::make_shared<DynamicObject>();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                        DateUtils::now() - startTime).count();
+                payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                if (result.isSuccess()) {
+                    code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                } else {
+                    code = api::EventCode::SYNCHRONIZATION_FAILED;
+                    payload->putString(api::Account::EV_SYNC_ERROR_CODE,
+                                       api::to_string(result.getFailure().getErrorCode()));
+                    payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
+                    payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
+                }
+                eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                self->_currentSyncEventBus = nullptr;
+
+            });
+            return eventPublisher->getEventBus();
         }
 
         void StellarLikeAccount::startBlockchainObservation() {
@@ -66,7 +113,24 @@ namespace ledger {
         }
 
         FuturePtr<ledger::core::Amount> StellarLikeAccount::getBalance() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            auto self = getSelf();
+            return async<std::shared_ptr<Amount>>([=] () {
+                const auto& currency = self->getWallet()->getCurrency();
+                soci::session sql(self->_params.database->getPool());
+                stellar::Account account {};
+
+                StellarLikeAccountDatabaseHelper::getAccount(sql, self->_params.keychain->getAddress()->toString(), account);
+                BigInt amount;
+
+                for (const auto& balance : account.balances) {
+                    if (balance.assetType == "native") {
+                        amount = balance.value;
+                        break;
+                    }
+                }
+
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, amount);
+            });
         }
 
         Future<AbstractAccount::AddressList> StellarLikeAccount::getFreshPublicAddresses() {
@@ -89,5 +153,26 @@ namespace ledger {
         std::shared_ptr<StellarLikeAccount> StellarLikeAccount::getSelf() {
             return std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
         }
+
+        int StellarLikeAccount::putLedger(soci::session &sql, stellar::Ledger &ledger) {
+            return 0;
+        }
+
+        void StellarLikeAccount::putTransaction(soci::session &sql, stellar::Transaction &tx) {
+            fmt::print("TX: {}\n", tx.hash);
+        }
+
+        int StellarLikeAccount::putOperation(soci::session &sql, stellar::Operation &op) {
+            fmt::print("OP: {} :: {}\n", op.transactionHash, op.id);
+            return 0;
+        }
+
+        void StellarLikeAccount::updateAccountInfo(soci::session &sql, stellar::Account &account) {
+            fmt::print("ACC {} {}\n", account.accountId, account.balances.front().value.toString());
+            if (account.accountId == _params.keychain->getAddress()->toString()) {
+                StellarLikeAccountDatabaseHelper::putAccount(sql, getWallet()->getWalletUid(), _params.index, account);
+            }
+        }
+
     }
 }

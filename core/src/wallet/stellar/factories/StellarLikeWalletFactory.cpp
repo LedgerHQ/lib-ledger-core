@@ -35,6 +35,7 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/stellar/explorers/HorizonBlockchainExplorer.hpp>
 #include <api/StellarConfiguration.hpp>
+#include <wallet/stellar/synchronizers/StellarLikeBlockchainExplorerAccountSynchronizer.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -64,6 +65,8 @@ namespace ledger {
             // Configure observer
 
             // Configure synchronizer
+            // This line will need to be changed if we have multiple synchronizers for now it's ok.
+            params.accountSynchronizer = std::make_shared<StellarLikeBlockchainExplorerAccountSynchronizer>(getPool(), params.blockchainExplorer);
 
             return std::make_shared<StellarLikeWallet>(entry.name, currency, getPool(), entry.configuration, scheme, params);
         }
@@ -78,8 +81,8 @@ namespace ledger {
             auto engine = STRING(api::StellarConfiguration::BLOCKCHAIN_EXPLORER_ENGINE, api::StellarConfiguration::HORIZON_EXPLORER_ENGINE);
             std::shared_ptr<StellarLikeBlockchainExplorer> explorer;
             if (engine == api::StellarConfiguration::HORIZON_EXPLORER_ENGINE) {
-                //engine = std::make_shared<HorizonBlockchainExplorer>(
-                //                                                      getPool()->getDispatcher()->getSerialExecutionContext("stellar"));
+                auto baseUrl = STRING(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, api::StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL);
+                explorer = std::make_shared<HorizonBlockchainExplorer>(getPool()->getDispatcher()->getSerialExecutionContext("stellar_explorer"), getPool()->getHttpClient(baseUrl), entry.configuration);
             }
             return explorer;
         }

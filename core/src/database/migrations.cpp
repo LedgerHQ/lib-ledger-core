@@ -746,12 +746,31 @@ namespace ledger {
                     "additional_SEPs TEXT NOT NULL"
                    ")";
 
+            // Stellar assets
+            sql << "CREATE TABLE stellar_assets("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                   "asset_type VARCHAR(255) NOT NULL,"
+                   "asset_code VARCHAR(255),"
+                   "asset_issuer VARCHAR(255)"
+                   ")";
+
             // Stellar accounts
-            sql << "CREATE TABLE stellar_account("
+            sql << "CREATE TABLE stellar_accounts("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                    "idx INTEGER NOT NULL,"
-                   "address TEXT NOT NULL"
+                   "address TEXT NOT NULL,"
+                   "sequence VARCHAR(255) DEFAULT '0'"
+                   ")";
+
+            // Stellar balances
+            sql << "CREATE TABLE stellar_account_balances("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                   "account_uid VARCHAR(255) NOT NULL REFERENCES stellar_account(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "asset_uid VARCHAR(255) NOT NULL REFERENCES stellar_asset(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "amount VARCHAR(255) NOT NULL,"
+                   "buying_liabilities VARCHAR(255),"
+                   "selling_liabilities VARCHAR(255)"
                    ")";
 
             // Stellar transactions

@@ -30,6 +30,8 @@
  */
 
 #include "StellarFixture.hpp"
+#include <wallet/common/OperationQuery.h>
+#include <math/BigInt.h>
 
 TEST_F(StellarFixture, SynchronizeStellarAccount) {
     auto pool = newPool();
@@ -37,6 +39,22 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     auto info = ::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
 
-    account->synchronize();
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
+                   make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                       fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                           return;
+                       EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                       EXPECT_EQ(event->getCode(),
+                                 api::EventCode::SYNCHRONIZATION_SUCCEED);
+                       dispatcher->stop();
+                   }));
+    EXPECT_EQ(bus, account->synchronize());
+    dispatcher->waitUntilStopped();
+    auto balance = ::wait(account->getBalance());
+    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
+    EXPECT_TRUE(operations.size() > 5);
 }
 

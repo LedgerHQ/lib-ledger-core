@@ -35,6 +35,8 @@
 #include <wallet/common/AbstractAccount.hpp>
 #include <api/StellarLikeAccount.hpp>
 #include <wallet/stellar/keychains/StellarLikeKeychain.hpp>
+#include "synchronizers/StellarLikeAccountSynchronizer.h"
+#include "explorers/StellarLikeBlockchainExplorer.hpp"
 
 namespace ledger {
     namespace core {
@@ -42,6 +44,9 @@ namespace ledger {
         struct StellarLikeAccountParams {
             int index;
             std::shared_ptr<StellarLikeKeychain> keychain;
+            std::shared_ptr<DatabaseSessionPool> database;
+            std::shared_ptr<StellarLikeAccountSynchronizer> synchronizer;
+            std::shared_ptr<StellarLikeBlockchainExplorer> explorer;
         };
 
         class StellarLikeWallet;
@@ -61,12 +66,24 @@ namespace ledger {
             getBalanceHistory(const std::string &start, const std::string &end, api::TimePeriod precision) override;
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point &date) override;
 
+            std::shared_ptr<StellarLikeKeychain> getKeychain() const { return _params.keychain; };
+
+            // Data insertion methods
+            void putTransaction(soci::session& sql, stellar::Transaction& tx);
+            int putOperation(soci::session& sql, stellar::Operation& op);
+            int putLedger(soci::session& sql, stellar::Ledger& ledger);
+            void updateAccountInfo(soci::session& sql, stellar::Account& account);
+
         protected:
             std::shared_ptr<StellarLikeAccount> getSelf();
 
         private:
             std::shared_ptr<StellarLikeWallet> _wallet;
             StellarLikeAccountParams _params;
+            std::mutex _synchronizationLock;
+            std::shared_ptr<api::EventBus> _currentSyncEventBus;
+            uint64_t _currentLedgerHeight;
+
         };
     }
 }

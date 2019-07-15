@@ -36,6 +36,7 @@
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/stellar/factories/StellarLikeKeychainFactory.hpp>
 #include <wallet/stellar/explorers/StellarLikeBlockchainExplorer.hpp>
+#include <wallet/stellar/synchronizers/StellarLikeAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
@@ -43,6 +44,7 @@ namespace ledger {
         struct StellarLikeWalletParams {
             std::shared_ptr<StellarLikeKeychainFactory> keychainFactory;
             std::shared_ptr<StellarLikeBlockchainExplorer> blockchainExplorer;
+            std::shared_ptr<StellarLikeAccountSynchronizer> accountSynchronizer;
         };
 
         class StellarLikeWallet : public virtual api::StellarLikeWallet, public virtual AbstractWallet {

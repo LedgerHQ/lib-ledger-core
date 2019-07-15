@@ -1,9 +1,9 @@
 /*
  *
- * create_stellar_account_tests.cpp
+ * StellarLikeAccountDatabaseHelper.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 18/02/2019.
+ * Created by Pierre Pollastri on 11/07/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,16 +29,29 @@
  *
  */
 
-#include "StellarFixture.hpp"
+#ifndef LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
+#define LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
 
-TEST_F(StellarFixture, CreateAccountWithPubKey) {
-    auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
-    auto info = ::wait(wallet->getNextAccountCreationInfo());
-    auto a = newAccount(wallet, 0, defaultAccount());
-    auto account = std::static_pointer_cast<AbstractAccount>(::wait(wallet->getAccount(0)));
-    auto address = ::wait(account->getFreshPublicAddresses()).front()->toString();
-    EXPECT_EQ(address, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
-    EXPECT_EQ(info.derivations.size(), 1);
-    EXPECT_EQ(info.derivations[0], "44'/148'/0'");
+#include <wallet/stellar/stellar.hpp>
+#include <soci.h>
+
+namespace ledger {
+    namespace core {
+        class StellarLikeAccountDatabaseHelper {
+        public:
+            StellarLikeAccountDatabaseHelper() = delete;
+
+            static bool getAccount(soci::session& sql, const std::string& accountUid, stellar::Account& out);
+            static void putAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
+            static void createAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
+
+
+            static bool putAccountBalance(soci::session& sql, const std::string& accountUid, const stellar::Balance& balance);
+            static std::string createAccountBalanceUid(const std::string& accountUid, const std::string& assetUid);
+
+        };
+    }
 }
+
+
+#endif //LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP

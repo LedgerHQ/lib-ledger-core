@@ -46,5 +46,17 @@ namespace ledger {
                     configuration,
                     currency, accountPreferences);
         }
+
+        std::shared_ptr<StellarLikeKeychain>
+        StellarLikeKeychainFactory::restore(int32_t index, const DerivationPath &path,
+                                            const std::shared_ptr<DynamicObject> &configuration,
+                                            const std::string &address,
+                                            const std::shared_ptr<Preferences> &accountPreferences,
+                                            const api::Currency &currency) {
+            return std::make_shared<DefaultStellarLikeKeychain>(
+                    std::make_shared<StellarLikeAddress>(address, currency, Option<std::string>(path.toString())),
+                    configuration,
+                    currency, accountPreferences);
+        }
     }
 }
