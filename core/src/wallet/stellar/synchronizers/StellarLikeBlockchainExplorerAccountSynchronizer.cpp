@@ -75,7 +75,7 @@ namespace ledger {
                                                                              const Option<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState> &state) {
             auto address = account->getKeychain()->getAddress()->toString();
             auto self = shared_from_this();
-            _explorer->getAccount(address).onComplete(getContext(), [=] (const Try<std::shared_ptr<stellar::Account>>& acc) {
+            _explorer->getAccount(address).onComplete(account->getContext(), [=] (const Try<std::shared_ptr<stellar::Account>>& acc) {
                 if (acc.isFailure())
                    self->failSynchronization(acc.getFailure());
                 else {
@@ -98,7 +98,7 @@ namespace ledger {
 
 
             auto self = shared_from_this();
-            _explorer->getTransactions(address, transactionCursor).onComplete(getContext(), [=] (const Try<stellar::TransactionVector>& txs) {
+            _explorer->getTransactions(address, transactionCursor).onComplete(account->getContext(), [=] (const Try<stellar::TransactionVector>& txs) {
                 SavedState newState = state.getValueOr(SavedState());
                 if (txs.isFailure())
                     self->failSynchronization(txs.getFailure());
@@ -110,6 +110,7 @@ namespace ledger {
                         for (const auto &tx : txs.getValue()) {
                             account->putTransaction(sql, *tx);
                         }
+                        tr.commit();
                     }
                     if (!txs.getValue().empty()) {
                         newState.algorithmVersion = SYNCHRONIZATION_ALGORITHM_VERSION;
@@ -134,7 +135,7 @@ namespace ledger {
 
 
             auto self = shared_from_this();
-            _explorer->getOperations(address, operationCursor).onComplete(getContext(), [=] (const Try<stellar::OperationVector>& ops) {
+            _explorer->getOperations(address, operationCursor).onComplete(account->getContext(), [=] (const Try<stellar::OperationVector>& ops) {
                 SavedState newState = state;
                 if (ops.isFailure())
                     self->failSynchronization(ops.getFailure());
@@ -146,6 +147,7 @@ namespace ledger {
                         for (const auto &op : ops.getValue()) {
                             account->putOperation(sql, *op);
                         }
+                        tr.commit();
                     }
                     if (!ops.getValue().empty()) {
                         newState.operationPagingToken = ops.getValue().back()->pagingToken;

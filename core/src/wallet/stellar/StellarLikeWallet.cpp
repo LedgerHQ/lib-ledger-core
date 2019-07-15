@@ -133,6 +133,7 @@ namespace ledger {
             );
             params.explorer = _params.blockchainExplorer;
             params.synchronizer = _params.accountSynchronizer;
+            params.database = getDatabase();
             return std::make_shared<StellarLikeAccount>(getSelf(), params);
         }
 

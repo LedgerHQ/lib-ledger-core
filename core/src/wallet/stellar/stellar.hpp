@@ -47,6 +47,8 @@ namespace ledger {
                 std::string   hash;
                 uint64_t height;
                 std::chrono::system_clock::time_point time;
+                BigInt baseFee;
+                BigInt baseReserve;
             };
 
             struct FeeStats {

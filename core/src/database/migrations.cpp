@@ -766,8 +766,8 @@ namespace ledger {
             // Stellar balances
             sql << "CREATE TABLE stellar_account_balances("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
-                   "account_uid VARCHAR(255) NOT NULL REFERENCES stellar_account(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
-                   "asset_uid VARCHAR(255) NOT NULL REFERENCES stellar_asset(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "account_uid VARCHAR(255) NOT NULL REFERENCES stellar_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "asset_uid VARCHAR(255) NOT NULL REFERENCES stellar_assets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                    "amount VARCHAR(255) NOT NULL,"
                    "buying_liabilities VARCHAR(255),"
                    "selling_liabilities VARCHAR(255)"
@@ -775,14 +775,25 @@ namespace ledger {
 
             // Stellar transactions
             sql << "CREATE TABLE stellar_transactions("
-                   "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL"
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL, "
+                   "hash VARCHAR(255) NOT NULL,"
+                   "source_account VARCHAR(255) NOT NULL,"
+                   "fee VARCHAR(255) NOT NULL,"
+                   "successful INTEGER NOT NULL"
                    ")";
 
             // Stellar operations
             sql << "CREATE TABLE stellar_operations("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES stellar_transactions(transaction_uid),"
-                   "transaction_hash VARCHAR(255) NOT NULL"
+                   "type INTEGER NOT NULL"
+                   ")";
+
+
+            sql << "CREATE TABLE stellar_ledgers("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES block(uid) ON DELETE CASCADE,"
+                   "base_fee VARCHAR(255) NOT NULL,"
+                   "base_reserve VARCHAR(255) NOT NULL"
                    ")";
 
         }

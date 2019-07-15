@@ -66,6 +66,7 @@ namespace ledger {
             auto accountUid = AccountDatabaseHelper::createAccountUid(walletUid, accountIndex);
             sql << "UPDATE stellar_accounts SET sequence = :sequence WHERE uid = :uid", use(in.sequence), use(accountUid);
             for (const auto& balance : in.balances) {
+                fmt::print("PUT ACCOUNT B {}\n", balance.value.toString());
                 putAccountBalance(sql, accountUid, balance);
             }
         }
@@ -76,24 +77,25 @@ namespace ledger {
             auto balanceUid = StellarLikeAccountDatabaseHelper::createAccountBalanceUid(accountUid, assetUid);
             int32_t count = -1;
 
+            StellarLikeAssetDatabaseHelper::putAsset(sql, balance.assetType, balance.assetCode, balance.assetIssuer);
+
             sql << "SELECT COUNT(*) FROM stellar_account_balances WHERE uid = :uid", use(balanceUid), into(count);
 
             auto sellingLiabilities = balance.sellingLiabilities.map<std::string>([] (const BigInt& i) { return i.toString(); });
             auto buyingLiabilities = balance.buyingLiabilities.map<std::string>([] (const BigInt& i) { return i.toString(); });
-
+            auto amount = balance.value.toString();
             if (count == 0) {
                 sql << "INSERT INTO stellar_account_balances VALUES (:uid, :account_uid, :asset_uid, :amount, :bl, :sl)",
-                       use(balanceUid), use(accountUid), use(assetUid), use(balance.value.toString()), use(buyingLiabilities),
+                       use(balanceUid), use(accountUid), use(assetUid), use(amount), use(buyingLiabilities),
                        use(sellingLiabilities);
             } else {
                 sql << "UPDATE stellar_account_balances SET "
                        "amout = :amount,"
                        "buying_liabilities = :bl,"
                        "selling_liabilities = :sl "
-                       "WHERE uid = :uid", use(balance.value.toString()), use(buyingLiabilities), use(sellingLiabilities),
+                       "WHERE uid = :uid", use(amount), use(buyingLiabilities), use(sellingLiabilities),
                        use(balanceUid);
             }
-
             return count == 0;
         }
 
@@ -108,6 +110,31 @@ namespace ledger {
             auto accountUid = AccountDatabaseHelper::createAccountUid(walletUid, accountIndex);
             sql << "INSERT INTO stellar_accounts VALUES (:uid, :wallet_uid, :idx, :address, :sequence)",
                     use(accountUid), use(walletUid), use(accountIndex), use(in.accountId), use(in.sequence);
+        }
+
+        void StellarLikeAccountDatabaseHelper::getAccountBalances(soci::session &sql, const std::string &accountUid,
+                                                                  stellar::Account &out) {
+            rowset<row> rows = (sql.prepare <<
+                    "SELECT a.asset_type, a.asset_code, a.asset_issuer, b.amount, "
+                    "b.buying_liabilities, b.selling_liabilities "
+                    "FROM stellar_account_balances AS b "
+                    "LEFT JOIN stellar_assets AS a ON asset_uid = a.uid "
+                    "WHERE b.account_uid = :uid", use(accountUid));
+
+            for (const auto& row : rows) {
+                stellar::Balance balance;
+                balance.assetType = row.get<std::string>(0);
+                balance.assetCode = row.get<Option<std::string>>(1);
+                balance.assetIssuer = row.get<Option<std::string>>(2);
+                balance.value = BigInt::fromString(row.get<std::string>(3));
+                balance.buyingLiabilities = row.get<Option<std::string>>(4).map<BigInt>([] (const std::string& s) {
+                    return BigInt::fromString(s);
+                });
+                balance.sellingLiabilities = row.get<Option<std::string>>(4).map<BigInt>([] (const std::string& s) {
+                    return BigInt::fromString(s);
+                });
+                out.balances.emplace_back(balance);
+            }
         }
 
     }

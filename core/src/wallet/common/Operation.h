@@ -47,6 +47,7 @@
 #include <api/OperationType.hpp>
 #include <api/Operation.hpp>
 #include "Block.h"
+#include <wallet/stellar/stellar.hpp>
 
 namespace ledger {
     namespace core {
@@ -68,8 +69,10 @@ namespace ledger {
             Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
             Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Option<TezosLikeBlockchainExplorerTransaction> tezosTransaction;
+            Option<stellar::Operation> stellarOperation;
 
             void refreshUid(const std::string &additional = "");
+        private:
 
             Operation() = default;
             Operation(Operation const&) = default;

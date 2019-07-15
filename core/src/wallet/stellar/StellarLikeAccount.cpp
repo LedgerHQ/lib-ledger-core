@@ -34,6 +34,17 @@
 #include <utils/DateUtils.hpp>
 #include <events/Event.hpp>
 #include "database/StellarLikeAccountDatabaseHelper.hpp"
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include "database/StellarLikeLedgerDatabaseHelper.hpp"
+#include "database/StellarLikeTransactionDatabaseHelper.hpp"
+#include <wallet/common/database/OperationDatabaseHelper.h>
+#include <set>
+
+using namespace ledger::core;
+
+static const std::set<stellar::OperationType> ACCEPTED_PAYMENT_TYPES {
+    stellar::OperationType::PAYMENT, stellar::OperationType::CREATE_ACCOUNT
+};
 
 namespace ledger {
     namespace core {
@@ -119,7 +130,9 @@ namespace ledger {
                 soci::session sql(self->_params.database->getPool());
                 stellar::Account account {};
 
-                StellarLikeAccountDatabaseHelper::getAccount(sql, self->_params.keychain->getAddress()->toString(), account);
+                auto accountId = AccountDatabaseHelper::createAccountUid(self->getWallet()->getWalletUid(), self->_params.index);
+                StellarLikeAccountDatabaseHelper::getAccount(sql, accountId, account);
+                StellarLikeAccountDatabaseHelper::getAccountBalances(sql, accountId, account);
                 BigInt amount;
 
                 for (const auto& balance : account.balances) {
@@ -155,23 +168,62 @@ namespace ledger {
         }
 
         int StellarLikeAccount::putLedger(soci::session &sql, stellar::Ledger &ledger) {
-            return 0;
+            return StellarLikeLedgerDatabaseHelper::putLedger(sql, getWallet()->getCurrency(), ledger) ? 1 : 0;
         }
 
         void StellarLikeAccount::putTransaction(soci::session &sql, stellar::Transaction &tx) {
-            fmt::print("TX: {}\n", tx.hash);
+            StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
         }
 
         int StellarLikeAccount::putOperation(soci::session &sql, stellar::Operation &op) {
-            fmt::print("OP: {} :: {}\n", op.transactionHash, op.id);
+            auto address = _params.keychain->getAddress()->toString();
+            if ((op.from != address && op.to != address))
+                return 0;
+
+            Operation operation;
+            operation.accountUid = getAccountUid();
+            operation.stellarOperation = op;
+            operation.currencyName = getWallet()->getCurrency().name;
+            operation.amount = op.amount;
+            operation.recipients = {op.to};
+            operation.senders = {op.from};
+            operation.date = op.createdAt;
+            operation.walletType = getWallet()->getWalletType();
+            operation.walletUid = getWallet()->getWalletUid();
+            operation.trust = std::make_shared<TrustIndicator>();
+            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+
+            if (op.from == address && ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end()) {
+                operation.type = api::OperationType::SEND;
+                operation.refreshUid();
+                OperationDatabaseHelper::putOperation(sql, operation);
+            }
+            if (op.to == address && ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end()) {
+                operation.type = api::OperationType::RECEIVE;
+                operation.refreshUid();
+                OperationDatabaseHelper::putOperation(sql, operation);
+            }
+
             return 0;
         }
 
         void StellarLikeAccount::updateAccountInfo(soci::session &sql, stellar::Account &account) {
-            fmt::print("ACC {} {}\n", account.accountId, account.balances.front().value.toString());
             if (account.accountId == _params.keychain->getAddress()->toString()) {
+                soci::transaction tr(sql);
                 StellarLikeAccountDatabaseHelper::putAccount(sql, getWallet()->getWalletUid(), _params.index, account);
+                tr.commit();
             }
+        }
+
+        std::shared_ptr<api::OperationQuery> StellarLikeAccount::queryOperations() {
+            auto query = std::make_shared<OperationQuery>(
+                    api::QueryFilter::accountEq(getAccountUid()),
+                    getWallet()->getDatabase(),
+                    getWallet()->getContext(),
+                    getWallet()->getMainExecutionContext()
+            );
+            query->registerAccount(shared_from_this());
+            return query;
         }
 
     }

@@ -1,9 +1,9 @@
 /*
  *
- * StellarLikeAccountDatabaseHelper.hpp
+ * StellarLikeLedgerDatabaseHelper.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 11/07/2019.
+ * Created by Pierre Pollastri on 15/07/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,30 +29,22 @@
  *
  */
 
-#ifndef LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
-#define LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
+#ifndef LEDGER_CORE_STELLARLIKELEDGERDATABASEHELPER_HPP
+#define LEDGER_CORE_STELLARLIKELEDGERDATABASEHELPER_HPP
 
-#include <wallet/stellar/stellar.hpp>
 #include <soci.h>
+#include <wallet/stellar/stellar.hpp>
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {
-        class StellarLikeAccountDatabaseHelper {
+        class StellarLikeLedgerDatabaseHelper {
         public:
-            StellarLikeAccountDatabaseHelper() = delete;
-
-            static bool getAccount(soci::session& sql, const std::string& accountUid, stellar::Account& out);
-            static void getAccountBalances(soci::session& sql, const std::string& accountUid, stellar::Account& out);
-            static void putAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
-            static void createAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
-
-
-            static bool putAccountBalance(soci::session& sql, const std::string& accountUid, const stellar::Balance& balance);
-            static std::string createAccountBalanceUid(const std::string& accountUid, const std::string& assetUid);
-
+            static bool putLedger(soci::session& sql, const api::Currency& currency, const stellar::Ledger& ledger);
+            static bool getLastLedger(soci::session& sql, const api::Currency& currency, stellar::Ledger& out);
         };
     }
 }
 
 
-#endif //LEDGER_CORE_STELLARLIKEACCOUNTDATABASEHELPER_HPP
+#endif //LEDGER_CORE_STELLARLIKELEDGERDATABASEHELPER_HPP

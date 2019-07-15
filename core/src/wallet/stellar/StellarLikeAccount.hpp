@@ -74,6 +74,8 @@ namespace ledger {
             int putLedger(soci::session& sql, stellar::Ledger& ledger);
             void updateAccountInfo(soci::session& sql, stellar::Account& account);
 
+            std::shared_ptr<api::OperationQuery> queryOperations() override;
+
         protected:
             std::shared_ptr<StellarLikeAccount> getSelf();
 

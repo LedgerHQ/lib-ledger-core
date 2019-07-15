@@ -37,6 +37,8 @@ using namespace ledger::core;
 static const JsonParserPathMatcher HASH_MATCHER("/hash");
 static const JsonParserPathMatcher SEQUENCE_MATCHER("/sequence");
 static const JsonParserPathMatcher TIME_MATCHER("/closed_at");
+static const JsonParserPathMatcher FEE_MATCHER("/base_fee");
+static const JsonParserPathMatcher RESERVE_MATCHER("/base_reserve");
 
 namespace ledger {
     namespace core {
@@ -72,6 +74,10 @@ namespace ledger {
         bool HorizonLedgerParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             if (_path.match(SEQUENCE_MATCHER)) {
                 _ledger->height = BigInt::fromString(std::string(str, length)).toUint64();
+            } else if (_path.match(FEE_MATCHER)) {
+                _ledger->baseFee = BigInt::fromString(std::string(str, length));
+            } else if (_path.match(RESERVE_MATCHER)) {
+                _ledger->baseReserve = BigInt::fromString(std::string(str, length));
             }
             return true;
         }

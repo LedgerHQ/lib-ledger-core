@@ -53,7 +53,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     EXPECT_EQ(bus, account->synchronize());
     dispatcher->waitUntilStopped();
     auto balance = ::wait(account->getBalance());
-    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
     EXPECT_TRUE(operations.size() > 5);
 }
