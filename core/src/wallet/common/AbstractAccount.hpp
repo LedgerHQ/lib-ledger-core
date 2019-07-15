@@ -41,6 +41,7 @@
 #include <api/BlockCallback.hpp>
 #include <api/BitcoinLikeAccount.hpp>
 #include <api/EthereumLikeAccount.hpp>
+#include <api/RippleLikeAccount.hpp>
 #include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
 #include <api/AmountListCallback.hpp>
@@ -65,6 +66,7 @@ namespace ledger {
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
             std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override;
+            std::shared_ptr<api::RippleLikeAccount> asRippleLikeAccount() override;
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getInternalPreferences() const;
