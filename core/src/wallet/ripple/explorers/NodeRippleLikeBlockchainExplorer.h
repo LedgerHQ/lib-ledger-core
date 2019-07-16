@@ -163,6 +163,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getAccountInfo(const std::string &address,
                            const std::string &key,
+                           const BigInt &defaultValue,
                            FieldTypes);
 
             api::RippleLikeNetworkParameters _parameters;
