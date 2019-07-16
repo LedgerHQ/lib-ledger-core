@@ -34,6 +34,7 @@
 #include <api/BitcoinLikeNetworkParameters.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
+#include <api/TezosLikeNetworkParameters.hpp>
 #include <api/Networks.hpp>
 
 

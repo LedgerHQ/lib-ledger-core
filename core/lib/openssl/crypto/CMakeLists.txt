@@ -120,7 +120,7 @@ add_submodule ( bio bio_lib.c bio_cb.c bio_err.c bss_mem.c bss_null.c bss_fd.c b
   bf_nbio.c bss_log.c bss_bio.c bss_dgram.c # bf_lbuf.c
   EXHEADERS bio.h )
 add_definitions(-DBLAKE256 -DBLAKE244)
-add_submodule ( blake blake256.c EXHEADERS blake256.h)
+add_submodule ( blake blake256.c blake2b.c EXHEADERS blake256.h blake2b.h)
 add_submodule ( bn bn_add.c bn_div.c bn_exp.c bn_lib.c bn_ctx.c bn_mul.c bn_mod.c
   bn_print.c bn_rand.c bn_shift.c bn_word.c bn_blind.c bn_kron.c bn_sqrt.c bn_gcd.c
   bn_prime.c bn_err.c bn_sqr.c bn_asm.c bn_recp.c bn_mont.c bn_mpi.c bn_exp2.c bn_gf2m.c

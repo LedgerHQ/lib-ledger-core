@@ -35,6 +35,8 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
 #include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
 #include <wallet/ripple/api_impl/RippleLikeOperation.h>
+#include <wallet/tezos/api_impl/TezosLikeOperation.h>
+#include <api/WalletType.hpp>
 
 
 namespace ledger {
@@ -88,6 +90,10 @@ namespace ledger {
             return _backend.walletType == api::WalletType::RIPPLE;
         }
 
+        bool OperationApi::isInstanceOfTezosLikeOperation() {
+            return _backend.walletType == api::WalletType::TEZOS;
+        }
+
         bool OperationApi::isComplete() {
             if (_backend.walletType == api::WalletType::BITCOIN) {
                 return _backend.bitcoinTransaction.nonEmpty();
@@ -95,6 +101,8 @@ namespace ledger {
                 return _backend.ethereumTransaction.nonEmpty();
             } else if (_backend.walletType == api::WalletType::RIPPLE) {
                 return _backend.rippleTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::TEZOS) {
+                return _backend.tezosTransaction.nonEmpty();
             }
             return false;
         }
@@ -140,9 +148,16 @@ namespace ledger {
 
         std::shared_ptr<api::RippleLikeOperation> OperationApi::asRippleLikeOperation() {
             if (getWalletType() != api::WalletType::RIPPLE) {
-                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ethereum type.");
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Ripple type.");
             }
             return std::make_shared<RippleLikeOperation>(shared_from_this());
+        }
+
+        std::shared_ptr<api::TezosLikeOperation> OperationApi::asTezosLikeOperation() {
+            if (getWalletType() != api::WalletType::TEZOS) {
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Tezos type.");
+            }
+            return std::make_shared<TezosLikeOperation>(shared_from_this());
         }
 
         const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {

@@ -54,10 +54,12 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeOperation> asBitcoinLikeOperation() override;
             std::shared_ptr<api::EthereumLikeOperation> asEthereumLikeOperation() override;
             std::shared_ptr<api::RippleLikeOperation> asRippleLikeOperation() override;
+            std::shared_ptr<api::TezosLikeOperation> asTezosLikeOperation() override;
             optional<int64_t> getBlockHeight() override;
             bool isInstanceOfBitcoinLikeOperation() override;
             bool isInstanceOfEthereumLikeOperation() override;
             bool isInstanceOfRippleLikeOperation() override;
+            bool isInstanceOfTezosLikeOperation() override;
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();

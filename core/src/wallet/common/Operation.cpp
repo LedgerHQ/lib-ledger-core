@@ -31,7 +31,7 @@
 #include "Operation.h"
 #include "database/OperationDatabaseHelper.h"
 #include <utils/Exception.hpp>
-
+#include <fmt/format.h>
 namespace ledger {
     namespace core {
 
@@ -42,6 +42,8 @@ namespace ledger {
                 uid = OperationDatabaseHelper::createUid(accountUid, ethereumTransaction.getValue().hash, type);
             } else if (rippleTransaction.nonEmpty()) {
                 uid = OperationDatabaseHelper::createUid(accountUid, rippleTransaction.getValue().hash, type);
+            } else if (tezosTransaction.nonEmpty()) {
+                uid = OperationDatabaseHelper::createUid(accountUid, fmt::format("{}+{}", tezosTransaction.getValue().hash, api::to_string(tezosTransaction.getValue().type)), type);
             } else {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Cannot refresh uid of an incomplete operation.");
             }

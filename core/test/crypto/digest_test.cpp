@@ -122,6 +122,17 @@ TEST(Digest, BLAKE256) {
     auto output4 = BLAKE::blake256(vInput4);
     EXPECT_EQ(hex::toString(output4), "9d8ee513f4c43a73c3dd7c6e7d389e62cca017358d880d16e4fae547ebac5717");
 }
+
+TEST(Digest, BLAKE2B) {
+    auto input1 = hex::toByteArray("");
+    auto output512 = BLAKE::blake2b(input1);
+    EXPECT_EQ(hex::toString(output512), "786a02f742015903c6c6fd852552d272912f4740e15847618a86e217f71f5419d25e1031afee585313896444934eb04b903a685b1448b755d56f701afe9be2ce");
+
+    std::string input2 = "The quick brown fox jumps over the lazy dog";
+    std::vector<uint8_t> vInput(input2.begin(), input2.end());
+    auto output5121 = BLAKE::blake2b(vInput);
+    EXPECT_EQ(hex::toString(output5121), "a8add4bdddfd93e4877d2746e62817b116364a1fa7bc148d95090bc7333b3673f82401cf7aa2e4cb1ecd90296e3f14cb5413f8ed77be73045b13914cdcd6a918");
+}
 TEST(Digest, Keccak256) {
 
     auto empty = hex::toByteArray("");
