@@ -640,5 +640,23 @@ namespace ledger {
 
             sql << "DROP TABLE tezos_currencies";
         }
+
+        template <> void migrate<12>(soci::session& sql) {
+            sql << "CREATE TABLE internal_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "type VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "gas_limit VARCHAR(255) NOT NULL,"
+                    "gas_used VARCHAR(255) NOT NULL,"
+                    "input_data VARCHAR(255)"
+                    ")";
+        }
+
+        template <> void rollback<12>(soci::session& sql) {
+            sql << "DROP TABLE internal_operations";
+        }
     }
 }

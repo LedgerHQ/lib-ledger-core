@@ -3,6 +3,8 @@
 
 #include "EthereumLikeOperation.hpp"  // my header
 #include "EthereumLikeTransaction.hpp"
+#include "InternalTransaction.hpp"
+#include "Marshal.hpp"
 
 namespace djinni_generated {
 
@@ -26,6 +28,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeOperation_00024CppPro
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeOperation>(nativeRef);
         auto r = ref->getTransaction();
         return ::djinni::release(::djinni_generated::EthereumLikeTransaction::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeOperation_00024CppProxy_native_1getInternalTransactions(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeOperation>(nativeRef);
+        auto r = ref->getInternalTransactions();
+        return ::djinni::release(::djinni::List<::djinni_generated::InternalTransaction>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
