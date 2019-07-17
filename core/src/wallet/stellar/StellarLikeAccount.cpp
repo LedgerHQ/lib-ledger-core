@@ -177,7 +177,7 @@ namespace ledger {
 
         int StellarLikeAccount::putOperation(soci::session &sql, stellar::Operation &op) {
             auto address = _params.keychain->getAddress()->toString();
-            if ((op.from != address && op.to != address))
+            if ((op.from != address && op.to != address) || (op.sourceAmount.nonEmpty() && op.asset.type != "native"))
                 return 0;
 
             Operation operation;
@@ -192,13 +192,22 @@ namespace ledger {
             operation.walletUid = getWallet()->getWalletUid();
             operation.trust = std::make_shared<TrustIndicator>();
             operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+            operation.block = {};
 
-            if (op.from == address && ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end()) {
+            if (op.from == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
+                (op.type == stellar::OperationType::PATH_PAYMENT &&
+                 op.sourceAsset.getValueOr({}).type == "native"))) {
                 operation.type = api::OperationType::SEND;
+                if (op.type == stellar::OperationType::PATH_PAYMENT) {
+                    // Small hack until path_payment is completely integrated
+                    operation.amount = op.sourceAmount.getValueOr(op.amount);
+                }
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
             }
-            if (op.to == address && ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end()) {
+            if (op.to == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
+                                       (op.type == stellar::OperationType::PATH_PAYMENT &&
+                                        op.asset.type == "native")))  {
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);

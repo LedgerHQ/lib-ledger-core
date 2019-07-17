@@ -107,6 +107,9 @@ namespace ledger {
                 std::string to;
                 std::string transactionHash;
                 std::chrono::system_clock::time_point createdAt;
+
+                Option<Asset> sourceAsset;
+                Option<BigInt> sourceAmount;
             };
 
             struct Transaction {

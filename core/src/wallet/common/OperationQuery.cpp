@@ -38,6 +38,7 @@
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
+#include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -229,7 +230,9 @@ namespace ledger {
         }
 
         void OperationQuery::inflateStellarLikeTransaction(soci::session &sql, OperationApi &operation) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateStellarLikeTransaction(soci::session &sql, OperationApi &operation)");
+            stellar::Operation op;
+            StellarLikeTransactionDatabaseHelper::getOperation(sql, operation.getBackend().uid, op);
+            operation.getBackend().stellarOperation = op;
         }
     }
 }

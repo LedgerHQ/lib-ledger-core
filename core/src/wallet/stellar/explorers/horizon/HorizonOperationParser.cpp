@@ -46,6 +46,14 @@ static const JsonParserPathMatcher TO_MATCHER("/to");
 static const JsonParserPathMatcher AMOUNT_MATCHER("/amount");
 static const JsonParserPathMatcher PAGING_TOKEN_MATCHER("/paging_token");
 static const JsonParserPathMatcher ID_MATCHER("/id");
+static const JsonParserPathMatcher SOURCE_AMOUNT_MATCHER("/source_amount");
+
+// Source asset for path payment
+static const JsonParserPathMatcher SOURCE_ASSET_TYPE_MATCHER("/source_asset_type");
+static const JsonParserPathMatcher SOURCE_ASSET_CODE_MATCHER("/source_asset_code");
+static const JsonParserPathMatcher SOURCE_ASSET_ISSUER_MATCHER("/source_asset_issuer");
+
+#define SOURCE_ASSET (_operation->sourceAsset.isEmpty() ? _operation->sourceAsset = stellar::Asset() : _operation->sourceAsset).getValue()
 
 namespace ledger {
     namespace core {
@@ -110,6 +118,14 @@ namespace ledger {
                 _operation->pagingToken = std::string(str, length);
             } else if (_path.match(TRANSACTION_HASH_MATCHER)) {
                 _operation->transactionHash = std::string(str, length);
+            } else if (_path.match(SOURCE_AMOUNT_MATCHER)) {
+                _operation->sourceAmount = BigInt::fromFloatString(std::string(str, length), 7);
+            } else if (_path.match(SOURCE_ASSET_CODE_MATCHER)) {
+                SOURCE_ASSET.code = std::string(str, length);
+            } else if (_path.match(SOURCE_ASSET_TYPE_MATCHER)) {
+                SOURCE_ASSET.type = std::string(str, length);
+            } else if (_path.match(SOURCE_ASSET_ISSUER_MATCHER)) {
+                SOURCE_ASSET.issuer = std::string(str, length);
             } else {
                 _assetParser.String(str, length, copy);
             }

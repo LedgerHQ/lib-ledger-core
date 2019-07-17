@@ -779,16 +779,25 @@ namespace ledger {
                    "hash VARCHAR(255) NOT NULL,"
                    "source_account VARCHAR(255) NOT NULL,"
                    "fee VARCHAR(255) NOT NULL,"
-                   "successful INTEGER NOT NULL"
+                   "successful INTEGER NOT NULL,"
+                   "ledger VARCHAR(255) NOT NULL,"
+                   "memo_type TEXT NOT NULL,"
+                   "memo TEXT NOT NULL"
                    ")";
 
-            // Stellar operations
+            // Stellar native operations
             sql << "CREATE TABLE stellar_operations("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
-                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES stellar_transactions(transaction_uid),"
+                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES stellar_transactions(transaction_uid) ON DELETE CASCADE,"
                    "type INTEGER NOT NULL"
                    ")";
 
+
+            // Stellar account operations
+            sql << "CREATE TABLE stellar_account_operations("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                   "operation_uid VARCHAR(255) NOT NULL REFERENCES stellar_operations(uid) ON DELETE CASCADE"
+                   ")";
 
             sql << "CREATE TABLE stellar_ledgers("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES block(uid) ON DELETE CASCADE,"

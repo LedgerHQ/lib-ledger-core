@@ -42,9 +42,11 @@ namespace ledger {
                                                                   const stellar::Transaction &tx) {
             auto uid = createTransactionUid(currency, tx.hash);
             if (!transactionExists(sql, uid)) {
+                auto ledger = BigInt(tx.ledger).toString();
                 auto fee = tx.feePaid.toString();
-                sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :fee, :success)",
-                        use(uid), use(tx.hash), use(tx.sourceAccount), use(fee), use(tx.successful ? 1 : 0);
+                sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :fee, :success, :ledger)",
+                        use(uid), use(tx.hash), use(tx.sourceAccount), use(fee), use(tx.successful ? 1 : 0),
+                        use(ledger), use(tx.memoType), use(tx.memo);
                 return true;
             }
             return false;
@@ -65,6 +67,26 @@ namespace ledger {
         StellarLikeTransactionDatabaseHelper::putOperation(soci::session &sql, const std::string &accountUid,
                                                            const stellar::Operation &operation) {
             return std::string();
+        }
+
+        bool
+        StellarLikeTransactionDatabaseHelper::getOperation(soci::session &sql, const std::string &accountOperationUid,
+                                                           stellar::Operation &out) {
+
+            return false;
+        }
+
+        bool StellarLikeTransactionDatabaseHelper::getTransaction(soci::session &sql, const std::string &hash,
+                                                                  stellar::Transaction &out) {
+            std::string fee;
+            int successful;
+            sql << "SELECT hash, source_account, fee, successful, ledger, memo_type, memo "
+                   "FROM stellar_transactions "
+                   "WHERE hash = :hash LIMIT 1", use(hash), into(out.hash), into(out.sourceAccount), into(fee),
+                   into(successful), into(out.ledger), into(out.memoType), into(out.memo);
+            out.successful = successful == 1;
+            out.feePaid = BigInt::fromString(fee);
+            return out.hash == hash;
         }
     }
 }
