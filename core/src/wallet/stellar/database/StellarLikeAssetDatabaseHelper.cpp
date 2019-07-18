@@ -44,7 +44,11 @@ namespace ledger {
         std::string
         StellarLikeAssetDatabaseHelper::createAssetUid(const std::string &type, const Option<std::string> &code,
                                                        const Option<std::string> &issuer) {
-            return SHA256::stringToHexHash(fmt::format("{}::{}::{}", type, code.getValueOr(""), issuer.getValueOr("")));
+            stellar::Asset asset;
+            asset.type = type;
+            asset.issuer = issuer.getValueOr("");
+            asset.code = code.getValueOr("");
+            return createAssetUid(asset);
         }
 
         bool StellarLikeAssetDatabaseHelper::putAsset(soci::session &sql, const std::string &type,
@@ -60,6 +64,21 @@ namespace ledger {
             }
 
             return count == 0;
+        }
+
+        std::string StellarLikeAssetDatabaseHelper::createAssetUid(const stellar::Asset &asset) {
+            return SHA256::stringToHexHash(fmt::format("{}::{}::{}", asset.type, asset.code, asset.issuer));
+        }
+
+        bool StellarLikeAssetDatabaseHelper::putAsset(soci::session &sql, const stellar::Asset &asset) {
+            Option<std::string> code;
+            Option<std::string> issuer;
+
+            if (!asset.code.empty())
+                code = asset.code;
+            if (!asset.issuer.empty())
+                issuer = asset.issuer;
+            return putAsset(sql, asset.type, code, issuer);
         }
 
 

@@ -32,6 +32,9 @@
 #include "StellarLikeTransactionDatabaseHelper.hpp"
 #include <crypto/SHA256.hpp>
 #include <fmt/format.h>
+#include "StellarLikeAssetDatabaseHelper.hpp"
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 
 using namespace soci;
 
@@ -40,11 +43,12 @@ namespace ledger {
 
         bool StellarLikeTransactionDatabaseHelper::putTransaction(soci::session &sql, const api::Currency &currency,
                                                                   const stellar::Transaction &tx) {
-            auto uid = createTransactionUid(currency, tx.hash);
+            auto uid = createTransactionUid(currency.name, tx.hash);
             if (!transactionExists(sql, uid)) {
                 auto ledger = BigInt(tx.ledger).toString();
                 auto fee = tx.feePaid.toString();
-                sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :fee, :success, :ledger)",
+                sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :fee, :success, :ledger,"
+                       ":memo_typ, :memo)",
                         use(uid), use(tx.hash), use(tx.sourceAccount), use(fee), use(tx.successful ? 1 : 0),
                         use(ledger), use(tx.memoType), use(tx.memo);
                 return true;
@@ -52,9 +56,9 @@ namespace ledger {
             return false;
         }
 
-        std::string StellarLikeTransactionDatabaseHelper::createTransactionUid(const api::Currency &currency,
+        std::string StellarLikeTransactionDatabaseHelper::createTransactionUid(const std::string &currencyName,
                 const std::string &transactionHash) {
-            return SHA256::stringToHexHash(fmt::format("{}::{}", currency.name, transactionHash));
+            return SHA256::stringToHexHash(fmt::format("{}::{}", currencyName, transactionHash));
         }
 
         bool StellarLikeTransactionDatabaseHelper::transactionExists(soci::session &sql, const std::string &uid) {
@@ -65,8 +69,30 @@ namespace ledger {
 
         std::string
         StellarLikeTransactionDatabaseHelper::putOperation(soci::session &sql, const std::string &accountUid,
-                                                           const stellar::Operation &operation) {
-            return std::string();
+                                                           const std::string& currencyName,
+                                                           const stellar::Operation &op) {
+            auto uid = createOperationUid(accountUid, op.id);
+            auto txUid = createTransactionUid(currencyName, op.transactionHash);
+            auto assetUid = StellarLikeAssetDatabaseHelper::createAssetUid(op.asset);
+            auto sourceAssetUid = op.sourceAsset.map<std::string>([] (const stellar::Asset& asset) {
+                return StellarLikeAssetDatabaseHelper::createAssetUid(asset);
+            });
+            auto amount = op.amount.toString();
+            auto srcAmount = op.sourceAmount.map<std::string>([] (const BigInt& b) {
+                return b.toString();
+            });
+            StellarLikeAssetDatabaseHelper::putAsset(sql, op.asset);
+            if (op.sourceAsset)  {
+                StellarLikeAssetDatabaseHelper::putAsset(sql, op.sourceAsset.getValue());
+            }
+            int type = (int)op.type;
+            if (!operationExists(sql, uid)) {
+                sql << "INSERT INTO stellar_operations VALUES("
+                       ":uid, :tx_uid, :hash, :time, :asset_uid, :src_asset_uid, :amount, :src_amount, :from, :to, :type"
+                       ")", use(uid), use(txUid), use(op.id), use(op.createdAt), use(assetUid), use(sourceAssetUid),
+                       use(amount), use(srcAmount), use(op.from), use(op.to), use(type);
+            }
+            return uid;
         }
 
         bool
@@ -87,6 +113,17 @@ namespace ledger {
             out.successful = successful == 1;
             out.feePaid = BigInt::fromString(fee);
             return out.hash == hash;
+        }
+
+        std::string StellarLikeTransactionDatabaseHelper::createOperationUid(const std::string &accountUid,
+                                                                             const std::string &hash) {
+            return SHA256::stringToHexHash(fmt::format("{}::{}", accountUid, hash));
+        }
+
+        bool StellarLikeTransactionDatabaseHelper::operationExists(soci::session &sql, const std::string &uid) {
+            auto count = 0;
+            sql << "SELECT COUNT(*) FROM stellar_operations WHERE uid = :uid", use(uid), into(count);
+            return count >= 1;
         }
     }
 }

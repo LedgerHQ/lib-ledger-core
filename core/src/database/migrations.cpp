@@ -787,8 +787,16 @@ namespace ledger {
 
             // Stellar native operations
             sql << "CREATE TABLE stellar_operations("
-                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
-                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES stellar_transactions(transaction_uid) ON DELETE CASCADE,"
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES stellar_transactions(uid) ON DELETE CASCADE,"
+                   "hash VARCHAR(255) NOT NULL,"
+                   "created_at VARCHAR(255) NOT NULL,"
+                   "asset_uid VARCHAR(255) NOT NULL REFERENCES stellar_assets(uid) ON DELETE CASCADE,"
+                   "source_asset_uid VARCHAR(255) REFERENCES stellar_assets(uid) ON DELETE CASCADE,"
+                   "amount VARCHAR(255) NOT NULL,"
+                   "source_amount VARCHAR(255),"
+                   "from_address VARCHAR(255) NOT NULL,"
+                   "to_address VARCHAR(255) NOT NULL,"
                    "type INTEGER NOT NULL"
                    ")";
 

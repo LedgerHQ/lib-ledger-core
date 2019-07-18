@@ -43,10 +43,12 @@ namespace ledger {
             static bool putTransaction(soci::session& sql, const api::Currency& currency,
                     const stellar::Transaction& tx);
             static std::string putOperation(soci::session &sql,
-                    const std::string& accountUid, const stellar::Operation& operation);
+                    const std::string& accountUid, const std::string& currencyName, const stellar::Operation& op);
             static bool transactionExists(soci::session& sql, const std::string& uid);
-            static std::string createTransactionUid(const api::Currency &currency,
+            static std::string createTransactionUid(const std::string &currencyName,
                     const std::string& transactionHash);
+            static bool operationExists(soci::session& sql, const std::string& operationUid);
+            static std::string createOperationUid(const std::string& accountUid, const std::string& opHash);
             static bool getOperation(soci::session& sql, const std::string& accountOperationUid, stellar::Operation& out);
             static bool getTransaction(soci::session& sql, const std::string& hash, stellar::Transaction& out);
         };

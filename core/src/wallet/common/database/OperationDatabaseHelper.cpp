@@ -131,7 +131,10 @@ namespace ledger {
                 }
             } else if (operation.stellarOperation.nonEmpty())  {
                 auto& operationValue = operation.stellarOperation.getValue();
-                StellarLikeTransactionDatabaseHelper::putOperation(sql, operation.accountUid, operationValue);
+                auto stellarOpId = StellarLikeTransactionDatabaseHelper::putOperation(sql, operation.accountUid, operation.currencyName, operationValue);
+                if (insert) {
+                    sql << "INSERT INTO stellar_account_operations VALUES(:uid, :op_uid)", use(operation.uid), use(stellarOpId);
+                }
             }
         }
 

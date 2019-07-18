@@ -180,6 +180,13 @@ namespace ledger {
             if ((op.from != address && op.to != address) || (op.sourceAmount.nonEmpty() && op.asset.type != "native"))
                 return 0;
 
+            stellar::Transaction tx;
+
+            // Retrieve the transaction containing this operation to get some additional data.
+            if (StellarLikeTransactionDatabaseHelper::getTransaction(sql, op.transactionHash, tx) == 0) {
+                return 0;
+            }
+
             Operation operation;
             operation.accountUid = getAccountUid();
             operation.stellarOperation = op;
@@ -192,7 +199,18 @@ namespace ledger {
             operation.walletUid = getWallet()->getWalletUid();
             operation.trust = std::make_shared<TrustIndicator>();
             operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
-            operation.block = {};
+
+            Block block;
+            block.currencyName = getWallet()->getCurrency().name;
+            block.time = tx.createdAt;
+            block.height = tx.ledger;
+            block.hash = fmt::format("{}", block.height);
+
+            operation.block = block;
+
+            if (op.type == stellar::OperationType::CREATE_ACCOUNT) {
+                operation.stellarOperation.getValue().asset.type = "native";
+            }
 
             if (op.from == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
                 (op.type == stellar::OperationType::PATH_PAYMENT &&
