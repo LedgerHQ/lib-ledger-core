@@ -7,7 +7,7 @@ namespace ledger {
         class PathResolver : public ledger::core::api::PathResolver {
         public:
             std::string resolveDatabasePath(const std::string& path) override { 
-                return _workingDir + path;
+                return _workingDir + "/" + path;
             };
 
             std::string resolveLogFilePath(const std::string& path) override {
