@@ -57,12 +57,12 @@ namespace ledger {
                                      "Can only get balance of 1 address from Ripple Node, but got {} addresses", addresses.size());
             }
             std::string addressesStr = addresses[0]->toBase58();
-            return getAccountInfo(addressesStr, "Balance", FieldTypes::StringType);
+            return getAccountInfo(addressesStr, "Balance", BigInt::ZERO, FieldTypes::StringType);
         }
 
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getSequence(const std::string &address) {
-            return getAccountInfo(address, "Sequence", FieldTypes::NumberType);
+            return getAccountInfo(address, "Sequence", BigInt::ZERO, FieldTypes::NumberType);
         }
 
         Future<std::shared_ptr<BigInt>>
@@ -81,7 +81,8 @@ namespace ledger {
             bodyRequest.setMethod("server_info");
             auto requestBody = bodyRequest.getString();
             bool parseNumberAsString = type == FieldTypes::StringType;
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .json(parseNumberAsString).mapPtr<BigInt>(getContext(), [field, type](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a result field ?
@@ -140,7 +141,8 @@ namespace ledger {
             bodyRequest.setMethod("submit");
             bodyRequest.pushParameter("tx_blob", hex::toString(transaction));
             auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
                         auto &json = *std::get<1>(result);
                         if (!json.IsObject() || !json.HasMember("result") ||
@@ -170,7 +172,8 @@ namespace ledger {
             bodyRequest.pushParameter("trasnaction", transactionHash);
             bodyRequest.pushParameter("binary", "true");
             auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .json().template map<Bytes>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> Bytes {
                         auto &json = *std::get<1>(result);
                         if (!json.IsObject() || !json.HasMember("result") ||
@@ -202,7 +205,8 @@ namespace ledger {
             bodyRequest.setMethod("account_tx");
             bodyRequest.pushParameter("account", addresses[0]);
             auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .template json<TransactionsBulk, Exception>(
                             LedgerApiParser<TransactionsBulk, RippleLikeTransactionsBulkParser>())
                     .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](
@@ -225,7 +229,8 @@ namespace ledger {
             bodyRequest.setMethod("ledger");
             bodyRequest.pushParameter("ledger_index", std::string("validated"));
             auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .template json<Block, Exception>(LedgerApiParser<Block, RippleLikeBlockParser>())
                     .template mapPtr<Block>(getExplorerContext(),
                                                    [](const Either<Exception, std::shared_ptr<Block>> &result) {
@@ -262,14 +267,16 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getAccountInfo(const std::string &address,
                                                          const std::string &key,
+                                                         const BigInt &defaultValue,
                                                          FieldTypes type) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("account_info");
             bodyRequest.pushParameter("account", address);
             bodyRequest.pushParameter("ledger_index", std::string("validated"));
             auto requestBody = bodyRequest.getString();
-            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()))
-                    .json().mapPtr<BigInt>(getContext(), [address, key, type](const HttpRequest::JsonResult &result) {
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
+                    .json().mapPtr<BigInt>(getContext(), [address, key, type, defaultValue](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a result field ?
                         if (!json.IsObject() || !json.HasMember("result") ||
@@ -281,8 +288,8 @@ namespace ledger {
                         //Is there an account_data field ?
                         auto resultObj = json["result"].GetObject();
                         if (!resultObj.HasMember("account_data") || !resultObj["account_data"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"account_data\" in response",
-                                                 key, address);
+                            // Case of account not found (not activated yet)
+                            return std::make_shared<BigInt>(defaultValue);
                         }
 
                         //Is there an field with key name ?
