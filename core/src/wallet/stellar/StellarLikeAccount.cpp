@@ -156,7 +156,69 @@ namespace ledger {
         Future<std::vector<std::shared_ptr<api::Amount>>>
         StellarLikeAccount::getBalanceHistory(const std::string &start, const std::string &end,
                                               api::TimePeriod precision) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            auto self = getSelf();
+            return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
+
+                auto startDate = DateUtils::fromJSON(start);
+                auto endDate = DateUtils::fromJSON(end);
+                if (startDate >= endDate) {
+                    throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
+                                         "Start date should be strictly greater than end date");
+                }
+
+                const auto &uid = self->getAccountUid();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<Operation> operations;
+
+                auto keychain = self->getKeychain();
+                std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
+                    return keychain->contains(addr);
+                };
+
+                //Get operations related to an account
+                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+
+                auto lowerDate = startDate;
+                auto upperDate = DateUtils::incrementDate(startDate, precision);
+
+                std::vector<std::shared_ptr<api::Amount>> amounts;
+                std::size_t operationsCount = 0;
+                BigInt sum;
+                while (lowerDate <= endDate && operationsCount < operations.size()) {
+
+                    auto operation = operations[operationsCount];
+                    while (operation.date > upperDate && lowerDate < endDate) {
+                        lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                        upperDate = DateUtils::incrementDate(upperDate, precision);
+                        amounts.emplace_back(
+                                std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                    }
+
+                    if (operation.date <= upperDate) {
+                        switch (operation.type) {
+                            case api::OperationType::RECEIVE: {
+                                sum = sum + operation.amount;
+                                break;
+                            }
+                            case api::OperationType::SEND: {
+                                sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
+                                break;
+                            }
+                            default:
+                                break;
+                        }
+                    }
+                    operationsCount += 1;
+                }
+
+                while (lowerDate < endDate) {
+                    lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                    amounts.emplace_back(
+                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                }
+
+                return amounts;
+            });
         }
 
         Future<api::ErrorCode> StellarLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {

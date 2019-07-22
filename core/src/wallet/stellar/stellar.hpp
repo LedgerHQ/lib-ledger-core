@@ -93,7 +93,7 @@ namespace ledger {
                 Flags flags;
             };
 
-            enum class OperationType : uint8_t  {CREATE_ACCOUNT = 0, PAYMENT = 1, PATH_PAYMENT = 2, MANAGER_OFFER = 3, CREATE_PASSIVE_OFFER = 4, SET_OPTIONS = 5,
+            enum class OperationType : uint8_t  {CREATE_ACCOUNT = 0, PAYMENT = 1, PATH_PAYMENT = 2, MANAGE_OFFER = 3, CREATE_PASSIVE_OFFER = 4, SET_OPTIONS = 5,
                                                  CHANGE_TRUST = 6, ALLOW_TRUST = 7, ACCOUNT_MERGE = 8, INFLATION = 9, MANAGE_DATA = 10, BUMP_SEQUENCE = 11};
 
             struct Operation {

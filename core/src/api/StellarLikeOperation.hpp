@@ -13,9 +13,13 @@
 
 namespace ledger { namespace core { namespace api {
 
+struct StellarLikeOperationRecord;
+
 class LIBCORE_EXPORT StellarLikeOperation {
 public:
     virtual ~StellarLikeOperation() {}
+
+    virtual StellarLikeOperationRecord getRecord() = 0;
 };
 
 } } }  // namespace ledger::core::api

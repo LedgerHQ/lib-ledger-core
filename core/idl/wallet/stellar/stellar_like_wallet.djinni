@@ -1,3 +1,10 @@
+@import "../amount.djinni"
+
+StellarLikeOperationType = enum {
+    create_account; payment; path_payment; manage_offer; create_passive_offer; set_optionals;
+    change_trust; allow_trust; account_merge; inflation; manage_data; bump_sequence;
+}
+
 
 StellarLikeBlock = interface +c {
 
@@ -11,8 +18,24 @@ StellarLikeTransactionBuilder = interface +c {
 
 }
 
-StellarLikeOperation = interface +c {
+StellarLikeAsset = record {
+    type: string;
+    code: optional<string>;
+    issuer: optional<string>;
+}
 
+StellarLikeOperationRecord = record {
+    hash: string;
+    successful: bool;
+    operationType: StellarLikeOperationType;
+    transactionHash: string;
+    asset: StellarLikeAsset;
+    sourceAsset: optional<StellarLikeAsset>;
+    sourceAmount: optional<Amount>;
+}
+
+StellarLikeOperation = interface +c {
+    getRecord(): StellarLikeOperationRecord;
 }
 
 StellarLikeAccount = interface +c {
