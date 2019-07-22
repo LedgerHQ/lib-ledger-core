@@ -90,8 +90,8 @@ api::AccountCreationInfo ETC_KEYS_INFO_LIVE(
 
 api::AccountCreationInfo XRP_KEYS_INFO(
         0, {"main"}, {"44'/144'/0'"},
-        {hex::toByteArray("024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed")},
-        {hex::toByteArray("b4f8427e7e19f284dfe7b99f107c55d00b3eae56df9569f0c4d56722742a5d71")}
+        {hex::toByteArray("03c73f64083463fa923e1530af6f558204853873c6a45cbfb1f2f1e2ac2a5d989c")},
+        {hex::toByteArray("f7e8d16154d3c7cbfa2cea35aa7a6ae0c429980892cf2d6ea9e031f57f22a63d")}
 );
 
 api::AccountCreationInfo XTZ_KEYS_INFO(
