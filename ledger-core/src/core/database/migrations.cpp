@@ -449,7 +449,6 @@ namespace ledger {
             // Abstract currency table
             sql << "CREATE TABLE currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
-                "type VARCHAR(255) NOT NULL,"
                 "bip44_coin_type INTEGER NOT NULL,"
                 "payment_uri_scheme VARCHAR(255)"
             ")";
