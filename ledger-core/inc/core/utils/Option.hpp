@@ -28,18 +28,19 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPTION_HPP
-#define LEDGER_CORE_OPTION_HPP
 
-#include "optional.hpp"
-#include "Unit.hpp"
+#pragma once
+
+#include <core/utils/optional.hpp>
+#include <core/utils/Unit.hpp>
+
 #include <cstddef>
+#include <memory>
 #include <new>
 #include <stdexcept>
 #include <type_traits>
 #include <utility>
 #include <vector>
-#include <memory>
 
 #undef foreach
 
@@ -251,5 +252,3 @@ namespace ledger {
 
     }
 }
-
-#endif //LEDGER_CORE_OPTION_HPP
