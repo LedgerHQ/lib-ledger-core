@@ -98,9 +98,44 @@ namespace ledger {
         bool
         StellarLikeTransactionDatabaseHelper::getOperation(soci::session &sql, const std::string &accountOperationUid,
                                                            stellar::Operation &out) {
+            Option<std::string> sourceAssetUid, sourceAssetCode, sourceAssetIssuer, sourceAmount;
+            Option<std::string> assetCode, assetIssuer;
+            int type, successful;
+            std::string amount;
+            sql << "SELECT o.hash, t.successful, o.type, o.amount, o.from_address, o.to_address,"
+                   " o.created_at, o.source_amount, a.asset_type, a.asset_code, a.asset_issuer,"
+                   " o.source_asset_uid, t.hash "
+                   "FROM stellar_account_operations AS ao "
+                   "LEFT JOIN stellar_operations AS o ON ao.operation_uid = o.uid "
+                   "LEFT JOIN stellar_transactions AS t ON t.uid = o.transaction_uid "
+                   "LEFT JOIN stellar_assets AS a ON  a.uid = o.asset_uid "
+                   "WHERE ao.uid = :uid", use(accountOperationUid), into(out.id)
+                   ,into(successful), into(type), into(amount), into(out.from)
+                   ,into(out.to), into(out.createdAt), into(sourceAmount), into(out.asset.type)
+                   ,into(assetCode), into(assetIssuer), into(sourceAssetUid)
+                   ,into(out.transactionHash);
 
-            return false;
+            out.amount = BigInt::fromString(amount);
+            out.type = (stellar::OperationType)type;
+            out.transactionSuccessful = successful == 1;
+            out.asset.issuer = assetIssuer.getValueOr("");
+            out.asset.code = assetCode.getValueOr("");
+            out.sourceAmount = sourceAmount.map<BigInt>([] (const std::string& s) {
+                return BigInt::fromString(s);
+            });
+            if (sourceAssetUid.nonEmpty()) {
+                stellar::Asset asset;
+                sql << "SELECT asset_type, asset_code, asset_issuer "
+                       "FROM stellar_assets WHERE uid = :uid", use(sourceAssetUid.getValue())
+                       ,into(asset.type), into(sourceAssetCode), into(sourceAssetCode);
+                asset.code = sourceAssetCode.getValueOr("");
+                asset.issuer = sourceAssetIssuer.getValueOr("");
+                out.sourceAsset = asset;
+            }
+            return !out.transactionHash.empty();
         }
+
+
 
         bool StellarLikeTransactionDatabaseHelper::getTransaction(soci::session &sql, const std::string &hash,
                                                                   stellar::Transaction &out) {
@@ -124,6 +159,16 @@ namespace ledger {
             auto count = 0;
             sql << "SELECT COUNT(*) FROM stellar_operations WHERE uid = :uid", use(uid), into(count);
             return count >= 1;
+        }
+
+        int StellarLikeTransactionDatabaseHelper::countOperationsForTransaction(soci::session &sql,
+                                                                                const std::string &txHash,
+                                                                                const std::string &senderAddress) {
+            int count;
+            sql << "SELECT COUNT(*) FROM stellar_operations "
+                   "WHERE transaction_hash = :hash AND from_address = :address"
+                   , use(txHash), use(senderAddress), into(count);
+            return count;
         }
     }
 }

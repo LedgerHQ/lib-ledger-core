@@ -102,6 +102,8 @@ namespace ledger {
                 return _backend.rippleTransaction.nonEmpty();
             } else if (_backend.walletType == api::WalletType::TEZOS) {
                 return _backend.tezosTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::STELLAR) {
+                return _backend.stellarOperation.nonEmpty();
             }
             return false;
         }

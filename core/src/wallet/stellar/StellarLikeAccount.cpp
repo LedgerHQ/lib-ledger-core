@@ -215,10 +215,15 @@ namespace ledger {
             if (op.from == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
                 (op.type == stellar::OperationType::PATH_PAYMENT &&
                  op.sourceAsset.getValueOr({}).type == "native"))) {
+                auto operationCount = 0;
                 operation.type = api::OperationType::SEND;
                 if (op.type == stellar::OperationType::PATH_PAYMENT) {
                     // Small hack until path_payment is completely integrated
                     operation.amount = op.sourceAmount.getValueOr(op.amount);
+                }
+                if (operationCount == 0) {
+                    // First operation inserted with fees
+                    operation.fees = tx.feePaid;
                 }
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);

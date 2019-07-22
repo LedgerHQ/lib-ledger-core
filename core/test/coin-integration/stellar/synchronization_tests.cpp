@@ -53,8 +53,29 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     EXPECT_EQ(bus, account->synchronize());
     dispatcher->waitUntilStopped();
     auto balance = ::wait(account->getBalance());
-    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations())->execute());
+    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
     EXPECT_TRUE(operations.size() >= 5);
+
+    const auto& first = operations.front();
+
+    EXPECT_EQ(first->getAmount()->toString(), "1800038671");
+    EXPECT_EQ(first->getFees()->toString(), "0");
+    EXPECT_EQ(first->getDate(), DateUtils::fromJSON("2019-03-14T10:08:27Z"));
+    EXPECT_EQ(first->getSenders().front(), "GBV4ZDEPNQ2FKSPKGJP2YKDAIZWQ2XKRQD4V4ACH3TCTFY6KPY3OAVS7");
+    EXPECT_EQ(first->getRecipients().front(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
+    EXPECT_EQ(first->isComplete(), true);
+    EXPECT_EQ(first->getOperationType(), api::OperationType::RECEIVE);
+
+
+    const auto& second = operations[1];
+
+    EXPECT_EQ(second->getAmount()->toString(), "50000000");
+    EXPECT_EQ(second->getFees()->toString(), "100");
+    EXPECT_EQ(second->getDate(), DateUtils::fromJSON("2019-03-14T10:24:15Z"));
+    EXPECT_EQ(second->getSenders().front(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
+    EXPECT_EQ(second->getRecipients().front(), "GB6TMMOCZSFFVXUXPV6FATTGQN6NKV74I2LTBB6LR7GEWLTN2IGZ6L6X");
+    EXPECT_EQ(second->isComplete(), true);
+    EXPECT_EQ(second->getOperationType(), api::OperationType::SEND);
 }
 

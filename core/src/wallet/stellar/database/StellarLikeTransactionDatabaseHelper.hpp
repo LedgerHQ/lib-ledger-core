@@ -51,6 +51,9 @@ namespace ledger {
             static std::string createOperationUid(const std::string& accountUid, const std::string& opHash);
             static bool getOperation(soci::session& sql, const std::string& accountOperationUid, stellar::Operation& out);
             static bool getTransaction(soci::session& sql, const std::string& hash, stellar::Transaction& out);
+
+            static int countOperationsForTransaction(soci::session& sql, const std::string& txHash,
+                    const std::string& senderAddress);
         };
     }
 }
