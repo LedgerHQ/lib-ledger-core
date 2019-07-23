@@ -30,3 +30,36 @@
  */
 
 #include "StellarLikeOperation.hpp"
+#include <api/StellarLikeOperationType.hpp>
+#include <wallet/common/Amount.h>
+#include <wallet/common/AbstractAccount.hpp>
+
+namespace ledger {
+    namespace core {
+
+        api::StellarLikeOperationRecord StellarLikeOperation::getRecord() {
+            const auto& op = _api->getBackend().stellarOperation.getValueOr(stellar::Operation());
+            api::StellarLikeAsset asset(
+                    op.asset.type,
+                    op.asset.code.empty() ? Option<std::string>() : Option<std::string>(op.asset.code),
+                    op.asset.issuer.empty() ? Option<std::string>() : Option<std::string>(op.asset.issuer)
+            );
+            auto sourceAsset = op.sourceAsset.map<api::StellarLikeAsset>([] (const auto& a) {
+                return api::StellarLikeAsset(
+                    a.type,
+                    a.code.empty() ? Option<std::string>() : Option<std::string>(a.code),
+                    a.issuer.empty() ? Option<std::string>() : Option<std::string>(a.issuer)
+                );
+            });
+            std::shared_ptr<api::Amount> sourceAmount;
+            if (op.sourceAmount.nonEmpty()) {
+                sourceAmount = std::make_shared<Amount>(
+                        _api->getAccount()->getWallet()->getCurrency(), 0, op.sourceAmount.getValue());
+            }
+            return api::StellarLikeOperationRecord(
+                        op.id, op.transactionSuccessful, (api::StellarLikeOperationType) op.type,
+                        op.transactionHash, asset, sourceAsset, sourceAmount
+                    );
+        }
+    }
+}

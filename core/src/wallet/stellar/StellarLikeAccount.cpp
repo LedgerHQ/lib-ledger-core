@@ -39,6 +39,7 @@
 #include "database/StellarLikeTransactionDatabaseHelper.hpp"
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <set>
+#include <wallet/common/BalanceHistory.hpp>
 
 using namespace ledger::core;
 

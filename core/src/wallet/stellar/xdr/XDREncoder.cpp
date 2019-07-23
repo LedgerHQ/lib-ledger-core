@@ -1,9 +1,9 @@
 /*
  *
- * StellarLikeOperation.hpp
+ * XDREncoder.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/02/2019.
+ * Created by Pierre Pollastri on 23/07/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,26 +29,12 @@
  *
  */
 
-#ifndef LEDGER_CORE_STELLARLIKEOPERATION_HPP
-#define LEDGER_CORE_STELLARLIKEOPERATION_HPP
+#include "XDREncoder.hpp"
 
-#include <api/StellarLikeOperation.hpp>
-#include <wallet/common/api_impl/OperationApi.h>
-#include <api/StellarLikeOperationRecord.hpp>
+using namespace ledger::core::stellar;
 
-namespace ledger {
-    namespace core {
-        class StellarLikeOperation : public api::StellarLikeOperation {
-        public:
-            explicit StellarLikeOperation(const std::shared_ptr<OperationApi>& api) : _api(api) {};
+XDRUnionInstance::XDRUnionInstance(int32_t d, void *i, WriteInstance w)
+    : discriminant(d), instance(i), write(w)
+{
 
-            api::StellarLikeOperationRecord getRecord() override;
-
-        private:
-            std::shared_ptr<OperationApi> _api;
-        };
-    }
 }
-
-
-#endif //LEDGER_CORE_STELLARLIKEOPERATION_HPP

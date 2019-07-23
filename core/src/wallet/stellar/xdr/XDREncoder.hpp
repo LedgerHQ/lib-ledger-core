@@ -1,9 +1,9 @@
 /*
  *
- * StellarLikeOperation.hpp
+ * XDREncoder.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/02/2019.
+ * Created by Pierre Pollastri on 23/07/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,26 +29,51 @@
  *
  */
 
-#ifndef LEDGER_CORE_STELLARLIKEOPERATION_HPP
-#define LEDGER_CORE_STELLARLIKEOPERATION_HPP
+#ifndef LEDGER_CORE_XDRENCODER_HPP
+#define LEDGER_CORE_XDRENCODER_HPP
 
-#include <api/StellarLikeOperation.hpp>
-#include <wallet/common/api_impl/OperationApi.h>
-#include <api/StellarLikeOperationRecord.hpp>
+#include <bytes/BytesWriter.h>
+#include <list>
 
 namespace ledger {
     namespace core {
-        class StellarLikeOperation : public api::StellarLikeOperation {
-        public:
-            explicit StellarLikeOperation(const std::shared_ptr<OperationApi>& api) : _api(api) {};
+        namespace stellar {
 
-            api::StellarLikeOperationRecord getRecord() override;
+            class XDREncoder;
+            using WriteInstance = void (*)(void*, XDREncoder& encoder);
 
-        private:
-            std::shared_ptr<OperationApi> _api;
-        };
+            struct XDRUnionInstance {
+                int32_t discriminant;
+                void *instance;
+                WriteInstance write;
+
+                XDRUnionInstance(int32_t d, void* instance, WriteInstance write);
+            };
+
+            class XDREncoder {
+            public:
+
+                template <class Object>
+                void write(std::list<Object> list) {
+                    _writer.writeBeValue<int32_t>(list.size());
+                };
+
+                void write(const XDRUnionInstance& instance);
+
+                void write(int32_t i);
+                void write(uint32_t i);
+
+                void write(int64_t i);
+                void write(uint64_t i);
+
+                void writeString();
+
+            private:
+                BytesWriter _writer;
+            };
+        }
     }
 }
 
 
-#endif //LEDGER_CORE_STELLARLIKEOPERATION_HPP
+#endif //LEDGER_CORE_XDRENCODER_HPP
