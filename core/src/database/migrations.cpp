@@ -630,6 +630,8 @@ namespace ledger {
         }
 
         template <> void rollback<11>(soci::session& sql) {
+            sql << "DROP TABLE tezos_originated_operations";
+
             sql << "DROP TABLE tezos_originated_accounts";
 
             sql << "DROP TABLE tezos_operations";
