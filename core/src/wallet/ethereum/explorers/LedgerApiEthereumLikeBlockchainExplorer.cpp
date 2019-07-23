@@ -126,7 +126,7 @@ namespace ledger {
             auto networkId = getNetworkParameters().Identifier;
             std::string field("balance");
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
-            return _http->POST(fmt::format("/blockchain/{}/erc20/balance", getExplorerVersion()), std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
+            return _http->POST(fmt::format("/blockchain/{}/{}/erc20/balance", getExplorerVersion(), getNetworkParameters().Identifier), std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .json(parseNumbersAsString)
                     .mapPtr<BigInt>(getContext(), [field, networkId] (const HttpRequest::JsonResult& result) {
                 auto& json = *std::get<1>(result);
