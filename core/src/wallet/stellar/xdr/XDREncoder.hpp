@@ -54,8 +54,11 @@ namespace ledger {
             public:
 
                 template <class Object>
-                void write(std::list<Object> list) {
+                void write(const std::list<Object>& list) {
                     _writer.writeBeValue<int32_t>(list.size());
+                    for (const auto& item : list) {
+                        write(item);
+                    }
                 };
 
                 void write(const XDRUnionInstance& instance);
@@ -66,7 +69,10 @@ namespace ledger {
                 void write(int64_t i);
                 void write(uint64_t i);
 
-                void writeString();
+                void write(const std::string& str);
+                void write(const std::vector<uint8_t>& bytes);
+
+                std::vector<uint8_t> toByteArray() const;
 
             private:
                 BytesWriter _writer;

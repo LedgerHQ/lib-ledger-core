@@ -38,3 +38,38 @@ XDRUnionInstance::XDRUnionInstance(int32_t d, void *i, WriteInstance w)
 {
 
 }
+
+void XDREncoder::write(const XDRUnionInstance &instance) {
+    write(instance.discriminant);
+    instance.write(instance.instance, *this);
+}
+
+void XDREncoder::write(int32_t i) {
+    _writer.writeBeValue<int32_t>(i);
+}
+
+void XDREncoder::write(uint32_t i) {
+    _writer.writeBeValue<uint32_t>(i);
+}
+
+void XDREncoder::write(int64_t i) {
+    _writer.writeBeValue<int64_t>(i);
+}
+
+void XDREncoder::write(uint64_t i) {
+    _writer.writeBeValue<uint64_t>(i);
+}
+
+void XDREncoder::write(const std::string &str) {
+    write((uint32_t)str.size());
+    _writer.writeString(str);
+}
+
+void XDREncoder::write(const std::vector<uint8_t> &bytes) {
+    write((uint32_t)bytes.size());
+    _writer.writeByteArray(bytes);
+}
+
+std::vector<uint8_t> XDREncoder::toByteArray() const {
+    return _writer.toByteArray();
+}
