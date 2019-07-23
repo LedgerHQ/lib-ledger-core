@@ -23,6 +23,6 @@ if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" ==
 	else
 		export JAR_VERSION=$LIB_VERSION
 	fi
-	sbt publish
+	JAR_VERSION=$JAR_VERSION sbt publish
 fi
 
