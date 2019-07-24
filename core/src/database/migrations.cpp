@@ -660,5 +660,12 @@ namespace ledger {
         template <> void rollback<12>(soci::session& sql) {
             sql << "DROP TABLE internal_operations";
         }
+
+        template <> void migrate<13>(soci::session& sql) {
+            sql << "ALTER TABLE bitcoin_outputs ADD COLUMN block_height BIGINT";
+        }
+
+        template <> void rollback<13>(soci::session& sql) {
+        }
     }
 }

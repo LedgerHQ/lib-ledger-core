@@ -96,6 +96,7 @@ BitcoinLikeOutput = interface +c {
     # @return Optional String, address that spent
     getAddress(): optional<string>;
     getDerivationPath(): optional<DerivationPath>;
+    getBlockHeight(): optional<i64>;
 }
 
 # Class representing Bitcoin block

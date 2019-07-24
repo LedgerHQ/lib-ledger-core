@@ -66,6 +66,10 @@ namespace ledger {
                 BitcoinLikeBlockchainExplorerOutput output;
                 _transaction->outputs.push_back(output);
                 _outputParser.init(&_transaction->outputs.back());
+                // Set block height
+                if (_transaction->block.hasValue()) {
+                    _transaction->outputs.back().blockHeight = _transaction->block.getValue().height;
+                }
             } else if (currentObject == "block") {
                 BitcoinLikeBlockchainExplorer::Block block;
                 _transaction->block = Option<BitcoinLikeBlockchainExplorer::Block>(block);

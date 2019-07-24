@@ -21,7 +21,7 @@ namespace ledger { namespace core { namespace api {
 class BigInt;
 enum class OperationType;
 
-/** Class representing of an Ethereum internal transaction. */
+/** Class representing an Ethereum internal transaction. */
 class LIBCORE_EXPORT InternalTransaction {
 public:
     virtual ~InternalTransaction() {}

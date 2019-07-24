@@ -58,6 +58,8 @@ namespace ledger {
 
             std::shared_ptr<api::DerivationPath> getDerivationPath() override;
 
+            std::experimental::optional<int64_t> getBlockHeight() override;
+
             const BigInt& value();
 
         private:
