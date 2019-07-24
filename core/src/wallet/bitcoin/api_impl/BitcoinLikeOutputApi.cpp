@@ -90,6 +90,10 @@ namespace ledger {
             return _path;
         }
 
+        std::experimental::optional<int64_t> BitcoinLikeOutputApi::getBlockHeight() {
+            return static_cast<int64_t>(getOutput().blockHeight.getValueOr(std::numeric_limits<uint64_t>::max()));
+        }
+
         BitcoinLikeOutputApi::BitcoinLikeOutputApi(const BitcoinLikeBlockchainExplorerOutput &output,
                                                    const api::Currency &currency,
                                                    const std::shared_ptr<api::DerivationPath> &path)

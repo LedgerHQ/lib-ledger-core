@@ -1,4 +1,8 @@
-## 3.0.0 (on-going)
+## 3.1.0 (on-going)
+
+- Add block heights on `BitcoinLikeOutput`s to enhance performances while picking UTXOs with deepest first UTXO picking strategy
+
+## 3.0.0
 
 - Use direct call to `balanceOf` on ERC20 to get balance in tokens of an account.
 
