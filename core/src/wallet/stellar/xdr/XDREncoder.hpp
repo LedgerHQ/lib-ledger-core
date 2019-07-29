@@ -34,49 +34,72 @@
 
 #include <bytes/BytesWriter.h>
 #include <list>
+#include <boost/variant/variant.hpp>
+#include <array>
 
 namespace ledger {
     namespace core {
         namespace stellar {
+            namespace xdr {
+                class Encoder;
 
-            class XDREncoder;
-            using WriteInstance = void (*)(void*, XDREncoder& encoder);
+                using ObjectEncoder = std::function<void(Encoder &)>;
 
-            struct XDRUnionInstance {
-                int32_t discriminant;
-                void *instance;
-                WriteInstance write;
+                class Encoder {
+                public:
 
-                XDRUnionInstance(int32_t d, void* instance, WriteInstance write);
-            };
+                    template<class Object>
+                    void write(const std::list<Object> &list) {
+                        _writer.writeBeValue<int32_t>(list.size());
+                        for (const auto &item : list) {
+                            write(item);
+                        }
+                    };
 
-            class XDREncoder {
-            public:
+                    template<class Object>
+                    void write(const std::vector<Object> &list) {
+                        _writer.writeBeValue<int32_t>(list.size());
+                        for (const auto &item : list) {
+                            write(item);
+                        }
+                    };
 
-                template <class Object>
-                void write(const std::list<Object>& list) {
-                    _writer.writeBeValue<int32_t>(list.size());
-                    for (const auto& item : list) {
-                        write(item);
-                    }
+                    template<class Object, std::size_t N>
+                    void write(const std::array<Object, N> &list) {
+                        _writer.writeBeValue<int32_t>(list.size());
+                        for (const auto &item : list) {
+                            write(item);
+                        }
+                    };
+
+                    void write(const ObjectEncoder &w);
+
+                    void write(int32_t i);
+
+                    void write(uint32_t i);
+
+                    void write(int64_t i);
+
+                    void write(uint64_t i);
+
+                    void write(const std::string &str);
+
+                    void write(const std::vector<uint8_t> &bytes);
+
+                    std::vector<uint8_t> toByteArray() const;
+
+                private:
+                    BytesWriter _writer;
                 };
 
-                void write(const XDRUnionInstance& instance);
-
-                void write(int32_t i);
-                void write(uint32_t i);
-
-                void write(int64_t i);
-                void write(uint64_t i);
-
-                void write(const std::string& str);
-                void write(const std::vector<uint8_t>& bytes);
-
-                std::vector<uint8_t> toByteArray() const;
-
-            private:
-                BytesWriter _writer;
-            };
+                template <class Discriminant>
+                static ObjectEncoder make_union(Discriminant discriminant, const ObjectEncoder& encode) {
+                    return [=] (Encoder& encoder) {
+                        encoder.write(static_cast<int>(discriminant));
+                        encode(encoder);
+                    };
+                }
+            }
         }
     }
 }

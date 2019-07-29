@@ -1,6 +1,6 @@
 /*
  *
- * Encoder.cpp
+ * XDRTransaction.hpp
  * ledger-core
  *
  * Created by Pierre Pollastri on 23/07/2019.
@@ -29,42 +29,28 @@
  *
  */
 
-#include "XDREncoder.hpp"
+#ifndef LEDGER_CORE_XDRTRANSACTION_HPP
+#define LEDGER_CORE_XDRTRANSACTION_HPP
 
-using namespace ledger::core::stellar::xdr;
+namespace ledger {
+    namespace core {
+        namespace stellar {
+            // Based on https://github.com/stellar/stellar-core/blob/master/src/xdr/Stellar-transaction.x
 
-void Encoder::write(int32_t i) {
-    _writer.writeBeValue<int32_t>(i);
+
+
+            class XDRTransaction {
+            public:
+
+            };
+
+
+            class XDRTransactionEnvelope {
+            public:
+
+            };
+        }
+    }
 }
 
-void Encoder::write(uint32_t i) {
-    _writer.writeBeValue<uint32_t>(i);
-}
-
-void Encoder::write(int64_t i) {
-    _writer.writeBeValue<int64_t>(i);
-}
-
-void Encoder::write(uint64_t i) {
-    _writer.writeBeValue<uint64_t>(i);
-}
-
-void Encoder::write(const std::string &str) {
-    write((uint32_t)str.size());
-    _writer.writeString(str);
-}
-
-void Encoder::write(const std::vector<uint8_t> &bytes) {
-    write((uint32_t)bytes.size());
-    _writer.writeByteArray(bytes);
-}
-
-void Encoder::write(const ObjectEncoder &w) {
-    w(*this);
-}
-
-std::vector<uint8_t> Encoder::toByteArray() const {
-    return _writer.toByteArray();
-}
-
-
+#endif //LEDGER_CORE_XDRTRANSACTION_HPP

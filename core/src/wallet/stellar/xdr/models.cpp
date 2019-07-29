@@ -1,6 +1,6 @@
 /*
  *
- * Encoder.cpp
+ * models.cpp
  * ledger-core
  *
  * Created by Pierre Pollastri on 23/07/2019.
@@ -29,42 +29,7 @@
  *
  */
 
-#include "XDREncoder.hpp"
+#include "models.hpp"
 
 using namespace ledger::core::stellar::xdr;
-
-void Encoder::write(int32_t i) {
-    _writer.writeBeValue<int32_t>(i);
-}
-
-void Encoder::write(uint32_t i) {
-    _writer.writeBeValue<uint32_t>(i);
-}
-
-void Encoder::write(int64_t i) {
-    _writer.writeBeValue<int64_t>(i);
-}
-
-void Encoder::write(uint64_t i) {
-    _writer.writeBeValue<uint64_t>(i);
-}
-
-void Encoder::write(const std::string &str) {
-    write((uint32_t)str.size());
-    _writer.writeString(str);
-}
-
-void Encoder::write(const std::vector<uint8_t> &bytes) {
-    write((uint32_t)bytes.size());
-    _writer.writeByteArray(bytes);
-}
-
-void Encoder::write(const ObjectEncoder &w) {
-    w(*this);
-}
-
-std::vector<uint8_t> Encoder::toByteArray() const {
-    return _writer.toByteArray();
-}
-
 
