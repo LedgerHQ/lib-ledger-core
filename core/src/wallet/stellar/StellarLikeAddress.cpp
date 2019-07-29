@@ -33,6 +33,7 @@
 #include <bytes/BytesWriter.h>
 #include <crypto/CRC.hpp>
 #include <math/BaseConverter.hpp>
+#include <bytes/BytesReader.h>
 
 namespace ledger {
     namespace core {
@@ -51,9 +52,17 @@ namespace ledger {
             return _address;
         }
 
+        std::vector<uint8_t> StellarLikeAddress::toPublicKey() {
+            std::vector<uint8_t> bytes;
+            BaseConverter::decode(_address, BaseConverter::BASE32_RFC4648_NO_PADDING, bytes);
+            BytesReader reader(bytes);
+            reader.seek(getCurrency().stellarLikeNetworkParameters.value().Version.size(), BytesReader::Seek::CUR);
+            return reader.read(32);
+        }
+
         std::shared_ptr<StellarLikeAddress>
         StellarLikeAddress::parse(const std::string &address, const api::Currency &currency) {
-            return nullptr;
+            return std::make_shared<StellarLikeAddress>(address, currency, Option<std::string>());
         }
 
         std::string StellarLikeAddress::convertPubkeyToAddress(const std::vector<uint8_t> &pubKey,

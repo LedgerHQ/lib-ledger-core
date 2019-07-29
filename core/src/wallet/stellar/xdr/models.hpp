@@ -71,6 +71,10 @@ namespace ledger {
                 using string28 = std::string; // Max 28 chars
                 using string64 = std::string; // Max 64 chars
 
+                // Signature
+                using SignatureHint = std::array<uint8_t, 4>;
+                using Signature = std::vector<uint8_t>; // Max length == 64
+
                 // TimeBounds structure
                 struct TimeBounds {
                     TimePoint minTime;
@@ -79,9 +83,8 @@ namespace ledger {
 
                 // Public key union
                 struct PublicKey {
-                    boost::variant<uint32_t> content;
-
-                    ObjectEncoder encode() const;
+                    PublicKeyType type;
+                    uint256 content;
                 };
                 using AccountID = PublicKey;
 
@@ -205,7 +208,7 @@ namespace ledger {
 
                 struct SetOptionsOp
                 {
-                    AccountID* inflationDest; // sets the inflation destination
+                    Option<AccountID> inflationDest; // sets the inflation destination
 
                     Option<uint32_t> clearFlags; // which flags to clear
                     Option<uint32_t> setFlags;   // which flags to set
@@ -275,15 +278,20 @@ namespace ledger {
 
                 };
 
-                /**
-                 * Create an encoder for the given object. This function must have a
-                 * specialization for each types to encode.
-                 * @tparam T The class of the object to encode
-                 * @param object The object to encode
-                 * @return A function able to encode the object
-                 */
-                template <class T>
-                ObjectEncoder make_encoder(const T& object);
+                // Decorated signature structure
+                struct DecoratedSignature
+                {
+                    SignatureHint hint;  // last 4 bytes of the public key, used as a hint
+                    Signature signature; // actual signature
+                };
+
+                // Transaction envelope structure
+                struct TransactionEnvelope {
+                    Transaction tx;
+                    /* Each decorated signature is a signature over the SHA256 hash of
+                     * a TransactionSignaturePayload */
+                    std::list<DecoratedSignature> signatures;
+                };
             }
         }
     }

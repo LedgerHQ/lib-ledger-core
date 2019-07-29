@@ -36,6 +36,7 @@
 #include <list>
 #include <boost/variant/variant.hpp>
 #include <array>
+#include <utils/Option.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,46 +46,76 @@ namespace ledger {
 
                 using ObjectEncoder = std::function<void(Encoder &)>;
 
+                /**
+                * Create an encoder for the given object. This function must have a
+                * specialization for each types to encode.
+                * @tparam T The class of the object to encode
+                * @param object The object to encode
+                * @return A function able to encode the object
+                */
+                template <class T>
+                ObjectEncoder make_encoder(const T& object);
+
                 class Encoder {
                 public:
 
                     template<class Object>
-                    void write(const std::list<Object> &list) {
+                    Encoder& operator<<(const std::list<Object> &list) {
                         _writer.writeBeValue<int32_t>(list.size());
                         for (const auto &item : list) {
-                            write(item);
+                            *this << item;
                         }
+                        return *this;
                     };
 
                     template<class Object>
-                    void write(const std::vector<Object> &list) {
+                    Encoder& operator<<(const std::vector<Object> &list) {
                         _writer.writeBeValue<int32_t>(list.size());
                         for (const auto &item : list) {
-                            write(item);
+                            *this << item;
                         }
+                        return *this;
                     };
 
                     template<class Object, std::size_t N>
-                    void write(const std::array<Object, N> &list) {
-                        _writer.writeBeValue<int32_t>(list.size());
+                    Encoder& operator<<(const std::array<Object, N> &list) {
                         for (const auto &item : list) {
-                            write(item);
+                            *this << item;
                         }
+                        return *this;
                     };
 
-                    void write(const ObjectEncoder &w);
+                    template<class Object>
+                    Encoder& operator<<(const Object& object) {
+                        make_encoder(object)(*this);
+                        return *this;
+                    }
 
-                    void write(int32_t i);
+                    template<class Object>
+                    Encoder& operator<<(const Option<Object> &option) {
+                        *this << option.nonEmpty();
+                        if (option.nonEmpty()) {
+                            *this << option.getValue();
+                        }
+                        return *this;
+                    };
 
-                    void write(uint32_t i);
+                    Encoder& operator<<(const ObjectEncoder &w);
 
-                    void write(int64_t i);
+                    Encoder& operator<<(int32_t i);
 
-                    void write(uint64_t i);
+                    Encoder& operator<<(uint32_t i);
 
-                    void write(const std::string &str);
+                    Encoder& operator<<(int64_t i);
 
-                    void write(const std::vector<uint8_t> &bytes);
+                    Encoder& operator<<(uint64_t i);
+
+                    Encoder& operator<<(bool b);
+                    Encoder& operator<<(uint8_t byte);
+
+                    Encoder& operator<<(const std::string &str);
+
+                    Encoder& operator<<(const std::vector<uint8_t> &bytes);
 
                     std::vector<uint8_t> toByteArray() const;
 
@@ -92,13 +123,6 @@ namespace ledger {
                     BytesWriter _writer;
                 };
 
-                template <class Discriminant>
-                static ObjectEncoder make_union(Discriminant discriminant, const ObjectEncoder& encode) {
-                    return [=] (Encoder& encoder) {
-                        encoder.write(static_cast<int>(discriminant));
-                        encode(encoder);
-                    };
-                }
             }
         }
     }

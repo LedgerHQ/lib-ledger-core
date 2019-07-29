@@ -51,6 +51,8 @@ namespace ledger {
             static std::string convertPubkeyToAddress(  const std::vector<uint8_t>& pubKey,
                                                         const api::StellarLikeNetworkParameters& params);
 
+            std::vector<uint8_t> toPublicKey();
+
         private:
             std::string _address;
         };

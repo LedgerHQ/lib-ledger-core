@@ -33,38 +33,55 @@
 
 using namespace ledger::core::stellar::xdr;
 
-void Encoder::write(int32_t i) {
+Encoder& Encoder::operator<<(int32_t i) {
     _writer.writeBeValue<int32_t>(i);
+    return *this;
 }
 
-void Encoder::write(uint32_t i) {
+Encoder& Encoder::operator<<(uint32_t i) {
     _writer.writeBeValue<uint32_t>(i);
+    return *this;
 }
 
-void Encoder::write(int64_t i) {
+Encoder& Encoder::operator<<(int64_t i) {
     _writer.writeBeValue<int64_t>(i);
+    return *this;
 }
 
-void Encoder::write(uint64_t i) {
+Encoder& Encoder::operator<<(uint64_t i) {
     _writer.writeBeValue<uint64_t>(i);
+    return *this;
 }
 
-void Encoder::write(const std::string &str) {
-    write((uint32_t)str.size());
+Encoder& Encoder::operator<<(const std::string &str) {
+    *this << ((uint32_t)str.size());
     _writer.writeString(str);
+    return *this;
 }
 
-void Encoder::write(const std::vector<uint8_t> &bytes) {
-    write((uint32_t)bytes.size());
+Encoder& Encoder::operator<<(const std::vector<uint8_t> &bytes) {
+    *this << ((uint32_t)bytes.size());
     _writer.writeByteArray(bytes);
+    return *this;
 }
 
-void Encoder::write(const ObjectEncoder &w) {
+Encoder& Encoder::operator<<(const ObjectEncoder &w) {
     w(*this);
+    return *this;
+}
+
+Encoder& Encoder::operator<<(bool b) {
+    auto v = (int32_t)(b ? 1 : 0);
+    return (*this << v);
 }
 
 std::vector<uint8_t> Encoder::toByteArray() const {
     return _writer.toByteArray();
+}
+
+Encoder &Encoder::operator<<(uint8_t byte) {
+    _writer.writeByte(byte);
+    return *this;
 }
 
 
