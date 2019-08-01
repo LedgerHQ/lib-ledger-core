@@ -1,0 +1,9 @@
+@extern "../../ledger-core/idl/core.yaml"
+
+# Your interface goes here. You can create additional .djinni files in the idl/ directory and import
+# them here with the @import "<foo.djinni>" syntax. Don’t forget to add an @import line to expose
+# the content of a file as public generated API.
+HelloWorld = enum {
+  Hello;
+  World;
+}

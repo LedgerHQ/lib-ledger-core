@@ -1,0 +1,98 @@
+#!/bin/sh
+
+# project new <coin-id> [--force]
+function usage {
+  echo $1
+  exit $2
+}
+
+function cmd_project_new {
+  if [[ -z "$1" ]];
+  then
+    usage "please provide the name of the currency" 1
+  fi
+
+  coin_name="$1"
+  project_name="ledger-core-$coin_name"
+  echo "—> project $project_name"
+
+  if [[ -d "./$project_name" ]];
+  then
+    if [[ ! "$2" == "--force" ]];
+    then
+      usage "project already created; aborting…" 1
+    fi
+  fi
+
+  echo "—> creating files hierarchy"
+  mkdir -p $project_name/{build,idl,inc/database,src/database}
+  touch $project_name/README.md
+
+  echo "—> symlinking ledger-core’s libraries"
+  ln -sf $PWD/ledger-core/lib $project_name/lib
+  ln -sf $PWD/ledger-core/cmake $project_name/cmake
+
+  echo "—> generating CMake configuration"
+  sed s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt
+  sed s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project-src.txt.tpl > $project_name/src/CMakeLists.txt
+
+  echo "—> generating IDL entry point"
+  cp ./tools/templates/idl.djinni $project_name/idl/
+
+  echo "—> creating migrations files"
+  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.hpp > $project_name/inc/database/migrations.hpp
+  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.cpp > $project_name/src/database/migrations.cpp
+}
+
+function cmd_project_idl {
+  if [[ -z "$1" ]];
+  then
+    usage "please provide the name of the currency" 1
+  fi
+
+  project_name="ledger-core-$1"
+  ./tools/idl_interfaces.sh ledger-core $project_name
+}
+
+function cmd_project {
+  case "$1" in
+    "new")
+      shift
+      cmd_project_new $*
+      ;;
+
+    "api")
+      shift
+      cmd_project_idl $*
+      ;;
+
+    *)
+      usage "project usage" 1
+      ;;
+  esac
+}
+
+function cmd_idl {
+  if [[ ! -z "$*" ]];
+  then
+    usage "too many arguments; generating the API for Ledger Core doesn’t require any argument" 1
+  fi
+
+  ./tools/idl_interfaces.sh ledger-core
+}
+
+case "$1" in
+  "project")
+    shift
+    cmd_project $*
+    ;;
+
+  "api")
+    shift
+    cmd_idl $*
+    ;;
+
+  *)
+    usage "usage" 2
+    ;;
+esac
