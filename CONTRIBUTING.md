@@ -38,6 +38,9 @@ this same document.
   - We *tag* instable releases on `develop` with the special `-rc` suffix to support *release
     candidates*.
 
+If you would like to know more about the architecture and the internals (configuring / building),
+feel free to refer to [this document](doc/architecture.md).
+
 ## Release process
   - Development: fixes, features are done on specific branches on developers' fork,
   - Pull requests: submitted to LedgerHQ/develop with updated CHANGELOG.md,
