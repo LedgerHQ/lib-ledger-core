@@ -145,6 +145,10 @@ namespace ledger {
         // Add internal transactions for ETH
         template <> void migrate<12>(soci::session& sql);
         template <> void rollback<12>(soci::session& sql);
+
+        // Add block height to outputs
+        template <> void migrate<13>(soci::session& sql);
+        template <> void rollback<13>(soci::session& sql);
     }
 }
 

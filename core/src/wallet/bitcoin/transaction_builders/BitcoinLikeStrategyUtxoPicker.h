@@ -42,7 +42,7 @@ namespace ledger {
                                           const api::Currency &currency);
         protected:
             Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
-            Future<UTXODescriptorList> filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
+            UTXODescriptorList filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
                                      const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
                                      const BigInt& aggregatedAmount);
             bool hasEnough(const std::shared_ptr<Buddy>& buddy, const BigInt& aggregatedAmount, int inputCount, bool computeOutputAmount = false);
@@ -55,11 +55,11 @@ namespace ledger {
                 int64_t effectiveFees;
                 int64_t longTermFees;
             };
-            Future<BitcoinLikeUtxoPicker::UTXODescriptorList> filterWithOptimizeSize(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+            BitcoinLikeUtxoPicker::UTXODescriptorList filterWithOptimizeSize(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                                                      const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
                                                                                      const BigInt &aggregatedAmount);
 
-            Future<BitcoinLikeUtxoPicker::UTXODescriptorList> filterWithMergeOutputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+            BitcoinLikeUtxoPicker::UTXODescriptorList filterWithMergeOutputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                                                      const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
                                                                                      const BigInt &aggregatedAmount);
 
@@ -72,7 +72,7 @@ namespace ledger {
             static const int64_t CENT = 1000000;
             static const int64_t MIN_CHANGE = 100000;
         private:
-            Future<BitcoinLikeUtxoPicker::UTXODescriptorList> filterWithKnapsackSolver(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+            BitcoinLikeUtxoPicker::UTXODescriptorList filterWithKnapsackSolver(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                                                        const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
                                                                                        const BigInt &aggregatedAmount);
 
