@@ -1,5 +1,6 @@
 #pragma once
 #include "api/HttpUrlConnection.hpp"
+#include <memory>
 
 namespace ledger {
     namespace core {
@@ -13,7 +14,7 @@ namespace ledger {
 
             class FakeUrlConnection : public api::HttpUrlConnection {
             public:
-                static std::shared_ptr<FakeUrlConnection> FakeUrlConnection::fromString(const std::string& responseData);
+                static std::shared_ptr<FakeUrlConnection> fromString(const std::string& responseData);
                 FakeUrlConnection(const UrlConnectionData& data);
                 int32_t getStatusCode() override;
                 std::string getStatusText() override;
