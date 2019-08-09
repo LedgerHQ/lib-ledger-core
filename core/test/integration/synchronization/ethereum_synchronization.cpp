@@ -270,8 +270,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
     }
 }
 
-std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>>
-createSyncReceiver() {
+std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>> createSyncReceiver() {
     auto promise = std::make_shared<Promise<bool>>();
     return
         std::make_pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>>(
@@ -331,41 +330,41 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
                     {
                         "http://test.test/blockchain/v3/eth/addresses/0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43/transactions",
                         test::FakeUrlConnection::fromString("\
-{\
-    \"truncated\": false,\
-    \"txs\": [\
-        {\
-            \"hash\": \"0x24ebd24caebcdb5d5fe22ba4d2e1904515dbb7d8fcd968789c8810ad379ba866\",\
-            \"status\": 1,\
-            \"received_at\": \"2018-06-08T10:19:10Z\",\
-            \"nonce\": \"0x05\",\
-            \"value\": 1000000000000000,\
-            \"gas\": 21000,\
-            \"gas_price\": 11000000000,\
-            \"from\": \"0xf0c91a8f0f95a2fd90ab74c6c13ef0db2af96447\",\
-            \"to\": \"0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43\",\
-            \"input\": \"0x\",\
-            \"cumulative_gas_used\": 6388806,\
-            \"gas_used\": 21000,\
-            \"transfer_events\": {\
-                \"list\": [],\
-                \"truncated\": false\
-            },\
-            \"actions\": [\
-                {\
-                    \"from\": \"0xf0c91a8f0f95a2fd90ab74c6c13ef0db2af96447\",\
-                    \"to\": \"0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43\",\
-                    \"value\": 1000000000000000\
-                }\
-            ],\
-            \"block\": {\
-                \"hash\": \"0x0160a3b2b762ec42f5a1134ac260a21c98f377e153d332efb6e20534abb37f78\",\
-                \"height\": 5752778,\
-                \"time\": \"2018-06-08T10:19:10Z\"\
-            }\
-        }\
-    ]\
-}")
+                            {\
+                                \"truncated\": false,\
+                                \"txs\": [\
+                                    {\
+                                        \"hash\": \"0x24ebd24caebcdb5d5fe22ba4d2e1904515dbb7d8fcd968789c8810ad379ba866\",\
+                                        \"status\": 1,\
+                                        \"received_at\": \"2018-06-08T10:19:10Z\",\
+                                        \"nonce\": \"0x05\",\
+                                        \"value\": 1000000000000000,\
+                                        \"gas\": 21000,\
+                                        \"gas_price\": 11000000000,\
+                                        \"from\": \"0xf0c91a8f0f95a2fd90ab74c6c13ef0db2af96447\",\
+                                        \"to\": \"0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43\",\
+                                        \"input\": \"0x\",\
+                                        \"cumulative_gas_used\": 6388806,\
+                                        \"gas_used\": 21000,\
+                                        \"transfer_events\": {\
+                                            \"list\": [],\
+                                            \"truncated\": false\
+                                        },\
+                                        \"actions\": [\
+                                            {\
+                                                \"from\": \"0xf0c91a8f0f95a2fd90ab74c6c13ef0db2af96447\",\
+                                                \"to\": \"0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43\",\
+                                                \"value\": 1000000000000000\
+                                            }\
+                                        ],\
+                                        \"block\": {\
+                                            \"hash\": \"0x0160a3b2b762ec42f5a1134ac260a21c98f377e153d332efb6e20534abb37f78\",\
+                                            \"height\": 5752778,\
+                                            \"time\": \"2018-06-08T10:19:10Z\"\
+                                        }\
+                                    }\
+                                ]\
+                            }")
                     },
                     {
                         "http://test.test/blockchain/v3/eth/addresses/0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43/transactions?block_hash=0x0160a3b2b762ec42f5a1134ac260a21c98f377e153d332efb6e20534abb37f78",
