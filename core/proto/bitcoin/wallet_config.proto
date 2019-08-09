@@ -1,9 +1,0 @@
-syntax = "proto3";
-package ledger.core.message.bitcoin;
-import "bitcoin/account_config.proto";
-
-// This values can be changed at any time
-message WalletSetting {
-    // default AccountConfiguration for accounts of this wallet
-    AccountConfiguration default_account_configuration = 1;
-}

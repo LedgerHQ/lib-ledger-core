@@ -7,6 +7,7 @@
 #include "api/Amount.hpp"
 #include "api/AmountCallback.hpp"
 #include "api/AccountCreationInfo.hpp"
+#include "api/Block.hpp"
 #include "api/Wallet.hpp"
 #include "api/WalletCallback.hpp"
 #include "api/WalletPool.hpp"
@@ -17,6 +18,11 @@
 #include "api/EventBus.hpp"
 #include "api/EventReceiver.hpp"
 #include "api/ExtendedKeyAccountCreationInfo.hpp"
+#include "api/Operation.hpp"
+#include "api/OperationQuery.hpp"
+#include "api/OperationOrderKey.hpp"
+#include "api/OperationType.hpp"
+#include "messages/bitcoin/operation.pb.h"
 #include "wallet/bitcoin/BitcoinLikeAccount.hpp"
 #include "wallet/currencies.hpp"
 #include <functional>
@@ -26,47 +32,79 @@ namespace ledger {
 namespace core {
     using namespace message::bitcoin;
 
+    std::string KeychainToString(message::bitcoin::KeychainEngine keychainEngine) {
+        switch (keychainEngine) {
+        case KeychainEngine::BIP49_P2SH:
+            return api::KeychainEngines::BIP49_P2SH;
+        case KeychainEngine::BIP32_P2PKH:
+            return api::KeychainEngines::BIP32_P2PKH;
+        case KeychainEngine::BIP173_P2WPKH:
+            return api::KeychainEngines::BIP173_P2WPKH;
+        case KeychainEngine::BIP173_P2WSH:
+            return api::KeychainEngines::BIP173_P2WSH;
+        default:
+            throw std::runtime_error("Can't parse BitcoinLikeRequest");
+        }
+    }
+
+    std::string AccountIDToString(const message::bitcoin::AccountID& accountID) {
+        return accountID.xpub() + ":" + accountID.currency_name() + ":" + KeychainToString(accountID.keychain_engine());
+    }
+
     BitcoinLikeCommandProcessor::BitcoinLikeCommandProcessor(const std::shared_ptr<WalletPool>& walletPool)
         : _walletPool(walletPool) {
 
     }
 
+    Future<std::shared_ptr<api::BitcoinLikeAccount>> BitcoinLikeCommandProcessor::getOrCreateAccount(const message::bitcoin::AccountID& accountID) {
+        auto accountName = AccountIDToString(accountID);
+        return _walletPool->getWallet(accountName)
+            .recoverWith(_walletPool->getContext(), [walletPool = _walletPool, accountID, accountName](const Exception& ex) {
+                if (ex.getErrorCode() != api::ErrorCode::WALLET_NOT_FOUND)
+                    throw ex;
+                auto walletConfig = DynamicObject::newInstance();
+                walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, KeychainToString(accountID.keychain_engine()));
+                return walletPool->createWallet(accountName, accountID.currency_name(), walletConfig);
+            })
+            .flatMap<std::shared_ptr<api::Account>>(_walletPool->getContext(), [walletPool = _walletPool, xpub = accountID.xpub()](const std::shared_ptr<AbstractWallet>& wallet) {
+                return wallet->getAccount(0)
+                    .recoverWith(walletPool->getContext(), [xpub, wallet](const Exception& ex) {
+                        // create account
+                        api::ExtendedKeyAccountCreationInfo info;
+                        info.index = 0;
+                        info.extendedKeys.push_back(xpub);
+                        return wallet->newAccountWithExtendedKeyInfo(info);
+                    });
+            })
+            .map<std::shared_ptr<api::BitcoinLikeAccount>>(_walletPool->getContext(), (const std::shared_ptr<api::Account>& account) {
+                return std::dynamic_pointer_cast<api::BitcoinLikeAccount>(account);
+            });
+    }
+
     Future<std::string> BitcoinLikeCommandProcessor::processRequest(const std::string& request) {
-        Request req;
+        BitcoinRequest req;
         if (!req.ParseFromString(request)) {
             throw std::runtime_error("Can't parse BitcoinLikeRequest");
         }
-        switch (req.type())
+        switch (req.request_case())
         {
-        case RequestType::CREATE_ACCOUNT: {
-            CreateAccountRequest createAcc;
-            if (!createAcc.ParseFromString(req.submessage())) {
-                throw std::runtime_error("Can't parse bitcoin CreateAccountRequest");
-            }
-            return processRequest(createAcc)
-                .map<std::string>(_walletPool->getContext(), [](const CreateAccountResponse& createAccResp) {
-                    return createAccResp.SerializeAsString();
-                });
-        }
-        case RequestType::SYNC_ACCOUNT: {
-            SyncAccountRequest syncAcc;
-            if (!syncAcc.ParseFromString(req.submessage())) {
-                throw std::runtime_error("Can't parse bitcoin SyncAccountRequest");
-            }
-            return processRequest(syncAcc)
+        case BitcoinRequest::RequestCase::kSyncAccount: {
+            return processRequest(req.sync_account())
                 .map<std::string>(_walletPool->getContext(), [](const SyncAccountResponse& syncAccResp) {
                     return syncAccResp.SerializeAsString();
                 });
         }
-        case RequestType::GET_ACCOUNT_BALANCE: {
-            GetBalanceRequest getBalance;
-            if (!getBalance.ParseFromString(req.submessage())) {
-                throw std::runtime_error("Can't parse bitcoin GetBalanceRequest");
-            }
-            return processRequest(getBalance)
+        case BitcoinRequest::RequestCase::kGetBalance: {
+            return processRequest(req.get_balance())
                 .map<std::string>(_walletPool->getContext(), [](const GetBalanceResponse& balanceResp) {
                     return balanceResp.SerializeAsString();
                 });
+        }
+        case BitcoinRequest::RequestCase::kGetOperations: {
+            return processRequest(req.get_operations())
+                .map<std::string>(_walletPool->getContext(), [](const GetOperationsResponse& balanceResp) {
+                return balanceResp.SerializeAsString();
+                    });
         }
         default:
             throw std::runtime_error("Unknown BitcoinLikeRequestType");;
@@ -74,37 +112,6 @@ namespace core {
         std::string ans;
         req.SerializeToString(&ans);
         return Future<std::string>::successful(ans);
-    }
-
-    Future<CreateAccountResponse> BitcoinLikeCommandProcessor::processRequest(const CreateAccountRequest& req) {
-        auto walletConfig = api::DynamicObject::newInstance();
-        if (req.config().keychain_engine() == KeychainEngine::BIP49_P2SH) {
-            walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH);
-        }
-        else if (req.config().keychain_engine() == KeychainEngine::BIP173_P2WSH){
-            walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WSH);
-        }
-        else {
-            walletConfig->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP32_P2PKH);
-        }
-        return
-        _walletPool->createWallet("wallet1", ledger::core::currencies::BITCOIN.name, walletConfig)
-            .flatMap<std::shared_ptr<api::Account>>(_walletPool->getContext(), [req](const std::shared_ptr<AbstractWallet>& wallet) {
-                api::ExtendedKeyAccountCreationInfo info;
-                info.index = req.index();
-                info.extendedKeys.push_back(req.xpub());
-                return wallet->newAccountWithExtendedKeyInfo(info);
-            })
-            .map<CreateAccountResponse>(_walletPool->getContext(), [this](const std::shared_ptr<api::Account> & acc) {
-                CreateAccountResponse resp;
-                resp.mutable_created_account()->set_index(acc->getIndex());
-                std::string uid("change_me");
-                resp.mutable_created_account()->set_uid(uid);
-                _accounts[uid] = acc;
-                std::string x = resp.SerializeAsString();
-                std::cout << x << std::endl;
-                return resp;
-            });
     }
 
     class EventListener : public std::enable_shared_from_this<EventListener> ,public api::EventReceiver {
@@ -125,32 +132,31 @@ namespace core {
     };
 
     Future<SyncAccountResponse> BitcoinLikeCommandProcessor::processRequest(const SyncAccountRequest& req) {
-        auto findIt = _accounts.find(req.acc_uid());
-        if (findIt == _accounts.end()) {
-            throw Exception(api::ErrorCode::RUNTIME_ERROR, "Unknown account");
-        }
-        std::shared_ptr<api::EventBus> eventBus = findIt->second->synchronize();
-        auto res = std::make_shared<Promise<SyncAccountResponse>>();
-        auto eventListener = std::make_shared<EventListener>([res, eventBus](const std::shared_ptr<api::Event>& event) {
-            SyncAccountResponse resp;
-            switch (event->getCode()) {
-            case api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: {
-                resp.set_new_acc(true);
-                res->complete(resp);
-                return;
-            }
-            case api::EventCode::SYNCHRONIZATION_SUCCEED: {
-                resp.set_new_acc(false);
-                res->complete(resp);
-                return;
-            }
-            default:
-                core::Exception ex(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed");
-                res->failure(ex);
-            }
-        });
-        eventBus->subscribe(_walletPool->getContext(), eventListener);
-        return res->getFuture();
+        return getOrCreateAccount(req.account_id())
+            .flatMap<SyncAccountResponse>(_walletPool->getContext(), [walletPool = _walletPool](const std::shared_ptr<api::Account>& account) {
+                std::shared_ptr<api::EventBus> eventBus = account->synchronize();
+                auto res = std::make_shared<Promise<SyncAccountResponse>>();
+                auto eventListener = std::make_shared<EventListener>([res, eventBus](const std::shared_ptr<api::Event>& event) {
+                    SyncAccountResponse resp;
+                    switch (event->getCode()) {
+                    case api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: {
+                        resp.set_new_acc(true);
+                        res->complete(resp);
+                        return;
+                    }
+                    case api::EventCode::SYNCHRONIZATION_SUCCEED: {
+                        resp.set_new_acc(false);
+                        res->complete(resp);
+                        return;
+                    }
+                    default:
+                        core::Exception ex(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed");
+                        res->failure(ex);
+                    }
+                    });
+                eventBus->subscribe(walletPool->getContext(), eventListener);
+                return res->getFuture();
+            });
     }
 
     class AmountCallback: public api::AmountCallback {
@@ -175,24 +181,91 @@ namespace core {
     };
 
     Future<GetBalanceResponse> BitcoinLikeCommandProcessor::processRequest(const GetBalanceRequest& req) {
-        auto findIt = _accounts.find(req.acc_uid());
-        if (findIt == _accounts.end()) {
-            throw Exception(api::ErrorCode::RUNTIME_ERROR, "Unknown account");
+        return
+            getOrCreateAccount(req.account_id())
+                .flatMap<GetBalanceResponse>(_walletPool->getContext(), [=] (const std::shared_ptr<api::Account> & account) {
+                    auto res = std::make_shared<Promise<GetBalanceResponse>>();
+                    auto amountCallback = std::make_shared<AmountCallback>(
+                        [res](const std::string& amount) {
+                            GetBalanceResponse resp;
+                            message::common::Amount* amnt = resp.mutable_amount();
+                            amnt->set_value(amount);
+                            std::string x = resp.SerializeAsString();
+                            res->complete(resp);
+                        },
+                        [res](const api::Error& err) {
+                            res->failure(core::Exception(err.code, err.message));
+                        });
+                    account->getBalance(amountCallback);
+                    return res->getFuture();
+                });
+    }
+
+    void convertUnit(const api::CurrencyUnit& unit, message::common::Unit* protoUnit) {
+        protoUnit->set_name(unit.name);
+        protoUnit->set_magnitude(unit.numberOfDecimal);
+    }
+
+    void convertAmount(const std::shared_ptr<api::Amount>& apiAmount, message::common::Amount* protoAmount) {
+        protoAmount->set_value(apiAmount->toString());
+        convertUnit(apiAmount->getUnit(), protoAmount->mutable_unit());
+    }
+
+    void convertOperation(const std::shared_ptr<api::Operation>& apiOperation, message::bitcoin::Operation* protoOperation) {
+        convertAmount(apiOperation->getAmount(), protoOperation->mutable_amount());
+        for (auto& sender : apiOperation->getSenders()) {
+            protoOperation->add_senders(sender);
         }
-        auto res = std::make_shared<Promise<GetBalanceResponse>>();
-        auto amountCallback = std::make_shared<AmountCallback>(
-            [res](const std::string& amount ) {
-                GetBalanceResponse resp;
-                message::common::Amount* amnt = resp.mutable_amount();
-                amnt->set_value(amount);
-                std::string x = resp.SerializeAsString();
-                res->complete(resp);
-            },
-            [res](const api::Error& err) {
-                res->failure(core::Exception(err.code, err.message));
-            });
-        findIt->second->getBalance(amountCallback);
-        return res->getFuture();
+        for (auto& recipient : apiOperation->getRecipients()) {
+            protoOperation->add_receivers(recipient);
+        }
+        if (apiOperation->getFees())
+        convertAmount(apiOperation->getFees(), protoOperation->mutable_fee());
+        switch (apiOperation->getOperationType()) {
+        case api::OperationType::SEND:
+            protoOperation->set_operation_type(message::bitcoin::Operation_OperationType_SEND);
+            break;
+        case api::OperationType::RECEIVE:
+            protoOperation->set_operation_type(message::bitcoin::Operation_OperationType_RECEIVE);
+        };
+        if (apiOperation->getBlockHeight())
+            protoOperation->set_block_height(apiOperation->getBlockHeight().value());
+        protoOperation->set_date_epoch_ms(std::chrono::duration_cast<std::chrono::milliseconds>(apiOperation->getDate().time_since_epoch()).count());
+    }
+
+    Future<GetOperationsResponse> BitcoinLikeCommandProcessor::processRequest(const message::bitcoin::GetOperationsRequest& req) {
+        return 
+            getOrCreateAccount(req.account_id())
+                .flatMap<std::vector<std::shared_ptr<api::Operation>>>(_walletPool->getContext(), [](const std::shared_ptr<api::Account>& account) {
+                    auto completedQuery = account->queryOperations()->complete();
+                    completedQuery->addOrder(api::OperationOrderKey::DATE, false);
+                    return std::dynamic_pointer_cast<OperationQuery>(completedQuery)->execute();
+                })
+                .map<GetOperationsResponse>(_walletPool->getContext(), [](const std::vector<std::shared_ptr<api::Operation>>& operations) {
+                    GetOperationsResponse response;
+                    for (auto& apiOperation : operations) {
+                        message::bitcoin::Operation* operation = response.add_operations();
+                        convertOperation(apiOperation, operation);
+                    }
+                    return response;
+                });
+    }
+
+    Future<GetLastBlockResponse> BitcoinLikeCommandProcessor::processRequest(const GetLastBlockRequest& req) {
+        return
+            getOrCreateAccount(req.account_id())
+                .flatMap<std::shared_ptr<api::Block>> (_walletPool->getContext(), [](const std::shared_ptr<api::Account>& account) {
+                    return account->getLastBlock();
+                })
+            .map<GetLastBlockResponse>(_walletPool->getContext(), [](const std::shared_ptr<api::Block>& block) {
+                    GetLastBlockResponse response;
+                    response.last_block()->set_height(block->height);
+                    response.last_block()->set_hash(block->blockHash);
+                    return response;
+                });
+    }
+
+    Future<GetFreshAddressResponse> BitcoinLikeCommandProcessor::processRequest(const GetFreshAddressRequest& req) {
     }
 }
 }

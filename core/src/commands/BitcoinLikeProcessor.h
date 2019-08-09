@@ -6,24 +6,24 @@
 #include "async/Future.hpp"
 #include "wallet/pool/WalletPool.hpp"
 
-
 namespace ledger {
     namespace core {
         namespace api {
-            class Account;
+            class BitcoinLikeAccount;
         };
 
         class BitcoinLikeCommandProcessor {
         public:
             BitcoinLikeCommandProcessor(const std::shared_ptr<WalletPool>& walletPool);
             Future<std::string> processRequest(const std::string& message);
-        protected:
-            Future<message::bitcoin::CreateAccountResponse> processRequest(const message::bitcoin::CreateAccountRequest& req);
+        private:
             Future<message::bitcoin::SyncAccountResponse> processRequest(const message::bitcoin::SyncAccountRequest& req);
             Future<message::bitcoin::GetBalanceResponse> processRequest(const message::bitcoin::GetBalanceRequest& req);
-        private:
+            Future<message::bitcoin::GetOperationsResponse> processRequest(const message::bitcoin::GetOperationsRequest& req);
+            Future<message::bitcoin::GetLastBlockResponse> processRequest(const message::bitcoin::GetLastBlockRequest& req);
+            Future<message::bitcoin::GetFreshAddressResponse> processRequest(const message::bitcoin::GetFreshAddressRequest& req);
+            Future<std::shared_ptr<api::BitcoinLikeAccount>> getOrCreateAccount(const message::bitcoin::AccountID& ccountID);
             std::shared_ptr<WalletPool> _walletPool;
-            std::unordered_map<std::string, std::shared_ptr<api::Account>> _accounts;
         };
     }
 }

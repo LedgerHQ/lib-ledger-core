@@ -277,6 +277,18 @@ class Operation :
   ::ledger::core::message::common::Amount* mutable_fee();
   void set_allocated_fee(::ledger::core::message::common::Amount* fee);
 
+  // int64 block_height = 6;
+  void clear_block_height();
+  static const int kBlockHeightFieldNumber = 6;
+  ::google::protobuf::int64 block_height() const;
+  void set_block_height(::google::protobuf::int64 value);
+
+  // int64 date_epoch_ms = 7;
+  void clear_date_epoch_ms();
+  static const int kDateEpochMsFieldNumber = 7;
+  ::google::protobuf::int64 date_epoch_ms() const;
+  void set_date_epoch_ms(::google::protobuf::int64 value);
+
   // .ledger.core.message.bitcoin.Operation.OperationType operation_type = 5;
   void clear_operation_type();
   static const int kOperationTypeFieldNumber = 5;
@@ -292,6 +304,8 @@ class Operation :
   ::google::protobuf::RepeatedPtrField<::std::string> senders_;
   ::ledger::core::message::common::Amount* amount_;
   ::ledger::core::message::common::Amount* fee_;
+  ::google::protobuf::int64 block_height_;
+  ::google::protobuf::int64 date_epoch_ms_;
   int operation_type_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2foperation_2eproto;
@@ -547,6 +561,34 @@ inline void Operation::set_operation_type(::ledger::core::message::bitcoin::Oper
   
   operation_type_ = value;
   // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.operation_type)
+}
+
+// int64 block_height = 6;
+inline void Operation::clear_block_height() {
+  block_height_ = PROTOBUF_LONGLONG(0);
+}
+inline ::google::protobuf::int64 Operation::block_height() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.block_height)
+  return block_height_;
+}
+inline void Operation::set_block_height(::google::protobuf::int64 value) {
+  
+  block_height_ = value;
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.block_height)
+}
+
+// int64 date_epoch_ms = 7;
+inline void Operation::clear_date_epoch_ms() {
+  date_epoch_ms_ = PROTOBUF_LONGLONG(0);
+}
+inline ::google::protobuf::int64 Operation::date_epoch_ms() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.date_epoch_ms)
+  return date_epoch_ms_;
+}
+inline void Operation::set_date_epoch_ms(::google::protobuf::int64 value) {
+  
+  date_epoch_ms_ = value;
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.date_epoch_ms)
 }
 
 #ifdef __GNUC__

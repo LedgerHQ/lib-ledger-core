@@ -77,7 +77,9 @@ proto.ledger.core.message.bitcoin.Operation.toObject = function(includeInstance,
     fee: (f = msg.getFee()) && common_amount_pb.Amount.toObject(includeInstance, f),
     receiversList: jspb.Message.getRepeatedField(msg, 3),
     sendersList: jspb.Message.getRepeatedField(msg, 4),
-    operationType: jspb.Message.getFieldWithDefault(msg, 5, 0)
+    operationType: jspb.Message.getFieldWithDefault(msg, 5, 0),
+    blockHeight: jspb.Message.getFieldWithDefault(msg, 6, 0),
+    dateEpochMs: jspb.Message.getFieldWithDefault(msg, 7, 0)
   };
 
   if (includeInstance) {
@@ -135,6 +137,14 @@ proto.ledger.core.message.bitcoin.Operation.deserializeBinaryFromReader = functi
     case 5:
       var value = /** @type {!proto.ledger.core.message.bitcoin.Operation.OperationType} */ (reader.readEnum());
       msg.setOperationType(value);
+      break;
+    case 6:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setBlockHeight(value);
+      break;
+    case 7:
+      var value = /** @type {number} */ (reader.readInt64());
+      msg.setDateEpochMs(value);
       break;
     default:
       reader.skipField();
@@ -199,6 +209,20 @@ proto.ledger.core.message.bitcoin.Operation.serializeBinaryToWriter = function(m
   if (f !== 0.0) {
     writer.writeEnum(
       5,
+      f
+    );
+  }
+  f = message.getBlockHeight();
+  if (f !== 0) {
+    writer.writeInt64(
+      6,
+      f
+    );
+  }
+  f = message.getDateEpochMs();
+  if (f !== 0) {
+    writer.writeInt64(
+      7,
       f
     );
   }
@@ -355,6 +379,36 @@ proto.ledger.core.message.bitcoin.Operation.prototype.getOperationType = functio
 /** @param {!proto.ledger.core.message.bitcoin.Operation.OperationType} value */
 proto.ledger.core.message.bitcoin.Operation.prototype.setOperationType = function(value) {
   jspb.Message.setProto3EnumField(this, 5, value);
+};
+
+
+/**
+ * optional int64 block_height = 6;
+ * @return {number}
+ */
+proto.ledger.core.message.bitcoin.Operation.prototype.getBlockHeight = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 6, 0));
+};
+
+
+/** @param {number} value */
+proto.ledger.core.message.bitcoin.Operation.prototype.setBlockHeight = function(value) {
+  jspb.Message.setProto3IntField(this, 6, value);
+};
+
+
+/**
+ * optional int64 date_epoch_ms = 7;
+ * @return {number}
+ */
+proto.ledger.core.message.bitcoin.Operation.prototype.getDateEpochMs = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 7, 0));
+};
+
+
+/** @param {number} value */
+proto.ledger.core.message.bitcoin.Operation.prototype.setDateEpochMs = function(value) {
+  jspb.Message.setProto3IntField(this, 7, value);
 };
 
 

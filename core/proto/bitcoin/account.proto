@@ -1,9 +1,15 @@
 syntax = "proto3";
 package ledger.core.message.bitcoin;
 
-message Account {
-    string uid = 1;
-    string name = 2;
-    uint32 index = 3;
-    string xpub = 4;
+enum KeychainEngine {
+    BIP32_P2PKH = 0;
+    BIP49_P2SH = 1;
+    BIP173_P2WPKH = 2;
+    BIP173_P2WSH = 3;
+}
+
+message AccountID {
+    string xpub = 1;
+    KeychainEngine keychain_engine = 2;
+    string currency_name = 3;
 }

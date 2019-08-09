@@ -30,6 +30,7 @@
 #include <google/protobuf/message.h>
 #include <google/protobuf/repeated_field.h>  // IWYU pragma: export
 #include <google/protobuf/extension_set.h>  // IWYU pragma: export
+#include <google/protobuf/generated_enum_reflection.h>
 #include <google/protobuf/unknown_field_set.h>
 // @@protoc_insertion_point(includes)
 #include <google/protobuf/port_def.inc>
@@ -52,16 +53,16 @@ namespace ledger {
 namespace core {
 namespace message {
 namespace bitcoin {
-class Account;
-class AccountDefaultTypeInternal;
-extern AccountDefaultTypeInternal _Account_default_instance_;
+class AccountID;
+class AccountIDDefaultTypeInternal;
+extern AccountIDDefaultTypeInternal _AccountID_default_instance_;
 }  // namespace bitcoin
 }  // namespace message
 }  // namespace core
 }  // namespace ledger
 namespace google {
 namespace protobuf {
-template<> ::ledger::core::message::bitcoin::Account* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::Account>(Arena*);
+template<> ::ledger::core::message::bitcoin::AccountID* Arena::CreateMaybeMessage<::ledger::core::message::bitcoin::AccountID>(Arena*);
 }  // namespace protobuf
 }  // namespace google
 namespace ledger {
@@ -69,27 +70,50 @@ namespace core {
 namespace message {
 namespace bitcoin {
 
+enum KeychainEngine {
+  BIP32_P2PKH = 0,
+  BIP49_P2SH = 1,
+  BIP173_P2WPKH = 2,
+  BIP173_P2WSH = 3,
+  KeychainEngine_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::google::protobuf::int32>::min(),
+  KeychainEngine_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::google::protobuf::int32>::max()
+};
+bool KeychainEngine_IsValid(int value);
+const KeychainEngine KeychainEngine_MIN = BIP32_P2PKH;
+const KeychainEngine KeychainEngine_MAX = BIP173_P2WSH;
+const int KeychainEngine_ARRAYSIZE = KeychainEngine_MAX + 1;
+
+const ::google::protobuf::EnumDescriptor* KeychainEngine_descriptor();
+inline const ::std::string& KeychainEngine_Name(KeychainEngine value) {
+  return ::google::protobuf::internal::NameOfEnum(
+    KeychainEngine_descriptor(), value);
+}
+inline bool KeychainEngine_Parse(
+    const ::std::string& name, KeychainEngine* value) {
+  return ::google::protobuf::internal::ParseNamedEnum<KeychainEngine>(
+    KeychainEngine_descriptor(), name, value);
+}
 // ===================================================================
 
-class Account :
-    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.Account) */ {
+class AccountID :
+    public ::google::protobuf::Message /* @@protoc_insertion_point(class_definition:ledger.core.message.bitcoin.AccountID) */ {
  public:
-  Account();
-  virtual ~Account();
+  AccountID();
+  virtual ~AccountID();
 
-  Account(const Account& from);
+  AccountID(const AccountID& from);
 
-  inline Account& operator=(const Account& from) {
+  inline AccountID& operator=(const AccountID& from) {
     CopyFrom(from);
     return *this;
   }
   #if LANG_CXX11
-  Account(Account&& from) noexcept
-    : Account() {
+  AccountID(AccountID&& from) noexcept
+    : AccountID() {
     *this = ::std::move(from);
   }
 
-  inline Account& operator=(Account&& from) noexcept {
+  inline AccountID& operator=(AccountID&& from) noexcept {
     if (GetArenaNoVirtual() == from.GetArenaNoVirtual()) {
       if (this != &from) InternalSwap(&from);
     } else {
@@ -101,34 +125,34 @@ class Account :
   static const ::google::protobuf::Descriptor* descriptor() {
     return default_instance().GetDescriptor();
   }
-  static const Account& default_instance();
+  static const AccountID& default_instance();
 
   static void InitAsDefaultInstance();  // FOR INTERNAL USE ONLY
-  static inline const Account* internal_default_instance() {
-    return reinterpret_cast<const Account*>(
-               &_Account_default_instance_);
+  static inline const AccountID* internal_default_instance() {
+    return reinterpret_cast<const AccountID*>(
+               &_AccountID_default_instance_);
   }
   static constexpr int kIndexInFileMessages =
     0;
 
-  void Swap(Account* other);
-  friend void swap(Account& a, Account& b) {
+  void Swap(AccountID* other);
+  friend void swap(AccountID& a, AccountID& b) {
     a.Swap(&b);
   }
 
   // implements Message ----------------------------------------------
 
-  inline Account* New() const final {
-    return CreateMaybeMessage<Account>(nullptr);
+  inline AccountID* New() const final {
+    return CreateMaybeMessage<AccountID>(nullptr);
   }
 
-  Account* New(::google::protobuf::Arena* arena) const final {
-    return CreateMaybeMessage<Account>(arena);
+  AccountID* New(::google::protobuf::Arena* arena) const final {
+    return CreateMaybeMessage<AccountID>(arena);
   }
   void CopyFrom(const ::google::protobuf::Message& from) final;
   void MergeFrom(const ::google::protobuf::Message& from) final;
-  void CopyFrom(const Account& from);
-  void MergeFrom(const Account& from);
+  void CopyFrom(const AccountID& from);
+  void MergeFrom(const AccountID& from);
   PROTOBUF_ATTRIBUTE_REINITIALIZES void Clear() final;
   bool IsInitialized() const final;
 
@@ -150,7 +174,7 @@ class Account :
   void SharedCtor();
   void SharedDtor();
   void SetCachedSize(int size) const final;
-  void InternalSwap(Account* other);
+  void InternalSwap(AccountID* other);
   private:
   inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
     return nullptr;
@@ -166,37 +190,9 @@ class Account :
 
   // accessors -------------------------------------------------------
 
-  // string uid = 1;
-  void clear_uid();
-  static const int kUidFieldNumber = 1;
-  const ::std::string& uid() const;
-  void set_uid(const ::std::string& value);
-  #if LANG_CXX11
-  void set_uid(::std::string&& value);
-  #endif
-  void set_uid(const char* value);
-  void set_uid(const char* value, size_t size);
-  ::std::string* mutable_uid();
-  ::std::string* release_uid();
-  void set_allocated_uid(::std::string* uid);
-
-  // string name = 2;
-  void clear_name();
-  static const int kNameFieldNumber = 2;
-  const ::std::string& name() const;
-  void set_name(const ::std::string& value);
-  #if LANG_CXX11
-  void set_name(::std::string&& value);
-  #endif
-  void set_name(const char* value);
-  void set_name(const char* value, size_t size);
-  ::std::string* mutable_name();
-  ::std::string* release_name();
-  void set_allocated_name(::std::string* name);
-
-  // string xpub = 4;
+  // string xpub = 1;
   void clear_xpub();
-  static const int kXpubFieldNumber = 4;
+  static const int kXpubFieldNumber = 1;
   const ::std::string& xpub() const;
   void set_xpub(const ::std::string& value);
   #if LANG_CXX11
@@ -208,21 +204,34 @@ class Account :
   ::std::string* release_xpub();
   void set_allocated_xpub(::std::string* xpub);
 
-  // uint32 index = 3;
-  void clear_index();
-  static const int kIndexFieldNumber = 3;
-  ::google::protobuf::uint32 index() const;
-  void set_index(::google::protobuf::uint32 value);
+  // string currency_name = 3;
+  void clear_currency_name();
+  static const int kCurrencyNameFieldNumber = 3;
+  const ::std::string& currency_name() const;
+  void set_currency_name(const ::std::string& value);
+  #if LANG_CXX11
+  void set_currency_name(::std::string&& value);
+  #endif
+  void set_currency_name(const char* value);
+  void set_currency_name(const char* value, size_t size);
+  ::std::string* mutable_currency_name();
+  ::std::string* release_currency_name();
+  void set_allocated_currency_name(::std::string* currency_name);
 
-  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.Account)
+  // .ledger.core.message.bitcoin.KeychainEngine keychain_engine = 2;
+  void clear_keychain_engine();
+  static const int kKeychainEngineFieldNumber = 2;
+  ::ledger::core::message::bitcoin::KeychainEngine keychain_engine() const;
+  void set_keychain_engine(::ledger::core::message::bitcoin::KeychainEngine value);
+
+  // @@protoc_insertion_point(class_scope:ledger.core.message.bitcoin.AccountID)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr uid_;
-  ::google::protobuf::internal::ArenaStringPtr name_;
   ::google::protobuf::internal::ArenaStringPtr xpub_;
-  ::google::protobuf::uint32 index_;
+  ::google::protobuf::internal::ArenaStringPtr currency_name_;
+  int keychain_engine_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_bitcoin_2faccount_2eproto;
 };
@@ -235,179 +244,126 @@ class Account :
   #pragma GCC diagnostic push
   #pragma GCC diagnostic ignored "-Wstrict-aliasing"
 #endif  // __GNUC__
-// Account
+// AccountID
 
-// string uid = 1;
-inline void Account::clear_uid() {
-  uid_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Account::uid() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.uid)
-  return uid_.GetNoArena();
-}
-inline void Account::set_uid(const ::std::string& value) {
-  
-  uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.uid)
-}
-#if LANG_CXX11
-inline void Account::set_uid(::std::string&& value) {
-  
-  uid_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Account.uid)
-}
-#endif
-inline void Account::set_uid(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  
-  uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Account.uid)
-}
-inline void Account::set_uid(const char* value, size_t size) {
-  
-  uid_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Account.uid)
-}
-inline ::std::string* Account::mutable_uid() {
-  
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Account.uid)
-  return uid_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Account::release_uid() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Account.uid)
-  
-  return uid_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Account::set_allocated_uid(::std::string* uid) {
-  if (uid != nullptr) {
-    
-  } else {
-    
-  }
-  uid_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), uid);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Account.uid)
-}
-
-// string name = 2;
-inline void Account::clear_name() {
-  name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& Account::name() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.name)
-  return name_.GetNoArena();
-}
-inline void Account::set_name(const ::std::string& value) {
-  
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.name)
-}
-#if LANG_CXX11
-inline void Account::set_name(::std::string&& value) {
-  
-  name_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Account.name)
-}
-#endif
-inline void Account::set_name(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Account.name)
-}
-inline void Account::set_name(const char* value, size_t size) {
-  
-  name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Account.name)
-}
-inline ::std::string* Account::mutable_name() {
-  
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Account.name)
-  return name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* Account::release_name() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Account.name)
-  
-  return name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void Account::set_allocated_name(::std::string* name) {
-  if (name != nullptr) {
-    
-  } else {
-    
-  }
-  name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), name);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Account.name)
-}
-
-// uint32 index = 3;
-inline void Account::clear_index() {
-  index_ = 0u;
-}
-inline ::google::protobuf::uint32 Account::index() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.index)
-  return index_;
-}
-inline void Account::set_index(::google::protobuf::uint32 value) {
-  
-  index_ = value;
-  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.index)
-}
-
-// string xpub = 4;
-inline void Account::clear_xpub() {
+// string xpub = 1;
+inline void AccountID::clear_xpub() {
   xpub_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline const ::std::string& Account::xpub() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Account.xpub)
+inline const ::std::string& AccountID::xpub() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountID.xpub)
   return xpub_.GetNoArena();
 }
-inline void Account::set_xpub(const ::std::string& value) {
+inline void AccountID::set_xpub(const ::std::string& value) {
   
   xpub_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.AccountID.xpub)
 }
 #if LANG_CXX11
-inline void Account::set_xpub(::std::string&& value) {
+inline void AccountID::set_xpub(::std::string&& value) {
   
   xpub_.SetNoArena(
     &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.AccountID.xpub)
 }
 #endif
-inline void Account::set_xpub(const char* value) {
+inline void AccountID::set_xpub(const char* value) {
   GOOGLE_DCHECK(value != nullptr);
   
   xpub_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.AccountID.xpub)
 }
-inline void Account::set_xpub(const char* value, size_t size) {
+inline void AccountID::set_xpub(const char* value, size_t size) {
   
   xpub_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
       ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.AccountID.xpub)
 }
-inline ::std::string* Account::mutable_xpub() {
+inline ::std::string* AccountID::mutable_xpub() {
   
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountID.xpub)
   return xpub_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline ::std::string* Account::release_xpub() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Account.xpub)
+inline ::std::string* AccountID::release_xpub() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountID.xpub)
   
   return xpub_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
-inline void Account::set_allocated_xpub(::std::string* xpub) {
+inline void AccountID::set_allocated_xpub(::std::string* xpub) {
   if (xpub != nullptr) {
     
   } else {
     
   }
   xpub_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), xpub);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Account.xpub)
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountID.xpub)
+}
+
+// .ledger.core.message.bitcoin.KeychainEngine keychain_engine = 2;
+inline void AccountID::clear_keychain_engine() {
+  keychain_engine_ = 0;
+}
+inline ::ledger::core::message::bitcoin::KeychainEngine AccountID::keychain_engine() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountID.keychain_engine)
+  return static_cast< ::ledger::core::message::bitcoin::KeychainEngine >(keychain_engine_);
+}
+inline void AccountID::set_keychain_engine(::ledger::core::message::bitcoin::KeychainEngine value) {
+  
+  keychain_engine_ = value;
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.AccountID.keychain_engine)
+}
+
+// string currency_name = 3;
+inline void AccountID::clear_currency_name() {
+  currency_name_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& AccountID::currency_name() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.AccountID.currency_name)
+  return currency_name_.GetNoArena();
+}
+inline void AccountID::set_currency_name(const ::std::string& value) {
+  
+  currency_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.AccountID.currency_name)
+}
+#if LANG_CXX11
+inline void AccountID::set_currency_name(::std::string&& value) {
+  
+  currency_name_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.AccountID.currency_name)
+}
+#endif
+inline void AccountID::set_currency_name(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  currency_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.AccountID.currency_name)
+}
+inline void AccountID::set_currency_name(const char* value, size_t size) {
+  
+  currency_name_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.AccountID.currency_name)
+}
+inline ::std::string* AccountID::mutable_currency_name() {
+  
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.AccountID.currency_name)
+  return currency_name_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* AccountID::release_currency_name() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.AccountID.currency_name)
+  
+  return currency_name_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void AccountID::set_allocated_currency_name(::std::string* currency_name) {
+  if (currency_name != nullptr) {
+    
+  } else {
+    
+  }
+  currency_name_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), currency_name);
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.AccountID.currency_name)
 }
 
 #ifdef __GNUC__
@@ -420,6 +376,18 @@ inline void Account::set_allocated_xpub(::std::string* xpub) {
 }  // namespace message
 }  // namespace core
 }  // namespace ledger
+
+namespace google {
+namespace protobuf {
+
+template <> struct is_proto_enum< ::ledger::core::message::bitcoin::KeychainEngine> : ::std::true_type {};
+template <>
+inline const EnumDescriptor* GetEnumDescriptor< ::ledger::core::message::bitcoin::KeychainEngine>() {
+  return ::ledger::core::message::bitcoin::KeychainEngine_descriptor();
+}
+
+}  // namespace protobuf
+}  // namespace google
 
 // @@protoc_insertion_point(global_scope)
 

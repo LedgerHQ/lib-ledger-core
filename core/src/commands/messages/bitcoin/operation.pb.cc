@@ -63,6 +63,8 @@ const ::google::protobuf::uint32 TableStruct_bitcoin_2foperation_2eproto::offset
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, receivers_),
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, senders_),
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, operation_type_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, block_height_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, date_epoch_ms_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::ledger::core::message::bitcoin::Operation)},
@@ -80,19 +82,20 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 
 const char descriptor_table_protodef_bitcoin_2foperation_2eproto[] =
   "\n\027bitcoin/operation.proto\022\033ledger.core.m"
-  "essage.bitcoin\032\023common/amount.proto\"\212\002\n\t"
+  "essage.bitcoin\032\023common/amount.proto\"\267\002\n\t"
   "Operation\0222\n\006amount\030\001 \001(\0132\".ledger.core."
   "message.common.Amount\022/\n\003fee\030\002 \001(\0132\".led"
   "ger.core.message.common.Amount\022\021\n\treceiv"
   "ers\030\003 \003(\t\022\017\n\007senders\030\004 \003(\t\022L\n\016operation_"
   "type\030\005 \001(\01624.ledger.core.message.bitcoin"
-  ".Operation.OperationType\"&\n\rOperationTyp"
-  "e\022\010\n\004SEND\020\000\022\013\n\007RECEIVE\020\001b\006proto3"
+  ".Operation.OperationType\022\024\n\014block_height"
+  "\030\006 \001(\003\022\025\n\rdate_epoch_ms\030\007 \001(\003\"&\n\rOperati"
+  "onType\022\010\n\004SEND\020\000\022\013\n\007RECEIVE\020\001b\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_bitcoin_2foperation_2eproto = {
   false, InitDefaults_bitcoin_2foperation_2eproto, 
   descriptor_table_protodef_bitcoin_2foperation_2eproto,
-  "bitcoin/operation.proto", &assign_descriptors_table_bitcoin_2foperation_2eproto, 352,
+  "bitcoin/operation.proto", &assign_descriptors_table_bitcoin_2foperation_2eproto, 397,
 };
 
 void AddDescriptors_bitcoin_2foperation_2eproto() {
@@ -171,6 +174,8 @@ const int Operation::kFeeFieldNumber;
 const int Operation::kReceiversFieldNumber;
 const int Operation::kSendersFieldNumber;
 const int Operation::kOperationTypeFieldNumber;
+const int Operation::kBlockHeightFieldNumber;
+const int Operation::kDateEpochMsFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Operation::Operation()
@@ -194,7 +199,9 @@ Operation::Operation(const Operation& from)
   } else {
     fee_ = nullptr;
   }
-  operation_type_ = from.operation_type_;
+  ::memcpy(&block_height_, &from.block_height_,
+    static_cast<size_t>(reinterpret_cast<char*>(&operation_type_) -
+    reinterpret_cast<char*>(&block_height_)) + sizeof(operation_type_));
   // @@protoc_insertion_point(copy_constructor:ledger.core.message.bitcoin.Operation)
 }
 
@@ -241,7 +248,9 @@ void Operation::Clear() {
     delete fee_;
   }
   fee_ = nullptr;
-  operation_type_ = 0;
+  ::memset(&block_height_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&operation_type_) -
+      reinterpret_cast<char*>(&block_height_)) + sizeof(operation_type_));
   _internal_metadata_.Clear();
 }
 
@@ -327,6 +336,20 @@ const char* Operation::_InternalParse(const char* begin, const char* end, void* 
         if (static_cast<::google::protobuf::uint8>(tag) != 40) goto handle_unusual;
         ::google::protobuf::uint64 val = ::google::protobuf::internal::ReadVarint(&ptr);
         msg->set_operation_type(static_cast<::ledger::core::message::bitcoin::Operation_OperationType>(val));
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        break;
+      }
+      // int64 block_height = 6;
+      case 6: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 48) goto handle_unusual;
+        msg->set_block_height(::google::protobuf::internal::ReadVarint(&ptr));
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        break;
+      }
+      // int64 date_epoch_ms = 7;
+      case 7: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 56) goto handle_unusual;
+        msg->set_date_epoch_ms(::google::protobuf::internal::ReadVarint(&ptr));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         break;
       }
@@ -432,6 +455,32 @@ bool Operation::MergePartialFromCodedStream(
         break;
       }
 
+      // int64 block_height = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (48 & 0xFF)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &block_height_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // int64 date_epoch_ms = 7;
+      case 7: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (56 & 0xFF)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::int64, ::google::protobuf::internal::WireFormatLite::TYPE_INT64>(
+                 input, &date_epoch_ms_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -497,6 +546,16 @@ void Operation::SerializeWithCachedSizes(
       5, this->operation_type(), output);
   }
 
+  // int64 block_height = 6;
+  if (this->block_height() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(6, this->block_height(), output);
+  }
+
+  // int64 date_epoch_ms = 7;
+  if (this->date_epoch_ms() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteInt64(7, this->date_epoch_ms(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
@@ -550,6 +609,16 @@ void Operation::SerializeWithCachedSizes(
       5, this->operation_type(), target);
   }
 
+  // int64 block_height = 6;
+  if (this->block_height() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(6, this->block_height(), target);
+  }
+
+  // int64 date_epoch_ms = 7;
+  if (this->date_epoch_ms() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(7, this->date_epoch_ms(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
@@ -601,6 +670,20 @@ size_t Operation::ByteSizeLong() const {
         *fee_);
   }
 
+  // int64 block_height = 6;
+  if (this->block_height() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->block_height());
+  }
+
+  // int64 date_epoch_ms = 7;
+  if (this->date_epoch_ms() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::Int64Size(
+        this->date_epoch_ms());
+  }
+
   // .ledger.core.message.bitcoin.Operation.OperationType operation_type = 5;
   if (this->operation_type() != 0) {
     total_size += 1 +
@@ -642,6 +725,12 @@ void Operation::MergeFrom(const Operation& from) {
   if (from.has_fee()) {
     mutable_fee()->::ledger::core::message::common::Amount::MergeFrom(from.fee());
   }
+  if (from.block_height() != 0) {
+    set_block_height(from.block_height());
+  }
+  if (from.date_epoch_ms() != 0) {
+    set_date_epoch_ms(from.date_epoch_ms());
+  }
   if (from.operation_type() != 0) {
     set_operation_type(from.operation_type());
   }
@@ -676,6 +765,8 @@ void Operation::InternalSwap(Operation* other) {
   senders_.InternalSwap(CastToBase(&other->senders_));
   swap(amount_, other->amount_);
   swap(fee_, other->fee_);
+  swap(block_height_, other->block_height_);
+  swap(date_epoch_ms_, other->date_epoch_ms_);
   swap(operation_type_, other->operation_type_);
 }
 

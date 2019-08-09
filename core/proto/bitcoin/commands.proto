@@ -2,50 +2,20 @@ syntax = "proto3";
 package ledger.core.message.bitcoin;
 
 import "bitcoin/account.proto";
-import "bitcoin/account_config.proto";
-import "bitcoin/wallet.proto";
 import "bitcoin/operation.proto";
 import "common/amount.proto";
+import "common/block.proto";
 
-// GET_WALLETS
-// GetWalletRequest is empty
-message GetWalletsResponse {
-    repeated Wallet wallets = 1;
-}
-
-// CREATE_WALLET
-message CreateWalletRequest {
-    string name = 1;
-    string currency_name = 2;
-}
-
-message CreateWalletResponse {
-    Wallet wallet = 1;
-}
-
-// GET_ACCOUNTS
-message GetAccountsRequest {
-    string wallet_uid = 1;
-}
-
-message GetAccountsResponse {
-    repeated Account accounts = 1;
-}
-
-// CREATE_ACCOUNT
-message CreateAccountRequest {
-    string xpub = 1;
-    uint32 index = 2;
-    AccountConfiguration config = 3;
-}
-
-message CreateAccountResponse {
-    Account created_account = 1;
+message LedgerExplorerConfig {
+    uint32 version = 1;
+    string endpoint = 2;
+    uint32 port = 3;
 }
 
 // SYNC_ACCOUNT
 message SyncAccountRequest {
-    string acc_uid = 1;
+    AccountID account_id = 1;
+    LedgerExplorerConfig explorer = 2;
 }
 
 message SyncAccountResponse {
@@ -54,7 +24,7 @@ message SyncAccountResponse {
 
 // GET_BALANCE
 message GetBalanceRequest {
-    string acc_uid = 1;
+    AccountID account_id = 1;
 }
 
 message GetBalanceResponse {
@@ -63,33 +33,39 @@ message GetBalanceResponse {
 
 // GET_OPERATIONS
 message GetOperationsRequest {
-    string acc_uid = 1;
+    AccountID account_id = 1;
 }
 
 message GetOperationsResponse {
     repeated Operation operations = 1;
 }
 
-message SetAccountSettingsRequest {
-    string acc_uid = 1;
-    AccountSettings settings = 2;
+// GET_LAST_BLOCK
+message GetLastBlockRequest {
+    AccountID account_id = 1;
 }
 
-
-enum RequestType {
-    SET_ACCOUNT_SETTINGS = 0;   // send AccountSetting
-    SET_WALLET_SETTINGS = 1;    // send WalletSetting
-    SET_CURRENCY_SETTINGS = 2;  // send CurrencySetting
-    GET_WALLETS = 3;
-    CREATE_WALLET = 4;
-    GET_ACCOUNTS = 5;
-    CREATE_ACCOUNT = 6;
-    SYNC_ACCOUNT = 7;
-    GET_ACCOUNT_BALANCE = 8;
-    GET_OPERATIONS = 9;
+message GetLastBlockResponse {
+    common.Block last_block = 1;
 }
 
-message Request {
-    RequestType type = 1;
-    bytes submessage = 2;
+// GET_FRESH_ADDRESS
+message GetFreshAddressRequest {
+    AccountID account_id = 1;
+}
+
+message GetFreshAddressResponse {
+    string address = 1;
+    // relative path to pubkey from account level
+    string path = 2;
+}
+
+message BitcoinRequest {
+    oneof request {
+        SyncAccountRequest sync_account = 1;
+        GetBalanceRequest get_balance = 2;
+        GetOperationsRequest get_operations = 3;
+        GetLastBlockRequest get_last_block = 4;
+        GetFreshAddressRequest get_fresh_address = 5;
+    }
 }
