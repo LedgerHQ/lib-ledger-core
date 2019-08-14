@@ -132,6 +132,7 @@ namespace ledger {
 
         std::vector<uint8_t> BitcoinLikeTransactionApi::serialize() {
             BytesWriter writer;
+            serializeSignature(writer);
             serializeProlog(writer);
             serializeInputs(writer);
             serializeOutputs(writer);
@@ -268,8 +269,49 @@ namespace ledger {
             return writer.toByteArray();
         }
 
+        void BitcoinLikeTransactionApi::setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) {
+            _vSignature = vSignature;
+            _rSignature = rSignature;
+            _sSignature = sSignature;
+        }
+
+        void BitcoinLikeTransactionApi::setDERSignature(const std::vector<uint8_t> & signature) {
+            BytesReader reader(signature);
+            //DER prefix
+            reader.readNextByte();
+            //Total length
+            reader.readNextVarInt();
+            //Nb of elements for R
+            reader.readNextByte();
+            //R length
+            auto rSize = reader.readNextVarInt();
+            _rSignature = reader.read(rSize);
+            //Nb of elements for S
+            reader.readNextByte();
+            //S length
+            auto sSize = reader.readNextVarInt();
+            _sSignature = reader.read(sSize);
+        }
+
+        void BitcoinLikeTransactionApi::setVSignature(const std::vector<uint8_t> & vSignature) {
+            _vSignature = vSignature;
+        }
+
         int32_t BitcoinLikeTransactionApi::getVersion() {
             return _version;
+        }
+
+        void BitcoinLikeTransactionApi::serializeSignature(BytesWriter &out) {
+            if (!_rSignature.empty() && !_sSignature.empty()) {
+                out.writeByteArray(_vSignature);
+                out.writeByte(_rSignature.size() + _sSignature.size() + 4);
+                out.writeByte(0x02);
+                out.writeByte(_rSignature.size());
+                out.writeByteArray(_rSignature);
+                out.writeByte(0x02);
+                out.writeByte(_sSignature.size());
+                out.writeByteArray(_sSignature);
+            }
         }
 
         void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {

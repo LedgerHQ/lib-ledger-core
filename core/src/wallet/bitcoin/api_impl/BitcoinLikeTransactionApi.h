@@ -41,6 +41,7 @@
 #include <api/EstimatedSize.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 #include <api/KeychainEngines.hpp>
+
 namespace ledger {
     namespace core {
 
@@ -110,6 +111,9 @@ namespace ledger {
 
             int32_t getVersion() override;
 
+            void setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
+            void setDERSignature(const std::vector<uint8_t> & signature) override;
+            void setVSignature(const std::vector<uint8_t> & vSignature) override;
 
             BitcoinLikeTransactionApi &addInput(const std::shared_ptr<BitcoinLikeWritableInputApi> &input);
 
@@ -143,6 +147,8 @@ namespace ledger {
 
             inline bool isReadOnly() const;
 
+            inline void serializeSignature(BytesWriter &out);  
+
             inline void serializeProlog(BytesWriter &out);
 
             inline void serializeInputs(BytesWriter &out);
@@ -166,6 +172,9 @@ namespace ledger {
             bool _writable;
             std::string _keychainEngine;
             uint64_t _currentBlockHeight;
+            std::vector<uint8_t> _vSignature;
+            std::vector<uint8_t> _rSignature;
+            std::vector<uint8_t> _sSignature;
         };
     }
 }

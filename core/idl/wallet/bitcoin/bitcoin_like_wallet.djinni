@@ -142,6 +142,11 @@ BitcoinLikeTransaction = interface +c {
     # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
     # size.
     getEstimatedSize(): EstimatedSize;
+    # Set signature of transaction, when a signature is set serialize method gives back serialized Tx.
+    setSignature(vSignature: binary, rSignature: binary, sSignature: binary);
+    setDERSignature(signature: binary);
+    setVSignature(vSignature: binary);
+
 }
 
 # Class representing a Bitcoin Operation.
