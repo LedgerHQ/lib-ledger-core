@@ -61,7 +61,6 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     auto f = builder->build();
     auto tx = ::wait(f);
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
-    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }
 

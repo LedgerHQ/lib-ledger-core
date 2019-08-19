@@ -29,7 +29,6 @@
  *
  */
 #include "BitcoinLikeAccount.hpp"
-
 #include <database/query/QueryBuilder.h>
 
 #include <collections/functional.hpp>
@@ -706,6 +705,196 @@ namespace ledger {
 
         void BitcoinLikeAccount::getFees(const std::shared_ptr<api::BigIntListCallback> & callback) {
             return _explorer->getFees().callback(getContext(), callback);;
+        }
+
+        FuturePtr<api::BitcoinLikeTransaction> BitcoinLikeAccount::getReplayByFeeTransaction(const std::string & hash, const std::shared_ptr<api::Amount> & additionaFeesPerBytes, bool forceBuild) {
+            auto self = getSelf();
+            // Get Transaction hex
+            return _explorer->getRawTransaction(hash).flatMapPtr<api::BitcoinLikeTransaction>(getContext(), [=] (const Bytes &rawTx) -> FuturePtr<api::BitcoinLikeTransaction> {
+                auto tx = std::dynamic_pointer_cast<BitcoinLikeTransactionApi>(
+                        BitcoinLikeTransactionApi::parseRawTransaction(
+                                self->getWallet()->getCurrency(),
+                                rawTx.getContainer(),
+                                self->_currentBlockHeight,
+                                false)
+                );
+
+                // Get input amounts
+                BigInt inputsValue;
+                {
+                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    for (auto &input : tx->getInputs()) {
+                        // Check if sequences are lower than 0xffffffff otherwise impossible to use RBF
+                        // TODO: support uints in Djinni
+                        if (!forceBuild && input->getSequence() == std::numeric_limits<uint32_t>::max()) {
+                            throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
+                                                 "Replay-by-fee (RBF) for transaction not supported : one or multiple transaction's inputs have sequence set to maximum");
+                        }
+
+                        BitcoinLikeBlockchainExplorerTransaction prevOut;
+                        auto prevTxHash = input->getPreviousTxHash().value_or("");
+                        if (!prevTxHash.empty()) {
+                            BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql,
+                                                                                       prevTxHash,
+                                                                                       self->getAccountUid(),
+                                                                                       prevOut);
+
+                            inputsValue = inputsValue + prevOut.outputs[input->getPreviousOutputIndex().value_or(0)].value;
+                        }
+                    }
+                }
+
+                // Get outputs value and change output if it exists
+                BigInt outputsValues;
+                std::shared_ptr<api::BitcoinLikeOutput> outputChange;
+                for (auto &o : tx->getOutputs()) {
+                    // Update outputs value
+                    outputsValues = outputsValues + *(std::dynamic_pointer_cast<ledger::core::Amount>(o->getValue())->value());
+
+                    // Get change output
+                    auto isChange = self->getKeychain()->getAddressPurpose(o->getAddress().value_or(""))
+                                            .getValueOr(BitcoinLikeKeychain::KeyPurpose::RECEIVE) == BitcoinLikeKeychain::KeyPurpose::CHANGE;
+                    // We take last output to a change address
+                    outputChange = isChange ? o : outputChange;
+                }
+
+                // Get new fees per byte
+                auto fees = inputsValue - outputsValues;
+                auto additionalFees = static_cast<uint64_t>(additionaFeesPerBytes->toLong() * rawTx.size());
+
+                auto incrementSequence = [=](const std::shared_ptr<BitcoinLikeTransactionApi> &transaction) {
+                    for (auto &input : transaction->getInputs()) {
+                        // TODO: support uints in Djinni
+                        std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(input)->setSequence(input->getSequence() + 1);
+                    }
+                };
+
+                // First we try to get change output and decrease it's amount
+                // Case change output can cover new fees, in this case we decrease it's amount
+                if (outputChange) {
+                    if (outputChange->getValue()->toLong() > additionalFees) {
+                        BitcoinLikeBlockchainExplorerOutput out;
+                        out.address = outputChange->getAddress();
+                        out.index = outputChange->getOutputIndex();
+                        out.value = BigInt(outputChange->getValue()->toString()) - BigInt((unsigned long long) additionalFees);
+                        out.transactionHash = outputChange->getTransactionHash();
+                        out.script = hex::toString(outputChange->getScript());
+                        tx->addOutput(std::make_shared<BitcoinLikeOutputApi>(out, self->getWallet()->getCurrency()));
+                        tx->removeOutput(outputChange->getOutputIndex());
+                        incrementSequence(tx);
+                        return FuturePtr<api::BitcoinLikeTransaction>::successful(tx);
+                    }
+                }
+
+                // Construct new outputs taking into account fees
+                // Pick new UTXO
+                return self->getUTXO().mapPtr<api::BitcoinLikeTransaction>(self->getContext(), [=](const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos) {
+                    // Deepest first
+                    auto tmpUtxos = utxos;
+                    std::sort(tmpUtxos.begin(), tmpUtxos.end(), [] (const std::shared_ptr<api::BitcoinLikeOutput> &lo,
+                                                                    const std::shared_ptr<api::BitcoinLikeOutput> &ro) {
+                        return lo->getBlockHeight().value_or(std::numeric_limits<uint64_t>::max()) < ro->getBlockHeight().value_or(std::numeric_limits<uint64_t>::max());
+                    });
+
+                    // Aggregate enough UTXOs to cover additional fees
+                    uint64_t aggregatedAmount = 0;
+                    auto itUtxo = std::find_if(tmpUtxos.begin(),
+                                               tmpUtxos.end(),
+                                               [&](const std::shared_ptr<api::BitcoinLikeOutput> &output) {
+                                                   aggregatedAmount += output->getValue()->toLong();
+                                                   return aggregatedAmount >= additionalFees;
+                                               }
+                    );
+
+                    if (itUtxo == tmpUtxos.end()) {
+                        // Could happen if we try RBF on a tx produced with send max mode ...
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Replay-by-fee (RBF) for transaction not supported e.g. No available UTXOs to cover new fees.");
+                    }
+
+                    auto utxo = tmpUtxos.begin();
+
+                    while (utxo != itUtxo + 1) {
+                        auto newOutput = std::dynamic_pointer_cast<BitcoinLikeOutputApi>(*utxo);
+
+                        std::vector<std::vector<uint8_t>> pub_keys;
+                        std::vector<std::shared_ptr<api::DerivationPath>> paths;
+                        // Get derivations and public keys
+                        auto outputAddress = newOutput->getAddress().value_or("");
+                        if (!outputAddress.empty()) {
+                            auto derivationPath = self->getKeychain()->getAddressDerivationPath(outputAddress);
+                            if (derivationPath.nonEmpty()) {
+                                paths.push_back(std::make_shared<DerivationPathApi>(DerivationPath(derivationPath.getValue())));
+                                pub_keys.push_back(self->getKeychain()->getPublicKey(outputAddress).getValue());
+                            }
+                        }
+                        auto input = std::shared_ptr<BitcoinLikeWritableInputApi>(
+                                new BitcoinLikeWritableInputApi(
+                                        self->getExplorer(),
+                                        self->getContext(),
+                                        0xfffffff0,
+                                        pub_keys,
+                                        paths,
+                                        outputAddress,
+                                        std::make_shared<Amount>(
+                                                self->getKeychain()->getCurrency(),
+                                                0,
+                                                BigInt(newOutput->getValue()->toBigInt()->toString(10))
+                                        ),
+                                        newOutput->getTransactionHash(),
+                                        newOutput->getOutputIndex(),
+                                        {},
+                                        std::make_shared<BitcoinLikeOutputApi>(
+                                                newOutput->getOutput(),
+                                                self->getWallet()->getCurrency()
+                                        )
+                                )
+                        );
+                        tx->addInput(input);
+                        utxo++;
+                    }
+
+
+                    // Adjust change output
+                    auto additionalChange = aggregatedAmount - additionalFees;
+                    if (outputChange) {
+                        auto changeOutput = std::dynamic_pointer_cast<BitcoinLikeOutputApi>(outputChange);
+                        auto out = changeOutput->getOutput();
+                        out.value = out.value + BigInt((unsigned long long) additionalChange);
+                        tx->addOutput(
+                                std::make_shared<BitcoinLikeOutputApi>(
+                                        out,
+                                        self->getWallet()->getCurrency()
+                                )
+                        );
+                        tx->removeOutput(outputChange->getOutputIndex());
+                    } else {
+                        // Create a change
+                        auto changeAddress = self->getKeychain()->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
+                        BitcoinLikeBlockchainExplorerOutput out;
+                        out.index = static_cast<uint64_t>(tx->getOutputs().size());
+                        out.value = BigInt((unsigned long long) additionalChange);
+                        out.address = Option<std::string>(changeAddress).toOptional();
+                        auto script = BitcoinLikeScript::fromAddress(changeAddress, self->getWallet()->getCurrency());
+                        out.script = hex::toString(script.serialize());
+                        auto path = self->getKeychain()->getAddressDerivationPath(changeAddress);
+                        auto derivationPath = path.nonEmpty() ? std::make_shared<DerivationPathApi>(DerivationPath(path.getValue())) : nullptr;
+                        tx->addOutput(
+                                std::make_shared<BitcoinLikeOutputApi>(
+                                        out,
+                                        self->getWallet()->getCurrency(),
+                                        derivationPath
+                                )
+                        );
+                    }
+                    incrementSequence(tx);
+                    return tx;
+                });
+            });
+        }
+        void BitcoinLikeAccount::getReplayByFeeTransaction(const std::string & hash,
+                                                           const std::shared_ptr<api::Amount> & additionaFeesPerBytes,
+                                                           const std::shared_ptr<api::BitcoinLikeTransactionCallback> & txCB) {
+            getReplayByFeeTransaction(hash, additionaFeesPerBytes).callback(getContext(), txCB);
         }
 
     }

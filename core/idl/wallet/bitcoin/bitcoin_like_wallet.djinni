@@ -277,6 +277,13 @@ BitcoinLikeAccount = interface +c {
     # specific methods under the same specific class so it will be easy to segratate
     # when the right time comes !
     getFees(callback: ListCallback<BigInt>);
+    # Replay-by-fee a transaction that is still in mempool with higher fees
+    # @param hash: hash of transaction to override, should be still in mempool
+    # @param additionaFeesPerBytes: fees per byte to add on top of fees of origina; transaction
+    # @return transaction: new transaction with new set fees
+    # Example: if transaction is 200 bytes with originally 10 sat/byte fee (i.e. fees 2000 sat),
+    # setting additionaFeesPerBytes to 1 sat/byte will construct same tx with fees of 2200 sat
+    getReplayByFeeTransaction(hash: string, additionaFeesPerBytes: Amount, transaction: Callback<BitcoinLikeTransaction>);
 }
 
 # A bitcoin-like wallet.

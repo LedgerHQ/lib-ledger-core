@@ -62,7 +62,6 @@ namespace ledger {
 
             const BigInt& value();
 
-        private:
             BitcoinLikeBlockchainExplorerOutput& getOutput();
 
         private:

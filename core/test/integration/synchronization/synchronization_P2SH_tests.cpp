@@ -248,6 +248,33 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                auto txHash = "8d242c8a858ad9c321905b31ae861fa0ec4cb01ad7da8516862ce50052506db1";
+                auto rawTx = "0100000000010209773a59d10cec4fddfd1f6cf9dfc0343ac02ca849bc52b009454f7877ee03f60000000017160014e4fae08faaa8469c5756fda7fbfde46922a4e7b2ffffffff3870ede3e4515852177a618463a2e713d56bb0d442f74babe34507d19019ae930000000017160014e4fae08faaa8469c5756fda7fbfde46922a4e7b2ffffffff02002d3101000000001976a9147c3caaaa10b9c04b9444536c51501971dd2c349788ac90bdc9010000000017a91474eca497e567d8d311e256882890974448c536ae8702483045022100f7320e4fc348284b591d747380d55396cec8ee10f1c23c54274b802e2acfd0d202204ac3af5275d416765b6316a9369a7671a7a9d62e7b1470d6bf3e3924cb26a2e1012103d2f424cd1f60e96241a968b9da3c3f6b780f90538bdf306350b9607c279ad48602473044022057812f4164f20373e22f9375f6286323e47f0168eca61193029437e3bf135fd30220527012960f3ef1c002b6f2b70bda80126f9926fe0de2e98db380051f626d09ab012103d2f424cd1f60e96241a968b9da3c3f6b780f90538bdf306350b9607c279ad48600000000";
+
+                // Get current fees
+                auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(rawTx), 0);
+                auto additionalFeesPerByte = BigInt(1000);
+                auto forceBuild = true;
+                // RBF with only a tweak of change output
+                auto newTx = wait(
+                        account->getReplayByFeeTransaction(
+                                txHash,
+                                std::make_shared<Amount>(wallet->getCurrency(), 0 , additionalFeesPerByte),
+                                forceBuild
+                        )
+                );
+                EXPECT_NE(hex::toString(newTx->serialize()), rawTx);
+
+                // RBF with consumption of new UTXO
+                additionalFeesPerByte = BigInt(200000);
+                newTx = wait(
+                        account->getReplayByFeeTransaction(
+                                txHash,
+                                std::make_shared<Amount>(wallet->getCurrency(), 0 , additionalFeesPerByte),
+                                forceBuild
+                        )
+                );
+                EXPECT_NE(hex::toString(newTx->serialize()), rawTx);
                 dispatcher->stop();
             });
 

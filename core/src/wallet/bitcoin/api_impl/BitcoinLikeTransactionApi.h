@@ -123,6 +123,10 @@ namespace ledger {
 
             BitcoinLikeTransactionApi &setHash(const std::string &hash);
 
+            BitcoinLikeTransactionApi &removeOutput(uint64_t index);
+
+            std::vector<uint8_t> serializeInputScriptSig(const std::shared_ptr<api::BitcoinLikeInput> &input);
+
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
                                                                                     const std::vector<uint8_t> &rawTransaction,

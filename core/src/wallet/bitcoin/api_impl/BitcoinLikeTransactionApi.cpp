@@ -262,6 +262,13 @@ namespace ledger {
             return *this;
         }
 
+        BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::removeOutput(uint64_t index) {
+            if (index < _outputs.size()) {
+                _outputs.erase(_outputs.begin() + index);
+            }
+            return *this;
+        }
+
         std::vector<uint8_t> BitcoinLikeTransactionApi::serializeOutputs() {
             BytesWriter writer;
             serializeOutputs(writer);
@@ -311,6 +318,39 @@ namespace ledger {
             }
         }
 
+        std::vector<uint8_t> BitcoinLikeTransactionApi::serializeInputScriptSig(const std::shared_ptr<api::BitcoinLikeInput> &input) {
+            //Decred has only a tree field
+            if (_params.Identifier == "dcr") {
+                return {0x00};
+            }
+
+            BytesWriter writer;
+            auto scriptSig = input->getScriptSig();
+            auto isSegwit = BitcoinLikeKeychain::isSegwit(_keychainEngine);
+            if (!isSegwit && !scriptSig.empty()) {
+                writer.writeVarInt(scriptSig.size());
+                writer.writeByteArray(scriptSig);
+            } else if (isSegwit && scriptSig.size() > 1) {
+                auto pubKeys = input->getPublicKeys();
+                if (!pubKeys.empty()) {
+                    //TODO: handle multi-sig
+                    std::vector<uint8_t> redeemScript = {0x00, 0x14};
+                    redeemScript.insert(redeemScript.end(), pubKeys[0].begin(), pubKeys[0].end());
+                    writer.writeVarInt(redeemScript.size() + 1);
+                    writer.writeVarInt(redeemScript.size());
+                    writer.writeByteArray(redeemScript);
+                } else {
+                    writer.writeVarInt(0);
+                }
+            } else {
+                auto prevOut = input->getPreviousOuput()->getScript();
+                writer.writeVarInt(prevOut.size());
+                writer.writeByteArray(prevOut);
+            }
+
+            return writer.toByteArray();
+        }
+
         void BitcoinLikeTransactionApi::serializeInputs(BytesWriter &writer) {
             // If all inputs are empty we need to create an unsigned transaction
             writer.writeVarInt(_inputs.size());
@@ -323,36 +363,7 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::INCOMPLETE_TRANSACTION, "Missing previous transaction index");
                 writer.writeLeValue<int32_t>(input->getPreviousOutputIndex().value());
 
-                //Decred has only a tree field
-                if (_params.Identifier == "dcr") {
-                    writer.writeByteArray({0x00});
-                    writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
-                    return;
-                }
-
-                auto scriptSig = input->getScriptSig();
-                auto isSegwit = BitcoinLikeKeychain::isSegwit(_keychainEngine);
-                if (!isSegwit && scriptSig.size() > 0) {
-                    writer.writeVarInt(scriptSig.size());
-                    writer.writeByteArray(scriptSig);
-                } else if (isSegwit && scriptSig.size() > 1) {
-                    auto pubKeys = input->getPublicKeys();
-                    if (!pubKeys.empty()) {
-                        //TODO: handle multi-sig
-                        std::vector<uint8_t> redeemScript = {0x00, 0x14};
-                        redeemScript.insert(redeemScript.end(), pubKeys[0].begin(), pubKeys[0].end());
-                        writer.writeVarInt(redeemScript.size() + 1);
-                        writer.writeVarInt(redeemScript.size());
-                        writer.writeByteArray(redeemScript);
-                    } else {
-                        writer.writeVarInt(0);
-                    }
-                } else {
-                    auto prevOut = input->getPreviousOuput()->getScript();
-                    writer.writeVarInt(prevOut.size());
-                    writer.writeByteArray(prevOut);
-                }
-
+                writer.writeByteArray(serializeInputScriptSig(input));
                 writer.writeLeValue<uint32_t>(static_cast<const uint32_t>(input->getSequence()));
             }
         }

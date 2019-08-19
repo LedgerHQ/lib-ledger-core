@@ -7,6 +7,7 @@
 #include "../utils/optional.hpp"
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -18,10 +19,12 @@
 
 namespace ledger { namespace core { namespace api {
 
+class Amount;
 class BigIntListCallback;
 class BitcoinLikeOutputListCallback;
 class BitcoinLikeTransaction;
 class BitcoinLikeTransactionBuilder;
+class BitcoinLikeTransactionCallback;
 class I32Callback;
 class StringCallback;
 
@@ -58,6 +61,16 @@ public:
      * when the right time comes !
      */
     virtual void getFees(const std::shared_ptr<BigIntListCallback> & callback) = 0;
+
+    /**
+     * Replay-by-fee a transaction that is still in mempool with higher fees
+     * @param hash: hash of transaction to override, should be still in mempool
+     * @param additionaFeesPerBytes: fees per byte to add on top of fees of origina; transaction
+     * @return transaction: new transaction with new set fees
+     * Example: if transaction is 200 bytes with originally 10 sat/byte fee (i.e. fees 2000 sat),
+     * setting additionaFeesPerBytes to 1 sat/byte will construct same tx with fees of 2200 sat
+     */
+    virtual void getReplayByFeeTransaction(const std::string & hash, const std::shared_ptr<Amount> & additionaFeesPerBytes, const std::shared_ptr<BitcoinLikeTransactionCallback> & transaction) = 0;
 };
 
 } } }  // namespace ledger::core::api

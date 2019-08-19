@@ -46,6 +46,7 @@
 #include <api/BitcoinLikeTransactionRequest.hpp>
 #include <api/BitcoinLikePreparedTransaction.hpp>
 #include <api/BigIntListCallback.hpp>
+#include <api/BitcoinLikeTransactionCallback.hpp>
 #include <wallet/bitcoin/types.h>
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
 
@@ -138,6 +139,15 @@ namespace ledger {
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
 
             void getFees(const std::shared_ptr<api::BigIntListCallback> & callback) override ;
+
+            FuturePtr<api::BitcoinLikeTransaction> getReplayByFeeTransaction(const std::string & hash,
+                                                                             const std::shared_ptr<api::Amount> & additionaFeesPerBytes,
+                                                                             bool forceBuild = false);
+
+            void getReplayByFeeTransaction(const std::string & hash,
+                                           const std::shared_ptr<api::Amount> & additionaFeesPerBytes,
+                                           const std::shared_ptr<api::BitcoinLikeTransactionCallback> & txCB) override;
+
         protected:
             bool checkIfWalletIsEmpty();
 
