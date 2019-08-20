@@ -41,6 +41,7 @@
 #include <api/EstimatedSize.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 #include <api/KeychainEngines.hpp>
+#include <api/BitcoinLikeSignature.hpp>
 
 namespace ledger {
     namespace core {
@@ -110,10 +111,10 @@ namespace ledger {
             std::vector<uint8_t> serializeOutputs() override;
 
             int32_t getVersion() override;
+            
+            void setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) override;
 
-            void setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
-            void setDERSignature(const std::vector<uint8_t> & signature) override;
-            void setVSignature(const std::vector<uint8_t> & vSignature) override;
+            void setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) override;
 
             BitcoinLikeTransactionApi &addInput(const std::shared_ptr<BitcoinLikeWritableInputApi> &input);
 
@@ -147,8 +148,6 @@ namespace ledger {
 
             inline bool isReadOnly() const;
 
-            inline void serializeSignature(BytesWriter &out);  
-
             inline void serializeProlog(BytesWriter &out);
 
             inline void serializeInputs(BytesWriter &out);
@@ -172,9 +171,6 @@ namespace ledger {
             bool _writable;
             std::string _keychainEngine;
             uint64_t _currentBlockHeight;
-            std::vector<uint8_t> _vSignature;
-            std::vector<uint8_t> _rSignature;
-            std::vector<uint8_t> _sSignature;
         };
     }
 }

@@ -132,7 +132,6 @@ namespace ledger {
 
         std::vector<uint8_t> BitcoinLikeTransactionApi::serialize() {
             BytesWriter writer;
-            serializeSignature(writer);
             serializeProlog(writer);
             serializeInputs(writer);
             serializeOutputs(writer);
@@ -269,49 +268,56 @@ namespace ledger {
             return writer.toByteArray();
         }
 
-        void BitcoinLikeTransactionApi::setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) {
-            _vSignature = vSignature;
-            _rSignature = rSignature;
-            _sSignature = sSignature;
+        void BitcoinLikeTransactionApi::setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) {
+            if (signatures.size() != _inputs.size()) {
+                throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "DER signature length differs to current input length");
+            }
+            for (std::size_t i = 0; i < signatures.size(); ++i) {
+                BytesWriter writer;
+                //Var bytes Signature (prefix length)
+                //Get length of VarInt representing length of R
+                BytesWriter rLength;
+                rLength.writeVarInt(signatures[i].r.size());
+                //Get length of VarInt representing length of R
+                BytesWriter sLength;
+                sLength.writeVarInt(signatures[i].s.size());
+                //Get length of VarInt representing length of R and S (plus their stack sizes)
+                auto sAndRLengthInt = 1 + rLength.toByteArray().size() + signatures[i].r.size() + 
+                    1 + sLength.toByteArray().size() + signatures[i].s.size();
+                BytesWriter sAndRLength;
+                sAndRLength.writeVarInt(sAndRLengthInt);
+                //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S
+                auto totalSigLength = 1 + sAndRLength.toByteArray().size() + sAndRLengthInt;
+                writer.writeVarInt(totalSigLength);
+                //DER prefix
+                writer.writeByte(0x30);
+                //Size of DER signature minus DER prefix | Size(S+R)
+                writer.writeVarInt(sAndRLengthInt);
+                //R field
+                writer.writeByte(0x02); //Nb of stack elements
+                writer.writeVarInt(signatures[i].r.size());
+                writer.writeByteArray(signatures[i].r);
+                //S field
+                writer.writeByte(0x02); //Nb of stack elements
+                writer.writeVarInt(signatures[i].s.size());
+                writer.writeByteArray(signatures[i].s);
+                writer.writeByte(0x01); // SIGHASH byte
+                _inputs[i]->setP2PKHSigScript(writer.toByteArray());
+                
+            }
         }
 
-        void BitcoinLikeTransactionApi::setDERSignature(const std::vector<uint8_t> & signature) {
-            BytesReader reader(signature);
-            //DER prefix
-            reader.readNextByte();
-            //Total length
-            reader.readNextVarInt();
-            //Nb of elements for R
-            reader.readNextByte();
-            //R length
-            auto rSize = reader.readNextVarInt();
-            _rSignature = reader.read(rSize);
-            //Nb of elements for S
-            reader.readNextByte();
-            //S length
-            auto sSize = reader.readNextVarInt();
-            _sSignature = reader.read(sSize);
-        }
-
-        void BitcoinLikeTransactionApi::setVSignature(const std::vector<uint8_t> & vSignature) {
-            _vSignature = vSignature;
+        void BitcoinLikeTransactionApi::setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) {
+            if (signatures.size() != _inputs.size()) {
+                throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "DER signature length differs to current input length");
+            }
+            for (std::size_t i = 0; i < signatures.size(); ++i) {
+                _inputs[i]->setP2PKHSigScript(signatures[i]);
+            }
         }
 
         int32_t BitcoinLikeTransactionApi::getVersion() {
             return _version;
-        }
-
-        void BitcoinLikeTransactionApi::serializeSignature(BytesWriter &out) {
-            if (!_rSignature.empty() && !_sSignature.empty()) {
-                out.writeByteArray(_vSignature);
-                out.writeByte(_rSignature.size() + _sSignature.size() + 4);
-                out.writeByte(0x02);
-                out.writeByte(_rSignature.size());
-                out.writeByteArray(_rSignature);
-                out.writeByte(0x02);
-                out.writeByte(_sSignature.size());
-                out.writeByteArray(_sSignature);
-            }
         }
 
         void BitcoinLikeTransactionApi::serializeProlog(BytesWriter &writer) {

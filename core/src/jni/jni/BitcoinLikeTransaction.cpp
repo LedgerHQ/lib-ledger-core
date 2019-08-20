@@ -6,6 +6,7 @@
 #include "BitcoinLikeBlock.hpp"
 #include "BitcoinLikeInput.hpp"
 #include "BitcoinLikeOutput.hpp"
+#include "BitcoinLikeSignature.hpp"
 #include "EstimatedSize.hpp"
 #include "Marshal.hpp"
 
@@ -154,32 +155,21 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppPr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_vSignature, jbyteArray j_rSignature, jbyteArray j_sSignature)
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setSignatures(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_signatures)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
-        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_vSignature),
-                          ::djinni::Binary::toCpp(jniEnv, j_rSignature),
-                          ::djinni::Binary::toCpp(jniEnv, j_sSignature));
+        ref->setSignatures(::djinni::List<::djinni_generated::BitcoinLikeSignature>::toCpp(jniEnv, j_signatures));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setDERSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setDERSignatures(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_signatures)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
-        ref->setDERSignature(::djinni::Binary::toCpp(jniEnv, j_signature));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setVSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_vSignature)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
-        ref->setVSignature(::djinni::Binary::toCpp(jniEnv, j_vSignature));
+        ref->setDERSignatures(::djinni::List<::djinni::Binary>::toCpp(jniEnv, j_signatures));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
