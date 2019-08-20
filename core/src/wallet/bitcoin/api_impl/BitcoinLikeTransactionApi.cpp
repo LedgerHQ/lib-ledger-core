@@ -268,11 +268,14 @@ namespace ledger {
             return writer.toByteArray();
         }
 
-        void BitcoinLikeTransactionApi::setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) {
+        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) {
             if (signatures.size() != _inputs.size()) {
-                throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "DER signature length differs to current input length");
+                return api::BitcoinLikeSignatureState::MISSING_DATA;
             }
             for (std::size_t i = 0; i < signatures.size(); ++i) {
+                if (_inputs[i]->getScriptSig().size() > 0) {
+                    return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
+                }
                 BytesWriter writer;
                 //Var bytes Signature (prefix length)
                 //Get length of VarInt representing length of R
@@ -303,17 +306,21 @@ namespace ledger {
                 writer.writeByteArray(signatures[i].s);
                 writer.writeByte(0x01); // SIGHASH byte
                 _inputs[i]->setP2PKHSigScript(writer.toByteArray());
-                
             }
+            return api::BitcoinLikeSignatureState::SIGNING_SUCCEED;
         }
 
-        void BitcoinLikeTransactionApi::setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) {
+        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) {
             if (signatures.size() != _inputs.size()) {
-                throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "DER signature length differs to current input length");
+                return api::BitcoinLikeSignatureState::MISSING_DATA;
             }
             for (std::size_t i = 0; i < signatures.size(); ++i) {
+                if (_inputs[i]->getScriptSig().size() > 0) {
+                    return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
+                }
                 _inputs[i]->setP2PKHSigScript(signatures[i]);
             }
+            return api::BitcoinLikeSignatureState::SIGNING_SUCCEED;
         }
 
         int32_t BitcoinLikeTransactionApi::getVersion() {

@@ -42,6 +42,7 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeWritableInputApi.h>
 #include <api/KeychainEngines.hpp>
 #include <api/BitcoinLikeSignature.hpp>
+#include <api/BitcoinLikeSignatureState.hpp>
 
 namespace ledger {
     namespace core {
@@ -112,9 +113,9 @@ namespace ledger {
 
             int32_t getVersion() override;
             
-            void setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) override;
+            api::BitcoinLikeSignatureState setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) override;
 
-            void setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) override;
+            api::BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) override;
 
             BitcoinLikeTransactionApi &addInput(const std::shared_ptr<BitcoinLikeWritableInputApi> &input);
 

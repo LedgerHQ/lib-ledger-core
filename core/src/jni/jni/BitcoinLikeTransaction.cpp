@@ -7,6 +7,7 @@
 #include "BitcoinLikeInput.hpp"
 #include "BitcoinLikeOutput.hpp"
 #include "BitcoinLikeSignature.hpp"
+#include "BitcoinLikeSignatureState.hpp"
 #include "EstimatedSize.hpp"
 #include "Marshal.hpp"
 
@@ -155,22 +156,24 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppPr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setSignatures(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_signatures)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setSignatures(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_signatures)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
-        ref->setSignatures(::djinni::List<::djinni_generated::BitcoinLikeSignature>::toCpp(jniEnv, j_signatures));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ref->setSignatures(::djinni::List<::djinni_generated::BitcoinLikeSignature>::toCpp(jniEnv, j_signatures));
+        return ::djinni::release(::djinni_generated::BitcoinLikeSignatureState::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setDERSignatures(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_signatures)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransaction_00024CppProxy_native_1setDERSignatures(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_signatures)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransaction>(nativeRef);
-        ref->setDERSignatures(::djinni::List<::djinni::Binary>::toCpp(jniEnv, j_signatures));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+        auto r = ref->setDERSignatures(::djinni::List<::djinni::Binary>::toCpp(jniEnv, j_signatures));
+        return ::djinni::release(::djinni_generated::BitcoinLikeSignatureState::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated
