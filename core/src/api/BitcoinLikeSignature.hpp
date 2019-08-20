@@ -11,9 +11,25 @@
 
 namespace ledger { namespace core { namespace api {
 
+/**
+ * Structure representing DER encoded signature
+ * DER format :
+ * - DER prefix
+ * - Length of rest of signature
+ * - Marker for r value
+ * - Length of r value
+ * - r value, Big Endian
+ * - Marker for s value
+ * - Length of s value
+ * - s value, Big Endian
+ * - SIGHASH byte (ALL, NONE, SINGLE)
+ */
 struct BitcoinLikeSignature final {
+    /** r data */
     std::vector<uint8_t> r;
+    /** s data */
     std::vector<uint8_t> s;
+    /** Ignored attribute */
     std::vector<uint8_t> v;
 
     BitcoinLikeSignature(std::vector<uint8_t> r_,

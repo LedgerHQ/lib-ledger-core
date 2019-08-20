@@ -24,6 +24,7 @@ class Amount;
 class BitcoinLikeBlock;
 class BitcoinLikeInput;
 class BitcoinLikeOutput;
+enum class BitcoinLikeSignatureState;
 struct BitcoinLikeSignature;
 struct EstimatedSize;
 
@@ -77,10 +78,18 @@ public:
      */
     virtual EstimatedSize getEstimatedSize() = 0;
 
-    /** Set signature of transaction, when a signature is set serialize method gives back serialized Tx. */
-    virtual void setSignatures(const std::vector<BitcoinLikeSignature> & signatures) = 0;
+    /**
+     * Sign all inputs for given transaction. 
+     * Build DER encoded signature from RSV data.
+     * @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
+     */
+    virtual BitcoinLikeSignatureState setSignatures(const std::vector<BitcoinLikeSignature> & signatures) = 0;
 
-    virtual void setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) = 0;
+    /**
+     * Sign all inputs for given transaction. 
+     * @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
+     */
+    virtual BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) = 0;
 };
 
 } } }  // namespace ledger::core::api
