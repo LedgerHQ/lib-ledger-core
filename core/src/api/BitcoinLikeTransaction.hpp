@@ -24,6 +24,7 @@ class Amount;
 class BitcoinLikeBlock;
 class BitcoinLikeInput;
 class BitcoinLikeOutput;
+struct BitcoinLikeSignature;
 struct EstimatedSize;
 
 /** Class representing a Bitcoin transaction. */
@@ -77,11 +78,9 @@ public:
     virtual EstimatedSize getEstimatedSize() = 0;
 
     /** Set signature of transaction, when a signature is set serialize method gives back serialized Tx. */
-    virtual void setSignature(const std::vector<uint8_t> & vSignature, const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) = 0;
+    virtual void setSignatures(const std::vector<BitcoinLikeSignature> & signatures) = 0;
 
-    virtual void setDERSignature(const std::vector<uint8_t> & signature) = 0;
-
-    virtual void setVSignature(const std::vector<uint8_t> & vSignature) = 0;
+    virtual void setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) = 0;
 };
 
 } } }  // namespace ledger::core::api

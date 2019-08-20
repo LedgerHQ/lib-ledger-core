@@ -112,6 +112,12 @@ BitcoinLikeBlock = interface +c {
     getTime(): date;
 }
 
+BitcoinLikeSignature = record {
+    r: binary;
+    s: binary;
+    v: binary;
+}
+
 # Class representing a Bitcoin transaction.
 BitcoinLikeTransaction = interface +c {
     # Get the hash of the transaction.
@@ -143,10 +149,8 @@ BitcoinLikeTransaction = interface +c {
     # size.
     getEstimatedSize(): EstimatedSize;
     # Set signature of transaction, when a signature is set serialize method gives back serialized Tx.
-    setSignature(vSignature: binary, rSignature: binary, sSignature: binary);
-    setDERSignature(signature: binary);
-    setVSignature(vSignature: binary);
-
+    setSignatures(signatures: list<BitcoinLikeSignature>);
+    setDERSignatures(signatures: list<binary>);
 }
 
 # Class representing a Bitcoin Operation.
