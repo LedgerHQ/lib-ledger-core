@@ -1,9 +1,9 @@
 #include <core/api/PoolConfiguration.hpp>
-#include <core/Meta.hpp>
+#include <core/Services.hpp>
 
 namespace ledger {
     namespace core {
-        Meta::Meta(
+        Services::Services(
             const std::string &name,
             const std::string &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
@@ -76,7 +76,7 @@ namespace ledger {
             _publisher = std::make_shared<EventPublisher>(getContext());
         }
 
-        std::shared_ptr<Meta> Meta::newInstance(
+        std::shared_ptr<Services> Services::newInstance(
             const std::string &name,
             const std::string &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
@@ -88,7 +88,7 @@ namespace ledger {
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration
         ) {
-            auto meta = std::shared_ptr<Meta>(new Meta(
+            auto meta = std::shared_ptr<Services>(new Services(
                 name,
                 password,
                 httpClient,
@@ -104,47 +104,47 @@ namespace ledger {
             return meta;
         }
 
-        std::shared_ptr<Preferences> Meta::getExternalPreferences() const {
+        std::shared_ptr<Preferences> Services::getExternalPreferences() const {
             return _externalPreferencesBackend->getPreferences("pool");
         }
 
-        std::shared_ptr<Preferences> Meta::getInternalPreferences() const {
+        std::shared_ptr<Preferences> Services::getInternalPreferences() const {
             return _internalPreferencesBackend->getPreferences("pool");
         }
 
-        std::shared_ptr<spdlog::logger> Meta::logger() const {
+        std::shared_ptr<spdlog::logger> Services::logger() const {
             return _logger;
         }
 
-        std::shared_ptr<DatabaseSessionPool> Meta::getDatabaseSessionPool() const {
+        std::shared_ptr<DatabaseSessionPool> Services::getDatabaseSessionPool() const {
             return _database;
         }
 
-        std::shared_ptr<DynamicObject> Meta::getConfiguration() const {
+        std::shared_ptr<DynamicObject> Services::getConfiguration() const {
             return _configuration;
         }
 
-        const std::string &Meta::getName() const {
+        const std::string &Services::getName() const {
             return _poolName;
         }
 
-        const std::string Meta::getPassword() const {
+        const std::string Services::getPassword() const {
             return _password;
         }
 
-        std::shared_ptr<api::PathResolver> Meta::getPathResolver() const {
+        std::shared_ptr<api::PathResolver> Services::getPathResolver() const {
             return _pathResolver;
         }
 
-        std::shared_ptr<api::RandomNumberGenerator> Meta::rng() const {
+        std::shared_ptr<api::RandomNumberGenerator> Services::rng() const {
             return _rng;
         }
 
-        std::shared_ptr<api::ThreadDispatcher> Meta::getDispatcher() const {
+        std::shared_ptr<api::ThreadDispatcher> Services::getDispatcher() const {
             return _threadDispatcher;
         }
 
-        std::shared_ptr<HttpClient> Meta::getHttpClient(const std::string &baseUrl) {
+        std::shared_ptr<HttpClient> Services::getHttpClient(const std::string &baseUrl) {
             auto it = _httpClients.find(baseUrl);
             if (it == _httpClients.end() || !it->second.lock()) {
                 auto client = std::make_shared<HttpClient>(
@@ -163,15 +163,15 @@ namespace ledger {
             return client;
         }
 
-        std::shared_ptr<api::EventBus> Meta::getEventBus() const {
+        std::shared_ptr<api::EventBus> Services::getEventBus() const {
             return _publisher->getEventBus();
         }
 
-        std::shared_ptr<WebSocketClient> Meta::getWebSocketClient() const {
+        std::shared_ptr<WebSocketClient> Services::getWebSocketClient() const {
             return _wsClient;
         }
 
-        Future<api::ErrorCode> Meta::changePassword(
+        Future<api::ErrorCode> Services::changePassword(
             const std::string& oldPassword,
             const std::string& newPassword
         ) {
