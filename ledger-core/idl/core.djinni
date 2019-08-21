@@ -18,6 +18,7 @@
 @import "path_resolver.djinni"
 @import "preferences.djinni"
 @import "secp256k1.djinni"
+@import "services.djinni"
 @import "time_period.djinni"
 @import "thread_dispatcher.djinni"
 @import "trust.djinni"
