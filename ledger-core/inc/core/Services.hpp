@@ -1,6 +1,6 @@
 /*
  *
- * Meta
+ * Services
  * ledger-core
  *
  * Created by Dimitri Sabadie on 2019/08/20.
@@ -50,7 +50,7 @@
 
 namespace ledger {
     namespace core {
-        /// The Meta ledger-core object.
+        /// The Services ledger-core object.
         ///
         /// That object is used to store all meta data and objects related to ledger-core, such as:
         ///
@@ -63,9 +63,9 @@ namespace ledger {
         ///
         /// It’s typical that those objects don’t have to live more than once in memory so it’s better to
         /// gather them (legacy code was using the WalletPool for that).
-        struct Meta : DedicatedContext, std::enable_shared_from_this<Meta> {
-            Meta() = delete;
-            Meta(
+        struct Services : DedicatedContext, std::enable_shared_from_this<Services> {
+            Services() = delete;
+            Services(
                 const std::string &name,
                 const std::string &password,
                 const std::shared_ptr<api::HttpClient> &httpClient,
@@ -77,12 +77,12 @@ namespace ledger {
                 const std::shared_ptr<api::DatabaseBackend> &backend,
                 const std::shared_ptr<api::DynamicObject> &configuration
             );
-            ~Meta() = default;
+            ~Services() = default;
 
             /// Create a new meta configuration.
             ///
-            /// This function is semantically exactly the same as the parametered Meta constructor.
-            static std::shared_ptr<Meta> newInstance(
+            /// This function is semantically exactly the same as the parametered Services constructor.
+            static std::shared_ptr<Services> newInstance(
                 const std::string &name,
                 const std::string &password,
                 const std::shared_ptr<api::HttpClient> &httpClient,
