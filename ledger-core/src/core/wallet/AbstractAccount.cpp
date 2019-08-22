@@ -3,11 +3,9 @@
  * AbstractAccount
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/04/2017.
- *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2010 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -39,20 +37,23 @@
 
 namespace ledger {
     namespace core {
-
-        AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
-                : DedicatedContext(wallet->getMainExecutionContext()) {
-            _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
-            _logger = wallet->logger();
-            _index = index;
-            _internalPreferences = wallet->getAccountInternalPreferences(index);
-            _externalPreferences = wallet->getAccountExternalPreferences(index);
-            _loggerApi = wallet->getLogger();
-            _wallet = wallet;
-            _mainExecutionContext = wallet->getMainExecutionContext();
-            _logger = wallet->logger();
-            _type = wallet->getWalletType();
-            _publisher = std::make_shared<EventPublisher>(getContext());
+        AbstractAccount::AbstractAccount(
+            const std::shared_ptr<Services>& services,
+            const std::string& walletUid,
+            int32_t index
+        ): DedicatedContext(services->getDispatcher()->getMainExecutionContext()),
+           _uid(AccountDatabaseHelper::createAccountUid(walletUid, index)),
+           _logger(services->logger())
+           _index(index),
+           _internalPreferences(services
+               ->getInternalPreferences()
+               ->getSubPreferences(fmt::format("account_{}", index))),
+           _externalPreferences(services
+               ->getExternalPreferences()
+               ->getSubPreferences(fmt::format("account_{}", index))),
+           _loggerApi(std::make_shared<LoggerApi>(_logger)),
+           _mainExecutionContext(services->getDispatcher()->getMainExecutionContext()) {
+           _publisher = std::make_shared<EventPublisher>(getContext());
         }
 
         int32_t AbstractAccount::getIndex() {
@@ -67,31 +68,8 @@ namespace ledger {
             return _loggerApi;
         }
 
-        bool AbstractAccount::isInstanceOfBitcoinLikeAccount() {
-            return _type == api::WalletType::BITCOIN;
-        }
-
-        bool AbstractAccount::isInstanceOfEthereumLikeAccount() {
-            return _type == api::WalletType::ETHEREUM;
-        }
-
-        bool AbstractAccount::isInstanceOfRippleLikeAccount() {
-            return _type == api::WalletType::RIPPLE;
-        }
-
-        api::WalletType AbstractAccount::getWalletType() {
-            return _type;
-        }
-
         std::shared_ptr<api::Preferences> AbstractAccount::getOperationPreferences(const std::string &uid) {
             return getOperationExternalPreferences(uid);
-        }
-
-        std::shared_ptr<api::BitcoinLikeAccount> AbstractAccount::asBitcoinLikeAccount() {
-            return std::dynamic_pointer_cast<api::BitcoinLikeAccount>(shared_from_this());
-        }
-        std::shared_ptr<api::EthereumLikeAccount> AbstractAccount::asEthereumLikeAccount() {
-            return std::dynamic_pointer_cast<api::EthereumLikeAccount>(shared_from_this());
         }
 
         std::shared_ptr<spdlog::logger> AbstractAccount::logger() const {
@@ -110,21 +88,6 @@ namespace ledger {
             return _uid;
         }
 
-        std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() const {
-            auto wallet = _wallet.lock();
-            if (!wallet) {
-                throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
-            }
-            return wallet;
-        }
-
-		std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
-            auto wallet = _wallet.lock();
-            if (!wallet) {
-                throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
-            }
-            return wallet;
-		}
 
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;
@@ -217,6 +180,5 @@ namespace ledger {
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
-
     }
 }
