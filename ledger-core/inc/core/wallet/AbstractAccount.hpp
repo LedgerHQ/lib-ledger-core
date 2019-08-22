@@ -49,7 +49,12 @@ namespace ledger {
         public:
             using AddressList = std::vector<std::shared_ptr<api::Address>>;
 
-            AbstractAccount(const std::shared_ptr<Services>& services, int32_t index);
+            AbstractAccount(
+                const std::shared_ptr<Services>& services,
+                const std::string& walletUid,
+                int32_t index
+            );
+
             int32_t getIndex() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             std::shared_ptr<api::Logger> getLogger() override;
@@ -93,6 +98,7 @@ namespace ledger {
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
         private:
+            std::shared_ptr<Services> _services;
             int32_t _index;
             std::string _uid;
             std::shared_ptr<spdlog::logger> _logger;

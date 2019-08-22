@@ -42,9 +42,10 @@ namespace ledger {
             const std::string& walletUid,
             int32_t index
         ): DedicatedContext(services->getDispatcher()->getMainExecutionContext()),
+           _services(services),
+           _index(index),
            _uid(AccountDatabaseHelper::createAccountUid(walletUid, index)),
            _logger(services->logger())
-           _index(index),
            _internalPreferences(services
                ->getInternalPreferences()
                ->getSubPreferences(fmt::format("account_{}", index))),
@@ -84,10 +85,9 @@ namespace ledger {
             return _internalPreferences->getSubPreferences(fmt::format("operation_{}", uid));
         }
 
-        const std::string &AbstractAccount::getAccountUid() const {
+        const std::string& AbstractAccount::getAccountUid() const {
             return _uid;
         }
-
 
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;
@@ -96,7 +96,7 @@ namespace ledger {
         std::shared_ptr<api::OperationQuery> AbstractAccount::queryOperations() {
             return std::make_shared<OperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
-                    getWallet()->getDatabase(),
+                    _services->getDatabase(),
                     getContext(),
                     getMainExecutionContext()
             );
