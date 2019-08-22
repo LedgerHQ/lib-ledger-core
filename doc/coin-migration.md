@@ -178,13 +178,7 @@ and objects:
   - List of *wallets*. Those are abstract wallets and you shouldn’t try to use them directly.
 
 Factories used to be in the wallet pool but they were removed to make the abstract code completely
-coin-agnostic. They now live in the `ledger-core-factories` project.
-
-The wallet pool is now a simple object used to share lots of scarce resources, like HTTP
-connections, and other important data between coins. Wallets are created and stored via a wallet
-pool, but their creation is not handled directly through the wallet pool.
-
-Currencies are abstract objects used to represent each coin metadata. It contains:
+coin-agnostic. Currencies are abstract objects used to represent each coin metadata. It contains:
 
   - Name of the coin.
   - Unique ID (integer) representing the coin. (SLIP-0044).
@@ -197,5 +191,16 @@ Currencies are abstract objects used to represent each coin metadata. It contain
 
 Currencies used to hold network parameters but they don’t anymore. The idea is that they must
 remain coin-agnostic.
+
+The concept of _wallet pool_ and _wallets_ was temporary removed. A new type was introduced to
+hold all common and sharable properties: `Services`. The `Services` type is a simple type that can
+formulated as:
+
+```
+Services = WalletPool - wallets - factories - currencies
+```
+
+So it’s basically the same thing as an old `WalletPool` but removed from the wallets, factories and
+currencies objects.
 
 [soci]: https://github.com/SOCI/soci
