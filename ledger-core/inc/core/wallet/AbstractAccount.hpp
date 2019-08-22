@@ -3,11 +3,9 @@
  * AbstractAccount
  * ledger-core
  *
- * Created by Pierre Pollastri on 28/04/2017.
- *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -33,6 +31,7 @@
 
 #include <mutex>
 
+#include <core/Services.hpp>
 #include <core/api/Account.hpp>
 #include <core/api/Address.hpp>
 #include <core/api/Block.hpp>
@@ -41,7 +40,6 @@
 #include <core/api/TimePeriod.hpp>
 #include <core/async/Future.hpp>
 #include <core/events/EventPublisher.hpp>
-#include <core/wallet/AbstractWallet.hpp>
 #include <core/wallet/Amount.h>
 #include <core/wallet/OperationQuery.h>
 
@@ -51,11 +49,10 @@ namespace ledger {
         public:
             using AddressList = std::vector<std::shared_ptr<api::Address>>;
 
-            AbstractAccount(const std::shared_ptr<AbstractWallet>& wallet, int32_t index);
+            AbstractAccount(const std::shared_ptr<Services>& services, int32_t index);
             int32_t getIndex() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             std::shared_ptr<api::Logger> getLogger() override;
-            api::WalletType getWalletType() override;
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
@@ -63,8 +60,6 @@ namespace ledger {
             virtual std::shared_ptr<Preferences> getExternalPreferences() const;
             virtual std::shared_ptr<spdlog::logger> logger() const;
             virtual const std::string& getAccountUid() const;
-            virtual std::shared_ptr<AbstractWallet> getWallet() const;
-            virtual std::shared_ptr<AbstractWallet> getWallet();
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
             void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
@@ -98,15 +93,13 @@ namespace ledger {
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
         private:
-            api::WalletType  _type;
-            int32_t  _index;
+            int32_t _index;
             std::string _uid;
             std::shared_ptr<spdlog::logger> _logger;
             std::shared_ptr<api::Logger> _loggerApi;
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
-            std::weak_ptr<AbstractWallet> _wallet;
             std::shared_ptr<EventPublisher> _publisher;
             std::mutex _eventsLock;
             std::list<std::shared_ptr<api::Event>> _events;
