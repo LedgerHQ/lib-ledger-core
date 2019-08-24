@@ -1,5 +1,8 @@
 ## 3.1.0 (on-going)
 
+- First [RBF](https://github.com/bitcoin/bips/blob/master/bip-0125.mediawiki) (Replay-By-Fee) implementation: replaying 
+a transaction is basically constructing the same one, plus potentially additional UTXOs to cover the extra fees 
+which are mandatory to replay a transaction. 
 - Add block heights on `BitcoinLikeOutput`s to enhance performances while picking UTXOs with deepest first UTXO picking strategy
 
 ## 3.0.0
