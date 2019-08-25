@@ -69,8 +69,9 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         NodeTezosLikeBlockchainExplorer::getFees() {
+            bool parseNumbersAsString = true;
             return _http->GET("head")
-                    .json().mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
+                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a fees field ?
                         if (!json.IsObject() || !json.HasMember("fees") ||
