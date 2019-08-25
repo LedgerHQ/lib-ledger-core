@@ -123,6 +123,8 @@ TezosLikeAccount = interface +c {
 	# This estimation is based on X last incoming txs (to address) that succeeded
 	# Note: same note as for getFees method on BitcoinLikeAccount
 	getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
+	# Get fees from network
+	getFees(callback: Callback<BigInt>);
 	# Get originated accounts by current account
 	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
 }

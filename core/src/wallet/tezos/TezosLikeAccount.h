@@ -142,6 +142,9 @@ namespace ledger {
 
             void addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries);
 
+            void getFees(const std::shared_ptr<api::BigIntCallback> & callback) override;
+            FuturePtr<BigInt> getFees();
+
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
 
