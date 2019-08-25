@@ -187,12 +187,8 @@ namespace ledger {
                         result.index = accountIndex;
                         auto length = info.derivations.size();
                         for (auto i = 0; i < length; i++) {
-                             DerivationPath path(info.derivations[i]);
-                             auto owner = info.owners[i];
-                             result.derivations.push_back(path.getParent().toString());
-                             result.derivations.push_back(path.toString());
-                             result.owners.push_back(owner);
-                             result.owners.push_back(owner);
+                             result.derivations.push_back(DerivationPath(info.derivations[i]).toString());
+                             result.owners.push_back(info.owners[i]);
                         }
                         return result;
             });
