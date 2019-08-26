@@ -280,29 +280,29 @@ namespace ledger {
                 //Var bytes Signature (prefix length)
                 //Get length of VarInt representing length of R
                 BytesWriter rLength;
-                rLength.writeVarInt(signatures[i].r.size());
+                rLength.writeByte(signatures[i].r.size());
                 //Get length of VarInt representing length of R
                 BytesWriter sLength;
-                sLength.writeVarInt(signatures[i].s.size());
+                sLength.writeByte(signatures[i].s.size());
                 //Get length of VarInt representing length of R and S (plus their stack sizes)
                 auto sAndRLengthInt = 1 + rLength.toByteArray().size() + signatures[i].r.size() + 
                     1 + sLength.toByteArray().size() + signatures[i].s.size();
                 BytesWriter sAndRLength;
-                sAndRLength.writeVarInt(sAndRLengthInt);
+                sAndRLength.writeByte(sAndRLengthInt);
                 //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S
                 auto totalSigLength = 1 + sAndRLength.toByteArray().size() + sAndRLengthInt;
-                writer.writeVarInt(totalSigLength);
+                writer.writeByte(totalSigLength);
                 //DER prefix
                 writer.writeByte(0x30);
                 //Size of DER signature minus DER prefix | Size(S+R)
-                writer.writeVarInt(sAndRLengthInt);
+                writer.writeByte(sAndRLengthInt);
                 //R field
                 writer.writeByte(0x02); //Nb of stack elements
-                writer.writeVarInt(signatures[i].r.size());
+                writer.writeByte(signatures[i].r.size());
                 writer.writeByteArray(signatures[i].r);
                 //S field
                 writer.writeByte(0x02); //Nb of stack elements
-                writer.writeVarInt(signatures[i].s.size());
+                writer.writeByte(signatures[i].s.size());
                 writer.writeByteArray(signatures[i].s);
                 writer.writeByte(0x01); // SIGHASH byte
                 _inputs[i]->setP2PKHSigScript(writer.toByteArray());
