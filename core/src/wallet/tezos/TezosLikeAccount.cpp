@@ -526,5 +526,19 @@ namespace ledger {
             }
         }
 
+        void TezosLikeAccount::getFees(const std::shared_ptr<api::BigIntCallback> & callback) {
+            getFees().mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &fees) -> std::shared_ptr<api::BigInt>
+            {
+                if (!fees) {
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve fees from network");
+                }
+                return std::make_shared<api::BigIntImpl>(*fees);
+            }).callback(getContext(), callback);
+        }
+
+        FuturePtr<BigInt> TezosLikeAccount::getFees() {
+            return _explorer->getFees();
+        }
+
     }
 }
