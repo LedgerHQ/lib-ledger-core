@@ -45,6 +45,15 @@ namespace ledger {
     namespace core {
 
         namespace networks {
+
+            enum sigHashType : uint8_t {
+                SIGHASH_ALL = 1,
+                SIGHASH_NONE = 2,
+                SIGHASH_SINGLE = 3,
+                SIGHASH_FORKID = 0x40,
+                SIGHASH_ANYONECANPAY = 0x80
+            };
+            
             // Since version for networks are starting at 1
             static const int HIGHTEST_PARAMETERS_VERSION = 2;
 
