@@ -277,21 +277,12 @@ namespace ledger {
                     return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
                 }
                 BytesWriter writer;
-                //Var bytes Signature (prefix length)
-                //Get length of VarInt representing length of R
-                BytesWriter rLength;
-                rLength.writeByte(signatures[i].r.size());
-                //Get length of VarInt representing length of R
-                BytesWriter sLength;
-                sLength.writeByte(signatures[i].s.size());
                 //Get length of VarInt representing length of R and S (plus their stack sizes)
-                auto sAndRLengthInt = 1 + rLength.toByteArray().size() + signatures[i].r.size() + 
-                    1 + sLength.toByteArray().size() + signatures[i].s.size();
-                BytesWriter sAndRLength;
-                sAndRLength.writeByte(sAndRLengthInt);
-                //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S
-                auto totalSigLength = 1 + sAndRLength.toByteArray().size() + sAndRLengthInt;
-                writer.writeByte(totalSigLength);
+                //4 value representing both stack size and length of R and S - sighash is excluded
+                auto const sAndRLengthInt = 4 + signatures[i].r.size() + signatures[i].s.size();
+                //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S | SIGHASH
+                auto const totalSigInt = 2 + sAndRLengthInt;
+                writer.writeByte(totalSigInt);
                 //DER prefix
                 writer.writeByte(0x30);
                 //Size of DER signature minus DER prefix | Size(S+R)
