@@ -277,7 +277,7 @@ namespace ledger {
                     return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
                 }
                 BytesWriter writer;
-                //Get length of VarInt representing length of R and S (plus their stack sizes)
+                //Get length representing length of R and S
                 //4 value representing both stack size and length of R and S - sighash is excluded
                 auto const sAndRLengthInt = 4 + signatures[i].r.size() + signatures[i].s.size();
                 //DER Signature = Total Size | DER prefix | Size(S+R) | R StackSize | R Length | R | S StackSize | S Length | S | SIGHASH
@@ -295,7 +295,7 @@ namespace ledger {
                 writer.writeByte(0x02); //Nb of stack elements
                 writer.writeByte(signatures[i].s.size());
                 writer.writeByteArray(signatures[i].s);
-                writer.writeByte(0x01); // SIGHASH byte
+                writer.writeByte(networks::sigHashType::SIGHASH_ALL);
                 _inputs[i]->setP2PKHSigScript(writer.toByteArray());
             }
             return api::BitcoinLikeSignatureState::SIGNING_SUCCEED;
