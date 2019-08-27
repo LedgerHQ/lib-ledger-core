@@ -35,8 +35,6 @@
 #include <core/api/Account.hpp>
 #include <core/api/Address.hpp>
 #include <core/api/Block.hpp>
-#include <core/api/BlockCallback.hpp>
-#include <core/api/ErrorCodeCallback.hpp>
 #include <core/api/TimePeriod.hpp>
 #include <core/async/Future.hpp>
 #include <core/events/EventPublisher.hpp>
@@ -67,21 +65,25 @@ namespace ledger {
             virtual const std::string& getAccountUid() const;
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
-            void getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) override;
+            void getLastBlock(const std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> & callback) override;
             Future<api::Block> getLastBlock();
 
-            void getBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+            void getBalance(const std::function<void(std::shared_ptr<api::Amount>, std::experimental::optional<api::Error>)> & callback) override;
             virtual FuturePtr<Amount> getBalance() = 0;
 
-            void getFreshPublicAddresses(const std::shared_ptr<api::AddressListCallback> &callback) override;
+            void getFreshPublicAddresses(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Address>>>, std::experimental::optional<api::Error>)> & callback) override;
             virtual Future<AddressList> getFreshPublicAddresses() = 0;
-            void getBalanceHistory(const std::string & start,
-                                   const std::string & end,
-                                   api::TimePeriod precision,
-                                   const std::shared_ptr<api::AmountListCallback> & callback) override;
-            virtual Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string & start,
-                                                                                   const std::string & end,
-                                                                                   api::TimePeriod precision) = 0;
+            void getBalanceHistory(
+                const std::string & start,
+                const std::string & end,
+                TimePeriod period,
+                const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)> & callback
+            ) override;
+            virtual Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(
+                const std::string & start,
+                const std::string & end,
+                api::TimePeriod precision
+            ) = 0;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
@@ -89,7 +91,7 @@ namespace ledger {
 
             void emitEventsNow();
 
-            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
+            void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback) override ;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
         protected:
