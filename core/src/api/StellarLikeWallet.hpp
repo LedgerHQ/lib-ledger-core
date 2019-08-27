@@ -3,6 +3,9 @@
 
 #ifndef DJINNI_GENERATED_STELLARLIKEWALLET_HPP
 #define DJINNI_GENERATED_STELLARLIKEWALLET_HPP
+
+#include <memory>
+#include <string>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
        #include <libcore_export.h>
@@ -13,9 +16,13 @@
 
 namespace ledger { namespace core { namespace api {
 
+class BoolCallback;
+
 class LIBCORE_EXPORT StellarLikeWallet {
 public:
     virtual ~StellarLikeWallet() {}
+
+    virtual void exists(const std::string & address, const std::shared_ptr<BoolCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

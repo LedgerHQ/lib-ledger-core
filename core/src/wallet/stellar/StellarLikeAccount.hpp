@@ -76,6 +76,13 @@ namespace ledger {
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
+            void exists(const std::shared_ptr<api::BoolCallback> &callback) override;
+            Future<bool> exists();
+            std::shared_ptr<api::StellarLikeTransactionBuilder> buildTransaction() override;
+
+            void broadcastRawTransaction(const std::vector<uint8_t> &tx,
+                                         const std::shared_ptr<api::StringCallback> &callback) override;
+
         protected:
             std::shared_ptr<StellarLikeAccount> getSelf();
 

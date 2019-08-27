@@ -76,7 +76,9 @@ namespace ledger {
             auto address = account->getKeychain()->getAddress()->toString();
             auto self = shared_from_this();
             _explorer->getAccount(address).onComplete(account->getContext(), [=] (const Try<std::shared_ptr<stellar::Account>>& acc) {
-                if (acc.isFailure())
+                if (acc.isFailure() && acc.getFailure().getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND) {
+                    self->endSynchronization();
+                } else if (acc.isFailure())
                    self->failSynchronization(acc.getFailure());
                 else {
                     soci::session sql(_database->getPool());

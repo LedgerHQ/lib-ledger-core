@@ -11,11 +11,14 @@ StellarLikeBlock = interface +c {
 }
 
 StellarLikeTransaction = interface +c {
-
+    toRawTransaction(): binary;
 }
 
 StellarLikeTransactionBuilder = interface +c {
-
+    addNativePayment(address: string, amount: Amount): StellarLikeTransactionBuilder;
+    addCreateAccount(address: string, amount: Amount): StellarLikeTransactionBuilder;
+    setBaseFee(baseFee: Amount): StellarLikeTransactionBuilder;
+    build(callback: Callback<StellarLikeTransaction>);
 }
 
 StellarLikeAsset = record {
@@ -39,9 +42,19 @@ StellarLikeOperation = interface +c {
 }
 
 StellarLikeAccount = interface +c {
+    # Checks if the current account exists on the stellar Network. If it doesn't the account needs to be activated by
+    # sending an account creation operation with an amount of at least the base reserve.
+    # @return Callback with a boolean indicating if the account exists on the Stellar network or not.
+    exists(callback: Callback<bool>);
 
+    # Create a new transaction builder to create new transaction
+    # @return The transaction builder
+    buildTransaction(): StellarLikeTransactionBuilder;
+
+    # Broadcast the given raw transaction to the network.
+    broadcastRawTransaction(tx: binary, callback: Callback<string>);
 }
 
 StellarLikeWallet = interface +c {
-
+    exists(address: string, callback: Callback<bool>);
 }

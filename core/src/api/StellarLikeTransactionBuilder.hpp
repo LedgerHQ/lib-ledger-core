@@ -3,6 +3,9 @@
 
 #ifndef DJINNI_GENERATED_STELLARLIKETRANSACTIONBUILDER_HPP
 #define DJINNI_GENERATED_STELLARLIKETRANSACTIONBUILDER_HPP
+
+#include <memory>
+#include <string>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
        #include <libcore_export.h>
@@ -13,9 +16,20 @@
 
 namespace ledger { namespace core { namespace api {
 
+class Amount;
+class StellarLikeTransactionCallback;
+
 class LIBCORE_EXPORT StellarLikeTransactionBuilder {
 public:
     virtual ~StellarLikeTransactionBuilder() {}
+
+    virtual std::shared_ptr<StellarLikeTransactionBuilder> addNativePayment(const std::string & address, const std::shared_ptr<Amount> & amount) = 0;
+
+    virtual std::shared_ptr<StellarLikeTransactionBuilder> addCreateAccount(const std::string & address, const std::shared_ptr<Amount> & amount) = 0;
+
+    virtual std::shared_ptr<StellarLikeTransactionBuilder> setBaseFee(const std::shared_ptr<Amount> & baseFee) = 0;
+
+    virtual void build(const std::shared_ptr<StellarLikeTransactionCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

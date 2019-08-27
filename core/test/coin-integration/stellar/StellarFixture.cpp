@@ -49,6 +49,14 @@ api::AccountCreationInfo StellarFixture::defaultAccount() const {
     return accountInfo("a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f");
 }
 
+api::AccountCreationInfo StellarFixture::emptyAccount() const {
+    StellarLikeAddress addr(
+            "GCDCR6S7JAYWA3DCD2QOQX7MSHX5BZT2HUFYEMK4R76NXFQ7QQA4TF7W",
+            STELLAR,
+            Option<std::string>::NONE
+            );
+    return accountInfo(hex::toString(addr.toPublicKey()));
+}
 
 
 std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {

@@ -76,6 +76,9 @@ namespace ledger {
 
             Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
+            void exists(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) override;
+            Future<bool> exists(const std::string& address);
+
         protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;

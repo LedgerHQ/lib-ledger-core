@@ -40,6 +40,7 @@
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <set>
 #include <wallet/common/BalanceHistory.hpp>
+#include <api/BoolCallback.hpp>
 
 using namespace ledger::core;
 
@@ -320,6 +321,30 @@ namespace ledger {
             query->registerAccount(shared_from_this());
             return query;
         }
+
+        void StellarLikeAccount::exists(const std::shared_ptr<api::BoolCallback> &callback) {
+            exists().onComplete(getContext(), [=] (const Try<bool>& result) {
+                if (result.isFailure()) {
+                    callback->onCallback(optional<bool>(), optional<api::Error>(api::Error(result.getFailure().getErrorCode(), result.getFailure().getMessage())));
+                } else {
+                    callback->onCallback(optional<bool>(result.getValue()), optional<api::Error>());
+                }
+            });
+        }
+
+        std::shared_ptr<api::StellarLikeTransactionBuilder> StellarLikeAccount::buildTransaction() {
+            return nullptr;
+        }
+
+        void StellarLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &tx,
+                                                         const std::shared_ptr<api::StringCallback> &callback) {
+
+        }
+
+        Future<bool> StellarLikeAccount::exists() {
+            return  std::dynamic_pointer_cast<StellarLikeWallet>(getWallet())->exists(_params.keychain->getAddress()->toString());
+        }
+
 
     }
 }

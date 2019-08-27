@@ -38,7 +38,8 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
     auto info = ::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
-
+    auto exists = ::wait(account->exists());
+    EXPECT_TRUE(exists);
     auto bus = account->synchronize();
     bus->subscribe(dispatcher->getMainExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
@@ -79,3 +80,28 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     EXPECT_EQ(second->getOperationType(), api::OperationType::SEND);
 }
 
+TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
+    auto pool = newPool();
+    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto account = newAccount(wallet, 0, emptyAccount());
+
+    auto exists = ::wait(account->exists());
+    EXPECT_FALSE(exists);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
+                   make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                       fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                           return;
+                       EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                       EXPECT_EQ(event->getCode(),
+                                 api::EventCode::SYNCHRONIZATION_SUCCEED);
+                       dispatcher->stop();
+                   }));
+    dispatcher->waitUntilStopped();
+    auto balance = ::wait(account->getBalance());
+    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) == 0);
+    EXPECT_TRUE(operations.size() == 0);
+}

@@ -36,6 +36,15 @@
 
 namespace ledger {
     namespace core {
+        struct HorizonError {
+            uint32_t statusCode;
+            std::string statusMessage;
+            std::string errorTitle;
+            std::string errorDetails;
+
+            HorizonError() : statusCode(0) {};
+        };
+
         template <class ResultType, class Parser, bool HasEmbedded = true>
         class HorizonApiParser {
         public:
@@ -43,16 +52,13 @@ namespace ledger {
             using Response = Either<Exception, std::shared_ptr<ResultType>>;
 
             HorizonApiParser() : _contentMatcher("/_embedded") {
-                _statusCode = 0;
                 _result = std::make_shared<ResultType>();
                 _parser.init(_result.get());
                 _parser.setPathView(_path.view(HasEmbedded ? 2 : 0));
             }
 
             HorizonApiParser(const HorizonApiParser<ResultType, Parser, HasEmbedded>& cpy) :
-                _statusCode(cpy._statusCode),
-                _errorTitle(cpy._errorTitle),
-                _errorDetails(cpy._errorTitle),
+                _error(cpy._error),
                 _result(cpy._result),
                 _path(cpy._path),
                 _contentMatcher("/_embedded") {
@@ -122,9 +128,9 @@ namespace ledger {
                 _path.value();
 
                 if (_path.view(0).match(titlePath)) {
-                    _errorTitle = std::string(str, length);
+                    _error.errorTitle = std::string(str, length);
                 } else if (_path.view(0).match(detailsPath)) {
-                    _errorDetails = std::string(str, length);
+                    _error.errorDetails = std::string(str, length);
                 }
                 return delegate([&] () {
                     _parser.String(str, length, copy);
@@ -172,7 +178,8 @@ namespace ledger {
 
             Either<Exception, std::shared_ptr<ResultType>> build() {
                 if (isFailure()) {
-                    auto ex = make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", _statusCode, _errorTitle, _errorDetails);
+                    auto error = std::make_shared<HorizonError>(_error);
+                    auto ex = make_exception(api::ErrorCode::API_ERROR, std::static_pointer_cast<void>(error), "{} - {}: {}", _error.statusCode, _error.errorTitle, _error.errorDetails);
                     return Either<Exception, std::shared_ptr<ResultType>>(ex);
                 } else {
                     return Either<Exception, std::shared_ptr<ResultType>>(_result);
@@ -180,15 +187,17 @@ namespace ledger {
             };
 
             void attach(const std::shared_ptr<api::HttpUrlConnection>& connection) {
-                _statusCode = (uint32_t) connection->getStatusCode();
+                _error.statusCode = (uint32_t) connection->getStatusCode();
+                _error.statusMessage = connection->getStatusText();
             }
 
             void attach(const std::string& statusText, uint32_t statusCode) {
-                _statusCode = statusCode;
+                _error.statusCode = statusCode;
+                _error.statusMessage = statusText;
             }
 
             inline bool isFailure() const {
-                return _statusCode < 200 || _statusCode >= 400;
+                return _error.statusCode < 200 || _error.statusCode >= 400;
             }
 
             inline bool continueParsing() const {
@@ -209,9 +218,7 @@ namespace ledger {
             Parser _parser;
             JsonParserPathMatcher _contentMatcher;
             std::shared_ptr<ResultType> _result;
-            uint32_t _statusCode;
-            std::string _errorTitle;
-            std::string _errorDetails;
+            HorizonError _error;
             JsonParserPath _path;
             Option<Exception> _exception;
         };

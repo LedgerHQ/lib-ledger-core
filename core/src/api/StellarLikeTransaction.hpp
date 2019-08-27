@@ -3,6 +3,9 @@
 
 #ifndef DJINNI_GENERATED_STELLARLIKETRANSACTION_HPP
 #define DJINNI_GENERATED_STELLARLIKETRANSACTION_HPP
+
+#include <cstdint>
+#include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
        #include <libcore_export.h>
@@ -16,6 +19,8 @@ namespace ledger { namespace core { namespace api {
 class LIBCORE_EXPORT StellarLikeTransaction {
 public:
     virtual ~StellarLikeTransaction() {}
+
+    virtual std::vector<uint8_t> toRawTransaction() = 0;
 };
 
 } } }  // namespace ledger::core::api

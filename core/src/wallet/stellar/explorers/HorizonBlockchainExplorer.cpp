@@ -39,6 +39,7 @@
 #include "horizon/HorizonTransactionParser.hpp"
 #include "horizon/HorizonOperationParser.hpp"
 #include "horizon/HorizonFeeStatsParser.hpp"
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -127,6 +128,13 @@ namespace ledger {
             return http->GET(fmt::format("/accounts/{}", accountId))
                     .template json<AccountParser::Result, Exception>(AccountParser())
                     .map<std::shared_ptr<stellar::Account>>(getContext(), [] (const AccountParser::Response& result) -> std::shared_ptr<stellar::Account> {
+                        if (result.isLeft() && result.getLeft().getErrorCode() == api::ErrorCode::API_ERROR &&
+                            result.getLeft().getUserData().nonEmpty()) {
+                            auto error = std::static_pointer_cast<HorizonError>(result.getLeft().getUserData().getValue());
+                            if (error->statusCode == 404) {
+                                throw Exception(api::ErrorCode::ACCOUNT_NOT_FOUND, error->errorDetails);
+                            }
+                        }
                         if (result.isLeft()) {
                             throw result.getLeft();
                         }

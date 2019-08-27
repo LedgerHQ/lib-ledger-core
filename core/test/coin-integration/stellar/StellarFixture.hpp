@@ -43,6 +43,7 @@ public:
 
     api::AccountCreationInfo accountInfo(const std::string& pubKey) const;
     api::AccountCreationInfo defaultAccount() const;
+    api::AccountCreationInfo emptyAccount() const;
 
     api::Currency getCurrency() const;
 };

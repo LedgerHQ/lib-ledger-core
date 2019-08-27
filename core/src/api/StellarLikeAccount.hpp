@@ -3,6 +3,10 @@
 
 #ifndef DJINNI_GENERATED_STELLARLIKEACCOUNT_HPP
 #define DJINNI_GENERATED_STELLARLIKEACCOUNT_HPP
+
+#include <cstdint>
+#include <memory>
+#include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
        #include <libcore_export.h>
@@ -13,9 +17,29 @@
 
 namespace ledger { namespace core { namespace api {
 
+class BoolCallback;
+class StellarLikeTransactionBuilder;
+class StringCallback;
+
 class LIBCORE_EXPORT StellarLikeAccount {
 public:
     virtual ~StellarLikeAccount() {}
+
+    /**
+     * Checks if the current account exists on the stellar Network. If it doesn't the account needs to be activated by
+     * sending an account creation operation with an amount of at least the base reserve.
+     * @return Callback with a boolean indicating if the account exists on the Stellar network or not.
+     */
+    virtual void exists(const std::shared_ptr<BoolCallback> & callback) = 0;
+
+    /**
+     * Create a new transaction builder to create new transaction
+     * @return The transaction builder
+     */
+    virtual std::shared_ptr<StellarLikeTransactionBuilder> buildTransaction() = 0;
+
+    /** Broadcast the given raw transaction to the network. */
+    virtual void broadcastRawTransaction(const std::vector<uint8_t> & tx, const std::shared_ptr<StringCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

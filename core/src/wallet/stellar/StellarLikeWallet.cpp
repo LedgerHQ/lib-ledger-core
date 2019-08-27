@@ -36,6 +36,7 @@
 #include "synchronizers/StellarLikeBlockchainExplorerAccountSynchronizer.hpp"
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include "database/StellarLikeAccountDatabaseHelper.hpp"
+#include <api/BoolCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -139,6 +140,28 @@ namespace ledger {
 
         std::shared_ptr<StellarLikeWallet> StellarLikeWallet::getSelf() {
             return std::dynamic_pointer_cast<StellarLikeWallet>(shared_from_this());
+        }
+
+        void StellarLikeWallet::exists(const std::string &address, const std::shared_ptr<api::BoolCallback> &callback) {
+            exists(address).onComplete(getContext(), [=] (const Try<bool>& result) {
+                if (result.isFailure()) {
+                    callback->onCallback(optional<bool>(), optional<api::Error>(api::Error(result.getFailure().getErrorCode(), result.getFailure().getMessage())));
+                } else {
+                    callback->onCallback(optional<bool>(result.getValue()), optional<api::Error>());
+                }
+            });
+        }
+
+        Future<bool> StellarLikeWallet::exists(const std::string &address) {
+            auto explorer = _params.blockchainExplorer;
+            StellarLikeAddress addr(address, getCurrency(), Option<std::string>::NONE);
+            return explorer->getAccount(address).map<bool>(getContext(), [] (const auto& result) {
+                return true;
+            }).recover(getContext(), [] (const Exception& ex) {
+                if (ex.getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND)
+                    return false;
+                throw ex;
+            });
         }
 
     }
