@@ -36,11 +36,8 @@
 #include <core/async/DedicatedContext.hpp>
 #include <core/database/query/QueryBuilder.h>
 #include <core/database/DatabaseSessionPool.hpp>
-#include <core/Operation.h>
-#include "../common/api_impl/OperationApi.h"
-#include "AbstractAccount.hpp"
+#include <core/operation/Operation.h>
 #include <unordered_map>
-#include "api_impl/OperationApi.h"
 
 namespace ledger {
     namespace core {
@@ -62,7 +59,7 @@ namespace ledger {
             std::shared_ptr<api::OperationQuery> complete() override;
             std::shared_ptr<api::OperationQuery> partial() override;
 
-            void execute(const std::shared_ptr<api::OperationListCallback> &callback) override;
+            void execute(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Operation>>>, std::experimental::optional<api::Error>)> & callback) override;
             Future<std::vector<std::shared_ptr<api::Operation>>> execute();
 
             std::shared_ptr<OperationQuery> registerAccount(const  std::shared_ptr<AbstractAccount>& account);

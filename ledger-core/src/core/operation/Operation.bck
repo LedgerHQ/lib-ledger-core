@@ -31,7 +31,7 @@
 
 #include <core/operation/Operation.h>
 #include <core/wallet/Amount.h>
-// #include "../AbstractAccount.hpp"
+#include <core/wallet/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {

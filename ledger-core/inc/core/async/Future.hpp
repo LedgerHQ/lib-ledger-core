@@ -253,10 +253,20 @@ namespace ledger {
                 });
             };
 
-            void callback(const Context& context, const std::function<void(const std::experimental::optional<T>&, std::experimental::optional<api::Error>)> & cb) {
+            void callback(const Context& context, const std::function<void(std::experimental::optional<T>, std::experimental::optional<api::Error>)> & cb) {
                 onComplete(context, [cb] (const Try<T>& result) {
                     if (result.isSuccess()) {
                         cb(result.toOption().toOptional(), Option<api::Error>().toOptional());
+                    } else {
+                        cb(nullptr, Option<api::Error>(result.getFailure().toApiError()).toOptional());
+                    }
+                });
+            };
+
+            void callback(const Context& context, const std::function<void(T, std::experimental::optional<api::Error>)> & cb) {
+                onComplete(context, [cb] (const Try<T>& result) {
+                    if (result.isSuccess()) {
+                        cb(result.getValue(), Option<api::Error>().toOptional());
                     } else {
                         cb(nullptr, Option<api::Error>(result.getFailure().toApiError()).toOptional());
                     }
