@@ -26,15 +26,15 @@
  * SOFTWARE.
  *
  */
-#include <core/wallet/AccountDatabaseHelper.hpp>
 
-#include <core/operation/OperationQuery.h>
+//#include <core/operation/OperationQuery.h>
+#include <core/debug/LoggerApi.hpp>
+#include <core/utils/Exception.hpp>
+#include <core/api/ErrorCode.hpp>
+#include <core/events/Event.hpp>
 #include <core/wallet/AbstractAccount.hpp>
-#include <api/AmountCallback.hpp>
-#include <utils/Exception.hpp>
-#include <api/ErrorCode.hpp>
-#include <events/Event.hpp>
-#include <wallet/common/database/BlockDatabaseHelper.h>
+#include <core/wallet/BlockDatabaseHelper.h>
+#include <core/wallet/AccountDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -46,13 +46,15 @@ namespace ledger {
            _services(services),
            _index(index),
            _uid(AccountDatabaseHelper::createAccountUid(walletUid, index)),
-           _logger(services->logger())
+           _logger(services->logger()),
            _internalPreferences(services
                ->getInternalPreferences()
-               ->getSubPreferences(fmt::format("account_{}", index))),
+               ->getSubPreferences(fmt::format("account_{}", index))
+           ),
            _externalPreferences(services
                ->getExternalPreferences()
-               ->getSubPreferences(fmt::format("account_{}", index))),
+               ->getSubPreferences(fmt::format("account_{}", index))
+           ),
            _loggerApi(std::make_shared<LoggerApi>(_logger)),
            _mainExecutionContext(services->getDispatcher()->getMainExecutionContext()) {
            _publisher = std::make_shared<EventPublisher>(getContext());
@@ -94,14 +96,14 @@ namespace ledger {
             return _mainExecutionContext;
         }
 
-        std::shared_ptr<api::OperationQuery> AbstractAccount::queryOperations() {
-            return std::make_shared<OperationQuery>(
-                    api::QueryFilter::accountEq(getAccountUid()),
-                    _services->getDatabase(),
-                    getContext(),
-                    getMainExecutionContext()
-            );
-        }
+        //std::shared_ptr<api::OperationQuery> AbstractAccount::queryOperations() {
+        //    return std::make_shared<OperationQuery>(
+        //            api::QueryFilter::accountEq(getAccountUid()),
+        //            _services->getDatabase(),
+        //            getContext(),
+        //            getMainExecutionContext()
+        //    );
+        //}
 
         std::shared_ptr<Preferences> AbstractAccount::getInternalPreferences() const {
             return _internalPreferences;
@@ -120,9 +122,9 @@ namespace ledger {
         }
 
         void AbstractAccount::getBalanceHistory(
-            std::string & start,
+            const std::string & start,
             const std::string & end,
-            TimePeriod period,
+            api::TimePeriod period,
             const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)> & callback
         ) {
             getBalanceHistory(start, end, period).callback(getMainExecutionContext(), callback);
@@ -132,19 +134,19 @@ namespace ledger {
             return _publisher->getEventBus();
         }
 
-        void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
-            auto payload = DynamicObject::newInstance();
-            payload->putString(api::Account::EV_NEW_OP_UID, operation.uid);
-            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
-            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
-            auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
-            pushEvent(event);
-        }
+        //void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
+        //    auto payload = DynamicObject::newInstance();
+        //    payload->putString(api::Account::EV_NEW_OP_UID, operation.uid);
+        //    payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+        //    payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
+        //    auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
+        //    pushEvent(event);
+        //}
 
-        void AbstractAccount::emitNewBlockEvent(const Block &block) {
+        void AbstractAccount::emitNewBlockEvent(const api::Block &block) {
             auto payload = DynamicObject::newInstance();
             payload->putLong(api::Account::EV_NEW_BLOCK_HEIGHT, block.height);
-            payload->putString(api::Account::EV_NEW_BLOCK_HASH, block.hash);
+            payload->putString(api::Account::EV_NEW_BLOCK_HASH, block.blockHash);
             payload->putString(api::Account::EV_NEW_BLOCK_CURRENCY_NAME, block.currencyName);
             auto event = Event::newInstance(api::EventCode::NEW_BLOCK, payload);
             pushEvent(event);

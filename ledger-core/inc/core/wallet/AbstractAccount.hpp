@@ -39,7 +39,7 @@
 #include <core/async/Future.hpp>
 #include <core/events/EventPublisher.hpp>
 #include <core/wallet/Amount.h>
-#include <core/wallet/OperationQuery.h>
+//#include <core/wallet/OperationQuery.h>
 
 namespace ledger {
     namespace core {
@@ -76,7 +76,7 @@ namespace ledger {
             void getBalanceHistory(
                 const std::string & start,
                 const std::string & end,
-                TimePeriod period,
+                api::TimePeriod period,
                 const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)> & callback
             ) override;
             virtual Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(
@@ -85,7 +85,7 @@ namespace ledger {
                 api::TimePeriod precision
             ) = 0;
 
-            std::shared_ptr<api::OperationQuery> queryOperations() override;
+            //std::shared_ptr<api::OperationQuery> queryOperations() override;
 
             std::shared_ptr<api::EventBus> getEventBus() override;
 
@@ -95,8 +95,8 @@ namespace ledger {
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
         protected:
-            void emitNewOperationEvent(const Operation& operation);
-            void emitNewBlockEvent(const Block& block);
+            //void emitNewOperationEvent(const Operation& operation);
+            void emitNewBlockEvent(const api::Block& block);
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
         private:
