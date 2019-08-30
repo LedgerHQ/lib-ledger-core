@@ -19,6 +19,7 @@
   * [The Services type](#the-services-type)
   * [The AbstractAccount (revisited) type](#the-abstractaccount-revisited-type)
   * [Implementing RippleLikeAccount](#implementing-ripplelikeaccount)
+  * [Reversing analysis from bottom-up to top-down](#reversing-analysis-from-bottom-up-to-top-down)
 * [Rationale](#rationale)
 * [Related work](#related-work)
   * [djinni modification](#djinni-modification)
@@ -162,6 +163,10 @@ After trying to move things around, I quickly hit a reality: if I were to change
 type, I was going to need to change pretty much 98% of our code, because wallets, accounts,
 synchronizers, explorers, currencies and databases rely on it.
 
+`OperationQuery` is now a bit special: instead of branching on the type of wallet (Bitcoin,
+Ethereum, etc.) it now defines a virtual pure method (`inflateCompleteTransaction`) that must be
+implemented by coin-code. It’s as simple as that.
+
 ## The Services type
 
 The idea hit me as a joke at first but I eventually got tempted to adopt the idea. The idea was to
@@ -223,6 +228,11 @@ Implementing `RippleLikeAccount` is blocked by, recursively:
   - `RippleLikeAccountSynchronizer`.
   - `RippleLikeKeychain`.
   - Various internals, such as database support, network parameters, etc.
+
+## Reversing analysis from bottom-up to top-down
+
+Currently, I’ve tried to go from transactions, operations etc. up to account and wallet. Maybe we
+can now go the other way around and see if we can abstract wallets enough.
 
 # Rationale
 > Should we go for it? Drop it?
