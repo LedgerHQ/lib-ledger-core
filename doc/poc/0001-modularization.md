@@ -20,7 +20,6 @@
   * [The AbstractAccount (revisited) type](#the-abstractaccount-revisited-type)
   * [Implementing RippleLikeAccount](#implementing-ripplelikeaccount)
 * [Rationale](#rationale)
-  * [Quick feedback](#quick-feedback)
 * [Related work](#related-work)
   * [djinni modification](#djinni-modification)
   * [Ubinder](#ubinder)
@@ -34,14 +33,27 @@ Coin integration has been a big topic in 2019. In order to ease integrating new 
 library has to be split into smaller chunks in order to make it more maintainable and flexible.
 Especially, but not limited to:
 
-  - Being able to make a breaking change on a coin shouldn’t imply a new release of the whole
-    library but only the coin sub-module.
-  - Adding a new coin should have zero impact on existing code — exception made for _dynamic
-    dispatch_ code, such as code that lists every available coin, for instance.
-  - The most abstract unit of code must not depend on any implementation nor coin, but must provide
-    hints and helpers to implement the coin sub-modules quick and safely.
-  - Finally, we want to be able to make it easy for other teams (Live, Vault, Backend) to interface
-    with our system and _pick what they want_ instead of relying on a big monolith.
+  1. Better _major releases_: being able to make a breaking change on a coin shouldn’t imply a new
+    release of the whole library but only the coin sub-module.
+  2. Better _minor releases_: adding a new coin should have zero impact on existing code — exception
+    made for _dynamic dispatch_ code, such as code that lists every available coin, for instance.
+  3. Better _abstraction and interface_: the most abstract unit of code must not depend on any
+    implementation nor coin, but must provide hints and helpers to implement the coin sub-modules
+    quick and safely.
+  4. Better _interoperability_: finally, we want to be able to make it easy for other teams (Live,
+    Vault, Backend) to interface with our system and _pick what they want_ instead of relying on a
+    big monolith.
+
+Just for the record, adding support of a new coin implies adding **hundreds of new files**,
+modifying some of the abstract part of the library and introducing several **thousands of lines of
+code**.
+
+![](../img/tezos_integ_gh.png)
+
+Finally, it is important to understand that this Proof of Concept is about implementation rather
+than interface. Even if, as you will see through this document, interfaces will change, it is a
+consequence of the internal redesigning. Easing interfacing is a completely different and
+complementary topic. See the [Related work](#related-work) section for further details.
 
 ## TL;DR
 
@@ -61,14 +73,21 @@ project. For instance, the `ledger-core-ripple` project provides support for the
 All libraries (base and coins) have three main parts:
 
   - IDLs, which are used to define the public interface that can be shared on foreign languages,
-    such as JavaScript, Scala / JNI, React Native, Rust, etc.
-  - C++ interface, which is generated based on the IDLs.
-  - C++ implementation, implementing the various functionalities.
+    such as _JavaScript_, _Scala_ / _JNI_, _React Native_, _Rust_, etc.
+  - C++ interface, which is generated based on the IDLs and used internally by the Core library’s
+    implementation.
+  - The actual C++ implementation, implementing the various functionalities and coin features.
 
 Adding a new coin implies creating a new project `ledger-core-<coin_name>`, provide a set of
-IDLs and implement the C++ code to support the required features.
+IDLs and implement the C++ code to support the required features. That library can then be compiled
+and exposed as e.g. a _npm_ package or a _Scala_ JAR.
 
 ## Adding a new coin project
+
+With the current codebase, we don’t have any means to create or add new coins: you’re on your own.
+This is not a problem for people who have been there for a while but for people not used to adding
+coins, external contributions or newcomers, it’s overwhelming as they don’t know exactly what they
+have to do.
 
 With the `lc` script, it’s quite easy:
 
@@ -81,7 +100,8 @@ It creates everything needed to get started, among:
   - The files hierarchy.
   - The database migrations system.
   - The build system files (CMake).
-  - The connection between `ledger-core-ripple`’s IDLs with `ledger-core`’s one.
+  - The connection between `ledger-core-ripple`’s IDLs with `ledger-core`’s one, ensuring a complete
+    and valid dependency relationship.
 
 ## IDLs
 
@@ -191,16 +211,34 @@ database, because lots of code depends on it. The typical workflow I had:
 
 ## Implementing RippleLikeAccount
 
-As soon as the above points are resolved, implementing is just a matter of moving code around.
+Implementing `RippleLikeAccount` is blocked by, recursively:
+
+  - `AbstractAccount`, which must be available.
+    - `OperationQuery`, which is exposed via `getOperationQuery`. An `OperationQuery` is an ORM-like
+      structure allowing to perform smart computations on `Operation`.
+    - `Operation`, which is a more user-friendly form of a _blockchain transaction_.
+  - `AbstractWallet`.
+  - `RippleLikeBlockchainExplorer`.
+  - `RippleLikeBlockchainObserver`.
+  - `RippleLikeAccountSynchronizer`.
+  - `RippleLikeKeychain`.
+  - Various internals, such as database support, network parameters, etc.
 
 # Rationale
 > Should we go for it? Drop it?
 
-## Quick feedback
-
 The first feedback is that such a change was not that trivial. Lots of coupled parts of the code
-had to be taken out, moved and refactored. `WalletPool`, `Currency`, `Wallet` and
-`NetworkParameters` are heat points and we need to keep them in mind.
+had to be taken out, moved and refactored. `WalletPool`, `Currency`, `Wallet`, `Operation`,
+`OperationQuery` and `NetworkParameters` are heat points and we need to keep them in mind.
+
+However, it is quite obvious that we need that change to be able to grow the library internally.
+Adding a new coin shouldn’t imply modifying dozens of not hundreds of files, spreading thousands of
+lines of code.
+
+Once the Ripple coin is completely done, the abstract library will have changed quite a lot in
+terms of interface, easing integration of all the other remaining coins. The document aforementioned
+in the [TL;DR](#tldr) section will provide everything for people (us, the Core Team, other Ledger
+teams’ members but also external contributors) to get starting and add new coins.
 
 # Related work
 > What else has been done and is similar?
@@ -239,7 +277,7 @@ modularization process, because we want a smooth and easy learning curve and mig
 doesn’t work with IDLs anymore but with a _wrapper_ and is heavily driven by serialization formats.
 Instead of exposing objects, methods and functions in the foreign’s native representations, those
 are exposed as blobs that must be serialized and are passed through a messaging channel (that
-implements a _request-response_ pattern as wall as a _notification_ system).
+implements a _request-response_ pattern as well as a _notification_ system).
 
 When we need to converge to [Ubinder], we will have to change a little bit the internal working of
 the [lc] script (not to generate IDLs files anymore) but generate whatever serialization suits us
