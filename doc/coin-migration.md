@@ -22,6 +22,7 @@ For the purpose of this document, we will consider the migration of a coin calle
   * [Configure and compile your library](#configure-and-compile-your-library)
 * [Migrating the database system](#migrating-the-database-system)
 * [Wallet pool migration](#wallet-pool-migration)
+* [Operation queries migration](#operation-queries-migration)
 
 <!-- vim-markdown-toc -->
 
@@ -202,5 +203,14 @@ Services = WalletPool - wallets - factories - currencies
 
 So it’s basically the same thing as an old `WalletPool` but removed from the wallets, factories and
 currencies objects.
+
+## Operation queries migration
+
+The `OperationQuery` type is now a pure abstract class because it’s children must implement the
+`OperationQuery::inflateCompleteTransaction`. The content of that function can be taken out the
+legacy `OperationQuery::inflateCompleteTransaction`’s `switch` case, depending on the coin you’re
+implementing. You will have to read some more code (for instance, for Bitcoin, the
+`OperationQuery::inflateBitcoinLikeTransaction`) in order to implement the pure virtual method in
+the coin specific code.
 
 [soci]: https://github.com/SOCI/soci
