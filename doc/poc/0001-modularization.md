@@ -1,9 +1,10 @@
 - Proof of Concept: `0001-modularization`.
 - State: `draft`.
+- Date Created: 2019/08/30
+- Date Updated: 2019/08/30
 - Author: [Dimitri Sabadie](https://github.com/phaazon)
 - Summary: a small PoC to showcase how the core library can be segregated and modularized by taking
   out the Ripple code and moving it into its own project.
-
 
 <!-- vim-markdown-toc GFM -->
 
