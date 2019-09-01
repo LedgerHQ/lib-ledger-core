@@ -210,32 +210,37 @@ namespace ledger {
             return "";
         }
 
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getHelper(const std::string &url,
+                                                                                   const std::string &field,
+                                                                                   const std::unordered_map<std::string, std::string> &params) {
+            bool parseNumbersAsString = true;
+            auto networkId = getNetworkParameters().Identifier;
+
+            std::string p, separator = "?";
+            for (auto &param : params) {
+                p += fmt::format("{}{}={}", separator, param.first, param.second);
+                separator = "&";
+            }
+
+            return _http->GET(url + p, std::unordered_map<std::string, std::string>()).json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [field, networkId] (const HttpRequest::JsonResult& result) {
+                auto& json = *std::get<1>(result);
+                if (!json.IsArray() || json.Size() == 0 || json[0].IsString()) {
+                    throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
+                }
+                return std::make_shared<BigInt>(json[0].GetString());
+            });
+        }
+
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
-            // TODO: replace with final call
-            // return getHelper(fmt::format("/contract/{}/estimate-gas-limit", getExplorerVersion(), getNetworkParameters().Identifier, address), "estimated_gas_limit");
-            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("10300"));
+            return getHelper(fmt::format("/{}/estimate_gas", getExplorerVersion()), "estimated_gas_limit", std::unordered_map<std::string, std::string>{{"token", address}});
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
-            // TODO: replace with final call
-            // return getHelper(fmt::format("/contract/{}/storage", getExplorerVersion(), getNetworkParameters().Identifier, address), "storage");
-            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("300"));
+            return getHelper(fmt::format("/{}/estimate_storage", getExplorerVersion()), "storage", std::unordered_map<std::string, std::string>{{"token", address}});
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
-            // TODO: replace with final call
-            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("0"));
-            /*
-            bool parseNumbersAsString = true;
-            return _http->GET(fmt::format("/contract/{}/counter", address))
-                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [address] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
-                        if (!json.IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get counter for {}", address);
-                        }
-                        return std::make_shared<BigInt>(json.GetString());
-                    });
-            */
+            return getHelper(fmt::format("/{}/counter", getExplorerVersion()), "counter", std::unordered_map<std::string, std::string>{{"token", address}});
         }
     }
 }
