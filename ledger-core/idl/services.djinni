@@ -1,0 +1,125 @@
+@import "database.djinni"
+@import "dynamic.djinni"
+@import "events.djinni"
+@import "error.djinni"
+@import "http_client.djinni"
+@import "logger.djinni"
+@import "math/random.djinni"
+@import "path_resolver.djinni"
+@import "preferences.djinni"
+@import "thread_dispatcher.djinni"
+@import "websocket_client.djinni"
+
+# Class respresenting a set of services.
+Services = interface +c {
+    # Create a new instance of Services object.
+    # @param name, string, name of the Services object
+    # @param password, string, password to lock (empty string means no password)
+    # @param http, HttpClient object, http client used for all calls made by applications
+    # @param webSocketClient, WebSocketClient object, socket through which applications observe and get notified (explorer, DBs ...)
+    # @param pathResolver, PathResolver Object, resolve paths to logs, databases, preferences ...
+    # @param logPrinter, LogPrinter object, used to dump/log for debug purpose
+    # @param dispatcher, ThreadDispatcher object, responsable of dispatching task through available threads
+    # @param rng, RandomNumberGenerator object, needed for generating random numbers (for seeds, salts ...)
+    # @param backend, DatabseBackend object, DB in which applications store all required infos (created wallets, their options, their accounts ...)
+    # @param configuration, DynamicObject object, desired configuration
+    # @return Services object, instance of Services
+    static newInstance(
+        name: string,
+        password: string,
+        httpClient: HttpClient,
+        webSocketClient: WebSocketClient,
+        pathResolver: PathResolver,
+        logPrinter: LogPrinter,
+        dispatcher: ThreadDispatcher,
+        rng: RandomNumberGenerator,
+        backend: DatabaseBackend,
+        configuration: DynamicObject
+    ): Services;
+
+    # Return used logger to dump logs in defined log path by PathResolver.
+    # @return Logger object
+    getLogger(): Logger;
+
+    # Return the name of the Services object
+    # @return string
+    getName(): string;
+
+    # Return preferences (deduced from configuration).
+    # @return Preferences object
+    getPreferences(): Preferences;
+
+    # Get event bus (handler).
+    # @param EventBus object
+    getEventBus(): EventBus;
+
+    # Change Database password.
+    #
+    # Allow to change password of database holding all informations about
+    # accounts, wallets, transactions etc. and the preferences.
+    #
+    # WARNING: be careful to have no other instances of Services using
+    # same database / preferences.
+    changePassword(oldPassword: string, newPassword: string, callback: callback2<void, optional<ErrorCode>, optional<Error>>);
+}
+
+# Class representing a services builder.
+ServicesBuilder = interface +c {
+    # Set http client to be used.
+    # @param client, HttpClient
+    # @return ServicesBuilder object, instance with services http client set
+    setHttpClient(client: HttpClient): ServicesBuilder;
+
+    # Set web socket client.
+    # @param client, WebSocketClient object
+    # @reutnr ServicesBuilder object, instance with services web socket client set
+    setWebsocketClient(client: WebSocketClient): ServicesBuilder;
+
+    # Set path resolver that will be used.
+    # @param pathResolver, Pathresolver object
+    # @param ServicesBuilder object, instance with services path resolver set
+    setPathResolver(pathResolver: PathResolver): ServicesBuilder;
+
+    # Set log printer.
+    # @param printer, LogPrinter object
+    # @param ServicesBuilder object, instance with services logger set
+    setLogPrinter(printer: LogPrinter): ServicesBuilder;
+
+    # Set thread dispatcher.
+    # @param dispatcher, ThreadDispatcher object
+    # @param ServicesBuilder object, instance with services thread dispatcher set
+    setThreadDispatcher(dispatcher: ThreadDispatcher): ServicesBuilder;
+
+    # Set name.
+    # @param name, string
+    # @return ServicesBuilder object, instance with services name set
+    setName(name: string): ServicesBuilder;
+
+    # Set password.
+    # @param password, string
+    # @return ServicesBuilder object, with services password set
+    setPassword(password: string): ServicesBuilder;
+
+    # Set random number generator.
+    # @param rng, RandomNumberGenerator object
+    # @return ServicesBuilder object, with services random number generator set
+    setRandomNumberGenerator(rng: RandomNumberGenerator): ServicesBuilder;
+
+    # Set database.
+    # @param backend, DatabaseBackend object
+    # @return ServicesBuilder object, with services database set
+    setDatabaseBackend(backend: DatabaseBackend): ServicesBuilder;
+
+    # Set configuration.
+    # @param configuration, DynamicObject object
+    # @return ServicesBuilder object, with services configuration set
+    setConfiguration(configuration: DynamicObject): ServicesBuilder;
+
+    # Create services.
+    # @param callback, callback returning a Services instance
+    build(listener: callback2<void, optional<Services>, optional<Error>>);
+
+    # Create an instance of the services builder.
+    # @return ServicesBuilder object
+    static createInstance(): ServicesBuilder;
+}
