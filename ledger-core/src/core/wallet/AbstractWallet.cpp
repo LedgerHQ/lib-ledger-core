@@ -38,36 +38,37 @@
 #include <core/debug/LoggerApi.hpp>
 #include <core/wallet/AbstractAccount.hpp>
 #include <core/wallet/AbstractWallet.hpp>
-#include <core/wallet/AccountDatabaseHelper.h>
+#include <core/wallet/AccountDatabaseHelper.hpp>
 #include <core/wallet/BlockDatabaseHelper.h>
+#include <core/wallet/WalletDatabaseEntry.hpp>
 
 namespace ledger {
     namespace core {
         AbstractWallet::AbstractWallet(
             const std::string &walletName,
             const api::Currency &currency,
-            const std::shared_ptr<WalletPool> &pool,
+            const std::shared_ptr<Services> &services,
             const std::shared_ptr<DynamicObject> &configuration,
             const DerivationScheme &derivationScheme
         ): DedicatedContext(
-            pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName))
+            services->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName))
            ),
            _scheme(derivationScheme) {
-            _pool = pool;
+            _services = services;
             _name = walletName;
-            _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);
+            _uid = WalletDatabaseEntry::createWalletUid(services->getName(), _name);
             _currency = currency;
             _configuration = configuration;
-            _externalPreferences = pool->getExternalPreferences()->getSubPreferences(
+            _externalPreferences = services->getExternalPreferences()->getSubPreferences(
                     fmt::format("wallet_{}", walletName));
-            _internalPreferences = pool->getInternalPreferences()->getSubPreferences(
+            _internalPreferences = services->getInternalPreferences()->getSubPreferences(
                     fmt::format("wallet_{}", walletName));
             _publisher = std::make_shared<EventPublisher>(getContext());
-            _logger = pool->logger();
-            _loggerApi = std::make_shared<LoggerApi>(pool->logger());
-            _database = pool->getDatabaseSessionPool();
-            _mainExecutionContext = pool->getDispatcher()->getMainExecutionContext();
-            _logger = pool->logger();
+            _logger = services->logger();
+            _loggerApi = std::make_shared<LoggerApi>(services->logger());
+            _database = services->getDatabaseSessionPool();
+            _mainExecutionContext = services->getDispatcher()->getMainExecutionContext();
+            _logger = services->logger();
         }
 
         std::shared_ptr<api::EventBus> AbstractWallet::getEventBus() {
@@ -227,9 +228,9 @@ namespace ledger {
             newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractWallet::getAccount(int32_t offset,
-            int32_t count,
-            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Account>>>, std::experimental::optional<api::Error>)> & callback
+        void AbstractWallet::getAccount(
+            int32_t index,
+            const std::function<void(std::shared_ptr<api::Account>, std::experimental::optional<api::Error>)> & callback
         ) {
             getAccount(index).callback(getMainExecutionContext(), callback);
         }
@@ -258,7 +259,7 @@ namespace ledger {
         void AbstractWallet::getAccounts(
             int32_t offset,
             int32_t count,
-            const std::shared_ptr<api::AccountListCallback> &callback
+            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Account>>>, std::experimental::optional<api::Error>)> & callback
         ) {
             getAccounts(offset, count).callback(getMainExecutionContext(), callback);
         }
@@ -287,13 +288,6 @@ namespace ledger {
         ) {
             _accounts[account->getIndex()] = account;
             _publisher->relay(account->getEventBus());
-        }
-
-        std::shared_ptr<WalletPool> AbstractWallet::getPool() const {
-            auto pool = _pool.lock();
-            if (!pool)
-                throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Wallet pool was released");
-            return pool;
         }
 
         Future<api::Block> AbstractWallet::getLastBlock() {

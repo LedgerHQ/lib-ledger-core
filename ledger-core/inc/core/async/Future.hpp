@@ -258,7 +258,7 @@ namespace ledger {
                     if (result.isSuccess()) {
                         cb(result.toOption().toOptional(), Option<api::Error>().toOptional());
                     } else {
-                        cb(nullptr, Option<api::Error>(result.getFailure().toApiError()).toOptional());
+                        cb(Option<T>().toOptional(), Option<api::Error>(result.getFailure().toApiError()).toOptional());
                     }
                 });
             };
