@@ -28,11 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SOCI_OPTION_H
-#define LEDGER_CORE_SOCI_OPTION_H
+
+#pragma once
 
 #include <type-conversion-traits.h>
-#include <utils/Option.hpp>
+#include <core/utils/Option.hpp>
+
 namespace soci {
     template <typename T>
     struct type_conversion<ledger::core::Option<T>> {
@@ -60,6 +61,3 @@ namespace soci {
 
     };
 }
-
-
-#endif //LEDGER_CORE_SOCI_OPTION_H
