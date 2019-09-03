@@ -29,7 +29,7 @@
  *
  */
 
-#include <core/operation/Operation.h>
+#include <core/operation/Operation.hpp>
 #include <core/wallet/Amount.h>
 #include <core/wallet/AbstractAccount.hpp>
 
@@ -72,8 +72,8 @@ namespace ledger {
         }
 
         optional<int64_t> Operation::getBlockHeight() {
-            return _backend.block.map<int64_t>([] (const Block& block) {
-                return (int64_t) block.height;
+            return block.template map<int64_t>([] (const api::Block& block) {
+                return block.height;
             });
         }
 

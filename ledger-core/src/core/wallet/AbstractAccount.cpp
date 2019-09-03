@@ -40,12 +40,12 @@ namespace ledger {
     namespace core {
         AbstractAccount::AbstractAccount(
             const std::shared_ptr<Services>& services,
-            const std::string& walletUid,
+            const std::shared_ptr<AbstractWallet>& wallet,
             int32_t index
         ): DedicatedContext(services->getDispatcher()->getMainExecutionContext()),
            _services(services),
            _index(index),
-           _uid(AccountDatabaseHelper::createAccountUid(walletUid, index)),
+           _uid(AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index)),
            _logger(services->logger()),
            _internalPreferences(services
                ->getInternalPreferences()
@@ -92,6 +92,22 @@ namespace ledger {
             return _uid;
         }
 
+        std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() const {
+            auto wallet = _wallet.lock();
+            if (!wallet) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
+            }
+            return wallet;
+        }
+
+        std::shared_ptr<AbstractWallet> AbstractAccount::getWallet() {
+            auto wallet = _wallet.lock();
+            if (!wallet) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Wallet was already released");
+            }
+            return wallet;
+        }
+
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;
         }
@@ -134,14 +150,14 @@ namespace ledger {
             return _publisher->getEventBus();
         }
 
-        //void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
-        //    auto payload = DynamicObject::newInstance();
-        //    payload->putString(api::Account::EV_NEW_OP_UID, operation.uid);
-        //    payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
-        //    payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
-        //    auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
-        //    pushEvent(event);
-        //}
+        void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
+            auto payload = DynamicObject::newInstance();
+            payload->putString(api::Account::EV_NEW_OP_UID, operation.uid);
+            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
+            auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
+            pushEvent(event);
+        }
 
         void AbstractAccount::emitNewBlockEvent(const api::Block &block) {
             auto payload = DynamicObject::newInstance();
