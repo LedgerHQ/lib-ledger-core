@@ -38,6 +38,8 @@
 #include <core/api/TimePeriod.hpp>
 #include <core/async/Future.hpp>
 #include <core/events/EventPublisher.hpp>
+#include <core/operation/Operation.hpp>
+#include <core/wallet/AbstractWallet.hpp>
 #include <core/wallet/Amount.h>
 //#include <core/wallet/OperationQuery.h>
 
@@ -49,7 +51,7 @@ namespace ledger {
 
             AbstractAccount(
                 const std::shared_ptr<Services>& services,
-                const std::string& walletUid,
+                const std::shared_ptr<AbstractWallet>& wallet,
                 int32_t index
             );
 
@@ -63,6 +65,8 @@ namespace ledger {
             virtual std::shared_ptr<Preferences> getExternalPreferences() const;
             virtual std::shared_ptr<spdlog::logger> logger() const;
             virtual const std::string& getAccountUid() const;
+            virtual std::shared_ptr<AbstractWallet> getWallet() const;
+            virtual std::shared_ptr<AbstractWallet> getWallet();
             const std::shared_ptr<api::ExecutionContext> getMainExecutionContext() const;
 
             void getLastBlock(const std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> & callback) override;
@@ -95,7 +99,7 @@ namespace ledger {
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
         protected:
-            //void emitNewOperationEvent(const Operation& operation);
+            void emitNewOperationEvent(const Operation& operation);
             void emitNewBlockEvent(const api::Block& block);
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
@@ -108,6 +112,7 @@ namespace ledger {
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
+            std::weak_ptr<AbstractWallet> _wallet;
             std::shared_ptr<EventPublisher> _publisher;
             std::mutex _eventsLock;
             std::list<std::shared_ptr<api::Event>> _events;
