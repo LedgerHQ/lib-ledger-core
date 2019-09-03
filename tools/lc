@@ -33,8 +33,8 @@ function cmd_project_new {
   ln -sf $PWD/ledger-core/cmake $project_name/cmake
 
   echo "—> generating CMake configuration"
-  sed s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt
-  sed s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project-src.txt.tpl > $project_name/src/CMakeLists.txt
+  sed -e s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt
+  sed -e s/\$project_name/$project_name/g -e s/\$coin_name/$coin_name/g ./tools/templates/CMakeLists-project-src.txt.tpl > $project_name/src/CMakeLists.txt
 
   echo "—> generating IDL entry point"
   cp ./tools/templates/idl.djinni $project_name/idl/
