@@ -25,7 +25,7 @@ function cmd_project_new {
   fi
 
   echo "—> creating files hierarchy"
-  mkdir -p $project_name/{build,idl,inc/$coin_name/database,src/database}
+  mkdir -p $project_name/{build,idl,inc/$coin_name/database,src/$coin_name/database}
   touch $project_name/README.md
 
   echo "—> symlinking ledger-core’s libraries"
@@ -41,7 +41,7 @@ function cmd_project_new {
 
   echo "—> creating migrations files"
   sed s/\$project_name/$coin_name/g ./tools/templates/migrations.hpp > $project_name/inc/$coin_name/database/migrations.hpp
-  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.cpp > $project_name/src/database/migrations.cpp
+  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.cpp > $project_name/src/$coin_name/database/migrations.cpp
 }
 
 function cmd_project_idl {
