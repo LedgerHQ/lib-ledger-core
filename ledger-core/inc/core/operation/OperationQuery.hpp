@@ -36,7 +36,7 @@
 #include <core/async/DedicatedContext.hpp>
 #include <core/database/query/QueryBuilder.h>
 #include <core/database/DatabaseSessionPool.hpp>
-#include <core/operation/Operation.h>
+#include <core/operation/Operation.hpp>
 #include <unordered_map>
 
 namespace ledger {
@@ -66,15 +66,20 @@ namespace ledger {
 
         private:
             void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations);
-            void inflateCompleteTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
-            void inflateBitcoinLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
-            void inflateRippleLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateTezosLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
 
         protected:
+            virtual std::shared_ptr<Operation> createOperation(
+                std::shared_ptr<AbstractAccount> &account
+            ) = 0;
+
+            virtual void inflateCompleteTransaction(
+                soci::session& sql,
+                const std::string &accountUid,
+                Operation& operation
+            ) = 0;
+
             virtual soci::rowset<soci::row> performExecute(soci::session &sql);
+
             QueryBuilder _builder;
             std::shared_ptr<api::QueryFilter> _headFilter;
             bool _fetchCompleteOperation;
@@ -84,6 +89,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_OPERATIONQUERY_H
