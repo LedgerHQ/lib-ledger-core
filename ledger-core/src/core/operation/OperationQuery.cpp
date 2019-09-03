@@ -29,11 +29,14 @@
  *
  */
 
-#include <core/operation/OperationQuery.hpp>
-#include <core/operation/Operation.hpp>
+#include <core/api/enum_from_string.hpp>
 #include <core/database/soci-date.h>
 #include <core/database/soci-option.h>
 #include <core/database/soci-number.h>
+#include <core/collections/strings.hpp>
+#include <core/operation/OperationQuery.hpp>
+#include <core/operation/Operation.hpp>
+#include <core/wallet/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {
@@ -137,91 +140,45 @@ namespace ledger {
                 auto account = _accounts.find(accountUid);
                 if (account == _accounts.end())
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Account {} is not registered.", accountUid);
-                auto operationApi = std::make_shared<OperationApi>(account->second);
-                auto& operation = operationApi->getBackend();
+                auto operation = createOperation(account->second);
 
                 // Inflate abstract operation
 
-                operation.uid = row.get<std::string>(1);
-                operation.walletUid = row.get<std::string>(2);
-                operation.type = api::from_string<api::OperationType >(row.get<std::string>(3));
-                operation.date = row.get<std::chrono::system_clock::time_point>(4);
-                operation.senders = strings::split(row.get<std::string>(5), ",");
-                operation.recipients = strings::split(row.get<std::string>(6), ",");
-                operation.amount = BigInt::fromHex(row.get<std::string>(7));
-                operation.fees = BigInt::fromHex(row.get<std::string>(8));
-                operation.currencyName = row.get<std::string>(9);
-                operation.trust = nullptr;
-                operation.walletType = account->second->getWalletType();
+                operation->uid = row.get<std::string>(1);
+                operation->walletUid = row.get<std::string>(2);
+                operation->type = api::from_string<api::OperationType >(row.get<std::string>(3));
+                operation->date = row.get<std::chrono::system_clock::time_point>(4);
+                operation->senders = strings::split(row.get<std::string>(5), ",");
+                operation->recipients = strings::split(row.get<std::string>(6), ",");
+                operation->amount = BigInt::fromHex(row.get<std::string>(7));
+                operation->fees = BigInt::fromHex(row.get<std::string>(8));
+                operation->currencyName = row.get<std::string>(9);
+                operation->trust = nullptr;
 
                 if (row.get_indicator(11) != soci::i_null) {
                     // The operation has a block, inflate the block
-                    Block block;
-                    block.hash = row.get<std::string>(11);
+                    api::Block block;
+                    block.blockHash = row.get<std::string>(11);
                     block.height = soci::get_number<uint64_t>(row, 12);
                     block.time = row.get<std::chrono::system_clock::time_point>(13);
-                    block.currencyName = operation.currencyName;
-                    operation.block = Option<Block>(std::move(block));
+                    block.currencyName = operation->currencyName;
+                    operation->block = Option<api::Block>(std::move(block));
                 }
 
                 // End of inflate
                 if (_fetchCompleteOperation) {
-                    inflateCompleteTransaction(sql, accountUid, *operationApi);
+                    inflateCompleteTransaction(sql, accountUid, *operation);
                 }
-                operations.push_back(operationApi);
+
+                operations.push_back(operation);
             }
         }
 
-        std::shared_ptr<OperationQuery>
-        OperationQuery::registerAccount(const std::shared_ptr<AbstractAccount> &account) {
+        std::shared_ptr<OperationQuery> OperationQuery::registerAccount(
+            const std::shared_ptr<AbstractAccount> &account
+        ) {
             _accounts[account->getAccountUid()] = account;
             return shared_from_this();
-        }
-
-        void OperationQuery::inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation) {
-            switch (operation.getAccount()->getWalletType()) {
-                case (api::WalletType::BITCOIN): return inflateBitcoinLikeTransaction(sql, accountUid, operation);
-                case (api::WalletType::ETHEREUM): return inflateEthereumLikeTransaction(sql, operation);
-                case (api::WalletType::RIPPLE): return inflateRippleLikeTransaction(sql, operation);
-                case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
-                case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
-            }
-        }
-
-        void OperationQuery::inflateBitcoinLikeTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation) {
-            BitcoinLikeBlockchainExplorerTransaction tx;
-            operation.getBackend().bitcoinTransaction = Option<BitcoinLikeBlockchainExplorerTransaction>(tx);
-            std::string transactionHash;
-            sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, accountUid, operation.getBackend().bitcoinTransaction.getValue());
-        }
-
-        void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation) {
-            RippleLikeBlockchainExplorerTransaction tx;
-            operation.getBackend().rippleTransaction = Option<RippleLikeBlockchainExplorerTransaction>(tx);
-            std::string transactionHash;
-            sql << "SELECT transaction_hash FROM ripple_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            RippleLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().rippleTransaction.getValue());
-        }
-
-        void OperationQuery::inflateTezosLikeTransaction(soci::session &sql, OperationApi &operation) {
-            TezosLikeBlockchainExplorerTransaction tx;
-            operation.getBackend().tezosTransaction = Option<TezosLikeBlockchainExplorerTransaction>(tx);
-            std::string transactionHash;
-            sql << "SELECT transaction_hash FROM tezos_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            TezosLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().uid, operation.getBackend().tezosTransaction.getValue());
-        }
-
-        void OperationQuery::inflateEthereumLikeTransaction(soci::session &sql, OperationApi &operation) {
-            EthereumLikeBlockchainExplorerTransaction tx;
-            operation.getBackend().ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(tx);
-            std::string transactionHash;
-            sql << "SELECT transaction_hash FROM ethereum_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            EthereumLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().ethereumTransaction.getValue());
-        }
-
-        void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation)");
         }
     }
 }
