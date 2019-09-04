@@ -76,6 +76,11 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>>
+        NodeRippleLikeBlockchainExplorer::getLedgerSequence() {
+            return getServerInfo("seq", FieldTypes::StringType);
+        }
+
+        Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getServerInfo(const std::string &field, FieldTypes type) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("server_info");
@@ -112,7 +117,7 @@ namespace ledger {
                                 auto reserveObj = infoObj["validated_ledger"].GetObject();
                                 if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsString()) {
                                     throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                         fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", field));
+                                                         fmt::format("Failed to get {} from network, no (or malformed) field \"{}\" in response", field, field));
                                 }
 
                                 auto value = reserveObj[field.c_str()].GetString();
@@ -123,7 +128,7 @@ namespace ledger {
                                 auto reserveObj = infoObj["validated_ledger"].GetObject();
                                 if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsDouble()) {
                                     throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                         fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", field));
+                                                         fmt::format("Failed to get {} from network, no (or malformed) field \"{}\" in response <<<", field, field));
                                 }
 
                                 auto value = reserveObj[field.c_str()].GetDouble();

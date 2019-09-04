@@ -82,8 +82,12 @@ TEST_F(RippleMakeTransaction, CreateTx) {
     builder->sendToAddress(api::Amount::fromLong(currency, 220000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
     auto f = builder->build();
     auto tx = ::wait(f);
+
     auto destTag = tx->getDestinationTag();
     EXPECT_EQ(destTag.value_or(0), 0);
+    auto lastLedgerSequence = tx->getLedgerSequence();
+    EXPECT_TRUE(lastLedgerSequence->intValue() > 0);
+
     auto serializedTx = tx->serialize();
     auto parsedTx = RippleLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
     auto serializedParsedTx = parsedTx->serialize();
