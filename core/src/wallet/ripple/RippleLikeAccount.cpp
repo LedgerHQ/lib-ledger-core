@@ -411,9 +411,17 @@ namespace ledger {
                     tx->setDestinationTag(request.destinationTag.getValue());
                 }
 
-                return explorer->getSequence(accountAddress->toString()).mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &sequence) -> std::shared_ptr<api::RippleLikeTransaction> {
-                    tx->setSequence(BigInt(sequence->toString()) + BigInt("1"));
-                    return tx;
+                return explorer->getSequence(accountAddress->toString()).flatMapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &sequence) -> FuturePtr<api::RippleLikeTransaction> {
+                    tx->setSequence(*sequence);
+
+                    return explorer->getLedgerSequence().mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt>& ledgerSequence) -> std::shared_ptr<api::RippleLikeTransaction> {
+                        // according to this <https://xrpl.org/reliable-transaction-submission.html#lastledgersequence>,
+                        // we should set the LastLedgerSequence value on every transaction; advised to
+                        // use the ledger index of the latest valid ledger + 4
+                        tx->setLedgerSequence(*ledgerSequence + BigInt("4"));
+
+                        return tx;
+                    });
                 });
             };
 
