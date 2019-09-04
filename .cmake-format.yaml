@@ -1,0 +1,24 @@
+additional_commands:
+  foo:
+    flags:
+    - BAR
+    - BAZ
+    kwargs:
+      DEPENDS: '*'
+      HEADERS: '*'
+      SOURCES: '*'
+line_width: 100
+tab_size: 2
+max_subgroups_hwrap: 2
+max_pargs_hwrap: 3
+max_rows_cmdline: 2
+max_lines_hwrap: 2
+separate_ctrl_name_with_space: false
+separate_fn_name_with_space: false
+dangle_parens: false
+line_ending: unix
+command_case: 'lower'
+bullet_char: '*'
+enum_char: '.'
+
+

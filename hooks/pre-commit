@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# Enable auto-formatting when commit if the `hooks.autoFormat` is true
+autoFormat=$(git config --bool hooks.autoFormat)
+
+if [ "$autoFormat" == "true" ] && [ -x "$(command -v clang-format)" ]; then
+	files=$(git diff --cached --name-only | grep -e .cpp -e .hpp)
+
+	if [ ! -z "$files" ]; then
+		clang-format -verbose -i -style=file $files
+	fi
+fi
+
+if [ "$autoFormat" == "true" ] && [ -x "$(command -v cmake-format)" ]; then
+	files=$(git diff --cached --name-only | grep -e CMakeLists.txt -e .cmake)
+
+	if [ ! -z "$files" ]; then
+		cmake-format $files -c .cmake-format.yaml -i -l info
+	fi
+fi

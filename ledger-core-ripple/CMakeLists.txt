@@ -30,7 +30,15 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
-enable_testing()
+include(AutoFormat)
+
+file(GLOB_RECURSE CMAKE_FILES "CMakeLists.txt")
+list(FILTER CMAKE_FILES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/(test/)?lib/*")
+set_cmake_format(${CMAKE_CURRENT_SOURCE_DIR}/../.cmake-format.yaml "${CMAKE_FILES}")
+
+file(GLOB_RECURSE CXX_FILES "*.hpp" "*.cpp")
+list(FILTER CXX_FILES EXCLUDE REGEX "${CMAKE_CURRENT_SOURCE_DIR}/(test/)?(lib|build|inc/core/api|inc/core/jni)/*")
+set_clang_format("${CXX_FILES}"))
 
 add_subdirectory(src)
 
