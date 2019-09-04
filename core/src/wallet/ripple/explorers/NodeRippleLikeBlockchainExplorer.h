@@ -129,6 +129,9 @@ namespace ledger {
             getBaseReserve() override;
 
             Future<std::shared_ptr<BigInt>>
+            getLedgerSequence() override;
+
+            Future<std::shared_ptr<BigInt>>
             getServerInfo(const std::string &field, FieldTypes type);
 
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
