@@ -45,6 +45,12 @@ namespace ledger {
         };
 
         std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void (const std::shared_ptr<api::Event> &)> f);
+
+        std::shared_ptr<LambdaEventReceiver> make_promise_receiver(
+                Promise<Unit>& promise,
+                const std::vector<api::EventCode> &successCodes,
+                const std::vector<api::EventCode> &failureCodes
+        );
     }
 }
 

@@ -1,9 +1,9 @@
 /*
  *
- * XDRTransaction.cpp
+ * StellarLikeTransaction.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 23/07/2019.
+ * Created by Pierre Pollastri on 28/08/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,4 +29,11 @@
  *
  */
 
-#include "XDRTransaction.hpp"
+#include "StellarLikeTransaction.hpp"
+#include <wallet/stellar/xdr/XDREncoder.hpp>
+
+std::vector<uint8_t> ledger::core::StellarLikeTransaction::toRawTransaction() {
+    stellar::xdr::Encoder encoder;
+    encoder << _envelope;
+    return encoder.toByteArray();
+}

@@ -3,6 +3,7 @@
 
 #include "StellarLikeTransactionBuilder.hpp"  // my header
 #include "Amount.hpp"
+#include "BigInt.hpp"
 #include "Marshal.hpp"
 #include "StellarLikeTransactionCallback.hpp"
 
@@ -49,6 +50,66 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_000
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
         auto r = ref->setBaseFee(::djinni_generated::Amount::toCpp(jniEnv, j_baseFee));
+        return ::djinni::release(::djinni_generated::StellarLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_00024CppProxy_native_1putSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
+        auto r = ref->putSignature(::djinni::Binary::toCpp(jniEnv, j_signature));
+        return ::djinni::release(::djinni_generated::StellarLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_00024CppProxy_native_1setTextMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_text)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setTextMemo(::djinni::String::toCpp(jniEnv, j_text));
+        return ::djinni::release(::djinni_generated::StellarLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_00024CppProxy_native_1setNumberMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_number)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setNumberMemo(::djinni_generated::BigInt::toCpp(jniEnv, j_number));
+        return ::djinni::release(::djinni_generated::StellarLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_00024CppProxy_native_1setHashMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_hash)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setHashMemo(::djinni::Binary::toCpp(jniEnv, j_hash));
+        return ::djinni::release(::djinni_generated::StellarLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_00024CppProxy_native_1setReturnMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_value)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setReturnMemo(::djinni::Binary::toCpp(jniEnv, j_value));
+        return ::djinni::release(::djinni_generated::StellarLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_00024CppProxy_native_1setSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_sequence)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setSequence(::djinni_generated::BigInt::toCpp(jniEnv, j_sequence));
         return ::djinni::release(::djinni_generated::StellarLikeTransactionBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

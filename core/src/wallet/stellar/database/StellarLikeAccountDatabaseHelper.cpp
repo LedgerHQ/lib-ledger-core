@@ -90,7 +90,7 @@ namespace ledger {
                        use(sellingLiabilities);
             } else {
                 sql << "UPDATE stellar_account_balances SET "
-                       "amout = :amount,"
+                       "amount = :amount,"
                        "buying_liabilities = :bl,"
                        "selling_liabilities = :sl "
                        "WHERE uid = :uid", use(amount), use(buyingLiabilities), use(sellingLiabilities),

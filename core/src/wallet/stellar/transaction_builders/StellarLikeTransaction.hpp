@@ -1,9 +1,9 @@
 /*
  *
- * XDRTransaction.hpp
+ * StellarLikeTransaction.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 23/07/2019.
+ * Created by Pierre Pollastri on 28/08/2019.
  *
  * The MIT License (MIT)
  *
@@ -29,28 +29,26 @@
  *
  */
 
-#ifndef LEDGER_CORE_XDRTRANSACTION_HPP
-#define LEDGER_CORE_XDRTRANSACTION_HPP
+#ifndef LEDGER_CORE_STELLARLIKETRANSACTION_HPP
+#define LEDGER_CORE_STELLARLIKETRANSACTION_HPP
 
+#include <api/StellarLikeTransaction.hpp>
+#include <wallet/stellar/xdr/models.hpp>
 namespace ledger {
     namespace core {
-        namespace stellar {
-            // Based on https://github.com/stellar/stellar-core/blob/master/src/xdr/Stellar-transaction.x
+        class StellarLikeTransaction : public virtual api::StellarLikeTransaction {
+        public:
+            explicit StellarLikeTransaction(stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope) {};
+            explicit StellarLikeTransaction(const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope) {};
+            std::vector<uint8_t> toRawTransaction() override;
 
+            const stellar::xdr::TransactionEnvelope& envelope() const { return _envelope; }
 
-
-            class XDRTransaction {
-            public:
-
-            };
-
-
-            class XDRTransactionEnvelope {
-            public:
-
-            };
-        }
+        private:
+            stellar::xdr::TransactionEnvelope _envelope;
+        };
     }
 }
 
-#endif //LEDGER_CORE_XDRTRANSACTION_HPP
+
+#endif //LEDGER_CORE_STELLARLIKETRANSACTION_HPP

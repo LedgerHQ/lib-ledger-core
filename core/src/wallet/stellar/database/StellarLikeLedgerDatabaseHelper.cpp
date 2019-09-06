@@ -46,7 +46,7 @@ namespace ledger {
             block.time = ledger.time;
             block.currencyName = currency.name;
             if (BlockDatabaseHelper::putBlock(sql, block)) {
-                auto uid = BlockDatabaseHelper::createBlockUid(fmt::format("{}", block.height), currency.name);
+                auto uid = BlockDatabaseHelper::createBlockUid(ledger.hash, currency.name);
                 auto baseFee = ledger.baseFee.toString();
                 auto baseReserve = ledger.baseReserve.toString();
                 sql << "INSERT INTO stellar_ledgers VALUES(:uid, :base_fee, :base_reserve)",

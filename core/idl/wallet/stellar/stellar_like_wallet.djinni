@@ -18,6 +18,12 @@ StellarLikeTransactionBuilder = interface +c {
     addNativePayment(address: string, amount: Amount): StellarLikeTransactionBuilder;
     addCreateAccount(address: string, amount: Amount): StellarLikeTransactionBuilder;
     setBaseFee(baseFee: Amount): StellarLikeTransactionBuilder;
+    putSignature(signature: binary): StellarLikeTransactionBuilder;
+    setTextMemo(text: string): StellarLikeTransactionBuilder;
+    setNumberMemo(number: BigInt): StellarLikeTransactionBuilder;
+    setHashMemo(hash: binary): StellarLikeTransactionBuilder;
+    setReturnMemo(value: binary): StellarLikeTransactionBuilder;
+    setSequence(sequence: BigInt): StellarLikeTransactionBuilder;
     build(callback: Callback<StellarLikeTransaction>);
 }
 
@@ -41,6 +47,13 @@ StellarLikeOperation = interface +c {
     getRecord(): StellarLikeOperationRecord;
 }
 
+StellarLikeFeeStats = record {
+    lastBaseFee: i64;
+    modeAcceptedFee: i64;
+    minAccepted: i64;
+    maxFee: i64;
+}
+
 StellarLikeAccount = interface +c {
     # Checks if the current account exists on the stellar Network. If it doesn't the account needs to be activated by
     # sending an account creation operation with an amount of at least the base reserve.
@@ -53,6 +66,15 @@ StellarLikeAccount = interface +c {
 
     # Broadcast the given raw transaction to the network.
     broadcastRawTransaction(tx: binary, callback: Callback<string>);
+
+    # Get base reserve of the network
+    getBaseReserve(callback: Callback<Amount>);
+
+    # Get sequence number to be used in the next transaction
+    getSequence(callback: Callback<BigInt>);
+
+    # Get recommended fee
+    getFeeStats(callback: Callback<StellarLikeFeeStats>);
 }
 
 StellarLikeWallet = interface +c {

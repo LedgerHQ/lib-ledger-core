@@ -46,7 +46,7 @@ namespace ledger {
 
         void StellarLikeBlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<StellarLikeAccount> &account,
                                                                      const std::chrono::system_clock::time_point &toDate) {
-
+            account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer")->editor()->clear();
         }
 
         std::shared_ptr<ProgressNotifier<Unit>> StellarLikeBlockchainExplorerAccountSynchronizer::synchronize(
@@ -174,7 +174,6 @@ namespace ledger {
             _notifier->failure(ex);
             _notifier = nullptr;
         }
-
 
     }
 }

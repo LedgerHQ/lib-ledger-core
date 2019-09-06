@@ -17,7 +17,10 @@
 
 namespace ledger { namespace core { namespace api {
 
+class AmountCallback;
+class BigIntCallback;
 class BoolCallback;
+class StellarLikeFeeStatsCallback;
 class StellarLikeTransactionBuilder;
 class StringCallback;
 
@@ -40,6 +43,15 @@ public:
 
     /** Broadcast the given raw transaction to the network. */
     virtual void broadcastRawTransaction(const std::vector<uint8_t> & tx, const std::shared_ptr<StringCallback> & callback) = 0;
+
+    /** Get base reserve of the network */
+    virtual void getBaseReserve(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /** Get sequence number to be used in the next transaction */
+    virtual void getSequence(const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /** Get recommended fee */
+    virtual void getFeeStats(const std::shared_ptr<StellarLikeFeeStatsCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

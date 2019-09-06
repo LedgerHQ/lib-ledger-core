@@ -808,7 +808,7 @@ namespace ledger {
                    ")";
 
             sql << "CREATE TABLE stellar_ledgers("
-                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES block(uid) ON DELETE CASCADE,"
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES blocks(uid) ON DELETE CASCADE,"
                    "base_fee VARCHAR(255) NOT NULL,"
                    "base_reserve VARCHAR(255) NOT NULL"
                    ")";

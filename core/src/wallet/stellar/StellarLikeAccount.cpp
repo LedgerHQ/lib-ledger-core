@@ -41,12 +41,19 @@
 #include <set>
 #include <wallet/common/BalanceHistory.hpp>
 #include <api/BoolCallback.hpp>
+#include <api/AmountCallback.hpp>
+#include <events/LambdaEventReceiver.hpp>
+#include "transaction_builders/StellarLikeTransactionBuilder.hpp"
+#include <api/BigIntCallback.hpp>
+#include <database/soci-date.h>
 
 using namespace ledger::core;
 
 static const std::set<stellar::OperationType> ACCEPTED_PAYMENT_TYPES {
     stellar::OperationType::PAYMENT, stellar::OperationType::CREATE_ACCOUNT
 };
+
+static const auto INVALID_SYNCHRONIZATION_DELAY = 60 * 60 * 1000;
 
 namespace ledger {
     namespace core {
@@ -78,6 +85,8 @@ namespace ledger {
             _params.explorer->getLastLedger().onComplete(getContext(),
                                                     [self](const TryPtr<stellar::Ledger> &l) mutable {
                                                         if (l.isSuccess()) {
+                                                            soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                                            self->putLedger(sql, *l.getValue());
                                                             self->_currentLedgerHeight = l.getValue()->height;
                                                         }
                                                     });
@@ -224,7 +233,17 @@ namespace ledger {
         }
 
         Future<api::ErrorCode> StellarLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            auto log = logger();
+            auto accountUid = getAccountUid();
+            auto self = getSelf();
+            return async<api::ErrorCode>([=] () {
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
+                        accountUid), soci::use(date);
+                self->_params.synchronizer->reset(self, date);
+                log->debug(" Finish erasing data of account : {}", accountUid);
+                return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
+            });
         }
 
         std::shared_ptr<StellarLikeAccount> StellarLikeAccount::getSelf() {
@@ -333,7 +352,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::StellarLikeTransactionBuilder> StellarLikeAccount::buildTransaction() {
-            return nullptr;
+            return std::make_shared<ledger::core::StellarLikeTransactionBuilder>(getSelf());
         }
 
         void StellarLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &tx,
@@ -343,6 +362,65 @@ namespace ledger {
 
         Future<bool> StellarLikeAccount::exists() {
             return  std::dynamic_pointer_cast<StellarLikeWallet>(getWallet())->exists(_params.keychain->getAddress()->toString());
+        }
+
+        void StellarLikeAccount::getBaseReserve(const std::shared_ptr<api::AmountCallback> &callback) {
+            getBaseReserve().callback(getContext(), callback);
+        }
+
+        FuturePtr<Amount> StellarLikeAccount::getBaseReserve() {
+            auto self = getSelf();
+            auto queryLastLedgerAndGetReserve = [=] () -> std::shared_ptr<Amount> {
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                stellar::Ledger lgr;
+                auto now = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now().time_since_epoch()).count();
+                if (!StellarLikeLedgerDatabaseHelper::getLastLedger(sql, self->getWallet()->getCurrency(), lgr) ||
+                      now - std::chrono::duration_cast<std::chrono::milliseconds>(lgr.time.time_since_epoch()).count() >  INVALID_SYNCHRONIZATION_DELAY) {
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Last ledger is out dated");
+                }
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, lgr.baseReserve);
+            };
+            return async<std::shared_ptr<Amount>>([=] () {
+                return queryLastLedgerAndGetReserve();
+            }).recoverWith(getContext(), [=] (const Exception& ex) {
+                Promise<Unit> p;
+                self->synchronize()->subscribe(self->getContext(), make_promise_receiver(p,
+                        {api::EventCode::SYNCHRONIZATION_SUCCEED, api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT},
+                                                                                         {api::EventCode::SYNCHRONIZATION_FAILED}));
+                return p.getFuture().mapPtr<Amount>(getContext(), [=] (const Unit&) { return queryLastLedgerAndGetReserve(); });
+            });
+        }
+
+        void StellarLikeAccount::getFeeStats(const std::shared_ptr<api::StellarLikeFeeStatsCallback> &callback) {
+            getFeeStats().callback(getContext(), callback);
+        }
+
+        Future<api::StellarLikeFeeStats> StellarLikeAccount::getFeeStats() {
+            return _params.explorer->getRecommendedFees().map<api::StellarLikeFeeStats>(getContext(), [] (const std::shared_ptr<stellar::FeeStats>& stats) {
+                return api::StellarLikeFeeStats(
+                        stats->lastBaseFee.toInt64(),
+                        stats->modeAcceptedFee.toInt64(),
+                        stats->minAccepted.toInt64(),
+                        stats->maxFee.toInt64()
+                        );
+            });
+        }
+
+        void StellarLikeAccount::getSequence(const std::shared_ptr<api::BigIntCallback> &callback) {
+            getSequence().mapPtr<api::BigInt>(getContext(), [=] (const BigInt& i) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<api::BigIntImpl>(i);
+            }).callback(getContext(), callback);
+        }
+
+        Future<BigInt> StellarLikeAccount::getSequence() {
+            auto self = getSelf();
+            return async<BigInt>([=] () {
+                stellar::Account account;
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                if (StellarLikeAccountDatabaseHelper::getAccount(sql, self->getAccountUid(), account))
+                    return BigInt::fromString(account.sequence);
+                return BigInt::ZERO;
+            });
         }
 
 

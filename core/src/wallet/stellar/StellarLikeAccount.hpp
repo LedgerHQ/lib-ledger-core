@@ -37,6 +37,10 @@
 #include <wallet/stellar/keychains/StellarLikeKeychain.hpp>
 #include "synchronizers/StellarLikeAccountSynchronizer.h"
 #include "explorers/StellarLikeBlockchainExplorer.hpp"
+#include <api/StellarLikeTransactionBuilder.hpp>
+#include <api/StellarLikeFeeStats.hpp>
+#include <api/StellarLikeFeeStatsCallback.hpp>
+
 
 namespace ledger {
     namespace core {
@@ -82,6 +86,17 @@ namespace ledger {
 
             void broadcastRawTransaction(const std::vector<uint8_t> &tx,
                                          const std::shared_ptr<api::StringCallback> &callback) override;
+
+            const StellarLikeAccountParams params() const { return _params; };
+
+            void getBaseReserve(const std::shared_ptr<api::AmountCallback> &callback) override;
+            FuturePtr<Amount> getBaseReserve();
+
+            void getFeeStats(const std::shared_ptr<api::StellarLikeFeeStatsCallback> &callback) override;
+            Future<api::StellarLikeFeeStats> getFeeStats();
+
+            void getSequence(const std::shared_ptr<api::BigIntCallback> &callback) override;
+            Future<BigInt> getSequence();
 
         protected:
             std::shared_ptr<StellarLikeAccount> getSelf();
