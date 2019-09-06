@@ -121,6 +121,7 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         RippleLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
+            logger()->debug("Creating new XRP account (index = {}) with extended key info", info.index);
 
             if (info.extendedKeys.empty()) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -129,7 +130,7 @@ namespace ledger {
 
             auto self = getSelf();
             auto scheme = getDerivationScheme();
-            auto accountIndex = getAccountIndex(scheme, info.index);
+            auto accountIndex = info.index;
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
             return async<std::shared_ptr<api::Account> >([=]() -> std::shared_ptr<api::Account> {
