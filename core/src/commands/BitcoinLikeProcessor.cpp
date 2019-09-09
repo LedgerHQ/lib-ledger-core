@@ -4,10 +4,12 @@
 #include "api/DynamicObject.hpp"
 #include "api/Account.hpp"
 #include "api/AccountCallback.hpp"
+#include "api/Address.hpp"
 #include "api/Amount.hpp"
 #include "api/AmountCallback.hpp"
 #include "api/AccountCreationInfo.hpp"
 #include "api/Block.hpp"
+#include "api/BlockCallback.hpp"
 #include "api/Wallet.hpp"
 #include "api/WalletCallback.hpp"
 #include "api/WalletPool.hpp"
@@ -56,7 +58,7 @@ namespace core {
 
     }
 
-    Future<std::shared_ptr<api::BitcoinLikeAccount>> BitcoinLikeCommandProcessor::getOrCreateAccount(const message::bitcoin::AccountID& accountID) {
+    Future<std::shared_ptr<api::Account>> BitcoinLikeCommandProcessor::getOrCreateAccount(const message::bitcoin::AccountID& accountID) {
         auto accountName = AccountIDToString(accountID);
         return _walletPool->getWallet(accountName)
             .recoverWith(_walletPool->getContext(), [walletPool = _walletPool, accountID, accountName](const Exception& ex) {
@@ -75,9 +77,6 @@ namespace core {
                         info.extendedKeys.push_back(xpub);
                         return wallet->newAccountWithExtendedKeyInfo(info);
                     });
-            })
-            .map<std::shared_ptr<api::BitcoinLikeAccount>>(_walletPool->getContext(), (const std::shared_ptr<api::Account>& account) {
-                return std::dynamic_pointer_cast<api::BitcoinLikeAccount>(account);
             });
     }
 
@@ -90,21 +89,27 @@ namespace core {
         {
         case BitcoinRequest::RequestCase::kSyncAccount: {
             return processRequest(req.sync_account())
-                .map<std::string>(_walletPool->getContext(), [](const SyncAccountResponse& syncAccResp) {
-                    return syncAccResp.SerializeAsString();
+                .map<std::string>(_walletPool->getContext(), [](const SyncAccountResponse& syncAccResponce) {
+                    return syncAccResponce.SerializeAsString();
                 });
         }
         case BitcoinRequest::RequestCase::kGetBalance: {
             return processRequest(req.get_balance())
-                .map<std::string>(_walletPool->getContext(), [](const GetBalanceResponse& balanceResp) {
-                    return balanceResp.SerializeAsString();
+                .map<std::string>(_walletPool->getContext(), [](const GetBalanceResponse& balanceResponce) {
+                    return balanceResponce.SerializeAsString();
                 });
         }
         case BitcoinRequest::RequestCase::kGetOperations: {
             return processRequest(req.get_operations())
-                .map<std::string>(_walletPool->getContext(), [](const GetOperationsResponse& balanceResp) {
-                return balanceResp.SerializeAsString();
-                    });
+                .map<std::string>(_walletPool->getContext(), [](const GetOperationsResponse& getOperationResponce) {
+                    return getOperationResponce.SerializeAsString();
+                });
+        }
+        case BitcoinRequest::RequestCase::kGetFreshAddress: {
+            return processRequest(req.get_fresh_address())
+                .map<std::string>(_walletPool->getContext(), [](const GetFreshAddressResponse& getFreshAddressResponse) {
+                    return getFreshAddressResponse.SerializeAsString();
+                });
         }
         default:
             throw std::runtime_error("Unknown BitcoinLikeRequestType");;
@@ -174,6 +179,58 @@ namespace core {
                 return;
             }
             _onSuccess(result->toString());
+        }
+    private:
+        OnSuccess _onSuccess;
+        OnError _onError;
+    };
+
+    class BlockCallback : public api::BlockCallback {
+    public:
+        typedef std::function<void(const api::Block&)> OnSuccess;
+        typedef std::function<void(const api::Error&)> OnError;
+
+        BlockCallback(OnSuccess onSuccess, OnError onError)
+            : _onSuccess(onSuccess)
+            , _onError(onError) {};
+
+        void onCallback(const std::experimental::optional<api::Block>& result, const std::experimental::optional<api::Error>& error) override {
+            if (error) {
+                _onError(error.value());
+                return;
+            }
+            if (!result) {
+                api::Error er(api::ErrorCode::BLOCK_NOT_FOUND, "BlockCallback doesn't get either error nor value");
+                _onError(er);
+                return;
+            }
+            _onSuccess(result.value());
+        }
+    private:
+        OnSuccess _onSuccess;
+        OnError _onError;
+    };
+
+    class AddressListCallback : public api::AddressListCallback {
+    public:
+        typedef std::function<void(const std::shared_ptr<api::Address>&)> OnSuccess;
+        typedef std::function<void(const api::Error&)> OnError;
+
+        AddressListCallback(OnSuccess onSuccess, OnError onError)
+            : _onSuccess(onSuccess)
+            , _onError(onError) {};
+
+        void onCallback(const std::experimental::optional<std::vector<std::shared_ptr<api::Address>>>& result, const std::experimental::optional<api::Error>& error) override {
+            if (error) {
+                _onError(error.value());
+                return;
+            }
+            if ((!result) || (result.value().size() == 0)) {
+                api::Error er(api::ErrorCode::BLOCK_NOT_FOUND, "AddressListCallback doesn't get either error nor value");
+                _onError(er);
+                return;
+            }
+            _onSuccess(result.value()[0]);
         }
     private:
         OnSuccess _onSuccess;
@@ -254,18 +311,45 @@ namespace core {
     Future<GetLastBlockResponse> BitcoinLikeCommandProcessor::processRequest(const GetLastBlockRequest& req) {
         return
             getOrCreateAccount(req.account_id())
-                .flatMap<std::shared_ptr<api::Block>> (_walletPool->getContext(), [](const std::shared_ptr<api::Account>& account) {
-                    return account->getLastBlock();
-                })
-            .map<GetLastBlockResponse>(_walletPool->getContext(), [](const std::shared_ptr<api::Block>& block) {
-                    GetLastBlockResponse response;
-                    response.last_block()->set_height(block->height);
-                    response.last_block()->set_hash(block->blockHash);
-                    return response;
-                });
+            .flatMap<GetLastBlockResponse>(_walletPool->getContext(), [](const std::shared_ptr<api::Account>& account) {
+                auto res = std::make_shared<Promise<GetLastBlockResponse>>();
+                auto blockCallback = std::make_shared<BlockCallback>(
+                    [res](const api::Block& result) {
+                        GetLastBlockResponse resp;
+                        message::common::Block* block = resp.mutable_last_block();
+                        block->set_height(result.height);
+                        block->set_hash(result.blockHash);
+                        std::string x = resp.SerializeAsString();
+                        res->complete(resp);
+                    },
+                    [res](const api::Error& err) {
+                        res->failure(core::Exception(err.code, err.message));
+                    });
+                account->getLastBlock(blockCallback);
+                return res->getFuture();
+            });
     }
 
     Future<GetFreshAddressResponse> BitcoinLikeCommandProcessor::processRequest(const GetFreshAddressRequest& req) {
+        return
+            getOrCreateAccount(req.account_id())
+            .flatMap<GetFreshAddressResponse>(_walletPool->getContext(), [](const std::shared_ptr<api::Account>& account) {
+                auto res = std::make_shared<Promise<GetFreshAddressResponse>>();
+                auto callback = std::make_shared<AddressListCallback>(
+                        [res](const std::shared_ptr<api::Address>& result) {
+                            GetFreshAddressResponse resp;
+                            resp.set_address(result->toString());
+                            auto path = result->getDerivationPath();
+                            if (path)
+                                resp.set_path(path.value());
+                            res->complete(resp);
+                        },
+                        [res](const api::Error& err) {
+                            res->failure(core::Exception(err.code, err.message));
+                        });
+                account->getFreshPublicAddresses(callback);
+                return res->getFuture();
+                });
     }
 }
 }

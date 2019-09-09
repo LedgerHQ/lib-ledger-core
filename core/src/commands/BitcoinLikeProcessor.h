@@ -9,7 +9,7 @@
 namespace ledger {
     namespace core {
         namespace api {
-            class BitcoinLikeAccount;
+            class Account;
         };
 
         class BitcoinLikeCommandProcessor {
@@ -22,7 +22,7 @@ namespace ledger {
             Future<message::bitcoin::GetOperationsResponse> processRequest(const message::bitcoin::GetOperationsRequest& req);
             Future<message::bitcoin::GetLastBlockResponse> processRequest(const message::bitcoin::GetLastBlockRequest& req);
             Future<message::bitcoin::GetFreshAddressResponse> processRequest(const message::bitcoin::GetFreshAddressRequest& req);
-            Future<std::shared_ptr<api::BitcoinLikeAccount>> getOrCreateAccount(const message::bitcoin::AccountID& ccountID);
+            Future<std::shared_ptr<api::Account>> getOrCreateAccount(const message::bitcoin::AccountID& ccountID);
             std::shared_ptr<WalletPool> _walletPool;
         };
     }

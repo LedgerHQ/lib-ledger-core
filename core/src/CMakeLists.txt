@@ -43,6 +43,8 @@ target_link_libraries(ledger-core-interface INTERFACE libprotobuf)
 target_link_libraries(ledger-core-interface INTERFACE ubinder_wrapper)
 
 target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
+target_compile_definitions(ledger-core-interface INTERFACE BOOST_DATE_TIME_NO_LIB)
+target_compile_definitions(ledger-core-interface INTERFACE BOOST_REGEX_NO_LIB)
 target_compile_definitions(ledger-core-interface INTERFACE
     LIB_VERSION_MAJOR=${VERSION_MAJOR}
     LIB_VERSION_MINOR=${VERSION_MINOR}

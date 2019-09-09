@@ -32,37 +32,42 @@ namespace ledger {
 
         void LibCoreCommands::OnRequest(std::vector<uint8_t>&& data, std::function<void(std::vector<uint8_t>&&)>&& callback) {
             std::call_once(_startExecutionContext, [this]() { _executionContext->start(); });
-            CoreRequest request;
-            if (data.size() > 0) {
-                request.ParseFromArray(&data[0], data.size());
-            }
-            return processRequest(std::move(request))
-                .onComplete(_executionContext, [cb{ std::move(callback) }](const Try<CoreResponse>& t) -> void {
-                    if (t.isSuccess()) {
-                        auto& val = t.getValue();
-                        std::vector<uint8_t> data(val.ByteSize());
-                        if (data.size() > 0) {
-                            val.SerializeToArray(&data[0], data.size());
-                        }
-                        cb(std::move(data));
+            Future<CoreRequest>::async(_executionContext, [requestData(std::move(data))]() {
+                CoreRequest request;
+                if (requestData.size() > 0) {
+                    request.ParseFromArray(&requestData[0], requestData.size());
+                }
+                return request;
+            })
+            .flatMap<CoreResponse>(_executionContext, [self = this](const CoreRequest& request) {
+                return self->processRequest(std::move(request));
+            })
+            .onComplete(_executionContext, [cb{ std::move(callback) }](const Try<CoreResponse>& t) -> void {
+                if (t.isSuccess()) {
+                    auto& val = t.getValue();
+                    std::vector<uint8_t> data(val.ByteSize());
+                    if (data.size() > 0) {
+                        val.SerializeToArray(&data[0], data.size());
                     }
-                    else {
-                        CoreResponse response;
-                        response.set_error(t.getFailure().getMessage());
-                        std::vector<uint8_t> data(response.ByteSize());
-                        if (data.size() > 0) {
-                            response.SerializeToArray(&data[0], data.size());
-                        }
-                        cb(std::move(data));
+                    cb(std::move(data));
+                }
+                else {
+                    CoreResponse response;
+                    response.set_error(t.getFailure().getMessage());
+                    std::vector<uint8_t> data(response.ByteSize());
+                    if (data.size() > 0) {
+                        response.SerializeToArray(&data[0], data.size());
                     }
-                });
+                    cb(std::move(data));
+                }
+            });
         }
 
         void LibCoreCommands::OnNotification(std::vector<uint8_t>&& data) {
 
         }
 
-        Future<CoreResponse> LibCoreCommands::processRequest(CoreRequest&& request) {
+        Future<CoreResponse> LibCoreCommands::processRequest(const CoreRequest&& request) {
             switch (request.request_type())
             {
             case CoreRequestType::GET_VERSION: {

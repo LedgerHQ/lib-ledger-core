@@ -2,6 +2,7 @@
 #include <vector>
 #include <functional>
 #include <memory>
+#include <string>
 #include "commands.pb.h"
 #include "ubinder/function_types.h"
 #include "ubinder/cpp_wrapper.hpp"
@@ -33,7 +34,7 @@ namespace ledger {
             std::unique_ptr<BitcoinLikeCommandProcessor> _bitcoinLikeProcessor;
             std::shared_ptr<WalletPool> _walletPool;
         private:
-            Future<message::CoreResponse> processRequest(message::CoreRequest&& request);
+            Future<message::CoreResponse> processRequest(const message::CoreRequest&& request);
         };
 
         static ubinder::CppWrapper<ledger::core::LibCoreCommands> CppWrapperInstance;
