@@ -154,22 +154,12 @@ namespace ledger {
             reader.readNextByte();
             //R length
             auto rSize = reader.readNextVarInt();
-            if (rSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _rSignature = reader.read(rSize - 1);
-            } else {
-                _rSignature = reader.read(rSize);
-            }
+            _rSignature = reader.read(rSize);
             //Nb of elements for S
             reader.readNextByte();
             //S length
             auto sSize = reader.readNextVarInt();
-            if (sSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _sSignature = reader.read(sSize - 1);
-            } else {
-                _sSignature = reader.read(sSize);
-            }
+            _sSignature = reader.read(sSize);
         }
 
         //Field ID References:
