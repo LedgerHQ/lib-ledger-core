@@ -51,7 +51,7 @@ namespace ledger {
             : type(t), key(k), value(v) {
         }
 
-        std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> PreferencesBackend::LEVELDB_INSTANCE_POOL;
+        std::unordered_map<std::string, std::shared_ptr<leveldb::DB>> PreferencesBackend::LEVELDB_INSTANCE_POOL;
         std::mutex PreferencesBackend::LEVELDB_INSTANCE_POOL_MUTEX;
 
         PreferencesBackend::PreferencesBackend(const std::string &path,
@@ -62,11 +62,11 @@ namespace ledger {
             _db = obtainInstance(_dbName);
         }
 
-        std::shared_ptr<leveldb::DB> PreferencesBackend::obtainInstance(const std::string &path) {
+        std::weak_ptr<leveldb::DB> PreferencesBackend::obtainInstance(const std::string &path) {
             std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
             auto it = LEVELDB_INSTANCE_POOL.find(path);
             if (it != LEVELDB_INSTANCE_POOL.end()) {
-                auto db = it->second.lock();
+                auto db = it->second;
                 if (db != nullptr)
                     return db;
             }
@@ -83,13 +83,18 @@ namespace ledger {
             auto instance = std::shared_ptr<leveldb::DB>(db);
             std::weak_ptr<leveldb::DB> weakInstance = instance;
 
-            LEVELDB_INSTANCE_POOL[path] = weakInstance;
+            LEVELDB_INSTANCE_POOL[path] = instance;
 
-            return instance;
+            return weakInstance;
         }
 
-        void PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
-            auto db = _db;
+        bool PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
+            auto db = _db.lock();
+
+            if (db == nullptr) {
+              return false;
+            }
+
             leveldb::WriteBatch batch;
             leveldb::WriteOptions options;
             options.sync = true;
@@ -99,6 +104,8 @@ namespace ledger {
             }
 
             db->Write(options, &batch);
+
+            return true;
         }
 
         // Put a single PreferencesChange.
@@ -143,10 +150,16 @@ namespace ledger {
         }
 
         optional<std::string> PreferencesBackend::getRaw(const std::vector<uint8_t>& key) const {
+            auto db = _db.lock();
+
+            if (db == nullptr) {
+              return optional<std::string>();
+            }
+
             leveldb::Slice k((const char *)key.data(), key.size());
             std::string value;
 
-            auto status = _db->Get(leveldb::ReadOptions(), k, &value);
+            auto status = db->Get(leveldb::ReadOptions(), k, &value);
             if (status.ok()) {
                 return optional<std::string>(value);
             } else {
@@ -156,7 +169,13 @@ namespace ledger {
 
         void PreferencesBackend::iterate(const std::vector<uint8_t> &keyPrefix,
                                          std::function<bool (leveldb::Slice &&, leveldb::Slice &&)> f) {
-            std::unique_ptr<leveldb::Iterator> it(_db->NewIterator(leveldb::ReadOptions()));
+            auto db = _db.lock();
+
+            if (db == nullptr) {
+              return;
+            }
+
+            std::unique_ptr<leveldb::Iterator> it(db->NewIterator(leveldb::ReadOptions()));
             leveldb::Slice start((const char *) keyPrefix.data(), keyPrefix.size());
             std::vector<uint8_t> limitRaw(keyPrefix.begin(), keyPrefix.end());
 
@@ -213,6 +232,12 @@ namespace ledger {
             const std::string& oldPassword,
             const std::string& newPassword
         ) {
+            auto db = _db.lock();
+
+            if (db == nullptr) {
+              return false;
+            }
+
             Option<AESCipher> noCipher;
             auto newCipher = noCipher;
             auto salt = getEncryptionSalt();
@@ -281,7 +306,7 @@ namespace ledger {
             // duplicating it) and one that puts the new encoded one; once the iteration is done,
             // we submit the batch to leveldb and it applies it atomically
             leveldb::WriteBatch batch;
-            auto it = std::unique_ptr<leveldb::Iterator>(_db->NewIterator(leveldb::ReadOptions()));
+            auto it = std::unique_ptr<leveldb::Iterator>(db->NewIterator(leveldb::ReadOptions()));
 
             for (it->SeekToFirst(); it->Valid(); it->Next()) {
                 // decrypt with the old cipher, if any
@@ -318,7 +343,7 @@ namespace ledger {
             // atomic update
             leveldb::WriteOptions writeOpts;
             writeOpts.sync = true;
-            _db->Write(writeOpts, &batch);
+            db->Write(writeOpts, &batch);
 
             // update the cipher to use with the new one
             _cipher = newCipher;
@@ -336,11 +361,11 @@ namespace ledger {
                 std::lock_guard<std::mutex> lock(LEVELDB_INSTANCE_POOL_MUTEX);
                 auto it = LEVELDB_INSTANCE_POOL.find(_dbName);
                 if (it != LEVELDB_INSTANCE_POOL.end()) {
-                    // drop the cached DB first
+                    // drop the cached DB first and closes the database
                     LEVELDB_INSTANCE_POOL.erase(it);
                 }
 
-                _db.reset(); // this should completely drop
+                _db.reset();
 
                 leveldb::Options options;
                 leveldb::DestroyDB(_dbName, options);
