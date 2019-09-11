@@ -154,12 +154,18 @@ namespace ledger {
                             !json["result"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"result\" in response");
                         }
-                        //Is there an account_data field ?
+                        //Is there an tx_json field ?
                         auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("hash") || !resultObj["hash"].IsString()) {
+                        if (!resultObj.HasMember("tx_json") || !resultObj["tx_json"].IsObject()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"tx_json\" in response");
+                        }
+
+                        //Is there an hash field ?
+                        auto jsonObj = resultObj["tx_json"].GetObject();
+                        if (!jsonObj.HasMember("hash") || !jsonObj["hash"].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
                         }
-                        return resultObj["hash"].GetString();
+                        return jsonObj["hash"].GetString();
                     });
         }
 
