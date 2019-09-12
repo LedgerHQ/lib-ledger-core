@@ -41,6 +41,7 @@
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
+#include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -249,6 +250,30 @@ namespace ledger {
             }
         }
 
+        void EthereumLikeAccount::getInternalTransactions(
+            soci::session &sql,
+            Operation const& parent,
+            std::vector<InternalTransaction>& internalTransactions
+        ) {
+          soci::rowset<soci::row> rows = (sql.prepare <<
+              "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used"
+              "FROM internal_operations as io"
+              "WHERE io.eth_op_uid = :uid",
+              soci::use(parent.uid)
+          );
+
+          for (auto& row : rows) {
+            InternalTx tx;
+            tx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
+            tx.value = BigInt(row.get<std::string>(1));
+            tx.from = row.get<std::string>(2);
+            tx.to = row.get<std::string>(3);
+            tx.gasLimit = BigInt(row.get<std::string>(4));
+            tx.gasUsed = BigInt(row.get<std::string>(5));
+            internalTransactions.push_back(InternalTransaction(tx));
+          }
+        }
+
         bool EthereumLikeAccount::putBlock(soci::session& sql,
                                            const EthereumLikeBlockchainExplorer::Block& block) {
                 Block abstractBlock;
@@ -311,14 +336,21 @@ namespace ledger {
                     const auto &uid = self->getAccountUid();
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
                     std::vector<Operation> operations;
+                    std::vector<InternalTransaction> internalTransactions;
 
                     auto keychain = self->getKeychain();
                     std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
                         return keychain->contains(addr);
                     };
 
-                    //Get operations related to an account
+                    // Get operations related to an account
                     OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+
+                    // Get internal transactions for every operations related to an account and
+                    // turn them into logical operation to affect the balance
+                    for (auto const& operation : operations) {
+                      getInternalTransactions(sql, operation, internalTransactions);
+                    }
 
                     auto lowerDate = startDate;
                     auto upperDate = DateUtils::incrementDate(startDate, precision);
