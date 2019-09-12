@@ -259,6 +259,20 @@ class Operation :
   const ::google::protobuf::RepeatedPtrField<::std::string>& senders() const;
   ::google::protobuf::RepeatedPtrField<::std::string>* mutable_senders();
 
+  // string transaction_hash = 8;
+  void clear_transaction_hash();
+  static const int kTransactionHashFieldNumber = 8;
+  const ::std::string& transaction_hash() const;
+  void set_transaction_hash(const ::std::string& value);
+  #if LANG_CXX11
+  void set_transaction_hash(::std::string&& value);
+  #endif
+  void set_transaction_hash(const char* value);
+  void set_transaction_hash(const char* value, size_t size);
+  ::std::string* mutable_transaction_hash();
+  ::std::string* release_transaction_hash();
+  void set_allocated_transaction_hash(::std::string* transaction_hash);
+
   // .ledger.core.message.common.Amount amount = 1;
   bool has_amount() const;
   void clear_amount();
@@ -302,6 +316,7 @@ class Operation :
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
   ::google::protobuf::RepeatedPtrField<::std::string> receivers_;
   ::google::protobuf::RepeatedPtrField<::std::string> senders_;
+  ::google::protobuf::internal::ArenaStringPtr transaction_hash_;
   ::ledger::core::message::common::Amount* amount_;
   ::ledger::core::message::common::Amount* fee_;
   ::google::protobuf::int64 block_height_;
@@ -589,6 +604,59 @@ inline void Operation::set_date_epoch_ms(::google::protobuf::int64 value) {
   
   date_epoch_ms_ = value;
   // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.date_epoch_ms)
+}
+
+// string transaction_hash = 8;
+inline void Operation::clear_transaction_hash() {
+  transaction_hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& Operation::transaction_hash() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.bitcoin.Operation.transaction_hash)
+  return transaction_hash_.GetNoArena();
+}
+inline void Operation::set_transaction_hash(const ::std::string& value) {
+  
+  transaction_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:ledger.core.message.bitcoin.Operation.transaction_hash)
+}
+#if LANG_CXX11
+inline void Operation::set_transaction_hash(::std::string&& value) {
+  
+  transaction_hash_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.bitcoin.Operation.transaction_hash)
+}
+#endif
+inline void Operation::set_transaction_hash(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  transaction_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.bitcoin.Operation.transaction_hash)
+}
+inline void Operation::set_transaction_hash(const char* value, size_t size) {
+  
+  transaction_hash_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.bitcoin.Operation.transaction_hash)
+}
+inline ::std::string* Operation::mutable_transaction_hash() {
+  
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.bitcoin.Operation.transaction_hash)
+  return transaction_hash_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* Operation::release_transaction_hash() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.bitcoin.Operation.transaction_hash)
+  
+  return transaction_hash_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void Operation::set_allocated_transaction_hash(::std::string* transaction_hash) {
+  if (transaction_hash != nullptr) {
+    
+  } else {
+    
+  }
+  transaction_hash_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), transaction_hash);
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.bitcoin.Operation.transaction_hash)
 }
 
 #ifdef __GNUC__

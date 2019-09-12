@@ -79,7 +79,8 @@ proto.ledger.core.message.bitcoin.Operation.toObject = function(includeInstance,
     sendersList: jspb.Message.getRepeatedField(msg, 4),
     operationType: jspb.Message.getFieldWithDefault(msg, 5, 0),
     blockHeight: jspb.Message.getFieldWithDefault(msg, 6, 0),
-    dateEpochMs: jspb.Message.getFieldWithDefault(msg, 7, 0)
+    dateEpochMs: jspb.Message.getFieldWithDefault(msg, 7, 0),
+    transactionHash: jspb.Message.getFieldWithDefault(msg, 8, "")
   };
 
   if (includeInstance) {
@@ -145,6 +146,10 @@ proto.ledger.core.message.bitcoin.Operation.deserializeBinaryFromReader = functi
     case 7:
       var value = /** @type {number} */ (reader.readInt64());
       msg.setDateEpochMs(value);
+      break;
+    case 8:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setTransactionHash(value);
       break;
     default:
       reader.skipField();
@@ -223,6 +228,13 @@ proto.ledger.core.message.bitcoin.Operation.serializeBinaryToWriter = function(m
   if (f !== 0) {
     writer.writeInt64(
       7,
+      f
+    );
+  }
+  f = message.getTransactionHash();
+  if (f.length > 0) {
+    writer.writeString(
+      8,
       f
     );
   }
@@ -409,6 +421,21 @@ proto.ledger.core.message.bitcoin.Operation.prototype.getDateEpochMs = function(
 /** @param {number} value */
 proto.ledger.core.message.bitcoin.Operation.prototype.setDateEpochMs = function(value) {
   jspb.Message.setProto3IntField(this, 7, value);
+};
+
+
+/**
+ * optional string transaction_hash = 8;
+ * @return {string}
+ */
+proto.ledger.core.message.bitcoin.Operation.prototype.getTransactionHash = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 8, ""));
+};
+
+
+/** @param {string} value */
+proto.ledger.core.message.bitcoin.Operation.prototype.setTransactionHash = function(value) {
+  jspb.Message.setProto3StringField(this, 8, value);
 };
 
 

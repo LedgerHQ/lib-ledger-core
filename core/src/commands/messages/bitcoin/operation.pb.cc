@@ -65,6 +65,7 @@ const ::google::protobuf::uint32 TableStruct_bitcoin_2foperation_2eproto::offset
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, operation_type_),
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, block_height_),
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, date_epoch_ms_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::bitcoin::Operation, transaction_hash_),
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::ledger::core::message::bitcoin::Operation)},
@@ -82,20 +83,21 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 
 const char descriptor_table_protodef_bitcoin_2foperation_2eproto[] =
   "\n\027bitcoin/operation.proto\022\033ledger.core.m"
-  "essage.bitcoin\032\023common/amount.proto\"\267\002\n\t"
+  "essage.bitcoin\032\023common/amount.proto\"\321\002\n\t"
   "Operation\0222\n\006amount\030\001 \001(\0132\".ledger.core."
   "message.common.Amount\022/\n\003fee\030\002 \001(\0132\".led"
   "ger.core.message.common.Amount\022\021\n\treceiv"
   "ers\030\003 \003(\t\022\017\n\007senders\030\004 \003(\t\022L\n\016operation_"
   "type\030\005 \001(\01624.ledger.core.message.bitcoin"
   ".Operation.OperationType\022\024\n\014block_height"
-  "\030\006 \001(\003\022\025\n\rdate_epoch_ms\030\007 \001(\003\"&\n\rOperati"
-  "onType\022\010\n\004SEND\020\000\022\013\n\007RECEIVE\020\001b\006proto3"
+  "\030\006 \001(\003\022\025\n\rdate_epoch_ms\030\007 \001(\003\022\030\n\020transac"
+  "tion_hash\030\010 \001(\t\"&\n\rOperationType\022\010\n\004SEND"
+  "\020\000\022\013\n\007RECEIVE\020\001b\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_bitcoin_2foperation_2eproto = {
   false, InitDefaults_bitcoin_2foperation_2eproto, 
   descriptor_table_protodef_bitcoin_2foperation_2eproto,
-  "bitcoin/operation.proto", &assign_descriptors_table_bitcoin_2foperation_2eproto, 397,
+  "bitcoin/operation.proto", &assign_descriptors_table_bitcoin_2foperation_2eproto, 423,
 };
 
 void AddDescriptors_bitcoin_2foperation_2eproto() {
@@ -176,6 +178,7 @@ const int Operation::kSendersFieldNumber;
 const int Operation::kOperationTypeFieldNumber;
 const int Operation::kBlockHeightFieldNumber;
 const int Operation::kDateEpochMsFieldNumber;
+const int Operation::kTransactionHashFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 Operation::Operation()
@@ -189,6 +192,10 @@ Operation::Operation(const Operation& from)
       receivers_(from.receivers_),
       senders_(from.senders_) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
+  transaction_hash_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.transaction_hash().size() > 0) {
+    transaction_hash_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.transaction_hash_);
+  }
   if (from.has_amount()) {
     amount_ = new ::ledger::core::message::common::Amount(*from.amount_);
   } else {
@@ -208,6 +215,7 @@ Operation::Operation(const Operation& from)
 void Operation::SharedCtor() {
   ::google::protobuf::internal::InitSCC(
       &scc_info_Operation_bitcoin_2foperation_2eproto.base);
+  transaction_hash_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   ::memset(&amount_, 0, static_cast<size_t>(
       reinterpret_cast<char*>(&operation_type_) -
       reinterpret_cast<char*>(&amount_)) + sizeof(operation_type_));
@@ -219,6 +227,7 @@ Operation::~Operation() {
 }
 
 void Operation::SharedDtor() {
+  transaction_hash_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (this != internal_default_instance()) delete amount_;
   if (this != internal_default_instance()) delete fee_;
 }
@@ -240,6 +249,7 @@ void Operation::Clear() {
 
   receivers_.Clear();
   senders_.Clear();
+  transaction_hash_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (GetArenaNoVirtual() == nullptr && amount_ != nullptr) {
     delete amount_;
   }
@@ -351,6 +361,22 @@ const char* Operation::_InternalParse(const char* begin, const char* end, void* 
         if (static_cast<::google::protobuf::uint8>(tag) != 56) goto handle_unusual;
         msg->set_date_epoch_ms(::google::protobuf::internal::ReadVarint(&ptr));
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        break;
+      }
+      // string transaction_hash = 8;
+      case 8: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 66) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.bitcoin.Operation.transaction_hash");
+        object = msg->mutable_transaction_hash();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
         break;
       }
       default: {
@@ -481,6 +507,21 @@ bool Operation::MergePartialFromCodedStream(
         break;
       }
 
+      // string transaction_hash = 8;
+      case 8: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (66 & 0xFF)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_transaction_hash()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->transaction_hash().data(), static_cast<int>(this->transaction_hash().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "ledger.core.message.bitcoin.Operation.transaction_hash"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
       default: {
       handle_unusual:
         if (tag == 0) {
@@ -556,6 +597,16 @@ void Operation::SerializeWithCachedSizes(
     ::google::protobuf::internal::WireFormatLite::WriteInt64(7, this->date_epoch_ms(), output);
   }
 
+  // string transaction_hash = 8;
+  if (this->transaction_hash().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->transaction_hash().data(), static_cast<int>(this->transaction_hash().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "ledger.core.message.bitcoin.Operation.transaction_hash");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      8, this->transaction_hash(), output);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     ::google::protobuf::internal::WireFormat::SerializeUnknownFields(
         _internal_metadata_.unknown_fields(), output);
@@ -619,6 +670,17 @@ void Operation::SerializeWithCachedSizes(
     target = ::google::protobuf::internal::WireFormatLite::WriteInt64ToArray(7, this->date_epoch_ms(), target);
   }
 
+  // string transaction_hash = 8;
+  if (this->transaction_hash().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->transaction_hash().data(), static_cast<int>(this->transaction_hash().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "ledger.core.message.bitcoin.Operation.transaction_hash");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        8, this->transaction_hash(), target);
+  }
+
   if (_internal_metadata_.have_unknown_fields()) {
     target = ::google::protobuf::internal::WireFormat::SerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields(), target);
@@ -654,6 +716,13 @@ size_t Operation::ByteSizeLong() const {
   for (int i = 0, n = this->senders_size(); i < n; i++) {
     total_size += ::google::protobuf::internal::WireFormatLite::StringSize(
       this->senders(i));
+  }
+
+  // string transaction_hash = 8;
+  if (this->transaction_hash().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->transaction_hash());
   }
 
   // .ledger.core.message.common.Amount amount = 1;
@@ -719,6 +788,10 @@ void Operation::MergeFrom(const Operation& from) {
 
   receivers_.MergeFrom(from.receivers_);
   senders_.MergeFrom(from.senders_);
+  if (from.transaction_hash().size() > 0) {
+
+    transaction_hash_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.transaction_hash_);
+  }
   if (from.has_amount()) {
     mutable_amount()->::ledger::core::message::common::Amount::MergeFrom(from.amount());
   }
@@ -763,6 +836,8 @@ void Operation::InternalSwap(Operation* other) {
   _internal_metadata_.Swap(&other->_internal_metadata_);
   receivers_.InternalSwap(CastToBase(&other->receivers_));
   senders_.InternalSwap(CastToBase(&other->senders_));
+  transaction_hash_.Swap(&other->transaction_hash_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
   swap(amount_, other->amount_);
   swap(fee_, other->fee_);
   swap(block_height_, other->block_height_);

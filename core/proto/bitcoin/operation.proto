@@ -15,4 +15,6 @@ message Operation {
     OperationType operation_type = 5;
     int64 block_height = 6;
     int64 date_epoch_ms = 7;
+
+    string transaction_hash = 8;
 }
