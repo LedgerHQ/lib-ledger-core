@@ -15,6 +15,14 @@ add_subdirectory(snappy)
 add_subdirectory(leveldb)
 
 add_subdirectory(spdlog)
+
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
+  # On Android, temporary directories are a bit special and are not located in the same place, such
+  # as /tmp or /usr/tmp; for this reason, we ask temporary files to be stored in memory instead
+  message("Compiling SQLCipher for Android with file temporary directory disabled (all-on-memory).")
+  add_definitions(-DSQLITE_TEMP_STORE=3)
+endif ()
+
 add_subdirectory(sqlcipher)
 
 set(SQLITE_LIB sqlcipher)
