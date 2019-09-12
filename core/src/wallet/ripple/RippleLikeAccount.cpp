@@ -28,7 +28,6 @@
  *
  */
 
-
 #include "RippleLikeAccount.h"
 #include "RippleLikeWallet.h"
 #include <async/Future.hpp>
@@ -45,6 +44,8 @@
 #include <math/Base58.hpp>
 #include <utils/Option.hpp>
 #include <utils/DateUtils.hpp>
+#include <api/RippleConfiguration.hpp>
+#include <api/RippleConfigurationDefaults.hpp>
 
 #include <database/soci-number.h>
 #include <database/soci-date.h>
@@ -418,7 +419,11 @@ namespace ledger {
                         // according to this <https://xrpl.org/reliable-transaction-submission.html#lastledgersequence>,
                         // we should set the LastLedgerSequence value on every transaction; advised to
                         // use the ledger index of the latest valid ledger + 4
-                        tx->setLedgerSequence(*ledgerSequence + BigInt("4"));
+                        auto offset = self->getWallet()->getConfiguration()->getInt(
+                            api::RippleConfiguration::RIPPLE_LAST_LEDGER_SEQUENCE_OFFSET
+                        ).value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_LAST_LEDGER_SEQUENCE_OFFSET);
+
+                        tx->setLedgerSequence(*ledgerSequence + BigInt(offset));
 
                         return tx;
                     });
