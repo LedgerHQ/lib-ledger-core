@@ -10,6 +10,7 @@
 #include "api/AccountCreationInfo.hpp"
 #include "api/Block.hpp"
 #include "api/BlockCallback.hpp"
+#include "api/BitcoinLikeOperation.hpp"
 #include "api/Wallet.hpp"
 #include "api/WalletCallback.hpp"
 #include "api/WalletPool.hpp"
@@ -288,6 +289,7 @@ namespace core {
         if (apiOperation->getBlockHeight())
             protoOperation->set_block_height(apiOperation->getBlockHeight().value());
         protoOperation->set_date_epoch_ms(std::chrono::duration_cast<std::chrono::milliseconds>(apiOperation->getDate().time_since_epoch()).count());
+        protoOperation->set_transaction_hash(apiOperation->asBitcoinLikeOperation()->getTransaction()->getHash());
     }
 
     Future<GetOperationsResponse> BitcoinLikeCommandProcessor::processRequest(const message::bitcoin::GetOperationsRequest& req) {
