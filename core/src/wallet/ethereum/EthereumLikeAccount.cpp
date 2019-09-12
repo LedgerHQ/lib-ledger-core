@@ -336,7 +336,6 @@ namespace ledger {
                     const auto &uid = self->getAccountUid();
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
                     std::vector<Operation> operations;
-                    std::vector<InternalTransaction> internalTransactions;
 
                     auto keychain = self->getKeychain();
                     std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
@@ -348,8 +347,34 @@ namespace ledger {
 
                     // Get internal transactions for every operations related to an account and
                     // turn them into logical operation to affect the balance
-                    for (auto const& operation : operations) {
-                      getInternalTransactions(sql, operation, internalTransactions);
+                    {
+                      // a buffer for allocating internal operations
+                      std::vector<InternalTransaction> internalTransactions;
+                      std::vector<Operation> internalOperations;
+
+                      // this loop get all the internal transactions related to a given ETH
+                      // operation and will transform them into regular Operation
+                      for (auto const& operation : operations) {
+                        // get this operation’s internal tx
+                        internalTransactions.clear();
+                        getInternalTransactions(sql, operation, internalTransactions);
+
+                        auto gasPrice = operation.ethereumTransaction->gasPrice;
+                        auto date = operation.date;
+
+                        for (auto& itx : internalTransactions) {
+                          // transform into an Operation
+                          Operation operation;
+                          operation.amount = BigInt(itx.getValue()->toString(10));
+                          operation.fees = gasPrice * BigInt(itx.getUsedGas()->toString(10));
+                          operation.type = itx.getOperationType();
+                          operation.date = date;
+                          internalOperations.push_back(operation);
+                        }
+                      }
+
+                      // add the internal operations to the list of operations
+                      std::copy(internalOperations.begin(), internalOperations.end(),std::back_inserter(operations));
                     }
 
                     auto lowerDate = startDate;
