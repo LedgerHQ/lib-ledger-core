@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_RIPPLECONFIGURATIONDEFAULTS_HPP
 #define DJINNI_GENERATED_RIPPLECONFIGURATIONDEFAULTS_HPP
 
+#include <cstdint>
 #include <string>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -30,6 +31,8 @@ public:
     static std::string const RIPPLE_OBSERVER_WS_ENDPOINT_S3;
 
     static std::string const RIPPLE_DEFAULT_PORT;
+
+    static int32_t const RIPPLE_DEFAULT_LAST_LEDGER_SEQUENCE_OFFSET;
 };
 
 } } }  // namespace ledger::core::api
