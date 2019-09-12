@@ -43,12 +43,14 @@
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
+#include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 #include <wallet/ethereum/observers/EthereumLikeBlockchainObserver.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
+
 namespace ledger {
     namespace core {
         class EthereumLikeAccount : public api::EthereumLikeAccount, public AbstractAccount {
@@ -70,7 +72,15 @@ namespace ledger {
             void inflateOperation(Operation &out,
                                   const std::shared_ptr<const AbstractWallet>& wallet,
                                   const EthereumLikeBlockchainExplorerTransaction &tx);
+
             int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction &transaction);
+            /// Get internal transactions related to the parent operation.
+            void getInternalTransactions(
+                soci::session &sql,
+                Operation const& parent,
+                std::vector<InternalTransaction>& internalTransactions
+            );
+
             void updateERC20Accounts(soci::session &sql, const Operation &operation);
             void updateERC20Operation(soci::session &sql,
                                       const Operation &operation,
