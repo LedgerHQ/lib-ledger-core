@@ -149,6 +149,10 @@ namespace ledger {
         // Add block height to outputs
         template <> void migrate<13>(soci::session& sql);
         template <> void rollback<13>(soci::session& sql);
+
+        // Add XRP sequence
+        template <> void migrate<14>(soci::session& sql);
+        template <> void rollback<14>(soci::session& sql);
     }
 }
 
