@@ -100,6 +100,7 @@ namespace ledger {
             _receiver = RippleLikeAddress::fromBase58(tx.receiver, _currency);
             _sender = RippleLikeAddress::fromBase58(tx.sender, _currency);
 
+            _sequence = std::make_shared<api::BigIntImpl>(tx.sequence);
         }
 
         std::string RippleLikeTransactionApi::getHash() {
