@@ -667,5 +667,12 @@ namespace ledger {
 
         template <> void rollback<13>(soci::session& sql) {
         }
+
+        template <> void migrate<14>(soci::session& sql) {
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN sequence BIGINT";
+        }
+
+        template <> void rollback<14>(soci::session& sql) {
+        }
     }
 }
