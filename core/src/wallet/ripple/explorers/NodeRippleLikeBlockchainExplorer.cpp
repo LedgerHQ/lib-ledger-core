@@ -189,7 +189,7 @@ namespace ledger {
         Future<Bytes> NodeRippleLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("tx");
-            bodyRequest.pushParameter("trasnaction", transactionHash);
+            bodyRequest.pushParameter("transaction", transactionHash);
             bodyRequest.pushParameter("binary", "true");
             auto requestBody = bodyRequest.getString();
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
