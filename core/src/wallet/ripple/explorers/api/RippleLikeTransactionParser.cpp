@@ -172,6 +172,8 @@ namespace ledger {
                 } else if (_lastKey == "Fee") {
                     BigInt valueBigInt = BigInt::fromString(value);
                     _transaction->fees = value;
+                } else if (_lastKey == "Sequence") {
+                    _transaction->sequence = BigInt::fromString(value);
                 } else if (_lastKey == "MemoData" && !_transaction->memos.empty()) {
                     _transaction->memos.back().data = value;
                 } else if (_lastKey == "MemoFormat" && !_transaction->memos.empty()) {
