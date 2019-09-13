@@ -57,6 +57,7 @@ namespace ledger {
             std::chrono::system_clock::time_point receivedAt;
             BigInt value;
             BigInt fees;
+            BigInt sequence;
             std::string receiver;
             std::string sender;
             Option<Block> block;
@@ -73,6 +74,7 @@ namespace ledger {
                 this->receivedAt = cpy.receivedAt;
                 this->confirmations = cpy.confirmations;
                 this->fees = cpy.fees;
+                this->sequence = cpy.sequence;
                 this->receiver = cpy.receiver;
                 this->sender = cpy.sender;
                 this->value = cpy.value;
