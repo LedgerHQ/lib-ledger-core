@@ -30,6 +30,7 @@ class Logger;
 class OperationQuery;
 class Preferences;
 class RippleLikeAccount;
+class TezosLikeAccount;
 enum class TimePeriod;
 enum class WalletType;
 
@@ -134,6 +135,9 @@ public:
 
     /** Turn the account into a Ripple one, allowing operations to be performed on the Ripple network. */
     virtual std::shared_ptr<RippleLikeAccount> asRippleLikeAccount() = 0;
+
+    /** Turn the account into a Tezos one, allowing operations to be performed on the Tezos network. */
+    virtual std::shared_ptr<TezosLikeAccount> asTezosLikeAccount() = 0;
 
     /**
      * Check if account is a Bitcoin one.

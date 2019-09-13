@@ -99,6 +99,10 @@ namespace ledger {
             return std::dynamic_pointer_cast<api::RippleLikeAccount>(shared_from_this());
         }
 
+        std::shared_ptr<api::TezosLikeAccount> AbstractAccount::asTezosLikeAccount() {
+            return std::dynamic_pointer_cast<api::TezosLikeAccount>(shared_from_this());
+        }
+
         std::shared_ptr<spdlog::logger> AbstractAccount::logger() const {
             return _logger;
         }
