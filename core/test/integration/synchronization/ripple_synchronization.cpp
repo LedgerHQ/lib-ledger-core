@@ -37,6 +37,9 @@
 #include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
 #include <iostream>
 #include <api/BlockchainExplorerEngines.hpp>
+#include <api/RippleLikeOperation.hpp>
+#include <api/RippleLikeTransaction.hpp>
+
 using namespace std;
 
 class RippleLikeWalletSynchronization : public BaseFixture {
@@ -95,6 +98,12 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
             auto ops = wait(
                     std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
+
+            for (auto const& op : ops) {
+                auto xrpOp = op->asRippleLikeOperation();
+                EXPECT_FALSE(xrpOp == nullptr);
+                EXPECT_FALSE(xrpOp->getTransaction()->getSequence() == nullptr);
+            }
 
             auto block = wait(account->getLastBlock());
             auto blockHash = block.blockHash;
