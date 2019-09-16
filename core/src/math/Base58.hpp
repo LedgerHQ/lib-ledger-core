@@ -46,6 +46,7 @@ namespace ledger {
             ~Base58() = delete;
 
             static std::string encode(const std::vector<uint8_t>& bytes, const std::shared_ptr<api::DynamicObject> &config);
+            static std::string encode(const std::vector<uint8_t>& bytes, const std::string& digits);
             static std::string encodeWithChecksum(const std::vector<uint8_t>& bytes, const std::shared_ptr<api::DynamicObject> &config);
             static std::string encodeWithEIP55(const std::vector<uint8_t>& bytes);
             static std::string encodeWithEIP55(const std::string &address);
@@ -58,8 +59,18 @@ namespace ledger {
 
             static std::vector<uint8_t> computeChecksum(const std::vector<uint8_t>& bytes, const std::string &networkIdentifier = "");
         };
+        namespace Base58Utils {
+            template<typename HashAlgorithmFunction>
+            std::vector<uint8_t> computeChecksum(const std::vector<uint8_t>& bytes) {
+                auto doubleHash = HashAlgorithmFunction(HashAlgorithmFunction(bytes));
+                return std::vector<uint8_t>(doubleHash.begin(), doubleHash.begin() + 4);
+            }
 
-
+            template<typename HashAlgorithmFunction>
+            std::string encodeWithChecksum(const std::vector<uint8_t>& bytes, const std::string& digitis) {
+                return Base58::encode(vector::concat<uint8_t>(bytes, computeChecksum<HashAlgorithmFunction>(bytes)), digitis);
+            }
+        }
     }
 }
 

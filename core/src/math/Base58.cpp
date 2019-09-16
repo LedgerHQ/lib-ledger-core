@@ -41,15 +41,14 @@ using namespace ledger::core;
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 static const ledger::core::BigInt V_58(58);
 
-static void _encode(const ledger::core::BigInt &v,
-                    std::stringstream &ss,
-                    const std::string &networkIdentifier,
-                    const std::string &networkBase58Dictionary) {
+static void _encode(const ledger::core::BigInt& v,
+                    std::stringstream& ss,
+                    const std::string& networkBase58Dictionary) {
     if (v == ledger::core::BigInt::ZERO) {
-        return ;
+        return;
     }
     auto r = (v % V_58).toUnsignedInt();
-    _encode(v / V_58, ss, networkIdentifier, networkBase58Dictionary);
+    _encode(v / V_58, ss, networkBase58Dictionary);
     ss << networkBase58Dictionary[r];
 }
 
@@ -65,16 +64,20 @@ static bool shouldUseNetworkBase58Dictionary(const std::shared_ptr<api::DynamicO
     return config->getBoolean("useNetworkDictionary").value_or(false);
 }
 
-std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
-                                         const std::shared_ptr<api::DynamicObject> &config) {
+std::string ledger::core::Base58::encode(const std::vector<uint8_t>& bytes, const std::string& base58Dictionary) {
     BigInt intData(bytes.data(), bytes.size(), false);
     std::stringstream ss;
-    auto base58Dictionary = getNetworkBase58Dictionary(config);
     for (auto i = 0; i < bytes.size() && bytes[i] == 0; i++) {
         ss << base58Dictionary[0];
     }
-    _encode(intData, ss, getNetworkIdentifier(config), base58Dictionary);
+    _encode(intData, ss, base58Dictionary);
     return ss.str();
+}
+
+std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
+                                         const std::shared_ptr<api::DynamicObject> &config) {
+    auto base58Dictionary = getNetworkBase58Dictionary(config);
+    return encode(bytes, base58Dictionary);
 }
 
 std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> &bytes,

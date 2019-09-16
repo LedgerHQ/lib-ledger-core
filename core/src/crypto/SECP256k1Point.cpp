@@ -36,76 +36,37 @@
 
 namespace ledger {
     namespace core {
+        SECP256k1Point::ContextUniqPtr SECP256k1Point::_context = ContextUniqPtr(secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY), secp256k1_context_destroy);
 
-        SECP256k1Point::SECP256k1Point(const std::vector<uint8_t> &p) : SECP256k1Point() {
-            _pubKey = new secp256k1_pubkey();
-            if (secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size()) == 0)
+        SECP256k1Point::SECP256k1Point(const std::vector<uint8_t> &p) {
+            if (secp256k1_ec_pubkey_parse(_context.get(), &_pubKey, p.data(), p.size()) == 0)
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Unable to parse secp256k1 point");
         }
 
-        SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const");
-        }
-
-        SECP256k1Point::SECP256k1Point() {
-            _context = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
-            _pubKey = nullptr;
-        }
-
-        SECP256k1Point::~SECP256k1Point() {
-            secp256k1_context_destroy(_context);
-            if (_pubKey) {
-                delete _pubKey;
-            }
-        }
-
-        SECP256k1Point::SECP256k1Point(const SECP256k1Point &p) : SECP256k1Point() {
-           *this = p;
-        }
-
-        SECP256k1Point &SECP256k1Point::operator=(const SECP256k1Point &p) {
-            _pubKey = new secp256k1_pubkey();
-            ::memcpy(_pubKey, p._pubKey, sizeof(*p._pubKey));
-            return *this;
-        }
-
-        bool SECP256k1Point::isAtInfinity() const {
-            ensurePubkeyIsNotNull();
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "bool SECP256k1Point::isAtInfinity() const");
-        }
-
         SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) const {
-            ensurePubkeyIsNotNull();
             // Pad the number to 32 bytes with 0
             auto num = n;
             VectorUtils::padOnLeft<uint8_t>(num, 0, 32);
 
-            secp256k1_pubkey* pubKey = new secp256k1_pubkey();
-            memcpy(pubKey, _pubKey, sizeof(*pubKey));
+            secp256k1_pubkey pubKey;
+            memcpy(&pubKey, &_pubKey, sizeof(pubKey));
             std::vector<uint8_t> serializedKey(33);
             auto len = serializedKey.size();
-            auto flag = secp256k1_ec_pubkey_tweak_add(_context, pubKey, num.data());
+            auto flag = secp256k1_ec_pubkey_tweak_add(_context.get(), &pubKey, num.data());
             if (flag == 0) throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
-            secp256k1_ec_pubkey_serialize(_context, serializedKey.data(), &len, pubKey, SECP256K1_EC_COMPRESSED);
+            secp256k1_ec_pubkey_serialize(_context.get(), serializedKey.data(), &len, &pubKey, SECP256K1_EC_COMPRESSED);
             return SECP256k1Point(serializedKey);
         }
 
         std::vector<uint8_t> SECP256k1Point::toByteArray(bool compressed) const {
-            ensurePubkeyIsNotNull();
             if (compressed) {
                 std::vector<uint8_t> result(33);
                 size_t len = 33;
-                secp256k1_ec_pubkey_serialize(_context, result.data(), &len, _pubKey, SECP256K1_EC_COMPRESSED);
+                secp256k1_ec_pubkey_serialize(_context.get(), result.data(), &len, &_pubKey, SECP256K1_EC_COMPRESSED);
                 return result;
             }
-            return std::vector<uint8_t>(_pubKey->data, _pubKey->data + sizeof(_pubKey->data));
+            return std::vector<uint8_t>(_pubKey.data, _pubKey.data + sizeof(_pubKey.data));
 
         }
-
-        void SECP256k1Point::ensurePubkeyIsNotNull() const {
-            if (_pubKey == nullptr)
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Public key is null, cannot do any computation on the point.");
-        }
-
     }
 }

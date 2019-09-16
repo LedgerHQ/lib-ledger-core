@@ -39,21 +39,16 @@ namespace ledger {
     namespace core {
         class SECP256k1Point {
         public:
-            SECP256k1Point(const std::vector<uint8_t>& p);
-            SECP256k1Point operator+(const SECP256k1Point& p) const;
+            explicit SECP256k1Point(const std::vector<uint8_t>& p);
             SECP256k1Point generatorMultiply(const std::vector<uint8_t>& n) const;
-            SECP256k1Point(const SECP256k1Point& p);
+            SECP256k1Point(SECP256k1Point&& p) = default;
+            SECP256k1Point(const SECP256k1Point& p) = delete;
+            SECP256k1Point& operator=(const SECP256k1Point& p) = delete;
             std::vector<uint8_t> toByteArray(bool compressed = true) const;
-            SECP256k1Point& operator=(const SECP256k1Point& p);
-            bool isAtInfinity() const;
-            ~SECP256k1Point();
-        protected:
-            SECP256k1Point();
-            void ensurePubkeyIsNotNull() const;
-
         private:
-            secp256k1_context* _context;
-            secp256k1_pubkey* _pubKey;
+            using ContextUniqPtr = std::unique_ptr<secp256k1_context, decltype(&secp256k1_context_destroy)>;
+            static ContextUniqPtr _context;
+            secp256k1_pubkey _pubKey;
         };
     }
 }

@@ -113,9 +113,8 @@ namespace ledger {
                 throw Exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Cannot derive key - IL >= N");
             }
 
-            SECP256k1Point K = SECP256k1Point(_key).generatorMultiply(IL.toByteArray());
             return DeterministicPublicKey(
-                    K.toByteArray(),
+                    SECP256k1Point(_key).generatorMultiply(IL.toByteArray()).toByteArray(),
                     IR,
                     childIndex,
                     _depth + 1,
