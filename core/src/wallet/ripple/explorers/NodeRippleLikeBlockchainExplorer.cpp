@@ -154,18 +154,27 @@ namespace ledger {
                             !json["result"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"result\" in response");
                         }
-                        //Is there an tx_json field ?
+
                         auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("tx_json") || !resultObj["tx_json"].IsObject()) {
+
+                        if (resultObj.HasMember("engine_result") && resultObj["engine_result"] == "tesSUCCESS") {
+                          // Check presence of tx_json field
+                          if (!resultObj.HasMember("tx_json") || !resultObj["tx_json"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"tx_json\" in response");
+                          }
+                          auto txnObj = resultObj["tx_json"].GetObject();
+
+                          // Check presence of hash field
+                          if (!txnObj.HasMember("hash") || !txnObj["hash"].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
+                          }
+
+                          return txnObj["hash"].GetString();
                         }
 
-                        //Is there an hash field ?
-                        auto jsonObj = resultObj["tx_json"].GetObject();
-                        if (!jsonObj.HasMember("hash") || !jsonObj["hash"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
-                        }
-                        return jsonObj["hash"].GetString();
+                        throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                             "Failed to broadcast transaction: {}",
+                                             resultObj["engine_result"].GetString());
                     });
         }
 
@@ -180,7 +189,7 @@ namespace ledger {
         Future<Bytes> NodeRippleLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("tx");
-            bodyRequest.pushParameter("trasnaction", transactionHash);
+            bodyRequest.pushParameter("transaction", transactionHash);
             bodyRequest.pushParameter("binary", "true");
             auto requestBody = bodyRequest.getString();
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
