@@ -411,6 +411,21 @@ namespace ledger {
                             {}
                     );
                     return STAKENET;
+                } else if (networkName == "hatch") {
+                    static const api::BitcoinLikeNetworkParameters HATCH(
+                            "hatch",
+                            {0x4C},
+                            {0x01},
+                            {0x02, 0xFE, 0x52, 0xF8},
+                            api::BitcoinLikeFeePolicy::PER_BYTE,
+                            10000,
+                            "Hatch Signed Message:\n",
+                            false,
+                            0,
+                            {sigHashType::SIGHASH_ALL},
+                            {}
+                    );
+                    return HATCH;
                 }
 
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
@@ -459,7 +474,8 @@ namespace ledger {
                 getNetworkParameters("pivx"),
                 getNetworkParameters("clubcoin"),
                 getNetworkParameters("decred"),
-                getNetworkParameters("stakenet")
+                getNetworkParameters("stakenet"),
+                getNetworkParameters("hatch")
             });
         }
     }

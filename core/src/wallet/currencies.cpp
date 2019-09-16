@@ -239,6 +239,14 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("stakenet", 8, "XSN");
 
+            const api::Currency HATCH =
+                    Currency("hatch")
+                            .forkOfBitcoin(networks::getNetworkParameters("hatch"))
+                            .bip44(88888888)
+                            .paymentUri("hatch")
+                            .unit("satoshi", 0, "satoshi")
+                            .unit("hatch", 8, "HATCH");
+
             //Reference for ETH coinTypes: https://github.com/LedgerHQ/ledger-live-common/blob/b0196ae9031447f41f8e641f0ec5d3e2b72be83c/src/data/cryptocurrencies.js
             const api::Currency ETHEREUM =
                     Currency("ethereum")
@@ -305,6 +313,7 @@ namespace ledger {
                 CLUBCOIN,
                 DECRED,
                 STAKENET,
+                HATCH,
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
                 ETHEREUM_CLASSIC,
