@@ -135,15 +135,16 @@ const char descriptor_table_protodef_commands_2eproto[] =
   "est_body\030\002 \001(\014\"4\n\014CoreResponse\022\025\n\rrespon"
   "se_body\030\001 \001(\014\022\r\n\005error\030\002 \001(\t\"A\n\022GetVersi"
   "onResponse\022\r\n\005major\030\001 \001(\005\022\r\n\005minor\030\002 \001(\005"
-  "\022\r\n\005patch\030\003 \001(\005*u\n\017CoreRequestType\022\017\n\013GE"
-  "T_VERSION\020\000\022\025\n\021SET_CONFIGURATION\020\001\022\023\n\017BI"
-  "TCOIN_REQUEST\020\002\022\024\n\020ETHEREUM_REQUEST\020\003\022\017\n"
-  "\013XRP_REQUEST\020\004b\006proto3"
+  "\022\r\n\005patch\030\003 \001(\005*\210\001\n\017CoreRequestType\022\017\n\013G"
+  "ET_VERSION\020\000\022\025\n\021SET_CONFIGURATION\020\001\022\023\n\017B"
+  "ITCOIN_REQUEST\020\002\022\024\n\020ETHEREUM_REQUEST\020\003\022\017"
+  "\n\013XRP_REQUEST\020\004\022\021\n\rUTILS_REQUEST\020\005b\006prot"
+  "o3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_commands_2eproto = {
   false, InitDefaults_commands_2eproto, 
   descriptor_table_protodef_commands_2eproto,
-  "commands.proto", &assign_descriptors_table_commands_2eproto, 382,
+  "commands.proto", &assign_descriptors_table_commands_2eproto, 402,
 };
 
 void AddDescriptors_commands_2eproto() {
@@ -169,6 +170,7 @@ bool CoreRequestType_IsValid(int value) {
     case 2:
     case 3:
     case 4:
+    case 5:
       return true;
     default:
       return false;

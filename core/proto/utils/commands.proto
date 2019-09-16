@@ -1,0 +1,21 @@
+syntax = "proto3";
+package ledger.core.message.utils;
+
+// Create "xpub" from points in hex (x and y coordinates)
+message CreateXpubFromPointsRequest {
+    // point in hex
+    string public_point = 1;
+    string version_prefix = 2;
+    // optional parent point in hex
+    string parent_public_point = 3;
+}
+
+message CreateXpubFromPointsResponse {
+    string xpub = 1;
+}
+
+message UtilsRequest {
+    oneof request {
+        CreateXpubFromPointsRequest xpub_from_points = 1;
+    }
+}

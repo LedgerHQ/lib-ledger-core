@@ -81,12 +81,13 @@ enum CoreRequestType {
   BITCOIN_REQUEST = 2,
   ETHEREUM_REQUEST = 3,
   XRP_REQUEST = 4,
+  UTILS_REQUEST = 5,
   CoreRequestType_INT_MIN_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::google::protobuf::int32>::min(),
   CoreRequestType_INT_MAX_SENTINEL_DO_NOT_USE_ = std::numeric_limits<::google::protobuf::int32>::max()
 };
 bool CoreRequestType_IsValid(int value);
 const CoreRequestType CoreRequestType_MIN = GET_VERSION;
-const CoreRequestType CoreRequestType_MAX = XRP_REQUEST;
+const CoreRequestType CoreRequestType_MAX = UTILS_REQUEST;
 const int CoreRequestType_ARRAYSIZE = CoreRequestType_MAX + 1;
 
 const ::google::protobuf::EnumDescriptor* CoreRequestType_descriptor();

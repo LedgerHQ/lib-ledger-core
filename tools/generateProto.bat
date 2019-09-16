@@ -2,6 +2,8 @@ protoc -I ../core/proto --cpp_out ../core/src/commands/messages --js_out=import_
 protoc -I ../core/proto --cpp_out ../core/src/commands/messages --js_out=import_style=commonjs,binary:../node-binding/messages ../core/proto/core_configuration.proto
 protoc -I ../core/proto --cpp_out ../core/src/commands/messages --js_out=import_style=commonjs,binary:../node-binding/messages ../core/proto/services.proto
 
+protoc -I ../core/proto --cpp_out ../core/src/commands/messages --js_out=import_style=commonjs,binary:../node-binding/messages ../core/proto/utils/commands.proto
+
 protoc -I ../core/proto --cpp_out ../core/src/commands/messages --js_out=import_style=commonjs,binary:../node-binding/messages ../core/proto/bitcoin/account.proto
 protoc -I ../core/proto --cpp_out ../core/src/commands/messages --js_out=import_style=commonjs,binary:../node-binding/messages ../core/proto/bitcoin/commands.proto
 protoc -I ../core/proto --cpp_out ../core/src/commands/messages --js_out=import_style=commonjs,binary:../node-binding/messages ../core/proto/bitcoin/currency.proto

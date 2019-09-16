@@ -36,15 +36,6 @@ list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 add_library(ledger-core-interface INTERFACE)
 
 find_package(protobuf REQUIRED)
-add_library(ledger-core-proto STATIC)
-protobuf_generate(
-        LANGUAGE CPP
-        TARGET ledger-core-proto
-        APPEND_PATH ${PATH_TO_PROTO}
-        PROTOS ${ProtoFiles})
-
-target_link_libraries(ledger-core-proto PRIVATE libprotobuf)
-target_link_libraries(ledger-core-interface INTERFACE ledger-core-proto)
 
 if (ANDROID)
     target_link_libraries(ledger-core-interface INTERFACE log)

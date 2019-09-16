@@ -617,7 +617,8 @@ proto.ledger.core.message.CoreRequestType = {
   SET_CONFIGURATION: 1,
   BITCOIN_REQUEST: 2,
   ETHEREUM_REQUEST: 3,
-  XRP_REQUEST: 4
+  XRP_REQUEST: 4,
+  UTILS_REQUEST: 5
 };
 
 goog.object.extend(exports, proto.ledger.core.message);
