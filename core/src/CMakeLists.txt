@@ -35,8 +35,6 @@ list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
 add_library(ledger-core-interface INTERFACE)
 
-find_package(protobuf REQUIRED)
-
 if (ANDROID)
     target_link_libraries(ledger-core-interface INTERFACE log)
 endif()
