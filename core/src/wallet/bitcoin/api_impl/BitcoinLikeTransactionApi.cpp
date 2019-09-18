@@ -268,12 +268,15 @@ namespace ledger {
             return writer.toByteArray();
         }
 
-        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) {
+        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures, bool overrid) {
             if (signatures.size() != _inputs.size()) {
                 return api::BitcoinLikeSignatureState::MISSING_DATA;
             }
             for (std::size_t i = 0; i < signatures.size(); ++i) {
-                if (_inputs[i]->getScriptSig().size() > 0) {
+                if (overrid == true ) {
+                    _inputs[i]->setScriptSig(std::vector<uint8_t>{});
+                }
+                else if (_inputs[i]->getScriptSig().size() > 0) {
                     return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
                 }
                 BytesWriter writer;
@@ -301,12 +304,15 @@ namespace ledger {
             return api::BitcoinLikeSignatureState::SIGNING_SUCCEED;
         }
 
-        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) {
+        api::BitcoinLikeSignatureState BitcoinLikeTransactionApi::setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures, bool override) {
             if (signatures.size() != _inputs.size()) {
                 return api::BitcoinLikeSignatureState::MISSING_DATA;
             }
             for (std::size_t i = 0; i < signatures.size(); ++i) {
-                if (_inputs[i]->getScriptSig().size() > 0) {
+                if (override == true) {
+                    _inputs[i]->setScriptSig(std::vector<uint8_t>{});
+                }
+                else if (_inputs[i]->getScriptSig().size() > 0) {
                     return api::BitcoinLikeSignatureState::ALREADY_SIGNED;
                 }
                 _inputs[i]->setP2PKHSigScript(signatures[i]);

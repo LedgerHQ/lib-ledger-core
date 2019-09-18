@@ -113,9 +113,9 @@ namespace ledger {
 
             int32_t getVersion() override;
             
-            api::BitcoinLikeSignatureState setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures) override;
+            api::BitcoinLikeSignatureState setSignatures(const std::vector<api::BitcoinLikeSignature> & signatures, bool override = false) override;
 
-            api::BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) override;
+            api::BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures, bool override = false) override;
 
             BitcoinLikeTransactionApi &addInput(const std::shared_ptr<BitcoinLikeWritableInputApi> &input);
 

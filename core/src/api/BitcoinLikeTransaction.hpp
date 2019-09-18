@@ -83,13 +83,13 @@ public:
      * Build DER encoded signature from RSV data.
      * @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
      */
-    virtual BitcoinLikeSignatureState setSignatures(const std::vector<BitcoinLikeSignature> & signatures) = 0;
+    virtual BitcoinLikeSignatureState setSignatures(const std::vector<BitcoinLikeSignature> & signatures, bool override) = 0;
 
     /**
      * Sign all inputs for given transaction. 
      * @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
      */
-    virtual BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures) = 0;
+    virtual BitcoinLikeSignatureState setDERSignatures(const std::vector<std::vector<uint8_t>> & signatures, bool override) = 0;
 };
 
 } } }  // namespace ledger::core::api

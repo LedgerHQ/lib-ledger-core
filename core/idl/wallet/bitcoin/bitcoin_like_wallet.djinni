@@ -171,10 +171,10 @@ BitcoinLikeTransaction = interface +c {
     # Sign all inputs for given transaction. 
     # Build DER encoded signature from RSV data.
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
-    setSignatures(signatures: list<BitcoinLikeSignature>): BitcoinLikeSignatureState;
+    setSignatures(signatures: list<BitcoinLikeSignature>, override: bool): BitcoinLikeSignatureState;
     # Sign all inputs for given transaction. 
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
-    setDERSignatures(signatures: list<binary>): BitcoinLikeSignatureState;
+    setDERSignatures(signatures: list<binary>, override: bool): BitcoinLikeSignatureState;
 }
 
 # Class representing a Bitcoin Operation.
