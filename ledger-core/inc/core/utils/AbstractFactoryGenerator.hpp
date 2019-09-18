@@ -31,15 +31,19 @@
 
 #pragma once 
 
-#include <map>
 #include <memory>
 #include <type_traits>
+#include <unordered_map>
 
 namespace ledger
 {
 namespace core
 {
 
+/**
+ * The purpose of this class is to hold at runtime a bunch of abstract factories
+ * and it offers a way to make them on the fly thanks to unique keys.
+ */
 template <typename Key, typename T>
 class AbstractFactoryGenerator 
 {
@@ -52,15 +56,17 @@ public:
     using key_type = std::decay_t<Key>;
     using value_type = std::shared_ptr<T>;
 
-    AbstractFactoryGenerator() = default;
-    ~AbstractFactoryGenerator() = default;
+    // Add - or replace if factory already exist - a new factory identifies by the key
+    value_type learn(key_type const& key, value_type const& factory);
 
-    value_type add(key_type const& key, value_type const& factory);
-    void remove(key_type const& key);
+    // Remove the factory identifies by the key
+    void forget(key_type const& key);
+
+    // Find the factory identifies by the key and create a sharable instance of it
     value_type make(key_type const& key) const;
 
 private:
-    std::map<key_type, value_type> factories_;
+    std::unordered_map<key_type, value_type> factories_;
 };
 
 } // namespace core
