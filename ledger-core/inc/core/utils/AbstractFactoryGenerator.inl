@@ -37,7 +37,7 @@ namespace core
 {
 
 template <typename Key, typename T>
-typename AbstractFactoryGenerator<Key, T>::value_type AbstractFactoryGenerator<Key, T>::add(
+typename AbstractFactoryGenerator<Key, T>::value_type AbstractFactoryGenerator<Key, T>::learn(
     key_type const& key, value_type const& factory)
 {
     auto it = factories_.find(key);
@@ -53,7 +53,7 @@ typename AbstractFactoryGenerator<Key, T>::value_type AbstractFactoryGenerator<K
 }
 
 template <typename Key, typename T>
-void AbstractFactoryGenerator<Key, T>::remove(key_type const& key)
+void AbstractFactoryGenerator<Key, T>::forget(key_type const& key)
 {
     auto it = factories_.find(key);
 
