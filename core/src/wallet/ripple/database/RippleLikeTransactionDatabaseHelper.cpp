@@ -48,7 +48,7 @@ namespace ledger {
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
                     " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
                     "block.height, block.hash, block.time, block.currency_name, "
-                    "memo.data, memo.fmt, memo.ty "
+                    "memo.data, memo.fmt, memo.ty, tx.sequence "
                     "FROM ripple_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
                     "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
@@ -91,6 +91,8 @@ namespace ledger {
                         row.get<std::string>(13)
                 ));
             }
+
+            tx.sequence = BigInt(row.get<std::string>(14));
 
             return true;
         }
