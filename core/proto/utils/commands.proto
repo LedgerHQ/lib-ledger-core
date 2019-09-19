@@ -3,11 +3,12 @@ package ledger.core.message.utils;
 
 // Create "xpub" from points in hex (x and y coordinates)
 message CreateXpubFromPointsRequest {
-    // point in hex
-    string public_point = 1;
-    string version_prefix = 2;
-    // optional parent point in hex
+    string version_prefix = 1;
+    uint32 depth = 2;
     string parent_public_point = 3;
+    uint32 index = 4;
+    string chain_code = 5;
+    string public_point = 6;
 }
 
 message CreateXpubFromPointsResponse {

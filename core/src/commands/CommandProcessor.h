@@ -14,6 +14,7 @@ namespace ledger {
 
         class AsioExecutionContext;
         class BitcoinLikeCommandProcessor;
+        class UtilsCommandProcessor;
         class LogPrinter;
         class PathResolver;
         class ThreadDispatcher;
@@ -25,14 +26,20 @@ namespace ledger {
             void OnRequest(std::vector<uint8_t>&& data, std::function<void(std::vector<uint8_t>&&)>&& callback);
             void OnNotification(std::vector<uint8_t>&& data);
         private:
-            std::shared_ptr<AsioExecutionContext> _executionContext;
             std::once_flag _startExecutionContext;
+
+            // services
+            std::shared_ptr<AsioExecutionContext> _executionContext;
             std::shared_ptr<WrapperHttpClient> _httpClient;
             std::shared_ptr<PathResolver> _pathResolver;
             std::shared_ptr<ThreadDispatcher> _threadDispathcher;
             std::shared_ptr<LogPrinter> _logPrinter;
-            std::unique_ptr<BitcoinLikeCommandProcessor> _bitcoinLikeProcessor;
+            
             std::shared_ptr<WalletPool> _walletPool;
+
+            //processors
+            std::unique_ptr<BitcoinLikeCommandProcessor> _bitcoinLikeProcessor;
+            std::unique_ptr<UtilsCommandProcessor> _utilsProcessor;
         private:
             Future<message::CoreResponse> processRequest(const message::CoreRequest&& request);
         };

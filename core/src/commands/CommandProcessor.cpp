@@ -5,6 +5,7 @@
 #include "async/Future.hpp"
 #include "utils/Try.hpp"
 #include "commands/BitcoinLikeProcessor.h"
+#include "commands/UtilsCommandProcessor.h"
 #include "commands.pb.h"
 #include "core_configuration.pb.h"
 #include "commands/PathResolver.hpp"
@@ -103,6 +104,7 @@ namespace ledger {
                         dbBackend,
                         config);
                     _bitcoinLikeProcessor = std::make_unique<BitcoinLikeCommandProcessor>(_walletPool);
+                    _utilsProcessor = std::make_unique<UtilsCommandProcessor>();
                     CoreResponse resp;
                     return Future<CoreResponse>::successful(resp);
                 }
@@ -112,12 +114,21 @@ namespace ledger {
             }
             case CoreRequestType::BITCOIN_REQUEST: {
                 return _bitcoinLikeProcessor->processRequest(request.request_body())
-                    .map<CoreResponse>(_walletPool->getContext(), [](const std::string& buff) {
+                    .map<CoreResponse>(_executionContext, [](const std::string& buff) {
                         CoreResponse resp;
                         resp.set_response_body(buff);
                         std::string temp_debub = resp.SerializeAsString();
                         return resp;
                     });
+            }
+            case CoreRequestType::UTILS_REQUEST: {
+                return _utilsProcessor->processRequest(request.request_body())
+                    .map<CoreResponse>(_executionContext, [](const std::string& buff) {
+                    CoreResponse resp;
+                    resp.set_response_body(buff);
+                    std::string temp_debub = resp.SerializeAsString();
+                    return resp;
+                        });
             }
             default:
                 CoreResponse resp;

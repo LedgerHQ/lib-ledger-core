@@ -118,3 +118,11 @@ TEST(Address, FromBech32Address) {
         EXPECT_EQ(address->toBech32(), test.first);
     }
 }
+
+TEST(Address, CreateXpub) {
+    auto conf = std::make_shared<ledger::core::DynamicObject>();
+
+    auto liveData = Base58::decode("xpub6BezZZ1HGWH3iGguzANbj6zLM4hqjGcpPUtTTwmSUc2DSEybcHSn5BUp5pVH562sWQPCh8qgNZE1NKB4RYL2aEReu4kxBCEYf5nXvsERbxW", conf);
+    auto myData = Base58::decode("xpub6BezZZ19T52Wo8fgtVNT87SzZ9qq3sRbhEjtE4F7fRx1XCiuaFfqgbrGsxtmNiNhbA5BSz4amDm52YSMdR2WaeksKAMuZE744EjiAUiVsEB", conf);
+    int k = liveData.size() + myData.size();
+}

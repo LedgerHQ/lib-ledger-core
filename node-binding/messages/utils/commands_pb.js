@@ -107,9 +107,12 @@ proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.toObject =
  */
 proto.ledger.core.message.utils.CreateXpubFromPointsRequest.toObject = function(includeInstance, msg) {
   var f, obj = {
-    publicPoint: jspb.Message.getFieldWithDefault(msg, 1, ""),
-    versionPrefix: jspb.Message.getFieldWithDefault(msg, 2, ""),
-    parentPublicPoint: jspb.Message.getFieldWithDefault(msg, 3, "")
+    versionPrefix: jspb.Message.getFieldWithDefault(msg, 1, ""),
+    depth: jspb.Message.getFieldWithDefault(msg, 2, 0),
+    parentPublicPoint: jspb.Message.getFieldWithDefault(msg, 3, ""),
+    index: jspb.Message.getFieldWithDefault(msg, 4, 0),
+    chainCode: jspb.Message.getFieldWithDefault(msg, 5, ""),
+    publicPoint: jspb.Message.getFieldWithDefault(msg, 6, "")
   };
 
   if (includeInstance) {
@@ -148,15 +151,27 @@ proto.ledger.core.message.utils.CreateXpubFromPointsRequest.deserializeBinaryFro
     switch (field) {
     case 1:
       var value = /** @type {string} */ (reader.readString());
-      msg.setPublicPoint(value);
+      msg.setVersionPrefix(value);
       break;
     case 2:
-      var value = /** @type {string} */ (reader.readString());
-      msg.setVersionPrefix(value);
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setDepth(value);
       break;
     case 3:
       var value = /** @type {string} */ (reader.readString());
       msg.setParentPublicPoint(value);
+      break;
+    case 4:
+      var value = /** @type {number} */ (reader.readUint32());
+      msg.setIndex(value);
+      break;
+    case 5:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setChainCode(value);
+      break;
+    case 6:
+      var value = /** @type {string} */ (reader.readString());
+      msg.setPublicPoint(value);
       break;
     default:
       reader.skipField();
@@ -187,16 +202,16 @@ proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.serializeB
  */
 proto.ledger.core.message.utils.CreateXpubFromPointsRequest.serializeBinaryToWriter = function(message, writer) {
   var f = undefined;
-  f = message.getPublicPoint();
+  f = message.getVersionPrefix();
   if (f.length > 0) {
     writer.writeString(
       1,
       f
     );
   }
-  f = message.getVersionPrefix();
-  if (f.length > 0) {
-    writer.writeString(
+  f = message.getDepth();
+  if (f !== 0) {
+    writer.writeUint32(
       2,
       f
     );
@@ -208,36 +223,57 @@ proto.ledger.core.message.utils.CreateXpubFromPointsRequest.serializeBinaryToWri
       f
     );
   }
+  f = message.getIndex();
+  if (f !== 0) {
+    writer.writeUint32(
+      4,
+      f
+    );
+  }
+  f = message.getChainCode();
+  if (f.length > 0) {
+    writer.writeString(
+      5,
+      f
+    );
+  }
+  f = message.getPublicPoint();
+  if (f.length > 0) {
+    writer.writeString(
+      6,
+      f
+    );
+  }
 };
 
 
 /**
- * optional string public_point = 1;
+ * optional string version_prefix = 1;
  * @return {string}
  */
-proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getPublicPoint = function() {
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getVersionPrefix = function() {
   return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 1, ""));
 };
 
 
 /** @param {string} value */
-proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setPublicPoint = function(value) {
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setVersionPrefix = function(value) {
   jspb.Message.setProto3StringField(this, 1, value);
 };
 
 
 /**
- * optional string version_prefix = 2;
- * @return {string}
+ * optional uint32 depth = 2;
+ * @return {number}
  */
-proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getVersionPrefix = function() {
-  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 2, ""));
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getDepth = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 2, 0));
 };
 
 
-/** @param {string} value */
-proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setVersionPrefix = function(value) {
-  jspb.Message.setProto3StringField(this, 2, value);
+/** @param {number} value */
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setDepth = function(value) {
+  jspb.Message.setProto3IntField(this, 2, value);
 };
 
 
@@ -253,6 +289,51 @@ proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getParentP
 /** @param {string} value */
 proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setParentPublicPoint = function(value) {
   jspb.Message.setProto3StringField(this, 3, value);
+};
+
+
+/**
+ * optional uint32 index = 4;
+ * @return {number}
+ */
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getIndex = function() {
+  return /** @type {number} */ (jspb.Message.getFieldWithDefault(this, 4, 0));
+};
+
+
+/** @param {number} value */
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setIndex = function(value) {
+  jspb.Message.setProto3IntField(this, 4, value);
+};
+
+
+/**
+ * optional string chain_code = 5;
+ * @return {string}
+ */
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getChainCode = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 5, ""));
+};
+
+
+/** @param {string} value */
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setChainCode = function(value) {
+  jspb.Message.setProto3StringField(this, 5, value);
+};
+
+
+/**
+ * optional string public_point = 6;
+ * @return {string}
+ */
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.getPublicPoint = function() {
+  return /** @type {string} */ (jspb.Message.getFieldWithDefault(this, 6, ""));
+};
+
+
+/** @param {string} value */
+proto.ledger.core.message.utils.CreateXpubFromPointsRequest.prototype.setPublicPoint = function(value) {
+  jspb.Message.setProto3StringField(this, 6, value);
 };
 
 

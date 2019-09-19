@@ -42,9 +42,7 @@ namespace ledger {
          static std::string bytesToHexHash(const std::vector<uint8_t>& bytes);
          static std::vector<uint8_t> stringToBytesHash(const std::string& input);
          static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
-
-     private:
-         static std::vector<uint8_t> dataToBytesHash(const void *data, size_t size);
+         static std::vector<uint8_t> dataToBytesHash(const void* data, size_t size);
      };
  }
 }

@@ -174,23 +174,9 @@ class CreateXpubFromPointsRequest :
 
   // accessors -------------------------------------------------------
 
-  // string public_point = 1;
-  void clear_public_point();
-  static const int kPublicPointFieldNumber = 1;
-  const ::std::string& public_point() const;
-  void set_public_point(const ::std::string& value);
-  #if LANG_CXX11
-  void set_public_point(::std::string&& value);
-  #endif
-  void set_public_point(const char* value);
-  void set_public_point(const char* value, size_t size);
-  ::std::string* mutable_public_point();
-  ::std::string* release_public_point();
-  void set_allocated_public_point(::std::string* public_point);
-
-  // string version_prefix = 2;
+  // string version_prefix = 1;
   void clear_version_prefix();
-  static const int kVersionPrefixFieldNumber = 2;
+  static const int kVersionPrefixFieldNumber = 1;
   const ::std::string& version_prefix() const;
   void set_version_prefix(const ::std::string& value);
   #if LANG_CXX11
@@ -216,14 +202,57 @@ class CreateXpubFromPointsRequest :
   ::std::string* release_parent_public_point();
   void set_allocated_parent_public_point(::std::string* parent_public_point);
 
+  // string chain_code = 5;
+  void clear_chain_code();
+  static const int kChainCodeFieldNumber = 5;
+  const ::std::string& chain_code() const;
+  void set_chain_code(const ::std::string& value);
+  #if LANG_CXX11
+  void set_chain_code(::std::string&& value);
+  #endif
+  void set_chain_code(const char* value);
+  void set_chain_code(const char* value, size_t size);
+  ::std::string* mutable_chain_code();
+  ::std::string* release_chain_code();
+  void set_allocated_chain_code(::std::string* chain_code);
+
+  // string public_point = 6;
+  void clear_public_point();
+  static const int kPublicPointFieldNumber = 6;
+  const ::std::string& public_point() const;
+  void set_public_point(const ::std::string& value);
+  #if LANG_CXX11
+  void set_public_point(::std::string&& value);
+  #endif
+  void set_public_point(const char* value);
+  void set_public_point(const char* value, size_t size);
+  ::std::string* mutable_public_point();
+  ::std::string* release_public_point();
+  void set_allocated_public_point(::std::string* public_point);
+
+  // uint32 depth = 2;
+  void clear_depth();
+  static const int kDepthFieldNumber = 2;
+  ::google::protobuf::uint32 depth() const;
+  void set_depth(::google::protobuf::uint32 value);
+
+  // uint32 index = 4;
+  void clear_index();
+  static const int kIndexFieldNumber = 4;
+  ::google::protobuf::uint32 index() const;
+  void set_index(::google::protobuf::uint32 value);
+
   // @@protoc_insertion_point(class_scope:ledger.core.message.utils.CreateXpubFromPointsRequest)
  private:
   class HasBitSetters;
 
   ::google::protobuf::internal::InternalMetadataWithArena _internal_metadata_;
-  ::google::protobuf::internal::ArenaStringPtr public_point_;
   ::google::protobuf::internal::ArenaStringPtr version_prefix_;
   ::google::protobuf::internal::ArenaStringPtr parent_public_point_;
+  ::google::protobuf::internal::ArenaStringPtr chain_code_;
+  ::google::protobuf::internal::ArenaStringPtr public_point_;
+  ::google::protobuf::uint32 depth_;
+  ::google::protobuf::uint32 index_;
   mutable ::google::protobuf::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_utils_2fcommands_2eproto;
 };
@@ -489,60 +518,7 @@ class UtilsRequest :
 #endif  // __GNUC__
 // CreateXpubFromPointsRequest
 
-// string public_point = 1;
-inline void CreateXpubFromPointsRequest::clear_public_point() {
-  public_point_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline const ::std::string& CreateXpubFromPointsRequest::public_point() const {
-  // @@protoc_insertion_point(field_get:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-  return public_point_.GetNoArena();
-}
-inline void CreateXpubFromPointsRequest::set_public_point(const ::std::string& value) {
-  
-  public_point_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
-  // @@protoc_insertion_point(field_set:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-}
-#if LANG_CXX11
-inline void CreateXpubFromPointsRequest::set_public_point(::std::string&& value) {
-  
-  public_point_.SetNoArena(
-    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
-  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-}
-#endif
-inline void CreateXpubFromPointsRequest::set_public_point(const char* value) {
-  GOOGLE_DCHECK(value != nullptr);
-  
-  public_point_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
-  // @@protoc_insertion_point(field_set_char:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-}
-inline void CreateXpubFromPointsRequest::set_public_point(const char* value, size_t size) {
-  
-  public_point_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-      ::std::string(reinterpret_cast<const char*>(value), size));
-  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-}
-inline ::std::string* CreateXpubFromPointsRequest::mutable_public_point() {
-  
-  // @@protoc_insertion_point(field_mutable:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-  return public_point_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline ::std::string* CreateXpubFromPointsRequest::release_public_point() {
-  // @@protoc_insertion_point(field_release:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-  
-  return public_point_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-}
-inline void CreateXpubFromPointsRequest::set_allocated_public_point(::std::string* public_point) {
-  if (public_point != nullptr) {
-    
-  } else {
-    
-  }
-  public_point_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), public_point);
-  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
-}
-
-// string version_prefix = 2;
+// string version_prefix = 1;
 inline void CreateXpubFromPointsRequest::clear_version_prefix() {
   version_prefix_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
@@ -593,6 +569,20 @@ inline void CreateXpubFromPointsRequest::set_allocated_version_prefix(::std::str
   }
   version_prefix_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), version_prefix);
   // @@protoc_insertion_point(field_set_allocated:ledger.core.message.utils.CreateXpubFromPointsRequest.version_prefix)
+}
+
+// uint32 depth = 2;
+inline void CreateXpubFromPointsRequest::clear_depth() {
+  depth_ = 0u;
+}
+inline ::google::protobuf::uint32 CreateXpubFromPointsRequest::depth() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.utils.CreateXpubFromPointsRequest.depth)
+  return depth_;
+}
+inline void CreateXpubFromPointsRequest::set_depth(::google::protobuf::uint32 value) {
+  
+  depth_ = value;
+  // @@protoc_insertion_point(field_set:ledger.core.message.utils.CreateXpubFromPointsRequest.depth)
 }
 
 // string parent_public_point = 3;
@@ -646,6 +636,126 @@ inline void CreateXpubFromPointsRequest::set_allocated_parent_public_point(::std
   }
   parent_public_point_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), parent_public_point);
   // @@protoc_insertion_point(field_set_allocated:ledger.core.message.utils.CreateXpubFromPointsRequest.parent_public_point)
+}
+
+// uint32 index = 4;
+inline void CreateXpubFromPointsRequest::clear_index() {
+  index_ = 0u;
+}
+inline ::google::protobuf::uint32 CreateXpubFromPointsRequest::index() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.utils.CreateXpubFromPointsRequest.index)
+  return index_;
+}
+inline void CreateXpubFromPointsRequest::set_index(::google::protobuf::uint32 value) {
+  
+  index_ = value;
+  // @@protoc_insertion_point(field_set:ledger.core.message.utils.CreateXpubFromPointsRequest.index)
+}
+
+// string chain_code = 5;
+inline void CreateXpubFromPointsRequest::clear_chain_code() {
+  chain_code_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& CreateXpubFromPointsRequest::chain_code() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+  return chain_code_.GetNoArena();
+}
+inline void CreateXpubFromPointsRequest::set_chain_code(const ::std::string& value) {
+  
+  chain_code_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+}
+#if LANG_CXX11
+inline void CreateXpubFromPointsRequest::set_chain_code(::std::string&& value) {
+  
+  chain_code_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+}
+#endif
+inline void CreateXpubFromPointsRequest::set_chain_code(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  chain_code_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+}
+inline void CreateXpubFromPointsRequest::set_chain_code(const char* value, size_t size) {
+  
+  chain_code_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+}
+inline ::std::string* CreateXpubFromPointsRequest::mutable_chain_code() {
+  
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+  return chain_code_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* CreateXpubFromPointsRequest::release_chain_code() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+  
+  return chain_code_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void CreateXpubFromPointsRequest::set_allocated_chain_code(::std::string* chain_code) {
+  if (chain_code != nullptr) {
+    
+  } else {
+    
+  }
+  chain_code_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), chain_code);
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code)
+}
+
+// string public_point = 6;
+inline void CreateXpubFromPointsRequest::clear_public_point() {
+  public_point_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& CreateXpubFromPointsRequest::public_point() const {
+  // @@protoc_insertion_point(field_get:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
+  return public_point_.GetNoArena();
+}
+inline void CreateXpubFromPointsRequest::set_public_point(const ::std::string& value) {
+  
+  public_point_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
+}
+#if LANG_CXX11
+inline void CreateXpubFromPointsRequest::set_public_point(::std::string&& value) {
+  
+  public_point_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
+}
+#endif
+inline void CreateXpubFromPointsRequest::set_public_point(const char* value) {
+  GOOGLE_DCHECK(value != nullptr);
+  
+  public_point_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
+}
+inline void CreateXpubFromPointsRequest::set_public_point(const char* value, size_t size) {
+  
+  public_point_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
+}
+inline ::std::string* CreateXpubFromPointsRequest::mutable_public_point() {
+  
+  // @@protoc_insertion_point(field_mutable:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
+  return public_point_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* CreateXpubFromPointsRequest::release_public_point() {
+  // @@protoc_insertion_point(field_release:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
+  
+  return public_point_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void CreateXpubFromPointsRequest::set_allocated_public_point(::std::string* public_point) {
+  if (public_point != nullptr) {
+    
+  } else {
+    
+  }
+  public_point_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), public_point);
+  // @@protoc_insertion_point(field_set_allocated:ledger.core.message.utils.CreateXpubFromPointsRequest.public_point)
 }
 
 // -------------------------------------------------------------------

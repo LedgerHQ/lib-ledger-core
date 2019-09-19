@@ -38,7 +38,7 @@
 #include <crypto/Keccak.h>
 
 using namespace ledger::core;
-static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
+const std::string Base58::BITCOIN_BASE58_DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
 static const ledger::core::BigInt V_58(58);
 
 static void _encode(const ledger::core::BigInt& v,
@@ -57,7 +57,7 @@ static std::string getNetworkIdentifier(const std::shared_ptr<api::DynamicObject
 }
 
 static std::string getNetworkBase58Dictionary(const std::shared_ptr<api::DynamicObject> &config) {
-    return config->getString("base58Dictionary").value_or(DIGITS);
+    return config->getString("base58Dictionary").value_or(Base58::BITCOIN_BASE58_DIGITS);
 }
 
 static bool shouldUseNetworkBase58Dictionary(const std::shared_ptr<api::DynamicObject> &config) {
@@ -124,7 +124,7 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
     BigInt intData(0);
     std::vector<uint8_t> prefix;
     auto useBase58Dict = shouldUseNetworkBase58Dictionary(config);
-    auto base58Dictionary = useBase58Dict ? getNetworkBase58Dictionary(config) : DIGITS;
+    auto base58Dictionary = useBase58Dict ? getNetworkBase58Dictionary(config) : BITCOIN_BASE58_DIGITS;
     for (auto& c : str) {
         if (c == '1' && intData == BigInt::ZERO) {
             prefix.push_back(0);

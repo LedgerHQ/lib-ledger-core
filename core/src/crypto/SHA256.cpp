@@ -43,12 +43,12 @@ namespace ledger {
         }
 
         std::vector<uint8_t> SHA256::dataToBytesHash(const void *data, size_t size) {
-            uint8_t hash[SHA256_DIGEST_LENGTH];
+            std::vector<uint8_t> hash(SHA256_DIGEST_LENGTH);
             SHA256_CTX sha256;
             SHA256_Init(&sha256);
             SHA256_Update(&sha256, data, size);
-            SHA256_Final(hash, &sha256);
-            return std::vector<uint8_t >(hash, hash + SHA256_DIGEST_LENGTH);
+            SHA256_Final(&hash[0], &sha256);
+            return hash;
         }
         
         std::vector<uint8_t> SHA256::stringToBytesHash(const std::string &input) {

@@ -97,9 +97,12 @@ const ::google::protobuf::uint32 TableStruct_utils_2fcommands_2eproto::offsets[]
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
-  PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsRequest, public_point_),
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsRequest, version_prefix_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsRequest, depth_),
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsRequest, parent_public_point_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsRequest, index_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsRequest, chain_code_),
+  PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsRequest, public_point_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::ledger::core::message::utils::CreateXpubFromPointsResponse, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -116,8 +119,8 @@ const ::google::protobuf::uint32 TableStruct_utils_2fcommands_2eproto::offsets[]
 };
 static const ::google::protobuf::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, sizeof(::ledger::core::message::utils::CreateXpubFromPointsRequest)},
-  { 8, -1, sizeof(::ledger::core::message::utils::CreateXpubFromPointsResponse)},
-  { 14, -1, sizeof(::ledger::core::message::utils::UtilsRequest)},
+  { 11, -1, sizeof(::ledger::core::message::utils::CreateXpubFromPointsResponse)},
+  { 17, -1, sizeof(::ledger::core::message::utils::UtilsRequest)},
 };
 
 static ::google::protobuf::Message const * const file_default_instances[] = {
@@ -134,18 +137,20 @@ static ::google::protobuf::Message const * const file_default_instances[] = {
 
 const char descriptor_table_protodef_utils_2fcommands_2eproto[] =
   "\n\024utils/commands.proto\022\031ledger.core.mess"
-  "age.utils\"h\n\033CreateXpubFromPointsRequest"
-  "\022\024\n\014public_point\030\001 \001(\t\022\026\n\016version_prefix"
-  "\030\002 \001(\t\022\033\n\023parent_public_point\030\003 \001(\t\",\n\034C"
-  "reateXpubFromPointsResponse\022\014\n\004xpub\030\001 \001("
-  "\t\"m\n\014UtilsRequest\022R\n\020xpub_from_points\030\001 "
-  "\001(\01326.ledger.core.message.utils.CreateXp"
-  "ubFromPointsRequestH\000B\t\n\007requestb\006proto3"
+  "age.utils\"\232\001\n\033CreateXpubFromPointsReques"
+  "t\022\026\n\016version_prefix\030\001 \001(\t\022\r\n\005depth\030\002 \001(\r"
+  "\022\033\n\023parent_public_point\030\003 \001(\t\022\r\n\005index\030\004"
+  " \001(\r\022\022\n\nchain_code\030\005 \001(\t\022\024\n\014public_point"
+  "\030\006 \001(\t\",\n\034CreateXpubFromPointsResponse\022\014"
+  "\n\004xpub\030\001 \001(\t\"m\n\014UtilsRequest\022R\n\020xpub_fro"
+  "m_points\030\001 \001(\01326.ledger.core.message.uti"
+  "ls.CreateXpubFromPointsRequestH\000B\t\n\007requ"
+  "estb\006proto3"
   ;
 ::google::protobuf::internal::DescriptorTable descriptor_table_utils_2fcommands_2eproto = {
   false, InitDefaults_utils_2fcommands_2eproto, 
   descriptor_table_protodef_utils_2fcommands_2eproto,
-  "utils/commands.proto", &assign_descriptors_table_utils_2fcommands_2eproto, 320,
+  "utils/commands.proto", &assign_descriptors_table_utils_2fcommands_2eproto, 371,
 };
 
 void AddDescriptors_utils_2fcommands_2eproto() {
@@ -171,9 +176,12 @@ class CreateXpubFromPointsRequest::HasBitSetters {
 };
 
 #if !defined(_MSC_VER) || _MSC_VER >= 1900
-const int CreateXpubFromPointsRequest::kPublicPointFieldNumber;
 const int CreateXpubFromPointsRequest::kVersionPrefixFieldNumber;
+const int CreateXpubFromPointsRequest::kDepthFieldNumber;
 const int CreateXpubFromPointsRequest::kParentPublicPointFieldNumber;
+const int CreateXpubFromPointsRequest::kIndexFieldNumber;
+const int CreateXpubFromPointsRequest::kChainCodeFieldNumber;
+const int CreateXpubFromPointsRequest::kPublicPointFieldNumber;
 #endif  // !defined(_MSC_VER) || _MSC_VER >= 1900
 
 CreateXpubFromPointsRequest::CreateXpubFromPointsRequest()
@@ -185,10 +193,6 @@ CreateXpubFromPointsRequest::CreateXpubFromPointsRequest(const CreateXpubFromPoi
   : ::google::protobuf::Message(),
       _internal_metadata_(nullptr) {
   _internal_metadata_.MergeFrom(from._internal_metadata_);
-  public_point_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
-  if (from.public_point().size() > 0) {
-    public_point_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.public_point_);
-  }
   version_prefix_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   if (from.version_prefix().size() > 0) {
     version_prefix_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.version_prefix_);
@@ -197,15 +201,30 @@ CreateXpubFromPointsRequest::CreateXpubFromPointsRequest(const CreateXpubFromPoi
   if (from.parent_public_point().size() > 0) {
     parent_public_point_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.parent_public_point_);
   }
+  chain_code_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.chain_code().size() > 0) {
+    chain_code_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.chain_code_);
+  }
+  public_point_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  if (from.public_point().size() > 0) {
+    public_point_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.public_point_);
+  }
+  ::memcpy(&depth_, &from.depth_,
+    static_cast<size_t>(reinterpret_cast<char*>(&index_) -
+    reinterpret_cast<char*>(&depth_)) + sizeof(index_));
   // @@protoc_insertion_point(copy_constructor:ledger.core.message.utils.CreateXpubFromPointsRequest)
 }
 
 void CreateXpubFromPointsRequest::SharedCtor() {
   ::google::protobuf::internal::InitSCC(
       &scc_info_CreateXpubFromPointsRequest_utils_2fcommands_2eproto.base);
-  public_point_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   version_prefix_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   parent_public_point_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  chain_code_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  public_point_.UnsafeSetDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(&depth_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&index_) -
+      reinterpret_cast<char*>(&depth_)) + sizeof(index_));
 }
 
 CreateXpubFromPointsRequest::~CreateXpubFromPointsRequest() {
@@ -214,9 +233,10 @@ CreateXpubFromPointsRequest::~CreateXpubFromPointsRequest() {
 }
 
 void CreateXpubFromPointsRequest::SharedDtor() {
-  public_point_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   version_prefix_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   parent_public_point_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  chain_code_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  public_point_.DestroyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
 }
 
 void CreateXpubFromPointsRequest::SetCachedSize(int size) const {
@@ -234,9 +254,13 @@ void CreateXpubFromPointsRequest::Clear() {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  public_point_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   version_prefix_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
   parent_public_point_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  chain_code_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  public_point_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+  ::memset(&depth_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&index_) -
+      reinterpret_cast<char*>(&depth_)) + sizeof(index_));
   _internal_metadata_.Clear();
 }
 
@@ -253,25 +277,9 @@ const char* CreateXpubFromPointsRequest::_InternalParse(const char* begin, const
     ptr = ::google::protobuf::io::Parse32(ptr, &tag);
     GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
     switch (tag >> 3) {
-      // string public_point = 1;
+      // string version_prefix = 1;
       case 1: {
         if (static_cast<::google::protobuf::uint8>(tag) != 10) goto handle_unusual;
-        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
-        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
-        ctx->extra_parse_data().SetFieldName("ledger.core.message.utils.CreateXpubFromPointsRequest.public_point");
-        object = msg->mutable_public_point();
-        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
-          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
-          goto string_till_end;
-        }
-        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
-        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
-        ptr += size;
-        break;
-      }
-      // string version_prefix = 2;
-      case 2: {
-        if (static_cast<::google::protobuf::uint8>(tag) != 18) goto handle_unusual;
         ptr = ::google::protobuf::io::ReadSize(ptr, &size);
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("ledger.core.message.utils.CreateXpubFromPointsRequest.version_prefix");
@@ -285,6 +293,13 @@ const char* CreateXpubFromPointsRequest::_InternalParse(const char* begin, const
         ptr += size;
         break;
       }
+      // uint32 depth = 2;
+      case 2: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 16) goto handle_unusual;
+        msg->set_depth(::google::protobuf::internal::ReadVarint(&ptr));
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        break;
+      }
       // string parent_public_point = 3;
       case 3: {
         if (static_cast<::google::protobuf::uint8>(tag) != 26) goto handle_unusual;
@@ -292,6 +307,45 @@ const char* CreateXpubFromPointsRequest::_InternalParse(const char* begin, const
         GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
         ctx->extra_parse_data().SetFieldName("ledger.core.message.utils.CreateXpubFromPointsRequest.parent_public_point");
         object = msg->mutable_parent_public_point();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      // uint32 index = 4;
+      case 4: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 32) goto handle_unusual;
+        msg->set_index(::google::protobuf::internal::ReadVarint(&ptr));
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        break;
+      }
+      // string chain_code = 5;
+      case 5: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 42) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code");
+        object = msg->mutable_chain_code();
+        if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
+          parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
+          goto string_till_end;
+        }
+        GOOGLE_PROTOBUF_PARSER_ASSERT(::google::protobuf::internal::StringCheckUTF8(ptr, size, ctx));
+        ::google::protobuf::internal::InlineGreedyStringParser(object, ptr, size, ctx);
+        ptr += size;
+        break;
+      }
+      // string public_point = 6;
+      case 6: {
+        if (static_cast<::google::protobuf::uint8>(tag) != 50) goto handle_unusual;
+        ptr = ::google::protobuf::io::ReadSize(ptr, &size);
+        GOOGLE_PROTOBUF_PARSER_ASSERT(ptr);
+        ctx->extra_parse_data().SetFieldName("ledger.core.message.utils.CreateXpubFromPointsRequest.public_point");
+        object = msg->mutable_public_point();
         if (size > end - ptr + ::google::protobuf::internal::ParseContext::kSlopBytes) {
           parser_till_end = ::google::protobuf::internal::GreedyStringParserUTF8;
           goto string_till_end;
@@ -335,30 +389,28 @@ bool CreateXpubFromPointsRequest::MergePartialFromCodedStream(
     tag = p.first;
     if (!p.second) goto handle_unusual;
     switch (::google::protobuf::internal::WireFormatLite::GetTagFieldNumber(tag)) {
-      // string public_point = 1;
+      // string version_prefix = 1;
       case 1: {
         if (static_cast< ::google::protobuf::uint8>(tag) == (10 & 0xFF)) {
-          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
-                input, this->mutable_public_point()));
-          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-            this->public_point().data(), static_cast<int>(this->public_point().length()),
-            ::google::protobuf::internal::WireFormatLite::PARSE,
-            "ledger.core.message.utils.CreateXpubFromPointsRequest.public_point"));
-        } else {
-          goto handle_unusual;
-        }
-        break;
-      }
-
-      // string version_prefix = 2;
-      case 2: {
-        if (static_cast< ::google::protobuf::uint8>(tag) == (18 & 0xFF)) {
           DO_(::google::protobuf::internal::WireFormatLite::ReadString(
                 input, this->mutable_version_prefix()));
           DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
             this->version_prefix().data(), static_cast<int>(this->version_prefix().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
             "ledger.core.message.utils.CreateXpubFromPointsRequest.version_prefix"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // uint32 depth = 2;
+      case 2: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (16 & 0xFF)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &depth_)));
         } else {
           goto handle_unusual;
         }
@@ -374,6 +426,49 @@ bool CreateXpubFromPointsRequest::MergePartialFromCodedStream(
             this->parent_public_point().data(), static_cast<int>(this->parent_public_point().length()),
             ::google::protobuf::internal::WireFormatLite::PARSE,
             "ledger.core.message.utils.CreateXpubFromPointsRequest.parent_public_point"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // uint32 index = 4;
+      case 4: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (32 & 0xFF)) {
+
+          DO_((::google::protobuf::internal::WireFormatLite::ReadPrimitive<
+                   ::google::protobuf::uint32, ::google::protobuf::internal::WireFormatLite::TYPE_UINT32>(
+                 input, &index_)));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // string chain_code = 5;
+      case 5: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (42 & 0xFF)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_chain_code()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->chain_code().data(), static_cast<int>(this->chain_code().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code"));
+        } else {
+          goto handle_unusual;
+        }
+        break;
+      }
+
+      // string public_point = 6;
+      case 6: {
+        if (static_cast< ::google::protobuf::uint8>(tag) == (50 & 0xFF)) {
+          DO_(::google::protobuf::internal::WireFormatLite::ReadString(
+                input, this->mutable_public_point()));
+          DO_(::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+            this->public_point().data(), static_cast<int>(this->public_point().length()),
+            ::google::protobuf::internal::WireFormatLite::PARSE,
+            "ledger.core.message.utils.CreateXpubFromPointsRequest.public_point"));
         } else {
           goto handle_unusual;
         }
@@ -407,24 +502,19 @@ void CreateXpubFromPointsRequest::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string public_point = 1;
-  if (this->public_point().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->public_point().data(), static_cast<int>(this->public_point().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.message.utils.CreateXpubFromPointsRequest.public_point");
-    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      1, this->public_point(), output);
-  }
-
-  // string version_prefix = 2;
+  // string version_prefix = 1;
   if (this->version_prefix().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->version_prefix().data(), static_cast<int>(this->version_prefix().length()),
       ::google::protobuf::internal::WireFormatLite::SERIALIZE,
       "ledger.core.message.utils.CreateXpubFromPointsRequest.version_prefix");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
-      2, this->version_prefix(), output);
+      1, this->version_prefix(), output);
+  }
+
+  // uint32 depth = 2;
+  if (this->depth() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(2, this->depth(), output);
   }
 
   // string parent_public_point = 3;
@@ -435,6 +525,31 @@ void CreateXpubFromPointsRequest::SerializeWithCachedSizes(
       "ledger.core.message.utils.CreateXpubFromPointsRequest.parent_public_point");
     ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
       3, this->parent_public_point(), output);
+  }
+
+  // uint32 index = 4;
+  if (this->index() != 0) {
+    ::google::protobuf::internal::WireFormatLite::WriteUInt32(4, this->index(), output);
+  }
+
+  // string chain_code = 5;
+  if (this->chain_code().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->chain_code().data(), static_cast<int>(this->chain_code().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      5, this->chain_code(), output);
+  }
+
+  // string public_point = 6;
+  if (this->public_point().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->public_point().data(), static_cast<int>(this->public_point().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "ledger.core.message.utils.CreateXpubFromPointsRequest.public_point");
+    ::google::protobuf::internal::WireFormatLite::WriteStringMaybeAliased(
+      6, this->public_point(), output);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -450,18 +565,7 @@ void CreateXpubFromPointsRequest::SerializeWithCachedSizes(
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  // string public_point = 1;
-  if (this->public_point().size() > 0) {
-    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
-      this->public_point().data(), static_cast<int>(this->public_point().length()),
-      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
-      "ledger.core.message.utils.CreateXpubFromPointsRequest.public_point");
-    target =
-      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        1, this->public_point(), target);
-  }
-
-  // string version_prefix = 2;
+  // string version_prefix = 1;
   if (this->version_prefix().size() > 0) {
     ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
       this->version_prefix().data(), static_cast<int>(this->version_prefix().length()),
@@ -469,7 +573,12 @@ void CreateXpubFromPointsRequest::SerializeWithCachedSizes(
       "ledger.core.message.utils.CreateXpubFromPointsRequest.version_prefix");
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
-        2, this->version_prefix(), target);
+        1, this->version_prefix(), target);
+  }
+
+  // uint32 depth = 2;
+  if (this->depth() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(2, this->depth(), target);
   }
 
   // string parent_public_point = 3;
@@ -481,6 +590,33 @@ void CreateXpubFromPointsRequest::SerializeWithCachedSizes(
     target =
       ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
         3, this->parent_public_point(), target);
+  }
+
+  // uint32 index = 4;
+  if (this->index() != 0) {
+    target = ::google::protobuf::internal::WireFormatLite::WriteUInt32ToArray(4, this->index(), target);
+  }
+
+  // string chain_code = 5;
+  if (this->chain_code().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->chain_code().data(), static_cast<int>(this->chain_code().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "ledger.core.message.utils.CreateXpubFromPointsRequest.chain_code");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        5, this->chain_code(), target);
+  }
+
+  // string public_point = 6;
+  if (this->public_point().size() > 0) {
+    ::google::protobuf::internal::WireFormatLite::VerifyUtf8String(
+      this->public_point().data(), static_cast<int>(this->public_point().length()),
+      ::google::protobuf::internal::WireFormatLite::SERIALIZE,
+      "ledger.core.message.utils.CreateXpubFromPointsRequest.public_point");
+    target =
+      ::google::protobuf::internal::WireFormatLite::WriteStringToArray(
+        6, this->public_point(), target);
   }
 
   if (_internal_metadata_.have_unknown_fields()) {
@@ -504,14 +640,7 @@ size_t CreateXpubFromPointsRequest::ByteSizeLong() const {
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  // string public_point = 1;
-  if (this->public_point().size() > 0) {
-    total_size += 1 +
-      ::google::protobuf::internal::WireFormatLite::StringSize(
-        this->public_point());
-  }
-
-  // string version_prefix = 2;
+  // string version_prefix = 1;
   if (this->version_prefix().size() > 0) {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
@@ -523,6 +652,34 @@ size_t CreateXpubFromPointsRequest::ByteSizeLong() const {
     total_size += 1 +
       ::google::protobuf::internal::WireFormatLite::StringSize(
         this->parent_public_point());
+  }
+
+  // string chain_code = 5;
+  if (this->chain_code().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->chain_code());
+  }
+
+  // string public_point = 6;
+  if (this->public_point().size() > 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::StringSize(
+        this->public_point());
+  }
+
+  // uint32 depth = 2;
+  if (this->depth() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->depth());
+  }
+
+  // uint32 index = 4;
+  if (this->index() != 0) {
+    total_size += 1 +
+      ::google::protobuf::internal::WireFormatLite::UInt32Size(
+        this->index());
   }
 
   int cached_size = ::google::protobuf::internal::ToCachedSize(total_size);
@@ -552,10 +709,6 @@ void CreateXpubFromPointsRequest::MergeFrom(const CreateXpubFromPointsRequest& f
   ::google::protobuf::uint32 cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.public_point().size() > 0) {
-
-    public_point_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.public_point_);
-  }
   if (from.version_prefix().size() > 0) {
 
     version_prefix_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.version_prefix_);
@@ -563,6 +716,20 @@ void CreateXpubFromPointsRequest::MergeFrom(const CreateXpubFromPointsRequest& f
   if (from.parent_public_point().size() > 0) {
 
     parent_public_point_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.parent_public_point_);
+  }
+  if (from.chain_code().size() > 0) {
+
+    chain_code_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.chain_code_);
+  }
+  if (from.public_point().size() > 0) {
+
+    public_point_.AssignWithDefault(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), from.public_point_);
+  }
+  if (from.depth() != 0) {
+    set_depth(from.depth());
+  }
+  if (from.index() != 0) {
+    set_index(from.index());
   }
 }
 
@@ -591,12 +758,16 @@ void CreateXpubFromPointsRequest::Swap(CreateXpubFromPointsRequest* other) {
 void CreateXpubFromPointsRequest::InternalSwap(CreateXpubFromPointsRequest* other) {
   using std::swap;
   _internal_metadata_.Swap(&other->_internal_metadata_);
-  public_point_.Swap(&other->public_point_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
-    GetArenaNoVirtual());
   version_prefix_.Swap(&other->version_prefix_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
   parent_public_point_.Swap(&other->parent_public_point_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
     GetArenaNoVirtual());
+  chain_code_.Swap(&other->chain_code_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  public_point_.Swap(&other->public_point_, &::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+    GetArenaNoVirtual());
+  swap(depth_, other->depth_);
+  swap(index_, other->index_);
 }
 
 ::google::protobuf::Metadata CreateXpubFromPointsRequest::GetMetadata() const {

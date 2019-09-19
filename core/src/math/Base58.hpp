@@ -58,6 +58,8 @@ namespace ledger {
 
 
             static std::vector<uint8_t> computeChecksum(const std::vector<uint8_t>& bytes, const std::string &networkIdentifier = "");
+        public:
+            static const std::string BITCOIN_BASE58_DIGITS;
         };
         namespace Base58Utils {
             template<typename HashAlgorithmFunction>
