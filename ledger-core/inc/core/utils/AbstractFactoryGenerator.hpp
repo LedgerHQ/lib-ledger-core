@@ -53,20 +53,20 @@ public:
         "AbstractFactoryGenerator<Key, T> requires 'T' to be sharable."
     );
 
-    using key_type = std::decay_t<Key>;
-    using value_type = std::shared_ptr<T>;
+    using KeyType = std::decay_t<Key>;
+    using ValueType = std::shared_ptr<T>;
 
     // Add - or replace if factory already exist - a new factory identifies by the key
-    value_type learn(key_type const& key, value_type const& factory);
+    ValueType learn(KeyType const& key, ValueType const& factory);
 
     // Remove the factory identifies by the key
-    void forget(key_type const& key);
+    void forget(KeyType const& key);
 
     // Find the factory identifies by the key and create a sharable instance of it
-    value_type make(key_type const& key) const;
+    ValueType make(KeyType const& key) const;
 
 private:
-    std::unordered_map<key_type, value_type> factories_;
+    std::unordered_map<KeyType, ValueType> factories_;
 };
 
 } // namespace core
