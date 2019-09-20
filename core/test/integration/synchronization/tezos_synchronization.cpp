@@ -40,6 +40,9 @@
 #include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/tezos/api_impl/TezosLikeOperation.h>
 #include <wallet/tezos/delegation/TezosLikeOriginatedAccount.h>
+#include <api/TezosConfiguration.hpp>
+#include <api/TezosConfigurationDefaults.hpp>
+
 using namespace std;
 
 class TezosLikeWalletSynchronization : public BaseFixture {
@@ -51,6 +54,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
+        configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1);
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "tezos", configuration));
         std::set<std::string> emittedOperations;
         {
@@ -96,10 +100,18 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto balanceHistory = wait(std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(origAccount)->getBalanceHistory(dispatcher->getMainExecutionContext(), fromDate, toDate, api::TimePeriod::MONTH));
                     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), origBalance->toLong());
                 }
+
                 dispatcher->stop();
             });
 
             auto restoreKey = account->getRestoreKey();
+            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+
+            dispatcher->waitUntilStopped();
+
+            // re-launch a synchronization if it’s the first time
+            std::cout << "Running a second synchronization." << std::endl;
+            dispatcher = std::make_shared<QtThreadDispatcher>();
             account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();

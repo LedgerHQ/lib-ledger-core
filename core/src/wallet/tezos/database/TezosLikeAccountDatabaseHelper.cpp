@@ -65,8 +65,8 @@ namespace ledger {
                     TezosLikeOriginatedAccountDatabaseEntry originatedEntry;
                     originatedEntry.uid = row.get<std::string>(2);
                     originatedEntry.address = row.get<std::string>(3);
-                    originatedEntry.spendable = row.get<bool>(4);
-                    originatedEntry.delegatable = row.get<bool>(5);
+                    originatedEntry.spendable = static_cast<bool>(row.get<int>(4));
+                    originatedEntry.delegatable = static_cast<bool>(row.get<int>(5));
                     if (row.get_indicator(6) != i_null) {
                         originatedEntry.publicKey = row.get<std::string>(6);
                     }
