@@ -66,7 +66,7 @@ public:
     ValueType make(KeyType const& key) const;
 
 private:
-    std::unordered_map<KeyType, ValueType> factories_;
+    std::unordered_map<KeyType, ValueType> _factories;
 };
 
 } // namespace core
