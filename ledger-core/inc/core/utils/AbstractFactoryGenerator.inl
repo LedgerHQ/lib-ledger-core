@@ -40,9 +40,9 @@ template <typename Key, typename T>
 typename AbstractFactoryGenerator<Key, T>::ValueType AbstractFactoryGenerator<Key, T>::learn(
     KeyType const& key, ValueType const& factory)
 {
-    auto it = factories_.find(key);
+    auto it = _factories.find(key);
  
-    if (it == std::end(factories_)) {
+    if (it == std::end(_factories)) {
         return nullptr;
     }
 
@@ -55,19 +55,19 @@ typename AbstractFactoryGenerator<Key, T>::ValueType AbstractFactoryGenerator<Ke
 template <typename Key, typename T>
 void AbstractFactoryGenerator<Key, T>::forget(KeyType const& key)
 {
-    auto it = factories_.find(key);
+    auto it = _factories.find(key);
 
-    if (it != std::end(factories_)) {
-        factories_.erase(it);
+    if (it != std::end(_factories)) {
+        _factories.erase(it);
     }
 }
 
 template <typename Key, typename T>
 typename AbstractFactoryGenerator<Key, T>::ValueType AbstractFactoryGenerator<Key, T>::make(KeyType const& key) const
 {
-    auto it = factories_.find(key);
+    auto it = _factories.find(key);
 
-    if (it == std::end(factories_)) {
+    if (it == std::end(_factories)) {
         return nullptr;
     }
 
