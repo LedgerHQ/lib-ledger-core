@@ -45,6 +45,8 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
 #include <api/TezosCurve.hpp>
+#include <api/TezosConfiguration.hpp>
+#include <api/TezosConfigurationDefaults.hpp>
 
 namespace ledger {
     namespace core {
@@ -91,14 +93,25 @@ namespace ledger {
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
                 DerivationPath occurencePath(info.derivations[0]);
 
+                api::TezosCurve curve;
+                auto curveConf = self->getConfiguration()->getString(api::TezosConfiguration::TEZOS_XPUB_CURVE).value_or("");
+                if (curveConf == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519) {
+                    curve = api::TezosCurve::ED25519;
+                } else if (curveConf == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1) {
+                    curve = api::TezosCurve::SECP256K1;
+                } else {
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Unsupported or missing curve type for Tezos");
+                }
+
                 auto xpub = TezosLikeExtendedPublicKey::fromRaw(
                         self->getCurrency(),
                         Option<std::vector<uint8_t>>(),
                         info.publicKeys[0],
                         info.chainCodes[0],
                         info.derivations[0],
-                        api::TezosCurve::SECP256K1
+                        curve
                 );
+
                 result.owners.push_back(info.owners[0]);
                 result.derivations.push_back(info.derivations[0]);
                 result.extendedKeys.push_back(xpub->toBase58());

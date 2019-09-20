@@ -17,4 +17,8 @@ std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_WS_ENDPOINT_S2 = {"
 
 std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_WS_ENDPOINT_S3 = {"wss://s3.tezos.com"};
 
+std::string const TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519 = {"ED25519"};
+
+std::string const TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1 = {"SECP256K1"};
+
 } } }  // namespace ledger::core::api

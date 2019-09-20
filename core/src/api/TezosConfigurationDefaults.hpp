@@ -30,6 +30,10 @@ public:
     static std::string const TEZOS_OBSERVER_WS_ENDPOINT_S2;
 
     static std::string const TEZOS_OBSERVER_WS_ENDPOINT_S3;
+
+    static std::string const TEZOS_XPUB_CURVE_ED25519;
+
+    static std::string const TEZOS_XPUB_CURVE_SECP256K1;
 };
 
 } } }  // namespace ledger::core::api
