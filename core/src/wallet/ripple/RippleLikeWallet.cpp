@@ -50,7 +50,7 @@
 namespace ledger {
     namespace core {
 
-        const api::WalletType RippleLikeWallet::type = api::WalletType::ETHEREUM;
+        const api::WalletType RippleLikeWallet::type = api::WalletType::RIPPLE;
 
         RippleLikeWallet::RippleLikeWallet(const std::string &name,
                                            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
