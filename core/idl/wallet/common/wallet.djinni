@@ -334,6 +334,8 @@ Account = interface +c {
     asEthereumLikeAccount() : EthereumLikeAccount;
     # Turn the account into a Ripple one, allowing operations to be performed on the Ripple network.
     asRippleLikeAccount(): RippleLikeAccount;
+    # Turn the account into a Tezos one, allowing operations to be performed on the Tezos network.
+    asTezosLikeAccount(): TezosLikeAccount;
     # Check if account is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeAccount(): bool;

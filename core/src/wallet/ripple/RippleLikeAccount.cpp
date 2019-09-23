@@ -28,7 +28,6 @@
  *
  */
 
-
 #include "RippleLikeAccount.h"
 #include "RippleLikeWallet.h"
 #include <async/Future.hpp>
@@ -45,6 +44,8 @@
 #include <math/Base58.hpp>
 #include <utils/Option.hpp>
 #include <utils/DateUtils.hpp>
+#include <api/RippleConfiguration.hpp>
+#include <api/RippleConfigurationDefaults.hpp>
 
 #include <database/soci-number.h>
 #include <database/soci-date.h>
@@ -411,9 +412,21 @@ namespace ledger {
                     tx->setDestinationTag(request.destinationTag.getValue());
                 }
 
-                return explorer->getSequence(accountAddress->toString()).mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &sequence) -> std::shared_ptr<api::RippleLikeTransaction> {
-                    tx->setSequence(BigInt(sequence->toString()) + BigInt("1"));
-                    return tx;
+                return explorer->getSequence(accountAddress->toString()).flatMapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &sequence) -> FuturePtr<api::RippleLikeTransaction> {
+                    tx->setSequence(*sequence);
+
+                    return explorer->getLedgerSequence().mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt>& ledgerSequence) -> std::shared_ptr<api::RippleLikeTransaction> {
+                        // according to this <https://xrpl.org/reliable-transaction-submission.html#lastledgersequence>,
+                        // we should set the LastLedgerSequence value on every transaction; advised to
+                        // use the ledger index of the latest valid ledger + 4
+                        auto offset = self->getWallet()->getConfiguration()->getInt(
+                            api::RippleConfiguration::RIPPLE_LAST_LEDGER_SEQUENCE_OFFSET
+                        ).value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_LAST_LEDGER_SEQUENCE_OFFSET);
+
+                        tx->setLedgerSequence(*ledgerSequence + BigInt(offset));
+
+                        return tx;
+                    });
                 });
             };
 

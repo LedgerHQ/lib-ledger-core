@@ -130,13 +130,12 @@ namespace ledger {
                     .value_or(api::BlockchainExplorerEngines::RIPPLE_NODE);
             std::shared_ptr<RippleLikeBlockchainExplorer> explorer = nullptr;
             if (engine == api::BlockchainExplorerEngines::RIPPLE_NODE) {
-                auto http = pool->getHttpClient(fmt::format("{}:{}",
-            configuration->getString(
-                    api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
-            ).value_or(api::RippleConfigurationDefaults::RIPPLE_OBSERVER_NODE_ENDPOINT_S2),
-                    configuration->getString(
-                            api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
-                    ).value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT))
+                auto http = pool->getHttpClient(
+                        fmt::format("{}:{}",
+                                    configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                                            .value_or(api::RippleConfigurationDefaults::RIPPLE_OBSERVER_NODE_ENDPOINT_S2),
+                                    configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_PORT)
+                                            .value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT))
                 );
                 auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
                 auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();

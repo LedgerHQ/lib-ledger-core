@@ -76,6 +76,11 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>>
+        NodeRippleLikeBlockchainExplorer::getLedgerSequence() {
+            return getServerInfo("seq", FieldTypes::StringType);
+        }
+
+        Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getServerInfo(const std::string &field, FieldTypes type) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("server_info");
@@ -112,7 +117,7 @@ namespace ledger {
                                 auto reserveObj = infoObj["validated_ledger"].GetObject();
                                 if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsString()) {
                                     throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                         fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", field));
+                                                         fmt::format("Failed to get {} from network, no (or malformed) field \"{}\" in response", field, field));
                                 }
 
                                 auto value = reserveObj[field.c_str()].GetString();
@@ -123,7 +128,7 @@ namespace ledger {
                                 auto reserveObj = infoObj["validated_ledger"].GetObject();
                                 if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsDouble()) {
                                     throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                         fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", field));
+                                                         fmt::format("Failed to get {} from network, no (or malformed) field \"{}\" in response <<<", field, field));
                                 }
 
                                 auto value = reserveObj[field.c_str()].GetDouble();
@@ -149,12 +154,27 @@ namespace ledger {
                             !json["result"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"result\" in response");
                         }
-                        //Is there an account_data field ?
+
                         auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("hash") || !resultObj["hash"].IsString()) {
+
+                        if (resultObj.HasMember("engine_result") && resultObj["engine_result"] == "tesSUCCESS") {
+                          // Check presence of tx_json field
+                          if (!resultObj.HasMember("tx_json") || !resultObj["tx_json"].IsObject()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"tx_json\" in response");
+                          }
+                          auto txnObj = resultObj["tx_json"].GetObject();
+
+                          // Check presence of hash field
+                          if (!txnObj.HasMember("hash") || !txnObj["hash"].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
+                          }
+
+                          return txnObj["hash"].GetString();
                         }
-                        return resultObj["hash"].GetString();
+
+                        throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                             "Failed to broadcast transaction: {}",
+                                             resultObj["engine_result"].GetString());
                     });
         }
 
@@ -169,7 +189,7 @@ namespace ledger {
         Future<Bytes> NodeRippleLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("tx");
-            bodyRequest.pushParameter("trasnaction", transactionHash);
+            bodyRequest.pushParameter("transaction", transactionHash);
             bodyRequest.pushParameter("binary", "true");
             auto requestBody = bodyRequest.getString();
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
