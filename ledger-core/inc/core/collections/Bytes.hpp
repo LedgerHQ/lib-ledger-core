@@ -28,12 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BYTES_HPP
-#define LEDGER_CORE_BYTES_HPP
 
-#include "Sequence.hpp"
-#include "../utils/hex.h"
-#include "String.hpp"
+#pragma once
+
+#include <core/collections/Sequence.hpp>
+#include <core/collections/String.hpp>
+#include <core/utils/Hex.hpp>
 
 namespace ledger {
     namespace core {
@@ -61,5 +61,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_BYTES_HPP

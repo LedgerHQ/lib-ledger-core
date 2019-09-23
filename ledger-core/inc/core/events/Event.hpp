@@ -28,11 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_EVENT_HPP
-#define LEDGER_CORE_EVENT_HPP
 
-#include "EventPublisher.hpp"
+#pragma once
+
 #include <memory>
+
+#include <core/events/EventPublisher.hpp>
 
 namespace ledger {
     namespace core {
@@ -56,6 +57,3 @@ namespace ledger {
         std::shared_ptr<api::Event> make_event(api::EventCode code, const std::shared_ptr<api::DynamicObject>& payload);
     }
 }
-
-
-#endif //LEDGER_CORE_EVENT_HPP

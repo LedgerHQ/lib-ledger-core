@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HTTPJSONHANDLER_HPP
-#define LEDGER_CORE_HTTPJSONHANDLER_HPP
+
+#pragma once
 
 #include <rapidjson/reader.h>
-#include "HttpClient.hpp"
-#include "../utils/Either.hpp"
+
+#include <core/net/HttpClient.hpp>
+#include <core/utils/Either.hpp>
 
 namespace ledger {
     namespace core {
@@ -65,6 +66,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_HTTPJSONHANDLER_HPP

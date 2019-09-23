@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DERIVATIONPATH_HPP
-#define LEDGER_CORE_DERIVATIONPATH_HPP
+
+#pragma once
 
 #include <string>
 #include <vector>
-#include "Exception.hpp"
+
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -79,6 +80,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_DERIVATIONPATH_HPP

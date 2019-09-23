@@ -34,7 +34,7 @@
 #include <core/api/OperationQuery.hpp>
 #include <core/api/OperationOrderKey.hpp>
 #include <core/async/DedicatedContext.hpp>
-#include <core/database/query/QueryBuilder.h>
+#include <core/database/query/QueryBuilder.hpp>
 #include <core/database/DatabaseSessionPool.hpp>
 #include <core/operation/Operation.hpp>
 #include <unordered_map>

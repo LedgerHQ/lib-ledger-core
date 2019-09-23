@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_DYNAMICVALUE_HPP
-#define LEDGER_CORE_DYNAMICVALUE_HPP
+#pragma once
 
 #include <vector>
 #include <boost/variant.hpp>
@@ -39,7 +38,7 @@
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/archives/binary.hpp>
 #include <core/api/DynamicType.hpp>
-#include <core/utils/optional.hpp>
+#include <core/utils/Optional.hpp>
 
 namespace ledger {
     namespace core {
@@ -251,5 +250,3 @@ namespace ledger {
         template<> void DynamicValue::serialize<cereal::BinaryInputArchive>(cereal::BinaryInputArchive&);
     }
 }
-
-#endif //LEDGER_CORE_DYNAMICVALUE_HPP

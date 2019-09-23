@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_LAMBDARUNNABLE_HPP
-#define LEDGER_CORE_LAMBDARUNNABLE_HPP
+
+#pragma once
 
 #include <functional>
-#include "../api/Runnable.hpp"
 #include <memory>
+
+#include <core/api/Runnable.hpp>
 
 namespace ledger {
     namespace core {
@@ -52,6 +53,3 @@ namespace ledger {
         std::shared_ptr<api::Runnable> make_runnable(std::function<void()> func);
     }
 }
-
-
-#endif //LEDGER_CORE_LAMBDARUNNABLE_HPP

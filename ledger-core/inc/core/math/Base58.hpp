@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BASE58_HPP
-#define LEDGER_CORE_BASE58_HPP
+
+#pragma once
 
 #include <memory>
 #include <string>
@@ -63,6 +63,3 @@ namespace ledger {
 
     }
 }
-
-
-#endif //LEDGER_CORE_BASE58_HPP

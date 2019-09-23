@@ -36,7 +36,7 @@
 #include <core/api/ExecutionContext.hpp>
 #include <core/async/Future.hpp>
 #include <core/database/DatabaseBackend.hpp>
-#include <core/debug/LoggerStreamBuffer.h>
+#include <core/debug/LoggerStreamBuffer.hpp>
 
 namespace ledger {
     namespace core {

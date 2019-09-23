@@ -28,14 +28,15 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_LOGPRINTERSINK_HPP
-#define LEDGER_CORE_LOGPRINTERSINK_HPP
+
+#pragma once 
+
+#include <memory>
+#include <mutex>
 
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/sink.h>
 #include <spdlog/sinks/base_sink.h>
-#include <memory>
-#include <mutex>
 
 namespace spd = spdlog;
 
@@ -57,6 +58,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_LOGPRINTERSINK_HPP

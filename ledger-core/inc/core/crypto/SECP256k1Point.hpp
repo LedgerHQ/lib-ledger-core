@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SECP256K1POINT_HPP
-#define LEDGER_CORE_SECP256K1POINT_HPP
 
-#include <include/secp256k1.h>
-#include "../math/BigInt.h"
+#pragma once
+
 #include <cstdint>
+#include <include/secp256k1.h>
+
+#include <core/math/BigInt.hpp>
 
 namespace ledger {
     namespace core {
@@ -57,6 +58,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_SECP256K1POINT_HPP

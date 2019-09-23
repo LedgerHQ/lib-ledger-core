@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP
-#define LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP
+
+#pragma once 
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -39,7 +39,7 @@
     #endif
 #endif
 
-#include "../api/ExecutionContext.hpp"
+#include <core/api/ExecutionContext.hpp>
 
 namespace ledger {
     namespace core {
@@ -51,5 +51,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_IMMEDIATEEXECUTIONCONTEXT_HPP

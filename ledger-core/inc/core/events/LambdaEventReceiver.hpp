@@ -28,10 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_LAMBDAEVENTRECEIVER_HPP
-#define LEDGER_CORE_LAMBDAEVENTRECEIVER_HPP
 
-#include "EventPublisher.hpp"
+#pragma once
+
+#include <core/events/EventPublisher.hpp>
 
 namespace ledger {
     namespace core {
@@ -47,6 +47,3 @@ namespace ledger {
         std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void (const std::shared_ptr<api::Event> &)> f);
     }
 }
-
-
-#endif //LEDGER_CORE_LAMBDAEVENTRECEIVER_HPP

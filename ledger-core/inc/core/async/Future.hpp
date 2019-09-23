@@ -41,8 +41,8 @@
 #include <core/api/Error.hpp>
 #include <core/api/ExecutionContext.hpp>
 #include <core/async/Deffered.hpp>
-#include <core/traits/callback_traits.hpp>
-#include <core/traits/shared_ptr_traits.hpp>
+#include <core/traits/CallbackTraits.hpp>
+#include <core/traits/SharedPtrTraits.hpp>
 #include <core/utils/Exception.hpp>
 #include <core/utils/ImmediateExecutionContext.hpp>
 

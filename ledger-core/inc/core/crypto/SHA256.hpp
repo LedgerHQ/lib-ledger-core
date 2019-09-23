@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SHA256_HPP
-#define LEDGER_CORE_SHA256_HPP
+
+#pragma once
 
 #include <string>
 #include <vector>
@@ -48,6 +48,3 @@ namespace ledger {
      };
  }
 }
-
-
-#endif //LEDGER_CORE_SHA256_HPP

@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_PBKDF2_HPP
-#define LEDGER_CORE_PBKDF2_HPP
+
+#pragma once
 
 #include <vector>
 #include <cstdint>
@@ -43,6 +43,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_PBKDF2_HPP

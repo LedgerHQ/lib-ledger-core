@@ -28,15 +28,17 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_MAPLIKE_HPP
-#define LEDGER_CORE_MAPLIKE_HPP
+
+#pragma once
 
 #include <unordered_map>
-#include "../utils/Option.hpp"
-#include "../utils/Try.hpp"
-#include "../utils/Exception.hpp"
+
 #include <fmt/format.h>
-#include "Sequence.hpp"
+
+#include <core/collections/Sequence.hpp>
+#include <core/utils/Exception.hpp>
+#include <core/utils/Option.hpp>
+#include <core/utils/Try.hpp>
 
 namespace ledger {
     namespace core {
@@ -147,4 +149,3 @@ namespace ledger {
         using Map = MapLike<K, V, std::unordered_map<K, V>>;
     }
 }
-#endif //LEDGER_CORE_MAPLIKE_HPP

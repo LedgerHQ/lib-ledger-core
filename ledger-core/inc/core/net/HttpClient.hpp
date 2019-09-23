@@ -44,10 +44,10 @@
 #include <core/api/HttpUrlConnection.hpp>
 #include <core/async/Future.hpp>
 #include <core/async/Promise.hpp>
-#include <core/debug/logger.hpp>
+#include <core/debug/Logger.hpp>
 #include <core/net/HttpUrlConnectionInputStream.hpp>
 #include <core/utils/Either.hpp>
-#include <core/utils/optional.hpp>
+#include <core/utils/Optional.hpp>
 #include <core/utils/Option.hpp>
 
 namespace ledger {

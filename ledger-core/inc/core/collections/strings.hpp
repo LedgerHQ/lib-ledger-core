@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_STRINGS_HPP
-#define LEDGER_CORE_STRINGS_HPP
+
+#pragma once
 
 #include <string>
 #include <functional>
-#include "../utils/Option.hpp"
 #include <vector>
+
+#include <core/utils/Option.hpp>
 
 namespace ledger {
     namespace core {
@@ -49,6 +50,3 @@ namespace ledger {
         }
     }
 }
-
-
-#endif //LEDGER_CORE_STRINGS_HPP

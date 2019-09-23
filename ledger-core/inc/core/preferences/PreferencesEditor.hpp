@@ -28,15 +28,17 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_PREFERENCESEDITOR_HPP
-#define LEDGER_CORE_PREFERENCESEDITOR_HPP
 
-#include "PreferencesBackend.hpp"
-#include "Preferences.hpp"
-#include "../api/PreferencesEditor.hpp"
+#pragma once
+
 #include <memory>
+
 #include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
+
+#include <core/api/PreferencesEditor.hpp>
+#include <core/preferences/PreferencesBackend.hpp>
+#include <core/preferences/Preferences.hpp>
 
 namespace ledger {
     namespace core {
@@ -85,6 +87,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_PREFERENCESEDITOR_HPP

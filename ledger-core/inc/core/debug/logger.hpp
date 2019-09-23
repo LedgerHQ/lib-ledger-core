@@ -28,16 +28,17 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_LOGGER_HPP
-#define LEDGER_CORE_LOGGER_HPP
 
-#include <spdlog/spdlog.h>
-#include "../api/ExecutionContext.hpp"
-#include "../api/LogPrinter.hpp"
-#include "../api/PathResolver.hpp"
-#include <memory>
+#pragma once
+
 #include <cstddef>
-#include "../utils/optional.hpp"
+#include <memory>
+#include <spdlog/spdlog.h>
+
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/LogPrinter.hpp>
+#include <core/api/PathResolver.hpp>
+#include <core/utils/Optional.hpp>
 
 namespace ledger {
     namespace core {
@@ -57,5 +58,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_LOGGER_HPP

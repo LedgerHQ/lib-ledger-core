@@ -28,12 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HASH160_HPP
-#define LEDGER_CORE_HASH160_HPP
 
-#include "RIPEMD160.hpp"
-#include "SHA256.hpp"
-#include "HashAlgorithm.h"
+#pragma once
+
+#include <core/crypto/RIPEMD160.hpp>
+#include <core/crypto/SHA256.hpp>
+#include <core/crypto/HashAlgorithm.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,6 +45,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_HASH160_HPP
