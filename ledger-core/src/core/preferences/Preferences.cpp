@@ -29,7 +29,7 @@
  *
  */
 
-#include <core/bytes/BytesReader.h>
+#include <core/bytes/BytesReader.hpp>
 #include <core/preferences/Preferences.hpp>
 
 namespace ledger {

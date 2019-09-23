@@ -29,7 +29,7 @@
  *
  */
 
-#include <core/net/WebSocketConnection.h>
+#include <core/net/WebSocketConnection.hpp>
 
 namespace ledger {
     namespace core {

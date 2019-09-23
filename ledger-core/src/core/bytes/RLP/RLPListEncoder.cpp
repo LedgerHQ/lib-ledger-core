@@ -28,8 +28,8 @@
  *
  */
 
-#include <core/bytes/RLP/RLPListEncoder.h>
-#include <core/bytes/RLP/RLPStringEncoder.h>
+#include <core/bytes/RLP/RLPListEncoder.hpp>
+#include <core/bytes/RLP/RLPStringEncoder.hpp>
 
 /*
  * Reursive Length Prefix List Encoder

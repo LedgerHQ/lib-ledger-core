@@ -31,7 +31,7 @@
 #include <openssl/sha.h>
 
 #include <core/crypto/SHA512.hpp>
-#include <core/utils/hex.h>
+#include <core/utils/Hex.hpp>
 
 namespace ledger {
     namespace core {

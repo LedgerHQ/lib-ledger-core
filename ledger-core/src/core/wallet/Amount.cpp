@@ -30,7 +30,7 @@
  */
 
 #include <core/utils/Exception.hpp>
-#include <core/wallet/Amount.h>
+#include <core/wallet/Amount.hpp>
 
 namespace ledger {
     namespace core {

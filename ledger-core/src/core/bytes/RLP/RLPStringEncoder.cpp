@@ -28,8 +28,8 @@
  *
  */
 
-#include <core/bytes/RLP/RLPStringEncoder.h>
-#include <core/utils/hex.h>
+#include <core/bytes/RLP/RLPStringEncoder.hpp>
+#include <core/utils/Hex.hpp>
 
 /*
  * Reursive Length Prefix String Encoder

@@ -28,10 +28,10 @@
  *
  */
 
-#include <core/crypto/HashAlgorithm.h>
+#include <core/crypto/HashAlgorithm.hpp>
 #include <core/crypto/SHA256.hpp>
-#include <core/crypto/BLAKE.h>
-#include <core/utils/hex.h>
+#include <core/crypto/BLAKE.hpp>
+#include <core/utils/Hex.hpp>
 
 namespace ledger {
     namespace core {

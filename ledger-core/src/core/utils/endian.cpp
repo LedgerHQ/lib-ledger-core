@@ -31,7 +31,7 @@
 
 #include <cstdint>
 #include <iostream>
-#include <core/utils/endian.h>
+#include <core/utils/Endian.hpp>
 
 namespace ledger {
     namespace core {

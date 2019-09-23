@@ -29,8 +29,8 @@
  *
  */
 
-#include <core/database/query/CompoundQueryFilter.h>
-#include <core/database/query/QueryFilter.h>
+#include <core/database/query/CompoundQueryFilter.hpp>
+#include <core/database/query/QueryFilter.hpp>
 #include <core/utils/Exception.hpp>
 
 namespace ledger {

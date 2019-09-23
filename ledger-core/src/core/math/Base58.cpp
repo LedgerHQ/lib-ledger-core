@@ -32,12 +32,12 @@
 #include <functional>
 #include <sstream>
 
-#include <core/collections/vector.hpp>
-#include <core/crypto/HashAlgorithm.h>
-#include <core/crypto/Keccak.h>
+#include <core/collections/Vector.hpp>
+#include <core/crypto/HashAlgorithm.hpp>
+#include <core/crypto/Keccak.hpp>
 #include <core/math/Base58.hpp>
-#include <core/math/BigInt.h>
-#include <core/utils/hex.h>
+#include <core/math/BigInt.hpp>
+#include <core/utils/Hex.hpp>
 
 using namespace ledger::core;
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";

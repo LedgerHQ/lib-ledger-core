@@ -30,7 +30,7 @@
 
 #include <blake256.h>
 
-#include <core/crypto/BLAKE.h>
+#include <core/crypto/BLAKE.hpp>
 
 namespace ledger {
     namespace core {

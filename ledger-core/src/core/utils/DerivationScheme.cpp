@@ -32,7 +32,7 @@
 #include <boost/lexical_cast.hpp>
 #include <sstream>
 
-#include <core/collections/collections.hpp>
+#include <core/collections/Collections.hpp>
 #include <core/utils/DerivationScheme.hpp>
 
 namespace ledger {

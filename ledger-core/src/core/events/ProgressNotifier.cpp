@@ -29,4 +29,4 @@
  *
  */
 
-#include <core/events/ProgressNotifier.h>
+#include <core/events/ProgressNotifier.hpp>

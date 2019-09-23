@@ -28,7 +28,7 @@
  *
  */
 
-#include <core/bytes/RLP/RLPEncoder.h>
+#include <core/bytes/RLP/RLPEncoder.hpp>
 
 /*
  * Reursive Length Prefix Encoder

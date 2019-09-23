@@ -31,8 +31,8 @@
 
 #include <algorithm>
 
-#include <core/bytes/BytesWriter.h>
-#include <core/utils/endian.h>
+#include <core/bytes/BytesWriter.hpp>
+#include <core/utils/Endian.hpp>
 
 namespace ledger {
     namespace core {

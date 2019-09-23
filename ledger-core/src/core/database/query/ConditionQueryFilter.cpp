@@ -28,7 +28,7 @@
  * SOFTWARE.
  *
  */
-#include <core/database/query/ConditionQueryFilter.h>
+#include <core/database/query/ConditionQueryFilter.hpp>
 
 namespace ledger {
     namespace core {

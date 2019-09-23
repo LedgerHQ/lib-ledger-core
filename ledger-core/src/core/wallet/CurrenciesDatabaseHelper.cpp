@@ -30,10 +30,10 @@
  */
 
 #include <core/wallet/CurrenciesDatabaseHelper.hpp>
-#include <core/utils/hex.h>
+#include <core/utils/Hex.hpp>
 #include <core/api/enum_from_string.hpp>
 #include <core/api/Currency.hpp>
-#include <core/collections/strings.hpp>
+#include <core/collections/Strings.hpp>
 
 using namespace soci;
 

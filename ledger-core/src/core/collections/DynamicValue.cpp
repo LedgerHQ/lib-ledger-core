@@ -34,7 +34,7 @@
 #include <core/collections/DynamicValue.hpp>
 #include <core/collections/DynamicObject.hpp>
 #include <core/collections/DynamicArray.hpp>
-#include <core/utils/hex.h>
+#include <core/utils/Hex.hpp>
 
 namespace ledger {
     namespace core {
