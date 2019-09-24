@@ -213,12 +213,8 @@ namespace ledger {
                         _transaction->sender = value;
                     }
                 } else if (_lastKey == "nonce") {
-                    uint64_t result = 0;
-                    auto nonce = fromStringToBytes(value);
-                    for (auto i = 0; i < nonce.size(); i++) {
-                        result += nonce[i] << i * 8;
-                    }
-                    _transaction->nonce = result;
+                    std::istringstream issNonce(value);
+                    issNonce >> _transaction->nonce;
                 } else if (_lastKey == "input") {
                     if (isInternalTx) {
                         _transaction->internalTransactions.back().inputData = fromStringToBytes(value);
