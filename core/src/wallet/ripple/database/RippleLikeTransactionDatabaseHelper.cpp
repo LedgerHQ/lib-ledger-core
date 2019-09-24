@@ -92,7 +92,7 @@ namespace ledger {
                 ));
             }
 
-            tx.sequence = BigInt(get_number<uint64_t>(row, 14));
+            tx.sequence = BigInt(static_cast<unsigned long long>(get_number<uint64_t>(row, 14)));
 
             return true;
         }
