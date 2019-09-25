@@ -34,7 +34,7 @@
 #include <cstdint>
 #include <rapidjson/reader.h>
 
-#include <core/collections/collections.hpp>
+#include <core/collections/Collections.hpp>
 #include <core/net/HttpClient.hpp>
 
 namespace ledger {

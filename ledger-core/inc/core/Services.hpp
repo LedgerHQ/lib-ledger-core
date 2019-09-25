@@ -45,7 +45,7 @@
 #include <core/events/EventPublisher.hpp>
 #include <core/database/DatabaseSessionPool.hpp>
 #include <core/net/HttpClient.hpp>
-#include <core/net/WebSocketClient.h>
+#include <core/net/WebSocketClient.hpp>
 #include <core/preferences/Preferences.hpp>
 
 namespace ledger {

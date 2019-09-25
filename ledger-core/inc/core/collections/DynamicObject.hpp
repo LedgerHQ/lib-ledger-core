@@ -37,7 +37,7 @@
 #include <core/api/DynamicArray.hpp>
 #include <core/api/DynamicObject.hpp>
 #include <core/api/DynamicType.hpp>
-#include <core/collections/collections.hpp>
+#include <core/collections/Collections.hpp>
 #include <core/collections/DynamicValue.hpp>
 #include <core/collections/DynamicArray.hpp>
 

@@ -31,8 +31,8 @@
 
 #include <fmt/format.h>
 
-#include <core/database/soci-date.h>
-#include <core/database/soci-number.h>
+#include <core/database/SociDate.hpp>
+#include <core/database/SociNumber.hpp>
 #include <core/crypto/SHA256.hpp>
 #include <core/wallet/AccountDatabaseHelper.hpp>
 

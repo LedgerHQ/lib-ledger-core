@@ -31,13 +31,14 @@
 
 #pragma once
 
-#include "../api/RandomNumberGenerator.hpp"
 #include <memory>
 #include <string>
 #include <ostream>
 #include <istream>
-#include "../bytes/BytesReader.h"
-#include "../bytes/BytesWriter.h"
+
+#include <core/api/RandomNumberGenerator.hpp>
+#include <core/bytes/BytesReader.hpp>
+#include <core/bytes/BytesWriter.hpp>
 
 namespace ledger {
  namespace core {

@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HTTPURLCONNECTIONINPUTSTREAM_HPP
-#define LEDGER_CORE_HTTPURLCONNECTIONINPUTSTREAM_HPP
 
-#include "../api/HttpUrlConnection.hpp"
+#pragma once
+
 #include <vector>
 #include <memory>
+
+#include <core/api/HttpUrlConnection.hpp>
 
 namespace ledger {
  namespace core {
@@ -60,6 +61,3 @@ namespace ledger {
      };
  }
 }
-
-
-#endif //LEDGER_CORE_HTTPURLCONNECTIONINPUTSTREAM_HPP

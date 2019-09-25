@@ -29,7 +29,7 @@
  *
  */
 
-#include <core/address/Address.h>
+#include <core/address/Address.hpp>
 #include <core/utils/Exception.hpp>
 
 namespace ledger {

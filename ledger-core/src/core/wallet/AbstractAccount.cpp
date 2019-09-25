@@ -33,7 +33,7 @@
 #include <core/api/ErrorCode.hpp>
 #include <core/events/Event.hpp>
 #include <core/wallet/AbstractAccount.hpp>
-#include <core/wallet/BlockDatabaseHelper.h>
+#include <core/wallet/BlockDatabaseHelper.hpp>
 #include <core/wallet/AccountDatabaseHelper.hpp>
 
 namespace ledger {

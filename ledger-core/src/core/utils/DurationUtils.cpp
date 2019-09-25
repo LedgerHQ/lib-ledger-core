@@ -29,4 +29,4 @@
  *
  */
 
-#include <core/utils/DurationUtils.h>
+#include <core/utils/DurationUtils.hpp>

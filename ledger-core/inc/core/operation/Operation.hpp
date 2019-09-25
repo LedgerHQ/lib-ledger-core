@@ -41,7 +41,7 @@
 #include <core/api/Operation.hpp>
 #include <core/api/OperationType.hpp>
 #include <core/api/TrustIndicator.hpp>
-#include <core/math/BigInt.h>
+#include <core/math/BigInt.hpp>
 #include <core/utils/Option.hpp>
 
 namespace ledger {

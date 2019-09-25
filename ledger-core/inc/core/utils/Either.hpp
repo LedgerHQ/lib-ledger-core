@@ -28,13 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_EITHER_HPP
-#define LEDGER_CORE_EITHER_HPP
 
-#include "Option.hpp"
-#include "Either.hpp"
+#pragma once
+
 #include <functional>
-#include "Exception.hpp"
+
+#include <core/utils/Option.hpp>
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -155,6 +155,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_EITHER_HPP

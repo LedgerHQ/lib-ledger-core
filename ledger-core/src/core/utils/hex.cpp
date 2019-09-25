@@ -29,7 +29,7 @@
  *
  */
 
-#include <core/utils/hex.h>
+#include <core/utils/Hex.hpp>
 
 namespace ledger {
     namespace core {

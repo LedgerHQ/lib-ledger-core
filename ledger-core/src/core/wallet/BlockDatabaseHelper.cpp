@@ -32,9 +32,9 @@
 #include <fmt/format.h>
 
 #include <core/crypto/SHA256.hpp>
-#include <core/database/soci-date.h>
-#include <core/database/soci-number.h>
-#include <core/wallet/BlockDatabaseHelper.h>
+#include <core/database/SociDate.hpp>
+#include <core/database/SociNumber.hpp>
+#include <core/wallet/BlockDatabaseHelper.hpp>
 
 using namespace soci;
 

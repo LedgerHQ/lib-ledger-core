@@ -31,7 +31,7 @@
 
 #include <fmt/format.h>
 
-#include <core/database/query/CompoundQueryFilter.h>
+#include <core/database/query/CompoundQueryFilter.hpp>
 
 namespace ledger {
     namespace core {

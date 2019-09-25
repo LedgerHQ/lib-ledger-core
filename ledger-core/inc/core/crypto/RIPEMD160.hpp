@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_RIPEMD160_HPP
-#define LEDGER_CORE_RIPEMD160_HPP
+
+#pragma once
 
 #include <vector>
 #include <cstdint>
@@ -44,6 +44,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPEMD160_HPP

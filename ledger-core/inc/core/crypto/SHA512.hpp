@@ -28,9 +28,7 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_SHA512_H
-#define LEDGER_CORE_SHA512_H
+#pragma once
 
 #include <string>
 #include <vector>
@@ -49,6 +47,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_SHA512_H

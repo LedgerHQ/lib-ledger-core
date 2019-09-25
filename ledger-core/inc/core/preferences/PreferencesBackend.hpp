@@ -48,7 +48,7 @@
 #include <core/crypto/AESCipher.hpp>
 #include <core/preferences/Preferences.hpp>
 #include <core/utils/Option.hpp>
-#include <core/utils/optional.hpp>
+#include <core/utils/Optional.hpp>
 
 namespace ledger {
     namespace core {

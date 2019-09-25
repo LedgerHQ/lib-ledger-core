@@ -30,7 +30,7 @@
  */
 #include <fmt/format.h>
 
-#include <core/database/query/QueryBuilder.h>
+#include <core/database/query/QueryBuilder.hpp>
 
 namespace ledger {
     namespace core {

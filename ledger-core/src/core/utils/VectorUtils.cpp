@@ -29,4 +29,4 @@
  *
  */
 
-#include <core/utils/VectorUtils.h>
+#include <core/utils/VectorUtils.hpp>

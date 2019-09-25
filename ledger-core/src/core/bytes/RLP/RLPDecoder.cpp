@@ -28,9 +28,9 @@
  *
  */
 
-#include <core/bytes/RLP/RLPDecoder.h>
-#include <core/bytes/RLP/RLPStringEncoder.h>
-#include <core/bytes/RLP/RLPListEncoder.h>
+#include <core/bytes/RLP/RLPDecoder.hpp>
+#include <core/bytes/RLP/RLPStringEncoder.hpp>
+#include <core/bytes/RLP/RLPListEncoder.hpp>
 
 /*
  * Reursive Length Prefix Decoder

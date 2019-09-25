@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_HMACSHA256_HPP
-#define LEDGER_CORE_HMACSHA256_HPP
+
+#pragma once
 
 #include <vector>
 #include <cstdint>
@@ -47,5 +47,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_HMACSHA256_HPP

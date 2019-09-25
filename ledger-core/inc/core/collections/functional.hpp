@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_FUNCTIONAL_HPP
-#define LEDGER_CORE_FUNCTIONAL_HPP
+
+#pragma once
 
 #include <functional>
 #include <vector>
@@ -52,5 +52,3 @@ namespace ledger {
         }
     }
 }
-
-#endif //LEDGER_CORE_FUNCTIONAL_HPP

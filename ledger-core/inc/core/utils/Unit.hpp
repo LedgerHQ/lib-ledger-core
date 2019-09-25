@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_UNIT_HPP
-#define LEDGER_CORE_UNIT_HPP
+
+#pragma once
 
 namespace ledger {
     namespace core {
@@ -46,5 +46,3 @@ namespace ledger {
         const Unit unit {};
     }
 }
-
-#endif //LEDGER_CORE_UNIT_HPP

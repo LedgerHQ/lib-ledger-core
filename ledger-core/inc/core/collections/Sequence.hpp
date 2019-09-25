@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SEQUENCE_HPP
-#define LEDGER_CORE_SEQUENCE_HPP
+
+#pragma once
 
 #include <vector>
-#include <list>
-#include "../utils/Exception.hpp"
 #include <iterator>
+#include <list>
+
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -122,5 +123,3 @@ namespace ledger {
 
     }
 }
-
-#endif //LEDGER_CORE_SEQUENCE_HPP

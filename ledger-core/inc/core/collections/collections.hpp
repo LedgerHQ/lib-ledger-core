@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_COLLECTIONS_HPP
-#define LEDGER_CORE_COLLECTIONS_HPP
+
+#pragma once
 
 #include <core/utils/Option.hpp>
 #include <core/utils/Either.hpp>
@@ -37,13 +37,12 @@
 #include <core/collections/MapLike.hpp>
 #include <core/collections/Sequence.hpp>
 #include <core/collections/String.hpp>
-#include <core/collections/functional.hpp>
-#include <core/collections/strings.hpp>
-#include <core/collections/vector.hpp>
+#include <core/collections/Functional.hpp>
+#include <core/collections/Strings.hpp>
+#include <core/collections/Vector.hpp>
 
 namespace ledger {
     namespace core {
 
     }
 }
-#endif //LEDGER_CORE_COLLECTIONS_HPP

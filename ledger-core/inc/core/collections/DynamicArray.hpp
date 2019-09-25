@@ -28,17 +28,19 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DYNAMICARRAY_HPP
-#define LEDGER_CORE_DYNAMICARRAY_HPP
 
-#include "../api/DynamicArray.hpp"
-#include "../api/DynamicObject.hpp"
-#include "../api/DynamicType.hpp"
+#pragma once
+
+#include <sstream>
+
 #include <cereal/cereal.hpp>
 #include <cereal/types/vector.hpp>
-#include "../collections/collections.hpp"
-#include "DynamicValue.hpp"
-#include <sstream>
+
+#include <core/api/DynamicArray.hpp>
+#include <core/api/DynamicObject.hpp>
+#include <core/api/DynamicType.hpp>
+#include <core/collections/Collections.hpp>
+#include <core/collections/DynamicValue.hpp>
 
 namespace ledger {
     namespace core {
@@ -115,5 +117,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_DYNAMICARRAY_HPP

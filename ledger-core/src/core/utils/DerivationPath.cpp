@@ -36,8 +36,8 @@
 #include <fmt/format.h>
 
 #include <core/utils/DerivationPath.hpp>
-#include <core/collections/vector.hpp>
-#include <core/collections/strings.hpp>
+#include <core/collections/Vector.hpp>
+#include <core/collections/Strings.hpp>
 
 namespace ledger {
     namespace core {

@@ -28,8 +28,8 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP
-#define LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP
+
+#pragma once
 
 #include <vector>
 
@@ -66,6 +66,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_DETERMINISTICPUBLICKEY_HPP

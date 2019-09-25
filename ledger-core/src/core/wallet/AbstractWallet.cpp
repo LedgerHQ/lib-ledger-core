@@ -31,15 +31,15 @@
 
 #include <core/Services.hpp>
 #include <core/async/DedicatedContext.hpp>
-#include <core/async/algorithm.h>
-#include <core/database/soci-date.h>
-#include <core/database/soci-number.h>
-#include <core/database/soci-option.h>
+#include <core/async/Algorithm.hpp>
+#include <core/database/SociDate.hpp>
+#include <core/database/SociNumber.hpp>
+#include <core/database/SociOption.hpp>
 #include <core/debug/LoggerApi.hpp>
 #include <core/wallet/AbstractAccount.hpp>
 #include <core/wallet/AbstractWallet.hpp>
 #include <core/wallet/AccountDatabaseHelper.hpp>
-#include <core/wallet/BlockDatabaseHelper.h>
+#include <core/wallet/BlockDatabaseHelper.hpp>
 #include <core/wallet/WalletDatabaseEntry.hpp>
 
 namespace ledger {

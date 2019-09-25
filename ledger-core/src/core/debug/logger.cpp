@@ -33,7 +33,7 @@
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/null_sink.h>
 
-#include <core/debug/logger.hpp>
+#include <core/debug/Logger.hpp>
 #include <core/debug/LogPrinterSink.hpp>
 #include <core/debug/RotatingEncryptableSink.hpp>
 #include <core/api/PathResolver.hpp>

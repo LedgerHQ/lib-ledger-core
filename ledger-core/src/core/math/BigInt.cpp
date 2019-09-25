@@ -33,8 +33,8 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <core/math/BigInt.h>
-#include <core/collections/collections.hpp>
+#include <core/math/BigInt.hpp>
+#include <core/collections/Collections.hpp>
 
 namespace ledger {
     namespace core {

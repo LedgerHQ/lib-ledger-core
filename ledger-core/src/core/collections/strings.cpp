@@ -31,7 +31,7 @@
 
 #include <boost/algorithm/string.hpp>
 
-#include <core/collections/strings.hpp>
+#include <core/collections/Strings.hpp>
 #include <core/collections/String.hpp>
 
 namespace ledger {

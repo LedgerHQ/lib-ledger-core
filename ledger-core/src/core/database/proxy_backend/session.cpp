@@ -29,7 +29,7 @@
  *
  */
 
-#include <core/database/proxy_backend/soci-proxy.h>
+#include <core/database/proxy_backend/SociProxy.hpp>
 
 using namespace soci;
 using namespace ledger::core;

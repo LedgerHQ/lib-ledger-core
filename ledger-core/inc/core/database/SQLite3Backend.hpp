@@ -28,11 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SQLITE3BACKEND_HPP
-#define LEDGER_CORE_SQLITE3BACKEND_HPP
 
-#include "DatabaseBackend.hpp"
+#pragma once
+
 #include <memory>
+
+#include <core/database/DatabaseBackend.hpp>
 
 namespace ledger {
  namespace core {
@@ -59,6 +60,3 @@ namespace ledger {
      };
  }
 }
-
-
-#endif //LEDGER_CORE_SQLITE3BACKEND_HPP

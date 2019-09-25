@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_LOGGERAPI_HPP
-#define LEDGER_CORE_LOGGERAPI_HPP
 
-#include "logger.hpp"
-#include "../api/Logger.hpp"
+#pragma once
+
 #include <memory>
+
+#include <core/debug/Logger.hpp>
+#include <core/api/Logger.hpp>
 
 namespace ledger {
     namespace core {
@@ -56,5 +57,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_LOGGERAPI_HPP

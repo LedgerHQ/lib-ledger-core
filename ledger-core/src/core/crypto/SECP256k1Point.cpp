@@ -30,9 +30,9 @@
  */
 
 #include <core/crypto/SECP256k1Point.hpp>
-#include <core/debug/Benchmarker.h>
+#include <core/debug/Benchmarker.hpp>
 #include <core/utils/Exception.hpp>
-#include <core/utils/VectorUtils.h>
+#include <core/utils/VectorUtils.hpp>
 #include <include/secp256k1.h>
 
 namespace ledger {

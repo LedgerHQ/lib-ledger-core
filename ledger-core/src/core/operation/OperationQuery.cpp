@@ -30,10 +30,10 @@
  */
 
 #include <core/api/enum_from_string.hpp>
-#include <core/database/soci-date.h>
-#include <core/database/soci-option.h>
-#include <core/database/soci-number.h>
-#include <core/collections/strings.hpp>
+#include <core/database/SociDate.hpp>
+#include <core/database/SociOption.hpp>
+#include <core/database/SociNumber.hpp>
+#include <core/collections/Strings.hpp>
 #include <core/operation/OperationQuery.hpp>
 #include <core/operation/Operation.hpp>
 #include <core/wallet/AbstractAccount.hpp>

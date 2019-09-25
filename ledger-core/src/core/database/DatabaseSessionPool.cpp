@@ -30,7 +30,7 @@
  */
 
 #include <core/database/DatabaseSessionPool.hpp>
-#include <core/database/migrations.hpp>
+#include <core/database/Migrations.hpp>
 
 namespace ledger {
     namespace core {

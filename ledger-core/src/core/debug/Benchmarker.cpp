@@ -29,9 +29,9 @@
  *
  */
 
-#include <core/debug/Benchmarker.h>
+#include <core/debug/Benchmarker.hpp>
 #include <core/utils/DateUtils.hpp>
-#include <core/utils/DurationUtils.h>
+#include <core/utils/DurationUtils.hpp>
 
 namespace ledger {
     namespace core {

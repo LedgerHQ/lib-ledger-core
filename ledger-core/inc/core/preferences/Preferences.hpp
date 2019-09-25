@@ -28,19 +28,21 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_PREFERENCES_HPP
-#define LEDGER_CORE_PREFERENCES_HPP
 
-#include "../api/Preferences.hpp"
-#include "../api/PreferencesEditor.hpp"
-#include "PreferencesBackend.hpp"
-#include "PreferencesEditor.hpp"
-#include "../utils/Option.hpp"
+#pragma once
+
+#include <boost/iostreams/device/array.hpp>
+#include <boost/iostreams/stream.hpp>
+
 #include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/set.hpp>
-#include <boost/iostreams/device/array.hpp>
-#include <boost/iostreams/stream.hpp>
+
+#include <core/api/Preferences.hpp>
+#include <core/api/PreferencesEditor.hpp>
+#include <core/preferences/PreferencesBackend.hpp>
+#include <core/preferences/PreferencesEditor.hpp>
+#include <core/utils/Option.hpp>
 
 namespace ledger {
     namespace core {
@@ -114,6 +116,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_PREFERENCES_HPP

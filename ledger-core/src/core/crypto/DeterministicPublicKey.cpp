@@ -30,16 +30,16 @@
  */
 
 #include <core/api/Secp256k1.hpp>
-#include <core/bytes/BytesWriter.h>
+#include <core/bytes/BytesWriter.hpp>
 #include <core/crypto/DeterministicPublicKey.hpp>
 #include <core/crypto/HASH160.hpp>
 #include <core/crypto/HMAC.hpp>
-#include <core/crypto/HashAlgorithm.h>
-#include <core/crypto/Keccak.h>
+#include <core/crypto/HashAlgorithm.hpp>
+#include <core/crypto/Keccak.hpp>
 #include <core/crypto/RIPEMD160.hpp>
 #include <core/crypto/SECP256k1Point.hpp>
-#include <core/debug/Benchmarker.h>
-#include <core/math/BigInt.h>
+#include <core/debug/Benchmarker.hpp>
+#include <core/math/BigInt.hpp>
 #include <core/utils/Exception.hpp>
 
 namespace ledger {

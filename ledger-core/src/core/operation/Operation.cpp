@@ -30,7 +30,7 @@
  */
 
 #include <core/operation/Operation.hpp>
-#include <core/wallet/Amount.h>
+#include <core/wallet/Amount.hpp>
 #include <core/wallet/AbstractAccount.hpp>
 
 namespace ledger {

@@ -28,11 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_URI_HPP
-#define LEDGER_CORE_URI_HPP
 
-#include "../collections/collections.hpp"
+#pragma once
 
+#include <core/collections/Collections.hpp>
 
 namespace ledger {
     namespace core {
@@ -56,5 +55,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_URI_HPP

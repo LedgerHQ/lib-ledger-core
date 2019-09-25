@@ -42,7 +42,7 @@
 #include <core/async/DedicatedContext.hpp>
 #include <core/collections/DynamicObject.hpp>
 #include <core/database/DatabaseSessionPool.hpp>
-#include <core/debug/logger.hpp>
+#include <core/debug/Logger.hpp>
 #include <core/events/EventPublisher.hpp>
 #include <core/utils/DerivationScheme.hpp>
 #include <core/preferences/Preferences.hpp>

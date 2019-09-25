@@ -29,8 +29,8 @@
  *
  */
 
-#include <core/net/WebSocketClient.h>
-#include <core/net/WebSocketConnection.h>
+#include <core/net/WebSocketClient.hpp>
+#include <core/net/WebSocketConnection.hpp>
 #include <core/async/Promise.hpp>
 
 namespace ledger {

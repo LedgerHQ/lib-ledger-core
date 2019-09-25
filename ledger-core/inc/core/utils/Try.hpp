@@ -40,7 +40,7 @@
 #include <stdexcept>
 #include <typeinfo>
 
-#include <core/utils/optional.hpp>
+#include <core/utils/Optional.hpp>
 #include <core/utils/Option.hpp>
 #include <core/utils/Exception.hpp>
 

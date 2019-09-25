@@ -33,8 +33,8 @@
 #include <fmt/format.h>
 #include <sstream>
 
-#include <core/bytes/BytesReader.h>
-#include <core/utils/endian.h>
+#include <core/bytes/BytesReader.hpp>
+#include <core/utils/Endian.hpp>
 
 namespace ledger {
     namespace core {

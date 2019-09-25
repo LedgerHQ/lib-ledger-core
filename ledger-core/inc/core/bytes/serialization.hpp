@@ -28,15 +28,17 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_SERIALIZATION_HPP
-#define LEDGER_CORE_SERIALIZATION_HPP
+
+#pragma once
 
 #include <vector>
+#include <sstream>
+
 #include <boost/iostreams/device/array.hpp>
 #include <boost/iostreams/stream.hpp>
+
 #include <cereal/archives/binary.hpp>
 #include <cereal/external/base64.hpp>
-#include <sstream>
 
 namespace ledger {
     namespace core {
@@ -80,6 +82,3 @@ namespace ledger {
         }
     }
 }
-
-
-#endif //LEDGER_CORE_SERIALIZATION_HPP

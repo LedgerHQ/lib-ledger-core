@@ -28,11 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_AES256_HPP
-#define LEDGER_CORE_AES256_HPP
 
-#include "../api/RandomNumberGenerator.hpp"
+#pragma once
+
 #include <vector>
+
+#include <core/api/RandomNumberGenerator.hpp>
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -52,6 +53,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_AES256_HPP

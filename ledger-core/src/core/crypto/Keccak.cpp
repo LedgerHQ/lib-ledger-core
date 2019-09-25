@@ -32,7 +32,7 @@
 #include <libethash/sha3.h>
 #include <libethash/ethash.h>
 
-#include <core/crypto/Keccak.h>
+#include <core/crypto/Keccak.hpp>
 
 namespace ledger {
     namespace core {

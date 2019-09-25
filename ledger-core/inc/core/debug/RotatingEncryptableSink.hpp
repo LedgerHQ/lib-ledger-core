@@ -39,7 +39,7 @@
 
 #include <core/api/ExecutionContext.hpp>
 #include <core/api/PathResolver.hpp>
-#include <core/utils/optional.hpp>
+#include <core/utils/Optional.hpp>
 
 namespace ledger {
     namespace core {

@@ -40,7 +40,7 @@
 #include <core/events/EventPublisher.hpp>
 #include <core/operation/Operation.hpp>
 #include <core/wallet/AbstractWallet.hpp>
-#include <core/wallet/Amount.h>
+#include <core/wallet/Amount.hpp>
 //#include <core/wallet/OperationQuery.h>
 
 namespace ledger {

@@ -28,14 +28,15 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_EVENTBUS_HPP
-#define LEDGER_CORE_EVENTBUS_HPP
 
-#include "EventPublisher.hpp"
-#include "Event.hpp"
+#pragma once
+
 #include <tuple>
 #include <unordered_map>
 #include <list>
+
+#include <core/events/EventPublisher.hpp>
+#include <core/events/Event.hpp>
 
 namespace ledger {
     namespace core {
@@ -59,6 +60,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_EVENTBUS_HPP

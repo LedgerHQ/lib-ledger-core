@@ -30,7 +30,7 @@
  */
 
 #include <core/api/DynamicType.hpp>
-#include <core/utils/ConfigurationMatchable.h>
+#include <core/utils/ConfigurationMatchable.hpp>
 
 ledger::core::ConfigurationMatchable::ConfigurationMatchable(const std::vector<std::string> &matchableKeys)
         : _matchableKeys(matchableKeys) {

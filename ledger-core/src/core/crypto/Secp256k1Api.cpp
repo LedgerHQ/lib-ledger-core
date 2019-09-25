@@ -2,9 +2,9 @@
 // Created by PIERRE POLLASTRI on 25/08/2017.
 //
 
-#include <core/crypto/Secp256k1Api.h>
+#include <core/crypto/Secp256k1Api.hpp>
 #include <core/utils/Exception.hpp>
-#include <core/utils/hex.h>
+#include <core/utils/Hex.hpp>
 #include <include/secp256k1.h>
 
 namespace ledger {
