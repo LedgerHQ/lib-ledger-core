@@ -49,6 +49,8 @@ namespace ledger {
                                                                                                const Option<std::string>& cursor)  override;
 
             Future<std::shared_ptr<stellar::Account>> getAccount(const std::string &accountId) const override;
+
+            Future<std::string> postTransaction(const std::vector<uint8_t> &tx) override;
         };
     }
 }

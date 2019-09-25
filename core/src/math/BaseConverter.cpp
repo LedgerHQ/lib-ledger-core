@@ -34,6 +34,10 @@
 namespace ledger {
     namespace core {
 
+        static BaseConverter::CharNormalizer NO_OP_NORMALIZER = [] (char c) {
+            return c;
+        };
+
         static BaseConverter::CharNormalizer BASE32_RFC4648_NORMALIZER = [] (char c) {
             if (c == '0')
                 return 'O';
@@ -59,6 +63,17 @@ namespace ledger {
             }
         };
 
+        static BaseConverter::PaddingPolicy BASE64_RFC4648_PADDER = [] (int padding, std::stringstream& ss) {
+            switch (padding) {
+                case 2: // 8bits
+                    ss << "==";
+                    break;
+                case 1: // 16bits
+                    ss << "=";
+                    break;
+            }
+        };
+
         static BaseConverter::PaddingPolicy NO_PADDING = [] (int padding, std::stringstream& ss) {};
 
 
@@ -74,6 +89,11 @@ namespace ledger {
                 NO_PADDING
         };
 
+        BaseConverter::Base64Params BaseConverter::BASE64_RFC4648 {
+                "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/",
+                NO_OP_NORMALIZER,
+                BASE64_RFC4648_PADDER
+        };
 
     }
 }

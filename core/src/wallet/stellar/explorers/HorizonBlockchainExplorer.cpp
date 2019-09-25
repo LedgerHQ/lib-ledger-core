@@ -40,6 +40,7 @@
 #include "horizon/HorizonOperationParser.hpp"
 #include "horizon/HorizonFeeStatsParser.hpp"
 #include <utils/Exception.hpp>
+#include <math/BaseConverter.hpp>
 
 namespace ledger {
     namespace core {
@@ -140,6 +141,17 @@ namespace ledger {
                         }
                        return result.getRight();
                     });
+        }
+
+        Future<std::string> HorizonBlockchainExplorer::postTransaction(const std::vector<uint8_t> &tx) {
+            std::stringstream body;
+            body << "{" << "\"tx\":" << '"' << BaseConverter::encode(tx, BaseConverter::BASE64_RFC4648) << '"' << "}";
+            auto bodyString = body.str();
+            return http->POST("/transactions", std::vector<uint8_t>(bodyString.begin(), bodyString.end()))
+            .json().template map<std::string>(getContext(), [] (const HttpRequest::JsonResult& result) -> std::string {
+                auto& json = *std::get<1>(result);
+                return json["hash"].GetString();
+            });
         }
 
     }

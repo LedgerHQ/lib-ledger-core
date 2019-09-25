@@ -94,10 +94,11 @@ namespace ledger {
             };
 
             using Base32Params = Params<32, 40, 5>;
-
+            using Base64Params = Params<64, 24, 6>;
 
             static Base32Params BASE32_RFC4648;
             static Base32Params BASE32_RFC4648_NO_PADDING;
+            static Base64Params BASE64_RFC4648;
 
             /**
              * Decode the given string to byte array.

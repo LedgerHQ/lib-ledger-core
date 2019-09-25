@@ -86,6 +86,7 @@ namespace ledger {
 
             void broadcastRawTransaction(const std::vector<uint8_t> &tx,
                                          const std::shared_ptr<api::StringCallback> &callback) override;
+            Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &tx);
 
             const StellarLikeAccountParams params() const { return _params; };
 

@@ -36,7 +36,7 @@
 #include <utils/hex.h>
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
-        0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
+        0, {"main"}, {"44'/0'/0'"}, {"xpub6BowPnDBJ4bk2V3HfEsAnoXjV8dnSv2sVctpKJHRzynA4exU2iigyxfEa5jHYEJzpH9wb3AkZWcUKNSYvbaCTt9u5VhmS6BMu1BowJRmFE4"}
 );
 
 api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO(

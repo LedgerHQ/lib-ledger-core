@@ -46,6 +46,7 @@
 #include "transaction_builders/StellarLikeTransactionBuilder.hpp"
 #include <api/BigIntCallback.hpp>
 #include <database/soci-date.h>
+#include <api/StringCallback.hpp>
 
 using namespace ledger::core;
 
@@ -357,7 +358,12 @@ namespace ledger {
 
         void StellarLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &tx,
                                                          const std::shared_ptr<api::StringCallback> &callback) {
+            broadcastRawTransaction(tx).callback(getMainExecutionContext(), callback);
+        }
 
+
+        Future<std::string> StellarLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &tx) {
+            return _params.explorer->postTransaction(tx);
         }
 
         Future<bool> StellarLikeAccount::exists() {
@@ -422,7 +428,6 @@ namespace ledger {
                 return BigInt::ZERO;
             });
         }
-
 
     }
 }

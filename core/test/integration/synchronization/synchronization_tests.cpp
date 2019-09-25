@@ -132,6 +132,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnceAtATime) {
                                               }));
             EXPECT_EQ(bus, account->synchronize());
             dispatcher->waitUntilStopped();
+
         }
     }
 }
