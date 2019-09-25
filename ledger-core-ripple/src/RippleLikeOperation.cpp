@@ -28,8 +28,8 @@
  *
  */
 
-#include <RippleLikeTransaction.h>
-#include <RippleLikeOperation.h>
+#include <RippleLikeTransaction.hpp>
+#include <RippleLikeOperation.hpp>
 
 namespace ledger {
     namespace core {

@@ -36,10 +36,10 @@
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <core/api/Currency.hpp>
 #include <core/crypto/DeterministicPublicKey.hpp>
-#include <core/key/ExtendedPublicKey.h>
+#include <core/key/ExtendedPublicKey.hpp>
 #include <core/utils/DerivationPath.hpp>
 #include <core/utils/Option.hpp>
-#include <RippleLikeAddress.h>
+#include <RippleLikeAddress.hpp>
 
 namespace ledger {
     namespace core {

@@ -30,8 +30,8 @@
 
 #pragma once
 
-#include <core/explorers/AbstractBlockParser.h>
-#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <core/explorers/AbstractBlockParser.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {

@@ -34,9 +34,9 @@
 
 #include <core/api/Currency.hpp>
 #include <core/api/KeychainEngines.hpp>
-#include <keychains/RippleLikeKeychain.h>
-#include <RippleLikeExtendedPublicKey.h>
-#include <RippleNetworks.h>
+#include <keychains/RippleLikeKeychain.hpp>
+#include <RippleLikeExtendedPublicKey.hpp>
+#include <RippleNetworks.hpp>
 
 namespace ledger {
     namespace core {

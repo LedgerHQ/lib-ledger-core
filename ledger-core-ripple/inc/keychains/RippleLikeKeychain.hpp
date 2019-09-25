@@ -42,7 +42,7 @@
 #include <core/preferences/Preferences.hpp>
 #include <core/utils/DerivationScheme.hpp>
 #include <core/utils/Option.hpp>
-#include <RippleLikeAddress.h>
+#include <RippleLikeAddress.hpp>
 
 namespace ledger {
     namespace core {

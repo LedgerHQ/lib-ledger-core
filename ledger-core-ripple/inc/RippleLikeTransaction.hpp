@@ -34,10 +34,10 @@
 #include <api/RippleLikeTransaction.hpp>
 #include <core/api/Amount.hpp>
 #include <core/api/Currency.hpp>
-#include <core/math/BigInt.h>
-#include <core/operation/Operation.h>
-#include <explorers/RippleLikeBlockchainExplorer.h>
-#include <RippleLikeBlock.h>
+#include <core/math/BigInt.hpp>
+#include <core/operation/Operation.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
+#include <RippleLikeBlock.hpp>
 
 namespace ledger {
     namespace core {

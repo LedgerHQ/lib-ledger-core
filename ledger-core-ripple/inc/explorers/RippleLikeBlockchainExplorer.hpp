@@ -39,13 +39,13 @@
 #include <core/api/ExecutionContext.hpp>
 #include <core/async/DedicatedContext.hpp>
 #include <core/collections/DynamicObject.hpp>
-#include <core/math/BigInt.h>
+#include <core/math/BigInt.hpp>
 #include <core/net/HttpClient.hpp>
-#include <core/utils/ConfigurationMatchable.h>
+#include <core/utils/ConfigurationMatchable.hpp>
 #include <core/utils/Option.hpp>
 #include <core/api/Block.hpp>
-#include <core/explorers/AbstractBlockchainExplorer.h>
-#include <keychains/RippleLikeKeychain.h>
+#include <core/explorers/AbstractBlockchainExplorer.hpp>
+#include <keychains/RippleLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {

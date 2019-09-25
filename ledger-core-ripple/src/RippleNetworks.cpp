@@ -29,7 +29,7 @@
  */
 
 #include <core/utils/Exception.hpp>
-#include <RippleNetworks.h>
+#include <RippleNetworks.hpp>
 
 namespace ledger {
     namespace core {

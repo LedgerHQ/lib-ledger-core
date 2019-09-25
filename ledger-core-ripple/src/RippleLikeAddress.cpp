@@ -29,13 +29,13 @@
  */
 
 #include <core/collections/DynamicObject.hpp>
-#include <core/collections/vector.hpp>
-#include <core/crypto/Keccak.h>
+#include <core/collections/Vector.hpp>
+#include <core/crypto/Keccak.hpp>
 #include <core/math/Base58.hpp>
 #include <core/utils/Exception.hpp>
-#include <core/utils/hex.h>
-#include <RippleNetworks.h>
-#include <RippleLikeAddress.h>
+#include <core/utils/Hex.hpp>
+#include <RippleNetworks.hpp>
+#include <RippleLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
