@@ -40,8 +40,8 @@ function cmd_project_new {
   cp ./tools/templates/idl.djinni $project_name/idl/
 
   echo "—> creating migrations files"
-  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.hpp > $project_name/inc/$coin_name/database/migrations.hpp
-  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.cpp > $project_name/src/$coin_name/database/migrations.cpp
+  sed s/\$project_name/$coin_name/g ./tools/templates/Migrations.hpp > $project_name/inc/$coin_name/database/Migrations.hpp
+  sed s/\$project_name/$coin_name/g ./tools/templates/Migrations.cpp > $project_name/src/$coin_name/database/Migrations.cpp
 }
 
 function cmd_project_idl {
