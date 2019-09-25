@@ -29,13 +29,13 @@
  */
 
 #include <core/math/Base58.hpp>
-#include <core/bytes/BytesReader.h>
-#include <core/bytes/BytesWriter.h>
-#include <core/collections/vector.hpp>
+#include <core/bytes/BytesReader.hpp>
+#include <core/bytes/BytesWriter.hpp>
+#include <core/collections/Vector.hpp>
 #include <core/crypto/SHA256.hpp>
 
-#include <RippleNetworks.h>
-#include <RippleLikeExtendedPublicKey.h>
+#include <RippleNetworks.hpp>
+#include <RippleLikeExtendedPublicKey.hpp>
 
 namespace ledger {
     namespace core {

@@ -28,7 +28,7 @@
  *
  */
 
-#include <RippleLikeBlock.h>
+#include <RippleLikeBlock.hpp>
 
 namespace ledger {
     namespace core {

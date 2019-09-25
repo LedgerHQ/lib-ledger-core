@@ -32,10 +32,10 @@
 
 #include <api/RippleLikeAddress.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
-#include <core/address/Address.h>
+#include <core/address/Address.hpp>
 #include <core/api/Currency.hpp>
 #include <core/utils/Option.hpp>
-#include <core/utils/optional.hpp>
+#include <core/utils/Optional.hpp>
 
 namespace ledger {
     namespace core {

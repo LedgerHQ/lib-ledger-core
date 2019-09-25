@@ -28,8 +28,7 @@
  *
  */
 
-
-#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {

@@ -28,7 +28,7 @@
  *
  */
 
-#include <explorers/RippleLikeTransactionParser.h>
+#include <explorers/RippleLikeTransactionParser.hpp>
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \

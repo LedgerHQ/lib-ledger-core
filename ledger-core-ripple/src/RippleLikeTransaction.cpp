@@ -28,15 +28,15 @@
  *
  */
 
-#include <core/bytes/BytesWriter.h>
-#include <core/bytes/BytesReader.h>
-#include <core/bytes/RLP/RLPListEncoder.h>
-#include <core/bytes/RLP/RLPStringEncoder.h>
-#include <core/utils/hex.h>
-#include <core/math/BigInt.h>
-#include <core/wallet/Amount.h>
-#include <RippleLikeAddress.h>
-#include <RippleLikeTransaction.h>
+#include <core/bytes/BytesWriter.hpp>
+#include <core/bytes/BytesReader.hpp>
+#include <core/bytes/RLP/RLPListEncoder.hpp>
+#include <core/bytes/RLP/RLPStringEncoder.hpp>
+#include <core/utils/Hex.hpp>
+#include <core/math/BigInt.hpp>
+#include <core/wallet/Amount.hpp>
+#include <RippleLikeAddress.hpp>
+#include <RippleLikeTransaction.hpp>
 
 namespace ledger {
     namespace core {

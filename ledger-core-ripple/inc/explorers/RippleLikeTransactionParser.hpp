@@ -35,10 +35,10 @@
 #include <rapidjson/reader.h>
 #include <stack>
 
-#include <core/collections/collections.hpp>
+#include <core/collections/Collections.hpp>
 #include <core/net/HttpClient.hpp>
-#include <explorers/RippleLikeBlockParser.h>
-#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <explorers/RippleLikeBlockParser.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {
