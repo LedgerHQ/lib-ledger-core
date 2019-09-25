@@ -29,6 +29,8 @@
  *
  */
 
+#include <cassert>
+
 #include <core/crypto/AESCipher.hpp>
 #include <core/crypto/PBKDF2.hpp>
 #include <core/crypto/AES256.hpp>
