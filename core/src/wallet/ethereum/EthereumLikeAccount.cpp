@@ -256,8 +256,8 @@ namespace ledger {
             std::vector<InternalTransaction>& internalTransactions
         ) {
           soci::rowset<soci::row> rows = (sql.prepare <<
-              "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used"
-              "FROM internal_operations as io"
+              "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used "
+              "FROM internal_operations as io "
               "WHERE io.eth_op_uid = :uid",
               soci::use(parent.uid)
           );
