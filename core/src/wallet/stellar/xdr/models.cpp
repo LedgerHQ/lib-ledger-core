@@ -31,11 +31,11 @@
 
 #include "models.hpp"
 
-using namespace ledger::core::stellar::xdr;
+namespace ledger { namespace core { namespace stellar { namespace xdr {
 
 // Here is the skycrapper of make_encoder functions
 
-#define BEGIN_ENCODER(type) template <> ObjectEncoder ledger::core::stellar::xdr::make_encoder(const type & object) { \
+#define BEGIN_ENCODER(type) template <> ObjectEncoder make_encoder(const type & object) { \
     return [=] (Encoder& encoder) {
 
 #define END_ENCODER };}
@@ -56,7 +56,8 @@ END_ENCODER
 BEGIN_ENCODER(Memo)
     encoder << static_cast<int32_t>(object.type);
     switch (object.type) {
-        case MemoType::MEMO_NONE:break;
+        case MemoType::MEMO_NONE:
+            break;
         case MemoType::MEMO_TEXT:
             encoder << boost::get<std::string>(object.content);
             break;
@@ -73,7 +74,8 @@ END_ENCODER
 BEGIN_ENCODER(Asset)
     encoder << static_cast<int32_t>(object.type);
     switch (object.type) {
-        case AssetType::ASSET_TYPE_NATIVE:break;
+        case AssetType::ASSET_TYPE_NATIVE:
+            break;
         case AssetType::ASSET_TYPE_CREDIT_ALPHANUM4:
             encoder << boost::get<AssetCode4>(object.assetCode);
             break;
@@ -108,50 +110,50 @@ END_ENCODER
 
 BEGIN_ENCODER(PathPaymentOp)
     encoder
-    << object.sendAsset
-    << object.sendMax
-    << object.destination
-    << object.destAsset
-    << object.destAmount
-    << object.path;
+            << object.sendAsset
+            << object.sendMax
+            << object.destination
+            << object.destAsset
+            << object.destAmount
+            << object.path;
 END_ENCODER
 
 BEGIN_ENCODER(ManageSellOfferOp)
     encoder
-    << object.selling
-    << object.buying
-    << object.price
-    << object.offerID;
+            << object.selling
+            << object.buying
+            << object.price
+            << object.offerID;
 END_ENCODER
 
 BEGIN_ENCODER(ManageBuyOfferOp)
     encoder
-    << object.selling
-    << object.buying
-    << object.buyAmount
-    << object.price
-    << object.offerID;
+            << object.selling
+            << object.buying
+            << object.buyAmount
+            << object.price
+            << object.offerID;
 END_ENCODER
 
 BEGIN_ENCODER(CreatePassiveSellOfferOp)
     encoder
-    << object.selling
-    << object.buying
-    << object.amount
-    << object.price;
+            << object.selling
+            << object.buying
+            << object.amount
+            << object.price;
 END_ENCODER
 
 BEGIN_ENCODER(SetOptionsOp)
     encoder
-    << object.inflationDest
-    << object.clearFlags
-    << object.setFlags
-    << object.masterWeight
-    << object.lowThreshold
-    << object.medThreshold
-    << object.highThreshold
-    << object.homeDomain
-    << object.signer;
+            << object.inflationDest
+            << object.clearFlags
+            << object.setFlags
+            << object.masterWeight
+            << object.lowThreshold
+            << object.medThreshold
+            << object.highThreshold
+            << object.homeDomain
+            << object.signer;
 END_ENCODER
 
 BEGIN_ENCODER(ChangeTrustOp)
@@ -161,7 +163,8 @@ END_ENCODER
 BEGIN_ENCODER(AllowTrustOp)
     encoder << object.trustor << static_cast<int32_t>(object.type);
     switch (object.type) {
-        case AssetType::ASSET_TYPE_NATIVE:break;
+        case AssetType::ASSET_TYPE_NATIVE:
+            break;
         case AssetType::ASSET_TYPE_CREDIT_ALPHANUM4:
             encoder << boost::get<AssetCode4>(object.assetCode);
             break;
@@ -210,7 +213,8 @@ BEGIN_ENCODER(Operation)
         case OperationType::ACCOUNT_MERGE:
             encoder << boost::get<AccountID>(object.content);
             break;
-        case OperationType::INFLATION:break;
+        case OperationType::INFLATION:
+            break;
         case OperationType::MANAGE_DATA:
             encoder << boost::get<ManageDataOp>(object.content);
             break;
@@ -225,13 +229,13 @@ END_ENCODER
 
 BEGIN_ENCODER(Transaction)
     encoder
-    << object.sourceAccount
-    << object.fee
-    << object.seqNum
-    << object.timeBounds
-    << object.memo
-    << object.operations
-    << (int32_t)0;// reserved for future use
+            << object.sourceAccount
+            << object.fee
+            << object.seqNum
+            << object.timeBounds
+            << object.memo
+            << object.operations
+            << (int32_t) 0;// reserved for future use
 END_ENCODER
 
 BEGIN_ENCODER(TransactionEnvelope)
@@ -241,3 +245,5 @@ END_ENCODER
 BEGIN_ENCODER(DecoratedSignature)
     encoder << object.hint << object.signature;
 END_ENCODER
+
+} } } }

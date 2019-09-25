@@ -45,7 +45,7 @@ namespace ledger {
                                                                   const stellar::Transaction &tx) {
             auto uid = createTransactionUid(currency.name, tx.hash);
             if (!transactionExists(sql, uid)) {
-                auto ledger = BigInt(tx.ledger).toString();
+                auto ledger = fmt::format("{}", tx.ledger);
                 auto fee = tx.feePaid.toString();
                 sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :fee, :success, :ledger,"
                        ":memo_typ, :memo)",
