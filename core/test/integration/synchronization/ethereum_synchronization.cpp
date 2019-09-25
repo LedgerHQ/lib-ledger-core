@@ -54,7 +54,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-mainnet.explorers.dev.aws.ledger.fr");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
             auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
             std::set<std::string> emittedOperations;
             {
