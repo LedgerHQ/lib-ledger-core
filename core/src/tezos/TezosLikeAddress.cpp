@@ -91,24 +91,22 @@ namespace ledger {
                                                                        const api::Currency &currency,
                                                                        const Option<std::string> &derivationPath) {
             std::vector<uint8_t> hash160, version;
-            if (address.size() >= 20) {
-                auto &params = currency.tezosLikeNetworkParameters.value();
-                auto config = std::make_shared<DynamicObject>();
-                config->putString("networkIdentifier", params.Identifier);
-                auto decoded = Base58::checkAndDecode(address, config);
-                if (decoded.isFailure()) {
-                    throw decoded.getFailure();
-                }
-                auto value = decoded.getValue();
-
-                //Check decoded address size
-                if (value.size() <= 20) {
-                    throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
-                }
-
-                hash160 = std::vector<uint8_t>(value.end() - 20, value.end());
-                version = std::vector<uint8_t>(value.begin(), value.end() - 20);
+            auto &params = currency.tezosLikeNetworkParameters.value();
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", params.Identifier);
+            auto decoded = Base58::checkAndDecode(address, config);
+            if (decoded.isFailure()) {
+                throw decoded.getFailure();
             }
+            auto value = decoded.getValue();
+
+            //Check decoded address size
+            if (value.size() <= 20) {
+                throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
+            }
+
+            hash160 = std::vector<uint8_t>(value.end() - 20, value.end());
+            version = std::vector<uint8_t>(value.begin(), value.end() - 20);
             return std::make_shared<ledger::core::TezosLikeAddress>(currency, hash160, version, derivationPath);
         }
     }
