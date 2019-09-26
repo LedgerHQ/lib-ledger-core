@@ -52,9 +52,7 @@ public:
     virtual std::vector<uint8_t> serialize() = 0;
 
     /** Set signature of transaction, when a signature is set serialize method gives back serialized Tx */
-    virtual void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) = 0;
-
-    virtual void setDERSignature(const std::vector<uint8_t> & signature) = 0;
+    virtual void setSignature(const std::vector<uint8_t> & signature) = 0;
 
     /**
      * Get the time when the transaction was issued or the time of the block including

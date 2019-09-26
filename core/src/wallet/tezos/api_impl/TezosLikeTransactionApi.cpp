@@ -130,38 +130,12 @@ namespace ledger {
             return _signingPubKey;
         }
 
-        void TezosLikeTransactionApi::setSignature(const std::vector<uint8_t> &rSignature,
-                                                   const std::vector<uint8_t> &sSignature) {
-            _rSignature = rSignature;
-            _sSignature = sSignature;
-        }
-
-        void TezosLikeTransactionApi::setDERSignature(const std::vector<uint8_t> &signature) {
-            BytesReader reader(signature);
-            //DER prefix
-            reader.readNextByte();
-            //Total length
-            reader.readNextVarInt();
-            //Nb of elements for R
-            reader.readNextByte();
-            //R length
-            auto rSize = reader.readNextVarInt();
-            if (rSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _rSignature = reader.read(rSize - 1);
-            } else {
-                _rSignature = reader.read(rSize);
+        void TezosLikeTransactionApi::setSignature(const std::vector<uint8_t> &signature) {
+            // Signature should be 64 bytes
+            if (signature.size() != 64) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setSignature: XTZ signature should have a length of 64 bytes.");
             }
-            //Nb of elements for S
-            reader.readNextByte();
-            //S length
-            auto sSize = reader.readNextVarInt();
-            if (sSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _sSignature = reader.read(sSize - 1);
-            } else {
-                _sSignature = reader.read(sSize);
-            }
+            _signature = signature;
         }
 
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
@@ -270,6 +244,11 @@ namespace ledger {
                 }
                 default:
                     break;
+            }
+
+            // Append signature
+            if (!_signature.empty()) {
+                writer.writeByteArray(_signature);
             }
 
             return writer.toByteArray();
