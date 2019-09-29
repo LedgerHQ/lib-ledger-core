@@ -51,7 +51,7 @@
 namespace ledger {
     namespace core {
 
-        const api::WalletType TezosLikeWallet::type = api::WalletType::ETHEREUM;
+        const api::WalletType TezosLikeWallet::type = api::WalletType::TEZOS;
 
         TezosLikeWallet::TezosLikeWallet(const std::string &name,
                                          const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,

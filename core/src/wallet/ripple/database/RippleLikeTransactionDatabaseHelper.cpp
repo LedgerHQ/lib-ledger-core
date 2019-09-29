@@ -92,7 +92,7 @@ namespace ledger {
                 ));
             }
 
-            tx.sequence = BigInt(row.get<std::string>(14));
+            tx.sequence = BigInt(static_cast<unsigned long long>(get_number<uint64_t>(row, 14)));
 
             return true;
         }
@@ -135,7 +135,7 @@ namespace ledger {
                 auto hexValue = tx.value.toHexString();
                 auto hexFees = tx.fees.toHexString();
                 sql
-                        << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations)",
+                        << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations, :sequence)",
                         use(rippleTxUid),
                         use(tx.hash),
                         use(hexValue),
@@ -144,7 +144,8 @@ namespace ledger {
                         use(tx.sender),
                         use(tx.receiver),
                         use(hexFees),
-                        use(tx.confirmations);
+                        use(tx.confirmations),
+                        use(tx.sequence);
 
                 int fieldIndex = 0;
                 for (auto& memo : tx.memos) {
