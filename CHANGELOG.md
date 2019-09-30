@@ -1,6 +1,7 @@
 ## 3.1.0 (on-going)
 
 - Add block heights on `BitcoinLikeOutput`s to enhance performances while picking UTXOs with deepest first UTXO picking strategy
+- Add signature settings on `BitcoinLikeTransaction` to create DER signature from RS(V) data
 
 ## 3.0.0
 

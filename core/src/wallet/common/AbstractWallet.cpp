@@ -243,7 +243,6 @@ namespace ledger {
         FuturePtr<api::Account> AbstractWallet::getAccount(int32_t index) {
             auto self = shared_from_this();
             return async<std::shared_ptr<api::Account>>([self, index] () -> std::shared_ptr<api::Account> {
-                soci::session sql(self->getDatabase()->getPool());
                 auto it = self->_accounts.find(index);
                 if (it != self->_accounts.end()) {
                     auto ptr = it->second;
@@ -251,6 +250,7 @@ namespace ledger {
                         return ptr;
                 }
 
+                soci::session sql(self->getDatabase()->getPool());
                 if (!AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index)) {
                     throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet '{}', doesn't exist", index,  self->getName());
                 }
@@ -343,7 +343,7 @@ namespace ledger {
                 soci::rowset<soci::row> accounts = (sql.prepare << "SELECT idx FROM accounts "
                                                                     "WHERE wallet_uid = :wallet_uid AND created_at >= :date",
                                                                     soci::use(uid), soci::use(date));
-                
+
                 for (auto& account : accounts) {
                     if (account.get_indicator(0) != soci::i_null) {
                         self->_accounts.erase(account.get<int32_t>(0));
