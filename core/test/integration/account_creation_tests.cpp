@@ -59,6 +59,8 @@ TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfoOnExistingWallet) {
 TEST_F(AccountCreationTest, ChangePassword) {
     auto oldPassword = "";
     auto newPassword = "new_test";
+
+    // Create wallet, account ... in plain DB
     auto pool = newDefaultPool("my_pool", oldPassword);
     {
         auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
@@ -67,11 +69,17 @@ TEST_F(AccountCreationTest, ChangePassword) {
         EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     }
 
-    wait(pool->changePassword(oldPassword, newPassword));
-    {
-        auto wallet = wait(pool->getWallet("my_wallet"));
-        auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->getAccount(0)));
-        auto address = wait(account->getFreshPublicAddresses())[0]->toString();
-        EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-    }
+    auto changePasswordAndGetInfos = [] (const std::shared_ptr<WalletPool> &walletPool, const std::string &oldPassword, const std::string &newPassword) {
+        wait(walletPool->changePassword(oldPassword, newPassword));
+        {
+            auto wallet = wait(walletPool->getWallet("my_wallet"));
+            auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->getAccount(0)));
+            auto address = wait(account->getFreshPublicAddresses())[0]->toString();
+            EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+        }
+    };
+
+    changePasswordAndGetInfos(pool, "", "new_test");
+    changePasswordAndGetInfos(pool, "new_test", "new_test_0");
+    changePasswordAndGetInfos(pool, "new_test_0", "");
 }

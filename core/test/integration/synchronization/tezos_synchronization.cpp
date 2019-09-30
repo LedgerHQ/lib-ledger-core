@@ -50,7 +50,7 @@ class TezosLikeWalletSynchronization : public BaseFixture {
 };
 
 TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool("xtz", "");
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
