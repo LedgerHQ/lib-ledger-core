@@ -28,7 +28,7 @@
  *
  */
 
-#include <core/observers/AbstractBlockchainObserver.h>
+#include <core/observers/AbstractBlockchainObserver.hpp>
 #include <core/net/WebSocketClient.hpp>
 #include <core/net/WebSocketConnection.hpp>
 
