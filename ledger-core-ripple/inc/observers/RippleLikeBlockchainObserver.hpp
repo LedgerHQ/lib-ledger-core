@@ -38,12 +38,12 @@
 #include <core/api/DynamicObject.hpp>
 #include <core/api/ExecutionContext.hpp>
 #include <core/async/DedicatedContext.hpp>
-#include <core/net/WebSocketClient.h>
-#include <core/net/WebSocketConnection.h>
-#include <core/observers/AbstractBlockchainObserver.h>
-#include <core/observers/AbstractLedgerApiBlockchainObserver.h>
-#include <core/utils/ConfigurationMatchable.h>
-#include <explorers/RippleLikeBlockchainExplorer.h>
+#include <core/net/WebSocketClient.hpp>
+#include <core/net/WebSocketConnection.hpp>
+#include <core/observers/AbstractBlockchainObserver.hpp>
+#include <core/observers/AbstractLedgerApiBlockchainObserver.hpp>
+#include <core/utils/ConfigurationMatchable.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {

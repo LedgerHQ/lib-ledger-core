@@ -28,28 +28,27 @@
  *
  */
 
-#include "RippleLikeAccount.h"
-#include "RippleLikeWallet.h"
-#include <async/Future.hpp>
-#include <wallet/common/database/OperationDatabaseHelper.h>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
-#include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
-#include <wallet/ripple/api_impl/RippleLikeTransactionApi.h>
-#include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
-#include <events/Event.hpp>
-#include <math/Base58.hpp>
-#include <utils/Option.hpp>
-#include <utils/DateUtils.hpp>
 #include <api/RippleConfiguration.hpp>
 #include <api/RippleConfigurationDefaults.hpp>
-
-#include <database/soci-number.h>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
+#include <api_impl/RippleLikeTransactionApi.hpp>
+#include <core/async/Future.hpp>
+#include <core/operation/OperationDatabaseHelper.hpp>
+#include <core/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.hpp>
+#include <core/events/Event.hpp>
+#include <core/math/Base58.hpp>
+#include <core/utils/Option.hpp>
+#include <core/utils/DateUtils.hpp>
+#include <database/RippleLikeAccountDatabaseHelper.hpp>
+#include <database/RippleLikeTransactionDatabaseHelper.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
+#include <transaction_builders/RippleLikeTransactionBuilder.hpp>
+#include <wallet/common/database/BlockDatabaseHelper.hpp>
+#include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
+#include <core/database/SociNumber.hpp>
+#include <core/database/SociDate.hpp>
+#include <core/database/SociOption.hpp>
+#include <RippleLikeAccount.hpp>
+#include <RippleLikeWallet.hpp>
 
 namespace ledger {
     namespace core {
@@ -366,8 +365,10 @@ namespace ledger {
             return _keychain->getRestoreKey();
         }
 
-        void RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                                        const std::shared_ptr<api::StringCallback> &callback) {
+        void RippleLikeAccount::broadcastRawTransaction(
+            const std::vector<uint8_t> & transaction,
+            const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+        ) {
             _explorer->pushTransaction(transaction).map<std::string>(getContext(),
                                                                      [](const String &seq) -> std::string {
                                                                          //TODO: optimistic update
@@ -375,8 +376,10 @@ namespace ledger {
                                                                      }).callback(getContext(), callback);
         }
 
-        void RippleLikeAccount::broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction,
-                                                     const std::shared_ptr<api::StringCallback> &callback) {
+        void RippleLikeAccount::broadcastTransaction(
+            const std::shared_ptr<RippleLikeTransaction> & transaction,
+            const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+        ) {
             broadcastRawTransaction(transaction->serialize(), callback);
         }
 
@@ -437,7 +440,7 @@ namespace ledger {
                                                                   buildFunction);
         }
 
-        void RippleLikeAccount::getFees(const std::shared_ptr<api::AmountCallback> & callback) {
+        void RippleLikeAccount::getFees(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) {
             getFees().callback(getContext(), callback);
         }
 
@@ -449,7 +452,7 @@ namespace ledger {
             });
         }
 
-        void RippleLikeAccount::getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) {
+        void RippleLikeAccount::getBaseReserve(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) {
             getBaseReserve().callback(getContext(), callback);
         }
 

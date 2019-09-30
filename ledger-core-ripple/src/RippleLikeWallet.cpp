@@ -28,34 +28,25 @@
  *
  */
 
-
-#include "RippleLikeWallet.h"
-
-#include "RippleLikeAccount.h"
-
 #include <algorithm>
 
-#include <async/wait.h>
-#include <api/ErrorCode.hpp>
-#include <api/AccountCallback.hpp>
-#include <api/ConfigurationDefaults.hpp>
-#include <api/KeychainEngines.hpp>
+#include <core/api/ErrorCode.hpp>
+#include <core/api/ConfigurationDefaults.hpp>
+#include <core/api/KeychainEngines.hpp>
+#include <core/async/Wait.hpp>
 
-#include <ripple/RippleLikeExtendedPublicKey.h>
+#include <RippleLikeWallet.hpp>
+#include <RippleLikeAccount.hpp>
+#include <RippleLikeExtendedPublicKey.hpp>
 
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
-
+#include <core/wallet/AccountDatabaseHelper.hpp>
+#include <core/wallet/RippleLikeAccountDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
-
-        const api::WalletType RippleLikeWallet::type = api::WalletType::ETHEREUM;
-
         RippleLikeWallet::RippleLikeWallet(const std::string &name,
                                            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                                            const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
-                                           const std::shared_ptr<RippleLikeKeychainFactory> &keychainFactory,
                                            const RippleLikeAccountSynchronizerFactory &synchronizer,
                                            const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
                                            const std::shared_ptr<DynamicObject> &configuration,
@@ -64,7 +55,6 @@ namespace ledger {
                 : AbstractWallet(name, network, pool, configuration, scheme) {
             _explorer = explorer;
             _observer = observer;
-            _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
         }
 

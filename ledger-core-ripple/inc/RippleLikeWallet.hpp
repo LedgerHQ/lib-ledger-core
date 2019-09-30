@@ -28,28 +28,21 @@
  *
  */
 
+#pragma once
 
-#ifndef LEDGER_CORE_RIPPLELIKEWALLET_H
-#define LEDGER_CORE_RIPPLELIKEWALLET_H
-
-#include <wallet/common/AbstractWallet.hpp>
-#include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
-#include <wallet/ripple/factories/RippleLikeWalletFactory.h>
-#include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
+#include <core/wallet/AbstractWallet.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
+#include <observers/RippleLikeBlockchainObserver.hpp>
+#include <synchronizers/RippleLikeAccountSynchronizer.hpp>
 
 namespace ledger {
     namespace core {
         class RippleLikeWallet : public AbstractWallet {
         public:
-            static const api::WalletType type;
-
             RippleLikeWallet(
                     const std::string &name,
                     const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                     const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
-                    const std::shared_ptr<RippleLikeKeychainFactory> &keychainFactory,
                     const RippleLikeAccountSynchronizerFactory &synchronizerFactory,
                     const std::shared_ptr<WalletPool> &pool,
                     const api::Currency &network,
@@ -83,12 +76,8 @@ namespace ledger {
 
             std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
             std::shared_ptr<RippleLikeBlockchainObserver> _observer;
-            std::shared_ptr<RippleLikeKeychainFactory> _keychainFactory;
             RippleLikeAccountSynchronizerFactory _synchronizerFactory;
             api::RippleLikeNetworkParameters _network;
         };
     }
 }
-
-
-#endif //LEDGER_CORE_RIPPLELIKEWALLET_H

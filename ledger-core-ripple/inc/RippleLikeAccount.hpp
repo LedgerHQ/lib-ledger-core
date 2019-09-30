@@ -93,20 +93,24 @@ namespace ledger {
 
             std::string getRestoreKey() override;
 
-            void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                         const std::shared_ptr<api::StringCallback> &callback) override;
+            void broadcastRawTransaction(
+                const std::vector<uint8_t> & transaction,
+                const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+            ) override;
 
-            void broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction,
-                                      const std::shared_ptr<api::StringCallback> &callback) override;
+            void broadcastTransaction(
+                const std::shared_ptr<api::RippleLikeTransaction> & transaction,
+                const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+            ) override;
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> buildTransaction() override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-            void getFees(const std::shared_ptr<api::AmountCallback> & callback) override;
+            void getFees(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) override;
             FuturePtr<api::Amount> getFees();
 
-            void getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) override;
+            void getBaseReserve(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) override;
             FuturePtr<api::Amount> getBaseReserve();
         private:
             std::shared_ptr<RippleLikeAccount> getSelf();
