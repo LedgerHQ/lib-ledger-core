@@ -85,7 +85,10 @@ namespace ledger {
                 struct PublicKey {
                     PublicKeyType type;
                     uint256 content;
+
+                    PublicKey() : type(PublicKeyType::PUBLIC_KEY_TYPE_ED25519) {};
                 };
+
                 using AccountID = PublicKey;
 
                 // Memo union
@@ -100,6 +103,8 @@ namespace ledger {
                 struct Memo {
                     MemoType type;
                     boost::variant<string28, uint64_t, Hash> content;
+
+                    Memo() : type(MemoType::MEMO_NONE) {};
                 };
 
                 // Asset union
@@ -276,6 +281,7 @@ namespace ledger {
                     std::list<Operation> operations;
                     AccountID sourceAccount;
 
+                    Transaction() : fee(0), seqNum(0) {};
                 };
 
                 // Decorated signature structure
