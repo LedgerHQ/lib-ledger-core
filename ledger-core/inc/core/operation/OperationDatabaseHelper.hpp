@@ -32,11 +32,22 @@
 #pragma once
 
 #include <string>
+#include <type_traits>
 
 #include <soci.h>
 
+#include <core/api/Amount.hpp>
+#include <core/api/BigInt.hpp>
 #include <core/api/OperationType.hpp>
+#include <core/bytes/Serialization.hpp>
+#include <core/crypto/SHA256.hpp>
+#include <core/database/SociNumber.hpp>
+#include <core/database/SociDate.hpp>
+#include <core/database/SociOption.hpp>
+#include <core/collections/Strings.hpp>
 #include <core/operation/Operation.hpp>
+#include <core/wallet/BlockDatabaseHelper.hpp>
+#include <core/wallet/TrustIndicator.hpp>
 
 namespace ledger {
     namespace core {
@@ -94,11 +105,8 @@ namespace ledger {
 
             auto count = 0;
             std::string serializedTrust;
-            // TODO: I'm honestly not sure at all about this line below - since
-            // api::TrustIndicator has none `serialize` method, we obviously need the
-            // underlying implementation. Change `api::TrustIndicator` to
-            // `TrustIndicator` in the `Operation` class is for sure a better solution 
-            serialization::saveBase64<TrustIndicator>(*dynamic_cast<TrustIndicator*>(operation.trust.get()), serializedTrust);
+
+            serialization::saveBase64<TrustIndicator>(*operation.trust, serializedTrust);
             if (operation.block.nonEmpty()) {
                 BlockDatabaseHelper::putBlock(sql, operation.block.getValue());
             }
