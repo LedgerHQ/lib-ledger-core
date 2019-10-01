@@ -48,19 +48,28 @@
 namespace ledger {
 namespace core {
 
+
 namespace impl {
 
+    // Declares a type trait to check if templated type has a static method
+    // called `updateCurrencyOperation`.
     template <typename T, typename = void>
     struct has_update;
 
+    // Uses SFINAE to determine if templated type has the 
+    // `updateCurrencyOperation` method.
+    // If the substitution succeed, `has_update` is evaluated as a
+    // `true_type`
     template <typename T>
     struct has_update<T, decltype(T::updateCurrencyOperation)> : std::true_type
     {};
 
+    // Else the `has_update` is evaluated as a `false_type`
     template <typename T>
     struct has_update<T, void> : std::false_type
     {};
 
+    // Syntaxic sugar here to avoid to write the `has_update<T>::value`
     template <typename T>
     constexpr auto has_update_v = has_update<T>::value;
 }
