@@ -76,7 +76,7 @@ bool OperationDatabaseHelper<Derived>::putOperation(soci::session& sql, const Op
 
     auto count = 0;
     std::string serializedTrust;
-    // TODO: I'm honestly not sure at all about this above line - since
+    // TODO: I'm honestly not sure at all about this line below - since
     // api::TrustIndicator has none `serialize` method, we obviously need the
     // underlying implementation. Change `api::TrustIndicator` to
     // `TrustIndicator` in the `Operation` class is for sure a better solution 
