@@ -229,8 +229,6 @@ namespace ledger {
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
-<<<<<<< HEAD
-=======
 
         std::shared_ptr<api::StellarLikeAccount> AbstractAccount::asStellarLikeAccount() {
             return std::dynamic_pointer_cast<api::StellarLikeAccount>(shared_from_this());
@@ -240,6 +238,5 @@ namespace ledger {
             return _type == api::WalletType::STELLAR;
         }
 
->>>>>>> Implement stellar methods in Common Wallet, Account, Address types
     }
 }
