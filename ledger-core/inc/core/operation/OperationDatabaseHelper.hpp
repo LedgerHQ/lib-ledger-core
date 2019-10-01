@@ -39,26 +39,26 @@
 #include <core/operation/Operation.hpp>
 
 namespace ledger {
-namespace core {
+    namespace core {
 
-template <typename Derived>
-class OperationDatabaseHelper {
-public:
-    static bool putOperation(soci::session& sql, const Operation& operation);
-    
-    static std::string createUid(const std::string& accountUid,
-                                    const std::string& txId,
-                                    const api::OperationType type);
-    static void queryOperations(soci::session& sql, int32_t from, int32_t to,
-                                bool complete, bool excludeDropped, std::vector<Operation>& out);
+        template <typename Derived>
+        class OperationDatabaseHelper {
+        public:
+            static bool putOperation(soci::session& sql, const Operation& operation);
+            
+            static std::string createUid(const std::string& accountUid,
+                                            const std::string& txId,
+                                            const api::OperationType type);
+            static void queryOperations(soci::session& sql, int32_t from, int32_t to,
+                                        bool complete, bool excludeDropped, std::vector<Operation>& out);
 
-    static std::size_t queryOperations(soci::session &sql,
-                                        const std::string &accountUid,
-                                        std::vector<Operation>& out,
-                                        std::function<bool (const std::string& address)> filter);
-};
+            static std::size_t queryOperations(soci::session &sql,
+                                                const std::string &accountUid,
+                                                std::vector<Operation>& out,
+                                                std::function<bool (const std::string& address)> filter);
+        };
 
-}
+    }
 }
 
 #include <core/operation/OperationDatabaseHelper.inl>
