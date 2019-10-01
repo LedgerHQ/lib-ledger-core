@@ -40,9 +40,9 @@
 #include <core/api/Block.hpp>
 #include <core/api/Operation.hpp>
 #include <core/api/OperationType.hpp>
-#include <core/api/TrustIndicator.hpp>
 #include <core/math/BigInt.hpp>
 #include <core/utils/Option.hpp>
+#include <core/wallet/TrustIndicator.hpp>
 
 namespace ledger {
     namespace core {
@@ -82,7 +82,7 @@ namespace ledger {
             Option<api::Block> block;
             std::string currencyName;
             api::OperationType type;
-            std::shared_ptr<api::TrustIndicator> trust;
+            std::shared_ptr<TrustIndicator> trust;
             std::shared_ptr<AbstractAccount> _account;
         };
     }
