@@ -82,6 +82,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                               api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                     auto balance = wait(account->getBalance());
+                    std::cout << "Balance: " << balance->toString() << std::endl;
 
                     auto erc20Accounts = account->getERC20Accounts();
                     erc20Count = erc20Accounts.size();
@@ -99,7 +100,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto amountToSend = std::make_shared<api::BigIntImpl>(BigInt::fromString("10"));
                     auto transferData = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getTransferToAddressData(amountToSend, "0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43"));
                     EXPECT_GT(transferData.size(), 0);
-                    
+
                     auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
                     std::cout << "ERC20 Operations: " << operations.size() << std::endl;
                     EXPECT_NE(operations.size(), 0);
@@ -126,6 +127,17 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
 
                 auto block = wait(account->getLastBlock());
                 auto blockHash = block.blockHash;
+
+                auto history = wait(account->getBalanceHistory(
+                            "2019-09-20T00:00:00Z",
+                            "2019-10-02T00:00:00Z",
+                            api::TimePeriod::DAY
+                            ));
+
+                std::cout << "Balance history:" << std::endl;
+                for (auto const& amount : history) {
+                    std::cout << "  -> " << amount->toString() << std::endl;
+                }
             }
         }
     }
@@ -314,8 +326,8 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
                 test::UrlConnectionData blockNotFound;
                 blockNotFound.statusCode = 404;
                 blockNotFound.body = "Block 0xaef3a92f1017445c98139b7ab3ddd6e8abfe75588652338ca6f537cf47ab620d not found";
-                
-                fakeHttp->setBehavior({ 
+
+                fakeHttp->setBehavior({
                     {
                         "http://test.test/blockchain/v3/eth/blocks/current" ,
                         test::FakeUrlConnection::fromString("{\"hash\":\"0xdd73566cf4913cba5060377397283cf411e03bdbe1b83d4695699d9e6ac1c941\",\"height\":8175344,\"time\":\"2019-07-18T14:54:00Z\",\"txs\":[]}")

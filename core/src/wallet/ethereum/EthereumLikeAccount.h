@@ -75,11 +75,7 @@ namespace ledger {
 
             int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction &transaction);
             /// Get internal transactions related to the parent operation.
-            void getInternalTransactions(
-                soci::session &sql,
-                Operation const& parent,
-                std::vector<InternalTransaction>& internalTransactions
-            );
+            std::vector<Operation> getInternalOperations(soci::session &sql);
 
             void updateERC20Accounts(soci::session &sql, const Operation &operation);
             void updateERC20Operation(soci::session &sql,

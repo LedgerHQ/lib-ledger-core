@@ -250,28 +250,44 @@ namespace ledger {
             }
         }
 
-        void EthereumLikeAccount::getInternalTransactions(
-            soci::session &sql,
-            Operation const& parent,
-            std::vector<InternalTransaction>& internalTransactions
-        ) {
-          soci::rowset<soci::row> rows = (sql.prepare <<
-              "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used "
-              "FROM internal_operations as io "
-              "WHERE io.eth_op_uid = :uid",
-              soci::use(parent.uid)
-          );
+        std::vector<Operation> EthereumLikeAccount::getInternalOperations(soci::session &sql) {
+            auto accountUid = getAccountUid();
+            auto walletUid = getWallet()->getWalletUid();
 
-          for (auto& row : rows) {
-            InternalTx tx;
-            tx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
-            tx.value = BigInt(row.get<std::string>(1));
-            tx.from = row.get<std::string>(2);
-            tx.to = row.get<std::string>(3);
-            tx.gasLimit = BigInt(row.get<std::string>(4));
-            tx.gasUsed = BigInt(row.get<std::string>(5));
-            internalTransactions.push_back(InternalTransaction(tx));
-          }
+            soci::rowset<soci::row> rows = (sql.prepare <<
+                "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used, et.gas_price, op.date "
+                "FROM internal_operations as io "
+                "JOIN operations as op on io.ethereum_operation_uid = op.uid "
+                "JOIN ethereum_operations as eo on eo.uid = op.uid "
+                "JOIN ethereum_transactions as et on eo.transaction_uid = et.transaction_uid "
+                "WHERE op.account_uid = :auid and op.wallet_uid = :wuid",
+                soci::use(accountUid),
+                soci::use(walletUid)
+            );
+
+            std::vector<Operation> operations;
+
+            for (auto& row : rows) {
+                InternalTx tx;
+                tx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
+                tx.value = BigInt::fromHex(row.get<std::string>(1));
+                tx.from = row.get<std::string>(2);
+                tx.to = row.get<std::string>(3);
+                tx.gasLimit = BigInt::fromHex(row.get<std::string>(4));
+                tx.gasUsed = BigInt::fromHex(row.get<std::string>(5));
+                auto gasPrice = BigInt::fromHex(row.get<std::string>(6));
+                auto date = DateUtils::fromJSON(row.get<std::string>(7));
+
+                Operation operation;
+                operation.amount = tx.value;
+                operation.fees = gasPrice * tx.gasUsed.getValueOr(BigInt::ZERO);
+                operation.type = tx.type;
+                operation.date = date;
+
+                operations.push_back(operation);
+            }
+
+            return operations;
         }
 
         bool EthereumLikeAccount::putBlock(soci::session& sql,
@@ -345,33 +361,10 @@ namespace ledger {
                     // Get operations related to an account
                     OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
 
-                    // Get internal transactions for every operations related to an account and
-                    // turn them into logical operation to affect the balance
+                    // Get internal operations, add them to the list of operations and deallocate
+                    // them to free memory
                     {
-                      // a buffer for allocating internal operations
-                      std::vector<InternalTransaction> internalTransactions;
-                      std::vector<Operation> internalOperations;
-
-                      // this loop get all the internal transactions related to a given ETH
-                      // operation and will transform them into regular Operation
-                      for (auto const& operation : operations) {
-                        // get this operation’s internal tx
-                        internalTransactions.clear();
-                        getInternalTransactions(sql, operation, internalTransactions);
-
-                        auto gasPrice = operation.ethereumTransaction->gasPrice;
-                        auto date = operation.date;
-
-                        for (auto& itx : internalTransactions) {
-                          // transform into an Operation
-                          Operation operation;
-                          operation.amount = BigInt(itx.getValue()->toString(10));
-                          operation.fees = gasPrice * BigInt(itx.getUsedGas()->toString(10));
-                          operation.type = itx.getOperationType();
-                          operation.date = date;
-                          internalOperations.push_back(operation);
-                        }
-                      }
+                      auto internalOperations = getInternalOperations(sql);
 
                       // add the internal operations to the list of operations
                       std::copy(internalOperations.begin(), internalOperations.end(),std::back_inserter(operations));
