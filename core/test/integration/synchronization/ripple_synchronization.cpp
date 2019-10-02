@@ -167,3 +167,42 @@ TEST_F(RippleLikeWalletSynchronization, EmitNewBlock) {
         dispatcher->waitUntilStopped();
     }
 }
+
+TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
+    auto pool = newDefaultPool();
+    auto configuration = DynamicObject::newInstance();
+    configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+                             "44'/<coin_type>'/<account>'/<node>/<address>");
+    auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
+    auto nextIndex = wait(wallet->getNextAccountIndex());
+    auto account = createRippleLikeAccount(wallet, nextIndex, VAULT_XRP_KEYS_INFO);
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+            return;
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(),
+                  api::EventCode::SYNCHRONIZATION_SUCCEED);
+
+        dispatcher->stop();
+    });
+
+    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    dispatcher->waitUntilStopped();
+
+    auto ops = wait(
+            std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    std::cout << "Ops: " << ops.size() << std::endl;
+
+    uint32_t destinationTag = 0;
+    for (auto const& op : ops) {
+        auto xrpOp = op->asRippleLikeOperation();
+
+        if (xrpOp->getTransaction()->getHash() == "EE38840B83CAB39216611D2F6E4F9828818514C3EA47504AE2521D8957331D3C" ) {
+          destinationTag = xrpOp->getTransaction()->getDestinationTag().value_or(0);
+          break;
+        }
+    }
+
+    EXPECT_TRUE(destinationTag == 123456789);
+}

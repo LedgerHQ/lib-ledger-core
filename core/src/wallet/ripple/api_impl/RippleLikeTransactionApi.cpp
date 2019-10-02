@@ -102,6 +102,10 @@ namespace ledger {
 
             _sequence = std::make_shared<api::BigIntImpl>(tx.sequence);
 
+            if (tx.destinationTag.nonEmpty()) {
+              _destinationTag = static_cast<int64_t>(tx.destinationTag.getValue());
+            }
+
             if (tx.block.hasValue()) {
                 _ledgerSequence = std::make_shared<api::BigIntImpl>(BigInt(static_cast<unsigned long long>(tx.block.getValue().height)));
             } else {
