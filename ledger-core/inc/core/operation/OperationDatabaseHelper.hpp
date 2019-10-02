@@ -81,7 +81,7 @@ namespace ledger {
             // If the substitution succeed, `has_update` is evaluated as a
             // `true_type`
             template <typename T>
-            struct has_update<T, decltype(T::updateCurrencyOperation)> : std::true_type
+            struct has_update<T, decltype(T::updateOperation)> : std::true_type
             {};
 
             // Else the `has_update` is evaluated as a `false_type`
@@ -99,7 +99,7 @@ namespace ledger {
         {
             static_assert(
                 impl::has_update_v<Derived>,
-                "OperationDatabaseHelper<T> requires 'T' to define 'updateCurrencyOperation' method");
+                "OperationDatabaseHelper<T> requires 'T' to define 'updateOperation' method");
 
             using namespace soci;
 
@@ -120,7 +120,7 @@ namespace ledger {
                         , use(blockUid)
                         , use(serializedTrust)
                         , use(operation.uid);
-                Derived::updateCurrencyOperation(sql, operation, newOperation);
+                Derived::updateOperation(sql, operation, newOperation);
                 return false;
             } else {
                 auto type = api::to_string(operation.type);
@@ -142,7 +142,7 @@ namespace ledger {
                         , use(hexFees), use(blockUid)
                         , use(operation.currencyName), use(serializedTrust);
 
-                Derived::updateCurrencyOperation(sql, operation, newOperation);
+                Derived::updateOperation(sql, operation, newOperation);
                 return true;
             }
 
