@@ -31,15 +31,18 @@
 
 #pragma once
 
-#include <memory>
-#include <type_traits>
+#include <functional>
 #include <string>
+#include <type_traits>
+#include <vector>
 
 #include <soci.h>
 
 #include <core/api/OperationType.hpp>
-#include <core/operation/Operation.hpp>
 #include <core/collections/Strings.hpp>
+#include <core/math/BigInt.hpp>
+#include <core/operation/Operation.hpp>
+#include <core/utils/DateUtils.hpp>
 
 namespace ledger {
     namespace core {
