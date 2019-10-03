@@ -20,6 +20,7 @@ OperationOrderKey = enum {
 OperationType = enum {
     send;
     receive;
+    none;
 }
 
 #TODO
