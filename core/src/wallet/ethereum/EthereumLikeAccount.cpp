@@ -251,8 +251,9 @@ namespace ledger {
         }
 
         std::vector<Operation> EthereumLikeAccount::getInternalOperations(soci::session &sql) {
-            auto accountUid = getAccountUid();
-            auto walletUid = getWallet()->getWalletUid();
+            auto addr = _keychain->getAddress()->toString();
+
+            std::cout << "getting internal fucking transactions for address " << addr << std::endl;
 
             soci::rowset<soci::row> rows = (sql.prepare <<
                 "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used, et.gas_price, op.date "
@@ -260,9 +261,8 @@ namespace ledger {
                 "JOIN operations as op on io.ethereum_operation_uid = op.uid "
                 "JOIN ethereum_operations as eo on eo.uid = op.uid "
                 "JOIN ethereum_transactions as et on eo.transaction_uid = et.transaction_uid "
-                "WHERE op.account_uid = :auid and op.wallet_uid = :wuid",
-                soci::use(accountUid),
-                soci::use(walletUid)
+                "WHERE io.receiver = :addr or io.sender = :addr",
+                soci::use(addr, "addr")
             );
 
             std::vector<Operation> operations;
@@ -280,7 +280,11 @@ namespace ledger {
 
                 Operation operation;
                 operation.amount = tx.value;
-                operation.fees = gasPrice * tx.gasUsed.getValueOr(BigInt::ZERO);
+
+                if (tx.gasUsed.hasValue()) {
+                    operation.fees = gasPrice * tx.gasUsed.getValue();
+                }
+
                 operation.type = tx.type;
                 operation.date = date;
 
@@ -355,20 +359,31 @@ namespace ledger {
 
                     auto keychain = self->getKeychain();
                     std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                        return keychain->contains(addr);
+                        //return keychain->contains(addr);
+                        auto keychainAddr = keychain->getAddress()->toString();
+                        return addr == keychainAddr;
                     };
 
                     // Get operations related to an account
                     OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                    std::cout << "OPERATIONS: " << operations.size() << std::endl;
 
                     // Get internal operations, add them to the list of operations and deallocate
                     // them to free memory
                     {
                       auto internalOperations = getInternalOperations(sql);
+                      std::cout << "INTERNALS: " << internalOperations.size() << std::endl;
 
                       // add the internal operations to the list of operations
-                      std::copy(internalOperations.begin(), internalOperations.end(),std::back_inserter(operations));
+                      operations.insert(operations.end(), internalOperations.begin(), internalOperations.end());
                     }
+
+                    // sort operations
+                    std::sort(operations.begin(), operations.end(), [](Operation const& a, Operation const& b) {
+                        return a.date <= b.date;
+                    });
+
+                    // FIXME STATUS PUTAIN
 
                     auto lowerDate = startDate;
                     auto upperDate = DateUtils::incrementDate(startDate, precision);
