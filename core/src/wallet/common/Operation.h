@@ -68,14 +68,16 @@ namespace ledger {
             Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
             Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Option<TezosLikeBlockchainExplorerTransaction> tezosTransaction;
-            Operation() {};
             void refreshUid();
-        private:
 
+            Operation() = default;
+            Operation(Operation const&) = default;
+            Operation(Operation&&) = default;
+
+            Operation& operator=(Operation const&) = default;
+            Operation& operator=(Operation&&) = default;
         };
     }
-
 }
-
 
 #endif //LEDGER_CORE_OPERATION_H

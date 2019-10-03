@@ -139,7 +139,7 @@ namespace ledger {
                                                  std::vector<Operation> &operations,
                                                  std::function<bool(const std::string &address)> filter) {
             rowset<row> rows = (sql.prepare <<
-                                            "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients, op.uid"
+                                            "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
                                                     " FROM operations AS op "
                                                     " WHERE op.account_uid = :uid ORDER BY op.date",
                                                     use(accountUid));
@@ -159,15 +159,17 @@ namespace ledger {
                 auto senders = strings::split(row.get<std::string>(4), ",");
                 auto recipients = strings::split(row.get<std::string>(5), ",");
                 if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
-                    (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients)) ||
-                    type == api::OperationType::NONE) {
-                    operations.resize(operations.size() + 1);
-                    auto& operation = operations[operations.size() - 1];
+                    (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
+                    Operation operation;
+                    //operations.resize(operations.size() + 1);
+                    //auto& operation = operations[operations.size() - 1];
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));
                     operation.fees = BigInt::fromHex(row.get<std::string>(1));
                     operation.type = type;
                     operation.date = DateUtils::fromJSON(row.get<std::string>(3));
-                    operation.uid = row.get<std::string>(6);
+
+                    operations.push_back(operation);
+
                     c += 1;
                 }
             }

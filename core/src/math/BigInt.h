@@ -192,7 +192,8 @@ namespace ledger {
             BigInt& operator--();
             BigInt  operator--(int);
 
-            void operator=(const BigInt&);
+            BigInt& operator=(const BigInt&);
+            BigInt& operator=(BigInt&& a);
 
             bool operator<(const BigInt&) const;
             bool operator<=(const BigInt&) const;
