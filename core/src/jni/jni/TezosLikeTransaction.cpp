@@ -93,22 +93,12 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppP
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_rSignature, jbyteArray j_sSignature)
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
-        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_rSignature),
-                          ::djinni::Binary::toCpp(jniEnv, j_sSignature));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransaction_00024CppProxy_native_1setDERSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransaction>(nativeRef);
-        ref->setDERSignature(::djinni::Binary::toCpp(jniEnv, j_signature));
+        ref->setSignature(::djinni::Binary::toCpp(jniEnv, j_signature));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
