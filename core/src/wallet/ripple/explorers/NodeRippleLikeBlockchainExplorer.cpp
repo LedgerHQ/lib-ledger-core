@@ -157,7 +157,9 @@ namespace ledger {
 
                         auto resultObj = json["result"].GetObject();
 
-                        if (resultObj.HasMember("engine_result") && resultObj["engine_result"] == "tesSUCCESS") {
+                        if (resultObj.HasMember("engine_result") &&
+                            (resultObj["engine_result"] == "tesSUCCESS" ||
+                             resultObj["engine_result"] == "terQUEUED")) {
                           // Check presence of tx_json field
                           if (!resultObj.HasMember("tx_json") || !resultObj["tx_json"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"tx_json\" in response");
@@ -171,6 +173,7 @@ namespace ledger {
 
                           return txnObj["hash"].GetString();
                         }
+
 
                         throw make_exception(api::ErrorCode::HTTP_ERROR,
                                              "Failed to broadcast transaction: {}",
