@@ -117,7 +117,6 @@ namespace ledger {
         public:
             BigInt();
             BigInt(const BigInt& cpy);
-            BigInt(BigInt&& mov);
 
             /**
              * Initializes a new BigInt with the given big endian data.
@@ -192,7 +191,7 @@ namespace ledger {
             BigInt& operator--();
             BigInt  operator--(int);
 
-            void operator=(const BigInt&);
+            BigInt& operator=(const BigInt&);
 
             bool operator<(const BigInt&) const;
             bool operator<=(const BigInt&) const;

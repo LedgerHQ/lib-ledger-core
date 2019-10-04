@@ -249,9 +249,13 @@ namespace ledger {
             return temp;
         }
 
-        void BigInt::operator=(const BigInt &a) {
+        BigInt& BigInt::operator=(const BigInt &a) {
+            if (this == &a) {
+                return *this;
+            }
             bdSetEqual(_bigd, a._bigd);
             _negative = a._negative;
+            return *this;
         }
 
         bool BigInt::isNegative() const {
@@ -369,12 +373,6 @@ namespace ledger {
             } else {
                 return BigInt::fromDecimal(str);
             }
-        }
-
-        BigInt::BigInt(BigInt &&mov) {
-            _bigd = mov._bigd;
-            _negative = mov._negative;
-            mov._bigd = nullptr;
         }
 
         bool BigInt::all_digits(std::string const& s) {

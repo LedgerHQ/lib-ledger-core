@@ -30,6 +30,7 @@
  */
 
 #include "gtest/gtest.h"
+#include "gmock/gmock.h"
 #include "math/BigInt.h"
 
 using namespace ledger::core;
@@ -165,4 +166,31 @@ TEST(BigInt, Power) {
     EXPECT_EQ(BigInt(1000000).pow(0), BigInt(1));
     EXPECT_EQ(BigInt(-1000000).pow(0), BigInt(-1));
     EXPECT_EQ(BigInt(-2).pow(3), BigInt(-8));
+}
+
+TEST(BigInt, Swap) {
+    BigInt a(2);
+    BigInt b(3);
+    auto c = a;
+    a = b;
+    b = c;
+    EXPECT_EQ(a, BigInt(3));
+    EXPECT_EQ(b, BigInt(2));
+}
+
+TEST(BigInt, Sort) {
+    std::vector<BigInt> x{ 
+        BigInt(3),
+        BigInt(2),
+        BigInt(5),
+        BigInt(3),
+        BigInt(0)
+    };
+    std::sort(x.begin(), x.end());
+    ASSERT_THAT(x, ::testing::ContainerEq(std::vector<BigInt>{
+        BigInt(0),
+        BigInt(2),
+        BigInt(3),
+        BigInt(3),
+        BigInt(5) }));
 }
