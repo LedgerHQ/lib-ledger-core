@@ -45,17 +45,15 @@ namespace ledger {
     namespace core {
         class TezosLikeKeychainFactory {
         public:
-            std::shared_ptr<TezosLikeKeychain> build(int32_t index,
-                                                     const DerivationPath &path,
+            std::shared_ptr<TezosLikeKeychain> build(const DerivationPath &path,
                                                      const std::shared_ptr<DynamicObject> &configuration,
-                                                     const api::ExtendedKeyAccountCreationInfo &info,
+                                                     const api::AccountCreationInfo &info,
                                                      const std::shared_ptr<Preferences> &accountPreferences,
                                                      const api::Currency &currency);
 
-            std::shared_ptr<TezosLikeKeychain> restore(int32_t index,
-                                                       const DerivationPath &path,
+            std::shared_ptr<TezosLikeKeychain> restore(const DerivationPath &path,
                                                        const std::shared_ptr<DynamicObject> &configuration,
-                                                       const std::string &databaseXpubEntry,
+                                                       const std::string &address,
                                                        const std::shared_ptr<Preferences> &accountPreferences,
                                                        const api::Currency &currency);
         };
