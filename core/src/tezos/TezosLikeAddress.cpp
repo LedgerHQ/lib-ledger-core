@@ -35,22 +35,30 @@
 #include <collections/vector.hpp>
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
-
+#include <crypto/BLAKE.h>
 namespace ledger {
     namespace core {
-
         TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
                                            const std::vector<uint8_t> &hash160,
                                            const std::vector<uint8_t> &version,
                                            const Option<std::string> &derivationPath) :
                 _params(currency.tezosLikeNetworkParameters.value()),
-                _derivationPath(derivationPath),
                 _hash160(hash160),
                 _version(version),
-                AbstractAddress(currency, derivationPath) {
+                _derivationPath(derivationPath),
+                AbstractAddress(currency, derivationPath)
+        {}
 
-        }
-
+        TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
+                                           const std::vector<uint8_t> &pubKey,
+                                           const std::vector<uint8_t> &version,
+                                           api::TezosCurve curve,
+                                           const Option<std::string> &derivationPath) :
+                TezosLikeAddress(currency,
+                                 BLAKE::blake2b(pubKey, 20, static_cast<size_t>(curve != api::TezosCurve::ED25519)),
+                                 version,
+                                 derivationPath)
+        {}
         std::vector<uint8_t> TezosLikeAddress::getVersion() {
             return _version;
         }
@@ -66,7 +74,7 @@ namespace ledger {
         std::string TezosLikeAddress::toBase58() {
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", _params.Identifier);
-            return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
+            return Base58::encodeWithChecksum(vector::concat(getVersion(), _hash160), config);
         }
 
         std::experimental::optional<std::string> TezosLikeAddress::getDerivationPath() {

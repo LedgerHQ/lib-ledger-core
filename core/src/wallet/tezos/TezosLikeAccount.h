@@ -47,7 +47,6 @@
 #include <wallet/tezos/observers/TezosLikeBlockchainObserver.h>
 #include <wallet/tezos/keychains/TezosLikeKeychain.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
-//#include <wallet/tezos/delegation/TezosLikeOriginatedAccount.h>
 
 namespace ledger {
     namespace core {

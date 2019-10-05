@@ -36,42 +36,17 @@
 #include <cereal/archives/binary.hpp>
 #include <cereal/types/set.hpp>
 #include <tezos/TezosLikeExtendedPublicKey.h>
+#include <api/TezosConfiguration.hpp>
+#include <api/TezosConfigurationDefaults.hpp>
 namespace ledger {
     namespace core {
-        TezosLikeKeychain::TezosLikeKeychain(const std::shared_ptr <api::DynamicObject> &configuration,
-                                             const api::Currency &params, int account,
-                                             const std::shared_ptr <Preferences> &preferences) :
-                _account(account), _preferences(preferences), _configuration(configuration), _currency(params),
-                _fullScheme(DerivationScheme(configuration
-                                                     ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                                                     .value_or("44'/<coin_type>'/<account>'/<node>/<address>"))),
-                _scheme(DerivationScheme(configuration
-                                                 ->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME)
-                                                 .value_or(
-                                                         "44'/<coin_type>'/<account>'/<node>/<address>")).getSchemeFrom(
-                        DerivationSchemeLevel::ACCOUNT_INDEX).shift()) {
-        }
 
-        TezosLikeKeychain::TezosLikeKeychain(const std::shared_ptr <api::DynamicObject> &configuration,
+        TezosLikeKeychain::TezosLikeKeychain(const std::shared_ptr<api::DynamicObject> &configuration,
                                              const api::Currency &params,
-                                             int account,
-                                             const std::shared_ptr <api::TezosLikeExtendedPublicKey> &xpub,
-                                             const std::shared_ptr <Preferences> &preferences)
-                : TezosLikeKeychain(configuration, params, account, preferences) {
-
-            _xpub = xpub;
-            getAllObservableAddresses(0, 0);
-        }
-
-        TezosLikeKeychain::TezosLikeKeychain(const std::shared_ptr <api::DynamicObject> &configuration,
-                                             const api::Currency &params,
-                                             int account,
-                                             const std::string &accountAddress,
-                                             const std::shared_ptr <Preferences> &preferences)
-                : TezosLikeKeychain(configuration, params, account, preferences) {}
-
-        int TezosLikeKeychain::getAccountIndex() const {
-            return _account;
+                                             const Option<std::vector<uint8_t>> &pubKey,
+                                             const std::shared_ptr<Preferences> &preferences)
+                : _configuration(configuration), _currency(params), _publicKey(pubKey) {
+            _address = getAddressFromPublicKey();
         }
 
         const api::TezosLikeNetworkParameters &TezosLikeKeychain::getNetworkParameters() const {
@@ -91,101 +66,42 @@ namespace ledger {
             return _currency;
         }
 
-        const DerivationScheme &TezosLikeKeychain::getDerivationScheme() const {
-            return _scheme;
-        }
-
-        DerivationScheme &TezosLikeKeychain::getDerivationScheme() {
-            return _scheme;
-        }
-
-        const DerivationScheme &TezosLikeKeychain::getFullDerivationScheme() const {
-            return _fullScheme;
-        }
-
-
         std::shared_ptr <TezosLikeAddress> TezosLikeKeychain::getAddress() const {
-            if (_address.empty()) {
-                throw Exception(api::ErrorCode::INVALID_ARGUMENT, fmt::format("Address not derived yet from keychain"));
-            }
-            return std::dynamic_pointer_cast<TezosLikeAddress>(
-                    TezosLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath)));
-        }
-
-        Option <std::string> TezosLikeKeychain::getAddressDerivationPath(const std::string &address) const {
-            auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
-            if (path.empty()) {
-                return Option<std::string>();
-            } else {
-                auto derivation = DerivationPath(getExtendedPublicKey()->getRootPath()) + DerivationPath(path);
-                return Option<std::string>(derivation.toString());
-            }
+            return _address;
         }
 
         std::vector <TezosLikeKeychain::Address>
         TezosLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            std::vector <TezosLikeKeychain::Address> result;
-            result.push_back(derive());
-            return result;
-        }
-
-
-        std::shared_ptr <api::TezosLikeExtendedPublicKey> TezosLikeKeychain::getExtendedPublicKey() const {
-            return _xpub;
+            return std::vector<TezosLikeKeychain::Address>{getAddressFromPublicKey()};
         }
 
         std::string TezosLikeKeychain::getRestoreKey() const {
-            return _xpub->toBase58();
+            return _address->toString();
         }
-
 
         bool TezosLikeKeychain::contains(const std::string &address) const {
-            return getAddressDerivationPath(address).nonEmpty();
+            return _address->toString() == address;
         }
 
-        int32_t TezosLikeKeychain::getOutputSizeAsSignedTxInput() const {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
-                                 "TezosLikeKeychain::getOutputSizeAsSignedTxInput is not implemented yet");
+        Option <std::vector<uint8_t>> TezosLikeKeychain::getPublicKey() const {
+            return _publicKey;
         }
 
-        Option <std::vector<uint8_t>> TezosLikeKeychain::getPublicKey(const std::string &address) const {
-            auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
-            if (path.empty()) {
-                Option <std::vector<uint8_t>> ();
+        TezosLikeKeychain::Address TezosLikeKeychain::getAddressFromPublicKey() {
+            auto curveConfig = _configuration->getString(api::TezosConfiguration::TEZOS_XPUB_CURVE);
+            api::TezosCurve curve;
+            if (curveConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519) {
+                curve = api::TezosCurve::ED25519;
+            } else if (curveConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1) {
+                curve = api::TezosCurve::SECP256K1;
+            } else {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Could not retrieve address from public key : unknown Tezos Curve");
             }
-            return Option <std::vector<uint8_t>> (_xpub->derivePublicKey(path));
-        }
-
-        TezosLikeKeychain::Address TezosLikeKeychain::derive() {
-
-            if (_address.empty()) {
-                _localPath = getDerivationScheme()
-                        .setCoinType(getCurrency().bip44CoinType)
-                        .getPath().toString();
-
-                auto cacheKey = fmt::format("path:{}", _localPath);
-                _address = getPreferences()->getString(cacheKey, "");
-                if (_address.empty()) {
-                    auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
-                            .setCoinType(getCurrency().bip44CoinType)
-                            .getPath().toString();
-                    auto xpub = _xpub;
-                    _address = xpub->derive(p)->toBase58();
-                    // Feed path -> address cache
-                    // Feed address -> path cache
-                    getPreferences()
-                            ->edit()
-                            ->putString(cacheKey, _address)
-                            ->putString(fmt::format("address:{}", _address), _localPath)
-                            ->commit();
-                }
-            }
-
-            auto tezosAddress = TezosLikeAddress::parse(_address, getCurrency(), Option<std::string>(_localPath));
-            if (!tezosAddress) {
-                throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Could not derive address");
-            }
-            return std::dynamic_pointer_cast<TezosLikeAddress>(tezosAddress);
+            return std::make_shared<TezosLikeAddress>(_currency,
+                                                      _publicKey.getValueOr(std::vector<uint8_t>()),
+                                                      _currency.tezosLikeNetworkParameters.value().ImplicitPrefix,
+                                                      curve,
+                                                      Option<std::string>(""));
         }
     }
 }
