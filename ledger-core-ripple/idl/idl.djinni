@@ -151,11 +151,16 @@ RippleLikeAccount = interface +c {
   getBaseReserve(callback: callback2<void, optional<Amount>, optional<Error>>);
 }
 
+RippleConfiguration = interface +c {
+    const RIPPLE_LAST_LEDGER_SEQUENCE_OFFSET: string = "RIPPLE_LAST_LEDGER_SEQUENCE_OFFSET";
+}
+
 RippleConfigurationDefaults = interface +c {
-	const RIPPLE_DEFAULT_API_ENDPOINT: string = "https://data.ripple.com";
-	const RIPPLE_OBSERVER_NODE_ENDPOINT_S2: string = "https://s2.ripple.com";
-	const RIPPLE_OBSERVER_NODE_ENDPOINT_S3: string = "https://s3.ripple.com";
-	const RIPPLE_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.ripple.com";
-	const RIPPLE_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.ripple.com";
-	const RIPPLE_DEFAULT_PORT: string = "51234";
+	  const RIPPLE_DEFAULT_API_ENDPOINT: string = "https://data.ripple.com";
+	  const RIPPLE_OBSERVER_NODE_ENDPOINT_S2: string = "https://s2.ripple.com";
+	  const RIPPLE_OBSERVER_NODE_ENDPOINT_S3: string = "https://s3.ripple.com";
+	  const RIPPLE_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.ripple.com";
+	  const RIPPLE_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.ripple.com";
+	  const RIPPLE_DEFAULT_PORT: string = "51234";
+    const RIPPLE_DEFAULT_LAST_LEDGER_SEQUENCE_OFFSET: i32 = 4;
 }
