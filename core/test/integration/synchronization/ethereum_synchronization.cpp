@@ -144,17 +144,15 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.dev.aws.ledger.fr");
-        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
-        //auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO);
+            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
             auto keychain = account->getRestoreKey();
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
@@ -182,10 +180,10 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 cout<<" ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
                 auto erc20Accounts = account->getERC20Accounts();
-                EXPECT_EQ(erc20Accounts.size(), 1);
-                EXPECT_EQ(erc20Accounts[0]->getOperations().size(),1);
+                EXPECT_GT(erc20Accounts.size(), 0);
+                EXPECT_GT(erc20Accounts[0]->getOperations().size(),0);
                 auto erc20Balance = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
-                EXPECT_EQ(erc20Balance->intValue(), 2500);
+                EXPECT_GT(erc20Balance->intValue(), 0);
                 auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
                 std::cout << "ERC20 balance: " << erc20Balance->toString(10) << std::endl;
@@ -307,7 +305,6 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/60'/0'/0/<account>'");
             configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "http://test.test");
             auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
-            std::set<std::string> emittedOperations;
             {
                 auto nextIndex = wait(wallet->getNextAccountIndex());
                 EXPECT_EQ(nextIndex, 0);
@@ -373,7 +370,7 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
                     });
                 account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
                 EXPECT_TRUE(wait(waiter.second));
-                // next time 
+                // next time
                 waiter = createSyncReceiver();
                 account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
                 EXPECT_TRUE(wait(waiter.second));

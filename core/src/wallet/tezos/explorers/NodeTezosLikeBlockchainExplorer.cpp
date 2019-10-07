@@ -232,15 +232,15 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
-            return getHelper(fmt::format("/{}/estimate_gas", getExplorerVersion()), "estimated_gas_limit", std::unordered_map<std::string, std::string>{{"token", address}});
+            return getHelper(fmt::format("{}/estimate_gas", getExplorerVersion()), "estimated_gas_limit", std::unordered_map<std::string, std::string>{{"token", address}});
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
-            return getHelper(fmt::format("/{}/estimate_storage", getExplorerVersion()), "storage", std::unordered_map<std::string, std::string>{{"token", address}});
+            return getHelper(fmt::format("{}/estimate_storage", getExplorerVersion()), "storage", std::unordered_map<std::string, std::string>{{"token", address}});
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
-            return getHelper(fmt::format("/{}/counter", getExplorerVersion()), "counter", std::unordered_map<std::string, std::string>{{"token", address}});
+            return getHelper(fmt::format("{}/counter", getExplorerVersion()), "counter", std::unordered_map<std::string, std::string>{{"token", address}});
         }
     }
 }
