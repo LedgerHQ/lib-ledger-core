@@ -23,4 +23,8 @@ std::string const TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1 = {"SEC
 
 std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_FEES = {"1420"};
 
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT = {"10600"};
+
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_STORAGE_LIMIT = {"300"};
+
 } } }  // namespace ledger::core::api

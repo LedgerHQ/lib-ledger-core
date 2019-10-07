@@ -166,4 +166,6 @@ TezosConfigurationDefaults = interface +c {
   	const TEZOS_XPUB_CURVE_SECP256K1: string = "SECP256K1";
 	# Taken from some existing XTZ wallets
 	const TEZOS_DEFAULT_FEES: string = "1420";
+	const TEZOS_DEFAULT_GAS_LIMIT: string = "10600";
+	const TEZOS_DEFAULT_STORAGE_LIMIT: string = "300";
 }
