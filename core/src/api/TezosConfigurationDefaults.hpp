@@ -37,6 +37,10 @@ public:
 
     /** Taken from some existing XTZ wallets */
     static std::string const TEZOS_DEFAULT_FEES;
+
+    static std::string const TEZOS_DEFAULT_GAS_LIMIT;
+
+    static std::string const TEZOS_DEFAULT_STORAGE_LIMIT;
 };
 
 } } }  // namespace ledger::core::api

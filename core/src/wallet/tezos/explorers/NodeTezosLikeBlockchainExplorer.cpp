@@ -214,7 +214,8 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getHelper(const std::string &url,
                                                                                    const std::string &field,
-                                                                                   const std::unordered_map<std::string, std::string> &params) {
+                                                                                   const std::unordered_map<std::string, std::string> &params,
+                                                                                   const std::string &fallbackValue) {
             bool parseNumbersAsString = true;
             auto networkId = getNetworkParameters().Identifier;
 
@@ -224,25 +225,48 @@ namespace ledger {
                 separator = "&";
             }
 
-            return _http->GET(url + p, std::unordered_map<std::string, std::string>()).json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [field, networkId] (const HttpRequest::JsonResult& result) {
-                auto& json = *std::get<1>(result);
-                if (!json.IsArray() || json.Size() == 0 || !json[0].IsString()) {
-                    throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
-                }
-                return std::make_shared<BigInt>(json[0].GetString());
+            return _http->GET(url + p, std::unordered_map<std::string, std::string>())
+                    .json(parseNumbersAsString)
+                    .mapPtr<BigInt>(getContext(), [field, networkId, fallbackValue] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
+                        if (!json.IsArray() || json.Size() == 0 || !json[0].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
+                        }
+                        std::string value = json[0].GetString();
+                        if (value == "0" && !fallbackValue.empty()) {
+                            value = fallbackValue;
+                        }
+                        return std::make_shared<BigInt>(value);
             });
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
-            return getHelper(fmt::format("blockchain/{}/{}/estimate_gas", getExplorerVersion(), getNetworkParameters().Identifier), "estimated_gas_limit", std::unordered_map<std::string, std::string>{{"token", address}});
+            return getHelper(fmt::format("blockchain/{}/{}/estimate_gas",
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier),
+                             "estimated_gas_limit",
+                             std::unordered_map<std::string, std::string>{{"token", address}},
+                             api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT
+                );
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
-            return getHelper(fmt::format("blockchain/{}/{}/estimate_storage", getExplorerVersion(), getNetworkParameters().Identifier), "storage", std::unordered_map<std::string, std::string>{{"token", address}});
+            return getHelper(fmt::format("blockchain/{}/{}/estimate_storage",
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier),
+                             "storage",
+                             std::unordered_map<std::string, std::string>{{"token", address}},
+                             api::TezosConfigurationDefaults::TEZOS_DEFAULT_STORAGE_LIMIT
+            );
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
-            return getHelper(fmt::format("blockchain/{}/{}/counter", getExplorerVersion(), getNetworkParameters().Identifier), "counter", std::unordered_map<std::string, std::string>{{"token", address}});
+            return getHelper(fmt::format("blockchain/{}/{}/counter",
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier),
+                             "counter",
+                             std::unordered_map<std::string, std::string>{{"token", address}}
+            );
         }
     }
 }

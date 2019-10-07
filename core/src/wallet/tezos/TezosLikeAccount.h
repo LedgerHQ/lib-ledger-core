@@ -133,9 +133,11 @@ namespace ledger {
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-            void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
+            void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override;
+            FuturePtr<BigInt> getEstimatedGasLimit(const std::string &address);
 
             void getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override;
+            FuturePtr<BigInt> getStorage(const std::string &address);
 
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> getOriginatedAccounts() override;
 

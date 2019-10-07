@@ -122,6 +122,12 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto fees = wait(account->getFees());
             EXPECT_GT(fees->toUint64(), 0);
+
+            auto storage = wait(account->getStorage("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
+            EXPECT_GT(storage->toUint64(), 0);
+
+            auto gasLimit = wait(account->getEstimatedGasLimit("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
+            EXPECT_GT(gasLimit->toUint64(), 0);
         }
     }
 }
