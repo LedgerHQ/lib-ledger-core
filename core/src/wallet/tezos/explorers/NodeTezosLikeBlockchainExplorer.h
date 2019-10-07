@@ -110,6 +110,7 @@ namespace ledger {
                       const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>());
 
             api::TezosLikeNetworkParameters _parameters;
+            std::string _explorerVersion;
         };
     }
 }

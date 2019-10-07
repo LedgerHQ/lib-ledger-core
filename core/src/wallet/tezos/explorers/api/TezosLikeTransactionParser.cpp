@@ -122,6 +122,10 @@ namespace ledger {
                 std::string number(str, length);
                 if (_lastKey == "op_level" && _transaction->block.hasValue()) {
                     _transaction->block.getValue().height = BigInt::fromString(number).toUint64();
+                } else if (_lastKey == "amount") {
+                    _transaction->value = BigInt::fromString(number);
+                } else if (_lastKey == "fee") {
+                    _transaction->fees = _transaction->fees + BigInt::fromString(number);
                 }
                 return true;
             }
@@ -177,10 +181,6 @@ namespace ledger {
                     }
                 } else if (_lastKey == "public_key") {
                     _transaction->publicKey = value;
-                } else if (_lastKey == "amount") {
-                    _transaction->value = BigInt::fromString(value);
-                } else if (_lastKey == "fee") {
-                    _transaction->fees = _transaction->fees + BigInt::fromString(value);
                 } else if (_lastKey == "burn_tez") {
                     _transaction->fees = _transaction->fees + BigInt::fromString(value);
                 }
