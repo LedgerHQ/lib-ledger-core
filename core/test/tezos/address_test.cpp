@@ -92,3 +92,12 @@ TEST(TezosAddress, ParseAddressFromString) {
     auto tezosAddress = ledger::core::TezosLikeAddress::parse(address, currency, Option<std::string>("0/0"));
     EXPECT_EQ(address, tezosAddress->toString());
 }
+
+TEST(TezosAddress, AddressValidation) {
+    auto address = "tz1fmeh1DSskufrsi4qWxsfGPyhVdNtXNu78";
+    EXPECT_EQ(api::Address::isValid(address, currency), true);
+    address = "tz1fmeh1DSskufrsi4qWxsfGPyhVdNtXNu";
+    EXPECT_EQ(api::Address::isValid(address, currency), false);
+    address = "qw";
+    EXPECT_EQ(api::Address::isValid(address, currency), false);
+}
