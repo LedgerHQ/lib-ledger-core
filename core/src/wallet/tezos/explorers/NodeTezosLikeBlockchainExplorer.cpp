@@ -44,7 +44,8 @@ namespace ledger {
                 TezosLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
-            _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v3");
+            _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION)
+                    .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION);
         }
 
 
@@ -57,8 +58,12 @@ namespace ledger {
             }
             bool parseNumbersAsString = true;
             std::string addressesStr = addresses[0]->toBase58();
-            return _http->GET(fmt::format("blockchain/{}/{}/balance/{}", getExplorerVersion(), getNetworkParameters().Identifier, addressesStr))
-                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [addressesStr](const HttpRequest::JsonResult &result) {
+            return _http->GET(fmt::format("blockchain/{}/{}/balance/{}",
+                                          getExplorerVersion(),
+                                          getNetworkParameters().Identifier,
+                                          addressesStr))
+                    .json(parseNumbersAsString)
+                    .mapPtr<BigInt>(getContext(), [addressesStr](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         if (!json.IsArray() && json.Size() == 1 && json[0].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
@@ -83,7 +88,7 @@ namespace ledger {
                         std::string fees = json["fees"].GetString();
                         // Sometimes network is sending 0 for fees
                         if (fees == "0") {
-                            fees = "1420"; // Taken from some existing XTZ wallets
+                            fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
                         }
                         return std::make_shared<BigInt>(fees);
                     });
@@ -221,7 +226,7 @@ namespace ledger {
 
             return _http->GET(url + p, std::unordered_map<std::string, std::string>()).json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [field, networkId] (const HttpRequest::JsonResult& result) {
                 auto& json = *std::get<1>(result);
-                if (!json.IsArray() || json.Size() == 0 || json[0].IsString()) {
+                if (!json.IsArray() || json.Size() == 0 || !json[0].IsString()) {
                     throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
                 }
                 return std::make_shared<BigInt>(json[0].GetString());

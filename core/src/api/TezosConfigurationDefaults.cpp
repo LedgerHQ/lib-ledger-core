@@ -21,4 +21,6 @@ std::string const TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519 = {"ED255
 
 std::string const TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1 = {"SECP256K1"};
 
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_FEES = {"1420"};
+
 } } }  // namespace ledger::core::api

@@ -164,4 +164,6 @@ TezosConfigurationDefaults = interface +c {
 	const TEZOS_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.tezos.com";
   	const TEZOS_XPUB_CURVE_ED25519: string = "ED25519";
   	const TEZOS_XPUB_CURVE_SECP256K1: string = "SECP256K1";
+	# Taken from some existing XTZ wallets
+	const TEZOS_DEFAULT_FEES: string = "1420";
 }
