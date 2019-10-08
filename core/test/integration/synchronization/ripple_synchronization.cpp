@@ -107,7 +107,6 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto block = wait(account->getLastBlock());
             auto blockHash = block.blockHash;
-
         }
     }
 }
