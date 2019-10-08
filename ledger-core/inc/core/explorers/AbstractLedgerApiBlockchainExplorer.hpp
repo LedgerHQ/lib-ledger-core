@@ -87,10 +87,10 @@ namespace ledger {
                         });
             }
 
-            FuturePtr<Block> getLedgerApiCurrentBlock() const {
+            FuturePtr<api::Block> getLedgerApiCurrentBlock() const {
                 return _http->GET(fmt::format("/blockchain/{}/{}/blocks/current", getExplorerVersion(), getNetworkParameters().Identifier))
-                        .template json<Block, Exception>(LedgerApiParser<Block, BlockParser>())
-                        .template mapPtr<Block>(getExplorerContext(), [] (const Either<Exception, std::shared_ptr<Block>>& result) {
+                        .template json<api::Block, Exception>(LedgerApiParser<api::Block, BlockParser>())
+                        .template mapPtr<api::Block>(getExplorerContext(), [] (const Either<Exception, std::shared_ptr<api::Block>>& result) {
                             if (result.isLeft()) {
                                 throw result.getLeft();
                             } else {
