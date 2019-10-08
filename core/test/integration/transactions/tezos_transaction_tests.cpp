@@ -208,6 +208,9 @@ TEST_F(TezosMakeTransaction, ParseSignedRawDelegationTransaction) {
     // ensure the values are correct
     EXPECT_EQ(tx->getSender()->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
     EXPECT_EQ(tx->getReceiver()->toBase58(), "KT1GdNaQowD3r8VprK8pni2R2DZd5Vxnkvw5");
+    // It is BLKSXLjQkkPj3WsRZQ6PAwDotSbR25t3mKvZ7bvXUx75Poex4u9 predecessor of
+    // BM7DAEUj8dCNUzViXjg8DyeWtthvorDXMk6ocMwNz7iVo73WNKC where tx included
+    EXPECT_EQ(tx->getBlockHash().value(), "BLKSXLjQkkPj3WsRZQ6PAwDotSbR25t3mKvZ7bvXUx75Poex4u9");
     EXPECT_EQ(tx->getValue()->toLong(), 100000L);
     EXPECT_EQ(tx->getFees()->toLong(), 1420L);
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10300L);

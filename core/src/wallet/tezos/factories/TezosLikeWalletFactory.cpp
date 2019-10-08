@@ -139,12 +139,12 @@ namespace ledger {
                     .value_or(api::BlockchainExplorerEngines::TEZOS_NODE);
             std::shared_ptr<TezosLikeBlockchainExplorer> explorer = nullptr;
             if (engine == api::BlockchainExplorerEngines::TEZOS_NODE) {
-                auto http = pool->getHttpClient(fmt::format("{}/{}",
+                auto http = pool->getHttpClient(fmt::format("{}",
                                                             configuration->getString(
                                                                     api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
                                                             ).value_or(
-                                                                    api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT),
-                                                configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION))
+                                                                    api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT
+                                                            ))
                 );
                 auto context = pool->getDispatcher()->getSerialExecutionContext(
                         api::BlockchainObserverEngines::TEZOS_NODE);

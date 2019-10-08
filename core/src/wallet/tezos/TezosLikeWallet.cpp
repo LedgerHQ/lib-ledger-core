@@ -80,131 +80,50 @@ namespace ledger {
 
         FuturePtr<ledger::core::api::Account>
         TezosLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
-            if (info.chainCodes.size() != 1 || info.publicKeys.size() != 1 || info.owners.size() != 1)
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (only one public key is needed)");
             auto self = getSelf();
-            return async<api::ExtendedKeyAccountCreationInfo>([self, info]() -> api::ExtendedKeyAccountCreationInfo {
-                if (info.owners.size() != info.derivations.size() || info.owners.size() != info.chainCodes.size() ||
-                    info.publicKeys.size() != info.owners.size())
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (size of arrays differs)");
-                api::ExtendedKeyAccountCreationInfo result;
-
-                if (info.chainCodes[0].size() != 32 || info.publicKeys[0].size() != 33)
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Account creation info are inconsistent (contains invalid public key(s))");
-                DerivationPath occurencePath(info.derivations[0]);
-
-                api::TezosCurve curve;
-                auto curveConf = self->getConfiguration()->getString(api::TezosConfiguration::TEZOS_XPUB_CURVE).value_or("");
-                if (curveConf == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519) {
-                    curve = api::TezosCurve::ED25519;
-                } else if (curveConf == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1) {
-                    curve = api::TezosCurve::SECP256K1;
-                } else {
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Unsupported or missing curve type for Tezos");
+            return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
+                DerivationPath path(info.derivations[0]);
+                if (info.publicKeys.size() < 1) {
+                    throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
                 }
+                soci::session sql(getDatabase()->getPool());
+                {
+                    if (AccountDatabaseHelper::accountExists(sql, getWalletUid(), info.index)) {
+                        throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Account {} already exists", info.index);
+                    }
+                    auto keychain = self->_keychainFactory->build(
+                            path,
+                            std::dynamic_pointer_cast<DynamicObject>(self->getConfiguration()),
+                            info,
+                            self->getAccountInternalPreferences(info.index),
+                            self->getCurrency()
+                    );
+                    soci::transaction tr(sql);
 
-                auto xpub = TezosLikeExtendedPublicKey::fromRaw(
-                        self->getCurrency(),
-                        Option<std::vector<uint8_t>>(),
-                        info.publicKeys[0],
-                        info.chainCodes[0],
-                        info.derivations[0],
-                        curve
-                );
-
-                result.owners.push_back(info.owners[0]);
-                result.derivations.push_back(info.derivations[0]);
-                result.extendedKeys.push_back(xpub->toBase58());
-                result.index = info.index;
-                return result;
-            }).flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(), [self](const api::ExtendedKeyAccountCreationInfo &info) {
-                return self->newAccountWithExtendedKeyInfo(info);
+                    if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), info.index))
+                        throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {}, for wallet '{}', already exists", info.index, self->getWalletUid());
+                    AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index);
+                    TezosLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index, hex::toString(info.publicKeys[0]));
+                    tr.commit();
+                }
+                return self->createAccountInstance(sql, AccountDatabaseHelper::createAccountUid(self->getWalletUid(), info.index));
             });
         }
 
         FuturePtr<ledger::core::api::Account>
         TezosLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
-
-            if (info.extendedKeys.empty()) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Empty extended keys passed to newAccountWithExtendedKeyInfo");
-            }
-
-            auto self = getSelf();
-            auto scheme = getDerivationScheme();
-            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(info.index);
-            auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto index = info.index;
-            return async<std::shared_ptr<api::Account> >([=]() -> std::shared_ptr<api::Account> {
-                auto keychain = self->_keychainFactory->build(
-                        index,
-                        xpubPath,
-                        getConfig(),
-                        info,
-                        getAccountInternalPreferences(index),
-                        getCurrency()
-                );
-                soci::session sql(self->getDatabase()->getPool());
-                soci::transaction tr(sql);
-                auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
-                if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index))
-                    throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {}, for wallet '{}', already exists", index, self->getWalletUid());
-                AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index);
-                TezosLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index, info.extendedKeys[info.extendedKeys.size() - 1]);
-                tr.commit();
-                auto account = std::static_pointer_cast<api::Account>(
-                        std::make_shared<TezosLikeAccount>(
-                                self->shared_from_this(),
-                                index,
-                                self->_explorer,
-                                self->_observer,
-                                self->_synchronizerFactory(),
-                                keychain
-                        )
-                );
-                self->addAccountInstanceToInstanceCache(std::dynamic_pointer_cast<AbstractAccount>(account));
-                return account;
-            });
+            throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Tezos does not support account creation with extended key infos.");
         }
 
         Future<api::ExtendedKeyAccountCreationInfo>
         TezosLikeWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
-            auto self = std::dynamic_pointer_cast<TezosLikeWallet>(shared_from_this());
-            return async<api::ExtendedKeyAccountCreationInfo>(
-                    [self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
-                        api::ExtendedKeyAccountCreationInfo info;
-                        info.index = accountIndex;
-                        auto scheme = self->getDerivationScheme();
-                        scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(accountIndex);;
-                        auto keychainEngine = self->getConfiguration()->getString(
-                                api::Configuration::KEYCHAIN_ENGINE).value_or(
-                                api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
-                        if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
-                            keychainEngine == api::KeychainEngines::BIP49_P2SH) {
-                            auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-                            info.derivations.push_back(xpubPath.toString());
-                            info.owners.push_back(std::string("main"));
-                        } else {
-                            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
-                                                 "No implementation found found for keychain {}", keychainEngine);
-                        }
-
-                        return info;
-                    });
+            throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Tezos does not support account creation with extended key infos.");
         }
 
         Future<api::AccountCreationInfo> TezosLikeWallet::getAccountCreationInfo(int32_t accountIndex) {
-            auto self = std::dynamic_pointer_cast<TezosLikeWallet>(shared_from_this());
-            return getExtendedKeyAccountCreationInfo(accountIndex)
-                    .map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) {
-                        api::AccountCreationInfo result;
-                        result.index = accountIndex;
-                        auto length = info.derivations.size();
-                        for (auto i = 0; i < length; i++) {
-                             result.derivations.push_back(DerivationPath(info.derivations[i]).toString());
-                             result.owners.push_back(info.owners[i]);
-                        }
-                        return result;
-            });
+            auto scheme = getDerivationScheme();
+            auto path = scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
+            return Future<api::AccountCreationInfo>::successful(api::AccountCreationInfo{accountIndex, {"main"}, {path.toString()}, {}, {}});
         }
 
         std::shared_ptr<TezosLikeWallet> TezosLikeWallet::getSelf() {
@@ -218,7 +137,9 @@ namespace ledger {
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
+            auto keychain = _keychainFactory->restore(xpubPath,
+                                                      getConfig(),
+                                                      entry.publicKey,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
             auto account = std::make_shared<TezosLikeAccount>(shared_from_this(),
                                                               entry.index,

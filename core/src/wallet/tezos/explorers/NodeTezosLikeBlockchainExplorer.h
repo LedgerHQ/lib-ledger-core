@@ -107,9 +107,11 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getHelper(const std::string &url,
                       const std::string &field,
-                      const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>());
+                      const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
+                      const std::string &fallbackValue = "");
 
             api::TezosLikeNetworkParameters _parameters;
+            std::string _explorerVersion;
         };
     }
 }

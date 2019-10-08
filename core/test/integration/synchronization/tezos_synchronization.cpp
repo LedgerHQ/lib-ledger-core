@@ -118,10 +118,16 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             std::cout<<">>> Nb of ops: "<<ops.size()<<std::endl;
-            EXPECT_NE(ops.size(), 0);
+            EXPECT_GT(ops.size(), 0);
 
             auto fees = wait(account->getFees());
-            EXPECT_GE(fees->toUint64(), 0);
+            EXPECT_GT(fees->toUint64(), 0);
+
+            auto storage = wait(account->getStorage("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
+            EXPECT_GT(storage->toUint64(), 0);
+
+            auto gasLimit = wait(account->getEstimatedGasLimit("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
+            EXPECT_GT(gasLimit->toUint64(), 0);
         }
     }
 }

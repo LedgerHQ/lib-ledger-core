@@ -35,22 +35,30 @@
 #include <collections/vector.hpp>
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
-
+#include <crypto/BLAKE.h>
 namespace ledger {
     namespace core {
-
         TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
                                            const std::vector<uint8_t> &hash160,
                                            const std::vector<uint8_t> &version,
                                            const Option<std::string> &derivationPath) :
                 _params(currency.tezosLikeNetworkParameters.value()),
-                _derivationPath(derivationPath),
                 _hash160(hash160),
                 _version(version),
-                AbstractAddress(currency, derivationPath) {
+                _derivationPath(derivationPath),
+                AbstractAddress(currency, derivationPath)
+        {}
 
-        }
-
+        TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
+                                           const std::vector<uint8_t> &pubKey,
+                                           const std::vector<uint8_t> &version,
+                                           api::TezosCurve curve,
+                                           const Option<std::string> &derivationPath) :
+                TezosLikeAddress(currency,
+                                 BLAKE::blake2b(pubKey, 20, static_cast<size_t>(curve != api::TezosCurve::ED25519)),
+                                 version,
+                                 derivationPath)
+        {}
         std::vector<uint8_t> TezosLikeAddress::getVersion() {
             return _version;
         }
@@ -66,7 +74,7 @@ namespace ledger {
         std::string TezosLikeAddress::toBase58() {
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", _params.Identifier);
-            return Base58::encodeWithChecksum(vector::concat(_version, _hash160), config);
+            return Base58::encodeWithChecksum(vector::concat(getVersion(), _hash160), config);
         }
 
         std::experimental::optional<std::string> TezosLikeAddress::getDerivationPath() {
@@ -91,22 +99,24 @@ namespace ledger {
                                                                        const api::Currency &currency,
                                                                        const Option<std::string> &derivationPath) {
             std::vector<uint8_t> hash160, version;
-            auto &params = currency.tezosLikeNetworkParameters.value();
-            auto config = std::make_shared<DynamicObject>();
-            config->putString("networkIdentifier", params.Identifier);
-            auto decoded = Base58::checkAndDecode(address, config);
-            if (decoded.isFailure()) {
-                throw decoded.getFailure();
-            }
-            auto value = decoded.getValue();
+            if (!address.empty()) {
+                auto &params = currency.tezosLikeNetworkParameters.value();
+                auto config = std::make_shared<DynamicObject>();
+                config->putString("networkIdentifier", params.Identifier);
+                auto decoded = Base58::checkAndDecode(address, config);
+                if (decoded.isFailure()) {
+                    throw decoded.getFailure();
+                }
+                auto value = decoded.getValue();
 
-            //Check decoded address size
-            if (value.size() <= 20) {
-                throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
-            }
+                //Check decoded address size
+                if (value.size() <= 20) {
+                    throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid address : Invalid base 58 format");
+                }
 
-            hash160 = std::vector<uint8_t>(value.end() - 20, value.end());
-            version = std::vector<uint8_t>(value.begin(), value.end() - 20);
+                hash160 = std::vector<uint8_t>(value.end() - 20, value.end());
+                version = std::vector<uint8_t>(value.begin(), value.end() - 20);
+            }
             return std::make_shared<ledger::core::TezosLikeAddress>(currency, hash160, version, derivationPath);
         }
     }

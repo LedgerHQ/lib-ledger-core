@@ -222,7 +222,7 @@ namespace ledger {
                 auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, self->getWallet()->getCurrency());
                 tx->setSender(accountAddress);
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
-                tx->setSigningPubKey(self->getKeychain()->getPublicKey(senderAddress).getValue());
+                tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
                 tx->setType(request.type);
                 return explorer->getCounter(request.toAddress).mapPtr<api::TezosLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) {
                     tx->setCounter(nonce);
