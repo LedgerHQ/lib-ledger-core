@@ -1,6 +1,6 @@
 /*
  *
- * RippleLikeOperation
+ * RippleLikeAccountDatabaseHelper
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -28,28 +28,35 @@
  *
  */
 
-#include <core/operation/OperationDatabaseHelper.hpp>
-#include <RippleLikeTransaction.hpp>
-#include <RippleLikeOperation.hpp>
+#include <core/wallet/AccountDatabaseHelper.hpp>
+#include <RippleLikeAccountDatabaseHelper.hpp>
+
+using namespace soci;
 
 namespace ledger {
     namespace core {
-        RippleLikeOperation::RippleLikeOperation(
-            std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
-            api::Currency const & currency
-        ): _transaction(std::make_shared<RippleLikeTransaction>(tx, currency)) {
+        void RippleLikeAccountDatabaseHelper::createAccount(
+            soci::session &sql,
+            const std::string walletUid, int32_t index,
+            const std::string &address
+        ) {
+            auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
+            sql << "INSERT INTO ripple_accounts VALUES(:uid, :wallet_uid, :idx, :address)",use(uid), use(walletUid), use(index), use(address);
         }
 
-        std::shared_ptr<api::RippleLikeTransaction> RippleLikeOperation::getTransaction() {
-            return _transaction;
-        }
+        bool RippleLikeAccountDatabaseHelper::queryAccount(
+            soci::session &sql,
+            const std::string &accountUid,
+            RippleLikeAccountDatabaseEntry &entry
+        ) {
+            rowset<row> rows = (sql.prepare << "SELECT idx, address FROM ripple_accounts WHERE uid = :uid", use(accountUid));
+            for (auto& row : rows) {
+                entry.index = row.get<int32_t>(0);
+                entry.address = row.get<std::string>(1);
+                return true;
+            }
 
-        void RippleLikeOperation::refreshUid() {
-          uid = OperationDatabaseHelper::createUid(
-              accountUid,
-              _transaction->getHash(),
-              getOperationType()
-          );
+            return false;
         }
     }
 }

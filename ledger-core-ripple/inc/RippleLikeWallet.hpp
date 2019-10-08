@@ -30,7 +30,10 @@
 
 #pragma once
 
+#include <core/Services.hpp>
 #include <core/wallet/AbstractWallet.hpp>
+
+#include <factories/RippleLikeWalletFactory.hpp>
 #include <explorers/RippleLikeBlockchainExplorer.hpp>
 #include <observers/RippleLikeBlockchainObserver.hpp>
 #include <synchronizers/RippleLikeAccountSynchronizer.hpp>
@@ -44,7 +47,7 @@ namespace ledger {
                     const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                     const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
                     const RippleLikeAccountSynchronizerFactory &synchronizerFactory,
-                    const std::shared_ptr<WalletPool> &pool,
+                    const std::shared_ptr<Services> &services,
                     const api::Currency &network,
                     const std::shared_ptr<DynamicObject> &configuration,
                     const DerivationScheme &scheme
@@ -55,9 +58,9 @@ namespace ledger {
 
             std::shared_ptr<api::EventBus> synchronize() override;
 
-            FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) override;
+            FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) override;
 
-            FuturePtr<ledger::core::api::Account>
+            FuturePtr<api::Account>
             newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) override;
 
             Future<api::ExtendedKeyAccountCreationInfo>

@@ -1,6 +1,6 @@
 /*
  *
- * RippleLikeOperation
+ * RippleLikeKeychainFactory
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -28,28 +28,36 @@
  *
  */
 
-#include <core/operation/OperationDatabaseHelper.hpp>
-#include <RippleLikeTransaction.hpp>
-#include <RippleLikeOperation.hpp>
+#pragma once
+
+#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <core/api/Currency.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/preferences/Preferences.hpp>
+
+#include <keychains/RippleLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {
-        RippleLikeOperation::RippleLikeOperation(
-            std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
-            api::Currency const & currency
-        ): _transaction(std::make_shared<RippleLikeTransaction>(tx, currency)) {
-        }
+        class RippleLikeKeychainFactory {
+        public:
+            std::shared_ptr<RippleLikeKeychain> build(
+                int32_t index,
+                const DerivationPath &path,
+                const std::shared_ptr<DynamicObject>& configuration,
+                const api::ExtendedKeyAccountCreationInfo& info,
+                const std::shared_ptr<Preferences>& accountPreferences,
+                const api::Currency& currency
+            );
 
-        std::shared_ptr<api::RippleLikeTransaction> RippleLikeOperation::getTransaction() {
-            return _transaction;
-        }
-
-        void RippleLikeOperation::refreshUid() {
-          uid = OperationDatabaseHelper::createUid(
-              accountUid,
-              _transaction->getHash(),
-              getOperationType()
-          );
-        }
+            std::shared_ptr<RippleLikeKeychain> restore(
+                int32_t index,
+                const DerivationPath &path,
+                const std::shared_ptr<DynamicObject>& configuration,
+                const std::string &databaseXpubEntry,
+                const std::shared_ptr<Preferences>& accountPreferences,
+                const api::Currency& currency
+            );
+        };
     }
 }

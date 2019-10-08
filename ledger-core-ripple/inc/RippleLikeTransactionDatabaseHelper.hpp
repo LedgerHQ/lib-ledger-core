@@ -1,6 +1,6 @@
 /*
  *
- * RippleLikeOperation
+ * RIppleLikeTransactionDatabaseHelper
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -28,28 +28,34 @@
  *
  */
 
-#include <core/operation/OperationDatabaseHelper.hpp>
-#include <RippleLikeTransaction.hpp>
-#include <RippleLikeOperation.hpp>
+#pragma once
+
+#include <soci.h>
+#include <string>
+
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {
-        RippleLikeOperation::RippleLikeOperation(
-            std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
-            api::Currency const & currency
-        ): _transaction(std::make_shared<RippleLikeTransaction>(tx, currency)) {
-        }
+        class RippleLikeTransactionDatabaseHelper {
+        public:
+            static bool getTransactionByHash(soci::session &sql,
+                                             const std::string &hash,
+                                             RippleLikeBlockchainExplorerTransaction &tx);
 
-        std::shared_ptr<api::RippleLikeTransaction> RippleLikeOperation::getTransaction() {
-            return _transaction;
-        }
+            static bool inflateTransaction(soci::session &sql,
+                                           const soci::row &row,
+                                           RippleLikeBlockchainExplorerTransaction &tx);
 
-        void RippleLikeOperation::refreshUid() {
-          uid = OperationDatabaseHelper::createUid(
-              accountUid,
-              _transaction->getHash(),
-              getOperationType()
-          );
-        }
+            static bool transactionExists(soci::session &sql,
+                                          const std::string &rippleTxUid);
+
+            static std::string createRippleTransactionUid(const std::string &accountUid,
+                                                          const std::string &txHash);
+
+            static std::string putTransaction(soci::session &sql,
+                                              const std::string &accountUid,
+                                              const RippleLikeBlockchainExplorerTransaction &tx);
+        };
     }
 }

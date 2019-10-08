@@ -30,6 +30,7 @@
 
 #include <functional>
 
+#include <core/Services.hpp>
 #include <core/api/Currency.hpp>
 #include <core/wallet/AbstractWalletFactory.hpp>
 #include <explorers/RippleLikeBlockchainExplorer.hpp>
@@ -40,11 +41,9 @@
 namespace ledger {
     namespace core {
         using RippleLikeAccountSynchronizerFactory = std::function<std::shared_ptr<RippleLikeAccountSynchronizer> ()>;
-        class WalletPool;
-
         class RippleLikeWalletFactory : public AbstractWalletFactory {
         public:
-            RippleLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool> &pool);
+            RippleLikeWalletFactory(const api::Currency &currency, const std::shared_ptr<Services> &services);
             std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
         private:

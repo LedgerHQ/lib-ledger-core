@@ -35,13 +35,13 @@
 #include <core/api/BlockchainObserverEngines.hpp>
 #include <core/api/ConfigurationDefaults.hpp>
 #include <api/RippleConfigurationDefaults.hpp>
-#include <explorers/ApiRippleLikeBlockchainExplorer.h>
-#include <explorers/NodeRippleLikeBlockchainExplorer.h>
-#include <factories/RippleLikeKeychainFactory.h>
-#include <observers/RippleLikeBlockchainObserver.h>
+#include <explorers/ApiRippleLikeBlockchainExplorer.hpp>
+#include <explorers/NodeRippleLikeBlockchainExplorer.hpp>
+#include <factories/RippleLikeKeychainFactory.hpp>
+#include <observers/RippleLikeBlockchainObserver.hpp>
 #include <factories/RippleLikeWalletFactory.hpp>
-#include <synchronizers/RippleLikeBlockchainExplorerAccountSynchronizer.h>
-#include <RippleLikeWallet.h>
+#include <synchronizers/RippleLikeBlockchainExplorerAccountSynchronizer.hpp>
+#include <RippleLikeWallet.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -49,16 +49,16 @@ namespace ledger {
     namespace core {
         RippleLikeWalletFactory::RippleLikeWalletFactory(
             const api::Currency &currency,
-            const std::shared_ptr<WalletPool> &pool
+            const std::shared_ptr<Services>& services
         ):
-          AbstractWalletFactory(currency, pool) {
+          AbstractWalletFactory(currency, services) {
             _keychainFactories = {{api::KeychainEngines::BIP49_P2SH, std::make_shared<RippleLikeKeychainFactory>()}};
         }
 
         std::shared_ptr<AbstractWallet> RippleLikeWalletFactory::build(const WalletDatabaseEntry &entry)
         {
-            auto pool = getPool();
-            pool->logger()->info("Building wallet instance '{}' for {} with parameters: {}", entry.name, entry.currencyName, entry.configuration->dump());
+            auto services = getServices();
+            services->logger()->info("Building wallet instance '{}' for {} with parameters: {}", entry.name, entry.currencyName, entry.configuration->dump());
             // Get currency
             auto currency = getPool()->getCurrency(entry.currencyName);
             if (currency.isEmpty())
@@ -75,17 +75,17 @@ namespace ledger {
             // Configure observer
             auto observer = getObserver(entry.currencyName, entry.configuration);
             if (observer == nullptr)
-                pool->logger()->warn("Observer engine '{}' is not supported. Wallet {} was created anyway. Real time events won't be handled by this instance.",  STRING(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE, "undefined"), entry.name);
+                services->logger()->warn("Observer engine '{}' is not supported. Wallet {} was created anyway. Real time events won't be handled by this instance.",  STRING(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE, "undefined"), entry.name);
             // Configure synchronizer
             Option<RippleLikeAccountSynchronizerFactory> synchronizerFactory;
             {
                 auto engine = entry.configuration->getString(api::Configuration::SYNCHRONIZATION_ENGINE)
                         .value_or(api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION);
                 if (engine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
-                    std::weak_ptr<WalletPool> p = pool;
+                    std::weak_ptr<Services> p = services;
                     synchronizerFactory = Option<RippleLikeAccountSynchronizerFactory>([p, explorer]() {
-                        auto pool = p.lock();
-                        return std::make_shared<RippleLikeBlockchainExplorerAccountSynchronizer>(pool, explorer);
+                        auto services = p.lock();
+                        return std::make_shared<RippleLikeBlockchainExplorerAccountSynchronizer>(services, explorer);
                     });
                 }
             }
@@ -102,7 +102,7 @@ namespace ledger {
                     observer,
                     keychainFactory->second,
                     synchronizerFactory.getValue(),
-                    pool,
+                    services,
                     currency.getValue(),
                     entry.configuration,
                     scheme
@@ -124,29 +124,29 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto services = getServices();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                     .value_or(api::BlockchainExplorerEngines::RIPPLE_NODE);
             std::shared_ptr<RippleLikeBlockchainExplorer> explorer = nullptr;
             if (engine == api::BlockchainExplorerEngines::RIPPLE_NODE) {
-                auto http = pool->getHttpClient(
+                auto http = services->getHttpClient(
                         fmt::format("{}:{}",
                                     configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
                                             .value_or(api::RippleConfigurationDefaults::RIPPLE_OBSERVER_NODE_ENDPOINT_S2),
                                     configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_PORT)
                                             .value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT))
                 );
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
+                auto context = services->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
                 auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();
 
                 explorer = std::make_shared<NodeRippleLikeBlockchainExplorer>(context, http, networkParams, configuration);
             } else if (engine == api::BlockchainExplorerEngines::RIPPLE_API) {
-                auto http = pool->getHttpClient(
+                auto http = services->getHttpClient(
                         configuration->getString(
                                 api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
                         ).value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_API_ENDPOINT)
                 );
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
+                auto context = services->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
                 auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();
 
                 explorer = std::make_shared<ApiRippleLikeBlockchainExplorer>(context, http, networkParams, configuration);
@@ -173,14 +173,14 @@ namespace ledger {
                 }
             }
 
-            auto pool = getPool();
+            auto services = getServices();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE)
                     .value_or(api::BlockchainObserverEngines::RIPPLE_NODE);
             std::shared_ptr<RippleLikeBlockchainObserver> observer;
             if (engine == api::BlockchainObserverEngines::RIPPLE_NODE) {
-                auto ws = pool->getWebSocketClient();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
-                auto logger = pool->logger();
+                auto ws = services->getWebSocketClient();
+                auto context = services->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
+                auto logger = services->logger();
                 const auto& currency = getCurrency();
                 observer = std::make_shared<RippleLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }

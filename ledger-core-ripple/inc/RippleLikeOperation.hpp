@@ -30,18 +30,21 @@
 
 #pragma once
 
+#include <core/operation/Operation.hpp>
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
 
 namespace ledger {
     namespace core {
-        class RippleLikeOperation : public api::RippleLikeOperation {
+        class RippleLikeOperation : public api::RippleLikeOperation, public Operation {
         public:
             RippleLikeOperation(
                 std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
                 api::Currency const & currency
             );
             std::shared_ptr<api::RippleLikeTransaction> getTransaction() override;
+
+            void refreshUid() override;
 
         private:
             std::shared_ptr<api::RippleLikeTransaction> _transaction;

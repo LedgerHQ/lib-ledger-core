@@ -34,13 +34,13 @@
 #include <core/api/ConfigurationDefaults.hpp>
 #include <core/api/KeychainEngines.hpp>
 #include <core/async/Wait.hpp>
+#include <core/wallet/AccountDatabaseHelper.hpp>
 
 #include <RippleLikeWallet.hpp>
 #include <RippleLikeAccount.hpp>
+#include <RippleLikeAccountDatabaseHelper.hpp>
 #include <RippleLikeExtendedPublicKey.hpp>
 
-#include <core/wallet/AccountDatabaseHelper.hpp>
-#include <core/wallet/RippleLikeAccountDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -48,11 +48,12 @@ namespace ledger {
                                            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                                            const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
                                            const RippleLikeAccountSynchronizerFactory &synchronizer,
-                                           const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
+                                           const std::shared_ptr<Services> &services,
+                                           const api::Currency &network,
                                            const std::shared_ptr<DynamicObject> &configuration,
                                            const DerivationScheme &scheme
         )
-                : AbstractWallet(name, network, pool, configuration, scheme) {
+                : AbstractWallet(name, network, services, configuration, scheme) {
             _explorer = explorer;
             _observer = observer;
             _synchronizerFactory = synchronizer;
@@ -66,7 +67,7 @@ namespace ledger {
             return nullptr;
         }
 
-        FuturePtr<ledger::core::api::Account>
+        FuturePtr<api::Account>
         RippleLikeWallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
             if (info.chainCodes.size() != 1 || info.publicKeys.size() != 1 || info.owners.size() != 1)
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -96,8 +97,8 @@ namespace ledger {
                 result.extendedKeys.push_back(xpub->toBase58());
                 result.index = info.index;
                 return result;
-            }).flatMap<std::shared_ptr<ledger::core::api::Account>>(getContext(),
-                                                                    [self](const api::ExtendedKeyAccountCreationInfo &info) -> Future<std::shared_ptr<ledger::core::api::Account>> {
+            }).flatMap<std::shared_ptr<api::Account>>(getContext(),
+                                                                    [self](const api::ExtendedKeyAccountCreationInfo &info) -> Future<std::shared_ptr<api::Account>> {
                                                                         return self->newAccountWithExtendedKeyInfo(
                                                                                 info);
                                                                     });
@@ -109,7 +110,7 @@ namespace ledger {
             return dPath.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath().isLastChildHardened() ? dPath.getAccountIndex() : index;
         }
 
-        FuturePtr<ledger::core::api::Account>
+        FuturePtr<api::Account>
         RippleLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
             logger()->debug("Creating new XRP account (index = {}) with extended key info", info.index);
 

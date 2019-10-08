@@ -349,6 +349,11 @@ namespace ledger {
             return *this;
         }
 
+        RippleLikeTransaction& RippleLikeTransaction::setDestinationTag(uint32_t tag) {
+            _destinationTag = tag;
+            return *this;
+        }
+
         std::vector<api::RippleLikeMemo> RippleLikeTransaction::getMemos() {
             return _memos;
         }

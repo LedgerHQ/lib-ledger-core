@@ -97,6 +97,9 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>>
             getBaseReserve() = 0;
+
+            virtual Future<std::shared_ptr<BigInt>>
+            getLedgerSequence() = 0;
         };
     }
 }

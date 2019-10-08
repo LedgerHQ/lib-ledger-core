@@ -69,6 +69,7 @@ namespace ledger {
             RippleLikeTransaction & setReceiver(const std::shared_ptr<api::RippleLikeAddress> &receiver);
             RippleLikeTransaction & setSigningPubKey(const std::vector<uint8_t> &pubKey);
             RippleLikeTransaction & setHash(const std::string &hash);
+            RippleLikeTransaction & setDestinationTag(uint32_t tag);
             std::vector<api::RippleLikeMemo> getMemos() override;
             void addMemo(api::RippleLikeMemo const& memo) override;
             std::experimental::optional<int64_t> getDestinationTag() override;

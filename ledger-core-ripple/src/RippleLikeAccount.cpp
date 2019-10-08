@@ -28,31 +28,32 @@
  *
  */
 
-#include <api/RippleConfiguration.hpp>
-#include <api/RippleConfigurationDefaults.hpp>
-#include <api_impl/RippleLikeTransactionApi.hpp>
 #include <core/async/Future.hpp>
-#include <core/operation/OperationDatabaseHelper.hpp>
-#include <core/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.hpp>
-#include <core/events/Event.hpp>
-#include <core/math/Base58.hpp>
-#include <core/utils/Option.hpp>
-#include <core/utils/DateUtils.hpp>
-#include <database/RippleLikeAccountDatabaseHelper.hpp>
-#include <database/RippleLikeTransactionDatabaseHelper.hpp>
-#include <explorers/RippleLikeBlockchainExplorer.hpp>
-#include <transaction_builders/RippleLikeTransactionBuilder.hpp>
-#include <wallet/common/database/BlockDatabaseHelper.hpp>
-#include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <core/database/SociNumber.hpp>
 #include <core/database/SociDate.hpp>
 #include <core/database/SociOption.hpp>
+#include <core/events/Event.hpp>
+#include <core/math/Base58.hpp>
+#include <core/operation/OperationDatabaseHelper.hpp>
+#include <core/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.hpp>
+#include <core/utils/Option.hpp>
+#include <core/utils/DateUtils.hpp>
+#include <core/wallet/BlockDatabaseHelper.hpp>
+#include <core/wallet/CurrenciesDatabaseHelper.hpp>
+
+#include <api/RippleConfiguration.hpp>
+#include <api/RippleConfigurationDefaults.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
+#include <transaction_builders/RippleLikeTransactionBuilder.hpp>
 #include <RippleLikeAccount.hpp>
+#include <RippleLikeAccountDatabaseHelper.hpp>
+#include <RippleLikeOperation.hpp>
+#include <RippleLikeTransaction.hpp>
+#include <RippleLikeTransactionDatabaseHelper.hpp>
 #include <RippleLikeWallet.hpp>
 
 namespace ledger {
     namespace core {
-
         RippleLikeAccount::RippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                              int32_t index,
                                              const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
@@ -83,9 +84,11 @@ namespace ledger {
                     });
         }
 
-        void RippleLikeAccount::inflateOperation(Operation &out,
-                                                 const std::shared_ptr<const AbstractWallet> &wallet,
-                                                 const RippleLikeBlockchainExplorerTransaction &tx) {
+        void RippleLikeAccount::inflateOperation(
+            RippleLikeOperation &out,
+            const std::shared_ptr<const AbstractWallet> &wallet,
+            const RippleLikeBlockchainExplorerTransaction &tx
+        ) {
             out.accountUid = getAccountUid();
             out.block = tx.block;
             out.rippleTransaction = Option<RippleLikeBlockchainExplorerTransaction>(tx);
@@ -111,7 +114,7 @@ namespace ledger {
 
             int result = FLAG_TRANSACTION_UPDATED;
 
-            Operation operation;
+            RippleLikeOperation operation;
             inflateOperation(operation, wallet, transaction);
             std::vector<std::string> senders{transaction.sender};
             operation.senders = std::move(senders);
@@ -147,8 +150,8 @@ namespace ledger {
 
         bool RippleLikeAccount::putBlock(soci::session &sql,
                                          const RippleLikeBlockchainExplorer::Block &block) {
-            Block abstractBlock;
-            abstractBlock.hash = block.hash;
+          api::Block abstractBlock;
+            abstractBlock.blockHash = block.blockHash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
@@ -207,7 +210,7 @@ namespace ledger {
 
                 const auto &uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                std::vector<Operation> operations;
+                std::vector<RippleLikeOperation> operations;
 
                 auto keychain = self->getKeychain();
                 std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
@@ -215,7 +218,7 @@ namespace ledger {
                 };
 
                 //Get operations related to an account
-                OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                OperationDatabaseHelper<RippleLikeOperation>::queryOperations(sql, uid, operations, filter);
 
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);
@@ -377,7 +380,7 @@ namespace ledger {
         }
 
         void RippleLikeAccount::broadcastTransaction(
-            const std::shared_ptr<RippleLikeTransaction> & transaction,
+            const std::shared_ptr<api::RippleLikeTransaction> & transaction,
             const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
         ) {
             broadcastRawTransaction(transaction->serialize(), callback);
@@ -396,7 +399,7 @@ namespace ledger {
             auto buildFunction = [self](const RippleLikeTransactionBuildRequest &request,
                                         const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::RippleLikeTransaction>> {
                 auto currency = self->getWallet()->getCurrency();
-                auto tx = std::make_shared<RippleLikeTransactionApi>(self->getWallet()->getCurrency());
+                auto tx = std::make_shared<RippleLikeTransaction>(self->getWallet()->getCurrency());
                 tx->setValue(request.value);
                 tx->setFees(request.fees);
                 auto address = self->getKeychain()->getAddress();
@@ -463,6 +466,5 @@ namespace ledger {
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *reserve);
             });
         }
-
     }
 }

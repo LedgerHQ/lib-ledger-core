@@ -121,6 +121,13 @@ RippleLikeTransactionBuilder = interface +c {
 	# @return A reference on the same builder in order to chain calls.
 	setFees(fees: Amount): RippleLikeTransactionBuilder;
 
+  # Add a memo.
+  # @return A reference on the same builder in order to chain calls.
+  addMemo(memo: RippleLikeMemo): RippleLikeTransactionBuilder;
+
+  # An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account
+  setDestinationTag(tag: i64): RippleLikeTransactionBuilder;
+
 	# Build a transaction from the given builder parameters.
 	build(callback: callback2<void, optional<RippleLikeTransaction>, optional<Error>>);
 

@@ -1,6 +1,6 @@
 /*
  *
- * RippleLikeOperation
+ * RippleLikeAccountDatabaseHelper
  *
  * Created by El Khalil Bellakrid on 06/01/2019.
  *
@@ -28,28 +28,29 @@
  *
  */
 
-#include <core/operation/OperationDatabaseHelper.hpp>
-#include <RippleLikeTransaction.hpp>
-#include <RippleLikeOperation.hpp>
+#pragma once
+
+#include <string>
+#include <soci.h>
+
+#include <RippleLikeAccountDatabaseEntry.hpp>
 
 namespace ledger {
     namespace core {
-        RippleLikeOperation::RippleLikeOperation(
-            std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
-            api::Currency const & currency
-        ): _transaction(std::make_shared<RippleLikeTransaction>(tx, currency)) {
-        }
+        class RippleLikeAccountDatabaseHelper {
+        public:
+            static void createAccount(
+                soci::session& sql,
+                const std::string walletUid,
+                int32_t index,
+                const std::string& address
+            );
 
-        std::shared_ptr<api::RippleLikeTransaction> RippleLikeOperation::getTransaction() {
-            return _transaction;
-        }
-
-        void RippleLikeOperation::refreshUid() {
-          uid = OperationDatabaseHelper::createUid(
-              accountUid,
-              _transaction->getHash(),
-              getOperationType()
-          );
-        }
+            static bool queryAccount(
+                soci::session& sql,
+                const std::string& accountUid,
+                RippleLikeAccountDatabaseEntry& entry
+            );
+        };
     }
 }

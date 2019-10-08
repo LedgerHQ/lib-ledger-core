@@ -1,8 +1,8 @@
 /*
  *
- * RippleLikeOperation
+ * RippleLikeTransactionsParser
  *
- * Created by El Khalil Bellakrid on 06/01/2019.
+ * Created by El Khalil Bellakrid on 07/01/2019.
  *
  * The MIT License (MIT)
  *
@@ -28,28 +28,28 @@
  *
  */
 
-#include <core/operation/OperationDatabaseHelper.hpp>
-#include <RippleLikeTransaction.hpp>
-#include <RippleLikeOperation.hpp>
+#pragma once
+
+#include <core/explorers/AbstractTransactionsParser.hpp>
+#include <explorers/RippleLikeTransactionParser.hpp>
 
 namespace ledger {
     namespace core {
-        RippleLikeOperation::RippleLikeOperation(
-            std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
-            api::Currency const & currency
-        ): _transaction(std::make_shared<RippleLikeTransaction>(tx, currency)) {
-        }
+        class RippleLikeTransactionsParser
+                : public AbstractTransactionsParser<RippleLikeBlockchainExplorerTransaction, RippleLikeTransactionParser> {
+        public:
+            RippleLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
+                _arrayDepth = 0;
+                _objectDepth = 0;
+            }
 
-        std::shared_ptr<api::RippleLikeTransaction> RippleLikeOperation::getTransaction() {
-            return _transaction;
-        }
+        protected:
+            RippleLikeTransactionParser &getTransactionParser() override {
+                return _transactionParser;
+            }
 
-        void RippleLikeOperation::refreshUid() {
-          uid = OperationDatabaseHelper::createUid(
-              accountUid,
-              _transaction->getHash(),
-              getOperationType()
-          );
-        }
+        private:
+            RippleLikeTransactionParser _transactionParser;
+        };
     }
 }
