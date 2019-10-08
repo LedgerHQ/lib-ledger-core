@@ -114,6 +114,12 @@ RippleLikeAccount = interface +c {
     # Get base reserve (dust to leave on an XRP account) from network
     # Note: same note as above
     getBaseReserve(callback: Callback<Amount>);
+    # Check whether an account has been activated or not
+    # Here activation, means that the XRP account received a first transaction with a minimum amount
+    # greater or equal to XRP base reserve
+    # @param: address to check
+    # @return: true if valid address and has been activated, false otherwise
+    isAddressActivated(address: string, isActivated: Callback<bool>);
 }
 
 RippleConfiguration = interface +c {
