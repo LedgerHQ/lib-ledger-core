@@ -586,7 +586,7 @@ namespace ledger {
                     "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "idx INTEGER NOT NULL,"
-                    "address VARCHAR(255) NOT NULL"
+                    "public_key VARCHAR(255) NOT NULL"
                     ")";
 
             sql << "CREATE TABLE tezos_transactions("

@@ -5,7 +5,7 @@
 
 namespace ledger { namespace core { namespace api {
 
-std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT = {"https://api6.tzscan.io"};
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT = {"https://explorers.api.live.ledger.com"};
 
 std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION = {"v3"};
 
@@ -20,5 +20,11 @@ std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_WS_ENDPOINT_S3 = {"
 std::string const TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519 = {"ED25519"};
 
 std::string const TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1 = {"SECP256K1"};
+
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_FEES = {"1420"};
+
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT = {"10600"};
+
+std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_STORAGE_LIMIT = {"300"};
 
 } } }  // namespace ledger::core::api

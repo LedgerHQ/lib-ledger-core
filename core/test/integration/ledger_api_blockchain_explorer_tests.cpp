@@ -142,7 +142,7 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetFees) {
     auto result = wait(explorer->getFees());
     EXPECT_NE(result.size(), 0);
     if (result.size() > 1) {
-        EXPECT_GE(result[0], result[1]);
+        EXPECT_GE(result[0]->intValue(), result[1]->intValue());
     }
 }
 

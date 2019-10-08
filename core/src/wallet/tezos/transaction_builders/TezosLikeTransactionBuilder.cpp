@@ -274,6 +274,12 @@ namespace ledger {
                 default:
                     break;
             }
+
+            // Parse signature
+            if (isSigned) {
+                tx->setSignature(reader.read(64));
+            }
+
             return tx;
         }
     }
