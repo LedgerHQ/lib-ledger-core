@@ -6,6 +6,7 @@
 
 #include <cstdint>
 #include <memory>
+#include <string>
 #include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -18,6 +19,7 @@
 namespace ledger { namespace core { namespace api {
 
 class AmountCallback;
+class BoolCallback;
 class RippleLikeTransaction;
 class RippleLikeTransactionBuilder;
 class StringCallback;
@@ -47,6 +49,15 @@ public:
      * Note: same note as above
      */
     virtual void getBaseReserve(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /**
+     * Check whether an account has been activated or not
+     * Here activation, means that the XRP account received a first transaction with a minimum amount
+     * greater or equal to XRP base reserve
+     * @param: address to check
+     * @return: true if valid address and has been activated, false otherwise
+     */
+    virtual void isAddressActivated(const std::string & address, const std::shared_ptr<BoolCallback> & isActivated) = 0;
 };
 
 } } }  // namespace ledger::core::api
