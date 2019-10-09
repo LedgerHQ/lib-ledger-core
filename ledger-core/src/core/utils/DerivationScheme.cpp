@@ -121,6 +121,13 @@ namespace ledger {
             return *this;
         }
 
+        DerivationScheme DerivationScheme::getSchemeToDepth(size_t depth) const {
+            if (depth <= _scheme.size()) {
+                return DerivationScheme(std::vector<DerivationSchemeNode>(_scheme.begin(), _scheme.begin() + depth));
+            }
+            return *this;
+        }
+
         DerivationPath DerivationScheme::getPath() {
             std::function<uint32_t (const DerivationSchemeNode&)> map = [] (const DerivationSchemeNode &item) -> uint32_t {
                 return item.value | (item.hardened ? 0x80000000 : 0x00);

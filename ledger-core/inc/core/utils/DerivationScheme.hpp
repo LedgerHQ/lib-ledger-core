@@ -60,6 +60,8 @@ namespace ledger {
             DerivationScheme(const DerivationScheme& cpy);
             DerivationScheme getSchemeFrom(DerivationSchemeLevel level);
             DerivationScheme getSchemeTo(DerivationSchemeLevel level);
+            DerivationScheme getSchemeToDepth(size_t depth) const;
+
             DerivationScheme shift(int n = 1);
 
             DerivationPath getPath();
