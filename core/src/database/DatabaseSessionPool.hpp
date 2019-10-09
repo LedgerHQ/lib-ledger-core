@@ -59,7 +59,7 @@ namespace ledger {
                 const std::string &password = ""
             );
 
-            static const int CURRENT_DATABASE_SCHEME_VERSION = 15;
+            static const int CURRENT_DATABASE_SCHEME_VERSION = 16;
 
             void performDatabaseMigration();
             void performDatabaseRollback();
