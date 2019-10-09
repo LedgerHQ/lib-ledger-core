@@ -586,7 +586,7 @@ namespace ledger {
                     "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "idx INTEGER NOT NULL,"
-                    "public_key VARCHAR(255) NOT NULL"
+                    "address VARCHAR(255) NOT NULL"
                     ")";
 
             sql << "CREATE TABLE tezos_transactions("
@@ -680,6 +680,14 @@ namespace ledger {
         }
 
         template <> void rollback<15>(soci::session& sql) {
+        }
+
+        template <> void migrate<16>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_accounts RENAME COLUMN address TO public_key";
+        }
+
+        template <> void rollback<16>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_accounts RENAME COLUMN public_key TO address";
         }
     }
 }
