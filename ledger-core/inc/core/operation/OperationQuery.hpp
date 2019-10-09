@@ -146,10 +146,9 @@ namespace ledger {
                 auto self = this->shared_from_this();
 
                 return async<std::vector<std::shared_ptr<api::Operation>>>([=] () {
-                    std::vector<std::shared_ptr<T>> out;
+                    std::vector<std::shared_ptr<api::Operation>> out;
                     self->performExecute(out);
-                    // TODO: convert T to api::Operation
-                    return std::vector<std::shared_ptr<api::Operation>>{};
+                    return out;
                 });
             }
 
@@ -160,7 +159,7 @@ namespace ledger {
             }
 
         private:
-            void performExecute(std::vector<std::shared_ptr<T>>& operations)
+            void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations)
             {
                 soci::session sql(_pool->getPool());
                 soci::rowset<soci::row> rows = performExecute(sql);
@@ -200,7 +199,7 @@ namespace ledger {
                         inflateCompleteTransaction(sql, accountUid, *operation);
                     }
 
-                    operations.push_back(operation);
+                    operations.push_back(std::dynamic_pointer_cast<api::Operation>(operation));
                 }
             }
 
