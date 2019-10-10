@@ -71,6 +71,14 @@ namespace ledger {
             _logger = services->logger();
         }
 
+        std::shared_ptr<Services> AbstractWallet::getServices() const {
+            auto services = _services.lock();
+
+            if (!services)
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "Services is freed.");
+            return services;
+        }
+
         std::shared_ptr<api::EventBus> AbstractWallet::getEventBus() {
             return _publisher->getEventBus();
         }
