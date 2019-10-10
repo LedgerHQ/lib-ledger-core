@@ -6,6 +6,8 @@ echo ">>>>>>> GETTING CIRCLE_TAG : $CIRCLE_TAG"
 echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
 
 echo "========> Install basic config"
+echo "deb http://httpredir.debian.org/debian experimental main" >> /etc/apt/sources.list
+echo "deb-src http://httpredir.debian.org/debian experimental main" >> /etc/apt/sources.list
 apt-get update
 apt-get install -y apt-transport-https wget python build-essential libx11-xcb-dev
 apt-get install -y libssl-dev curl tcl
@@ -31,7 +33,7 @@ export PATH=$HOME/cmake-3.12.3/bin:$PATH
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
     echo "========> Install Qt5"
-    apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev
+    apt-get install -t experimental -y qt5-default libqt5websockets5 libqt5websockets5-dev libqt5network5 libqt5core5a qtbase-abi-5-12-5 qtbase5-dev
 fi
 
 echo "========> Install Sqlite"

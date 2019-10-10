@@ -6,7 +6,7 @@ dependencies:
 jobs:
   build_linux_release:
     docker:
-      - image: debian:stretch
+      - image: debian:experimental
     working_directory: ~/lib-ledger-core
     steps:
       - run:
@@ -95,7 +95,7 @@ jobs:
             . .circleci/deploy.sh
   build_linux_debug:
       docker:
-        - image: debian:stretch
+        - image: debian:experimental
       working_directory: ~/lib-ledger-core
       steps:
         - run:
@@ -244,7 +244,7 @@ jobs:
           . .circleci/publish_jar.sh
   generate_doc:
     docker:
-      - image: circleci/buildpack-deps:stretch
+      - image: circleci/buildpack-deps:experimental
     steps:
       - run:
           command: git clone --depth 1 -b "$CIRCLE_TAG" --recurse-submodules "$CIRCLE_REPOSITORY_URL" .
