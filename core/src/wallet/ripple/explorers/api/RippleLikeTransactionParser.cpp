@@ -131,10 +131,11 @@ namespace ledger {
                     _transaction->confirmations = value.toUint64();
                 } else if (_lastKey == "ledger_index") {
                     RippleLikeBlockchainExplorer::Block block;
-                    BigInt valueBigInt = BigInt::fromString(number);
-                    block.height = valueBigInt.toUint64();
+                    block.height = value.toUint64();
                     block.currencyName = currencies::RIPPLE.name;
                     _transaction->block = block;
+                } else if (_lastKey == "DestinationTag") {
+                  _transaction->destinationTag = Option<uint64_t>(value.toUint64());
                 }
 
                 return true;
