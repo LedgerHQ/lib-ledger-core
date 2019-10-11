@@ -103,6 +103,7 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
                 auto xrpOp = op->asRippleLikeOperation();
                 EXPECT_FALSE(xrpOp == nullptr);
                 EXPECT_FALSE(xrpOp->getTransaction()->getSequence() == nullptr);
+                EXPECT_TRUE(std::chrono::duration_cast<std::chrono::hours>(xrpOp->getTransaction()->getDate().time_since_epoch()).count() != 0);
             }
 
             auto block = wait(account->getLastBlock());
