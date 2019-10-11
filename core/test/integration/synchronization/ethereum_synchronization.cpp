@@ -136,8 +136,8 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 std::strftime(now_str, sizeof(now_str), "%y-%m-%dT%H:%M:%SZ", std::localtime(&now));
 
                 auto history = wait(account->getBalanceHistory(
-                            "2019-09-20T00:00:00Z",
                             now_str,
+                            "2019-09-20T00:00:00Z",
                             api::TimePeriod::DAY
                             ));
 
