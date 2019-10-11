@@ -253,10 +253,8 @@ namespace ledger {
         std::vector<Operation> EthereumLikeAccount::getInternalOperations(soci::session &sql) {
             auto addr = _keychain->getAddress()->toString();
 
-            std::cout << "getting internal fucking transactions for address " << addr << std::endl;
-
             soci::rowset<soci::row> rows = (sql.prepare <<
-                "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used, et.gas_price, op.date "
+                "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used, et.gas_price, op.date, et.status "
                 "FROM internal_operations as io "
                 "JOIN operations as op on io.ethereum_operation_uid = op.uid "
                 "JOIN ethereum_operations as eo on eo.uid = op.uid "
@@ -278,6 +276,10 @@ namespace ledger {
                 auto gasPrice = BigInt::fromHex(row.get<std::string>(6));
                 auto date = DateUtils::fromJSON(row.get<std::string>(7));
 
+                // inject the status so that internal transactions can do things with it
+                EthereumLikeBlockchainExplorerTransaction etx;
+                etx.status = soci::get_number<uint64_t>(row, 8);
+
                 Operation operation;
                 operation.amount = tx.value;
 
@@ -287,6 +289,8 @@ namespace ledger {
 
                 operation.type = tx.type;
                 operation.date = date;
+
+                operation.ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(etx);
 
                 operations.push_back(operation);
             }
@@ -366,13 +370,11 @@ namespace ledger {
 
                     // Get operations related to an account
                     OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
-                    std::cout << "OPERATIONS: " << operations.size() << std::endl;
 
                     // Get internal operations, add them to the list of operations and deallocate
                     // them to free memory
                     {
                       auto internalOperations = getInternalOperations(sql);
-                      std::cout << "INTERNALS: " << internalOperations.size() << std::endl;
 
                       // add the internal operations to the list of operations
                       operations.insert(operations.end(), internalOperations.begin(), internalOperations.end());
@@ -383,8 +385,6 @@ namespace ledger {
                         return a.date <= b.date;
                     });
 
-                    // FIXME STATUS PUTAIN
-
                     auto lowerDate = startDate;
                     auto upperDate = DateUtils::incrementDate(startDate, precision);
 
@@ -392,8 +392,8 @@ namespace ledger {
                     std::size_t operationsCount = 0;
                     BigInt sum;
                     while (lowerDate <= endDate && operationsCount < operations.size()) {
-
                         auto operation = operations[operationsCount];
+
                         while (operation.date > upperDate && lowerDate < endDate) {
                             lowerDate = DateUtils::incrementDate(lowerDate, precision);
                             upperDate = DateUtils::incrementDate(upperDate, precision);
@@ -402,6 +402,12 @@ namespace ledger {
                         }
 
                         if (operation.date <= upperDate) {
+                            // if the operation has failed, we set its amount to 0 so that we only take
+                            // into account the fees
+                            if (operation.ethereumTransaction->status != 1) {
+                                operation.amount = BigInt::ZERO;
+                            }
+
                             switch (operation.type) {
                                 case api::OperationType::RECEIVE: {
                                     sum = sum + operation.amount;
@@ -415,6 +421,7 @@ namespace ledger {
                                     break;
                             }
                         }
+
                         operationsCount += 1;
                     }
 

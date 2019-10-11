@@ -72,8 +72,10 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
 
                 pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
+                std::string balanceStr;
+
                 receiver.reset();
-                receiver = make_receiver([=, &erc20Count](const std::shared_ptr<api::Event> &event) {
+                receiver = make_receiver([=, &erc20Count, &balanceStr](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
                     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                         return;
@@ -82,7 +84,8 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                               api::EventCode::SYNCHRONIZATION_SUCCEED);
 
                     auto balance = wait(account->getBalance());
-                    std::cout << "Balance: " << balance->toString() << std::endl;
+                    balanceStr = balance->toString();
+                    std::cout << "Balance: " << balanceStr << std::endl;
 
                     auto erc20Accounts = account->getERC20Accounts();
                     erc20Count = erc20Accounts.size();
@@ -128,9 +131,13 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 auto block = wait(account->getLastBlock());
                 auto blockHash = block.blockHash;
 
+                auto now = std::time(nullptr);
+                char now_str[256];
+                std::strftime(now_str, sizeof(now_str), "%y-%m-%dT%H:%M:%SZ", std::localtime(&now));
+
                 auto history = wait(account->getBalanceHistory(
                             "2019-09-20T00:00:00Z",
-                            "2019-10-02T00:00:00Z",
+                            now_str,
                             api::TimePeriod::DAY
                             ));
 
@@ -138,6 +145,9 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 for (auto const& amount : history) {
                     std::cout << "  -> " << amount->toString() << std::endl;
                 }
+
+                // we expect the final amount in the history to be equal to the current balance
+                EXPECT_EQ(history.back()->toString(), balanceStr);
             }
         }
     }
