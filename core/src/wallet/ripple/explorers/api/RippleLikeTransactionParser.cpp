@@ -28,7 +28,6 @@
  *
  */
 
-
 #include <wallet/currencies.hpp>
 #include "RippleLikeTransactionParser.h"
 
@@ -40,6 +39,8 @@
 
 namespace ledger {
     namespace core {
+
+        const uint64_t XRP_EPOCH_SECONDS_FROM_UNIX_EPOCH = 946684800;
 
         bool RippleLikeTransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(Key, str, length, copy) {
@@ -139,7 +140,9 @@ namespace ledger {
                 } else if (_lastKey == "date" && currentObject != "transaction") {
                   // we have to adapt the value of date because XRP is using their own epoch,
                   // which is 2000/01/01, which is 946684800 after the Unix epoch
-                  std::chrono::system_clock::time_point date(std::chrono::seconds(value.toUint64() - 946684800));
+                  //
+                  // <https://xrpl.org/basic-data-types.html#specifying-time>
+                  std::chrono::system_clock::time_point date(std::chrono::seconds(value.toUint64() - XRP_EPOCH_SECONDS_FROM_UNIX_EPOCH));
 
                   _transaction->receivedAt = date;
                   if (_transaction->block.hasValue()) {
