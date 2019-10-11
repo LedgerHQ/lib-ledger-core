@@ -95,5 +95,9 @@ namespace ledger {
         api::Currency Operation::getCurrency() {
             return _account->getWallet()->getCurrency();
         }
+
+        bool Operation::isComplete() {
+            return true;
+        }
     }
 }

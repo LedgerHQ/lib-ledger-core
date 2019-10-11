@@ -71,6 +71,8 @@ namespace ledger {
 
             api::Currency getCurrency() override;
 
+            bool isComplete() override;
+
             std::string uid;
             std::string accountUid;
             std::string walletUid;
