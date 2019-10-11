@@ -42,6 +42,7 @@
 #include <factories/RippleLikeWalletFactory.hpp>
 #include <synchronizers/RippleLikeBlockchainExplorerAccountSynchronizer.hpp>
 #include <RippleLikeWallet.hpp>
+#include <RippleNetworks.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -60,9 +61,8 @@ namespace ledger {
             auto services = getServices();
             services->logger()->info("Building wallet instance '{}' for {} with parameters: {}", entry.name, entry.currencyName, entry.configuration->dump());
             // Get currency
-            auto currency = getPool()->getCurrency(entry.currencyName);
-            if (currency.isEmpty())
-                throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, "Unsupported currency '{}'.", entry.currencyName);
+            auto currency = getCurrency();
+
             // Configure keychain
             auto keychainFactory = _keychainFactories.find(STRING(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH));
             if (keychainFactory == _keychainFactories.end()) {
@@ -103,7 +103,7 @@ namespace ledger {
                     keychainFactory->second,
                     synchronizerFactory.getValue(),
                     services,
-                    currency.getValue(),
+                    currency,
                     entry.configuration,
                     scheme
             );
@@ -137,9 +137,9 @@ namespace ledger {
                                             .value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT))
                 );
                 auto context = services->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
-                auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();
 
-                explorer = std::make_shared<NodeRippleLikeBlockchainExplorer>(context, http, networkParams, configuration);
+                auto networkParameters = networks::getRippleLikeNetworkParameters(currencyName);
+                explorer = std::make_shared<NodeRippleLikeBlockchainExplorer>(context, http, networkParameters, configuration);
             } else if (engine == api::BlockchainExplorerEngines::RIPPLE_API) {
                 auto http = services->getHttpClient(
                         configuration->getString(
@@ -147,9 +147,9 @@ namespace ledger {
                         ).value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_API_ENDPOINT)
                 );
                 auto context = services->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
-                auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();
 
-                explorer = std::make_shared<ApiRippleLikeBlockchainExplorer>(context, http, networkParams, configuration);
+                auto networkParameters = networks::getRippleLikeNetworkParameters(currencyName);
+                explorer = std::make_shared<ApiRippleLikeBlockchainExplorer>(context, http, networkParameters, configuration);
             }
             if (explorer)
                 _runningExplorers.push_back(explorer);

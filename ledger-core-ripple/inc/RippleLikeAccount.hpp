@@ -31,6 +31,7 @@
 #pragma once
 
 #include <time.h>
+
 #include <core/api/Address.hpp>
 #include <core/api/Event.hpp>
 #include <core/wallet/AbstractWallet.hpp>
@@ -42,6 +43,8 @@
 #include <observers/RippleLikeBlockchainObserver.hpp>
 #include <keychains/RippleLikeKeychain.hpp>
 #include <synchronizers/RippleLikeAccountSynchronizer.hpp>
+
+#include <RippleLikeOperation.hpp>
 
 namespace ledger {
     namespace core {
@@ -60,9 +63,11 @@ namespace ledger {
 
             FuturePtr<RippleLikeBlockchainExplorerTransaction> getTransaction(const std::string &hash);
 
-            void inflateOperation(Operation &out,
-                                  const std::shared_ptr<const AbstractWallet> &wallet,
-                                  const RippleLikeBlockchainExplorerTransaction &tx);
+            void inflateOperation(
+                RippleLikeOperation &out,
+                const std::shared_ptr<const AbstractWallet> &wallet,
+                const RippleLikeBlockchainExplorerTransaction &tx
+            );
 
             int putTransaction(soci::session &sql, const RippleLikeBlockchainExplorerTransaction &transaction);
 

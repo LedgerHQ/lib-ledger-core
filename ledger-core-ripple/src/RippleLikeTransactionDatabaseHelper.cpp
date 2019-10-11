@@ -76,7 +76,7 @@ namespace ledger {
             if (row.get_indicator(7) != i_null) {
                 RippleLikeBlockchainExplorer::Block block;
                 block.height = get_number<uint64_t>(row, 7);
-                block.hash = row.get<std::string>(8);
+                block.blockHash = row.get<std::string>(8);
                 block.time = row.get<std::chrono::system_clock::time_point>(9);
                 block.currencyName = row.get<std::string>(10);
                 tx.block = block;
@@ -115,7 +115,7 @@ namespace ledger {
                                                                         const std::string &accountUid,
                                                                         const RippleLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([](const RippleLikeBlockchainExplorer::Block &block) {
-                return block.getUid();
+                return block.uid;
             });
 
             auto rippleTxUid = createRippleTransactionUid(accountUid, tx.hash);

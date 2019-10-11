@@ -28,6 +28,8 @@
  *
  */
 
+#pragma once
+
 #include <functional>
 
 #include <core/Services.hpp>

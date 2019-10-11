@@ -33,6 +33,7 @@
 #include <core/Services.hpp>
 #include <core/wallet/AbstractWallet.hpp>
 
+#include <factories/RippleLikeKeychainFactory.hpp>
 #include <factories/RippleLikeWalletFactory.hpp>
 #include <explorers/RippleLikeBlockchainExplorer.hpp>
 #include <observers/RippleLikeBlockchainObserver.hpp>
@@ -70,6 +71,8 @@ namespace ledger {
 
             std::shared_ptr<RippleLikeBlockchainExplorer> getBlockchainExplorer();
 
+            bool hasMultipleAddresses() const override;
+
         protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
@@ -79,6 +82,7 @@ namespace ledger {
 
             std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
             std::shared_ptr<RippleLikeBlockchainObserver> _observer;
+            std::shared_ptr<RippleLikeKeychainFactory> _keychainFactory;
             RippleLikeAccountSynchronizerFactory _synchronizerFactory;
             api::RippleLikeNetworkParameters _network;
         };

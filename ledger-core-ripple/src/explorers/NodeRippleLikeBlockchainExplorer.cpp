@@ -31,9 +31,11 @@
 
 #include <rapidjson/document.h>
 
-#include <explorers/NodeRippleLikeBlockchainExplorer.hpp>
-#include <api/RippleConfigurationDefaults.hpp>
 #include <core/api/Configuration.hpp>
+
+#include <api/RippleConfigurationDefaults.hpp>
+#include <explorers/NodeRippleLikeBlockchainExplorer.hpp>
+#include <RippleLikeCurrencies.hpp>
 
 namespace ledger {
     namespace core {

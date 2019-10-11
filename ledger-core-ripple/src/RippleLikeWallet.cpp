@@ -238,5 +238,8 @@ namespace ledger {
             return _explorer;
         }
 
+        bool RippleLikeWallet::hasMultipleAddresses() const {
+          return false;
+        }
     }
 }

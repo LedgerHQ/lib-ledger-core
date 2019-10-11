@@ -1,8 +1,8 @@
 /*
  *
- * rippleNetworks
+ * RippleLikeCurrencies
  *
- * Created by El Khalil Bellakrid on 05/01/2019.
+ * Created by Dimitri Sabadie on 2019/10/11
  *
  * The MIT License (MIT)
  *
@@ -31,35 +31,19 @@
 #pragma once
 
 #ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER) && _MSC_VER <= 1900
-        #include <LibCoreExport.hpp>
+    #if defined(_MSC_VER)
+        #include <core/LibCoreExport.hpp>
     #else
         #define LIBCORE_EXPORT
     #endif
 #endif
 
-#include <api/RippleLikeNetworkParameters.hpp>
+#include <core/api/Currency.hpp>
 
 namespace ledger {
     namespace core {
-        namespace networks {
-            extern LIBCORE_EXPORT const std::string RIPPLE_DIGITS;
-            extern LIBCORE_EXPORT const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName);
-            extern LIBCORE_EXPORT const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE;
-
-            template<class Archive>
-            void serialize(Archive & archive,
-                           api::RippleLikeNetworkParameters & p)
-            {
-                archive(
-                        p.Identifier,
-                        p.MessagePrefix,
-                        p.XPUBVersion,
-                        p.AdditionalRIPs,
-                        p.TimestampDelay
-                );
-            }
-
+        namespace currencies {
+            extern LIBCORE_EXPORT const api::Currency RIPPLE;
         }
     }
 }

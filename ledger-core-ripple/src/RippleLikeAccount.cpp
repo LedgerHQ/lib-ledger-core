@@ -47,7 +47,6 @@
 #include <transaction_builders/RippleLikeTransactionBuilder.hpp>
 #include <RippleLikeAccount.hpp>
 #include <RippleLikeAccountDatabaseHelper.hpp>
-#include <RippleLikeOperation.hpp>
 #include <RippleLikeTransaction.hpp>
 #include <RippleLikeTransactionDatabaseHelper.hpp>
 #include <RippleLikeWallet.hpp>
@@ -60,7 +59,7 @@ namespace ledger {
                                              const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<RippleLikeAccountSynchronizer> &synchronizer,
                                              const std::shared_ptr<RippleLikeKeychain> &keychain) : AbstractAccount(
-                wallet, index) {
+                wallet->getServices(), wallet, index) {
             _explorer = explorer;
             _observer = observer;
             _synchronizer = synchronizer;
@@ -93,7 +92,6 @@ namespace ledger {
             out.block = tx.block;
             out.rippleTransaction = Option<RippleLikeBlockchainExplorerTransaction>(tx);
             out.currencyName = getWallet()->getCurrency().name;
-            out.walletType = getWalletType();
             out.walletUid = wallet->getWalletUid();
             out.date = tx.receivedAt;
             if (out.block.nonEmpty())
