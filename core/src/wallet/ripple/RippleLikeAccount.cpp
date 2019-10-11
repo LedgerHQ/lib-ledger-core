@@ -473,11 +473,14 @@ namespace ledger {
             }
             auto self = getSelf();
             return _explorer->getBaseReserve().flatMap<bool>(getContext(), [self, xrpAddress](const std::shared_ptr<BigInt> &reserve) -> Future<bool> {
+                if (!reserve) {
+                    return Future<bool>::successful(false);
+                }
                 return self->_explorer->getBalance(
                         std::vector<RippleLikeKeychain::Address>{
                                 std::dynamic_pointer_cast<RippleLikeAddress>(xrpAddress)
                         }).map<bool>(self->getContext(), [reserve](const std::shared_ptr<BigInt> &balance) -> bool {
-                    if (!reserve || !balance) {
+                    if (!balance) {
                         return false;
                     }
                     return reserve->compare(*balance) < 0;
