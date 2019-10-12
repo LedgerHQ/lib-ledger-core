@@ -104,16 +104,10 @@ namespace ledger {
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()))
                     .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
                         auto &json = *std::get<1>(result);
-                        if (!json.IsObject() || !json.HasMember("result") ||
-                            !json["result"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"result\" in response");
+                        if (!json.IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to parse broadcast transaction response, missing transaction hash");
                         }
-                        //Is there an account_data field ?
-                        auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("hash") || !resultObj["hash"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
-                        }
-                        return resultObj["hash"].GetString();
+                        return json.GetString();
                     });
         }
 
