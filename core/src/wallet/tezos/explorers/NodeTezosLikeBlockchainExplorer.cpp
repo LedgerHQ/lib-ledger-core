@@ -241,6 +241,8 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
+            // TODO: activate when backend fix issue with gas limit estimation
+            /*
             return getHelper(fmt::format("blockchain/{}/{}/estimate_gas",
                                          getExplorerVersion(),
                                          getNetworkParameters().Identifier),
@@ -248,6 +250,10 @@ namespace ledger {
                              std::unordered_map<std::string, std::string>{{"token", address}},
                              api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT
                 );
+             */
+            return FuturePtr<BigInt>::successful(
+                    std::make_shared<BigInt>(api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT)
+            );
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
