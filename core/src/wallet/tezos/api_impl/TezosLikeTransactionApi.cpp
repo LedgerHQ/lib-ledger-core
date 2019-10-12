@@ -118,8 +118,11 @@ namespace ledger {
             return _gasLimit;
         }
 
-        std::shared_ptr<api::Amount> TezosLikeTransactionApi::getStorageLimit() {
-            return _storage;
+        std::shared_ptr<api::BigInt> TezosLikeTransactionApi::getStorageLimit() {
+            if (!_storage) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::getStorageLimit: Invalid storage limit.");
+            }
+            return std::make_shared<api::BigIntImpl>(*_storage);
         }
 
         std::experimental::optional<std::string> TezosLikeTransactionApi::getBlockHash() {
@@ -138,11 +141,14 @@ namespace ledger {
             _signature = signature;
         }
 
+        // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
             BytesWriter writer;
 
             // Watermark: Generic-Operation
-            writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
+            if (_signature.empty()) {
+                writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
+            }
 
             // Block Hash
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
@@ -178,8 +184,7 @@ namespace ledger {
             writer.writeByteArray(zarith::zSerializeNumber(bigIntGasLimit.toByteArray()));
 
             // Storage Limit
-            auto bigIntStorageLimit = BigInt::fromString(_storage->toBigInt()->toString(10));
-            writer.writeByteArray(zarith::zSerializeNumber(bigIntStorageLimit.toByteArray()));
+            writer.writeByteArray(zarith::zSerializeNumber(_storage->toByteArray()));
 
             switch(_type) {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
@@ -321,7 +326,7 @@ namespace ledger {
             if (!storage) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "TezosLikeTransactionApi::setStorage: Invalid Storage");
             }
-            _storage = std::make_shared<Amount>(_currency, 0, *storage);
+            _storage = storage;
             return *this;
         }
 

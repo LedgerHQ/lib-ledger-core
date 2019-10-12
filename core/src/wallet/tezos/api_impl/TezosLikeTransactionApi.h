@@ -69,7 +69,7 @@ namespace ledger {
 
             std::shared_ptr<api::Amount> getGasLimit() override ;
 
-            std::shared_ptr<api::Amount> getStorageLimit() override;
+            std::shared_ptr<api::BigInt> getStorageLimit() override;
 
             std::experimental::optional<std::string> getBlockHash() override;
 
@@ -108,7 +108,7 @@ namespace ledger {
             api::Currency _currency;
             std::shared_ptr<api::Amount> _fees;
             std::shared_ptr<api::Amount> _gasLimit;
-            std::shared_ptr<api::Amount> _storage;
+            std::shared_ptr<BigInt> _storage;
             std::shared_ptr<BigInt> _counter;
             std::shared_ptr<api::Amount> _value;
             std::shared_ptr<api::TezosLikeAddress> _receiver;

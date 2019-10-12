@@ -224,8 +224,12 @@ namespace ledger {
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
                 tx->setType(request.type);
-                return explorer->getCounter(request.toAddress).mapPtr<api::TezosLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &nonce) {
-                    tx->setCounter(nonce);
+                return explorer->getCounter(request.toAddress).mapPtr<api::TezosLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &counter) {
+                    if (!counter) {
+                        throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
+                    }
+                    // We should increment current counter
+                    tx->setCounter(std::make_shared<BigInt>(++(*counter)));
                     return tx;
                 }).flatMapPtr<Block>(self->getContext(), [explorer] (const std::shared_ptr<api::TezosLikeTransaction> &transaction) {
                     return explorer->getCurrentBlock();
@@ -241,7 +245,8 @@ namespace ledger {
                     return FuturePtr<api::TezosLikeTransaction>::successful(tx);
                 });
             };
-            return std::make_shared<TezosLikeTransactionBuilder>(getContext(),
+            return std::make_shared<TezosLikeTransactionBuilder>(senderAddress,
+                                                                 getContext(),
                                                                  getWallet()->getCurrency(),
                                                                  _explorer,
                                                                  logger(),

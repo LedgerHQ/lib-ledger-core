@@ -67,7 +67,7 @@ public:
 
     virtual std::shared_ptr<Amount> getGasLimit() = 0;
 
-    virtual std::shared_ptr<Amount> getStorageLimit() = 0;
+    virtual std::shared_ptr<BigInt> getStorageLimit() = 0;
 
     /** Get hash of block in which tx is included */
     virtual std::experimental::optional<std::string> getBlockHash() = 0;
