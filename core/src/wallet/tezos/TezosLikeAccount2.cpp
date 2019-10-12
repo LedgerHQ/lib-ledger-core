@@ -193,11 +193,21 @@ namespace ledger {
 
         void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                        const std::shared_ptr<api::StringCallback> &callback) {
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(),
-                                                                     [](const String &seq) -> std::string {
-                                                                         //TODO: optimistic update
-                                                                         return seq.str();
-                                                                     }).callback(getContext(), callback);
+            _explorer->pushTransaction(transaction)
+                    .map<std::string>(getContext(),
+                                      [](const String &seq) -> std::string {
+                                          //TODO: optimistic update
+                                          return seq.str();
+                                      })
+                    .recoverWith(getContext(), [] (const Exception &e) {
+                        return Future<std::string>::failure(
+                                make_exception(
+                                        api::ErrorCode::INCOMPLETE_TRANSACTION,
+                                        fmt::format("Failed to broadcast raw transaction, reason {}", e.getMessage())
+                                )
+                        );
+                    })
+                    .callback(getContext(), callback);
         }
 
         void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
@@ -224,14 +234,12 @@ namespace ledger {
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
                 tx->setType(request.type);
-                return explorer->getCounter(request.toAddress).mapPtr<api::TezosLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt> &counter) {
+                return explorer->getCounter(senderAddress).flatMapPtr<Block>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &counter) {
                     if (!counter) {
                         throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                     }
                     // We should increment current counter
                     tx->setCounter(std::make_shared<BigInt>(++(*counter)));
-                    return tx;
-                }).flatMapPtr<Block>(self->getContext(), [explorer] (const std::shared_ptr<api::TezosLikeTransaction> &transaction) {
                     return explorer->getCurrentBlock();
                 }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx] (const std::shared_ptr<Block> &block) {
                     tx->setBlockHash(block->hash);
