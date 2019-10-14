@@ -109,6 +109,9 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
             auto block = wait(account->getLastBlock());
             auto blockHash = block.blockHash;
 
+            EXPECT_EQ(wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7")), true);
+            EXPECT_EQ(wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCK")), false);
+            EXPECT_EQ(wait(account->isAddressActivated("rf1pjatD8LyyevP1BqQJtHoz5edC5vE77Q")), false);
         }
     }
 }
