@@ -25,5 +25,4 @@ install_manifest.txt
 tags
 *.a
 /ledger-core/idl/core.yaml
-/ledger-core/inc/core/api
-/ledger-core-ripple/inc/api
+/**/inc/**/api
