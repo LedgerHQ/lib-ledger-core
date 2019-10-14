@@ -36,11 +36,11 @@
 #include <stack>
 
 #include <core/net/HttpClient.hpp>
-#include <core/collections/collections.hpp>
-#include <explorers/RippleLikeBlockchainExplorer.h>
-#include <explorers/RippleLikeBlockParser.h>
-#include <explorers/RippleLikeTransactionParser.h>
-#include <core/explorers/AbstractWebSocketNotificationParser.h>
+#include <core/collections/Collections.hpp>
+#include <explorers/RippleLikeBlockchainExplorer.hpp>
+#include <explorers/RippleLikeBlockParser.hpp>
+#include <explorers/RippleLikeTransactionParser.hpp>
+#include <core/explorers/AbstractWebSocketNotificationParser.hpp>
 
 
 #define PROXY_PARSE_RIPPLE_WS(method, ...)                                         \
