@@ -41,7 +41,7 @@ TezosLikeTransaction = interface +c {
 	getSigningPubKey(): binary;
 	getCounter(): BigInt;
 	getGasLimit(): Amount;
-	getStorageLimit(): Amount;
+	getStorageLimit(): BigInt;
 	# Get hash of block in which tx is included
 	getBlockHash(): optional<string>;
 }

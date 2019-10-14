@@ -75,6 +75,8 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     builder->setFees(api::Amount::fromLong(currency, 250));
     builder->setGasLimit(api::Amount::fromLong(currency, 10000));
     builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
+    // Self-transaction not allowed
+    EXPECT_THROW(builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE"), Exception);
     builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
     // TODO: activate when we got URL of our custom explorer
     /*
@@ -144,7 +146,7 @@ TEST_F(TezosMakeTransaction, ParseUnsignedRawTransaction) {
     EXPECT_EQ(tx->getValue()->toLong(), 10000000000L);
     EXPECT_EQ(tx->getFees()->toLong(), 1274L);
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10200L);
-    EXPECT_EQ(tx->getStorageLimit()->toLong(), 277L);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "277");
 }
 
 TEST_F(TezosMakeTransaction, ParseUnsignedRawRevealTransaction) {
@@ -160,7 +162,7 @@ TEST_F(TezosMakeTransaction, ParseUnsignedRawRevealTransaction) {
     EXPECT_EQ(tx->getValue()->toLong(), 0L);
     EXPECT_EQ(tx->getFees()->toLong(), 1258L);
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10000L);
-    EXPECT_EQ(tx->getStorageLimit()->toLong(), 0L);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
 }
 
 TEST_F(TezosMakeTransaction, ParseUnsignedRawOriginationTransaction) {
@@ -176,7 +178,7 @@ TEST_F(TezosMakeTransaction, ParseUnsignedRawOriginationTransaction) {
     EXPECT_EQ(tx->getValue()->toLong(), 0L);
     EXPECT_EQ(tx->getFees()->toLong(), 1170L);
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10100L);
-    EXPECT_EQ(tx->getStorageLimit()->toLong(), 277L);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "277");
 }
 
 TEST_F(TezosMakeTransaction, ParseUnsignedRawDelegationTransaction) {
@@ -193,13 +195,13 @@ TEST_F(TezosMakeTransaction, ParseUnsignedRawDelegationTransaction) {
     EXPECT_EQ(tx->getValue()->toLong(), 0L);
     EXPECT_EQ(tx->getFees()->toLong(), 1161L);
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10100L);
-    EXPECT_EQ(tx->getStorageLimit()->toLong(), 0L);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
 }
 
 // Reference https://tzscan.io/ooPbtVVy7TZLoRirGsCgyy6Esyqm3Kj22QvEVpAmEXX3vHBGbF8
 TEST_F(TezosMakeTransaction, ParseSignedRawDelegationTransaction) {
     // round-trip
-    auto strTx = "034fd4dca725498e819cc4dd6a87adcfb98770f600558d5d097d1a48b2324a9a2e080000bbdd4268871d1751a601fe66603324714266bf558c0bdeff4ebc50ac02a08d0601583f106387cb85212812b738cae45b497551bf9a00007dc21f46b94d6b432c881b78e1fee917ef0fd382571a5d5f1bf1c5aa90d62a02777eeebac53e3fe9bbcf4501cc2ee0cb1dbe65ec24c869a4715d84f65cfdc101";
+    auto strTx = "4fd4dca725498e819cc4dd6a87adcfb98770f600558d5d097d1a48b2324a9a2e080000bbdd4268871d1751a601fe66603324714266bf558c0bdeff4ebc50ac02a08d0601583f106387cb85212812b738cae45b497551bf9a00007dc21f46b94d6b432c881b78e1fee917ef0fd382571a5d5f1bf1c5aa90d62a02777eeebac53e3fe9bbcf4501cc2ee0cb1dbe65ec24c869a4715d84f65cfdc101";
     auto txBytes = hex::toByteArray(strTx);
     auto tx = api::TezosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::TEZOS, txBytes);
 
@@ -214,6 +216,6 @@ TEST_F(TezosMakeTransaction, ParseSignedRawDelegationTransaction) {
     EXPECT_EQ(tx->getValue()->toLong(), 100000L);
     EXPECT_EQ(tx->getFees()->toLong(), 1420L);
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10300L);
-    EXPECT_EQ(tx->getStorageLimit()->toLong(), 300L);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "300");
     EXPECT_EQ(tx->getCounter()->toString(10), "1294302");
 }
