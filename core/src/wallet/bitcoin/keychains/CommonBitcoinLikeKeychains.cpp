@@ -176,7 +176,8 @@ namespace ledger {
                                                             uint32_t to) {
             auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex + _state.nonConsecutiveChangeIndexes.size() : _state.maxConsecutiveReceiveIndex + _state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
             auto length = std::min<size_t >(to - from, maxObservableIndex - from);
-            std::vector<BitcoinLikeKeychain::Address> result(length +1);
+            std::vector<BitcoinLikeKeychain::Address> result;
+            result.reserve(length + 1);
             for (auto i = 0; i <= length; i++) {
                 if (purpose == KeyPurpose::RECEIVE) {
                     result.push_back(derive(KeyPurpose::RECEIVE, from + i));
