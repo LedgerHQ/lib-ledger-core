@@ -28,7 +28,6 @@
  *
  */
 
-
 #include <wallet/currencies.hpp>
 #include "RippleLikeTransactionParser.h"
 
@@ -40,6 +39,8 @@
 
 namespace ledger {
     namespace core {
+
+        const uint64_t XRP_EPOCH_SECONDS_FROM_UNIX_EPOCH = 946684800;
 
         bool RippleLikeTransactionParser::Key(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(Key, str, length, copy) {
@@ -136,6 +137,17 @@ namespace ledger {
                     _transaction->block = block;
                 } else if (_lastKey == "DestinationTag") {
                   _transaction->destinationTag = Option<uint64_t>(value.toUint64());
+                } else if (_lastKey == "date" && currentObject != "transaction") {
+                  // we have to adapt the value of date because XRP is using their own epoch,
+                  // which is 2000/01/01, which is 946684800 after the Unix epoch
+                  //
+                  // <https://xrpl.org/basic-data-types.html#specifying-time>
+                  std::chrono::system_clock::time_point date(std::chrono::seconds(value.toUint64() - XRP_EPOCH_SECONDS_FROM_UNIX_EPOCH));
+
+                  _transaction->receivedAt = date;
+                  if (_transaction->block.hasValue()) {
+                      _transaction->block.getValue().time = date;
+                  }
                 }
 
                 return true;
@@ -149,20 +161,6 @@ namespace ledger {
 
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
-                } else if (_lastKey == "date" && currentObject != "transaction") {
-                    auto pos = value.find('+');
-                    if ( pos != std::string::npos && pos > 0) {
-                        value = value.substr(0, pos);
-                    }
-                    auto posZ = value.find('Z');
-                    if ( posZ == std::string::npos ) {
-                        value = value + "Z";
-                    }
-                    auto date = DateUtils::fromJSON(value);
-                    _transaction->receivedAt = date;
-                    if (_transaction->block.hasValue()) {
-                        _transaction->block.getValue().time = date;
-                    }
                 } else if (_lastKey == "Account" && (currentObject == "tx" || currentObject == "transaction")){
                     _transaction->sender = value;
                 } else if (_lastKey == "Destination") {
