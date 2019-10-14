@@ -35,6 +35,7 @@
 #include <core/events/Event.hpp>
 #include <core/math/Base58.hpp>
 #include <core/operation/OperationDatabaseHelper.hpp>
+#include <core/operation/OperationQuery.hpp>
 #include <core/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.hpp>
 #include <core/utils/Option.hpp>
 #include <core/utils/DateUtils.hpp>
@@ -90,13 +91,13 @@ namespace ledger {
         ) {
             out.accountUid = getAccountUid();
             out.block = tx.block;
-            out.rippleTransaction = Option<RippleLikeBlockchainExplorerTransaction>(tx);
             out.currencyName = getWallet()->getCurrency().name;
             out.walletUid = wallet->getWalletUid();
             out.date = tx.receivedAt;
-            if (out.block.nonEmpty())
+
+            if (out.block.nonEmpty()) {
                 out.block.getValue().currencyName = wallet->getCurrency().name;
-            out.rippleTransaction.getValue().block = out.block;
+            }
         }
 
         int RippleLikeAccount::putTransaction(soci::session &sql,
@@ -112,24 +113,30 @@ namespace ledger {
 
             int result = FLAG_TRANSACTION_UPDATED;
 
-            RippleLikeOperation operation;
+            RippleLikeOperation operation(
+                std::make_shared<RippleLikeBlockchainExplorerTransaction>(transaction),
+                getWallet()->getCurrency()
+            );
             inflateOperation(operation, wallet, transaction);
+
             std::vector<std::string> senders{transaction.sender};
-            operation.senders = std::move(senders);
             std::vector<std::string> receivers{transaction.receiver};
+
+            operation.senders = std::move(senders);
             operation.recipients = std::move(receivers);
             operation.fees = transaction.fees;
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
 
-
             if (_accountAddress == transaction.sender) {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
+
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     emitNewOperationEvent(operation);
                 }
+
                 result = FLAG_NEW_TRANSACTION;
             }
 
@@ -137,9 +144,11 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
+
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     emitNewOperationEvent(operation);
                 }
+
                 result = FLAG_NEW_TRANSACTION;
             }
 
@@ -174,7 +183,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::OperationQuery> RippleLikeAccount::queryOperations() {
-            auto query = std::make_shared<OperationQuery>(
+            auto query = std::make_shared<RippleLikeOperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
                     getWallet()->getContext(),
@@ -216,7 +225,7 @@ namespace ledger {
                 };
 
                 //Get operations related to an account
-                OperationDatabaseHelper<RippleLikeOperation>::queryOperations(sql, uid, operations, filter);
+                OperationDatabaseHelper::queryOperations<RippleLikeOperation>(sql, uid, operations, filter);
 
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);

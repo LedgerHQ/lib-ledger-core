@@ -31,6 +31,8 @@
 #pragma once
 
 #include <core/operation/Operation.hpp>
+#include <core/operation/OperationQuery.hpp>
+
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
 
@@ -38,6 +40,7 @@ namespace ledger {
     namespace core {
         class RippleLikeOperation : public api::RippleLikeOperation, public Operation {
         public:
+            RippleLikeOperation() = default;
             RippleLikeOperation(
                 std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
                 api::Currency const & currency
@@ -48,6 +51,27 @@ namespace ledger {
 
         private:
             std::shared_ptr<api::RippleLikeTransaction> _transaction;
+        };
+
+        class RippleLikeOperationQuery : public OperationQuery<RippleLikeOperation> {
+        public:
+            RippleLikeOperationQuery(
+                const std::shared_ptr<api::QueryFilter>& headFilter,
+                const std::shared_ptr<DatabaseSessionPool>& pool,
+                const std::shared_ptr<api::ExecutionContext>& context,
+                const std::shared_ptr<api::ExecutionContext>& mainContext
+            );
+
+        protected:
+            std::shared_ptr<RippleLikeOperation> createOperation(
+                std::shared_ptr<AbstractAccount> &account
+            ) override;
+
+            void inflateCompleteTransaction(
+                soci::session& sql,
+                const std::string &accountUid,
+                RippleLikeOperation& operation
+            ) override;
         };
     }
 }

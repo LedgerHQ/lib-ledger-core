@@ -35,7 +35,7 @@
 namespace ledger {
     namespace core {
         namespace currencies {
-            const api::Currency RIPPLE =
+            api::Currency const RIPPLE =
                 CurrencyBuilder("ripple")
                 .bip44(144)
                 .paymentUri("ripple")

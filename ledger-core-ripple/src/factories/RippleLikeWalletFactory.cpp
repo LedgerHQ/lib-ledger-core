@@ -100,7 +100,6 @@ namespace ledger {
                     entry.name,
                     explorer,
                     observer,
-                    keychainFactory->second,
                     synchronizerFactory.getValue(),
                     services,
                     currency,

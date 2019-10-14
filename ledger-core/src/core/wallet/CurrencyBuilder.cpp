@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include <core/api/Wallet.hpp>
 #include <core/wallet/CurrencyBuilder.hpp>
 
