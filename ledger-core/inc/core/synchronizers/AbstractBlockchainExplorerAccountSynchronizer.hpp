@@ -429,7 +429,7 @@ namespace ledger {
 
                             if (lastBlock.nonEmpty()) {
                                 batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
-                                batchState.blockHash = lastBlock.getValue().hash;
+                                batchState.blockHash = lastBlock.getValue().blockHash;
                             }
                         }
 

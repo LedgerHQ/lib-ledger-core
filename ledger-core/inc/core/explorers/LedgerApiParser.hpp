@@ -171,7 +171,7 @@ namespace ledger {
 
             void attach(const std::string& statusText, uint32_t statusCode) {
                 _statusCode = statusCode;
-                _statusText = _statusText;
+                _statusText = statusText;
             }
 
             inline bool isFailure() const {
