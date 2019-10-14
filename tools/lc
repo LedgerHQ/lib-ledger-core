@@ -25,7 +25,7 @@ function cmd_project_new {
   fi
 
   echo "—> creating files hierarchy"
-  mkdir -p $project_name/{build,idl,inc/database,src/database}
+  mkdir -p $project_name/{build,idl,inc/$coin_name/database,src/$coin_name/database}
   touch $project_name/README.md
 
   echo "—> symlinking ledger-core’s libraries"
@@ -33,15 +33,15 @@ function cmd_project_new {
   ln -sf $PWD/ledger-core/cmake $project_name/cmake
 
   echo "—> generating CMake configuration"
-  sed s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt
-  sed s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project-src.txt.tpl > $project_name/src/CMakeLists.txt
+  sed -e s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt
+  sed -e s/\$project_name/$project_name/g -e s/\$coin_name/$coin_name/g ./tools/templates/CMakeLists-project-src.txt.tpl > $project_name/src/CMakeLists.txt
 
   echo "—> generating IDL entry point"
   cp ./tools/templates/idl.djinni $project_name/idl/
 
   echo "—> creating migrations files"
-  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.hpp > $project_name/inc/database/migrations.hpp
-  sed s/\$project_name/$coin_name/g ./tools/templates/migrations.cpp > $project_name/src/database/migrations.cpp
+  sed s/\$project_name/$coin_name/g ./tools/templates/Migrations.hpp > $project_name/inc/$coin_name/database/Migrations.hpp
+  sed s/\$project_name/$coin_name/g ./tools/templates/Migrations.cpp > $project_name/src/$coin_name/database/Migrations.cpp
 }
 
 function cmd_project_idl {
@@ -50,8 +50,7 @@ function cmd_project_idl {
     usage "please provide the name of the currency" 1
   fi
 
-  project_name="ledger-core-$1"
-  ./tools/idl_interfaces.sh ledger-core $project_name
+  ./tools/idl_interfaces.sh ledger-core $1
 }
 
 function cmd_project {

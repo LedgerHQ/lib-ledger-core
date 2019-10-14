@@ -8,7 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Automatically add API files to the library
 file(
     GLOB $project_name-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/api/*"
+    "${CMAKE_SOURCE_DIR}/inc/$coin_name/api/*"
 )
 list(APPEND $project_name-sources ${$project_name-api-sources})
 
@@ -118,7 +118,7 @@ if (TARGET_JNI)
 endif ()
 
 target_include_directories($project_name-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
-target_include_directories($project_name-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/api)
+target_include_directories($project_name-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/$coin_name/api)
 target_include_directories($project_name-interface INTERFACE "${CMAKE_SOURCE_DIR}/../ledger-core/inc")
 target_include_directories($project_name-interface INTERFACE "${CMAKE_SOURCE_DIR}/../ledger-core/inc/core/api")
 target_include_directories($project_name-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/bigd")

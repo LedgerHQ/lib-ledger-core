@@ -1,4 +1,4 @@
-#include <database/migrations.hpp>
+#include <$project_name/database/Migrations.hpp>
 
 namespace ledger {
     namespace core {
