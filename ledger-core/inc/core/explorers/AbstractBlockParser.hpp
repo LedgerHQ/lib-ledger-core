@@ -82,7 +82,7 @@ namespace ledger {
             bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 std::string value = std::string(str, length);
                 if (getLastKey() == "hash") {
-                    _block->hash = value;
+                    _block->blockHash = value;
                 } else if (getLastKey() == "time") {
                     _block->time = DateUtils::fromJSON(value);
                 }
