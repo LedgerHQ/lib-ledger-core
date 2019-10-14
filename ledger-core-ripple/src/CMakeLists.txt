@@ -8,7 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Automatically add API files to the library
 file(
     GLOB ledger-core-ripple-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/api/*"
+    "${CMAKE_SOURCE_DIR}/inc/ripple/api/*"
 )
 list(APPEND ledger-core-ripple-sources ${ledger-core-ripple-api-sources})
 
@@ -118,7 +118,7 @@ if (TARGET_JNI)
 endif ()
 
 target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
-target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/api)
+target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/ripple/api)
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/../ledger-core/inc")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/../ledger-core/inc/core/api")
 target_include_directories(ledger-core-ripple-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/bigd")
