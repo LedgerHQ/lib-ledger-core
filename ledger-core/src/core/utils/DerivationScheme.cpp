@@ -108,7 +108,7 @@ namespace ledger {
             return DerivationScheme(scheme);
         }
 
-        DerivationScheme DerivationScheme::getSchemeTo(DerivationSchemeLevel level) {
+        DerivationScheme DerivationScheme::getSchemeTo(DerivationSchemeLevel level) const {
             auto it = _scheme.begin();
             auto end = _scheme.end();
             while (it != end) {
