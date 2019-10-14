@@ -161,8 +161,7 @@ namespace ledger {
                 if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
                     Operation operation;
-                    //operations.resize(operations.size() + 1);
-                    //auto& operation = operations[operations.size() - 1];
+
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));
                     operation.fees = BigInt::fromHex(row.get<std::string>(1));
                     operation.type = type;
