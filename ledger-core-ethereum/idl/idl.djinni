@@ -1,0 +1,157 @@
+@extern "../../ledger-core/idl/core.yaml"
+
+@import "addresses.djinni"
+@import "erc20.djinni"
+
+# An Ethereum-like wallet.
+EthereumLikeWallet = interface +c {
+
+}
+
+# Class representing a Ethereum transaction.
+EthereumLikeTransaction = interface +c {
+    # Get the hash of the transaction.
+    getHash(): string;
+    # Get the nonce of the transaction : sequence number issued by originating EOA.
+    getNonce(): i32;
+    # Get Gas price (in wei).
+    getGasPrice(): Amount;
+    # Get start gas (in wei) : maximum amount of gas the originator is willing to pay.
+    getGasLimit(): Amount;
+    # Effective used gas.
+    getGasUsed(): Amount;
+    # Get destination ETH address.
+    getReceiver(): EthereumLikeAddress;
+    # Get ETH sender address.
+    getSender(): EthereumLikeAddress;
+    # Get amount of ether to send.
+    getValue(): Amount;
+    # Get binary data payload.
+    getData(): optional<binary>;
+    # Get status of transaction: equals to 1 if succeeded, 0 otherwise
+    getStatus(): i32;
+    # Serialize the transaction to its raw format.
+    serialize(): binary;
+    # Set signature of transaction, when a signature is set serialize method gives back serialized Tx.
+    setSignature(vSignature: binary, rSignature: binary, sSignature: binary);
+    setDERSignature(signature: binary);
+    setVSignature(vSignature: binary);
+    # Get the time when the transaction was issued or the time of the block including this
+    # transaction.
+    getDate(): date;
+    # Get block to which transaction belongs (was mined in).
+    getBlock(): optional<EthereumLikeBlock>;
+}
+
+# Class representing an Ethereum internal transaction.
+InternalTransaction = interface +c {
+    # Get start gas (in wei) : maximum amount of gas the originator is willing to pay.
+    getGasLimit(): BigInt;
+    # Used gas (in wei) : used gas during this transaction:
+    getUsedGas(): BigInt;
+    # Get source ETH address.
+    getSender(): string;
+    # Get destination ETH address.
+    getReceiver(): string;
+    # Get amount of ether to send.
+    getValue(): BigInt;
+    # Get binary data payload.
+    getData(): binary;
+    # Get operation type : whether it is a SEND or RECEIVE.
+    getOperationType(): OperationType;
+}
+# Class representing a Ethereum Operation.
+EthereumLikeOperation = interface +c {
+    # Get operation's transaction.
+    # @return EthereumLikeTransaction object
+    const getTransaction(): EthereumLikeTransaction;
+    # Get all actions triggered by this transaction
+    getInternalTransactions(): list<InternalTransaction>;
+}
+
+# Class representing Ethereum block.
+EthereumLikeBlock = interface +c {
+    # Hash of block.
+    # @return string representing hash of this block
+    getHash(): string;
+    # Height of block in blockchain.
+    # @return 64 bits integer, height of block
+    getHeight(): i64;
+    # Timestamp when block was mined.
+    # @return Date object, date when block was appended to blockchain
+    getTime(): date;
+}
+
+# Builder for transactions on the Ethereum blockchain.
+#
+# Use this interface when you want to build a transaction step by step.
+EthereumLikeTransactionBuilder = interface +c {
+    # Send funds to the given address. This method can be called multiple times to send to multiple addresses.
+    # @param amount The value to send
+    # @param address Address of the recipient
+    # @return A reference on the same builder in order to chain calls.
+    sendToAddress(amount: Amount, address: string): EthereumLikeTransactionBuilder;
+
+    # Send all available funds to the given address.
+    # @param address Address of the recipient
+    # @return A reference on the same builder in order to chain calls.
+    wipeToAddress(address: string): EthereumLikeTransactionBuilder;
+
+    # Set gas price (in wei) the originator is willing to pay.
+    # @return A reference on the same builder in order to chain calls.
+    setGasPrice(gasPrice: Amount): EthereumLikeTransactionBuilder;
+
+    # Set gas limit (in wei) the originator is not willing to exceed.
+    # @return A reference on the same builder in order to chain calls.
+    setGasLimit(gasLimit: Amount): EthereumLikeTransactionBuilder;
+
+    # Set input data the originator wants to embed in transaction.
+    setInputData(data: binary): EthereumLikeTransactionBuilder;
+
+    # Build a transaction from the given builder parameters.
+    build(callback: callback2<void, optional<EthereumLikeTransaction>, optional<Error>>);
+
+    # Create a clone of this builder.
+    # @return A copy of the current builder instance.
+    clone(): EthereumLikeTransactionBuilder;
+
+    # Reset the current instance to its initial state
+    reset();
+
+    # Create an unsigned transaction for the Ethereum blockchain out of a raw binary.
+    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
+    # Create a signed transaction for the Ethereum blockchain out of a raw binary.
+    static parseRawSignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
+}
+
+# Class representing a Ethereum account.
+EthereumLikeAccount = interface +c {
+    # Send a raw (binary) transaction on the Ethereum blockchain.
+    broadcastRawTransaction(transaction: binary, callback: callback2<void, optional<string>, optional<Error>>);
+    # Send a transaction on the Ethereum blockchain.
+    broadcastTransaction(transaction: EthereumLikeTransaction, callback: callback2<void, optional<string>, optional<Error>>);
+    # Get a builder object to construct transactions.
+    buildTransaction(): EthereumLikeTransactionBuilder;
+    # Get the list of ERC20 accounts associated with this Ethereum account.
+    getERC20Accounts(): list<ERC20LikeAccount>;
+    # Get gas price from network
+    # Note: it would have been better to have this method on EthereumLikeWallet
+    # but since EthereumLikeWallet is not used anywhere, it's better to keep all
+    # specific methods under the same specific class so it will be easy to segratate
+    # when the right time comes !
+    getGasPrice(callback: callback2<void, optional<BigInt>, optional<Error>>);
+    # Get estimated gas limit to set so the transaction will succeed
+    # The passed address could be EOA or contract
+    # This estimation is based on X last incoming txs (to address) that succeeded
+    # Note: same note as above
+    getEstimatedGasLimit(address: string, callback: callback2<void, optional<BigInt>, optional<Error>>);
+    # Get balance of ERC20 token
+    # The passed address is an ERC20 account
+    # Note: same note as above
+    getERC20Balance(erc20Address: string, callback: callback2<void, optional<BigInt>, optional<Error>>);
+}
+
+# TODO I think we need to remove this (useful?) interface
+EthereumPublicKeyProvider = interface +j +n +o {
+
+}
