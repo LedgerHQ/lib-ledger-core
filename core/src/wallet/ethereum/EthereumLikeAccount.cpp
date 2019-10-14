@@ -259,7 +259,7 @@ namespace ledger {
                 "JOIN operations as op on io.ethereum_operation_uid = op.uid "
                 "JOIN ethereum_operations as eo on eo.uid = op.uid "
                 "JOIN ethereum_transactions as et on eo.transaction_uid = et.transaction_uid "
-                "WHERE io.receiver = :addr or io.sender = :addr",
+                "WHERE et.status != 0 AND (io.receiver = :addr OR io.sender = :addr)",
                 soci::use(addr, "addr")
             );
 
@@ -347,9 +347,8 @@ namespace ledger {
         EthereumLikeAccount::getBalanceHistory(const std::string & start,
                                                const std::string & end,
                                                api::TimePeriod precision) {
-                auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
+                auto self = getSelf();
                 return async<std::vector<std::shared_ptr<api::Amount>>>([=] () -> std::vector<std::shared_ptr<api::Amount>> {
-
                     auto startDate = DateUtils::fromJSON(start);
                     auto endDate = DateUtils::fromJSON(end);
                     if (startDate >= endDate) {
@@ -362,7 +361,7 @@ namespace ledger {
                     std::vector<Operation> operations;
 
                     auto keychain = self->getKeychain();
-                    std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
+                    std::function<bool(const std::string &)> filter = [&keychain](const std::string& addr) -> bool {
                         //return keychain->contains(addr);
                         auto keychainAddr = keychain->getAddress()->toString();
                         return addr == keychainAddr;
@@ -374,15 +373,15 @@ namespace ledger {
                     // Get internal operations, add them to the list of operations and deallocate
                     // them to free memory
                     {
-                      auto internalOperations = getInternalOperations(sql);
+                        auto internalOperations = getInternalOperations(sql);
 
-                      // add the internal operations to the list of operations
-                      operations.insert(operations.end(), internalOperations.begin(), internalOperations.end());
+                        // add the internal operations to the list of operations
+                        operations.insert(operations.end(), internalOperations.begin(), internalOperations.end());
                     }
 
                     // sort operations
                     std::sort(operations.begin(), operations.end(), [](Operation const& a, Operation const& b) {
-                        return a.date <= b.date;
+                        return a.date > b.date;
                     });
 
                     auto lowerDate = startDate;
@@ -402,12 +401,6 @@ namespace ledger {
                         }
 
                         if (operation.date <= upperDate) {
-                            // if the operation has failed, we set its amount to 0 so that we only take
-                            // into account the fees
-                            if (operation.ethereumTransaction->status != 1) {
-                                operation.amount = BigInt::ZERO;
-                            }
-
                             switch (operation.type) {
                                 case api::OperationType::RECEIVE: {
                                     sum = sum + operation.amount;
@@ -427,8 +420,10 @@ namespace ledger {
 
                     while (lowerDate < endDate) {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
+
                         amounts.emplace_back(
-                                std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum)
+                        );
                     }
 
                     return amounts;
