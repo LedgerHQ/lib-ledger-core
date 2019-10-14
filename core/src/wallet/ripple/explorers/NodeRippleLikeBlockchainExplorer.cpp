@@ -57,38 +57,38 @@ namespace ledger {
                                      "Can only get balance of 1 address from Ripple Node, but got {} addresses", addresses.size());
             }
             std::string addressesStr = addresses[0]->toBase58();
-            return getAccountInfo(addressesStr, "Balance", BigInt::ZERO, FieldTypes::StringType);
+            return getAccountInfo(addressesStr, "Balance", BigInt::ZERO);
         }
 
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getSequence(const std::string &address) {
-            return getAccountInfo(address, "Sequence", BigInt::ZERO, FieldTypes::NumberType);
+            return getAccountInfo(address, "Sequence", BigInt::ZERO);
         }
 
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getFees() {
-            return getServerInfo("base_fee_xrp", FieldTypes::NumberType);
+            return getServerState("base_fee");
         }
 
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getBaseReserve() {
-            return getServerInfo("reserve_base_xrp", FieldTypes::StringType);
+            return getServerState("reserve_base");
         }
 
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getLedgerSequence() {
-            return getServerInfo("seq", FieldTypes::StringType);
+            return getServerState("seq");
         }
 
         Future<std::shared_ptr<BigInt>>
-        NodeRippleLikeBlockchainExplorer::getServerInfo(const std::string &field, FieldTypes type) {
+        NodeRippleLikeBlockchainExplorer::getServerState(const std::string &field) {
             NodeRippleLikeBodyRequest bodyRequest;
-            bodyRequest.setMethod("server_info");
+            bodyRequest.setMethod("server_state");
             auto requestBody = bodyRequest.getString();
-            bool parseNumberAsString = type == FieldTypes::StringType;
+            bool parseNumberAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
-                    .json(parseNumberAsString).mapPtr<BigInt>(getContext(), [field, type](const HttpRequest::JsonResult &result) {
+                    .json(parseNumberAsString).mapPtr<BigInt>(getContext(), [field](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a result field ?
                         if (!json.IsObject() || !json.HasMember("result") ||
@@ -99,44 +99,25 @@ namespace ledger {
 
                         //Is there an info field ?
                         auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("info") || !resultObj["info"].IsObject()) {
+                        if (!resultObj.HasMember("state") || !resultObj["state"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get base reserve from network, no (or malformed) field \"info\" in response");
+                                                 "Failed to get base reserve from network, no (or malformed) field \"state\" in response");
                         }
 
                         //Is there a validated_ledger field ?
-                        auto infoObj = resultObj["info"].GetObject();
+                        auto infoObj = resultObj["state"].GetObject();
                         if (!infoObj.HasMember("validated_ledger") || !infoObj["validated_ledger"].IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get base reserve from network, no (or malformed) field \"validated_ledger\" in response");
                         }
 
-                        switch (type) {
-                            case FieldTypes::StringType: {
-                                //Is there a reserve_base_xrp field ?
-                                auto reserveObj = infoObj["validated_ledger"].GetObject();
-                                if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsString()) {
-                                    throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                         fmt::format("Failed to get {} from network, no (or malformed) field \"{}\" in response", field, field));
-                                }
-
-                                auto value = reserveObj[field.c_str()].GetString();
-                                return std::make_shared<BigInt>(value);
-                            }
-                            case FieldTypes::NumberType: {
-                                //Is there a reserve_base_xrp field ?
-                                auto reserveObj = infoObj["validated_ledger"].GetObject();
-                                if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsDouble()) {
-                                    throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                         fmt::format("Failed to get {} from network, no (or malformed) field \"{}\" in response <<<", field, field));
-                                }
-
-                                auto value = reserveObj[field.c_str()].GetDouble();
-                                return std::make_shared<BigInt>(static_cast<unsigned int>(value * pow(10, currencies::RIPPLE.units[1].numberOfDecimal)));
-                            }
+                        auto reserveObj = infoObj["validated_ledger"].GetObject();
+                        if (!reserveObj.HasMember(field.c_str()) || !reserveObj[field.c_str()].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                 fmt::format("Failed to get {} from network, no (or malformed) field \"{}\" in response", field, field));
                         }
-
-                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Failed to get {} which has an unkown field type", field);
+                        auto value = reserveObj[field.c_str()].GetString();
+                        return std::make_shared<BigInt>(value);
                     });
         }
 
@@ -290,16 +271,16 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         NodeRippleLikeBlockchainExplorer::getAccountInfo(const std::string &address,
                                                          const std::string &key,
-                                                         const BigInt &defaultValue,
-                                                         FieldTypes type) {
+                                                         const BigInt &defaultValue) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("account_info");
             bodyRequest.pushParameter("account", address);
             bodyRequest.pushParameter("ledger_index", std::string("validated"));
             auto requestBody = bodyRequest.getString();
+            bool parseNumberAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
-                    .json().mapPtr<BigInt>(getContext(), [address, key, type, defaultValue](const HttpRequest::JsonResult &result) {
+                    .json(parseNumberAsString).mapPtr<BigInt>(getContext(), [address, key, defaultValue](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a result field ?
                         if (!json.IsObject() || !json.HasMember("result") ||
@@ -317,29 +298,13 @@ namespace ledger {
 
                         //Is there an field with key name ?
                         auto accountObj = resultObj["account_data"].GetObject();
-                        switch(type) {
-                            case FieldTypes::NumberType : {
-                                if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsUint64()) {
-                                    throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",
-                                                         key, address, key);
-                                }
-
-                                auto balance = accountObj[key.c_str()].GetUint64();
-                                return std::make_shared<BigInt>((int64_t)balance);
-                            }
-                            case FieldTypes::StringType : {
-                                if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsString()) {
-                                    throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",
-                                                         key, address, key);
-                                }
-
-                                auto balance = accountObj[key.c_str()].GetString();
-                                return std::make_shared<BigInt>(balance);
-                            }
+                        if (!accountObj.HasMember(key.c_str()) || !accountObj[key.c_str()].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get {} for {}, no (or malformed) field \"{}\" in response",
+                                                 key, address, key);
                         }
 
-                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Failed to get {} which has an unkown field type",
-                                             key);
+                        auto value = accountObj[key.c_str()].GetString();
+                        return std::make_shared<BigInt>(value);
                     });
         }
     }

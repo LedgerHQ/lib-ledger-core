@@ -3,6 +3,7 @@
 
 #include "RippleLikeAccount.hpp"  // my header
 #include "AmountCallback.hpp"
+#include "BoolCallback.hpp"
 #include "Marshal.hpp"
 #include "RippleLikeTransaction.hpp"
 #include "RippleLikeTransactionBuilder.hpp"
@@ -68,6 +69,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeAccount_00024CppProxy_nati
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeAccount>(nativeRef);
         ref->getBaseReserve(::djinni_generated::AmountCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeAccount_00024CppProxy_native_1isAddressActivated(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_isActivated)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeAccount>(nativeRef);
+        ref->isAddressActivated(::djinni::String::toCpp(jniEnv, j_address),
+                                ::djinni_generated::BoolCallback::toCpp(jniEnv, j_isActivated));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
