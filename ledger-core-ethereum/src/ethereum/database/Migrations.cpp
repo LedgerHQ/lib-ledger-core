@@ -2,11 +2,11 @@
 
 namespace ledger {
     namespace core {
-        int const ethereumMigration::coinID = 60;
+        int const EthereumMigration::coinID = 60;
 
-        uint32_t const ethereumMigration::currentVersion = 1;
+        uint32_t const EthereumMigration::currentVersion = 1;
 
-        template <> void migrate<1, ethereumMigration>(soci::session& sql) {
+        template <> void migrate<1, EthereumMigration>(soci::session& sql) {
             // ETH currencies
             sql << "CREATE TABLE ethereum_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -86,7 +86,7 @@ namespace ledger {
 
         }
 
-        template <> void rollback<1, ethereumMigration>(soci::session& sql) {
+        template <> void rollback<1, EthereumMigration>(soci::session& sql) {
             // ERC20 tokens
             sql << "DROP TABLE erc20_tokens";
 
