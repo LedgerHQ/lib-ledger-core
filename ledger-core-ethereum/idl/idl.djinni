@@ -3,11 +3,6 @@
 @import "addresses.djinni"
 @import "erc20.djinni"
 
-# An Ethereum-like wallet.
-EthereumLikeWallet = interface +c {
-
-}
-
 # Class representing a Ethereum transaction.
 EthereumLikeTransaction = interface +c {
     # Get the hash of the transaction.
