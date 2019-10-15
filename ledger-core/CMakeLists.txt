@@ -51,3 +51,9 @@ if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
 else()
     message(STATUS "Test are disabled")
 endif()
+
+if (BUILD_TESTS)
+    add_subdirectory(qt-host)
+endif()
+
+enable_testing()
