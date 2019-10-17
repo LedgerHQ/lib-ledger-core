@@ -45,9 +45,11 @@ namespace ledger {
         // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
         class TezosLikeTransactionApi : public api::TezosLikeTransaction {
         public:
-            explicit TezosLikeTransactionApi(const api::Currency &currency);
+            explicit TezosLikeTransactionApi(const api::Currency &currency,
+                                             const std::string &protocolUpdate);
 
-            explicit TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
+            explicit TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
+                                             const std::string &protocolUpdate);
 
             api::TezosOperationTag getType() override;
 
@@ -120,6 +122,7 @@ namespace ledger {
             api::TezosOperationTag _type;
             std::string _revealedPubKey;
             BigInt _balance;
+            std::string _protocolUpdate;
         };
     }
 }
