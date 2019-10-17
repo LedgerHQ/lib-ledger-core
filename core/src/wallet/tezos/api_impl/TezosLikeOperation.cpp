@@ -36,7 +36,9 @@ namespace ledger {
     namespace core {
 
         TezosLikeOperation::TezosLikeOperation(const std::shared_ptr<OperationApi>& baseOp) {
-            _transaction = std::make_shared<TezosLikeTransactionApi>(baseOp);
+            // Since this patch is temporary, we can live with this
+            // Plus, this transactions are used in "read-only" mode
+            _transaction = std::make_shared<TezosLikeTransactionApi>(baseOp, "");
         }
         std::shared_ptr<api::TezosLikeTransaction> TezosLikeOperation::getTransaction() {
             return _transaction;

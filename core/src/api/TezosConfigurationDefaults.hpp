@@ -41,6 +41,8 @@ public:
     static std::string const TEZOS_DEFAULT_GAS_LIMIT;
 
     static std::string const TEZOS_DEFAULT_STORAGE_LIMIT;
+
+    static std::string const TEZOS_PROTOCOL_UPDATE_BABYLON;
 };
 
 } } }  // namespace ledger::core::api
