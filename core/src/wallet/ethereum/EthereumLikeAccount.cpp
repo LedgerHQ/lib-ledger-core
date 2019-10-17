@@ -123,7 +123,14 @@ namespace ledger {
             operation.date = transaction.receivedAt;
 
             auto updateOperation = [&] (soci::session &sql, Operation &operation, api::OperationType ty) {
-                operation.amount = transaction.value;
+                // if the status of the transaction is not correct, we set the operation’s amount to
+                // zero as it’s failed (yet fees were still paid)
+                if (transaction.status == 0) {
+                    operation.amount = BigInt::ZERO;
+                } else {
+                    operation.amount = transaction.value;
+                }
+
                 operation.type = ty;
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
@@ -259,7 +266,7 @@ namespace ledger {
                 "JOIN operations as op on io.ethereum_operation_uid = op.uid "
                 "JOIN ethereum_operations as eo on eo.uid = op.uid "
                 "JOIN ethereum_transactions as et on eo.transaction_uid = et.transaction_uid "
-                "WHERE et.status != 0 AND (io.receiver = :addr OR io.sender = :addr)",
+                "WHERE io.receiver = :addr OR io.sender = :addr",
                 soci::use(addr, "addr")
             );
 
@@ -268,7 +275,16 @@ namespace ledger {
             for (auto& row : rows) {
                 InternalTx tx;
                 tx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
-                tx.value = BigInt::fromHex(row.get<std::string>(1));
+
+                // if the status is not okay, we have to change the amount of the operation because
+                // it wasn’t really broadcasted, but the fees were still paid
+                auto status = soci::get_number<uint64_t>(row, 8);
+                if (status == 0) {
+                    tx.value = BigInt::ZERO;
+                } else {
+                    tx.value = BigInt::fromHex(row.get<std::string>(1));
+                }
+
                 tx.from = row.get<std::string>(2);
                 tx.to = row.get<std::string>(3);
                 tx.gasLimit = BigInt::fromHex(row.get<std::string>(4));
@@ -276,9 +292,8 @@ namespace ledger {
                 auto gasPrice = BigInt::fromHex(row.get<std::string>(6));
                 auto date = DateUtils::fromJSON(row.get<std::string>(7));
 
-                // inject the status so that internal transactions can do things with it
                 EthereumLikeBlockchainExplorerTransaction etx;
-                etx.status = soci::get_number<uint64_t>(row, 8);
+                etx.status = status;
 
                 Operation operation;
                 operation.amount = tx.value;
