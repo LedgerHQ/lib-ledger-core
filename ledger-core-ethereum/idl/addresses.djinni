@@ -1,0 +1,46 @@
+@extern "../../ledger-core/idl/core.yaml"
+
+EthereumLikeNetworkParameters = record {
+    # Name of the network.
+    Identifier: string;
+    # Constant prefix to prepend all signature messages.
+    MessagePrefix: string;
+    # EIP-155 chain ID.
+    ChainID: string;
+    # Version of the Extended Public Key standard.
+    XPUBVersion: binary;
+    # Addition EIPs enabled for this network.
+    AdditionalEIPs: list<string>;
+    # Delay applied to all timestamps. Used to debounce transactions.
+    TimestampDelay: i64;
+}
+
+# Helper class for manipulating Ethereum like addresses.
+EthereumLikeAddress = interface +c {
+    # Gets the version of the address.
+    # @return The version of the address
+    getVersion(): binary;
+    # Gets the raw keccak hash of the public key (truncated to 20 bytes).
+    # @return The 20 bytes of the public key keccak hash
+    getKeccakHash(): binary;
+    # Gets the network parameters used for serializing the address.
+    # @return The network parameters of the address
+    getNetworkParameters(): EthereumLikeNetworkParameters;
+    # Encodes keccak with respect to EIP55.
+    # @return The EIP55 encoding
+    toEIP55(): string;
+}
+
+# The xPUB definition for Ethereum.
+EthereumLikeExtendedPublicKey = interface +c {
+    # Derive an address from an xPUB and a path.
+    derive(path: string): EthereumLikeAddress;
+    # Derive a public key from an xPUB and a path.
+    derivePublicKey(path: string): binary;
+    # Derive a shorten version of a public key (SHA256 + RIPEMD160) from an xPUB and a path.
+    deriveHash160(path: string): binary;
+    # Get the xPUB in base 58.
+    toBase58(): string;
+    # Get the root path of the xPUB.
+    getRootPath(): string;
+}
