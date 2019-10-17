@@ -38,7 +38,6 @@
 
 namespace ledger {
     namespace core {
-
         enum DerivationSchemeLevel {
             COIN_TYPE,
             ACCOUNT_INDEX,
