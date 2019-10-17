@@ -41,22 +41,10 @@
 
 #include <ripple/api/RippleLikeTransactionBuilder.hpp>
 #include <ripple/explorers/RippleLikeBlockchainExplorer.hpp>
+#include <ripple/transaction_builders/RippleLikeTransactionBuildRequest.hpp>
 
 namespace ledger {
     namespace core {
-        struct RippleLikeTransactionBuildRequest {
-            RippleLikeTransactionBuildRequest() {
-                wipe = false;
-            };
-            std::string toAddress;
-            std::shared_ptr<BigInt> value;
-            std::shared_ptr<BigInt> fees;
-            BigInt sequence;
-            bool wipe;
-            std::vector<api::RippleLikeMemo> memos;
-            Option<int64_t> destinationTag;
-        };
-
         using RippleLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::RippleLikeTransaction>>(
                 const RippleLikeTransactionBuildRequest &, const std::shared_ptr<RippleLikeBlockchainExplorer> &)>;
 

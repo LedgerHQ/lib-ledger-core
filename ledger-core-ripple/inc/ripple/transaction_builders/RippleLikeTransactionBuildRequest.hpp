@@ -1,8 +1,8 @@
 /*
  *
- * RippleLikeAccountSynchronizer
+ * RippleLikeTransactionBuildRequest
  *
- * Created by El Khalil Bellakrid on 06/01/2019.
+ * Created by Dimitri Sabadie on 2019/10/17
  *
  * The MIT License (MIT)
  *
@@ -30,12 +30,27 @@
 
 #pragma once
 
-#include <core/synchronizers/AbstractAccountSynchronizer.hpp>
+#include <memory>
+#include <string>
+#include <vector>
+
+#include <core/math/BigInt.hpp>
+#include <core/utils/Option.hpp>
+
+#include <ripple/api/RippleLikeMemo.hpp>
 
 namespace ledger {
     namespace core {
-        class RippleLikeAccount;
+        struct RippleLikeTransactionBuildRequest {
+            RippleLikeTransactionBuildRequest();
 
-        using RippleLikeAccountSynchronizer = AbstractAccountSynchronizer<RippleLikeAccount>;
+            std::string toAddress;
+            std::shared_ptr<BigInt> value;
+            std::shared_ptr<BigInt> fees;
+            BigInt sequence;
+            bool wipe;
+            std::vector<api::RippleLikeMemo> memos;
+            Option<int64_t> destinationTag;
+        };
     }
 }

@@ -48,62 +48,6 @@ namespace ledger {
             StringType
         };
 
-        class NodeRippleLikeBodyRequest {
-
-        public:
-            NodeRippleLikeBodyRequest() {
-                //Document should be defined as object
-                _document.SetObject();
-                _params = rapidjson::Value(rapidjson::kObjectType);
-            };
-
-            NodeRippleLikeBodyRequest &setMethod(const std::string &method) {
-                //In case need to allocate more memory
-                rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
-                //Field with method
-                rapidjson::Value vMethod(rapidjson::kStringType);
-                vMethod.SetString(method.c_str(), static_cast<rapidjson::SizeType>(method.length()), allocator);
-                _document.AddMember("method", vMethod, allocator);
-                return *this;
-            };
-
-            NodeRippleLikeBodyRequest &pushParameter(const std::string &key, const std::string &value) {
-                rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
-                rapidjson::Value vKeyParam(rapidjson::kStringType);
-                vKeyParam.SetString(key.c_str(), static_cast<rapidjson::SizeType>(key.length()), allocator);
-                rapidjson::Value vParam(rapidjson::kStringType);
-                vParam.SetString(value.c_str(), static_cast<rapidjson::SizeType>(value.length()), allocator);
-                _params.AddMember(vKeyParam, vParam, allocator);
-                return *this;
-            };
-
-            NodeRippleLikeBodyRequest &pushParameter(const std::string &key, int64_t value) {
-                rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
-                rapidjson::Value vKeyParam(rapidjson::kStringType);
-                vKeyParam.SetString(key.c_str(), static_cast<rapidjson::SizeType>(key.length()), allocator);
-                rapidjson::Value vParam(rapidjson::kNumberType);
-                vParam.SetInt64(value);
-                _params.AddMember(vKeyParam, vParam, allocator);
-                return *this;
-            };
-
-            std::string getString() {
-                rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
-                rapidjson::Value container(rapidjson::kArrayType);
-                container.PushBack(_params, allocator);
-                _document.AddMember("params", container, allocator);
-                //Stream to string buffer
-                rapidjson::StringBuffer buffer;
-                rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-                _document.Accept(writer);
-                return buffer.GetString();
-            };
-
-        private:
-            rapidjson::Document _document;
-            rapidjson::Value _params;
-        };
-
         class NodeRippleLikeBlockchainExplorer : public RippleLikeBlockchainExplorer,
                                                  public LedgerApiBlockchainExplorer,
                                                  public DedicatedContext,

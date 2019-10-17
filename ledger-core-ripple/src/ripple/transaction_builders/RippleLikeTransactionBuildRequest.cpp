@@ -1,8 +1,8 @@
 /*
  *
- * RippleLikeAccountSynchronizer
+ * RippleLikeTransactionBuildRequest
  *
- * Created by El Khalil Bellakrid on 06/01/2019.
+ * Created by Dimitri Sabadie on 2019/10/17
  *
  * The MIT License (MIT)
  *
@@ -28,14 +28,11 @@
  *
  */
 
-#pragma once
-
-#include <core/synchronizers/AbstractAccountSynchronizer.hpp>
+#include <ripple/transaction_builders/RippleLikeTransactionBuildRequest.hpp>
 
 namespace ledger {
     namespace core {
-        class RippleLikeAccount;
-
-        using RippleLikeAccountSynchronizer = AbstractAccountSynchronizer<RippleLikeAccount>;
+        RippleLikeTransactionBuildRequest::RippleLikeTransactionBuildRequest(): wipe(false) {
+        }
     }
 }
