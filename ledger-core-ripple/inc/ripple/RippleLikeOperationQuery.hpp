@@ -1,8 +1,8 @@
 /*
  *
- * RippleLikeOperation
+ * RippleLikeOperationQuery
  *
- * Created by El Khalil Bellakrid on 06/01/2019.
+ * Created by Dimitri Sabadie on 2019/10/17
  *
  * The MIT License (MIT)
  *
@@ -30,28 +30,31 @@
 
 #pragma once
 
-#include <core/operation/Operation.hpp>
+#include <core/operation/OperationQuery.hpp>
 
-#include <ripple/api/RippleLikeOperation.hpp>
-#include <ripple/api/RippleLikeTransaction.hpp>
-#include <ripple/explorers/RippleLikeBlockchainExplorer.hpp>
+#include <ripple/RippleLikeOperation.hpp>
 
 namespace ledger {
     namespace core {
-        class RippleLikeOperation : public api::RippleLikeOperation, public Operation {
+        class RippleLikeOperationQuery : public OperationQuery<RippleLikeOperation> {
         public:
-            RippleLikeOperation() = default;
-            RippleLikeOperation(
-                std::shared_ptr<RippleLikeBlockchainExplorerTransaction> const & tx,
-                api::Currency const & currency
+            RippleLikeOperationQuery(
+                const std::shared_ptr<api::QueryFilter>& headFilter,
+                const std::shared_ptr<DatabaseSessionPool>& pool,
+                const std::shared_ptr<api::ExecutionContext>& context,
+                const std::shared_ptr<api::ExecutionContext>& mainContext
             );
-            std::shared_ptr<api::RippleLikeTransaction> getTransaction() override;
 
-            void refreshUid() override;
+        protected:
+            std::shared_ptr<RippleLikeOperation> createOperation(
+                std::shared_ptr<AbstractAccount> &account
+            ) override;
 
-        private:
-            std::shared_ptr<api::RippleLikeTransaction> _transaction;
+            void inflateCompleteTransaction(
+                soci::session& sql,
+                const std::string &accountUid,
+                RippleLikeOperation& operation
+            ) override;
         };
-
     }
 }

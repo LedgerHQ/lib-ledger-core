@@ -48,6 +48,7 @@
 #include <ripple/transaction_builders/RippleLikeTransactionBuilder.hpp>
 #include <ripple/RippleLikeAccount.hpp>
 #include <ripple/RippleLikeAccountDatabaseHelper.hpp>
+#include <ripple/RippleLikeOperationQuery.hpp>
 #include <ripple/RippleLikeTransaction.hpp>
 #include <ripple/RippleLikeTransactionDatabaseHelper.hpp>
 #include <ripple/RippleLikeWallet.hpp>
