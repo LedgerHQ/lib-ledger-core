@@ -1,8 +1,8 @@
 /*
  *
- * RippleLikeCurrencies
+ * RippleLikeCoinID
  *
- * Created by Dimitri Sabadie on 2019/10/11
+ * Created by Dimitri Sabadie on 2019/10/17.
  *
  * The MIT License (MIT)
  *
@@ -28,21 +28,12 @@
  *
  */
 
-#include <core/wallet/CurrencyBuilder.hpp>
+#pragma once
 
-#include <ripple/RippleLikeCoinID.hpp>
-#include <ripple/RippleLikeCurrencies.hpp>
-#include <ripple/RippleNetworks.hpp>
+#include <stdint.h>
 
 namespace ledger {
     namespace core {
-        namespace currencies {
-            api::Currency const RIPPLE =
-                CurrencyBuilder("ripple")
-                .bip44(RIPPLE_COIN_ID)
-                .paymentUri("ripple")
-                .unit("drop", 0, "drop")
-                .unit("XRP", 6, "XRP");
-        }
+        extern uint64_t const RIPPLE_COIN_ID;
     }
 }
