@@ -1,13 +1,12 @@
 /*
  *
- * CurrencyBuilder
- * ledger-core
+ * RippleLikeKeychainFactory
  *
- * Created by Pierre Pollastri on 12/05/2017.
+ * Created by El Khalil Bellakrid on 06/01/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,25 +30,34 @@
 
 #pragma once
 
+#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
 #include <core/api/Currency.hpp>
-#include <core/utils/Option.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/preferences/Preferences.hpp>
+
+#include <ripple/keychains/RippleLikeKeychain.hpp>
 
 namespace ledger {
     namespace core {
-        class CurrencyBuilder {
+        class RippleLikeKeychainFactory {
         public:
-            CurrencyBuilder(const std::string name);
-            CurrencyBuilder& units(std::vector<api::CurrencyUnit> units);
-            CurrencyBuilder& bip44(int32_t coinType);
-            CurrencyBuilder& paymentUri(const std::string& scheme);
-            CurrencyBuilder& unit(const std::string& name, int magnitude, const std::string& code);
-            operator api::Currency() const;
+            std::shared_ptr<RippleLikeKeychain> build(
+                int32_t index,
+                const DerivationPath &path,
+                const std::shared_ptr<DynamicObject>& configuration,
+                const api::ExtendedKeyAccountCreationInfo& info,
+                const std::shared_ptr<Preferences>& accountPreferences,
+                const api::Currency& currency
+            );
 
-        private:
-            std::vector<api::CurrencyUnit> _units;
-            std::string _name;
-            std::string _paymentUriScheme;
-            int32_t _coinType;
+            std::shared_ptr<RippleLikeKeychain> restore(
+                int32_t index,
+                const DerivationPath &path,
+                const std::shared_ptr<DynamicObject>& configuration,
+                const std::string &databaseXpubEntry,
+                const std::shared_ptr<Preferences>& accountPreferences,
+                const api::Currency& currency
+            );
         };
     }
 }

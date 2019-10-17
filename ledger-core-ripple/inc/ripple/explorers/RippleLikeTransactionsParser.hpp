@@ -1,13 +1,12 @@
 /*
  *
- * CurrencyBuilder
- * ledger-core
+ * RippleLikeTransactionsParser
  *
- * Created by Pierre Pollastri on 12/05/2017.
+ * Created by El Khalil Bellakrid on 07/01/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,36 +28,29 @@
  *
  */
 
-#include <core/api/Wallet.hpp>
-#include <core/wallet/CurrencyBuilder.hpp>
+#pragma once
+
+#include <core/explorers/AbstractTransactionsParser.hpp>
+
+#include <ripple/explorers/RippleLikeTransactionParser.hpp>
 
 namespace ledger {
     namespace core {
-        CurrencyBuilder::CurrencyBuilder(const std::string name) {
-            _name = name;
-        }
+        class RippleLikeTransactionsParser
+                : public AbstractTransactionsParser<RippleLikeBlockchainExplorerTransaction, RippleLikeTransactionParser> {
+        public:
+            RippleLikeTransactionsParser(std::string &lastKey) : _transactionParser(lastKey) {
+                _arrayDepth = 0;
+                _objectDepth = 0;
+            }
 
-        CurrencyBuilder &CurrencyBuilder::units(std::vector<api::CurrencyUnit> units) {
-            _units = units;
-            return *this;
-        }
+        protected:
+            RippleLikeTransactionParser &getTransactionParser() override {
+                return _transactionParser;
+            }
 
-        CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_name, _coinType, _paymentUriScheme, _units);
-        }
-
-        CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {
-            _coinType = coinType;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::paymentUri(const std::string &scheme) {
-            _paymentUriScheme = scheme;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::unit(const std::string &name, int magnitude, const std::string &code) {
-            return unit(name, magnitude, code);
-        }
+        private:
+            RippleLikeTransactionParser _transactionParser;
+        };
     }
 }

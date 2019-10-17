@@ -1,13 +1,12 @@
 /*
  *
- * CurrencyBuilder
- * ledger-core
+ * rippleNetworks
  *
- * Created by Pierre Pollastri on 12/05/2017.
+ * Created by El Khalil Bellakrid on 05/01/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,36 +28,38 @@
  *
  */
 
-#include <core/api/Wallet.hpp>
-#include <core/wallet/CurrencyBuilder.hpp>
+#pragma once
+
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <LibCoreExport.hpp>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
+#include <ripple/api/RippleLikeNetworkParameters.hpp>
 
 namespace ledger {
     namespace core {
-        CurrencyBuilder::CurrencyBuilder(const std::string name) {
-            _name = name;
-        }
+        namespace networks {
+            extern LIBCORE_EXPORT const std::string RIPPLE_DIGITS;
+            extern LIBCORE_EXPORT const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName);
+            extern LIBCORE_EXPORT const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE;
 
-        CurrencyBuilder &CurrencyBuilder::units(std::vector<api::CurrencyUnit> units) {
-            _units = units;
-            return *this;
-        }
+            template<class Archive>
+            void serialize(Archive & archive,
+                           api::RippleLikeNetworkParameters & p)
+            {
+                archive(
+                        p.Identifier,
+                        p.MessagePrefix,
+                        p.XPUBVersion,
+                        p.AdditionalRIPs,
+                        p.TimestampDelay
+                );
+            }
 
-        CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_name, _coinType, _paymentUriScheme, _units);
-        }
-
-        CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {
-            _coinType = coinType;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::paymentUri(const std::string &scheme) {
-            _paymentUriScheme = scheme;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::unit(const std::string &name, int magnitude, const std::string &code) {
-            return unit(name, magnitude, code);
         }
     }
 }

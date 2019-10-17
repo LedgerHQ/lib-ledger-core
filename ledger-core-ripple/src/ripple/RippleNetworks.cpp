@@ -1,13 +1,12 @@
 /*
  *
- * CurrencyBuilder
- * ledger-core
+ * rippleNetworks
  *
- * Created by Pierre Pollastri on 12/05/2017.
+ * Created by El Khalil Bellakrid on 05/01/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,36 +28,31 @@
  *
  */
 
-#include <core/api/Wallet.hpp>
-#include <core/wallet/CurrencyBuilder.hpp>
+#include <core/utils/Exception.hpp>
+
+#include <ripple/RippleNetworks.hpp>
 
 namespace ledger {
     namespace core {
-        CurrencyBuilder::CurrencyBuilder(const std::string name) {
-            _name = name;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::units(std::vector<api::CurrencyUnit> units) {
-            _units = units;
-            return *this;
-        }
-
-        CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_name, _coinType, _paymentUriScheme, _units);
-        }
-
-        CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {
-            _coinType = coinType;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::paymentUri(const std::string &scheme) {
-            _paymentUriScheme = scheme;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::unit(const std::string &name, int magnitude, const std::string &code) {
-            return unit(name, magnitude, code);
+        namespace networks {
+            const std::string RIPPLE_DIGITS = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
+            const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName) {
+                if (networkName == "ripple") {
+                    static const api::RippleLikeNetworkParameters RIPPLE(
+                            "xrp",
+                            "XRP signed message:\n",
+                            {0x04, 0x88, 0xB2, 0x1E},
+                            {},
+                            0
+                    );
+                    return RIPPLE;
+                }
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
+            }
+            const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE
+                    ({
+                             getRippleLikeNetworkParameters("ripple")
+                     });
         }
     }
 }

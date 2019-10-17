@@ -1,13 +1,12 @@
 /*
  *
- * CurrencyBuilder
- * ledger-core
+ * RippleLikeOperationQuery
  *
- * Created by Pierre Pollastri on 12/05/2017.
+ * Created by Dimitri Sabadie on 2019/10/17
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,36 +28,33 @@
  *
  */
 
-#include <core/api/Wallet.hpp>
-#include <core/wallet/CurrencyBuilder.hpp>
+#pragma once
+
+#include <core/operation/OperationQuery.hpp>
+
+#include <ripple/RippleLikeOperation.hpp>
 
 namespace ledger {
     namespace core {
-        CurrencyBuilder::CurrencyBuilder(const std::string name) {
-            _name = name;
-        }
+        class RippleLikeOperationQuery : public OperationQuery<RippleLikeOperation> {
+        public:
+            RippleLikeOperationQuery(
+                const std::shared_ptr<api::QueryFilter>& headFilter,
+                const std::shared_ptr<DatabaseSessionPool>& pool,
+                const std::shared_ptr<api::ExecutionContext>& context,
+                const std::shared_ptr<api::ExecutionContext>& mainContext
+            );
 
-        CurrencyBuilder &CurrencyBuilder::units(std::vector<api::CurrencyUnit> units) {
-            _units = units;
-            return *this;
-        }
+        protected:
+            std::shared_ptr<RippleLikeOperation> createOperation(
+                std::shared_ptr<AbstractAccount> &account
+            ) override;
 
-        CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_name, _coinType, _paymentUriScheme, _units);
-        }
-
-        CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {
-            _coinType = coinType;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::paymentUri(const std::string &scheme) {
-            _paymentUriScheme = scheme;
-            return *this;
-        }
-
-        CurrencyBuilder &CurrencyBuilder::unit(const std::string &name, int magnitude, const std::string &code) {
-            return unit(name, magnitude, code);
-        }
+            void inflateCompleteTransaction(
+                soci::session& sql,
+                const std::string &accountUid,
+                RippleLikeOperation& operation
+            ) override;
+        };
     }
 }
