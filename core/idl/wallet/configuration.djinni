@@ -4,6 +4,7 @@ BlockchainExplorerEngines = interface +c {
     const RIPPLE_API: string = "RIPPLE_API";
     const RIPPLE_NODE: string = "RIPPLE_NODE";
     const TEZOS_NODE: string = "TEZOS_NODE";
+    const TZSTATS_API: string = "TZSTATS_API";
 }
 
 # Available API to use with observers.

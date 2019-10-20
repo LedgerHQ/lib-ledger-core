@@ -56,9 +56,14 @@ namespace ledger {
             return createRequest(api::HttpMethod::DEL, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
         }
 
-        HttpRequest HttpClient::POST(const std::string &path, const std::vector<uint8_t> &body,
-                                     const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::POST, path, std::experimental::optional<std::vector<uint8_t>>(body), headers);
+        HttpRequest HttpClient::POST(const std::string &path,
+                                     const std::vector<uint8_t> &body,
+                                     const std::unordered_map<std::string, std::string> &headers,
+                                     const std::string &baseUrl) {
+            return createRequest(api::HttpMethod::POST,
+                                 path,
+                                 std::experimental::optional<std::vector<uint8_t>>(body),
+                                 headers);
         }
 
         HttpClient& HttpClient::addHeader(const std::string &key, const std::string &value) {
@@ -71,10 +76,12 @@ namespace ledger {
             return *this;
         }
 
-        HttpRequest HttpClient::createRequest(api::HttpMethod method, const std::string &path,
+        HttpRequest HttpClient::createRequest(api::HttpMethod method,
+                                              const std::string &path,
                                               const std::experimental::optional<std::vector<uint8_t >> body,
-                                              const std::unordered_map<std::string, std::string> &headers) {
-            auto url = _baseUrl;
+                                              const std::unordered_map<std::string, std::string> &headers,
+                                              const std::string &baseUrl) {
+            auto url = baseUrl.empty() ? _baseUrl : baseUrl;
             if (path.front() == '/') {
                 url += std::string(path.data() + 1);
             } else {

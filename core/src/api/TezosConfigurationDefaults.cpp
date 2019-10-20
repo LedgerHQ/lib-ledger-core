@@ -9,7 +9,7 @@ std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT = {"htt
 
 std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION = {"v3"};
 
-std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_NODE_ENDPOINT_S2 = {"https://s2.tezos.com"};
+std::string const TezosConfigurationDefaults::TZSTATS_API_ENDPOINT = {"https://api.tzstats.com/explorer"};
 
 std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_NODE_ENDPOINT_S3 = {"https://s3.tezos.com"};
 

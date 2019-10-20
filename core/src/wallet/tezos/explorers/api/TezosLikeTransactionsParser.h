@@ -33,7 +33,6 @@
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONSPARSER_H
 
 #include "TezosLikeTransactionParser.h"
-
 #include <wallet/common/explorers/api/AbstractTransactionsParser.h>
 
 namespace ledger {
