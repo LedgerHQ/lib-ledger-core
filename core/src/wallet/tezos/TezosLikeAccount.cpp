@@ -234,15 +234,23 @@ namespace ledger {
         }
 
         void TezosLikeAccount::getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
-            _explorer->getEstimatedGasLimit(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
+            getEstimatedGasLimit(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<api::BigIntImpl>(*gasLimit);
             }).callback(getContext(), callback);
         }
 
+        FuturePtr<BigInt> TezosLikeAccount::getEstimatedGasLimit(const std::string &address) {
+            return _explorer->getEstimatedGasLimit(address);
+        }
+
         void TezosLikeAccount::getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
-            _explorer->getStorage(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &storage) -> std::shared_ptr<api::BigInt> {
+            getStorage(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &storage) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<api::BigIntImpl>(*storage);
             }).callback(getContext(), callback);
+        }
+
+        FuturePtr<BigInt> TezosLikeAccount::getStorage(const std::string &address) {
+            return _explorer->getStorage(address);
         }
 
         std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>>

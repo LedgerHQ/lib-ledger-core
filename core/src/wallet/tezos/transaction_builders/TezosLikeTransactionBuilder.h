@@ -70,7 +70,8 @@ namespace ledger {
                                             public std::enable_shared_from_this<TezosLikeTransactionBuilder> {
         public:
 
-            explicit TezosLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext> &context,
+            explicit TezosLikeTransactionBuilder(const std::string &senderAddress,
+                                                 const std::shared_ptr<api::ExecutionContext> &context,
                                                  const api::Currency &params,
                                                  const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
                                                  const std::shared_ptr<spdlog::logger> &logger,
@@ -113,7 +114,7 @@ namespace ledger {
             TezosLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<spdlog::logger> _logger;
-
+            std::string _senderAddress;
         };
     }
 }

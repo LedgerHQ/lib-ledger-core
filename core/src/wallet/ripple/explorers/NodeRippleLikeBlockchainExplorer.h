@@ -132,7 +132,7 @@ namespace ledger {
             getLedgerSequence() override;
 
             Future<std::shared_ptr<BigInt>>
-            getServerInfo(const std::string &field, FieldTypes type);
+            getServerState(const std::string &field);
 
             Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
 
@@ -166,8 +166,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getAccountInfo(const std::string &address,
                            const std::string &key,
-                           const BigInt &defaultValue,
-                           FieldTypes);
+                           const BigInt &defaultValue);
 
             api::RippleLikeNetworkParameters _parameters;
         };

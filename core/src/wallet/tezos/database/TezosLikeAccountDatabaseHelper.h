@@ -41,7 +41,7 @@ namespace ledger {
             static void createAccount(soci::session& sql,
                                       const std::string walletUid,
                                       int32_t index,
-                                      const std::string& address);
+                                      const std::string& publicKey);
             static bool queryAccount(soci::session& sql,
                                      const std::string& accountUid,
                                      TezosLikeAccountDatabaseEntry& entry);

@@ -153,6 +153,14 @@ namespace ledger {
         // Add XRP sequence
         template <> void migrate<14>(soci::session& sql);
         template <> void rollback<14>(soci::session& sql);
+
+        // Add XRP destination_tag
+        template <> void migrate<15>(soci::session& sql);
+        template <> void rollback<15>(soci::session& sql);
+
+        // Replace XTZ address column by public_key one
+        template <> void migrate<16>(soci::session& sql);
+        template <> void rollback<16>(soci::session& sql);
     }
 }
 

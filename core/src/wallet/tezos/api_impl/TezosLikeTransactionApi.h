@@ -69,13 +69,11 @@ namespace ledger {
 
             std::shared_ptr<api::Amount> getGasLimit() override ;
 
-            std::shared_ptr<api::Amount> getStorageLimit() override;
+            std::shared_ptr<api::BigInt> getStorageLimit() override;
 
             std::experimental::optional<std::string> getBlockHash() override;
 
-            void setSignature(const std::vector<uint8_t> &rSignature, const std::vector<uint8_t> &sSignature) override;
-
-            void setDERSignature(const std::vector<uint8_t> &signature) override;
+            void setSignature(const std::vector<uint8_t> &signature) override;
 
             std::vector<uint8_t> getSigningPubKey() override;
 
@@ -110,15 +108,14 @@ namespace ledger {
             api::Currency _currency;
             std::shared_ptr<api::Amount> _fees;
             std::shared_ptr<api::Amount> _gasLimit;
-            std::shared_ptr<api::Amount> _storage;
+            std::shared_ptr<BigInt> _storage;
             std::shared_ptr<BigInt> _counter;
             std::shared_ptr<api::Amount> _value;
             std::shared_ptr<api::TezosLikeAddress> _receiver;
             api::TezosCurve _receiverCurve;
             std::shared_ptr<api::TezosLikeAddress> _sender;
             api::TezosCurve _senderCurve;
-            std::vector<uint8_t> _rSignature;
-            std::vector<uint8_t> _sSignature;
+            std::vector<uint8_t> _signature;
             std::vector<uint8_t> _signingPubKey;
             api::TezosOperationTag _type;
             std::string _revealedPubKey;

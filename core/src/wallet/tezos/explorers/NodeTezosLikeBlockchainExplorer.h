@@ -96,7 +96,22 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>> getCounter(const std::string &address) override;
 
         private:
+            /*
+             * Helper to a get specific field's value from given url
+             * WARNING: this is only useful for fields with an integer (decimal representation) value (with a string type)
+             * @param url : base url to fetch the value on,
+             * @param field: name of field we are interested into,
+             * @param params: additional params to query value of field
+             * @return BigInt representing the value of targetted field
+             */
+            Future<std::shared_ptr<BigInt>>
+            getHelper(const std::string &url,
+                      const std::string &field,
+                      const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
+                      const std::string &fallbackValue = "");
+
             api::TezosLikeNetworkParameters _parameters;
+            std::string _explorerVersion;
         };
     }
 }
