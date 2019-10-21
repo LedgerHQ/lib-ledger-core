@@ -66,7 +66,7 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getFees() {
-            bool parseNumbersAsString = true;
+            const bool parseNumbersAsString = true;
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
@@ -80,6 +80,8 @@ namespace ledger {
                         // Sometimes network is sending 0 for fees
                         if (fees == "0") {
                             fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
+                        } else if (fees.find('.') != std::string::npos) {
+                            fees = api::BigInt::fromDecimalString(fees, 6, ".")->toString(10);
                         }
                         return std::make_shared<BigInt>(fees);
                     });
@@ -113,7 +115,7 @@ namespace ledger {
 
         Future<Unit> ExternalTezosLikeBlockchainExplorer::killSession(void *session) {
             if (session) {
-                _sessions.erase(*((std::string *)session));
+                _sessions.erase(*(reinterpret_cast<std::string *>(session)));
             }
             return Future<Unit>::successful(unit);
         }
@@ -136,7 +138,7 @@ namespace ledger {
             if (session.hasValue()) {
                 auto s = _sessions[*((std::string *)session.getValue())];
                 offset = limit * s;
-                _sessions[*((std::string *)session.getValue())]++;
+                _sessions[*reinterpret_cast<std::string *>(session.getValue())]++;
             }
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -145,15 +147,15 @@ namespace ledger {
             }
             std::string params = fmt::format("?limit={}",limit);
             if (offset > 0) {
-                params += fmt::format("?offset={}",offset);
+                params += fmt::format("&offset={}",offset);
             }
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
-            return _http->GET(fmt::format("account/{}/op", addresses[0]))
+            return _http->GET(fmt::format("account/{}/op{}", addresses[0], params))
                     .template json<TransactionsBulk, Exception>(
                             LedgerApiParser<TransactionsBulk,
                             TezosLikeTransactionsBulkParser>())
                     .template mapPtr<TransactionsBulk>(getExplorerContext(),
-                                                           [=](const EitherTransactionsBulk &result) {
+                                                           [](const EitherTransactionsBulk &result) {
                                                                if (result.isLeft()) {
                                                                    throw result.getLeft();
                                                                } else {
@@ -201,7 +203,7 @@ namespace ledger {
                                                        const std::string &field,
                                                        const std::unordered_map<std::string, std::string> &params,
                                                        const std::string &fallbackValue) {
-            bool parseNumbersAsString = true;
+            const bool parseNumbersAsString = true;
             auto networkId = getNetworkParameters().Identifier;
 
             std::string p, separator = "?";
