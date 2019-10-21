@@ -136,7 +136,7 @@ namespace ledger {
            }
 
            static void backward(soci::session& sql, int currentVersion) {
-             sql << "DELETE FROM __database_meta__ where id = :id", soci::use(T::coinID);
+               sql << "DELETE FROM __database_meta__ where id = :id", soci::use(T::coinID);
            }
         };
 
