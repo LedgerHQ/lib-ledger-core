@@ -29,6 +29,9 @@ if(NOT MSVC)
     list(APPEND SOCI_CORE_DEPENDENCIES ${DL_LIBRARY})
     set_directory_properties(PROPERTIES INCLUDE_DIRECTORIES ${DL_INCLUDE_DIR})
     add_definitions(-DHAVE_DL=1)
+    # lib-ledger-core patch: we use CMake native support for dl
+  else
+    list(APPEND SOCI_CORE_DEPENDENCIES ${CMAKE_DL_LIBS})
   endif()
 endif()
 
