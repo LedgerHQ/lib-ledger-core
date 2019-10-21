@@ -674,5 +674,20 @@ namespace ledger {
 
         template <> void rollback<14>(soci::session& sql) {
         }
+
+        template <> void migrate<15>(soci::session& sql) {
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN destination_tag BIGINT";
+        }
+
+        template <> void rollback<15>(soci::session& sql) {
+        }
+
+        template <> void migrate<16>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_accounts RENAME COLUMN address TO public_key";
+        }
+
+        template <> void rollback<16>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_accounts RENAME COLUMN public_key TO address";
+        }
     }
 }

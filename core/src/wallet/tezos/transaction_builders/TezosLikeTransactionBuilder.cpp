@@ -41,16 +41,15 @@ namespace ledger {
     namespace core {
 
         TezosLikeTransactionBuilder::TezosLikeTransactionBuilder(
+                const std::string &senderAddress,
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const api::Currency &currency,
                 const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
                 const std::shared_ptr<spdlog::logger> &logger,
-                const TezosLikeTransactionBuildFunction &buildFunction) {
-            _context = context;
-            _currency = currency;
-            _explorer = explorer;
-            _build = buildFunction;
-            _logger = logger;
+                const TezosLikeTransactionBuildFunction &buildFunction) :
+                _senderAddress(senderAddress), _context(context),
+                _currency(currency), _explorer(explorer),
+                _build(buildFunction), _logger(logger){
             _request.wipe = false;
         }
 
@@ -71,6 +70,12 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransactionBuilder>
         TezosLikeTransactionBuilder::sendToAddress(const std::shared_ptr<api::Amount> &amount,
                                                    const std::string &address) {
+            // XTZ self-transactions seems to always fail and existing wallet forbid self-transactions
+            // So that's why we prevent user from creating a self-transaction
+            // TODO: Get reference to confirm this
+            if (address == _senderAddress) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Can not send funds to sending address !");
+            }
             _request.value = std::make_shared<BigInt>(amount->toString());
             _request.toAddress = address;
             return shared_from_this();
@@ -129,6 +134,7 @@ namespace ledger {
             return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction, true);
         }
 
+        // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
         std::shared_ptr<api::TezosLikeTransaction>
         TezosLikeTransactionBuilder::parseRawTransaction(const api::Currency &currency,
                                                          const std::vector<uint8_t> &rawTransaction,
@@ -136,8 +142,10 @@ namespace ledger {
             auto params = currency.tezosLikeNetworkParameters.value();
             auto tx = std::make_shared<TezosLikeTransactionApi>(currency);
             BytesReader reader(rawTransaction);
-            // Watermark: Generic-Operation
-            reader.readNextByte();
+            if (!isSigned) {
+                // Watermark: Generic-Operation
+                reader.readNextByte();
+            }
 
             // Block Hash
             auto blockHashBytes = reader.read(32);
@@ -274,6 +282,12 @@ namespace ledger {
                 default:
                     break;
             }
+
+            // Parse signature
+            if (isSigned) {
+                tx->setSignature(reader.read(64));
+            }
+
             return tx;
         }
     }

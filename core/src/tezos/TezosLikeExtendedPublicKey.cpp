@@ -60,8 +60,9 @@ namespace ledger {
         TezosLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
             return std::make_shared<TezosLikeAddress>(_currency,
-                                                      _key.getPublicKeyBlake2b(_curve == api::TezosCurve::ED25519),
+                                                      _key.getPublicKey(),
                                                       _currency.tezosLikeNetworkParameters.value().ImplicitPrefix,
+                                                      _curve,
                                                       optional<std::string>((_path + p).toString()));
         }
 

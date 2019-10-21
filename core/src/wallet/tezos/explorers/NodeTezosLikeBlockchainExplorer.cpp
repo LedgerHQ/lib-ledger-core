@@ -44,6 +44,8 @@ namespace ledger {
                 TezosLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
+            _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION)
+                    .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION);
         }
 
 
@@ -56,8 +58,12 @@ namespace ledger {
             }
             bool parseNumbersAsString = true;
             std::string addressesStr = addresses[0]->toBase58();
-            return _http->GET(fmt::format("balance/{}", addressesStr))
-                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [addressesStr](const HttpRequest::JsonResult &result) {
+            return _http->GET(fmt::format("blockchain/{}/{}/balance/{}",
+                                          getExplorerVersion(),
+                                          getNetworkParameters().Identifier,
+                                          addressesStr))
+                    .json(parseNumbersAsString)
+                    .mapPtr<BigInt>(getContext(), [addressesStr](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         if (!json.IsArray() && json.Size() == 1 && json[0].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
@@ -70,7 +76,7 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         NodeTezosLikeBlockchainExplorer::getFees() {
             bool parseNumbersAsString = true;
-            return _http->GET("head")
+            return _http->GET(fmt::format("blockchain/{}/{}/head", getExplorerVersion(), getNetworkParameters().Identifier))
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a fees field ?
@@ -79,27 +85,29 @@ namespace ledger {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get fees from network, no (or malformed) field \"result\" in response");
                         }
-                        auto fees = json["fees"].GetString();
+                        std::string fees = json["fees"].GetString();
+                        // Sometimes network is sending 0 for fees
+                        if (fees == "0") {
+                            fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
+                        }
                         return std::make_shared<BigInt>(fees);
                     });
         }
 
         Future<String>
         NodeTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
-            //injection/operation
-            return _http->GET("")
+            // TODO: TBC with backend team
+            std::stringstream body;
+            body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
+            auto bodyString = body.str();
+            return _http->POST(fmt::format("blockchain/{}/{}/broadcast_transaction", getExplorerVersion(), getNetworkParameters().Identifier),
+                               std::vector<uint8_t>(bodyString.begin(), bodyString.end()))
                     .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
                         auto &json = *std::get<1>(result);
-                        if (!json.IsObject() || !json.HasMember("result") ||
-                            !json["result"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"result\" in response");
+                        if (!json.IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to parse broadcast transaction response, missing transaction hash");
                         }
-                        //Is there an account_data field ?
-                        auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("hash") || !resultObj["hash"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to broadcast transaction, no (or malformed) field \"hash\" in response");
-                        }
-                        return resultObj["hash"].GetString();
+                        return json.GetString();
                     });
         }
 
@@ -112,20 +120,8 @@ namespace ledger {
         }
 
         Future<Bytes> NodeTezosLikeBlockchainExplorer::getRawTransaction(const String &transactionHash) {
-            return _http->GET("")
-                    .json().template map<Bytes>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> Bytes {
-                        auto &json = *std::get<1>(result);
-                        if (!json.IsObject() || !json.HasMember("result") ||
-                            !json["result"].IsObject()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get raw transaction, no (or malformed) field \"result\" in response");
-                        }
-                        //Is there a tx field ?
-                        auto resultObj = json["result"].GetObject();
-                        if (!resultObj.HasMember("tx") || !resultObj["tx"].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get raw transaction, no (or malformed) field \"tx\" in response");
-                        }
-                        return Bytes(hex::toByteArray(std::string(resultObj["tx"].GetString(), resultObj["tx"].GetStringLength())));
-                    });
+            // WARNING: not implemented
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Endpoint to get raw transactions is not implemented.");
         }
 
         Future<String> NodeTezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
@@ -156,7 +152,7 @@ namespace ledger {
                                                                                                             const std::string &parameters,
                                                                                                             const std::shared_ptr<TransactionsBulk> &txsBulk,
                                                                                                             size_t type) -> FuturePtr<TransactionsBulk> {
-                return self->_http->GET(fmt::format("operations/{}?type={}{}", address, txTypes[type], parameters))
+                return self->_http->GET(fmt::format("blockchain/{}/{}/operations/{}?type={}{}", self->getExplorerVersion(), self->getNetworkParameters().Identifier, address, txTypes[type], parameters))
                         .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TezosLikeTransactionsBulkParser>())
                         .template flatMapPtr<TransactionsBulk>(self->getExplorerContext(), [=](const EitherTransactionsBulk &result) {
                             if (result.isLeft()) {
@@ -177,7 +173,7 @@ namespace ledger {
         }
 
         FuturePtr<Block> NodeTezosLikeBlockchainExplorer::getCurrentBlock() const {
-            return _http->GET("head")
+            return _http->GET(fmt::format("blockchain/{}/{}/head", getExplorerVersion(), getNetworkParameters().Identifier))
                     .template json<Block, Exception>(LedgerApiParser<Block, TezosLikeBlockParser>())
                     .template mapPtr<Block>(getExplorerContext(),
                                             [](const Either<Exception, std::shared_ptr<Block>> &result) {
@@ -207,35 +203,70 @@ namespace ledger {
         }
 
         std::string NodeTezosLikeBlockchainExplorer::getExplorerVersion() const {
-            return "";
+            return _explorerVersion;
+        }
+
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getHelper(const std::string &url,
+                                                                                   const std::string &field,
+                                                                                   const std::unordered_map<std::string, std::string> &params,
+                                                                                   const std::string &fallbackValue) {
+            bool parseNumbersAsString = true;
+            auto networkId = getNetworkParameters().Identifier;
+
+            std::string p, separator = "?";
+            for (auto &param : params) {
+                p += fmt::format("{}{}={}", separator, param.first, param.second);
+                separator = "&";
+            }
+
+            return _http->GET(url + p, std::unordered_map<std::string, std::string>())
+                    .json(parseNumbersAsString)
+                    .mapPtr<BigInt>(getContext(), [field, networkId, fallbackValue] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
+                        if (!json.IsArray() || json.Size() == 0 || !json[0].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
+                        }
+                        std::string value = json[0].GetString();
+                        if (value == "0" && !fallbackValue.empty()) {
+                            value = fallbackValue;
+                        }
+                        return std::make_shared<BigInt>(value);
+            });
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
-            // TODO: replace with final call
-            // return getHelper(fmt::format("/contract/{}/estimate-gas-limit", getExplorerVersion(), getNetworkParameters().Identifier, address), "estimated_gas_limit");
-            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("10300"));
+            // TODO: activate when backend fix issue with gas limit estimation
+            /*
+            return getHelper(fmt::format("blockchain/{}/{}/estimate_gas",
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier),
+                             "estimated_gas_limit",
+                             std::unordered_map<std::string, std::string>{{"token", address}},
+                             api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT
+                );
+             */
+            return FuturePtr<BigInt>::successful(
+                    std::make_shared<BigInt>(api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT)
+            );
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
-            // TODO: replace with final call
-            // return getHelper(fmt::format("/contract/{}/storage", getExplorerVersion(), getNetworkParameters().Identifier, address), "storage");
-            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("300"));
+            return getHelper(fmt::format("blockchain/{}/{}/estimate_storage",
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier),
+                             "storage",
+                             std::unordered_map<std::string, std::string>{{"token", address}},
+                             api::TezosConfigurationDefaults::TEZOS_DEFAULT_STORAGE_LIMIT
+            );
         }
 
         Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
-            // TODO: replace with final call
-            return Future<std::shared_ptr<BigInt>>::successful(std::make_shared<BigInt>("0"));
-            /*
-            bool parseNumbersAsString = true;
-            return _http->GET(fmt::format("/contract/{}/counter", address))
-                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [address] (const HttpRequest::JsonResult& result) {
-                        auto& json = *std::get<1>(result);
-                        if (!json.IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get counter for {}", address);
-                        }
-                        return std::make_shared<BigInt>(json.GetString());
-                    });
-            */
+            return getHelper(fmt::format("blockchain/{}/{}/counter",
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier),
+                             "counter",
+                             std::unordered_map<std::string, std::string>{{"token", address}}
+            );
         }
     }
 }

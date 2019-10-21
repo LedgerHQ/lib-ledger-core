@@ -46,6 +46,12 @@ namespace ledger {
                              const std::vector<uint8_t> &version,
                              const Option<std::string> &derivationPath = Option<std::string>());
 
+            TezosLikeAddress(const api::Currency &currency,
+                             const std::vector<uint8_t> &pubKey,
+                             const std::vector<uint8_t> &version,
+                             api::TezosCurve curve,
+                             const Option<std::string> &derivationPath = Option<std::string>());
+
             std::vector<uint8_t> getVersion() override;
 
             std::vector<uint8_t> getHash160() override;
@@ -67,8 +73,8 @@ namespace ledger {
                                                                 const Option<std::string> &derivationPath = Option<std::string>());
 
         private:
-            const std::vector<uint8_t> _version;
             const std::vector<uint8_t> _hash160;
+            const std::vector<uint8_t> _version;
             const api::TezosLikeNetworkParameters _params;
             const Option<std::string> _derivationPath;
         };

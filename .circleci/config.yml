@@ -127,7 +127,7 @@ jobs:
             name: Run_Tests
             command: |
                 cd ../lib-ledger-core-build
-                ~/cmake-3.13.3-Linux-x86_64/bin/ctest
+                ~/cmake-3.13.3-Linux-x86_64/bin/ctest -VV -timeout 60
   build_macos_release:
     macos:
       xcode: "10.0.0"
@@ -221,7 +221,7 @@ jobs:
           name: Run_Tests
           command: |
               cd ../lib-ledger-core-build
-              ctest
+              ctest -VV -timeout 60
   publish_jar:
     macos:
       xcode: "10.0.0"

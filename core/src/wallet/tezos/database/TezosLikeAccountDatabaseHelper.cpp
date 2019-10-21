@@ -42,23 +42,23 @@ namespace ledger {
         void TezosLikeAccountDatabaseHelper::createAccount(soci::session &sql,
                                                            const std::string walletUid,
                                                            int32_t index,
-                                                           const std::string &address) {
+                                                           const std::string &publicKey) {
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-            sql << "INSERT INTO tezos_accounts VALUES(:uid, :wallet_uid, :idx, :address)",use(uid), use(walletUid), use(index), use(address);
+            sql << "INSERT INTO tezos_accounts VALUES(:uid, :wallet_uid, :idx, :publicKey)",use(uid), use(walletUid), use(index), use(publicKey);
         }
 
         bool TezosLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
                                                           const std::string &accountUid,
                                                           TezosLikeAccountDatabaseEntry &entry) {
-            rowset<row> rows = (sql.prepare << "SELECT xtz.idx, xtz.address, "
+            rowset<row> rows = (sql.prepare << "SELECT xtz.idx, xtz.public_key, "
                     "orig.uid, orig.address, orig.spendable, orig.delegatable, orig.public_key "
                     "FROM tezos_accounts AS xtz "
                     "LEFT JOIN tezos_originated_accounts AS orig ON xtz.uid = orig.tezos_account_uid "
                     "WHERE xtz.uid = :uid", use(accountUid));
             for (auto& row : rows) {
-                if (entry.address.empty()) {
+                if (entry.publicKey.empty()) {
                     entry.index = row.get<int32_t>(0);
-                    entry.address = row.get<std::string>(1);
+                    entry.publicKey = row.get<std::string>(1);
                 }
                 // Get related originated accounts
                 if (row.get_indicator(2) != i_null) {
@@ -73,7 +73,7 @@ namespace ledger {
                     entry.originatedAccounts.emplace_back(originatedEntry);
                 }
             }
-            return !entry.address.empty();
+            return !entry.publicKey.empty();
         }
 
         std::string TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(const std::string &xtzAccountUid, const std::string &originatedAddress) {

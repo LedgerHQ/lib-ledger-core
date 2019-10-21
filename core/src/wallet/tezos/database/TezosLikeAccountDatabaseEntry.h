@@ -46,7 +46,7 @@ namespace ledger {
 
         struct TezosLikeAccountDatabaseEntry {
             int32_t index;
-            std::string address;
+            std::string publicKey;
             std::vector<TezosLikeOriginatedAccountDatabaseEntry> originatedAccounts;
         };
     }

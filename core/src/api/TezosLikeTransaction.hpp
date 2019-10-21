@@ -52,9 +52,7 @@ public:
     virtual std::vector<uint8_t> serialize() = 0;
 
     /** Set signature of transaction, when a signature is set serialize method gives back serialized Tx */
-    virtual void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) = 0;
-
-    virtual void setDERSignature(const std::vector<uint8_t> & signature) = 0;
+    virtual void setSignature(const std::vector<uint8_t> & signature) = 0;
 
     /**
      * Get the time when the transaction was issued or the time of the block including
@@ -69,7 +67,7 @@ public:
 
     virtual std::shared_ptr<Amount> getGasLimit() = 0;
 
-    virtual std::shared_ptr<Amount> getStorageLimit() = 0;
+    virtual std::shared_ptr<BigInt> getStorageLimit() = 0;
 
     /** Get hash of block in which tx is included */
     virtual std::experimental::optional<std::string> getBlockHash() = 0;
