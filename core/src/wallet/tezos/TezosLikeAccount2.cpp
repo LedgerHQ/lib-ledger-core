@@ -103,12 +103,12 @@ namespace ledger {
             auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future = _synchronizer->synchronize(std::static_pointer_cast<TezosLikeAccount>(shared_from_this()))->getFuture();
             auto self = std::static_pointer_cast<TezosLikeAccount>(shared_from_this());
+            auto future = _synchronizer->synchronize(self)->getFuture();
 
             //Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(),
-                                                    [self](const TryPtr<TezosLikeBlockchainExplorer::Block> &block) mutable {
+                                                    [](const TryPtr<TezosLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
                                                             //TODO
                                                         }
@@ -127,27 +127,32 @@ namespace ledger {
                         }
 
                         using TxsBulk = TezosLikeBlockchainExplorer::TransactionsBulk;
-                        static std::function<Future<Unit> (size_t)> getTxs = [self] (size_t id) -> Future<Unit> {
-                            std::vector<std::string> addresses{self->_originatedAccounts[id]->getAddress()};
-                            // TODO: Get info of last fetched block
-                            // For the moment we start synchro from the beginning
-                            return self->_explorer->getTransactions(addresses).flatMap<Unit>(self->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
-                                auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(self->getAccountUid(), addresses[0]);
-                                vector::map<int, TezosLikeBlockchainExplorerTransaction>(bulk->transactions, [=] (const TezosLikeBlockchainExplorerTransaction &tx) {
-                                    soci::session sql(self->getWallet()->getDatabase()->getPool());
-                                    return self->putTransaction(sql, tx, uid, addresses[0]);
-                                });
 
-                                if (id == self->_originatedAccounts.size() - 1) {
-                                    return Future<Unit>::successful(Unit());
-                                }
-
-                                return getTxs(id + 1);
-                            }).recover(self->getContext(), [self] (const Exception& ex) -> Unit {
-                                throw ex;
-                            });
-                        };
-                        return getTxs(0);
+                        static std::function<Future<Unit> (std::shared_ptr<TezosLikeAccount>, size_t)> getTxs =
+                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id) -> Future<Unit> {
+                                    std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
+                                    // TODO: Get info of last fetched block
+                                    // For the moment we start synchro from the beginning
+                                    return account->_explorer->getTransactions(addresses)
+                                            .flatMap<Unit>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
+                                                auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
+                                                {
+                                                    soci::session sql(account->getWallet()->getDatabase()->getPool());
+                                                    soci::transaction tr(sql);
+                                                    for (auto &tx : bulk->transactions) {
+                                                        account->putTransaction(sql, tx, uid, addresses[0]);
+                                                    }
+                                                    tr.commit();
+                                                    if (id == account->_originatedAccounts.size() - 1) {
+                                                        return Future<Unit>::successful(Unit());
+                                                    }
+                                                }
+                                                return getTxs(account, id + 1);
+                                            }).recover(account->getContext(), [] (const Exception& ex) -> Unit {
+                                                throw ex;
+                                            });
+                                };
+                        return getTxs(self, 0);
                     })
                     .onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
                         api::EventCode code;
