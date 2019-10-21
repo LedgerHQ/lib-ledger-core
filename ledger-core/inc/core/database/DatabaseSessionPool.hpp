@@ -36,6 +36,7 @@
 #include <core/api/ExecutionContext.hpp>
 #include <core/async/Future.hpp>
 #include <core/database/DatabaseBackend.hpp>
+#include <core/database/Migrations.hpp>
 #include <core/debug/LoggerStreamBuffer.hpp>
 
 namespace ledger {
@@ -63,6 +64,32 @@ namespace ledger {
 
             /// Install the required data / schemas in the database to allow coins to register.
             void performDatabaseMigrationSetup();
+
+            /// Run migration forward for a given migration system.
+            template <int V, typename T>
+            void forwardMigration() {
+                soci::session sql(getPool());
+                int version = getDatabaseMigrationVersion<T>(sql);
+
+                soci::transaction tr(sql);
+                Migration<V, T>::forward(sql, version);
+
+                tr.commit();
+            }
+
+            /// Rollback a migration for a given migration system.
+            template <int V, typename T>
+            void rollbackMigration() {
+                soci::session sql(getPool());
+                int version = getDatabaseMigrationVersion<T>(sql);
+
+                soci::transaction tr(sql);
+                Migration<V, T>::backward(sql, version);
+
+                unsetupMigrations(sql);
+
+                tr.commit();
+            }
 
             /// Uninstall the data / schemas from the database that allow coins to register.
             void performDatabaseMigrationUnsetup();

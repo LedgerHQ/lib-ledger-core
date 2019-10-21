@@ -87,6 +87,12 @@ namespace ledger {
             soci::session sql(getPool());
             int version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
+            // if the database doesn’t exist, we need to create its structure
+            if (version == -1) {
+              setupMigrations(sql);
+              version = getDatabaseMigrationVersion<CoreMigration>(sql);
+            }
+
             soci::transaction tr(sql);
             Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::forward(sql, version);
 
@@ -94,13 +100,7 @@ namespace ledger {
         }
 
         void DatabaseSessionPool::performDatabaseMigrationUnsetup() {
-            soci::session sql(getPool());
-            int version = getDatabaseMigrationVersion<CoreMigration>(sql);
-
-            soci::transaction tr(sql);
-            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::backward(sql, version);
-
-            tr.commit();
+            rollbackMigration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>();
         }
 
         void DatabaseSessionPool::performChangePassword(const std::string &oldPassword,
