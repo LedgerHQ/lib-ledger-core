@@ -10,7 +10,7 @@ endif (APPLE)
 add_executable(ledger-core-tezos-tests main.cpp address_test.cpp)
 
 target_link_libraries(ledger-core-tezos-tests gtest gtest_main)
-target_link_libraries(ledger-core-tezos-tests ledger-core)
+target_link_libraries(ledger-core-tezos-tests ledger-core-static)
 target_link_libraries(ledger-core-tezos-tests ledger-test)
 target_link_libraries(ledger-core-tezos-tests leveldb)
 target_include_directories(ledger-core-tezos-tests PUBLIC ../../../core/lib/leveldb/include)
