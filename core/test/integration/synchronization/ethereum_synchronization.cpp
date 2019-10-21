@@ -183,7 +183,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 EXPECT_GT(erc20Accounts.size(), 0);
                 EXPECT_GT(erc20Accounts[0]->getOperations().size(),0);
                 auto erc20Balance = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
-                EXPECT_GT(erc20Balance->intValue(), 0);
+                EXPECT_TRUE(BigInt(erc20Balance->toString(10)) > BigInt("0"));
                 auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
                 std::cout << "ERC20 balance: " << erc20Balance->toString(10) << std::endl;
