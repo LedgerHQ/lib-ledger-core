@@ -63,7 +63,8 @@ namespace ledger {
             return createRequest(api::HttpMethod::POST,
                                  path,
                                  std::experimental::optional<std::vector<uint8_t>>(body),
-                                 headers);
+                                 headers,
+                                 baseUrl);
         }
 
         HttpClient& HttpClient::addHeader(const std::string &key, const std::string &value) {
