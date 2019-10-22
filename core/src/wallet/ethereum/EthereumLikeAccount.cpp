@@ -41,6 +41,7 @@
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ethereum/api_impl/EthereumLikeTransactionApi.h>
+#include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -122,7 +123,14 @@ namespace ledger {
             operation.date = transaction.receivedAt;
 
             auto updateOperation = [&] (soci::session &sql, Operation &operation, api::OperationType ty) {
-                operation.amount = transaction.value;
+                // if the status of the transaction is not correct, we set the operation’s amount to
+                // zero as it’s failed (yet fees were still paid)
+                if (transaction.status == 0) {
+                    operation.amount = BigInt::ZERO;
+                } else {
+                    operation.amount = transaction.value;
+                }
+
                 operation.type = ty;
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
@@ -249,6 +257,62 @@ namespace ledger {
             }
         }
 
+        std::vector<Operation> EthereumLikeAccount::getInternalOperations(soci::session &sql) {
+            auto addr = _keychain->getAddress()->toString();
+
+            soci::rowset<soci::row> rows = (sql.prepare <<
+                "SELECT io.type, io.value, io.sender, io.receiver, io.gas_limit, io.gas_used, et.gas_price, op.date, et.status "
+                "FROM internal_operations as io "
+                "JOIN operations as op on io.ethereum_operation_uid = op.uid "
+                "JOIN ethereum_operations as eo on eo.uid = op.uid "
+                "JOIN ethereum_transactions as et on eo.transaction_uid = et.transaction_uid "
+                "WHERE io.receiver = :addr OR io.sender = :addr",
+                soci::use(addr, "addr")
+            );
+
+            std::vector<Operation> operations;
+
+            for (auto& row : rows) {
+                InternalTx tx;
+                tx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
+
+                // if the status is not okay, we have to change the amount of the operation because
+                // it wasn’t really broadcasted, but the fees were still paid
+                auto status = soci::get_number<uint64_t>(row, 8);
+                if (status == 0) {
+                    tx.value = BigInt::ZERO;
+                } else {
+                    tx.value = BigInt::fromHex(row.get<std::string>(1));
+                }
+
+                tx.from = row.get<std::string>(2);
+                tx.to = row.get<std::string>(3);
+                tx.gasLimit = BigInt::fromHex(row.get<std::string>(4));
+                tx.gasUsed = BigInt::fromHex(row.get<std::string>(5));
+                auto gasPrice = BigInt::fromHex(row.get<std::string>(6));
+                auto date = DateUtils::fromJSON(row.get<std::string>(7));
+
+                EthereumLikeBlockchainExplorerTransaction etx;
+                etx.status = status;
+
+                Operation operation;
+                operation.amount = tx.value;
+
+                if (tx.gasUsed.hasValue()) {
+                    operation.fees = gasPrice * tx.gasUsed.getValue();
+                }
+
+                operation.type = tx.type;
+                operation.date = date;
+
+                operation.ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(etx);
+
+                operations.push_back(operation);
+            }
+
+            return operations;
+        }
+
         bool EthereumLikeAccount::putBlock(soci::session& sql,
                                            const EthereumLikeBlockchainExplorer::Block& block) {
                 Block abstractBlock;
@@ -298,9 +362,8 @@ namespace ledger {
         EthereumLikeAccount::getBalanceHistory(const std::string & start,
                                                const std::string & end,
                                                api::TimePeriod precision) {
-                auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
+                auto self = getSelf();
                 return async<std::vector<std::shared_ptr<api::Amount>>>([=] () -> std::vector<std::shared_ptr<api::Amount>> {
-
                     auto startDate = DateUtils::fromJSON(start);
                     auto endDate = DateUtils::fromJSON(end);
                     if (startDate >= endDate) {
@@ -313,12 +376,28 @@ namespace ledger {
                     std::vector<Operation> operations;
 
                     auto keychain = self->getKeychain();
-                    std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-                        return keychain->contains(addr);
+                    std::function<bool(const std::string &)> filter = [&keychain](const std::string& addr) -> bool {
+                        //return keychain->contains(addr);
+                        auto keychainAddr = keychain->getAddress()->toString();
+                        return addr == keychainAddr;
                     };
 
-                    //Get operations related to an account
+                    // Get operations related to an account
                     OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+
+                    // Get internal operations, add them to the list of operations and deallocate
+                    // them to free memory
+                    {
+                        auto internalOperations = getInternalOperations(sql);
+
+                        // add the internal operations to the list of operations
+                        operations.insert(operations.end(), internalOperations.begin(), internalOperations.end());
+                    }
+
+                    // sort operations
+                    std::sort(operations.begin(), operations.end(), [](Operation const& a, Operation const& b) {
+                        return a.date > b.date;
+                    });
 
                     auto lowerDate = startDate;
                     auto upperDate = DateUtils::incrementDate(startDate, precision);
@@ -327,8 +406,8 @@ namespace ledger {
                     std::size_t operationsCount = 0;
                     BigInt sum;
                     while (lowerDate <= endDate && operationsCount < operations.size()) {
-
                         auto operation = operations[operationsCount];
+
                         while (operation.date > upperDate && lowerDate < endDate) {
                             lowerDate = DateUtils::incrementDate(lowerDate, precision);
                             upperDate = DateUtils::incrementDate(upperDate, precision);
@@ -350,13 +429,16 @@ namespace ledger {
                                     break;
                             }
                         }
+
                         operationsCount += 1;
                     }
 
                     while (lowerDate < endDate) {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
+
                         amounts.emplace_back(
-                                std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum));
+                            std::make_shared<ledger::core::Amount>(self->getWallet()->getCurrency(), 0, sum)
+                        );
                     }
 
                     return amounts;
