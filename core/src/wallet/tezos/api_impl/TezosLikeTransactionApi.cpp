@@ -219,18 +219,13 @@ namespace ledger {
                     writer.writeByteArray(zarith::zSerializeNumber(bigIntValue.toByteArray()));
 
                     // Set Receiver
-                    if (isBabylonActivated) {
-                        auto receiverContractID = vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
-                        writer.writeByteArray(receiverContractID);
-                    } else {
-                        // Originated
-                        auto isReceiverOriginated = _receiver->toBase58().find("KT1") == 0;
-                        writer.writeByte(static_cast<uint8_t>(isReceiverOriginated));
-                        auto receiverContractID = isReceiverOriginated ?
-                                                  vector::concat(_receiver->getHash160(), {0x00}) :
-                                                  vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
-                        writer.writeByteArray(receiverContractID);
-                    }
+                    // Originated
+                    auto isReceiverOriginated = _receiver->toBase58().find("KT1") == 0;
+                    writer.writeByte(static_cast<uint8_t>(isReceiverOriginated));
+                    auto receiverContractID = isReceiverOriginated ?
+                                              vector::concat(_receiver->getHash160(), {0x00}) :
+                                              vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
+                    writer.writeByteArray(receiverContractID);
 
 
                     // Additional parameters

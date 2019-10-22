@@ -37,6 +37,8 @@
 
 namespace ledger {
     namespace core {
+        const std::string rpcNode = "https://mainnet.tezrpc.me/";
+
         ExternalTezosLikeBlockchainExplorer::ExternalTezosLikeBlockchainExplorer(
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<HttpClient> &http,
@@ -96,7 +98,7 @@ namespace ledger {
             return _http->POST("/injection/operation?chain=main",
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
                                std::unordered_map<std::string, std::string>{},
-                               "https://mainnet.tezrpc.me/")
+                               rpcNode)
                     .json().template map<String>(getExplorerContext(),
                                                  [](const HttpRequest::JsonResult &result) -> String {
                                                      auto &json = *std::get<1>(result);
@@ -204,7 +206,8 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getHelper(const std::string &url,
                                                        const std::string &field,
                                                        const std::unordered_map<std::string, std::string> &params,
-                                                       const std::string &fallbackValue) {
+                                                       const std::string &fallbackValue,
+                                                       const std::string &forceUrl) {
             const bool parseNumbersAsString = true;
             auto networkId = getNetworkParameters().Identifier;
 
@@ -214,19 +217,21 @@ namespace ledger {
                 separator = "&";
             }
 
-            return _http->GET(url + p, std::unordered_map<std::string, std::string>())
+            return _http->GET(url + p,
+                              std::unordered_map<std::string, std::string>(),
+                              forceUrl)
                     .json(parseNumbersAsString)
                     .mapPtr<BigInt>(getContext(),
                                     [field, networkId, fallbackValue](const HttpRequest::JsonResult &result) {
                                         auto &json = *std::get<1>(result);
-                                        if (!json.IsObject() ||
-                                                !json.HasMember(field.c_str()) ||
-                                                !json[field.c_str()].IsString()) {
+                                        if ((!json.IsObject() ||
+                                            !json.HasMember(field.c_str()) ||
+                                            !json[field.c_str()].IsString()) && !json.IsString()) {
                                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                                  fmt::format("Failed to get {} for {}", field,
                                                                              networkId));
                                         }
-                                        std::string value = json[field.c_str()].GetString();
+                                        std::string value = json.IsString() ? json.GetString() : json[field.c_str()].GetString();
                                         if (value == "0" && !fallbackValue.empty()) {
                                             value = fallbackValue;
                                         } else if (value.find('.') != std::string::npos) {
@@ -255,10 +260,11 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
-            return getHelper(fmt::format("account/{}", address),
-                             "n_tx",
+            return getHelper(fmt::format("/chains/main/blocks/head/context/contracts/{}/counter", address),
+                             "",
                              std::unordered_map<std::string, std::string>{},
-                             "0"
+                             "0",
+                             rpcNode
             );
         }
     }

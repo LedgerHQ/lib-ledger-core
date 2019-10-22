@@ -131,7 +131,9 @@ namespace ledger {
                        const std::shared_ptr<api::HttpClient> &client,
                        const std::shared_ptr<api::ExecutionContext> &context
             );
-            HttpRequest GET(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
+            HttpRequest GET(const std::string& path,
+                            const std::unordered_map<std::string, std::string>& headers = {},
+                            const std::string &baseUrl = "");
             HttpRequest PUT(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest DEL(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest POST(const std::string& path,
