@@ -127,7 +127,7 @@ echo "======> CMake config for $unamestr in $BUILD_CONFIG mode"
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
     if [ "$unamestr" == "Linux" ]; then
-        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug"
+        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" "-DSYS_OPENSSL=ON" "-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu" "-DOPENSSL_INCLUDE_DIR=/usr/include/openssl"
     elif [ "$unamestr" == "Darwin" ]; then
         version=`ls /usr/local/Cellar/qt | grep 5.`
         echo "====> Get qt5 version"

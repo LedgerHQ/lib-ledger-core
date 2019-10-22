@@ -34,15 +34,24 @@
 #include <openssl/sha.h>
 
 std::vector<uint8_t> ledger::core::HMAC::sha256(const std::vector<uint8_t>& key,
-                                                    const std::vector<uint8_t>& data) {
+                                                const std::vector<uint8_t>& data) {
     auto len = SHA256_DIGEST_LENGTH;
     std::vector<uint8_t> hash(len);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     HMAC_CTX hmac;
     HMAC_CTX_init(&hmac);
     HMAC_Init_ex(&hmac, key.data(), key.size(), EVP_sha256(), NULL);
     HMAC_Update(&hmac, data.data(), data.size());
     HMAC_Final(&hmac, hash.data(), (unsigned int *)(&len));
     HMAC_cleanup(&hmac);
+#else
+    HMAC_CTX * hmac = HMAC_CTX_new();
+    HMAC_CTX_reset(hmac);
+    HMAC_Init_ex(hmac, key.data(), key.size(), EVP_sha256(), NULL);
+    HMAC_Update(hmac, data.data(), data.size());
+    HMAC_Final(hmac, hash.data(), (unsigned int *)(&len));
+    HMAC_CTX_free(hmac);
+#endif
     return hash;
 }
 
@@ -50,11 +59,20 @@ std::vector<uint8_t> ledger::core::HMAC::sha512(const std::vector<uint8_t>& key,
                                                     const std::vector<uint8_t>& data) {
     auto len = SHA512_DIGEST_LENGTH;
     std::vector<uint8_t> hash(len);
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     HMAC_CTX hmac;
     HMAC_CTX_init(&hmac);
     HMAC_Init_ex(&hmac, key.data(), key.size(), EVP_sha512(), NULL);
     HMAC_Update(&hmac, data.data(), data.size());
     HMAC_Final(&hmac, hash.data(), (unsigned int *)(&len));
     HMAC_cleanup(&hmac);
+#else
+    HMAC_CTX * hmac = HMAC_CTX_new();
+    HMAC_CTX_reset(hmac);
+    HMAC_Init_ex(hmac, key.data(), key.size(), EVP_sha512(), NULL);
+    HMAC_Update(hmac, data.data(), data.size());
+    HMAC_Final(hmac, hash.data(), (unsigned int *)(&len));
+    HMAC_CTX_free(hmac);
+#endif
     return hash;
 }
