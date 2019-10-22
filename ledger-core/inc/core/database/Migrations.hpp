@@ -39,14 +39,12 @@
 namespace ledger {
     namespace core {
         /// Get the current database migration version.
-        ///
-        /// The coinID trait is required on T.
         template <typename T>
         int getDatabaseMigrationVersion(soci::session& sql) {
             int version = -1;
 
             try {
-                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = :id", soci::use(T::coinID), soci::into(version));
+                soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = :id", soci::use(T::COIN_ID), soci::into(version));
                 st.execute();
                 st.fetch();
             } catch (...) {
@@ -68,7 +66,7 @@ namespace ledger {
 
             if (currentVersion < version) {
                 migrate<version, T>(sql);
-                sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::coinID), soci::use(version);
+                sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(version);
 
                 return true;
             }
@@ -84,11 +82,12 @@ namespace ledger {
         ///
         /// The T type variable is expected to be a trait that has some constants:
         ///
-        ///   - T::coinID: coin ID numeric value. Keep in mind that this value must be unique for
+        ///   - T::COIN_ID: coin ID numeric value. Keep in mind that this value must be unique for
         ///     all coins as it serves as a namespace value.
         ///
         ///     See <https://github.com/satoshilabs/slips/blob/master/slip-0044.md> to correctly
         ///     implement this function.
+        ///   - T::CURRENT_VERSION: current version of the migration system.
         template <int version, typename T>
         struct Migration final {
           /// Advance the migration system up to migrationNumber.
@@ -97,7 +96,7 @@ namespace ledger {
 
               if (currentVersion < version) {
                   migrate<version, T>(sql);
-                  sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::coinID), soci::use(version);
+                  sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(version);
               }
           }
 
@@ -112,7 +111,7 @@ namespace ledger {
                       // update the version for > 0
                       if (version != 0) {
                           auto prevVersion = version - 1;
-                          sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::coinID), soci::use(prevVersion);
+                          sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(prevVersion);
                       }
 
                       Migration<version - 1, T>::backward(sql, currentVersion - 1);
@@ -132,11 +131,11 @@ namespace ledger {
         template <typename T>
         struct Migration<0, T> final {
            static void forward(soci::session& sql, int currentVersion) {
-               sql << "INSERT INTO __database_meta__(id, version) VALUES(:id, 0)", soci::use(T::coinID);
+               sql << "INSERT INTO __database_meta__(id, version) VALUES(:id, 0)", soci::use(T::COIN_ID);
            }
 
            static void backward(soci::session& sql, int currentVersion) {
-               sql << "DELETE FROM __database_meta__ where id = :id", soci::use(T::coinID);
+               sql << "DELETE FROM __database_meta__ where id = :id", soci::use(T::COIN_ID);
            }
         };
 
@@ -150,7 +149,8 @@ namespace ledger {
 
         /// The Core tag type.
         struct CoreMigration {
-            static int const coinID;
+            static int constexpr COIN_ID = -1;
+            static uint32_t constexpr CURRENT_VERSION = 1;
         };
 
         // migrations

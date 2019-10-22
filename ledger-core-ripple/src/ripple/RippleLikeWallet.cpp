@@ -40,7 +40,7 @@
 #include <ripple/RippleLikeAccount.hpp>
 #include <ripple/RippleLikeAccountDatabaseHelper.hpp>
 #include <ripple/RippleLikeExtendedPublicKey.hpp>
-
+#include <ripple/database/Migrations.hpp>
 
 namespace ledger {
     namespace core {
@@ -57,6 +57,9 @@ namespace ledger {
             _explorer = explorer;
             _observer = observer;
             _synchronizerFactory = synchronizer;
+
+            // create the DB structure if not already created
+            services->getDatabaseSessionPool()->forwardMigration<XRPMigration>();
         }
 
         bool RippleLikeWallet::isSynchronizing() {

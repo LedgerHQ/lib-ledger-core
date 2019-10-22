@@ -60,39 +60,37 @@ namespace ledger {
                 const std::string &password = ""
             );
 
-            static const int CURRENT_DATABASE_SCHEME_VERSION = 1;
-
             /// Install the required data / schemas in the database to allow coins to register.
             void performDatabaseMigrationSetup();
 
+            /// Uninstall the data / schemas from the database that allow coins to register.
+            void performDatabaseMigrationUnsetup();
+
             /// Run migration forward for a given migration system.
-            template <int V, typename T>
+            template <typename T>
             void forwardMigration() {
                 soci::session sql(getPool());
                 int version = getDatabaseMigrationVersion<T>(sql);
 
                 soci::transaction tr(sql);
-                Migration<V, T>::forward(sql, version);
+                Migration<T::CURRENT_VERSION, T>::forward(sql, version);
 
                 tr.commit();
             }
 
             /// Rollback a migration for a given migration system.
-            template <int V, typename T>
+            template <typename T>
             void rollbackMigration() {
                 soci::session sql(getPool());
                 int version = getDatabaseMigrationVersion<T>(sql);
 
                 soci::transaction tr(sql);
-                Migration<V, T>::backward(sql, version);
+                Migration<T::CURRENT_VERSION, T>::backward(sql, version);
 
                 unsetupMigrations(sql);
 
                 tr.commit();
             }
-
-            /// Uninstall the data / schemas from the database that allow coins to register.
-            void performDatabaseMigrationUnsetup();
 
             void performChangePassword(const std::string &oldPassword,
                                        const std::string &newPassword);

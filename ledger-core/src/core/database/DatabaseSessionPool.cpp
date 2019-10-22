@@ -94,13 +94,13 @@ namespace ledger {
             }
 
             soci::transaction tr(sql);
-            Migration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>::forward(sql, version);
+            Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
 
             tr.commit();
         }
 
         void DatabaseSessionPool::performDatabaseMigrationUnsetup() {
-            rollbackMigration<CURRENT_DATABASE_SCHEME_VERSION, CoreMigration>();
+            rollbackMigration<CoreMigration>();
         }
 
         void DatabaseSessionPool::performChangePassword(const std::string &oldPassword,

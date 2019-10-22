@@ -32,11 +32,14 @@
 
 #include <core/database/Migrations.hpp>
 
+#include <ripple/RippleLikeCoinID.hpp>
+
 namespace ledger {
     namespace core {
         /// The Ripple tag type.
         struct XRPMigration {
-          static int const coinID;
+          static int constexpr COIN_ID = RIPPLE_COIN_ID;
+          static uint32_t constexpr CURRENT_VERSION = 2;
         };
 
         // migrations

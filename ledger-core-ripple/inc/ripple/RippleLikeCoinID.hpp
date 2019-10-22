@@ -34,6 +34,6 @@
 
 namespace ledger {
     namespace core {
-        extern uint64_t const RIPPLE_COIN_ID;
+        static uint64_t constexpr RIPPLE_COIN_ID = 144;
     }
 }
