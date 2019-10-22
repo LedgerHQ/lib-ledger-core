@@ -39,6 +39,7 @@
 #include <ethereum/EthereumLikeWallet.hpp>
 #include <ethereum/EthereumLikeAccount.hpp>
 #include <ethereum/EthereumLikeExtendedPublicKey.hpp>
+#include <ethereum/database/Migrations.hpp>
 #include <ethereum/database/EthereumLikeAccountDatabaseHelper.hpp>
 
 namespace ledger {
@@ -48,7 +49,7 @@ namespace ledger {
                                              const std::shared_ptr<EthereumLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<EthereumLikeKeychainFactory> &keychainFactory,
                                              const EthereumLikeAccountSynchronizerFactory &synchronizer,
-                                             const std::shared_ptr<Services> &services, 
+                                             const std::shared_ptr<Services> &services,
                                              const api::Currency &currency,
                                              const std::shared_ptr<DynamicObject>& configuration,
                                              const DerivationScheme& scheme
@@ -59,6 +60,9 @@ namespace ledger {
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
             _coinType = scheme.getCoinType() ? scheme.getCoinType() : currency.bip44CoinType;
+
+            // create the DB structure if not already created
+            services->getDatabaseSessionPool()->forwardMigration<EthereumMigration>();
         }
 
         bool EthereumLikeWallet::isSynchronizing() {

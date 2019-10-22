@@ -2,9 +2,9 @@
 
 namespace ledger {
     namespace core {
-        int const EthereumMigration::coinID = 60;
+        int constexpr EthereumMigration::COIN_ID;
 
-        uint32_t const EthereumMigration::currentVersion = 1;
+        uint32_t constexpr EthereumMigration::CURRENT_VERSION;
 
         template <> void migrate<1, EthereumMigration>(soci::session& sql) {
             // ETH currencies
