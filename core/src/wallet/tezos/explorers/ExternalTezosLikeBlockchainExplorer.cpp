@@ -60,7 +60,8 @@ namespace ledger {
             std::string addressesStr = addresses[0]->toString();
             return getHelper(fmt::format("account/{}", addressesStr),
                              "total_balance",
-                             std::unordered_map<std::string, std::string>{}
+                             std::unordered_map<std::string, std::string>{},
+                             "0"
             );
         }
 
@@ -95,7 +96,7 @@ namespace ledger {
             return _http->POST("/injection/operation?chain=main",
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
                                std::unordered_map<std::string, std::string>{},
-                               "https://mainnet.tezrpc.me")
+                               "https://mainnet.tezrpc.me/")
                     .json().template map<String>(getExplorerContext(),
                                                  [](const HttpRequest::JsonResult &result) -> String {
                                                      auto &json = *std::get<1>(result);
@@ -157,7 +158,8 @@ namespace ledger {
                     .template mapPtr<TransactionsBulk>(getExplorerContext(),
                                                            [](const EitherTransactionsBulk &result) {
                                                                if (result.isLeft()) {
-                                                                   throw result.getLeft();
+                                                                   // Because it fails when there are no ops
+                                                                   return std::make_shared<TransactionsBulk>();
                                                                } else {
                                                                    return result.getRight();
                                                                }
@@ -231,7 +233,10 @@ namespace ledger {
                                             value = api::BigInt::fromDecimalString(value, 6, ".")->toString(10);
                                         }
                                         return std::make_shared<BigInt>(value);
-                                    });
+                                    })
+                    .recover(getContext(), [fallbackValue] (const Exception &exception) {
+                        return std::make_shared<BigInt>(!fallbackValue.empty() ? fallbackValue : "0");
+                    });
         }
 
         Future<std::shared_ptr<BigInt>>
@@ -252,7 +257,8 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getCounter(const std::string &address) {
             return getHelper(fmt::format("account/{}", address),
                              "n_tx",
-                             std::unordered_map<std::string, std::string>{}
+                             std::unordered_map<std::string, std::string>{},
+                             "0"
             );
         }
     }
