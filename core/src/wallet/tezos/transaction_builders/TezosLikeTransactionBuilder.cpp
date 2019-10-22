@@ -248,28 +248,21 @@ namespace ledger {
                     // Get Receiver
                     // Originated
                     std::vector<uint8_t> receiverHash160, receiverVersion;
-                    if (isBabylonActivated) {
+
+                    auto isReceiverOriginated = reader.readNextByte();
+
+                    if (!isReceiverOriginated) {
                         // Curve code
                         auto receiverCurveCode = reader.readNextByte();
                         // 20 bytes of publicKey hash
                         receiverHash160 = reader.read(20);
-                        receiverVersion = params.ImplicitPrefix;
                     } else {
-                        auto isReceiverOriginated = reader.readNextByte();
-
-                        if (!isReceiverOriginated) {
-                            // Curve code
-                            auto receiverCurveCode = reader.readNextByte();
-                            // 20 bytes of publicKey hash
-                            receiverHash160 = reader.read(20);
-                        } else {
-                            // 20 bytes of publicKey hash
-                            receiverHash160 = reader.read(20);
-                            // Padding
-                            reader.readNextByte();
-                        }
-                        receiverVersion = isReceiverOriginated ? params.OriginatedPrefix : params.ImplicitPrefix;
+                        // 20 bytes of publicKey hash
+                        receiverHash160 = reader.read(20);
+                        // Padding
+                        reader.readNextByte();
                     }
+                    receiverVersion = isReceiverOriginated ? params.OriginatedPrefix : params.ImplicitPrefix;
 
                     tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                        receiverHash160,
