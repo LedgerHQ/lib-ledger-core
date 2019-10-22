@@ -134,7 +134,10 @@ namespace ledger {
             HttpRequest GET(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest PUT(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest DEL(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
-            HttpRequest POST(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
+            HttpRequest POST(const std::string& path,
+                             const std::vector<uint8_t> &body,
+                             const std::unordered_map<std::string, std::string>& headers = {},
+                             const std::string &baseUrl = "");
             HttpClient& addHeader(const std::string& key, const std::string& value);
             HttpClient& removeHeader(const std::string& key);
             void setLogger(const std::shared_ptr<spdlog::logger>& logger);
@@ -143,8 +146,8 @@ namespace ledger {
             HttpRequest createRequest(api::HttpMethod method,
                                       const std::string& path,
                                       const std::experimental::optional<std::vector<uint8_t >> body,
-                                      const std::unordered_map<std::string, std::string>& headers
-            );
+                                      const std::unordered_map<std::string, std::string>& headers,
+                                      const std::string &baseUrl = "");
 
         private:
             std::string _baseUrl;
