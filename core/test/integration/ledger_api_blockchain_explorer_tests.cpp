@@ -92,8 +92,9 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash) {
     EXPECT_EQ(tx.outputs[1].address.getValue(), "19j8biFtMSy5HFRX6mXiurjz3jszg7nLN5");
     EXPECT_EQ(tx.block.getValue().hash, "0000000000000000026aa418ef33e0b079a42d348f35bc0a2fa4bc150a9c459d");
     EXPECT_EQ(tx.block.getValue().height, 403912);
-    EXPECT_EQ(tx.block.getValue().time.time_since_epoch().count(), 1458734061000000);
-    EXPECT_EQ(tx.receivedAt.time_since_epoch().count(), 1458734061000000);
+    // Checked that real value of 2016-03-23T11:54:21Z corresponds to 1458734061000
+    EXPECT_EQ(std::chrono::duration_cast<std::chrono::milliseconds>(tx.block.getValue().time.time_since_epoch()).count(), 1458734061000);
+    EXPECT_EQ(std::chrono::duration_cast<std::chrono::milliseconds>(tx.receivedAt.time_since_epoch()).count(), 1458734061000);
 }
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_2) {
