@@ -32,7 +32,7 @@
 #include "TezosLikeTransactionParser.h"
 #include <wallet/currencies.hpp>
 #include <api/TezosOperationTag.hpp>
-
+#include <api/BigInt.hpp>
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
  if (currentObject == "block") {                                    \
@@ -83,9 +83,11 @@ namespace ledger {
 
         bool TezosLikeTransactionParser::Bool(bool b) {
             PROXY_PARSE(Bool, b) {
-                if (_lastKey == "spendable" && _transaction->originatedAccount.hasValue()) {
+                if ((_lastKey == "spendable" || _lastKey == "is_spendable")
+                    && _transaction->originatedAccount.hasValue()) {
                     _transaction->originatedAccount.getValue().spendable = b;
-                } else if (_lastKey == "delegatable" && _transaction->originatedAccount.hasValue()) {
+                } else if ((_lastKey == "delegatable" || _lastKey == "is_delegatable")
+                           && _transaction->originatedAccount.hasValue()) {
                     _transaction->originatedAccount.getValue().delegatable = b;
                 }
                 return true;
@@ -120,12 +122,23 @@ namespace ledger {
                                                    bool copy) {
             PROXY_PARSE(RawNumber, str, length, copy) {
                 std::string number(str, length);
-                if (_lastKey == "op_level" && _transaction->block.hasValue()) {
+                auto toValue = [] (const std::string &v, bool forceConversion) -> BigInt {
+                    if (v.find('.') != std::string::npos || forceConversion) {
+                        return BigInt(api::BigInt::fromDecimalString(v, 6, ".")->toString(10));
+                    }
+                    return BigInt::fromString(v);
+                };
+                if ((_lastKey == "op_level" || _lastKey == "height")
+                    && _transaction->block.hasValue()) {
                     _transaction->block.getValue().height = BigInt::fromString(number).toUint64();
-                } else if (_lastKey == "amount") {
-                    _transaction->value = BigInt::fromString(number);
+                } else if (_lastKey == "amount" || _lastKey == "volume") {
+                    _transaction->value = toValue(number, _lastKey == "volume");
                 } else if (_lastKey == "fee") {
-                    _transaction->fees = _transaction->fees + BigInt::fromString(number);
+                    _transaction->fees = _transaction->fees + toValue(number, false);
+                } else if (_lastKey == "gas_limit") {
+                    _transaction->gas_limit = toValue(number, false);
+                } else if (_lastKey == "storage_limit") {
+                    _transaction->storage_limit = toValue(number, false);
                 }
                 return true;
             }
@@ -135,15 +148,21 @@ namespace ledger {
         TezosLikeTransactionParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             PROXY_PARSE(String, str, length, copy) {
                 std::string value(str, length);
+                auto toValue = [] (const std::string &v, bool forceConversion) -> BigInt {
+                    if (v.find('.') != std::string::npos || forceConversion) {
+                        return BigInt(api::BigInt::fromDecimalString(v, 6, ".")->toString(10));
+                    }
+                    return BigInt::fromString(v);
+                };
 
                 if (_lastKey == "hash") {
                     _transaction->hash = value;
-                } else if (_lastKey == "block_hash") {
+                } else if (_lastKey == "block_hash" || _lastKey == "block") {
                     TezosLikeBlockchainExplorer::Block block;
                     block.hash = value;
                     block.currencyName = currencies::TEZOS.name;
                     _transaction->block = block;
-                } else if (_lastKey == "timestamp") {
+                } else if (_lastKey == "timestamp" || _lastKey == "time") {
                     auto pos = value.find('+');
                     if (pos != std::string::npos && pos > 0) {
                         value = value.substr(0, pos);
@@ -157,17 +176,23 @@ namespace ledger {
                     if (_transaction->block.hasValue()) {
                         _transaction->block.getValue().time = date;
                     }
-                } else if (currentObject == "src" && _lastKey == "tz") {
+                } else if (_lastKey == "sender" ||
+                        (currentObject == "src" && _lastKey == "tz")) {
                     _transaction->sender = value;
-                } else if ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz") {
+                } else if (_lastKey == "receiver" ||
+                        ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz")) {
                     _transaction->receiver = value;
+                    if (_lastKey == "receiver" &&
+                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
+                        _transaction->originatedAccount.getValue().address = value;
+                    }
                 } else if (currentObject == "tz1" && _lastKey == "tz") {
                     _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount(value);
                 } else if (_lastKey == "gas_limit") {
                     _transaction->gas_limit = BigInt::fromString(value);
                 } else if (_lastKey == "storage_limit") {
                     _transaction->storage_limit = BigInt::fromString(value);
-                } else if (_lastKey == "kind" && _transaction->type == api::TezosOperationTag::OPERATION_TAG_NONE) {
+                } else if ((_lastKey == "kind" || _lastKey == "type") && _transaction->type == api::TezosOperationTag::OPERATION_TAG_NONE) {
                     static std::unordered_map<std::string, api::TezosOperationTag> opTags {
                             std::make_pair("reveal", api::TezosOperationTag::OPERATION_TAG_REVEAL),
                             std::make_pair("transaction", api::TezosOperationTag::OPERATION_TAG_TRANSACTION),
@@ -179,10 +204,17 @@ namespace ledger {
                     } else {
                         _transaction->type = api::TezosOperationTag::OPERATION_TAG_NONE;
                     }
-                } else if (_lastKey == "public_key") {
+
+                    if (_lastKey == "type" &&
+                            _transaction->type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
+                        _transaction->originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount();
+                    }
+
+                } else if (_lastKey == "public_key" ||
+                        (_lastKey == "data" && _transaction->type == api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
                     _transaction->publicKey = value;
-                } else if (_lastKey == "burn_tez") {
-                    _transaction->fees = _transaction->fees + BigInt::fromString(value);
+                } else if (_lastKey == "burn_tez" || _lastKey == "burned") {
+                    _transaction->fees = _transaction->fees + toValue(value, _lastKey == "burned");
                 }
                 return true;
             }
