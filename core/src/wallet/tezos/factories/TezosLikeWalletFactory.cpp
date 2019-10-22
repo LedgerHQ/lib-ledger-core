@@ -38,6 +38,7 @@
 
 #include <wallet/tezos/explorers/NodeTezosLikeBlockchainExplorer.h>
 #include <wallet/tezos/explorers/ExternalTezosLikeBlockchainExplorer.h>
+#include <wallet/tezos/explorers/RpcNodeTezosLikeBlockchainExplorer.h>
 #include <wallet/tezos/TezosLikeWallet.h>
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/tezos/synchronizers/TezosLikeBlockchainExplorerAccountSynchronizer.h>
@@ -135,33 +136,37 @@ namespace ledger {
             auto pool = getPool();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                     .value_or(api::BlockchainExplorerEngines::TEZOS_NODE);
-            std::shared_ptr<TezosLikeBlockchainExplorer> explorer = nullptr;
-            auto isTzStats = engine == api::BlockchainExplorerEngines::TZSTATS_API;
-            if (engine == api::BlockchainExplorerEngines::TEZOS_NODE ||
-                    isTzStats) {
-                auto defaultValue = isTzStats ?
-                        api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT :
-                                    api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT;
-                auto http = pool->getHttpClient(fmt::format("{}",
-                                                            configuration->getString(
-                                                                    api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
-                                                            ).value_or(defaultValue))
-                );
-                auto context = pool->getDispatcher()
-                        ->getSerialExecutionContext(api::BlockchainObserverEngines::TEZOS_NODE);
-                auto &networkParams = getCurrency().tezosLikeNetworkParameters.value();
 
-                if (isTzStats) {
-                    explorer = std::make_shared<ExternalTezosLikeBlockchainExplorer>(context,
-                                                                                     http,
-                                                                                     networkParams,
-                                                                                     configuration);
-                } else {
-                    explorer = std::make_shared<NodeTezosLikeBlockchainExplorer>(context,
+            std::shared_ptr<TezosLikeBlockchainExplorer> explorer = nullptr;
+            auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::TEZOS_NODE);
+            auto &networkParams = getCurrency().tezosLikeNetworkParameters.value();
+            auto optionalEndpoint = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT);
+
+            if (engine == api::BlockchainExplorerEngines::TEZOS_NODE) {
+                auto http = pool->getHttpClient(optionalEndpoint.value_or(
+                        api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT
+                ));
+                explorer = std::make_shared<ExternalTezosLikeBlockchainExplorer>(context,
                                                                                  http,
                                                                                  networkParams,
                                                                                  configuration);
-                }
+            } else if (engine == api::BlockchainExplorerEngines::TZSTATS_API) {
+                auto http = pool->getHttpClient(optionalEndpoint.value_or(
+                        api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT
+                ));
+                explorer = std::make_shared<ExternalTezosLikeBlockchainExplorer>(context,
+                                                                                 http,
+                                                                                 networkParams,
+                                                                                 configuration);
+            } else {
+                // Fallback on RPC node if unknown engine
+                auto http = pool->getHttpClient(optionalEndpoint.value_or(
+                        api::TezosConfigurationDefaults::TEZOS_RPC_ENDPOINT
+                ));
+                explorer = std::make_shared<RpcNodeTezosLikeBlockchainExplorer>(context,
+                                                                                http,
+                                                                                networkParams,
+                                                                                configuration);
             }
             if (explorer)
                 _runningExplorers.push_back(explorer);
