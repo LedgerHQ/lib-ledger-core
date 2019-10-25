@@ -106,6 +106,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             });
 
             auto restoreKey = account->getRestoreKey();
+            EXPECT_EQ(restoreKey, hex::toString(XTZ_KEYS_INFO.publicKeys[0]));
             account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
