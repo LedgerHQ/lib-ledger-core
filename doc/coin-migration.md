@@ -127,32 +127,64 @@ The `ledger-core` library provides a simple way to store objects in a database. 
 the [soci] library is used to create SQL statements. Those statements are gathered in *migrations*.
 Currently, migrations are composed of two parts:
 
-  - **Forward migrations**: this kind of migration migrates the content of the coin’s database from
-    version `N` to version `N + 1`. They typically add new tables, columns, data, but they can also
-    remove data depending on what needs to be done.
-  - **Backward migrations**: this kind of migration is often called a *rollback migration*, as it
-    cancels the associated *forward migration*. The SQL statements in such migrations will reflect
-    the opposite actions done in the *forward migration*. For instance, if you add a table in the
-    *forward migration*, the *rollback migration* will remove it. Please try to provide useful
-    *rollback migrations* as much often as possible, even though sometimes *rollback migrations* are
-    not a lossless operation.
+- **Forward migrations**: this kind of migration migrates the content of the coin’s database from
+  version `N` to version `N + 1`. They typically add new tables, columns, data, but they can also
+  remove data depending on what needs to be done.
+- **Backward migrations**: this kind of migration is often called a *rollback migration*, as it
+  cancels the associated *forward migration*. The SQL statements in such migrations will reflect
+  the opposite actions done in the *forward migration*. For instance, if you add a table in the
+  *forward migration*, the *rollback migration* will remove it. Please try to provide useful
+  *rollback migrations* as much often as possible, even though sometimes *rollback migrations* are
+  not a lossless operation.
 
 The `ledger-core` library also has some migrations to handle the abstract and common objects. You
 should follow the same conventions to handle your migrations, that are:
 
-  - Edit the `coinID` static variable in the `database/src/migrations.cpp` file to put the correct
-    value, depending on your coin. Please refer to <https://github.com/satoshilabs/slips/blob/master/slip-0044.md#registered-coin-types>
-    if you don’t know which value to use.
-  - Migrations use C++’s template system. You have to edit two functions to fully implement a
-    migration:
-    - The `migrate<N, T>` function. `N` is the number of the migration and `T` is the *tag type*
-      representing your coin (it’s defined in `database/inc/migrations.hpp`).
-      You can change the name of this type if you want, but don’t forget to change it in the `.cpp`
-      version too.
-    - The `rollback<N, T>` function.
-  - When you need a new migration, all you have to do is to create a new pair of functions by
-    incrementing the `N` value and change the `currentVersion` static variable to match the latest,
-    expected version.
+- Edit the `COIN_ID` static variable in the `database/Migrations.hpp` file to put the correct
+  value, depending on your coin. Please refer to <https://github.com/satoshilabs/slips/blob/master/slip-0044.md#registered-coin-types>
+  if you don’t know which value to use.
+- Edit the `CURRENT_VERSION` static variable in the same file. If you’re just creating your
+  project for the first time, you’ll likely to just put `1` here, but you should update that value
+  as soon as you have a new migration pair to add.
+- Migrations use C++’s template system. You have to edit two functions to fully implement a
+  migration:
+  - The `migrate<N, T>` function. `N` is the number of the migration and `T` is the *tag type*
+    representing your coin (it’s defined in `database/Migrations.hpp`).
+    You can change the name of this type if you want, but don’t forget to change it in the `.cpp`
+    version too.
+  - The `rollback<N, T>` function.
+- When you need a new migration, all you have to do is to create a new pair of functions by
+  incrementing the `N` value and change the `CURRENT_VERSION` static variable to match the latest,
+  expected version.
+
+You’re done with migrations, but you still have something to do: tell `ledger-core` to setup the
+database structure when using your project. There’s not a single way to do it, but there’s a
+preferred fashion: ask for the creation of the database structure when creating a new wallet. In
+the constructor of your coin wallet, you should be passed a `Services` object, which you can use
+to create your database structure.
+
+```cpp
+RippleLikeWallet::RippleLikeWallet(
+  const std::string &name,
+  const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
+  const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
+  const RippleLikeAccountSynchronizerFactory &synchronizer,
+  const std::shared_ptr<Services> &services,
+  const api::Currency &network,
+  const std::shared_ptr<DynamicObject> &configuration,
+  const DerivationScheme &scheme
+): AbstractWallet(name, network, services, configuration, scheme) {
+  _explorer = explorer;
+  _observer = observer;
+  _synchronizerFactory = synchronizer;
+
+  // create the DB structure if not already created
+  services->getDatabaseSessionPool()->forwardMigration<XRPMigration>();
+}
+```
+
+The `DatabaseSessionPool::forwardMigration<T>` method allows you to perform, if not already done,
+the database setup for a given coin identified by `T`.
 
 ## Wallet pool migration
 
