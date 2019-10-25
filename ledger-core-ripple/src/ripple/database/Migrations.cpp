@@ -29,11 +29,11 @@
  */
 
 #include <ripple/database/Migrations.hpp>
-#include <ripple/RippleLikeCoinID.hpp>
 
 namespace ledger {
     namespace core {
-        int const XRPMigration::coinID = RIPPLE_COIN_ID;
+        int constexpr XRPMigration::COIN_ID;
+        uint32_t constexpr XRPMigration::CURRENT_VERSION;
 
         template <> void migrate<1, XRPMigration>(soci::session& sql) {
             sql << "CREATE TABLE ripple_currencies("

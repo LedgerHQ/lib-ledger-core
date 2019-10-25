@@ -6,8 +6,8 @@ namespace ledger {
     namespace core {
         /// Tag type.
         struct EthereumMigration {
-          static int const coinID;
-          static uint32_t const currentVersion;
+          static int constexpr COIN_ID = 60;
+          static uint32_t constexpr CURRENT_VERSION = 1;
         };
 
         // migrations

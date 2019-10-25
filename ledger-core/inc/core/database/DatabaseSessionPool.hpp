@@ -36,6 +36,7 @@
 #include <core/api/ExecutionContext.hpp>
 #include <core/async/Future.hpp>
 #include <core/database/DatabaseBackend.hpp>
+#include <core/database/Migrations.hpp>
 #include <core/debug/LoggerStreamBuffer.hpp>
 
 namespace ledger {
@@ -59,14 +60,37 @@ namespace ledger {
                 const std::string &password = ""
             );
 
-            //static const int CURRENT_DATABASE_SCHEME_VERSION = 8;
-            static const int CURRENT_DATABASE_SCHEME_VERSION = 1;
-
             /// Install the required data / schemas in the database to allow coins to register.
             void performDatabaseMigrationSetup();
 
             /// Uninstall the data / schemas from the database that allow coins to register.
             void performDatabaseMigrationUnsetup();
+
+            /// Run migration forward for a given migration system.
+            template <typename T>
+            void forwardMigration() {
+                soci::session sql(getPool());
+                int version = getDatabaseMigrationVersion<T>(sql);
+
+                soci::transaction tr(sql);
+                Migration<T::CURRENT_VERSION, T>::forward(sql, version);
+
+                tr.commit();
+            }
+
+            /// Rollback a migration for a given migration system.
+            template <typename T>
+            void rollbackMigration() {
+                soci::session sql(getPool());
+                int version = getDatabaseMigrationVersion<T>(sql);
+
+                soci::transaction tr(sql);
+                Migration<T::CURRENT_VERSION, T>::backward(sql, version);
+
+                unsetupMigrations(sql);
+
+                tr.commit();
+            }
 
             void performChangePassword(const std::string &oldPassword,
                                        const std::string &newPassword);

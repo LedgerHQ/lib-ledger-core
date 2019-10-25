@@ -6,8 +6,8 @@ namespace ledger {
     namespace core {
         /// Tag type.
         struct $project_nameMigration {
-          static int const coinID;
-          static uint32_t const currentVersion;
+          static int constexpr coinID = 99999; // TODO: edit
+          static uint32_t constexpr currentVersion = 1; // TODO: edit
         };
 
         // migrations
