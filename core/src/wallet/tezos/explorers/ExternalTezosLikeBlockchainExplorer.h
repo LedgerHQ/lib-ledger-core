@@ -111,7 +111,8 @@ namespace ledger {
             getHelper(const std::string &url,
                       const std::string &field,
                       const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
-                      const std::string &fallbackValue = "");
+                      const std::string &fallbackValue = "",
+                      const std::string &forceUrl = "");
 
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;
