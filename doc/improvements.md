@@ -10,6 +10,7 @@
 * [Redundant names](#redundant-names)
     * [Namespace by library](#namespace-by-library)
     * [Remove redundant information](#remove-redundant-information)
+* [Constness](#constness)
 
 ## Operation
 
@@ -118,3 +119,13 @@ Now we have proper namespace by library. We can remove the information in each c
 that refers to the coin. For instance, a `BitcoinLikeAccount` will become `bitcoin::Account`.
 We have to discuss to the usage of the `Like` word in class names. Should we keep that thing ?
 Or simply skip it ?
+
+## Constness
+
+To be extremely short, our codebase **lack of constness** both within generated codes 
+and hand-written source codes.  
+What is it a problem for ? First we problably miss a lot of compilation optimisation
+both in execution speed and executable size. Second the way our codebase express its intention
+isn't clear - why this getter is not marked as const ? An internal member will be modified
+if we call such a getter ? This is of course a really simple example but we can 
+easily imagine a way more complex use case
