@@ -43,8 +43,10 @@ namespace ledger {
             }
         }
 
-        HttpRequest HttpClient::GET(const std::string &path, const std::unordered_map<std::string, std::string> &headers) {
-            return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers);
+        HttpRequest HttpClient::GET(const std::string &path,
+                                    const std::unordered_map<std::string, std::string> &headers,
+                                    const std::string &baseUrl) {
+            return createRequest(api::HttpMethod::GET, path, std::experimental::optional<std::vector<uint8_t>>(), headers, baseUrl);
         }
 
         HttpRequest HttpClient::PUT(const std::string &path, const std::vector<uint8_t> &body,
@@ -63,7 +65,8 @@ namespace ledger {
             return createRequest(api::HttpMethod::POST,
                                  path,
                                  std::experimental::optional<std::vector<uint8_t>>(body),
-                                 headers);
+                                 headers,
+                                 baseUrl);
         }
 
         HttpClient& HttpClient::addHeader(const std::string &key, const std::string &value) {

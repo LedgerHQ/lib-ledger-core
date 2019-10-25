@@ -152,7 +152,8 @@ TezosLikeOriginatedAccount = interface +c {
 }
 
 TezosConfiguration = interface +c {
-  const TEZOS_XPUB_CURVE: string = "TEZOS_XPUB_CURVE";
+  	const TEZOS_XPUB_CURVE: string = "TEZOS_XPUB_CURVE";
+	const TEZOS_PROTOCOL_UPDATE: string = "TEZOS_PROTOCOL_UPDATE";
 }
 
 TezosConfigurationDefaults = interface +c {
@@ -168,4 +169,5 @@ TezosConfigurationDefaults = interface +c {
 	const TEZOS_DEFAULT_FEES: string = "1420";
 	const TEZOS_DEFAULT_GAS_LIMIT: string = "10600";
 	const TEZOS_DEFAULT_STORAGE_LIMIT: string = "300";
+	const TEZOS_PROTOCOL_UPDATE_BABYLON: string = "TEZOS_PROTOCOL_UPDATE_BABYLON";
 }

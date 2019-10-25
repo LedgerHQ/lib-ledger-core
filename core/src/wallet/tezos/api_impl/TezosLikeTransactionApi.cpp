@@ -44,17 +44,20 @@
 #include <bytes/zarith/zarith.h>
 #include <api/TezosCurve.hpp>
 #include <tezos/TezosLikeExtendedPublicKey.h>
-
+#include <api/TezosConfigurationDefaults.hpp>
 namespace ledger {
     namespace core {
 
-        TezosLikeTransactionApi::TezosLikeTransactionApi(const api::Currency &currency) {
-            _currency = currency;
+        TezosLikeTransactionApi::TezosLikeTransactionApi(const api::Currency &currency,
+                                                         const std::string &protocolUpdate) :
+                _currency(currency),
+                _protocolUpdate(protocolUpdate){
             _block = std::make_shared<TezosLikeBlockApi>(Block{});
             _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
         }
 
-        TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation) {
+        TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
+                                                         const std::string &protocolUpdate) {
             auto &tx = operation->getBackend().tezosTransaction.getValue();
             _time = tx.receivedAt;
 
@@ -143,6 +146,7 @@ namespace ledger {
 
         // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
+            auto isBabylonActivated = _protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
             BytesWriter writer;
 
             // Watermark: Generic-Operation
@@ -159,17 +163,23 @@ namespace ledger {
             // Remove 2 first bytes (of version)
             writer.writeByteArray(std::vector<uint8_t>{blockHash.begin() + 2, blockHash.end()});
 
+            auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
             // Operation Tag
-            writer.writeByte(static_cast<uint8_t>(_type));
+            writer.writeByte(static_cast<uint8_t>(_type) + offset);
 
             // Set Sender
-            // Originated
-            auto isSenderOriginated = _sender->toBase58().find("KT1") == 0;
-            writer.writeByte(static_cast<uint8_t>(isSenderOriginated));
-            auto senderContractID = isSenderOriginated ?
-                                    vector::concat(_sender->getHash160(), {0x00}) :
-                                    vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
-            writer.writeByteArray(senderContractID);
+            if (isBabylonActivated) {
+                auto senderContractID = vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
+                writer.writeByteArray(senderContractID);
+            } else {
+                // Originated
+                auto isSenderOriginated = _sender->toBase58().find("KT1") == 0;
+                writer.writeByte(static_cast<uint8_t>(isSenderOriginated));
+                auto senderContractID = isSenderOriginated ?
+                                        vector::concat(_sender->getHash160(), {0x00}) :
+                                        vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
+                writer.writeByteArray(senderContractID);
+            }
 
 
             // Fee
@@ -217,13 +227,16 @@ namespace ledger {
                                               vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
                     writer.writeByteArray(receiverContractID);
 
+
                     // Additional parameters
                     writer.writeByte(0x00);
                     break;
                 }
                 case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
-                    writer.writeByte(static_cast<uint8_t >(_senderCurve));
-                    writer.writeByteArray(_sender->getHash160());
+                    if (!isBabylonActivated) {
+                        writer.writeByte(static_cast<uint8_t >(_senderCurve));
+                        writer.writeByteArray(_sender->getHash160());
+                    }
                     // Balance
                     writer.writeByteArray(zarith::zSerializeNumber(_balance.toByteArray()));
                     // Is spendable ?

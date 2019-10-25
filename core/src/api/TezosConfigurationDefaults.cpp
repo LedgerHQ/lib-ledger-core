@@ -27,4 +27,6 @@ std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT = {"10600"
 
 std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_STORAGE_LIMIT = {"300"};
 
+std::string const TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON = {"TEZOS_PROTOCOL_UPDATE_BABYLON"};
+
 } } }  // namespace ledger::core::api

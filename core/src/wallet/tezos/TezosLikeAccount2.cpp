@@ -54,6 +54,7 @@
 #include <utils/DateUtils.hpp>
 #include <collections/vector.hpp>
 #include <database/query/ConditionQueryFilter.h>
+#include <api/TezosConfiguration.hpp>
 
 using namespace soci;
 
@@ -229,12 +230,16 @@ namespace ledger {
             auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
                                         const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::TezosLikeTransaction>> {
                 auto currency = self->getWallet()->getCurrency();
-                auto tx = std::make_shared<TezosLikeTransactionApi>(self->getWallet()->getCurrency());
+                auto protocolUpdate = self->getWallet()
+                        ->getConfiguration()
+                        ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
+                        .value_or("");
+                auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
                 tx->setValue(request.value);
                 tx->setFees(request.fees);
                 tx->setGasLimit(request.gasLimit);
                 tx->setStorage(request.storageLimit);
-                auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, self->getWallet()->getCurrency());
+                auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, currency);
                 tx->setSender(accountAddress);
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
@@ -263,7 +268,11 @@ namespace ledger {
                                                                  getWallet()->getCurrency(),
                                                                  _explorer,
                                                                  logger(),
-                                                                 buildFunction);
+                                                                 buildFunction,
+                                                                 getWallet()
+                                                                         ->getConfiguration()
+                                                                         ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE).value_or("")
+            );
         }
 
         void TezosLikeAccount::addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries) {
