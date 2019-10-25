@@ -32,39 +32,31 @@ shouldn’t have to provide `Configuration` nor `Keychain`.
 
 Transactions are streamed from an explorer via a mechanism of batches.
 
-  1. First, the batch indexed with `α` is retrieved.
-    1. We derive all observable addresses from the keychain for the `α` batch. That algorithm works
-      by indexing the range of addresses with the batch index multiplied by the size of half a batch.
-      That is due to the fact we need both internal addresses (mostly, change addresses) and
-      external addresses (send / receive).
-    2. All the derived addresses form a _batch_ of strings that is sent to the explorer along with
-      the block hash of the current state.
-    3. Transactions are gotten from explorers by joining addresses altogether with commas
-      separated lists. They’re then injected in HTTP queries. An HTTP token is stored in the
-      `X-LedgerWallet-SyncToken` HTTP header.
-    4. The endpoint used is `"https://explorers.api.live.ledger.com/blockchain/{}/{}/addresses/{}/transactions{}"`,
-      where the `{}` are, respectively:
-      1. The explorer version. We use mostly `v2` and `v3` now. The main differences between `v2`
-        and `v3` is an implementation detail (different internal architecture and infrastructure),
-        for most part.
-      2. The identifier of the blockchain network we target. For instance, for bitcoin, we use
-        `"btc"`.
-      3. The list of addresses, comma-separated, computed in 1.1 and 1.2 above.
-      4. A list of parameters for the explorers to work with — typical use includes `?noToken=true`.
-        for non-session requests.
-    5. The result is then parsed as JSON by using a `LedgerApiParser` into a `TransactionsBulk`
-      depending on the type of coin.
-  2. The resulting batch is then inspected. For all transactions:
-    1. We look for _pending transactions_. If one is found, it is injected the transaction;
-      otherwise it’s erased.
-    2. The transaction is injected into the account and the last block is updated.
-	3. If the batch has no transaction, it means that the synchronization is over. We use that kind of
-    mechanism because of gap addresses: some currencies require a gap of a certain number of
-    deterministic addresses to test. When no transaction refers to them, no one will (until a new
-    transaction is inserted) and then we can safely end the synchronization.
-  4. If the batch had transactions, we have to recompute the next index batch and generate new
-    observable addresses. That can be pictured as a recursive algorithm, then.
-  5. The set of _to-drop_ transactions is traversed and transactions are dropped. Those are
-    transactions that got removed from a reorganization, for instance.
+1. First, we create a _buddy_ object. That object is badly named and serves as a _synchronization
+  state_ only. It shares several properties from the account and the application configuration.
+2. The first important thing to do is to check whether a reorganization had happened. That is
+  encoded in our library if there’s a saved state regarding synchronization (i.e. a previous
+  synchronization has put some state in the preferences local storage). If that’s the the case:
+  1. We take the deepest batches from the saved state by ordering them by block height.
+  2. We look at blocks one by one and check whether they exist in database. We stop at the first
+    block that doesn’t exist in database and its height is the _deepest failed block height_.
+  3. If the _deepest failed block height_ doesn’t refer to the genesis block, we get the last block
+    currently living in database and then for all batches in the buddy saved state, if the batch’s
+    block height is greater or equal to the _deepest failed block height_, we update the batch
+    block’s height and hash according to the value of the last black from DB.
+3. We create / initialize the saved state and update both the current block and the transactions to
+  drop — i.e. that is, transactions without an associated block.
+4. The interaction with the explorers starts here. The current code is based on a recursing future,
+  `synchronizeBatches`, that takes the current batch index as argument.
+5. The `synchronizeBatch` is then called with the batch index. That function performs several
+  derivation of the observable addresses from the keychain of the account. This gives us several
+  addresses we send to the explorer by asking for the list of transactions.
+  1. We don’t get the whole set of transactions directly but instead a _transactions bulk_ — an
+    object gathering some but not all of the asked transcations.
+  2. Each transaction in that bulk object are put into database and removed from pending
+    transactions if they were in.
+  3. We loop back by recalling `synchronizeBatch` if there’s still transactions in the bulk.
+6. If the account can have multiple addresses, we recall `synchronizeBatches` until we don’t get
+  any transaction and that we pass the limit of discoverable addresses without transaction.
 
 [crypto assets repository]: https://github.com/LedgerHQ/crypto-assets/tree/master/coins
