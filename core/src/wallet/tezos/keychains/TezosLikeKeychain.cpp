@@ -76,7 +76,7 @@ namespace ledger {
         }
 
         std::string TezosLikeKeychain::getRestoreKey() const {
-            return _address->toString();
+            return hex::toString(_publicKey.getValueOr(std::vector<uint8_t>()));
         }
 
         bool TezosLikeKeychain::contains(const std::string &address) const {
