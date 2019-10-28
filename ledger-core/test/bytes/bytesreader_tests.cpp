@@ -30,7 +30,8 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/bytes/BytesReader.h>
+
+#include <core/bytes/BytesReader.hpp>
 
 TEST(BytesReader, CursorTests) {
     std::vector<uint8_t> data({0xFF, 0x01, 0x10, 42, 'H', 'e', 'l', 'l', 'o', ' ', 'w', 'o', 'r', 'l', 'd', 0x12, 0x16});

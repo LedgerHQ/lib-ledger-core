@@ -29,11 +29,13 @@
  */
 
 #include <gtest/gtest.h>
-#include <vector>
-#include <ledger/core/bytes/BytesWriter.h>
-#include <ledger/core/bytes/zarith/zarith.h>
-#include <ledger/core/utils/hex.h>
 #include <iostream>
+#include <vector>
+
+#include <core/bytes/BytesWriter.hpp>
+#include <core/bytes/zarith/Zarith.hpp>
+#include <core/utils/Hex.hpp>
+
 using namespace std;
 
 using namespace ledger::core;

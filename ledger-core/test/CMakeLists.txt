@@ -7,7 +7,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE
 add_subdirectory(lib/googletest)
 #add_subdirectory(lib/libledger-test)
 #add_subdirectory(common)
-#add_subdirectory(bytes)
+add_subdirectory(bytes)
 add_subdirectory(math)
 add_subdirectory(utils)
 #add_subdirectory(async)
