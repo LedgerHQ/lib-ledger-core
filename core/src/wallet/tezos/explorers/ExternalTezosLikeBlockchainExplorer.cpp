@@ -63,7 +63,9 @@ namespace ledger {
             return getHelper(fmt::format("account/{}", addressesStr),
                              "total_balance",
                              std::unordered_map<std::string, std::string>{},
-                             "0"
+                             "0",
+                             "",
+                             true
             );
         }
 
@@ -207,7 +209,8 @@ namespace ledger {
                                                        const std::string &field,
                                                        const std::unordered_map<std::string, std::string> &params,
                                                        const std::string &fallbackValue,
-                                                       const std::string &forceUrl) {
+                                                       const std::string &forceUrl,
+                                                       bool isDecimal) {
             const bool parseNumbersAsString = true;
             auto networkId = getNetworkParameters().Identifier;
 
@@ -222,7 +225,7 @@ namespace ledger {
                               forceUrl)
                     .json(parseNumbersAsString)
                     .mapPtr<BigInt>(getContext(),
-                                    [field, networkId, fallbackValue](const HttpRequest::JsonResult &result) {
+                                    [field, networkId, fallbackValue, isDecimal](const HttpRequest::JsonResult &result) {
                                         auto &json = *std::get<1>(result);
                                         if ((!json.IsObject() ||
                                             !json.HasMember(field.c_str()) ||
@@ -234,7 +237,7 @@ namespace ledger {
                                         std::string value = json.IsString() ? json.GetString() : json[field.c_str()].GetString();
                                         if (value == "0" && !fallbackValue.empty()) {
                                             value = fallbackValue;
-                                        } else if (value.find('.') != std::string::npos) {
+                                        } else if (isDecimal || value.find('.') != std::string::npos) {
                                             value = api::BigInt::fromDecimalString(value, 6, ".")->toString(10);
                                         }
                                         return std::make_shared<BigInt>(value);

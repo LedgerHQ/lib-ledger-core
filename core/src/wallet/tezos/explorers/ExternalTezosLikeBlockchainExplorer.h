@@ -112,7 +112,8 @@ namespace ledger {
                       const std::string &field,
                       const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
                       const std::string &fallbackValue = "",
-                      const std::string &forceUrl = "");
+                      const std::string &forceUrl = "",
+                      bool isDecimal = false);
 
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;
