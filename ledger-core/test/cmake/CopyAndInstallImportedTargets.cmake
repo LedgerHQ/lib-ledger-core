@@ -1,0 +1,10 @@
+include(CopyImportedTarget)
+
+function(copy_install_imported_targets _target)
+    copy_imported_targets(${_target} ${ARGN})
+    foreach(_dep ${ARGN})
+        if(WIN32)
+            install_imported_target(${_dep} DESTINATION $<TARGET_FILE_DIR:${_target}>)
+        endif()
+    endforeach()
+endfunction()
