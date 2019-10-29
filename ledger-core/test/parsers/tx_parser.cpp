@@ -1,13 +1,13 @@
 #include <gtest/gtest.h>
 
-#include <utils/JSONUtils.h>
-#include <wallet/common/explorers/api/AbstractBlockParser.h>
+#include <core/utils/JSONUtils.hpp>
+#include <core/explorers/AbstractBlockParser.hpp>
 
 using namespace ledger::core;
 
 struct TestBlock {
     uint64_t height;
-    std::string hash;
+    std::string blockHash;
     std::chrono::system_clock::time_point time;
 };
 
