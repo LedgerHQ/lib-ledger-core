@@ -208,7 +208,7 @@ namespace ledger {
                                       })
                     .recoverWith(getContext(), [] (const Exception &e) {
                         // Avoid fmt error because of JSON string
-                        auto error = "Failed to broadcast raw transaction, reason " + e.getMessage();
+                        const auto error = "Failed to broadcast raw transaction, reason " + e.getMessage();
                         return Future<std::string>::failure(
                                 Exception(api::ErrorCode::INCOMPLETE_TRANSACTION, error)
                         );
@@ -246,8 +246,8 @@ namespace ledger {
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
                 tx->setManagerAddress(managerAddress);
                 tx->setType(request.type);
-                auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
-                                      managerAddress : senderAddress;
+                const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
+                                            managerAddress : senderAddress;
                 return explorer->getCounter(counterAddress).flatMapPtr<Block>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &counter) {
                     if (!counter) {
                         throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
