@@ -30,40 +30,34 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
 #include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
+
+#include <async/QtThreadDispatcher.hpp>
+#include <core/Services.hpp>
+#include <core/api/DynamicObject.hpp>
+#include <core/database/DatabaseSessionPool.hpp>
+
 #include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
+#include <NativePathResolver.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
 
 static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
     "__database_meta__",
-    "pools",
     "currencies",
     "units",
     "wallets",
     "accounts",
     "operations",
     "blocks",
-    "bitcoin_currencies",
-    "bitcoin_transactions",
-    "bitcoin_inputs",
-    "bitcoin_outputs",
-    "bitcoin_operations",
-    "bitcoin_transaction_inputs",
-    "bitcoin_accounts",
-    "bitcoin_operations"
 };
 
 TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
     auto dispatcher = std::make_shared<QtThreadDispatcher>();
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+
     DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "test")
     .onComplete(dispatcher->getMainExecutionContext(), [&] (const TryPtr<DatabaseSessionPool>& result) {
         EXPECT_TRUE(result.isSuccess());
@@ -82,52 +76,5 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
         dispatcher->stop();
     });
     dispatcher->waitUntilStopped();
-    resolver->clean();
-}
-
-TEST(DatabaseSessionPool, InitializeCurrencies) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
-    auto resolver = std::make_shared<NativePathResolver>();
-    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
-    auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    auto pool = WalletPool::newInstance(
-    "my_pool",
-    "",
-    nullptr,
-    nullptr,
-    resolver,
-    printer,
-    dispatcher,
-    nullptr,
-    backend,
-    api::DynamicObject::newInstance()
-    );
-
-    api::Currency bitcoin;
-
-    for (auto& currency : pool->getCurrencies()) {
-        if (currency.name == "bitcoin") {
-            bitcoin = currency;
-        }
-    }
-
-    EXPECT_EQ(bitcoin.name, "bitcoin");
-    EXPECT_EQ(bitcoin.bip44CoinType, 0);
-    EXPECT_EQ(bitcoin.paymentUriScheme, "bitcoin");
-    EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2PKHVersion[0], 0);
-    EXPECT_EQ(bitcoin.bitcoinLikeNetworkParameters.value().P2SHVersion[0], 5);
-
-    for (const auto& unit : bitcoin.units) {
-        if (unit.name == "bitcoin") {
-            EXPECT_EQ(unit.code, "BTC");
-            EXPECT_EQ(unit.symbol, "BTC");
-            EXPECT_EQ(unit.numberOfDecimal, 8);
-        } else if (unit.name == "milli-bitcoin") {
-            EXPECT_EQ(unit.code, "mBTC");
-            EXPECT_EQ(unit.symbol, "mBTC");
-            EXPECT_EQ(unit.numberOfDecimal, 5);
-        }
-    }
-
     resolver->clean();
 }

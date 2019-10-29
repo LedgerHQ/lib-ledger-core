@@ -28,14 +28,17 @@
  *
  */
 
+#include <chrono>
 #include <gtest/gtest.h>
-#include "BaseFixture.h"
-#include <utils/FilesystemUtils.h>
 #include <soci.h>
 #include <soci-sqlite3.h>
-#include <chrono>
-using namespace ledger::core;
 
+#include <core/utils/DateUtils.hpp>
+
+#include <utils/FilesystemUtils.h>
+#include "BaseFixture.hpp"
+
+using namespace ledger::core;
 
 class SQLCipherTest : public BaseFixture {
 };

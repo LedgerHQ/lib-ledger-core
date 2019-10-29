@@ -11,7 +11,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-database-tests main.cpp pool_tests.cpp query_filters_tests.cpp query_builder_tests.cpp
+add_executable(ledger-core-database-tests main.cpp services_tests.cpp query_filters_tests.cpp query_builder_tests.cpp
             BaseFixture.cpp BaseFixture.h IntegrationEnvironment.cpp IntegrationEnvironment.h
         database_soci_proxy_tests.cpp MemoryDatabaseProxy.cpp MemoryDatabaseProxy.h sqlcipher_tests.cpp)
 
@@ -19,8 +19,8 @@ target_link_libraries(ledger-core-database-tests gtest gtest_main)
 target_link_libraries(ledger-core-database-tests ledger-core-static)
 target_link_libraries(ledger-core-database-tests ledger-test)
 target_link_libraries(ledger-core-database-tests ledger-qt-host)
-target_include_directories(ledger-core-database-tests PUBLIC ../../../qt-host)
-target_include_directories(ledger-core-database-tests PUBLIC ../../../core/src/)
+target_include_directories(ledger-core-database-tests PUBLIC ../lib/qt-host)
+target_include_directories(ledger-core-database-tests PUBLIC ../../inc)
 
 include(CopyAndInstallImportedTargets)
 copy_install_imported_targets(ledger-core-database-tests crypto)

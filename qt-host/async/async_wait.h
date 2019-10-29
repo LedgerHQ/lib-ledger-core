@@ -28,11 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ASYNC_WAIT_H
-#define LEDGER_CORE_ASYNC_WAIT_H
 
-#include <async/Future.hpp>
+#pragma once
+
 #include <QEventLoop>
+
+#include <core/async/Future.hpp>
+
 #include "QtThreadPoolExecutionContext.hpp"
 
 template <typename T>
@@ -50,5 +52,3 @@ T wait(ledger::core::Future<T> future) {
     }
     return result.getValue();
 };
-
-#endif //LEDGER_CORE_ASYNC_WAIT_H

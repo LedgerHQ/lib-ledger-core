@@ -30,27 +30,22 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
-#include <src/database/DatabaseSessionPool.hpp>
-#include <NativePathResolver.hpp>
 #include <unordered_set>
-#include <src/wallet/pool/WalletPool.hpp>
-#include <CoutLogPrinter.hpp>
-#include <src/api/DynamicObject.hpp>
-#include <wallet/common/CurrencyBuilder.hpp>
-#include <wallet/bitcoin/BitcoinLikeWallet.hpp>
-#include <wallet/bitcoin/database/BitcoinLikeWalletDatabase.h>
-#include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <wallet/pool/database/PoolDatabaseHelper.hpp>
-#include <utils/JSONUtils.h>
-#include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <async/async_wait.h>
-#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
-#include <database/query/QueryBuilder.h>
-#include <api/QueryFilter.hpp>
 
-#include "BaseFixture.h"
+#include <async/QtThreadDispatcher.hpp>
+#include <async/async_wait.h>
+#include <CoutLogPrinter.hpp>
+#include <NativePathResolver.hpp>
+
+#include <core/api/DynamicObject.hpp>
+#include <core/api/QueryFilter.hpp>
+#include <core/database/DatabaseSessionPool.hpp>
+#include <core/database/query/QueryBuilder.hpp>
+#include <core/utils/JSONUtils.hpp>
+#include <core/wallet/CurrencyBuilder.hpp>
+#include <core/wallet/AccountDatabaseHelper.hpp>
+
+#include "BaseFixture.hpp"
 
 class QueryBuilderTest : public BaseFixture {
 

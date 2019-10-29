@@ -28,11 +28,12 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_COUTLOGPRINTER_HPP
-#define LEDGER_CORE_COUTLOGPRINTER_HPP
 
-#include "api/LogPrinter.hpp"
+#pragma once
+
 #include <memory>
+
+#include <core/api/LogPrinter.hpp>
 
 class CoutLogPrinter : public ledger::core::api::LogPrinter {
 public:
@@ -54,6 +55,3 @@ public:
 private:
     std::shared_ptr<ledger::core::api::ExecutionContext> _context;
 };
-
-
-#endif //LEDGER_CORE_COUTLOGPRINTER_HPP
