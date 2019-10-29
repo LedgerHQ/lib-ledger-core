@@ -32,7 +32,7 @@
 #define LEDGER_CORE_OPERATIONAPI_H
 
 #include <api/Operation.hpp>
-#include "../Operation.h"
+#include <wallet/common/Operation.h>
 #include <api/Currency.hpp>
 
 namespace ledger {

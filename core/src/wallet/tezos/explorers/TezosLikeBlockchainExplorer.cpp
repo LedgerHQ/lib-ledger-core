@@ -30,13 +30,80 @@
 
 
 #include "TezosLikeBlockchainExplorer.h"
-
+#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 namespace ledger {
     namespace core {
+
+        const std::string rpcNode = "https://mainnet.tezrpc.me/";
+
         TezosLikeBlockchainExplorer::TezosLikeBlockchainExplorer(
                 const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
                 const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
             setConfiguration(configuration);
+        }
+
+        Future<std::vector<uint8_t>> TezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
+                                                                                   const std::shared_ptr<api::ExecutionContext> &context,
+                                                                                   const std::shared_ptr<HttpClient> &http) {
+            std::string params;
+            switch (tx->getType()) {
+                case api::TezosOperationTag::OPERATION_TAG_TRANSACTION:
+                    params = fmt::format("\"parameters\":"
+                                                 "{{\"entrypoint\":\"do\",\"value\":["
+                                                 "{{\"prim\":\"DROP\"}},"
+                                                 "{{\"prim\":\"NIL\",\"args\":[{{\"prim\":\"operation\"}}]}},"
+                                                 "{{\"prim\":\"PUSH\",\"args\":[{{\"prim\":\"key_hash\"}},{{\"string\":\"{}\"}}]}},"
+                                                 "{{\"prim\":\"IMPLICIT_ACCOUNT\"}},"
+                                                 "{{\"prim\":\"PUSH\",\"args\":[{{\"prim\":\"mutez\"}},{{\"int\":\"{}\"}}]}},"
+                                                 "{{\"prim\":\"UNIT\"}},"
+                                                 "{{\"prim\":\"TRANSFER_TOKENS\"}},"
+                                                 "{{\"prim\":\"CONS\"}}]}}",
+                                         tx->getReceiver()->toBase58(),
+                                         tx->getValue()->toString());
+                    break;
+                case api::TezosOperationTag::OPERATION_TAG_DELEGATION:
+                    params = "\"parameters\":"
+                            "{{\"entrypoint\":\"do\",\"value\":["
+                            "{{\"prim\":\"DROP\"}},"
+                            "{{\"prim\":\"NIL\",\"args\":[{{\"prim\":\"operation\"}}]}},"
+                            "{{\"prim\":\"NONE\",\"args\":[{{\"prim\":\"key_hash\"}}]}},"
+                            "{{\"prim\":\"SET_DELEGATE\"}},"
+                            "{{\"prim\":\"CONS\"}}]}}";
+                    break;
+                default:
+                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Only supported operations from originated accounts: Transaction & (Remove) of delegation.");
+            }
+            //
+            auto bodyString = fmt::format("{{\"branch\":\"{}\","
+                                                  "\"contents\":[{{\"kind\":\"transaction\","
+                                                  "\"fee\":\"{}\",\"gas_limit\":\"{}\",\"storage_limit\":\"{}\","
+                                                  "\"amount\":\"{}\",\"destination\":\"{}\",{},"
+                                                  "\"source\":\"{}\",\"counter\":\"{}\"}}]}}",
+                                          tx->getBlockHash().value_or(""),
+                                          tx->getFees()->toString(),
+                                          "27000",
+                                          tx->getStorageLimit()->toString(10),
+                                          0,
+                                          tx->getSender()->toBase58(),
+                                          params,
+                                          tx->getManagerAddress(),
+                                          tx->getCounter()->toString(10)
+            );
+            const bool parseNumbersAsString = true;
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return http->POST("/chains/main/blocks/head/helpers/forge/operations",
+                              std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
+                              headers,
+                              rpcNode)
+                    .json(parseNumbersAsString)
+                    .map<std::vector<uint8_t>>(context, [](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to forge operation.");
+                        }
+                        auto info = json.GetString();
+                        return hex::toByteArray(info);
+                    });
         }
     }
 }

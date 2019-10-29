@@ -270,5 +270,12 @@ namespace ledger {
                              rpcNode
             );
         }
+
+        Future<std::vector<uint8_t>> ExternalTezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) {
+            return TezosLikeBlockchainExplorer::forgeKTOperation(tx,
+                                                                 getExplorerContext(),
+                                                                 _http);
+        }
+
     }
 }
