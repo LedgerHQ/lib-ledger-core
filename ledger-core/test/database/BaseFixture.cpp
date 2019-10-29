@@ -30,8 +30,9 @@
  */
 
 #include <utils/FilesystemUtils.h>
+
 #include "IntegrationEnvironment.h"
-#include "BaseFixture.h"
+#include "BaseFixture.hpp"
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
@@ -50,6 +51,7 @@ const std::string TX_4 = "{\"hash\":\"4450e70656888bd7f5240a9b532eac54db7d72f3b4
 void BaseFixture::SetUp() {
     ::testing::Test::SetUp();
     ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
+
     dispatcher = std::make_shared<QtThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
@@ -62,9 +64,9 @@ void BaseFixture::TearDown() {
     resolver->clean();
 }
 
-std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
-    return WalletPool::newInstance(
-            poolName,
+std::shared_ptr<Services> BaseFixture::newDefaultServices(std::string name) {
+    return Services::newInstance(
+            name,
             "",
             http,
             nullptr,
@@ -77,58 +79,32 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
     );
 }
 
-BitcoinLikeWalletDatabase
-BaseFixture::newBitcoinAccount(const std::shared_ptr<WalletPool> &pool,
-                               const std::string &walletName,
-                               const std::string &currencyName,
-                               const std::shared_ptr<api::DynamicObject> &configuration,
-                               int32_t index,
-                               const std::string &xpub) {
-    BitcoinLikeWalletDatabase db(pool, walletName, "bitcoin");
-    if (!db.accountExists(index)) {
-        createWallet(pool, walletName, currencyName, configuration);
-        createAccount(pool, walletName, index);
-        db.createAccount(index, xpub);
-    }
-    return db;
-}
-
-void BaseFixture::createWallet(const std::shared_ptr<WalletPool> &pool,
-                               const std::string &walletName,
-                               const std::string &currencyName,
-                               const std::shared_ptr<api::DynamicObject> &configuration) {
-    soci::session sql(pool->getDatabaseSessionPool()
-                              ->getPool());
+void BaseFixture::createWallet(
+    const std::shared_ptr<Services> &services,
+    const std::string &walletName,
+    const std::string &currencyName,
+    const std::shared_ptr<api::DynamicObject> &configuration
+) {
+    soci::session sql(services->getDatabaseSessionPool()->getPool());
     WalletDatabaseEntry entry;
     entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
     entry.name = walletName;
-    entry.poolName = pool->getName();
+    entry.poolName = services->getName();
     entry.currencyName = currencyName;
     entry.updateUid();
+
     PoolDatabaseHelper::putWallet(sql, entry);
 }
 
-void BaseFixture::createAccount(const std::shared_ptr<WalletPool> &pool, const std::string &walletName, int32_t index) {
-    soci::session sql(pool->getDatabaseSessionPool()
-                              ->getPool());
-    auto walletUid = WalletDatabaseEntry::createWalletUid(pool->getName(), walletName);
-    if (!AccountDatabaseHelper::accountExists(sql, walletUid, index))
+void BaseFixture::createAccount(
+    const std::shared_ptr<Services> &services,
+    const std::string &walletName,
+    int32_t index
+) {
+    soci::session sql(services->getDatabaseSessionPool()->getPool());
+    auto walletUid = WalletDatabaseEntry::createWalletUid(services->getName(), walletName);
+
+    if (!AccountDatabaseHelper::accountExists(sql, walletUid, index)) {
         AccountDatabaseHelper::createAccount(sql, walletUid, index);
+    }
 }
-
-std::shared_ptr<BitcoinLikeAccount>
-BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
-                                      const api::AccountCreationInfo &info) {
-    auto i = info;
-    i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithInfo(info)));
-}
-
-std::shared_ptr<BitcoinLikeAccount>
-BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
-                                      const api::ExtendedKeyAccountCreationInfo &info) {
-    auto i = info;
-    i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(info)));
-}
-

@@ -48,12 +48,6 @@ namespace ledger {
         }
 
         template <> void migrate<1, CoreMigration>(soci::session& sql) {
-            // Pool table
-            sql << "CREATE TABLE pools("
-                "name VARCHAR(255) PRIMARY KEY NOT NULL,"
-                "created_at VARCHAR(255) NOT NULL"
-            ")";
-
             // Abstract currency table
             sql << "CREATE TABLE currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -132,9 +126,6 @@ namespace ledger {
 
             // Abstract currency table
             sql << "DROP TABLE currencies";
-
-            // Pool table
-            sql << "DROP TABLE pools";
         }
     }
 }

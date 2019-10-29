@@ -28,18 +28,18 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_QTTHREADPOOLEXECUTIONCONTEXT_HPP
-#define LEDGER_CORE_QTTHREADPOOLEXECUTIONCONTEXT_HPP
+
+#pragma once
 
 #include <QtConcurrent>
 #include <QThreadPool>
-#include <api/ExecutionContext.hpp>
-#include <api/Runnable.hpp>
 #include <QTimer>
+
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/Runnable.hpp>
 
 namespace ledger {
     namespace qt {
-
         class QtThreadPoolExecutionContext : public QObject, public core::api::ExecutionContext {
             Q_OBJECT
         public:
@@ -56,5 +56,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_QTTHREADPOOLEXECUTIONCONTEXT_HPP

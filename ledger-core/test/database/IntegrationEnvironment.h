@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_INTEGRATIONENVIRONMENT_H
-#define LEDGER_CORE_INTEGRATIONENVIRONMENT_H
+#pragma once
 
 #include <gtest/gtest.h>
 #include <QCoreApplication>
@@ -46,6 +45,3 @@ private:
     std::string _appDir;
     static IntegrationEnvironment* _instance;
 };
-
-
-#endif //LEDGER_CORE_INTEGRATIONENVIRONMENT_H
