@@ -30,11 +30,12 @@
  */
 
 #include <gtest/gtest.h>
-#include <src/events/EventBus.hpp>
+
 #include <async/QtThreadDispatcher.hpp>
-#include <src/events/LambdaEventReceiver.hpp>
-#include <src/events/Event.hpp>
-#include <src/collections/DynamicObject.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/events/Event.hpp>
+#include <core/events/EventBus.hpp>
+#include <core/events/LambdaEventReceiver.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
