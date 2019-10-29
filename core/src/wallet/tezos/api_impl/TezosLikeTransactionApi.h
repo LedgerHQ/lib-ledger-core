@@ -103,7 +103,7 @@ namespace ledger {
             TezosLikeTransactionApi & setBalance(const BigInt &balance);
 
             TezosLikeTransactionApi & setManagerAddress(const std::string &managerAddress);
-            std::string getManagerAddress();
+            std::string getManagerAddress() const;
 
             TezosLikeTransactionApi &setRawTx(const std::vector<uint8_t> &rawTx);
         private:

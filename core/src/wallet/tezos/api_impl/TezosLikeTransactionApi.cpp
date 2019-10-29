@@ -365,7 +365,7 @@ namespace ledger {
             return *this;
         }
 
-        std::string TezosLikeTransactionApi::getManagerAddress() {
+        std::string TezosLikeTransactionApi::getManagerAddress() const {
             return _managerAddress;
         }
 
