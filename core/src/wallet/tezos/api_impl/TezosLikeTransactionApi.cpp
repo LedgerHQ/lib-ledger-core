@@ -30,7 +30,6 @@
 
 
 #include "TezosLikeTransactionApi.h"
-#include "TezosLikeTransactionApi.h"
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/AbstractWallet.hpp>
@@ -148,10 +147,18 @@ namespace ledger {
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
             auto isBabylonActivated = _protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
             BytesWriter writer;
-
             // Watermark: Generic-Operation
             if (_signature.empty()) {
                 writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
+            }
+
+            // If tx was forged then nothing to do
+            if (!_rawTx.empty()) {
+                writer.writeByteArray(_rawTx);
+                if (!_signature.empty()) {
+                    writer.writeByteArray(_signature);
+                }
+                return writer.toByteArray();
             }
 
             // Block Hash
@@ -350,6 +357,20 @@ namespace ledger {
 
         TezosLikeTransactionApi & TezosLikeTransactionApi::setBalance(const BigInt &balance) {
             _balance = balance;
+            return *this;
+        }
+
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setManagerAddress(const std::string &managerAddress) {
+            _managerAddress = managerAddress;
+            return *this;
+        }
+
+        std::string TezosLikeTransactionApi::getManagerAddress() const {
+            return _managerAddress;
+        }
+
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setRawTx(const std::vector<uint8_t> &rawTx) {
+            _rawTx = rawTx;
             return *this;
         }
     }

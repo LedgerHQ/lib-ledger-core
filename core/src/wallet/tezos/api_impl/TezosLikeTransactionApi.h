@@ -34,7 +34,6 @@
 
 #include <wallet/common/api_impl/OperationApi.h>
 #include <wallet/tezos/api_impl/TezosLikeBlockApi.h>
-
 #include <api/TezosLikeTransaction.hpp>
 #include <api/Amount.hpp>
 #include <api/Currency.hpp>
@@ -103,6 +102,10 @@ namespace ledger {
 
             TezosLikeTransactionApi & setBalance(const BigInt &balance);
 
+            TezosLikeTransactionApi & setManagerAddress(const std::string &managerAddress);
+            std::string getManagerAddress() const;
+
+            TezosLikeTransactionApi &setRawTx(const std::vector<uint8_t> &rawTx);
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlockApi> _block;
@@ -123,6 +126,8 @@ namespace ledger {
             std::string _revealedPubKey;
             BigInt _balance;
             std::string _protocolUpdate;
+            std::string _managerAddress;
+            std::vector<uint8_t> _rawTx;
         };
     }
 }

@@ -55,6 +55,7 @@
 #include <collections/vector.hpp>
 #include <database/query/ConditionQueryFilter.h>
 #include <api/TezosConfiguration.hpp>
+#include <api/TezosConfigurationDefaults.hpp>
 
 using namespace soci;
 
@@ -206,11 +207,10 @@ namespace ledger {
                                           return seq.str();
                                       })
                     .recoverWith(getContext(), [] (const Exception &e) {
+                        // Avoid fmt error because of JSON string
+                        const auto error = "Failed to broadcast raw transaction, reason " + e.getMessage();
                         return Future<std::string>::failure(
-                                make_exception(
-                                        api::ErrorCode::INCOMPLETE_TRANSACTION,
-                                        fmt::format("Failed to broadcast raw transaction, reason {}", e.getMessage())
-                                )
+                                Exception(api::ErrorCode::INCOMPLETE_TRANSACTION, error)
                         );
                     })
                     .callback(getContext(), callback);
@@ -228,8 +228,9 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction(const std::string &senderAddress) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
-                                        const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::TezosLikeTransaction>> {
+                                                       const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) {
                 auto currency = self->getWallet()->getCurrency();
+                auto managerAddress = self->getKeychain()->getAddress()->toString();
                 auto protocolUpdate = self->getWallet()
                         ->getConfiguration()
                         ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
@@ -243,20 +244,29 @@ namespace ledger {
                 tx->setSender(accountAddress);
                 tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
                 tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
+                tx->setManagerAddress(managerAddress);
                 tx->setType(request.type);
-                return explorer->getCounter(senderAddress).flatMapPtr<Block>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &counter) {
+                const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
+                                            managerAddress : senderAddress;
+                return explorer->getCounter(counterAddress).flatMapPtr<Block>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &counter) {
                     if (!counter) {
                         throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                     }
                     // We should increment current counter
                     tx->setCounter(std::make_shared<BigInt>(++(*counter)));
                     return explorer->getCurrentBlock();
-                }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx] (const std::shared_ptr<Block> &block) {
+                }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                     tx->setBlockHash(block->hash);
                     if (tx->getType() == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                         std::vector<TezosLikeKeychain::Address> listAddresses{self->_keychain->getAddress()};
                         return explorer->getBalance(listAddresses).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::shared_ptr<BigInt> &balance) {
                             tx->setBalance(*balance);
+                            return tx;
+                        });
+                    } else if (senderAddress.find("KT1") == 0) {
+                        // HACK: KT Operation we use forge endpoint
+                        return explorer->forgeKTOperation(tx).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::vector<uint8_t> &rawTx) {
+                            tx->setRawTx(rawTx);
                             return tx;
                         });
                     }
