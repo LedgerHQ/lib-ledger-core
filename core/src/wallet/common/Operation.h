@@ -69,7 +69,7 @@ namespace ledger {
             Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Option<TezosLikeBlockchainExplorerTransaction> tezosTransaction;
 
-            void refreshUid();
+            void refreshUid(const std::string &additional = "");
 
             Operation() = default;
             Operation(Operation const&) = default;
