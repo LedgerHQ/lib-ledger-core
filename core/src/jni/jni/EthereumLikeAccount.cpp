@@ -3,6 +3,7 @@
 
 #include "EthereumLikeAccount.hpp"  // my header
 #include "BigIntCallback.hpp"
+#include "BigIntListCallback.hpp"
 #include "ERC20LikeAccount.hpp"
 #include "EthereumLikeTransaction.hpp"
 #include "EthereumLikeTransactionBuilder.hpp"
@@ -90,6 +91,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAccount>(nativeRef);
         ref->getERC20Balance(::djinni::String::toCpp(jniEnv, j_erc20Address),
                              ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getERC20Balances(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_erc20Addresses, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAccount>(nativeRef);
+        ref->getERC20Balances(::djinni::List<::djinni::String>::toCpp(jniEnv, j_erc20Addresses),
+                              ::djinni_generated::BigIntListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

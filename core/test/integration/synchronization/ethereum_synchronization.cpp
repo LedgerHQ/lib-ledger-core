@@ -97,6 +97,14 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto erc20BalanceFromAccount = wait(account->getERC20Balance(erc20Accounts[0]->getToken().contractAddress));
                     EXPECT_EQ(erc20Balance->toString(10), erc20BalanceFromAccount->toString(10));
 
+                    std::vector<std::string> erc20Addresses;
+                    for (auto &erc20Acc: erc20Accounts) {
+                        erc20Addresses.push_back(erc20Acc->getToken().contractAddress);
+                    }
+                    auto erc20BalancesFromAccount = wait(account->getERC20Balances(erc20Addresses));
+                    EXPECT_EQ(erc20BalancesFromAccount.size(), erc20Accounts.size());
+                    EXPECT_EQ(erc20BalancesFromAccount[0]->toString(10), erc20Balance->toString(10));
+
                     auto amountToSend = std::make_shared<api::BigIntImpl>(BigInt::fromString("10"));
                     auto transferData = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getTransferToAddressData(amountToSend, "0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43"));
                     EXPECT_GT(transferData.size(), 0);

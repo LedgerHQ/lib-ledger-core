@@ -19,6 +19,7 @@
 namespace ledger { namespace core { namespace api {
 
 class BigIntCallback;
+class BigIntListCallback;
 class ERC20LikeAccount;
 class EthereumLikeTransaction;
 class EthereumLikeTransactionBuilder;
@@ -64,6 +65,13 @@ public:
      * Note: same note as above
      */
     virtual void getERC20Balance(const std::string & erc20Address, const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /**
+     * Get balance of ERC20 tokens
+     * The passed addresses are ERC20 accounts
+     * Note: same note as above
+     */
+    virtual void getERC20Balances(const std::vector<std::string> & erc20Addresses, const std::shared_ptr<BigIntListCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api
