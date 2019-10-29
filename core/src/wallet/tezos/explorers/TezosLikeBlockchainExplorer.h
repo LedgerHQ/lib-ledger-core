@@ -101,7 +101,7 @@ namespace ledger {
             }
 
         };
-
+        class TezosLikeTransactionApi;
         class TezosLikeBlockchainExplorer : public ConfigurationMatchable,
                                             public AbstractBlockchainExplorer<TezosLikeBlockchainExplorerTransaction> {
         public:
@@ -124,6 +124,13 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>>
             getCounter(const std::string &address) = 0;
+
+            virtual Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
+            // This a helper to manage legacy KT accounts
+            // WARNING: we will only support removing delegation and transfer from KT to implicit account
+            static Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
+                                                                 const std::shared_ptr<api::ExecutionContext> &context,
+                                                                 const std::shared_ptr<HttpClient> &http);
         };
     }
 }
