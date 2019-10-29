@@ -28,12 +28,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NATIVEPATHRESOLVER_HPP
-#define LEDGER_CORE_NATIVEPATHRESOLVER_HPP
 
-#include <src/api/PathResolver.hpp>
+#pragma once
+
 #include <vector>
-#include <utils/Option.hpp>
+
+#include <core/api/PathResolver.hpp>
+#include <core/utils/Option.hpp>
 
 class NativePathResolver : public ledger::core::api::PathResolver {
 public:
@@ -49,6 +50,3 @@ private:
     std::vector<std::string> _createdPaths;
     ledger::core::Option<std::string> _rootDirPath;
 };
-
-
-#endif //LEDGER_CORE_NATIVEPATHRESOLVER_HPP
