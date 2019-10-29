@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NATIVETHREADDISPATCHER_HPP
-#define LEDGER_CORE_NATIVETHREADDISPATCHER_HPP
 
-#include <ledger/core/api/ThreadDispatcher.hpp>
-#include <ledger/core/api/ExecutionContext.hpp>
-#include <ledger/core/api/Runnable.hpp>
-#include <ledger/core/api/Lock.hpp>
+#pragma once
+
+#include <core/api/ThreadDispatcher.hpp>
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/Runnable.hpp>
+#include <core/api/Lock.hpp>
+
 #include "EventThread.hpp"
 #include "EventLooper.hpp"
 
@@ -66,5 +67,3 @@ std::shared_ptr<ledger::core::api::Runnable> make_runnable(std::function<void()>
         FAIL() << "Timeout"; \
     }), time); \
     dispatcher->waitUntilStopped();
-
-#endif //LEDGER_CORE_NATIVETHREADDISPATCHER_HPP

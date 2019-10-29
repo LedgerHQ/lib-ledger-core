@@ -28,10 +28,10 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_OPENSSLRANDOMNUMBERGENERATOR_HPP
-#define LEDGER_CORE_OPENSSLRANDOMNUMBERGENERATOR_HPP
 
-#include <ledger/core/api/RandomNumberGenerator.hpp>
+#pragma once
+
+#include <core/api/RandomNumberGenerator.hpp>
 
 class OpenSSLRandomNumberGenerator : public ledger::core::api::RandomNumberGenerator {
 public:
@@ -43,5 +43,3 @@ public:
 
     virtual int8_t getRandomByte() override;
 };
-
-#endif // LEDGER_CORE_OPENSSLRANDOMNUMBERGENERATOR_HPP

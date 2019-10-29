@@ -28,14 +28,17 @@
  * SOFTWARE.
  *
  */
-#include "MongooseHttpClient.hpp"
-#include "NativeThreadDispatcher.hpp"
-#include "../../../src/api/HttpMethod.hpp"
-#include <ledger/core/api/HttpRequest.hpp>
+
 #include <sstream>
 #include <cstring>
-#include <ledger/core/api/HttpUrlConnection.hpp>
-#include <ledger/core/api/HttpReadBodyResult.hpp>
+
+#include <core/api/HttpUrlConnection.hpp>
+#include <core/api/HttpReadBodyResult.hpp>
+#include <core/api/HttpRequest.hpp>
+#include <core/api/HttpMethod.hpp>
+
+#include "MongooseHttpClient.hpp"
+#include "NativeThreadDispatcher.hpp"
 
 class HttpUrlConnection : public ledger::core::api::HttpUrlConnection {
 public:

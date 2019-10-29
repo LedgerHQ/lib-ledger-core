@@ -28,17 +28,18 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_MONGOOSESIMPLERESTSERVER_HPP
-#define LEDGER_CORE_MONGOOSESIMPLERESTSERVER_HPP
+
+#pragma once
 
 #include <string>
 #include <functional>
-#include "mongoose.h"
-#include <ledger/core/api/ExecutionContext.hpp>
-#include <unordered_map>
-#include <regex>
-#include "route.h"
 #include <memory>
+#include <regex>
+#include <unordered_map>
+#include <mongoose.h>
+
+#include <core/api/ExecutionContext.hpp>
+#include "route.h"
 
 struct RestRequest {
     struct mg_connection *connection;
@@ -99,5 +100,3 @@ private:
     struct mg_connection *_connection;
     route::Route _route;
 };
-
-#endif //LEDGER_CORE_MONGOOSESIMPLERESTSERVER_HPP
