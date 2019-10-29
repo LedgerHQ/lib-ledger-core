@@ -79,12 +79,13 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
     // Self-transaction not allowed
     EXPECT_THROW(builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE"), Exception);
-    builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
+    builder->wipeToAddress("tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
     // TODO: activate when we got URL of our custom explorer
-
     auto f = builder->build();
     auto tx = ::wait(f);
     auto serializedTx = tx->serialize();
+    auto balance = wait(account->getBalance());
+    EXPECT_EQ(balance->toLong(), tx->getValue()->toLong() + tx->getFees()->toLong());
     auto parsedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
     auto serializedParsedTx = parsedTx->serialize();
     EXPECT_EQ(serializedTx, serializedParsedTx);
