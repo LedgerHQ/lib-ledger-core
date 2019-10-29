@@ -31,12 +31,13 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <async/QtThreadDispatcher.hpp>
-#include <ledger/core/net/WebSocketClient.h>
 #include <QCoreApplication>
-#include <ledger/core/utils/Option.hpp>
-#include <ledger/core/async/Future.hpp>
-#include <net/WebSocketConnection.h>
+
+#include <async/QtThreadDispatcher.hpp>
+#include <core/async/Future.hpp>
+#include <core/net/WebSocketClient.hpp>
+#include <core/net/WebSocketConnection.hpp>
+#include <core/utils/Option.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;
@@ -59,7 +60,7 @@ public:
 
 class WebSocketClientTest : public Test {
 public:
-    WebSocketClientTest() 
+    WebSocketClientTest()
         : engine(std::make_shared<MockApiWebSocketClient>())
         , handler([&h = mockHandler](WebSocketEventType a,
                                     const std::shared_ptr<WebSocketConnection>& b,
@@ -69,7 +70,7 @@ public:
     void TearDown() override {
         // there are circular dependencies between WebSocketClient and WebSocketConnection
         // so without connection.close() there is a leak
-        Mock::AllowLeak(engine.get());    
+        Mock::AllowLeak(engine.get());
     }
 
     const std::string url = "uri://some_address";

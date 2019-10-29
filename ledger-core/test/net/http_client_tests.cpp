@@ -28,18 +28,21 @@
  * SOFTWARE.
  *
  */
+
+#include <boost/lexical_cast.hpp>
 #include <gtest/gtest.h>
+#include <fstream>
+
+#include <core/net/HttpClient.hpp>
+#include <core/net/HttpJsonHandler.hpp>
+
 #include <EventLooper.hpp>
 #include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
-#include <fstream>
 #include <mongoose.h>
 #include <MongooseHttpClient.hpp>
 #include <MongooseSimpleRestServer.hpp>
-#include <ledger/core/net/HttpClient.hpp>
-#include <ledger/core/net/HttpJsonHandler.hpp>
-#include <boost/lexical_cast.hpp>
 
 static std::string BIG_TEXT =
         "Hi guys, I own a Nano S and I am a big fan, however there is a big slice of information that is missing from your website, that is how reliable the Nano S is, how much testing it's been through (and it goes through any time a new software release is distributed) etc. \n"
