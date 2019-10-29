@@ -28,13 +28,15 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_MONGOOSEHTTPCLIENT_HPP
-#define LEDGER_CORE_MONGOOSEHTTPCLIENT_HPP
 
-#include <ledger/core/api/HttpClient.hpp>
-#include <ledger/core/api/ExecutionContext.hpp>
-#include "mongoose.h"
+#pragma once
+
 #include <memory>
+
+#include <core/api/HttpClient.hpp>
+#include <core/api/ExecutionContext.hpp>
+
+#include "mongoose.h"
 
 class MongooseHttpClient : public ledger::core::api::HttpClient, public std::enable_shared_from_this<MongooseHttpClient> {
 
@@ -54,6 +56,3 @@ private:
     struct mg_mgr _mgr;
     bool _running;
 };
-
-
-#endif //LEDGER_CORE_MONGOOSEHTTPCLIENT_HPP

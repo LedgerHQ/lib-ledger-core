@@ -28,18 +28,20 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ASIOHTTPCLIENT_HPP
-#define LEDGER_CORE_ASIOHTTPCLIENT_HPP
+
+#pragma once
 
 #define OPENSSL_NO_KRB5
+
 #include <asio.hpp>
 #include <asio/ssl.hpp>
-#include <ledger/core/api/HttpClient.hpp>
-#include <ledger/core/api/ExecutionContext.hpp>
-#include <ledger/core/api/HttpMethod.hpp>
-#include <ledger/core/api/HttpReadBodyResult.hpp>
-#include <ledger/core/api/HttpUrlConnection.hpp>
-#include <ledger/core/api/HttpRequest.hpp>
+
+#include <core/api/HttpClient.hpp>
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/HttpMethod.hpp>
+#include <core/api/HttpReadBodyResult.hpp>
+#include <core/api/HttpUrlConnection.hpp>
+#include <core/api/HttpRequest.hpp>
 
 class AsioHttpClient : public ledger::core::api::HttpClient {
 public:
@@ -52,6 +54,3 @@ private:
     asio::ssl::context _sslContext;
     asio::io_service _io_service;
 };
-
-
-#endif //LEDGER_CORE_ASIOHTTPCLIENT_HPP

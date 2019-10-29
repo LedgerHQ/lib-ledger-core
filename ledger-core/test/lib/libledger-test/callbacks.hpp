@@ -28,14 +28,15 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_CALLBACKS_HPP
-#define LEDGER_CORE_CALLBACKS_HPP
 
-#include <ledger/core/traits/callback_traits.hpp>
+#pragma once
+
 #include <functional>
-#include <ledger/core/async/Promise.hpp>
-#include <ledger/core/async/Future.hpp>
-#include <ledger/core/utils/Exception.hpp>
+
+#include <core/traits/CallbackTraits.hpp>
+#include <core/async/Promise.hpp>
+#include <core/async/Future.hpp>
+#include <core/utils/Exception.hpp>
 
 using namespace ledger::core;
 
@@ -94,5 +95,3 @@ std::shared_ptr<FutureCallback<T, Class, has_on_callback_method<Class, void (con
 make_api_callback() {
     return std::make_shared<FutureCallback<T, Class, has_on_callback_method<Class, void (const std::shared_ptr<T>&, const std::experimental::optional<api::Error>&)>::value>>();
 };
-
-#endif //LEDGER_CORE_CALLBACKS_HPP
