@@ -53,5 +53,6 @@ else()
 endif()
 
 if (BUILD_TESTS)
+    add_subdirectory(test/lib/qt-host)
     enable_testing()
 endif()
