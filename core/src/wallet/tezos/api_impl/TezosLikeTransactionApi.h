@@ -63,6 +63,7 @@ namespace ledger {
             std::shared_ptr<api::Amount> getValue() override;
 
             std::vector<uint8_t> serialize() override;
+            std::vector<uint8_t> serializeWithType(api::TezosOperationTag type);
 
             std::chrono::system_clock::time_point getDate() override;
 
@@ -106,6 +107,9 @@ namespace ledger {
             std::string getManagerAddress() const;
 
             TezosLikeTransactionApi &setRawTx(const std::vector<uint8_t> &rawTx);
+
+            TezosLikeTransactionApi &reveal(bool needReveal);
+            bool toReveal() const;
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlockApi> _block;
@@ -128,6 +132,7 @@ namespace ledger {
             std::string _protocolUpdate;
             std::string _managerAddress;
             std::vector<uint8_t> _rawTx;
+            bool _needReveal;
         };
     }
 }
