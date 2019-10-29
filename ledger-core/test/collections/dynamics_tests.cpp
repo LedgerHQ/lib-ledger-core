@@ -30,11 +30,12 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/api/DynamicArray.hpp>
-#include <ledger/core/api/DynamicObject.hpp>
-#include <ledger/core/collections/DynamicObject.hpp>
-#include <ledger/core/collections/DynamicValue.hpp>
-#include <ledger/core/utils/optional.hpp>
+
+#include <core/api/DynamicArray.hpp>
+#include <core/api/DynamicObject.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/collections/DynamicValue.hpp>
+#include <core/utils/Optional.hpp>
 
 using namespace ledger::core::api;
 
@@ -239,7 +240,7 @@ TEST(Dynamics, OverwriteDynamicObject) {
     replacement->putString("string", "Hello")
             ->putInt("int", 1)
             ->putData("data", {0x19, 0x90});
-    
+
     object->updateWithConfiguration(replacement);
 
     EXPECT_EQ(object->size(), 6);
