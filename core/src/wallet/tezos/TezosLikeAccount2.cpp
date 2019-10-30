@@ -278,6 +278,15 @@ namespace ledger {
                                 return explorer->getCurrentBlock();
                             }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                 tx->setBlockHash(block->hash);
+
+                                // Check whether we need a reveal operation
+                                // We assume that accounts are synced
+                                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                // Check if there is a send operation, otherwise we need a reveal
+                                uint64_t count = 0;
+                                sql << "SELECT COUNT(*) FROM tezos_transactions WHERE sender = :address", use(senderAddress), into(count);
+                                tx->reveal(count == 0);
+
                                 if (tx->getType() == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                                     std::vector<TezosLikeKeychain::Address> listAddresses{self->_keychain->getAddress()};
                                     return explorer->getBalance(listAddresses).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::shared_ptr<BigInt> &balance) {

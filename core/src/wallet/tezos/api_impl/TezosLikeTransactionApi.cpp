@@ -50,13 +50,14 @@ namespace ledger {
         TezosLikeTransactionApi::TezosLikeTransactionApi(const api::Currency &currency,
                                                          const std::string &protocolUpdate) :
                 _currency(currency),
-                _protocolUpdate(protocolUpdate){
+                _protocolUpdate(protocolUpdate),
+                _needReveal(false){
             _block = std::make_shared<TezosLikeBlockApi>(Block{});
             _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
         }
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
-                                                         const std::string &protocolUpdate) {
+                                                         const std::string &protocolUpdate) : _needReveal(false) {
             auto &tx = operation->getBackend().tezosTransaction.getValue();
             _time = tx.receivedAt;
 
@@ -145,7 +146,6 @@ namespace ledger {
 
         // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
-            auto isBabylonActivated = _protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
             BytesWriter writer;
             // Watermark: Generic-Operation
             if (_signature.empty()) {
@@ -155,6 +155,10 @@ namespace ledger {
             // If tx was forged then nothing to do
             if (!_rawTx.empty()) {
                 writer.writeByteArray(_rawTx);
+                // If we need reveal, then we must prepend it
+                if (_needReveal) {
+                    writer.writeByteArray(serializeWithType(api::TezosOperationTag::OPERATION_TAG_REVEAL));
+                }
                 if (!_signature.empty()) {
                     writer.writeByteArray(_signature);
                 }
@@ -170,9 +174,28 @@ namespace ledger {
             // Remove 2 first bytes (of version)
             writer.writeByteArray(std::vector<uint8_t>{blockHash.begin() + 2, blockHash.end()});
 
+            // If we need reveal, then we must prepend it
+            if (_needReveal) {
+                writer.writeByteArray(serializeWithType(api::TezosOperationTag::OPERATION_TAG_REVEAL));
+            }
+
+            writer.writeByteArray(serializeWithType(_type));
+
+            // Append signature
+            if (!_signature.empty()) {
+                writer.writeByteArray(_signature);
+            }
+
+            return writer.toByteArray();
+        }
+
+        std::vector<uint8_t> TezosLikeTransactionApi::serializeWithType(api::TezosOperationTag type) {
+            auto isBabylonActivated = _protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
+            BytesWriter writer;
+
             auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
             // Operation Tag
-            writer.writeByte(static_cast<uint8_t>(_type) + offset);
+            writer.writeByte(static_cast<uint8_t>(type) + offset);
 
             // Set Sender
             if (isBabylonActivated) {
@@ -194,7 +217,11 @@ namespace ledger {
             writer.writeByteArray(zarith::zSerializeNumber(bigIntFess.toByteArray()));
 
             // Counter
-            writer.writeByteArray(zarith::zSerializeNumber(_counter->toByteArray()));
+            // If account need revelation then we increment counter
+            // because it was used in revelation op
+            auto localCounter = _needReveal && type != api::TezosOperationTag::OPERATION_TAG_REVEAL ?
+                                *_counter + BigInt(1) : *_counter;
+            writer.writeByteArray(zarith::zSerializeNumber(localCounter.toByteArray()));
 
             // Gas Limit
             auto bigIntGasLimit = BigInt::fromString(_gasLimit->toBigInt()->toString(10));
@@ -203,16 +230,15 @@ namespace ledger {
             // Storage Limit
             writer.writeByteArray(zarith::zSerializeNumber(_storage->toByteArray()));
 
-            switch(_type) {
+            switch(type) {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
                     if (!_signingPubKey.empty()) {
-                        if (_signingPubKey.size() == 32) {
-                            // Then it's ED25519
-                            writer.writeByte(0x00);
+                        writer.writeByte(0x00);
+                        if (_signingPubKey.size() == 33) {
+                            writer.writeByteArray(std::vector<uint8_t>{_signingPubKey.begin() + 1, _signingPubKey.end()});
                         } else { // TODO: find better, will be an issue when supporting p256
-                            writer.writeByte(0x01);
+                            writer.writeByteArray(_signingPubKey);
                         }
-                        writer.writeByteArray(_signingPubKey);
                     } else if (!_revealedPubKey.empty()) {
                         auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
                         writer.writeByte(0x00);
@@ -270,15 +296,8 @@ namespace ledger {
                 default:
                     break;
             }
-
-            // Append signature
-            if (!_signature.empty()) {
-                writer.writeByteArray(_signature);
-            }
-
             return writer.toByteArray();
         }
-
         TezosLikeTransactionApi &TezosLikeTransactionApi::setFees(const std::shared_ptr<BigInt> &fees) {
             if (!fees) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -372,6 +391,15 @@ namespace ledger {
         TezosLikeTransactionApi & TezosLikeTransactionApi::setRawTx(const std::vector<uint8_t> &rawTx) {
             _rawTx = rawTx;
             return *this;
+        }
+
+        TezosLikeTransactionApi &TezosLikeTransactionApi::reveal(bool needReveal) {
+            _needReveal = needReveal;
+            return *this;
+        }
+
+        bool TezosLikeTransactionApi::toReveal() const {
+            return _needReveal;
         }
     }
 }

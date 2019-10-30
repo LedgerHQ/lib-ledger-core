@@ -73,7 +73,10 @@ namespace ledger {
                 default:
                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Only supported operations from originated accounts: Transaction & (Remove) of delegation.");
             }
-            //
+
+            // Increment counter if needs revelation
+            // Arf BigInts ...
+            auto counter = tx->toReveal() ? (BigInt(tx->getCounter()->toString(10)) + BigInt(1)).toString() : tx->getCounter()->toString(10);
             auto bodyString = fmt::format("{{\"branch\":\"{}\","
                                                   "\"contents\":[{{\"kind\":\"transaction\","
                                                   "\"fee\":\"{}\",\"gas_limit\":\"{}\",\"storage_limit\":\"{}\","
@@ -87,7 +90,7 @@ namespace ledger {
                                           tx->getSender()->toBase58(),
                                           params,
                                           tx->getManagerAddress(),
-                                          tx->getCounter()->toString(10)
+                                          counter
             );
             const bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
