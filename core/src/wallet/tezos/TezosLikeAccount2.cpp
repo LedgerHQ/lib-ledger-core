@@ -282,7 +282,7 @@ namespace ledger {
                                 // Check whether we need a reveal operation
                                 // We assume that accounts are synced
                                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                                // Check if a there is a send operation, otherwise we need a reveal
+                                // Check if there is a send operation, otherwise we need a reveal
                                 uint64_t count = 0;
                                 sql << "SELECT COUNT(*) FROM tezos_transactions WHERE sender = :address", use(senderAddress), into(count);
                                 tx->reveal(count == 0);
