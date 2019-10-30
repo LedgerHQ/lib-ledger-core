@@ -139,6 +139,8 @@ namespace ledger {
                     _transaction->gas_limit = toValue(number, false);
                 } else if (_lastKey == "storage_limit") {
                     _transaction->storage_limit = toValue(number, false);
+                } else if (_lastKey == "burned") {
+                    _transaction->fees = _transaction->fees + toValue(number, true);
                 }
                 return true;
             }
@@ -213,8 +215,8 @@ namespace ledger {
                 } else if (_lastKey == "public_key" ||
                         (_lastKey == "data" && _transaction->type == api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
                     _transaction->publicKey = value;
-                } else if (_lastKey == "burn_tez" || _lastKey == "burned") {
-                    _transaction->fees = _transaction->fees + toValue(value, _lastKey == "burned");
+                } else if (_lastKey == "burn_tez") {
+                    _transaction->fees = _transaction->fees + toValue(value, false);
                 }
                 return true;
             }
