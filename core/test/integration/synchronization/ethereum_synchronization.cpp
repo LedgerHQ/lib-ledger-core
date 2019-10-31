@@ -33,6 +33,7 @@
 #include <set>
 #include <api/KeychainEngines.hpp>
 #include <api/EthereumLikeTransaction.hpp>
+#include <api/OperationOrderKey.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
@@ -100,7 +101,10 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto transferData = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getTransferToAddressData(amountToSend, "0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43"));
                     EXPECT_GT(transferData.size(), 0);
                     
-                    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
+                    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]
+                                                                                             ->queryOperations()
+                                                                                             ->addOrder(api::OperationOrderKey::DATE, true)
+                                                                                             ->complete())->execute());
                     std::cout << "ERC20 Operations: " << operations.size() << std::endl;
                     EXPECT_NE(operations.size(), 0);
 
