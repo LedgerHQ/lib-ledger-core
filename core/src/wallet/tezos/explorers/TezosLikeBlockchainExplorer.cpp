@@ -108,5 +108,24 @@ namespace ledger {
                         return hex::toByteArray(info);
                     });
         }
+
+        Future<std::string> TezosLikeBlockchainExplorer::getManagerKey(const std::string &address,
+                                                                       const std::shared_ptr<api::ExecutionContext> &context,
+                                                                       const std::shared_ptr<HttpClient> &http) {
+            const bool parseNumbersAsString = true;
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}/manager_key", address),
+                             std::unordered_map<std::string, std::string>{},
+                             rpcNode)
+                    .json(parseNumbersAsString)
+                    .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsString()) {
+                            // Possible if address was not revealed yet
+                            return "";
+                        }
+                        return json.GetString();
+                    });
+        }
     }
 }

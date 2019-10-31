@@ -277,5 +277,11 @@ namespace ledger {
                                                                  _http);
         }
 
+        Future<std::string> ExternalTezosLikeBlockchainExplorer::getManagerKey(const std::string &address) {
+            return TezosLikeBlockchainExplorer::getManagerKey(address,
+                                                              getExplorerContext(),
+                                                              _http);
+        }
+
     }
 }
