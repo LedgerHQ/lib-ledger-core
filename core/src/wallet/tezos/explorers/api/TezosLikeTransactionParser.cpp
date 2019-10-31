@@ -181,7 +181,7 @@ namespace ledger {
                 } else if (_lastKey == "sender" ||
                         (currentObject == "src" && _lastKey == "tz")) {
                     _transaction->sender = value;
-                } else if (_lastKey == "receiver" ||
+                } else if (_lastKey == "receiver" || _lastKey == "delegate" ||
                         ((currentObject == "destination" || currentObject == "delegate") && _lastKey == "tz")) {
                     _transaction->receiver = value;
                     if (_lastKey == "receiver" &&
