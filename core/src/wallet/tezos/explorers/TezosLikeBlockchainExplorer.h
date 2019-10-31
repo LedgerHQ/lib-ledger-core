@@ -131,6 +131,13 @@ namespace ledger {
             static Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
                                                                  const std::shared_ptr<api::ExecutionContext> &context,
                                                                  const std::shared_ptr<HttpClient> &http);
+
+            virtual Future<std::string> getManagerKey(const std::string &address) = 0;
+            // This a helper to manage legacy KT accounts
+            // WARNING: we will only support removing delegation and transfer from KT to implicit account
+            static Future<std::string> getManagerKey(const std::string &address,
+                                                     const std::shared_ptr<api::ExecutionContext> &context,
+                                                     const std::shared_ptr<HttpClient> &http);
         };
     }
 }

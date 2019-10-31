@@ -97,6 +97,8 @@ namespace ledger {
 
             Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) override ;
 
+            Future<std::string> getManagerKey(const std::string &address) override;
+
         private:
             /*
              * Helper to a get specific field's value from given url
