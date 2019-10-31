@@ -243,68 +243,82 @@ namespace ledger {
                                                      "Missing mandatory informations (e.g. gasLimit, gasPrice or value).");
                             }
 
-                            auto managerAddress = self->getKeychain()->getAddress()->toString();
-                            auto protocolUpdate = self->getWallet()
-                                    ->getConfiguration()
-                                    ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
-                                    .value_or("");
+                            // Check if recepient is revealed or not
+                            // because if not we have to add additional fees equal to storage_limit (in mXTZ)
+                            auto getRevealFee = [self, explorer, request]() -> Future<BigInt> {
+                               if (request.type != api::TezosOperationTag::OPERATION_TAG_TRANSACTION) {
+                                   return Future<BigInt>::successful(BigInt::ZERO);
+                               }
+                                return explorer->getManagerKey(request.toAddress).map<BigInt>(self->getContext(), [request] (const std::string &managerKey) -> BigInt {
+                                    // Base unit is uXTZ
+                                    return !managerKey.empty() ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
+                                });
+                            };
 
-                            auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
+                            return getRevealFee()
+                                    .flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [=]
+                                            (const BigInt &burned) {
+                                        auto managerAddress = self->getKeychain()->getAddress()->toString();
+                                        auto protocolUpdate = self->getWallet()
+                                                ->getConfiguration()
+                                                ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
+                                                .value_or("");
 
-                            // Check whether we need a reveal operation
-                            // We assume that accounts are synced
-                            soci::session sql(self->getWallet()->getDatabase()->getPool());
-                            // Check if there is a send operation, otherwise we need a reveal
-                            uint64_t count = 0;
-                            sql << "SELECT COUNT(*) FROM tezos_transactions WHERE sender = :address", use(senderAddress), into(count);
-                            tx->reveal(count == 0);
-
-                            // Check for balance
-                            // Multiply by 2 fees, since in case of reveal op, we input same fees as the ones used
-                            // for transaction op
-                            auto maxPossibleAmountToSend = *balance -
-                                    (tx->toReveal() ? *request.fees * BigInt(static_cast<unsigned long long>(2)) : *request.fees);
-                            auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
-                            if (maxPossibleAmountToSend < amountToSend) {
-                                throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-                            }
-
-                            tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
-                            tx->setFees(request.fees);
-                            tx->setGasLimit(request.gasLimit);
-                            tx->setStorage(request.storageLimit);
-
-                            tx->setSender(accountAddress);
-                            tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
-                            tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
-                            tx->setManagerAddress(managerAddress);
-                            tx->setType(request.type);
-                            const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
-                                                        managerAddress : senderAddress;
-                            return explorer->getCounter(counterAddress).flatMapPtr<Block>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &counter) {
-                                if (!counter) {
-                                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
-                                }
-                                // We should increment current counter
-                                tx->setCounter(std::make_shared<BigInt>(++(*counter)));
-                                return explorer->getCurrentBlock();
-                            }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
-                                tx->setBlockHash(block->hash);
-                                if (tx->getType() == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
-                                    std::vector<TezosLikeKeychain::Address> listAddresses{self->_keychain->getAddress()};
-                                    return explorer->getBalance(listAddresses).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::shared_ptr<BigInt> &balance) {
+                                        auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
+                                        // Balance is used only for origination which is always performed from implicit accounts
+                                        // In that case senderAddress == self->_keychain->getAddress() so safe to do so
                                         tx->setBalance(*balance);
-                                        return tx;
+
+                                        // Check whether we need a reveal operation
+                                        // We assume that accounts are synced
+                                        soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                        // Check if there is a send operation, otherwise we need a reveal
+                                        uint64_t count = 0;
+                                        sql << "SELECT COUNT(*) FROM tezos_transactions WHERE sender = :address", use(senderAddress), into(count);
+                                        tx->reveal(count == 0);
+
+                                        // Check for balance
+                                        // Multiply by 2 fees, since in case of reveal op, we input same fees as the ones used
+                                        // for transaction op
+                                        auto fees = burned +
+                                                    (tx->toReveal() ? *request.fees * BigInt(static_cast<unsigned long long>(2)) : *request.fees);
+                                        auto maxPossibleAmountToSend = *balance - fees;
+                                        auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
+                                        if (maxPossibleAmountToSend < amountToSend) {
+                                            throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+                                        }
+
+                                        tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
+                                        tx->setFees(std::make_shared<BigInt>(fees));
+                                        tx->setGasLimit(request.gasLimit);
+                                        tx->setStorage(request.storageLimit);
+
+                                        tx->setSender(accountAddress);
+                                        tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
+                                        tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
+                                        tx->setManagerAddress(managerAddress);
+                                        tx->setType(request.type);
+                                        const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
+                                                                    managerAddress : senderAddress;
+                                        return explorer->getCounter(counterAddress).flatMapPtr<Block>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &counter) {
+                                            if (!counter) {
+                                                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
+                                            }
+                                            // We should increment current counter
+                                            tx->setCounter(std::make_shared<BigInt>(++(*counter)));
+                                            return explorer->getCurrentBlock();
+                                        }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
+                                            tx->setBlockHash(block->hash);
+                                            if (senderAddress.find("KT1") == 0) {
+                                                // HACK: KT Operation we use forge endpoint
+                                                return explorer->forgeKTOperation(tx).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::vector<uint8_t> &rawTx) {
+                                                    tx->setRawTx(rawTx);
+                                                    return tx;
+                                                });
+                                            }
+                                            return FuturePtr<api::TezosLikeTransaction>::successful(tx);
+                                        });
                                     });
-                                } else if (senderAddress.find("KT1") == 0) {
-                                    // HACK: KT Operation we use forge endpoint
-                                    return explorer->forgeKTOperation(tx).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::vector<uint8_t> &rawTx) {
-                                        tx->setRawTx(rawTx);
-                                        return tx;
-                                    });
-                                }
-                                return FuturePtr<api::TezosLikeTransaction>::successful(tx);
-                            });
                         });
             };
             return std::make_shared<TezosLikeTransactionBuilder>(senderAddress,
