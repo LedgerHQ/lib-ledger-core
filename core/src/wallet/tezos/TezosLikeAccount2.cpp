@@ -249,14 +249,26 @@ namespace ledger {
                                     ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
                                     .value_or("");
 
+                            auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
+
+                            // Check whether we need a reveal operation
+                            // We assume that accounts are synced
+                            soci::session sql(self->getWallet()->getDatabase()->getPool());
+                            // Check if there is a send operation, otherwise we need a reveal
+                            uint64_t count = 0;
+                            sql << "SELECT COUNT(*) FROM tezos_transactions WHERE sender = :address", use(senderAddress), into(count);
+                            tx->reveal(count == 0);
+
                             // Check for balance
-                            auto maxPossibleAmountToSend = *balance - *request.fees;
+                            // Multiply by 2 fees, since in case of reveal op, we input same fees as the ones used
+                            // for transaction op
+                            auto maxPossibleAmountToSend = *balance -
+                                    (tx->toReveal() ? *request.fees * BigInt(static_cast<unsigned long long>(2)) : *request.fees);
                             auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
                             if (maxPossibleAmountToSend < amountToSend) {
                                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                             }
 
-                            auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
                             tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
                             tx->setFees(request.fees);
                             tx->setGasLimit(request.gasLimit);
@@ -278,15 +290,6 @@ namespace ledger {
                                 return explorer->getCurrentBlock();
                             }).flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                 tx->setBlockHash(block->hash);
-
-                                // Check whether we need a reveal operation
-                                // We assume that accounts are synced
-                                soci::session sql(self->getWallet()->getDatabase()->getPool());
-                                // Check if there is a send operation, otherwise we need a reveal
-                                uint64_t count = 0;
-                                sql << "SELECT COUNT(*) FROM tezos_transactions WHERE sender = :address", use(senderAddress), into(count);
-                                tx->reveal(count == 0);
-
                                 if (tx->getType() == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
                                     std::vector<TezosLikeKeychain::Address> listAddresses{self->_keychain->getAddress()};
                                     return explorer->getBalance(listAddresses).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::shared_ptr<BigInt> &balance) {
