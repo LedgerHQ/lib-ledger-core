@@ -51,11 +51,15 @@ namespace ledger {
                 query << sFilter;
             }
 
-            if (_order.size() > 0) {
+            if (!_order.empty()) {
+                // Add table name in case of _outerJoins to avoid ambiguity
+                // We assume that added order is always on main table
+                const auto specifier = _outerJoins.empty() ? "" :
+                                       fmt::format("{}.", _output.empty() ? _table : _output);
                 query << " ORDER BY ";
                 for (auto it = _order.begin(); it != _order.end(); it++) {
                     auto& order = *it;
-                    query << std::get<0>(order) << (std::get<1>(order) ? " DESC" : " ASC");
+                    query << specifier << std::get<0>(order) << (std::get<1>(order) ? " DESC" : " ASC");
 
                     if (std::distance(it, _order.end()) > 1) {
                         query << ",";
