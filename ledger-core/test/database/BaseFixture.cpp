@@ -104,7 +104,7 @@ void BaseFixture::createAccount(
     int32_t index
 ) {
     soci::session sql(services->getDatabaseSessionPool()->getPool());
-    auto walletUid = WalletDatabaseEntry::createWalletUid(walletName);
+    auto walletUid = WalletDatabaseEntry::createWalletUid(services->getTenant(), walletName);
 
     if (!AccountDatabaseHelper::accountExists(sql, walletUid, index)) {
         AccountDatabaseHelper::createAccount(sql, walletUid, index);
