@@ -29,14 +29,17 @@
  *
  */
 
+#include <fstream>
+
 #include <gtest/gtest.h>
+
+#include <core/preferences/PreferencesBackend.hpp>
+#include <core/utils/Option.hpp>
+
 #include <EventLooper.hpp>
 #include <EventThread.hpp>
-#include <NativeThreadDispatcher.hpp>
-#include <ledger/core/preferences/PreferencesBackend.hpp>
-#include <ledger/core/utils/Option.hpp>
 #include <NativePathResolver.hpp>
-#include <fstream>
+#include <NativeThreadDispatcher.hpp>
 #include <OpenSSLRandomNumberGenerator.hpp>
 
 class PreferencesTest : public ::testing::Test {
