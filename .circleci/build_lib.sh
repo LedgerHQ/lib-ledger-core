@@ -111,13 +111,15 @@ if [ "$1" == "ios" -o "$1" == "android" ]; then
     echo "=====>Cleaning to prepare clean build"
     echo "=====>Remove build directory"
     rm -rf ../lib-ledger-core-build
+    rm -rf ledger-core/build
 fi
 
 echo "=====>Create which will contain artifacts"
 cd .. && (mkdir lib-ledger-core-artifacts || echo "lib-ledger-core-artifacts directory already exists")
 
 echo "=====>Create build directory"
-(mkdir lib-ledger-core-build || echo "lib-ledger-core-build directory already exists") && cd lib-ledger-core-build
+mkdir lib-ledger-core-build || echo "lib-ledger-core-build directory already exists"
+mkdir lib-ledger-core/ledger-core/build || "ledger-core build directory already exists"
 
 echo "=====>Start build"
 unamestr=`uname`
@@ -147,7 +149,23 @@ if [ "$1" == "ios" ]; then
 fi
 
 echo $cmake_params
+
+echo "======> Configuring lib-ledger-core"
+cd lib-ledger-core-build
 cmake $cmake_params ../lib-ledger-core
+
+echo "======> Build for $unamestr in $BUILD_CONFIG mode"
+if [ "$1" == "ios" ]; then
+    echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
+    xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
+else
+    make -j4
+fi
+
+echo "======> Configuring ledger-core"
+cd ../lib-ledger-core/ledger-core/build
+cmake $cmake_params ..
+
 echo "======> Build for $unamestr in $BUILD_CONFIG mode"
 if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
