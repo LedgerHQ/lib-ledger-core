@@ -289,7 +289,10 @@ namespace ledger {
                                         }
 
                                         tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
-                                        tx->setFees(std::make_shared<BigInt>(fees));
+                                        // Burned XTZs are not part of the fees
+                                        // And if we have a reveal operation, it will be doubled automatically
+                                        // since we serialize 2 ops with same fees
+                                        tx->setFees(request.fees);
                                         tx->setGasLimit(request.gasLimit);
                                         tx->setStorage(request.storageLimit);
 
