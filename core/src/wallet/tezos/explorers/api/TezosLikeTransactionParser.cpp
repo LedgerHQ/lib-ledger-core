@@ -89,6 +89,12 @@ namespace ledger {
                 } else if ((_lastKey == "delegatable" || _lastKey == "is_delegatable")
                            && _transaction->originatedAccount.hasValue()) {
                     _transaction->originatedAccount.getValue().delegatable = b;
+                } else if (_lastKey == "failed") {
+                    // For Tzscan
+                    _transaction->status = static_cast<uint64_t>(!b);
+                } else if (_lastKey == "is_success") {
+                    // For Tzstats
+                    _transaction->status = static_cast<uint64_t>(b);
                 }
                 return true;
             }

@@ -161,6 +161,10 @@ namespace ledger {
         // Replace XTZ address column by public_key one
         template <> void migrate<16>(soci::session& sql);
         template <> void rollback<16>(soci::session& sql);
+
+        // Add status column on XTZ transactions
+        template <> void migrate<17>(soci::session& sql);
+        template <> void rollback<17>(soci::session& sql);
     }
 }
 
