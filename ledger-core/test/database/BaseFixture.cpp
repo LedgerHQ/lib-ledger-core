@@ -29,9 +29,12 @@
  *
  */
 
+#include <core/wallet/WalletDatabaseEntry.hpp>
+#include <core/wallet/WalletDatabaseHelper.hpp>
+
 #include <utils/FilesystemUtils.h>
 
-#include "IntegrationEnvironment.h"
+#include "IntegrationEnvironment.hpp"
 #include "BaseFixture.hpp"
 
 api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
@@ -89,11 +92,10 @@ void BaseFixture::createWallet(
     WalletDatabaseEntry entry;
     entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
     entry.name = walletName;
-    entry.poolName = services->getName();
     entry.currencyName = currencyName;
     entry.updateUid();
 
-    PoolDatabaseHelper::putWallet(sql, entry);
+    WalletDatabaseHelper::putWallet(sql, entry);
 }
 
 void BaseFixture::createAccount(
@@ -102,7 +104,7 @@ void BaseFixture::createAccount(
     int32_t index
 ) {
     soci::session sql(services->getDatabaseSessionPool()->getPool());
-    auto walletUid = WalletDatabaseEntry::createWalletUid(services->getName(), walletName);
+    auto walletUid = WalletDatabaseEntry::createWalletUid(walletName);
 
     if (!AccountDatabaseHelper::accountExists(sql, walletUid, index)) {
         AccountDatabaseHelper::createAccount(sql, walletUid, index);

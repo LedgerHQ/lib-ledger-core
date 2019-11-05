@@ -29,7 +29,7 @@
  *
  */
 
-#include "IntegrationEnvironment.h"
+#include "IntegrationEnvironment.hpp"
 
 IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
 

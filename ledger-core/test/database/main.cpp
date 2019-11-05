@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include "IntegrationEnvironment.h"
+#include "IntegrationEnvironment.hpp"
 
 int main(int argc, char **argv) {
     IntegrationEnvironment::initInstance(argc, argv);
