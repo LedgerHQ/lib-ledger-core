@@ -31,6 +31,7 @@
 
 #include <boost/lexical_cast.hpp>
 #include <gtest/gtest.h>
+#include <mongoose.h>
 #include <fstream>
 
 #include <core/net/HttpClient.hpp>
@@ -40,7 +41,6 @@
 #include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
-#include <mongoose.h>
 #include <MongooseHttpClient.hpp>
 #include <MongooseSimpleRestServer.hpp>
 

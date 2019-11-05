@@ -32,6 +32,8 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <gtest/gtest.h>
+#include <spdlog/details/os.h>
 #include <streambuf>
 
 #include <core/debug/Logger.hpp>
@@ -42,8 +44,6 @@
 #include <NativeThreadDispatcher.hpp>
 #include <NativePathResolver.hpp>
 #include <CoutLogPrinter.hpp>
-#include <spdlog/details/os.h>
-#include <gtest/gtest.h>
 
 TEST(LoggerTest, LogAndOverflow) {
     auto dispatcher = std::make_shared<NativeThreadDispatcher>();

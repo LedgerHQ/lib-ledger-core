@@ -38,6 +38,7 @@
 #include <core/crypto/AESCipher.hpp>
 #include <core/bytes/BytesReader.hpp>
 #include <core/bytes/BytesWriter.hpp>
+
 #include <OpenSSLRandomNumberGenerator.hpp>
 
 using namespace ledger::core;

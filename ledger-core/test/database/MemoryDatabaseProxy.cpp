@@ -29,24 +29,24 @@
  *
  */
 
- #include "MemoryDatabaseProxy.h"
-#include <api/DatabaseConnectionPool.hpp>
-#include <api/DatabaseConnection.hpp>
-#include <api/DatabaseStatement.hpp>
-#include <api/DatabaseBlob.hpp>
-#include <api/DatabaseResultSet.hpp>
-
-#include <sqlite3.h>
-//#include <soci-sqlite3.h>
-#include <database/proxy_backend/soci-proxy.h>
-#include <soci.h>
-#include <soci-backend.h>
-#include <sstream>
-#include <list>
+#include <algorithm>
 #include <boost/algorithm/string.hpp>
 #include <boost/lexical_cast.hpp>
-#include <algorithm>
+#include <list>
 #include <iterator>
+#include <soci.h>
+#include <soci-backend.h>
+#include <sqlite3.h>
+#include <sstream>
+
+#include <core/api/DatabaseConnectionPool.hpp>
+#include <core/api/DatabaseConnection.hpp>
+#include <core/api/DatabaseStatement.hpp>
+#include <core/api/DatabaseBlob.hpp>
+#include <core/api/DatabaseResultSet.hpp>
+#include <core/database/proxy_backend/SociProxy.hpp>
+
+#include "MemoryDatabaseProxy.hpp"
 
 #define BIND(Type) \
     auto pos = sqlite3_bind_parameter_index(_stmt, name.c_str()); \
@@ -334,7 +334,7 @@ private:
 class Connection : public api::DatabaseConnection {
 public:
     Connection(sqlite3* db, const std::string &dbName) : _db(db), _dbName(dbName) {};
-    
+
     std::shared_ptr<api::DatabaseStatement> prepareStatement(const std::string &query, bool repeatable) override {
         return std::make_shared<Statement>(_db, query);
     };

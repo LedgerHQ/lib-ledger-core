@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include <core/utils/JSONUtils.hpp>
 #include <core/explorers/AbstractBlockParser.hpp>
+#include <core/utils/JSONUtils.hpp>
 
 using namespace ledger::core;
 

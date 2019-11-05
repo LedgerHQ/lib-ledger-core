@@ -30,6 +30,7 @@
  */
 
 #include <gtest/gtest.h>
+
 #include <core/crypto/SHA256.hpp>
 #include <core/crypto/SHA512.hpp>
 #include <core/crypto/RIPEMD160.hpp>

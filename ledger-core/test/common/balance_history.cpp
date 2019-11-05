@@ -35,8 +35,8 @@
 #include <memory>
 #include <vector>
 
-#include <api/OperationType.hpp>
-#include <api/TimePeriod.hpp>
+#include <core/api/OperationType.hpp>
+#include <core/api/TimePeriod.hpp>
 #include <core/utils/DateUtils.hpp>
 #include <core/utils/Option.hpp>
 #include <core/wallet/BalanceHistory.hpp>
