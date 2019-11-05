@@ -105,14 +105,19 @@ namespace ledger {
         }
 
         BigInt::BigInt(const std::string &str, int radix) : BigInt() {
-           if (radix == 10) {
-               _negative = str[0] == '-';
-               bdConvFromDecimal(_bigd, str.c_str());
-           } else if (radix == 16) {
-               bdConvFromHex(_bigd, str.c_str());
-           } else {
-               throw std::invalid_argument("Cannot handle radix");
-           }
+            if (radix == 10) {
+                // handle digit representation
+                if (!all_digits(str)) {
+                    throw std::invalid_argument("Non-numeric base 10 big int");
+                }
+
+                _negative = str[0] == '-';
+                bdConvFromDecimal(_bigd, str.c_str());
+            } else if (radix == 16) {
+                bdConvFromHex(_bigd, str.c_str());
+            } else {
+                throw std::invalid_argument("Cannot handle radix");
+            }
         }
 
         BigInt::~BigInt() {
@@ -464,6 +469,17 @@ namespace ledger {
             } else {
                 return std::shared_ptr<BigInt>(new ::ledger::core::BigInt(ledger::core::BigInt::fromHex(s)));
             }
+        }
+
+        bool BigInt::all_digits(std::string const& s) {
+            auto it = s.cbegin();
+            auto end = s.cend();
+
+            if (it != end && (*it == '-' || *it == '+')) {
+                it++; // move past the first character
+            }
+
+            return std::all_of(it, end, [](char c) { return isdigit(c); });
         }
     }
 }

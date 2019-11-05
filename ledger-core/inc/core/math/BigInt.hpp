@@ -248,6 +248,9 @@ namespace ledger {
         private:
             BigInt(const std::string& str, int radix);
 
+            /// Check that all characters are digits.
+            static bool all_digits(std::string const& s);
+
             BIGD _bigd;
             bool _negative;
         };
