@@ -44,6 +44,8 @@ TezosLikeTransaction = interface +c {
 	getStorageLimit(): BigInt;
 	# Get hash of block in which tx is included
 	getBlockHash(): optional<string>;
+	# Get status of transaction: equals to 1 if succeeded, 0 otherwise
+	getStatus(): i32;
 }
 
 #Class representing a Tezos Operation

@@ -79,6 +79,8 @@ namespace ledger {
 
             std::vector<uint8_t> getSigningPubKey() override;
 
+            int32_t getStatus() override;
+
             TezosLikeTransactionApi &setFees(const std::shared_ptr<BigInt> &fees);
 
             TezosLikeTransactionApi &setValue(const std::shared_ptr<BigInt> &value);
@@ -133,6 +135,7 @@ namespace ledger {
             std::string _managerAddress;
             std::vector<uint8_t> _rawTx;
             bool _needReveal;
+            int32_t _status;
         };
     }
 }
