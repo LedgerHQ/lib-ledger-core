@@ -53,6 +53,7 @@ namespace ledger {
 
             static bool getWallet(
                 soci::session& sql,
+                const std::string& tenant,
                 const std::string& walletName,
                 WalletDatabaseEntry& entry
             );

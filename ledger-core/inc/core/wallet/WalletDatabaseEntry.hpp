@@ -40,13 +40,15 @@ namespace ledger {
         struct WalletDatabaseEntry {
             std::string uid;
             std::string name;
+            std::string tenant;
             std::string currencyName;
             std::shared_ptr<DynamicObject> configuration;
 
             void updateUid();
 
             static std::string createWalletUid(
-                const std::string &walletName
+                const std::string& tenant,
+                const std::string& walletName
             );
         };
     }

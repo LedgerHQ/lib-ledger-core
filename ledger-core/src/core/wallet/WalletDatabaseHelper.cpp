@@ -45,9 +45,13 @@ namespace ledger {
             auto configuration = hex::toString(serializeConfig);
             auto now = DateUtils::now();
             if (!walletExists(sql, wallet)) {
-                sql << "INSERT INTO wallets VALUES(:uid, :name, :currency_name, :configuration, :now)",
-                        use(wallet.uid), use(wallet.name), use(wallet.currencyName), use(configuration),
-                        use(now);
+                sql << "INSERT INTO wallets VALUES(:uid, :name, :tenant, :currency_name, :configuration, :now)",
+                use(wallet.uid),
+                use(wallet.name),
+                use(wallet.tenant),
+                use(wallet.currencyName),
+                use(configuration),
+                use(now);
             } else {
                 sql << "UPDATE wallets SET configuration = :configuration WHERE uid = :uid",
                 use(configuration), use(wallet.uid);
@@ -60,7 +64,7 @@ namespace ledger {
             std::vector<WalletDatabaseEntry> &wallets
         ) {
             rowset<row> rows = (
-                sql.prepare <<  "SELECT uid, name, currency_name, configuration "
+                sql.prepare <<  "SELECT uid, name, currency_name, configuration, tenant "
                                 "FROM wallets "
                                 "ORDER BY created_at "
                                 "LIMIT :count OFFSET :offset",
@@ -89,13 +93,14 @@ namespace ledger {
 
         bool WalletDatabaseHelper::getWallet(
             soci::session &sql,
-            const std::string &walletName,
+            const std::string& tenant,
+            const std::string& walletName,
             WalletDatabaseEntry &entry
         ) {
-            auto walletUid = WalletDatabaseEntry::createWalletUid(walletName);
+            auto walletUid = WalletDatabaseEntry::createWalletUid(tenant, walletName);
 
             rowset<row> rows = (
-                sql.prepare << "SELECT uid, name, currency_name, configuration "
+                sql.prepare << "SELECT uid, name, currency_name, configuration, tenant "
                                "FROM wallets "
                                "WHERE uid = :uid",
                 use(walletUid)
@@ -120,6 +125,7 @@ namespace ledger {
             auto serializedConfig = hex::toByteArray(row.get<std::string>(3));
 
             entry.configuration = std::static_pointer_cast<ledger::core::DynamicObject>(DynamicObject::load(serializedConfig));
+            entry.tenant = row.get<std::string>(4);
         }
 
         bool WalletDatabaseHelper::removeWallet(

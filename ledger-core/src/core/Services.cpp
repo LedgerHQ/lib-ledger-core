@@ -4,7 +4,7 @@
 namespace ledger {
     namespace core {
         Services::Services(
-            const std::string &name,
+            const std::string &tenant,
             const std::string &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
             const std::shared_ptr<api::WebSocketClient> &webSocketClient,
@@ -14,9 +14,9 @@ namespace ledger {
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration
-        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
+        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", tenant))) {
             // General
-            _poolName = name;
+            _tenant = tenant;
 
             _configuration = std::static_pointer_cast<DynamicObject>(configuration);
 
@@ -31,12 +31,12 @@ namespace ledger {
 
             // Preferences management
             _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
-                fmt::format("/{}/preferences.db", _poolName),
+                fmt::format("/{}/preferences.db", _tenant),
                 getContext(),
                 _pathResolver
             );
             _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
-                fmt::format("/{}/__preferences__.db", _poolName),
+                fmt::format("/{}/__preferences__.db", _tenant),
                 getContext(),
                 _pathResolver
             );
@@ -53,8 +53,8 @@ namespace ledger {
             _logPrinter = logPrinter;
             auto enableLogger = _configuration->getBoolean(api::PoolConfiguration::ENABLE_INTERNAL_LOGGING).value_or(true);
             _logger = logger::create(
-                    name + "-l",
-                    dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", name)),
+                    tenant + "-l",
+                    dispatcher->getSerialExecutionContext(fmt::format("logger_queue_{}", tenant)),
                     pathResolver,
                     logPrinter,
                     logger::DEFAULT_MAX_SIZE,
@@ -66,7 +66,7 @@ namespace ledger {
                std::static_pointer_cast<DatabaseBackend>(backend),
                pathResolver,
                _logger,
-               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
+               Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(tenant),
                password
             );
 
@@ -77,7 +77,7 @@ namespace ledger {
         }
 
         std::shared_ptr<Services> Services::newInstance(
-            const std::string &name,
+            const std::string &tenant,
             const std::string &password,
             const std::shared_ptr<api::HttpClient> &httpClient,
             const std::shared_ptr<api::WebSocketClient> &webSocketClient,
@@ -89,7 +89,7 @@ namespace ledger {
             const std::shared_ptr<api::DynamicObject> &configuration
         ) {
             auto meta = std::shared_ptr<Services>(new Services(
-                name,
+                tenant,
                 password,
                 httpClient,
                 webSocketClient,
@@ -124,8 +124,8 @@ namespace ledger {
             return _configuration;
         }
 
-        const std::string &Services::getName() const {
-            return _poolName;
+        const std::string &Services::getTenant() const {
+            return _tenant;
         }
 
         const std::string Services::getPassword() const {
