@@ -91,7 +91,12 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> TezosLikeTransactionApi::getFees() {
-            return _fees;
+            // Since revelation constructs a second operation in same transaction we have to double it
+            return _needReveal ?
+                   std::make_shared<Amount>(_currency,
+                                            0 ,
+                                            BigInt(_fees->toString()) * BigInt(static_cast<unsigned long long>(2))) :
+                   _fees;
         }
 
         std::shared_ptr<api::TezosLikeAddress> TezosLikeTransactionApi::getReceiver() {
