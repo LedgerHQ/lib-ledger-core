@@ -29,10 +29,9 @@
  *
  */
 
-#ifndef LEDGER_CORE_MEMORYDATABASEPROXY_H
-#define LEDGER_CORE_MEMORYDATABASEPROXY_H
+#pragma once
 
-#include <database/ProxyBackend.hpp>
+#include <core/database/ProxyBackend.hpp>
 
 class ConnectionPool;
 class MemoryDatabaseProxy : public ledger::core::api::DatabaseEngine {
@@ -44,6 +43,3 @@ public:
 private:
     std::shared_ptr<ConnectionPool> _pool;
 };
-
-
-#endif //LEDGER_CORE_MEMORYDATABASEPROXY_H

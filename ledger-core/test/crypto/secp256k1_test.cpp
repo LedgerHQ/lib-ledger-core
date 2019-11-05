@@ -3,8 +3,9 @@
 //
 
 #include <gtest/gtest.h>
-#include <crypto/Secp256k1Api.h>
-#include <crypto/SHA256.hpp>
+
+#include <core/crypto/Secp256k1Api.hpp>
+#include <core/crypto/SHA256.hpp>
 
 using namespace ledger::core;
 

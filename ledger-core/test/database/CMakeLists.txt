@@ -14,7 +14,7 @@ include_directories(../lib/libledger-test/)
 add_executable(ledger-core-database-tests
     main.cpp services_tests.cpp query_filters_tests.cpp BaseFixture.cpp BaseFixture.hpp
     IntegrationEnvironment.cpp IntegrationEnvironment.hpp database_soci_proxy_tests.cpp
-    MemoryDatabaseProxy.cpp MemoryDatabaseProxy.h sqlcipher_tests.cpp
+    MemoryDatabaseProxy.cpp MemoryDatabaseProxy.hpp sqlcipher_tests.cpp
 )
 
 target_link_libraries(ledger-core-database-tests gtest gtest_main)

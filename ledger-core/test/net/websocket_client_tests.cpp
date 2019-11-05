@@ -33,11 +33,12 @@
 #include <gmock/gmock.h>
 #include <QCoreApplication>
 
-#include <async/QtThreadDispatcher.hpp>
 #include <core/async/Future.hpp>
 #include <core/net/WebSocketClient.hpp>
 #include <core/net/WebSocketConnection.hpp>
 #include <core/utils/Option.hpp>
+
+#include <async/QtThreadDispatcher.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;

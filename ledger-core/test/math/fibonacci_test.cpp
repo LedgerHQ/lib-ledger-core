@@ -30,6 +30,7 @@
  */
 
 #include <gtest/gtest.h>
+
 #include <core/math/Fibonacci.hpp>
 
 TEST(Fibonacci, Suite) {

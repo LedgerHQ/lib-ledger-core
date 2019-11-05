@@ -29,16 +29,19 @@
  *
  */
 
-#include <database/ProxyBackend.hpp>
-#include <gtest/gtest.h>
-#include <soci.h>
-#include "MemoryDatabaseProxy.h"
-#include <fmt/format.h>
-#include <list>
 #include <algorithm>
-#include <cmath>
 #include <array>
-#include <utils/DateUtils.hpp>
+#include <cmath>
+#include <gtest/gtest.h>
+#include <list>
+#include <fmt/format.h>
+#include <soci.h>
+
+#include <core/database/ProxyBackend.hpp>
+#include <core/utils/DateUtils.hpp>
+
+#include "MemoryDatabaseProxy.hpp"
+
 using namespace ledger::core;
 
 struct Item {

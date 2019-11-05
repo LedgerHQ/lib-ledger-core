@@ -30,6 +30,7 @@
  */
 
 #include <gtest/gtest.h>
+
 #include <core/collections/Collections.hpp>
 
 using namespace ledger::core;
