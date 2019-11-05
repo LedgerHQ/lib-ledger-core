@@ -37,9 +37,9 @@
 
 #include <api/OperationType.hpp>
 #include <api/TimePeriod.hpp>
-#include <utils/DateUtils.hpp>
-#include <utils/Option.hpp>
-#include <wallet/common/BalanceHistory.hpp>
+#include <core/utils/DateUtils.hpp>
+#include <core/utils/Option.hpp>
+#include <core/wallet/BalanceHistory.hpp>
 
 using namespace ledger::core;
 using namespace std;

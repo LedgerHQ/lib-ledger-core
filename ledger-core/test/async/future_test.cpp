@@ -30,9 +30,10 @@
  */
 
 #include <gtest/gtest.h>
-#include <src/async/Future.hpp>
-#include <src/async/FutureUtils.hpp>
 #include <iostream>
+
+#include <core/async/Future.hpp>
+#include <core/async/FutureUtils.hpp>
 #include <async/QtThreadDispatcher.hpp>
 
 #undef foreach
