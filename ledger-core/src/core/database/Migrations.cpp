@@ -75,7 +75,6 @@ namespace ledger {
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "name VARCHAR(255),"
                 "currency_name VARCHAR(255) NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
-                "pool_name VARCHAR(255) NOT NULL REFERENCES pools(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                 "configuration TEXT NOT NULL, "
                 "created_at TEXT NOT NULL"
             ")";
