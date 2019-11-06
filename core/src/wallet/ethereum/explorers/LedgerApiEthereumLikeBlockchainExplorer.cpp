@@ -30,7 +30,6 @@
 
 
 #include "LedgerApiEthereumLikeBlockchainExplorer.h"
-#include "../../../../../cmake-build-debug/include/ledger/core/api/ErrorCode.hpp"
 #include <api_impl/BigIntImpl.hpp>
 namespace ledger {
     namespace core {
@@ -147,8 +146,6 @@ namespace ledger {
             std::string requestBody(buffer.GetString());
 
             bool parseNumbersAsString = true;
-            auto networkId = getNetworkParameters().Identifier;
-            std::string field("balance");
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return _http->POST(fmt::format("/blockchain/{}/{}/erc20/balances",
                                            getExplorerVersion(),
@@ -156,7 +153,7 @@ namespace ledger {
                                std::vector<uint8_t>(requestBody.begin(), requestBody.end()),
                                headers)
                     .json(parseNumbersAsString)
-                    .map<std::vector<BigInt>>(getContext(), [field, networkId, erc20Addresses] (const HttpRequest::JsonResult& result) {
+                    .map<std::vector<BigInt>>(getContext(), [erc20Addresses] (const HttpRequest::JsonResult& result) {
                         auto& json = *std::get<1>(result);
 
                         if (!json.IsArray() || json.Size() != erc20Addresses.size()) {
