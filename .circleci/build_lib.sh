@@ -152,15 +152,15 @@ echo $cmake_params
 
 echo "======> Configuring lib-ledger-core"
 cd lib-ledger-core-build
-cmake $cmake_params ../lib-ledger-core
-
-echo "======> Build for $unamestr in $BUILD_CONFIG mode"
-if [ "$1" == "ios" ]; then
-    echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
-    xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
-else
-    make -j4
-fi
+# cmake $cmake_params ../lib-ledger-core
+#
+# echo "======> Build for $unamestr in $BUILD_CONFIG mode"
+# if [ "$1" == "ios" ]; then
+#     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
+#     xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
+# else
+#     make -j4
+# fi
 
 echo "======> Configuring ledger-core"
 cd ../lib-ledger-core/ledger-core/build
