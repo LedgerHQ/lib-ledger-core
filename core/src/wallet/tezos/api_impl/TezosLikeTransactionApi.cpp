@@ -54,6 +54,7 @@ namespace ledger {
                 _needReveal(false){
             _block = std::make_shared<TezosLikeBlockApi>(Block{});
             _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
+            _status = 0;
         }
 
         TezosLikeTransactionApi::TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
@@ -80,6 +81,8 @@ namespace ledger {
             _type = tx.type;
 
             _revealedPubKey = tx.publicKey;
+
+            _status = tx.status;
         }
 
         api::TezosOperationTag TezosLikeTransactionApi::getType() {
@@ -141,6 +144,9 @@ namespace ledger {
             return _signingPubKey;
         }
 
+        int32_t TezosLikeTransactionApi::getStatus() {
+            return _status;
+        }
         void TezosLikeTransactionApi::setSignature(const std::vector<uint8_t> &signature) {
             // Signature should be 64 bytes
             if (signature.size() != 64) {
