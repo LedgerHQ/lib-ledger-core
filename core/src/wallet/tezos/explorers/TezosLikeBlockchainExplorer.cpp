@@ -31,20 +31,24 @@
 
 #include "TezosLikeBlockchainExplorer.h"
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
+#include <api/TezosConfiguration.hpp>
+#include <api/TezosConfigurationDefaults.hpp>
+
 namespace ledger {
     namespace core {
-
-        const std::string rpcNode = "https://mainnet.tezrpc.me/";
 
         TezosLikeBlockchainExplorer::TezosLikeBlockchainExplorer(
                 const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
                 const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
             setConfiguration(configuration);
+            _rpcNode = configuration->getString(api::TezosConfiguration::TEZOS_NODE)
+                    .value_or(api::TezosConfigurationDefaults::TEZOS_RPC_ENDPOINT);
         }
 
         Future<std::vector<uint8_t>> TezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
                                                                                    const std::shared_ptr<api::ExecutionContext> &context,
-                                                                                   const std::shared_ptr<HttpClient> &http) {
+                                                                                   const std::shared_ptr<HttpClient> &http,
+                                                                                   const std::string &rpcNode) {
             std::string params;
             switch (tx->getType()) {
                 case api::TezosOperationTag::OPERATION_TAG_TRANSACTION:
@@ -111,7 +115,8 @@ namespace ledger {
 
         Future<std::string> TezosLikeBlockchainExplorer::getManagerKey(const std::string &address,
                                                                        const std::shared_ptr<api::ExecutionContext> &context,
-                                                                       const std::shared_ptr<HttpClient> &http) {
+                                                                       const std::shared_ptr<HttpClient> &http,
+                                                                       const std::string &rpcNode) {
             const bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}/manager_key", address),

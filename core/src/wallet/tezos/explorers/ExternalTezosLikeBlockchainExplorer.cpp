@@ -37,8 +37,6 @@
 
 namespace ledger {
     namespace core {
-        const std::string rpcNode = "https://mainnet.tezrpc.me/";
-
         ExternalTezosLikeBlockchainExplorer::ExternalTezosLikeBlockchainExplorer(
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<HttpClient> &http,
@@ -100,7 +98,7 @@ namespace ledger {
             return _http->POST("/injection/operation?chain=main",
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
                                std::unordered_map<std::string, std::string>{},
-                               rpcNode)
+                               getRPCNodeEndpoint())
                     .json().template map<String>(getExplorerContext(),
                                                  [](const HttpRequest::JsonResult &result) -> String {
                                                      auto &json = *std::get<1>(result);
@@ -267,20 +265,22 @@ namespace ledger {
                              "",
                              std::unordered_map<std::string, std::string>{},
                              "0",
-                             rpcNode
+                             getRPCNodeEndpoint()
             );
         }
 
         Future<std::vector<uint8_t>> ExternalTezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) {
             return TezosLikeBlockchainExplorer::forgeKTOperation(tx,
                                                                  getExplorerContext(),
-                                                                 _http);
+                                                                 _http,
+                                                                 getRPCNodeEndpoint());
         }
 
         Future<std::string> ExternalTezosLikeBlockchainExplorer::getManagerKey(const std::string &address) {
             return TezosLikeBlockchainExplorer::getManagerKey(address,
                                                               getExplorerContext(),
-                                                              _http);
+                                                              _http,
+                                                              getRPCNodeEndpoint());
         }
 
     }

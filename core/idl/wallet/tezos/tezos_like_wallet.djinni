@@ -156,12 +156,14 @@ TezosLikeOriginatedAccount = interface +c {
 TezosConfiguration = interface +c {
   	const TEZOS_XPUB_CURVE: string = "TEZOS_XPUB_CURVE";
 	const TEZOS_PROTOCOL_UPDATE: string = "TEZOS_PROTOCOL_UPDATE";
+	const TEZOS_NODE: string = "TEZOS_NODE";
 }
 
 TezosConfigurationDefaults = interface +c {
 	const TEZOS_DEFAULT_API_ENDPOINT: string = "https://explorers.api.live.ledger.com";
 	const TEZOS_DEFAULT_API_VERSION: string = "v3";
 	const TZSTATS_API_ENDPOINT: string = "https://api.tzstats.com/explorer";
+	const TEZOS_RPC_ENDPOINT: string = "https://mainnet.tezrpc.me";
 	const TEZOS_OBSERVER_NODE_ENDPOINT_S3: string = "https://s3.tezos.com";
 	const TEZOS_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.tezos.com";
 	const TEZOS_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.tezos.com";
