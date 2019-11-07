@@ -11,6 +11,8 @@ std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION = {"v3"}
 
 std::string const TezosConfigurationDefaults::TZSTATS_API_ENDPOINT = {"https://api.tzstats.com/explorer"};
 
+std::string const TezosConfigurationDefaults::TEZOS_RPC_ENDPOINT = {"https://mainnet.tezrpc.me"};
+
 std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_NODE_ENDPOINT_S3 = {"https://s3.tezos.com"};
 
 std::string const TezosConfigurationDefaults::TEZOS_OBSERVER_WS_ENDPOINT_S2 = {"wss://s2.tezos.com"};

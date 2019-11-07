@@ -272,13 +272,15 @@ namespace ledger {
         Future<std::vector<uint8_t>> NodeTezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) {
             return TezosLikeBlockchainExplorer::forgeKTOperation(tx,
                                                                  getExplorerContext(),
-                                                                 _http);
+                                                                 _http,
+                                                                 getRPCNodeEndpoint());
         }
 
         Future<std::string> NodeTezosLikeBlockchainExplorer::getManagerKey(const std::string &address) {
             return TezosLikeBlockchainExplorer::getManagerKey(address,
                                                               getExplorerContext(),
-                                                              _http);
+                                                              _http,
+                                                              getRPCNodeEndpoint());
         }
     }
 }
