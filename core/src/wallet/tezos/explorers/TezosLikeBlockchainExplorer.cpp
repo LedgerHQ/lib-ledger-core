@@ -42,7 +42,7 @@ namespace ledger {
                 const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
             setConfiguration(configuration);
             _rpcNode = configuration->getString(api::TezosConfiguration::TEZOS_NODE)
-                    .value_or(api::TezosConfigurationDefaults::TEZOS_RPC_ENDPOINT);
+                    .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_NODE);
         }
 
         Future<std::vector<uint8_t>> TezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
