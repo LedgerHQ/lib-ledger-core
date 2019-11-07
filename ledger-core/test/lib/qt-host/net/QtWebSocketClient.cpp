@@ -29,8 +29,9 @@
  *
  */
 
-#include "QtWebSocketClient.h"
-#include <api/ErrorCode.hpp>
+#include <core/api/ErrorCode.hpp>
+
+#include "QtWebSocketClient.hpp"
 
 using namespace ledger::core;
 

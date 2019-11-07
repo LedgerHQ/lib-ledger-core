@@ -28,18 +28,19 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_QTTHREADDISPATCHER_HPP
-#define LEDGER_CORE_QTTHREADDISPATCHER_HPP
+
+#pragma once
 
 #include <functional>
 
-#include <QObject>
+#include <QCoreApplication>
 #include <QMap>
 #include <QMutex>
-#include <api/ThreadDispatcher.hpp>
-#include <api/Runnable.hpp>
-#include <QCoreApplication>
-#include <api/ExecutionContext.hpp>
+#include <QObject>
+
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/Runnable.hpp>
+#include <core/api/ThreadDispatcher.hpp>
 
 namespace ledger {
     namespace qt {
@@ -64,6 +65,3 @@ namespace ledger {
         std::shared_ptr<ledger::core::api::Runnable> make_runnable(std::function<void()> func);
     }
 }
-
-
-#endif //LEDGER_CORE_QTTHREADDISPATCHER_HPP

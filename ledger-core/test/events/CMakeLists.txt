@@ -11,7 +11,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-events-tests main.cpp events_test.cpp)
+add_executable(ledger-core-events-tests main.cpp EventsTest.cpp)
 
 target_link_libraries(ledger-core-events-tests gtest gtest_main)
 target_link_libraries(ledger-core-events-tests ledger-core-static)

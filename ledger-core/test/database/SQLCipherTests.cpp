@@ -35,7 +35,7 @@
 
 #include <core/utils/DateUtils.hpp>
 
-#include <utils/FilesystemUtils.h>
+#include <utils/FilesystemUtils.hpp>
 #include "BaseFixture.hpp"
 
 using namespace ledger::core;

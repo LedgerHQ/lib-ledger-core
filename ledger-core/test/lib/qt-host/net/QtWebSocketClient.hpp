@@ -29,14 +29,14 @@
  *
  */
 
-#ifndef LEDGER_CORE_QTWEBSOCKETCLIENT_H
-#define LEDGER_CORE_QTWEBSOCKETCLIENT_H
+#pragma once
 
-#include <api/WebSocketClient.hpp>
-#include <api/WebSocketConnection.hpp>
-#include <QtWebSockets/QtWebSockets>
-#include <QHash>
 #include <QAtomicInt>
+#include <QHash>
+#include <QtWebSockets/QtWebSockets>
+
+#include <core/api/WebSocketClient.hpp>
+#include <core/api/WebSocketConnection.hpp>
 
 namespace ledger {
     namespace qt {
@@ -71,6 +71,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_QTWEBSOCKETCLIENT_H

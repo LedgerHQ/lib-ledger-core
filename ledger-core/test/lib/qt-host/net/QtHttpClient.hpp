@@ -28,19 +28,20 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_QTHTTPCLIENT_HPP
-#define LEDGER_CORE_QTHTTPCLIENT_HPP
 
-#include <functional>
+#pragma once
 
-#include <api/HttpClient.hpp>
-#include <api/HttpUrlConnection.hpp>
-#include <api/HttpRequest.hpp>
-#include <api/HttpReadBodyResult.hpp>
-#include <api/HttpMethod.hpp>
 #include <QtNetwork>
 #include <QNetworkReply>
 #include <QObject>
+#include <functional>
+
+#include <core/api/HttpClient.hpp>
+#include <core/api/HttpUrlConnection.hpp>
+#include <core/api/HttpRequest.hpp>
+#include <core/api/HttpReadBodyResult.hpp>
+#include <core/api/HttpMethod.hpp>
+
 #include "../async/QtThreadDispatcher.hpp"
 
 namespace ledger {
@@ -57,5 +58,3 @@ namespace ledger {
         };
     }
 }
-
-#endif //LEDGER_CORE_QTHTTPCLIENT_HPP

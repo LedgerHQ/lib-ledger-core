@@ -7,7 +7,7 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-crypto-tests main.cpp digest_test.cpp encryption_test.cpp deterministic_public_key_test.cpp secp256k1_test.cpp)
+add_executable(ledger-core-crypto-tests main.cpp DigestTest.cpp EncryptionTest.cpp DeterministicPublicKeyTest.cpp Secp256k1Test.cpp)
 
 target_link_libraries(ledger-core-crypto-tests gtest gtest_main)
 target_link_libraries(ledger-core-crypto-tests ledger-core-static)

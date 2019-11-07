@@ -9,7 +9,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-net-tests main.cpp http_client_tests.cpp websocket_client_tests.cpp)
+add_executable(ledger-core-net-tests main.cpp HTTPClientTests.cpp WebSocketClientTests.cpp)
 
 target_link_libraries(ledger-core-net-tests gtest gtest_main)
 target_link_libraries(ledger-core-net-tests gmock)

@@ -29,7 +29,9 @@
  *
  */
 #include <iostream>
-#include <utils/LambdaRunnable.hpp>
+
+#include <core/utils/LambdaRunnable.hpp>
+
 #include "QtThreadPoolExecutionContext.hpp"
 
 void ledger::qt::QtThreadPoolExecutionContext::execute(const std::shared_ptr<ledger::core::api::Runnable> &runnable) {
