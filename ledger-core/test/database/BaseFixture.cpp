@@ -32,7 +32,7 @@
 #include <core/wallet/WalletDatabaseEntry.hpp>
 #include <core/wallet/WalletDatabaseHelper.hpp>
 
-#include <utils/FilesystemUtils.h>
+#include <utils/FilesystemUtils.hpp>
 
 #include "IntegrationEnvironment.hpp"
 #include "BaseFixture.hpp"

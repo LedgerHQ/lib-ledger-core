@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_FILESYSTEMUTILS_H
-#define LEDGER_CORE_FILESYSTEMUTILS_H
+#pragma once
 
 #include <string>
 
@@ -42,6 +41,3 @@ namespace ledger {
         };
     }
 }
-
-
-#endif //LEDGER_CORE_FILESYSTEMUTILS_H

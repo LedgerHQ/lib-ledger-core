@@ -28,15 +28,17 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_QTMAINEXECUTIONCONTEXT_HPP
-#define LEDGER_CORE_QTMAINEXECUTIONCONTEXT_HPP
 
+#pragma once
+
+#include <atomic>
+
+#include <QCoreApplication>
 #include <QtConcurrent>
 #include <QThreadPool>
-#include <api/ExecutionContext.hpp>
-#include <api/Runnable.hpp>
-#include <QCoreApplication>
-#include <atomic>
+
+#include <core/api/ExecutionContext.hpp>
+#include <core/api/Runnable.hpp>
 
 namespace ledger {
     namespace qt {
@@ -66,5 +68,3 @@ namespace ledger {
 }
 
 Q_DECLARE_METATYPE(std::shared_ptr<ledger::core::api::Runnable>);
-
-#endif //LEDGER_CORE_QTMAINEXECUTIONCONTEXT_HPP

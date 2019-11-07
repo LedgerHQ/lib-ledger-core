@@ -48,7 +48,7 @@
 #include <core/wallet/AccountDatabaseHelper.hpp>
 
 #include <async/QtThreadDispatcher.hpp>
-#include <async/async_wait.h>
+#include <async/AsyncWait.hpp>
 #include <net/QtHttpClient.hpp>
 #include <CoutLogPrinter.hpp>
 #include <NativePathResolver.hpp>

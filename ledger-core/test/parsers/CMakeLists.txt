@@ -12,8 +12,8 @@ endif (APPLE)
 include_directories(../lib/libledger-test/)
 
 add_executable(ledger-core-parser-tests
-        main.cpp
-        tx_parser.cpp
+    main.cpp
+    TXParser.cpp
 )
 
 target_link_libraries(ledger-core-parser-tests gtest gtest_main)

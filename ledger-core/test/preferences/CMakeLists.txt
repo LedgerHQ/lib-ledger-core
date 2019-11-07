@@ -10,7 +10,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-preferences-tests main.cpp preferences_test.cpp)
+add_executable(ledger-core-preferences-tests main.cpp PreferencesTest.cpp)
 
 target_link_libraries(ledger-core-preferences-tests gtest gtest_main)
 target_link_libraries(ledger-core-preferences-tests ledger-core-static)

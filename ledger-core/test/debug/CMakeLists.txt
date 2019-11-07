@@ -8,7 +8,7 @@ endif (APPLE)
 
 include_directories(../lib/libledger-test/)
 
-add_executable(ledger-core-debug-tests main.cpp logger_test.cpp)
+add_executable(ledger-core-debug-tests main.cpp LoggerTest.cpp)
 
 target_link_libraries(ledger-core-debug-tests gtest gtest_main)
 target_link_libraries(ledger-core-debug-tests ledger-core-static)
