@@ -1,12 +1,12 @@
 #!/bin/sh
 
 # project new <coin-id> [--force]
-function usage() {
+usage() {
   echo $1
   exit $2
 }
 
-function cmd_project_new() {
+cmd_project_new() {
   if [[ -z "$1" ]];
   then
     usage "please provide the name of the currency" 1
@@ -44,7 +44,7 @@ function cmd_project_new() {
   sed s/\$project_name/$coin_name/g ./tools/templates/Migrations.cpp > $project_name/src/$coin_name/database/Migrations.cpp
 }
 
-function cmd_project_idl() {
+cmd_project_idl() {
   if [[ -z "$1" ]];
   then
     usage "please provide the name of the currency" 1
@@ -53,7 +53,7 @@ function cmd_project_idl() {
   ./tools/idl_interfaces.sh ledger-core $1
 }
 
-function cmd_project() {
+cmd_project() {
   case "$1" in
     "new")
       shift
@@ -71,7 +71,7 @@ function cmd_project() {
   esac
 }
 
-function cmd_idl() {
+cmd_idl() {
   if [[ ! -z "$*" ]];
   then
     usage "too many arguments; generating the API for Ledger Core doesn’t require any argument" 1
