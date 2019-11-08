@@ -119,10 +119,10 @@ jobs:
             name: Build_Library
             command: |
               . .circleci/build_lib.sh Debug
-        - run:
-            name: Build_Module
-            command: |
-              . .circleci/build_node_module.sh
+        # - run:
+        #     name: Build_Module
+        #     command: |
+        #       . .circleci/build_node_module.sh
         - run:
             name: Run_Tests
             command: |
@@ -215,10 +215,10 @@ jobs:
           name: Build_Library
           command: |
             . .circleci/build_lib.sh Debug
-      - run:
-          name: Build_Module
-          command: |
-            . .circleci/build_node_module.sh
+      #- run:
+      #    name: Build_Module
+      #    command: |
+      #      . .circleci/build_node_module.sh
       - run:
           name: Run_Tests
           command: |
