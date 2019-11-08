@@ -283,5 +283,12 @@ namespace ledger {
                                                               getRPCNodeEndpoint());
         }
 
+        Future<bool> ExternalTezosLikeBlockchainExplorer::isAllocated(const std::string &address) {
+            return TezosLikeBlockchainExplorer::isAllocated(address,
+                                                            getExplorerContext(),
+                                                            _http,
+                                                            getRPCNodeEndpoint());
+        }
+
     }
 }
