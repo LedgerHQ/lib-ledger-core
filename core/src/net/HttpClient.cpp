@@ -84,7 +84,8 @@ namespace ledger {
                                               const std::experimental::optional<std::vector<uint8_t >> body,
                                               const std::unordered_map<std::string, std::string> &headers,
                                               const std::string &baseUrl) {
-            auto url = baseUrl.empty() ? _baseUrl : baseUrl;
+            auto url = baseUrl.empty() ? _baseUrl :
+                       baseUrl.back() != '/' ? baseUrl + "/" : baseUrl;
             if (path.front() == '/') {
                 url += std::string(path.data() + 1);
             } else {
