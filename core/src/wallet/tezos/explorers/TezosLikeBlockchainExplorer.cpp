@@ -130,6 +130,9 @@ namespace ledger {
                             return "";
                         }
                         return json.GetString();
+                    }).recover(context, [] (const Exception &exception) {
+                        // for KT we got an 404 instead of just a null value as we would expect
+                        return "";
                     });
         }
     }
