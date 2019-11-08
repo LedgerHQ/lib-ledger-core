@@ -135,5 +135,22 @@ namespace ledger {
                         return "";
                     });
         }
+
+        Future<bool> TezosLikeBlockchainExplorer::isAllocated(const std::string &address,
+                                                              const std::shared_ptr<api::ExecutionContext> &context,
+                                                              const std::shared_ptr<HttpClient> &http,
+                                                              const std::string &rpcNode) {
+            const bool parseNumbersAsString = true;
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}", address),
+                             std::unordered_map<std::string, std::string>{},
+                             rpcNode)
+                    .json(parseNumbersAsString)
+                    .map<bool>(context, [](const HttpRequest::JsonResult &result) {
+                       return true;
+                    }).recover(context, [] (const Exception &exception) {
+                        return false;
+                    });
+        }
     }
 }

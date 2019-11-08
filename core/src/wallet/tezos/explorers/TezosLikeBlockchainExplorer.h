@@ -144,6 +144,12 @@ namespace ledger {
                                                      const std::shared_ptr<HttpClient> &http,
                                                      const std::string &rpcNode);
 
+            virtual Future<bool> isAllocated(const std::string &address) = 0;
+            static Future<bool> isAllocated(const std::string &address,
+                                            const std::shared_ptr<api::ExecutionContext> &context,
+                                            const std::shared_ptr<HttpClient> &http,
+                                            const std::string &rpcNode);
+
         protected:
             std::string getRPCNodeEndpoint() const {
                 return _rpcNode;

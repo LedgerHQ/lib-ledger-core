@@ -99,6 +99,8 @@ namespace ledger {
 
             Future<std::string> getManagerKey(const std::string &address) override;
 
+            Future<bool> isAllocated(const std::string &address) override;
+
         private:
             /*
              * Helper to a get specific field's value from given url
