@@ -29,7 +29,7 @@
  *
  */
 
-#include "FakeWebSocketClient.h"
+#include "FakeWebSocketClient.hpp"
 #include <api/WebSocketConnection.hpp>
 
 FakeWebSocketClient::FakeWebSocketClient() : _id(0) {

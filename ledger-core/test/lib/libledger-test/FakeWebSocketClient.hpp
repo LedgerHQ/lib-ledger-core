@@ -29,15 +29,15 @@
  *
  */
 
-#ifndef LEDGER_CORE_FAKEWEBSOCKETCLIENT_H
-#define LEDGER_CORE_FAKEWEBSOCKETCLIENT_H
+#pragma once
 
-#include <api/WebSocketClient.hpp>
-#include <memory>
-#include <list>
-#include <functional>
 #include <atomic>
-#include <api/ErrorCode.hpp>
+#include <functional>
+#include <list>
+#include <memory>
+
+#include <core/api/ErrorCode.hpp>
+#include <core/api/WebSocketClient.hpp>
 
 class FakeWebSocketClient : public ledger::core::api::WebSocketClient {
 public:
@@ -59,7 +59,3 @@ private:
     std::function<void ()> _connectCallback;
 
 };
-
-
-
-#endif //LEDGER_CORE_FAKEWEBSOCKETCLIENT_H
