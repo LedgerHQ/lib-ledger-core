@@ -35,7 +35,7 @@
 #include <soci.h>
 #include <unordered_set>
 
-#include <async/AsyncWwait.hpp>
+#include <async/AsyncWait.hpp>
 #include <async/QtThreadDispatcher.hpp>
 #include <net/QtHttpClient.hpp>
 #include <CoutLogPrinter.hpp>
@@ -45,8 +45,10 @@
 
 #include <core/Services.hpp>
 #include <core/api/Account.hpp>
+#include <core/api/AccountCreationInfo.hpp>
 #include <core/api/BigInt.hpp>
 #include <core/api/DynamicObject.hpp>
+#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
 #include <core/events/LambdaEventReceiver.hpp>
 #include <core/database/DatabaseSessionPool.hpp>
 #include <core/utils/JSONUtils.hpp>

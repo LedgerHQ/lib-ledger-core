@@ -163,7 +163,7 @@ void BaseFixture::createWallet(
     WalletDatabaseEntry entry;
     entry.configuration = std::static_pointer_cast<DynamicObject>(configuration);
     entry.name = walletName;
-    entry.tenant = pool->getTenant();
+    entry.tenant = services->getTenant();
     entry.currencyName = currencyName;
     entry.updateUid();
 
@@ -171,13 +171,13 @@ void BaseFixture::createWallet(
 }
 
 void BaseFixture::createAccount(
-    const std::shared_ptr<Services> &services,i
+    const std::shared_ptr<Services> &services,
     const std::string &walletName,
     int32_t index
 ) {
     soci::session sql(services->getDatabaseSessionPool()->getPool());
 
-    auto walletUid = WalletDatabaseEntry::createWalletUid(services->getName(), walletName);
+    auto walletUid = WalletDatabaseEntry::createWalletUid(services->getTenant(), walletName);
 
     if (!AccountDatabaseHelper::accountExists(sql, walletUid, index)) {
         AccountDatabaseHelper::createAccount(sql, walletUid, index);
