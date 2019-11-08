@@ -25,16 +25,20 @@ cmd_project_new() {
   fi
 
   echo "—> creating files hierarchy"
-  mkdir -p $project_name/{build,idl,inc/$coin_name/database,src/$coin_name/database}
+  mkdir -p $project_name/{build,idl,inc/$coin_name/database,src/$coin_name/database,test}
   touch $project_name/README.md
 
   echo "—> symlinking ledger-core’s libraries"
   ln -sf $PWD/ledger-core/lib $project_name/lib
   ln -sf $PWD/ledger-core/cmake $project_name/cmake
 
+  echo "-> symlinking ledger-core’s test librariries"
+  ln -sf $PWD/ledger-core/test/lib $project_name/test/lib
+
   echo "—> generating CMake configuration"
   sed -e s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt
   sed -e s/\$project_name/$project_name/g -e s/\$coin_name/$coin_name/g ./tools/templates/CMakeLists-project-src.txt.tpl > $project_name/src/CMakeLists.txt
+  sed -e s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project-test.txt.tpl > $project_name/test/CMakeLists.txt
 
   echo "—> generating IDL entry point"
   cp ./tools/templates/idl.djinni $project_name/idl/
