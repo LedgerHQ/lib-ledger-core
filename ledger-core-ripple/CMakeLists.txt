@@ -43,10 +43,11 @@ add_subdirectory(src)
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 
-if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
-    message(STATUS "Test are enabled")
+if(BUILD_TESTS)
+    message(STATUS "Tests are enabled")
+    add_subdirectory(test/lib/qt-host)
     enable_testing()
-    #add_subdirectory(test) TODO: uncomment to enable tests
+    add_subdirectory(test)
 else()
-    message(STATUS "Test are disabled")
+    message(STATUS "Tests are disabled")
 endif()
