@@ -58,7 +58,9 @@ namespace ledger {
         }
 
         CurrencyBuilder &CurrencyBuilder::unit(const std::string &name, int magnitude, const std::string &code) {
-            return unit(name, magnitude, code);
+            api::CurrencyUnit u(name, code, (int32_t) magnitude);
+            _units.push_back(u);
+            return *this;
         }
     }
 }
