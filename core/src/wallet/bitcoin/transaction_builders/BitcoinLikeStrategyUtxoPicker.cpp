@@ -216,7 +216,10 @@ namespace ledger {
                                                                          getCurrency(),
                                                                          buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
             //Size 1 signed UTXO (signed input)
-            auto signedUTXOSize = buddy->keychain->getOutputSizeAsSignedTxInput();
+            auto signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
+                                                                          0,
+                                                                          getCurrency(),
+                                                                          buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
 
             //Size of unsigned change
             auto changeSize = oneOutputSize;
@@ -273,7 +276,7 @@ namespace ledger {
             //Sort utxos by effectiveValue
             std::sort(listEffectiveUTXOs.begin(), listEffectiveUTXOs.end(), descendingEffectiveValue);
 
-            int64_t currentWaste = 0;
+            int64_t currentWaste = 0, currentActualTarget = actualTarget;
             int64_t bestWaste = MAX_MONEY;
             std::vector<bool> bestSelection;
             buddy->logger->debug("Start filterWithLowestFees, target range is {} to {}, available funds {}", actualTarget, actualTarget + costOfChange, currentAvailableValue);
@@ -282,13 +285,13 @@ namespace ledger {
 
                 //Condition for starting a backtrack
                 bool backtrack = false;
-                if(currentValue + currentAvailableValue < actualTarget || //Cannot reach target with the amount remaining in currentAvailableValue
-                   currentValue > actualTarget + costOfChange || // Selected value is out of range, go back and try other branch
+                if(currentValue + currentAvailableValue < currentActualTarget || //Cannot reach target with the amount remaining in currentAvailableValue
+                   currentValue > currentActualTarget + costOfChange || // Selected value is out of range, go back and try other branch
                    (currentWaste > bestWaste && listEffectiveUTXOs.at(0).effectiveFees - listEffectiveUTXOs.at(0).longTermFees > 0) ) { //avoid selecting utxos producing more waste
                     buddy->logger->debug("Should backtrack");
                     backtrack = true;
-                } else if (currentValue >= actualTarget) { //Selected valued is within range
-                    currentWaste += (currentValue - actualTarget);
+                } else if (currentValue >= currentActualTarget) { //Selected valued is within range
+                    currentWaste += (currentValue - currentActualTarget);
                     buddy->logger->debug("Selected Value is within range, current waste {}, best waste {}", currentWaste, bestWaste);
                     if (currentWaste <= bestWaste) {
                         bestSelection = currentSelection;
@@ -296,7 +299,7 @@ namespace ledger {
                         bestWaste = currentWaste;
                     }
                     // remove the excess value as we will be selecting different coins now
-                    currentWaste -= (currentValue - actualTarget);
+                    currentWaste -= (currentValue - currentActualTarget);
                     backtrack = true;
                 }
 
@@ -319,6 +322,7 @@ namespace ledger {
                     auto& effectiveUTXO = listEffectiveUTXOs.at(currentSelection.size() - 1);
                     currentValue -= effectiveUTXO.effectiveValue;
                     currentWaste -= (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
+                    currentActualTarget -= effectiveUTXO.effectiveFees;
                     buddy->logger->debug("Backtrack, remove {}, current values is {} and current waste is {}", effectiveUTXO.effectiveValue, currentValue, currentWaste);
                 } else { //Moving forwards, continuing down this branch
                     buddy->logger->debug("Moving forward with currentSelection size {}", currentSelection.size());
@@ -338,6 +342,7 @@ namespace ledger {
                         currentSelection.push_back(true);
                         currentValue += effectiveUTXO.effectiveValue;
                         currentWaste += (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
+                        currentActualTarget += effectiveUTXO.effectiveFees;
                         buddy->logger->debug("Select UTXO with effective value {}, current waste is {}", effectiveUTXO.effectiveValue, currentWaste);
                     }
                 }
@@ -363,7 +368,7 @@ namespace ledger {
             }
 
             //Set change amount
-            buddy->changeAmount = bestValue - BigInt(actualTarget + costOfChange);
+            buddy->changeAmount = bestValue - BigInt(currentActualTarget + costOfChange);
 
             return out;
         }
