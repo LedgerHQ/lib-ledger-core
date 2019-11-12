@@ -1,5 +1,5 @@
 const logic = require('./create_sync_balance.js')
-const binding = require('bindings')('lib-core-node')
+const binding = require('bindings')('ledger-core')
 const services = require('./messages/services_pb.js')
 const https = require('https');
 const URL = require('url').URL;

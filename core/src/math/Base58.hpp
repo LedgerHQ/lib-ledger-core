@@ -36,6 +36,7 @@
 #include "../utils/Try.hpp"
 #include "../utils/Exception.hpp"
 #include <api/DynamicObject.hpp>
+#include <collections/vector.hpp>
 #include <memory>
 
 namespace ledger {

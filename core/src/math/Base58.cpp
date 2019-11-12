@@ -31,7 +31,6 @@
 #include "Base58.hpp"
 #include "BigInt.h"
 #include <sstream>
-#include "../collections/vector.hpp"
 #include <crypto/HashAlgorithm.h>
 #include <utils/hex.h>
 #include <functional>

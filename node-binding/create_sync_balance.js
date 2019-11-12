@@ -1,7 +1,13 @@
 require('./messages/commands_pb.js');
-require('./messages/core_configuration_pb');
-require('./messages/bitcoin/commands_pb.js');
-
+const {LibCoreConfiguration} = require('./messages/core_configuration_pb');
+const {GetBalanceRequest, BitcoinRequest, GetBalanceResponse} = require('./messages/bitcoin/commands_pb.js');
+const {
+    CoreRequest,
+    CoreRequestType,
+    CoreResponse,
+    GetVersionResponse
+} = require('./messages/commands_pb.js');
+const {ServiceRequest} = require('./messages/services_pb');
 createGetVersionRequest = function() {
     var req = new CoreRequest();
     req.setRequestType(CoreRequestType.GET_VERSION);
@@ -33,10 +39,10 @@ createSyncAccountRequest = function(accId) {
 
 createGetBalanceRequest = function(uid) {
     var balanceReq = new GetBalanceRequest()
-    balanceReq.setAccUid(uid);
-    var btcReq = new Request();
-    btcReq.setType(RequestType.GET_ACCOUNT_BALANCE);
-    btcReq.setSubmessage(balanceReq.serializeBinary());
+    balanceReq.setAccountId(uid);
+    var btcReq = new CoreRequest();
+    btcReq.setRequestType(CoreRequestType.GET_ACCOUNT_BALANCE);
+    btcReq.setRequestBody(balanceReq.serializeBinary());
     var req = new CoreRequest();
     req.setRequestType(CoreRequestType.BITCOIN_REQUEST);
     req.setRequestBody(btcReq.serializeBinary());
