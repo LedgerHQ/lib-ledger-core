@@ -1,4 +1,4 @@
-const logic = require('./create_sync_balance.js')
+const {run_test_logic} = require('./create_sync_balance.js')
 const binding = require('bindings')('ledger-core')
 const services = require('./messages/services_pb.js')
 const https = require('https');
@@ -8,9 +8,9 @@ const axios = require('axios');
 
 
 function OnRequest(data, callback) {
-    var serviceReq = services.ServiceRequest.deserializeBinary(data);
+    const serviceReq = services.ServiceRequest.deserializeBinary(data);
     if (serviceReq.getType() == services.ServiceRequestType.HTTP_REQ) {
-        var httpReq = services.HttpRequest.deserializeBinary(serviceReq.getRequestBody());
+        const httpReq = services.HttpRequest.deserializeBinary(serviceReq.getRequestBody());
         const method = httpReq.getMethod();
         const headersMap = httpReq.getHeadersMap();
         let dataStr = httpReq.getBody();
@@ -30,8 +30,8 @@ function OnRequest(data, callback) {
         console.log(param);
         axios(param)
           .then((resp) => {
-              var serviceResp = new services.ServiceResponse();
-              var respMessage = new services.HttpResponse();
+              const serviceResp = new services.ServiceResponse();
+              const respMessage = new services.HttpResponse();
               respMessage.setCode(resp.status);
               respMessage.setBody(JSON.stringify(resp.data));
               serviceResp.setResponseBody(respMessage.serializeBinary());
@@ -39,7 +39,7 @@ function OnRequest(data, callback) {
               })
           .catch((err) => {
               console.log(err);
-              var serviceResp = new services.ServiceResponse();
+              const serviceResp = new services.ServiceResponse();
               serviceResp.setError(err.message);
               callback(serviceResp.serializeBinary());
           });
@@ -51,8 +51,7 @@ function OnNotification(data) {
 }
 
 
-callbacker = new ubinder.Callbacker(binding, OnNotification, OnRequest)
-
 run_test = function() {
+    const callbacker = new ubinder.Callbacker(binding, OnNotification, OnRequest)
     run_test_logic(callbacker, console.log, "data");
 }
