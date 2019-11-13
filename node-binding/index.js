@@ -50,8 +50,16 @@ function OnNotification(data) {
 
 }
 
-
-run_test = function() {
-    const callbacker = new UbinderOnPromises(binding, OnNotification, OnRequest)
-    run_test_logic(callbacker, console.log, "data");
+function OnExit() {
+    process.exit(0);
 }
+
+
+
+const run_test = async () =>  {
+    const callbacker = new UbinderOnPromises(binding, OnNotification, OnRequest, OnExit);
+    const result = await run_test_logic(callbacker, console.log, "data");
+    callbacker.exit();
+}
+
+module.exports.run_test = run_test;

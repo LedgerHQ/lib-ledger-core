@@ -68,6 +68,10 @@ namespace ledger {
 
         }
 
+        void LibCoreCommands::OnExit() {
+            _executionContext->stop();
+        }
+
         Future<CoreResponse> LibCoreCommands::processRequest(const CoreRequest&& request) {
             switch (request.request_type())
             {
@@ -148,15 +152,19 @@ WRAPPER_EXPORT
         ::RequestResponse sendRequest,
         ::RequestResponse sendResponse,
         ::Notification sendNotification,
+        ::ExitRequestResponse sendExit,
         ::RequestResponse* onRequest,
         ::RequestResponse* onResponse,
-        ::Notification* onNotification) {
+        ::Notification* onNotification,
+        ::ExitRequestResponse* onExit) {
         ledger::core::CppWrapperInstance.sendRequest = sendRequest;
         ledger::core::CppWrapperInstance.sendResponse = sendResponse;
         ledger::core::CppWrapperInstance.sendNotification = sendNotification;
+        ledger::core::CppWrapperInstance.sendExit = sendExit;
         *onRequest = &ledger::core::OnRequestFunc;
         *onResponse = &ledger::core::OnResponseFunc;
         *onNotification = &ledger::core::OnNotificationFunc;
+        *onExit = &ledger::core::OnExit;
     }
     
 #ifdef __cplusplus

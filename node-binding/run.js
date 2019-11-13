@@ -1,1 +1,2 @@
-require('./index.js'); run_test();
+const {run_test} = require('./index.js');
+run_test();

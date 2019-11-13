@@ -25,6 +25,7 @@ namespace ledger {
             LibCoreCommands();
             void OnRequest(std::vector<uint8_t>&& data, std::function<void(std::vector<uint8_t>&&)>&& callback);
             void OnNotification(std::vector<uint8_t>&& data);
+            void OnExit();
         private:
             std::once_flag _startExecutionContext;
 
@@ -56,6 +57,10 @@ namespace ledger {
 
         void OnNotificationFunc(const char* data, size_t dataSize) {
             CppWrapperInstance.onNotification(data, dataSize);
+        }
+
+        void OnExit() {
+            CppWrapperInstance.onExit();
         }
     }
 }

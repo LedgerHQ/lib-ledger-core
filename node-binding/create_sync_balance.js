@@ -71,24 +71,20 @@ async function createAndSyncAccount(callbacker, outputFunction, path, accId) {
     outputFunction("Balance = " + balanceResp.getAmount().getValue());
 }
 
-run_test_logic = function(callbacker, outputFunction, path) {
+const run_test_logic = async (callbacker, outputFunction, path) => {
     try {
         const accId = new proto.ledger.core.message.bitcoin.AccountID();
         accId.setCurrencyName('bitcoin');
         accId.setXpub("xpub6CQRBg1k8KN2yZfWUywHt9dtDSEFfHhwhBrEjzuHj5YBV2p81NEviAhEhGzYpC5AzwuL6prM2wc1oyMQ8hmsCKqrWwHrjcboQvkBctC1JTq");
         accId.setKeychainEngine(proto.ledger.core.message.bitcoin.KeychainEngine.BIP49_P2SH);
         versionReq = createGetVersionRequest();
-        callbacker.sendRequest(versionReq)
-            .then((data) => {
-                const resp = CoreResponse.deserializeBinary(data);
-                if (resp.error) throw resp.error;
-                const versionResp = GetVersionResponse.deserializeBinary(resp.getResponseBody());
-                outputFunction("lib-core version: " + versionResp.getMajor() + "." + versionResp.getMinor() + "." + versionResp.getPatch())
-            })
-            .catch((err)=> outputFunction(err));
-        createAndSyncAccount(callbacker, outputFunction, path, accId)
-            .then((data)=>outputFunction(data))
-            .catch((e)=>outputFunction(e));
+        const data = await callbacker.sendRequest(versionReq);
+        const resp = CoreResponse.deserializeBinary(data);
+        if (resp.error) throw resp.error;
+        const versionResp = GetVersionResponse.deserializeBinary(resp.getResponseBody());
+        outputFunction("lib-core version: " + versionResp.getMajor() + "." + versionResp.getMinor() + "." + versionResp.getPatch());
+        const syncData = await createAndSyncAccount(callbacker, outputFunction, path, accId);
+        outputFunction(syncData);
     }
     catch (error) {
         outputFunction(error.message);
