@@ -3,7 +3,7 @@ const binding = require('bindings')('ledger-core')
 const services = require('./messages/services_pb.js')
 const https = require('https');
 const URL = require('url').URL;
-const ubinder = require('../core/lib/ubinder/src/node/ubinder');
+const {UbinderOnPromises} = require('../core/lib/ubinder/src/js_common/UbinderOnPromises.js');
 const axios = require('axios');
 
 
@@ -52,6 +52,6 @@ function OnNotification(data) {
 
 
 run_test = function() {
-    const callbacker = new ubinder.Callbacker(binding, OnNotification, OnRequest)
+    const callbacker = new UbinderOnPromises(binding, OnNotification, OnRequest)
     run_test_logic(callbacker, console.log, "data");
 }
