@@ -294,7 +294,7 @@ namespace ledger {
                     break;
                 }
                 case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
-                    if (_receiver) {
+                    if (_receiver && !_receiver->getHash160().empty()) {
                         // Delegate is always implicit account (TBC)
                         writer.writeByte(0xFF);
                         writer.writeByte(static_cast<uint8_t >(_receiverCurve));
