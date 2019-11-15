@@ -35,6 +35,9 @@ public:
     /** Sets the API endpoint for API based engine (Ledger's API). */
     static std::string const BLOCKCHAIN_EXPLORER_API_ENDPOINT;
 
+    /** Sets the node's endpoint to broadcast transactions with one's node */
+    static std::string const BLOCKCHAIN_NODE_ENDPOINT;
+
     /** Sets the API version. */
     static std::string const BLOCKCHAIN_EXPLORER_VERSION;
 

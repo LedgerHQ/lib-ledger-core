@@ -84,6 +84,7 @@ namespace ledger {
         private:
             api::BitcoinLikeNetworkParameters _parameters;
             std::string _explorerVersion;
+            std::string _customRpcNode;
         };
     }
 }

@@ -36,5 +36,22 @@ namespace ledger {
                                                                      const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
             setConfiguration(configuration);
         }
+
+        Future<String> BitcoinLikeBlockchainExplorer::pushTransactionToNode(const std::vector<uint8_t> &rawTx,
+                                                                            const std::shared_ptr<api::ExecutionContext> &context,
+                                                                            const std::shared_ptr<HttpClient> &client,
+                                                                            const std::string &rpcNode) {
+            std::stringstream body;
+            body << '{"jsonrpc": "2.0", "id": "broadcastTx", "method": "sendrawtransaction", "params": ["' << hex::toString(rawTx) <<'"] }';
+            auto bodyString = body.str();
+            return client->POST("",
+                               std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
+                                                    std::unordered_map<std::string, std::string>{},
+                                                    rpcNode)
+                    .json().template map<String>(context, [] (const HttpRequest::JsonResult& result) -> String {
+                        auto& json = *std::get<1>(result);
+                        return json["result"].GetString();
+                    });
+        }
     }
 }

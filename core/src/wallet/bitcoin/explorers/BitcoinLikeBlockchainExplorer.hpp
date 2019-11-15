@@ -40,6 +40,7 @@
 #include <async/Future.hpp>
 #include <collections/collections.hpp>
 #include <math/BigInt.h>
+#include <net/HttpClient.hpp>
 #include <utils/ConfigurationMatchable.h>
 #include <utils/optional.hpp>
 #include <utils/Option.hpp>
@@ -111,6 +112,11 @@ namespace ledger {
                                           const std::vector<std::string> &matchableKeys);
 
             virtual Future<std::vector<std::shared_ptr<api::BigInt>>> getFees() = 0;
+
+            static Future<String> pushTransactionToNode(const std::vector<uint8_t> &rawTx,
+                                                         const std::shared_ptr<api::ExecutionContext> &context,
+                                                         const std::shared_ptr<HttpClient> &client,
+                                                         const std::string &rpcNode);
 
         };
     }

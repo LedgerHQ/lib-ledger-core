@@ -32,6 +32,8 @@
 #include <api/ErrorCode.hpp>
 #include "LedgerApiBitcoinLikeBlockchainExplorer.hpp"
 #include <api_impl/BigIntImpl.hpp>
+#include <api/Configuration.hpp>
+
 namespace ledger {
     namespace core {
 
@@ -44,6 +46,7 @@ namespace ledger {
             _http = http;
             _parameters = parameters;
             _explorerVersion = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION).value_or("v2");
+            _customRpcNode = configuration->getString(api::Configuration::BLOCKCHAIN_NODE_ENDPOINT).value_or("");
         }
 
         Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
@@ -67,6 +70,14 @@ namespace ledger {
         }
 
         Future<String> LedgerApiBitcoinLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
+            // Check if we set up a custom node to broadcast transactions
+            if (!_customRpcNode.empty()) {
+                return BitcoinLikeBlockchainExplorer::pushTransactionToNode(
+                        transaction,
+                        getExplorerContext(),
+                        _http,
+                        _customRpcNode);
+            }
             return pushLedgerApiTransaction(transaction);
         }
 

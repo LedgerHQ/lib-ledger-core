@@ -15,6 +15,8 @@ std::string const Configuration::BLOCKCHAIN_EXPLORER_ENGINE = {"BLOCKCHAIN_EXPLO
 
 std::string const Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT = {"BLOCKCHAIN_EXPLORER_API_ENDPOINT"};
 
+std::string const Configuration::BLOCKCHAIN_NODE_ENDPOINT = {"BLOCKCHAIN_NODE_ENDPOINT"};
+
 std::string const Configuration::BLOCKCHAIN_EXPLORER_VERSION = {"BLOCKCHAIN_EXPLORER_VERSION"};
 
 std::string const Configuration::BLOCKCHAIN_EXPLORER_PORT = {"BLOCKCHAIN_EXPLORER_PORT"};
