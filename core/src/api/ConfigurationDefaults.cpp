@@ -15,4 +15,6 @@ std::string const ConfigurationDefaults::DEFAULT_KEYCHAIN = {"BIP32_P2PKH"};
 
 int32_t const ConfigurationDefaults::DEFAULT_TRUST_LIMIT = 3;
 
+int32_t const ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE = 20;
+
 } } }  // namespace ledger::core::api
