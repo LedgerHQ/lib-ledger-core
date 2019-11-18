@@ -1,7 +1,12 @@
-## 3.1.0 (on-going)
+## 3.2.0 (on-going)
+
+- Bump Djinni version to support Node 12.
+
+## 3.1.0
 
 - Add block heights on `BitcoinLikeOutput`s to enhance performances while picking UTXOs with deepest first UTXO picking strategy
 - Add signature settings on `BitcoinLikeTransaction` to create DER signature from RS(V) data
+- Stable XTZ support.
 
 ## 3.0.0
 
