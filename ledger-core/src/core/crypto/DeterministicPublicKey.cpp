@@ -31,6 +31,7 @@
 
 #include <core/api/Secp256k1.hpp>
 #include <core/bytes/BytesWriter.hpp>
+#include <core/crypto/BLAKE.hpp>
 #include <core/crypto/DeterministicPublicKey.hpp>
 #include <core/crypto/HASH160.hpp>
 #include <core/crypto/HMAC.hpp>
@@ -82,6 +83,10 @@ namespace ledger {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid public key :  Keccak hash of uncompressed public key with wrong size");
             }
             return  std::vector<uint8_t>(keccak.end() - 20, keccak.end());
+        }
+
+        std::vector<uint8_t> DeterministicPublicKey::getPublicKeyBlake2b(bool isED25519) const {
+            return BLAKE::blake2b(_key, 20, !isED25519);
         }
 
         const std::vector<uint8_t>& DeterministicPublicKey::getPublicKey() const {
