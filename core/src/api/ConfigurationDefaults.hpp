@@ -35,6 +35,9 @@ public:
 
     /** Default trust limit (block height). */
     static int32_t const DEFAULT_TRUST_LIMIT;
+
+    /** Default observable range for HD keychains */
+    static int32_t const KEYCHAIN_DEFAULT_OBSERVABLE_RANGE;
 };
 
 } } }  // namespace ledger::core::api
