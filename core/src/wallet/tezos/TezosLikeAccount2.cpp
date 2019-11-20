@@ -307,8 +307,33 @@ namespace ledger {
                                             tx->setGasLimit(request.gasLimit);
                                             tx->setStorage(request.storageLimit);
 
-                                            tx->setSender(accountAddress);
-                                            tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency));
+                                            auto getCurveHelper = [] (const std::string &xpubConfig) -> api::TezosCurve {
+                                                if (xpubConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519) {
+                                                    return api::TezosCurve::ED25519;
+                                                } else if (xpubConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1) {
+                                                    return api::TezosCurve::SECP256K1;
+                                                }
+                                                return api::TezosCurve::P256;
+                                            };
+                                            // Get sender's curve first
+                                            // For KT accounts, it is always ED25519
+                                            auto senderCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519;
+                                            if (senderAddress.find("KT1") != 0) {
+                                                senderCurve = self->getKeychain()->getConfiguration()
+                                                        ->getString(api::TezosConfiguration::TEZOS_XPUB_CURVE)
+                                                        .value_or(api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
+                                            }
+                                            tx->setSender(accountAddress, getCurveHelper(senderCurve));
+
+                                            // Get receiver's curve
+                                            auto receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519;
+                                            auto receiverPrefix = request.toAddress.substr(0, 3);
+                                            if (receiverPrefix == "tz2") {
+                                                receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1;
+                                            } else if (receiverPrefix == "tz3") {
+                                                receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256;
+                                            }
+                                            tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency), getCurveHelper(receiverCurve));
                                             tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
                                             tx->setManagerAddress(managerAddress);
                                             tx->setType(request.type);

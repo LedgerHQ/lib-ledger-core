@@ -186,7 +186,7 @@ namespace ledger {
                 auto senderCurveCode = reader.readNextByte();
                 // then hash160 ...
                 senderHash160 = reader.read(20);
-                version = params.ImplicitPrefix;
+                version = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
             } else {
                 auto isSenderOriginated = reader.readNextByte();
                 if (isSenderOriginated) {
@@ -194,13 +194,14 @@ namespace ledger {
                     senderHash160 = reader.read(20);
                     // ... and padding
                     reader.readNextByte();
+                    version = params.OriginatedPrefix;
                 } else {
                     // Otherwise first curve code ...
                     auto senderCurveCode = reader.readNextByte();
                     // then hash160 ...
                     senderHash160 = reader.read(20);
+                    version = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
                 }
-                version = isSenderOriginated ? params.OriginatedPrefix : params.ImplicitPrefix;
             }
             tx->setSender(std::make_shared<TezosLikeAddress>(currency,
                                                              senderHash160,
@@ -256,13 +257,14 @@ namespace ledger {
                         auto receiverCurveCode = reader.readNextByte();
                         // 20 bytes of publicKey hash
                         receiverHash160 = reader.read(20);
+                        receiverVersion = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(receiverCurveCode));
                     } else {
                         // 20 bytes of publicKey hash
                         receiverHash160 = reader.read(20);
                         // Padding
                         reader.readNextByte();
+                        receiverVersion = params.OriginatedPrefix;
                     }
-                    receiverVersion = isReceiverOriginated ? params.OriginatedPrefix : params.ImplicitPrefix;
 
                     tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                        receiverHash160,
@@ -307,7 +309,10 @@ namespace ledger {
                         auto delegateHash160 = reader.read(20);
                         tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                            delegateHash160,
-                                                                           params.ImplicitPrefix, // can't delegate to originated account (TBC)
+                                                                           TezosLikeAddress::getPrefixFromImplicitVersion(
+                                                                                   params.ImplicitPrefix,
+                                                                                   api::TezosCurve(delegateCurveCode)
+                                                                           ), // can't delegate to originated account (TBC)
                                                                            Option<std::string>()));
                     }
                     break;
