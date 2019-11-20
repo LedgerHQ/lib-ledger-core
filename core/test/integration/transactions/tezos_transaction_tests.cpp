@@ -48,7 +48,7 @@ struct TezosMakeTransaction : public TezosMakeBaseTransaction {
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
-        configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1);
+        configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         testData.configuration = configuration;
         testData.walletName = "my_wallet";
         testData.currencyName = "tezos";

@@ -94,6 +94,8 @@ namespace ledger {
                 curve = api::TezosCurve::ED25519;
             } else if (curveConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1) {
                 curve = api::TezosCurve::SECP256K1;
+            } else if (curveConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256) {
+                curve = api::TezosCurve::P256;
             } else {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Could not retrieve address from public key : unknown Tezos Curve");
             }

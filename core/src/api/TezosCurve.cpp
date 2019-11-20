@@ -10,12 +10,14 @@ std::string to_string(const TezosCurve& tezosCurve) {
     switch (tezosCurve) {
         case TezosCurve::ED25519: return "ED25519";
         case TezosCurve::SECP256K1: return "SECP256K1";
+        case TezosCurve::P256: return "P256";
     };
 };
 template <>
 TezosCurve from_string(const std::string& tezosCurve) {
     if (tezosCurve == "ED25519") return TezosCurve::ED25519;
-    else return TezosCurve::SECP256K1;
+    else if (tezosCurve == "SECP256K1") return TezosCurve::SECP256K1;
+    else return TezosCurve::P256;
 };
 
 std::ostream &operator<<(std::ostream &os, const TezosCurve &o)
@@ -23,6 +25,7 @@ std::ostream &operator<<(std::ostream &os, const TezosCurve &o)
     switch (o) {
         case TezosCurve::ED25519:  return os << "ED25519";
         case TezosCurve::SECP256K1:  return os << "SECP256K1";
+        case TezosCurve::P256:  return os << "P256";
     }
 }
 
