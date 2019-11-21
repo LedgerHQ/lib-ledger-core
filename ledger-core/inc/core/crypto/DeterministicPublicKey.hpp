@@ -53,6 +53,7 @@ namespace ledger {
             std::vector<uint8_t> getUncompressedPublicKey() const;
             std::vector<uint8_t> getPublicKeyHash160() const;
             std::vector<uint8_t> getPublicKeyKeccak256() const;
+            std::vector<uint8_t> getPublicKeyBlake2b(bool isED25519) const;
             std::vector<uint8_t> toByteArray(const std::vector<uint8_t>& version = {}) const;
         public:
 
