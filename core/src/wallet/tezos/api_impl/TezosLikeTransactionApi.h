@@ -105,7 +105,7 @@ namespace ledger {
 
             TezosLikeTransactionApi & setBalance(const BigInt &balance);
 
-            TezosLikeTransactionApi & setManagerAddress(const std::string &managerAddress);
+            TezosLikeTransactionApi & setManagerAddress(const std::string &managerAddress, api::TezosCurve curve);
             std::string getManagerAddress() const;
 
             TezosLikeTransactionApi &setRawTx(const std::vector<uint8_t> &rawTx);
@@ -133,6 +133,7 @@ namespace ledger {
             BigInt _balance;
             std::string _protocolUpdate;
             std::string _managerAddress;
+            api::TezosCurve _managerCurve;
             std::vector<uint8_t> _rawTx;
             bool _needReveal;
             int32_t _status;
