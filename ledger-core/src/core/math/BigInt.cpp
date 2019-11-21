@@ -433,5 +433,37 @@ namespace ledger {
                 return toHexString();
             }
         }
+
+        std::shared_ptr<api::BigInt> api::BigInt::fromDecimalString(const std::string &s, int32_t precision,
+                                                          const std::string &decimalSeparator) {
+            std::string writer;
+            std::string decimaleWriter;
+            auto hasReachedDecimalPart = false;
+            auto d = 0;
+            for (auto i = 0; i < s.length(); i++) {
+                auto c = s[i];
+                if (c >= '0' && c <= '9' && !hasReachedDecimalPart) {
+                    writer.push_back(c);
+                } else if (c == decimalSeparator[0] && !hasReachedDecimalPart) {
+                    hasReachedDecimalPart = true;
+                } else if (c >= '0' && c <= '9' && hasReachedDecimalPart) {
+                    decimaleWriter.push_back(c);
+                } else {
+                    d += 1;
+                }
+            }
+            while (decimaleWriter.size() < precision) {
+                decimaleWriter.push_back('0');
+            }
+            return fromIntegerString(writer + decimaleWriter, 10);
+        }
+
+        std::shared_ptr<api::BigInt> api::BigInt::fromIntegerString(const std::string &s, int32_t radix) {
+            if (radix == 10) {
+                return std::shared_ptr<BigInt>(new ::ledger::core::BigInt(ledger::core::BigInt::fromDecimal(s)));
+            } else {
+                return std::shared_ptr<BigInt>(new ::ledger::core::BigInt(ledger::core::BigInt::fromHex(s)));
+            }
+        }
     }
 }
