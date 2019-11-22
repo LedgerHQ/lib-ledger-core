@@ -273,37 +273,38 @@ namespace ledger {
             std::vector<Operation> operations;
 
             for (auto& row : rows) {
-                InternalTx tx;
-                tx.type = api::from_string<api::OperationType>(row.get<std::string>(0));
+                // ignore NONE operation
+                Operation operation;
+
+                operation.type = api::from_string<api::OperationType>(row.get<std::string>(0));
+
+                if (operation.type == api::OperationType::NONE) {
+                  continue;
+                }
+
+                //auto from = row.get<std::string>(2);
+                //auto to = row.get<std::string>(3);
+                auto gasLimit = BigInt::fromHex(row.get<std::string>(4));
+                auto gasUsed = BigInt::fromHex(row.get<std::string>(5));
+                auto gasPrice = BigInt::fromHex(row.get<std::string>(6));
+
+                operation.date = DateUtils::fromJSON(row.get<std::string>(7));
+
+                // we set fees to zero because they’re paid by the parent transaction if not set to NONE
+                operation.fees = BigInt::ZERO;
 
                 // if the status is not okay, we have to change the amount of the operation because
                 // it wasn’t really broadcasted, but the fees were still paid
                 auto status = soci::get_number<uint64_t>(row, 8);
                 if (status == 0) {
-                    tx.value = BigInt::ZERO;
+                    operation.amount = BigInt::ZERO;
                 } else {
-                    tx.value = BigInt::fromHex(row.get<std::string>(1));
+                    operation.amount = BigInt::fromHex(row.get<std::string>(1));
                 }
 
-                tx.from = row.get<std::string>(2);
-                tx.to = row.get<std::string>(3);
-                tx.gasLimit = BigInt::fromHex(row.get<std::string>(4));
-                tx.gasUsed = BigInt::fromHex(row.get<std::string>(5));
-                auto gasPrice = BigInt::fromHex(row.get<std::string>(6));
-                auto date = DateUtils::fromJSON(row.get<std::string>(7));
-
+                // required when computing balances
                 EthereumLikeBlockchainExplorerTransaction etx;
                 etx.status = status;
-
-                Operation operation;
-                operation.amount = tx.value;
-
-                if (tx.gasUsed.hasValue()) {
-                    operation.fees = gasPrice * tx.gasUsed.getValue();
-                }
-
-                operation.type = tx.type;
-                operation.date = date;
 
                 operation.ethereumTransaction = Option<EthereumLikeBlockchainExplorerTransaction>(etx);
 
@@ -377,7 +378,6 @@ namespace ledger {
 
                     auto keychain = self->getKeychain();
                     std::function<bool(const std::string &)> filter = [&keychain](const std::string& addr) -> bool {
-                        //return keychain->contains(addr);
                         auto keychainAddr = keychain->getAddress()->toString();
                         return addr == keychainAddr;
                     };
@@ -396,7 +396,7 @@ namespace ledger {
 
                     // sort operations
                     std::sort(operations.begin(), operations.end(), [](Operation const& a, Operation const& b) {
-                        return a.date > b.date;
+                        return a.date < b.date;
                     });
 
                     auto lowerDate = startDate;
@@ -421,10 +421,12 @@ namespace ledger {
                                     sum = sum + operation.amount;
                                     break;
                                 }
+
                                 case api::OperationType::SEND: {
                                     sum = sum - (operation.amount + operation.fees.getValueOr(BigInt::ZERO));
                                     break;
                                 }
+
                                 default:
                                     break;
                             }
