@@ -20,6 +20,7 @@ namespace ledger { namespace core { namespace api {
 enum class TezosCurve : int {
     ED25519,
     SECP256K1,
+    P256,
 };
 LIBCORE_EXPORT  std::string to_string(const TezosCurve& tezosCurve);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const TezosCurve &o);
