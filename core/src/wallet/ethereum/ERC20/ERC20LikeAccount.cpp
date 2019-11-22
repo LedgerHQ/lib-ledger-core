@@ -287,7 +287,7 @@ namespace ledger {
             auto query = std::make_shared<ERC20OperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
-                    localAccount->getWallet()->getContext(),
+                    localAccount->getContext(),
                     localAccount->getWallet()->getMainExecutionContext()
             );
             query->registerAccount(localAccount);

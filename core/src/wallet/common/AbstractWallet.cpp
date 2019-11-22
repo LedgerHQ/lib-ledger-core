@@ -48,11 +48,10 @@ namespace ledger {
                                        const api::Currency &currency,
                                        const std::shared_ptr<WalletPool> &pool,
                                        const std::shared_ptr<DynamicObject> &configuration,
-                                       const DerivationScheme &derivationScheme
-        )
-                : DedicatedContext(
-                pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName))),
-                  _scheme(derivationScheme) {
+                                       const DerivationScheme &derivationScheme)
+                : DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext(fmt::format("wallet_{}", walletName))),
+                  _scheme(derivationScheme)
+        {
             _pool = pool;
             _name = walletName;
             _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);

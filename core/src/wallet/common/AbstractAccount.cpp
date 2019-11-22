@@ -36,12 +36,18 @@
 #include <api/ErrorCode.hpp>
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-
+#include <wallet/pool/WalletPool.hpp>
 namespace ledger {
     namespace core {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
-                : DedicatedContext(wallet->getMainExecutionContext()) {
+                :
+                DedicatedContext(
+                        wallet->getPool()
+                                ->getDispatcher()
+                                ->getThreadPoolExecutionContext(fmt::format("account_{}_{}", wallet->getName(), index))
+                )
+        {
             _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
             _index = index;
