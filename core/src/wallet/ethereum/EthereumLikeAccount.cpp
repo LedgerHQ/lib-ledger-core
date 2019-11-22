@@ -396,7 +396,7 @@ namespace ledger {
 
                     // sort operations
                     std::sort(operations.begin(), operations.end(), [](Operation const& a, Operation const& b) {
-                        return a.date > b.date;
+                        return a.date < b.date;
                     });
 
                     auto lowerDate = startDate;
