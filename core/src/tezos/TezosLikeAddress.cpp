@@ -120,6 +120,7 @@ namespace ledger {
             return std::make_shared<ledger::core::TezosLikeAddress>(currency, hash160, version, derivationPath);
         }
 
+        // Reference: https://gitlab.com/tezos/tezos/blob/952dacac820e337577d5a6ea8db881883d9d865c/src/lib_signer_backends/ledger.ml#L100
         std::vector<uint8_t> TezosLikeAddress::getPublicKeyHash160(const std::vector<uint8_t> &pubKey,
                                                                    api::TezosCurve curve) {
             auto result = vector::concat(
