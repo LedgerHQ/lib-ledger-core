@@ -55,7 +55,7 @@
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <events/EventPublisher.hpp>
 #include <net/WebSocketClient.h>
-
+#include <utils/TTLCache.h>
 namespace ledger {
     namespace core {
         class BitcoinLikeWalletFactory;
@@ -140,7 +140,11 @@ namespace ledger {
             /// > that doesn’t include having lots of objects in memory.
             Future<api::ErrorCode> freshResetAll();
 
+<<<<<<< HEAD
             std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
+=======
+            Option<api::Block> getBlockFromCache(const std::string &currencyName);
+>>>>>>> Add caching on last block and balance
         private:
             WalletPool(
                 const std::string &name,
@@ -214,6 +218,8 @@ namespace ledger {
             std::unordered_map<std::string, int64_t> _lastEmittedBlocks;
 
             std::shared_ptr<api::ExecutionContext> _threadPoolExecutionContext;
+            //Here the key is the currency name
+            TTLCache<std::string, api::Block> _blockCache;
         };
     }
 }

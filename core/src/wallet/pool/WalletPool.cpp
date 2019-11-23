@@ -51,7 +51,9 @@ namespace ledger {
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration
-        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
+        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
+           _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BLOCK_CACHE).value_or(30)))
+        {
             // General
             _poolName = name;
 
@@ -465,6 +467,10 @@ namespace ledger {
         }
 
         Future<api::Block> WalletPool::getLastBlock(const std::string &currencyName) {
+            auto optBlock = _blockCache.get(currencyName);
+            if (optBlock.hasValue()) {
+                return Future<api::Block>::successful(optBlock.getValue());
+            }
             auto self = shared_from_this();
             return Future<api::Block>::async(_threadPoolExecutionContext, [self, currencyName] () -> api::Block {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
@@ -472,6 +478,8 @@ namespace ledger {
                 if (block.isEmpty()) {
                     throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Currency '{}' may not exist", currencyName);
                 }
+                // Update cache
+                self->_blockCache.put(currencyName, block.getValue());
                 return block.getValue();
             });
         }
@@ -556,6 +564,8 @@ namespace ledger {
 
         std::shared_ptr<api::ExecutionContext> WalletPool::getThreadPoolExecutionContext() const {
             return _threadPoolExecutionContext;
+        Option<api::Block> WalletPool::getBlockFromCache(const std::string &currencyName) {
+            return _blockCache.get(currencyName);
         }
     }
 }

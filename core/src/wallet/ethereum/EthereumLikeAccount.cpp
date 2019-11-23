@@ -334,28 +334,26 @@ namespace ledger {
         }
 
         FuturePtr<Amount> EthereumLikeAccount::getBalance() {
+            auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
             std::vector<EthereumLikeKeychain::Address> listAddresses{_keychain->getAddress()};
-                auto currency = getWallet()->getCurrency();
-<<<<<<< HEAD
-                return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [currency] (const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
-=======
-                return _explorer->getBalance(listAddresses).mapPtr<Amount>(getThreadPoolExecutionContext(), [currency] (const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
->>>>>>> Add getThreadPoolExecutionContext method on AbstractAccount class
-                    return std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
-                });
+            auto currency = getWallet()->getCurrency();
+            auto self = getSelf();
+            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency] (const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
+                Amount b(currency, 0, BigInt(balance->toString()));
+                self->getWallet()->updateBalanceCache(self->getIndex(), b);
+                return std::make_shared<Amount>(b);
+            });
         }
 
         std::shared_ptr<api::OperationQuery> EthereumLikeAccount::queryOperations() {
             auto query = std::make_shared<OperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
-<<<<<<< HEAD
                     getWallet()->getPool()->getThreadPoolExecutionContext(),
                     getMainExecutionContext()
-=======
-                    getThreadPoolExecutionContext(),
-                    getWallet()->getMainExecutionContext()
->>>>>>> Add getThreadPoolExecutionContext method on AbstractAccount class
             );
             query->registerAccount(shared_from_this());
             return query;
@@ -604,11 +602,7 @@ namespace ledger {
                 });
 
                 return txHash;
-<<<<<<< HEAD
             }).callback(getMainExecutionContext(), callback);
-=======
-            }).callback(getThreadPoolExecutionContext(), callback);
->>>>>>> Add getThreadPoolExecutionContext method on AbstractAccount class
         }
 
         void EthereumLikeAccount::broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,

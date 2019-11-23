@@ -88,6 +88,9 @@ Configuration = interface +c {
 
     # Operation trust.
     const TRUST_LIMIT: string = "TRUST_LIMIT";
+
+    # Time to Live for block cache
+    const TTL_BLOCK_CACHE: string = "TTL_BLOCK_CACHE";
 }
 
 # Configuration of wallet pools.

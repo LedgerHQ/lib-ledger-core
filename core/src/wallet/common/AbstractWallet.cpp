@@ -51,6 +51,7 @@ namespace ledger {
                                        const DerivationScheme &derivationScheme)
                 : DedicatedContext(pool->getThreadPoolExecutionContext()),
                   _scheme(derivationScheme)
+                  _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BLOCK_CACHE).value_or(30)))
         {
             _pool = pool;
             _name = walletName;
@@ -349,5 +350,13 @@ namespace ledger {
             return getConfig();
         }
 
+
+        Option<Amount> AbstractWallet::getBalanceFromCache(size_t accountIndex) {
+            return _balanceCache.get(fmt::format("{}-{}", _currency.name, accountIndex));
+        }
+
+        void AbstractWallet::updateBalanceCache(size_t accountIndex, Amount balance) {
+            _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
+        }
     }
 }

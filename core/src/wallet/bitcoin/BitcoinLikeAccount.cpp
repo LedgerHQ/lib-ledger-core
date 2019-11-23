@@ -432,6 +432,10 @@ namespace ledger {
         }
 
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getBalance() {
+            auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             return async<std::shared_ptr<Amount>>([=] () -> std::shared_ptr<Amount> {
                 const int32_t BATCH_SIZE = 100;
@@ -449,7 +453,9 @@ namespace ledger {
                 for (const auto& utxo : utxos) {
                     sum = sum + utxo.value;
                 }
-                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, sum);
+                Amount balance(self->getWallet()->getCurrency(), 0, sum);
+                self->getWallet()->updateBalanceCache(self->getIndex(), balance);
+                return std::make_shared<Amount>(balance);
             });
         }
 
@@ -550,9 +556,10 @@ namespace ledger {
         // certain currency
         // WARNING: please don't use this method if you need an accurate value
         // of last block
-        static uint64_t getLastBlockFromDB(soci::session &sql, const std::string &currencyName) {
+        static uint64_t getLastBlockFromDB(const std::shared_ptr<BitcoinLikeAccount> btcAccount, soci::session &sql, const std::string &currencyName) {
+            auto cachedBlock = btcAccount->getWallet()->getPool()->getBlockFromCache(btcAccount->getWallet()->getCurrency().name);
             //Get last block from DB
-            auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, currencyName);
+            auto lastBlock = cachedBlock.hasValue() ? cachedBlock : BlockDatabaseHelper::getLastBlock(sql, currencyName);
             // If we can not retrieve a last block for currency,
             // we set the returned block height to LLONG_MAX in order to
             // activate/apply last BIP/update/fork for this currency.
@@ -569,7 +576,7 @@ namespace ledger {
                 auto optimisticUpdate = Try<int>::from([&] () -> int {
                     //Get last block from DB
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
-                    auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+                    auto lastBlockHeight = getLastBlockFromDB(self, sql, self->getWallet()->getCurrency().name);
 
                     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
@@ -649,7 +656,7 @@ namespace ledger {
             };
 
             soci::session sql(self->getWallet()->getDatabase()->getPool());
-            auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+            auto lastBlockHeight = getLastBlockFromDB(self, sql, self->getWallet()->getCurrency().name);
 
             return std::make_shared<BitcoinLikeTransactionBuilder>(
                     getMainExecutionContext(),

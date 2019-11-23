@@ -29,4 +29,6 @@ std::string const Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE = {"SYNCHRONIZA
 
 std::string const Configuration::TRUST_LIMIT = {"TRUST_LIMIT"};
 
+std::string const Configuration::TTL_BLOCK_CACHE = {"TTL_BLOCK_CACHE"};
+
 } } }  // namespace ledger::core::api
