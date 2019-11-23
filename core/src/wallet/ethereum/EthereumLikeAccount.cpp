@@ -344,7 +344,7 @@ namespace ledger {
             auto query = std::make_shared<OperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
-                    getWallet()->getContext(),
+                    getContext(),
                     getWallet()->getMainExecutionContext()
             );
             query->registerAccount(shared_from_this());

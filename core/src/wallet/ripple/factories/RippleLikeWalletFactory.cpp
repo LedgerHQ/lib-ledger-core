@@ -129,6 +129,13 @@ namespace ledger {
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                     .value_or(api::BlockchainExplorerEngines::RIPPLE_NODE);
             std::shared_ptr<RippleLikeBlockchainExplorer> explorer = nullptr;
+            auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();
+            auto context = pool->getDispatcher()->getSerialExecutionContext(
+                    fmt::format("{}-{}-explorer",
+                                api::BlockchainExplorerEngines::RIPPLE_NODE,
+                                networkParams.Identifier
+                    )
+            );
             if (engine == api::BlockchainExplorerEngines::RIPPLE_NODE) {
                 auto http = pool->getHttpClient(
                         fmt::format("{}:{}",
@@ -137,8 +144,6 @@ namespace ledger {
                                     configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_PORT)
                                             .value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT))
                 );
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
-                auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();
 
                 explorer = std::make_shared<NodeRippleLikeBlockchainExplorer>(context, http, networkParams, configuration);
             } else if (engine == api::BlockchainExplorerEngines::RIPPLE_API) {
@@ -147,9 +152,6 @@ namespace ledger {
                                 api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
                         ).value_or(api::RippleConfigurationDefaults::RIPPLE_DEFAULT_API_ENDPOINT)
                 );
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
-                auto& networkParams = getCurrency().rippleLikeNetworkParameters.value();
-
                 explorer = std::make_shared<ApiRippleLikeBlockchainExplorer>(context, http, networkParams, configuration);
             }
             if (explorer)
@@ -180,7 +182,12 @@ namespace ledger {
             std::shared_ptr<RippleLikeBlockchainObserver> observer;
             if (engine == api::BlockchainObserverEngines::RIPPLE_NODE) {
                 auto ws = pool->getWebSocketClient();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::RIPPLE_NODE);
+                auto context = pool->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-explorer",
+                                    api::BlockchainObserverEngines::RIPPLE_NODE,
+                                    networkParams.Identifier
+                        )
+                );
                 auto logger = pool->logger();
                 const auto& currency = getCurrency();
                 observer = std::make_shared<RippleLikeBlockchainObserver>(context, ws, configuration, logger, currency);

@@ -226,7 +226,7 @@ namespace ledger {
             auto query = std::make_shared<TezosOperationQuery>(
                     headFilter,
                     getWallet()->getDatabase(),
-                    getWallet()->getContext(),
+                    getContext(),
                     getWallet()->getMainExecutionContext()
             );
             query->registerAccount(shared_from_this());

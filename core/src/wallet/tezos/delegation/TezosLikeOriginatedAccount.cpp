@@ -174,7 +174,7 @@ namespace ledger {
             auto query = std::make_shared<TezosOriginatedOperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
-                    localAccount->getWallet()->getContext(),
+                    localAccount->getContext(),
                     localAccount->getWallet()->getMainExecutionContext()
             );
             query->registerAccount(localAccount);
