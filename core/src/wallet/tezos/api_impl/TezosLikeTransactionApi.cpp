@@ -210,8 +210,19 @@ namespace ledger {
 
             // Set Sender
             if (isBabylonActivated) {
-                auto senderContractID = vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
-                writer.writeByteArray(senderContractID);
+                // After Babylon, KT need no revelation and actions from KT account means actions from manager account
+                // with a smart contract, so if we are trying to reveal from KT account that means in fact that
+                // manager account needs revelation
+                if (type == api::TezosOperationTag::OPERATION_TAG_REVEAL && _sender->toBase58().find("KT1") == 0) {
+                    auto senderContractID = vector::concat(
+                            {static_cast<uint8_t>(_managerCurve)},
+                            TezosLikeAddress::fromBase58(_managerAddress, _currency, Option<std::string>())->getHash160()
+                    );
+                    writer.writeByteArray(senderContractID);
+                } else {
+                    auto senderContractID = vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
+                    writer.writeByteArray(senderContractID);
+                }
             } else {
                 // Originated
                 auto isSenderOriginated = _sender->toBase58().find("KT1") == 0;
@@ -390,8 +401,9 @@ namespace ledger {
             return *this;
         }
 
-        TezosLikeTransactionApi & TezosLikeTransactionApi::setManagerAddress(const std::string &managerAddress) {
+        TezosLikeTransactionApi & TezosLikeTransactionApi::setManagerAddress(const std::string &managerAddress, api::TezosCurve curve) {
             _managerAddress = managerAddress;
+            _managerCurve = curve;
             return *this;
         }
 
