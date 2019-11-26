@@ -81,7 +81,11 @@ namespace ledger {
             _synchronizer = synchronizer;
             _keychain = keychain;
             _keychain->getAllObservableAddresses(0, 40);
+<<<<<<< HEAD
             _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getWallet()->getPool()->getThreadPoolExecutionContext(), getWallet()->getCurrency());
+=======
+            _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getThreadPoolExecutionContext(), getWallet()->getCurrency());
+>>>>>>> Add getThreadPoolExecutionContext method on AbstractAccount class
             _currentBlockHeight = 0;
         }
 
@@ -388,7 +392,11 @@ namespace ledger {
             auto query = std::make_shared<OperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
+<<<<<<< HEAD
                     getWallet()->getPool()->getThreadPoolExecutionContext(),
+=======
+                    getThreadPoolExecutionContext(),
+>>>>>>> Add getThreadPoolExecutionContext method on AbstractAccount class
                     getWallet()->getMainExecutionContext()
             );
             query->registerAccount(shared_from_this());
