@@ -54,7 +54,7 @@ namespace ledger {
 
         std::vector<std::shared_ptr<api::InternalTransaction>>
         EthereumLikeOperation::getInternalTransactions() {
-            if (_initialized) {
+            if (!_initialized) {
                 soci::session sql(_backend->getAccount()->getWallet()->getDatabase()->getPool());
                 auto uid = _backend->getUid();
                 soci::rowset<soci::row> internalTxRows = (sql.prepare << "SELECT type, value, sender, "
@@ -72,6 +72,7 @@ namespace ledger {
                     internalTx.inputData = hex::toByteArray(row.get<std::string>(6));
                     _internalTxs.push_back(std::make_shared<InternalTransaction>(internalTx));
                 }
+                _initialized = true;
             }
             return _internalTxs;
         }

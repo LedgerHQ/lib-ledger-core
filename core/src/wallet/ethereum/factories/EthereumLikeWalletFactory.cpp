@@ -171,13 +171,13 @@ namespace ledger {
             std::shared_ptr<EthereumLikeBlockchainObserver> observer;
             if (engine == api::BlockchainObserverEngines::LEDGER_API) {
                 auto ws = pool->getWebSocketClient();
+                const auto& currency = getCurrency();
                 auto context = pool->getDispatcher()->getSerialExecutionContext(
                         fmt::format("{}-{}-observer",
                                     api::BlockchainObserverEngines::LEDGER_API,
-                                    getCurrency().ethereumLikeNetworkParameters.value().Identifier)
+                                    currency.ethereumLikeNetworkParameters.value().Identifier)
                 );
                 auto logger = pool->logger();
-                const auto& currency = getCurrency();
                 observer = std::make_shared<LedgerApiEthereumLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }
             if (observer)

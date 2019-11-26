@@ -194,6 +194,8 @@ namespace ledger {
             std::shared_ptr<TezosLikeBlockchainObserver> observer;
             if (engine == api::BlockchainObserverEngines::TEZOS_NODE) {
                 auto ws = pool->getWebSocketClient();
+                const auto &currency = getCurrency();
+                auto &networkParams = currency.tezosLikeNetworkParameters.value();
                 auto context = pool->getDispatcher()->getSerialExecutionContext(
                         fmt::format("{}-{}-explorer",
                                     api::BlockchainObserverEngines::TEZOS_NODE,
@@ -201,7 +203,6 @@ namespace ledger {
                         )
                 );
                 auto logger = pool->logger();
-                const auto &currency = getCurrency();
                 observer = std::make_shared<TezosLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }
             if (observer)

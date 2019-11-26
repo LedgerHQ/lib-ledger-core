@@ -182,6 +182,8 @@ namespace ledger {
             std::shared_ptr<RippleLikeBlockchainObserver> observer;
             if (engine == api::BlockchainObserverEngines::RIPPLE_NODE) {
                 auto ws = pool->getWebSocketClient();
+                const auto& currency = getCurrency();
+                auto& networkParams = currency.rippleLikeNetworkParameters.value();
                 auto context = pool->getDispatcher()->getSerialExecutionContext(
                         fmt::format("{}-{}-explorer",
                                     api::BlockchainObserverEngines::RIPPLE_NODE,
@@ -189,7 +191,6 @@ namespace ledger {
                         )
                 );
                 auto logger = pool->logger();
-                const auto& currency = getCurrency();
                 observer = std::make_shared<RippleLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }
             if (observer)

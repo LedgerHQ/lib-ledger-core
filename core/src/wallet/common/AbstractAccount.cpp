@@ -37,6 +37,7 @@
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/pool/WalletPool.hpp>
+
 namespace ledger {
     namespace core {
 
