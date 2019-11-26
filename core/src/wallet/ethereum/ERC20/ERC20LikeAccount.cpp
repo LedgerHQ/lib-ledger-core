@@ -46,6 +46,7 @@
 #include <soci.h>
 #include <database/soci-date.h>
 #include <database/query/ConditionQueryFilter.h>
+#include <wallet/pool/WalletPool.hpp>
 
 using namespace soci;
 
@@ -237,7 +238,7 @@ namespace ledger {
         void ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                         const std::string &address,
                                                         const std::shared_ptr<api::BinaryCallback> &data) {
-            auto context = _account.lock()->getContext();
+            auto context = _account.lock()->getWallet()->getMainExecutionContext();
             getTransferToAddressData(amount, address).callback(context, data);
         }
 
@@ -287,7 +288,7 @@ namespace ledger {
             auto query = std::make_shared<ERC20OperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
-                    localAccount->getContext(),
+                    localAccount->getWallet()->getPool()->getThreadPoolExecutionContext(),
                     localAccount->getWallet()->getMainExecutionContext()
             );
             query->registerAccount(localAccount);
@@ -299,7 +300,7 @@ namespace ledger {
             if (!parentAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
             }
-            return parentAccount->getContext();
+            return parentAccount->getWallet()->getMainExecutionContext();
         }
 
     }

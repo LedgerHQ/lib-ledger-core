@@ -48,7 +48,8 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeTransaction> _transaction;
             std::vector<std::shared_ptr<api::InternalTransaction>> _internalTxs;
             std::shared_ptr<OperationApi> _backend;
-            bool _initialized;
+            // To allow lazy loading of internal transactions
+            bool _internalTxsRetrieved;
         };
 
     }

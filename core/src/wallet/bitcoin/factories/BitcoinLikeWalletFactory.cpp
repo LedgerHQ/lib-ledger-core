@@ -202,7 +202,7 @@ namespace ledger {
                 auto context = pool->getDispatcher()->getSerialExecutionContext(
                         fmt::format("{}-{}-observer",
                                     api::BlockchainObserverEngines::LEDGER_API,
-                                    getCurrency().ethereumLikeNetworkParameters.value().Identifier)
+                                    getCurrency().bitcoinLikeNetworkParameters.value().Identifier)
                 );
                 auto logger = pool->logger();
                 const auto& currency = getCurrency();

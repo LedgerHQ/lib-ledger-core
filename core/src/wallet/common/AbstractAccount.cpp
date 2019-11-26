@@ -42,12 +42,7 @@ namespace ledger {
     namespace core {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
-                :
-                DedicatedContext(
-                        wallet->getPool()
-                                ->getDispatcher()
-                                ->getThreadPoolExecutionContext(fmt::format("account_{}_{}", wallet->getName(), index))
-                )
+                : DedicatedContext(wallet->getMainExecutionContext())
         {
             _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
@@ -150,7 +145,7 @@ namespace ledger {
             return std::make_shared<OperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
-                    getContext(),
+                    getWallet()->getPool()->getThreadPoolExecutionContext(),
                     getMainExecutionContext()
             );
         }
@@ -233,6 +228,5 @@ namespace ledger {
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
-
     }
 }
