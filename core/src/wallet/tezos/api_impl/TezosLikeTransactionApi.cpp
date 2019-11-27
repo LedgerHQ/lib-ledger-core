@@ -256,7 +256,9 @@ namespace ledger {
             writer.writeByteArray(zarith::zSerializeNumber(bigIntGasLimit.toByteArray()));
 
             // Storage Limit
-            writer.writeByteArray(zarith::zSerializeNumber(_storage->toByteArray()));
+            // No sotrage for reveal
+            auto storage = type == api::TezosOperationTag::OPERATION_TAG_REVEAL ? std::vector<uint8_t>{0} : _storage->toByteArray();
+            writer.writeByteArray(zarith::zSerializeNumber(storage));
 
             switch(type) {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
