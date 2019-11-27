@@ -52,7 +52,6 @@ if(IS_IOS GREATER_EQUAL 0)
     add_library(ledger-core SHARED
         ${ledger-core-sources}
         ${SRC_FILES}
-        ${CORE_SRC_FILES}
         ${HEADERS_FILES})
     target_link_libraries(ledger-core PUBLIC ledger-core-interface)
     set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
@@ -91,7 +90,6 @@ else()
     add_library(ledger-core-obj OBJECT
         ${ledger-core-sources}
         ${SRC_FILES}
-        ${CORE_SRC_FILES}
         ${HEADERS_FILES})
     target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
 
@@ -132,26 +130,26 @@ target_link_libraries(ledger-core-interface INTERFACE ethash)
 
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
-target_include_directories(ledger-core-interface INTERFACE ../inc)
-target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
+target_include_directories(
+    ledger-core-interface INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/inc>                      $<INSTALL_INTERFACE:include/ledger-core>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/bigd>                 $<INSTALL_INTERFACE:include/ledger-core/lib/bigd>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/rapidjson/include>    $<INSTALL_INTERFACE:include/ledger-core/lib/rapidjson/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci/core>            $<INSTALL_INTERFACE:include/ledger-core/lib/soci/core>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci_sqlite3>         $<INSTALL_INTERFACE:include/ledger-core/lib/soci_sqlite3>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/openssl/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/openssl/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/openssl/crypto/blake> $<INSTALL_INTERFACE:include/ledger-core/lib/openssl/crypto/blake>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/leveldb/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/leveldb/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/boost>                $<INSTALL_INTERFACE:include/ledger-core/lib/boost>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/cereal>               $<INSTALL_INTERFACE:include/ledger-core/lib/cereal>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/date>                 $<INSTALL_INTERFACE:include/ledger-core/lib/date>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/secp256k1>            $<INSTALL_INTERFACE:include/ledger-core/lib/secp256k1>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
+)
 
 if (TARGET_JNI)
     target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
-
-target_include_directories(ledger-core-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
-target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
-target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
-target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
-target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
-target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
-target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
-target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)
-target_include_directories(ledger-core-interface INTERFACE ../lib/boost)
-target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
-target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
-target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
-target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
 
 install(TARGETS ledger-core DESTINATION "lib")

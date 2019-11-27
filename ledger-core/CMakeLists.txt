@@ -47,12 +47,37 @@ string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
     message(STATUS "Tests are enabled")
     enable_testing()
+    add_subdirectory(test/lib/qt-host)
     add_subdirectory(test)
 else()
     message(STATUS "Tests are disabled")
 endif()
 
-if (BUILD_TESTS)
-    add_subdirectory(test/lib/qt-host)
-    enable_testing()
-endif()
+# Package support
+install(
+    TARGETS
+        ledger-core
+        ledger-core-static
+        ledger-core-obj
+        ledger-core-interface
+        bigd
+        fmt
+        crypto
+        soci_sqlite3
+        soci_core_static
+        leveldb
+        spdlog
+        sqlcipher
+        ethash
+    EXPORT ledger-core
+    ARCHIVE       DESTINATION lib/ledger-core
+    LIBRARY       DESTINATION lib/ledger-core
+    FRAMEWORK     DESTINATION lib/ledger-core
+    PUBLIC_HEADER DESTINATION include/ledger-core
+)
+
+install(
+    EXPORT ledger-core
+    NAMESPACE Core::
+    DESTINATION ledger-core
+)
