@@ -176,9 +176,10 @@ namespace ledger {
 
         Future<int32_t> AbstractWallet::getAccountCount() {
             auto self = shared_from_this();
-            return async<int32_t>([self]() -> int32_t {
+            return Future<int32_t>::async(getPool()->getThreadPoolExecutionContext(), [self]() -> int32_t {
                 soci::session sql(self->getDatabase()->getPool());
-                return AccountDatabaseHelper::getAccountsCount(sql, self->getWalletUid());
+                auto count = AccountDatabaseHelper::getAccountsCount(sql, self->getWalletUid());
+                return count;
             });
         }
 
@@ -227,12 +228,14 @@ namespace ledger {
 
         void AbstractWallet::newAccountWithInfo(const api::AccountCreationInfo &accountCreationInfo,
                                                 const std::shared_ptr<api::AccountCallback> &callback) {
+            auto self = shared_from_this();
             newAccountWithInfo(accountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::newAccountWithExtendedKeyInfo(
                 const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
                 const std::shared_ptr<api::AccountCallback> &callback) {
+            auto self = shared_from_this();
             newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 

@@ -104,7 +104,6 @@ namespace ledger {
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
 
-            std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
         protected:
             void emitNewOperationEvent(const Operation& operation);
             void emitNewBlockEvent(const Block& block);

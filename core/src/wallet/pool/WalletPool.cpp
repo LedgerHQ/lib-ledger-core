@@ -261,11 +261,12 @@ namespace ledger {
             return nullptr;
         }
 
-        Future<int64_t> WalletPool::getWalletCount() const {
+        Future<int64_t> WalletPool::getWalletCount() {
             auto self = shared_from_this();
-            return async<int64_t>([=] () -> int64_t {
+            return Future<int64_t>::async(_threadPoolExecutionContext, [=] () -> int64_t {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
-                return PoolDatabaseHelper::getWalletCount(sql, *self);
+                auto count = PoolDatabaseHelper::getWalletCount(sql, *self);
+                return count;
             });
         }
 
@@ -305,7 +306,6 @@ namespace ledger {
             }
             auto self = shared_from_this();
             return Future<std::shared_ptr<AbstractWallet>>::async(_threadDispatcher->getMainExecutionContext(), [=] () {
-                auto it = self->_wallets.find(WalletDatabaseEntry::createWalletUid(self->getName(), name));
                 auto entry = getWalletEntryFromDatabase(self, name);
                 if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));
@@ -562,10 +562,12 @@ namespace ledger {
             });
         }
 
-        std::shared_ptr<api::ExecutionContext> WalletPool::getThreadPoolExecutionContext() const {
-            return _threadPoolExecutionContext;
         Option<api::Block> WalletPool::getBlockFromCache(const std::string &currencyName) {
             return _blockCache.get(currencyName);
+        }
+
+        std::shared_ptr<api::ExecutionContext> WalletPool::getThreadPoolExecutionContext() const {
+            return _threadPoolExecutionContext;
         }
     }
 }

@@ -79,7 +79,7 @@ namespace ledger {
             std::shared_ptr<AbstractWalletFactory> getFactory(const std::string& currencyName) const;
 
             // Fetch wallet
-            Future<int64_t> getWalletCount() const;
+            Future<int64_t> getWalletCount();
             Future<std::vector<std::shared_ptr<AbstractWallet>>> getWallets(int64_t from, int64_t size);
             FuturePtr<AbstractWallet> getWallet(const std::string& name);
             Future<api::ErrorCode> updateWalletConfig(const std::string &name,
@@ -140,11 +140,8 @@ namespace ledger {
             /// > that doesn’t include having lots of objects in memory.
             Future<api::ErrorCode> freshResetAll();
 
-<<<<<<< HEAD
-            std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
-=======
             Option<api::Block> getBlockFromCache(const std::string &currencyName);
->>>>>>> Add caching on last block and balance
+            std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
         private:
             WalletPool(
                 const std::string &name,

@@ -73,6 +73,11 @@ namespace ledger {
                         });
             };
 
+            void erase(const K &key) {
+                std::lock_guard<std::mutex> lock(_lock);
+                _cache.erase(key);
+            };
+
         private:
             Duration _ttl;
             std::unordered_map<K, std::pair<V, Duration>> _cache;
