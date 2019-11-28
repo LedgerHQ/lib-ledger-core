@@ -297,6 +297,10 @@ namespace ledger {
                                             // for transaction op
                                             auto fees = burned +
                                                         (tx->toReveal() ? *request.fees * BigInt(static_cast<unsigned long long>(2)) : *request.fees);
+                                            // If sender is KT account then the managing account is paying the fees ...
+                                            if (senderAddress.find("KT1") == 0) {
+                                                fees = fees - *request.fees;
+                                            }
                                             auto maxPossibleAmountToSend = *balance - fees;
                                             auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
                                             if (maxPossibleAmountToSend < amountToSend) {
