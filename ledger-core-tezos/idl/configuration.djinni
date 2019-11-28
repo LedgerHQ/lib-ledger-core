@@ -1,0 +1,10 @@
+@extern "../../ledger-core/idl/core.yaml"
+
+TezosBlockchainExplorerEngines = interface +c {
+    const TEZOS_NODE: string = "TEZOS_NODE";
+}
+
+# Available API to use with observers.
+TezosBlockchainObserverEngines = interface +c {
+    const TEZOS_NODE: string = "TEZOS_NODE";
+}
