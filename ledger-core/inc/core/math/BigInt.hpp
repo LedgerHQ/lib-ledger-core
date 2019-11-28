@@ -204,7 +204,7 @@ namespace ledger {
 
             int compare(const BigInt&) const;
 
-            BigInt pow_u(unsigned short p) const;
+            BigInt powu(unsigned short p) const;
 
             unsigned long getBitSize() const;
             bool isNegative() const;

@@ -29,8 +29,9 @@
  *
  */
 
-#include "gtest/gtest.h"
-#include "math/BigInt.h"
+#include <gtest/gtest.h>
+
+#include <core/math/BigInt.hpp>
 
 using namespace ledger::core;
 
@@ -160,9 +161,9 @@ TEST(BigInt, Decrement) {
 }
 
 TEST(BigInt, Power) {
-    EXPECT_EQ(BigInt(2).pow(2), BigInt(4));
-    EXPECT_EQ(BigInt(-2).pow(2), BigInt(4));
-    EXPECT_EQ(BigInt(1000000).pow(0), BigInt(1));
-    EXPECT_EQ(BigInt(-1000000).pow(0), BigInt(-1));
-    EXPECT_EQ(BigInt(-2).pow(3), BigInt(-8));
+    EXPECT_EQ(BigInt(2).powu(2), BigInt(4));
+    EXPECT_EQ(BigInt(-2).powu(2), BigInt(4));
+    EXPECT_EQ(BigInt(1000000).powu(0), BigInt(1));
+    EXPECT_EQ(BigInt(-1000000).powu(0), BigInt(-1));
+    EXPECT_EQ(BigInt(-2).powu(3), BigInt(-8));
 }
