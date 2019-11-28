@@ -32,11 +32,13 @@
 // Seed generated with "ghost rookie muffin"
 
 #include <gtest/gtest.h>
-#include <ledger/core/crypto/DeterministicPublicKey.hpp>
-#include <ledger/core/math/Base58.hpp>
-#include <ledger/core/bytes/BytesReader.h>
-#include <ledger/core/utils/hex.h>
-#include <ledger/core/collections/DynamicObject.hpp>
+
+#include <core/bytes/BytesReader.hpp>
+#include <core/collections/DynamicObject.hpp>
+#include <core/crypto/DeterministicPublicKey.hpp>
+#include <core/math/Base58.hpp>
+#include <core/utils/Hex.hpp>
+
 using namespace ledger::core;
 
 static const std::string XPUB_1 = "xpub6EedcbfDs3pkzgqvoRxTW6P8NcCSaVbMQsb6xwCdEBzqZBronwY3Nte1Vjunza8f6eSMrYvbM5CMihGo6SbzpHxn4R5pvcr2ZbZ6wkDmgpy";
