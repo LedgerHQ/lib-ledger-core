@@ -66,7 +66,7 @@ namespace ledger {
         struct Services : DedicatedContext, std::enable_shared_from_this<Services> {
             Services() = delete;
             Services(
-                const std::string &name,
+                const std::string &tenant,
                 const std::string &password,
                 const std::shared_ptr<api::HttpClient> &httpClient,
                 const std::shared_ptr<api::WebSocketClient> &webSocketClient,
@@ -83,7 +83,7 @@ namespace ledger {
             ///
             /// This function is semantically exactly the same as the parametered Services constructor.
             static std::shared_ptr<Services> newInstance(
-                const std::string &name,
+                const std::string &tenant,
                 const std::string &password,
                 const std::shared_ptr<api::HttpClient> &httpClient,
                 const std::shared_ptr<api::WebSocketClient> &webSocketClient,
@@ -112,12 +112,12 @@ namespace ledger {
             std::shared_ptr<DatabaseSessionPool> getDatabaseSessionPool() const;
             std::shared_ptr<DynamicObject> getConfiguration() const;
             std::shared_ptr<api::EventBus> getEventBus() const;
-            const std::string& getName() const;
+            const std::string& getTenant() const;
             const std::string getPassword() const;
 
         private:
             // General
-            std::string _poolName;
+            std::string _tenant;
             std::string _password;
             std::shared_ptr<DynamicObject> _configuration;
 

@@ -35,14 +35,14 @@
 namespace ledger {
     namespace core {
         std::string WalletDatabaseEntry::createWalletUid(
-            const std::string &poolName,
-            const std::string &walletName
+            const std::string& tenant,
+            const std::string& walletName
         ) {
-            return SHA256::stringToHexHash(fmt::format("uid:{}+{}", poolName, walletName));
+            return SHA256::stringToHexHash(fmt::format("uid:{}+{}", tenant, walletName));
         }
 
         void WalletDatabaseEntry::updateUid() {
-            uid = createWalletUid(poolName, name);
+            uid = createWalletUid(tenant, name);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace ledger {
            _scheme(derivationScheme) {
             _services = services;
             _name = walletName;
-            _uid = WalletDatabaseEntry::createWalletUid(services->getName(), _name);
+            _uid = WalletDatabaseEntry::createWalletUid(services->getTenant(), _name);
             _currency = currency;
             _configuration = configuration;
             _externalPreferences = services->getExternalPreferences()->getSubPreferences(

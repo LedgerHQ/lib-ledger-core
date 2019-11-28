@@ -90,11 +90,10 @@ namespace ledger {
         ///   - T::CURRENT_VERSION: current version of the migration system.
         template <int version, typename T>
         struct Migration final {
-          /// Advance the migration system up to migrationNumber.
+          /// Advance the migration system up to version.
           static void forward(soci::session& sql, int currentVersion) {
-              Migration<version - 1, T>::forward(sql, currentVersion);
-
               if (currentVersion < version) {
+                  Migration<version - 1, T>::forward(sql, currentVersion);
                   migrate<version, T>(sql);
                   sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(version);
               }

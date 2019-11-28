@@ -1,13 +1,13 @@
 /*
  *
- * WalletDatabaseEntry
+ * WalletDatabaseHelper
  * ledger-core
  *
- * Created by Pierre Pollastri on 16/05/2017.
+ * Created by Dimitri Sabadie on 2019/11/05.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,24 +31,49 @@
 
 #pragma once
 
-#include <string>
+#include <soci.h>
 
-#include <core/collections/DynamicObject.hpp>
+#include <core/wallet/WalletDatabaseEntry.hpp>
 
 namespace ledger {
     namespace core {
-        struct WalletDatabaseEntry {
-            std::string uid;
-            std::string name;
-            std::string tenant;
-            std::string currencyName;
-            std::shared_ptr<DynamicObject> configuration;
+        class WalletDatabaseHelper {
+        public:
+            static void putWallet(soci::session &sql, const WalletDatabaseEntry &wallet);
 
-            void updateUid();
+            static int64_t getWallets(
+                soci::session& sql,
+                int64_t offset,
+                std::vector<WalletDatabaseEntry>& wallets
+            );
 
-            static std::string createWalletUid(
+            static int64_t getWalletCount(
+                soci::session& sql
+            );
+
+            static bool getWallet(
+                soci::session& sql,
                 const std::string& tenant,
-                const std::string& walletName
+                const std::string& walletName,
+                WalletDatabaseEntry& entry
+            );
+
+            static bool removeWallet(
+                soci::session& sql,
+                const WalletDatabaseEntry& entry
+            );
+
+            static bool walletExists(
+                soci::session& sql,
+                const WalletDatabaseEntry& entry
+            );
+
+        private:
+            WalletDatabaseHelper() = delete;
+
+            static void inflateWalletEntry(
+                soci::row& row,
+                WalletDatabaseEntry& entry
             );
         };
     }
