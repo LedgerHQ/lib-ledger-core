@@ -49,7 +49,7 @@ namespace ledger {
             
             std::shared_ptr<api::TezosLikeTransaction> getTransaction() const override;
 
-            void refreshUid() override;            
+            void refreshUid(const std::string &additional = "") override;            
             bool isComplete() override;
 
             const TezosLikeBlockchainExplorerTransaction& getExplorerTransaction() const;
