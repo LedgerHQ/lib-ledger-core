@@ -97,9 +97,7 @@ namespace ledger {
                                             api::TezosCurve curve)
         {
             auto &params = networks::getTezosLikeNetworkParameters(currency.name);
-            DeterministicPublicKey k = curve == api::TezosCurve::ED25519 ?
-                                       DeterministicPublicKey(publicKey, chainCode, 0, 0, 0, params.Identifier) :
-                                       TezosExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, chainCode, path);
+            DeterministicPublicKey k = DeterministicPublicKey(publicKey, chainCode, 0, 0, 0, params.Identifier);
             return std::make_shared<TezosLikeExtendedPublicKey>(currency, k, curve, DerivationPath(path));
         }
 
@@ -113,14 +111,14 @@ namespace ledger {
                 auto decodeResult = Base58::checkAndDecode(xpubBase58, config);
 
                 BytesReader reader(decodeResult.getValue());
-                auto version = reader.read(4);
+                auto version = reader.read(3);
                 auto publicKey = reader.readUntilEnd();
 
                 DeterministicPublicKey k(publicKey, {}, 0, 0, 0, params.Identifier);
                 return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, api::TezosCurve::ED25519, DerivationPath(path.getValueOr("m")));
             }
             DeterministicPublicKey k = TezosExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
-            return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, api::TezosCurve::SECP256K1, DerivationPath(path.getValueOr("m")));
+            return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, k.getPublicKey().size() == 33 ? api::TezosCurve::ED25519 : api::TezosCurve::SECP256K1, DerivationPath(path.getValueOr("m")));
         }
 
     }

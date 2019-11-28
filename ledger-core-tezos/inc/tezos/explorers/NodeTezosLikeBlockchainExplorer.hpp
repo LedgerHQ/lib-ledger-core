@@ -94,6 +94,11 @@ namespace ledger {
 
             Future<std::shared_ptr<BigInt>> getCounter(const std::string &address) override;
 
+            Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransaction> &tx) override;
+
+            Future<std::string> getManagerKey(const std::string &address) override;
+
+            Future<bool> isAllocated(const std::string &address) override;
         private:
             /*
              * Helper to a get specific field's value from given url

@@ -51,7 +51,7 @@ namespace ledger {
                                                                       TezosLikeBlockchainExplorerTransaction &tx) {
 
             rowset<row> rows = (sql.prepare << "SELECT tx.hash, tx.value, tx.time, "
-                    " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, "
+                    " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, "
                     "block.height, block.hash, block.time, block.currency_name "
                     "FROM tezos_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
@@ -87,12 +87,13 @@ namespace ledger {
             if (values.size() == 3) {
                 tx.originatedAccount = TezosLikeBlockchainExplorerOriginatedAccount(values[0], static_cast<bool>(std::stoi(values[1])), static_cast<bool>(std::stoi(values[2])));
             }
-            if (row.get_indicator(12) != i_null) {
+            tx.status = get_number<uint64_t>(row, 12);
+            if (row.get_indicator(13) != i_null) {
                 TezosLikeBlockchainExplorer::Block block;
-                block.height = get_number<uint64_t>(row, 12);
-                block.blockHash = row.get<std::string>(13);
-                block.time = row.get<std::chrono::system_clock::time_point>(14);
-                block.currencyName = row.get<std::string>(15);
+                block.height = get_number<uint64_t>(row, 13);
+                block.blockHash = row.get<std::string>(14);
+                block.time = row.get<std::chrono::system_clock::time_point>(15);
+                block.currencyName = row.get<std::string>(16);
                 tx.block = block;
             }
 
@@ -126,8 +127,8 @@ namespace ledger {
             if (transactionExists(sql, tezosTxUid)) {
                 // UPDATE (we only update block information)
                 if (tx.block.nonEmpty()) {
-                    sql << "UPDATE tezos_transactions SET block_uid = :uid WHERE hash = :tx_hash",
-                            use(blockUid), use(tx.hash);
+                    sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash",
+                            use(blockUid), use(tx.status), use(tx.hash);
                 }
                 return tezosTxUid;
             } else {
@@ -149,7 +150,7 @@ namespace ledger {
                     strings::join(vOrigAccount, origAccount, ":");
                     sOrigAccount = origAccount.str();
                 }
-                sql << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations, :type, :public_key, :originated_account)",
+                sql << "INSERT INTO tezos_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :gas_limit, :storage_limit, :confirmations, :type, :public_key, :originated_account, :status)",
                         use(tezosTxUid),
                         use(tx.hash),
                         use(hexValue),
@@ -163,7 +164,8 @@ namespace ledger {
                         use(tx.confirmations),
                         use(type),
                         use(pubKey),
-                        use(sOrigAccount);
+                        use(sOrigAccount),
+                        use(tx.status);
 
                 return tezosTxUid;
             }
