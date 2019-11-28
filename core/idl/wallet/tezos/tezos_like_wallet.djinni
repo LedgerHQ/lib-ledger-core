@@ -172,7 +172,7 @@ TezosConfigurationDefaults = interface +c {
 	const TEZOS_XPUB_CURVE_P256: string = "P256";
 	# Taken from some existing XTZ wallets
 	# http://tezos.gitlab.io/protocols/005_babylon.html#gas-cost-changes
-	const TEZOS_DEFAULT_FEES: string = "2500";
+	const TEZOS_DEFAULT_FEES: string = "5000";
 	const TEZOS_DEFAULT_GAS_LIMIT: string = "18000";
 	const TEZOS_DEFAULT_STORAGE_LIMIT: string = "300";
 	const TEZOS_PROTOCOL_UPDATE_BABYLON: string = "TEZOS_PROTOCOL_UPDATE_BABYLON";
