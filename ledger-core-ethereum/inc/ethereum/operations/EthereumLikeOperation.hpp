@@ -55,7 +55,7 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeTransaction> getTransaction() const override;
             std::vector<std::shared_ptr<api::InternalTransaction>> getInternalTransactions() override;
 
-            void refreshUid() override;            
+            void refreshUid(std::string const &additional = "") override;            
             bool isComplete() override;
             
             const EthereumLikeBlockchainExplorerTransaction& getExplorerTransaction() const;

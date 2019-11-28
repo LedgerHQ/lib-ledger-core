@@ -54,7 +54,7 @@ namespace ledger {
 
             virtual ~Operation() = default;
 
-            virtual void refreshUid() = 0;
+            virtual void refreshUid(const std::string &additional) = 0;
 
             std::string getUid() override;
             int32_t getAccountIndex() override;

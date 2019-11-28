@@ -46,7 +46,7 @@ namespace ledger {
             return _transaction;
         }
 
-        void RippleLikeOperation::refreshUid() {
+        void RippleLikeOperation::refreshUid(std::string const&) {
           uid = OperationDatabaseHelper::createUid(
               accountUid,
               _transaction->getHash(),

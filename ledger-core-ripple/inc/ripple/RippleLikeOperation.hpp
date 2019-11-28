@@ -47,7 +47,7 @@ namespace ledger {
             );
             std::shared_ptr<api::RippleLikeTransaction> getTransaction() override;
 
-            void refreshUid() override;
+            void refreshUid(std::string const &additional = "") override;
 
         private:
             std::shared_ptr<api::RippleLikeTransaction> _transaction;

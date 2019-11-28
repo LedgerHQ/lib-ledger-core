@@ -102,7 +102,7 @@ namespace ledger {
             return _internalTxs;
         }
 
-        void EthereumLikeOperation::refreshUid() {
+        void EthereumLikeOperation::refreshUid(std::string const&) {
             uid = EthereumLikeOperationDatabaseHelper::createUid(accountUid, _tx->getHash(), type);
         }
 
