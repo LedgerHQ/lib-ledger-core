@@ -309,7 +309,7 @@ namespace ledger {
             return false;
         }
 
-        BigInt BigInt::pow_u(unsigned short p) const {
+        BigInt BigInt::powu(unsigned short p) const {
             BigInt result;
             bdPower(result._bigd, _bigd, p);
             result._negative = isNegative() && (p % 2 != 0 || p == 0);
@@ -411,7 +411,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::BigInt> BigInt::pow(int32_t exponent) {
-            BigInt x = pow_u(static_cast<unsigned short>(exponent));
+            BigInt x = powu(static_cast<unsigned short>(exponent));
             return std::make_shared<BigInt>(x);
         }
 
