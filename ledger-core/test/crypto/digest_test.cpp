@@ -30,18 +30,17 @@
  */
 
 #include <gtest/gtest.h>
-#include <ledger/core/crypto/SHA256.hpp>
-#include <ledger/core/crypto/SHA512.hpp>
-#include <ledger/core/crypto/RIPEMD160.hpp>
-#include <ledger/core/utils/hex.h>
-#include <ledger/core/crypto/HMAC.hpp>
-#include <ledger/core/crypto/HASH160.hpp>
-#include <ledger/core/crypto/BLAKE.h>
-#include <ledger/core/crypto/HashAlgorithm.h>
-#include <ledger/core/crypto/Keccak.h>
+#include <core/crypto/SHA256.hpp>
+#include <core/crypto/SHA512.hpp>
+#include <core/crypto/RIPEMD160.hpp>
+#include <core/utils/Hex.hpp>
+#include <core/crypto/HMAC.hpp>
+#include <core/crypto/HASH160.hpp>
+#include <core/crypto/BLAKE.hpp>
+#include <core/crypto/HashAlgorithm.hpp>
+#include <core/crypto/Keccak.hpp>
 
 using namespace ledger::core;
-
 
 TEST(Digests, SHA256_Strings_to_String) {
     EXPECT_EQ(SHA256::stringToHexHash("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmno"), "2ff100b36c386c65a1afc462ad53e25479bec9498ed00aa5a04de584bc25301b");
