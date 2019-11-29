@@ -64,7 +64,7 @@ This project is based on **_cmake_** as a build system so you should install it 
 If you respect this folder structure (and naming), after `cd lib-ledger-core-build`, you can build the library by running:
 
 ```
-cmake -DCMAKE_INSTALL_PREFIX=/path/to/qt5 ../lib-ledger-core && make
+cmake -DCMAKE_PREFIX_PATH=/path/to/qt5 ../lib-ledger-core && make
 ```
 
 > (*macOSX users*) If you struggle to find where Qt5 is located, for example, on `macOSX`, `qt5` can
