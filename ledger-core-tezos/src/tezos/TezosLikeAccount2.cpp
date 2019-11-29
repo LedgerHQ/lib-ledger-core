@@ -282,14 +282,9 @@ namespace ledger {
                                         // Note: we can't rely on DB + sent transactions, because
                                         // it is possible to have deleted accounts that hit 0 balance
                                         // during Babylon update (arf ...)
-                                        auto setRevealStatus = [self, explorer, tx, senderAddress]() {
-                                            if (senderAddress.find("KT1") == 0) {
-                                                // No revelation anymore for KT accounts
-                                                tx->reveal(false);
-                                                return Future<Unit>::successful(unit);
-                                            }
+                                        auto setRevealStatus = [self, explorer, tx, senderAddress, managerAddress]() {
                                             // So here we are looking for unallocated accounts
-                                            return explorer->getManagerKey(senderAddress).map<Unit>(self->getContext(), [tx] (const std::string &managerKey) -> Unit {
+                                            return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getContext(), [tx] (const std::string &managerKey) -> Unit {
                                                 tx->reveal(managerKey.empty());
                                                 return unit;
                                             });
@@ -343,7 +338,11 @@ namespace ledger {
                                             }
                                             tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency), getCurveHelper(receiverCurve));
                                             tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
-                                            tx->setManagerAddress(managerAddress);
+                                            tx->setManagerAddress(managerAddress,
+                                                                  getCurveHelper(
+                                                                          self->getKeychain()->getConfiguration()
+                                                                          ->getString(api::TezosConfiguration::TEZOS_XPUB_CURVE)
+                                                                          .value_or(api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519)));
                                             tx->setType(request.type);
                                             const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
                                                                         managerAddress : senderAddress;
