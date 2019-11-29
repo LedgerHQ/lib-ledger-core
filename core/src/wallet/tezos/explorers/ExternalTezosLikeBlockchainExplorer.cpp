@@ -88,9 +88,7 @@ namespace ledger {
                         }
                         // Since nodes are giving some awkward values, we set a threshold to avoid having really fees
                         // Factor for threshold is inspired from other XTZ wallets
-                        return std::stoi(fees) > 6 * std::stoi(api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES) ?
-                        std::make_shared<BigInt>(6 * std::stoi(api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES)) :
-                        std::make_shared<BigInt>(fees);
+                        return std::make_shared<BigInt>(std::min(std::stoi(fees), std::stoi(api::TezosConfigurationDefaults::TEZOS_DEFAULT_MAX_FEES)));
                     });
         }
 
