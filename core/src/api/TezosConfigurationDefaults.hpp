@@ -45,6 +45,8 @@ public:
      */
     static std::string const TEZOS_DEFAULT_FEES;
 
+    static std::string const TEZOS_DEFAULT_MAX_FEES;
+
     static std::string const TEZOS_DEFAULT_GAS_LIMIT;
 
     static std::string const TEZOS_DEFAULT_STORAGE_LIMIT;

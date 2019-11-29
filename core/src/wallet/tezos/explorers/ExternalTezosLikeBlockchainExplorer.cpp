@@ -86,7 +86,9 @@ namespace ledger {
                         } else if (fees.find('.') != std::string::npos) {
                             fees = api::BigInt::fromDecimalString(fees, 6, ".")->toString(10);
                         }
-                        return std::make_shared<BigInt>(fees);
+                        // Since nodes are giving some awkward values, we set a threshold to avoid having really fees
+                        // Factor for threshold is inspired from other XTZ wallets
+                        return std::make_shared<BigInt>(std::min(std::stoi(fees), std::stoi(api::TezosConfigurationDefaults::TEZOS_DEFAULT_MAX_FEES)));
                     });
         }
 
