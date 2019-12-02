@@ -23,7 +23,9 @@ public:
 
     static std::string const TEZOS_DEFAULT_API_VERSION;
 
-    static std::string const TEZOS_OBSERVER_NODE_ENDPOINT_S2;
+    static std::string const TZSTATS_API_ENDPOINT;
+
+    static std::string const TEZOS_DEFAULT_NODE;
 
     static std::string const TEZOS_OBSERVER_NODE_ENDPOINT_S3;
 
@@ -35,12 +37,21 @@ public:
 
     static std::string const TEZOS_XPUB_CURVE_SECP256K1;
 
-    /** Taken from some existing XTZ wallets */
+    static std::string const TEZOS_XPUB_CURVE_P256;
+
+    /**
+     * Taken from some existing XTZ wallets
+     * http://tezos.gitlab.io/protocols/005_babylon.html#gas-cost-changes
+     */
     static std::string const TEZOS_DEFAULT_FEES;
+
+    static std::string const TEZOS_DEFAULT_MAX_FEES;
 
     static std::string const TEZOS_DEFAULT_GAS_LIMIT;
 
     static std::string const TEZOS_DEFAULT_STORAGE_LIMIT;
+
+    static std::string const TEZOS_PROTOCOL_UPDATE_BABYLON;
 };
 
 } } }  // namespace ledger::core::api

@@ -54,7 +54,8 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
-        configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1);
+        configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "tezos", configuration));
         std::set<std::string> emittedOperations;
         {
@@ -105,6 +106,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             });
 
             auto restoreKey = account->getRestoreKey();
+            EXPECT_EQ(restoreKey, hex::toString(XTZ_KEYS_INFO.publicKeys[0]));
             account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
@@ -120,6 +122,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             std::cout<<">>> Nb of ops: "<<ops.size()<<std::endl;
             EXPECT_GT(ops.size(), 0);
 
+            EXPECT_EQ(std::dynamic_pointer_cast<OperationApi>(ops[0])->asTezosLikeOperation()->getTransaction()->getStatus(), 1);
             auto fees = wait(account->getFees());
             EXPECT_GT(fees->toUint64(), 0);
 

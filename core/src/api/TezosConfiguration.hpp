@@ -20,6 +20,10 @@ public:
     virtual ~TezosConfiguration() {}
 
     static std::string const TEZOS_XPUB_CURVE;
+
+    static std::string const TEZOS_PROTOCOL_UPDATE;
+
+    static std::string const TEZOS_NODE;
 };
 
 } } }  // namespace ledger::core::api

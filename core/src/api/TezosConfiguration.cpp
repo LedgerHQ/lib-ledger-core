@@ -7,4 +7,8 @@ namespace ledger { namespace core { namespace api {
 
 std::string const TezosConfiguration::TEZOS_XPUB_CURVE = {"TEZOS_XPUB_CURVE"};
 
+std::string const TezosConfiguration::TEZOS_PROTOCOL_UPDATE = {"TEZOS_PROTOCOL_UPDATE"};
+
+std::string const TezosConfiguration::TEZOS_NODE = {"TEZOS_NODE"};
+
 } } }  // namespace ledger::core::api

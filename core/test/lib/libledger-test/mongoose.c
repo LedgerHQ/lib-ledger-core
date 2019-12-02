@@ -3992,7 +3992,11 @@ struct mg_ssl_if_ctx {
 };
 
 void mg_ssl_if_init() {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
   SSL_library_init();
+#else
+  OPENSSL_init_ssl(0, NULL);
+#endif
 }
 
 enum mg_ssl_if_result mg_ssl_if_conn_accept(struct mg_connection *nc,
@@ -4028,9 +4032,17 @@ enum mg_ssl_if_result mg_ssl_if_conn_init(
   }
   nc->ssl_if_data = ctx;
   if (nc->flags & MG_F_LISTENING) {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     ctx->ssl_ctx = SSL_CTX_new(SSLv23_server_method());
+#else
+    ctx->ssl_ctx = SSL_CTX_new(TLS_server_method());
+#endif
   } else {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
     ctx->ssl_ctx = SSL_CTX_new(SSLv23_client_method());
+#else
+    ctx->ssl_ctx = SSL_CTX_new(TLS_client_method());
+#endif
   }
   if (ctx->ssl_ctx == NULL) {
     MG_SET_PTRPTR(err_msg, "Failed to create SSL context");

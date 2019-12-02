@@ -71,6 +71,9 @@ public:
 
     /** Get hash of block in which tx is included */
     virtual std::experimental::optional<std::string> getBlockHash() = 0;
+
+    /** Get status of transaction: equals to 1 if succeeded, 0 otherwise */
+    virtual int32_t getStatus() = 0;
 };
 
 } } }  // namespace ledger::core::api

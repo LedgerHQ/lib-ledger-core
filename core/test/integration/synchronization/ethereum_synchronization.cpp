@@ -33,6 +33,7 @@
 #include <set>
 #include <api/KeychainEngines.hpp>
 #include <api/EthereumLikeTransaction.hpp>
+#include <api/OperationOrderKey.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
@@ -100,7 +101,10 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto transferData = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getTransferToAddressData(amountToSend, "0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43"));
                     EXPECT_GT(transferData.size(), 0);
                     
-                    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
+                    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]
+                                                                                             ->queryOperations()
+                                                                                             ->addOrder(api::OperationOrderKey::DATE, true)
+                                                                                             ->complete())->execute());
                     std::cout << "ERC20 Operations: " << operations.size() << std::endl;
                     EXPECT_NE(operations.size(), 0);
 
@@ -137,6 +141,53 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         EXPECT_EQ(account->getERC20Accounts().size(), erc20Count);
 
         wait(pool->freshResetAll());
+    }
+}
+
+TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
+    auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
+    auto erc20Count = 0;
+    {
+        auto pool = newDefaultPool();
+        {
+            auto configuration = DynamicObject::newInstance();
+            configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
+            auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
+
+            {
+                std::string balanceStr;
+                auto nextIndex = wait(wallet->getNextAccountIndex());
+                auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
+
+                auto receiver = make_receiver([=, &erc20Count, &balanceStr](const std::shared_ptr<api::Event> &event) {
+                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+
+                    if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                        return;
+
+                    auto balance = wait(account->getBalance());
+                    balanceStr = balance->toString();
+
+                    auto now = std::time(nullptr);
+                    char now_str[256];
+                    std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));
+
+                    auto history = wait(account->getBalanceHistory(
+                        "2019-09-20T00:00:00Z",
+                        now_str,
+                        api::TimePeriod::DAY
+                    ));
+
+                    EXPECT_EQ(history.back()->toString(), balanceStr);
+
+                    dispatcher->stop();
+                });
+
+                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+                dispatcher->waitUntilStopped();
+            }
+        }
     }
 }
 
@@ -183,7 +234,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 EXPECT_GT(erc20Accounts.size(), 0);
                 EXPECT_GT(erc20Accounts[0]->getOperations().size(),0);
                 auto erc20Balance = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
-                EXPECT_GT(erc20Balance->intValue(), 0);
+                EXPECT_TRUE(BigInt(erc20Balance->toString(10)) > BigInt("0"));
                 auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
                 std::cout << "ERC20 balance: " << erc20Balance->toString(10) << std::endl;

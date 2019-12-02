@@ -75,7 +75,8 @@ namespace ledger {
                                                  const api::Currency &params,
                                                  const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
                                                  const std::shared_ptr<spdlog::logger> &logger,
-                                                 const TezosLikeTransactionBuildFunction &buildFunction);
+                                                 const TezosLikeTransactionBuildFunction &buildFunction,
+                                                 const std::string &protocolUpdate = "");
 
             TezosLikeTransactionBuilder(const TezosLikeTransactionBuilder &cpy);
 
@@ -105,7 +106,8 @@ namespace ledger {
 
             static std::shared_ptr<api::TezosLikeTransaction> parseRawTransaction(const api::Currency &currency,
                                                                                   const std::vector<uint8_t> &rawTransaction,
-                                                                                  bool isSigned);
+                                                                                  bool isSigned,
+                                                                                  const std::string &protocolUpdate);
 
         private:
             api::Currency _currency;

@@ -249,9 +249,29 @@ namespace ledger {
             return temp;
         }
 
-        void BigInt::operator=(const BigInt &a) {
-            bdSetEqual(_bigd, a._bigd);
+        BigInt& BigInt::operator=(const BigInt &a) {
+            if (this != &a) {
+                bdSetEqual(_bigd, a._bigd);
+                _negative = a._negative;
+            }
+
+            return *this;
+        }
+
+        BigInt& BigInt::operator=(BigInt&& a) {
+            if (this == &a) {
+                return *this;
+            }
+
+            if (_bigd != nullptr) {
+                bdFree(&_bigd);
+            }
+
+            _bigd = a._bigd;
             _negative = a._negative;
+            a._bigd = nullptr;
+
+            return *this;
         }
 
         bool BigInt::isNegative() const {

@@ -160,12 +160,15 @@ namespace ledger {
                 auto recipients = strings::split(row.get<std::string>(5), ",");
                 if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
-                    operations.resize(operations.size() + 1);
-                    auto& operation = operations[operations.size() - 1];
+                    Operation operation;
+
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));
                     operation.fees = BigInt::fromHex(row.get<std::string>(1));
                     operation.type = type;
                     operation.date = DateUtils::fromJSON(row.get<std::string>(3));
+
+                    operations.push_back(operation);
+
                     c += 1;
                 }
             }
