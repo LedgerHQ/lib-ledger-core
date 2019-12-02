@@ -48,13 +48,15 @@ if(BUILD_TESTS)
 endif()
 # add_subdirectory( apps )
 
-install( FILES e_os2.h DESTINATION include/openssl )
+include(GNUInstallDirs)
 
-install( FILES tools/c_hash tools/c_info tools/c_issuer tools/c_name tools/c_rehash
+install( FILES e_os2.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/openssl )
+
+install( FILES tools/c_hash tools/c_info tools/c_issuer tools/c_name tools/c_rehash.in
     FAQ LICENSE PROBLEMS README README.ASN1 README.ENGINE
-    DESTINATION share/openssl )
+    DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/openssl )
 
-install( DIRECTORY doc DESTINATION ./ )
+install( DIRECTORY doc DESTINATION ${CMAKE_INSTALL_DOCDIR}/openssl )
 
 # Generate the package target
 set( CPACK_GENERATOR ZIP TGZ )
