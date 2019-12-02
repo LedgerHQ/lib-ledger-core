@@ -1,4 +1,9 @@
-## 3.1.0 (on-going)
+## 3.2.0 (on-going)
+
+- Using new ETH v3 explorer's endpoint to get ERC20 accounts balance,
+- Add method to batch ERC20 balance calls. 
+
+## 3.1.0
 
 - Add block heights on `BitcoinLikeOutput`s to enhance performances while picking UTXOs with deepest first UTXO picking strategy
 - Add signature settings on `BitcoinLikeTransaction` to create DER signature from RS(V) data

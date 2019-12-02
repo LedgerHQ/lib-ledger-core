@@ -40,6 +40,7 @@
 #include <api/StringCallback.hpp>
 #include <api/Event.hpp>
 #include <api/BigIntCallback.hpp>
+#include <api/BigIntListCallback.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
@@ -122,6 +123,8 @@ namespace ledger {
             void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
             FuturePtr<api::BigInt> getERC20Balance(const std::string & erc20Address);
             void getERC20Balance(const std::string & erc20Address, const std::shared_ptr<api::BigIntCallback> & callback) override;
+            Future<std::vector<std::shared_ptr<api::BigInt>>> getERC20Balances(const std::vector<std::string> &erc20Addresses);
+            void getERC20Balances(const std::vector<std::string> &erc20Addresses, const std::shared_ptr<api::BigIntListCallback> & callback) override;
 
             void addERC20Accounts(soci::session &sql,
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);

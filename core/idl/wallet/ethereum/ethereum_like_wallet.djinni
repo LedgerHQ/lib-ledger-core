@@ -155,4 +155,8 @@ EthereumLikeAccount = interface +c {
     # The passed address is an ERC20 account
     # Note: same note as above
     getERC20Balance(erc20Address: string, callback: Callback<BigInt>);
+    # Get balance of ERC20 tokens
+    # The passed addresses are ERC20 accounts
+    # Note: same note as above
+    getERC20Balances(erc20Addresses: list<string>, callback: ListCallback<BigInt>);
 }

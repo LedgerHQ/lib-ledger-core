@@ -107,35 +107,68 @@ namespace ledger {
             return getHelper(fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit", getExplorerVersion(), getNetworkParameters().Identifier, address), "estimated_gas_limit");
         }
 
-        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getERC20Balance(const std::string &address, const std::string &erc20Address) {
-            rapidjson::Document doc;
-            doc.SetObject();
-            rapidjson::Value vString(rapidjson::kStringType);
-            // Set address of account to check balance of
-            vString.SetString(address.c_str(), static_cast<rapidjson::SizeType>(address.length()), doc.GetAllocator());
-            doc.AddMember("address", vString, doc.GetAllocator());
-            // Set address of contract (ERC20) to check balance on
-            vString.SetString(erc20Address.c_str(), static_cast<rapidjson::SizeType>(erc20Address.length()), doc.GetAllocator());
-            doc.AddMember("contract", vString, doc.GetAllocator());
+        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getERC20Balance(const std::string &address,
+                                                                                                 const std::string &erc20Address) {
+            return getERC20Balances(address, std::vector<std::string>{erc20Address})
+                    .mapPtr<BigInt>(getContext(),
+                                    [erc20Address](const std::vector<BigInt> &balances) {
+                                        if (balances.empty()) {
+                                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                                 fmt::format("Failed to get balance for token {}", erc20Address)
+                                            );
+                                        }
+                                        return std::make_shared<BigInt>(balances[0]);
+                                    }
+                    );
+        }
+
+        Future<std::vector<BigInt>>
+        LedgerApiEthereumLikeBlockchainExplorer::getERC20Balances(const std::string &address,
+                                                                  const std::vector<std::string> &erc20Addresses) {
+            rapidjson::Document docContainer;
+            docContainer.SetArray();
+            auto &allocator = docContainer.GetAllocator();
+            for (auto &erc20Address : erc20Addresses) {
+                rapidjson::Value o(rapidjson::kObjectType);
+                rapidjson::Value vString(rapidjson::kStringType);
+                // Set address of account to check balance of
+                vString.SetString(address.c_str(), static_cast<rapidjson::SizeType>(address.length()), allocator);
+                o.AddMember("address", vString, allocator);
+                // Set address of contract (ERC20) to check balance on
+                vString.SetString(erc20Address.c_str(), static_cast<rapidjson::SizeType>(erc20Address.length()), allocator);
+                o.AddMember("contract", vString, allocator);
+                docContainer.PushBack(o.GetObject(), allocator);
+            }
+
             rapidjson::StringBuffer buffer;
             rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
-            doc.Accept(writer);
+            docContainer.Accept(writer);
             std::string requestBody(buffer.GetString());
 
             bool parseNumbersAsString = true;
-            auto networkId = getNetworkParameters().Identifier;
-            std::string field("balance");
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
-            return _http->POST(fmt::format("/blockchain/{}/{}/erc20/balance", getExplorerVersion(), getNetworkParameters().Identifier), std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
+            return _http->POST(fmt::format("/blockchain/{}/{}/erc20/balances",
+                                           getExplorerVersion(),
+                                           getNetworkParameters().Identifier),
+                               std::vector<uint8_t>(requestBody.begin(), requestBody.end()),
+                               headers)
                     .json(parseNumbersAsString)
-                    .mapPtr<BigInt>(getContext(), [field, networkId] (const HttpRequest::JsonResult& result) {
-                auto& json = *std::get<1>(result);
+                    .map<std::vector<BigInt>>(getContext(), [erc20Addresses] (const HttpRequest::JsonResult& result) {
+                        auto& json = *std::get<1>(result);
 
-                if (!json.IsObject() || !json.GetObject().HasMember(field.c_str()) || !json.GetObject()[field.c_str()].IsString()) {
-                    throw make_exception(api::ErrorCode::HTTP_ERROR, fmt::format("Failed to get {} for {}", field, networkId));
-                }
-                return std::make_shared<BigInt>(json.GetObject()[field.c_str()].GetString());
-            });
+                        if (!json.IsArray() || json.Size() != erc20Addresses.size()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balances for erc20 addresses.");
+                        }
+
+                        std::vector<BigInt> balances;
+                        for (auto &b : json.GetArray()) {
+                            if (!b.IsObject() || !b.GetObject().HasMember("balance")) {
+                                throw make_exception(api::ErrorCode::HTTP_ERROR, "ERC20 balance: Malformed balance fields.");
+                            }
+                            balances.emplace_back(BigInt(b.GetObject()["balance"].GetString()));
+                        }
+                        return balances;
+                    });
         }
 
         Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
