@@ -120,7 +120,7 @@ namespace ledger {
             if (!originatedAccountUid.empty() && !originatedAccountAddress.empty()) {
                 operation.amount = transaction.value;
                 operation.type = transaction.sender == originatedAccountAddress ? api::OperationType::SEND : api::OperationType::RECEIVE;
-                operation.refreshUid();
+                operation.refreshUid(originatedAccountUid);
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     // Update publicKey field for originated account
                     if (transaction.type == api::TezosOperationTag::OPERATION_TAG_REVEAL && transaction.publicKey.hasValue()) {

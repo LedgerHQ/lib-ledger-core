@@ -294,6 +294,15 @@ namespace ledger {
         FuturePtr<AbstractWallet> WalletPool::getWallet(const std::string &name) {
             auto self = shared_from_this();
             return async<std::shared_ptr<AbstractWallet>>([=] () {
+                auto it = self->_wallets.find(WalletDatabaseEntry::createWalletUid(self->getName(), name));
+                if (it != self->_wallets.end()) {
+                    auto ptr = it->second;
+
+                    if (ptr != nullptr) {
+                        return ptr;
+                    }
+                }
+
                 auto entry = getWalletEntryFromDatabase(self, name);
                 if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));

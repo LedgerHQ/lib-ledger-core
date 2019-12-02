@@ -1,4 +1,4 @@
-/build_jni/
+/build*/
 /externals/build/
 /cmake-build-debug/
 /core/lib/secp256k1/include/

@@ -268,5 +268,26 @@ namespace ledger {
                              std::unordered_map<std::string, std::string>{{"token", address}}
             );
         }
+
+        Future<std::vector<uint8_t>> NodeTezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) {
+            return TezosLikeBlockchainExplorer::forgeKTOperation(tx,
+                                                                 getExplorerContext(),
+                                                                 _http,
+                                                                 getRPCNodeEndpoint());
+        }
+
+        Future<std::string> NodeTezosLikeBlockchainExplorer::getManagerKey(const std::string &address) {
+            return TezosLikeBlockchainExplorer::getManagerKey(address,
+                                                              getExplorerContext(),
+                                                              _http,
+                                                              getRPCNodeEndpoint());
+        }
+
+        Future<bool> NodeTezosLikeBlockchainExplorer::isAllocated(const std::string &address) {
+            return TezosLikeBlockchainExplorer::isAllocated(address,
+                                                            getExplorerContext(),
+                                                            _http,
+                                                            getRPCNodeEndpoint());
+        }
     }
 }

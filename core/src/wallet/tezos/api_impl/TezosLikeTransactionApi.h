@@ -34,7 +34,6 @@
 
 #include <wallet/common/api_impl/OperationApi.h>
 #include <wallet/tezos/api_impl/TezosLikeBlockApi.h>
-
 #include <api/TezosLikeTransaction.hpp>
 #include <api/Amount.hpp>
 #include <api/Currency.hpp>
@@ -45,9 +44,11 @@ namespace ledger {
         // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
         class TezosLikeTransactionApi : public api::TezosLikeTransaction {
         public:
-            explicit TezosLikeTransactionApi(const api::Currency &currency);
+            explicit TezosLikeTransactionApi(const api::Currency &currency,
+                                             const std::string &protocolUpdate);
 
-            explicit TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation);
+            explicit TezosLikeTransactionApi(const std::shared_ptr<OperationApi> &operation,
+                                             const std::string &protocolUpdate);
 
             api::TezosOperationTag getType() override;
 
@@ -62,6 +63,7 @@ namespace ledger {
             std::shared_ptr<api::Amount> getValue() override;
 
             std::vector<uint8_t> serialize() override;
+            std::vector<uint8_t> serializeWithType(api::TezosOperationTag type);
 
             std::chrono::system_clock::time_point getDate() override;
 
@@ -76,6 +78,8 @@ namespace ledger {
             void setSignature(const std::vector<uint8_t> &signature) override;
 
             std::vector<uint8_t> getSigningPubKey() override;
+
+            int32_t getStatus() override;
 
             TezosLikeTransactionApi &setFees(const std::shared_ptr<BigInt> &fees);
 
@@ -101,6 +105,13 @@ namespace ledger {
 
             TezosLikeTransactionApi & setBalance(const BigInt &balance);
 
+            TezosLikeTransactionApi & setManagerAddress(const std::string &managerAddress, api::TezosCurve curve);
+            std::string getManagerAddress() const;
+
+            TezosLikeTransactionApi &setRawTx(const std::vector<uint8_t> &rawTx);
+
+            TezosLikeTransactionApi &reveal(bool needReveal);
+            bool toReveal() const;
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlockApi> _block;
@@ -120,6 +131,12 @@ namespace ledger {
             api::TezosOperationTag _type;
             std::string _revealedPubKey;
             BigInt _balance;
+            std::string _protocolUpdate;
+            std::string _managerAddress;
+            api::TezosCurve _managerCurve;
+            std::vector<uint8_t> _rawTx;
+            bool _needReveal;
+            int32_t _status;
         };
     }
 }
