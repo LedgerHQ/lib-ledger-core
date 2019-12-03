@@ -54,6 +54,13 @@ else()
 endif()
 
 # Package support
+include(GNUInstallDirs)
+set(ledger-core-pkg-location lib/cmake/ledger-core)
+
+export(PACKAGE ledger-core)
+
+include(CMakePackageConfigHelpers)
+
 install(
     TARGETS
         ledger-core
@@ -79,5 +86,23 @@ install(
 install(
     EXPORT ledger-core
     NAMESPACE Core::
-    DESTINATION ledger-core
+    DESTINATION ${ledger-core-pkg-location}
+)
+
+#configure_file(
+#    ledger-core-config.cmake
+#    ${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config.cmake
+#)
+
+write_basic_package_version_file(
+    "${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake"
+    VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(
+    FILES
+    "${CMAKE_SOURCE_DIR}/ledger-core-config.cmake"
+    "${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake"
+    DESTINATION ${ledger-core-pkg-location}
 )
