@@ -89,11 +89,6 @@ install(
     DESTINATION ${ledger-core-pkg-location}
 )
 
-#configure_file(
-#    ledger-core-config.cmake
-#    ${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config.cmake
-#)
-
 write_basic_package_version_file(
     "${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake"
     VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
