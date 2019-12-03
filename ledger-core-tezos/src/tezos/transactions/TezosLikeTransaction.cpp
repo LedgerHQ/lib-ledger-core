@@ -33,6 +33,7 @@
 #include <tezos/TezosNetworks.hpp>
 #include <tezos/TezosLikeExtendedPublicKey.hpp>
 #include <tezos/api/TezosCurve.hpp>
+#include <tezos/api/TezosConfigurationDefaults.hpp>
 #include <tezos/transactions/TezosLikeTransaction.hpp>
 
 #include <core/wallet/Amount.hpp>
@@ -49,16 +50,22 @@
 namespace ledger {
     namespace core {
 
-        TezosLikeTransaction::TezosLikeTransaction(const api::Currency &currency) {
-            _currency = currency;
+        TezosLikeTransaction::TezosLikeTransaction(const api::Currency &currency,
+                                                         const std::string &protocolUpdate) :
+                _currency(currency),
+                _protocolUpdate(protocolUpdate),
+                _needReveal(false){
             _block = std::make_shared<TezosLikeBlock>(api::Block{});
             _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
         }
 
         TezosLikeTransaction::TezosLikeTransaction(
             const TezosLikeBlockchainExplorerTransaction& tx,
-            const api::Currency& currency) {
+            const api::Currency& currency,
+            const std::string &protocolUpdate) : _needReveal(false) {
            
+            // TODD: check why this line is missing in the current legacy code
+            // _protocolUpdate = protocolUpdate;
             _time = tx.receivedAt;
 
             if (tx.block.nonEmpty()) {
@@ -80,6 +87,8 @@ namespace ledger {
             _type = tx.type;
 
             _revealedPubKey = tx.publicKey;
+
+            _status = tx.status;
         }
 
         api::TezosOperationTag TezosLikeTransaction::getType() {
@@ -91,7 +100,12 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> TezosLikeTransaction::getFees() {
-            return _fees;
+            // Since revelation constructs a second operation in same transaction we have to double it
+            return _needReveal ?
+                   std::make_shared<Amount>(_currency,
+                                            0 ,
+                                            BigInt(_fees->toString()) * BigInt(static_cast<unsigned long long>(2))) :
+                   _fees;
         }
 
         std::shared_ptr<api::TezosLikeAddress> TezosLikeTransaction::getReceiver() {
@@ -136,6 +150,10 @@ namespace ledger {
             return _signingPubKey;
         }
 
+        int32_t TezosLikeTransaction::getStatus() {
+            return _status;
+        }
+
         void TezosLikeTransaction::setSignature(const std::vector<uint8_t> &signature) {
             // Signature should be 64 bytes
             if (signature.size() != 64) {
@@ -158,21 +176,76 @@ namespace ledger {
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params.Identifier);
             auto decoded = Base58::checkAndDecode(_block->getHash(), config);
-            auto blockHash = decoded.getValue();
             // Remove 2 first bytes (of version)
-            writer.writeByteArray(std::vector<uint8_t>{blockHash.begin() + 2, blockHash.end()});
+            auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
 
+            // If tx was forged then nothing to do
+            if (!_rawTx.empty()) {
+                // If we need reveal, then we must prepend it
+                if (_needReveal) {
+                    writer.writeByteArray(blockHash);
+                    writer.writeByteArray(serializeWithType(api::TezosOperationTag::OPERATION_TAG_REVEAL));
+                    // Remove branch since it's already added
+                    writer.writeByteArray(std::vector<uint8_t>{_rawTx.begin() + blockHash.size(), _rawTx.end()});
+                } else {
+                    writer.writeByteArray(_rawTx);
+                }
+
+                if (!_signature.empty()) {
+                    writer.writeByteArray(_signature);
+                }
+                return writer.toByteArray();
+            }
+
+            writer.writeByteArray(blockHash);
+
+            // If we need reveal, then we must prepend it
+            if (_needReveal) {
+                writer.writeByteArray(serializeWithType(api::TezosOperationTag::OPERATION_TAG_REVEAL));
+            }
+
+            writer.writeByteArray(serializeWithType(_type));
+
+            // Append signature
+            if (!_signature.empty()) {
+                writer.writeByteArray(_signature);
+            }
+
+            return writer.toByteArray();
+        }
+
+        std::vector<uint8_t> TezosLikeTransaction::serializeWithType(api::TezosOperationTag type) {
+            auto isBabylonActivated = _protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
+            BytesWriter writer;
+
+            auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
             // Operation Tag
-            writer.writeByte(static_cast<uint8_t>(_type));
+            writer.writeByte(static_cast<uint8_t>(type) + offset);
 
             // Set Sender
-            // Originated
-            auto isSenderOriginated = _sender->toBase58().find("KT1") == 0;
-            writer.writeByte(static_cast<uint8_t>(isSenderOriginated));
-            auto senderContractID = isSenderOriginated ?
-                                    vector::concat(_sender->getHash160(), {0x00}) :
-                                    vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
-            writer.writeByteArray(senderContractID);
+            if (isBabylonActivated) {
+                // After Babylon, KT need no revelation and actions from KT account means actions from manager account
+                // with a smart contract, so if we are trying to reveal from KT account that means in fact that
+                // manager account needs revelation
+                if (type == api::TezosOperationTag::OPERATION_TAG_REVEAL && _sender->toBase58().find("KT1") == 0) {
+                    auto senderContractID = vector::concat(
+                            {static_cast<uint8_t>(_managerCurve)},
+                            TezosLikeAddress::fromBase58(_managerAddress, _currency, Option<std::string>())->getHash160()
+                    );
+                    writer.writeByteArray(senderContractID);
+                } else {
+                    auto senderContractID = vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
+                    writer.writeByteArray(senderContractID);
+                }
+            } else {
+                // Originated
+                auto isSenderOriginated = _sender->toBase58().find("KT1") == 0;
+                writer.writeByte(static_cast<uint8_t>(isSenderOriginated));
+                auto senderContractID = isSenderOriginated ?
+                                        vector::concat(_sender->getHash160(), {0x00}) :
+                                        vector::concat({static_cast<uint8_t>(_senderCurve)}, _sender->getHash160());
+                writer.writeByteArray(senderContractID);
+            }
 
 
             // Fee
@@ -180,25 +253,30 @@ namespace ledger {
             writer.writeByteArray(zarith::zSerializeNumber(bigIntFess.toByteArray()));
 
             // Counter
-            writer.writeByteArray(zarith::zSerializeNumber(_counter->toByteArray()));
+            // If account need revelation then we increment counter
+            // because it was used in revelation op
+            auto localCounter = _needReveal && type != api::TezosOperationTag::OPERATION_TAG_REVEAL ?
+                                *_counter + BigInt(1) : *_counter;
+            writer.writeByteArray(zarith::zSerializeNumber(localCounter.toByteArray()));
 
             // Gas Limit
             auto bigIntGasLimit = BigInt::fromString(_gasLimit->toBigInt()->toString(10));
             writer.writeByteArray(zarith::zSerializeNumber(bigIntGasLimit.toByteArray()));
 
             // Storage Limit
-            writer.writeByteArray(zarith::zSerializeNumber(_storage->toByteArray()));
+            // No storage for reveal
+            auto storage = type == api::TezosOperationTag::OPERATION_TAG_REVEAL ? std::vector<uint8_t>{0} : _storage->toByteArray();
+            writer.writeByteArray(zarith::zSerializeNumber(storage));
 
-            switch(_type) {
+            switch(type) {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
                     if (!_signingPubKey.empty()) {
-                        if (_signingPubKey.size() == 32) {
-                            // Then it's ED25519
-                            writer.writeByte(0x00);
+                        writer.writeByte(0x00);
+                        if (_signingPubKey.size() == 33) {
+                            writer.writeByteArray(std::vector<uint8_t>{_signingPubKey.begin() + 1, _signingPubKey.end()});
                         } else { // TODO: find better, will be an issue when supporting p256
-                            writer.writeByte(0x01);
+                            writer.writeByteArray(_signingPubKey);
                         }
-                        writer.writeByteArray(_signingPubKey);
                     } else if (!_revealedPubKey.empty()) {
                         auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
                         writer.writeByte(0x00);
@@ -212,21 +290,28 @@ namespace ledger {
                     writer.writeByteArray(zarith::zSerializeNumber(bigIntValue.toByteArray()));
 
                     // Set Receiver
-                    // Originated
-                    auto isReceiverOriginated = _receiver->toBase58().find("KT1") == 0;
-                    writer.writeByte(static_cast<uint8_t>(isReceiverOriginated));
-                    auto receiverContractID = isReceiverOriginated ?
-                                              vector::concat(_receiver->getHash160(), {0x00}) :
-                                              vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
-                    writer.writeByteArray(receiverContractID);
+                    if (isBabylonActivated) {
+                        auto receiverContractID = vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
+                        writer.writeByteArray(receiverContractID);
+                    } else {
+                        // Originated
+                        auto isReceiverOriginated = _receiver->toBase58().find("KT1") == 0;
+                        writer.writeByte(static_cast<uint8_t>(isReceiverOriginated));
+                        auto receiverContractID = isReceiverOriginated ?
+                                                  vector::concat(_receiver->getHash160(), {0x00}) :
+                                                  vector::concat({static_cast<uint8_t>(_receiverCurve)}, _receiver->getHash160());
+                        writer.writeByteArray(receiverContractID);
+                    }
 
                     // Additional parameters
                     writer.writeByte(0x00);
                     break;
                 }
                 case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
-                    writer.writeByte(static_cast<uint8_t >(_senderCurve));
-                    writer.writeByteArray(_sender->getHash160());
+                    if (!isBabylonActivated) {
+                        writer.writeByte(static_cast<uint8_t >(_senderCurve));
+                        writer.writeByteArray(_sender->getHash160());
+                    }
                     // Balance
                     writer.writeByteArray(zarith::zSerializeNumber(_balance.toByteArray()));
                     // Is spendable ?
@@ -240,7 +325,7 @@ namespace ledger {
                     break;
                 }
                 case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
-                    if (_receiver) {
+                    if (_receiver && !_receiver->getHash160().empty()) {
                         // Delegate is always implicit account (TBC)
                         writer.writeByte(0xFF);
                         writer.writeByte(static_cast<uint8_t >(_receiverCurve));
@@ -252,11 +337,6 @@ namespace ledger {
                 }
                 default:
                     break;
-            }
-
-            // Append signature
-            if (!_signature.empty()) {
-                writer.writeByteArray(_signature);
             }
 
             return writer.toByteArray();
@@ -341,6 +421,30 @@ namespace ledger {
         TezosLikeTransaction & TezosLikeTransaction::setBalance(const BigInt &balance) {
             _balance = balance;
             return *this;
+        }
+
+        TezosLikeTransaction & TezosLikeTransaction::setManagerAddress(const std::string &managerAddress, api::TezosCurve curve) {
+            _managerAddress = managerAddress;
+            _managerCurve = curve;
+            return *this;
+        }
+
+        std::string TezosLikeTransaction::getManagerAddress() const {
+            return _managerAddress;
+        }
+
+        TezosLikeTransaction & TezosLikeTransaction::setRawTx(const std::vector<uint8_t> &rawTx) {
+            _rawTx = rawTx;
+            return *this;
+        }
+
+        TezosLikeTransaction &TezosLikeTransaction::reveal(bool needReveal) {
+            _needReveal = needReveal;
+            return *this;
+        }
+
+        bool TezosLikeTransaction::toReveal() const {
+            return _needReveal;
         }
     }
 }

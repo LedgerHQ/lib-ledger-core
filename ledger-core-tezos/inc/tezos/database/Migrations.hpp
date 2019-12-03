@@ -9,7 +9,7 @@ namespace ledger {
         /// Tag type.
         struct TezosMigration {
           static int constexpr COIN_ID = TEZOS_COIN_ID; 
-          static uint32_t constexpr CURRENT_VERSION = 2; 
+          static uint32_t constexpr CURRENT_VERSION = 3; 
         };
 
         // migrations
@@ -18,5 +18,8 @@ namespace ledger {
 
         template <> void migrate<2, TezosMigration>(soci::session& sql);
         template <> void rollback<2, TezosMigration>(soci::session& sql);
+
+        template <> void migrate<3, TezosMigration>(soci::session& sql);
+        template <> void rollback<3, TezosMigration>(soci::session& sql);
   }
 }

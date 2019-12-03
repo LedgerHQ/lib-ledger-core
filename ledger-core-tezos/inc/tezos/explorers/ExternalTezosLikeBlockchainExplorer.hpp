@@ -1,8 +1,8 @@
 /*
  *
- * NodeTezosLikeBlockchainExplorer
+ * ExternalTezosLikeBlockchainExplorer
  *
- * Created by El Khalil Bellakrid on 29/04/2019.
+ * Created by El Khalil Bellakrid on 20/10/2019.
  *
  * The MIT License (MIT)
  *
@@ -40,17 +40,23 @@
 
 namespace ledger {
     namespace core {
-        using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<TezosLikeBlockchainExplorerTransaction, TezosLikeBlockchainExplorer::TransactionsBulk, TezosLikeTransactionsParser, TezosLikeTransactionsBulkParser, TezosLikeBlockParser, api::TezosLikeNetworkParameters>;
+        using ExternalApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<
+                TezosLikeBlockchainExplorerTransaction, 
+                TezosLikeBlockchainExplorer::TransactionsBulk, 
+                TezosLikeTransactionsParser,
+                TezosLikeTransactionsBulkParser,
+                TezosLikeBlockParser, 
+                api::TezosLikeNetworkParameters>;
 
-        class NodeTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
-                                                public LedgerApiBlockchainExplorer,
-                                                public DedicatedContext,
-                                                public std::enable_shared_from_this<NodeTezosLikeBlockchainExplorer> {
+        class ExternalTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer, 
+                                                    public ExternalApiBlockchainExplorer,
+                                                    public DedicatedContext, 
+                                                    public std::enable_shared_from_this<ExternalTezosLikeBlockchainExplorer> {
         public:
-            NodeTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
-                                            const std::shared_ptr<HttpClient> &http,
-                                            const api::TezosLikeNetworkParameters &parameters,
-                                            const std::shared_ptr<api::DynamicObject> &configuration);
+            ExternalTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
+                                                const std::shared_ptr<HttpClient> &http,
+                                                const api::TezosLikeNetworkParameters &parameters,
+                                                const std::shared_ptr<api::DynamicObject> &configuration);
 
             Future<std::shared_ptr<BigInt>>
             getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) override;
@@ -112,10 +118,12 @@ namespace ledger {
             getHelper(const std::string &url,
                       const std::string &field,
                       const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
-                      const std::string &fallbackValue = "");
+                      const std::string &fallbackValue = "",
+                      const std::string &forceUrl = "",
+                      bool isDecimal = false);
 
             api::TezosLikeNetworkParameters _parameters;
-            std::string _explorerVersion;
+            std::unordered_map<std::string, uint64_t> _sessions;
         };
     }
 }

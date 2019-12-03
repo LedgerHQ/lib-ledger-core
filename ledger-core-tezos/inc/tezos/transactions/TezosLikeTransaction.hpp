@@ -48,11 +48,13 @@ namespace ledger {
         // Reference: https://github.com/obsidiansystems/ledger-app-tezos/blob/9a0c8cc546677147b93935e0b0c96925244baf64/src/types.h
         class TezosLikeTransaction : public api::TezosLikeTransaction {
         public:
-            explicit TezosLikeTransaction(const api::Currency &currency);
+            explicit TezosLikeTransaction(const api::Currency &currency,
+                                          const std::string &protocolUpdate);
 
             explicit TezosLikeTransaction(
                 const TezosLikeBlockchainExplorerTransaction& tx,
-                const api::Currency &currency);
+                const api::Currency &currency,
+                const std::string &protocolUpdate);
 
             api::TezosOperationTag getType() override;
 
@@ -67,6 +69,7 @@ namespace ledger {
             std::shared_ptr<api::Amount> getValue() override;
 
             std::vector<uint8_t> serialize() override;
+            std::vector<uint8_t> serializeWithType(api::TezosOperationTag type);
 
             std::chrono::system_clock::time_point getDate() override;
 
@@ -81,6 +84,8 @@ namespace ledger {
             void setSignature(const std::vector<uint8_t> &signature) override;
 
             std::vector<uint8_t> getSigningPubKey() override;
+
+            int32_t getStatus() override;
 
             TezosLikeTransaction &setFees(const std::shared_ptr<BigInt> &fees);
 
@@ -106,6 +111,13 @@ namespace ledger {
 
             TezosLikeTransaction & setBalance(const BigInt &balance);
 
+            TezosLikeTransaction & setManagerAddress(const std::string &managerAddress, api::TezosCurve curve);
+            std::string getManagerAddress() const;
+
+            TezosLikeTransaction &setRawTx(const std::vector<uint8_t> &rawTx);
+
+            TezosLikeTransaction &reveal(bool needReveal);
+            bool toReveal() const;
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlock> _block;
@@ -125,6 +137,12 @@ namespace ledger {
             api::TezosOperationTag _type;
             std::string _revealedPubKey;
             BigInt _balance;
+            std::string _protocolUpdate;
+            std::string _managerAddress;
+            api::TezosCurve _managerCurve;
+            std::vector<uint8_t> _rawTx;
+            bool _needReveal;
+            int32_t _status;
         };
     }
 }

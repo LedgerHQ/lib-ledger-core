@@ -86,5 +86,11 @@ namespace ledger {
             sql << "ALTER TABLE tezos_accounts RENAME COLUMN public_key TO address";
         }
 
+        template <> void migrate<3, TezosMigration>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_transactions ADD COLUMN status BIGINT";
+        }
+
+        template <> void rollback<3, TezosMigration>(soci::session& sql) {
+        }
     }
 }

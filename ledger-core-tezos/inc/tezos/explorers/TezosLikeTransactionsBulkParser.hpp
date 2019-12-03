@@ -48,7 +48,8 @@ namespace ledger {
             };
 
             bool StartArray() {
-                if (_depth >= 1 || getLastKey() == "") {
+                if (_depth >= 1 || getLastKey() == "" ||
+                        (_depth == 0 && getLastKey() == "ops")) {
                     _depth += 1;
                 }
 

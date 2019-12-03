@@ -2,6 +2,7 @@
 
 TezosBlockchainExplorerEngines = interface +c {
     const TEZOS_NODE: string = "TEZOS_NODE";
+    const TZSTATS_API: string = "TZSTATS_API";
 }
 
 # Available API to use with observers.

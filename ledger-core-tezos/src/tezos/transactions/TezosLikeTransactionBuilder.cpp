@@ -32,6 +32,7 @@
 #include <tezos/TezosNetworks.hpp>
 #include <tezos/api/TezosCurve.hpp>
 #include <tezos/api/TezosOperationTag.hpp>
+#include <tezos/api/TezosConfigurationDefaults.hpp>
 #include <tezos/transactions/TezosLikeTransaction.hpp>
 #include <tezos/transactions/TezosLikeTransactionBuilder.hpp>
 
@@ -47,7 +48,8 @@ namespace ledger {
                 const api::Currency &currency,
                 const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
                 const std::shared_ptr<spdlog::logger> &logger,
-                const TezosLikeTransactionBuildFunction &buildFunction) :
+                const TezosLikeTransactionBuildFunction &buildFunction,
+                const std::string &protocolUpdate) :
                 _senderAddress(senderAddress), _context(context),
                 _currency(currency), _explorer(explorer),
                 _build(buildFunction), _logger(logger){
@@ -127,22 +129,36 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransaction>
         api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency &currency,
                                                                       const std::vector<uint8_t> &rawTransaction) {
-            return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction, false);
+            // Since this patch is temporary, we can live with this
+            // This method is not used yet anywhere internally or externally (except for tests)
+            return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency,
+                                                                                    rawTransaction,
+                                                                                    false,
+                                                                                    ""
+            );
         }
 
         std::shared_ptr<api::TezosLikeTransaction>
         api::TezosLikeTransactionBuilder::parseRawSignedTransaction(const api::Currency &currency,
                                                                     const std::vector<uint8_t> &rawTransaction) {
-            return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction, true);
+            // Since this patch is temporary, we can live with this
+            // This method is not used yet anywhere internally or externally (except for tests)
+            return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency,
+                                                                                    rawTransaction,
+                                                                                    true,
+                                                                                    ""
+            );
         }
 
         // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
         std::shared_ptr<api::TezosLikeTransaction>
         TezosLikeTransactionBuilder::parseRawTransaction(const api::Currency &currency,
                                                          const std::vector<uint8_t> &rawTransaction,
-                                                         bool isSigned) {
+                                                         bool isSigned,
+                                                         const std::string &protocolUpdate) {
+            auto isBabylonActivated = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
             auto params = networks::getTezosLikeNetworkParameters(currency.name);
-            auto tx = std::make_shared<TezosLikeTransaction>(currency);
+            auto tx = std::make_shared<TezosLikeTransaction>(currency, protocolUpdate);
             BytesReader reader(rawTransaction);
             if (!isSigned) {
                 // Watermark: Generic-Operation
@@ -162,25 +178,35 @@ namespace ledger {
             auto OpTag = reader.readNextByte();
             tx->setType(static_cast<api::TezosOperationTag>(OpTag));
 
+            // sender hash160
+            std::vector<uint8_t> senderHash160, version;
             // Get Sender
             // Originated
-            auto isSenderOriginated = reader.readNextByte();
-            // sender hash160
-            std::vector<uint8_t> senderHash160;
-            if (isSenderOriginated) {
-                // Then we read 20 bytes of publicKey hash
-                senderHash160 = reader.read(20);
-                // ... and padding
-                reader.readNextByte();
-            } else {
-                // Otherwise first curve code ...
+            if (isBabylonActivated) {
+                // First curve code ...
                 auto senderCurveCode = reader.readNextByte();
                 // then hash160 ...
                 senderHash160 = reader.read(20);
+                version = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
+            } else {
+                auto isSenderOriginated = reader.readNextByte();
+                if (isSenderOriginated) {
+                    // Then we read 20 bytes of publicKey hash
+                    senderHash160 = reader.read(20);
+                    // ... and padding
+                    reader.readNextByte();
+                    version = params.OriginatedPrefix;
+                } else {
+                    // Otherwise first curve code ...
+                    auto senderCurveCode = reader.readNextByte();
+                    // then hash160 ...
+                    senderHash160 = reader.read(20);
+                    version = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(senderCurveCode));
+                }
             }
             tx->setSender(std::make_shared<TezosLikeAddress>(currency,
                                                              senderHash160,
-                                                             isSenderOriginated ? params.OriginatedPrefix : params.ImplicitPrefix,
+                                                             version,
                                                              Option<std::string>()));
 
             // Fee
@@ -195,7 +221,9 @@ namespace ledger {
             // Storage Limit
             tx->setStorage(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
-            switch (OpTag) {
+            // Offset introduced by Babylon
+            auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
+            switch (OpTag - offset) {
                 case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL): {
                     auto curveCode = reader.readNextByte();
                     std::vector<uint8_t> pubKey;
@@ -221,23 +249,27 @@ namespace ledger {
 
                     // Get Receiver
                     // Originated
+                    std::vector<uint8_t> receiverHash160, receiverVersion;
+
                     auto isReceiverOriginated = reader.readNextByte();
-                    std::vector<uint8_t> receiverHash160;
+
                     if (!isReceiverOriginated) {
                         // Curve code
                         auto receiverCurveCode = reader.readNextByte();
                         // 20 bytes of publicKey hash
                         receiverHash160 = reader.read(20);
+                        receiverVersion = TezosLikeAddress::getPrefixFromImplicitVersion(params.ImplicitPrefix, api::TezosCurve(receiverCurveCode));
                     } else {
                         // 20 bytes of publicKey hash
                         receiverHash160 = reader.read(20);
                         // Padding
                         reader.readNextByte();
+                        receiverVersion = params.OriginatedPrefix;
                     }
 
                     tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                        receiverHash160,
-                                                                       isReceiverOriginated ? params.OriginatedPrefix : params.ImplicitPrefix,
+                                                                       receiverVersion,
                                                                        Option<std::string>()));
 
                     // Additional parameters
@@ -254,11 +286,13 @@ namespace ledger {
                                                                        std::vector<uint8_t>(),
                                                                        std::vector<uint8_t>(),
                                                                        Option<std::string>()));
-                    auto managerCurveCode = reader.readNextByte();
-                    // manager hash160
-                    auto managerHash160 = reader.read(20);
-                    if (managerHash160 != senderHash160) {
-                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Origination error: Manager is diffrent from sender");
+                    if (!isBabylonActivated) {
+                        auto managerCurveCode = reader.readNextByte();
+                        // manager hash160
+                        auto managerHash160 = reader.read(20);
+                        if (managerHash160 != senderHash160) {
+                            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Origination error: Manager is different from sender");
+                        }
                     }
                     // Balance
                     tx->setBalance(BigInt::fromHex(hex::toString(zarith::zParse(reader))));
@@ -276,7 +310,10 @@ namespace ledger {
                         auto delegateHash160 = reader.read(20);
                         tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,
                                                                            delegateHash160,
-                                                                           params.ImplicitPrefix, // can't delegate to originated account (TBC)
+                                                                           TezosLikeAddress::getPrefixFromImplicitVersion(
+                                                                                   params.ImplicitPrefix,
+                                                                                   api::TezosCurve(delegateCurveCode)
+                                                                           ), // can't delegate to originated account (TBC)
                                                                            Option<std::string>()));
                     }
                     break;

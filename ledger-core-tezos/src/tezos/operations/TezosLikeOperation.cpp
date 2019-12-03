@@ -40,8 +40,9 @@ namespace ledger {
                 const std::shared_ptr<const AbstractWallet> & wallet, 
                 TezosLikeBlockchainExplorerTransaction const& tx) {
             setExplorerTransaction(tx);
-            
-            _tx = std::make_shared<TezosLikeTransaction>(tx, wallet->getCurrency());
+            // Since this patch is temporary, we can live with this
+            // Plus, this transactions are used in "read-only" mode           
+            _tx = std::make_shared<TezosLikeTransaction>(tx, wallet->getCurrency(), "");
         }
 
         std::shared_ptr<api::TezosLikeTransaction> TezosLikeOperation::getTransaction() const {
@@ -63,12 +64,12 @@ namespace ledger {
             _explorerTx = tx;
         }
 
-        void TezosLikeOperation::refreshUid() {
-          uid = OperationDatabaseHelper::createUid(
-              accountUid,
-              _tx->getHash(),
-              getOperationType()
-          );
+        void TezosLikeOperation::refreshUid(const std::string &additional) {
+            auto final = fmt::format("{}+{}", _tx->getHash(), api::to_string(_tx->getType()));
+            if (!additional.empty()){
+                final = fmt::format("{}+{}", final, additional);
+            }
+            uid = OperationDatabaseHelper::createUid(accountUid, final, getOperationType());
         }
 
         bool TezosLikeOperation::isComplete() {
