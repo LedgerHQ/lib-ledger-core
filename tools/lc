@@ -29,11 +29,11 @@ cmd_project_new() {
   touch $project_name/README.md
 
   echo "—> symlinking ledger-core’s libraries"
-  ln -sf $PWD/ledger-core/lib $project_name/lib
-  ln -sf $PWD/ledger-core/cmake $project_name/cmake
+  ln -sf ledger-core/lib $project_name/lib
+  ln -sf ledger-core/cmake $project_name/cmake
 
   echo "-> symlinking ledger-core’s test librariries"
-  ln -sf $PWD/ledger-core/test/lib $project_name/test/lib
+  ln -sf ledger-core/test/lib $project_name/test/lib
 
   echo "—> generating CMake configuration"
   sed -e s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt
