@@ -54,12 +54,25 @@ else()
 endif()
 
 # Package support
+export(PACKAGE ledger-core)
+
 include(GNUInstallDirs)
 set(ledger-core-pkg-location lib/cmake/ledger-core)
 
-export(PACKAGE ledger-core)
-
 include(CMakePackageConfigHelpers)
+
+write_basic_package_version_file(
+    ${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake
+    VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
+    COMPATIBILITY SameMajorVersion
+)
+
+install(
+    FILES
+    ${CMAKE_SOURCE_DIR}/ledger-core-config.cmake
+    ${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake
+    DESTINATION ${ledger-core-pkg-location}
+)
 
 install(
     TARGETS
@@ -76,28 +89,21 @@ install(
         spdlog
         sqlcipher
         ethash
+        secp256k1
     EXPORT ledger-core
     ARCHIVE       DESTINATION lib/ledger-core
     LIBRARY       DESTINATION lib/ledger-core
     FRAMEWORK     DESTINATION lib/ledger-core
-    PUBLIC_HEADER DESTINATION include/ledger-core
+)
+
+install(
+  DIRECTORY
+    ${CMAKE_SOURCE_DIR}/inc/
+  DESTINATION include/ledger-core
 )
 
 install(
     EXPORT ledger-core
     NAMESPACE Core::
-    DESTINATION ${ledger-core-pkg-location}
-)
-
-write_basic_package_version_file(
-    "${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake"
-    VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
-    COMPATIBILITY SameMajorVersion
-)
-
-install(
-    FILES
-    "${CMAKE_SOURCE_DIR}/ledger-core-config.cmake"
-    "${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake"
     DESTINATION ${ledger-core-pkg-location}
 )
