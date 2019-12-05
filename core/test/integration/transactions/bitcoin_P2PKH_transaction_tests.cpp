@@ -227,3 +227,39 @@ TEST_F(ZCASHMakeP2SHTransaction, ParseSignedRawTransactionSapling) {
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 }
 */
+
+TEST_F(BitcoinMakeP2PKHTransaction, UTXOPerformance) {
+    std::shared_ptr<AbstractWallet> w = wait(pool->createWallet("my_btc_wallet", "bitcoin_testnet", DynamicObject::newInstance()));
+    api::ExtendedKeyAccountCreationInfo info = wait(w->getNextExtendedKeyAccountCreationInfo());
+    info.extendedKeys.push_back("tpubDDDQZa67HazEpPFQWMh5QxK1F7QkAahVCXhBRzkQb2Qvb2jzZeoocaTeomYQb6JrA8962XPQFwainLPJsAZT9nTAsL8hewseSw7oFmi5Eq1");
+    info.derivations.push_back("44'/1'/1'");
+    std::shared_ptr<AbstractAccount> account = std::dynamic_pointer_cast<AbstractAccount>(wait(w->newAccountWithExtendedKeyInfo(info)));
+    std::shared_ptr<BitcoinLikeAccount> bla = std::dynamic_pointer_cast<BitcoinLikeAccount>(account);
+    Promise<Unit> p;
+    auto s = bla->synchronize();
+
+    s->subscribe(bla->getContext(), make_receiver([=](const std::shared_ptr<api::Event> &event) mutable {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+            return;
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(),
+                  api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+        p.success(unit);
+    }));
+    Unit u = wait(p.getFuture());
+
+    auto balance = wait(bla->getBalance());
+    std::cout << "Balance: " << balance->toString() << std::endl;
+    auto builder = std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(bla->buildTransaction(true));
+    builder->sendToAddress(api::Amount::fromLong(currency, 12500000), "ms8C1x7qHa3WJM986NKyx267i2LFGaHRZn");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
+    std::cout << "Build." << std::endl;
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
+    auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
+
+    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+}
