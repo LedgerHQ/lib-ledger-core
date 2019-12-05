@@ -1,14 +1,19 @@
-## 3.2.0 (on-going)
+## 3.2.1 (on-going)
 
-- Using new ETH v3 explorer's endpoint to get ERC20 accounts balance,
-- Add method to batch ERC20 balance calls,
 - Execution context changes:
 	- Using pool's ThreadPoolExecutionContext in wallets and accounts for long running tasks,
 	- Using MainExecutionContext in pools, wallets and accounts for immediately completed futures,
 - Wallet caching: return completed future (resolved promises) based on cached accounts in `WalletPool::getWallet` method,
 - Account caching: same as above for `AbstractWallet::getAccount` method,
-- Lazy loading of internal transactions for ETH operations.
- 
+- Lazy loading of internal transactions for ETH operations,
+- Removed some logs from `BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize` because they were affecting
+Wallet Daemon perfos on huge accounts.
+
+
+## 3.2.0
+
+- Using new ETH v3 explorer's endpoint to get ERC20 accounts balance,
+- Add method to batch ERC20 balance calls,
 
 ## 3.1.0
 
