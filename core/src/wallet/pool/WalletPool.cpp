@@ -30,6 +30,7 @@
  */
 #include "WalletPool.hpp"
 #include <api/PoolConfiguration.hpp>
+#include <api/ConfigurationDefaults.hpp>
 #include <wallet/currencies.hpp>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
@@ -52,7 +53,8 @@ namespace ledger {
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration
         ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
-           _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BLOCK_CACHE).value_or(30)))
+           _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)))
         {
             // General
             _poolName = name;

@@ -17,4 +17,6 @@ int32_t const ConfigurationDefaults::DEFAULT_TRUST_LIMIT = 3;
 
 int32_t const ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE = 20;
 
+int32_t const ConfigurationDefaults::DEFAULT_TTL_CACHE = 30;
+
 } } }  // namespace ledger::core::api

@@ -29,8 +29,7 @@
  */
 
 
-#ifndef LEDGER_CORE_TTLCACHE_H
-#define LEDGER_CORE_TTLCACHE_H
+#pragma once
 
 #include <chrono>
 #include <unordered_map>
@@ -50,12 +49,11 @@ namespace ledger {
             Option<V> get(const K &key) {
                 std::lock_guard<std::mutex> lock(_lock);
                 auto it = _cache.find(key);
-                if (it == _cache.end() ||
-                        std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now().time_since_epoch()) - (*it).second.second > _ttl) {
-                    if (it != _cache.end()) {
-                        // Clean the cache
-                        _cache.erase(key);
-                    }
+                if (it == _cache.end()) {
+                    return Option<V>();
+                } else if (getNowDurationSinceEpoch() - (*it).second.second > _ttl) {
+                    // Clean the cache
+                    _cache.erase(key);
                     return Option<V>();
                 }
                 return Option<V>((*it).second.first);
@@ -66,9 +64,7 @@ namespace ledger {
                 _cache.insert(
                         { key,
                           { value,
-                            std::chrono::duration_cast<Duration>(
-                                    std::chrono::steady_clock::now().time_since_epoch()
-                            )
+                            getNowDurationSinceEpoch()
                           }
                         });
             };
@@ -79,6 +75,9 @@ namespace ledger {
             };
 
         private:
+            Duration getNowDurationSinceEpoch() {
+                return std::chrono::duration_cast<Duration>(std::chrono::steady_clock::now().time_since_epoch());
+            }
             Duration _ttl;
             std::unordered_map<K, std::pair<V, Duration>> _cache;
             std::mutex _lock;
@@ -86,6 +85,3 @@ namespace ledger {
 
     }
 }
-
-
-#endif //LEDGER_CORE_TTLCACHE_H

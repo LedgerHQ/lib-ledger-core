@@ -42,6 +42,8 @@
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 #include <async/DedicatedContext.hpp>
+#include <api/ConfigurationDefaults.hpp>
+
 namespace ledger {
     namespace core {
         AbstractWallet::AbstractWallet(const std::string &walletName,
@@ -50,8 +52,9 @@ namespace ledger {
                                        const std::shared_ptr<DynamicObject> &configuration,
                                        const DerivationScheme &derivationScheme)
                 : DedicatedContext(pool->getThreadPoolExecutionContext()),
-                  _scheme(derivationScheme)
-                  _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_BLOCK_CACHE).value_or(30)))
+                  _scheme(derivationScheme),
+                  _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                             .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)))
         {
             _pool = pool;
             _name = walletName;

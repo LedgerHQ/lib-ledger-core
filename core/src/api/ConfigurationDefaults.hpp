@@ -38,6 +38,9 @@ public:
 
     /** Default observable range for HD keychains */
     static int32_t const KEYCHAIN_DEFAULT_OBSERVABLE_RANGE;
+
+    /** Default TTL for cache */
+    static int32_t const DEFAULT_TTL_CACHE;
 };
 
 } } }  // namespace ledger::core::api
