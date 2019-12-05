@@ -147,10 +147,13 @@ namespace ledger {
                                                                     api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
                                                             ).value_or(defaultValue))
                 );
-                auto context = pool->getDispatcher()
-                        ->getSerialExecutionContext(api::BlockchainObserverEngines::TEZOS_NODE);
                 auto &networkParams = getCurrency().tezosLikeNetworkParameters.value();
-
+                auto context = pool->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-explorer",
+                                    api::BlockchainExplorerEngines::TEZOS_NODE,
+                                    networkParams.Identifier
+                        )
+                );
                 if (isTzStats) {
                     explorer = std::make_shared<ExternalTezosLikeBlockchainExplorer>(context,
                                                                                      http,
@@ -191,10 +194,15 @@ namespace ledger {
             std::shared_ptr<TezosLikeBlockchainObserver> observer;
             if (engine == api::BlockchainObserverEngines::TEZOS_NODE) {
                 auto ws = pool->getWebSocketClient();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(
-                        api::BlockchainObserverEngines::TEZOS_NODE);
-                auto logger = pool->logger();
                 const auto &currency = getCurrency();
+                auto &networkParams = currency.tezosLikeNetworkParameters.value();
+                auto context = pool->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-explorer",
+                                    api::BlockchainObserverEngines::TEZOS_NODE,
+                                    networkParams.Identifier
+                        )
+                );
+                auto logger = pool->logger();
                 observer = std::make_shared<TezosLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }
             if (observer)

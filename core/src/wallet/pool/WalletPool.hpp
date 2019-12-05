@@ -140,6 +140,7 @@ namespace ledger {
             /// > that doesn’t include having lots of objects in memory.
             Future<api::ErrorCode> freshResetAll();
 
+            std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
         private:
             WalletPool(
                 const std::string &name,
@@ -211,6 +212,8 @@ namespace ledger {
             // Event filter variables
             std::mutex _eventFilterMutex;
             std::unordered_map<std::string, int64_t> _lastEmittedBlocks;
+
+            std::shared_ptr<api::ExecutionContext> _threadPoolExecutionContext;
         };
     }
 }

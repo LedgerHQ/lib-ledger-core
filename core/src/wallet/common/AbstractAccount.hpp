@@ -118,6 +118,7 @@ namespace ledger {
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
+            std::shared_ptr<api::ExecutionContext> _threadPoolExecutionContext;
             std::weak_ptr<AbstractWallet> _wallet;
             std::shared_ptr<EventPublisher> _publisher;
             std::mutex _eventsLock;

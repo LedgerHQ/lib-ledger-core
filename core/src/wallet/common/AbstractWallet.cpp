@@ -48,11 +48,10 @@ namespace ledger {
                                        const api::Currency &currency,
                                        const std::shared_ptr<WalletPool> &pool,
                                        const std::shared_ptr<DynamicObject> &configuration,
-                                       const DerivationScheme &derivationScheme
-        )
-                : DedicatedContext(
-                pool->getDispatcher()->getSerialExecutionContext(fmt::format("wallet_{}", walletName))),
-                  _scheme(derivationScheme) {
+                                       const DerivationScheme &derivationScheme)
+                : DedicatedContext(pool->getThreadPoolExecutionContext()),
+                  _scheme(derivationScheme)
+        {
             _pool = pool;
             _name = walletName;
             _uid = WalletDatabaseEntry::createWalletUid(pool->getName(), _name);
@@ -241,15 +240,14 @@ namespace ledger {
         }
 
         FuturePtr<api::Account> AbstractWallet::getAccount(int32_t index) {
+            auto it = _accounts.find(index);
+            if (it != _accounts.end()) {
+                auto ptr = it->second;
+                if (ptr != nullptr)
+                    return FuturePtr<api::Account>::successful(ptr);
+            }
             auto self = shared_from_this();
-            return async<std::shared_ptr<api::Account>>([self, index] () -> std::shared_ptr<api::Account> {
-                auto it = self->_accounts.find(index);
-                if (it != self->_accounts.end()) {
-                    auto ptr = it->second;
-                    if (ptr != nullptr)
-                        return ptr;
-                }
-
+            return FuturePtr<api::Account>::async(getPool()->getThreadPoolExecutionContext(), [self, index] () -> std::shared_ptr<api::Account> {
                 soci::session sql(self->getDatabase()->getPool());
                 if (!AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index)) {
                     throw make_exception(api::ErrorCode::ACCOUNT_NOT_FOUND, "Account {}, for wallet '{}', doesn't exist", index,  self->getName());
@@ -267,9 +265,7 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<api::Account>>> AbstractWallet::getAccounts(int32_t offset, int32_t count) {
             auto self = shared_from_this();
-            return async<Unit>([=] () -> Unit {
-                return unit;
-            }).flatMap<std::vector<std::shared_ptr<api::Account>>>(getContext(), [=] (const Unit&) -> Future<std::vector<std::shared_ptr<api::Account>>> {
+            return Future<std::vector<std::shared_ptr<api::Account>>>::async(getPool()->getThreadPoolExecutionContext(), [=] () {
                 std::vector<Future<std::shared_ptr<api::Account>> > accounts;
                 std::list<int32_t> indexes;
                 soci::session sql(getDatabase()->getPool());
@@ -294,14 +290,7 @@ namespace ledger {
         }
 
         Future<api::Block> AbstractWallet::getLastBlock() {
-            auto self = shared_from_this();
-            return async<api::Block>([self] () -> api::Block {
-                soci::session sql(self->getDatabase()->getPool());
-                auto block = BlockDatabaseHelper::getLastBlock(sql, self->getCurrency().name);
-                if (block.isEmpty())
-                    throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "No block for this currency");
-                return block.getValue();
-            });
+            return getPool()->getLastBlock(getCurrency().name);
         }
 
         void AbstractWallet::getLastBlock(const std::shared_ptr<api::BlockCallback> &callback) {

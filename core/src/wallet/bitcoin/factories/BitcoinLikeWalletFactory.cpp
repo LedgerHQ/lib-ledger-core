@@ -159,9 +159,12 @@ namespace ledger {
                                 api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
                         ).value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT)
                 );
-
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
                 auto& networkParams = getCurrency().bitcoinLikeNetworkParameters.value();
+                auto context = pool->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-explorer",
+                                    api::BlockchainExplorerEngines::LEDGER_API,
+                                    networkParams.Identifier)
+                );
                 explorer = std::make_shared<LedgerApiBitcoinLikeBlockchainExplorer>(context, http, networkParams, configuration);
             }
 
@@ -196,10 +199,13 @@ namespace ledger {
 
             if (engine == api::BlockchainObserverEngines::LEDGER_API) {
                 auto ws = pool->getWebSocketClient();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
+                auto context = pool->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-observer",
+                                    api::BlockchainObserverEngines::LEDGER_API,
+                                    getCurrency().bitcoinLikeNetworkParameters.value().Identifier)
+                );
                 auto logger = pool->logger();
                 const auto& currency = getCurrency();
-
                 observer = std::make_shared<LedgerApiBitcoinLikeBlockchainObserver>(
                         context,
                         ws,

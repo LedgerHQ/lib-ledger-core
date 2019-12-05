@@ -81,7 +81,7 @@ namespace ledger {
             _synchronizer = synchronizer;
             _keychain = keychain;
             _keychain->getAllObservableAddresses(0, 40);
-            _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getContext(), getWallet()->getCurrency());
+            _picker = std::make_shared<BitcoinLikeStrategyUtxoPicker>(getWallet()->getPool()->getThreadPoolExecutionContext(), getWallet()->getCurrency());
             _currentBlockHeight = 0;
         }
 
@@ -388,7 +388,7 @@ namespace ledger {
             auto query = std::make_shared<OperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
-                    getWallet()->getContext(),
+                    getWallet()->getPool()->getThreadPoolExecutionContext(),
                     getWallet()->getMainExecutionContext()
             );
             query->registerAccount(shared_from_this());
@@ -415,9 +415,12 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> BitcoinLikeAccount::getUTXO() {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return getUTXOCount().flatMap<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [=] (const int32_t& count) -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
-                return self->getUTXO(0, count);
-            });
+            return getUTXOCount()
+                    .flatMap<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(
+                            getWallet()->getPool()->getThreadPoolExecutionContext(),
+                            [=] (const int32_t& count) -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
+                                return self->getUTXO(0, count);
+                            });
         }
 
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getBalance() {
@@ -447,7 +450,7 @@ namespace ledger {
                                               const std::string &end,
                                               api::TimePeriod precision) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
+            return Future<std::vector<std::shared_ptr<api::Amount>>>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::vector<std::shared_ptr<api::Amount>> {
 
                 auto startDate = DateUtils::fromJSON(start);
                 auto endDate = DateUtils::fromJSON(end);
@@ -620,7 +623,7 @@ namespace ledger {
                 }
 
                 return txHash;
-            }).callback(getContext(), callback);
+            }).callback(getMainExecutionContext(), callback);
         }
 
         void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
@@ -641,7 +644,7 @@ namespace ledger {
             auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
 
             return std::make_shared<BitcoinLikeTransactionBuilder>(
-                    getContext(),
+                    getMainExecutionContext(),
                     getWallet()->getCurrency(),
                     logger(),
                     _picker->getBuildFunction(getUTXO,
@@ -705,7 +708,7 @@ namespace ledger {
         }
 
         void BitcoinLikeAccount::getFees(const std::shared_ptr<api::BigIntListCallback> & callback) {
-            return _explorer->getFees().callback(getContext(), callback);;
+            return _explorer->getFees().callback(getMainExecutionContext(), callback);
         }
 
     }
