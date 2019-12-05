@@ -57,7 +57,7 @@ namespace ledger {
                     return Option<V>();
                 }
                 return Option<V>((*it).second.first);
-            };
+            }
 
             void put(const K &key, const V &value) {
                 std::lock_guard<std::mutex> lock(_lock);
@@ -67,12 +67,12 @@ namespace ledger {
                             getNowDurationSinceEpoch()
                           }
                         });
-            };
+            }
 
             void erase(const K &key) {
                 std::lock_guard<std::mutex> lock(_lock);
                 _cache.erase(key);
-            };
+            }
 
         private:
             Duration getNowDurationSinceEpoch() {
@@ -82,6 +82,5 @@ namespace ledger {
             std::unordered_map<K, std::pair<V, Duration>> _cache;
             std::mutex _lock;
         };
-
     }
 }
