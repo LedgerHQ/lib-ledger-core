@@ -334,11 +334,18 @@ namespace ledger {
         }
 
         FuturePtr<Amount> EthereumLikeAccount::getBalance() {
+            auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
             std::vector<EthereumLikeKeychain::Address> listAddresses{_keychain->getAddress()};
-                auto currency = getWallet()->getCurrency();
-                return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [currency] (const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
-                    return std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
-                });
+            auto currency = getWallet()->getCurrency();
+            auto self = getSelf();
+            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency] (const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
+                Amount b(currency, 0, BigInt(balance->toString()));
+                self->getWallet()->updateBalanceCache(self->getIndex(), b);
+                return std::make_shared<Amount>(b);
+            });
         }
 
         std::shared_ptr<api::OperationQuery> EthereumLikeAccount::queryOperations() {

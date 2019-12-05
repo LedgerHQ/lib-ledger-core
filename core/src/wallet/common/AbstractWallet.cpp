@@ -42,6 +42,8 @@
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 #include <async/DedicatedContext.hpp>
+#include <api/ConfigurationDefaults.hpp>
+
 namespace ledger {
     namespace core {
         AbstractWallet::AbstractWallet(const std::string &walletName,
@@ -50,7 +52,9 @@ namespace ledger {
                                        const std::shared_ptr<DynamicObject> &configuration,
                                        const DerivationScheme &derivationScheme)
                 : DedicatedContext(pool->getThreadPoolExecutionContext()),
-                  _scheme(derivationScheme)
+                  _scheme(derivationScheme),
+                  _balanceCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                             .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)))
         {
             _pool = pool;
             _name = walletName;
@@ -175,9 +179,10 @@ namespace ledger {
 
         Future<int32_t> AbstractWallet::getAccountCount() {
             auto self = shared_from_this();
-            return async<int32_t>([self]() -> int32_t {
+            return Future<int32_t>::async(getPool()->getThreadPoolExecutionContext(), [self]() -> int32_t {
                 soci::session sql(self->getDatabase()->getPool());
-                return AccountDatabaseHelper::getAccountsCount(sql, self->getWalletUid());
+                auto count = AccountDatabaseHelper::getAccountsCount(sql, self->getWalletUid());
+                return count;
             });
         }
 
@@ -226,12 +231,14 @@ namespace ledger {
 
         void AbstractWallet::newAccountWithInfo(const api::AccountCreationInfo &accountCreationInfo,
                                                 const std::shared_ptr<api::AccountCallback> &callback) {
+            auto self = shared_from_this();
             newAccountWithInfo(accountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::newAccountWithExtendedKeyInfo(
                 const api::ExtendedKeyAccountCreationInfo &extendedKeyAccountCreationInfo,
                 const std::shared_ptr<api::AccountCallback> &callback) {
+            auto self = shared_from_this();
             newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 
@@ -349,5 +356,13 @@ namespace ledger {
             return getConfig();
         }
 
+
+        Option<Amount> AbstractWallet::getBalanceFromCache(size_t accountIndex) {
+            return _balanceCache.get(fmt::format("{}-{}", _currency.name, accountIndex));
+        }
+
+        void AbstractWallet::updateBalanceCache(size_t accountIndex, Amount balance) {
+            _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
+        }
     }
 }

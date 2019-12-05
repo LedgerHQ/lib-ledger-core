@@ -166,11 +166,18 @@ namespace ledger {
         }
 
         FuturePtr<Amount> RippleLikeAccount::getBalance() {
+            auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
             std::vector<RippleLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
-            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [currency](
+            auto self = getSelf();
+            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](
                     const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
-                return std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
+                Amount b(currency, 0, BigInt(balance->toString()));
+                self->getWallet()->updateBalanceCache(self->getIndex(), b);
+                return std::make_shared<Amount>(b);
             });
         }
 

@@ -7,7 +7,9 @@
 - Account caching: same as above for `AbstractWallet::getAccount` method,
 - Lazy loading of internal transactions for ETH operations,
 - Removed some logs from `BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize` because they were affecting
-Wallet Daemon perfos on huge accounts.
+Wallet Daemon perfos on huge accounts,
+- Add TTL cache on last blocks (wallet pool level) and on balances (on wallet level), the TTL is configurable
+thanks to : `TTL_CACHE` and is defaulting to `DEFAULT_TTL_CACHE=30` which is inferior to mining frequency.
 
 
 ## 3.2.0

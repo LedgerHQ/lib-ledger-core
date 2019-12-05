@@ -424,6 +424,10 @@ namespace ledger {
         }
 
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getBalance() {
+            auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             return async<std::shared_ptr<Amount>>([=] () -> std::shared_ptr<Amount> {
                 const int32_t BATCH_SIZE = 100;
@@ -441,7 +445,9 @@ namespace ledger {
                 for (const auto& utxo : utxos) {
                     sum = sum + utxo.value;
                 }
-                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, sum);
+                Amount balance(self->getWallet()->getCurrency(), 0, sum);
+                self->getWallet()->updateBalanceCache(self->getIndex(), balance);
+                return std::make_shared<Amount>(balance);
             });
         }
 
@@ -531,7 +537,7 @@ namespace ledger {
         }
 
         Future<std::string> BitcoinLikeAccount::broadcastTransaction(const std::vector<uint8_t> &transaction) {
-            return _explorer->pushTransaction(transaction).map<std::string>(getContext(), [] (const String& hash) -> std::string {
+            return _explorer->pushTransaction(transaction).map<std::string>(getMainExecutionContext(), [] (const String& hash) -> std::string {
                 return hash.str();
             });
         }
@@ -559,9 +565,15 @@ namespace ledger {
                 //First parse it
                 auto txHash = seq.str();
                 auto optimisticUpdate = Try<int>::from([&] () -> int {
-                    //Get last block from DB
+                    //Get last block from DB or cache
+                    uint64_t lastBlockHeight = 0;
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
-                    auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+                    auto cachedBlock = self->getWallet()->getPool()->getBlockFromCache(self->getWallet()->getCurrency().name);
+                    if (cachedBlock.hasValue()) {
+                        lastBlockHeight = cachedBlock.getValue().height;
+                    } else {
+                        lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+                    }
 
                     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
@@ -640,8 +652,14 @@ namespace ledger {
                 return self->getTransaction(hash);
             };
 
-            soci::session sql(self->getWallet()->getDatabase()->getPool());
-            auto lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+            uint64_t lastBlockHeight = 0;
+            auto cachedBlock = self->getWallet()->getPool()->getBlockFromCache(self->getWallet()->getCurrency().name);
+            if (cachedBlock.hasValue()) {
+                lastBlockHeight = cachedBlock.getValue().height;
+            } else {
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
+            }
 
             return std::make_shared<BitcoinLikeTransactionBuilder>(
                     getMainExecutionContext(),

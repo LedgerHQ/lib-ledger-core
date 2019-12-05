@@ -50,6 +50,8 @@
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
 #include <api/DynamicObject.hpp>
+#include <utils/TTLCache.h>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
@@ -124,6 +126,9 @@ namespace ledger {
 
             std::shared_ptr<api::DynamicObject> getConfiguration() override;
 
+            Option<Amount> getBalanceFromCache(size_t accountIndex);
+            void updateBalanceCache(size_t accountIndex, Amount balance);
+
             virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;
             virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo& info) = 0;
             virtual Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(int32_t accountIndex) = 0;
@@ -162,7 +167,7 @@ namespace ledger {
             DerivationScheme _scheme;
             std::weak_ptr<WalletPool> _pool;
             std::unordered_map<int32_t, std::shared_ptr<AbstractAccount>> _accounts;
-
+            TTLCache<std::string, Amount> _balanceCache;
         };
     }
 }
