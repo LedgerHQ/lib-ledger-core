@@ -160,11 +160,12 @@ namespace ledger {
                             LedgerApiParser<TransactionsBulk,
                             TezosLikeTransactionsBulkParser>())
                     .template mapPtr<TransactionsBulk>(getExplorerContext(),
-                                                           [](const EitherTransactionsBulk &result) {
+                                                           [limit](const EitherTransactionsBulk &result) {
                                                                if (result.isLeft()) {
                                                                    // Because it fails when there are no ops
                                                                    return std::make_shared<TransactionsBulk>();
                                                                } else {
+                                                                   result.getRight()->hasNext = result.getRight()->transactions.size() == limit;
                                                                    return result.getRight();
                                                                }
                                                            });
