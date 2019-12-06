@@ -121,10 +121,7 @@ target_link_libraries(ledger-core-interface INTERFACE leveldb)
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
-#Secp256k1
-target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
-link_directories("${CMAKE_SOURCE_DIR}/lib/secp256k1/lib")
-add_dependencies(ledger-core-interface INTERFACE secp256k1)
+target_link_libraries(ledger-core-interface INTERFACE Secp256k1)
 
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 

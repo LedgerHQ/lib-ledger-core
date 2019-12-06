@@ -59,7 +59,7 @@ ExternalProject_Add(
 )
 
 # Create imported library
-add_library(Secp256k1 STATIC IMPORTED)
+add_library(Secp256k1 STATIC IMPORTED GLOBAL)
 file(MAKE_DIRECTORY "${SECP256K1_INCLUDE_DIR}")  # Must exist.
 set_property(TARGET Secp256k1 PROPERTY IMPORTED_CONFIGURATIONS Release)
 set_property(TARGET Secp256k1 PROPERTY IMPORTED_LOCATION_RELEASE "${SECP256K1_LIBRARY}")

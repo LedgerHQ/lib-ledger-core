@@ -89,7 +89,6 @@ install(
         spdlog
         sqlcipher
         ethash
-        secp256k1
     EXPORT ledger-core
     ARCHIVE       DESTINATION lib/ledger-core
     LIBRARY       DESTINATION lib/ledger-core
