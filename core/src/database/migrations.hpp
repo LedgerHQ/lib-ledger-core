@@ -137,6 +137,34 @@ namespace ledger {
         // Add block_height column to erc20_operations table
         template <> void migrate<10>(soci::session& sql);
         template <> void rollback<10>(soci::session& sql);
+
+        // Tezos Support
+        template <> void migrate<11>(soci::session& sql);
+        template <> void rollback<11>(soci::session& sql);
+
+        // Add internal transactions for ETH
+        template <> void migrate<12>(soci::session& sql);
+        template <> void rollback<12>(soci::session& sql);
+
+        // Add block height to outputs
+        template <> void migrate<13>(soci::session& sql);
+        template <> void rollback<13>(soci::session& sql);
+
+        // Add XRP sequence
+        template <> void migrate<14>(soci::session& sql);
+        template <> void rollback<14>(soci::session& sql);
+
+        // Add XRP destination_tag
+        template <> void migrate<15>(soci::session& sql);
+        template <> void rollback<15>(soci::session& sql);
+
+        // Replace XTZ address column by public_key one
+        template <> void migrate<16>(soci::session& sql);
+        template <> void rollback<16>(soci::session& sql);
+
+        // Add status column on XTZ transactions
+        template <> void migrate<17>(soci::session& sql);
+        template <> void rollback<17>(soci::session& sql);
     }
 }
 

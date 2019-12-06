@@ -33,11 +33,14 @@
 #include <set>
 #include <api/KeychainEngines.hpp>
 #include <api/EthereumLikeTransaction.hpp>
+#include <api/OperationOrderKey.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 #include <iostream>
+#include "FakeHttpClient.hpp"
+
 using namespace std;
 
 class EthereumLikeWalletSynchronization : public BaseFixture {
@@ -52,7 +55,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-mainnet.explorers.dev.aws.ledger.fr");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
             auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
             std::set<std::string> emittedOperations;
             {
@@ -98,7 +101,10 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto transferData = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getTransferToAddressData(amountToSend, "0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43"));
                     EXPECT_GT(transferData.size(), 0);
                     
-                    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]->queryOperations()->complete())->execute());
+                    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(erc20Accounts[0]
+                                                                                             ->queryOperations()
+                                                                                             ->addOrder(api::OperationOrderKey::DATE, true)
+                                                                                             ->complete())->execute());
                     std::cout << "ERC20 Operations: " << operations.size() << std::endl;
                     EXPECT_NE(operations.size(), 0);
 
@@ -138,21 +144,66 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
     }
 }
 
+TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
+    auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
+    auto erc20Count = 0;
+    {
+        auto pool = newDefaultPool();
+        {
+            auto configuration = DynamicObject::newInstance();
+            configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
+            auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
+
+            {
+                std::string balanceStr;
+                auto nextIndex = wait(wallet->getNextAccountIndex());
+                auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
+
+                auto receiver = make_receiver([=, &erc20Count, &balanceStr](const std::shared_ptr<api::Event> &event) {
+                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+
+                    if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                        return;
+
+                    auto balance = wait(account->getBalance());
+                    balanceStr = balance->toString();
+
+                    auto now = std::time(nullptr);
+                    char now_str[256];
+                    std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));
+
+                    auto history = wait(account->getBalanceHistory(
+                        "2019-09-20T00:00:00Z",
+                        now_str,
+                        api::TimePeriod::DAY
+                    ));
+
+                    EXPECT_EQ(history.back()->toString(), balanceStr);
+
+                    dispatcher->stop();
+                });
+
+                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+                dispatcher->waitUntilStopped();
+            }
+        }
+    }
+}
+
 TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>/<address>");
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"http://eth-ropsten.explorers.dev.aws.ledger.fr");
-        //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum_ropsten", configuration));
-        //auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ethereum", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO);
+            auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
             auto keychain = account->getRestoreKey();
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
@@ -180,10 +231,10 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
                 cout<<" ETH Balance: "<<balance->toLong()<<endl;
                 auto txBuilder = std::dynamic_pointer_cast<EthereumLikeTransactionBuilder>(account->buildTransaction());
                 auto erc20Accounts = account->getERC20Accounts();
-                EXPECT_EQ(erc20Accounts.size(), 1);
-                EXPECT_EQ(erc20Accounts[0]->getOperations().size(),1);
+                EXPECT_GT(erc20Accounts.size(), 0);
+                EXPECT_GT(erc20Accounts[0]->getOperations().size(),0);
                 auto erc20Balance = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getBalance());
-                EXPECT_EQ(erc20Balance->intValue(), 2500);
+                EXPECT_TRUE(BigInt(erc20Balance->toString(10)) > BigInt("0"));
                 auto contractAddress = erc20Accounts[0]->getToken().contractAddress;
                 std::cout << "Contract Address: " << contractAddress << std::endl;
                 std::cout << "ERC20 balance: " << erc20Balance->toString(10) << std::endl;
@@ -268,3 +319,114 @@ TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
     }
 }
 
+std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>> createSyncReceiver() {
+    auto promise = std::make_shared<Promise<bool>>();
+    return
+        std::make_pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>>(
+            make_receiver([promise](const std::shared_ptr<api::Event>& event) {
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_SUCCEED ||
+                    event->getCode() == api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT) {
+                    promise->success(true);
+                }
+                else if (event->getCode() == api::EventCode::SYNCHRONIZATION_FAILED) {
+                    promise->success(false);
+                }
+            }),
+            promise->getFuture());
+}
+
+TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
+    auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
+    {
+        auto fakeHttp = std::make_shared<test::FakeHttpClient>();
+        auto pool = WalletPool::newInstance(
+            "my_ppol",
+            "",
+            fakeHttp,
+            ws,
+            resolver,
+            printer,
+            dispatcher,
+            rng,
+            backend,
+            api::DynamicObject::newInstance()
+        );
+        {
+            auto configuration = DynamicObject::newInstance();
+            configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/60'/0'/0/<account>'");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "http://test.test");
+            auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
+            {
+                auto nextIndex = wait(wallet->getNextAccountIndex());
+                EXPECT_EQ(nextIndex, 0);
+
+                auto account = createEthereumLikeAccount(wallet, nextIndex, ETH_KEYS_INFO_LIVE);
+                auto waiter = createSyncReceiver();
+                test::UrlConnectionData blockNotFound;
+                blockNotFound.statusCode = 404;
+                blockNotFound.body = "Block 0xaef3a92f1017445c98139b7ab3ddd6e8abfe75588652338ca6f537cf47ab620d not found";
+                
+                fakeHttp->setBehavior({ 
+                    {
+                        "http://test.test/blockchain/v3/eth/blocks/current" ,
+                        test::FakeUrlConnection::fromString("{\"hash\":\"0xdd73566cf4913cba5060377397283cf411e03bdbe1b83d4695699d9e6ac1c941\",\"height\":8175344,\"time\":\"2019-07-18T14:54:00Z\",\"txs\":[]}")
+                    },
+                    {
+                        "http://test.test/blockchain/v3/eth/syncToken",
+                        test::FakeUrlConnection::fromString("{\"token\":\"f867afdf-c5b1-4a9d-b3e3-b4dfc985be8a\"}")
+                    },
+                    {
+                        "http://test.test/blockchain/v3/eth/addresses/0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43/transactions",
+                        test::FakeUrlConnection::fromString("\
+                            {\
+                                \"truncated\": false,\
+                                \"txs\": [\
+                                    {\
+                                        \"hash\": \"0x24ebd24caebcdb5d5fe22ba4d2e1904515dbb7d8fcd968789c8810ad379ba866\",\
+                                        \"status\": 1,\
+                                        \"received_at\": \"2018-06-08T10:19:10Z\",\
+                                        \"nonce\": \"0x05\",\
+                                        \"value\": 1000000000000000,\
+                                        \"gas\": 21000,\
+                                        \"gas_price\": 11000000000,\
+                                        \"from\": \"0xf0c91a8f0f95a2fd90ab74c6c13ef0db2af96447\",\
+                                        \"to\": \"0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43\",\
+                                        \"input\": \"0x\",\
+                                        \"cumulative_gas_used\": 6388806,\
+                                        \"gas_used\": 21000,\
+                                        \"transfer_events\": {\
+                                            \"list\": [],\
+                                            \"truncated\": false\
+                                        },\
+                                        \"actions\": [\
+                                            {\
+                                                \"from\": \"0xf0c91a8f0f95a2fd90ab74c6c13ef0db2af96447\",\
+                                                \"to\": \"0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43\",\
+                                                \"value\": 1000000000000000\
+                                            }\
+                                        ],\
+                                        \"block\": {\
+                                            \"hash\": \"0x0160a3b2b762ec42f5a1134ac260a21c98f377e153d332efb6e20534abb37f78\",\
+                                            \"height\": 5752778,\
+                                            \"time\": \"2018-06-08T10:19:10Z\"\
+                                        }\
+                                    }\
+                                ]\
+                            }")
+                    },
+                    {
+                        "http://test.test/blockchain/v3/eth/addresses/0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43/transactions?block_hash=0x0160a3b2b762ec42f5a1134ac260a21c98f377e153d332efb6e20534abb37f78",
+                        std::make_shared<test::FakeUrlConnection>(blockNotFound)
+                    }
+                    });
+                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
+                EXPECT_TRUE(wait(waiter.second));
+                // next time
+                waiter = createSyncReceiver();
+                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
+                EXPECT_TRUE(wait(waiter.second));
+                dispatcher->stop();
+            }
+        }
+    }
+}

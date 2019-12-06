@@ -103,6 +103,22 @@ You can build the core library or debug it from a docker image:
 
 Note: If you feel on fire you could use docker volumes to persist data.
 
+### Build library with OpenSSL
+
+It is possible to build the library with embedded version of OpenSSL (which is advised for 
+Android and iOS builds) or you can rely on OpenSSL provided by the system.  
+
+To build the library with system's OpenSSL you should configure the project by providing
+`-DSYS_OPENSSL=ON` option plus some additional variables to allow `cmake` to find OpenSSL library:
+
+- Macos: `-DOPENSSL_ROOT_DIR=<path-to-openssl-root-dir>` is needed, for example, if you 
+installed OpenSSL through `brew` you can pass: `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`,
+
+-Linux: `-OPENSSL_SSL_LIBRARIES=<path-to-openssl-libraries> -DOPENSSL_INCLUDE_DIR=<path-to-openssl-include-files>`,
+for example, if you installed OpenSSL through `apt-get` it will look like:       
+`-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu -DOPENSSL_INCLUDE_DIR=/usr/include/openssl`
+
+In both cases we are supporting OpenSSL `1.0` and `1.1`.
 ## Documentation
 
 You can generate the Doxygen documentation by running the `doc` target (for instance, `make doc`

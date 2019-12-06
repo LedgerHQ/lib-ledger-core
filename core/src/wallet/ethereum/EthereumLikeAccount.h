@@ -43,12 +43,14 @@
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
+#include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 #include <wallet/ethereum/observers/EthereumLikeBlockchainObserver.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
+
 namespace ledger {
     namespace core {
         class EthereumLikeAccount : public api::EthereumLikeAccount, public AbstractAccount {
@@ -70,11 +72,16 @@ namespace ledger {
             void inflateOperation(Operation &out,
                                   const std::shared_ptr<const AbstractWallet>& wallet,
                                   const EthereumLikeBlockchainExplorerTransaction &tx);
+
             int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction &transaction);
+            /// Get internal transactions related to the parent operation.
+            std::vector<Operation> getInternalOperations(soci::session &sql);
+
             void updateERC20Accounts(soci::session &sql, const Operation &operation);
             void updateERC20Operation(soci::session &sql,
                                       const Operation &operation,
                                       const ERC20Transaction &erc20Tx);
+            void updateInternalTransactions(soci::session &sql, const Operation &operation);
             bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<EthereumLikeKeychain> getKeychain() const;
@@ -118,6 +125,8 @@ namespace ledger {
 
             void addERC20Accounts(soci::session &sql,
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);
+
+
         private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
             std::shared_ptr<EthereumLikeKeychain> _keychain;

@@ -3,12 +3,15 @@ BlockchainExplorerEngines = interface +c {
     const LEDGER_API: string = "LEDGER_API";
     const RIPPLE_API: string = "RIPPLE_API";
     const RIPPLE_NODE: string = "RIPPLE_NODE";
+    const TEZOS_NODE: string = "TEZOS_NODE";
+    const TZSTATS_API: string = "TZSTATS_API";
 }
 
 # Available API to use with observers.
 BlockchainObserverEngines = interface +c {
     const LEDGER_API: string = "LEDGER_API";
     const RIPPLE_NODE: string = "RIPPLE_NODE";
+    const TEZOS_NODE: string = "TEZOS_NODE";
 }
 
 # Available keychains policies.
@@ -48,6 +51,8 @@ ConfigurationDefaults = interface +c {
     const DEFAULT_KEYCHAIN: string = "BIP32_P2PKH";
     # Default trust limit (block height).
     const DEFAULT_TRUST_LIMIT: i32 = 3;
+    # Default observable range for HD keychains
+    const KEYCHAIN_DEFAULT_OBSERVABLE_RANGE : i32 = 20;
 }
 
 # Overall configuration.

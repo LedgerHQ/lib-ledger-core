@@ -79,6 +79,12 @@ namespace ledger {
 
             session.close();
             session.open(*soci::factory_sqlite3(), db_params);
+
+            // Temporary workaround
+            // TODO: need investigation
+            db_params = fmt::format("dbname=\"{}\" ", _dbResolvedPath) + fmt::format("key=\"{}\" ", newPassword);
+            session.close();
+            session.open(*soci::factory_sqlite3(), db_params);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace ledger {
             DerivationScheme(const std::vector<DerivationSchemeNode>& nodes);
             DerivationScheme(const DerivationScheme& cpy);
             DerivationScheme getSchemeFrom(DerivationSchemeLevel level);
-            DerivationScheme getSchemeTo(DerivationSchemeLevel level);
+            DerivationScheme getSchemeTo(DerivationSchemeLevel level) const;
             DerivationScheme getSchemeToDepth(size_t depth) const;
             DerivationScheme shift(int n = 1);
 

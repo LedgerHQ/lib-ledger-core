@@ -129,11 +129,17 @@ Operation = interface +c {
     #Convert operation as Ripple operation
     #@return RippleLikeOperation object
     asRippleLikeOperation(): RippleLikeOperation;
+    #Convert operation as Tezos operation
+    #@return TezosLikeOperation object
+    asTezosLikeOperation(): TezosLikeOperation;
+    # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
     isInstanceOfBitcoinLikeOperation(): bool;
-    # Same as isInstanceOfBitcoinLikeOperation for ethereum.
+    # Same as isInstanceOfEthereumLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;
-    # Same as isInstanceOfBitcoinLikeOperation for ripple.
+    # Same as isInstanceOfRippleLikeOperation for ripple.
     isInstanceOfRippleLikeOperation(): bool;
+    # Same as isInstanceOfTezosLikeOperation for tezos.
+    isInstanceOfTezosLikeOperation(): bool;
     # Tells if the operation is complete.
     # @return boolean
     isComplete(): bool;
@@ -328,6 +334,8 @@ Account = interface +c {
     asEthereumLikeAccount() : EthereumLikeAccount;
     # Turn the account into a Ripple one, allowing operations to be performed on the Ripple network.
     asRippleLikeAccount(): RippleLikeAccount;
+    # Turn the account into a Tezos one, allowing operations to be performed on the Tezos network.
+    asTezosLikeAccount(): TezosLikeAccount;
     # Check if account is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeAccount(): bool;

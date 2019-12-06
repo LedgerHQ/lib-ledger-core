@@ -570,5 +570,131 @@ namespace ledger {
         template <> void rollback<10>(soci::session& sql) {
             // not supported in standard ways by SQLite :(
         }
+
+        template <> void migrate<11>(soci::session& sql) {
+            sql << "CREATE TABLE tezos_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "xpub_version VARCHAR(255) NOT NULL,"
+                    "implicit_prefix VARCHAR(255) NOT NULL,"
+                    "originated_prefix VARCHAR(255) NOT NULL,"
+                    "message_prefix VARCHAR(255) NOT NULL,"
+                    "additional_TIPs TEXT"
+                    ")";
+
+            sql << "CREATE TABLE tezos_accounts("
+                    "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "idx INTEGER NOT NULL,"
+                    "address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE tezos_transactions("
+                    "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
+                    "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
+                    "time VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "fees VARCHAR(255) NOT NULL,"
+                    "gas_limit VARCHAR(255) NOT NULL,"
+                    "storage_limit VARCHAR(255) NOT NULL,"
+                    "confirmations BIGINT NOT NULL,"
+                    "type VARCHAR(255) NOT NULL,"
+                    "public_key VARCHAR(255) NOT NULL,"
+                    "originated_account VARCHAR(255) NOT NULL" // address:spendable:originated
+                    ")";
+
+            sql << "CREATE TABLE tezos_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES tezos_transactions(transaction_uid),"
+                    "transaction_hash VARCHAR(255) NOT NULL"
+                    ")";
+
+            // Originated accounts
+            sql << "CREATE TABLE tezos_originated_accounts("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "tezos_account_uid VARCHAR(255) NOT NULL REFERENCES tezos_accounts(uid) ON DELETE CASCADE,"
+                    "address VARCHAR(255) NOT NULL,"
+                    "spendable INTEGER NOT NULL,"
+                    "delegatable INTEGER NOT NULL,"
+                    "public_key VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE tezos_originated_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES tezos_transactions(transaction_uid),"
+                    "originated_account_uid VARCHAR(255) NOT NULL REFERENCES tezos_originated_accounts(uid) ON DELETE CASCADE"
+                    ")";
+        }
+
+        template <> void rollback<11>(soci::session& sql) {
+            sql << "DROP TABLE tezos_originated_operations";
+
+            sql << "DROP TABLE tezos_originated_accounts";
+
+            sql << "DROP TABLE tezos_operations";
+
+            sql << "DROP TABLE tezos_transactions";
+
+            sql << "DROP TABLE tezos_accounts";
+
+            sql << "DROP TABLE tezos_currencies";
+        }
+
+        template <> void migrate<12>(soci::session& sql) {
+            sql << "CREATE TABLE internal_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
+                    "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "type VARCHAR(255) NOT NULL,"
+                    "value VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "receiver VARCHAR(255) NOT NULL,"
+                    "gas_limit VARCHAR(255) NOT NULL,"
+                    "gas_used VARCHAR(255) NOT NULL,"
+                    "input_data VARCHAR(255)"
+                    ")";
+        }
+
+        template <> void rollback<12>(soci::session& sql) {
+            sql << "DROP TABLE internal_operations";
+        }
+
+        template <> void migrate<13>(soci::session& sql) {
+            sql << "ALTER TABLE bitcoin_outputs ADD COLUMN block_height BIGINT";
+        }
+
+        template <> void rollback<13>(soci::session& sql) {
+        }
+
+        template <> void migrate<14>(soci::session& sql) {
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN sequence BIGINT";
+        }
+
+        template <> void rollback<14>(soci::session& sql) {
+        }
+
+        template <> void migrate<15>(soci::session& sql) {
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN destination_tag BIGINT";
+        }
+
+        template <> void rollback<15>(soci::session& sql) {
+        }
+
+        template <> void migrate<16>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_accounts RENAME COLUMN address TO public_key";
+        }
+
+        template <> void rollback<16>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_accounts RENAME COLUMN public_key TO address";
+        }
+
+        template <> void migrate<17>(soci::session& sql) {
+            sql << "ALTER TABLE tezos_transactions ADD COLUMN status BIGINT";
+        }
+
+        template <> void rollback<17>(soci::session& sql) {
+        }
     }
 }

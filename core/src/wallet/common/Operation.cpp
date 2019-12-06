@@ -31,17 +31,23 @@
 #include "Operation.h"
 #include "database/OperationDatabaseHelper.h"
 #include <utils/Exception.hpp>
-
+#include <fmt/format.h>
 namespace ledger {
     namespace core {
 
-        void Operation::refreshUid() {
+        void Operation::refreshUid(const std::string &additional) {
             if (bitcoinTransaction.nonEmpty()) {
                 uid = OperationDatabaseHelper::createUid(accountUid, bitcoinTransaction.getValue().hash, type);
             } else if (ethereumTransaction.nonEmpty()) {
                 uid = OperationDatabaseHelper::createUid(accountUid, ethereumTransaction.getValue().hash, type);
             } else if (rippleTransaction.nonEmpty()) {
                 uid = OperationDatabaseHelper::createUid(accountUid, rippleTransaction.getValue().hash, type);
+            } else if (tezosTransaction.nonEmpty()) {
+                auto final = fmt::format("{}+{}", tezosTransaction.getValue().hash, api::to_string(tezosTransaction.getValue().type));
+                if (!additional.empty()){
+                    final = fmt::format("{}+{}", final, additional);
+                }
+                uid = OperationDatabaseHelper::createUid(accountUid, final, type);
             } else {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Cannot refresh uid of an incomplete operation.");
             }

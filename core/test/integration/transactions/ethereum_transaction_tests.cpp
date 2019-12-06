@@ -107,7 +107,7 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
 
 TEST_F(EthereumMakeTransaction, ParseUnsignedRawTransaction) {
     //Tx hash 4858a0a3d5f1de0c0f5729f25c3501bda946093aed07f842e53a90ac65d66f70
-    auto strTx = "E800850165A0BC0083030D4094A49386FFF4E0DD767B145E75D92F7FBA8854553E8301E0F380018080";
+    auto strTx = "e880850165a0bc0083030d4094a49386fff4e0dd767b145e75d92f7fba8854553e8301e0f380018080";
     auto tx = api::EthereumLikeTransactionBuilder::parseRawUnsignedTransaction(ledger::core::currencies::ETHEREUM, hex::toByteArray(strTx));
     EXPECT_EQ(hex::toString(tx->serialize()), strTx);
 }

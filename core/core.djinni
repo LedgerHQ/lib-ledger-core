@@ -13,6 +13,7 @@
 @import "idl/net/websocket_client.djinni"
 @import "idl/ripple/addresses.djinni"
 @import "idl/wallet/ripple/ripple_like_wallet.djinni"
+@import "idl/wallet/tezos/tezos_like_wallet.djinni"
 
 LedgerCore = interface +c {
     # Gets the version of the library as a human readable string.

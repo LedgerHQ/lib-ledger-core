@@ -17,4 +17,6 @@ std::string const RippleConfigurationDefaults::RIPPLE_OBSERVER_WS_ENDPOINT_S3 = 
 
 std::string const RippleConfigurationDefaults::RIPPLE_DEFAULT_PORT = {"51234"};
 
+int32_t const RippleConfigurationDefaults::RIPPLE_DEFAULT_LAST_LEDGER_SEQUENCE_OFFSET = 4;
+
 } } }  // namespace ledger::core::api

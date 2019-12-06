@@ -41,7 +41,7 @@
 #include <api/RippleLikeTransactionBuilder.hpp>
 #include <api/StringCallback.hpp>
 #include <api/Event.hpp>
-
+#include <api/BoolCallback.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
@@ -116,6 +116,10 @@ namespace ledger {
 
             void getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) override;
             FuturePtr<api::Amount> getBaseReserve();
+
+            void isAddressActivated(const std::string &address,
+                                    const std::shared_ptr<api::BoolCallback> &isActivated) override;
+            Future<bool> isAddressActivated(const std::string &address);
         private:
             std::shared_ptr<RippleLikeAccount> getSelf();
 

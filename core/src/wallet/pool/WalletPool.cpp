@@ -179,6 +179,9 @@ namespace ledger {
                 case api::WalletType::MONERO:
                     _factories.push_back(make_factory<api::WalletType::MONERO>(currency, shared_from_this()));
                     break;
+                case api::WalletType::TEZOS:
+                    _factories.push_back(make_factory<api::WalletType::TEZOS>(currency, shared_from_this()));
+                    break;
             }
         }
 
@@ -291,6 +294,15 @@ namespace ledger {
         FuturePtr<AbstractWallet> WalletPool::getWallet(const std::string &name) {
             auto self = shared_from_this();
             return async<std::shared_ptr<AbstractWallet>>([=] () {
+                auto it = self->_wallets.find(WalletDatabaseEntry::createWalletUid(self->getName(), name));
+                if (it != self->_wallets.end()) {
+                    auto ptr = it->second;
+
+                    if (ptr != nullptr) {
+                        return ptr;
+                    }
+                }
+
                 auto entry = getWalletEntryFromDatabase(self, name);
                 if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));

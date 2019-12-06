@@ -10,6 +10,7 @@
 #include "OperationType.hpp"
 #include "Preferences.hpp"
 #include "RippleLikeOperation.hpp"
+#include "TezosLikeOperation.hpp"
 #include "TrustIndicator.hpp"
 #include "WalletType.hpp"
 
@@ -168,6 +169,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1a
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1asTezosLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->asTezosLikeOperation();
+        return ::djinni::release(::djinni_generated::TezosLikeOperation::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1isInstanceOfBitcoinLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -194,6 +205,16 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
         auto r = ref->isInstanceOfRippleLikeOperation();
+        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1isInstanceOfTezosLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->isInstanceOfTezosLikeOperation();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

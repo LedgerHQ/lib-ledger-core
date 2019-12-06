@@ -61,6 +61,8 @@ public:
     virtual std::experimental::optional<std::string> getAddress() = 0;
 
     virtual std::shared_ptr<DerivationPath> getDerivationPath() = 0;
+
+    virtual std::experimental::optional<int64_t> getBlockHeight() = 0;
 };
 
 } } }  // namespace ledger::core::api

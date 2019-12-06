@@ -144,7 +144,9 @@ sqlite3_statement_backend::load_rowset(int totalRows)
                 char const* zErrMsg = sqlite3_errmsg(session_.conn_);
                 std::ostringstream ss;
                 ss << "sqlite3_statement_backend::loadRS: "
-                   << zErrMsg;
+                   << zErrMsg
+                   << "; res = "
+                   << res;
                 throw sqlite3_soci_error(ss.str(), res);
             }
         }

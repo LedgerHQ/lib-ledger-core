@@ -5,6 +5,7 @@
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "EthereumLikeNetworkParameters.hpp"
 #include "RippleLikeNetworkParameters.hpp"
+#include "TezosLikeNetworkParameters.hpp"
 
 namespace djinni_generated {
 
@@ -45,6 +46,15 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_ripple(JNIEnv* jniEnv, j
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::Networks::ripple();
         return ::djinni::release(::djinni_generated::RippleLikeNetworkParameters::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_tezos(JNIEnv* jniEnv, jobject /*this*/)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::Networks::tezos();
+        return ::djinni::release(::djinni_generated::TezosLikeNetworkParameters::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

@@ -43,6 +43,7 @@
 
 #include <iostream>
 #include <api/KeychainEngines.hpp>
+#include <api/ConfigurationDefaults.hpp>
 
 using namespace std;
 
@@ -84,7 +85,8 @@ namespace ledger {
                 _state.maxConsecutiveChangeIndex = 0;
                 _state.empty = true;
             }
-            _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(20);
+            _observableRange = (uint32_t) configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE)
+                    .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE);
         }
 
         bool CommonBitcoinLikeKeychains::markPathAsUsed(const DerivationPath &p) {

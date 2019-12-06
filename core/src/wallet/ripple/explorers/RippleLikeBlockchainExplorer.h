@@ -57,10 +57,13 @@ namespace ledger {
             std::chrono::system_clock::time_point receivedAt;
             BigInt value;
             BigInt fees;
+            BigInt sequence;
             std::string receiver;
             std::string sender;
             Option<Block> block;
             uint64_t confirmations;
+            Option<uint64_t> destinationTag;
+
             std::vector<api::RippleLikeMemo> memos;
 
             RippleLikeBlockchainExplorerTransaction() {
@@ -73,10 +76,12 @@ namespace ledger {
                 this->receivedAt = cpy.receivedAt;
                 this->confirmations = cpy.confirmations;
                 this->fees = cpy.fees;
+                this->sequence = cpy.sequence;
                 this->receiver = cpy.receiver;
                 this->sender = cpy.sender;
                 this->value = cpy.value;
                 this->memos = cpy.memos;
+                this->destinationTag = cpy.destinationTag;
             }
 
         };
@@ -100,6 +105,9 @@ namespace ledger {
 
             virtual Future<std::shared_ptr<BigInt>>
             getBaseReserve() = 0;
+
+            virtual Future<std::shared_ptr<BigInt>>
+            getLedgerSequence() = 0;
         };
     }
 }
