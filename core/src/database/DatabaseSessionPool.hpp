@@ -46,7 +46,8 @@ namespace ledger {
                                 const std::shared_ptr<api::PathResolver> &resolver,
                                 const std::shared_ptr<spdlog::logger> &logger,
                                 const std::string &dbName,
-                                const std::string &password);
+                                const std::string &password,
+                                bool usingPostgreSQLDatabase);
             soci::connection_pool& getPool();
             ~DatabaseSessionPool();
 
@@ -56,7 +57,8 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver> &resolver,
                 const std::shared_ptr<spdlog::logger> &logger,
                 const std::string &dbName,
-                const std::string &password = ""
+                const std::string &password = "",
+                bool usingPostgreSQL = false
             );
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 17;
@@ -71,6 +73,7 @@ namespace ledger {
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;
+            bool _usingPostgreSQL;
         };
     }
 }

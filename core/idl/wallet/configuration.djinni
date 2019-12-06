@@ -55,6 +55,8 @@ ConfigurationDefaults = interface +c {
     const KEYCHAIN_DEFAULT_OBSERVABLE_RANGE : i32 = 20;
     # Default TTL for cache
     const DEFAULT_TTL_CACHE : i32 = 30;
+    # Default connection pool size for PostgreSQL
+    const DEFAULT_PG_CONNECTION_POOL_SIZE: i32 = 25;
 }
 
 # Overall configuration.
@@ -104,4 +106,9 @@ PoolConfiguration = interface +c {
     #
     # Set to true by default.
     const ENABLE_INTERNAL_LOGGING: string = "ENABLE_INTERNAL_LOGGING";
+
+    # Enable internal logging.
+    #
+    # Set to true by default.
+    const USE_PG_DATABASE: string = "USE_PG_DATABASE";
 }

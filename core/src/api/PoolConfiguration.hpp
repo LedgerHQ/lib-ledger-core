@@ -29,6 +29,13 @@ public:
      * Set to true by default.
      */
     static std::string const ENABLE_INTERNAL_LOGGING;
+
+    /**
+     * Enable internal logging.
+     *
+     * Set to true by default.
+     */
+    static std::string const USE_PG_DATABASE;
 };
 
 } } }  // namespace ledger::core::api

@@ -42,17 +42,17 @@ namespace ledger {
         int getDatabaseMigrationVersion(soci::session& sql);
 
         template <int migrationNumber>
-        void migrate(soci::session& sql) {
+        void migrate(soci::session& sql, bool usingPostgreSql) {
             std::cerr << "No specified migration for version " << migrationNumber << std::endl;
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified migration for version {}", migrationNumber);
         }
 
         template <int version>
-        bool migrate(soci::session& sql, int currentVersion) {
-            bool previousResult = migrate<version - 1>(sql, currentVersion);
+        bool migrate(soci::session& sql, int currentVersion, bool usingPostgreSql) {
+            bool previousResult = migrate<version - 1>(sql, currentVersion, usingPostgreSql);
 
             if (currentVersion < version) {
-                migrate<version>(sql);
+                migrate<version>(sql, usingPostgreSql);
                 sql << "UPDATE __database_meta__ SET version = :version", soci::use(version);
                 return true;
             }
@@ -61,7 +61,7 @@ namespace ledger {
         };
 
         template <int version>
-        void rollback(soci::session& sql) {
+        void rollback(soci::session& sql, bool usingPostgreSql) {
             //std::cerr << "No specified rollback for version " << version << std::endl;
             //throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified rollback for version {}", version);
         }
@@ -72,10 +72,10 @@ namespace ledger {
         /// and portable way. Also, it enables possible partial rollbacks, even though the current
         /// implementation doesn’t.
         template <int version>
-        void rollback(soci::session& sql, int currentVersion) {
+        void rollback(soci::session& sql, int currentVersion, bool usingPostgreSql) {
             if (currentVersion == version) {
                 // we’re in sync with the database; perform the rollback normally
-                rollback<version>(sql);
+                rollback<version>(sql, usingPostgreSql);
 
                 if (version >= 0) {
                     // after rolling back this migration, we won’t have anything left, so we only
@@ -85,12 +85,12 @@ namespace ledger {
                         sql << "UPDATE __database_meta__ SET version = :version", soci::use(prevVersion);
                     }
 
-                    rollback<version - 1>(sql, currentVersion - 1);
+                    rollback<version - 1>(sql, currentVersion - 1, usingPostgreSql);
                 }
             } else if (currentVersion < version) {
                 // we’re trying to rollback a migration that hasn’t been applied; try the previous
                 // rollback
-                rollback<version - 1>(sql, currentVersion);
+                rollback<version - 1>(sql, currentVersion, usingPostgreSql);
             } else {
                 // we’re trying to rollback a migration but we have missed some others; apply the
                 // next ones first
@@ -98,73 +98,73 @@ namespace ledger {
             }
         }
 
-        template <> bool migrate<-1>(soci::session& sql, int currentVersion);
-        template <> void rollback<-1>(soci::session& sql, int currentVersion);
+        template <> bool migrate<-1>(soci::session& sql, int currentVersion, bool usingPostgreSql);
+        template <> void rollback<-1>(soci::session& sql, int currentVersion, bool usingPostgreSql);
 
         // Migrations
-        template <> void migrate<0>(soci::session& sql);
-        template <> void rollback<0>(soci::session& sql);
+        template <> void migrate<0>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<0>(soci::session& sql, bool usingPostgreSql);
 
-        template <> void migrate<1>(soci::session& sql);
-        template <> void rollback<1>(soci::session& sql);
+        template <> void migrate<1>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<1>(soci::session& sql, bool usingPostgreSql);
 
-        template <> void migrate<2>(soci::session& sql);
-        template <> void rollback<2>(soci::session& sql);
+        template <> void migrate<2>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<2>(soci::session& sql, bool usingPostgreSql);
 
-        template <> void migrate<3>(soci::session& sql);
-        template <> void rollback<3>(soci::session& sql);
+        template <> void migrate<3>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<3>(soci::session& sql, bool usingPostgreSql);
 
-        template <> void migrate<4>(soci::session& sql);
-        template <> void rollback<4>(soci::session& sql);
+        template <> void migrate<4>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<4>(soci::session& sql, bool usingPostgreSql);
 
-        template <> void migrate<5>(soci::session& sql);
-        template <> void rollback<5>(soci::session& sql);
+        template <> void migrate<5>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<5>(soci::session& sql, bool usingPostgreSql);
 
-        template <> void migrate<6>(soci::session& sql);
-        template <> void rollback<6>(soci::session& sql);
+        template <> void migrate<6>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<6>(soci::session& sql, bool usingPostgreSql);
 
-        template <> void migrate<7>(soci::session& sql);
-        template <> void rollback<7>(soci::session& sql);
+        template <> void migrate<7>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<7>(soci::session& sql, bool usingPostgreSql);
 
         // add ripple’s memo field
-        template <> void migrate<8>(soci::session& sql);
-        template <> void rollback<8>(soci::session& sql);
+        template <> void migrate<8>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<8>(soci::session& sql, bool usingPostgreSql);
 
         // Migrate input_data from VARCHAR(255) to TEXT
-        template <> void migrate<9>(soci::session& sql);
-        template <> void rollback<9>(soci::session& sql);
+        template <> void migrate<9>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<9>(soci::session& sql, bool usingPostgreSql);
 
         // Add block_height column to erc20_operations table
-        template <> void migrate<10>(soci::session& sql);
-        template <> void rollback<10>(soci::session& sql);
+        template <> void migrate<10>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<10>(soci::session& sql, bool usingPostgreSql);
 
         // Tezos Support
-        template <> void migrate<11>(soci::session& sql);
-        template <> void rollback<11>(soci::session& sql);
+        template <> void migrate<11>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<11>(soci::session& sql, bool usingPostgreSql);
 
         // Add internal transactions for ETH
-        template <> void migrate<12>(soci::session& sql);
-        template <> void rollback<12>(soci::session& sql);
+        template <> void migrate<12>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<12>(soci::session& sql, bool usingPostgreSql);
 
         // Add block height to outputs
-        template <> void migrate<13>(soci::session& sql);
-        template <> void rollback<13>(soci::session& sql);
+        template <> void migrate<13>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<13>(soci::session& sql, bool usingPostgreSql);
 
         // Add XRP sequence
-        template <> void migrate<14>(soci::session& sql);
-        template <> void rollback<14>(soci::session& sql);
+        template <> void migrate<14>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<14>(soci::session& sql, bool usingPostgreSql);
 
         // Add XRP destination_tag
-        template <> void migrate<15>(soci::session& sql);
-        template <> void rollback<15>(soci::session& sql);
+        template <> void migrate<15>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<15>(soci::session& sql, bool usingPostgreSql);
 
         // Replace XTZ address column by public_key one
-        template <> void migrate<16>(soci::session& sql);
-        template <> void rollback<16>(soci::session& sql);
+        template <> void migrate<16>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<16>(soci::session& sql, bool usingPostgreSql);
 
         // Add status column on XTZ transactions
-        template <> void migrate<17>(soci::session& sql);
-        template <> void rollback<17>(soci::session& sql);
+        template <> void migrate<17>(soci::session& sql, bool usingPostgreSql);
+        template <> void rollback<17>(soci::session& sql, bool usingPostgreSql);
     }
 }
 

@@ -26,7 +26,7 @@ function command_Release {
 
 function command_Debug {
   BUILD_CONFIG="Debug"
-  add_to_cmake_params -DBUILD_TESTS=ON
+  add_to_cmake_params -DBUILD_TESTS=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
 }
 
 function command_ios {
@@ -144,6 +144,24 @@ if [ "$1" == "ios" ]; then
     # The reset is necessary for obscure reasons not to sign on iOS (maybe the CI breaks the PATH or
     # something). See the fix below that removes signatures.
     sudo xcode-select --reset
+fi
+
+if [ "$BUILD_CONFIG" == "Debug" ]; then
+	echo "======> Create PostgreSQL with name test_db, host localhost and port 5432"
+	export POSTGRES_USER=postgres
+	export POSTGRES_DB=test_db
+	if [ "$unamestr" == "Linux" ]; then
+		sed 's/md5/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
+		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
+		sed 's/peer/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
+		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
+		service postgresql start
+		psql -c "create database test_db" -U postgres -h localhost -p 5432
+	elif [ "$unamestr" == "Darwin" ]; then
+		initdb -D test_db
+		pg_ctl start -D test_db -l db_log -o "-i -h localhost -p 5432"
+		createdb -h localhost -p 5432 test_db
+	fi
 fi
 
 echo $cmake_params

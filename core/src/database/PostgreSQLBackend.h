@@ -1,13 +1,12 @@
 /*
  *
- * DatabaseBackend
- * ledger-core
+ * PostgreSQL
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by El Khalil Bellakrid on 06/12/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,35 +27,37 @@
  * SOFTWARE.
  *
  */
+
+#pragma once
+
 #include "DatabaseBackend.hpp"
-#include "SQLite3Backend.hpp"
-#include "PostgreSQLBackend.h"
-#include <api/DatabaseEngine.hpp>
-#include "ProxyBackend.hpp"
+#include <memory>
 
 namespace ledger {
     namespace core {
+        class PostgreSQLBackend : public DatabaseBackend {
+        public:
+            PostgreSQLBackend();
+            PostgreSQLBackend(int32_t connectionPoolSize);
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getSqlite3Backend() {
-            return std::make_shared<SQLite3Backend>();
-        }
+            int32_t getConnectionPoolSize() override;
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize) {
-            return std::make_shared<PostgreSQLBackend>(connectionPoolSize);
-        }
+            void init(const std::shared_ptr<api::PathResolver> &resolver,
+                      const std::string &dbName,
+                      const std::string &password,
+                      soci::session &session) override;
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::createBackendFromEngine(
-                const std::shared_ptr<ledger::core::api::DatabaseEngine> &engine) {
-            return std::make_shared<ProxyBackend>(engine);
-        }
+            void setPassword(const std::string &password,
+                             soci::session &session) override;
 
-        std::shared_ptr<api::DatabaseBackend> DatabaseBackend::enableQueryLogging(bool enable) {
-            _enableLogging = enable;
-            return shared_from_this();
-        }
+            void changePassword(const std::string & oldPassword,
+                                const std::string & newPassword,
+                                soci::session &session) override;
 
-        bool DatabaseBackend::isLoggingEnabled() {
-            return _enableLogging;
-        }
+        private:
+            // Resolved path to db
+            std::string _dbName;
+            int32_t _connectionPoolSize;
+        };
     }
 }

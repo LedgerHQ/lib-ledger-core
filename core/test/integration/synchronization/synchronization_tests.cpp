@@ -34,14 +34,23 @@
 #include <set>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <api/KeychainEngines.hpp>
+#include <api/PoolConfiguration.hpp>
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 };
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
+    auto configuration = DynamicObject::newInstance();
+#ifdef PG_SUPPORT
+    bool usePostgreSQL = true;
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    configuration->putBoolean(api::PoolConfiguration::USE_PG_DATABASE, true);
+    auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+#else
     auto pool = newDefaultPool();
+#endif
+
     {
-        auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://bitcoin-mainnet.explorers.dev.aws.ledger.fr:443");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
@@ -81,6 +90,13 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                                        ->build());
                 EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
 
+                auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Ops: " << ops.size() << std::endl;
+                for (auto& op : ops) {
+                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
+                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                }
                 dispatcher->stop();
             });
 

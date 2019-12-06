@@ -7,6 +7,8 @@
 * [Build of C++ library](#build-of-c-library)
     * [Building for JNI](#building-for-jni)
     * [Build library on docker](#build-library-on-docker)
+    * [Build library with OpenSSL](#build-library-with-openssl)
+    * [Build library with PostgreSQL](#build-library-with-postgresql)
 * [Documentation](#documentation)
 * [Binding to node.js](#binding-to-nodejs)
     * [Using the node module](#using-the-node-module)
@@ -119,6 +121,40 @@ for example, if you installed OpenSSL through `apt-get` it will look like:
 `-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu -DOPENSSL_INCLUDE_DIR=/usr/include/openssl`
 
 In both cases we are supporting OpenSSL `1.0` and `1.1`.
+
+### Build library with PostgreSQL
+
+#### Dependencies
+
+Make sure that your have `PostgreSQL` installed on your machine, otherwise the `CMake` 
+command `find_package(PostgreSQL REQUIRED)` will fail during configuration.
+
+#### Build
+
+To compile libcore with PostgreSQL support, you should add `-DPG_SUPPORT=ON` to your 
+`CMake` configuration command.
+
+For Linux, you might need to add `-DPostgreSQL_INCLUDE_DIR=path/to/include/dir` in your configuration
+as a hint for headers' location (e.g. `/usr/include/postgresql`).
+
+#### Wallet Pool Configuration
+
+To use with libcore, simply set value of the key `api::PoolConfiguration::DATABASE_NAME`
+to the database's URL connection and set it in the pool's configuration.
+
+To signal to the pool that used database backend is a PostgreSQL one, it is mandatory to
+set `api::PoolConfiguration::USE_PG_DATABASE` to `true` in the pool's configuration.
+
+It is also possible to configure the size of the connection pool when instantiating the 
+PostgreSQL `DatabaseBackend` : `api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize)`.
+
+#### Local testing
+
+If testing locally, make sure to have a running PostgreSQL server.
+As an example, if you are running it on `localhost:5432` and `test_db` as database name,
+database's name forwarded to the pool (through configuration key `api::PoolConfiguration::DATABASE_NAME`)  
+should look like : `postgres://localhost:5432/test_db` .  
+	
 ## Documentation
 
 You can generate the Doxygen documentation by running the `doc` target (for instance, `make doc`

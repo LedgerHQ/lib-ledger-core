@@ -30,7 +30,7 @@ brew install cmake
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
 	echo "========> Install Qt5"
-	brew install qt5
+	brew install qt5 postgresql
 	export PATH="/usr/local/Cellar/qt/5.*/bin:$PATH"
 fi
 

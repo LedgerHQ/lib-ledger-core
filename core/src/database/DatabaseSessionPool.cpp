@@ -39,7 +39,8 @@ namespace ledger {
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
-            const std::string &password
+            const std::string &password,
+            bool usingPostgreSQLDatabase
         ) : _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
@@ -55,6 +56,8 @@ namespace ledger {
                     session.set_log_stream(_logger);
             }
 
+            _usingPostgreSQL = usingPostgreSQLDatabase;
+
             // Migrate database
             performDatabaseMigration();
         }
@@ -69,10 +72,11 @@ namespace ledger {
                                             const std::shared_ptr<api::PathResolver> &resolver,
                                             const std::shared_ptr<spdlog::logger> &logger,
                                             const std::string &dbName,
-                                            const std::string &password) {
-            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password] () {
+                                            const std::string &password,
+                                            bool usingPostgreSQL) {
+            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password, usingPostgreSQL] () {
                 auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
-                    backend, resolver, logger, dbName, password
+                    backend, resolver, logger, dbName, password, usingPostgreSQL
                 ));
 
                 return pool;
@@ -88,7 +92,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _usingPostgreSQL);
             tr.commit();
         }
 
@@ -97,7 +101,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _usingPostgreSQL);
             tr.commit();
         }
 

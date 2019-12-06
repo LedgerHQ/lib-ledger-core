@@ -108,7 +108,8 @@ namespace ledger {
                pathResolver,
                _logger,
                Option<std::string>(configuration->getString(api::PoolConfiguration::DATABASE_NAME)).getValueOr(name),
-               password
+               password,
+               Option<bool>(configuration->getBoolean(api::PoolConfiguration::USE_PG_DATABASE)).getValueOr(false)
             );
 
             // Threading management

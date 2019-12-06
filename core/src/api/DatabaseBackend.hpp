@@ -47,6 +47,12 @@ public:
      */
     static std::shared_ptr<DatabaseBackend> getSqlite3Backend();
 
+    /**
+     * Create an instance of PostgreSQL database.
+     * @return DatabaseBackend object
+     */
+    static std::shared_ptr<DatabaseBackend> getPostgreSQLBackend(int32_t connectionPoolSize);
+
     /** Create a database backend instance from the given DatabaseEngine implementation. */
     static std::shared_ptr<DatabaseBackend> createBackendFromEngine(const std::shared_ptr<DatabaseEngine> & engine);
 };

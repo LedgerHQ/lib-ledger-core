@@ -31,7 +31,7 @@ export PATH=$HOME/cmake-3.12.3/bin:$PATH
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
     echo "========> Install Qt5"
-    apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev
+    apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev postgresql-9.6 libpq-dev postgresql-server-dev-all
 fi
 
 echo "========> Install Sqlite"
