@@ -99,7 +99,6 @@ else()
 
     add_library(ledger-core-static STATIC)
     target_link_libraries(ledger-core-static PUBLIC ledger-core-obj)
-    install(TARGETS ledger-core-static DESTINATION "lib")
 endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
@@ -121,7 +120,15 @@ target_link_libraries(ledger-core-interface INTERFACE leveldb)
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
-target_link_libraries(ledger-core-interface INTERFACE Secp256k1)
+include(GNUInstallDirs)
+
+target_link_libraries(
+    ledger-core-interface INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}>
+    $<INSTALL_INTERFACE:${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}>
+)
+
+message("--------------------------------------------- ${CMAKE_INSTALL_FULL_LIBDIR}")
 
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 
@@ -142,11 +149,15 @@ target_include_directories(
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/date>                 $<INSTALL_INTERFACE:include/ledger-core/lib/date>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/secp256k1>            $<INSTALL_INTERFACE:include/ledger-core/lib/secp256k1>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/fmt/include>          $<INSTALL_INTERFACE:include/ledger-core/lib/fmt/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/spdlog/include>       $<INSTALL_INTERFACE:include/ledger-core/lib/spdlog/include>
+
+    # Hack: work around to find the ledger-core API header files in dependent projects
+    $<INSTALL_INTERFACE:include/ledger-core/core/api>
 )
 
 if (TARGET_JNI)
     target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
-
-install(TARGETS ledger-core DESTINATION "lib")

@@ -101,6 +101,15 @@ install(
   DESTINATION include/ledger-core
 )
 
+# Hack: because most of our dependencies don’t correctly support CMake configuration, this hack
+# copies them as direct dependencies of Core so that we can use them… it’s dirty and we
+# need to fix that.
+install(
+  DIRECTORY
+    ${CMAKE_SOURCE_DIR}/lib/
+  DESTINATION include/ledger-core/lib
+)
+
 install(
     EXPORT ledger-core
     NAMESPACE Core::
