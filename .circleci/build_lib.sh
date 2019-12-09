@@ -151,13 +151,17 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
 	export POSTGRES_USER=postgres
 	export POSTGRES_DB=test_db
 	if [ "$unamestr" == "Linux" ]; then
+		echo "======> Modify PostgreSQL configuration file ..."
 		sed 's/md5/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
 		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
 		sed 's/peer/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
 		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
+		echo "======> Create database ..."
 		service postgresql start
+		createuser root -s -U postgres
 		psql -c "create database test_db" -U postgres -h localhost -p 5432
 	elif [ "$unamestr" == "Darwin" ]; then
+		mkdir test_db
 		initdb -D test_db
 		pg_ctl start -D test_db -l db_log -o "-i -h localhost -p 5432"
 		createdb -h localhost -p 5432 test_db

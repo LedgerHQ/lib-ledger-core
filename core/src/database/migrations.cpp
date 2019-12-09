@@ -369,13 +369,12 @@ namespace ledger {
             // ERC20 accounts
             sql << "DROP TABLE erc20_accounts";
 
-            // ETH operations
-            sql << "DROP TABLE ethereum_operations";
-
-            // ETH transactions
+            // ETH transactions and operations
             if (usingPostgreSql) {
+                sql << "DROP TABLE ethereum_operations CASCADE";
                 sql << "DROP TABLE ethereum_transactions CASCADE";
             } else {
+                sql << "DROP TABLE ethereum_operations";
                 sql << "DROP TABLE ethereum_transactions";
             }
 
