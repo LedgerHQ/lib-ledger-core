@@ -3,7 +3,7 @@ project($project_name)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 option(TARGET_JNI "Indicates wheter or not the toolchain must build for JNI or not" OFF)
-option(BUILD_TESTS "Indicates wheter or not the toolchain must build the test or not" ON)
+option(BUILD_TESTS "Indicates wheter or not the toolchain must build the test or not" OFF)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(UseBackportedModules)
@@ -37,8 +37,6 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
-enable_testing()
-
 add_subdirectory(src)
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
@@ -46,7 +44,7 @@ string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
     message(STATUS "Test are enabled")
     enable_testing()
-    #add_subdirectory(test) TODO: uncomment to enable tests
+    add_subdirectory(test)
 else()
     message(STATUS "Test are disabled")
 endif()
