@@ -128,8 +128,6 @@ target_link_libraries(
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}>
 )
 
-message("--------------------------------------------- ${CMAKE_INSTALL_FULL_LIBDIR}")
-
 target_link_libraries(ledger-core-interface INTERFACE ethash)
 
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
