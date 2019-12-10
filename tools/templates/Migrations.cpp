@@ -2,8 +2,8 @@
 
 namespace ledger {
     namespace core {
-        int constexpr $project_nameMigration::coinID;
-        uint32_t constexpr $project_nameMigration::currentVersion;
+        int constexpr $project_nameMigration::COIN_ID;
+        uint32_t constexpr $project_nameMigration::CURRENT_VERSION;
 
         template <> void migrate<1, $project_nameMigration>(soci::session& sql) {
         }
