@@ -22,6 +22,7 @@
 @import "time_period.djinni"
 @import "thread_dispatcher.djinni"
 @import "trust.djinni"
+@import "tuples.djinni"
 @import "wallet.djinni"
 @import "websocket_client.djinni"
 
