@@ -1,6 +1,4 @@
 cmake_minimum_required(VERSION 3.0)
-include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
-include_directories(${CMAKE_BINARY_DIR}/include)
 
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
@@ -12,11 +10,5 @@ add_executable(ledger-core-crypto-tests main.cpp DigestTest.cpp EncryptionTest.c
 target_link_libraries(ledger-core-crypto-tests gtest gtest_main)
 target_link_libraries(ledger-core-crypto-tests ledger-core-static)
 target_link_libraries(ledger-core-crypto-tests ledger-test)
-target_include_directories(ledger-core-crypto-tests PUBLIC ../../../core/src)
-target_include_directories(ledger-core-crypto-tests PUBLIC ../../../qt-host)
-include_directories(../lib/libledger-test/)
-
-include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-crypto-tests crypto)
 
 add_test (NAME ledger-core-crypto-tests COMMAND ledger-core-crypto-tests)

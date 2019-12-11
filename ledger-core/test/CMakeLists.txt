@@ -4,10 +4,6 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE)
 
-include_directories(../inc)
-include_directories(../lib/leveldb/include)
-include_directories(../lib/fmt/include)
-
 add_subdirectory(lib/googletest)
 add_subdirectory(lib/libledger-test)
 add_subdirectory(common)

@@ -1,6 +1,9 @@
 #pragma once
-#include "api/HttpClient.hpp"
+
 #include <unordered_map>
+
+#include <core/api/HttpClient.hpp>
+
 #include "FakeUrlConnection.hpp"
 
 namespace ledger {

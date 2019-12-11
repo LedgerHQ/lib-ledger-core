@@ -1,8 +1,9 @@
-
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-add_library(mangoose STATIC mongoose.c mongoose.h)
+add_library(mongoose STATIC mongoose.c mongoose.h)
+
+target_link_libraries(mongoose ssl)
 
 add_library(ledger-test STATIC
     EventLooper.cpp EventLooper.hpp EventThread.cpp EventThread.hpp NativeThreadDispatcher.cpp
@@ -14,23 +15,10 @@ add_library(ledger-test STATIC
     FakeHttpClient.cpp FakeUrlConnection.hpp FakeUrlConnection.cpp
 )
 
-include_directories(${CMAKE_BINARY_DIR}/include ../../../lib/openssl/include)
-
-if (MSVC)
-    target_include_directories(ledger-test PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core)
-endif ()
-
-target_link_libraries(mangoose PUBLIC ssl)
-
-target_link_libraries(ledger-test PUBLIC crypto)
+target_include_directories(
+    ledger-test INTERFACE
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/ledger-test>
+)
+target_include_directories(ledger-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../asio/include)
+target_link_libraries(ledger-test PUBLIC mongoose)
 target_link_libraries(ledger-test PUBLIC ledger-core-static)
-target_link_libraries(ledger-test PUBLIC mangoose)
-target_include_directories(ledger-test PUBLIC ../../../lib/cereal/)
-target_include_directories(ledger-test PUBLIC ../../../lib/fmt-3.0.0)
-target_include_directories(ledger-test PUBLIC ../../../lib/fmt/include)
-target_include_directories(ledger-test PUBLIC ../../../lib/leveldb/include)
-target_include_directories(ledger-test PUBLIC ../asio/include/)
-target_include_directories(ledger-test PUBLIC ../../../../core)
-target_include_directories(ledger-test PUBLIC ../../../../core/src)
-target_include_directories(ledger-test PUBLIC ../../../lib/boost/)
-target_include_directories(ledger-test PUBLIC ../inc)

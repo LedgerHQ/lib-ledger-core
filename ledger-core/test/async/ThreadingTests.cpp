@@ -30,10 +30,11 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
 #include <QThread>
 #include <QDateTime>
 #include <QDebug>
+
+#include <async/QtThreadDispatcher.hpp>
 
 using namespace ledger::core;
 using namespace ledger::qt;

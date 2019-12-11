@@ -28,13 +28,14 @@
  * SOFTWARE.
  *
  */
-#include "NativePathResolver.hpp"
+
 #include <boost/algorithm/string.hpp>
-#include <iostream>
 #include <fstream>
-#include <src/io/filesystem.hpp>
+#include <iostream>
 
+#include <core/io/FileSystem.hpp>
 
+#include "NativePathResolver.hpp"
 
 std::string NativePathResolver::resolveDatabasePath(const std::string &path) {
     std::string p = path;

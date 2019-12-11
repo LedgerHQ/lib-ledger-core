@@ -29,8 +29,9 @@
  *
  */
 
+#include <core/api/WebSocketConnection.hpp>
+
 #include "FakeWebSocketClient.hpp"
-#include <api/WebSocketConnection.hpp>
 
 FakeWebSocketClient::FakeWebSocketClient() : _id(0) {
     _closeCallback = [] () {};
