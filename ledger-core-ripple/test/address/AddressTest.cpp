@@ -44,7 +44,7 @@ using namespace ledger::core::api;
 using namespace ledger::core;
 
 Currency currency() {
-  static Currency currency = currencies::RIPPLE;
+  Currency currency = currencies::RIPPLE;
   return currency;
 }
 
