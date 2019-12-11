@@ -87,6 +87,8 @@ namespace ledger {
             auto flag = secp256k1_ec_pubkey_tweak_add(_context, pubKey, num.data());
             if (flag == 0) throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
             secp256k1_ec_pubkey_serialize(_context, serializedKey.data(), &len, pubKey, SECP256K1_EC_COMPRESSED);
+            delete pubKey;
+
             return SECP256k1Point(serializedKey);
         }
 
