@@ -63,5 +63,5 @@ target_compile_definitions(ssl PRIVATE
         -DOPENSSL_NO_SCTP
         -DOPENSSL_NO_EC_NISTP_64_GCC_128
         )
-target_include_directories(ssl PUBLIC ../include)
-target_include_directories(ssl PUBLIC ../include/openssl)
+target_include_directories(ssl PRIVATE ../include)
+target_include_directories(ssl PRIVATE ../include/openssl)

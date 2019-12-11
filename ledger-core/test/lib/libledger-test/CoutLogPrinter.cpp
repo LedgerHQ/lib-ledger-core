@@ -28,9 +28,12 @@
  * SOFTWARE.
  *
  */
-#include "CoutLogPrinter.hpp"
-#include "api/ExecutionContext.hpp"
 #include <iostream>
+
+#include <core/api/ExecutionContext.hpp>
+
+#include "CoutLogPrinter.hpp"
+
 /* FOREGROUND */
 static const std::string RST = "\x1B[0m";
 static const std::string KRED = "\x1B[31m";

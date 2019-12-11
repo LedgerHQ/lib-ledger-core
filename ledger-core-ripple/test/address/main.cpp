@@ -1,6 +1,6 @@
 /*
  *
- * rippleNetworks
+ * main
  *
  * Created by El Khalil Bellakrid on 05/01/2019.
  *
@@ -28,32 +28,9 @@
  *
  */
 
-#include <core/utils/Exception.hpp>
+#include <gtest/gtest.h>
 
-#include <ripple/RippleNetworks.hpp>
-
-namespace ledger {
-    namespace core {
-        namespace networks {
-            const std::string RIPPLE_DIGITS = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
-
-            const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName) {
-                if (networkName == "ripple") {
-                    static const api::RippleLikeNetworkParameters RIPPLE(
-                            "xrp",
-                            "XRP signed message:\n",
-                            {0x04, 0x88, 0xB2, 0x1E},
-                            {},
-                            0
-                    );
-                    return RIPPLE;
-                }
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
-            }
-
-            const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE({
-                getRippleLikeNetworkParameters("ripple")
-            });
-        }
-    }
+int main(int argc, char **argv) {
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
 }

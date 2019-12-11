@@ -1,12 +1,13 @@
 /*
  *
- * rippleNetworks
+ * filesystem
+ * ledger-core
  *
- * Created by El Khalil Bellakrid on 05/01/2019.
+ * Created by Pierre Pollastri on 31/01/2017.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,32 +29,15 @@
  *
  */
 
-#include <core/utils/Exception.hpp>
+#pragma once
 
-#include <ripple/RippleNetworks.hpp>
+#include <string>
 
 namespace ledger {
     namespace core {
-        namespace networks {
-            const std::string RIPPLE_DIGITS = "rpshnaf39wBUDNEGHJKLM4PQRST7VWXYZ2bcdeCg65jkm8oFqi1tuvAxyz";
-
-            const api::RippleLikeNetworkParameters getRippleLikeNetworkParameters(const std::string &networkName) {
-                if (networkName == "ripple") {
-                    static const api::RippleLikeNetworkParameters RIPPLE(
-                            "xrp",
-                            "XRP signed message:\n",
-                            {0x04, 0x88, 0xB2, 0x1E},
-                            {},
-                            0
-                    );
-                    return RIPPLE;
-                }
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
-            }
-
-            const std::vector<api::RippleLikeNetworkParameters> ALL_RIPPLE({
-                getRippleLikeNetworkParameters("ripple")
-            });
+        namespace fs {
+            bool remove_dir(const std::string& path);
+            bool remove_all(const std::string& path);
         }
     }
 }

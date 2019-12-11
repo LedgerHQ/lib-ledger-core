@@ -35,6 +35,7 @@ cmd_project_new() {
 
   echo "-> symlinking ledger-core’s test librariries"
   ln -sf ../ledger-core/test/lib $project_name/test/lib
+  ln -sf ../ledger-core/test/cmake $project_name/test/cmake
 
   echo "—> generating CMake configuration"
   sed -e s/\$project_name/$project_name/g ./tools/templates/CMakeLists-project.txt.tpl > $project_name/CMakeLists.txt

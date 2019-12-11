@@ -89,6 +89,9 @@ install(
         spdlog
         sqlcipher
         ethash
+        ledger-test
+        mongoose
+        ssl
     EXPORT ledger-core
     ARCHIVE       DESTINATION lib/ledger-core
     LIBRARY       DESTINATION lib/ledger-core
@@ -96,19 +99,27 @@ install(
 )
 
 install(
-  DIRECTORY
-    ${CMAKE_SOURCE_DIR}/inc/
-  DESTINATION include/ledger-core
+    DIRECTORY
+        ${CMAKE_SOURCE_DIR}/inc/
+    DESTINATION include/ledger-core
 )
 
 # Hack: because most of our dependencies don’t correctly support CMake configuration, this hack
 # copies them as direct dependencies of Core so that we can use them… it’s dirty and we
 # need to fix that.
 install(
-  DIRECTORY
-    ${CMAKE_SOURCE_DIR}/lib/
-  DESTINATION include/ledger-core/lib
+    DIRECTORY
+        ${CMAKE_SOURCE_DIR}/lib/
+    DESTINATION include/ledger-core/lib
 )
+
+install(
+    DIRECTORY
+        ${CMAKE_SOURCE_DIR} ./test/lib/libledger-test
+    DESTINATION include/ledger-test
+    PATTERN "*.hpp"
+)
+
 
 install(
     EXPORT ledger-core

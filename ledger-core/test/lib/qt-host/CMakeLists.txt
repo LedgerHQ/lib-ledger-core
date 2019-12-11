@@ -16,10 +16,11 @@ add_library(ledger-qt-host STATIC
     utils/FilesystemUtils.hpp net/QtWebSocketClient.cpp net/QtWebSocketClient.hpp
 )
 
+target_include_directories(ledger-qt-host INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
 # Use the Widgets module from Qt 5.
 target_link_libraries(ledger-qt-host Qt5::Core)
 target_link_libraries(ledger-qt-host Qt5::Concurrent)
 target_link_libraries(ledger-qt-host Qt5::Network)
 target_link_libraries(ledger-qt-host Qt5::WebSockets)
 target_link_libraries(ledger-qt-host ledger-core-static)
-target_include_directories(ledger-qt-host PUBLIC ../core/src)

@@ -1,6 +1,8 @@
 #pragma once
-#include "api/HttpUrlConnection.hpp"
+
 #include <memory>
+
+#include <core/api/HttpUrlConnection.hpp>
 
 namespace ledger {
     namespace core {
