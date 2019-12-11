@@ -39,11 +39,15 @@ namespace ledger {
 
         SECP256k1Point::SECP256k1Point(const std::vector<uint8_t> &p) : SECP256k1Point() {
             _pubKey = new secp256k1_pubkey();
-            if (secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size()) == 0)
+
+            if (secp256k1_ec_pubkey_parse(_context, _pubKey, p.data(), p.size()) == 0) {
+                destroy();
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Unable to parse secp256k1 point");
+            }
         }
 
         SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const {
+            destroy();
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "SECP256k1Point SECP256k1Point::operator+(const SECP256k1Point &p) const");
         }
 
@@ -53,7 +57,14 @@ namespace ledger {
         }
 
         SECP256k1Point::~SECP256k1Point() {
-            secp256k1_context_destroy(_context);
+            destroy();
+        }
+
+        void SECP256k1Point::destroy() const {
+            if (_context != nullptr) {
+                secp256k1_context_destroy(_context);
+            }
+
             if (_pubKey) {
                 delete _pubKey;
             }
@@ -71,6 +82,7 @@ namespace ledger {
 
         bool SECP256k1Point::isAtInfinity() const {
             ensurePubkeyIsNotNull();
+            destroy();
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "bool SECP256k1Point::isAtInfinity() const");
         }
 
@@ -80,14 +92,18 @@ namespace ledger {
             auto num = n;
             VectorUtils::padOnLeft<uint8_t>(num, 0, 32);
 
-            secp256k1_pubkey* pubKey = new secp256k1_pubkey();
-            memcpy(pubKey, _pubKey, sizeof(*pubKey));
+            secp256k1_pubkey pubKey = secp256k1_pubkey();
+            memcpy(&pubKey, _pubKey, sizeof(pubKey));
             std::vector<uint8_t> serializedKey(33);
             auto len = serializedKey.size();
-            auto flag = secp256k1_ec_pubkey_tweak_add(_context, pubKey, num.data());
-            if (flag == 0) throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
-            secp256k1_ec_pubkey_serialize(_context, serializedKey.data(), &len, pubKey, SECP256K1_EC_COMPRESSED);
-            delete pubKey;
+            auto flag = secp256k1_ec_pubkey_tweak_add(_context, &pubKey, num.data());
+
+            if (flag == 0) {
+                destroy();
+                throw Exception(api::ErrorCode::RUNTIME_ERROR, "SECP256k1Point SECP256k1Point::generatorMultiply(const std::vector<uint8_t> &n) failed");
+            }
+
+            secp256k1_ec_pubkey_serialize(_context, serializedKey.data(), &len, &pubKey, SECP256K1_EC_COMPRESSED);
 
             return SECP256k1Point(serializedKey);
         }
@@ -105,9 +121,10 @@ namespace ledger {
         }
 
         void SECP256k1Point::ensurePubkeyIsNotNull() const {
-            if (_pubKey == nullptr)
+            if (_pubKey == nullptr) {
+                destroy();
                 throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Public key is null, cannot do any computation on the point.");
+            }
         }
-
     }
 }

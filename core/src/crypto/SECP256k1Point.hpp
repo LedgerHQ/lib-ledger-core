@@ -51,6 +51,9 @@ namespace ledger {
             SECP256k1Point();
             void ensurePubkeyIsNotNull() const;
 
+            // destroy secp256k1 objects
+            void destroy() const;
+
         private:
             secp256k1_context* _context;
             secp256k1_pubkey* _pubKey;
