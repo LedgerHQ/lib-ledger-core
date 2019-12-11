@@ -47,6 +47,7 @@ namespace ledger {
                     const std::string &name,
                     const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                     const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
+                    const std::shared_ptr<RippleLikeKeychainFactory> &keychainFactory,
                     const RippleLikeAccountSynchronizerFactory &synchronizerFactory,
                     const std::shared_ptr<Services> &services,
                     const api::Currency &network,

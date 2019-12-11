@@ -36,11 +36,12 @@
 #include <core/api/ConfigurationDefaults.hpp>
 
 #include <ripple/api/RippleConfigurationDefaults.hpp>
+#include <ripple/database/Migrations.hpp>
 #include <ripple/explorers/ApiRippleLikeBlockchainExplorer.hpp>
 #include <ripple/explorers/NodeRippleLikeBlockchainExplorer.hpp>
 #include <ripple/factories/RippleLikeKeychainFactory.hpp>
-#include <ripple/observers/RippleLikeBlockchainObserver.hpp>
 #include <ripple/factories/RippleLikeWalletFactory.hpp>
+#include <ripple/observers/RippleLikeBlockchainObserver.hpp>
 #include <ripple/synchronizers/RippleLikeBlockchainExplorerAccountSynchronizer.hpp>
 #include <ripple/RippleLikeWallet.hpp>
 #include <ripple/RippleNetworks.hpp>
@@ -55,6 +56,8 @@ namespace ledger {
         ):
           AbstractWalletFactory(currency, services) {
             _keychainFactories = {{api::KeychainEngines::BIP49_P2SH, std::make_shared<RippleLikeKeychainFactory>()}};
+            // create the DB structure if not already created
+            services->getDatabaseSessionPool()->forwardMigration<XRPMigration>();
         }
 
         std::shared_ptr<AbstractWallet> RippleLikeWalletFactory::build(const WalletDatabaseEntry &entry)
@@ -101,6 +104,7 @@ namespace ledger {
                     entry.name,
                     explorer,
                     observer,
+                    keychainFactory->second,
                     synchronizerFactory.getValue(),
                     services,
                     currency,
