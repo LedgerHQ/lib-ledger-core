@@ -184,5 +184,21 @@ namespace ledger {
                 return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
             });
         }
+
+        Future<api::ErrorCode> Services::freshResetAll() {
+            auto self = shared_from_this();
+
+            return Future<api::ErrorCode>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
+                // drop the main database first
+                self->getDatabaseSessionPool()->performDatabaseMigrationUnsetup();
+
+                // then reset preferences
+                _externalPreferencesBackend->clear();
+                _internalPreferencesBackend->clear();
+
+                // and we’re done
+                return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+            });
+        }
     }
 }
