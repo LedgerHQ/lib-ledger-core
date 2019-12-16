@@ -8,24 +8,27 @@ if (APPLE)
 endif (APPLE)
 
 file(GLOB_RECURSE TEST_FILES *.cpp)
-add_executable(ledger-core-integration-tests
-        ${TEST_FILES}
-        ../database/IntegrationEnvironment.hpp
-        )
+add_library(ledger-core-integration-test
+    ${TEST_FILES}
+)
 
-target_link_libraries(ledger-core-integration-tests gtest gtest_main)
-target_link_libraries(ledger-core-integration-tests crypto)
+target_include_directories(
+    ledger-core-integration-test PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/ledger-test>
+)
+
+target_link_libraries(ledger-core-integration-test gtest gtest_main)
+target_link_libraries(ledger-core-integration-test crypto)
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # We need this otherwise link fails (for Linux),
     # this is needed since we build static library for tests,
     # not needed if we link against dynamic
     # TODO: needs more investigation
-    target_link_libraries(ledger-core-integration-tests ledger-core)
+    target_link_libraries(ledger-core-integration-test ledger-core)
 else()
-    target_link_libraries(ledger-core-integration-tests ledger-core-static)
+    target_link_libraries(ledger-core-integration-test ledger-core-static)
 endif()
 
-
-target_link_libraries(ledger-core-integration-tests ledger-test)
-target_link_libraries(ledger-core-integration-tests ledger-qt-host)
+target_link_libraries(ledger-core-integration-test ledger-test)
+target_link_libraries(ledger-core-integration-test ledger-qt-host)
