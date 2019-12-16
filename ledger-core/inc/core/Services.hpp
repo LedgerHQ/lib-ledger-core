@@ -115,6 +115,22 @@ namespace ledger {
             const std::string& getTenant() const;
             const std::string getPassword() const;
 
+            /// Reset services.
+            ///
+            /// Resetting the services is an irreversible fresh reset of the whole core system
+            /// and all of its created (sub-)objects (wallets, accounts, transactions, etc.). Please
+            /// consider a less destructive option before opting to using this. However, if you’re
+            /// looking for a way to end up as if you were in a “fresh install” situation, this is
+            /// the function to go to.
+            ///
+            /// Final warning: this function effectively swipes off everything. You’ve been warned.
+            ///
+            /// > Note: when calling that function, you must re-create a Services as all objects
+            /// > got destroyed. Consider restarting / exiting your application right after calling
+            /// > that function. You are also highly advised to run that function on a code path
+            /// > that doesn’t include having lots of objects in memory.
+            Future<api::ErrorCode> freshResetAll();
+
         private:
             // General
             std::string _tenant;
