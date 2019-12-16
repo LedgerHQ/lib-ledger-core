@@ -90,8 +90,11 @@ install(
         sqlcipher
         ethash
         ledger-test
+        ledger-qt-host
+        ledger-core-integration-test
         mongoose
         ssl
+        gtest gtest_main
     EXPORT ledger-core
     ARCHIVE       DESTINATION lib/ledger-core
     LIBRARY       DESTINATION lib/ledger-core
@@ -102,6 +105,7 @@ install(
     DIRECTORY
         ${CMAKE_SOURCE_DIR}/inc/
     DESTINATION include/ledger-core
+    FILES_MATCHING PATTERN "*.hpp"
 )
 
 # Hack: because most of our dependencies don’t correctly support CMake configuration, this hack
@@ -115,11 +119,31 @@ install(
 
 install(
     DIRECTORY
-        ${CMAKE_SOURCE_DIR} ./test/lib/libledger-test
+        ${CMAKE_SOURCE_DIR}/test/lib/libledger-test/
     DESTINATION include/ledger-test
-    PATTERN "*.hpp"
+    FILES_MATCHING PATTERN "*.hpp"
 )
 
+install(
+    DIRECTORY
+        ${CMAKE_SOURCE_DIR}/test/lib/qt-host/
+    DESTINATION include/ledger-test-qt
+    FILES_MATCHING PATTERN "*.hpp"
+)
+
+install (
+    DIRECTORY
+        ${CMAKE_SOURCE_DIR}/test/integration/
+    DESTINATION include/ledger-test/integration
+    FILES_MATCHING PATTERN "*.hpp"
+)
+
+install (
+    DIRECTORY
+        ${CMAKE_SOURCE_DIR}/test/database/
+    DESTINATION include/ledger-test/database
+    FILES_MATCHING PATTERN "*.hpp"
+)
 
 install(
     EXPORT ledger-core
