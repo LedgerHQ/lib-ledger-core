@@ -133,6 +133,7 @@ add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandar
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutputAndFakeSignature COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutputAndFakeSignature)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithMultipleInputs COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithMultipleInputs)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.Toto COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.Toto)
+add_test (NAME ledger-core-integration-BitcoinStardustTransaction.FilterDustUtxo COMMAND ledger-core-integration-tests --gtest_filter=BitcoinStardustTransaction.FilterDustUtxo)
 add_test (NAME ledger-core-integration-BCHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter=BCHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput)
 add_test (NAME ledger-core-integration-ZCASHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter=ZCASHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput)
 add_test (NAME ledger-core-integration-ZCASHMakeP2SHTransaction.ParseSignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter=ZCASHMakeP2SHTransaction.ParseSignedRawTransaction)
