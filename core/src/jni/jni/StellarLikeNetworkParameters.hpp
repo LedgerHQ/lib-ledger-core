@@ -25,7 +25,7 @@ private:
     StellarLikeNetworkParameters();
     friend ::djinni::JniClass<StellarLikeNetworkParameters>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeNetworkParameters") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StellarLikeNetworkParameters") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;[BJJLjava/util/ArrayList;)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
     const jfieldID field_Version { ::djinni::jniGetFieldID(clazz.get(), "Version", "[B") };

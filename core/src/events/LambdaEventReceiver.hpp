@@ -46,6 +46,13 @@ namespace ledger {
 
         std::shared_ptr<LambdaEventReceiver> make_receiver(std::function<void (const std::shared_ptr<api::Event> &)> f);
 
+        /**
+         * Create a receiver which will resolve the current promise in case it is callback with one success or failure code.
+         * @param promise
+         * @param successCodes
+         * @param failureCodes
+         * @return
+         */
         std::shared_ptr<LambdaEventReceiver> make_promise_receiver(
                 Promise<Unit>& promise,
                 const std::vector<api::EventCode> &successCodes,

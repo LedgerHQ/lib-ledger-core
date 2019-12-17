@@ -39,7 +39,7 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::EthereumPublicKeyProvider, ::djinni_generated::EthereumPublicKeyProvider>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EthereumPublicKeyProvider") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("EthereumPublicKeyProvider") };
 };
 
 }  // namespace djinni_generated

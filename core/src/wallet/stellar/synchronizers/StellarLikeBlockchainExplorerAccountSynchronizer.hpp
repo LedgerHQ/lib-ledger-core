@@ -40,18 +40,27 @@
 namespace ledger {
     namespace core {
 
-        struct SynchronizationSavedState {
-
-        };
-
         class StellarLikeBlockchainExplorerAccountSynchronizer
                 : public StellarLikeAccountSynchronizer,
                   public DedicatedContext,
                   public std::enable_shared_from_this<StellarLikeBlockchainExplorerAccountSynchronizer> {
         public:
+            /**
+             * Save the current state of the synchronize to enable incremental update and keep current
+             * pagination cursors, to avoid synchronizing everytime the full account.
+             */
             struct SavedState {
+                /**
+                 * Current version of the algorithm, to discriminate all saved state and ensure proper migration.
+                 */
                 int algorithmVersion;
+                /**
+                 * Last paging token used by the synchronizer for synchronizing operations.
+                 */
                 std::string operationPagingToken;
+                /**
+                 * Last paging token used by the synchronizer for synchronizing transactions.
+                 */
                 std::string transactionPagingToken;
 
                 template<class Archive>

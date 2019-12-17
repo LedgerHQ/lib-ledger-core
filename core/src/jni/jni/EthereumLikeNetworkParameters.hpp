@@ -25,7 +25,7 @@ private:
     EthereumLikeNetworkParameters();
     friend ::djinni::JniClass<EthereumLikeNetworkParameters>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EthereumLikeNetworkParameters") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("EthereumLikeNetworkParameters") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;[BLjava/util/ArrayList;J)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
     const jfieldID field_MessagePrefix { ::djinni::jniGetFieldID(clazz.get(), "MessagePrefix", "Ljava/lang/String;") };

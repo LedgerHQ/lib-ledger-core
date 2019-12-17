@@ -78,7 +78,7 @@ namespace ledger {
                 if (info.publicKeys.size() < 1) {
                     throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
                 }
-                soci::session sql(getDatabase()->getPool());
+                soci::session sql(self->getDatabase()->getPool());
                 {
                     if (AccountDatabaseHelper::accountExists(sql, getWalletUid(), info.index)) {
                         throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Account {} already exists", info.index);

@@ -32,6 +32,11 @@
 #include "StellarLikeBlockchainExplorerAccountSynchronizer.hpp"
 #include <wallet/stellar/StellarLikeAccount.hpp>
 
+/**
+ * Current version of the synchronization. Please keep this field up to date to ensure that we have proper migration
+ * mechanism if the synchronizer needs to save more data in its state in the future (or modify current value). This
+ * version allow smooth migration.
+ */
 static const auto SYNCHRONIZATION_ALGORITHM_VERSION = 1;
 
 namespace ledger {
@@ -39,9 +44,11 @@ namespace ledger {
 
         StellarLikeBlockchainExplorerAccountSynchronizer::StellarLikeBlockchainExplorerAccountSynchronizer(
                 const std::shared_ptr<WalletPool> &pool,
-                const std::shared_ptr<StellarLikeBlockchainExplorer> &explorer) : DedicatedContext(pool->getDispatcher()->getSerialExecutionContext("stellar_like_account_synchronizer")) {
-            _explorer = explorer;
-            _database = pool->getDatabaseSessionPool();
+                const std::shared_ptr<StellarLikeBlockchainExplorer> &explorer) :
+                DedicatedContext(pool->getDispatcher()->getSerialExecutionContext("stellar_like_account_synchronizer")),
+                _explorer(explorer),
+                _database(pool->getDatabaseSessionPool()) {
+
         }
 
         void StellarLikeBlockchainExplorerAccountSynchronizer::reset(const std::shared_ptr<StellarLikeAccount> &account,
@@ -51,8 +58,9 @@ namespace ledger {
 
         std::shared_ptr<ProgressNotifier<Unit>> StellarLikeBlockchainExplorerAccountSynchronizer::synchronize(
                 const std::shared_ptr<StellarLikeAccount> &account) {
-            if (_notifier != nullptr)
+            if (_notifier != nullptr) {
                 return _notifier;
+            }
             _notifier = std::make_shared<ProgressNotifier<Unit>>();
             synchronizeAccount(account);
             return _notifier;
@@ -78,9 +86,9 @@ namespace ledger {
             _explorer->getAccount(address).onComplete(account->getContext(), [=] (const Try<std::shared_ptr<stellar::Account>>& acc) {
                 if (acc.isFailure() && acc.getFailure().getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND) {
                     self->endSynchronization();
-                } else if (acc.isFailure())
-                   self->failSynchronization(acc.getFailure());
-                else {
+                } else if (acc.isFailure()) {
+                    self->failSynchronization(acc.getFailure());
+                } else {
                     soci::session sql(_database->getPool());
                     account->updateAccountInfo(sql, *acc.getValue());
                    self->synchronizeTransactions(account, state);
@@ -102,9 +110,9 @@ namespace ledger {
             auto self = shared_from_this();
             _explorer->getTransactions(address, transactionCursor).onComplete(account->getContext(), [=] (const Try<stellar::TransactionVector>& txs) {
                 SavedState newState = state.getValueOr(SavedState());
-                if (txs.isFailure())
+                if (txs.isFailure()) {
                     self->failSynchronization(txs.getFailure());
-                else {
+                } else {
                     {
                         soci::session sql(_database->getPool());
                         soci::transaction tr(sql);
@@ -139,9 +147,9 @@ namespace ledger {
             auto self = shared_from_this();
             _explorer->getOperations(address, operationCursor).onComplete(account->getContext(), [=] (const Try<stellar::OperationVector>& ops) {
                 SavedState newState = state;
-                if (ops.isFailure())
+                if (ops.isFailure()) {
                     self->failSynchronization(ops.getFailure());
-                else {
+                } else {
                     {
                         soci::session sql(_database->getPool());
                         soci::transaction tr(sql);

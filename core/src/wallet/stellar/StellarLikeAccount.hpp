@@ -55,7 +55,7 @@ namespace ledger {
 
         class StellarLikeWallet;
 
-        class StellarLikeAccount : public virtual api::StellarLikeAccount, public virtual AbstractAccount {
+        class StellarLikeAccount : public api::StellarLikeAccount, public AbstractAccount {
         public:
             StellarLikeAccount(const std::shared_ptr<StellarLikeWallet>& wallet, const StellarLikeAccountParams& params);
             bool isSynchronizing() override;

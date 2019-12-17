@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<DatabaseValueType>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    DatabaseValueType() : JniEnum("co/ledger/core/DatabaseValueType") {}
+    DatabaseValueType() : JniEnum("DatabaseValueType") {}
     friend ::djinni::JniClass<DatabaseValueType>;
 };
 

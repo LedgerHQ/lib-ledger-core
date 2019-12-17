@@ -134,9 +134,9 @@ namespace ledger {
                 // Signer key union
                 enum class SignerKeyType
                 {
-                    SIGNER_KEY_TYPE_ED25519 = (int) CryptoKeyType::KEY_TYPE_ED25519,
-                    SIGNER_KEY_TYPE_PRE_AUTH_TX = (int) CryptoKeyType::KEY_TYPE_PRE_AUTH_TX,
-                    SIGNER_KEY_TYPE_HASH_X = (int) CryptoKeyType::KEY_TYPE_HASH_X
+                    SIGNER_KEY_TYPE_ED25519 = static_cast<int>(CryptoKeyType::KEY_TYPE_ED25519),
+                    SIGNER_KEY_TYPE_PRE_AUTH_TX = static_cast<int>(CryptoKeyType::KEY_TYPE_PRE_AUTH_TX),
+                    SIGNER_KEY_TYPE_HASH_X = static_cast<int>(CryptoKeyType::KEY_TYPE_HASH_X)
                 };
 
                 struct SignerKey {

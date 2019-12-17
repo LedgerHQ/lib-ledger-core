@@ -25,9 +25,9 @@ private:
     FormatRules();
     friend ::djinni::JniClass<FormatRules>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/FormatRules") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/RoundingMode;I)V") };
-    const jfieldID field_roundingMode { ::djinni::jniGetFieldID(clazz.get(), "roundingMode", "Lco/ledger/core/RoundingMode;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("FormatRules") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LRoundingMode;I)V") };
+    const jfieldID field_roundingMode { ::djinni::jniGetFieldID(clazz.get(), "roundingMode", "LRoundingMode;") };
     const jfieldID field_maxNumberOfDecimals { ::djinni::jniGetFieldID(clazz.get(), "maxNumberOfDecimals", "I") };
 };
 

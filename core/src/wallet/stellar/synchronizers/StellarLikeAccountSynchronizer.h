@@ -38,9 +38,8 @@ namespace ledger {
     namespace core {
 
         class StellarLikeAccount;
-        class StellarLikeAccountSynchronizer : public AbstractAccountSynchronizer<StellarLikeAccount> {
+        using StellarLikeAccountSynchronizer = AbstractAccountSynchronizer<StellarLikeAccount>;
 
-        };
     }
 }
 

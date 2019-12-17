@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<ErrorCode>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    ErrorCode() : JniEnum("co/ledger/core/ErrorCode") {}
+    ErrorCode() : JniEnum("ErrorCode") {}
     friend ::djinni::JniClass<ErrorCode>;
 };
 
