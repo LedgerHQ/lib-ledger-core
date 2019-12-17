@@ -45,6 +45,13 @@
 namespace ledger {
     namespace core {
 
+        /**
+         * This structure holds every runtime module that the account is using.
+         * It makes the stellar account easier to build without passing a ton of
+         * parameters to its constructor. Once this structure is created it can
+         * be passed to the StellarLikeAccount constructor which keep an immutable
+         * copy of it.
+         */
         struct StellarLikeAccountParams {
             int index;
             std::shared_ptr<StellarLikeKeychain> keychain;
@@ -104,7 +111,7 @@ namespace ledger {
 
         private:
             std::shared_ptr<StellarLikeWallet> _wallet;
-            StellarLikeAccountParams _params;
+            const StellarLikeAccountParams _params;
             std::mutex _synchronizationLock;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             uint64_t _currentLedgerHeight;
