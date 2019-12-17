@@ -73,6 +73,23 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 //    );
 }
 
+TEST_F(BitcoinMakeP2PKHTransaction, FilterDustUtxo) {
+    // Set the dust amount to an abnormally high level
+    // to make sure no transaction can be above that.
+
+    currency.bitcoinLikeNetworkParameters->DustAmount = std::numeric_limits<int64_t>::max();
+    auto builder = tx_builder();
+
+    auto balance = wait(account->getBalance());
+
+    builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, 61));
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    EXPECT_TRUE(tx->getInputs().empty());
+}
+
 
 TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutputAndFakeSignature) {
     auto builder = tx_builder();

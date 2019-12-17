@@ -130,6 +130,7 @@ add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.TestNetS
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.BTCParsingAndSerialization COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.BTCParsingAndSerialization)
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.XSTParsingAndSerialization COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.XSTParsingAndSerialization)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutput)
+add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.FilterDustUtxo COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.FilterDustUtxo)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutputAndFakeSignature COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutputAndFakeSignature)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithMultipleInputs COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithMultipleInputs)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.Toto COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.Toto)
