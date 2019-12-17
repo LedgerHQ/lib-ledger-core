@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::BinaryCallback, ::djinni_generated::BinaryCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BinaryCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "([BLError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BinaryCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "([BLco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

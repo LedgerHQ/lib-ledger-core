@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-Logger::Logger() : ::djinni::JniInterface<::ledger::core::api::Logger, Logger>("Logger$CppProxy") {}
+Logger::Logger() : ::djinni::JniInterface<::ledger::core::api::Logger, Logger>("co/ledger/core/Logger$CppProxy") {}
 
 Logger::~Logger() = default;
 
 
-CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1d(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1d(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -29,7 +29,7 @@ CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1d(JNIEnv* jniEnv, jobj
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1i(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1i(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -39,7 +39,7 @@ CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1i(JNIEnv* jniEnv, jobj
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1e(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1e(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -49,7 +49,7 @@ CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1e(JNIEnv* jniEnv, jobj
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1w(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1w(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -59,7 +59,7 @@ CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1w(JNIEnv* jniEnv, jobj
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_Logger_00024CppProxy_native_1c(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Logger_00024CppProxy_native_1c(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tag, jstring j_message)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

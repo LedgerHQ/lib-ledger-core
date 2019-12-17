@@ -45,13 +45,13 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseConnection, ::djinni_generated::DatabaseConnection>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseConnection") };
-    const jmethodID method_prepareStatement { ::djinni::jniGetMethodID(clazz.get(), "prepareStatement", "(Ljava/lang/String;Z)LDatabaseStatement;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseConnection") };
+    const jmethodID method_prepareStatement { ::djinni::jniGetMethodID(clazz.get(), "prepareStatement", "(Ljava/lang/String;Z)Lco/ledger/core/DatabaseStatement;") };
     const jmethodID method_begin { ::djinni::jniGetMethodID(clazz.get(), "begin", "()V") };
     const jmethodID method_rollback { ::djinni::jniGetMethodID(clazz.get(), "rollback", "()V") };
     const jmethodID method_commit { ::djinni::jniGetMethodID(clazz.get(), "commit", "()V") };
     const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
-    const jmethodID method_newBlob { ::djinni::jniGetMethodID(clazz.get(), "newBlob", "()LDatabaseBlob;") };
+    const jmethodID method_newBlob { ::djinni::jniGetMethodID(clazz.get(), "newBlob", "()Lco/ledger/core/DatabaseBlob;") };
 };
 
 }  // namespace djinni_generated

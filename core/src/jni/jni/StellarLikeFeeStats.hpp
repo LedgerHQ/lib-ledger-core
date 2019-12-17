@@ -25,7 +25,7 @@ private:
     StellarLikeFeeStats();
     friend ::djinni::JniClass<StellarLikeFeeStats>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StellarLikeFeeStats") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeFeeStats") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(JJJJ)V") };
     const jfieldID field_lastBaseFee { ::djinni::jniGetFieldID(clazz.get(), "lastBaseFee", "J") };
     const jfieldID field_modeAcceptedFee { ::djinni::jniGetFieldID(clazz.get(), "modeAcceptedFee", "J") };

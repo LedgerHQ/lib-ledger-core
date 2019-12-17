@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::BitcoinLikeTransactionCallback, ::djinni_generated::BitcoinLikeTransactionCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BitcoinLikeTransactionCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LBitcoinLikeTransaction;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeTransactionCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/BitcoinLikeTransaction;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

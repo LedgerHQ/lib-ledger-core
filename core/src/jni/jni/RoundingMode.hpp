@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<RoundingMode>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    RoundingMode() : JniEnum("RoundingMode") {}
+    RoundingMode() : JniEnum("co/ledger/core/RoundingMode") {}
     friend ::djinni::JniClass<RoundingMode>;
 };
 

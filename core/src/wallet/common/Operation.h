@@ -72,7 +72,6 @@ namespace ledger {
             Option<stellar::Operation> stellarOperation;
 
             void refreshUid(const std::string &additional = "");
-        private:
 
             Operation() = default;
             Operation(Operation const&) = default;

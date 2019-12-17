@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::BoolCallback, ::djinni_generated::BoolCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BoolCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/lang/Boolean;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BoolCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/lang/Boolean;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

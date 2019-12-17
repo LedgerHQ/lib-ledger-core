@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-TezosConfigurationDefaults::TezosConfigurationDefaults() : ::djinni::JniInterface<::ledger::core::api::TezosConfigurationDefaults, TezosConfigurationDefaults>("TezosConfigurationDefaults$CppProxy") {}
+TezosConfigurationDefaults::TezosConfigurationDefaults() : ::djinni::JniInterface<::ledger::core::api::TezosConfigurationDefaults, TezosConfigurationDefaults>("co/ledger/core/TezosConfigurationDefaults$CppProxy") {}
 
 TezosConfigurationDefaults::~TezosConfigurationDefaults() = default;
 
 
-CJNIEXPORT void JNICALL Java_TezosConfigurationDefaults_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosConfigurationDefaults_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
