@@ -53,6 +53,11 @@ Services = interface +c {
     # @param EventBus object
     getEventBus(): EventBus;
 
+    # Return last block of blockchain of a given currency (if it is supported by the wallet pool).
+    # @param name, string, name of currency we are interested into getting it's blockchain's last block
+    # @param callback, Callback object returns a Block object
+    getLastBlock(currencyName: string, callback: callback2<void, optional<Block>, optional<Error>>);
+
     # Reset wallet pool.
     #
     # Resetting the wallet pool is an irreversible fresh reset of the whole wallet pool

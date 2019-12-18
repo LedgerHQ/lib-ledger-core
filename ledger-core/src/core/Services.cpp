@@ -171,6 +171,18 @@ namespace ledger {
             return _wsClient;
         }
 
+        Future<api::Block> Services::getLastBlock(const std::string &currencyName) {
+            auto self = shared_from_this();
+            return async<api::Block>([self, currencyName] () -> api::Block {
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                auto block = BlockDatabaseHelper::getLastBlock(sql, currencyName);
+                if (block.isEmpty()) {
+                    throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Currency '{}' may not exist", currencyName);
+                }
+                return block.getValue();
+            });
+        }
+
         Future<api::ErrorCode> Services::changePassword(
             const std::string& oldPassword,
             const std::string& newPassword
