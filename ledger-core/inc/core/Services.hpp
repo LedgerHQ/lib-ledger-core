@@ -35,6 +35,7 @@
 #include <unordered_map>
 #include <spdlog/spdlog.h>
 
+#include <core/api/Block.hpp>
 #include <core/api/ErrorCode.hpp>
 #include <core/api/EventBus.hpp>
 #include <core/api/PathResolver.hpp>
@@ -47,6 +48,7 @@
 #include <core/net/HttpClient.hpp>
 #include <core/net/WebSocketClient.hpp>
 #include <core/preferences/Preferences.hpp>
+#include <core/wallet/BlockDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -112,6 +114,7 @@ namespace ledger {
             std::shared_ptr<DatabaseSessionPool> getDatabaseSessionPool() const;
             std::shared_ptr<DynamicObject> getConfiguration() const;
             std::shared_ptr<api::EventBus> getEventBus() const;
+            Future<api::Block> getLastBlock(const std::string &currencyName);
             const std::string& getTenant() const;
             const std::string getPassword() const;
 
