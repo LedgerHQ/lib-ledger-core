@@ -42,7 +42,7 @@ class BitcoinLikeWalletSynchronization : public BaseFixture {
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
     auto configuration = DynamicObject::newInstance();
 #ifdef PG_SUPPORT
-    bool usePostgreSQL = true;
+    const bool usePostgreSQL = true;
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
     configuration->putBoolean(api::PoolConfiguration::USE_PG_DATABASE, true);
     auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);

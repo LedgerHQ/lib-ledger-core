@@ -74,7 +74,7 @@ namespace ledger {
         void PostgreSQLBackend::changePassword(const std::string & oldPassword,
                                             const std::string & newPassword,
                                             soci::session &session) {
-            throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before changing password.");
+            throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Change of password is not handled with PostgreSQL backend.");
         }
     }
 }
