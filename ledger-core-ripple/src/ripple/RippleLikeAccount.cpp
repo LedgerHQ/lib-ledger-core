@@ -474,5 +474,34 @@ namespace ledger {
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *reserve);
             });
         }
+
+        void RippleLikeAccount::isAddressActivated(
+            const std::string& address,
+            const std::function<void(std::experimental::optional<bool>, std::experimental::optional<api::Error>)>& isActivated
+        ) {
+            isAddressActivated(address).callback(getContext(), isActivated);
+        }
+
+        Future<bool> RippleLikeAccount::isAddressActivated(const std::string &address) {
+            auto xrpAddress = RippleLikeAddress::parse(address, getWallet()->getCurrency());
+            if (!xrpAddress) {
+                return Future<bool>::successful(false);
+            }
+            auto self = getSelf();
+            return _explorer->getBaseReserve().flatMap<bool>(getContext(), [self, xrpAddress](const std::shared_ptr<BigInt> &reserve) -> Future<bool> {
+                if (!reserve) {
+                    return Future<bool>::successful(false);
+                }
+                return self->_explorer->getBalance(
+                        std::vector<RippleLikeKeychain::Address>{
+                                std::dynamic_pointer_cast<RippleLikeAddress>(xrpAddress)
+                        }).map<bool>(self->getContext(), [reserve](const std::shared_ptr<BigInt> &balance) -> bool {
+                    if (!balance) {
+                        return false;
+                    }
+                    return reserve->compare(*balance) < 0;
+                });
+            });
+        }
     }
 }

@@ -117,6 +117,13 @@ namespace ledger {
 
             void getBaseReserve(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) override;
             FuturePtr<api::Amount> getBaseReserve();
+
+            void isAddressActivated(
+                const std::string& address,
+                const std::function<void(std::experimental::optional<bool>, std::experimental::optional<api::Error>)>& isActivated
+            ) override;
+            Future<bool> isAddressActivated(const std::string &address);
+
         private:
             std::shared_ptr<RippleLikeAccount> getSelf();
 
