@@ -5,6 +5,7 @@
 #include "BigIntCallback.hpp"
 #include "BigIntListCallback.hpp"
 #include "ERC20LikeAccount.hpp"
+#include "EthereumGasLimitRequest.hpp"
 #include "EthereumLikeTransaction.hpp"
 #include "EthereumLikeTransactionBuilder.hpp"
 #include "Marshal.hpp"
@@ -81,6 +82,17 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAccount>(nativeRef);
         ref->getEstimatedGasLimit(::djinni::String::toCpp(jniEnv, j_address),
                                   ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getDryrunGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_request, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAccount>(nativeRef);
+        ref->getDryrunGasLimit(::djinni::String::toCpp(jniEnv, j_address),
+                               ::djinni_generated::EthereumGasLimitRequest::toCpp(jniEnv, j_request),
+                               ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
