@@ -95,7 +95,7 @@ namespace ledger {
 
         std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::setBaseFee(const std::shared_ptr<api::Amount> &baseFee) {
-            _baseFee = (uint64_t) baseFee->toLong();
+            _baseFee = static_cast<uint64_t>(baseFee->toLong());
             return shared_from_this();
         }
 
