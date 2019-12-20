@@ -31,9 +31,40 @@
 
 #include "StellarLikeTransaction.hpp"
 #include <wallet/stellar/xdr/XDREncoder.hpp>
+#include <crypto/SHA256.hpp>
 
-std::vector<uint8_t> ledger::core::StellarLikeTransaction::toRawTransaction() {
-    stellar::xdr::Encoder encoder;
-    encoder << _envelope;
-    return encoder.toByteArray();
+namespace ledger {
+    namespace core {
+        std::vector<uint8_t> StellarLikeTransaction::toRawTransaction() {
+            stellar::xdr::Encoder encoder;
+            encoder << _envelope;
+            return encoder.toByteArray();
+        }
+
+        std::vector<uint8_t> StellarLikeTransaction::toSignatureBase() {
+            auto networkId = SHA256::stringToBytesHash(_params.NetworkPassphrase);
+            stellar::xdr::Encoder envTypeEncoder;
+            envTypeEncoder << static_cast<int32_t>(stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX);
+            auto encodedEnvType = envTypeEncoder.toByteArray();
+            std::vector<uint8_t> signatureBase;
+            stellar::xdr::Encoder txEncoder;
+            txEncoder << _envelope.tx;
+            auto encodedTx = txEncoder.toByteArray();
+
+            signatureBase.insert(signatureBase.end(), networkId.begin(), networkId.end());
+            signatureBase.insert(signatureBase.end(), encodedEnvType.begin(), encodedEnvType.end());
+            signatureBase.insert(signatureBase.end(), encodedTx.begin(), networkId.end());
+
+            return signatureBase;
+        }
+
+        void
+        StellarLikeTransaction::putSignature(const std::vector<uint8_t> &signature) {
+            stellar::xdr::DecoratedSignature sig;
+            sig.signature = signature;
+            _envelope.signatures.emplace_back(sig);
+        }
+    }
 }
+
+

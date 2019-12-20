@@ -46,14 +46,14 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::LogPrinter, ::djinni_generated::LogPrinter>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/LogPrinter") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("LogPrinter") };
     const jmethodID method_printError { ::djinni::jniGetMethodID(clazz.get(), "printError", "(Ljava/lang/String;)V") };
     const jmethodID method_printInfo { ::djinni::jniGetMethodID(clazz.get(), "printInfo", "(Ljava/lang/String;)V") };
     const jmethodID method_printDebug { ::djinni::jniGetMethodID(clazz.get(), "printDebug", "(Ljava/lang/String;)V") };
     const jmethodID method_printWarning { ::djinni::jniGetMethodID(clazz.get(), "printWarning", "(Ljava/lang/String;)V") };
     const jmethodID method_printApdu { ::djinni::jniGetMethodID(clazz.get(), "printApdu", "(Ljava/lang/String;)V") };
     const jmethodID method_printCriticalError { ::djinni::jniGetMethodID(clazz.get(), "printCriticalError", "(Ljava/lang/String;)V") };
-    const jmethodID method_getContext { ::djinni::jniGetMethodID(clazz.get(), "getContext", "()Lco/ledger/core/ExecutionContext;") };
+    const jmethodID method_getContext { ::djinni::jniGetMethodID(clazz.get(), "getContext", "()LExecutionContext;") };
 };
 
 }  // namespace djinni_generated

@@ -25,7 +25,7 @@ private:
     Locale();
     friend ::djinni::JniClass<Locale>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/Locale") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("Locale") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Z)V") };
     const jfieldID field_DecimalSeparator { ::djinni::jniGetFieldID(clazz.get(), "DecimalSeparator", "Ljava/lang/String;") };
     const jfieldID field_ThousandsSeparator { ::djinni::jniGetFieldID(clazz.get(), "ThousandsSeparator", "Ljava/lang/String;") };

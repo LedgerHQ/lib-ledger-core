@@ -25,7 +25,7 @@ private:
     BitcoinLikeOperator();
     friend ::djinni::JniClass<BitcoinLikeOperator>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeOperator") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BitcoinLikeOperator") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;B)V") };
     const jfieldID field_operatorName { ::djinni::jniGetFieldID(clazz.get(), "operatorName", "Ljava/lang/String;") };
     const jfieldID field_value { ::djinni::jniGetFieldID(clazz.get(), "value", "B") };

@@ -34,7 +34,7 @@
 static std::vector<api::CurrencyUnit> UNITS {};
 
 static api::StellarLikeNetworkParameters STELLAR_PARAMS {
-    "xlm", {6 << 3}, 5000000, 100, {}
+    "xlm", {6 << 3}, 5000000, 100, {}, "Public Global Stellar Network ; September 2015"
 };
 
 static api::Currency STELLAR =
@@ -61,7 +61,7 @@ api::AccountCreationInfo StellarFixture::emptyAccount() const {
 
 std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {
     auto pool = CoinIntegrationFixture::newPool(poolName);
-    injectCurrency(pool, STELLAR);
+    //injectCurrency(pool, STELLAR);
     return pool;
 }
 

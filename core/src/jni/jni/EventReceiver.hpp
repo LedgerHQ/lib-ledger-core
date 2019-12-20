@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::EventReceiver, ::djinni_generated::EventReceiver>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EventReceiver") };
-    const jmethodID method_onEvent { ::djinni::jniGetMethodID(clazz.get(), "onEvent", "(Lco/ledger/core/Event;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("EventReceiver") };
+    const jmethodID method_onEvent { ::djinni::jniGetMethodID(clazz.get(), "onEvent", "(LEvent;)V") };
 };
 
 }  // namespace djinni_generated

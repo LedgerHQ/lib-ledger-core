@@ -12,13 +12,18 @@ StellarLikeBlock = interface +c {
 
 StellarLikeTransaction = interface +c {
     toRawTransaction(): binary;
+    # Returns the payload which should be signed by the user in order to send the transaction.
+    toSignatureBase(): binary;
+
+    # Add a new signature to the transaction envelope
+    putSignature(signature: binary);
 }
 
 StellarLikeTransactionBuilder = interface +c {
     addNativePayment(address: string, amount: Amount): StellarLikeTransactionBuilder;
     addCreateAccount(address: string, amount: Amount): StellarLikeTransactionBuilder;
     setBaseFee(baseFee: Amount): StellarLikeTransactionBuilder;
-    putSignature(signature: binary): StellarLikeTransactionBuilder;
+
     setTextMemo(text: string): StellarLikeTransactionBuilder;
     setNumberMemo(number: BigInt): StellarLikeTransactionBuilder;
     setHashMemo(hash: binary): StellarLikeTransactionBuilder;

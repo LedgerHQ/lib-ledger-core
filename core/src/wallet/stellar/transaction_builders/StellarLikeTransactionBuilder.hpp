@@ -55,9 +55,6 @@ namespace ledger {
             setBaseFee(const std::shared_ptr<api::Amount> &baseFee) override;
 
             std::shared_ptr<api::StellarLikeTransactionBuilder>
-            putSignature(const std::vector<uint8_t> &signature) override;
-
-            std::shared_ptr<api::StellarLikeTransactionBuilder>
             setTextMemo(const std::string &text) override;
 
             std::shared_ptr<api::StellarLikeTransactionBuilder>

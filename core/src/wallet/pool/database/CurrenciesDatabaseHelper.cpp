@@ -147,12 +147,13 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 strings::join(params.AdditionalSEPs, seps, separator);
                 auto SEPs = seps.str();
 
-                sql << "INSERT INTO stellar_currencies VALUES(:name, :identifier, :version, :reserve, :fee, :seps)",
+                sql << "INSERT INTO stellar_currencies VALUES(:name, :identifier, :version, :reserve, :fee, :pass, :seps)",
                     use(currency.name),
                     use(params.Identifier),
                     use(hex::toString(params.Version)),
                     use(params.BaseReserve),
                     use(params.BaseFee),
+                    use(params.NetworkPassphrase),
                     use(SEPs)
                 ;
                 break;
@@ -278,7 +279,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
             case api::WalletType::MONERO:break;
             case api::WalletType::STELLAR: {
                 rowset<row> stellar_rows = (sql.prepare << "SELECT identifier, address_version, base_reserve,"
-                                                           "base_fee, additional_SEPs FROM stellar_currencies "
+                                                           "base_fee, network_passphrase, additional_SEPs FROM stellar_currencies "
                                                            "WHERE name = :name"
                         , use(currency.name));
                 for (auto& stellar_row : stellar_rows) {
@@ -287,7 +288,8 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                     params.Version = hex::toByteArray(stellar_row.get<std::string>(1));
                     params.BaseFee = soci::get_number<int64_t>(stellar_row, 2);
                     params.BaseReserve = soci::get_number<int64_t>(stellar_row, 3);
-                    params.AdditionalSEPs = strings::split(stellar_row.get<std::string>(4), ",");
+                    params.NetworkPassphrase = stellar_row.get<std::string>(4);
+                    params.AdditionalSEPs = strings::split(stellar_row.get<std::string>(5), ",");
                     currency.stellarLikeNetworkParameters = params;
                 }
                 break;

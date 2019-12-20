@@ -34,18 +34,29 @@
 
 #include <api/StellarLikeTransaction.hpp>
 #include <wallet/stellar/xdr/models.hpp>
+#include <api/Currency.hpp>
+
 namespace ledger {
     namespace core {
         class StellarLikeTransaction : public virtual api::StellarLikeTransaction {
         public:
-            explicit StellarLikeTransaction(stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope) {};
-            explicit StellarLikeTransaction(const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope) {};
+            explicit StellarLikeTransaction(
+                    const api::StellarLikeNetworkParameters& params,
+                    stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope) {};
+            explicit StellarLikeTransaction(
+                    const api::StellarLikeNetworkParameters& params,
+                    const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope) {};
             std::vector<uint8_t> toRawTransaction() override;
+
+            std::vector<uint8_t> toSignatureBase() override;
 
             const stellar::xdr::TransactionEnvelope& envelope() const { return _envelope; }
 
+            void putSignature(const std::vector<uint8_t> &signature) override;
+
         private:
             stellar::xdr::TransactionEnvelope _envelope;
+            api::StellarLikeNetworkParameters _params;
         };
     }
 }

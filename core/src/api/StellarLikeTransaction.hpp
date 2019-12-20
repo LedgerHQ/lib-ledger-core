@@ -21,6 +21,12 @@ public:
     virtual ~StellarLikeTransaction() {}
 
     virtual std::vector<uint8_t> toRawTransaction() = 0;
+
+    /** Returns the payload which should be signed by the user in order to send the transaction. */
+    virtual std::vector<uint8_t> toSignatureBase() = 0;
+
+    /** Add a new signature to the transaction envelope */
+    virtual void putSignature(const std::vector<uint8_t> & signature) = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -52,18 +52,18 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseStatement, ::djinni_generated::DatabaseStatement>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseStatement") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseStatement") };
     const jmethodID method_bindShort { ::djinni::jniGetMethodID(clazz.get(), "bindShort", "(IS)V") };
     const jmethodID method_bindInt { ::djinni::jniGetMethodID(clazz.get(), "bindInt", "(II)V") };
     const jmethodID method_bindLong { ::djinni::jniGetMethodID(clazz.get(), "bindLong", "(IJ)V") };
     const jmethodID method_bindFloat { ::djinni::jniGetMethodID(clazz.get(), "bindFloat", "(IF)V") };
     const jmethodID method_bindDouble { ::djinni::jniGetMethodID(clazz.get(), "bindDouble", "(ID)V") };
     const jmethodID method_bindString { ::djinni::jniGetMethodID(clazz.get(), "bindString", "(ILjava/lang/String;)V") };
-    const jmethodID method_bindBlob { ::djinni::jniGetMethodID(clazz.get(), "bindBlob", "(ILco/ledger/core/DatabaseBlob;)V") };
+    const jmethodID method_bindBlob { ::djinni::jniGetMethodID(clazz.get(), "bindBlob", "(ILDatabaseBlob;)V") };
     const jmethodID method_bindNull { ::djinni::jniGetMethodID(clazz.get(), "bindNull", "(I)V") };
-    const jmethodID method_describeColumn { ::djinni::jniGetMethodID(clazz.get(), "describeColumn", "(I)Lco/ledger/core/DatabaseColumn;") };
+    const jmethodID method_describeColumn { ::djinni::jniGetMethodID(clazz.get(), "describeColumn", "(I)LDatabaseColumn;") };
     const jmethodID method_getColumnCount { ::djinni::jniGetMethodID(clazz.get(), "getColumnCount", "()I") };
-    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "()Lco/ledger/core/DatabaseResultSet;") };
+    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "()LDatabaseResultSet;") };
     const jmethodID method_reset { ::djinni::jniGetMethodID(clazz.get(), "reset", "()V") };
     const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
 };

@@ -13,12 +13,12 @@
 
 namespace djinni_generated {
 
-ERC20LikeAccount::ERC20LikeAccount() : ::djinni::JniInterface<::ledger::core::api::ERC20LikeAccount, ERC20LikeAccount>("co/ledger/core/ERC20LikeAccount$CppProxy") {}
+ERC20LikeAccount::ERC20LikeAccount() : ::djinni::JniInterface<::ledger::core::api::ERC20LikeAccount, ERC20LikeAccount>("ERC20LikeAccount$CppProxy") {}
 
 ERC20LikeAccount::~ERC20LikeAccount() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_ERC20LikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -26,7 +26,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1getToken(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_ERC20LikeAccount_00024CppProxy_native_1getToken(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -36,7 +36,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1getAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_ERC20LikeAccount_00024CppProxy_native_1getAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -46,7 +46,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1getBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_ERC20LikeAccount_00024CppProxy_native_1getBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -55,7 +55,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1getBalanceHistoryFor(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_start, jobject j_end, jobject j_period)
+CJNIEXPORT jobject JNICALL Java_ERC20LikeAccount_00024CppProxy_native_1getBalanceHistoryFor(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_start, jobject j_end, jobject j_period)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -67,7 +67,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1getOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_ERC20LikeAccount_00024CppProxy_native_1getOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -77,7 +77,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1getTransferToAddressData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address, jobject j_data)
+CJNIEXPORT void JNICALL Java_ERC20LikeAccount_00024CppProxy_native_1getTransferToAddressData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address, jobject j_data)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -88,7 +88,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_ERC20LikeAccount_00024CppProxy_native_1queryOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_ERC20LikeAccount_00024CppProxy_native_1queryOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

@@ -32,8 +32,6 @@ public:
 
     virtual std::shared_ptr<StellarLikeTransactionBuilder> setBaseFee(const std::shared_ptr<Amount> & baseFee) = 0;
 
-    virtual std::shared_ptr<StellarLikeTransactionBuilder> putSignature(const std::vector<uint8_t> & signature) = 0;
-
     virtual std::shared_ptr<StellarLikeTransactionBuilder> setTextMemo(const std::string & text) = 0;
 
     virtual std::shared_ptr<StellarLikeTransactionBuilder> setNumberMemo(const std::shared_ptr<BigInt> & number) = 0;

@@ -58,8 +58,8 @@ TEST_F(StellarFixture, PaymentTransaction) {
     builder->setBaseFee(api::Amount::fromLong(wallet->getCurrency(), sequence.toInt64()));
     builder->addNativePayment("GA5IHE27VP64IR2JVVGQILN4JX43LFCC6MS2E6LAKGP3UULK3OFFBJXR", api::Amount::fromLong(wallet->getCurrency(), 20000000));
     builder->setBaseFee( api::Amount::fromLong(wallet->getCurrency(), 100));
-    builder->putSignature(hex::toByteArray("3045022100B2B31575F8536B284410D01217F688BE3A9FAF4BA0BA3A9093F983E40D630EC7022022A7A25B01403CFF0D00B3B853D230F8E96FF832B15D4CCC75203CB65896A2D5"));
     auto tx = ::wait(builder->build());
+    tx->putSignature(hex::toByteArray("3045022100B2B31575F8536B284410D01217F688BE3A9FAF4BA0BA3A9093F983E40D630EC7022022A7A25B01403CFF0D00B3B853D230F8E96FF832B15D4CCC75203CB65896A2D5"));
     auto envelope = std::dynamic_pointer_cast<StellarLikeTransaction>(tx)->envelope();
     EXPECT_EQ(envelope.signatures.size() , 1);
     EXPECT_EQ(envelope.tx.sourceAccount.type, stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519);

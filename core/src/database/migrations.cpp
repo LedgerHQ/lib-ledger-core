@@ -743,6 +743,7 @@ namespace ledger {
                     "address_version VARCHAR(255) NOT NULL,"
                     "base_reserve BIGINT NOT NULL,"
                     "base_fee BIGINT NOT NULL,"
+                    "network_passphrase TEXT NOT NULL,"
                     "additional_SEPs TEXT NOT NULL"
                    ")";
 

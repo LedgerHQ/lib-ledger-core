@@ -45,14 +45,6 @@ namespace ledger {
         }
 
         std::shared_ptr<api::StellarLikeTransactionBuilder>
-        StellarLikeTransactionBuilder::putSignature(const std::vector<uint8_t> &signature) {
-            stellar::xdr::DecoratedSignature sig;
-            sig.signature = signature;
-            _envelope.signatures.emplace_back(sig);
-            return shared_from_this();
-        }
-
-        std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::addNativePayment(const std::string &address,
                                                         const std::shared_ptr<api::Amount> &amount) {
             stellar::xdr::Operation operation;
@@ -127,7 +119,7 @@ namespace ledger {
                     std::copy(pubKey.begin() + 28,  pubKey.end(), signature.hint.begin());
                 }
                 envelope.tx.fee = envelope.tx.operations.size() * baseFee;
-                return std::make_shared<StellarLikeTransaction>(envelope);
+                return std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency().stellarLikeNetworkParameters.value(), envelope);
             });
         }
 

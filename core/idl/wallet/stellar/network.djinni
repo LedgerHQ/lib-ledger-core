@@ -10,5 +10,6 @@ StellarLikeNetworkParameters = record {
     BaseFee: i64;
     # Additional SEP to which the currency apply to
     AdditionalSEPs: list<string>;
-
+    # Network passphrase used as a chain id during signature
+    NetworkPassphrase: string;
 }

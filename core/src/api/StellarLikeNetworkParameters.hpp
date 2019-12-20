@@ -23,17 +23,21 @@ struct StellarLikeNetworkParameters final {
     int64_t BaseFee;
     /** Additional SEP to which the currency apply to */
     std::vector<std::string> AdditionalSEPs;
+    /** Network passphrase used as a chain id during signature */
+    std::string NetworkPassphrase;
 
     StellarLikeNetworkParameters(std::string Identifier_,
                                  std::vector<uint8_t> Version_,
                                  int64_t BaseReserve_,
                                  int64_t BaseFee_,
-                                 std::vector<std::string> AdditionalSEPs_)
+                                 std::vector<std::string> AdditionalSEPs_,
+                                 std::string NetworkPassphrase_)
     : Identifier(std::move(Identifier_))
     , Version(std::move(Version_))
     , BaseReserve(std::move(BaseReserve_))
     , BaseFee(std::move(BaseFee_))
     , AdditionalSEPs(std::move(AdditionalSEPs_))
+    , NetworkPassphrase(std::move(NetworkPassphrase_))
     {}
 
     StellarLikeNetworkParameters(const StellarLikeNetworkParameters& cpy) {
@@ -42,6 +46,7 @@ struct StellarLikeNetworkParameters final {
        this->BaseReserve = cpy.BaseReserve;
        this->BaseFee = cpy.BaseFee;
        this->AdditionalSEPs = cpy.AdditionalSEPs;
+       this->NetworkPassphrase = cpy.NetworkPassphrase;
     }
 
     StellarLikeNetworkParameters() = default;
@@ -53,17 +58,18 @@ struct StellarLikeNetworkParameters final {
        this->BaseReserve = cpy.BaseReserve;
        this->BaseFee = cpy.BaseFee;
        this->AdditionalSEPs = cpy.AdditionalSEPs;
+       this->NetworkPassphrase = cpy.NetworkPassphrase;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs);
+        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs, NetworkPassphrase);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs);
+        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs, NetworkPassphrase);
     }
 };
 
