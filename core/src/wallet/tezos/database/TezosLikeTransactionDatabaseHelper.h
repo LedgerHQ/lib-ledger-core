@@ -31,11 +31,13 @@
 
 #ifndef LEDGER_CORE_TEZOSLIKETRANSACTIONDATABASEHELPER_H
 #define LEDGER_CORE_TEZOSLIKETRANSACTIONDATABASEHELPER_H
+
 #include <string>
 #include <soci.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 #include <api/TezosOperationTag.hpp>
 #include <api/OperationType.hpp>
+
 namespace ledger {
     namespace core {
         class TezosLikeTransactionDatabaseHelper {

@@ -61,7 +61,7 @@ namespace ledger {
             rowset<row> rows = (sql.prepare <<
                                             "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height"
                                                     " FROM bitcoin_outputs AS o "
-                                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON  i.previous_tx_uid = o.transaction_uid "
+                                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
                                                     " AND i.previous_output_idx = o.idx"
                                                     " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid", use(accountUid));
 
