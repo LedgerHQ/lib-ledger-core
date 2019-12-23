@@ -410,18 +410,15 @@ namespace ledger {
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             return async<std::shared_ptr<Amount>>([=] () -> std::shared_ptr<Amount> {
-                const int32_t BATCH_SIZE = 100;
                 const auto& uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
-                auto offset = 0;
-                std::size_t count = 0;
                 BigInt sum(0);
                 auto keychain = self->getKeychain();
                 std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
                     return keychain->contains(addr);
                 };
-                for (; (count = BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, offset, BATCH_SIZE, utxos, filter)) == BATCH_SIZE; offset += count) {}
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), utxos, filter);
                 for (const auto& utxo : utxos) {
                     sum = sum + utxo.value;
                 }
