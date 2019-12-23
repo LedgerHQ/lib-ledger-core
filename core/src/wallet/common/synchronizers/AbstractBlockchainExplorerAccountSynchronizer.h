@@ -405,7 +405,7 @@ namespace ledger {
                         auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
                         soci::transaction tr(sql);
-
+                        buddy->logger->info("Got {} txs", bulk->transactions.size());
                         for (const auto& tx : bulk->transactions) {
                             buddy->account->putTransaction(sql, tx);
 

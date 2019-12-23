@@ -55,8 +55,8 @@ namespace ledger {
         }
 
         std::string BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
-                                                                  const std::string& accountUid,
-                                                                  const BitcoinLikeBlockchainExplorerTransaction &tx) {
+                                                                         const std::string &accountUid,
+                                                                         const BitcoinLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
                                    return block.getUid();
                                });
@@ -91,7 +91,7 @@ namespace ledger {
                         use(tx.lockTime);
                 // Insert outputs
                 for (const auto& output : tx.outputs) {
-                    insertOutput(sql, btcTxUid, tx.hash, output);
+                    insertOutput(sql, btcTxUid, accountUid, tx.hash, output);
                 }
                 // Insert inputs
                 for (const auto& input : tx.inputs) {
@@ -103,14 +103,23 @@ namespace ledger {
 
         void BitcoinLikeTransactionDatabaseHelper::insertOutput(soci::session &sql,
                                                                 const std::string& btcTxUid,
+                                                                const std::string &accountUid,
                                                                 const std::string& transactionHash,
                                                                 const BitcoinLikeBlockchainExplorerOutput &output) {
             auto value = output.value.toUint64();
-            sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL, :block_height)",
-                    use(output.index), use(btcTxUid),
-                    use(transactionHash), use(value),
-                    use(output.script), use(output.address),
-                    use(output.blockHeight);
+            if (output.accountUid.hasValue() && output.accountUid.getValue() == accountUid) {
+                sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, :account_uid, :block_height)",
+                        use(output.index), use(btcTxUid),
+                        use(transactionHash), use(value),
+                        use(output.script), use(output.address),
+                        use(accountUid), use(output.blockHeight);
+            } else {
+                sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL, :block_height)",
+                        use(output.index), use(btcTxUid),
+                        use(transactionHash), use(value),
+                        use(output.script), use(output.address),
+                        use(output.blockHeight);
+            }
         }
 
         void BitcoinLikeTransactionDatabaseHelper::insertInput(soci::session &sql,
@@ -220,28 +229,26 @@ namespace ledger {
             }
 
             // Fetch outputs
+            //Check if the output belongs to this account
+            //solve case of 2 accounts in DB one as sender and one as receiver
+            //of same transaction (filter on account_uid won't solve the issue because
+            //bitcoin_outputs going to external accounts have NULL account_uid)
+            auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
             rowset<soci::row> outputRows = (sql.prepare <<
-                    "SELECT idx, amount, script, address, transaction_uid, block_height FROM bitcoin_outputs WHERE transaction_hash = :hash "
-                    "ORDER BY idx", use(out.hash)
+                    "SELECT idx, amount, script, address, block_height FROM bitcoin_outputs WHERE transaction_hash = :hash AND transaction_uid = :tx_uid "
+                    "ORDER BY idx", use(out.hash), use(btcTxUid)
             );
 
-            auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
             for (auto& outputRow : outputRows) {
-                //Check if the output belongs to this account
-                //solve case of 2 accounts in DB one as sender and one as receiver
-                //of same transaction (filter on account_uid won't solve the issue because
-                //bitcoin_outputs going to external accounts have NULL account_uid)
-                if (outputRow.get<std::string>(4) == btcTxUid) {
-                    BitcoinLikeBlockchainExplorerOutput output;
-                    output.index = (uint64_t) outputRow.get<int>(0);
-                    output.value.assignScalar(outputRow.get<long long>(1));
-                    output.script = outputRow.get<std::string>(2);
-                    output.address = outputRow.get<Option<std::string>>(3);
-                    if (outputRow.get_indicator(4) != i_null) {
-                        output.blockHeight = row.get<BigInt>(5).toUint64();
-                    }
-                    out.outputs.push_back(std::move(output));
+                BitcoinLikeBlockchainExplorerOutput output;
+                output.index = (uint64_t) outputRow.get<int>(0);
+                output.value.assignScalar(outputRow.get<long long>(1));
+                output.script = outputRow.get<std::string>(2);
+                output.address = outputRow.get<Option<std::string>>(3);
+                if (outputRow.get_indicator(4) != i_null) {
+                    output.blockHeight = row.get<BigInt>(4).toUint64();
                 }
+                out.outputs.push_back(std::move(output));
             }
 
             // Enjoy the silence.
