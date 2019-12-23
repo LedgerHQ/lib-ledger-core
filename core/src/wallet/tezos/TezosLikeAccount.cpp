@@ -94,6 +94,7 @@ namespace ledger {
                                              const std::string &originatedAccountUid,
                                              const std::string &originatedAccountAddress) {
             auto wallet = getWallet();
+            auto self = shared_from_this();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
@@ -122,7 +123,7 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = transaction.sender == originatedAccountAddress ? api::OperationType::SEND : api::OperationType::RECEIVE;
                 operation.refreshUid(originatedAccountUid);
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                if (OperationDatabaseHelper::putOperation(sql, self, operation)) {
                     // Update publicKey field for originated account
                     if (transaction.type == api::TezosOperationTag::OPERATION_TAG_REVEAL && transaction.publicKey.hasValue()) {
                         TezosLikeAccountDatabaseHelper::updatePubKeyField(sql, originatedAccountUid, transaction.publicKey.getValue());
@@ -140,7 +141,7 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                if (OperationDatabaseHelper::putOperation(sql, self, operation)) {
                     emitNewOperationEvent(operation);
                 }
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
@@ -153,7 +154,7 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                if (OperationDatabaseHelper::putOperation(sql, self, operation)) {
                     emitNewOperationEvent(operation);
                 }
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {

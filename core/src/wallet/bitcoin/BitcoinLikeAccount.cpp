@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+
 #include "BitcoinLikeAccount.hpp"
 
 #include <database/query/QueryBuilder.h>
@@ -104,6 +105,7 @@ namespace ledger {
         int BitcoinLikeAccount::putTransaction(soci::session &sql,
                                                const BitcoinLikeBlockchainExplorerTransaction &transaction) {
             auto wallet = getWallet();
+            auto self = shared_from_this();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
@@ -206,7 +208,7 @@ namespace ledger {
                 operation.amount.assignI64(sentAmount);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation))
+                if (OperationDatabaseHelper::putOperation(sql, self, operation))
                     emitNewOperationEvent(operation);
             }
 
@@ -232,31 +234,9 @@ namespace ledger {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
                     operation.refreshUid();
-                    if (OperationDatabaseHelper::putOperation(sql, operation))
+                    if (OperationDatabaseHelper::putOperation(sql, self, operation))
                         emitNewOperationEvent(operation);
                 }
-
-                auto accountUid = getAccountUid();
-                //Update account_uid column of bitcoin_outputs table
-                for (auto& o : accountOutputs) {
-                    if (o.first->address.nonEmpty()) {
-                        auto address = o.first->address.getValue();
-                        soci::rowset<soci::row> rows = (sql.prepare << "SELECT transaction_uid, transaction_hash FROM bitcoin_outputs WHERE address = :address AND account_uid IS NULL ",
-                                soci::use(address));
-
-                        for (auto &row : rows) {
-                            auto txUid = row.get<std::string>(0);
-                            auto txHash = row.get<std::string>(1);
-                            //This check is made to avoid setting account_uid of bitcoin_outputs which was set during another's account scan/sync
-                            //since now bitcoin_outputs has transaction_uid (accountUid-hash) as primary key
-                            if (txUid == BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, txHash)) {
-                                sql << "UPDATE bitcoin_outputs SET account_uid = :accountUid WHERE address = :address AND transaction_uid = :txUid",
-                                        soci::use(accountUid), soci::use(address), soci::use(txUid);
-                            }
-                        }
-                    }
-                }
-
             }
 
             return result;
@@ -608,7 +588,6 @@ namespace ledger {
 
                     //Outputs
                     auto keychain = self->getKeychain();
-                    auto nodeIndex = keychain->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
                     auto outputCount = tx->getOutputs().size();
                     for (auto index = 0; index < outputCount; index++) {
                         auto output = tx->getOutputs()[index];

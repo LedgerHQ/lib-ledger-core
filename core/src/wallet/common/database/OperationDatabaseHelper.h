@@ -32,6 +32,7 @@
 #define LEDGER_CORE_OPERATIONDATABASEHELPER_H
 
 #include <api/OperationType.hpp>
+#include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Operation.h>
 #include <soci.h>
 #include <string>
@@ -40,7 +41,9 @@ namespace ledger {
     namespace core {
         class OperationDatabaseHelper {
         public:
-            static bool putOperation(soci::session& sql, const Operation& operation);
+            static bool putOperation(soci::session& sql,
+                                     const std::shared_ptr<AbstractAccount> &account,
+                                     const Operation& operation);
             static std::string createUid(const std::string& accountUid,
                                          const std::string& txId,
                                          const api::OperationType type);
@@ -52,7 +55,10 @@ namespace ledger {
                                                std::vector<Operation>& out,
                                                std::function<bool (const std::string& address)> filter);
         private:
-            static void updateCurrencyOperation(soci::session& sql, const Operation& operation, bool insert);
+            static void updateCurrencyOperation(soci::session& sql,
+                                                const std::shared_ptr<AbstractAccount> &account,
+                                                const Operation& operation,
+                                                bool insert);
         };
     }
 }

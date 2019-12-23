@@ -106,13 +106,13 @@ namespace ledger {
         }
 
         std::string EthereumLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
-                                                                         const std::string& accountUid,
+                                                                          const std::shared_ptr<AbstractAccount> &account,
                                                                          const EthereumLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const EthereumLikeBlockchainExplorer::Block& block) {
                 return block.getUid();
             });
 
-            auto ethTxUid = createEthereumTransactionUid(accountUid, tx.hash);
+            auto ethTxUid = createEthereumTransactionUid(account->getAccountUid(), tx.hash);
 
             if (transactionExists(sql, ethTxUid)) {
                 // UPDATE

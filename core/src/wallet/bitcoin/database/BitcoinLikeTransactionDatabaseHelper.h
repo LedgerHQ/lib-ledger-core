@@ -33,14 +33,19 @@
 
 #include <soci.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeTransactionDatabaseHelper {
         public:
             static bool transactionExists(soci::session& sql, const std::string& btcTxUid);
-            static std::string putTransaction(soci::session& sql, const std::string& accountUid, const BitcoinLikeBlockchainExplorerTransaction& tx);
+            static std::string putTransaction(soci::session& sql,
+                                              const std::shared_ptr<AbstractAccount> &account,
+                                              const BitcoinLikeBlockchainExplorerTransaction& tx);
             static inline void insertOutput(soci::session& sql,
+                                            const std::shared_ptr<AbstractAccount> &account,
                                             const std::string& btcTxUid,
                                             const std::string& transactionHash,
                                             const BitcoinLikeBlockchainExplorerOutput& output);

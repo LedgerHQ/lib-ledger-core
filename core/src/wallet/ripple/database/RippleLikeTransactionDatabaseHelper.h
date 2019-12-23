@@ -35,6 +35,7 @@
 
 #include <string>
 #include <soci.h>
+#include <wallet/common/AbstractAccount.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 
 namespace ledger {
@@ -56,7 +57,7 @@ namespace ledger {
                                                           const std::string &txHash);
 
             static std::string putTransaction(soci::session &sql,
-                                              const std::string &accountUid,
+                                              const std::shared_ptr<AbstractAccount> &account,
                                               const RippleLikeBlockchainExplorerTransaction &tx);
         };
     }
