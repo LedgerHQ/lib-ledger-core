@@ -35,7 +35,6 @@
 #include <string>
 #include <soci.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/common/AbstractAccount.hpp>
 #include <api/TezosOperationTag.hpp>
 #include <api/OperationType.hpp>
 

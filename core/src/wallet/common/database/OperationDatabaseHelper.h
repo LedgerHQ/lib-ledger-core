@@ -32,7 +32,6 @@
 #define LEDGER_CORE_OPERATIONDATABASEHELPER_H
 
 #include <api/OperationType.hpp>
-#include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Operation.h>
 #include <soci.h>
 #include <string>

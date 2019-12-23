@@ -35,7 +35,6 @@
 
 #include <string>
 #include <soci.h>
-#include <wallet/common/AbstractAccount.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 
 namespace ledger {

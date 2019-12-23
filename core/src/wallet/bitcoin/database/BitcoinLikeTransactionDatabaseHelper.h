@@ -33,8 +33,6 @@
 
 #include <soci.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <wallet/common/AbstractAccount.hpp>
-#include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 
 namespace ledger {
     namespace core {

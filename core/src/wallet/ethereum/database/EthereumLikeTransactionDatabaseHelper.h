@@ -34,7 +34,6 @@
 
 #include <string>
 #include <soci.h>
-#include <wallet/common/AbstractAccount.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 
 namespace ledger {
