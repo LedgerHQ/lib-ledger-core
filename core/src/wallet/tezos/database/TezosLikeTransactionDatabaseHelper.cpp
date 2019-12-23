@@ -115,13 +115,13 @@ namespace ledger {
         }
 
         std::string TezosLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
-                                                                       const std::shared_ptr<AbstractAccount> &account,
+                                                                       const std::string &accountUid,
                                                                        const TezosLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([](const TezosLikeBlockchainExplorer::Block &block) {
                 return block.getUid();
             });
 
-            auto tezosTxUid = createTezosTransactionUid(account->getAccountUid(), tx.hash, tx.type);
+            auto tezosTxUid = createTezosTransactionUid(accountUid, tx.hash, tx.type);
 
             if (transactionExists(sql, tezosTxUid)) {
                 // UPDATE (we only update block information)

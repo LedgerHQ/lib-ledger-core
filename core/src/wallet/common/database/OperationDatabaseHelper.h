@@ -42,7 +42,6 @@ namespace ledger {
         class OperationDatabaseHelper {
         public:
             static bool putOperation(soci::session& sql,
-                                     const std::shared_ptr<AbstractAccount> &account,
                                      const Operation& operation);
             static std::string createUid(const std::string& accountUid,
                                          const std::string& txId,
@@ -56,7 +55,6 @@ namespace ledger {
                                                std::function<bool (const std::string& address)> filter);
         private:
             static void updateCurrencyOperation(soci::session& sql,
-                                                const std::shared_ptr<AbstractAccount> &account,
                                                 const Operation& operation,
                                                 bool insert);
         };

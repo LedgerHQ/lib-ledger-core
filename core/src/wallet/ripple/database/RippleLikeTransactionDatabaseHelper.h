@@ -57,7 +57,7 @@ namespace ledger {
                                                           const std::string &txHash);
 
             static std::string putTransaction(soci::session &sql,
-                                              const std::shared_ptr<AbstractAccount> &account,
+                                              const std::string &accountUid,
                                               const RippleLikeBlockchainExplorerTransaction &tx);
         };
     }

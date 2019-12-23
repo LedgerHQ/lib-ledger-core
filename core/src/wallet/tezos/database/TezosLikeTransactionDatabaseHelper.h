@@ -60,7 +60,7 @@ namespace ledger {
                                                          api::TezosOperationTag type);
 
             static std::string putTransaction(soci::session &sql,
-                                              const std::shared_ptr<AbstractAccount> &account,
+                                              const std::string &accountUid,
                                               const TezosLikeBlockchainExplorerTransaction &tx);
         };
     }

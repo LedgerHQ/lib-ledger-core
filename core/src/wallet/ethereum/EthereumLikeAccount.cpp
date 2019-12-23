@@ -134,7 +134,7 @@ namespace ledger {
 
                 operation.type = ty;
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, shared_from_this(), operation);
+                OperationDatabaseHelper::putOperation(sql, operation);
                 updateERC20Accounts(sql, operation);
                 updateInternalTransactions(sql, operation);
             };

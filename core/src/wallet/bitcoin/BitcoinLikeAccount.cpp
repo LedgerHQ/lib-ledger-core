@@ -88,27 +88,27 @@ namespace ledger {
 
         void
         BitcoinLikeAccount::inflateOperation(Operation &out,
-                                             const std::shared_ptr<const AbstractWallet>& wallet,
                                              const BitcoinLikeBlockchainExplorerTransaction &tx) {
             out.accountUid = getAccountUid();
             out.block = tx.block;
             out.bitcoinTransaction = Option<BitcoinLikeBlockchainExplorerTransaction>(tx);
+            // Set accountUid of bitcoin outputs
+            for (auto &output : out.bitcoinTransaction.getValue().outputs) {
+                if (output.address.hasValue() && getKeychain()->contains(output.address.getValue())) {
+                    output.accountUid = getAccountUid();
+                }
+            }
             out.currencyName = getWallet()->getCurrency().name;
             out.walletType = getWalletType();
-            out.walletUid = wallet->getWalletUid();
+            out.walletUid = getWallet()->getWalletUid();
             out.date = tx.receivedAt;
             if (out.block.nonEmpty())
-                out.block.getValue().currencyName = wallet->getCurrency().name;
+                out.block.getValue().currencyName = getWallet()->getCurrency().name;
             out.bitcoinTransaction.getValue().block = out.block;
         }
 
         int BitcoinLikeAccount::putTransaction(soci::session &sql,
                                                const BitcoinLikeBlockchainExplorerTransaction &transaction) {
-            auto wallet = getWallet();
-            auto self = shared_from_this();
-            if (wallet == nullptr) {
-                throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
-            }
             if (transaction.block.nonEmpty())
                 putBlock(sql, transaction.block.getValue());
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
@@ -185,7 +185,7 @@ namespace ledger {
             strings::join(senders, snds, ",");
 
             Operation operation;
-            inflateOperation(operation, wallet, transaction);
+            inflateOperation(operation, transaction);
             operation.senders = std::move(senders);
             operation.recipients = std::move(recipients);
             operation.fees = std::move(BigInt().assignI64(fees));
@@ -193,7 +193,7 @@ namespace ledger {
             operation.date = transaction.receivedAt;
 
             // Compute trust
-            computeOperationTrust(operation, wallet, transaction);
+            computeOperationTrust(operation, transaction);
 
             if (accountInputs.size() > 0) {
                 // Create a send operation
@@ -208,7 +208,7 @@ namespace ledger {
                 operation.amount.assignI64(sentAmount);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, self, operation))
+                if (OperationDatabaseHelper::putOperation(sql, operation))
                     emitNewOperationEvent(operation);
             }
 
@@ -234,7 +234,7 @@ namespace ledger {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
                     operation.refreshUid();
-                    if (OperationDatabaseHelper::putOperation(sql, self, operation))
+                    if (OperationDatabaseHelper::putOperation(sql, operation))
                         emitNewOperationEvent(operation);
                 }
             }
@@ -243,7 +243,7 @@ namespace ledger {
         }
 
         void
-        BitcoinLikeAccount::computeOperationTrust(Operation &operation, const std::shared_ptr<const AbstractWallet> &wallet,
+        BitcoinLikeAccount::computeOperationTrust(Operation &operation,
                                                   const BitcoinLikeBlockchainExplorerTransaction &tx) {
             if (tx.block.nonEmpty()) {
                 auto txBlockHeight = tx.block.getValue().height;

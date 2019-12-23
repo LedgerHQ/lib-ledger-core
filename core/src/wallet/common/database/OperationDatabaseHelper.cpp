@@ -55,7 +55,6 @@ namespace ledger {
         }
 
         bool OperationDatabaseHelper::putOperation(soci::session &sql,
-                                                   const std::shared_ptr<AbstractAccount> &account,
                                                    const Operation &operation) {
             auto count = 0;
             std::string serializedTrust;
@@ -73,7 +72,7 @@ namespace ledger {
                         , use(blockUid)
                         , use(serializedTrust)
                         , use(operation.uid);
-                updateCurrencyOperation(sql, account, operation, newOperation);
+                updateCurrencyOperation(sql, operation, newOperation);
                 return false;
             } else {
                 auto type = api::to_string(operation.type);
@@ -95,7 +94,7 @@ namespace ledger {
                         , use(hexFees), use(blockUid)
                         , use(operation.currencyName), use(serializedTrust);
 
-                updateCurrencyOperation(sql, account, operation, newOperation);
+                updateCurrencyOperation(sql, operation, newOperation);
                 return true;
             }
 
@@ -104,29 +103,28 @@ namespace ledger {
 
         void
         OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql,
-                                                         const std::shared_ptr<AbstractAccount> &account,
                                                          const Operation &operation,
                                                          bool insert) {
             if (operation.bitcoinTransaction.nonEmpty()) {
                 auto operationValue = operation.bitcoinTransaction.getValue();
-                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, account, operationValue);
+                auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert)
                     sql << "INSERT INTO bitcoin_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(btcTxUid), use(operationValue.hash);
             } else if (operation.ethereumTransaction.nonEmpty()) {
                 auto operationValue = operation.ethereumTransaction.getValue();
-                auto ethTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, account, operationValue);
+                auto ethTxUid = EthereumLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
                     sql << "INSERT INTO ethereum_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(ethTxUid), use(operationValue.hash);
                 }
             } else if (operation.rippleTransaction.nonEmpty()) {
                 auto operationValue = operation.rippleTransaction.getValue();
-                auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, account, operationValue);
+                auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
                     sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(rippleTxUid), use(operationValue.hash);
                 }
             } else if (operation.tezosTransaction.nonEmpty()) {
                 auto operationValue = operation.tezosTransaction.getValue();
-                auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, account, operationValue);
+                auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
                     sql << "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(tezosTxUid), use(operationValue.hash);
                 }

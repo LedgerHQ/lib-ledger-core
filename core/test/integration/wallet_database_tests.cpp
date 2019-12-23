@@ -102,13 +102,11 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
     auto currencyName = "bitcoin";
     auto configuration = DynamicObject::newInstance();
 
-    auto walletName = "my_wallet";
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, walletName, currencyName, configuration, 0, XPUB_1);
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
     auto transaction = JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION);
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
-    auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wait(pool->getWallet(walletName))->getAccount(0))->asBitcoinLikeAccount());
-    BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, account, *transaction);
+    BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, acc.getAccountUid(), *transaction);
 
     BitcoinLikeBlockchainExplorerTransaction dbTransaction;
     if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction->hash, acc.getAccountUid(), dbTransaction)) {
@@ -130,8 +128,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     auto currencyName = "bitcoin";
     auto configuration = DynamicObject::newInstance();
 
-    auto walletName = "my_wallet";
-    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, walletName, currencyName, configuration, 0, XPUB_1);
+    BitcoinLikeWalletDatabase db = newBitcoinAccount(pool, "my_wallet", currencyName, configuration, 0, XPUB_1);
     std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION),
             *JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION_2),
@@ -139,15 +136,15 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     };
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     sql.begin();
-    auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wait(pool->getWallet(walletName))->getAccount(0))->asBitcoinLikeAccount());
+    BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
     for (auto& transaction : transactions) {
-        BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, account, transaction);
+        BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, acc.getAccountUid(), transaction);
     }
     sql.commit();
 
     for (auto& transaction : transactions) {
         BitcoinLikeBlockchainExplorerTransaction dbTx;
-        if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction.hash, account->getAccountUid(), dbTx)) {
+        if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction.hash, acc.getAccountUid(), dbTx)) {
             EXPECT_EQ(transaction.hash, dbTx.hash);
             EXPECT_EQ(transaction.lockTime, dbTx.lockTime);
             EXPECT_EQ(transaction.receivedAt.time_since_epoch().count(), dbTx.receivedAt.time_since_epoch().count());

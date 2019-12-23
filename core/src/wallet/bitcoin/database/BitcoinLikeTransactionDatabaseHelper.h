@@ -42,11 +42,11 @@ namespace ledger {
         public:
             static bool transactionExists(soci::session& sql, const std::string& btcTxUid);
             static std::string putTransaction(soci::session& sql,
-                                              const std::shared_ptr<AbstractAccount> &account,
+                                              const std::string &accountUid,
                                               const BitcoinLikeBlockchainExplorerTransaction& tx);
             static inline void insertOutput(soci::session& sql,
-                                            const std::shared_ptr<AbstractAccount> &account,
                                             const std::string& btcTxUid,
+                                            const std::string &accountUid,
                                             const std::string& transactionHash,
                                             const BitcoinLikeBlockchainExplorerOutput& output);
             static inline void insertInput(soci::session& sql,

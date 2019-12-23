@@ -55,13 +55,13 @@ namespace ledger {
         }
 
         std::string BitcoinLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
-                                                                         const std::shared_ptr<AbstractAccount> &account,
+                                                                         const std::string &accountUid,
                                                                          const BitcoinLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
                                    return block.getUid();
                                });
 
-            auto btcTxUid = createBitcoinTransactionUid(account->getAccountUid(), tx.hash);
+            auto btcTxUid = createBitcoinTransactionUid(accountUid, tx.hash);
 
             if (transactionExists(sql, btcTxUid)) {
                 // UPDATE (we only update block information)
@@ -91,29 +91,28 @@ namespace ledger {
                         use(tx.lockTime);
                 // Insert outputs
                 for (const auto& output : tx.outputs) {
-                    insertOutput(sql, account, btcTxUid, tx.hash, output);
+                    insertOutput(sql, btcTxUid, accountUid, tx.hash, output);
                 }
                 // Insert inputs
                 for (const auto& input : tx.inputs) {
-                    insertInput(sql, btcTxUid, account->getAccountUid(), tx.hash, input);
+                    insertInput(sql, btcTxUid, accountUid, tx.hash, input);
                 }
                 return btcTxUid;
             }
         }
 
         void BitcoinLikeTransactionDatabaseHelper::insertOutput(soci::session &sql,
-                                                                const std::shared_ptr<AbstractAccount> &account,
                                                                 const std::string& btcTxUid,
+                                                                const std::string &accountUid,
                                                                 const std::string& transactionHash,
                                                                 const BitcoinLikeBlockchainExplorerOutput &output) {
             auto value = output.value.toUint64();
-            auto btcAccount = std::dynamic_pointer_cast<BitcoinLikeAccount>(account->asBitcoinLikeAccount());
-            if (btcAccount && output.address.hasValue() && btcAccount->getKeychain()->contains(output.address.getValue())) {
+            if (output.accountUid.hasValue() && output.accountUid.getValue() == accountUid) {
                 sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, :account_uid, :block_height)",
                         use(output.index), use(btcTxUid),
                         use(transactionHash), use(value),
                         use(output.script), use(output.address),
-                        use(account->getAccountUid()), use(output.blockHeight);
+                        use(accountUid), use(output.blockHeight);
             } else {
                 sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL, :block_height)",
                         use(output.index), use(btcTxUid),
@@ -236,7 +235,7 @@ namespace ledger {
             //bitcoin_outputs going to external accounts have NULL account_uid)
             auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
             rowset<soci::row> outputRows = (sql.prepare <<
-                    "SELECT idx, amount, script, address, transaction_uid, block_height FROM bitcoin_outputs WHERE transaction_hash = :hash AND transaction_uid = :tx_uid "
+                    "SELECT idx, amount, script, address, block_height FROM bitcoin_outputs WHERE transaction_hash = :hash AND transaction_uid = :tx_uid "
                     "ORDER BY idx", use(out.hash), use(btcTxUid)
             );
 
@@ -247,7 +246,7 @@ namespace ledger {
                 output.script = outputRow.get<std::string>(2);
                 output.address = outputRow.get<Option<std::string>>(3);
                 if (outputRow.get_indicator(4) != i_null) {
-                    output.blockHeight = row.get<BigInt>(5).toUint64();
+                    output.blockHeight = row.get<BigInt>(4).toUint64();
                 }
                 out.outputs.push_back(std::move(output));
             }

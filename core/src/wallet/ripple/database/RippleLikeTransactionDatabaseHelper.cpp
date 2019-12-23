@@ -115,13 +115,13 @@ namespace ledger {
         }
 
         std::string RippleLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
-                                                                        const std::shared_ptr<AbstractAccount> &account,
+                                                                        const std::string &accountUid,
                                                                         const RippleLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([](const RippleLikeBlockchainExplorer::Block &block) {
                 return block.getUid();
             });
 
-            auto rippleTxUid = createRippleTransactionUid(account->getAccountUid(), tx.hash);
+            auto rippleTxUid = createRippleTransactionUid(accountUid, tx.hash);
 
             if (transactionExists(sql, rippleTxUid)) {
                 // UPDATE (we only update block information)

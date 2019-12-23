@@ -103,7 +103,6 @@ namespace ledger {
         int RippleLikeAccount::putTransaction(soci::session &sql,
                                               const RippleLikeBlockchainExplorerTransaction &transaction) {
             auto wallet = getWallet();
-            auto self = shared_from_this();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
@@ -129,7 +128,7 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, self, operation)) {
+                if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     emitNewOperationEvent(operation);
                 }
                 result = FLAG_NEW_TRANSACTION;
@@ -139,7 +138,7 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, self, operation)) {
+                if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     emitNewOperationEvent(operation);
                 }
                 result = FLAG_NEW_TRANSACTION;
