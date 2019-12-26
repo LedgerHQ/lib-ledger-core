@@ -68,11 +68,9 @@ namespace ledger {
                 if (tx.block.nonEmpty()) {
                     sql << "UPDATE bitcoin_transactions SET block_uid = :uid WHERE hash = :tx_hash",
                             use(blockUid), use(tx.hash);
-                    for (auto &out : tx.outputs) {
-                        auto blockHeight = tx.block.getValue().height;
-                        sql << "UPDATE bitcoin_outputs SET block_height = :height WHERE transaction_hash = :tx_hash",
-                                use(blockHeight), use(tx.hash);
-                    }
+                    auto blockHeight = tx.block.getValue().height;
+                    sql << "UPDATE bitcoin_outputs SET block_height = :height WHERE transaction_hash = :tx_hash",
+                    use(blockHeight), use(tx.hash);
                 }
                 return btcTxUid;
             } else {
