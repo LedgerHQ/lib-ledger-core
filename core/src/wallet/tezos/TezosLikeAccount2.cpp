@@ -131,51 +131,72 @@ namespace ledger {
 
                         using TxsBulk = TezosLikeBlockchainExplorer::TransactionsBulk;
 
-                        static std::function<Future<Unit> (std::shared_ptr<TezosLikeAccount>, size_t)> getTxs =
-                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id) -> Future<Unit> {
+                        static std::function<Future<Unit> (std::shared_ptr<TezosLikeAccount>, size_t, void*)> getTxs =
+                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session) -> Future<Unit> {
                                     std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
-                                    // TODO: Get info of last fetched block
-                                    // For the moment we start synchro from the beginning
-                                    return account->_explorer->getTransactions(addresses)
-                                            .flatMap<Unit>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
-                                                auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
-                                                {
-                                                    soci::session sql(account->getWallet()->getDatabase()->getPool());
-                                                    soci::transaction tr(sql);
-                                                    for (auto &tx : bulk->transactions) {
-                                                        account->putTransaction(sql, tx, uid, addresses[0]);
-                                                    }
-                                                    tr.commit();
-                                                    if (id == account->_originatedAccounts.size() - 1) {
-                                                        return Future<Unit>::successful(Unit());
-                                                    }
-                                                }
-                                                return getTxs(account, id + 1);
-                                            }).recover(account->getContext(), [] (const Exception& ex) -> Unit {
-                                                throw ex;
-                                            });
-                                };
-                        return getTxs(self, 0);
-                    })
-                    .onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
-                        api::EventCode code;
-                        auto payload = std::make_shared<DynamicObject>();
-                        auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                                DateUtils::now() - startTime).count();
-                        payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
-                        if (result.isSuccess()) {
-                            code = api::EventCode::SYNCHRONIZATION_SUCCEED;
-                        } else {
-                            code = api::EventCode::SYNCHRONIZATION_FAILED;
-                            payload->putString(api::Account::EV_SYNC_ERROR_CODE,
-                                               api::to_string(result.getFailure().getErrorCode()));
-                            payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
-                            payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
-                        }
-                        eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
-                        std::lock_guard<std::mutex> lock(self->_synchronizationLock);
-                        self->_currentSyncEventBus = nullptr;
-                    });
+
+                                    // Get offset to not start sync from beginning
+                                    auto offset = session ? Future<std::vector<std::shared_ptr<api::Operation>>>::successful(std::vector<std::shared_ptr<api::Operation>>()) :
+                                            std::dynamic_pointer_cast<OperationQuery>(
+                                            account->_originatedAccounts[id]->queryOperations()->partial()
+                                            )->execute();
+
+                                    return offset.flatMap<Unit>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
+                                        // For the moment we start synchro from the beginning
+                                        auto getSession = session ? Future<void *>::successful(session) :
+                                                          account->_explorer->startSession();
+                                        return getSession.flatMap<Unit>(account->getContext(), [=] (void *s) {
+                                            return account->_explorer->getTransactions(addresses, std::to_string(ops.size()), s)
+                                                    .flatMap<Unit>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
+                                                        auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
+                                                        {
+                                                            soci::session sql(account->getWallet()->getDatabase()->getPool());
+                                                            soci::transaction tr(sql);
+                                                            for (auto &tx : bulk->transactions) {
+                                                                account->putTransaction(sql, tx, uid, addresses[0]);
+                                                            }
+                                                            tr.commit();
+                                                        }
+
+                                                        if (bulk->hasNext) {
+                                                            return getTxs(account, id, s);
+                                                        }
+
+                                                        if (id == account->_originatedAccounts.size() - 1) {
+                                                            return Future<Unit>::successful(Unit());
+                                                        }
+
+                                                        auto killSession = s ? Future<Unit>::successful(Unit()) :
+                                                                           account->_explorer->killSession(s);
+                                                        return killSession.flatMap<Unit>(account->getContext(), [=](const Unit&){
+                                                            return getTxs(account, id + 1, nullptr);
+                                                        });
+                                                    }).recover(account->getContext(), [] (const Exception& ex) -> Unit {
+                                                        throw ex;
+                                                    });
+                                        });
+                                    });
+                        };
+                        return getTxs(self, 0, nullptr);
+            }).onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+                api::EventCode code;
+                auto payload = std::make_shared<DynamicObject>();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                        DateUtils::now() - startTime).count();
+                payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                if (result.isSuccess()) {
+                    code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                } else {
+                    code = api::EventCode::SYNCHRONIZATION_FAILED;
+                    payload->putString(api::Account::EV_SYNC_ERROR_CODE,
+                                       api::to_string(result.getFailure().getErrorCode()));
+                    payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
+                    payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
+                }
+                eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                self->_currentSyncEventBus = nullptr;
+            });
             return eventPublisher->getEventBus();
         }
 
