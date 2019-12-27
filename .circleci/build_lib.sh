@@ -151,6 +151,7 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
 	export POSTGRES_USER=postgres
 	export POSTGRES_DB=test_db
 	if [ "$unamestr" == "Linux" ]; then
+		# This modification is done to avoid authentication
 		echo "======> Modify PostgreSQL configuration file ..."
 		sed 's/md5/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
 		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
