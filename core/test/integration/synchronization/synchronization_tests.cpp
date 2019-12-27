@@ -44,7 +44,6 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    configuration->putBoolean(api::PoolConfiguration::USE_PG_DATABASE, true);
     auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
 #else
     auto pool = newDefaultPool();

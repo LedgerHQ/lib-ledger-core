@@ -47,14 +47,14 @@ namespace ledger {
             return version;
         }
 
-        template <> bool migrate<-1>(soci::session& sql, int currentVersion, bool usingPostgreSql) {
+        template <> bool migrate<-1>(soci::session& sql, int currentVersion, api::DatabaseBackendType type) {
             return false;
         }
 
-        template <> void rollback<-1>(soci::session& sql, int currentVersion, bool usingPostgreSql) {
+        template <> void rollback<-1>(soci::session& sql, int currentVersion, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<0>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<0>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE __database_meta__("
                 "id INT PRIMARY KEY NOT NULL,"
                 "version INT NOT NULL"
@@ -63,11 +63,11 @@ namespace ledger {
             sql << "INSERT INTO __database_meta__(id, version) VALUES(0, 0)";
         }
 
-        template <> void rollback<0>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<0>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE __database_meta__";
         }
 
-        template <> void migrate<1>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<1>(soci::session& sql, api::DatabaseBackendType type) {
             // Pool table
             sql << "CREATE TABLE pools("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -206,7 +206,7 @@ namespace ledger {
                 ")";
         }
 
-        template <> void rollback<1>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<1>(soci::session& sql, api::DatabaseBackendType type) {
             // Bitcoin operation table
             sql << "DROP TABLE bitcoin_operations";
 
@@ -250,24 +250,24 @@ namespace ledger {
             sql << "DROP TABLE pools";
         }
 
-        template <> void migrate<2>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<2>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN timestamp_delay BIGINT DEFAULT 0";
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN sighash_type VARCHAR(255) DEFAULT 01";
         }
 
-        template <> void rollback<2>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<2>(soci::session& sql, api::DatabaseBackendType type) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<3>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<3>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN additional_BIPs TEXT DEFAULT ''";
         }
 
-        template <> void rollback<3>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<3>(soci::session& sql, api::DatabaseBackendType type) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<4>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<4>(soci::session& sql, api::DatabaseBackendType type) {
             auto count = 0;
             sql << "SELECT COUNT(*) FROM bitcoin_currencies WHERE identifier = 'dgb'", soci::into(count);
             if (count > 0) {
@@ -275,11 +275,11 @@ namespace ledger {
             }
         }
 
-        template <> void rollback<4>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<4>(soci::session& sql, api::DatabaseBackendType type) {
             // cannot rollback
         }
 
-        template <> void migrate<5>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<5>(soci::session& sql, api::DatabaseBackendType type) {
             // ETH currencies
             sql << "CREATE TABLE ethereum_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -359,7 +359,7 @@ namespace ledger {
 
         }
 
-        template <> void rollback<5>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<5>(soci::session& sql, api::DatabaseBackendType type) {
             // ERC20 tokens
             sql << "DROP TABLE erc20_tokens";
 
@@ -370,14 +370,18 @@ namespace ledger {
             sql << "DROP TABLE erc20_accounts";
 
             // ETH transactions and operations
-            if (usingPostgreSql) {
-                sql << "DROP TABLE ethereum_operations CASCADE";
-                sql << "DROP TABLE ethereum_transactions CASCADE";
-            } else {
-                sql << "DROP TABLE ethereum_operations";
-                sql << "DROP TABLE ethereum_transactions";
+            switch (type) {
+                case api::DatabaseBackendType ::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_operations CASCADE";
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_operations";
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
             }
-
             // ETH accounts
             sql << "DROP TABLE ethereum_accounts";
 
@@ -385,7 +389,7 @@ namespace ledger {
             sql << "DROP TABLE ethereum_currencies";
         }
 
-        template <> void migrate<6>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<6>(soci::session& sql, api::DatabaseBackendType type) {
 
             sql << "CREATE TABLE ripple_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -421,7 +425,7 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<6>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<6>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE ripple_operations";
 
             sql << "DROP TABLE ripple_transactions";
@@ -431,7 +435,7 @@ namespace ledger {
             sql << "DROP TABLE ripple_currencies";
         }
 
-        template <> void migrate<7>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<7>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE bech32_parameters("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "hrp VARCHAR(255) NOT NULL,"
@@ -442,11 +446,11 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<7>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<7>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE bech32_parameters";
         }
 
-        template <> void migrate<8>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<8>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE ripple_memos("
                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid) ON DELETE CASCADE,"
                    "data VARCHAR(1024),"
@@ -456,11 +460,11 @@ namespace ledger {
                    ")";
         }
 
-        template <> void rollback<8>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<8>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE ripple_memos";
         }
 
-        template <> void migrate<9>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<9>(soci::session& sql, api::DatabaseBackendType type) {
             // Since ALTER TABLE for changing data is non standard we have no choice but create a swap table, migrate all data from the legacy table to the swap and
             // then remove the legacy table and rename the swap table to the final table name. We are doing this to change input_data for ET and ERC txs data type from
             // VARCHAR(255) to TEXT since nothings prevents those fields to be bigger than 255 characters long.
@@ -486,11 +490,18 @@ namespace ledger {
              sql << "INSERT INTO eth_swap "
                 "SELECT transaction_uid, hash, nonce, value, block_uid, time, sender, receiver, input_data, gas_price, gas_limit, gas_used, confirmations, status "
                 "FROM ethereum_transactions";
-            if (usingPostgreSql) {
-                sql << "DROP TABLE ethereum_transactions CASCADE";
-            } else {
-                sql << "DROP TABLE ethereum_transactions";
+
+            switch (type) {
+                case api::DatabaseBackendType ::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
             }
+
             sql << "ALTER TABLE eth_swap RENAME TO ethereum_transactions";
 
              // ERC20 operations
@@ -519,7 +530,7 @@ namespace ledger {
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
         }
 
-        template <> void rollback<9>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<9>(soci::session& sql, api::DatabaseBackendType type) {
              // ETH transactions
             sql << "CREATE TABLE eth_swap("
                 "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -541,11 +552,18 @@ namespace ledger {
              sql << "INSERT INTO eth_swap "
                 "SELECT transaction_uid, hash, nonce, value, block_uid, time, sender, receiver, input_data, gas_price, gas_limit, gas_used, confirmations, status "
                 "FROM ethereum_transactions";
-            if (usingPostgreSql) {
-                sql << "DROP TABLE ethereum_transactions CASCADE";
-            } else {
-                sql << "DROP TABLE ethereum_transactions";
+
+            switch (type) {
+                case api::DatabaseBackendType ::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
             }
+
             sql << "ALTER TABLE eth_swap RENAME TO ethereum_transactions";
 
              // ERC20 operations
@@ -574,15 +592,15 @@ namespace ledger {
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
         }
 
-        template <> void migrate<10>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<10>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE erc20_operations ADD COLUMN block_height BIGINT";
         }
 
-        template <> void rollback<10>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<10>(soci::session& sql, api::DatabaseBackendType type) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<11>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<11>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE tezos_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
@@ -640,7 +658,7 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<11>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<11>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE tezos_originated_operations";
 
             sql << "DROP TABLE tezos_originated_accounts";
@@ -654,7 +672,7 @@ namespace ledger {
             sql << "DROP TABLE tezos_currencies";
         }
 
-        template <> void migrate<12>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<12>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE internal_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
                     "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
@@ -668,44 +686,44 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<12>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<12>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE internal_operations";
         }
 
-        template <> void migrate<13>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<13>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_outputs ADD COLUMN block_height BIGINT";
         }
 
-        template <> void rollback<13>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<13>(soci::session& sql, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<14>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<14>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE ripple_transactions ADD COLUMN sequence BIGINT";
         }
 
-        template <> void rollback<14>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<14>(soci::session& sql, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<15>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<15>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE ripple_transactions ADD COLUMN destination_tag BIGINT";
         }
 
-        template <> void rollback<15>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<15>(soci::session& sql, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<16>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<16>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE tezos_accounts RENAME COLUMN address TO public_key";
         }
 
-        template <> void rollback<16>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<16>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE tezos_accounts RENAME COLUMN public_key TO address";
         }
 
-        template <> void migrate<17>(soci::session& sql, bool usingPostgreSql) {
+        template <> void migrate<17>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE tezos_transactions ADD COLUMN status BIGINT";
         }
 
-        template <> void rollback<17>(soci::session& sql, bool usingPostgreSql) {
+        template <> void rollback<17>(soci::session& sql, api::DatabaseBackendType type) {
         }
     }
 }

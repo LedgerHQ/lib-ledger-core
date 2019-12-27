@@ -106,9 +106,4 @@ PoolConfiguration = interface +c {
     #
     # Set to true by default.
     const ENABLE_INTERNAL_LOGGING: string = "ENABLE_INTERNAL_LOGGING";
-
-    # Enable internal logging.
-    #
-    # Set to true by default.
-    const USE_PG_DATABASE: string = "USE_PG_DATABASE";
 }

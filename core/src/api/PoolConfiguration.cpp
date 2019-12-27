@@ -9,6 +9,4 @@ std::string const PoolConfiguration::DATABASE_NAME = {"DATABASE_NAME"};
 
 std::string const PoolConfiguration::ENABLE_INTERNAL_LOGGING = {"ENABLE_INTERNAL_LOGGING"};
 
-std::string const PoolConfiguration::USE_PG_DATABASE = {"USE_PG_DATABASE"};
-
 } } }  // namespace ledger::core::api

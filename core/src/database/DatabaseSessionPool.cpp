@@ -31,6 +31,7 @@
 
 #include "DatabaseSessionPool.hpp"
 #include "migrations.hpp"
+#include "PostgreSQLBackend.h"
 
 namespace ledger {
     namespace core {
@@ -39,9 +40,8 @@ namespace ledger {
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
-            const std::string &password,
-            bool usingPostgreSQLDatabase
-        ) : _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            const std::string &password) :
+            _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
@@ -56,8 +56,8 @@ namespace ledger {
                     session.set_log_stream(_logger);
             }
 
-            _usingPostgreSQL = usingPostgreSQLDatabase;
-
+            _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
+                    api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
             // Migrate database
             performDatabaseMigration();
         }
@@ -72,11 +72,10 @@ namespace ledger {
                                             const std::shared_ptr<api::PathResolver> &resolver,
                                             const std::shared_ptr<spdlog::logger> &logger,
                                             const std::string &dbName,
-                                            const std::string &password,
-                                            bool usingPostgreSQL) {
-            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password, usingPostgreSQL] () {
+                                            const std::string &password) {
+            return FuturePtr<DatabaseSessionPool>::async(context, [backend, resolver, dbName, logger, password] () {
                 auto pool = std::shared_ptr<DatabaseSessionPool>(new DatabaseSessionPool(
-                    backend, resolver, logger, dbName, password, usingPostgreSQL
+                    backend, resolver, logger, dbName, password
                 ));
 
                 return pool;
@@ -92,7 +91,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _usingPostgreSQL);
+            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _type);
             tr.commit();
         }
 
@@ -101,7 +100,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _usingPostgreSQL);
+            rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _type);
             tr.commit();
         }
 

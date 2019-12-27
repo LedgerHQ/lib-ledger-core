@@ -37,6 +37,7 @@
 #include <async/Future.hpp>
 #include <database/DatabaseBackend.hpp>
 #include <debug/LoggerStreamBuffer.h>
+#include <api/DatabaseBackendType.hpp>
 
 namespace ledger {
     namespace core {
@@ -46,8 +47,7 @@ namespace ledger {
                                 const std::shared_ptr<api::PathResolver> &resolver,
                                 const std::shared_ptr<spdlog::logger> &logger,
                                 const std::string &dbName,
-                                const std::string &password,
-                                bool usingPostgreSQLDatabase);
+                                const std::string &password);
             soci::connection_pool& getPool();
             ~DatabaseSessionPool();
 
@@ -57,8 +57,7 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver> &resolver,
                 const std::shared_ptr<spdlog::logger> &logger,
                 const std::string &dbName,
-                const std::string &password = "",
-                bool usingPostgreSQL = false
+                const std::string &password = ""
             );
 
             static const int CURRENT_DATABASE_SCHEME_VERSION = 17;
@@ -73,7 +72,7 @@ namespace ledger {
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;
-            bool _usingPostgreSQL;
+            api::DatabaseBackendType _type;
         };
     }
 }
