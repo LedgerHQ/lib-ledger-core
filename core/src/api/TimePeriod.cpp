@@ -8,6 +8,7 @@ namespace ledger { namespace core { namespace api {
 
 std::string to_string(const TimePeriod& timePeriod) {
     switch (timePeriod) {
+        case TimePeriod::HOUR: return "HOUR";
         case TimePeriod::DAY: return "DAY";
         case TimePeriod::WEEK: return "WEEK";
         case TimePeriod::MONTH: return "MONTH";
@@ -15,7 +16,8 @@ std::string to_string(const TimePeriod& timePeriod) {
 };
 template <>
 TimePeriod from_string(const std::string& timePeriod) {
-    if (timePeriod == "DAY") return TimePeriod::DAY;
+    if (timePeriod == "HOUR") return TimePeriod::HOUR;
+    else if (timePeriod == "DAY") return TimePeriod::DAY;
     else if (timePeriod == "WEEK") return TimePeriod::WEEK;
     else return TimePeriod::MONTH;
 };
@@ -23,6 +25,7 @@ TimePeriod from_string(const std::string& timePeriod) {
 std::ostream &operator<<(std::ostream &os, const TimePeriod &o)
 {
     switch (o) {
+        case TimePeriod::HOUR:  return os << "HOUR";
         case TimePeriod::DAY:  return os << "DAY";
         case TimePeriod::WEEK:  return os << "WEEK";
         case TimePeriod::MONTH:  return os << "MONTH";
