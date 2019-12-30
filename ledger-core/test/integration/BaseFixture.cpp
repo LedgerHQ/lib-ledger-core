@@ -141,6 +141,12 @@ std::shared_ptr<Services> BaseFixture::newDefaultServices(
     );
 }
 
+std::shared_ptr<WalletStore> BaseFixture::newWalletStore(
+    const std::shared_ptr<Services>& services
+) {
+    return std::make_shared<WalletStore>(services);
+}
+
 void BaseFixture::createWallet(
     const std::shared_ptr<Services> &services,
     const std::string &walletName,
