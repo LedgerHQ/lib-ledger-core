@@ -1,3 +1,4 @@
+#include <core/wallet/CurrenciesDatabaseHelper.hpp>
 #include <core/wallet/WalletDatabaseHelper.hpp>
 #include <core/wallet/WalletStore.hpp>
 
@@ -6,6 +7,60 @@ namespace ledger {
         WalletStore::WalletStore(std::shared_ptr<Services> const& services):
             DedicatedContext(services->getDispatcher()->getSerialExecutionContext("wallet_store_queue")),
             _services(services) {
+        }
+
+        Option<api::Currency> WalletStore::getCurrency(std::string const& name) const {
+            for (auto& currency : _currencies) {
+                if (currency.name == name)
+                    return Option<api::Currency>(currency);
+            }
+
+            return Option<api::Currency>();
+        }
+
+        std::vector<api::Currency> const& WalletStore::getCurrencies() const {
+            return _currencies;
+        }
+
+        Future<Unit> WalletStore::addCurrency(api::Currency const& currency) {
+            auto self = shared_from_this();
+
+            return async<Unit>([=] () {
+                auto factory = self->getFactory(currency.name);
+                if (factory != nullptr) {
+                    throw Exception(api::ErrorCode::CURRENCY_ALREADY_EXISTS, fmt::format("Currency '{}' already exists.", currency.name));
+                }
+
+                soci::session sql(self->_services->getDatabaseSessionPool()->getPool());
+                CurrenciesDatabaseHelper::insertCurrency(sql, currency);
+
+                self->_currencies.push_back(currency);
+                return unit;
+            });
+        }
+
+        Future<Unit> WalletStore::removeCurrency(std::string const& currencyName) {
+            auto self = shared_from_this();
+
+            return async<Unit>([=] () {
+                auto factory = self->getFactory(currencyName);
+                if (factory == nullptr) {
+                    throw Exception(api::ErrorCode::CURRENCY_NOT_FOUND, fmt::format("Currency '{}' not found.", currencyName));
+                }
+
+                soci::session sql(self->_services->getDatabaseSessionPool()->getPool());
+                CurrenciesDatabaseHelper::removeCurrency(sql, currencyName);
+
+                auto cIt = std::find_if(self->_currencies.begin(), self->_currencies.end(), [currencyName] (const api::Currency& currency) {
+                   return currencyName == currency.name;
+                });
+
+                if (cIt != _currencies.end()) {
+                    _currencies.erase(cIt);
+                }
+
+                return unit;
+            });
         }
 
         Future<int64_t> WalletStore::getWalletCount() const {

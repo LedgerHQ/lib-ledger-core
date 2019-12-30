@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include <core/Services.hpp>
+#include <core/api/Currency.hpp>
 #include <core/api/ErrorCode.hpp>
 #include <core/api/DynamicObject.hpp>
 #include <core/async/DedicatedContext.hpp>
@@ -29,6 +30,9 @@ namespace ledger {
             // Wallets
             std::unordered_map<std::string, std::shared_ptr<AbstractWallet>> _wallets;
 
+            // Currencies
+            std::vector<api::Currency> _currencies;
+
             // Event filter variables
             std::mutex _eventFilterMutex;
             std::unordered_map<std::string, int64_t> _lastEmittedBlocks;
@@ -38,6 +42,12 @@ namespace ledger {
             ~WalletStore() = default;
 
             WalletStore(std::shared_ptr<Services> const& services);
+
+            // Currencies
+            Option<api::Currency> getCurrency(std::string const& name) const;
+            std::vector<api::Currency> const& getCurrencies() const;
+            Future<Unit> addCurrency(api::Currency const& currency);
+            Future<Unit> removeCurrency(std::string const& currencyName);
 
             // Fetch wallet
             Future<int64_t> getWalletCount() const;
