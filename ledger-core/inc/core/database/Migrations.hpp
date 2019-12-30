@@ -61,21 +61,11 @@ namespace ledger {
         }
 
         template <int version, typename T>
-        bool migrate(soci::session& sql, int currentVersion) {
-            bool previousResult = migrate<version - 1, T>(sql, currentVersion);
-
-            if (currentVersion < version) {
-                migrate<version, T>(sql);
-                sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(version);
-
-                return true;
-            }
-
-            return previousResult;
+        void migrate(soci::session& sql, int currentVersion) {
         };
 
         template <int version, typename T>
-        void rollback(soci::session& sql) {
+        void rollback(soci::session&) {
         }
 
         /// Migration system.
@@ -95,7 +85,14 @@ namespace ledger {
               if (currentVersion < version) {
                   Migration<version - 1, T>::forward(sql, currentVersion);
                   migrate<version, T>(sql);
-                  sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(version);
+
+                  if (version == 1) {
+                      sql << "INSERT INTO __database_meta__ (id, version)"
+                          "VALUES (:id, 1)",
+                          soci::use(T::COIN_ID);
+                  } else {
+                      sql << "UPDATE __database_meta__ SET version = :version where id = :id", soci::use(version), soci::use(T::COIN_ID);
+                  }
               }
           }
 
@@ -105,10 +102,10 @@ namespace ledger {
                   // we’re in sync with the database; perform the rollback normally
                   rollback<version, T>(sql);
 
-                  if (version >= 0) {
+                  if (currentVersion >= 0) {
                       // after rolling back this migration, we won’t have anything left, so we only
                       // update the version for > 0
-                      if (version != 0) {
+                      if (currentVersion != 0) {
                           auto prevVersion = version - 1;
                           sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(prevVersion);
                       }
@@ -129,12 +126,10 @@ namespace ledger {
 
         template <typename T>
         struct Migration<0, T> final {
-           static void forward(soci::session& sql, int currentVersion) {
-               sql << "INSERT INTO __database_meta__(id, version) VALUES(:id, 0)", soci::use(T::COIN_ID);
+           static void forward(soci::session&, int) {
            }
 
-           static void backward(soci::session& sql, int currentVersion) {
-               sql << "DELETE FROM __database_meta__ where id = :id", soci::use(T::COIN_ID);
+           static void backward(soci::session&, int) {
            }
         };
 
