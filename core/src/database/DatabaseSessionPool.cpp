@@ -31,7 +31,9 @@
 
 #include "DatabaseSessionPool.hpp"
 #include "migrations.hpp"
-#include "PostgreSQLBackend.h"
+#ifdef PG_SUPPORT
+    #include "PostgreSQLBackend.h"
+#endif
 
 namespace ledger {
     namespace core {
@@ -55,9 +57,12 @@ namespace ledger {
                 if (_logger != nullptr)
                     session.set_log_stream(_logger);
             }
-
+#ifdef PG_SUPPORT
             _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
                     api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
+#else
+            _type = api::DatabaseBackendType::SQLITE3;
+#endif
             // Migrate database
             performDatabaseMigration();
         }

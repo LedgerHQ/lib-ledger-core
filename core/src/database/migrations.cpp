@@ -371,7 +371,7 @@ namespace ledger {
 
             // ETH transactions and operations
             switch (type) {
-                case api::DatabaseBackendType ::POSTGRESQL: {
+                case api::DatabaseBackendType::POSTGRESQL: {
                     sql << "DROP TABLE ethereum_operations CASCADE";
                     sql << "DROP TABLE ethereum_transactions CASCADE";
                     break;
@@ -492,7 +492,7 @@ namespace ledger {
                 "FROM ethereum_transactions";
 
             switch (type) {
-                case api::DatabaseBackendType ::POSTGRESQL: {
+                case api::DatabaseBackendType::POSTGRESQL: {
                     sql << "DROP TABLE ethereum_transactions CASCADE";
                     break;
                 }
@@ -554,7 +554,7 @@ namespace ledger {
                 "FROM ethereum_transactions";
 
             switch (type) {
-                case api::DatabaseBackendType ::POSTGRESQL: {
+                case api::DatabaseBackendType::POSTGRESQL: {
                     sql << "DROP TABLE ethereum_transactions CASCADE";
                     break;
                 }

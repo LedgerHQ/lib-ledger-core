@@ -31,9 +31,7 @@
 #include "PostgreSQLBackend.h"
 #include <utils/Exception.hpp>
 #include <api/ConfigurationDefaults.hpp>
-#ifdef PG_SUPPORT
-    #include <soci-postgresql.h>
-#endif
+#include <soci-postgresql.h>
 using namespace soci;
 
 namespace ledger {
@@ -64,11 +62,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Database should be initiated before setting password.");
             }
             session.close();
-#ifdef PG_SUPPORT
             session.open(*soci::factory_postgresql(), _dbName);
-#else
-            throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "Libcore should be compiled with PG_SUPPORT flag.");
-#endif
         }
 
         void PostgreSQLBackend::changePassword(const std::string & oldPassword,

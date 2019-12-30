@@ -33,6 +33,11 @@ list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM SRC_FILES dummy.cpp)
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
+if (NOT PG_SUPPORT)
+    list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.cpp)
+    list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.h)
+endif()
+
 add_library(ledger-core-interface INTERFACE)
 
 target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
