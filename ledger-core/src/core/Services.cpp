@@ -167,6 +167,10 @@ namespace ledger {
             return _publisher->getEventBus();
         }
 
+        std::shared_ptr<EventPublisher> Services::getEventPublisher() const {
+            return _publisher;
+        }
+
         std::shared_ptr<WebSocketClient> Services::getWebSocketClient() const {
             return _wsClient;
         }
