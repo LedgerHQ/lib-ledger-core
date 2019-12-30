@@ -90,9 +90,9 @@ namespace ledger {
             // if the database doesn’t exist, we need to create its structure
             if (version == -1) {
               setupMigrations(sql);
-              version = getDatabaseMigrationVersion<CoreMigration>(sql);
             }
 
+            // play migrations
             soci::transaction tr(sql);
             Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
 
