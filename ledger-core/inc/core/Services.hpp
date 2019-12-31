@@ -114,6 +114,7 @@ namespace ledger {
             std::shared_ptr<DatabaseSessionPool> getDatabaseSessionPool() const;
             std::shared_ptr<DynamicObject> getConfiguration() const;
             std::shared_ptr<api::EventBus> getEventBus() const;
+            std::shared_ptr<EventPublisher> getEventPublisher() const;
             Future<api::Block> getLastBlock(const std::string &currencyName);
             const std::string& getTenant() const;
             const std::string getPassword() const;

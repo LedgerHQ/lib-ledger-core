@@ -35,14 +35,6 @@
 #include <soci.h>
 #include <unordered_set>
 
-#include <async/AsyncWait.hpp>
-#include <async/QtThreadDispatcher.hpp>
-#include <net/QtHttpClient.hpp>
-#include <CoutLogPrinter.hpp>
-#include <FakeWebSocketClient.hpp>
-#include <NativePathResolver.hpp>
-#include <OpenSSLRandomNumberGenerator.hpp>
-
 #include <core/Services.hpp>
 #include <core/api/Account.hpp>
 #include <core/api/AccountCreationInfo.hpp>
@@ -55,6 +47,15 @@
 #include <core/wallet/AccountDatabaseHelper.hpp>
 #include <core/wallet/CurrencyBuilder.hpp>
 #include <core/wallet/WalletDatabaseHelper.hpp>
+#include <core/wallet/WalletStore.hpp>
+
+#include <async/AsyncWait.hpp>
+#include <async/QtThreadDispatcher.hpp>
+#include <net/QtHttpClient.hpp>
+#include <CoutLogPrinter.hpp>
+#include <FakeWebSocketClient.hpp>
+#include <NativePathResolver.hpp>
+#include <OpenSSLRandomNumberGenerator.hpp>
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::qt; // Djeez
@@ -87,6 +88,10 @@ public:
     std::shared_ptr<Services> newDefaultServices(
         const std::string &tenant = "default_tenant",
         const std::string &password = "test"
+    );
+
+    std::shared_ptr<WalletStore> newWalletStore(
+        const std::shared_ptr<Services>& services
     );
 
     void createWallet(
