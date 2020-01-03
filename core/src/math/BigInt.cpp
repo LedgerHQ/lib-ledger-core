@@ -431,7 +431,7 @@ namespace ledger {
             auto size = i.backend().size();
             auto *limbs = i.backend().limbs();
 
-            // Here is the weird part. Boost is ividing the number into "limbs", the limbs size may differ depending on the
+            // Here is the weird part. Boost is dividing the number into "limbs", the limbs size may differ depending on the
             // platform but there are always ordered like little endian (the least significant limb is always first).
             // We can't forget that limb endianness depends on the architecture. To avoid having to perform multiple
             // swaps for every architecture we forces the whole limb "byte array" to be ordered like a bit uint256 in little endian
