@@ -66,6 +66,9 @@ namespace ledger {
                 std::shared_ptr<api::DynamicObject> const& configuration
             );
 
+            // Deletion
+            Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
+
             // Factories
 
             // Register a factory for a given currency. Return true if registered and false if
