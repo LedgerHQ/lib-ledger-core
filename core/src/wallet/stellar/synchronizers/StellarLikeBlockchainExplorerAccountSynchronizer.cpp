@@ -101,11 +101,8 @@ namespace ledger {
                 const Option<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState> &state) {
             auto address = account->getKeychain()->getAddress()->toString();
             auto transactionCursor = state.flatMap<std::string>([] (const SavedState& s) {
-                return s.transactionPagingToken.empty() ?
-                        Option<std::string>()
-                        : Option<std::string>(s.transactionPagingToken);
+                return s.transactionPagingToken.empty() ? Option<std::string>() : Option<std::string>(s.transactionPagingToken);
             });
-
 
             auto self = shared_from_this();
             _explorer->getTransactions(address, transactionCursor).onComplete(account->getContext(), [=] (const Try<stellar::TransactionVector>& txs) {
@@ -131,7 +128,6 @@ namespace ledger {
                     } else {
                         self->synchronizeOperations(account, newState);
                     }
-
                 }
             });
         }
@@ -167,7 +163,6 @@ namespace ledger {
                     } else {
                         self->endSynchronization();
                     }
-
                 }
             });
         }

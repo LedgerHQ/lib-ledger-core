@@ -187,7 +187,7 @@ namespace ledger {
             };
 
             void attach(const std::shared_ptr<api::HttpUrlConnection>& connection) {
-                _error.statusCode = (uint32_t) connection->getStatusCode();
+                _error.statusCode = static_cast<uint32_t>(connection->getStatusCode());
                 _error.statusMessage = connection->getStatusText();
             }
 
