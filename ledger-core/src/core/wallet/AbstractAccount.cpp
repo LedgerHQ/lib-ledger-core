@@ -56,7 +56,8 @@ namespace ledger {
                ->getSubPreferences(fmt::format("account_{}", index))
            ),
            _loggerApi(std::make_shared<LoggerApi>(_logger)),
-           _mainExecutionContext(services->getDispatcher()->getMainExecutionContext()) {
+           _mainExecutionContext(services->getDispatcher()->getMainExecutionContext()),
+           _wallet(wallet) {
            _publisher = std::make_shared<EventPublisher>(getContext());
         }
 
