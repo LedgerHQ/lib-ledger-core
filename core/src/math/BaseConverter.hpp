@@ -41,7 +41,7 @@
 namespace ledger {
     namespace core {
         /**
-         * An helper class to encode/decode byte array to an arbitraty base.
+         * An helper class to encode/decode byte array to an arbitraty base. Using RFC4648 as base algorithm.
          */
         class BaseConverter {
         public:
@@ -66,30 +66,17 @@ namespace ledger {
                  * The dictionary of characters used to encode to the given base. Each character must be ordered depending
                  * on their underlying numeric value for example the decimal alphabet is "0123456789"
                  */
-                char dictionnary[Base];
-
-                /**
-                 * Size in bits of each blocks of data to encode.
-                 */
-                int blockBitSize;
-
-                /**
-                 * Size in bits of each value in blocks.
-                 */
-                int valueBitSize;
+                char dictionary[Base];
 
                 PaddingPolicy padder;
-
 
                 CharNormalizer normalizeChar;
 
                 Params(const char dict[Base], const CharNormalizer &normalizer, const PaddingPolicy& padding)
-                    :   blockBitSize(BlockBitSize),
-                        valueBitSize(ValueBitSize),
-                        padder(padding),
+                    :   padder(padding),
                         normalizeChar(normalizer),
                         base(Base) {
-                    memcpy(dictionnary, dict, Base);
+                    memcpy(dictionary, dict, Base);
                 };
             };
 
@@ -109,6 +96,7 @@ namespace ledger {
              */
             template <int Base, int BlockBitSize, int ValueBitSize>
             static void decode(const std::string& string, const Params<Base, BlockBitSize, ValueBitSize>& params, std::vector<uint8_t>& out) {
+                static_assert(BlockBitSize >= 8, "Block bit size must be at least 8");
                 const auto blockCharSize = BlockBitSize / ValueBitSize;
                 const auto stringSize = string.size();
 
@@ -124,15 +112,15 @@ namespace ledger {
              * @param params The parameters used to encode the given bytes.
              * @return The encoded version of the given bytes.
              */
-            template <int Base, int BlockBitSize, int ValueBitSize>
+            template <int Base, int BlockBitSize, int ValueBitSize, int BlockByteSize = BlockBitSize / 8>
             static std::string encode(const std::vector<uint8_t>& bytes, const Params<Base, BlockBitSize, ValueBitSize>& params) {
-                const auto blockSize = BlockBitSize / 8;
-                uint8_t block[BlockBitSize / 8];
+                static_assert(BlockBitSize >= 8, "Block bit size must be at least 8");
+                uint8_t block[BlockByteSize];
                 std::stringstream ss;
                 auto offset = 0;
                 // Cut and encode input into blocks.
                 for (const auto& byte : bytes) {
-                    if (offset == blockSize) {
+                    if (offset == BlockByteSize) {
                         encodeBlock(block, offset, params, ss);
                         offset = 0;
                     }
@@ -144,20 +132,19 @@ namespace ledger {
             }
 
         private:
-            template <int Base, int BlockBitSize, int ValueBitSize>
+            template <int Base, int BlockBitSize, int ValueBitSize,
+                      int BlockByteSize = BlockBitSize / 8, int BitMask = (1u << ValueBitSize) - 1>
             static void encodeBlock(const uint8_t* block, int size, const Params<Base, BlockBitSize, ValueBitSize>& params, std::stringstream& ss) {
-                const auto blockSize = BlockBitSize / 8;
-                const auto mask = (1 << ValueBitSize) - 1;
+                static_assert(BlockBitSize >= 8, "Block bit size must be at least 8");
                 int index = 0;
                 auto bufferSize = 8; // Size of remaining untouched bit on the current offset
                 auto offset = 0; // Index in the block
 
                 // Split the block into values of ValueBitSize bits. We'll use this value as an index into our dictionary.
-
                 for (auto remaining = size * 8; remaining > 0; remaining -= ValueBitSize) {
                     auto remainingBits = bufferSize - ValueBitSize;
                     if (remainingBits < 0) {
-                        // For the sake of understand what we are doing we set remainingBits to a positive value
+                        // For the sake of understanding what we are doing, we set remainingBits to a positive value
                         remainingBits = -remainingBits;
                         // Move the bits from the buffer to the index
                         auto bufferMask = (1 << bufferSize) - 1;
@@ -165,7 +152,7 @@ namespace ledger {
 
                         // Now we advance the cursor
                         offset += 1;
-                        bufferSize= 8 - remainingBits;
+                        bufferSize = 8 - remainingBits;
 
                         // If we don't overflow complete the index with missing bits
                         if (offset < size) {
@@ -173,14 +160,15 @@ namespace ledger {
                             index = index | ((block[offset] >> bufferSize) & missingBitsMask);
                         }
                     } else {
+                        // We have enough data for one block, extract BlockBitSize bit from block at the current offset
                         bufferSize = remainingBits;
-                        index = (block[offset] >> bufferSize) & mask;
+                        index = (block[offset] >> bufferSize) & BitMask;
                     }
-                    ss << params.dictionnary[index];
+                    ss << params.dictionary[index];
                 }
 
-                // Add padding if the actual size of the block is below blockSize
-                auto padding = blockSize - size;
+                // Add padding if the actual size of the block is below BlockByteSize
+                auto padding = BlockByteSize - size;
                 if (padding != 0)
                     params.padder(padding, ss);
             }
@@ -189,22 +177,30 @@ namespace ledger {
             static void decodeBlock(const char* str, int size, const Params<Base, BlockBitSize, ValueBitSize>& params, std::vector<uint8_t>& out) {
                 int buffer = 0;
                 int bufferSize = 0;
+                // Compute extraction mask for a ValueBitSize of 5:
+                // (1 << 5) = 00100000
+                // (1 <<  5) -1 = 00011111 (i.e if we mask a byte with it, it will only give the 5 last bit values)
                 int mask = (1 << ValueBitSize) - 1;
                 auto pullFromBuffer = [&] () {
                     if (bufferSize >= 8) {
                         bufferSize = bufferSize - 8;
+                        // Get the byte value from the buffer and push it in the output
                         auto value = (uint8_t)((buffer >> bufferSize) & 0xFF);
                         out.push_back(value);
+                        // Clean buffer
                         auto bufferMask = (1 << bufferSize) - 1;
                         buffer = buffer & bufferMask;
                     }
                 };
 
                 for (auto offset = 0; offset < size; offset++) {
+                    // Get block value from the character
                     auto value = getCharIndex(params.normalizeChar(str[offset]), params);
+                    // Invalid value marks the end of the decoding.
                     if (value == -1)
                         return;
 
+                    // Fill the buffer
                     buffer = (buffer << ValueBitSize) | (value & mask);
                     bufferSize += ValueBitSize;
                     pullFromBuffer();
@@ -215,7 +211,7 @@ namespace ledger {
             template <int Base, int BlockBitSize, int ValueBitSize>
             static int getCharIndex(char c, const Params<Base, BlockBitSize, ValueBitSize>& params) {
                 for (auto index = 0; index < Base; index++) {
-                    if (params.dictionnary[index] == c)
+                    if (params.dictionary[index] == c)
                         return index;
                 }
                 return -1;
