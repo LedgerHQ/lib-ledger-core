@@ -53,7 +53,7 @@ namespace ledger {
 
             signatureBase.insert(signatureBase.end(), networkId.begin(), networkId.end());
             signatureBase.insert(signatureBase.end(), encodedEnvType.begin(), encodedEnvType.end());
-            signatureBase.insert(signatureBase.end(), encodedTx.begin(), networkId.end());
+            signatureBase.insert(signatureBase.end(), encodedTx.begin(), encodedTx.end());
 
             return signatureBase;
         }

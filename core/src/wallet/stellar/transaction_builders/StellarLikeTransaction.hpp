@@ -42,10 +42,10 @@ namespace ledger {
         public:
             explicit StellarLikeTransaction(
                     const api::StellarLikeNetworkParameters& params,
-                    stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope) {};
+                    stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope), _params(params) {};
             explicit StellarLikeTransaction(
                     const api::StellarLikeNetworkParameters& params,
-                    const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope) {};
+                    const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope), _params(params) {};
             std::vector<uint8_t> toRawTransaction() override;
 
             std::vector<uint8_t> toSignatureBase() override;

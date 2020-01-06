@@ -166,7 +166,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFreshResetAll) {
 
             // reset everything
             EXPECT_EQ(wait(pool->getWalletCount()), 1);
-            pool->freshResetAll();
+            wait(pool->freshResetAll());
         }
     }
     {

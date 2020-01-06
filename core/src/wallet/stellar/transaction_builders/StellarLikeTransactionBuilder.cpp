@@ -60,7 +60,7 @@ namespace ledger {
 
             operation.type = stellar::OperationType::PAYMENT;
             operation.content = op;
-            _envelope.tx.operations.emplace_back();
+            _envelope.tx.operations.emplace_back(operation);
 
             _balanceChange = _balanceChange + BigInt(op.amount);
 
@@ -82,7 +82,7 @@ namespace ledger {
 
             operation.type = stellar::OperationType::CREATE_ACCOUNT;
             operation.content = op;
-            _envelope.tx.operations.emplace_back();
+            _envelope.tx.operations.emplace_back(operation);
 
             _balanceChange = _balanceChange + BigInt(op.startingBalance);
 
