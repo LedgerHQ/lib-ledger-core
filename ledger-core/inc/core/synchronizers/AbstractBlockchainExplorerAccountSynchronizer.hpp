@@ -35,6 +35,7 @@
 #include <mutex>
 
 #include <core/api/Configuration.hpp>
+#include <core/api/ConfigurationDefaults.hpp>
 #include <core/async/Future.hpp>
 #include <core/async/Wait.hpp>
 #include <core/collections/DynamicObject.hpp>
@@ -175,7 +176,7 @@ namespace ledger {
                 buddy->configuration = std::static_pointer_cast<AbstractAccount>(account)->getWallet()->getConfig();
                 buddy->halfBatchSize = (uint32_t) buddy->configuration
                         ->getInt(api::Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE)
-                        .value_or(10);
+                        .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE);
                 buddy->keychain = account->getKeychain();
                 buddy->savedState = buddy->preferences
                         ->template getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");

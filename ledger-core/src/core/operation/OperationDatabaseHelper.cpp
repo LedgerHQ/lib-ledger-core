@@ -43,7 +43,7 @@
 
 namespace ledger {
     namespace core {
-        
+
         bool OperationDatabaseHelper::putOperation(soci::session& sql, const Operation& operation)
         {
             using namespace soci;
@@ -56,7 +56,7 @@ namespace ledger {
                 BlockDatabaseHelper::putBlock(sql, operation.block.getValue());
             }
             auto blockUid = operation.block.map<std::string>([] (const api::Block& block) {
-                return block.uid;
+                return BlockDatabaseHelper::createBlockUid(block);
             });
             sql << "SELECT COUNT(*) FROM operations WHERE uid = :uid", use(operation.uid), into(count);
             auto newOperation = count == 0;
@@ -97,7 +97,7 @@ namespace ledger {
         {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", accountUid, txId, api::to_string(type)));
         }
-                
+
         void OperationDatabaseHelper::queryOperations(
             soci::session&, int32_t, int32_t, bool, bool, std::vector<Operation>&)
         {
