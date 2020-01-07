@@ -30,7 +30,7 @@
  */
 
 #include "StellarLikeTransaction.hpp"
-#include "../../../../../cmake-build-debug/include/ledger/core/api/ErrorCode.hpp"
+#include <api/ErrorCode.hpp>
 #include <wallet/stellar/xdr/XDREncoder.hpp>
 #include <crypto/SHA256.hpp>
 #include <wallet/stellar/StellarLikeAddress.hpp>
@@ -70,6 +70,7 @@ namespace ledger {
             auto pubKey = stellarAddress->toPublicKey();
             stellar::xdr::DecoratedSignature sig;
             sig.signature = signature;
+            std::copy(signature.begin(), )
             std::copy(pubKey.begin() + (pubKey.size() - 4), pubKey.end(), sig.hint.begin());
             _envelope.signatures.emplace_back(sig);
         }
