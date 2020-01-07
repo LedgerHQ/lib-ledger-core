@@ -213,7 +213,7 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
     uint32_t destinationTag = 0;
     for (auto const& op : ops) {
         auto xrpOp = std::dynamic_pointer_cast<RippleLikeOperation>(op);
-        if (xrpOp->getTransaction()->getHash() == "EE38840B83CAB39216611D2F6E4F9828818514C3EA47504AE2521D8957331D3C" ) {
+        if (xrpOp->getTransaction()->getHash() == "609AC2E159F521563374383DEB3D57E098F7A2CC9481F02F4642D1F74CB2F3C9") {
           destinationTag = xrpOp->getTransaction()->getDestinationTag().value_or(0);
           break;
         }
