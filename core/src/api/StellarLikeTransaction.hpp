@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_STELLARLIKETRANSACTION_HPP
 
 #include <cstdint>
+#include <memory>
 #include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -16,6 +17,8 @@
 
 namespace ledger { namespace core { namespace api {
 
+class Address;
+
 class LIBCORE_EXPORT StellarLikeTransaction {
 public:
     virtual ~StellarLikeTransaction() {}
@@ -26,7 +29,7 @@ public:
     virtual std::vector<uint8_t> toSignatureBase() = 0;
 
     /** Add a new signature to the transaction envelope */
-    virtual void putSignature(const std::vector<uint8_t> & signature) = 0;
+    virtual void putSignature(const std::vector<uint8_t> & signature, const std::shared_ptr<Address> & address) = 0;
 };
 
 } } }  // namespace ledger::core::api

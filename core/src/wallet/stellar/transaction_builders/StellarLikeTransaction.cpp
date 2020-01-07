@@ -30,8 +30,11 @@
  */
 
 #include "StellarLikeTransaction.hpp"
+#include "../../../../../cmake-build-debug/include/ledger/core/api/ErrorCode.hpp"
 #include <wallet/stellar/xdr/XDREncoder.hpp>
 #include <crypto/SHA256.hpp>
+#include <wallet/stellar/StellarLikeAddress.hpp>
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,10 +61,16 @@ namespace ledger {
             return signatureBase;
         }
 
-        void
-        StellarLikeTransaction::putSignature(const std::vector<uint8_t> &signature) {
+        void StellarLikeTransaction::putSignature(const std::vector<uint8_t> &signature,
+                                                  const std::shared_ptr<api::Address>& address) {
+            auto stellarAddress = std::dynamic_pointer_cast<StellarLikeAddress>(address);
+            if (!stellarAddress)
+                throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "putTransaction can only handle stellar addresses");
+            // At this point pub key is 32 bytes
+            auto pubKey = stellarAddress->toPublicKey();
             stellar::xdr::DecoratedSignature sig;
             sig.signature = signature;
+            std::copy(pubKey.begin() + (pubKey.size() - 4), pubKey.end(), sig.hint.begin());
             _envelope.signatures.emplace_back(sig);
         }
     }

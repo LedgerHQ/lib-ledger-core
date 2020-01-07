@@ -16,7 +16,7 @@ StellarLikeTransaction = interface +c {
     toSignatureBase(): binary;
 
     # Add a new signature to the transaction envelope
-    putSignature(signature: binary);
+    putSignature(signature: binary, address: Address);
 }
 
 StellarLikeTransactionBuilder = interface +c {

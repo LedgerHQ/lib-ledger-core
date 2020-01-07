@@ -55,7 +55,6 @@ namespace ledger {
                                                              const std::shared_ptr<HttpClient>& http,
                                                              const std::shared_ptr<api::DynamicObject>& configuration)
             : StellarLikeBlockchainExplorer(context, http) {
-
         }
 
         Future<Option<std::shared_ptr<stellar::Asset>>> HorizonBlockchainExplorer::getAsset(const std::string& assetCode, const std::string& assetIssuer) {
@@ -145,9 +144,9 @@ namespace ledger {
 
         Future<std::string> HorizonBlockchainExplorer::postTransaction(const std::vector<uint8_t> &tx) {
             std::stringstream body;
-            body << "{" << "\"tx\":" << '"' << BaseConverter::encode(tx, BaseConverter::BASE64_RFC4648) << '"' << "}";
+            body << "tx=" << BaseConverter::encode(tx, BaseConverter::BASE64_RFC4648);
             auto bodyString = body.str();
-            return http->POST("/transactions", std::vector<uint8_t>(bodyString.begin(), bodyString.end()))
+            return http->POST("/transactions", std::vector<uint8_t>(bodyString.begin(), bodyString.end()), {{"Content-Type", "application/x-www-form-urlencoded"}})
             .json().template map<std::string>(getContext(), [] (const HttpRequest::JsonResult& result) -> std::string {
                 auto& json = *std::get<1>(result);
                 return json["hash"].GetString();
