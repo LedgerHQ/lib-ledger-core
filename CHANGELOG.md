@@ -1,4 +1,23 @@
-## 3.1.0 (on-going)
+## 3.2.1 (on-going)
+
+- Execution context changes:
+	- Using pool's ThreadPoolExecutionContext in wallets and accounts for long running tasks,
+	- Using MainExecutionContext in pools, wallets and accounts for immediately completed futures,
+- Wallet caching: return completed future (resolved promises) based on cached accounts in `WalletPool::getWallet` method,
+- Account caching: same as above for `AbstractWallet::getAccount` method,
+- Lazy loading of internal transactions for ETH operations,
+- Removed some logs from `BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize` because they were affecting
+Wallet Daemon perfos on huge accounts,
+- Add TTL cache on last blocks (wallet pool level) and on balances (on wallet level), the TTL is configurable
+thanks to : `TTL_CACHE` and is defaulting to `DEFAULT_TTL_CACHE=30` which is inferior to mining frequency.
+
+
+## 3.2.0
+
+- Using new ETH v3 explorer's endpoint to get ERC20 accounts balance,
+- Add method to batch ERC20 balance calls,
+
+## 3.1.0
 
 - Add block heights on `BitcoinLikeOutput`s to enhance performances while picking UTXOs with deepest first UTXO picking strategy
 - Add signature settings on `BitcoinLikeTransaction` to create DER signature from RS(V) data

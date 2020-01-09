@@ -18,6 +18,7 @@
 namespace ledger { namespace core { namespace api {
 
 enum class TimePeriod : int {
+    HOUR,
     DAY,
     WEEK,
     MONTH,

@@ -55,6 +55,9 @@ public:
 
     /** Operation trust. */
     static std::string const TRUST_LIMIT;
+
+    /** Time to Live for block cache */
+    static std::string const TTL_CACHE;
 };
 
 } } }  // namespace ledger::core::api

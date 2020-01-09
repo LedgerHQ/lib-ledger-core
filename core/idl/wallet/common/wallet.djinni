@@ -274,6 +274,7 @@ Address = interface +c {
 }
 
 TimePeriod = enum {
+    hour;
     day;
     week;
     month;

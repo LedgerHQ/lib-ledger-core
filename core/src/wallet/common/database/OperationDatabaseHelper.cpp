@@ -54,7 +54,8 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", accountUid, txId, api::to_string(type)));
         }
 
-        bool OperationDatabaseHelper::putOperation(soci::session &sql, const Operation &operation) {
+        bool OperationDatabaseHelper::putOperation(soci::session &sql,
+                                                   const Operation &operation) {
             auto count = 0;
             std::string serializedTrust;
             serialization::saveBase64<TrustIndicator>(*operation.trust, serializedTrust);
@@ -101,7 +102,9 @@ namespace ledger {
 
 
         void
-        OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql, const Operation &operation, bool insert) {
+        OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql,
+                                                         const Operation &operation,
+                                                         bool insert) {
             if (operation.bitcoinTransaction.nonEmpty()) {
                 auto operationValue = operation.bitcoinTransaction.getValue();
                 auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);

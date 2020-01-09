@@ -42,6 +42,7 @@
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
+#include <wallet/pool/WalletPool.hpp>
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
@@ -212,11 +213,18 @@ namespace ledger {
         }
 
         FuturePtr<Amount> TezosLikeAccount::getBalance() {
+            auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
             std::vector<TezosLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
-            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getContext(), [currency](
+            auto self = getSelf();
+            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](
                     const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
-                return std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
+                Amount b(currency, 0, BigInt(balance->toString()));
+                self->getWallet()->updateBalanceCache(self->getIndex(), b);
+                return std::make_shared<Amount>(b);
             });
         }
 
@@ -226,7 +234,7 @@ namespace ledger {
             auto query = std::make_shared<TezosOperationQuery>(
                     headFilter,
                     getWallet()->getDatabase(),
-                    getWallet()->getContext(),
+                    getWallet()->getPool()->getThreadPoolExecutionContext(),
                     getWallet()->getMainExecutionContext()
             );
             query->registerAccount(shared_from_this());
@@ -234,9 +242,9 @@ namespace ledger {
         }
 
         void TezosLikeAccount::getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
-            getEstimatedGasLimit(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
+            getEstimatedGasLimit(address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<api::BigIntImpl>(*gasLimit);
-            }).callback(getContext(), callback);
+            }).callback(getMainExecutionContext(), callback);
         }
 
         FuturePtr<BigInt> TezosLikeAccount::getEstimatedGasLimit(const std::string &address) {
@@ -244,9 +252,9 @@ namespace ledger {
         }
 
         void TezosLikeAccount::getStorage(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
-            getStorage(address).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &storage) -> std::shared_ptr<api::BigInt> {
+            getStorage(address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &storage) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<api::BigIntImpl>(*storage);
-            }).callback(getContext(), callback);
+            }).callback(getMainExecutionContext(), callback);
         }
 
         FuturePtr<BigInt> TezosLikeAccount::getStorage(const std::string &address) {
@@ -271,7 +279,7 @@ namespace ledger {
                                             const std::string &end,
                                             api::TimePeriod precision) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-            return async<std::vector<std::shared_ptr<api::Amount>>>([=]() -> std::vector<std::shared_ptr<api::Amount>> {
+            return Future<std::vector<std::shared_ptr<api::Amount>>>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=]() -> std::vector<std::shared_ptr<api::Amount>> {
 
                 auto startDate = DateUtils::fromJSON(start);
                 auto endDate = DateUtils::fromJSON(end);

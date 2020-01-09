@@ -288,11 +288,9 @@ namespace ledger {
                 if(currentValue + currentAvailableValue < currentActualTarget || //Cannot reach target with the amount remaining in currentAvailableValue
                    currentValue > currentActualTarget + costOfChange || // Selected value is out of range, go back and try other branch
                    (currentWaste > bestWaste && listEffectiveUTXOs.at(0).effectiveFees - listEffectiveUTXOs.at(0).longTermFees > 0) ) { //avoid selecting utxos producing more waste
-                    buddy->logger->debug("Should backtrack");
                     backtrack = true;
                 } else if (currentValue >= currentActualTarget) { //Selected valued is within range
                     currentWaste += (currentValue - currentActualTarget);
-                    buddy->logger->debug("Selected Value is within range, current waste {}, best waste {}", currentWaste, bestWaste);
                     if (currentWaste <= bestWaste) {
                         bestSelection = currentSelection;
                         bestSelection.resize(listEffectiveUTXOs.size());
@@ -323,9 +321,7 @@ namespace ledger {
                     currentValue -= effectiveUTXO.effectiveValue;
                     currentWaste -= (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
                     currentActualTarget -= effectiveUTXO.effectiveFees;
-                    buddy->logger->debug("Backtrack, remove {}, current values is {} and current waste is {}", effectiveUTXO.effectiveValue, currentValue, currentWaste);
                 } else { //Moving forwards, continuing down this branch
-                    buddy->logger->debug("Moving forward with currentSelection size {}", currentSelection.size());
                     auto& effectiveUTXO = listEffectiveUTXOs.at(currentSelection.size());
 
                     //Remove this utxo from currentAvailableValue
@@ -343,7 +339,6 @@ namespace ledger {
                         currentValue += effectiveUTXO.effectiveValue;
                         currentWaste += (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
                         currentActualTarget += effectiveUTXO.effectiveFees;
-                        buddy->logger->debug("Select UTXO with effective value {}, current waste is {}", effectiveUTXO.effectiveValue, currentWaste);
                     }
                 }
             }

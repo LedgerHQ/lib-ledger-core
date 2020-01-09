@@ -30,6 +30,7 @@
  */
 #include "WalletPool.hpp"
 #include <api/PoolConfiguration.hpp>
+#include <api/ConfigurationDefaults.hpp>
 #include <wallet/currencies.hpp>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
@@ -51,7 +52,10 @@ namespace ledger {
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration
-        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))) {
+        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
+           _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
+                                                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)))
+        {
             // General
             _poolName = name;
 
@@ -111,6 +115,8 @@ namespace ledger {
             _threadDispatcher = dispatcher;
 
             _publisher = std::make_shared<EventPublisher>(getContext());
+
+            _threadPoolExecutionContext = _threadDispatcher->getThreadPoolExecutionContext(fmt::format("pool_{}_thread_pool", name));
         }
 
         std::shared_ptr<WalletPool>
@@ -231,7 +237,7 @@ namespace ledger {
                 auto client = std::make_shared<HttpClient>(
                     baseUrl,
                     _httpEngine,
-                    getDispatcher()->getThreadPoolExecutionContext(fmt::format("http_clients"))
+                    getDispatcher()->getMainExecutionContext()
                 );
                 _httpClients[baseUrl] = client;
                 client->setLogger(logger());
@@ -257,11 +263,12 @@ namespace ledger {
             return nullptr;
         }
 
-        Future<int64_t> WalletPool::getWalletCount() const {
+        Future<int64_t> WalletPool::getWalletCount() {
             auto self = shared_from_this();
-            return async<int64_t>([=] () -> int64_t {
+            return Future<int64_t>::async(_threadPoolExecutionContext, [=] () -> int64_t {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
-                return PoolDatabaseHelper::getWalletCount(sql, *self);
+                auto count = PoolDatabaseHelper::getWalletCount(sql, *self);
+                return count;
             });
         }
 
@@ -292,17 +299,15 @@ namespace ledger {
         }
 
         FuturePtr<AbstractWallet> WalletPool::getWallet(const std::string &name) {
-            auto self = shared_from_this();
-            return async<std::shared_ptr<AbstractWallet>>([=] () {
-                auto it = self->_wallets.find(WalletDatabaseEntry::createWalletUid(self->getName(), name));
-                if (it != self->_wallets.end()) {
-                    auto ptr = it->second;
-
-                    if (ptr != nullptr) {
-                        return ptr;
-                    }
+            auto it = _wallets.find(WalletDatabaseEntry::createWalletUid(getName(), name));
+            if (it != _wallets.end()) {
+                auto ptr = it->second;
+                if (ptr != nullptr) {
+                    return FuturePtr<AbstractWallet>::successful(ptr);
                 }
-
+            }
+            auto self = shared_from_this();
+            return Future<std::shared_ptr<AbstractWallet>>::async(_threadDispatcher->getMainExecutionContext(), [=] () {
                 auto entry = getWalletEntryFromDatabase(self, name);
                 if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));
@@ -370,7 +375,7 @@ namespace ledger {
 
         Future<std::vector<std::shared_ptr<AbstractWallet>>> WalletPool::getWallets(int64_t from, int64_t size) {
             auto self = shared_from_this();
-            return async<std::vector<std::shared_ptr<AbstractWallet>>>([=] () {
+            return Future<std::vector<std::shared_ptr<AbstractWallet>>>::async(_threadPoolExecutionContext, [=] () {
                 std::vector<WalletDatabaseEntry> entries((size_t) size);
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 auto count = PoolDatabaseHelper::getWallets(sql, *self, from, entries);
@@ -464,13 +469,19 @@ namespace ledger {
         }
 
         Future<api::Block> WalletPool::getLastBlock(const std::string &currencyName) {
+            auto optBlock = _blockCache.get(currencyName);
+            if (optBlock.hasValue()) {
+                return Future<api::Block>::successful(optBlock.getValue());
+            }
             auto self = shared_from_this();
-            return async<api::Block>([self, currencyName] () -> api::Block {
+            return Future<api::Block>::async(_threadPoolExecutionContext, [self, currencyName] () -> api::Block {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 auto block = BlockDatabaseHelper::getLastBlock(sql, currencyName);
                 if (block.isEmpty()) {
                     throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Currency '{}' may not exist", currencyName);
                 }
+                // Update cache
+                self->_blockCache.put(currencyName, block.getValue());
                 return block.getValue();
             });
         }
@@ -551,6 +562,14 @@ namespace ledger {
                 // and we’re done
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
+        }
+
+        Option<api::Block> WalletPool::getBlockFromCache(const std::string &currencyName) {
+            return _blockCache.get(currencyName);
+        }
+
+        std::shared_ptr<api::ExecutionContext> WalletPool::getThreadPoolExecutionContext() const {
+            return _threadPoolExecutionContext;
         }
     }
 }

@@ -126,8 +126,9 @@ namespace ledger {
             if (transactionExists(sql, tezosTxUid)) {
                 // UPDATE (we only update block information)
                 if (tx.block.nonEmpty()) {
-                    sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash",
-                            use(blockUid), use(tx.status), use(tx.hash);
+                    auto type = api::to_string(tx.type);
+                    sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash AND type = :type",
+                            use(blockUid), use(tx.status), use(tx.hash), use(type);
                 }
                 return tezosTxUid;
             } else {
