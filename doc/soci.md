@@ -1,6 +1,6 @@
 # SOCI
 ## What's SOCI ?
-The core library is using [http://soci.sourceforge.net/index.html](SOCI) as its SQL driver abstraction layer. 
+The core library is using [SOCI](http://soci.sourceforge.net/index.html) as its SQL driver abstraction layer. 
 It provides an easy to make SQL queries inside C++ code and the ability to plug the library to multiple types of SQL 
 backends.
 
