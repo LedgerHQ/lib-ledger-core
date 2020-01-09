@@ -11,7 +11,7 @@ endif (APPLE)
 
 add_executable(
     ledger-core-ripple-tests main.cpp
-    Common.cpp AddressTest.cpp Fixtures.cpp RippleKeychainTest.cpp TransactionTest.cpp
+    AddressTest.cpp Fixtures.cpp RippleKeychainTest.cpp TransactionTest.cpp
     SynchronizationTest.cpp
 )
 
