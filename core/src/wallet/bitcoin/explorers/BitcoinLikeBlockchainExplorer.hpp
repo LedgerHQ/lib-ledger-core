@@ -67,8 +67,10 @@ namespace ledger {
             std::string transactionHash;
             BigInt value;
             Option<std::string> address;
+            Option<std::string> accountUid;
             std::string script;
             std::string time;
+            Option<uint64_t> blockHeight;
 
             BitcoinLikeBlockchainExplorerOutput() = default;
         };

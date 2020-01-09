@@ -36,12 +36,14 @@
 #include <api/ErrorCode.hpp>
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
     namespace core {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
-                : DedicatedContext(wallet->getMainExecutionContext()) {
+                : DedicatedContext(wallet->getMainExecutionContext())
+        {
             _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
             _index = index;
@@ -99,6 +101,10 @@ namespace ledger {
             return std::dynamic_pointer_cast<api::RippleLikeAccount>(shared_from_this());
         }
 
+        std::shared_ptr<api::TezosLikeAccount> AbstractAccount::asTezosLikeAccount() {
+            return std::dynamic_pointer_cast<api::TezosLikeAccount>(shared_from_this());
+        }
+
         std::shared_ptr<spdlog::logger> AbstractAccount::logger() const {
             return _logger;
         }
@@ -139,7 +145,7 @@ namespace ledger {
             return std::make_shared<OperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
-                    getContext(),
+                    getWallet()->getPool()->getThreadPoolExecutionContext(),
                     getMainExecutionContext()
             );
         }
@@ -222,6 +228,5 @@ namespace ledger {
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
-
     }
 }

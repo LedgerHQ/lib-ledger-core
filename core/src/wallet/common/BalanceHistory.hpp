@@ -57,7 +57,7 @@ namespace ledger {
             // The OperationIt type variable must implement the pre-increment operator (++it) and
             // be dereferencable with the * operator. It must have a value_type associated
             // type. Finally, it must be comparable with itself.
-            template <typename Op, typename Value, typename CastValue, typename ValueImpl, typename OperationIt>
+            template <typename Op, typename Value, typename CastValue, typename OperationIt>
             std::vector<std::shared_ptr<CastValue>> getBalanceHistoryFor(
                 std::chrono::system_clock::time_point const& startDate,
                 std::chrono::system_clock::time_point const& endDate,
@@ -83,7 +83,7 @@ namespace ledger {
                     while (operationDate > upperDate && lowerDate < endDate) {
                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
                         upperDate = DateUtils::incrementDate(upperDate, precision);
-                        values.emplace_back(std::make_shared<ValueImpl>(sum));
+                        values.emplace_back(Op::value_constructor(sum));
                     }
 
                     if (operationDate <= upperDate) {
@@ -95,7 +95,7 @@ namespace ledger {
 
                 while (lowerDate < endDate) {
                     lowerDate = DateUtils::incrementDate(lowerDate, precision);
-                    values.emplace_back(std::make_shared<ValueImpl>(sum));
+                    values.emplace_back(Op::value_constructor(sum));
                 }
 
                 return values;

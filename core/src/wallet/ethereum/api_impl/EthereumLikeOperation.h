@@ -35,16 +35,21 @@
 #include <api/EthereumLikeOperation.hpp>
 #include <api/EthereumLikeTransaction.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
+#include <api/InternalTransaction.hpp>
 
 namespace ledger {
     namespace core {
         class EthereumLikeOperation : public api::EthereumLikeOperation {
         public:
             EthereumLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
-            std::shared_ptr<api::EthereumLikeTransaction> getTransaction();
-
+            std::shared_ptr<api::EthereumLikeTransaction> getTransaction() override;
+            std::vector<std::shared_ptr<api::InternalTransaction>> getInternalTransactions() override;
         private:
             std::shared_ptr<api::EthereumLikeTransaction> _transaction;
+            std::vector<std::shared_ptr<api::InternalTransaction>> _internalTxs;
+            std::shared_ptr<OperationApi> _backend;
+            // To allow lazy loading of internal transactions
+            bool _internalTxsRetrieved;
         };
 
     }

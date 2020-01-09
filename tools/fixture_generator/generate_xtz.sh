@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+python generate_xtz_fixtures.py "xtz" "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE" "02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d" "abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9"

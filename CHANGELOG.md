@@ -1,6 +1,87 @@
-## 2.7.0 (on-going)
+## 3.2.1 (on-going)
 
-> ????/??/??
+- Execution context changes:
+	- Using pool's ThreadPoolExecutionContext in wallets and accounts for long running tasks,
+	- Using MainExecutionContext in pools, wallets and accounts for immediately completed futures,
+- Wallet caching: return completed future (resolved promises) based on cached accounts in `WalletPool::getWallet` method,
+- Account caching: same as above for `AbstractWallet::getAccount` method,
+- Lazy loading of internal transactions for ETH operations,
+- Removed some logs from `BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize` because they were affecting
+Wallet Daemon perfos on huge accounts,
+- Add TTL cache on last blocks (wallet pool level) and on balances (on wallet level), the TTL is configurable
+thanks to : `TTL_CACHE` and is defaulting to `DEFAULT_TTL_CACHE=30` which is inferior to mining frequency.
+
+
+## 3.2.0
+
+- Using new ETH v3 explorer's endpoint to get ERC20 accounts balance,
+- Add method to batch ERC20 balance calls,
+
+## 3.1.0
+
+- Add block heights on `BitcoinLikeOutput`s to enhance performances while picking UTXOs with deepest first UTXO picking strategy
+- Add signature settings on `BitcoinLikeTransaction` to create DER signature from RS(V) data
+
+## 3.0.0
+
+- Use direct call to `balanceOf` on ERC20 to get balance in tokens of an account.
+
+## 2.8.0
+
+### Tezos Integration:
+
+#### Keychain:
+
+- Tezos key derivation is based on [Edward's curve](https://github.com/satoshilabs/slips/blob/master/slip-0010.md),
+so normal (public) derivations are not supported, this is why the only derivation scheme which is supported now is `44'/<coin_type>'/<account_index>'/<node_index>'`,
+- As a consequence of absence of derivation, resulting "derived" address from a keychain is a hash of the public key. 
+- Used hashing algorithm is [`Blake2b`](https://github.com/openssl/openssl/blob/master/crypto/blake2/blake2b.c).
+- We support construction of accounts from both `Secp256k1` (`Base58`) extended public keys (prefixed with `xpub`) or from `Ed25519` (`Base58`) extended public keys (prefixed with `edpk`).
+
+#### Wallet logic:
+ 
+- Originated accounts are considered as sub-accounts of implicit accounts that originated them.
+
+#### Explorer:
+
+- The current default explorer used is Tzscan (used endpoint: https://api6.tzscan.io/v3).
+
+#### Synchronizer:
+
+- Synchronization of originated accounts comes right after the originator's account is synced.
+
+#### Transactions:
+
+- For the moment we only support `Transaction`, `Reveal`, `Origination` and `Delegation` operations, those are the ones relevant for us.
+- Parsing and serialization of transaction is based on Zarith encoder/decoder (for more details refer to: http://tezos.gitlab.io/master/api/p2p.html#n-t 
+ implementation is located here : `core/src/bytes/zarith`).
+- In Tezos, it is possible to have multiple operations in one transaction (e.g. `Reveal` + `Origination` or `Reveal` + `Transaction` ...), 
+ since each operation has it's own properties (fees, gas limit, storage limit ...) that user should set, so we probably won't handle multi-operation transactions.
+ This will be discussed with Libcore's users (e.g. Live team) to see if it is relevant to support multi-operation transactions.
+ 	
+#### Delegation:
+	
+- To delegate simply build a `Delegation` transaction with address to which delegate as receiver.
+  
+#### Parameters:
+
+- BIP44 Coin type : `1729`.
+- Used address prefixes: 
+	- Implicit (prefix `tz1`): `{0x06, 0xA1, 0x9F}`.
+	- Originated (prefix `KT1`): `{0x02, 0x5A, 0x79}`.
+- Default explorer's endpoint: https://api6.tzscan.io/v3
+
+#### Tests:
+
+- Added tests:
+	- Address derivation: `core/test/tezos`.
+	- Zarith encoder: `core/test/bytes/zarith.cpp`.
+	- Account creation and synchronization: `core/test/integration/synchronization/tezos_synchronization.cpp`.
+	- Transaction construction: `core/test/integration/transactions/tezos_transaction_tests.cpp`.
+
+## 2.7.0 
+
+> 2019/05/19
 
 - Change encoding of passwords in the public interface (wallet pool). Passwords are not optional
   anymore. This means that:

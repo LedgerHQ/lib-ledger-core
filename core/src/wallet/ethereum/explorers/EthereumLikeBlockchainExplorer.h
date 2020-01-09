@@ -58,6 +58,16 @@ namespace ledger {
             api::OperationType type;
         };
 
+        struct InternalTx {
+            std::string from;
+            std::string to;
+            BigInt value;
+            BigInt gasLimit;
+            Option<BigInt> gasUsed;
+            api::OperationType type;
+            std::vector<uint8_t> inputData;
+        };
+
         struct EthereumLikeBlockchainExplorerTransaction {
             std::string hash;
             std::chrono::system_clock::time_point receivedAt;
@@ -72,6 +82,7 @@ namespace ledger {
             uint64_t confirmations;
             std::vector<uint8_t> inputData;
             uint64_t status;
+            std::vector<InternalTx> internalTransactions;
             std::vector<ERC20Transaction> erc20Transactions;
             EthereumLikeBlockchainExplorerTransaction() {
                 nonce = 0;
@@ -93,6 +104,7 @@ namespace ledger {
                 this->nonce = cpy.nonce;
                 this->value = cpy.value;
                 this->status = cpy.status;
+                this->internalTransactions = cpy.internalTransactions;
                 this->erc20Transactions = cpy.erc20Transactions;
             }
 
@@ -109,7 +121,10 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) = 0;
             virtual Future<std::shared_ptr<BigInt>> getGasPrice() = 0;
             virtual Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(const std::string &address) = 0;
-            virtual Future<std::shared_ptr<BigInt>> getERC20Balance(const std::string &address, const std::string &erc20Address) = 0;
+            virtual Future<std::shared_ptr<BigInt>> getERC20Balance(const std::string &address,
+                                                                    const std::string &erc20Address) = 0;
+            virtual Future<std::vector<BigInt>> getERC20Balances(const std::string &address,
+                                                                 const std::vector<std::string> &erc20Addresses) = 0;
         };
     }
 }

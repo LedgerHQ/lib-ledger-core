@@ -39,6 +39,7 @@
 #include <database/soci-option.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
+#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 #include <bytes/serialization.hpp>
 #include <collections/strings.hpp>
 #include <wallet/common/TrustIndicator.h>
@@ -53,7 +54,8 @@ namespace ledger {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}+{}", accountUid, txId, api::to_string(type)));
         }
 
-        bool OperationDatabaseHelper::putOperation(soci::session &sql, const Operation &operation) {
+        bool OperationDatabaseHelper::putOperation(soci::session &sql,
+                                                   const Operation &operation) {
             auto count = 0;
             std::string serializedTrust;
             serialization::saveBase64<TrustIndicator>(*operation.trust, serializedTrust);
@@ -100,7 +102,9 @@ namespace ledger {
 
 
         void
-        OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql, const Operation &operation, bool insert) {
+        OperationDatabaseHelper::updateCurrencyOperation(soci::session &sql,
+                                                         const Operation &operation,
+                                                         bool insert) {
             if (operation.bitcoinTransaction.nonEmpty()) {
                 auto operationValue = operation.bitcoinTransaction.getValue();
                 auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
@@ -117,6 +121,12 @@ namespace ledger {
                 auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
                     sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(rippleTxUid), use(operationValue.hash);
+                }
+            } else if (operation.tezosTransaction.nonEmpty()) {
+                auto operationValue = operation.tezosTransaction.getValue();
+                auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
+                if (insert) {
+                    sql << "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(tezosTxUid), use(operationValue.hash);
                 }
             }
         }
@@ -153,12 +163,15 @@ namespace ledger {
                 auto recipients = strings::split(row.get<std::string>(5), ",");
                 if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
-                    operations.resize(operations.size() + 1);
-                    auto& operation = operations[operations.size() - 1];
+                    Operation operation;
+
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));
                     operation.fees = BigInt::fromHex(row.get<std::string>(1));
                     operation.type = type;
                     operation.date = DateUtils::fromJSON(row.get<std::string>(3));
+
+                    operations.push_back(operation);
+
                     c += 1;
                 }
             }

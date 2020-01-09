@@ -1,20 +1,33 @@
 include(ExternalProject)
 
-#set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
+set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/leveldb")
+#list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/leveldb")
 
 
 include(ProjectSecp256k1)
 add_subdirectory(bigd)
 add_subdirectory(fmt)
-add_subdirectory(openssl)
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    add_subdirectory(blake)
+else()
+    add_subdirectory(openssl)
+endif()
 add_subdirectory(ethash)
 add_subdirectory(snappy)
 add_subdirectory(leveldb)
 
 add_subdirectory(spdlog)
+
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
+  # On Android, temporary directories are a bit special and are not located in the same place, such
+  # as /tmp or /usr/tmp; for this reason, we ask temporary files to be stored in memory instead
+  message("Compiling SQLCipher for Android with file temporary directory disabled (all-on-memory).")
+  add_definitions(-DSQLITE_TEMP_STORE=3)
+endif ()
+
 add_subdirectory(sqlcipher)
 
 set(SQLITE_LIB sqlcipher)

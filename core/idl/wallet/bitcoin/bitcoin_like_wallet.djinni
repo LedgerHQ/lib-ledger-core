@@ -96,6 +96,7 @@ BitcoinLikeOutput = interface +c {
     # @return Optional String, address that spent
     getAddress(): optional<string>;
     getDerivationPath(): optional<DerivationPath>;
+    getBlockHeight(): optional<i64>;
 }
 
 # Class representing Bitcoin block
@@ -109,6 +110,32 @@ BitcoinLikeBlock = interface +c {
     # Timestamp when block was mined.
     # @return Date object, date when block was appended to blockchain
     getTime(): date;
+}
+
+# Structure representing DER encoded signature
+# DER format :
+# - DER prefix
+# - Length of rest of signature
+# - Marker for r value
+# - Length of r value
+# - r value, Big Endian
+# - Marker for s value
+# - Length of s value
+# - s value, Big Endian
+# - SIGHASH byte (ALL, NONE, SINGLE)
+BitcoinLikeSignature = record {
+    # r data
+    r: binary;
+    # s data
+    s: binary;
+    # Ignored attribute
+    v: binary;
+}
+
+BitcoinLikeSignatureState = enum {
+    ALREADY_SIGNED;
+    MISSING_DATA;
+    SIGNING_SUCCEED;
 }
 
 # Class representing a Bitcoin transaction.
@@ -141,6 +168,13 @@ BitcoinLikeTransaction = interface +c {
     # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
     # size.
     getEstimatedSize(): EstimatedSize;
+    # Sign all inputs for given transaction. 
+    # Build DER encoded signature from RSV data.
+    # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
+    setSignatures(signatures: list<BitcoinLikeSignature>, override: bool): BitcoinLikeSignatureState;
+    # Sign all inputs for given transaction. 
+    # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
+    setDERSignatures(signatures: list<binary>, override: bool): BitcoinLikeSignatureState;
 }
 
 # Class representing a Bitcoin Operation.

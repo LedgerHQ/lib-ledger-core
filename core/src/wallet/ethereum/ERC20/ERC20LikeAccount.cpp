@@ -46,6 +46,7 @@
 #include <soci.h>
 #include <database/soci-date.h>
 #include <database/query/ConditionQueryFilter.h>
+#include <wallet/pool/WalletPool.hpp>
 
 using namespace soci;
 
@@ -108,6 +109,10 @@ namespace ledger {
                     return op->getTime();
                 }
 
+                static inline std::shared_ptr<api::BigInt> value_constructor(const BigInt& v) {
+                    return std::make_shared<api::BigIntImpl>(v);
+                }
+
                 static inline void update_balance(std::shared_ptr<api::ERC20LikeOperation>& op, BigInt& sum) {
                     auto value = BigInt(op->getValue()->toString(10));
 
@@ -125,7 +130,7 @@ namespace ledger {
                 }
             };
 
-            return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::BigInt, api::BigIntImpl>(
+            return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::BigInt>(
                 startDate,
                 endDate,
                 precision,
@@ -233,7 +238,7 @@ namespace ledger {
         void ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                         const std::string &address,
                                                         const std::shared_ptr<api::BinaryCallback> &data) {
-            auto context = _account.lock()->getContext();
+            auto context = _account.lock()->getWallet()->getMainExecutionContext();
             getTransferToAddressData(amount, address).callback(context, data);
         }
 
@@ -283,7 +288,7 @@ namespace ledger {
             auto query = std::make_shared<ERC20OperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
-                    localAccount->getWallet()->getContext(),
+                    localAccount->getWallet()->getPool()->getThreadPoolExecutionContext(),
                     localAccount->getWallet()->getMainExecutionContext()
             );
             query->registerAccount(localAccount);
@@ -295,7 +300,7 @@ namespace ledger {
             if (!parentAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
             }
-            return parentAccount->getContext();
+            return parentAccount->getWallet()->getMainExecutionContext();
         }
 
     }

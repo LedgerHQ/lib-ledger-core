@@ -11,4 +11,8 @@ std::string const BlockchainExplorerEngines::RIPPLE_API = {"RIPPLE_API"};
 
 std::string const BlockchainExplorerEngines::RIPPLE_NODE = {"RIPPLE_NODE"};
 
+std::string const BlockchainExplorerEngines::TEZOS_NODE = {"TEZOS_NODE"};
+
+std::string const BlockchainExplorerEngines::TZSTATS_API = {"TZSTATS_API"};
+
 } } }  // namespace ledger::core::api

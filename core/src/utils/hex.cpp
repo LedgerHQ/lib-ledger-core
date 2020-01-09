@@ -28,6 +28,7 @@
  * SOFTWARE.
  *
  */
+#include <stdexcept>
 #include "hex.h"
 
 

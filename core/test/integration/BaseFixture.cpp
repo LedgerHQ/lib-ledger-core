@@ -90,8 +90,20 @@ api::AccountCreationInfo ETC_KEYS_INFO_LIVE(
 
 api::AccountCreationInfo XRP_KEYS_INFO(
         0, {"main"}, {"44'/144'/0'"},
-        {hex::toByteArray("024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed")},
-        {hex::toByteArray("b4f8427e7e19f284dfe7b99f107c55d00b3eae56df9569f0c4d56722742a5d71")}
+        {hex::toByteArray("03c73f64083463fa923e1530af6f558204853873c6a45cbfb1f2f1e2ac2a5d989c")},
+        {hex::toByteArray("f7e8d16154d3c7cbfa2cea35aa7a6ae0c429980892cf2d6ea9e031f57f22a63d")}
+);
+
+api::AccountCreationInfo VAULT_XRP_KEYS_INFO(
+        0, {"main"}, {"44'/144'/0'"},
+        {hex::toByteArray("03432A07E9AE9D557F160D9B1856F909E421B399E12673EEE0F4045F4F7BA151CF")},
+        {hex::toByteArray("5D958E80B0373FA505B95C1DD175B0588205D1620C56F7247B028EBCB0FB5032")}
+);
+
+api::AccountCreationInfo XTZ_KEYS_INFO(
+        0, {"main"}, {"44'/1729'/0'/0'"},
+        {hex::toByteArray("02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d")},
+        {hex::toByteArray("")}
 );
 
 
@@ -221,3 +233,11 @@ BaseFixture::createRippleLikeAccount(const std::shared_ptr<AbstractWallet> &wall
     return std::dynamic_pointer_cast<RippleLikeAccount>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
 }
 
+std::shared_ptr<TezosLikeAccount>
+BaseFixture::createTezosLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                    int32_t index,
+                                    const api::AccountCreationInfo &info) {
+    auto i = info;
+    i.index = index;
+    return std::dynamic_pointer_cast<TezosLikeAccount>(::wait(wallet->newAccountWithInfo(i)));
+}

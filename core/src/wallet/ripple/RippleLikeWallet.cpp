@@ -50,7 +50,7 @@
 namespace ledger {
     namespace core {
 
-        const api::WalletType RippleLikeWallet::type = api::WalletType::ETHEREUM;
+        const api::WalletType RippleLikeWallet::type = api::WalletType::RIPPLE;
 
         RippleLikeWallet::RippleLikeWallet(const std::string &name,
                                            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
@@ -113,8 +113,15 @@ namespace ledger {
                                                                     });
         }
 
+        static int32_t getAccountIndex(const DerivationScheme &dPath, int32_t index) {
+            // Set account index only if account level not hardened,
+            // otherwise keep the one defined in derivation scheme
+            return dPath.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath().isLastChildHardened() ? dPath.getAccountIndex() : index;
+        }
+
         FuturePtr<ledger::core::api::Account>
         RippleLikeWallet::newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) {
+            logger()->debug("Creating new XRP account (index = {}) with extended key info", info.index);
 
             if (info.extendedKeys.empty()) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
@@ -123,31 +130,31 @@ namespace ledger {
 
             auto self = getSelf();
             auto scheme = getDerivationScheme();
-            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(info.index);
+            auto accountIndex = info.index;
+            scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex);
             auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto index = info.index;
             return async<std::shared_ptr<api::Account> >([=]() -> std::shared_ptr<api::Account> {
                 auto keychain = self->_keychainFactory->build(
-                        index,
+                        accountIndex,
                         xpubPath,
                         getConfig(),
                         info,
-                        getAccountInternalPreferences(index),
+                        getAccountInternalPreferences(accountIndex),
                         getCurrency()
                 );
                 soci::session sql(self->getDatabase()->getPool());
                 soci::transaction tr(sql);
-                auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), index);
-                if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), index))
+                auto accountUid = AccountDatabaseHelper::createAccountUid(self->getWalletUid(), accountIndex);
+                if (AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), accountIndex))
                     throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS,
-                                         "Account {}, for wallet '{}', already exists", index, self->getWalletUid());
-                AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index);
-                RippleLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), index,
+                                         "Account {}, for wallet '{}', already exists", accountIndex, self->getWalletUid());
+                AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), accountIndex);
+                RippleLikeAccountDatabaseHelper::createAccount(sql, self->getWalletUid(), accountIndex,
                                                                info.extendedKeys[info.extendedKeys.size() - 1]);
                 tr.commit();
                 auto account = std::static_pointer_cast<api::Account>(std::make_shared<RippleLikeAccount>(
                         self->shared_from_this(),
-                        index,
+                        accountIndex,
                         self->_explorer,
                         self->_observer,
                         self->_synchronizerFactory(),
@@ -158,22 +165,37 @@ namespace ledger {
             });
         }
 
+        static DerivationScheme getAccountScheme(DerivationScheme &scheme) {
+            auto accountScheme = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX);
+            // To handle all exotic paths we should avoid private derivations
+            // So if node or/and address level are hardened, then they are included in account's derivation path
+            auto path = scheme.getPath();
+            auto hardenedDepth = path.getDepth();
+            while (hardenedDepth) {
+                if (path.isHardened(hardenedDepth - 1)) {
+                    break;
+                }
+                hardenedDepth--;
+            }
+            auto lastHardenedScheme = scheme.getSchemeToDepth(hardenedDepth);
+            return accountScheme.getPath().getDepth() > lastHardenedScheme.getPath().getDepth() ? accountScheme : lastHardenedScheme;
+        }
+
         Future<api::ExtendedKeyAccountCreationInfo>
         RippleLikeWallet::getExtendedKeyAccountCreationInfo(int32_t accountIndex) {
             auto self = std::dynamic_pointer_cast<RippleLikeWallet>(shared_from_this());
             return async<api::ExtendedKeyAccountCreationInfo>(
                     [self, accountIndex]() -> api::ExtendedKeyAccountCreationInfo {
                         api::ExtendedKeyAccountCreationInfo info;
-                        info.index = accountIndex;
                         auto scheme = self->getDerivationScheme();
-                        scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(accountIndex);;
+                        info.index = getAccountIndex(scheme, accountIndex);
+                        scheme.setCoinType(self->getCurrency().bip44CoinType).setAccountIndex(info.index);
                         auto keychainEngine = self->getConfiguration()->getString(
                                 api::Configuration::KEYCHAIN_ENGINE).value_or(
                                 api::ConfigurationDefaults::DEFAULT_KEYCHAIN);
                         if (keychainEngine == api::KeychainEngines::BIP32_P2PKH ||
                             keychainEngine == api::KeychainEngines::BIP49_P2SH) {
-                            auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-                            info.derivations.push_back(xpubPath.toString());
+                            info.derivations.push_back(getAccountScheme(scheme).getPath().toString());
                             info.owners.push_back(std::string("main"));
                         } else {
                             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
@@ -188,7 +210,7 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<RippleLikeWallet>(shared_from_this());
             return getExtendedKeyAccountCreationInfo(accountIndex).map<api::AccountCreationInfo>(getContext(), [self, accountIndex](const api::ExtendedKeyAccountCreationInfo info) {
                 api::AccountCreationInfo result;
-                result.index = accountIndex;
+                result.index = getAccountIndex(self->getDerivationScheme(), accountIndex);
                 auto length = info.derivations.size();
                 for (auto i = 0; i < length; i++) {
                     DerivationPath path(info.derivations[i]);
@@ -210,7 +232,7 @@ namespace ledger {
             RippleLikeAccountDatabaseHelper::queryAccount(sql, accountUid, entry);
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
-            auto xpubPath = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
+            auto xpubPath = getAccountScheme(scheme).getPath();
             auto keychain = _keychainFactory->restore(entry.index, xpubPath, getConfig(), entry.address,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
             return std::make_shared<RippleLikeAccount>(shared_from_this(),

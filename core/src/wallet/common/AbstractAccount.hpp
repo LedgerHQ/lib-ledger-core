@@ -42,6 +42,7 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <api/EthereumLikeAccount.hpp>
 #include <api/RippleLikeAccount.hpp>
+#include <api/TezosLikeAccount.hpp>
 #include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
 #include <api/AmountListCallback.hpp>
@@ -67,6 +68,7 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override;
             std::shared_ptr<api::RippleLikeAccount> asRippleLikeAccount() override;
+            std::shared_ptr<api::TezosLikeAccount> asTezosLikeAccount() override;
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getInternalPreferences() const;
@@ -116,6 +118,7 @@ namespace ledger {
             std::shared_ptr<Preferences> _internalPreferences;
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<api::ExecutionContext> _mainExecutionContext;
+            std::shared_ptr<api::ExecutionContext> _threadPoolExecutionContext;
             std::weak_ptr<AbstractWallet> _wallet;
             std::shared_ptr<EventPublisher> _publisher;
             std::mutex _eventsLock;

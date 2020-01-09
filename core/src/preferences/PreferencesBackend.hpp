@@ -80,7 +80,10 @@ namespace ledger {
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
             optional<std::string> get(const std::vector<uint8_t>& key);
-            void commit(const std::vector<PreferencesChange>& changes);
+
+            /// Commit a change. Return false if unsuccessful (might happen if the underlying DB
+            /// was destroyed).
+            bool commit(const std::vector<PreferencesChange>& changes);
 
             /// Turn encryption on for all future uses.
             ///
@@ -122,7 +125,7 @@ namespace ledger {
 
         private:
             std::shared_ptr<api::ExecutionContext> _context;
-            std::shared_ptr<leveldb::DB> _db;
+            std::weak_ptr<leveldb::DB> _db;
             std::string _dbName;
             Option<AESCipher> _cipher;
 
@@ -154,10 +157,11 @@ namespace ledger {
                 AESCipher& cipher
             );
 
-            static std::unordered_map<std::string, std::weak_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
+            // an owning table that holds connection opened
+            static std::unordered_map<std::string, std::shared_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;
             static std::mutex LEVELDB_INSTANCE_POOL_MUTEX;
 
-            static std::shared_ptr<leveldb::DB> obtainInstance(const std::string& path);
+            static std::weak_ptr<leveldb::DB> obtainInstance(const std::string& path);
         };
     }
 }

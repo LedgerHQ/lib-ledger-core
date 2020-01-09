@@ -106,7 +106,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
     auto transaction = JSONUtils::parse<TransactionParser>(SAMPLE_TRANSACTION);
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
-    BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, "fake_account", *transaction);
+    BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, acc.getAccountUid(), *transaction);
 
     BitcoinLikeBlockchainExplorerTransaction dbTransaction;
     if (BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transaction->hash, acc.getAccountUid(), dbTransaction)) {
@@ -138,7 +138,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
     sql.begin();
     BitcoinLikeAccountDatabase acc(db.getWalletUid(), 0);
     for (auto& transaction : transactions) {
-        BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, "fake_account", transaction);
+        BitcoinLikeTransactionDatabaseHelper::putTransaction(sql, acc.getAccountUid(), transaction);
     }
     sql.commit();
 

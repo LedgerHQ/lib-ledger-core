@@ -62,6 +62,10 @@ struct DummyOperationStrategy {
         return op.date;
     }
 
+    static inline std::shared_ptr<int32_t> value_constructor(int32_t v) {
+        return std::make_shared<int32_t>(v);
+    }
+
     static inline void update_balance(DummyOperation& op, int32_t& sum) {
         switch (op.ty) {
             case api::OperationType::RECEIVE:
@@ -84,7 +88,7 @@ TEST(BalanceHistory, ZeroesOutOfRange) {
     auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
     auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
-    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t, int32_t>(
+    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
         end,
         api::TimePeriod::DAY,
@@ -102,6 +106,36 @@ TEST(BalanceHistory, ZeroesOutOfRange) {
     EXPECT_TRUE(all_zero);
 }
 
+TEST(BalanceHistory, CorrectBalancesPerHour) {
+    // a basic collections of “operations” with nothing
+    std::vector<DummyOperation> operations = {
+        DummyOperation(10, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T00:00:00Z")),
+        DummyOperation(12, api::OperationType::RECEIVE, DateUtils::fromJSON("2019-01-01T02:00:00Z")),
+        DummyOperation(5, api::OperationType::SEND,     DateUtils::fromJSON("2019-01-01T04:00:00Z")),
+        DummyOperation(3, api::OperationType::SEND,     DateUtils::fromJSON("2019-01-01T07:30:00Z"))
+    };
+
+    auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
+    auto end =   DateUtils::fromJSON("2019-02-01T00:00:00Z");
+
+    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
+        start,
+        end,
+        api::TimePeriod::HOUR,
+        operations.cbegin(),
+        operations.cend(),
+        0
+    );
+
+    auto size = balances.size();
+    EXPECT_EQ(size, 744);
+
+    EXPECT_EQ(*balances[0], 10);
+    EXPECT_EQ(*balances[2], 22);
+    EXPECT_EQ(*balances[4], 17);
+    EXPECT_EQ(*balances[7], 14);
+}
+
 TEST(BalanceHistory, CorrectBalancesPerDay) {
     // a basic collections of “operations” with nothing
     std::vector<DummyOperation> operations = {
@@ -114,7 +148,7 @@ TEST(BalanceHistory, CorrectBalancesPerDay) {
     auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
     auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
-    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t, int32_t>(
+    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
         end,
         api::TimePeriod::DAY,
@@ -142,7 +176,7 @@ TEST(BalanceHistory, CorrectBalancesPerDay2) {
     auto start = DateUtils::fromJSON("2019-01-01T00:00:00Z");
     auto end = DateUtils::fromJSON("2019-02-01T00:00:00Z");
 
-    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t, int32_t>(
+    auto balances = agnostic::getBalanceHistoryFor<DummyOperationStrategy, int32_t, int32_t>(
         start,
         end,
         api::TimePeriod::DAY,

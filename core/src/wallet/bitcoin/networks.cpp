@@ -35,14 +35,6 @@ namespace ledger {
 
         namespace networks {
 
-            enum sigHashType : uint8_t {
-                SIGHASH_ALL = 1,
-                SIGHASH_NONE = 2,
-                SIGHASH_SINGLE = 3,
-                SIGHASH_FORKID = 0x40,
-                SIGHASH_ANYONECANPAY = 0x80
-            };
-
             const BIP115Parameters BIP115_PARAMETERS = {
                     "9ec9845acb02fab24e1c0368b3b517c1a4488fba97f0e3459ac053ea01000000",
                     {0xC0,0x1F,0x02}

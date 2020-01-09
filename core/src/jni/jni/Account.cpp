@@ -15,6 +15,7 @@
 #include "OperationQuery.hpp"
 #include "Preferences.hpp"
 #include "RippleLikeAccount.hpp"
+#include "TezosLikeAccount.hpp"
 #include "TimePeriod.hpp"
 #include "WalletType.hpp"
 
@@ -151,6 +152,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asR
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
         auto r = ref->asRippleLikeAccount();
         return ::djinni::release(::djinni_generated::RippleLikeAccount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asTezosLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->asTezosLikeAccount();
+        return ::djinni::release(::djinni_generated::TezosLikeAccount::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

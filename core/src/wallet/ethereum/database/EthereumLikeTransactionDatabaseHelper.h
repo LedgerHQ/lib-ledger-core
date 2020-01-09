@@ -55,7 +55,7 @@ namespace ledger {
                                                      const std::string& txHash);
 
             static std::string putTransaction(soci::session& sql,
-                                              const std::string& accountUid,
+                                              const std::string &accountUid,
                                               const EthereumLikeBlockchainExplorerTransaction &tx);
         };
     }

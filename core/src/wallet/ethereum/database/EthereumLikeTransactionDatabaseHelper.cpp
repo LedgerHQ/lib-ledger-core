@@ -67,13 +67,7 @@ namespace ledger {
                                                                        EthereumLikeBlockchainExplorerTransaction &tx) {
             tx.hash = row.get<std::string>(0);
             tx.value = BigInt::fromHex(row.get<std::string>(1));
-            auto nonceBytes = hex::toByteArray(row.get<std::string>(2));
-            auto shift = 0;
-            for (auto& byte : nonceBytes) {
-                tx.nonce += byte << shift;
-                shift += 8;
-            }
-
+            tx.nonce = BigInt(row.get<std::string>(2)).toUint64();
             tx.receivedAt = row.get<std::chrono::system_clock::time_point>(3);
             tx.inputData = hex::toByteArray(row.get<std::string>(4));
 
@@ -112,8 +106,8 @@ namespace ledger {
         }
 
         std::string EthereumLikeTransactionDatabaseHelper::putTransaction(soci::session &sql,
-                                                                         const std::string& accountUid,
-                                                                         const EthereumLikeBlockchainExplorerTransaction &tx) {
+                                                                          const std::string &accountUid,
+                                                                          const EthereumLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const EthereumLikeBlockchainExplorer::Block& block) {
                 return block.getUid();
             });

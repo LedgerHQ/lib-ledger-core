@@ -49,11 +49,30 @@ EthereumLikeTransaction = interface +c {
     getBlock(): optional<EthereumLikeBlock>;
 }
 
+# Class representing an Ethereum internal transaction.
+InternalTransaction = interface +c {
+    # Get start gas (in wei) : maximum amount of gas the originator is willing to pay.
+    getGasLimit(): BigInt;
+    # Used gas (in wei) : used gas during this transaction:
+    getUsedGas(): BigInt;
+    # Get source ETH address.
+    getSender(): string;
+    # Get destination ETH address.
+    getReceiver(): string;
+    # Get amount of ether to send.
+    getValue(): BigInt;
+    # Get binary data payload.
+    getData(): binary;
+    # Get operation type : whether it is a SEND or RECEIVE.
+    getOperationType(): OperationType;
+}
 # Class representing a Ethereum Operation.
 EthereumLikeOperation = interface +c {
     # Get operation's transaction.
     # @return EthereumLikeTransaction object
     getTransaction(): EthereumLikeTransaction;
+    # Get all actions triggered by this transaction
+    getInternalTransactions(): list<InternalTransaction>;
 }
 
 # Class representing Ethereum block.
@@ -136,4 +155,8 @@ EthereumLikeAccount = interface +c {
     # The passed address is an ERC20 account
     # Note: same note as above
     getERC20Balance(erc20Address: string, callback: Callback<BigInt>);
+    # Get balance of ERC20 tokens
+    # The passed addresses are ERC20 accounts
+    # Note: same note as above
+    getERC20Balances(erc20Addresses: list<string>, callback: ListCallback<BigInt>);
 }

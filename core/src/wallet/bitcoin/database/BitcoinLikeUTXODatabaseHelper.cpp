@@ -59,9 +59,9 @@ namespace ledger {
                                                  int32_t count, std::vector<BitcoinLikeBlockchainExplorerOutput> &out,
                                                  std::function<bool(const std::string &address)> filter) {
             rowset<row> rows = (sql.prepare <<
-                                            "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script"
+                                            "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height"
                                                     " FROM bitcoin_outputs AS o "
-                                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON  i.previous_tx_uid = o.transaction_uid "
+                                                    " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
                                                     " AND i.previous_output_idx = o.idx"
                                                     " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid", use(accountUid));
 
@@ -77,6 +77,9 @@ namespace ledger {
                         output.transactionHash = row.get<std::string>(2);
                         output.value = row.get<BigInt>(3);
                         output.script = row.get<std::string>(4);
+                        if (row.get_indicator(5) != i_null) {
+                            output.blockHeight = row.get<BigInt>(5).toUint64();
+                        }
                         c += 1;
                     }
                     o += 1;

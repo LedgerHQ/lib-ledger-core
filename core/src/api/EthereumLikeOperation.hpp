@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_ETHEREUMLIKEOPERATION_HPP
 
 #include <memory>
+#include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
        #include <libcore_export.h>
@@ -16,6 +17,7 @@
 namespace ledger { namespace core { namespace api {
 
 class EthereumLikeTransaction;
+class InternalTransaction;
 
 /** Class representing a Ethereum Operation. */
 class LIBCORE_EXPORT EthereumLikeOperation {
@@ -27,6 +29,9 @@ public:
      * @return EthereumLikeTransaction object
      */
     virtual std::shared_ptr<EthereumLikeTransaction> getTransaction() = 0;
+
+    /** Get all actions triggered by this transaction */
+    virtual std::vector<std::shared_ptr<InternalTransaction>> getInternalTransactions() = 0;
 };
 
 } } }  // namespace ledger::core::api
