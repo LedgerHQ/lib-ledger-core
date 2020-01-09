@@ -80,42 +80,43 @@ namespace ledger {
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto self = std::dynamic_pointer_cast<StellarLikeAccount>(shared_from_this());
             auto synchronizer = _params.synchronizer;
-            auto future = synchronizer->synchronize(self)->getFuture();
+
 
             //Update current block height (needed to compute trust level)
             _params.explorer->getLastLedger().onComplete(getContext(),
-                                                    [self](const TryPtr<stellar::Ledger> &l) mutable {
+                                                    [self, eventPublisher, synchronizer](const TryPtr<stellar::Ledger> &l) mutable {
                                                         if (l.isSuccess()) {
                                                             soci::session sql(self->getWallet()->getDatabase()->getPool());
                                                             self->putLedger(sql, *l.getValue());
                                                             self->_currentLedgerHeight = l.getValue()->height;
                                                         }
+                                                        auto future = synchronizer->synchronize(self)->getFuture();
+                                                        auto startTime = DateUtils::now();
+                                                        eventPublisher->postSticky(
+                                                                std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
+                                                                0);
+                                                        future.onComplete(self->getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+                                                            api::EventCode code;
+                                                            auto payload = std::make_shared<DynamicObject>();
+                                                            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
+                                                                    DateUtils::now() - startTime).count();
+                                                            payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                                                            if (result.isSuccess()) {
+                                                                code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                                                            } else {
+                                                                code = api::EventCode::SYNCHRONIZATION_FAILED;
+                                                                payload->putString(api::Account::EV_SYNC_ERROR_CODE,
+                                                                                   api::to_string(result.getFailure().getErrorCode()));
+                                                                payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
+                                                                payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
+                                                            }
+                                                            eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                                                            std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                                                            self->_currentSyncEventBus = nullptr;
+
+                                                        });
                                                     });
 
-            auto startTime = DateUtils::now();
-            eventPublisher->postSticky(
-                    std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
-                    0);
-            future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
-                api::EventCode code;
-                auto payload = std::make_shared<DynamicObject>();
-                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                        DateUtils::now() - startTime).count();
-                payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
-                if (result.isSuccess()) {
-                    code = api::EventCode::SYNCHRONIZATION_SUCCEED;
-                } else {
-                    code = api::EventCode::SYNCHRONIZATION_FAILED;
-                    payload->putString(api::Account::EV_SYNC_ERROR_CODE,
-                                       api::to_string(result.getFailure().getErrorCode()));
-                    payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
-                    payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
-                }
-                eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
-                std::lock_guard<std::mutex> lock(self->_synchronizationLock);
-                self->_currentSyncEventBus = nullptr;
-
-            });
             return eventPublisher->getEventBus();
         }
 

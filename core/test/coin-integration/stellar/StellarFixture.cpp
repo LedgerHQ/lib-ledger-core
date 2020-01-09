@@ -60,9 +60,7 @@ api::AccountCreationInfo StellarFixture::emptyAccount() const {
 
 
 std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {
-    auto pool = CoinIntegrationFixture::newPool(poolName);
-    //injectCurrency(pool, STELLAR);
-    return pool;
+    return CoinIntegrationFixture::newPool(poolName);
 }
 
 api::Currency StellarFixture::getCurrency() const {

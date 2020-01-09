@@ -38,7 +38,9 @@ TEST_F(StellarFixture, CreateAccountWithPubKey) {
     auto a = newAccount(wallet, 0, defaultAccount());
     auto account = std::static_pointer_cast<AbstractAccount>(::wait(wallet->getAccount(0)));
     auto address = ::wait(account->getFreshPublicAddresses()).front()->toString();
+    auto derivation = ::wait(account->getFreshPublicAddresses()).front()->getDerivationPath().value();
     EXPECT_EQ(address, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
     EXPECT_EQ(info.derivations.size(), 1);
     EXPECT_EQ(info.derivations[0], "44'/148'/0'");
+    EXPECT_EQ(derivation, "");
 }

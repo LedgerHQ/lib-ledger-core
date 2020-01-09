@@ -54,7 +54,7 @@ namespace ledger {
                                             const std::shared_ptr<Preferences> &accountPreferences,
                                             const api::Currency &currency) {
             return std::make_shared<DefaultStellarLikeKeychain>(
-                    std::make_shared<StellarLikeAddress>(address, currency, Option<std::string>(path.toString())),
+                    std::make_shared<StellarLikeAddress>(address, currency, Option<std::string>("")),
                     configuration,
                     currency, accountPreferences);
         }
