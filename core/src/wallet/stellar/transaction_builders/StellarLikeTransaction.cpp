@@ -35,6 +35,8 @@
 #include <crypto/SHA256.hpp>
 #include <wallet/stellar/StellarLikeAddress.hpp>
 #include <utils/Exception.hpp>
+#include <wallet/common/Amount.h>
+#include <api_impl/BigIntImpl.hpp>
 
 namespace ledger {
     namespace core {
@@ -45,7 +47,7 @@ namespace ledger {
         }
 
         std::vector<uint8_t> StellarLikeTransaction::toSignatureBase() {
-            auto networkId = SHA256::stringToBytesHash(_params.NetworkPassphrase);
+            auto networkId = SHA256::stringToBytesHash(_currency.stellarLikeNetworkParameters.value().NetworkPassphrase);
             stellar::xdr::Encoder envTypeEncoder;
             envTypeEncoder << static_cast<int32_t>(stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX);
             auto encodedEnvType = envTypeEncoder.toByteArray();
@@ -72,6 +74,21 @@ namespace ledger {
             sig.signature = signature;
             std::copy(pubKey.begin() + (pubKey.size() - 4), pubKey.end(), sig.hint.begin());
             _envelope.signatures.emplace_back(sig);
+        }
+
+        std::shared_ptr<api::Address> StellarLikeTransaction::getSourceAccount() {
+            const auto& sourcePubkey = _envelope.tx.sourceAccount.content;
+            std::vector<uint8_t> pubKey(sourcePubkey.size());
+            std::copy(sourcePubkey.begin(), sourcePubkey.end(), pubKey.begin());
+            return std::make_shared<StellarLikeAddress>(pubKey, _currency, Option<std::string>());
+        }
+
+        std::shared_ptr<api::BigInt> StellarLikeTransaction::getSourceAccountSequence() {
+            return std::make_shared<api::BigIntImpl>(BigInt(_envelope.tx.seqNum));
+        }
+
+        std::shared_ptr<api::Amount> StellarLikeTransaction::getFee() {
+            return std::make_shared<Amount>(_currency, 0, BigInt(_envelope.tx.fee));
         }
     }
 }

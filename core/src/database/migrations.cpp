@@ -761,6 +761,7 @@ namespace ledger {
                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                    "idx INTEGER NOT NULL,"
                    "address TEXT NOT NULL,"
+                   "subentries_count INTEGER DEFAULT 0,"
                    "sequence VARCHAR(255) DEFAULT '0'"
                    ")";
 
@@ -779,6 +780,7 @@ namespace ledger {
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL, "
                    "hash VARCHAR(255) NOT NULL,"
                    "source_account VARCHAR(255) NOT NULL,"
+                   "sequence VARCHAR(255) NOT NULL,"
                    "fee VARCHAR(255) NOT NULL,"
                    "successful INTEGER NOT NULL,"
                    "ledger VARCHAR(255) NOT NULL,"

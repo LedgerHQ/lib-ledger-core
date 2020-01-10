@@ -125,7 +125,7 @@ namespace ledger {
                     std::copy(pubKey.begin() + 28,  pubKey.end(), signature.hint.begin());
                 }
                 envelope.tx.fee = envelope.tx.operations.size() * baseFee;
-                return std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency().stellarLikeNetworkParameters.value(), envelope);
+                return std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), envelope);
             });
         }
 

@@ -35,6 +35,7 @@
 #include <api/StellarLikeOperation.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
 #include <api/StellarLikeOperationRecord.hpp>
+#include <wallet/stellar/transaction_builders/StellarLikeTransaction.hpp>
 
 namespace ledger {
     namespace core {
@@ -43,6 +44,8 @@ namespace ledger {
             explicit StellarLikeOperation(const std::shared_ptr<OperationApi>& api) : _api(api) {};
 
             api::StellarLikeOperationRecord getRecord() override;
+
+            std::shared_ptr<api::StellarLikeTransaction> getTransaction() override;
 
         private:
             std::shared_ptr<OperationApi> _api;

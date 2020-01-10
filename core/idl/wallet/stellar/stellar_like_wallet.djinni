@@ -17,6 +17,15 @@ StellarLikeTransaction = interface +c {
 
     # Add a new signature to the transaction envelope
     putSignature(signature: binary, address: Address);
+
+    # Returns the author of the transaction
+    getSourceAccount(): Address;
+
+    # Returns the sequence of the source account used for this transaction
+    getSourceAccountSequence(): BigInt;
+
+    # Returns the fee paid for this transaction to be validated
+    getFee(): Amount;
 }
 
 StellarLikeTransactionBuilder = interface +c {
@@ -49,7 +58,10 @@ StellarLikeOperationRecord = record {
 }
 
 StellarLikeOperation = interface +c {
+    # Get the underlying operation information
     getRecord(): StellarLikeOperationRecord;
+    # Get the underlying transaction in which this operation can be found.
+    getTransaction(): StellarLikeTransaction;
 }
 
 StellarLikeFeeStats = record {

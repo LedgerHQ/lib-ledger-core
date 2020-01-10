@@ -78,6 +78,9 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     EXPECT_EQ(second->getRecipients().front(), "GB6TMMOCZSFFVXUXPV6FATTGQN6NKV74I2LTBB6LR7GEWLTN2IGZ6L6X");
     EXPECT_EQ(second->isComplete(), true);
     EXPECT_EQ(second->getOperationType(), api::OperationType::SEND);
+
+    auto reserve = wait(account->getBaseReserve());
+    EXPECT_EQ(reserve->toLong(), 2 * 5000000);
 }
 
 TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {

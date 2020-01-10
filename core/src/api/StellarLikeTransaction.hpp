@@ -18,6 +18,8 @@
 namespace ledger { namespace core { namespace api {
 
 class Address;
+class Amount;
+class BigInt;
 
 class LIBCORE_EXPORT StellarLikeTransaction {
 public:
@@ -30,6 +32,15 @@ public:
 
     /** Add a new signature to the transaction envelope */
     virtual void putSignature(const std::vector<uint8_t> & signature, const std::shared_ptr<Address> & address) = 0;
+
+    /** Returns the author of the transaction */
+    virtual std::shared_ptr<Address> getSourceAccount() = 0;
+
+    /** Returns the sequence of the source account used for this transaction */
+    virtual std::shared_ptr<BigInt> getSourceAccountSequence() = 0;
+
+    /** Returns the fee paid for this transaction to be validated */
+    virtual std::shared_ptr<Amount> getFee() = 0;
 };
 
 } } }  // namespace ledger::core::api

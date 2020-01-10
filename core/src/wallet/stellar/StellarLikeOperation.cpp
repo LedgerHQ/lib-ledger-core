@@ -33,6 +33,7 @@
 #include <api/StellarLikeOperationType.hpp>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/stellar/xdr/models.hpp>
 
 namespace ledger {
     namespace core {
@@ -60,6 +61,14 @@ namespace ledger {
                         op.id, op.transactionSuccessful, (api::StellarLikeOperationType) op.type,
                         op.transactionHash, asset, sourceAsset, sourceAmount
                     );
+        }
+
+        std::shared_ptr<api::StellarLikeTransaction> StellarLikeOperation::getTransaction() {
+            stellar::xdr::TransactionEnvelope envelope;
+            const auto& backend = _api->getBackend().stellarOperation.getValue();
+            envelope.tx.sourceAccount.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
+           
+            return std::make_shared<StellarLikeTransaction>(_api->getCurrency(), std::move(envelope));
         }
     }
 }

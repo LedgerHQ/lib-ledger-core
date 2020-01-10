@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<TrustLevel>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    TrustLevel() : JniEnum("TrustLevel") {}
+    TrustLevel() : JniEnum("co/ledger/core/TrustLevel") {}
     friend ::djinni::JniClass<TrustLevel>;
 };
 

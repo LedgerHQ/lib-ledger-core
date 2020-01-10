@@ -43,11 +43,11 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::ThreadDispatcher, ::djinni_generated::ThreadDispatcher>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ThreadDispatcher") };
-    const jmethodID method_getSerialExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getSerialExecutionContext", "(Ljava/lang/String;)LExecutionContext;") };
-    const jmethodID method_getThreadPoolExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getThreadPoolExecutionContext", "(Ljava/lang/String;)LExecutionContext;") };
-    const jmethodID method_getMainExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getMainExecutionContext", "()LExecutionContext;") };
-    const jmethodID method_newLock { ::djinni::jniGetMethodID(clazz.get(), "newLock", "()LLock;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ThreadDispatcher") };
+    const jmethodID method_getSerialExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getSerialExecutionContext", "(Ljava/lang/String;)Lco/ledger/core/ExecutionContext;") };
+    const jmethodID method_getThreadPoolExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getThreadPoolExecutionContext", "(Ljava/lang/String;)Lco/ledger/core/ExecutionContext;") };
+    const jmethodID method_getMainExecutionContext { ::djinni::jniGetMethodID(clazz.get(), "getMainExecutionContext", "()Lco/ledger/core/ExecutionContext;") };
+    const jmethodID method_newLock { ::djinni::jniGetMethodID(clazz.get(), "newLock", "()Lco/ledger/core/Lock;") };
 };
 
 }  // namespace djinni_generated

@@ -9,12 +9,12 @@
 
 namespace djinni_generated {
 
-HttpRequest::HttpRequest() : ::djinni::JniInterface<::ledger::core::api::HttpRequest, HttpRequest>("HttpRequest$CppProxy") {}
+HttpRequest::HttpRequest() : ::djinni::JniInterface<::ledger::core::api::HttpRequest, HttpRequest>("co/ledger/core/HttpRequest$CppProxy") {}
 
 HttpRequest::~HttpRequest() = default;
 
 
-CJNIEXPORT void JNICALL Java_HttpRequest_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -22,7 +22,7 @@ CJNIEXPORT void JNICALL Java_HttpRequest_00024CppProxy_nativeDestroy(JNIEnv* jni
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_HttpRequest_00024CppProxy_native_1getMethod(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_1getMethod(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -32,7 +32,7 @@ CJNIEXPORT jobject JNICALL Java_HttpRequest_00024CppProxy_native_1getMethod(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_HttpRequest_00024CppProxy_native_1getHeaders(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_1getHeaders(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -42,7 +42,7 @@ CJNIEXPORT jobject JNICALL Java_HttpRequest_00024CppProxy_native_1getHeaders(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_HttpRequest_00024CppProxy_native_1getBody(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_1getBody(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -52,7 +52,7 @@ CJNIEXPORT jbyteArray JNICALL Java_HttpRequest_00024CppProxy_native_1getBody(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_HttpRequest_00024CppProxy_native_1getUrl(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_1getUrl(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -62,7 +62,7 @@ CJNIEXPORT jstring JNICALL Java_HttpRequest_00024CppProxy_native_1getUrl(JNIEnv*
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_HttpRequest_00024CppProxy_native_1complete(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_response, jobject j_error)
+CJNIEXPORT void JNICALL Java_co_ledger_core_HttpRequest_00024CppProxy_native_1complete(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_response, jobject j_error)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

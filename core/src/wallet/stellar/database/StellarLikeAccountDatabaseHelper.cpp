@@ -49,12 +49,13 @@ namespace ledger {
         bool StellarLikeAccountDatabaseHelper::getAccount(soci::session &sql, const std::string &accountUid,
                                                           stellar::Account& out) {
             rowset<row> rows = (sql.prepare <<
-                    "SELECT address, idx, sequence FROM stellar_accounts WHERE uid = :uid", use(accountUid));
+                    "SELECT address, idx, sequence, subentries_count FROM stellar_accounts WHERE uid = :uid", use(accountUid));
 
             for (const auto& row : rows) {
                 out.accountId = row.get<std::string>(0);
                 out.accountIndex = soci::get_number<uint32_t>(row, 1);
                 out.sequence = row.get<std::string>(2);
+                out.subentryCount = static_cast<uint32_t>(row.get<int>(3));
                 return true;
             }
 
@@ -108,8 +109,9 @@ namespace ledger {
         void StellarLikeAccountDatabaseHelper::createAccount(soci::session &sql, const std::string &walletUid,
                                                              int32_t accountIndex, const stellar::Account &in) {
             auto accountUid = AccountDatabaseHelper::createAccountUid(walletUid, accountIndex);
-            sql << "INSERT INTO stellar_accounts VALUES (:uid, :wallet_uid, :idx, :address, :sequence)",
-                    use(accountUid), use(walletUid), use(accountIndex), use(in.accountId), use(in.sequence);
+            sql << "INSERT INTO stellar_accounts VALUES (:uid, :wallet_uid, :idx, :address, :sequence, :count)",
+                    use(accountUid), use(walletUid), use(accountIndex), use(in.accountId), use(in.sequence),
+                    use(in.subentryCount);
         }
 
         void StellarLikeAccountDatabaseHelper::getAccountBalances(soci::session &sql, const std::string &accountUid,

@@ -25,7 +25,7 @@ private:
     CurrencyUnit();
     friend ::djinni::JniClass<CurrencyUnit>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CurrencyUnit") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CurrencyUnit") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V") };
     const jfieldID field_name { ::djinni::jniGetFieldID(clazz.get(), "name", "Ljava/lang/String;") };
     const jfieldID field_symbol { ::djinni::jniGetFieldID(clazz.get(), "symbol", "Ljava/lang/String;") };

@@ -41,11 +41,11 @@ namespace ledger {
         class StellarLikeTransaction : public virtual api::StellarLikeTransaction {
         public:
             explicit StellarLikeTransaction(
-                    const api::StellarLikeNetworkParameters& params,
-                    stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope), _params(params) {};
+                    const api::Currency& currency,
+                    stellar::xdr::TransactionEnvelope&& envelope) : _envelope(envelope), _currency(currency) {};
             explicit StellarLikeTransaction(
-                    const api::StellarLikeNetworkParameters& params,
-                    const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope), _params(params) {};
+                    const api::Currency& currency,
+                    const stellar::xdr::TransactionEnvelope& envelope) : _envelope(envelope), _currency(currency) {};
             std::vector<uint8_t> toRawTransaction() override;
 
             std::vector<uint8_t> toSignatureBase() override;
@@ -55,9 +55,16 @@ namespace ledger {
             void putSignature(const std::vector<uint8_t> &signature,
                               const std::shared_ptr<api::Address>& address) override;
 
+
+            std::shared_ptr<api::Address> getSourceAccount() override;
+
+            std::shared_ptr<api::BigInt> getSourceAccountSequence() override;
+
+            std::shared_ptr<api::Amount> getFee() override;
+
         private:
             stellar::xdr::TransactionEnvelope _envelope;
-            api::StellarLikeNetworkParameters _params;
+            api::Currency _currency;
         };
     }
 }

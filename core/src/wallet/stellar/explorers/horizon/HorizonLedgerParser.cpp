@@ -37,8 +37,8 @@ using namespace ledger::core;
 static const JsonParserPathMatcher HASH_MATCHER("/hash");
 static const JsonParserPathMatcher SEQUENCE_MATCHER("/sequence");
 static const JsonParserPathMatcher TIME_MATCHER("/closed_at");
-static const JsonParserPathMatcher FEE_MATCHER("/base_fee");
-static const JsonParserPathMatcher RESERVE_MATCHER("/base_reserve");
+static const JsonParserPathMatcher FEE_MATCHER("/base_fee_in_stroops");
+static const JsonParserPathMatcher RESERVE_MATCHER("/base_reserve_in_stroops");
 
 namespace ledger {
     namespace core {

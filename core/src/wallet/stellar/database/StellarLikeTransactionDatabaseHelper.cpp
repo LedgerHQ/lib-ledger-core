@@ -47,9 +47,10 @@ namespace ledger {
             if (!transactionExists(sql, uid)) {
                 auto ledger = fmt::format("{}", tx.ledger);
                 auto fee = tx.feePaid.toString();
-                sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :fee, :success, :ledger,"
+                auto sequence = tx.sourceAccountSequence.toString();
+                sql << "INSERT INTO stellar_transactions VALUES(:uid, :hash, :account, :sequence, :fee, :success, :ledger,"
                        ":memo_typ, :memo)",
-                        use(uid), use(tx.hash), use(tx.sourceAccount), use(fee), use(tx.successful ? 1 : 0),
+                        use(uid), use(tx.hash), use(tx.sourceAccount), use(sequence), use(fee), use(tx.successful ? 1 : 0),
                         use(ledger), use(tx.memoType), use(tx.memo);
                 return true;
             }
@@ -140,13 +141,15 @@ namespace ledger {
         bool StellarLikeTransactionDatabaseHelper::getTransaction(soci::session &sql, const std::string &hash,
                                                                   stellar::Transaction &out) {
             std::string fee;
+            std::string sequence;
             int successful;
-            sql << "SELECT hash, source_account, fee, successful, ledger, memo_type, memo "
+            sql << "SELECT hash, source_account, sequence, fee, successful, ledger, memo_type, memo "
                    "FROM stellar_transactions "
-                   "WHERE hash = :hash LIMIT 1", use(hash), into(out.hash), into(out.sourceAccount), into(fee),
+                   "WHERE hash = :hash LIMIT 1", use(hash), into(out.hash), into(out.sourceAccount), into(sequence), into(fee),
                    into(successful), into(out.ledger), into(out.memoType), into(out.memo);
             out.successful = successful == 1;
             out.feePaid = BigInt::fromString(fee);
+            out.sourceAccountSequence = BigInt::fromString(sequence);
             return out.hash == hash;
         }
 

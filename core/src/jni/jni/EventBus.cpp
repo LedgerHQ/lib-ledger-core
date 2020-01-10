@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-EventBus::EventBus() : ::djinni::JniInterface<::ledger::core::api::EventBus, EventBus>("EventBus$CppProxy") {}
+EventBus::EventBus() : ::djinni::JniInterface<::ledger::core::api::EventBus, EventBus>("co/ledger/core/EventBus$CppProxy") {}
 
 EventBus::~EventBus() = default;
 
 
-CJNIEXPORT void JNICALL Java_EventBus_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EventBus_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_EventBus_00024CppProxy_nativeDestroy(JNIEnv* jniEnv
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_EventBus_00024CppProxy_native_1subscribe(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_context, jobject j_receiver)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EventBus_00024CppProxy_native_1subscribe(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_context, jobject j_receiver)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT void JNICALL Java_EventBus_00024CppProxy_native_1subscribe(JNIEnv* jn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_EventBus_00024CppProxy_native_1unsubscribe(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_receiver)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EventBus_00024CppProxy_native_1unsubscribe(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_receiver)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

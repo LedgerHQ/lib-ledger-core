@@ -385,7 +385,9 @@ namespace ledger {
                       now - std::chrono::duration_cast<std::chrono::milliseconds>(lgr.time.time_since_epoch()).count() >  INVALID_SYNCHRONIZATION_DELAY) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Last ledger is out dated");
                 }
-                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, lgr.baseReserve);
+                stellar::Account acc;
+                StellarLikeAccountDatabaseHelper::getAccount(sql, self->getAccountUid(), acc);
+                return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, (BigInt(2) + BigInt(acc.subentryCount)) * lgr.baseReserve);
             };
             return async<std::shared_ptr<Amount>>([=] () {
                 return queryLastLedgerAndGetReserve();

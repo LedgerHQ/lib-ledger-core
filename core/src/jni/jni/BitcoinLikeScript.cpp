@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-BitcoinLikeScript::BitcoinLikeScript() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeScript, BitcoinLikeScript>("BitcoinLikeScript$CppProxy") {}
+BitcoinLikeScript::BitcoinLikeScript() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeScript, BitcoinLikeScript>("co/ledger/core/BitcoinLikeScript$CppProxy") {}
 
 BitcoinLikeScript::~BitcoinLikeScript() = default;
 
 
-CJNIEXPORT void JNICALL Java_BitcoinLikeScript_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeScript_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_BitcoinLikeScript_00024CppProxy_nativeDestroy(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_BitcoinLikeScript_00024CppProxy_native_1head(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeScript_00024CppProxy_native_1head(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jobject JNICALL Java_BitcoinLikeScript_00024CppProxy_native_1head(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_BitcoinLikeScript_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_BitcoinLikeScript_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jstring JNICALL Java_BitcoinLikeScript_00024CppProxy_native_1toString
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BitcoinLikeScript_parse(JNIEnv* jniEnv, jobject /*this*/, jbyteArray j_data)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeScript_parse(JNIEnv* jniEnv, jobject /*this*/, jbyteArray j_data)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

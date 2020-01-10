@@ -41,8 +41,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseColumn, ::djinni_generated::DatabaseColumn>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseColumn") };
-    const jmethodID method_getType { ::djinni::jniGetMethodID(clazz.get(), "getType", "()LDatabaseValueType;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseColumn") };
+    const jmethodID method_getType { ::djinni::jniGetMethodID(clazz.get(), "getType", "()Lco/ledger/core/DatabaseValueType;") };
     const jmethodID method_getName { ::djinni::jniGetMethodID(clazz.get(), "getName", "()Ljava/lang/String;") };
 };
 
