@@ -134,7 +134,16 @@ namespace ledger {
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
 
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                auto wasPut = OperationDatabaseHelper::putOperation(sql, operation);
+                auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, transaction);
+
+                if (wasPut) {
+                    sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)",
+                        soci::use(operation.uid),
+                        soci::use(rippleTxUid),
+                        soci::use(transaction.hash)
+                    ;
+
                     emitNewOperationEvent(operation);
                 }
 
@@ -146,7 +155,16 @@ namespace ledger {
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
 
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                auto wasPut = OperationDatabaseHelper::putOperation(sql, operation);
+                auto rippleTxUid = RippleLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, transaction);
+
+                if (wasPut) {
+                    sql << "INSERT INTO ripple_operations VALUES(:uid, :tx_uid, :tx_hash)",
+                        soci::use(operation.uid),
+                        soci::use(rippleTxUid),
+                        soci::use(transaction.hash)
+                    ;
+
                     emitNewOperationEvent(operation);
                 }
 

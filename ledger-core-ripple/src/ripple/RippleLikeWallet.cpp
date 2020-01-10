@@ -40,13 +40,13 @@
 #include <ripple/RippleLikeAccount.hpp>
 #include <ripple/RippleLikeAccountDatabaseHelper.hpp>
 #include <ripple/RippleLikeExtendedPublicKey.hpp>
-#include <ripple/database/Migrations.hpp>
 
 namespace ledger {
     namespace core {
         RippleLikeWallet::RippleLikeWallet(const std::string &name,
                                            const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
                                            const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
+                                           const std::shared_ptr<RippleLikeKeychainFactory> &keychainFactory,
                                            const RippleLikeAccountSynchronizerFactory &synchronizer,
                                            const std::shared_ptr<Services> &services,
                                            const api::Currency &network,
@@ -56,10 +56,8 @@ namespace ledger {
                 : AbstractWallet(name, network, services, configuration, scheme) {
             _explorer = explorer;
             _observer = observer;
+            _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
-
-            // create the DB structure if not already created
-            services->getDatabaseSessionPool()->forwardMigration<XRPMigration>();
         }
 
         bool RippleLikeWallet::isSynchronizing() {

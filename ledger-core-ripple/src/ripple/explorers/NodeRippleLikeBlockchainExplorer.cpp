@@ -188,7 +188,7 @@ namespace ledger {
                                 }
 
                                 auto value = reserveObj[field.c_str()].GetDouble();
-                                return std::make_shared<BigInt>(static_cast<unsigned int>(value * pow(10, currencies::RIPPLE.units[1].numberOfDecimal)));
+                                return std::make_shared<BigInt>(static_cast<unsigned int>(value * pow(10, currencies::ripple().units[1].numberOfDecimal)));
                             }
                         }
 

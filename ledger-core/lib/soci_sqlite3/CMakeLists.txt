@@ -18,5 +18,5 @@ target_link_libraries(soci_sqlite3 PUBLIC ${SQLITE_LIB})
 target_include_directories(
     soci_sqlite3 PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/../soci/core>
-    $<INSTALL_INTERFACE:include/soci/core>
+    $<INSTALL_INTERFACE:include/soci>
 )

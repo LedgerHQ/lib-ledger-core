@@ -168,29 +168,39 @@ namespace ledger {
         RippleLikeKeychain::Address RippleLikeKeychain::derive() {
             if (_address.empty()) {
                 _localPath = getDerivationScheme()
-                        .setAccountIndex(getAccountIndex())
-                        .setCoinType(getCurrency().bip44CoinType)
-                        .setNode(0)
-                        .setAddressIndex(0).getPath().toString();
+                    .setCoinType(getCurrency().bip44CoinType)
+                    .getPath().toString();
 
                 auto cacheKey = fmt::format("path:{}", _localPath);
                 _address = getPreferences()->getString(cacheKey, "");
-
                 if (_address.empty()) {
-                    auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
-                            .setAccountIndex(getAccountIndex())
-                            .setCoinType(getCurrency().bip44CoinType)
-                            .setNode(0)
-                            .setAddressIndex(0).getPath().toString();
-                    auto xpub = _xpub;
+                    auto nodeScheme = getDerivationScheme()
+                        .getSchemeFrom(DerivationSchemeLevel::NODE);
+                    auto p = nodeScheme.getPath().getDepth() > 0 ? nodeScheme
+                        .shift(1)
+                        .setCoinType(getCurrency().bip44CoinType)
+                        .getPath()
+                        .toString() : "";
+
+                    auto localNodeScheme = getDerivationScheme()
+                        .getSchemeTo(DerivationSchemeLevel::NODE)
+                        .setCoinType(getCurrency().bip44CoinType);
+                    // If node level is hardened we don't derive according to it since private
+                    // derivation are not supported
+                    auto xpub = localNodeScheme.getPath().getDepth() > 0 && localNodeScheme.getPath().isHardened(0) ?
+                        std::static_pointer_cast<RippleLikeExtendedPublicKey>(_xpub)->derive(DerivationPath("")) :
+                        std::static_pointer_cast<RippleLikeExtendedPublicKey>(_xpub)->derive(localNodeScheme.getPath());
+
+                    auto strScheme = localNodeScheme.getPath().toString();
+
                     _address = xpub->derive(p)->toBase58();
                     // Feed path -> address cache
                     // Feed address -> path cache
                     getPreferences()
-                            ->edit()
-                            ->putString(cacheKey, _address)
-                            ->putString(fmt::format("address:{}", _address), _localPath)
-                            ->commit();
+                        ->edit()
+                        ->putString(cacheKey, _address)
+                        ->putString(fmt::format("address:{}", _address), _localPath)
+                        ->commit();
                 }
             }
 

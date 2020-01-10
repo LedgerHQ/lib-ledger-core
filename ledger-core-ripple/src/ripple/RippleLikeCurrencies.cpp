@@ -37,12 +37,15 @@
 namespace ledger {
     namespace core {
         namespace currencies {
-            api::Currency const RIPPLE =
-                CurrencyBuilder("ripple")
-                .bip44(RIPPLE_COIN_ID)
-                .paymentUri("ripple")
-                .unit("drop", 0, "drop")
-                .unit("XRP", 6, "XRP");
+            api::Currency ripple() {
+                static api::Currency const CURRENCY = CurrencyBuilder("ripple")
+                    .bip44(RIPPLE_COIN_ID)
+                    .paymentUri("ripple")
+                    .unit("drop", 0, "drop")
+                    .unit("XRP", 6, "XRP");
+
+                return CURRENCY;
+            }
         }
     }
 }

@@ -60,6 +60,8 @@ namespace ledger {
             std::string sender;
             Option<api::Block> block;
             uint64_t confirmations;
+            Option<uint64_t> destinationTag;
+
             std::vector<api::RippleLikeMemo> memos;
 
             RippleLikeBlockchainExplorerTransaction() {
@@ -76,6 +78,7 @@ namespace ledger {
                 this->receiver = cpy.receiver;
                 this->sender = cpy.sender;
                 this->value = cpy.value;
+                this->destinationTag = cpy.destinationTag;
                 this->memos = cpy.memos;
             }
 

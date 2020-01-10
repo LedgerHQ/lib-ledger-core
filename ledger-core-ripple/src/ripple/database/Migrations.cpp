@@ -90,5 +90,19 @@ namespace ledger {
         template <> void rollback<2, XRPMigration>(soci::session& sql) {
             sql << "DROP TABLE ripple_memos";
         }
+
+        template <> void migrate<3, XRPMigration>(soci::session& sql) {
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN sequence BIGINT";
+        }
+
+        template <> void rollback<3, XRPMigration>(soci::session& sql) {
+        }
+
+        template <> void migrate<4, XRPMigration>(soci::session& sql) {
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN destination_tag BIGINT";
+        }
+
+        template <> void rollback<4, XRPMigration>(soci::session& sql) {
+        }
     }
 }

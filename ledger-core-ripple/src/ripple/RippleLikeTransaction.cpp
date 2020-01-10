@@ -97,8 +97,25 @@ namespace ledger {
             _fees = std::make_shared<Amount>(_currency, 0, tx->fees);
             _value = std::make_shared<Amount>(_currency, 0, tx->value);
 
-            _receiver = RippleLikeAddress::fromBase58(tx->receiver, _currency);
-            _sender = RippleLikeAddress::fromBase58(tx->sender, _currency);
+            if (!tx->receiver.empty()) {
+                _receiver = RippleLikeAddress::fromBase58(tx->receiver, _currency);
+            }
+
+            if (!tx->sender.empty()) {
+                _sender = RippleLikeAddress::fromBase58(tx->sender, _currency);
+            }
+
+            _sequence = std::make_shared<BigInt>(tx->sequence);
+
+            if (tx->destinationTag.nonEmpty()) {
+              _destinationTag = static_cast<int64_t>(tx->destinationTag.getValue());
+            }
+
+            if (tx->block.hasValue()) {
+                _ledgerSequence = std::make_shared<BigInt>(BigInt(static_cast<unsigned long long>(tx->block.getValue().height)));
+            } else {
+                _ledgerSequence = std::make_shared<BigInt>(BigInt::ZERO);
+            }
         }
 
         std::string RippleLikeTransaction::getHash() {
@@ -153,22 +170,12 @@ namespace ledger {
             reader.readNextByte();
             //R length
             auto rSize = reader.readNextVarInt();
-            if (rSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _rSignature = reader.read(rSize - 1);
-            } else {
-                _rSignature = reader.read(rSize);
-            }
+            _rSignature = reader.read(rSize);
             //Nb of elements for S
             reader.readNextByte();
             //S length
             auto sSize = reader.readNextVarInt();
-            if (sSize > 0 && reader.peek() == 0x00) {
-                reader.readNextByte();
-                _sSignature = reader.read(sSize - 1);
-            } else {
-                _sSignature = reader.read(sSize);
-            }
+            _sSignature = reader.read(sSize);
         }
 
         //Field ID References:
@@ -192,6 +199,13 @@ namespace ledger {
             //4 bytes Sequence
             auto sequence = _sequence->toString(16);
             writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_sequence->intValue()));
+
+            if (_destinationTag.hasValue()) {
+                //1 byte Destination tag:   Type Code = 2, Field Code = 14
+                writer.writeByte(0x2E);
+                //4 bytes Destination tag
+                writer.writeBeValue<uint32_t>(static_cast<const uint32_t>(_destinationTag.getValue()));
+            }
 
             //2 bytes LastLedgerSequence Field ID:   Type Code = 2, Field Code = 27
             writer.writeByteArray({0x20, 0x1B});
