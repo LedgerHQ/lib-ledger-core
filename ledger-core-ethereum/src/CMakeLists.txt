@@ -5,6 +5,8 @@ set(ANDROID_CPP_FEATURES exceptions)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+find_package(ledger-core 0.1.0 REQUIRED)
+
 # Automatically add API files to the library
 file(
     GLOB ledger-core-ethereum-api-sources
@@ -30,8 +32,6 @@ if (TARGET_JNI)
     list(APPEND ledger-core-ethereum-sources ${ledger-core-ethereum-jni-sources})
     add_definitions(-DTARGET_JNI=1)
 endif ()
-
-#link_directories(${CMAKE_BINARY_DIR}/lib)
 
 # Add files to compile to the project
 file(GLOB_RECURSE SRC_FILES *.cpp)
@@ -109,8 +109,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
 endif()
 
 # link the ledger-core library
-target_link_directories(ledger-core-ethereum-interface INTERFACE ${CMAKE_SOURCE_DIR}/../ledger-core/build/src)
-target_link_libraries(ledger-core-ethereum-interface INTERFACE ledger-core)
+target_link_libraries(ledger-core-ethereum-interface INTERFACE Core::ledger-core)
 
 if (TARGET_JNI)
     target_include_directories(ledger-core-ethereum-interface INTERFACE ${JNI_INCLUDE_DIRS})
@@ -119,16 +118,5 @@ endif ()
 
 target_include_directories(ledger-core-ethereum-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
 target_include_directories(ledger-core-ethereum-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/ethereum/api)
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/../ledger-core/inc")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/../ledger-core/inc/core/api")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/bigd")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/boost")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/cereal")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/fmt/include")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/leveldb/include")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/rapidjson/include")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/secp256k1")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/soci/core")
-target_include_directories(ledger-core-ethereum-interface INTERFACE "${CMAKE_SOURCE_DIR}/lib/spdlog/include")
 
-install(TARGETS ledger-core-ethereum DESTINATION "lib")
+install(TARGETS ledger-core-ethereum DESTINATION lib)
