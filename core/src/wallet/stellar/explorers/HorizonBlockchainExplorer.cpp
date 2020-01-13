@@ -41,6 +41,7 @@
 #include "horizon/HorizonFeeStatsParser.hpp"
 #include <utils/Exception.hpp>
 #include <math/BaseConverter.hpp>
+#include <utils/url.h>
 
 namespace ledger {
     namespace core {
@@ -144,7 +145,7 @@ namespace ledger {
 
         Future<std::string> HorizonBlockchainExplorer::postTransaction(const std::vector<uint8_t> &tx) {
             std::stringstream body;
-            body << "tx=" << BaseConverter::encode(tx, BaseConverter::BASE64_RFC4648);
+            body << "tx=" << url::encodeUrlQuery(BaseConverter::encode(tx, BaseConverter::BASE64_RFC4648));
             auto bodyString = body.str();
             return http->POST("/transactions", std::vector<uint8_t>(bodyString.begin(), bodyString.end()), {{"Content-Type", "application/x-www-form-urlencoded"}})
             .json().template map<std::string>(getContext(), [] (const HttpRequest::JsonResult& result) -> std::string {
