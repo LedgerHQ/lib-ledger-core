@@ -11,6 +11,7 @@ endif (APPLE)
 
 add_executable(
     ledger-core-ethereum-tests main.cpp Fixtures.cpp
+    TransactionTests.cpp
 )
 
 target_link_libraries(ledger-core-ethereum-tests Core::ledger-core-static)
@@ -23,3 +24,5 @@ target_link_libraries(ledger-core-ethereum-tests gtest gtest_main)
 set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE)
 
 add_subdirectory(lib/googletest)
+
+add_test (NAME Ethereum-transaction COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumMakeTransaction.*)
