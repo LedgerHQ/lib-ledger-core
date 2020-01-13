@@ -37,19 +37,29 @@
 #include <ripple/RippleLikeTransaction.hpp>
 
 #include <integration/BaseFixture.hpp>
+#include <integration/TransactionTestHelper.hpp>
 
 #include "Fixtures.hpp"
-#include "TransactionTestHelper.hpp"
 
 using namespace std;
 
-struct RippleMakeTransaction : public RippleMakeBaseTransaction {
+struct RippleMakeTransaction :
+    public MakeBaseTransaction<
+        RippleLikeAccount,
+        RippleLikeWalletFactory,
+        RippleLikeWallet,
+        RippleLikeTransactionBuilder
+    > {
+    api::Currency getCurrency() const override {
+        return currencies::ripple();
+    }
+
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
         testData.configuration = configuration;
         testData.walletName = "my_wallet";
         testData.currencyName = "ripple";
-        testData.inflate_xrp = ledger::testing::xrp::inflate;
+        testData.inflate_coin = ledger::testing::xrp::inflate;
     }
 };
 
