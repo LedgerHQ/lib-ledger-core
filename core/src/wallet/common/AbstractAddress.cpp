@@ -69,6 +69,10 @@ namespace ledger {
             return _currency.walletType == api::WalletType::STELLAR;
         }
 
+        const api::Currency &AbstractAddress::getCurrency() const {
+            return _currency;
+        }
+
 
         std::shared_ptr<api::Address> api::Address::parse(const std::string &address, const Currency &currency) {
             switch (currency.walletType) {

@@ -102,10 +102,10 @@ namespace ledger {
             Option<std::string> sourceAssetUid, sourceAssetCode, sourceAssetIssuer, sourceAmount;
             Option<std::string> assetCode, assetIssuer;
             int type, successful;
-            std::string amount;
+            std::string amount, transactionSequence, fee;
             sql << "SELECT o.hash, t.successful, o.type, o.amount, o.from_address, o.to_address,"
                    " o.created_at, o.source_amount, a.asset_type, a.asset_code, a.asset_issuer,"
-                   " o.source_asset_uid, t.hash "
+                   " o.source_asset_uid, t.hash, t.sequence, t.fee "
                    "FROM stellar_account_operations AS ao "
                    "LEFT JOIN stellar_operations AS o ON ao.operation_uid = o.uid "
                    "LEFT JOIN stellar_transactions AS t ON t.uid = o.transaction_uid "
@@ -114,7 +114,7 @@ namespace ledger {
                    ,into(successful), into(type), into(amount), into(out.from)
                    ,into(out.to), into(out.createdAt), into(sourceAmount), into(out.asset.type)
                    ,into(assetCode), into(assetIssuer), into(sourceAssetUid)
-                   ,into(out.transactionHash);
+                   ,into(out.transactionHash), into(transactionSequence), into(fee);
 
             out.amount = BigInt::fromString(amount);
             out.type = (stellar::OperationType)type;
@@ -133,6 +133,8 @@ namespace ledger {
                 asset.issuer = sourceAssetIssuer.getValueOr("");
                 out.sourceAsset = asset;
             }
+            out.transactionSequence = BigInt::fromString(transactionSequence);
+            out.transactionFee = BigInt::fromString(fee);
             return !out.transactionHash.empty();
         }
 

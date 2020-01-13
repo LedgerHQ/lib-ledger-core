@@ -25,13 +25,13 @@ private:
     BitcoinLikeNetworkParameters();
     friend ::djinni::JniClass<BitcoinLikeNetworkParameters>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeNetworkParameters") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;[B[B[BLco/ledger/core/BitcoinLikeFeePolicy;JLjava/lang/String;ZJ[BLjava/util/ArrayList;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BitcoinLikeNetworkParameters") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;[B[B[BLBitcoinLikeFeePolicy;JLjava/lang/String;ZJ[BLjava/util/ArrayList;)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
     const jfieldID field_P2PKHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2PKHVersion", "[B") };
     const jfieldID field_P2SHVersion { ::djinni::jniGetFieldID(clazz.get(), "P2SHVersion", "[B") };
     const jfieldID field_XPUBVersion { ::djinni::jniGetFieldID(clazz.get(), "XPUBVersion", "[B") };
-    const jfieldID field_FeePolicy { ::djinni::jniGetFieldID(clazz.get(), "FeePolicy", "Lco/ledger/core/BitcoinLikeFeePolicy;") };
+    const jfieldID field_FeePolicy { ::djinni::jniGetFieldID(clazz.get(), "FeePolicy", "LBitcoinLikeFeePolicy;") };
     const jfieldID field_DustAmount { ::djinni::jniGetFieldID(clazz.get(), "DustAmount", "J") };
     const jfieldID field_MessagePrefix { ::djinni::jniGetFieldID(clazz.get(), "MessagePrefix", "Ljava/lang/String;") };
     const jfieldID field_UsesTimestampedTransaction { ::djinni::jniGetFieldID(clazz.get(), "UsesTimestampedTransaction", "Z") };

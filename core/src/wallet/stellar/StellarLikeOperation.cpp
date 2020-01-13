@@ -30,6 +30,7 @@
  */
 
 #include "StellarLikeOperation.hpp"
+#include "StellarLikeAddress.hpp"
 #include <api/StellarLikeOperationType.hpp>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
@@ -66,8 +67,9 @@ namespace ledger {
         std::shared_ptr<api::StellarLikeTransaction> StellarLikeOperation::getTransaction() {
             stellar::xdr::TransactionEnvelope envelope;
             const auto& backend = _api->getBackend().stellarOperation.getValue();
-            envelope.tx.sourceAccount.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
-           
+            envelope.tx.sourceAccount = StellarLikeAddress(backend.from, _api->getCurrency(), Option<std::string>::NONE).toXdrPublicKey();
+            envelope.tx.seqNum = backend.transactionSequence.toUint64();
+            envelope.tx.fee = backend.transactionFee.toUnsignedInt();
             return std::make_shared<StellarLikeTransaction>(_api->getCurrency(), std::move(envelope));
         }
     }

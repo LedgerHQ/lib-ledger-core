@@ -110,6 +110,9 @@ namespace ledger {
 
                 Option<Asset> sourceAsset;
                 Option<BigInt> sourceAmount;
+
+                BigInt transactionSequence;
+                BigInt transactionFee;
             };
 
             struct Transaction {

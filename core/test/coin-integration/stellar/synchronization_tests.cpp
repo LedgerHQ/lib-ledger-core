@@ -103,8 +103,21 @@ TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
                        dispatcher->stop();
                    }));
     dispatcher->waitUntilStopped();
+    auto address = wait(account->getFreshPublicAddresses())[0];
     auto balance = ::wait(account->getBalance());
     auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) == 0);
     EXPECT_TRUE(operations.size() == 0);
+
+    // Fetch the first send operation
+    for (const auto& op: operations) {
+        if (op->getOperationType() == api::OperationType::SEND) {
+            const auto& sop = op->asStellarLikeOperation();
+            ASSERT_EQ(sop->getTransaction()->getSourceAccount()->toString(), address->toString());
+            ASSERT_TRUE(sop->getTransaction()->getFee()->toLong() > 0);
+            auto sequence = std::dynamic_pointer_cast<api::BigIntImpl>(sop->getTransaction()->getSourceAccountSequence())->backend();
+            ASSERT_TRUE(sequence > BigInt::ZERO);
+        }
+    }
+
 }

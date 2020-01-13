@@ -5,12 +5,12 @@
 
 namespace djinni_generated {
 
-StellarLikeBlock::StellarLikeBlock() : ::djinni::JniInterface<::ledger::core::api::StellarLikeBlock, StellarLikeBlock>("co/ledger/core/StellarLikeBlock$CppProxy") {}
+StellarLikeBlock::StellarLikeBlock() : ::djinni::JniInterface<::ledger::core::api::StellarLikeBlock, StellarLikeBlock>("StellarLikeBlock$CppProxy") {}
 
 StellarLikeBlock::~StellarLikeBlock() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeBlock_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_StellarLikeBlock_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

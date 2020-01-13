@@ -34,6 +34,7 @@
 
 #include <wallet/common/AbstractAddress.h>
 #include <api/StellarLikeAddress.hpp>
+#include <wallet/stellar/xdr/models.hpp>
 
 namespace ledger {
     namespace core {
@@ -51,7 +52,8 @@ namespace ledger {
             static std::string convertPubkeyToAddress(  const std::vector<uint8_t>& pubKey,
                                                         const api::StellarLikeNetworkParameters& params);
 
-            std::vector<uint8_t> toPublicKey();
+            std::vector<uint8_t> toPublicKey() const;
+            stellar::xdr::PublicKey toXdrPublicKey() const;
 
         private:
             std::string _address;

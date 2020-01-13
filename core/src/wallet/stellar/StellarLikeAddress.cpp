@@ -52,7 +52,7 @@ namespace ledger {
             return _address;
         }
 
-        std::vector<uint8_t> StellarLikeAddress::toPublicKey() {
+        std::vector<uint8_t> StellarLikeAddress::toPublicKey() const {
             std::vector<uint8_t> bytes;
             BaseConverter::decode(_address, BaseConverter::BASE32_RFC4648_NO_PADDING, bytes);
             BytesReader reader(bytes);
@@ -74,6 +74,17 @@ namespace ledger {
             auto checksum = CRC::calculate(payload, CRC::XMODEM);
             writer.writeLeValue(checksum);
             return BaseConverter::encode(writer.toByteArray(), BaseConverter::BASE32_RFC4648_NO_PADDING);
+        }
+
+        stellar::xdr::PublicKey StellarLikeAddress::toXdrPublicKey() const {
+            stellar::xdr::PublicKey pk;
+            pk.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
+            const auto pubkey = toPublicKey();
+            if (pubkey.size() != pk.content.max_size()) {
+                throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Pub key should be {} bytes long (got {})", pk.content.max_size(), pubkey.size());
+            }
+            std::copy(pubkey.begin(), pubkey.end(), pk.content.begin());
+            return pk;
         }
 
     }
