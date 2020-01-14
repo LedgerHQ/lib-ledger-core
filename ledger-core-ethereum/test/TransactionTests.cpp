@@ -57,7 +57,7 @@ struct EthereumMakeTransaction :
 
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v2");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION,"v3");
         testData.configuration = configuration;
         testData.walletName = "my_wallet";
         testData.currencyName = "ethereum";

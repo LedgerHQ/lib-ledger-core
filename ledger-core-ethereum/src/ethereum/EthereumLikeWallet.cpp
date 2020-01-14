@@ -39,7 +39,6 @@
 #include <ethereum/EthereumLikeWallet.hpp>
 #include <ethereum/EthereumLikeAccount.hpp>
 #include <ethereum/EthereumLikeExtendedPublicKey.hpp>
-#include <ethereum/database/Migrations.hpp>
 #include <ethereum/database/EthereumLikeAccountDatabaseHelper.hpp>
 
 namespace ledger {
@@ -60,9 +59,6 @@ namespace ledger {
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
             _coinType = scheme.getCoinType() ? scheme.getCoinType() : currency.bip44CoinType;
-
-            // create the DB structure if not already created
-            services->getDatabaseSessionPool()->forwardMigration<EthereumMigration>();
         }
 
         bool EthereumLikeWallet::isSynchronizing() {
