@@ -72,6 +72,7 @@ using namespace ledger::qt; // Djeez
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO;
 extern api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO;
+extern api::AccountCreationInfo P2WPKH_DGB_MEDIUM_KEYS_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo ETH_XPUB_INFO;
