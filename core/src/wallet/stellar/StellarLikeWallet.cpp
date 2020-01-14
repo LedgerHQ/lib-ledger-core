@@ -63,11 +63,11 @@ namespace ledger {
         }
 
         bool StellarLikeWallet::isInstanceOfStellarLikeWallet() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            return true;
         }
 
         std::shared_ptr<api::StellarLikeWallet> StellarLikeWallet::asStellarLikeWallet() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            return std::dynamic_pointer_cast<api::StellarLikeWallet>(shared_from_this());
         }
 
         FuturePtr<api::Account>
