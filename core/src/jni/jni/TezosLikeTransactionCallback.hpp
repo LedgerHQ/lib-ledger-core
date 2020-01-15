@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::TezosLikeTransactionCallback, ::djinni_generated::TezosLikeTransactionCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/TezosLikeTransactionCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/TezosLikeTransaction;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("TezosLikeTransactionCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LTezosLikeTransaction;LError;)V") };
 };
 
 }  // namespace djinni_generated

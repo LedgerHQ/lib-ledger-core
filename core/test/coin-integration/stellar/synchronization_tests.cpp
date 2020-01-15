@@ -119,5 +119,5 @@ TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
             ASSERT_TRUE(sequence > BigInt::ZERO);
         }
     }
-
 }
+

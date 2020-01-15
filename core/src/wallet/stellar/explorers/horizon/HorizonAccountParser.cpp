@@ -73,12 +73,13 @@ namespace ledger {
         }
 
         bool HorizonAccountParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-
+            if (_path.match(SUBENTRY_COUNT_MATCHER)) {
+                _account->subentryCount = BigInt::fromString(std::string(str, length)).toInt();
+            }
             return true;
         }
 
         bool HorizonAccountParser::String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            auto t = _path.toString();
             if (_path.match(ACCOUNT_ID_MATCHER)) {
                 _account->accountId = std::string(str, length);
             } else if (_path.match(SEQUENCE_MATCHER)) {

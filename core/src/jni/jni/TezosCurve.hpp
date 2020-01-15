@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<TezosCurve>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    TezosCurve() : JniEnum("co/ledger/core/TezosCurve") {}
+    TezosCurve() : JniEnum("TezosCurve") {}
     friend ::djinni::JniClass<TezosCurve>;
 };
 

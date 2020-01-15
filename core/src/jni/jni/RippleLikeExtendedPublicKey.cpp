@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-RippleLikeExtendedPublicKey::RippleLikeExtendedPublicKey() : ::djinni::JniInterface<::ledger::core::api::RippleLikeExtendedPublicKey, RippleLikeExtendedPublicKey>("co/ledger/core/RippleLikeExtendedPublicKey$CppProxy") {}
+RippleLikeExtendedPublicKey::RippleLikeExtendedPublicKey() : ::djinni::JniInterface<::ledger::core::api::RippleLikeExtendedPublicKey, RippleLikeExtendedPublicKey>("RippleLikeExtendedPublicKey$CppProxy") {}
 
 RippleLikeExtendedPublicKey::~RippleLikeExtendedPublicKey() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_RippleLikeExtendedPublicKey_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024Cpp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024CppProxy_native_1derive(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
+CJNIEXPORT jobject JNICALL Java_RippleLikeExtendedPublicKey_00024CppProxy_native_1derive(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024CppProxy_native_1derivePublicKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
+CJNIEXPORT jbyteArray JNICALL Java_RippleLikeExtendedPublicKey_00024CppProxy_native_1derivePublicKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024CppProxy_native_1deriveHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
+CJNIEXPORT jbyteArray JNICALL Java_RippleLikeExtendedPublicKey_00024CppProxy_native_1deriveHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_path)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -50,7 +50,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024CppProxy_native_1toBase58(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_RippleLikeExtendedPublicKey_00024CppProxy_native_1toBase58(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -60,7 +60,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_RippleLikeExtendedPublicKey_00024CppProxy_native_1getRootPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_RippleLikeExtendedPublicKey_00024CppProxy_native_1getRootPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

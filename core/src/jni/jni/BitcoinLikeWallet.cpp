@@ -5,12 +5,12 @@
 
 namespace djinni_generated {
 
-BitcoinLikeWallet::BitcoinLikeWallet() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeWallet, BitcoinLikeWallet>("co/ledger/core/BitcoinLikeWallet$CppProxy") {}
+BitcoinLikeWallet::BitcoinLikeWallet() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeWallet, BitcoinLikeWallet>("BitcoinLikeWallet$CppProxy") {}
 
 BitcoinLikeWallet::~BitcoinLikeWallet() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_BitcoinLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

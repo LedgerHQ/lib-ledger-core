@@ -22,12 +22,12 @@
 
 namespace djinni_generated {
 
-Account::Account() : ::djinni::JniInterface<::ledger::core::api::Account, Account>("co/ledger/core/Account$CppProxy") {}
+Account::Account() : ::djinni::JniInterface<::ledger::core::api::Account, Account>("Account$CppProxy") {}
 
 Account::~Account() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -35,7 +35,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_nativeDestroy(
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jint JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getIndex(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_Account_00024CppProxy_native_1getIndex(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -45,7 +45,7 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getInd
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1queryOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1queryOperations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -55,7 +55,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1que
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_native_1getBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +64,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getBal
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getBalanceHistory(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_start, jstring j_end, jobject j_period, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_native_1getBalanceHistory(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_start, jstring j_end, jobject j_period, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -76,7 +76,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getBal
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isSynchronizing(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Account_00024CppProxy_native_1isSynchronizing(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -86,7 +86,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1synchronize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1synchronize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -96,7 +96,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1syn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1getPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -106,7 +106,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getLogger(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1getLogger(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -116,7 +116,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getOperationPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_uid)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1getOperationPreferences(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_uid)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -126,7 +126,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asBitcoinLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1asBitcoinLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -136,7 +136,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asB
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asEthereumLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1asEthereumLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -146,7 +146,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asRippleLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1asRippleLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -156,7 +156,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asR
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asTezosLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1asTezosLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -166,7 +166,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asT
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asStellarLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1asStellarLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -176,7 +176,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asS
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isInstanceOfBitcoinLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Account_00024CppProxy_native_1isInstanceOfBitcoinLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -186,7 +186,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isInstanceOfEthereumLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Account_00024CppProxy_native_1isInstanceOfEthereumLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -196,7 +196,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isInstanceOfStellarLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Account_00024CppProxy_native_1isInstanceOfStellarLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -206,7 +206,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isInstanceOfRippleLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Account_00024CppProxy_native_1isInstanceOfRippleLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -216,7 +216,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getFreshPublicAddresses(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_native_1getFreshPublicAddresses(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -225,7 +225,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getFre
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getWalletType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1getWalletType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -235,7 +235,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getEventBus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Account_00024CppProxy_native_1getEventBus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -245,7 +245,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1startBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_native_1startBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -254,7 +254,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1startB
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1stopBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_native_1stopBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -263,7 +263,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1stopBl
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isObservingBlockchain(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_Account_00024CppProxy_native_1isObservingBlockchain(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -273,7 +273,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getLastBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_native_1getLastBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -282,7 +282,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getLas
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getRestoreKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_Account_00024CppProxy_native_1getRestoreKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -292,7 +292,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date, jobject j_callback)
+CJNIEXPORT void JNICALL Java_Account_00024CppProxy_native_1eraseDataSince(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_date, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

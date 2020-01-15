@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-SynchronizerEngines::SynchronizerEngines() : ::djinni::JniInterface<::ledger::core::api::SynchronizerEngines, SynchronizerEngines>("co/ledger/core/SynchronizerEngines$CppProxy") {}
+SynchronizerEngines::SynchronizerEngines() : ::djinni::JniInterface<::ledger::core::api::SynchronizerEngines, SynchronizerEngines>("SynchronizerEngines$CppProxy") {}
 
 SynchronizerEngines::~SynchronizerEngines() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_SynchronizerEngines_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_SynchronizerEngines_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
