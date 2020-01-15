@@ -215,6 +215,54 @@ namespace ledger {
             }
         }
 
+        uint16_t BytesReader::readNextBeUint16() {
+            uint16_t result;
+            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
+            for (auto i = 0; i < sizeof(result); i++) {
+                ptr[i] = readNextByte();
+            }
+            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
+                                                       ledger::core::endianness::Endianness::BIG,
+                                                       ledger::core::endianness::getSystemEndianness());
+            return result;
+        }
+
+        uint16_t BytesReader::readNextLeUint16() {
+            uint16_t result;
+            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
+            for (auto i = 0; i < sizeof(result); i++) {
+                ptr[i] = readNextByte();
+            }
+            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
+                                                       ledger::core::endianness::Endianness::LITTLE,
+                                                       ledger::core::endianness::getSystemEndianness());
+            return result;
+        }
+
+        int16_t BytesReader::readNextBeInt16() {
+            int16_t result;
+            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
+            for (auto i = 0; i < sizeof(result); i++) {
+                ptr[i] = readNextByte();
+            }
+            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
+                                                       ledger::core::endianness::Endianness::BIG,
+                                                       ledger::core::endianness::getSystemEndianness());
+            return result;
+        }
+
+        int16_t BytesReader::readNextLeInt16() {
+            int16_t result;
+            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
+            for (auto i = 0; i < sizeof(result); i++) {
+                ptr[i] = readNextByte();
+            }
+            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
+                                                       ledger::core::endianness::Endianness::LITTLE,
+                                                       ledger::core::endianness::getSystemEndianness());
+            return result;
+        }
+
 
     }
 }

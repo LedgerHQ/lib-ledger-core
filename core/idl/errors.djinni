@@ -101,6 +101,9 @@ ErrorCode = enum {
 
     # Invalid bech32 format
     invalid_bech32_format;
+
+    # Generic invalid address format
+    invalid_address_format;
 }
 
 Error = record {

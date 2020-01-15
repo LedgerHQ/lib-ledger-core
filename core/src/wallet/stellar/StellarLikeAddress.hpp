@@ -49,6 +49,8 @@ namespace ledger {
             std::string toString() override;
             static std::shared_ptr<StellarLikeAddress> parse(const std::string& address, const api::Currency& currency);
 
+            static bool isValid(const std::string& address, const api::Currency& currency);
+
             static std::string convertPubkeyToAddress(  const std::vector<uint8_t>& pubKey,
                                                         const api::StellarLikeNetworkParameters& params);
 

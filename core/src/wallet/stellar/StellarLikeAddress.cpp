@@ -38,9 +38,13 @@
 namespace ledger {
     namespace core {
 
+        static const std::size_t PUBKEY_SIZE = 32;
+        static const std::size_t CHECKSUM_SIZE = 2;
+
         StellarLikeAddress::StellarLikeAddress(const std::string &address, const api::Currency &currency,
                                                const Option<std::string> &path) :   AbstractAddress(currency, path),
                                                                                     _address(address) {
+
         }
 
         StellarLikeAddress::StellarLikeAddress(const std::vector<uint8_t> &pubKey, const api::Currency &currency,
@@ -62,6 +66,9 @@ namespace ledger {
 
         std::shared_ptr<StellarLikeAddress>
         StellarLikeAddress::parse(const std::string &address, const api::Currency &currency) {
+            if (!isValid(address, currency)) {
+                return nullptr;
+            }
             return std::make_shared<StellarLikeAddress>(address, currency, Option<std::string>());
         }
 
@@ -85,6 +92,26 @@ namespace ledger {
             }
             std::copy(pubkey.begin(), pubkey.end(), pk.content.begin());
             return pk;
+        }
+
+        bool StellarLikeAddress::isValid(const std::string &address, const api::Currency& currency) {
+            const auto &networkParams = currency.stellarLikeNetworkParameters.value();
+            std::vector<uint8_t> bytes;
+            try {
+                BaseConverter::decode(address, BaseConverter::BASE32_RFC4648_NO_PADDING, bytes);
+            } catch (...) {
+                return false;
+            }
+            if (bytes.size() != (networkParams.Version.size() + PUBKEY_SIZE + CHECKSUM_SIZE) ||
+                !std::equal(bytes.begin(), bytes.begin() + networkParams.Version.size(),
+                            networkParams.Version.begin())) {
+                return false;
+            }
+            BytesReader reader(bytes);
+            auto payload = reader.read(networkParams.Version.size() + PUBKEY_SIZE);
+            auto checksum = reader.readNextLeUint16();
+            auto expectedChecksum = CRC::calculate(payload, CRC::XMODEM);
+            return checksum == expectedChecksum;
         }
 
     }

@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::AccountCreationInfoCallback, ::djinni_generated::AccountCreationInfoCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AccountCreationInfoCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LAccountCreationInfo;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AccountCreationInfoCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/AccountCreationInfo;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

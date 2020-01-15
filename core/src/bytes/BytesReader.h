@@ -113,6 +113,27 @@ namespace ledger {
              * @return
              */
             uint32_t readNextLeUint();
+
+            /**
+             * Reads the next big endian unsigned short (unsigned 16bits integer)
+             */
+             uint16_t readNextBeUint16();
+
+            /**
+             * Reads the next little endian unsigned short (unsigned 16bits integer)
+             */
+            uint16_t readNextLeUint16();
+
+            /**
+             * Reads the next big endian signed short (signed 16bits integer)
+             */
+            int16_t readNextBeInt16();
+
+            /**
+             * Reads the next little endian signed short (signed 16bits integer)
+             */
+            int16_t readNextLeInt16();
+
             /**
              * Reads the next little endian int.
              * @return

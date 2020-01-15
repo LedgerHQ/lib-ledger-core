@@ -47,6 +47,10 @@ namespace ledger {
         std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::addNativePayment(const std::string &address,
                                                         const std::shared_ptr<api::Amount> &amount) {
+            if (!StellarLikeAddress::isValid(address, _account->getWallet()->getCurrency())) {
+                throw make_exception(api::ErrorCode::INVALID_ADDRESS_FORMAT,
+                                     "{} is not a valid stellar address", address);
+            }
             stellar::xdr::Operation operation;
             stellar::xdr::PaymentOp op;
             op.destination.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
@@ -70,6 +74,10 @@ namespace ledger {
         std::shared_ptr<api::StellarLikeTransactionBuilder>
         StellarLikeTransactionBuilder::addCreateAccount(const std::string &address,
                                                         const std::shared_ptr<api::Amount> &amount) {
+            if (!StellarLikeAddress::isValid(address, _account->getWallet()->getCurrency())) {
+                throw make_exception(api::ErrorCode::INVALID_ADDRESS_FORMAT,
+                        "{} is not a valid stellar address", address);
+            }
             stellar::xdr::Operation operation;
             stellar::xdr::CreateAccountOp op;
             op.destination.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;

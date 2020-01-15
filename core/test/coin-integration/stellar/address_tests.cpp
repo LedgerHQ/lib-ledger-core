@@ -42,10 +42,25 @@ static std::vector<std::string> addresses = {
         "GA5IHE27VP64IR2JVVGQILN4JX43LFCC6MS2E6LAKGP3UULK3OFFBJXR"
 };
 
+static std::vector<std::string> invalid_addresses = {
+        "GCQQQPIROIEFHIWAO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3",
+        "GA5IHE2",
+        "OCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3"
+};
+
 TEST_F(StellarFixture, AddressFromPubKey) {
     for (auto i = 0; i < pub_keys.size(); i++) {
         StellarLikeAddress address(hex::toByteArray(pub_keys[i]), getCurrency(), Option<std::string>::NONE);
         std::cout << "Address: " << address.toString() << std::endl;
         EXPECT_EQ(address.toString(), addresses[i]);
+    }
+}
+
+TEST_F(StellarFixture, AddressValidation) {
+    for (const auto& address : addresses) {
+        EXPECT_TRUE(StellarLikeAddress::isValid(address, getCurrency()));
+    }
+    for (const auto& address : invalid_addresses) {
+        EXPECT_FALSE(StellarLikeAddress::isValid(address, getCurrency()));
     }
 }

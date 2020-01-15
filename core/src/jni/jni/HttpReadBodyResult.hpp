@@ -25,9 +25,9 @@ private:
     HttpReadBodyResult();
     friend ::djinni::JniClass<HttpReadBodyResult>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("HttpReadBodyResult") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LError;[B)V") };
-    const jfieldID field_error { ::djinni::jniGetFieldID(clazz.get(), "error", "LError;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/HttpReadBodyResult") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/Error;[B)V") };
+    const jfieldID field_error { ::djinni::jniGetFieldID(clazz.get(), "error", "Lco/ledger/core/Error;") };
     const jfieldID field_data { ::djinni::jniGetFieldID(clazz.get(), "data", "[B") };
 };
 

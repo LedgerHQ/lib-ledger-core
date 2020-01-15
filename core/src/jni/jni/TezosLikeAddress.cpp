@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-TezosLikeAddress::TezosLikeAddress() : ::djinni::JniInterface<::ledger::core::api::TezosLikeAddress, TezosLikeAddress>("TezosLikeAddress$CppProxy") {}
+TezosLikeAddress::TezosLikeAddress() : ::djinni::JniInterface<::ledger::core::api::TezosLikeAddress, TezosLikeAddress>("co/ledger/core/TezosLikeAddress$CppProxy") {}
 
 TezosLikeAddress::~TezosLikeAddress() = default;
 
 
-CJNIEXPORT void JNICALL Java_TezosLikeAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_TezosLikeAddress_00024CppProxy_nativeDestroy(JNIEnv
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_TezosLikeAddress_00024CppProxy_native_1getVersion(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy_native_1getVersion(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jbyteArray JNICALL Java_TezosLikeAddress_00024CppProxy_native_1getVer
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_TezosLikeAddress_00024CppProxy_native_1getHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy_native_1getHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jbyteArray JNICALL Java_TezosLikeAddress_00024CppProxy_native_1getHas
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeAddress_00024CppProxy_native_1getNetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy_native_1getNetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -50,7 +50,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeAddress_00024CppProxy_native_1getNetwor
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_TezosLikeAddress_00024CppProxy_native_1toBase58(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_TezosLikeAddress_00024CppProxy_native_1toBase58(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
