@@ -33,8 +33,12 @@
 #include <core/api/KeychainEngines.hpp>
 #include <core/utils/Hex.hpp>
 #include <core/utils/DateUtils.hpp>
+#include <ripple/RippleLikeAccount.hpp>
 #include <ripple/RippleLikeAccountDatabaseHelper.hpp>
+#include <ripple/RippleLikeCurrencies.hpp>
 #include <ripple/RippleLikeTransaction.hpp>
+#include <ripple/RippleLikeWallet.hpp>
+#include <ripple/transaction_builders/RippleLikeTransactionBuilder.hpp>
 
 #include <integration/BaseFixture.hpp>
 #include <integration/TransactionTestHelper.hpp>

@@ -1,12 +1,13 @@
 #pragma once
 
 #include <core/database/Migrations.hpp>
+#include <ethereum/EthereumLikeCoinID.hpp>
 
 namespace ledger {
     namespace core {
         /// Tag type.
         struct EthereumMigration {
-          static int constexpr COIN_ID = 60;
+          static int constexpr COIN_ID = ETHEREUM_COIN_ID;
           static uint32_t constexpr CURRENT_VERSION = 1;
         };
 

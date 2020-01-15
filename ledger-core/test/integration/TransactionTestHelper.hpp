@@ -5,10 +5,6 @@
 #include <core/Services.hpp>
 #include <core/api/DynamicObject.hpp>
 #include <core/wallet/WalletStore.hpp>
-#include <ripple/RippleLikeWallet.hpp>
-#include <ripple/RippleLikeAccount.hpp>
-#include <ripple/transaction_builders/RippleLikeTransactionBuilder.hpp>
-#include <ripple/RippleLikeCurrencies.hpp>
 
 #include "integration/BaseFixture.hpp"
 

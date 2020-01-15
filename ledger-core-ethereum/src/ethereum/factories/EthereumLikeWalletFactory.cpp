@@ -36,36 +36,37 @@
 #include <core/api/ConfigurationDefaults.hpp>
 
 #include <ethereum/EthereumLikeWallet.hpp>
+#include <ethereum/EthereumNetworks.hpp>
+#include <ethereum/database/Migrations.hpp>
 #include <ethereum/explorers/LedgerApiEthereumLikeBlockchainExplorer.hpp>
 #include <ethereum/factories/EthereumLikeWalletFactory.hpp>
 #include <ethereum/factories/EthereumLikeKeychainFactory.hpp>
 #include <ethereum/observers/LedgerApiEthereumLikeBlockchainObserver.hpp>
 #include <ethereum/synchronizers/EthereumLikeBlockchainExplorerAccountSynchronizer.hpp>
-#include <ethereum/EthereumNetworks.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
 namespace ledger {
     namespace core {
-        EthereumLikeWalletFactory::EthereumLikeWalletFactory(const api::Currency &currency,
-                                                             const std::shared_ptr<Services> &services):
-                                                            AbstractWalletFactory(currency, services) {
-                _keychainFactories = {{api::KeychainEngines::BIP49_P2SH, std::make_shared<EthereumLikeKeychainFactory>()}};
+        EthereumLikeWalletFactory::EthereumLikeWalletFactory(
+            const api::Currency &currency,
+            const std::shared_ptr<Services> &services
+        ):
+          AbstractWalletFactory(currency, services) {
+            _keychainFactories = {{api::KeychainEngines::BIP49_P2SH, std::make_shared<EthereumLikeKeychainFactory>()}};
+            // create the DB structure if not already created
+            services->getDatabaseSessionPool()->forwardMigration<EthereumMigration>();
+
+            // TODO: add currencies
         }
 
         std::shared_ptr<AbstractWallet> EthereumLikeWalletFactory::build(const WalletDatabaseEntry &entry)
         {
             auto services = getServices();
             services->logger()->info("Building wallet instance '{}' for {} with parameters: {}", entry.name, entry.currencyName, entry.configuration->dump());
-            
-            // Get currency
-            auto isSupportedCurrency = [entry](auto const& networkParameters) {
-                return entry.currencyName == networkParameters.Identifier;
-            };
 
-            if (std::none_of(std::begin(networks::ALL_ETHEREUM), std::end(networks::ALL_ETHEREUM), isSupportedCurrency)) {
-                throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, "Unsupported currency '{}'.", entry.currencyName);
-            }
+            // Get currency
+            auto currency = getCurrency();
 
             // Configure keychain
             auto keychainFactory = _keychainFactories.find(STRING(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP49_P2SH));
@@ -110,7 +111,7 @@ namespace ledger {
                     keychainFactory->second,
                     synchronizerFactory.getValue(),
                     services,
-                    getCurrency(),
+                    currency,
                     entry.configuration,
                     scheme
             );
