@@ -30,7 +30,6 @@
  */
 
 #include "HorizonAccountParser.hpp"
-
 using namespace ledger::core;
 
 static const JsonParserPathMatcher ACCOUNT_ID_MATCHER("/account_id");

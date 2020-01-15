@@ -65,9 +65,9 @@ namespace ledger {
         void StellarLikeAccountDatabaseHelper::putAccount(soci::session &sql, const std::string &walletUid,
                                                           int32_t accountIndex, const stellar::Account &in) {
             auto accountUid = AccountDatabaseHelper::createAccountUid(walletUid, accountIndex);
-            sql << "UPDATE stellar_accounts SET sequence = :sequence WHERE uid = :uid", use(in.sequence), use(accountUid);
+            sql << "UPDATE stellar_accounts SET sequence = :sequence, subentries_count = :subentry"
+                   " WHERE uid = :uid", use(in.sequence), use(in.subentryCount), use(accountUid);
             for (const auto& balance : in.balances) {
-                fmt::print("PUT ACCOUNT B {}\n", balance.value.toString());
                 putAccountBalance(sql, accountUid, balance);
             }
         }

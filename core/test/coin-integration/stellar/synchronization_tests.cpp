@@ -121,3 +121,27 @@ TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
     }
 }
 
+TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
+    auto pool = newPool();
+    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    StellarLikeAddress addr("GAT4LBXYJGJJJRSNK74NPFLO55CDDXSYVMQODSEAAH3M6EY4S7LPH5GV", getCurrency(), Option<std::string>::NONE);
+    auto account = newAccount(wallet, 0, accountInfo(hex::toString(addr.toPublicKey())));
+    auto exists = ::wait(account->exists());
+    EXPECT_TRUE(exists);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
+                   make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                       fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                           return;
+                       EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                       EXPECT_EQ(event->getCode(),
+                                 api::EventCode::SYNCHRONIZATION_SUCCEED);
+                       dispatcher->stop();
+                   }));
+    EXPECT_EQ(bus, account->synchronize());
+    dispatcher->waitUntilStopped();
+    auto reserve = wait(account->getBaseReserve());
+    EXPECT_TRUE(reserve->toLong() > 2 * 5000000);
+}

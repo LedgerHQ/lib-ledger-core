@@ -74,3 +74,4 @@ TEST_F(StellarFixture, PaymentTransaction) {
     EXPECT_EQ(envelope.tx.memo.type, stellar::xdr::MemoType::MEMO_NONE);
     EXPECT_EQ(envelope.signatures.front().signature, signature);
 }
+
