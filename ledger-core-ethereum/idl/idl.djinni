@@ -144,6 +144,10 @@ EthereumLikeAccount = interface +c {
     # The passed address is an ERC20 account
     # Note: same note as above
     getERC20Balance(erc20Address: string, callback: callback2<void, optional<BigInt>, optional<Error>>);
+    # Get balance of ERC20 tokens
+    # The passed addresses are ERC20 accounts
+    # Note: same note as above
+    getERC20Balances(erc20Addresses: list<string>, callback: callback2<void, optional<list<BigInt>>, optional<Error>>);
 }
 
 # TODO I think we need to remove this (useful?) interface

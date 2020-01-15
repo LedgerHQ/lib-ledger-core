@@ -115,6 +115,14 @@ namespace ledger {
             FuturePtr<api::BigInt> getERC20Balance(const std::string & erc20Address);
             void getERC20Balance(const std::string & erc20Address, const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override;
 
+            Future<std::vector<std::shared_ptr<api::BigInt>>> getERC20Balances(
+                const std::vector<std::string>& erc20Addresses
+            );
+            void getERC20Balances(
+                const std::vector<std::string> & erc20Addresses,
+                const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BigInt>>>, std::experimental::optional<api::Error>)> & callback
+            ) override;
+
             void addERC20Accounts(soci::session &sql,
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);
 

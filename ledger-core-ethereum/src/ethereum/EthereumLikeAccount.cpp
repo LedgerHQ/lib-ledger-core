@@ -89,7 +89,7 @@ namespace ledger {
         EthereumLikeOperation EthereumLikeAccount::inflateOperation(
                                                    const std::shared_ptr<const AbstractWallet>& wallet,
                                                    const EthereumLikeBlockchainExplorerTransaction& tx) {
-                
+
                 EthereumLikeOperation operation{wallet, tx};
 
                 operation.accountUid = getAccountUid();
@@ -554,6 +554,26 @@ namespace ledger {
         void EthereumLikeAccount::getERC20Balance(const std::string & erc20Address,
                                                   const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
             getERC20Balance(erc20Address).callback(getContext(), callback);
+        }
+
+        void EthereumLikeAccount::getERC20Balances(
+            const std::vector<std::string> & erc20Addresses,
+            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BigInt>>>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            getERC20Balances(erc20Addresses).callback(getMainExecutionContext(), callback);
+        }
+
+        Future<std::vector<std::shared_ptr<api::BigInt>>> EthereumLikeAccount::getERC20Balances(
+            const std::vector<std::string>& erc20Addresses
+        ) {
+            return _explorer->getERC20Balances(_keychain->getAddress()->toEIP55(), erc20Addresses)
+                .map<std::vector<std::shared_ptr<api::BigInt>>>(getMainExecutionContext(),
+                        [] (const std::vector<BigInt> &erc20Balances) {
+                        return vector::map<std::shared_ptr<api::BigInt>, BigInt>(erc20Balances, [] (const BigInt &erc20Balance) {
+                                return std::make_shared<BigInt>(erc20Balance);
+                                });
+                        }
+                        );
         }
 
         void EthereumLikeAccount::addERC20Accounts(soci::session &sql,
