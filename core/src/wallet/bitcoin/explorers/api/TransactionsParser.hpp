@@ -44,6 +44,18 @@ namespace ledger {
                 _objectDepth = 0;
             }
 
+            bool StartObject() {
+                _objectDepth += 1;
+
+                if ((_arrayDepth == 1 || _arrayDepth == 0) && _objectDepth == 1) {
+                    BitcoinLikeBlockchainExplorerTransaction transaction;
+                    _transactions->push_back(transaction);
+                    getTransactionParser().init(&_transactions->back());
+                }
+
+                PROXY_PARSE_TX(StartObject)
+            };
+
         protected:
             TransactionParser &getTransactionParser() override {
                 return _transactionParser;
