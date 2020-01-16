@@ -140,7 +140,7 @@ namespace ledger {
                                                              Option<std::string> offset,
                                                              Option<void *> session) {
             auto tryOffset = Try<uint64_t>::from([=]() -> uint64_t {
-                return std::stoul(offset.getValue(), nullptr, 16);
+                return std::stoul(offset.getValue(), nullptr, 10);
             });
 
             uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
