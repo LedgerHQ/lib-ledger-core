@@ -46,7 +46,8 @@ namespace ledger {
 
             bool StartObject() {
                 _objectDepth += 1;
-
+                // In v2 /transactions/${hash} endpoint returns an array of tx object => _arrayDepth == 0
+                // In v3 /transactions/${hash} endpoint returns a tx object => _arrayDepth == 1
                 if ((_arrayDepth == 1 || _arrayDepth == 0) && _objectDepth == 1) {
                     BitcoinLikeBlockchainExplorerTransaction transaction;
                     _transactions->push_back(transaction);
