@@ -63,31 +63,25 @@ namespace ledger {
                                                     " FROM bitcoin_outputs AS o "
                                                     " LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid "
                                                     " AND i.previous_output_idx = o.idx"
-                                                    " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid", use(accountUid));
+                                                    " WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid"
+                                                    " ORDER BY block_height LIMIT :count OFFSET :off",
+                                                    use(accountUid), use(count), use(offset));
 
-            std::size_t c = 0;
-            std::size_t o = 0;
             for (auto& row : rows) {
                 if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
-                    if (o >= offset) {
-                        out.resize(out.size() + 1);
-                        auto& output = out[out.size() - 1];
-                        output.address = row.get<Option<std::string>>(0);
-                        output.index = get_number<uint64_t>(row, 1);
-                        output.transactionHash = row.get<std::string>(2);
-                        output.value = row.get<BigInt>(3);
-                        output.script = row.get<std::string>(4);
-                        if (row.get_indicator(5) != i_null) {
-                            output.blockHeight = row.get<BigInt>(5).toUint64();
-                        }
-                        c += 1;
+                    out.resize(out.size() + 1);
+                    auto& output = out[out.size() - 1];
+                    output.address = row.get<Option<std::string>>(0);
+                    output.index = get_number<uint64_t>(row, 1);
+                    output.transactionHash = row.get<std::string>(2);
+                    output.value = row.get<BigInt>(3);
+                    output.script = row.get<std::string>(4);
+                    if (row.get_indicator(5) != i_null) {
+                        output.blockHeight = row.get<BigInt>(5).toUint64();
                     }
-                    o += 1;
                 }
-                if (c >= count)
-                    break;
             }
-            return c;
+            return out.size();
         }
 
 
