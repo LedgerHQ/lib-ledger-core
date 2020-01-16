@@ -85,6 +85,18 @@ namespace ledger {
                             {0x00}
                     };
                     return DIGIBYTE;
+                } else if (networkIdentifier == "ltc") {
+                    //https://github.com/litecoin-project/litecoin/blob/master/src/bech32.cpp
+                    static const Bech32Struct LITECOIN = {
+                            "litecoin",
+                            "ltc1",
+                            "1",
+                            6,
+                            {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+                            {0x00},
+                            {0x00}
+                    };
+                    return LITECOIN;
                 }
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No Bech32 parameters set for {}", networkIdentifier);
             }
@@ -94,7 +106,8 @@ namespace ledger {
                             getBech32Params("btc"),
                             getBech32Params("btc_testnet"),
                             getBech32Params("abc"),
-                            getBech32Params("dgb")
+                            getBech32Params("dgb"),
+                            getBech32Params("ltc")
                     }
             );
 
