@@ -39,6 +39,7 @@
 #include <ethereum/EthereumLikeCurrencies.hpp>
 #include <ethereum/EthereumLikeWallet.hpp>
 #include <ethereum/ERC20/ERC20LikeAccount.hpp>
+#include <ethereum/ERC20/ERC20LikeOperationQuery.hpp>
 #include <ethereum/api/EthereumLikeTransaction.hpp>
 #include <ethereum/builders/EthereumLikeTransactionBuilder.hpp>
 #include <ethereum/database/EthereumLikeAccountDatabaseHelper.hpp>
@@ -68,8 +69,8 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
 
         {
             auto configuration = DynamicObject::newInstance();
-            configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
+            configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/60'/0'/0/<account>'");
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "http://eth-mainnet.explorers.dev.aws.ledger.fr:80");
 
             auto wallet = std::dynamic_pointer_cast<EthereumLikeWallet>(wait(walletStore->createWallet(walletName, "ethereum", configuration)));
             std::set<std::string> emittedOperations;
@@ -124,7 +125,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     auto transferData = wait(std::dynamic_pointer_cast<ERC20LikeAccount>(erc20Accounts[0])->getTransferToAddressData(amountToSend, "0xabf06640f8ca8fC5e0Ed471b10BeFCDf65A33e43"));
                     EXPECT_GT(transferData.size(), 0);
 
-                    auto operations = wait(std::dynamic_pointer_cast<EthereumLikeOperationQuery>(erc20Accounts[0]
+                    auto operations = wait(std::dynamic_pointer_cast<ERC20LikeOperationQuery>(erc20Accounts[0]
                             ->queryOperations()
                             ->addOrder(api::OperationOrderKey::DATE, true)
                             ->complete())->execute());
