@@ -28,6 +28,8 @@
  *
  */
 
+#pragma once
+
 #include <soci.h>
 
 #include <core/api/QueryFilter.hpp>
