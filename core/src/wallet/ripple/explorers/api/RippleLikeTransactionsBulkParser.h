@@ -43,8 +43,10 @@ namespace ledger {
         class RippleLikeTransactionsBulkParser
                 : public AbstractTransactionsBulkParser<RippleLikeBlockchainExplorer::TransactionsBulk, RippleLikeTransactionsParser> {
         public:
-            RippleLikeTransactionsBulkParser(std::string &lastKey) : _lastKey(lastKey),
-                                                                     _transactionsParser(lastKey) {
+            RippleLikeTransactionsBulkParser(std::string &lastKey):
+                _lastKey(lastKey),
+                _transactionsParser(lastKey),
+                _inPaginationMarker(false) {
                 _depth = 0;
             };
 
@@ -61,11 +63,41 @@ namespace ledger {
             };
 
             bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                std::string value = std::string(str, length);
-                if (_depth == 0 && getLastKey() == "marker") {
-                    _bulk->marker = value;
-                }
                 PROXY_PARSE_TXS(String, str, length, copy)
+            }
+
+            bool StartObject() {
+                if (_lastKey == "marker") {
+                    _inPaginationMarker = true;
+                }
+
+                PROXY_PARSE_TXS(StartObject)
+            }
+
+            bool EndObject(rapidjson::SizeType memberCount) {
+                if (_inPaginationMarker) {
+                    _bulk->paginationMarker = fmt::format("{}-{}",
+                            _paginationMarkerLedger,
+                            _paginationMarkerSeq
+                    );
+                    _paginationMarkerLedger = "";
+                    _paginationMarkerSeq = "";
+                    _inPaginationMarker = false;
+                }
+
+                PROXY_PARSE_TXS(EndObject, memberCount)
+            }
+
+            bool RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
+                if (_inPaginationMarker) {
+                    if (_lastKey == "ledger") {
+                        _paginationMarkerLedger = std::string(str, length);
+                    } else if (_lastKey == "seq") {
+                        _paginationMarkerSeq = std::string(str, length);
+                    }
+                }
+
+                PROXY_PARSE_TXS(RawNumber, str, length, copy)
             }
 
             bool Bool(bool b) {
@@ -85,6 +117,9 @@ namespace ledger {
         private:
             RippleLikeTransactionsParser _transactionsParser;
             std::string &_lastKey;
+            bool _inPaginationMarker;
+            std::string _paginationMarkerLedger;
+            std::string _paginationMarkerSeq;
         };
     }
 }

@@ -89,6 +89,39 @@ namespace ledger {
                 return *this;
             };
 
+            NodeRippleLikeBodyRequest& pushPagination(
+                const std::string &ledger,
+                const std::string &seq
+            ) {
+                std::string key = "marker";
+                std::string ledgerKeyStr = "ledger";
+                std::string seqKeyStr = "seq";
+
+                rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
+
+                rapidjson::Value vKeyParam(rapidjson::kStringType);
+                vKeyParam.SetString(key.c_str(), static_cast<rapidjson::SizeType>(key.length()), allocator);
+
+                rapidjson::Value object(rapidjson::kObjectType);
+
+                rapidjson::Value ledgerKey(rapidjson::kStringType);
+                ledgerKey.SetString(ledgerKeyStr.c_str(), static_cast<rapidjson::SizeType>(ledgerKeyStr.length()), allocator);
+                rapidjson::Value ledgerParam(rapidjson::kNumberType);
+                ledgerParam.SetString(ledger.c_str(), static_cast<rapidjson::SizeType>(ledger.length()), allocator);
+
+                rapidjson::Value seqKey(rapidjson::kStringType);
+                seqKey.SetString(seqKeyStr.c_str(), static_cast<rapidjson::SizeType>(seqKeyStr.length()), allocator);
+                rapidjson::Value seqParam(rapidjson::kNumberType);
+                seqParam.SetString(seq.c_str(), static_cast<rapidjson::SizeType>(seq.length()), allocator);
+
+                object.AddMember(ledgerKey, ledgerParam, allocator);
+                object.AddMember(seqKey, seqParam, allocator);
+
+                _params.AddMember(vKeyParam, object, allocator);
+
+                return *this;
+            }
+
             std::string getString() {
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
                 rapidjson::Value container(rapidjson::kArrayType);
@@ -169,6 +202,7 @@ namespace ledger {
                            const BigInt &defaultValue);
 
             api::RippleLikeNetworkParameters _parameters;
+            std::string _paginationMarker;
         };
     }
 }
