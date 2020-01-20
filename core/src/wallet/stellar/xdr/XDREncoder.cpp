@@ -56,6 +56,9 @@ Encoder& Encoder::operator<<(uint64_t i) {
 Encoder& Encoder::operator<<(const std::string &str) {
     *this << ((uint32_t)str.size());
     _writer.writeString(str);
+    for (auto mod = std::ceil(str.size() / 4.f) * 4 - str.size(); mod > 0; mod -= 1) {
+        _writer.writeByte(0);
+    }
     return *this;
 }
 

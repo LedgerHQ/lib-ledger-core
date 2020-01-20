@@ -94,3 +94,23 @@ TEST_F(StellarFixture, XDRPayment) {
     auto out = hex::toString(encoder.toByteArray());
     EXPECT_EQ(out, hexTx);
 }
+
+TEST_F(StellarFixture, XDRStrings) {
+    std::vector<std::string> tested {
+        "123", "1", "1234567890", "12345678"
+    };
+
+    std::vector<std::string> expected {
+        "0000000331323300",
+        "0000000131000000",
+        "0000000a313233343536373839300000",
+        "000000083132333435363738"
+    };
+
+    for (auto i = 0; i < tested.size(); i += 1) {
+        Encoder encoder;
+        encoder << tested[i];
+        EXPECT_EQ(hex::toString(encoder.toByteArray()), expected[i]);
+    }
+
+}
