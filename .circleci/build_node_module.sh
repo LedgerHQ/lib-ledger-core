@@ -7,6 +7,7 @@ source ~/.bashrc
 
 # Issue for MacOS: dyld: Library not loaded: /usr/local/opt/icu4c/lib/libicui18n.62.dylib
 if [ $(uname) == "Darwin" ]; then
+	brew unlink python@2
 	brew upgrade
 fi	
 
