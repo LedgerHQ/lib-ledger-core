@@ -35,7 +35,6 @@
 #include <core/async/DedicatedContext.hpp>
 #include <core/async/Future.hpp>
 
-#include <bitcoin/BitcoinTypes.hpp>
 #include <bitcoin/api/BitcoinLikeOutput.hpp>
 #include <bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <bitcoin/keychains/BitcoinLikeKeychain.hpp>
