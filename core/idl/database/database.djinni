@@ -1,3 +1,8 @@
+# An enum representing a type of database backend (ones supported now through SOCI).
+DatabaseBackendType = enum {
+    SQLite3;
+    PostgreSQL;
+}
 # An enum representing a SQL type.
 DatabaseValueType = enum {
     string; date; double; integer; long_long; unsigned_long_long; blob;
@@ -238,6 +243,10 @@ DatabaseBackend = interface +c {
     # Create an instance of SQLite3 database.
     # @return DatabaseBackend object
     static getSqlite3Backend(): DatabaseBackend;
+
+    # Create an instance of PostgreSQL database.
+    # @return DatabaseBackend object
+    static getPostgreSQLBackend(connectionPoolSize: i32): DatabaseBackend;
 
     # Create a database backend instance from the given DatabaseEngine implementation.
     static createBackendFromEngine(engine: DatabaseEngine): DatabaseBackend;

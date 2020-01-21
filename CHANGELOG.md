@@ -1,4 +1,9 @@
-## 3.2.1 (on-going)
+## 3.3.0 (on-going)
+
+- Add support for PostgreSQL (tested with PostgreSQL v9.6 and v12.1), for more details about how to
+build, use and configure libcore with PostgreSQL, please refer to our `README.md` 
+	  
+## 3.2.1
 
 - Execution context changes:
 	- Using pool's ThreadPoolExecutionContext in wallets and accounts for long running tasks,

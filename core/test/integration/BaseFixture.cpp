@@ -29,6 +29,7 @@
  *
  */
 
+#include <api/ConfigurationDefaults.hpp>
 #include <utils/FilesystemUtils.h>
 #include "BaseFixture.h"
 #include "IntegrationEnvironment.h"
@@ -118,7 +119,6 @@ void BaseFixture::SetUp() {
     ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     dispatcher = std::make_shared<QtThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-    backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
     ws = std::make_shared<FakeWebSocketClient>();
@@ -131,7 +131,15 @@ void BaseFixture::TearDown() {
     resolver->clean();
 }
 
-std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolName, const std::string &password) {
+std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolName,
+                                                        const std::string &password,
+                                                        const std::shared_ptr<api::DynamicObject> &configuration,
+                                                        bool usePostgreSQL) {
+
+    backend = std::static_pointer_cast<DatabaseBackend>(usePostgreSQL ?
+            DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE) : DatabaseBackend::getSqlite3Backend()
+    );
+
     return WalletPool::newInstance(
             poolName,
             password,
@@ -142,7 +150,7 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
             dispatcher,
             rng,
             backend,
-            api::DynamicObject::newInstance()
+            configuration
     );
 }
 
