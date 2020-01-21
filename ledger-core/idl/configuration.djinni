@@ -56,6 +56,9 @@ ConfigurationDefaults = interface +c {
 
     # Default observable range for HD keychains
     const KEYCHAIN_DEFAULT_OBSERVABLE_RANGE : i32 = 20;
+    
+    # Default TTL for cache
+    const DEFAULT_TTL_CACHE : i32 = 30;
 }
 
 # Overall configuration.
