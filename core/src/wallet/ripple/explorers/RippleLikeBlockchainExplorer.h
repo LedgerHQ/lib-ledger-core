@@ -64,7 +64,7 @@ namespace ledger {
             uint64_t confirmations;
             Option<uint64_t> destinationTag;
             std::vector<api::RippleLikeMemo> memos;
-            std::string status;
+            int32_t status;
 
             RippleLikeBlockchainExplorerTransaction(): confirmations(0) {
             }

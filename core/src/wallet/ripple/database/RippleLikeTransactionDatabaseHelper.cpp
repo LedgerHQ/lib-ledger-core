@@ -98,7 +98,7 @@ namespace ledger {
             }
 
             if (row.get_indicator(16) != i_null) {
-                tx.status = row.get<std::string>(16);
+                tx.status = get_number<int32_t>(row, 16);
             }
 
             return true;

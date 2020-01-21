@@ -41,7 +41,7 @@ RippleLikeTransaction = interface +c {
     # An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account
     getDestinationTag(): optional<i64>;
     # Status of the transaction.
-    getStatus(): string;
+    getStatus(): i32;
 }
 
 #Class representing a Ripple Operation

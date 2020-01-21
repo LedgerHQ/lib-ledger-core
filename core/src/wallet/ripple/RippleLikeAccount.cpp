@@ -150,7 +150,7 @@ namespace ledger {
             Operation& operation,
             RippleLikeBlockchainExplorerTransaction const& transaction
         ) const {
-            if (transaction.status == "tesSUCCESS") {
+            if (transaction.status == 1) {
                 operation.amount = transaction.value;
             } else {
                 // if the status of the transaction is not correct, we set the operation’s amount to
@@ -158,7 +158,6 @@ namespace ledger {
                 operation.amount = BigInt::ZERO;
             }
         }
-
 
         bool RippleLikeAccount::putBlock(soci::session &sql,
                                          const RippleLikeBlockchainExplorer::Block &block) {

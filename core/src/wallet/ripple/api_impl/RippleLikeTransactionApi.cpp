@@ -378,7 +378,7 @@ namespace ledger {
             _memos.push_back(memo);
         }
 
-        std::string RippleLikeTransactionApi::getStatus() {
+        int32_t RippleLikeTransactionApi::getStatus() {
             return _status;
         }
     }

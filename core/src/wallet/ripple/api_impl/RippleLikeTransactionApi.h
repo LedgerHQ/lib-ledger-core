@@ -72,7 +72,7 @@ namespace ledger {
             std::vector<api::RippleLikeMemo> getMemos() override;
             void addMemo(api::RippleLikeMemo const& memo) override;
             std::experimental::optional<int64_t> getDestinationTag() override;
-            std::string getStatus() override;
+            int32_t getStatus() override;
 
         private:
             std::chrono::system_clock::time_point _time;
@@ -90,7 +90,7 @@ namespace ledger {
             std::vector<uint8_t> _signingPubKey;
             std::vector<api::RippleLikeMemo> _memos;
             Option<int64_t> _destinationTag;
-            std::string _status;
+            int32_t _status;
         };
     }
 }
