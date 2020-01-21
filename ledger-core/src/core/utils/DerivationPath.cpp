@@ -48,7 +48,11 @@ namespace ledger {
         }
 
         DerivationPath::DerivationPath(const std::vector<int32_t> &path) : _path(path) {
-
+            // we cannot use unsigned integer because of some unsupported type in binding 
+            // so we have to check the validity of all the indexes in the path.
+            for (auto index : path)  {
+                assertIndexIsValid(index, "ledger::core::DerivationPath::DerivationPath");
+            }
         }
 
         std::vector<int32_t> DerivationPath::parse(const std::string &path) {
@@ -113,7 +117,7 @@ namespace ledger {
 
 
         int32_t DerivationPath::getDepth() const {
-            return (int32_t) _path.size();
+            return static_cast<int32_t>(_path.size());
         }
 
         int32_t DerivationPath::getChildNum(int32_t index) const {
@@ -122,6 +126,7 @@ namespace ledger {
         }
 
         int32_t DerivationPath::getUnhardenedChildNum(int32_t index) const {
+            assertIndexIsValid(index, "ledger::core::DerivationPath::getUnhardenedChildNum");
             return getNonHardenedChildNum(index);
         }
 

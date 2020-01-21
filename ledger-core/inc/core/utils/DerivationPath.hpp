@@ -82,7 +82,6 @@ namespace ledger {
         private:
             inline void assertIndexIsValid(int32_t index, const std::string& method) const;
 
-        private:
             std::vector<int32_t> _path;
         };
     }
