@@ -84,6 +84,9 @@ public:
 
     /** An arbitrary unsigned 32-bit integer that identifies a reason for payment or a non-Ripple account */
     virtual std::experimental::optional<int64_t> getDestinationTag() = 0;
+
+    /** Status of the transaction. */
+    virtual std::string getStatus() = 0;
 };
 
 } } }  // namespace ledger::core::api

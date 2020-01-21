@@ -725,5 +725,13 @@ namespace ledger {
 
         template <> void rollback<17>(soci::session& sql, api::DatabaseBackendType type) {
         }
+
+        template <> void migrate<18>(soci::session& sql, api::DatabaseBackendType type) {
+            // <https://xrpl.org/transaction-results.html>
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN status TEXT";
+        }
+
+        template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type) {
+        }
     }
 }

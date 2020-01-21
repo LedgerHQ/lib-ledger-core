@@ -123,9 +123,18 @@ namespace ledger {
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
 
+            auto setAmount = [&](Operation& operation) {
+                if (transaction.status == "tesSUCCESS") {
+                    operation.amount = transaction.value;
+                } else {
+                    // if the status of the transaction is not correct, we set the operation’s amount to
+                    // zero as it’s failed (yet fees were still paid)
+                    operation.amount = BigInt::ZERO;
+                }
+            };
 
             if (_accountAddress == transaction.sender) {
-                operation.amount = transaction.value;
+                setAmount(operation);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
@@ -135,7 +144,7 @@ namespace ledger {
             }
 
             if (_accountAddress == transaction.receiver) {
-                operation.amount = transaction.value;
+                setAmount(operation);
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {

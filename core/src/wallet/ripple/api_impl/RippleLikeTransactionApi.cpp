@@ -111,6 +111,8 @@ namespace ledger {
             } else {
                 _ledgerSequence = std::make_shared<api::BigIntImpl>(BigInt::ZERO);
             }
+
+            _status = tx.status;
         }
 
         std::string RippleLikeTransactionApi::getHash() {
@@ -374,6 +376,10 @@ namespace ledger {
 
         void RippleLikeTransactionApi::addMemo(api::RippleLikeMemo const& memo) {
             _memos.push_back(memo);
+        }
+
+        std::string RippleLikeTransactionApi::getStatus() {
+            return _status;
         }
     }
 }
