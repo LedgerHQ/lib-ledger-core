@@ -29,10 +29,13 @@ echo "========> Install C++ dependencies"
 brew install cmake
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
-	echo "========> Install Qt5 and PostgreSQL"
-	brew install qt5 postgresql
+	echo "========> Install Qt5"
+	brew install qt5
 	export PATH="/usr/local/Cellar/qt/5.*/bin:$PATH"
 fi
+
+echo "========> Install PostgreSQL"
+brew install postgresql
 
 echo "========> Install Sqlite"
 brew install sqlite

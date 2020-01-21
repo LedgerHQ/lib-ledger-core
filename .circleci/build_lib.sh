@@ -21,7 +21,7 @@ function command_target_jni {
 
 function command_Release {
   BUILD_CONFIG="Release"
-  add_to_cmake_params -DBUILD_TESTS=OFF
+  add_to_cmake_params -DBUILD_TESTS=OFF -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
 }
 
 function command_Debug {
