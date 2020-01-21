@@ -69,8 +69,7 @@ namespace ledger {
 
             for (auto& row : rows) {
                 if (row.get_indicator(0) != i_null && filter(row.get<std::string>(0))) {
-                    out.resize(out.size() + 1);
-                    auto& output = out[out.size() - 1];
+                    BitcoinLikeBlockchainExplorerOutput output;
                     output.address = row.get<Option<std::string>>(0);
                     output.index = get_number<uint64_t>(row, 1);
                     output.transactionHash = row.get<std::string>(2);
@@ -79,6 +78,7 @@ namespace ledger {
                     if (row.get_indicator(5) != i_null) {
                         output.blockHeight = row.get<BigInt>(5).toUint64();
                     }
+                    out.emplace_back(output);
                 }
             }
             return out.size();
