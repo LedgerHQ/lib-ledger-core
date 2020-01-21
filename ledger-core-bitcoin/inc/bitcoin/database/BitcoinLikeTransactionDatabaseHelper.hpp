@@ -29,7 +29,7 @@
  *
  */
 
-#pragma onoce
+#pragma once
 
 #include <soci.h>
 
