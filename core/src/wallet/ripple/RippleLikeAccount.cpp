@@ -123,18 +123,8 @@ namespace ledger {
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
 
-            auto setAmount = [&](Operation& operation) {
-                if (transaction.status == "tesSUCCESS") {
-                    operation.amount = transaction.value;
-                } else {
-                    // if the status of the transaction is not correct, we set the operation’s amount to
-                    // zero as it’s failed (yet fees were still paid)
-                    operation.amount = BigInt::ZERO;
-                }
-            };
-
             if (_accountAddress == transaction.sender) {
-                setAmount(operation);
+                setOperationAmount(operation, transaction);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
@@ -144,7 +134,7 @@ namespace ledger {
             }
 
             if (_accountAddress == transaction.receiver) {
-                setAmount(operation);
+                setOperationAmount(operation, transaction);
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
@@ -155,6 +145,20 @@ namespace ledger {
 
             return result;
         }
+
+        void RippleLikeAccount::setOperationAmount(
+            Operation& operation,
+            RippleLikeBlockchainExplorerTransaction const& transaction
+        ) const {
+            if (transaction.status == "tesSUCCESS") {
+                operation.amount = transaction.value;
+            } else {
+                // if the status of the transaction is not correct, we set the operation’s amount to
+                // zero as it’s failed (yet fees were still paid)
+                operation.amount = BigInt::ZERO;
+            }
+        }
+
 
         bool RippleLikeAccount::putBlock(soci::session &sql,
                                          const RippleLikeBlockchainExplorer::Block &block) {
