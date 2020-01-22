@@ -1,0 +1,83 @@
+@extern "../../ledger-core/idl/core.yaml"
+
+# Strategy used to compute the amount of fees of transactions.
+#
+# This basically gives the unit in which the fee amount will be expressed.
+BitcoinLikeFeePolicy = enum {
+    PER_BYTE;
+    PER_KBYTE;
+}
+
+# Bitcoin network parameters.
+BitcoinLikeNetworkParameters = record {
+    # Name of the network.
+    Identifier: string;
+    # Version of the Pay To Public Hash standard.
+    P2PKHVersion: binary;
+    # Version of the Pay To Script Hash standard.
+    P2SHVersion: binary;
+    # Version of the Extended Public Key standard.
+    XPUBVersion: binary;
+    # Policy to use when expressing fee amount.
+    FeePolicy: BitcoinLikeFeePolicy;
+    # Minimal amount a UTXO should have before being considered BTC dust.
+    DustAmount: i64;
+    # Constant prefix to prepend all signature messages.
+    MessagePrefix: string;
+    # Are transactions encoded with timestamp?
+    UsesTimestampedTransaction: bool;
+    # Delay applied to all timestamps. Used to debounce transactions.
+    TimestampDelay: i64;
+    # Bitcoin signature flag indicating what part of a transaction a signature signs.
+    SigHash: binary;
+    # Addition BIPs enabled for this network.
+    AdditionalBIPs: list<string>;
+}
+
+# Helper class for manipulating Bitcoin like addresses
+BitcoinLikeAddress = interface +c {
+    # Gets the version of the address (P2SH or P2PKH)
+    # @return The version of the address
+    getVersion(): binary;
+    # Gets the raw hash160 of the public key
+    # @return The 20 bytes of the public key hash160
+    getHash160(): binary;
+    # Gets the network parameters used for serializing the address
+    # @return The network parameters of the address
+    getNetworkParameters(): BitcoinLikeNetworkParameters;
+    # Serializes the hash160 into a Base58 encoded address (with checksum)
+    # @return The Base58 serialization
+    toBase58(): string;
+    # Get the Bech32 encoded address (with respect to BIP173)
+    # @return The Bech32 encoded address
+    toBech32(): string;
+    # Serializes the hash160 to a payment uri (i.e bitcoin:16UwLL9Risc3QfPqBUvKofHmBQ7wMtjvM)
+    # @return A payment uri to this address
+    # toPaymentUri(): string;
+    # Checks if the given address is a P2SH address
+    # @return True if the keychain engine is P2SH
+    isP2SH(): bool;
+    # Checks if the given address is a P2PKH address
+    # @return if the keychain engine is P2PKH
+    isP2PKH(): bool;
+    # Checks if the given address is a P2WSH address
+    # @return True if the keychain engine is P2WSH
+    isP2WSH(): bool;
+    # Checks if the given address is a P2WPKH address
+    # @return True if the keychain engine is P2WPKH
+    isP2WPKH(): bool;
+}
+
+# The xPUB definition for Bitcoin.
+BitcoinLikeExtendedPublicKey = interface +c {
+    # Derive an address from an xPUB and a path.
+    derive(path: string): BitcoinLikeAddress;
+    # Derive a public key from an xPUB and a path.
+    derivePublicKey(path: string): binary;
+    # Derive a shorten version of a public key (SHA256 + RIPEMD160) from an xPUB and a path.
+    deriveHash160(path: string): binary;
+    # Get the xPUB in base 58.
+    toBase58(): string;
+    # Get the root path of the xPUB.
+    getRootPath(): string;
+}
