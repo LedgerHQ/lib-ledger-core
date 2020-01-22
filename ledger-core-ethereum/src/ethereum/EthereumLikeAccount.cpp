@@ -92,6 +92,7 @@ namespace ledger {
 
                 EthereumLikeOperation operation{wallet, tx};
 
+                operation._account = shared_from_this();
                 operation.accountUid = getAccountUid();
                 operation.block = tx.block;
                 operation.currencyName = getWallet()->getCurrency().name;

@@ -66,7 +66,7 @@ namespace ledger {
 
             _gasPrice = std::make_shared<Amount>(_currency, 0, tx.gasPrice);
             _gasLimit = std::make_shared<Amount>(_currency, 0, tx.gasLimit);
-            _gasUsed = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValue());
+            _gasUsed = std::make_shared<Amount>(_currency, 0, tx.gasUsed.getValueOr(BigInt::ZERO));
             _value = std::make_shared<Amount>(_currency, 0, tx.value);
 
             _nonce = std::make_shared<BigInt>((int64_t)tx.nonce);
@@ -82,15 +82,15 @@ namespace ledger {
         std::string EthereumLikeTransaction::getHash() {
             return _hash;
         }
-        
+
         int32_t EthereumLikeTransaction::getNonce() {
             return (int32_t)_nonce->toUint64();
         }
-        
+
         std::shared_ptr<api::Amount> EthereumLikeTransaction::getGasPrice() {
             return _gasPrice;
         }
-        
+
         std::shared_ptr<api::Amount> EthereumLikeTransaction::getGasLimit() {
             return _gasLimit;
         }
@@ -109,7 +109,7 @@ namespace ledger {
         std::shared_ptr<api::Amount> EthereumLikeTransaction::getValue() {
             return _value;
         }
-        
+
         std::experimental::optional<std::vector<uint8_t>> EthereumLikeTransaction::getData() {
             return _data;
         }
@@ -247,6 +247,6 @@ namespace ledger {
             return *this;
         }
 
-        
+
     }
 }

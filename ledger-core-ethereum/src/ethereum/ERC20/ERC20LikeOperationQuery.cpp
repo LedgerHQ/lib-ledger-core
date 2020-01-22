@@ -32,13 +32,12 @@
 
 namespace ledger {
     namespace core {
-
         ERC20LikeOperationQuery::ERC20LikeOperationQuery(
             const std::shared_ptr<api::QueryFilter>& headFilter,
-            const std::shared_ptr<DatabaseSessionPool>& pool,   
+            const std::shared_ptr<DatabaseSessionPool>& pool,
             const std::shared_ptr<api::ExecutionContext>& context,
-            const std::shared_ptr<api::ExecutionContext>& mainContext) 
-            : EthereumLikeOperationQuery(headFilter, pool, context, mainContext) {
+            const std::shared_ptr<api::ExecutionContext>& mainContext)
+            : OperationQuery(headFilter, pool, context, mainContext) {
 
         }
 
@@ -52,6 +51,19 @@ namespace ledger {
                 .outerJoin("blocks AS b", "o.block_uid = b.uid")
                 .outerJoin("erc20_operations AS e", "o.uid = e.ethereum_operation_uid")
                 .execute(sql);
+        }
+
+        void ERC20LikeOperationQuery::inflateCompleteTransaction(
+            soci::session &sql,
+            const std::string &accountUid,
+            ERC20LikeOperation& operation
+        ) {
+        }
+
+        std::shared_ptr<ERC20LikeOperation> ERC20LikeOperationQuery::createOperation(
+            std::shared_ptr<AbstractAccount> &account
+        ) {
+            return std::make_shared<ERC20LikeOperation>(account);
         }
     }
 }

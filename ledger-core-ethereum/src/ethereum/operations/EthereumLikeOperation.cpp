@@ -42,21 +42,21 @@
 
 namespace ledger {
     namespace core {
-
         EthereumLikeOperation::EthereumLikeOperation(
-                const std::shared_ptr<const AbstractWallet>& wallet,
-                EthereumLikeBlockchainExplorerTransaction const& tx
-                ) {
+            const std::shared_ptr<const AbstractWallet>& wallet,
+            EthereumLikeBlockchainExplorerTransaction const& tx
+        ) {
             setExplorerTransaction(tx);
 
             _tx = std::make_shared<EthereumLikeTransaction>(tx, wallet->getCurrency());
         }
 
         EthereumLikeOperation::EthereumLikeOperation(
-                const std::shared_ptr<Operation>& operation,
-                EthereumLikeBlockchainExplorerTransaction const& tx) {
+            const std::shared_ptr<Operation>& operation,
+            EthereumLikeBlockchainExplorerTransaction const& tx
+        ) {
             setExplorerTransaction(tx);
-            
+
             _tx = std::make_shared<EthereumLikeTransaction>(tx, operation->getCurrency());
             soci::session sql(operation->getAccount()->getWallet()->getDatabase()->getPool());
             auto uid = operation->getUid();
@@ -90,7 +90,7 @@ namespace ledger {
         {
             return _explorerTx;
         }
-        
+
         void EthereumLikeOperation::setExplorerTransaction(EthereumLikeBlockchainExplorerTransaction const& tx)
         {
             _explorerTx = tx;
