@@ -205,8 +205,10 @@ namespace ledger {
             auto self = shared_from_this();
 
             return Future<api::ErrorCode>::async(_threadDispatcher->getMainExecutionContext(), [=]() {
+                // FIXME: drop coins first
+
                 // drop the main database first
-                self->getDatabaseSessionPool()->performDatabaseMigrationUnsetup();
+                //self->getDatabaseSessionPool()->performDatabaseMigrationUnsetup();
 
                 // then reset preferences
                 _externalPreferencesBackend->clear();
