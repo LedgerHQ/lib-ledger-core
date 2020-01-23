@@ -42,34 +42,34 @@ namespace ledger {
         class DerivationPath : public api::DerivationPath {
         public:
             explicit DerivationPath(const std::string& path);
-            explicit DerivationPath(const std::vector<int32_t>& path);
+            explicit DerivationPath(const std::vector<int64_t>& path);
             DerivationPath(const DerivationPath& path);
             DerivationPath(DerivationPath&& path);
             DerivationPath& operator=(DerivationPath&& path);
             DerivationPath& operator=(const DerivationPath& path);
 
-            int32_t getDepth() const override;
-            int32_t getChildNum(int32_t index) const override;
-            int32_t getUnhardenedChildNum(int32_t index) const override;
-            bool isHardened(int32_t index) const override;
+            int64_t getDepth() const override;
+            int64_t getChildNum(int64_t index) const override;
+            int64_t getUnhardenedChildNum(int64_t index) const override;
+            bool isHardened(int64_t index) const override;
             std::string toString(bool addLeadingM = false) const override;
             std::shared_ptr<api::DerivationPath> getAbstractParent() const override;
-            std::vector<int32_t> toVector() const override;
+            std::vector<int64_t> toVector() const override;
 
             DerivationPath getParent() const;
-            int32_t getLastChildNum() const;
-            int32_t getNonHardenedChildNum(int index) const;
-            int32_t getNonHardenedLastChildNum() const;
+            int64_t getLastChildNum() const;
+            int64_t getNonHardenedChildNum(int64_t index) const;
+            int64_t getNonHardenedLastChildNum() const;
             bool isRoot() const;
             bool isLastChildHardened() const;
  
-            int32_t operator[](int32_t index) const;
+            int64_t operator[](int64_t index) const;
             DerivationPath operator+(const DerivationPath& derivationPath) const;
             bool operator==(const DerivationPath& path) const;
             bool operator!=(const DerivationPath& path) const;
 
         public:
-            static std::vector<int32_t> parse(const std::string& path);
+            static std::vector<int64_t> parse(const std::string& path);
             static DerivationPath fromScheme(
                 const std::string& scheme,
                 int coinType,
@@ -80,9 +80,9 @@ namespace ledger {
             );
 
         private:
-            inline void assertIndexIsValid(int32_t index, const std::string& method) const;
+            inline void assertIndexIsValid(int64_t index, const std::string& method) const;
 
-            std::vector<int32_t> _path;
+            std::vector<int64_t> _path;
         };
     }
 }

@@ -48,7 +48,7 @@ namespace ledger {
         template <class NetworkParameters>
         class ExtendedPublicKey {
         public:
-            static inline DeterministicPublicKey _derive(int index, const std::vector<int32_t>& childNums, const DeterministicPublicKey& key) {
+            static inline DeterministicPublicKey _derive(int index, const std::vector<int64_t>& childNums, const DeterministicPublicKey& key) {
                 if (index >= childNums.size()) {
                     return key;
                 }

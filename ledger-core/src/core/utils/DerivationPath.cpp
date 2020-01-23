@@ -47,20 +47,16 @@ namespace ledger {
 
         }
 
-        DerivationPath::DerivationPath(const std::vector<int32_t> &path) : _path(path) {
-            // we cannot use unsigned integer because of some unsupported type in binding 
-            // so we have to check the validity of all the indexes in the path.
-            for (auto index : path)  {
-                assertIndexIsValid(index, "ledger::core::DerivationPath::DerivationPath");
-            }
+        DerivationPath::DerivationPath(const std::vector<int64_t> &path) : _path(path) {
+
         }
 
-        std::vector<int32_t> DerivationPath::parse(const std::string &path) {
+        std::vector<int64_t> DerivationPath::parse(const std::string &path) {
             std::string currentNode = "";
             bool hardened = false;
             bool lastCharWasZero = false;
-            bool nextIntIsInHex = false;
-            std::vector<int32_t> result;
+            uint8_t numericalBase = 10;
+            std::vector<int64_t> result;
             int sepCount = 0;
             int index = 0;
 
@@ -69,19 +65,15 @@ namespace ledger {
                     throw Exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Invalid path format (empty segment)");
                 }
                 if (!currentNode.empty()) {
-                    uint32_t value;
-
-                    if (nextIntIsInHex) {
-                        value = (int32_t) std::stol(currentNode, nullptr, 16);
-                    } else {
-                        value = (int32_t) std::stol(currentNode, nullptr, 10);
-                    }
+                    int64_t value = std::stol(currentNode, nullptr, numericalBase); 
+                    
                     if (hardened) {
                         value = HARD_BIT | value;
                     }
+                    
                     result.push_back(value);
                 }
-                nextIntIsInHex = false;
+                numericalBase = 10;
                 hardened = false;
                 currentNode.clear();
                 sepCount += 1;
@@ -93,7 +85,7 @@ namespace ledger {
                 } else if (c == '\'') {
                     hardened = true;
                 } else if (lastCharWasZero && (c == 'x' || c == 'X')) {
-                    nextIntIsInHex = true;
+                    numericalBase = 16;
                     lastCharWasZero = false;
                 } else if (c == 'm') {
                     if (index > 0) {
@@ -114,28 +106,26 @@ namespace ledger {
             return result;
         }
 
-
-
-        int32_t DerivationPath::getDepth() const {
-            return static_cast<int32_t>(_path.size());
+        int64_t DerivationPath::getDepth() const {
+            return static_cast<int64_t>(_path.size());
         }
 
-        int32_t DerivationPath::getChildNum(int32_t index) const {
+        int64_t DerivationPath::getChildNum(int64_t index) const {
             assertIndexIsValid(index, "ledger::core::DerivationPath::getChildNum");
             return _path[index];
         }
 
-        int32_t DerivationPath::getUnhardenedChildNum(int32_t index) const {
+        int64_t DerivationPath::getUnhardenedChildNum(int64_t index) const {
             assertIndexIsValid(index, "ledger::core::DerivationPath::getUnhardenedChildNum");
             return getNonHardenedChildNum(index);
         }
 
-        int32_t DerivationPath::getLastChildNum() const {
+        int64_t DerivationPath::getLastChildNum() const {
             assertIndexIsValid(getDepth() - 1, "ledger::core::DerivationPath::getLastChildNum");
             return _path.back();
         }
 
-        int32_t DerivationPath::getNonHardenedChildNum(int32_t index) const  {
+        int64_t DerivationPath::getNonHardenedChildNum(int64_t index) const  {
             assertIndexIsValid(index, "ledger::core::DerivationPath::getNonHardenedChildNum");
             if (isHardened(index)) {
                 return (*this)[index] & ~HARD_BIT;
@@ -144,12 +134,12 @@ namespace ledger {
             }
         }
 
-        int32_t DerivationPath::getNonHardenedLastChildNum() const {
+        int64_t DerivationPath::getNonHardenedLastChildNum() const {
             assertIndexIsValid(getDepth() - 1, "ledger::core::DerivationPath::getNonHardenedLastChildNum");
             return getLastChildNum() & ~HARD_BIT;
         }
 
-        int32_t DerivationPath::operator[](int32_t index) const {
+        int64_t DerivationPath::operator[](int64_t index) const {
             assertIndexIsValid(index, "ledger::core::DerivationPath::operator[]");
             return _path[index];
         }
@@ -174,7 +164,7 @@ namespace ledger {
         
         DerivationPath DerivationPath::getParent() const {
             assertIndexIsValid(getDepth() - 1, "ledger::core::DerivationPath::getParent");
-            return DerivationPath(std::vector<int32_t>(_path.begin(), _path.end() - 1));
+            return DerivationPath(std::vector<int64_t>(_path.begin(), _path.end() - 1));
         }
         
         bool DerivationPath::isRoot() const {
@@ -200,11 +190,11 @@ namespace ledger {
             return ss.str();
         }
 
-        std::vector<int32_t> DerivationPath::toVector() const {
+        std::vector<int64_t> DerivationPath::toVector() const {
             return _path;
         }
 
-        bool DerivationPath::isHardened(int32_t index) const {
+        bool DerivationPath::isHardened(int64_t index) const {
             assertIndexIsValid(index, "ledger::core::DerivationPath::isHardened");
             return (_path[index] & HARD_BIT) == HARD_BIT;
         }
@@ -214,7 +204,7 @@ namespace ledger {
             return isHardened(getDepth() - 1);
         }
 
-        void DerivationPath::assertIndexIsValid(int32_t index, const std::string& method) const {
+        void DerivationPath::assertIndexIsValid(int64_t index, const std::string& method) const {
             if (index >= getDepth()) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, fmt::format("{} - Index ({}) is out of bound. Path depth is {}", method, index, getDepth()));
             } else if (index < 0) {
