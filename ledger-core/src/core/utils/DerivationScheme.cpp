@@ -148,7 +148,7 @@ namespace ledger {
         }
 
         DerivationPath DerivationScheme::getPath() {
-            std::function<int32_t (const DerivationSchemeNode&)> map = [] (const DerivationSchemeNode &item) -> int32_t {
+            std::function<int64_t (const DerivationSchemeNode&)> map = [] (const DerivationSchemeNode &item) -> int64_t {
                 return item.value | (item.hardened ? 0x80000000 : 0x00);
             };
             auto segments = functional::map(_scheme, map);

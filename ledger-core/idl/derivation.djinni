@@ -1,16 +1,16 @@
 DerivationPath = interface +c {
     # Get the number of element in this path.
-    const getDepth(): i32;
+    const getDepth(): i64;
 
     # Get the child num at the given index in the path.
-    const getChildNum(index: i32): i32;
+    const getChildNum(index: i64): i64;
 
     # Get the child num at the given index in the path. If the child num is hardened, returns it
     # without the hardened marker bit.
-    const getUnhardenedChildNum(index: i32): i32;
+    const getUnhardenedChildNum(index: i64): i64;
 
     # Return true if the given index in the path is an hardened child num.
-    const isHardened(index: i32): bool;
+    const isHardened(index: i64): bool;
 
     # Serialize the given path to a human readable string like "44'/0'/0'/0/0".
     const toString(addLeadingM: bool): string;
@@ -20,7 +20,7 @@ DerivationPath = interface +c {
     const getAbstractParent(): DerivationPath;
 
     # Return an array where which item is a child num of the path.
-    const toVector(): list<i32>;
+    const toVector(): list<i64>;
 
     static parse(path: string): DerivationPath;
 }
