@@ -144,11 +144,13 @@ namespace ledger {
         /// The Core tag type.
         struct CoreMigration {
             static int constexpr COIN_ID = -1;
-            static uint32_t constexpr CURRENT_VERSION = 1;
+            static uint32_t constexpr CURRENT_VERSION = 2;
         };
 
         // migrations
         template <> void migrate<1, CoreMigration>(soci::session& sql);
         template <> void rollback<1, CoreMigration>(soci::session& sql);
+        template <> void migrate<2, CoreMigration>(soci::session& sql);
+        template <> void rollback<2, CoreMigration>(soci::session& sql);
     }
 }
