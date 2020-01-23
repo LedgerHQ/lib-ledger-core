@@ -116,16 +116,12 @@ namespace ledger {
             return oss.str();
         }
 
+        int32_t BytesReader::readNextBeInt() {
+            return readNextBeValue<int32_t>();
+        }
+
         uint32_t BytesReader::readNextBeUint() {
-            uint32_t result;
-            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
-            for (auto i = 0; i < sizeof(result); i++) {
-                ptr[i] = readNextByte();
-            }
-            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                        ledger::core::endianness::Endianness::BIG,
-                                                        ledger::core::endianness::getSystemEndianness());
-            return result;
+            return readNextBeValue<uint32_t>();
         }
 
         uint32_t BytesReader::readNextLeUint() {
@@ -140,16 +136,12 @@ namespace ledger {
             return result;
         }
 
+        int64_t BytesReader::readNextBeLong() {
+            return readNextBeValue<int64_t>();
+        }
+
         uint64_t BytesReader::readNextBeUlong() {
-            uint64_t result;
-            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
-            for (auto i = 0; i < sizeof(result); i++) {
-                ptr[i] = readNextByte();
-            }
-            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                       ledger::core::endianness::Endianness::BIG,
-                                                       ledger::core::endianness::getSystemEndianness());
-            return result;
+            return readNextBeValue<uint64_t>();
         }
 
         uint64_t BytesReader::readNextLeUlong() {

@@ -30,10 +30,12 @@
  */
 
 #include "models.hpp"
+#include "XDREncoder.hpp"
+#include "XDRDecoder.hpp"
 
 namespace ledger { namespace core { namespace stellar { namespace xdr {
 
-// Here is the skycrapper of make_encoder functions
+// Here is the skycrapper of make_encoder & make_decoder functions
 
 #define BEGIN_ENCODER(type) template <> ObjectEncoder make_encoder(const type & object) { \
     return [=] (Encoder& encoder) {
@@ -83,9 +85,7 @@ BEGIN_ENCODER(Asset)
             encoder << boost::get<AssetCode12>(object.assetCode);
             break;
     }
-    if (object.issuer.nonEmpty()) {
-        encoder << object.issuer;
-    }
+    encoder << object.issuer;
 END_ENCODER
 
 BEGIN_ENCODER(Price)
@@ -245,5 +245,269 @@ END_ENCODER
 BEGIN_ENCODER(DecoratedSignature)
     encoder << object.hint << object.signature;
 END_ENCODER
+
+
+// make_decoder functions
+
+#define BEGIN_DECODER(T) template <> ObjectDecoder make_decoder(T & object) { \
+    return [&] (Decoder& decoder) mutable {
+
+#define END_DECODER };}
+
+BEGIN_DECODER(TimeBounds)
+    decoder >> object.minTime >> object.maxTime;
+END_DECODER
+
+BEGIN_DECODER(PublicKeyType)
+    int32_t type;
+    decoder >> type;
+    object = static_cast<PublicKeyType>(type);
+END_DECODER
+
+BEGIN_DECODER(PublicKey)
+    decoder >> object.type;
+    switch (object.type) {
+        case PublicKeyType::PUBLIC_KEY_TYPE_ED25519:
+            decoder >> object.content;
+            break;
+    }
+END_DECODER
+
+BEGIN_DECODER(MemoType)
+    int32_t type;
+    decoder >> type;
+    object = static_cast<MemoType>(type);
+END_DECODER
+
+BEGIN_DECODER(Memo)
+    decoder >> object.type;
+
+    switch (object.type) {
+        case MemoType::MEMO_NONE:
+            break;
+        case MemoType::MEMO_TEXT:
+            object.content = std::string();
+            decoder >> boost::get<std::string>(object.content);
+            break;
+        case MemoType::MEMO_ID:
+            object.content = uint64_t();
+            decoder >> boost::get<uint64_t>(object.content);
+            break;
+        case MemoType::MEMO_HASH:
+        case MemoType::MEMO_RETURN:
+            object.content = Hash();
+            decoder >> boost::get<Hash>(object.content);
+            break;
+    }
+END_DECODER
+
+BEGIN_DECODER(AssetType)
+    int32_t type;
+    decoder >> type;
+    object = static_cast<AssetType>(type);
+END_DECODER
+
+BEGIN_DECODER(Asset)
+    decoder >> object.type;
+    switch (object.type) {
+        case AssetType::ASSET_TYPE_NATIVE:
+            break;
+        case AssetType::ASSET_TYPE_CREDIT_ALPHANUM4:
+            object.assetCode = AssetCode4();
+            decoder >> boost::get<AssetCode4>(object.assetCode);
+            break;
+        case AssetType::ASSET_TYPE_CREDIT_ALPHANUM12:
+            object.assetCode = AssetCode12();
+            decoder >> boost::get<AssetCode12>(object.assetCode);
+            break;
+    }
+    decoder >> object.issuer;
+END_DECODER
+
+BEGIN_DECODER(Price)
+    decoder >> object.n >> object.d;
+END_DECODER
+
+BEGIN_DECODER(SignerKeyType)
+    int32_t type;
+    decoder >> type;
+    object = static_cast<SignerKeyType>(type);
+END_DECODER
+
+BEGIN_DECODER(SignerKey)
+    decoder >> object.type >> object.content;
+END_DECODER
+
+BEGIN_DECODER(Signer)
+    decoder >> object.key >> object.weight;
+END_DECODER
+
+BEGIN_DECODER(CreateAccountOp)
+    decoder >> object.destination >> object.startingBalance;
+END_DECODER
+
+BEGIN_DECODER(PaymentOp)
+    decoder >> object.destination >> object.asset >> object.amount;
+END_DECODER
+
+BEGIN_DECODER(PathPaymentOp)
+    decoder
+            >> object.sendAsset
+            >> object.sendMax
+            >> object.destination
+            >> object.destAsset
+            >> object.destAmount
+            >> object.path;
+END_DECODER
+
+BEGIN_DECODER(ManageSellOfferOp)
+    decoder
+            >> object.selling
+            >> object.buying
+            >> object.price
+            >> object.offerID;
+END_DECODER
+
+BEGIN_DECODER(ManageBuyOfferOp)
+    decoder
+            >> object.selling
+            >> object.buying
+            >> object.buyAmount
+            >> object.price
+            >> object.offerID;
+END_DECODER
+
+BEGIN_DECODER(CreatePassiveSellOfferOp)
+    decoder
+            >> object.selling
+            >> object.buying
+            >> object.amount
+            >> object.price;
+END_DECODER
+
+BEGIN_DECODER(SetOptionsOp)
+    decoder
+            >> object.inflationDest
+            >> object.clearFlags
+            >> object.setFlags
+            >> object.masterWeight
+            >> object.lowThreshold
+            >> object.medThreshold
+            >> object.highThreshold
+            >> object.homeDomain
+            >> object.signer;
+END_DECODER
+
+BEGIN_DECODER(ChangeTrustOp)
+    decoder >> object.line >> object.limit;
+END_DECODER
+
+BEGIN_DECODER(AllowTrustOp)
+    decoder >> object.trustor >> object.type;
+    switch (object.type) {
+        case AssetType::ASSET_TYPE_NATIVE:
+            break;
+        case AssetType::ASSET_TYPE_CREDIT_ALPHANUM4:
+            object.assetCode = AssetCode4();
+            decoder >> boost::get<AssetCode4>(object.assetCode);
+            break;
+        case AssetType::ASSET_TYPE_CREDIT_ALPHANUM12:
+            object.assetCode = AssetCode12();
+            decoder >> boost::get<AssetCode12>(object.assetCode);
+            break;
+    }
+    decoder >> object.authorize;
+END_DECODER
+
+BEGIN_DECODER(ManageDataOp)
+    decoder >> object.dataName >> object.dataValue;
+END_DECODER
+
+BEGIN_DECODER(BumpSequenceOp)
+    decoder >> object.bumpTo;
+END_DECODER
+
+BEGIN_DECODER(OperationType)
+    int32_t type;
+    decoder >> type;
+    object = static_cast<OperationType>(type);
+END_DECODER
+
+BEGIN_DECODER(Operation)
+    decoder >> object.sourceAccount >> object.type;
+    switch (object.type) {
+        case OperationType::CREATE_ACCOUNT:
+            object.content = CreateAccountOp();
+            decoder >> boost::get<CreateAccountOp>(object.content);
+            break;
+        case OperationType::PAYMENT:
+            object.content = PaymentOp();
+            decoder >> boost::get<PaymentOp>(object.content);
+            break;
+        case OperationType::PATH_PAYMENT:
+            object.content = PathPaymentOp();
+            decoder >> boost::get<PathPaymentOp>(object.content);
+            break;
+        case OperationType::MANAGE_OFFER:
+            object.content = ManageSellOfferOp();
+            decoder >> boost::get<ManageSellOfferOp>(object.content);
+            break;
+        case OperationType::CREATE_PASSIVE_OFFER:
+            object.content = CreatePassiveSellOfferOp();
+            decoder >> boost::get<CreatePassiveSellOfferOp>(object.content);
+            break;
+        case OperationType::SET_OPTIONS:
+            object.content = SetOptionsOp();
+            decoder >> boost::get<SetOptionsOp>(object.content);
+            break;
+        case OperationType::CHANGE_TRUST:
+            object.content = ChangeTrustOp();
+            decoder >> boost::get<ChangeTrustOp>(object.content);
+            break;
+        case OperationType::ALLOW_TRUST:
+            object.content = AllowTrustOp();
+            decoder >> boost::get<AllowTrustOp>(object.content);
+            break;
+        case OperationType::ACCOUNT_MERGE:
+            object.content = AccountID();
+            decoder >> boost::get<AccountID>(object.content);
+            break;
+        case OperationType::INFLATION:
+            break;
+        case OperationType::MANAGE_DATA:
+            object.content = ManageDataOp();
+            decoder >> boost::get<ManageDataOp>(object.content);
+            break;
+        case OperationType::BUMP_SEQUENCE:
+            object.content = BumpSequenceOp();
+            decoder >> boost::get<BumpSequenceOp>(object.content);
+            break;
+        case OperationType::MANAGE_BUY_OFFER:
+            object.content = ManageBuyOfferOp();
+            decoder >> boost::get<ManageBuyOfferOp>(object.content);
+            break;
+    }
+END_DECODER
+
+BEGIN_DECODER(Transaction)
+    int32_t unused;
+    decoder
+            >> object.sourceAccount
+            >> object.fee
+            >> object.seqNum
+            >> object.timeBounds
+            >> object.memo
+            >> object.operations
+            >> unused; // reserved for future use
+END_DECODER
+
+BEGIN_DECODER(TransactionEnvelope)
+    decoder >> object.tx >> object.signatures;
+END_DECODER
+
+BEGIN_DECODER(DecoratedSignature)
+    decoder >> object.hint >> object.signature;
+END_DECODER
+
 
 } } } }

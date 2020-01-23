@@ -1,9 +1,9 @@
 /*
  *
- * Encoder.cpp
+ * XDRDecoder.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 23/07/2019.
+ * Created by Hakim Aammar on 13/01/2020.
  *
  * The MIT License (MIT)
  *
@@ -29,62 +29,54 @@
  *
  */
 
-#include "XDREncoder.hpp"
-#include <cmath>
+#include "XDRDecoder.hpp"
 
 using namespace ledger::core::stellar::xdr;
 
-Encoder& Encoder::operator<<(int32_t i) {
-    _writer.writeBeValue<int32_t>(i);
+Decoder::Decoder(const std::vector<uint8_t> &data) :
+_reader(data)
+{}
+
+Decoder& Decoder::operator>>(int32_t &i) {
+    i = _reader.readNextBeInt();
     return *this;
 }
 
-Encoder& Encoder::operator<<(uint32_t i) {
-    _writer.writeBeValue<uint32_t>(i);
+Decoder& Decoder::operator>>(uint32_t &i) {
+    i = _reader.readNextBeUint();
     return *this;
 }
 
-Encoder& Encoder::operator<<(int64_t i) {
-    _writer.writeBeValue<int64_t>(i);
+Decoder& Decoder::operator>>(int64_t &i) {
+    i = _reader.readNextBeLong();
     return *this;
 }
 
-Encoder& Encoder::operator<<(uint64_t i) {
-    _writer.writeBeValue<uint64_t>(i);
+Decoder& Decoder::operator>>(uint64_t &i) {
+    i = _reader.readNextBeUlong();
     return *this;
 }
 
-Encoder& Encoder::operator<<(const std::string &str) {
-    *this << ((uint32_t)str.size());
-    _writer.writeString(str);
-    for (auto mod = std::ceil(str.size() / 4.f) * 4 - str.size(); mod > 0; mod -= 1) {
-        _writer.writeByte(0);
-    }
+Decoder& Decoder::operator>>(std::string &str) {
+    // FIXME Manage issue of https://github.com/pollastri-pierre/lib-ledger-core/commit/301f55beca4964e986fd3937650a62ef5e9c4a4d
+    str = _reader.readNextVarString();
     return *this;
 }
 
-Encoder& Encoder::operator<<(const std::vector<uint8_t> &bytes) {
-    *this << ((uint32_t)bytes.size());
-    _writer.writeByteArray(bytes);
+Decoder& Decoder::operator>>(ObjectDecoder &r) {
+    r(*this);
     return *this;
 }
 
-Encoder& Encoder::operator<<(const ObjectEncoder &w) {
-    w(*this);
+Decoder& Decoder::operator>>(bool &b) {
+    int32_t v;
+    (*this) >> v;
+    b = (v == 0) ? false : true;
     return *this;
 }
 
-Encoder& Encoder::operator<<(bool b) {
-    auto v = (int32_t)(b ? 1 : 0);
-    return (*this << v);
-}
-
-std::vector<uint8_t> Encoder::toByteArray() const {
-    return _writer.toByteArray();
-}
-
-Encoder &Encoder::operator<<(uint8_t byte) {
-    _writer.writeByte(byte);
+Decoder& Decoder::operator>>(uint8_t &byte) {
+    byte = _reader.readNextByte();
     return *this;
 }
 

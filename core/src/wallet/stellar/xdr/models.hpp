@@ -32,7 +32,7 @@
 #ifndef LEDGER_CORE_MODELS_HPP
 #define LEDGER_CORE_MODELS_HPP
 
-#include "XDREncoder.hpp"
+#include <list>
 #include <utils/Option.hpp>
 #include <boost/variant.hpp>
 #include <array>
@@ -48,16 +48,16 @@ namespace ledger {
                 // Check the validity of the data, and an error should be raised as soon as the
                 // user is attempting any invalid operation
 
-                enum class CryptoKeyType : int
+                enum class CryptoKeyType : uint32_t
                 {
                     KEY_TYPE_ED25519 = 0,
                     KEY_TYPE_PRE_AUTH_TX = 1,
                     KEY_TYPE_HASH_X = 2
                 };
 
-                enum class PublicKeyType : int
+                enum class PublicKeyType : uint32_t
                 {
-                    PUBLIC_KEY_TYPE_ED25519 = (int) CryptoKeyType::KEY_TYPE_ED25519
+                    PUBLIC_KEY_TYPE_ED25519 = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_ED25519)
                 };
 
                 using uint256 = std::array<uint8_t, 32>;
@@ -92,7 +92,7 @@ namespace ledger {
                 using AccountID = PublicKey;
 
                 // Memo union
-                enum class MemoType {
+                enum class MemoType : uint32_t {
                     MEMO_NONE = 0,
                     MEMO_TEXT = 1,
                     MEMO_ID = 2,
@@ -111,7 +111,7 @@ namespace ledger {
                 using AssetCode4 = std::array<uint8_t, 4>;
                 using AssetCode12 = std::array<uint8_t, 12>;
 
-                enum class AssetType
+                enum class AssetType : uint32_t
                 {
                     ASSET_TYPE_NATIVE = 0,
                     ASSET_TYPE_CREDIT_ALPHANUM4 = 1,
@@ -132,11 +132,11 @@ namespace ledger {
                 };
 
                 // Signer key union
-                enum class SignerKeyType
+                enum class SignerKeyType : uint32_t
                 {
-                    SIGNER_KEY_TYPE_ED25519 = static_cast<int>(CryptoKeyType::KEY_TYPE_ED25519),
-                    SIGNER_KEY_TYPE_PRE_AUTH_TX = static_cast<int>(CryptoKeyType::KEY_TYPE_PRE_AUTH_TX),
-                    SIGNER_KEY_TYPE_HASH_X = static_cast<int>(CryptoKeyType::KEY_TYPE_HASH_X)
+                    SIGNER_KEY_TYPE_ED25519 = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_ED25519),
+                    SIGNER_KEY_TYPE_PRE_AUTH_TX = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_PRE_AUTH_TX),
+                    SIGNER_KEY_TYPE_HASH_X = static_cast<uint32_t>(CryptoKeyType::KEY_TYPE_HASH_X)
                 };
 
                 struct SignerKey {
@@ -300,7 +300,7 @@ namespace ledger {
                 };
 
                 // Transaction envelope type enum
-                enum class EnvelopeType
+                enum class EnvelopeType : uint32_t
                 {
                     ENVELOPE_TYPE_SCP = 1,
                     ENVELOPE_TYPE_TX = 2,
