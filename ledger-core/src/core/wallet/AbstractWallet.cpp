@@ -30,6 +30,8 @@
  */
 
 #include <core/Services.hpp>
+#include <core/api/Configuration.hpp>
+#include <core/api/ConfigurationDefaults.hpp>
 #include <core/async/DedicatedContext.hpp>
 #include <core/async/Algorithm.hpp>
 #include <core/database/SociDate.hpp>
@@ -50,10 +52,13 @@ namespace ledger {
             const std::shared_ptr<Services> &services,
             const std::shared_ptr<DynamicObject> &configuration,
             const DerivationScheme &derivationScheme
-        ): DedicatedContext(
-            services->getThreadPoolExecutionContext()
-           ),
-           _scheme(derivationScheme) {
+        ): DedicatedContext(services->getThreadPoolExecutionContext()),
+           _scheme(derivationScheme),
+           _balanceCache(std::chrono::seconds(
+                configuration->getInt(api::Configuration::TTL_CACHE)
+                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)
+            ))
+        {
             _services = services;
             _name = walletName;
             _uid = WalletDatabaseEntry::createWalletUid(services->getTenant(), _name);
@@ -366,6 +371,14 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
             return getConfig();
+        }
+
+        Option<Amount> AbstractWallet::getBalanceFromCache(size_t accountIndex) {
+            return _balanceCache.get(fmt::format("{}-{}", _currency.name, accountIndex));
+        }
+
+        void AbstractWallet::updateBalanceCache(size_t accountIndex, Amount balance) {
+            _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
         }
     }
 }
