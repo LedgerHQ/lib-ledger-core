@@ -63,9 +63,9 @@ namespace ledger {
 
                     Decoder(const std::vector<uint8_t> &data);
 
-                    // TODO Optimize?
                     template<class Object>
                     Decoder& operator>>(std::list<Object> &list) {
+                        list.clear();
                         auto listLength = _reader.readNextBeInt();
                         for (int i=0 ; i<listLength ; i++) {
                             Object item;
@@ -77,11 +77,13 @@ namespace ledger {
 
                     template<class Object>
                     Decoder& operator>>(std::vector<Object> &list) {
+                        list.clear();
                         auto listLength = _reader.readNextBeInt();
+                        list.reserve(listLength);
                         for (int i=0 ; i<listLength ; i++) {
                             Object item;
                             *this >> item;
-                            list.push_back(item);
+                            list[i] = item;
                         }
                         return *this;
                     }
@@ -103,7 +105,7 @@ namespace ledger {
                         if (optionNonEmpty) {
                             Object value;
                             *this >> value;
-                            option = value; // TODO Optimize?
+                            option = value;
                         }
                         return *this;
                     };
