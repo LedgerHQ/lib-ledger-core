@@ -32,6 +32,7 @@
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
 #include <set>
+#include <functional>
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
@@ -51,12 +52,20 @@ class TezosLikeWalletSynchronization : public BaseFixture {
 
 TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool("xtz", "");
-    {
+    static std::function<void (
+            const std::string &,
+            const std::string &)> test = [=] (
+                            const std::string &walletName,
+                            const std::string &nextWalletName) {
+        if (walletName.empty()) {
+            return;
+        }
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "tezos", configuration));
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://xtz-explorer.api.live.ledger.com/explorer");
+        auto wallet = wait(pool->createWallet(walletName, "tezos", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
@@ -131,7 +140,10 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto gasLimit = wait(account->getEstimatedGasLimit("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
             EXPECT_GT(gasLimit->toUint64(), 0);
+
+            test(nextWalletName, "");
         }
-    }
+    };
+    test("e847815f-488a-4301-b67c-378a5e9c8a61", "e847815f-488a-4301-b67c-378a5e9c8a60");
 }
 
