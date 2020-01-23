@@ -16,12 +16,12 @@ export PATH=$PATH:~/cmake_folder/bin
 ###
 
 function command_target_jni {
-  add_to_cmake_params -DTARGET_JNI=ON
+  add_to_cmake_params -DTARGET_JNI=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
 }
 
 function command_Release {
   BUILD_CONFIG="Release"
-  add_to_cmake_params -DBUILD_TESTS=OFF -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
+  add_to_cmake_params -DBUILD_TESTS=OFF
 }
 
 function command_Debug {
