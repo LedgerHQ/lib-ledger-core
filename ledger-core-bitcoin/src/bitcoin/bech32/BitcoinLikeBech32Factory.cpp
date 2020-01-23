@@ -1,6 +1,6 @@
 /*
  *
- * BCHBech32
+ * Bech32Factory
  *
  * Created by El Khalil Bellakrid on 18/02/2019.
  *
@@ -28,29 +28,21 @@
  *
  */
 
-#pragma once
+#include <core/utils/Exception.hpp>
 
-#include <core/math/bech32/Bech32.hpp>
-#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelper.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32Factory.hpp>
+#include <bitcoin/bech32/BTCBech32.hpp>
+#include <bitcoin/bech32/BCHBech32.hpp>
 
-// Reference: https://github.com/bitcoincashjs/cashaddrjs
 namespace ledger {
     namespace core {
-        class BCHBech32 : public Bech32 {
-        public:
-            BCHBech32() {
-                _bech32Params = BitcoinLikeBech32ParametersHelper::getBech32Params("abc");
-            };
-
-            uint64_t polymod(const std::vector<uint8_t>& values) override;
-
-            std::vector<uint8_t> expandHrp(const std::string& hrp) override;
-
-            std::string encode(const std::vector<uint8_t>& hash,
-                               const std::vector<uint8_t>& version) override;
-
-            std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-            decode(const std::string& str) override;
-        };
+        Option<std::shared_ptr<Bech32>> BitcoinLikeBech32Factory::newBech32Instance(const std::string &networkIdentifier) {
+            if (networkIdentifier == "btc" || networkIdentifier == "btc_testnet") {
+                return Option<std::shared_ptr<Bech32>>(std::make_shared<BTCBech32>(networkIdentifier));
+            } else if (networkIdentifier == "abc") {
+                return Option<std::shared_ptr<Bech32>>(std::make_shared<BCHBech32>());
+            }
+            return Option<std::shared_ptr<Bech32>>();
+        }
     }
 }

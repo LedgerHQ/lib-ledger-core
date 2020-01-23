@@ -34,10 +34,18 @@
 // BIP173: https://github.com/bitcoin/bips/blob/master/bip-0173.mediawiki
 // Implementation: https://github.com/sipa/bech32/tree/master/ref/c%2B%2B
 
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
 #include <vector>
 #include <string>
 
-#include <bitcoin/bech32/Bech32Parameters.hpp>
+#include <core/math/bech32/Bech32Parameters.hpp>
 
 // HRP refers to Human Readable Part
 namespace ledger {
@@ -65,9 +73,9 @@ namespace ledger {
             virtual std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
             decode(const std::string& str) = 0;
 
-            static unsigned char toLowerCase(unsigned char c);
+            static LIBCORE_EXPORT unsigned char toLowerCase(unsigned char c);
 
-            static bool convertBits(const std::vector<uint8_t>& in,
+            static LIBCORE_EXPORT bool convertBits(const std::vector<uint8_t>& in,
                                     int fromBits,
                                     int toBits,
                                     bool pad,
@@ -79,7 +87,7 @@ namespace ledger {
 
         protected:
             std::string encodeBech32(const std::vector<uint8_t>& values);
-            Bech32Parameters::Bech32Struct _bech32Params;
+            Bech32Parameters::Bech32Struct _bech32Params {};
         };
     }
 }

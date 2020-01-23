@@ -30,7 +30,7 @@
 
 #include <core/collections/Vector.hpp>
 
-#include <bitcoin/bech32/Bech32.hpp>
+#include <core/math/bech32/Bech32.hpp>
 
 namespace ledger {
     namespace core {
@@ -70,7 +70,7 @@ namespace ledger {
             }
             return ret;
         }
-        
+
         std::string Bech32::encodeBech32(const std::vector<uint8_t>& values) {
             // Values here should be concatenation of version + hash
             std::vector<uint8_t> checksum = createChecksum(values);

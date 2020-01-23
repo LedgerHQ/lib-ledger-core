@@ -30,14 +30,6 @@
 
 #pragma once
 
-#ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
-#endif
-
 #include <string>
 #include <vector>
 
@@ -74,9 +66,6 @@ namespace ledger {
                 {};
 
             };
-            extern LIBCORE_EXPORT const Bech32Struct getBech32Params(const std::string &networkIdentifier);
-            extern LIBCORE_EXPORT const std::vector<Bech32Struct> ALL;
-            bool insertParameters(soci::session& sql, const Bech32Struct &params);
         }
     }
 }

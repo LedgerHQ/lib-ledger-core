@@ -1,12 +1,12 @@
 /*
  *
- * Bech32Factory
+ * BitcoinLikeBech32ParametersHelper
  *
- * Created by El Khalil Bellakrid on 18/02/2019.
+ * Created by Gerry Agbobada on 2020/01/23
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -30,19 +30,24 @@
 
 #pragma once
 
-#include <string>
-#include <memory>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
 
-#include <core/utils/Option.hpp>
-
-#include <bitcoin/bech32/Bech32.hpp>
+#include <core/math/bech32/Bech32ParametersHelper.hpp>
 
 namespace ledger {
     namespace core {
-        class Bech32Factory {
-        public:
-            static Option<std::shared_ptr<Bech32>> newBech32Instance(const std::string &networkIdentifier);
-        };
+            class BitcoinLikeBech32ParametersHelper : public Bech32ParametersHelper<BitcoinLikeBech32ParametersHelper> {
+                public:
+                using tBase = Bech32ParametersHelper<BitcoinLikeBech32ParametersHelper>;
+
+                static const Bech32Parameters::Bech32Struct getCoinLikeBech32Params(const std::string &networkIdentifier);
+                static bool insertCoinLikeParameters(soci::session& sql, const Bech32Parameters::Bech32Struct &params);
+            };
     }
 }
-

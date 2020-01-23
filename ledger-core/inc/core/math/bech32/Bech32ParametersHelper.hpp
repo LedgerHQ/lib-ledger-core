@@ -1,12 +1,12 @@
 /*
  *
- * Bech32Factory
+ * Bech32ParametersHelper
  *
- * Created by El Khalil Bellakrid on 18/02/2019.
+ * Created by Gerry Agbobada on 23/01/2020
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,21 +28,33 @@
  *
  */
 
-#include <core/utils/Exception.hpp>
+#pragma once
 
-#include <bitcoin/bech32/Bech32Factory.hpp>
-#include <bitcoin/bech32/BTCBech32.hpp>
-#include <bitcoin/bech32/BCHBech32.hpp>
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER)
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
+#include <core/math/bech32/Bech32Parameters.hpp>
 
 namespace ledger {
     namespace core {
-        Option<std::shared_ptr<Bech32>> Bech32Factory::newBech32Instance(const std::string &networkIdentifier) {
-            if (networkIdentifier == "btc" || networkIdentifier == "btc_testnet") {
-                return Option<std::shared_ptr<Bech32>>(std::make_shared<BTCBech32>(networkIdentifier));
-            } else if (networkIdentifier == "abc") {
-                return Option<std::shared_ptr<Bech32>>(std::make_shared<BCHBech32>());
-            }
-            return Option<std::shared_ptr<Bech32>>();
-        }
+        // CRTP used to get static polymorphism on the interface
+        template <class CoinLikeBech32ParametersHelper>
+        class Bech32ParametersHelper {
+            public:
+                static const Bech32Parameters::Bech32Struct getBech32Params(const std::string &networkIdentifier) {
+                    return CoinLikeBech32ParametersHelper::getCoinLikeBech32Params(networkIdentifier);
+                }
+
+                static const std::vector<Bech32Parameters::Bech32Struct> ALL;
+
+                static bool insertParameters(soci::session& sql, const Bech32Parameters::Bech32Struct &params) {
+                    return CoinLikeBech32ParametersHelper::insertCoinLikeParameters(sql, params);
+                }
+        };
     }
 }

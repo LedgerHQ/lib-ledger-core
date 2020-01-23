@@ -1,6 +1,6 @@
 /*
  *
- * BCHBech32
+ * BitcoinLikeBech32Factory
  *
  * Created by El Khalil Bellakrid on 18/02/2019.
  *
@@ -30,27 +30,18 @@
 
 #pragma once
 
-#include <core/math/bech32/Bech32.hpp>
-#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelper.hpp>
+#include <string>
+#include <memory>
 
-// Reference: https://github.com/bitcoincashjs/cashaddrjs
+#include <core/utils/Option.hpp>
+
+#include <core/math/bech32/Bech32.hpp>
+
 namespace ledger {
     namespace core {
-        class BCHBech32 : public Bech32 {
+        class BitcoinLikeBech32Factory {
         public:
-            BCHBech32() {
-                _bech32Params = BitcoinLikeBech32ParametersHelper::getBech32Params("abc");
-            };
-
-            uint64_t polymod(const std::vector<uint8_t>& values) override;
-
-            std::vector<uint8_t> expandHrp(const std::string& hrp) override;
-
-            std::string encode(const std::vector<uint8_t>& hash,
-                               const std::vector<uint8_t>& version) override;
-
-            std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-            decode(const std::string& str) override;
+            static Option<std::shared_ptr<Bech32>> newBech32Instance(const std::string &networkIdentifier);
         };
     }
 }
