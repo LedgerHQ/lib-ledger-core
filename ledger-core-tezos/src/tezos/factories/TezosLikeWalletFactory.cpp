@@ -147,7 +147,7 @@ namespace ledger {
                 }
             }
 
-            auto pool = getServices();
+            auto services = getServices();
             auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE)
                     .value_or(api::TezosBlockchainExplorerEngines::TEZOS_NODE);
             std::shared_ptr<TezosLikeBlockchainExplorer> explorer = nullptr;
@@ -157,13 +157,17 @@ namespace ledger {
                 auto defaultValue = isTzStats ?
                         api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT :
                                     api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT;
-                auto http = pool->getHttpClient(fmt::format("{}",
+                auto http = services->getHttpClient(fmt::format("{}",
                                                             configuration->getString(
                                                                     api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
                                                             ).value_or(defaultValue)));
-                auto context = pool->getDispatcher()
-                        ->getSerialExecutionContext(api::TezosBlockchainExplorerEngines::TEZOS_NODE);;
                 auto &networkParams = networks::getTezosLikeNetworkParameters(getCurrency().name);
+                auto context = services->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-explorer",
+                                    api::TezosBlockchainExplorerEngines::TEZOS_NODE,
+                                    networkParams.Identifier
+                        )
+                );
 
                 if (isTzStats) {
                     explorer = std::make_shared<ExternalTezosLikeBlockchainExplorer>(context,
@@ -205,10 +209,15 @@ namespace ledger {
             std::shared_ptr<TezosLikeBlockchainObserver> observer;
             if (engine == api::TezosBlockchainObserverEngines::TEZOS_NODE) {
                 auto ws = services->getWebSocketClient();
-                auto context = services->getDispatcher()->getSerialExecutionContext(
-                        api::TezosBlockchainObserverEngines::TEZOS_NODE);
-                auto logger = services->logger();
                 const auto &currency = getCurrency();
+                auto &networkParams = networks::getTezosLikeNetworkParameters(currency.name);
+                auto context = services->getDispatcher()->getSerialExecutionContext(
+                        fmt::format("{}-{}-explorer",
+                                    api::TezosBlockchainObserverEngines::TEZOS_NODE,
+                                    networkParams.Identifier
+                        )
+                );
+                auto logger = services->logger();
                 observer = std::make_shared<TezosLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }
             if (observer)

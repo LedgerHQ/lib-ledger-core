@@ -75,7 +75,7 @@ namespace ledger {
             if (!localAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
-            getBalance(localAccount->getContext()).callback(localAccount->getContext(), callback);
+            getBalance(localAccount->getMainExecutionContext()).callback(localAccount->getMainExecutionContext(), callback);
         }
 
         FuturePtr<api::Amount> TezosLikeOriginatedAccount::getBalance(const std::shared_ptr<api::ExecutionContext>& context) {
@@ -111,7 +111,7 @@ namespace ledger {
             if (!localAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
-            getBalanceHistory(localAccount->getContext(), start, end, period).callback(localAccount->getContext(), callback);
+            getBalanceHistory(localAccount->getMainExecutionContext(), start, end, period).callback(localAccount->getMainExecutionContext(), callback);
         }
 
         Future<std::vector<std::shared_ptr<api::Amount>>>
@@ -180,7 +180,7 @@ namespace ledger {
             auto query = std::make_shared<TezosLikeOperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
-                    localAccount->getWallet()->getContext(),
+                    localAccount->getWallet()->getServices()->getThreadPoolExecutionContext(),
                     localAccount->getWallet()->getMainExecutionContext()
             );
             query->registerAccount(localAccount);
