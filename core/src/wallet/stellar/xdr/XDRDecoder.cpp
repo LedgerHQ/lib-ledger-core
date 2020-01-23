@@ -30,6 +30,7 @@
  */
 
 #include "XDRDecoder.hpp"
+#include <cmath>
 
 using namespace ledger::core::stellar::xdr;
 
@@ -58,8 +59,12 @@ Decoder& Decoder::operator>>(uint64_t &i) {
 }
 
 Decoder& Decoder::operator>>(std::string &str) {
-    // FIXME Manage issue of https://github.com/pollastri-pierre/lib-ledger-core/commit/301f55beca4964e986fd3937650a62ef5e9c4a4d
-    str = _reader.readNextVarString();
+    uint32_t size;
+    *this >> size;
+    str = _reader.readString(size);
+    for (auto mod = std::ceil(str.size() / 4.f) * 4 - str.size(); mod > 0; mod -= 1) {
+        _reader.readNextByte();
+    }
     return *this;
 }
 

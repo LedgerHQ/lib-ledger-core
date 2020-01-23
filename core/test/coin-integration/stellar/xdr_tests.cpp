@@ -157,22 +157,43 @@ TEST_F(StellarFixture, XDRPaymentDecode) {
     EXPECT_EQ(op.asset.type, AssetType::ASSET_TYPE_NATIVE);
 }
 
-TEST_F(StellarFixture, XDRStrings) {
-    std::vector<std::string> tested {
+TEST_F(StellarFixture, XDRStringsEncodeDecode) {
+    std::vector<std::string> decodedRef {
         "123", "1", "1234567890", "12345678"
     };
 
-    std::vector<std::string> expected {
+    std::vector<std::string> encodedRef {
         "0000000331323300",
         "0000000131000000",
         "0000000a313233343536373839300000",
         "000000083132333435363738"
     };
 
-    for (auto i = 0; i < tested.size(); i += 1) {
+    // Encode/decode std::strings individually
+    for (auto i = 0; i < decodedRef.size(); i += 1) {
         Encoder encoder;
-        encoder << tested[i];
-        EXPECT_EQ(hex::toString(encoder.toByteArray()), expected[i]);
+        encoder << decodedRef[i];
+        auto encoded = encoder.toByteArray();
+        EXPECT_EQ(encodedRef[i], hex::toString(encoded));
+
+        Decoder decoder(encoded);
+        std::string decoded;
+        decoder >> decoded;
+        EXPECT_EQ(decodedRef[i], decoded);
+    }
+
+    // Encode/decode std::strings encapsulated in an object
+    {
+        Encoder encoder;
+        encoder << decodedRef;
+
+        Decoder decoder(encoder.toByteArray());
+        std::vector<std::string> decoded(decodedRef.size());
+        decoder >> decoded;
+
+        for (auto i = 0; i < decodedRef.size(); i += 1) {
+            EXPECT_EQ(decodedRef[i], decoded[i]);
+        }
     }
 
 }
