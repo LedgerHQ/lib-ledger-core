@@ -171,7 +171,10 @@ namespace ledger {
             // If account in DB then it's already in _originatedAccounts
             auto count = 0;
             auto origAccount = transaction.originatedAccount.getValue();
-            sql << "SELECT COUNT(*) FROM tezos_originated_accounts WHERE address = :originated_address", soci::use(origAccount.address), soci::into(count);
+            sql << "SELECT COUNT(*) FROM tezos_originated_accounts "
+                   "WHERE address = :originated_address AND tezos_account_uid =:account_uid",
+                   soci::use(origAccount.address), soci::use(getAccountUid()), soci::into(count);
+
             if (count == 0) {
                 std::string pubKey;
                 int spendable = origAccount.spendable, delegatable = origAccount.delegatable;
