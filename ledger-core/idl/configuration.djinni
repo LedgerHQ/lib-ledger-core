@@ -56,7 +56,7 @@ ConfigurationDefaults = interface +c {
 
     # Default observable range for HD keychains
     const KEYCHAIN_DEFAULT_OBSERVABLE_RANGE : i32 = 20;
-    
+
     # Default TTL for cache
     const DEFAULT_TTL_CACHE : i32 = 30;
 }
@@ -98,6 +98,9 @@ Configuration = interface +c {
 
     # Operation trust.
     const TRUST_LIMIT: string = "TRUST_LIMIT";
+
+    # Time to Live for block cache
+    const TTL_CACHE: string = "TTL_CACHE";
 }
 
 # Configuration of wallet pools.

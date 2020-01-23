@@ -42,7 +42,7 @@ namespace ledger {
             const std::shared_ptr<Services>& services,
             const std::shared_ptr<AbstractWallet>& wallet,
             int32_t index
-        ): DedicatedContext(services->getDispatcher()->getMainExecutionContext()),
+        ): DedicatedContext(wallet->getMainExecutionContext()),
            _services(services),
            _index(index),
            _uid(AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index)),
@@ -56,7 +56,7 @@ namespace ledger {
                ->getSubPreferences(fmt::format("account_{}", index))
            ),
            _loggerApi(std::make_shared<LoggerApi>(_logger)),
-           _mainExecutionContext(services->getDispatcher()->getMainExecutionContext()),
+           _mainExecutionContext(wallet->getMainExecutionContext()),
            _wallet(wallet) {
            _publisher = std::make_shared<EventPublisher>(getContext());
         }
@@ -112,15 +112,6 @@ namespace ledger {
         const std::shared_ptr<api::ExecutionContext> AbstractAccount::getMainExecutionContext() const {
             return _mainExecutionContext;
         }
-
-        //std::shared_ptr<api::OperationQuery> AbstractAccount::queryOperations() {
-        //    return std::make_shared<OperationQuery>(
-        //            api::QueryFilter::accountEq(getAccountUid()),
-        //            _services->getDatabase(),
-        //            getContext(),
-        //            getMainExecutionContext()
-        //    );
-        //}
 
         std::shared_ptr<Preferences> AbstractAccount::getInternalPreferences() const {
             return _internalPreferences;

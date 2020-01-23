@@ -1,4 +1,6 @@
 #include <core/api/PoolConfiguration.hpp>
+#include <core/api/Configuration.hpp>
+#include <core/api/ConfigurationDefaults.hpp>
 #include <core/Services.hpp>
 
 namespace ledger {
@@ -14,7 +16,12 @@ namespace ledger {
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration
-        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", tenant))) {
+        ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", tenant))),
+           _blockCache(std::chrono::seconds(
+                configuration->getInt(api::Configuration::TTL_CACHE)
+                    .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)
+           ))
+        {
             // General
             _tenant = tenant;
 
@@ -74,6 +81,8 @@ namespace ledger {
             _threadDispatcher = dispatcher;
 
             _publisher = std::make_shared<EventPublisher>(getContext());
+
+            _threadPoolExecutionContext = _threadDispatcher->getThreadPoolExecutionContext(fmt::format("pool_{}_thread_pool", tenant));
         }
 
         std::shared_ptr<Services> Services::newInstance(
@@ -150,7 +159,7 @@ namespace ledger {
                 auto client = std::make_shared<HttpClient>(
                     baseUrl,
                     _httpEngine,
-                    getDispatcher()->getThreadPoolExecutionContext(fmt::format("http_clients"))
+                    getDispatcher()->getMainExecutionContext()
                 );
                 _httpClients[baseUrl] = client;
                 client->setLogger(logger());
@@ -176,13 +185,19 @@ namespace ledger {
         }
 
         Future<api::Block> Services::getLastBlock(const std::string &currencyName) {
+            auto optBlock = _blockCache.get(currencyName);
+            if (optBlock.hasValue()) {
+                return Future<api::Block>::successful(optBlock.getValue());
+            }
             auto self = shared_from_this();
-            return async<api::Block>([self, currencyName] () -> api::Block {
+            return Future<api::Block>::async(_threadPoolExecutionContext, [self, currencyName] () -> api::Block {
                 soci::session sql(self->getDatabaseSessionPool()->getPool());
                 auto block = BlockDatabaseHelper::getLastBlock(sql, currencyName);
                 if (block.isEmpty()) {
                     throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Currency '{}' may not exist", currencyName);
                 }
+                // Update cache
+                self->_blockCache.put(currencyName, block.getValue());
                 return block.getValue();
             });
         }
@@ -217,6 +232,14 @@ namespace ledger {
                 // and we’re done
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
+        }
+
+        Option<api::Block> Services::getBlockFromCache(const std::string &currencyName) {
+            return _blockCache.get(currencyName);
+        }
+
+        std::shared_ptr<api::ExecutionContext> Services::getThreadPoolExecutionContext() const {
+            return _threadPoolExecutionContext;
         }
     }
 }

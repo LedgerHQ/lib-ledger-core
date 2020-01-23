@@ -79,7 +79,7 @@ namespace ledger {
         ) {
             auto self = shared_from_this();
 
-            return async<std::vector<std::shared_ptr<AbstractWallet>>>([=] () {
+            return Future<std::vector<std::shared_ptr<AbstractWallet>>>::async(_services->getThreadPoolExecutionContext(), [=] () {
                 std::vector<WalletDatabaseEntry> entries((size_t) size);
                 soci::session sql(self->_services->getDatabaseSessionPool()->getPool());
                 auto count = WalletDatabaseHelper::getWallets(sql, from, entries);
@@ -94,19 +94,18 @@ namespace ledger {
         }
 
         FuturePtr<AbstractWallet> WalletStore::getWallet(std::string const& name) {
+            auto it = _wallets.find(WalletDatabaseEntry::createWalletUid(_services->getTenant(), name));
+            if (it != _wallets.end()) {
+                auto ptr = it->second;
+                if (ptr != nullptr) {
+                    return FuturePtr<AbstractWallet>::successful(ptr);
+                }
+            }
+
             auto self = shared_from_this();
 
-            return async<std::shared_ptr<AbstractWallet>>([=] () {
-                auto it = self->_wallets.find(WalletDatabaseEntry::createWalletUid(self->_services->getTenant(), name));
-                if (it != self->_wallets.end()) {
-                    auto ptr = it->second;
-
-                    if (ptr != nullptr) {
-                        return ptr;
-                    }
-                }
-
-                auto entry = self->getWalletEntryFromDatabase(name);
+            return Future<std::shared_ptr<AbstractWallet>>::async(_services->getDispatcher()->getMainExecutionContext(), [=] () {
+                auto entry = getWalletEntryFromDatabase(name);
                 if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));
                 }
