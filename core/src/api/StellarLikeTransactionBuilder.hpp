@@ -20,7 +20,9 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class BigInt;
+class StellarLikeTransaction;
 class StellarLikeTransactionCallback;
+struct Currency;
 
 class LIBCORE_EXPORT StellarLikeTransactionBuilder {
 public:
@@ -43,6 +45,10 @@ public:
     virtual std::shared_ptr<StellarLikeTransactionBuilder> setSequence(const std::shared_ptr<BigInt> & sequence) = 0;
 
     virtual void build(const std::shared_ptr<StellarLikeTransactionCallback> & callback) = 0;
+
+    static std::shared_ptr<StellarLikeTransaction> parseRawTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
+
+    static std::shared_ptr<StellarLikeTransaction> parseSignatureBase(const Currency & currency, const std::vector<uint8_t> & rawTransaction);
 };
 
 } } }  // namespace ledger::core::api

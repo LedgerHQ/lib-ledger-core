@@ -12,6 +12,7 @@ StellarLikeBlock = interface +c {
 
 StellarLikeTransaction = interface +c {
     toRawTransaction(): binary;
+
     # Returns the payload which should be signed by the user in order to send the transaction.
     toSignatureBase(): binary;
 
@@ -39,6 +40,9 @@ StellarLikeTransactionBuilder = interface +c {
     setReturnMemo(value: binary): StellarLikeTransactionBuilder;
     setSequence(sequence: BigInt): StellarLikeTransactionBuilder;
     build(callback: Callback<StellarLikeTransaction>);
+
+    static parseRawTransaction(currency: Currency, rawTransaction: binary): StellarLikeTransaction;
+    static parseSignatureBase(currency: Currency, rawTransaction: binary): StellarLikeTransaction;
 }
 
 StellarLikeAsset = record {

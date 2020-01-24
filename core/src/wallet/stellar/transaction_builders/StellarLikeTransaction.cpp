@@ -32,6 +32,7 @@
 #include "StellarLikeTransaction.hpp"
 #include <api/ErrorCode.hpp>
 #include <wallet/stellar/xdr/XDREncoder.hpp>
+#include <wallet/stellar/xdr/XDRDecoder.hpp>
 #include <crypto/SHA256.hpp>
 #include <wallet/stellar/StellarLikeAddress.hpp>
 #include <utils/Exception.hpp>
@@ -40,6 +41,57 @@
 
 namespace ledger {
     namespace core {
+
+        // FIXME Test this
+        std::shared_ptr<api::StellarLikeTransaction>
+        StellarLikeTransaction::parseRawTransaction(const api::Currency & currency,
+                                                    const std::vector<uint8_t> & rawTransaction)
+        {
+            stellar::xdr::Decoder decoder(rawTransaction);
+            stellar::xdr::TransactionEnvelope envelope;
+            decoder >> envelope;
+            return std::make_shared<StellarLikeTransaction>(currency, envelope);
+        }
+
+        // FIXME Test this
+        std::shared_ptr<api::StellarLikeTransaction>
+        StellarLikeTransaction::parseSignatureBase(const api::Currency & currency,
+                                                   const std::vector<uint8_t> & signatureBase)
+        {
+            std::cout << "StellarLikeTransaction::parseSignatureBase()" << std::endl;
+            std::cout << "---signatureBase.size(): " << signatureBase.size() << std::endl;
+
+            auto networkId = SHA256::stringToBytesHash(currency.stellarLikeNetworkParameters.value().NetworkPassphrase);
+
+            stellar::xdr::Encoder envTypeEncoder;
+            envTypeEncoder << static_cast<int32_t>(stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX);
+            auto encodedEnvType = envTypeEncoder.toByteArray();
+
+            auto offset = networkId.size() + encodedEnvType.size();
+            std::cout << "---offset: " << offset << std::endl;
+            auto rawTransaction = std::vector<uint8_t>(signatureBase.begin() + offset, signatureBase.end());
+            std::cout << "---rawTransaction.size(): " << rawTransaction.size() << std::endl;
+
+            stellar::xdr::Transaction tx;
+            stellar::xdr::Decoder txDecoder(rawTransaction);
+            txDecoder >> tx;
+
+            stellar::xdr::TransactionEnvelope envelope;
+            envelope.tx = tx;
+
+            return std::make_shared<StellarLikeTransaction>(currency, envelope);
+        }
+
+/*
+        void StellarLikeTransaction::parseRawTransaction(const api::Currency& currency, const std::vector<uint8_t>& rawTransaction) {
+            stellar::xdr::Decoder decoder(rawTransaction);
+            decoder >> _envelope;
+        }
+
+        void StellarLikeTransaction::parseSignatureBase(const api::Currency& currency, const std::vector<uint8_t>& rawTransaction) {
+
+        }
+*/
         std::vector<uint8_t> StellarLikeTransaction::toRawTransaction() {
             stellar::xdr::Encoder encoder;
             encoder << _envelope;
