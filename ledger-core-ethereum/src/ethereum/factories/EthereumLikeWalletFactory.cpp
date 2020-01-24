@@ -138,12 +138,18 @@ namespace ledger {
             std::shared_ptr<EthereumLikeBlockchainExplorer> explorer = nullptr;
             if (engine == api::BlockchainExplorerEngines::LEDGER_API) {
                 auto http = services->getHttpClient(
-                        configuration->getString(
-                                api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
-                        ).value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT)
+                    configuration->getString(
+                        api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT
+                    ).value_or(api::ConfigurationDefaults::BLOCKCHAIN_DEFAULT_API_ENDPOINT)
                 );
-                auto context = services->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
-                auto& networkParams = networks::getEthereumLikeNetworkParameters(getCurrency().name);
+                auto currency = getCurrency();
+                auto context = services->getDispatcher()->getSerialExecutionContext(
+                    fmt::format("{}-{}-explorer",
+                        api::BlockchainExplorerEngines::LEDGER_API,
+                        currency.name
+                    )
+                );
+                auto& networkParams = networks::getEthereumLikeNetworkParameters(currency.name);
 
                 explorer = std::make_shared<LedgerApiEthereumLikeBlockchainExplorer>(context, http, networkParams, configuration);
             }
@@ -175,9 +181,15 @@ namespace ledger {
             std::shared_ptr<EthereumLikeBlockchainObserver> observer;
             if (engine == api::BlockchainObserverEngines::LEDGER_API) {
                 auto ws = services->getWebSocketClient();
-                auto context = services->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::LEDGER_API);
-                auto logger = services->logger();
                 const auto& currency = getCurrency();
+                auto context = services->getDispatcher()->getSerialExecutionContext(
+                        fmt::format(
+                            "{}-{}-observer",
+                            api::BlockchainObserverEngines::LEDGER_API,
+                            currency.name
+                        )
+                );
+                auto logger = services->logger();
                 observer = std::make_shared<LedgerApiEthereumLikeBlockchainObserver>(context, ws, configuration, logger, currency);
             }
             if (observer)
