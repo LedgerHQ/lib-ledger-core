@@ -42,12 +42,11 @@
 
 namespace ledger {
     namespace core {
-            class BitcoinLikeBech32ParametersHelper : public Bech32ParametersHelper<BitcoinLikeBech32ParametersHelper> {
-                public:
-                using tBase = Bech32ParametersHelper<BitcoinLikeBech32ParametersHelper>;
+        struct BitcoinLikeBech32ParametersHelper : public Bech32ParametersHelper<BitcoinLikeBech32ParametersHelper> {
+            using tBase = Bech32ParametersHelper<BitcoinLikeBech32ParametersHelper>;
 
-                static const Bech32Parameters::Bech32Struct getCoinLikeBech32Params(const std::string &networkIdentifier);
-                static bool insertCoinLikeParameters(soci::session& sql, const Bech32Parameters::Bech32Struct &params);
-            };
+            static const Bech32Parameters::Bech32Struct getCoinLikeBech32Params(const std::string &networkIdentifier);
+            static bool insertCoinLikeParameters(soci::session& sql, const Bech32Parameters::Bech32Struct &params);
+        };
     }
 }

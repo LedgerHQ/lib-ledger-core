@@ -44,17 +44,16 @@ namespace ledger {
     namespace core {
         // CRTP used to get static polymorphism on the interface
         template <class CoinLikeBech32ParametersHelper>
-        class Bech32ParametersHelper {
-            public:
-                static const Bech32Parameters::Bech32Struct getBech32Params(const std::string &networkIdentifier) {
-                    return CoinLikeBech32ParametersHelper::getCoinLikeBech32Params(networkIdentifier);
-                }
+        struct Bech32ParametersHelper {
+            static const Bech32Parameters::Bech32Struct getBech32Params(const std::string &networkIdentifier) {
+                return CoinLikeBech32ParametersHelper::getCoinLikeBech32Params(networkIdentifier);
+            }
 
-                static const std::vector<Bech32Parameters::Bech32Struct> ALL;
+            static const std::vector<Bech32Parameters::Bech32Struct> ALL;
 
-                static bool insertParameters(soci::session& sql, const Bech32Parameters::Bech32Struct &params) {
-                    return CoinLikeBech32ParametersHelper::insertCoinLikeParameters(sql, params);
-                }
+            static bool insertParameters(soci::session& sql, const Bech32Parameters::Bech32Struct &params) {
+                return CoinLikeBech32ParametersHelper::insertCoinLikeParameters(sql, params);
+            }
         };
     }
 }
