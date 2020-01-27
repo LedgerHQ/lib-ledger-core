@@ -31,6 +31,7 @@
 
 #include "StellarFixture.hpp"
 #include <wallet/stellar/transaction_builders/StellarLikeTransactionBuilder.hpp>
+#include <wallet/currencies.hpp>
 #include <api_impl/BigIntImpl.hpp>
 
 TEST_F(StellarFixture, PaymentTransaction) {
@@ -75,3 +76,33 @@ TEST_F(StellarFixture, PaymentTransaction) {
     EXPECT_EQ(envelope.signatures.front().signature, signature);
 }
 
+TEST_F(StellarFixture, ParseRawTransaction) {
+    auto strTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4"
+                 "f00000064015dc2cc0000000300000000000000000000000100000000000000010000000"
+                 "03a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a500000000"
+                 "000000000000000000ee6b2800000000000000000";
+
+    auto tx = api::StellarLikeTransactionBuilder::parseRawTransaction(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
+
+    EXPECT_EQ(tx->getSourceAccount()->toString(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
+    EXPECT_EQ(tx->getSourceAccountSequence()->compare(api::BigInt::fromLong(98448948301135875L)), 0);
+    EXPECT_EQ(tx->getFee()->toLong(), 100L);
+
+    EXPECT_EQ(hex::toString(tx->toRawTransaction()), strTx);
+}
+
+TEST_F(StellarFixture, ParseSignatureBase) {
+    auto strTx = "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a97900000002"
+                 "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f"
+                 "00000064015dc2cc00000003000000000000000000000001000000000000000100000000"
+                 "3a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a5000000000"
+                 "00000000000000000ee6b28000000000";
+
+    auto tx = api::StellarLikeTransactionBuilder::parseSignatureBase(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
+
+    EXPECT_EQ(tx->getSourceAccount()->toString(), "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
+    EXPECT_EQ(tx->getSourceAccountSequence()->compare(api::BigInt::fromLong(98448948301135875L)), 0);
+    EXPECT_EQ(tx->getFee()->toLong(), 100L);
+
+    EXPECT_EQ(hex::toString(tx->toSignatureBase()), strTx);
+}

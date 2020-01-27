@@ -31,7 +31,6 @@
 
 #include "StellarLikeTransactionBuilder.hpp"
 #include <wallet/stellar/StellarLikeAccount.hpp>
-//#include <wallet/stellar/xdr/XDRDecoder.hpp>
 #include <api/StellarLikeTransactionCallback.hpp>
 #include <algorithm>
 #include <api_impl/BigIntImpl.hpp>
@@ -182,90 +181,17 @@ namespace ledger {
             return shared_from_this();
         }
 
-        // ("parseRawUnsignedTransaction" in Ethereum)
         std::shared_ptr<api::StellarLikeTransaction>
         api::StellarLikeTransactionBuilder::parseRawTransaction(const api::Currency & currency,
                                                                 const std::vector<uint8_t> & rawTransaction) {
             return ::ledger::core::StellarLikeTransaction::parseRawTransaction(currency, rawTransaction);
         }
 
-        // ("parseRawSignedTransaction" in Ethereum)
         std::shared_ptr<api::StellarLikeTransaction>
         api::StellarLikeTransactionBuilder::parseSignatureBase(const api::Currency & currency,
                                                                const std::vector<uint8_t> & rawTransaction) {
-            return ::ledger::core::StellarLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction);
+            return ::ledger::core::StellarLikeTransaction::parseSignatureBase(currency, rawTransaction);
         }
 
-#if 0
-        std::shared_ptr<api::StellarLikeTransaction>
-        StellarLikeTransactionBuilder::parseRawTransaction(const api::Currency & currency,
-                                                            const std::vector<uint8_t> & rawTransaction,
-                                                            bool isSigned) {
-
-            // TODO
-            ledger::core::StellarLikeTransaction decodedRawTx = ledger::core::StellarLikeTransaction::parseRawTransaction(currency, rawTransaction)
-            ledger::core::stellar::xdr::Decoder decoder(rawTransaction);
-            decoder >> decodedRawTx;
-            auto tx = std::make_shared<ledger::core::StellarLikeTransaction>(currency);
-
-            /*
-            auto decodedRawTx = RLPDecoder::decode(rawTransaction);
-            auto children = decodedRawTx->getChildren();
-
-            //TODO: throw if size is KO
-            int index = 0;
-            std::vector<uint8_t> vSignature, rSignature, sSignature;
-            for (auto &child: children) {
-                if (child->isList()) {
-                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No List in this TX");
-                }
-                auto childHexString = child->toString();
-                auto bigIntChild = std::shared_ptr<BigInt>(BigInt::from_hex(childHexString));
-                switch (index) {
-                    case 0:
-                        tx->setNonce(bigIntChild);
-                        break;
-                    case 1:
-                        tx->setGasPrice(bigIntChild);
-                        break;
-                    case 2:
-                        tx->setGasLimit(bigIntChild);
-                        break;
-                    case 3: {
-                        auto ethAddress = "0x" + childHexString;
-                        tx->setReceiver(Base58::encodeWithEIP55(ethAddress));
-                        break;
-                    }
-                    case 4:
-                        tx->setValue(bigIntChild);
-                        break;
-                    case 5:
-                        tx->setData(hex::toByteArray(childHexString));
-                        break;
-                    case 6:
-                        vSignature = hex::toByteArray(childHexString);
-                        break;
-                    case 7: //6 would be the 'V' field of V,R and S signature
-                        //R signature
-                        rSignature = hex::toByteArray(childHexString);
-                        break;
-                    case 8:
-                        //S signature
-                        sSignature = hex::toByteArray(childHexString);
-                        break;
-                    default:
-                        break;
-                }
-                index ++;
-            }
-
-            if (isSigned) {
-                tx->setSignature(vSignature, rSignature, sSignature);
-            }
-            */
-
-            return tx;
-        }
-#endif
     }
 }
