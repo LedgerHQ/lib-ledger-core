@@ -16,6 +16,7 @@ function generate_core_interface {
     CORE_DIR=$1 # Ledger Core library directory
     CORE_IDL_DIR=$CORE_DIR/idl
     CORE_API_DIR=$CORE_DIR/inc/core/api
+    CORE_CPP_JNI_DIR=$CORE_DIR/inc/core/jni
 
     echo -e "Generating ledger-core API"
 
@@ -30,6 +31,10 @@ function generate_core_interface {
         --cpp-optional-template std::experimental::optional \
         --cpp-optional-header "<core/utils/Optional.hpp>" \
         --export-header-name libcore_export \
+        --jni-include-cpp-prefix "../../api/" \
+        --jni-out $CORE_CPP_JNI_DIRECTORY/jni \
+        --java-out api/core/java \
+        --java-package co.ledger.core \
         --yaml-out $CORE_IDL_DIR \
         --yaml-out-file core.yaml \
         --trace $trace
