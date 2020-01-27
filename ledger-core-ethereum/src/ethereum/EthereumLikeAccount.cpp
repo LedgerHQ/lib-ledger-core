@@ -128,7 +128,14 @@ namespace ledger {
             operation.date = transaction.receivedAt;
 
             auto updateOperation = [&] (soci::session &sql, EthereumLikeOperation &operation, api::OperationType type) {
-                operation.amount = transaction.value;
+                // if the status of the transaction is not correct, we set the operation’s amount to
+                // zero as it’s failed (yet fees were still paid)
+                if (transaction.status == 0) {
+                    operation.amount = BigInt::ZERO;
+                } else {
+                    operation.amount = transaction.value;
+                }
+
                 operation.type = type;
                 operation.refreshUid();
 
@@ -150,7 +157,6 @@ namespace ledger {
 
             // Case of parent transaction not belonging to account, but having side effect (transfer events)
             // concerning account address
-            //if (!result && (!transaction.erc20Transactions.empty() || !operation.getInternalTransactions().empty())) {
             if (!result && (!transaction.erc20Transactions.empty() || !transaction.internalTransactions.empty())) {
                 updateOperation(sql, operation, api::OperationType::NONE);
                 result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
