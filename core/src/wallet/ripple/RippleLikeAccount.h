@@ -74,6 +74,13 @@ namespace ledger {
 
             int putTransaction(soci::session &sql, const RippleLikeBlockchainExplorerTransaction &transaction);
 
+            // Set the operation amount based on the state of the transaction. If it’s failed, the amount is set
+            // to zero (yet fees were still paid so they’re not altered).
+            void setOperationAmount(
+                Operation& operation,
+                RippleLikeBlockchainExplorerTransaction const& transaction
+            ) const;
+
             bool putBlock(soci::session &sql, const RippleLikeBlockchainExplorer::Block &block);
 
             std::shared_ptr<RippleLikeKeychain> getKeychain() const;

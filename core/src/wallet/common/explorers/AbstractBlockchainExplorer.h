@@ -50,7 +50,7 @@ namespace ledger {
             struct TransactionsBulk {
                 std::vector<Transaction> transactions;
                 bool hasNext;
-                std::string marker; //Needed for pagination for XRP: https://developers.ripple.com/markers-and-pagination.html
+                std::string paginationMarker; //Needed for pagination for XRP: https://developers.ripple.com/markers-and-pagination.html
             };
 
             virtual Future<void *> startSession() = 0;

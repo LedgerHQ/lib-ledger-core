@@ -116,6 +116,71 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
     }
 }
 
+TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
+    auto pool = newDefaultPool();
+    {
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+                                 "44'/<coin_type>'/<account>'/<node>/<address>");
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
+        std::set<std::string> emittedOperations;
+        {
+            auto nextIndex = wait(wallet->getNextAccountIndex());
+            EXPECT_EQ(nextIndex, 0);
+
+            auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
+
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                if (event->getCode() == api::EventCode::NEW_OPERATION) {
+                    auto uid = event->getPayload()->getString(
+                            api::Account::EV_NEW_OP_UID).value();
+                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
+                }
+            });
+
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+
+            std::shared_ptr<Amount> balance;
+
+            receiver.reset();
+            receiver = make_receiver([=, &balance](const std::shared_ptr<api::Event> &event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                EXPECT_EQ(event->getCode(),
+                          api::EventCode::SYNCHRONIZATION_SUCCEED);
+
+                balance = wait(account->getBalance());
+                std::cout << "Balance: " << balance->toString() << std::endl;
+                auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
+                dispatcher->stop();
+            });
+
+            auto restoreKey = account->getRestoreKey();
+            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+
+            dispatcher->waitUntilStopped();
+
+            auto now = std::time(nullptr);
+            char now_str[256];
+            std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));
+
+            auto history = wait(account->getBalanceHistory(
+                "2019-09-20T00:00:00Z",
+                now_str,
+                api::TimePeriod::DAY
+            ));
+
+            EXPECT_EQ(history.back()->toString(), balance->toString());
+
+            auto zero = std::make_shared<api::BigIntImpl>(BigInt::ZERO);
+            for (auto const& balance : history) {
+                EXPECT_TRUE(balance->toBigInt()->compare(zero) > 0);
+            }
+        }
+    }
+}
 
 const std::string NOTIF_WITH_TX = "{\"engine_result\":\"tesSUCCESS\",\"engine_result_code\":1,\"engine_result_message\":\"A destination tag is required.\",\"ledger_hash\":\"42A6250BE0CED050AD5AA7858B9D8F53E2F39377525C04B98DBB62F9321AB176\",\"ledger_index\":50394479,\"meta\":{\"AffectedNodes\":[{\"ModifiedNode\":{\"FinalFields\":{\"Account\":\"rJXvTXRLvQVhLGLaBsLE8JEFzRvNs9SY5e\",\"Balance\":\"30457198\",\"Flags\":0,\"OwnerCount\":0,\"Sequence\":72},\"LedgerEntryType\":\"AccountRoot\",\"LedgerIndex\":\"77C8BE5F5FBBFA60CB291BDE1BF0D76D961CD427539CCEF7F39F1467112F9518\",\"PreviousFields\":{\"Balance\":\"30457209\",\"Sequence\":71},\"PreviousTxnID\":\"91B5AF6E6CDA92DE8AADF6A8ABE17E0183A9A4A6CBFC1D4182D03355972E00C6\",\"PreviousTxnLgrSeq\":50394473}}],\"TransactionIndex\":12,\"TransactionResult\":\"tesSUCCESS\"},\"status\":\"success\",\"transaction\":{\"Account\":\"rJXvTXRLvQVhLGLaBsLE8JEFzRvNs9SY5e\",\"Amount\":\"1\",\"Destination\":\"rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7\",\"Fee\":\"10\",\"Flags\":2147483648,\"Sequence\":71,\"SigningPubKey\":\"028EB02B5AEB00B704953BB1075E03AB88B34FCF38A256A0E62A7CEE5F246976E4\",\"TransactionType\":\"Payment\",\"TxnSignature\":\"3045022100E0A428A6C3F123591063C10220744026D2BE154BE00039797347C5AAAF70FF4702203843347E2CF6700536AC7236CD455AF76225FA9D5B55A1E7A1C1CE580047B482\",\"date\":623185870,\"hash\":\"AC0D84CB81E8ECA92E7EF9ABC3526FAED54DE07763A308296B28468D68D34991\"},\"type\":\"transaction\",\"validated\":true}";
 TEST_F(RippleLikeWalletSynchronization, EmitNewTransactionAndReceiveOnPool) {

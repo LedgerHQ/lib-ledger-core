@@ -198,22 +198,36 @@ namespace ledger {
         }
 
         FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>
-        NodeRippleLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
-                                                          Option<std::string> fromBlockHash,
-                                                          Option<void *> session) {
+        NodeRippleLikeBlockchainExplorer::getTransactions(
+            const std::vector<std::string> &addresses,
+            Option<std::string> fromBlockHash,
+            Option<void *> session
+        ) {
             if (addresses.size() != 1) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Ripple Node, but got {} addresses", addresses.size());
             }
+
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("account_tx");
             bodyRequest.pushParameter("account", addresses[0]);
+
+            // handle transaction pagination in the case we have a pagination marker, which happens
+            // when a getTransactions returns a TransactionsBulk containing such a marker
+            if (!_paginationMarker.empty()) {
+                auto marker = strings::split(_paginationMarker, "-");
+                bodyRequest.pushPagination(marker[0], marker[1]);
+            }
+
             auto requestBody = bodyRequest.getString();
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+
+            auto self = shared_from_this();
+
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .template json<TransactionsBulk, Exception>(
                             LedgerApiParser<TransactionsBulk, RippleLikeTransactionsBulkParser>())
-                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](
+                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [self, fromBlockHash](
                             const Either<Exception, std::shared_ptr<TransactionsBulk>> &result) {
                         if (result.isLeft()) {
                             if (fromBlockHash.isEmpty()) {
@@ -223,7 +237,17 @@ namespace ledger {
                                                      "Unable to find block with hash {}", fromBlockHash.getValue());
                             }
                         } else {
-                            return result.getRight();
+                            // handle pagination if a pagination marker is present
+                            auto bulk = result.getRight();
+
+                            if (!bulk->paginationMarker.empty()) {
+                                bulk->hasNext = true;
+                                self->_paginationMarker = bulk->paginationMarker;
+                            } else {
+                                self->_paginationMarker = "";
+                            }
+
+                            return bulk;
                         }
                     });
         }

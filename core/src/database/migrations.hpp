@@ -166,6 +166,10 @@ namespace ledger {
         // Add status column on XTZ transactions
         template <> void migrate<17>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<17>(soci::session& sql, api::DatabaseBackendType type);
+
+        // Add XRP transaction status
+        template <> void migrate<18>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type);
     }
 }
 
