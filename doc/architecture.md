@@ -4,7 +4,6 @@ This document gathers all the architecture decisions made to the codebase, start
 of August 2019. The codebase had existed for several years back then but no design documentation
 existed beforehand.
 
-
 <!-- vim-markdown-toc GFM -->
 
 * [Foreword and overall architecture](#foreword-and-overall-architecture)

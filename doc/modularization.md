@@ -17,12 +17,18 @@ For the purpose of this document, we will consider the migration of a coin calle
 * [Overall architecture](#overall-architecture)
 * [Migration foreword](#migration-foreword)
 * [Setting up a new project](#setting-up-a-new-project)
-  * [Create a new Ledger Core Coin project](#create-a-new-ledger-core-coin-project)
-  * [Generate the public API](#generate-the-public-api)
-  * [Configure and compile your library](#configure-and-compile-your-library)
+    * [Create a new Ledger Core Coin project](#create-a-new-ledger-core-coin-project)
+    * [Generate the public API](#generate-the-public-api)
+    * [Configure and compile your libraries](#configure-and-compile-your-libraries)
+        * [CMake packages](#cmake-packages)
+        * [Configuring, building and installing ledger-core](#configuring-building-and-installing-ledger-core)
+        * [Configuring and building your coin library](#configuring-and-building-your-coin-library)
 * [Migrating the database system](#migrating-the-database-system)
-* [Wallet pool migration](#wallet-pool-migration)
-* [Operation queries migration](#operation-queries-migration)
+    * [Operation queries migration](#operation-queries-migration)
+* [Tests](#tests)
+* [Glossary](#glossary)
+    * [Services](#services)
+    * [WalletStore](#walletstore)
 
 <!-- vim-markdown-toc -->
 
@@ -97,19 +103,109 @@ lc project api <coin-name> # generate the coin library’s API
 
 You will notice a new directory in your library’s `inc/` directory: `inc/api/`.
 
-### Configure and compile your library
+### Configure and compile your libraries
 
-The next step is quite simple. Go into the `build/` directory of your library and invoke the CMake
-command to generate the configuration for your platform:
+The initial step is to compile the `ledger-core` library, as it’s a dependency of everything else.
+In order to do so, you need to understand how to package libraries.
+
+#### CMake packages
+
+We use _CMake_ to build our libraries. Although _CMake_ is not a package manager, we can still use
+it to _package_ libraries and pass configuration around for dependent projects to find and link
+against us. The way it’s done is multi-step process:
+
+1. You _configure_ your library. This is a mandatory step that implies generating the right
+  constants / setup for your environment (or for cross-compilation purposes). It’s typically the
+  the time when you call the `cmake` command.
+2. You _compile_ your library. Compilation artifacts go into a directory of your choice — chosen
+  at step (1.). It is important to notice that such a folder is a called a _compilation tree_ and
+  **only** contains compilation artifacts. Those artifacts and paths shouldn’t be considered as
+  _deployed_. They’re just output of the raw compilation. It’s typically when you call
+  `make` or whatever compilation toolchain you’re using.
+3. You _install_ your library. _CMake_ doesn’t do that by default but can generate scripts to
+  automate installing for you. Typical commands here are `make install`. Install directories
+  are set at step (1.) **and must be different from the compilation tree.**
+
+Because we need two directories (one for the compilation artifacts, one for
+deployment / installing), we can create various and interesting situations.
+
+- The default `ledger-core/build` directory should be used as compilation tree. In order to
+  _select_ that directory as compilation tree, all you have to do is to `cd ledger-core/build`
+  and invoke your `cmake` command from here.
+- The installation directory is completely free to pick and there’s no default.
+  - If you don’t specify any, _CMake_ will use its default system directory, which defaults to
+    `/usr/local` on Unix-like systems. On some platforms (like Archlinux), that might require you
+    super-user rights, which is not ideal.
+  - If you specify one, you should consider that directory as a _sandbox_. For instance,
+    `/tmp/ledger-core-install`.
+- Whatever the chosen install directory, you’ll have to stick with it. If you don’t use any,
+  don’t introduce one in the dependent project or `ledger-core` might not be found. If you use one,
+  stick with it.
+- The install directory is set when invoking `cmake` with the `CMAKE_INSTALL_PREFIX` variable.
+- Because we’re using _Qt5_ as dependency, we **also** need to append special _Qt5_ paths to the
+  _CMake_ resolution paths when invoking `cmake`. This is done via the `CMAKE_PREFIX_PATH`
+  variable. It is not always mandatory (you might need it on macOS).
+
+#### Configuring, building and installing ledger-core
+
+That’s already a lot to take into your mind. Let’s configure `ledger-core` so that we install it
+in `/tmp/ledger-core-install` — on macOS:
+
+```
+cd ledger-core/build
+cmake \
+  -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt/5.13.2 \
+  -DCMAKE_INSTALL_PREFIX=/tmp/ledger-core-install \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  ..
+```
+
+`-DCMAKE_BUILD_TYPE=Debug` should always been used on your machine when working or debugging as it
+will provide DWARF symbols and more information. It’s especially useful when injecting the library
+into a Ledger product such as Live Desktop / Mobile or Vault.
+
+`-DCMAKE_EXPORT_COMPILE_COMMANDS=ON` generates a _ctags-like_ file to help you with completions in
+your editor (if it doesn’t support LSP).
+
+Next step is simple: just compile your library:
+
+```
+make -j8
+```
+
+Upon completion, `ledger-core/build` contains a lot of artifacts. You can execute the tests with
+`make test` (or `ctest`), or install the artifacts into `/tmp/ledger-core-install`.
+
+Installation is easy as well:
+
+```
+make install
+```
+
+Once you’ve installed the library, you can start hacking on your coin library!
+
+#### Configuring and building your coin library
+
+Now that you have:
+
+1. Generated the public interface for `ledger-core` and `ledger-core-abrac`.
+2. Configured, compiled and installed `ledger-core` into `/tmp/ledger-core-install`.
+
+You are read to get moving. Go into `ledger-core-abrac/build` and repeat the configuration process.
+Don’t forgot to be consistent with the `CMAKE_INSTALL_PREFIX`.
 
 ```
 cd ledger-core-abrac/build
-cmake -DCMAKE_INSTALL_PREFIX=/usr/local/Cellar/qt/5.11.2_1 -DCMAKE_BUILD_TYPE=Debug ..
+cmake \
+  -DCMAKE_PREFIX_PATH=/usr/local/Cellar/qt/5.13.2 \
+  -DCMAKE_INSTALL_PREFIX=/tmp/ledger-core-install \
+  -DCMAKE_BUILD_TYPE=Debug \
+  -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+  ..
 ```
 
-> Please do not copy-paste without ensuring the `CMAKE_INSTALL_PREFIX` variable is correctly set.
-
-Once this is done, you can compile your library in a straight-forward way:
+Same thing, build:
 
 ```
 make -j8
@@ -159,34 +255,53 @@ should follow the same conventions to handle your migrations, that are:
 
 You’re done with migrations, but you still have something to do: tell `ledger-core` to setup the
 database structure when using your project. There’s not a single way to do it, but there’s a
-preferred fashion: ask for the creation of the database structure when creating a new wallet. In
-the constructor of your coin wallet, you should be passed a `Services` object, which you can use
-to create your database structure.
+preferred fashion: ask for the creation of the database structure when creating a new wallet
+factory. In the constructor of your factory, you should be passed a `Services` object, which you can
+use to create your database structure.
 
 ```cpp
-RippleLikeWallet::RippleLikeWallet(
-  const std::string &name,
-  const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
-  const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
-  const RippleLikeAccountSynchronizerFactory &synchronizer,
-  const std::shared_ptr<Services> &services,
-  const api::Currency &network,
-  const std::shared_ptr<DynamicObject> &configuration,
-  const DerivationScheme &scheme
-): AbstractWallet(name, network, services, configuration, scheme) {
-  _explorer = explorer;
-  _observer = observer;
-  _synchronizerFactory = synchronizer;
-
-  // create the DB structure if not already created
-  services->getDatabaseSessionPool()->forwardMigration<XRPMigration>();
+RippleLikeWalletFactory::RippleLikeWalletFactory(
+    const api::Currency &currency,
+    const std::shared_ptr<Services>& services
+):
+  AbstractWalletFactory(currency, services) {
+    _keychainFactories = {{api::KeychainEngines::BIP49_P2SH, std::make_shared<RippleLikeKeychainFactory>()}};
+    // create the DB structure if not already created
+    services->getDatabaseSessionPool()->forwardMigration<XRPMigration>();
+}
 }
 ```
 
 The `DatabaseSessionPool::forwardMigration<T>` method allows you to perform, if not already done,
 the database setup for a given coin identified by `T`.
 
-## Wallet pool migration
+### Operation queries migration
+
+The `OperationQuery` type is now a pure abstract class because its children must implement the
+`OperationQuery::inflateCompleteTransaction`. The content of that function can be taken out the
+legacy `OperationQuery::inflateCompleteTransaction`’s `switch` case, depending on the coin you’re
+implementing. You will have to read some more code (for instance, for Bitcoin, the
+`OperationQuery::inflateBitcoinLikeTransaction`) in order to implement the pure virtual method in
+the coin specific code.
+
+If you’re not migrating from an existing coin, you shouldn’t find the whole thing hard to deal
+with.
+
+## Tests
+
+Testing is supported via the `ledger-core` library which exposes some features. In your test
+projects, you can link to:
+
+- `ledger-test`: basic framework which gives you transaction test helpers, base fixtures, etc.
+- `ledger-qt-host`: _Qt5_-based implementation of HTTP clients, thread dispatcher, execution
+  contexts, etc.
+- `ledger-core-integration-test`: some more integration primitives to help you write integration
+  tests.
+- `gtest` and `gtest_main`: mandatory GoogleTest and GoogleMock libraries.
+
+## Glossary
+
+### Services
 
 The *wallet pool* has been a very coupled type. It has bindings and links to several other types
 and objects:
@@ -236,13 +351,10 @@ Services = WalletPool - wallets - factories - currencies
 So it’s basically the same thing as an old `WalletPool` but removed from the wallets, factories and
 currencies objects.
 
-## Operation queries migration
+### WalletStore
 
-The `OperationQuery` type is now a pure abstract class because it’s children must implement the
-`OperationQuery::inflateCompleteTransaction`. The content of that function can be taken out the
-legacy `OperationQuery::inflateCompleteTransaction`’s `switch` case, depending on the coin you’re
-implementing. You will have to read some more code (for instance, for Bitcoin, the
-`OperationQuery::inflateBitcoinLikeTransaction`) in order to implement the pure virtual method in
-the coin specific code.
+The `WalletStore` is the remaining part of modularized `WalletPool`.
+`WalletStore + Services = old WalletPool`. A `WalletStore` contains everything related to
+wallets and is, indeed, a map of name to wallets.
 
 [soci]: https://github.com/SOCI/soci
