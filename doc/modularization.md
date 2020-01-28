@@ -269,7 +269,6 @@ RippleLikeWalletFactory::RippleLikeWalletFactory(
     // create the DB structure if not already created
     services->getDatabaseSessionPool()->forwardMigration<XRPMigration>();
 }
-}
 ```
 
 The `DatabaseSessionPool::forwardMigration<T>` method allows you to perform, if not already done,
