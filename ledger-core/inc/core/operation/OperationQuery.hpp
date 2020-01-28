@@ -59,7 +59,7 @@ namespace ledger {
         static_assert(
             std::is_base_of<Operation, T>::value,
             "OperationQuery<T> requires 'T' to be based on Operation type");
-        
+
         public:
             OperationQuery(
                 const std::shared_ptr<api::QueryFilter>& headFilter,
@@ -79,28 +79,28 @@ namespace ledger {
             {
                 switch (key) {
                     case api::OperationOrderKey::AMOUNT:
-                        _builder.order("amount", std::move(descending));
+                        _builder.order("o.amount", std::move(descending));
                         break;
                     case api::OperationOrderKey::DATE:
-                        _builder.order("date", std::move(descending));
+                        _builder.order("o.date", std::move(descending));
                         break;
                     case api::OperationOrderKey::SENDERS:
-                        _builder.order("senders", std::move(descending));
+                        _builder.order("o.senders", std::move(descending));
                         break;
                     case api::OperationOrderKey::RECIPIENTS:
-                        _builder.order("recipients", std::move(descending));
+                        _builder.order("o.recipients", std::move(descending));
                         break;
                     case api::OperationOrderKey::TYPE:
-                        _builder.order("type", std::move(descending));
+                        _builder.order("o.type", std::move(descending));
                         break;
                     case api::OperationOrderKey::CURRENCY_NAME:
-                        _builder.order("currency_name", std::move(descending));
+                        _builder.order("o.currency_name", std::move(descending));
                         break;
                     case api::OperationOrderKey::FEES:
-                        _builder.order("fees", std::move(descending));
+                        _builder.order("o.fees", std::move(descending));
                         break;
                     case api::OperationOrderKey::BLOCK_HEIGHT:
-                        _builder.order("block_height", std::move(descending));
+                        _builder.order("o.block_height", std::move(descending));
                         break;
                 }
                 return this->shared_from_this();
@@ -111,13 +111,13 @@ namespace ledger {
             {
                 return _headFilter;
             }
-            
+
             std::shared_ptr<api::OperationQuery> offset(int64_t from) override
             {
                 _builder.offset(static_cast<int32_t>(from));
                 return this->shared_from_this();
             }
-            
+
             std::shared_ptr<api::OperationQuery> limit(int64_t count) override
             {
                 _builder.limit(static_cast<int32_t>(count));

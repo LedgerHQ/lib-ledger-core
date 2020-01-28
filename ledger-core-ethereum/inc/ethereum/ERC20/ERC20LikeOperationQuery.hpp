@@ -32,11 +32,12 @@
 
 #include <soci.h>
 
-#include <ethereum/operations/EthereumLikeOperationQuery.hpp>
+#include <core/operation/OperationQuery.hpp>
+#include <ethereum/ERC20/ERC20LikeOperation.hpp>
 
 namespace ledger {
     namespace core {
-        class ERC20LikeOperationQuery : public EthereumLikeOperationQuery {
+        class ERC20LikeOperationQuery : public OperationQuery<ERC20LikeOperation> {
         public:
             ERC20LikeOperationQuery(
                 const std::shared_ptr<api::QueryFilter>& headFilter,
@@ -45,8 +46,17 @@ namespace ledger {
                 const std::shared_ptr<api::ExecutionContext>& mainContext);
 
         protected:
-            virtual soci::rowset<soci::row> performExecute(soci::session &sql) override;
-        };
+            soci::rowset<soci::row> performExecute(soci::session &sql) override;
 
+            void inflateCompleteTransaction(
+                soci::session &sql,
+                const std::string &accountUid,
+                ERC20LikeOperation& operation
+            ) override;
+
+            std::shared_ptr<ERC20LikeOperation> createOperation(
+                std::shared_ptr<AbstractAccount> &account
+            ) override;
+        };
     }
 }

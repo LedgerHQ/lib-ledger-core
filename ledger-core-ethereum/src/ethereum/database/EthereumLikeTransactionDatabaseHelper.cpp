@@ -115,7 +115,7 @@ namespace ledger {
                                                                          const std::string& accountUid,
                                                                          const EthereumLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const EthereumLikeBlockchainExplorer::Block& block) {
-                return block.uid;
+                return BlockDatabaseHelper::createBlockUid(block.blockHash, block.currencyName);
             });
 
             auto ethTxUid = createEthereumTransactionUid(accountUid, tx.hash);

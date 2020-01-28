@@ -39,20 +39,32 @@
 #include <ethereum/explorers/EthereumLikeBlockchainExplorer.hpp>
 #include <ethereum/operations/EthereumLikeOperation.hpp>
 
-
 namespace ledger {
     namespace core {
-
-        class ERC20LikeOperation : public api::ERC20LikeOperation {
+        class ERC20LikeOperation : virtual public api::ERC20LikeOperation, virtual public Operation {
         public:
-            ERC20LikeOperation(const std::string &accountAddress,
-                               const std::string &operationUid,
-                               const EthereumLikeOperation &operation,
-                               const ERC20Transaction &erc20Tx,
-                               const api::Currency &currency);
+            ERC20LikeOperation(
+                std::shared_ptr<AbstractAccount> const& account
+            );
 
-            ERC20LikeOperation() : _blockHeight(0){};
-            
+            ERC20LikeOperation(
+                const std::string &accountAddress,
+                const std::string &operationUid,
+                const EthereumLikeOperation &operation,
+                const ERC20Transaction &erc20Tx,
+                const api::Currency &currency
+            );
+
+            ERC20LikeOperation() = default;
+
+            api::OperationType getOperationType() override {
+                return Operation::getOperationType();
+            }
+
+            optional<int64_t> getBlockHeight() override {
+                return Operation::getBlockHeight();
+            }
+
             std::string getHash() override;
             std::shared_ptr<api::BigInt> getNonce() override;
             std::shared_ptr<api::BigInt> getGasPrice() override;
@@ -63,11 +75,10 @@ namespace ledger {
             std::shared_ptr<api::BigInt> getValue() override ;
             std::vector<uint8_t> getData() override ;
             std::chrono::system_clock::time_point getTime() override;
-            api::OperationType getOperationType() override;
             std::string getOperationUid();
             std::string getETHOperationUid();
             int32_t getStatus() override ;
-            std::experimental::optional<int64_t> getBlockHeight() override;
+
             ERC20LikeOperation &setHash(const std::string &hash) {
                 _hash = hash;
                 return *this;
@@ -94,17 +105,17 @@ namespace ledger {
             };
 
             ERC20LikeOperation &setSender(const std::string &sender) {
-                _sender = sender;
+                senders = { sender };
                 return *this;
             };
 
             ERC20LikeOperation &setReceiver(const std::string &receiver) {
-                _receiver = receiver;
+                recipients = { receiver };
                 return *this;
             };
 
             ERC20LikeOperation &setValue(const BigInt &value) {
-                _value = std::make_shared<BigInt>(value);
+                amount = value;
                 return *this;
             };
 
@@ -114,17 +125,17 @@ namespace ledger {
             };
 
             ERC20LikeOperation &setTime(const std::chrono::system_clock::time_point& time) {
-                _time = time;
+                date = time;
                 return *this;
             };
 
             ERC20LikeOperation &setOperationType(api::OperationType type) {
-                _operationType = type;
+                this->type = type;
                 return *this;
             };
 
             ERC20LikeOperation &setOperationUid(const std::string &operationUid) {
-                _uid = operationUid;
+                uid = operationUid;
                 return *this;
             };
 
@@ -139,27 +150,26 @@ namespace ledger {
             };
 
             ERC20LikeOperation &setBlockHeight(int64_t blockHeight) {
-                _blockHeight = blockHeight;
+                if (!block.hasValue()) {
+                    block = api::Block();
+                }
+
+                block->height = blockHeight;
+
                 return *this;
             }
-            
+
+            void refreshUid(std::string const&) override;
+
         private:
-            std::string _uid;
             std::string _ethUidOperation;
             std::string _hash;
             std::shared_ptr<api::BigInt> _nonce;
             std::shared_ptr<api::BigInt> _gasPrice;
             std::shared_ptr<api::BigInt> _gasLimit;
             std::shared_ptr<api::BigInt> _gasUsed;
-            std::string _sender;
-            std::string _receiver;
-            std::shared_ptr<api::BigInt> _value;
             std::vector<uint8_t> _data;
-            std::chrono::system_clock::time_point _time;
-            api::OperationType _operationType;
             int32_t _status;
-            int64_t _blockHeight;
         };
-
     }
 }

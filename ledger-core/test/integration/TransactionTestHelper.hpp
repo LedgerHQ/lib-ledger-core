@@ -49,11 +49,13 @@ struct MakeBaseTransaction : public BaseFixture {
     }
 
     void TearDown() override {
-        BaseFixture::TearDown();
         account = nullptr;
         wallet = nullptr;
         walletStore = nullptr;
+
+        wait(services->freshResetAll());
         services = nullptr;
+        BaseFixture::TearDown();
     }
 
     std::shared_ptr<CoinTransactionBuilder> tx_builder() {

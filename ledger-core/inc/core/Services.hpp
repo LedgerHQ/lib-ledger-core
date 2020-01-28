@@ -48,6 +48,7 @@
 #include <core/net/HttpClient.hpp>
 #include <core/net/WebSocketClient.hpp>
 #include <core/preferences/Preferences.hpp>
+#include <core/utils/TTLCache.hpp>
 #include <core/wallet/BlockDatabaseHelper.hpp>
 
 namespace ledger {
@@ -135,6 +136,10 @@ namespace ledger {
             /// > that doesn’t include having lots of objects in memory.
             Future<api::ErrorCode> freshResetAll();
 
+            Option<api::Block> getBlockFromCache(const std::string &currencyName);
+
+                std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
+
         private:
             // General
             std::string _tenant;
@@ -170,6 +175,10 @@ namespace ledger {
 
             // Event publisher
             std::shared_ptr<EventPublisher> _publisher;
+
+            std::shared_ptr<api::ExecutionContext> _threadPoolExecutionContext;
+            //Here the key is the currency name
+            TTLCache<std::string, api::Block> _blockCache;
         };
     }
 }

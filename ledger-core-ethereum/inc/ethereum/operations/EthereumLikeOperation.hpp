@@ -43,7 +43,7 @@ namespace ledger {
         class EthereumLikeOperation : public api::EthereumLikeOperation, public Operation {
         public:
             EthereumLikeOperation() = default;
-            
+
             EthereumLikeOperation(
                 const std::shared_ptr<const AbstractWallet>& wallet,
                 EthereumLikeBlockchainExplorerTransaction const& tx);
@@ -55,16 +55,19 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeTransaction> getTransaction() const override;
             std::vector<std::shared_ptr<api::InternalTransaction>> getInternalTransactions() override;
 
-            void refreshUid(std::string const &additional = "") override;            
+            void refreshUid(std::string const &additional = "") override;
             bool isComplete() override;
-            
+
             const EthereumLikeBlockchainExplorerTransaction& getExplorerTransaction() const;
             EthereumLikeBlockchainExplorerTransaction& getExplorerTransaction();
             void setExplorerTransaction(EthereumLikeBlockchainExplorerTransaction const& tx);
+
         private:
             std::shared_ptr<api::EthereumLikeTransaction> _tx;
             EthereumLikeBlockchainExplorerTransaction _explorerTx;
             std::vector<std::shared_ptr<api::InternalTransaction>> _internalTxs;
+            // To allow lazy loading of internal transactions
+            bool _internalTxsRetrieved;
         };
 
     }

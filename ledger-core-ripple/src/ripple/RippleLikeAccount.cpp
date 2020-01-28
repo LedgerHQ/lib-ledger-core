@@ -193,9 +193,13 @@ namespace ledger {
         }
 
         FuturePtr<Amount> RippleLikeAccount::getBalance() {
+            auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
             std::vector<RippleLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
-            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getContext(), [currency](
+            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [currency](
                     const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
                 return std::make_shared<Amount>(currency, 0, BigInt(balance->toString()));
             });
@@ -205,7 +209,7 @@ namespace ledger {
             auto query = std::make_shared<RippleLikeOperationQuery>(
                     api::QueryFilter::accountEq(getAccountUid()),
                     getWallet()->getDatabase(),
-                    getWallet()->getContext(),
+                    getWallet()->getServices()->getThreadPoolExecutionContext(),
                     getWallet()->getMainExecutionContext()
             );
             query->registerAccount(shared_from_this());
@@ -351,7 +355,7 @@ namespace ledger {
             eventPublisher->postSticky(
                     std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
                     0);
-            future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+            future.onComplete(getMainExecutionContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -402,7 +406,7 @@ namespace ledger {
                                                                      [](const String &seq) -> std::string {
                                                                          //TODO: optimistic update
                                                                          return seq.str();
-                                                                     }).callback(getContext(), callback);
+                                                                     }).callback(getMainExecutionContext(), callback);
         }
 
         void RippleLikeAccount::broadcastTransaction(
@@ -444,10 +448,10 @@ namespace ledger {
                     tx->setDestinationTag(request.destinationTag.getValue());
                 }
 
-                return explorer->getSequence(accountAddress->toString()).flatMapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &sequence) -> FuturePtr<api::RippleLikeTransaction> {
+                return explorer->getSequence(accountAddress->toString()).flatMapPtr<api::RippleLikeTransaction>(self->getMainExecutionContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &sequence) -> FuturePtr<api::RippleLikeTransaction> {
                     tx->setSequence(*sequence);
 
-                    return explorer->getLedgerSequence().mapPtr<api::RippleLikeTransaction>(self->getContext(), [self, tx] (const std::shared_ptr<BigInt>& ledgerSequence) -> std::shared_ptr<api::RippleLikeTransaction> {
+                    return explorer->getLedgerSequence().mapPtr<api::RippleLikeTransaction>(self->getMainExecutionContext(), [self, tx] (const std::shared_ptr<BigInt>& ledgerSequence) -> std::shared_ptr<api::RippleLikeTransaction> {
                         // according to this <https://xrpl.org/reliable-transaction-submission.html#lastledgersequence>,
                         // we should set the LastLedgerSequence value on every transaction; advised to
                         // use the ledger index of the latest valid ledger + 4
@@ -462,7 +466,7 @@ namespace ledger {
                 });
             };
 
-            return std::make_shared<RippleLikeTransactionBuilder>(getContext(),
+            return std::make_shared<RippleLikeTransactionBuilder>(getMainExecutionContext(),
                                                                   getWallet()->getCurrency(),
                                                                   _explorer,
                                                                   logger(),
@@ -470,24 +474,24 @@ namespace ledger {
         }
 
         void RippleLikeAccount::getFees(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) {
-            getFees().callback(getContext(), callback);
+            getFees().callback(getMainExecutionContext(), callback);
         }
 
         FuturePtr<api::Amount> RippleLikeAccount::getFees() {
             auto self = shared_from_this();
-            return _explorer->getFees().mapPtr<api::Amount>(getContext(), [self] (const std::shared_ptr<BigInt> &fees) {
+            return _explorer->getFees().mapPtr<api::Amount>(getMainExecutionContext(), [self] (const std::shared_ptr<BigInt> &fees) {
                 // Fees in drops
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *fees);
             });
         }
 
         void RippleLikeAccount::getBaseReserve(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) {
-            getBaseReserve().callback(getContext(), callback);
+            getBaseReserve().callback(getMainExecutionContext(), callback);
         }
 
         FuturePtr<api::Amount> RippleLikeAccount::getBaseReserve() {
             auto self = shared_from_this();
-            return _explorer->getBaseReserve().mapPtr<api::Amount>(getContext(), [self] (const std::shared_ptr<BigInt> &reserve) {
+            return _explorer->getBaseReserve().mapPtr<api::Amount>(getMainExecutionContext(), [self] (const std::shared_ptr<BigInt> &reserve) {
                 // Reserve in XRPs
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, *reserve);
             });
@@ -497,7 +501,7 @@ namespace ledger {
             const std::string& address,
             const std::function<void(std::experimental::optional<bool>, std::experimental::optional<api::Error>)>& isActivated
         ) {
-            isAddressActivated(address).callback(getContext(), isActivated);
+            isAddressActivated(address).callback(getMainExecutionContext(), isActivated);
         }
 
         Future<bool> RippleLikeAccount::isAddressActivated(const std::string &address) {
@@ -506,14 +510,14 @@ namespace ledger {
                 return Future<bool>::successful(false);
             }
             auto self = getSelf();
-            return _explorer->getBaseReserve().flatMap<bool>(getContext(), [self, xrpAddress](const std::shared_ptr<BigInt> &reserve) -> Future<bool> {
+            return _explorer->getBaseReserve().flatMap<bool>(getMainExecutionContext(), [self, xrpAddress](const std::shared_ptr<BigInt> &reserve) -> Future<bool> {
                 if (!reserve) {
                     return Future<bool>::successful(false);
                 }
                 return self->_explorer->getBalance(
                         std::vector<RippleLikeKeychain::Address>{
                                 std::dynamic_pointer_cast<RippleLikeAddress>(xrpAddress)
-                        }).map<bool>(self->getContext(), [reserve](const std::shared_ptr<BigInt> &balance) -> bool {
+                        }).map<bool>(self->getMainExecutionContext(), [reserve](const std::shared_ptr<BigInt> &balance) -> bool {
                     if (!balance) {
                         return false;
                     }

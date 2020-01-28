@@ -239,7 +239,7 @@ namespace ledger {
         void ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                         const std::string &address,
                                                         const std::function<void(std::experimental::optional<std::vector<uint8_t>>, std::experimental::optional<::ledger::core::api::Error>)> &data) {
-            auto context = _account.lock()->getContext();
+            auto context = _account.lock()->getWallet()->getMainExecutionContext();
             getTransferToAddressData(amount, address).callback(context, data);
         }
 
@@ -289,7 +289,7 @@ namespace ledger {
             auto query = std::make_shared<ERC20LikeOperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
-                    localAccount->getWallet()->getContext(),
+                    localAccount->getWallet()->getServices()->getThreadPoolExecutionContext(),
                     localAccount->getWallet()->getMainExecutionContext()
             );
             query->registerAccount(localAccount);
@@ -301,7 +301,7 @@ namespace ledger {
             if (!parentAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
             }
-            return parentAccount->getContext();
+            return parentAccount->getWallet()->getMainExecutionContext();
         }
 
     }

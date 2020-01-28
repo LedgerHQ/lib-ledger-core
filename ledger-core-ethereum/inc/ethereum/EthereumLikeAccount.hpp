@@ -68,15 +68,20 @@ namespace ledger {
 
             FuturePtr<EthereumLikeBlockchainExplorerTransaction> getTransaction(const std::string& hash);
             EthereumLikeOperation inflateOperation(
-                                  const std::shared_ptr<const AbstractWallet>& wallet,
-                                  const EthereumLikeBlockchainExplorerTransaction& tx);
-            int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction& tx);
+                const std::shared_ptr<const AbstractWallet>& wallet,
+                const EthereumLikeBlockchainExplorerTransaction &tx
+            );
+
+            int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction &transaction);
+            /// Get internal transactions related to the parent operation.
+            std::vector<EthereumLikeOperation> getInternalOperations(soci::session &sql);
+
             void updateERC20Accounts(soci::session &sql, EthereumLikeOperation &operation);
             void updateERC20Operation(soci::session &sql,
                                       const EthereumLikeOperation &operation,
                                       const ERC20Transaction &erc20Tx);
             void updateInternalTransactions(soci::session &sql, EthereumLikeOperation &operation);
-            bool putBlock(soci::session& sql, const api::Block& block);
+            bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<EthereumLikeKeychain> getKeychain() const;
 

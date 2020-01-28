@@ -39,89 +39,92 @@
 
 namespace ledger {
     namespace core {
+        ERC20LikeOperation::ERC20LikeOperation(
+            std::shared_ptr<AbstractAccount> const& account
+        ): Operation(account) {
+        }
 
-            ERC20LikeOperation::ERC20LikeOperation(const std::string &accountAddress,
-                                                   const std::string &operationUid,
-                                                   const EthereumLikeOperation &operation,
-                                                   const ERC20Transaction &erc20Tx,
-                                                   const api::Currency &currency) {
+        ERC20LikeOperation::ERC20LikeOperation(
+            const std::string &accountAddress,
+            const std::string &operationUid,
+            const EthereumLikeOperation &operation,
+            const ERC20Transaction &erc20Tx,
+            const api::Currency &currency
+        ): Operation(operation.getAccount()) {
+            auto const tx = operation.getTransaction();
+            uid = operationUid;
+            senders = { erc20Tx.from };
+            recipients = { erc20Tx.to };
+            amount = erc20Tx.value;
+            type = erc20Tx.type;
+            date = operation.getExplorerTransaction().receivedAt;
+            block = api::Block();
+            block->height = tx->getBlock()->getHeight();
 
-                auto const tx = operation.getTransaction();
-                _uid = operationUid;
-                _ethUidOperation = operation.uid;
-                _hash = tx->getHash();
-                _nonce = std::make_shared<BigInt>(BigInt(static_cast<int64_t>(tx->getNonce())));
-                _gasPrice = tx->getGasPrice()->toBigInt();
-                _gasLimit = tx->getGasLimit()->toBigInt();
-                _gasUsed = tx->getGasUsed()->toBigInt();
-                _status = tx->getStatus();
-                _receiver = erc20Tx.to;
-                _sender = erc20Tx.from;
-                _value = std::make_shared<BigInt>(BigInt(erc20Tx.value));
-                _data = tx->getData().value_or(std::vector<uint8_t>{});
-                _time = operation.getExplorerTransaction().receivedAt;
-                _operationType = erc20Tx.type;
-                _blockHeight = tx->getBlock() ? tx->getBlock()->getHeight() : 0;
-            }
+            _ethUidOperation = operation.uid;
+            _hash = tx->getHash();
+            _nonce = std::make_shared<BigInt>(BigInt(static_cast<int64_t>(tx->getNonce())));
+            _gasPrice = tx->getGasPrice()->toBigInt();
+            _gasLimit = tx->getGasLimit()->toBigInt();
+            _gasUsed = tx->getGasUsed()->toBigInt();
+            _data = tx->getData().value_or(std::vector<uint8_t>{});
+            _status = tx->getStatus();
+        }
 
-            std::string ERC20LikeOperation::getHash() {
-                return _hash;
-            }
+        std::string ERC20LikeOperation::getHash() {
+            return _hash;
+        }
 
-            std::shared_ptr<api::BigInt> ERC20LikeOperation::getNonce() {
-                return _nonce;
-            }
+        std::shared_ptr<api::BigInt> ERC20LikeOperation::getNonce() {
+            return _nonce;
+        }
 
-            std::shared_ptr<api::BigInt> ERC20LikeOperation::getGasPrice() {
-                return _gasPrice;
-            }
+        std::shared_ptr<api::BigInt> ERC20LikeOperation::getGasPrice() {
+            return _gasPrice;
+        }
 
-            std::shared_ptr<api::BigInt> ERC20LikeOperation::getGasLimit() {
-                return _gasLimit;
-            }
+        std::shared_ptr<api::BigInt> ERC20LikeOperation::getGasLimit() {
+            return _gasLimit;
+        }
 
-            std::shared_ptr<api::BigInt> ERC20LikeOperation::getUsedGas() {
-                return _gasUsed;
-            }
+        std::shared_ptr<api::BigInt> ERC20LikeOperation::getUsedGas() {
+            return _gasUsed;
+        }
 
-            std::string ERC20LikeOperation::getSender() {
-                return _sender;
-            }
+        std::string ERC20LikeOperation::getSender() {
+            return getSenders()[0];
+        }
 
-            std::string ERC20LikeOperation::getReceiver() {
-                return _receiver;
-            }
+        std::string ERC20LikeOperation::getReceiver() {
+            return getRecipients()[0];
+        }
 
-            std::shared_ptr<api::BigInt> ERC20LikeOperation::getValue() {
-                return _value;
-            }
+        std::shared_ptr<api::BigInt> ERC20LikeOperation::getValue() {
+            return getAmount()->toBigInt();
+        }
 
-            std::vector<uint8_t> ERC20LikeOperation::getData() {
-                return _data;
-            }
+        std::vector<uint8_t> ERC20LikeOperation::getData() {
+            return _data;
+        }
 
-            std::chrono::system_clock::time_point ERC20LikeOperation::getTime() {
-                return _time;
-            }
+        std::chrono::system_clock::time_point ERC20LikeOperation::getTime() {
+            return getDate();
+        }
 
-            api::OperationType ERC20LikeOperation::getOperationType() {
-                return _operationType;
-            }
+        std::string ERC20LikeOperation::getOperationUid() {
+            return getUid();
+        }
 
-            std::string ERC20LikeOperation::getOperationUid() {
-                return _uid;
-            }
+        std::string ERC20LikeOperation::getETHOperationUid() {
+            return _ethUidOperation;
+        }
 
-            std::string ERC20LikeOperation::getETHOperationUid() {
-                return _ethUidOperation;
-            }
+        int32_t ERC20LikeOperation::getStatus() {
+            return _status;
+        }
 
-            int32_t ERC20LikeOperation::getStatus() {
-                return _status;
-            }
-
-            std::experimental::optional<int64_t> ERC20LikeOperation::getBlockHeight() {
-                return _blockHeight == 0 ? Option<int64_t>() : Option<int64_t>(_blockHeight);
-            }
+        void ERC20LikeOperation::refreshUid(std::string const&) {
+            //uid =
+        }
     }
 }

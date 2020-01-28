@@ -206,14 +206,14 @@ namespace ledger {
                                           //TODO: optimistic update
                                           return seq.str();
                                       })
-                    .recoverWith(getContext(), [] (const Exception &e) {
+                    .recoverWith(getMainExecutionContext(), [] (const Exception &e) {
                         // Avoid fmt error because of JSON string
                         const auto error = "Failed to broadcast raw transaction, reason " + e.getMessage();
                         return Future<std::string>::failure(
                                 Exception(api::ErrorCode::INCOMPLETE_TRANSACTION, error)
                         );
                     })
-                    .callback(getContext(), callback);
+                    .callback(getMainExecutionContext(), callback);
         }
 
         void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
@@ -250,14 +250,14 @@ namespace ledger {
                                }
                                 // FIXME: this is a workaround by the time the nodes are fixed
                                 // So here we are looking for unallocated accounts
-                                return explorer->getTransactions(std::vector<std::string>{request.toAddress}).map<BigInt>(self->getContext(), [request] (const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk> &txBulk) {
+                                return explorer->getTransactions(std::vector<std::string>{request.toAddress}).map<BigInt>(self->getMainExecutionContext(), [request] (const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk> &txBulk) {
                                     // Base unit is uXTZ
                                     return (txBulk && !txBulk->transactions.empty()) ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
                                 });
 
                                 /*
                                  * Once /chains/main/blocks/head/context/contracts/<contract_id> fixed we should use this one
-                                return explorer->isAllocated(request.toAddress).map<BigInt>(self->getContext(), [request] (bool isAllocated) -> BigInt {
+                                return explorer->isAllocated(request.toAddress).map<BigInt>(self->getMainExecutionContext(), [request] (bool isAllocated) -> BigInt {
                                     // Base unit is uXTZ
                                     return isAllocated ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
                                 });
@@ -275,22 +275,22 @@ namespace ledger {
 
                                         auto tx = std::make_shared<TezosLikeTransaction>(currency, protocolUpdate);
                                         // Balance is used only for origination which is always performed from implicit accounts
-                                        // In that case senderAddress == self->_keychain->getAddress() so safe to do so            
+                                        // In that case senderAddress == self->_keychain->getAddress() so safe to do so
                                         tx->setBalance(*std::dynamic_pointer_cast<BigInt>(balance));
 
-                                        // Check whether we need a reveal operation                                       
+                                        // Check whether we need a reveal operation
                                         // Note: we can't rely on DB + sent transactions, because
                                         // it is possible to have deleted accounts that hit 0 balance
                                         // during Babylon update (arf ...)
                                         auto setRevealStatus = [self, explorer, tx, senderAddress, managerAddress]() {
                                             // So here we are looking for unallocated accounts
-                                            return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getContext(), [tx] (const std::string &managerKey) -> Unit {
+                                            return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getMainExecutionContext(), [tx] (const std::string &managerKey) -> Unit {
                                                 tx->reveal(managerKey.empty());
                                                 return unit;
                                             });
                                         };
 
-                                        return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getContext(), [=] (const Unit &result) {
+                                        return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=] (const Unit &result) {
                                             // Check for balance
                                             // Multiply by 2 fees, since in case of reveal op, we input same fees as the ones used
                                             // for transaction op
@@ -350,7 +350,7 @@ namespace ledger {
                                             tx->setType(request.type);
                                             const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
                                                                         managerAddress : senderAddress;
-                                            return explorer->getCounter(counterAddress).flatMapPtr<api::Block>(self->getContext(), [self, tx, explorer] (const std::shared_ptr<api::BigInt> &counter) {
+                                            return explorer->getCounter(counterAddress).flatMapPtr<api::Block>(self->getMainExecutionContext(), [self, tx, explorer] (const std::shared_ptr<api::BigInt> &counter) {
                                                 if (!counter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
@@ -361,7 +361,7 @@ namespace ledger {
                                                 tx->setBlockHash(block->blockHash);
                                                 if (senderAddress.find("KT1") == 0) {
                                                     // HACK: KT Operation we use forge endpoint
-                                                    return explorer->forgeKTOperation(tx).mapPtr<api::TezosLikeTransaction>(self->getContext(), [tx] (const std::vector<uint8_t> &rawTx) {
+                                                    return explorer->forgeKTOperation(tx).mapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [tx] (const std::vector<uint8_t> &rawTx) {
                                                         tx->setRawTx(rawTx);
                                                         return tx;
                                                     });
@@ -398,13 +398,13 @@ namespace ledger {
 
         void TezosLikeAccount::getFees(
             const std::function<void(std::experimental::optional<std::shared_ptr<api::BigInt>>, std::experimental::optional<api::Error>)> & callback) {
-            getFees().mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &fees) -> std::shared_ptr<api::BigInt>
+            getFees().mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &fees) -> std::shared_ptr<api::BigInt>
             {
                 if (!fees) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve fees from network");
                 }
                 return std::make_shared<BigInt>(*fees);
-            }).callback(getContext(), callback);
+            }).callback(getMainExecutionContext(), callback);
         }
 
         FuturePtr<BigInt> TezosLikeAccount::getFees() {
