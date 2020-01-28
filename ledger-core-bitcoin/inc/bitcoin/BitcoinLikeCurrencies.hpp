@@ -43,29 +43,29 @@
 namespace ledger {
     namespace core {
         namespace currencies {
-            extern LIBCORE_EXPORT const api::Currency BITCOIN;
-            extern LIBCORE_EXPORT const api::Currency BITCOIN_TESTNET;
-            extern LIBCORE_EXPORT const api::Currency BITCOIN_CASH;
-            extern LIBCORE_EXPORT const api::Currency BITCOIN_GOLD;
-            extern LIBCORE_EXPORT const api::Currency ZCASH;
-            extern LIBCORE_EXPORT const api::Currency ZENCASH;
-            extern LIBCORE_EXPORT const api::Currency LITECOIN;
-            extern LIBCORE_EXPORT const api::Currency PEERCOIN;
-            extern LIBCORE_EXPORT const api::Currency DIGIBYTE;
-            extern LIBCORE_EXPORT const api::Currency HCASH;
-            extern LIBCORE_EXPORT const api::Currency QTUM;
-            extern LIBCORE_EXPORT const api::Currency STEALTHCOIN;
-            extern LIBCORE_EXPORT const api::Currency VERTCOIN;
-            extern LIBCORE_EXPORT const api::Currency VIACOIN;
-            extern LIBCORE_EXPORT const api::Currency DASH;
-            extern LIBCORE_EXPORT const api::Currency DOGECOIN;
-            extern LIBCORE_EXPORT const api::Currency STRATIS;
-            extern LIBCORE_EXPORT const api::Currency KOMODO;
-            extern LIBCORE_EXPORT const api::Currency POSWALLET;
-            extern LIBCORE_EXPORT const api::Currency PIVX;
-            extern LIBCORE_EXPORT const api::Currency CLUBCOIN;
-            extern LIBCORE_EXPORT const api::Currency DECRED;
-            extern LIBCORE_EXPORT const api::Currency STAKENET;
+            api::Currency bitcoin();
+            api::Currency bitcoin_testnet();
+            api::Currency bitcoin_cash();
+            api::Currency bitcoin_gold();
+            api::Currency zcash();
+            api::Currency zencash();
+            api::Currency litecoin();
+            api::Currency peercoin();
+            api::Currency digibyte();
+            api::Currency hcash();
+            api::Currency qtum();
+            api::Currency stealthcoin();
+            api::Currency vertcoin();
+            api::Currency viacoin();
+            api::Currency dash();
+            api::Currency dogecoin();
+            api::Currency stratis();
+            api::Currency komodo();
+            api::Currency poswallet();
+            api::Currency pivx();
+            api::Currency clubcoin();
+            api::Currency decred();
+            api::Currency stakenet();
         }
     }
 }
