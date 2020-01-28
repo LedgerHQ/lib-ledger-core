@@ -39,7 +39,6 @@
 #include <core/debug/Benchmarker.hpp>
 #include <core/math/Base58.hpp>
 #include <core/utils/DerivationPath.hpp>
-#include <core/utils/DjinniHelpers.hpp>
 
 #include <bitcoin/BitcoinLikeAddress.hpp>
 #include <bitcoin/BitcoinLikeExtendedPublicKey.hpp>

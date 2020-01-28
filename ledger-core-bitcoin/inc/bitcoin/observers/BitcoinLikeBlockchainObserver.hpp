@@ -35,7 +35,7 @@
 #include <core/api/ExecutionContext.hpp>
 #include <core/api/DynamicObject.hpp>
 #include <core/async/DedicatedContext.hpp>
-#include <core/debug/logger.hpp>
+#include <core/debug/Logger.hpp>
 #include <core/observers/AbstractBlockchainObserver.hpp>
 
 #include <bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
