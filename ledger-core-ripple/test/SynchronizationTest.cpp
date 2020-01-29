@@ -28,7 +28,7 @@ struct RippleLikeWalletSynchronization : BaseFixture {
 TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
     auto services = newDefaultServices();
     auto walletStore = newWalletStore(services);
-    walletStore->addCurrency(currencies::ripple());
+    wait(walletStore->addCurrency(currencies::ripple()));
 
     auto factory = std::make_shared<RippleLikeWalletFactory>(currencies::ripple(), services);
     walletStore->registerFactory(currencies::ripple(), factory);
@@ -111,7 +111,7 @@ TEST_F(RippleLikeWalletSynchronization, EmitNewTransactionAndReceiveOnPool) {
         auto configuration = DynamicObject::newInstance();
 
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(currencies::ripple());
+        wait(walletStore->addCurrency(currencies::ripple()));
 
         auto factory = std::make_shared<RippleLikeWalletFactory>(currencies::ripple(), services);
         walletStore->registerFactory(currencies::ripple(), factory);
@@ -142,7 +142,7 @@ TEST_F(RippleLikeWalletSynchronization, EmitNewBlock) {
         auto configuration = DynamicObject::newInstance();
 
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(currencies::ripple());
+        wait(walletStore->addCurrency(currencies::ripple()));
 
         auto factory = std::make_shared<RippleLikeWalletFactory>(currencies::ripple(), services);
         walletStore->registerFactory(currencies::ripple(), factory);
@@ -181,7 +181,7 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
                              "44'/<coin_type>'/<account>'/<node>/<address>");
 
     auto walletStore = newWalletStore(services);
-    walletStore->addCurrency(currencies::ripple());
+    wait(walletStore->addCurrency(currencies::ripple()));
 
     auto factory = std::make_shared<RippleLikeWalletFactory>(currencies::ripple(), services);
     walletStore->registerFactory(currencies::ripple(), factory);

@@ -113,7 +113,7 @@ TEST_F(RippleKeychains, RippleDerivationSchemes) {
     auto configuration = DynamicObject::newInstance();
 
     auto walletStore = newWalletStore(services);
-    walletStore->addCurrency(currencies::ripple());
+    wait(walletStore->addCurrency(currencies::ripple()));
 
     auto factory = std::make_shared<RippleLikeWalletFactory>(currencies::ripple(), services);
     walletStore->registerFactory(currencies::ripple(), factory);
