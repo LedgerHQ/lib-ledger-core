@@ -40,6 +40,7 @@
 #include <core/api/EventBus.hpp>
 #include <core/api/PathResolver.hpp>
 #include <core/api/RandomNumberGenerator.hpp>
+#include <core/api/Services.hpp>
 #include <core/api/ThreadDispatcher.hpp>
 #include <core/async/DedicatedContext.hpp>
 #include <core/collections/DynamicObject.hpp>
@@ -66,7 +67,7 @@ namespace ledger {
         ///
         /// It’s typical that those objects don’t have to live more than once in memory so it’s better to
         /// gather them (legacy code was using the WalletPool for that).
-        struct Services : DedicatedContext, std::enable_shared_from_this<Services> {
+        struct Services : DedicatedContext, std::enable_shared_from_this<Services>, api::Services {
             Services() = delete;
             Services(
                 const std::string &tenant,
@@ -104,6 +105,12 @@ namespace ledger {
                 const std::string& newPassword
             );
 
+            void changePassword(
+                const std::string & oldPassword,
+                const std::string & newPassword,
+                const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+            ) override;
+
             std::shared_ptr<HttpClient> getHttpClient(const std::string& baseUrl);
             std::shared_ptr<WebSocketClient> getWebSocketClient() const;
             std::shared_ptr<Preferences> getExternalPreferences() const;
@@ -114,11 +121,11 @@ namespace ledger {
             std::shared_ptr<spdlog::logger> logger() const;
             std::shared_ptr<DatabaseSessionPool> getDatabaseSessionPool() const;
             std::shared_ptr<DynamicObject> getConfiguration() const;
-            std::shared_ptr<api::EventBus> getEventBus() const;
+            std::shared_ptr<api::EventBus> getEventBus() const override;
             std::shared_ptr<EventPublisher> getEventPublisher() const;
             Future<api::Block> getLastBlock(const std::string &currencyName);
-            const std::string& getTenant() const;
-            const std::string getPassword() const;
+            std::string getTenant() const override;
+            std::string getPassword() const;
 
             /// Reset services.
             ///
@@ -138,7 +145,21 @@ namespace ledger {
 
             Option<api::Block> getBlockFromCache(const std::string &currencyName);
 
-                std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
+            std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext() const;
+
+            // API only override methods
+            std::shared_ptr<api::Logger> getLogger() const override;
+
+            std::shared_ptr<api::Preferences> getPreferences() const override;
+
+            void getLastBlock(
+                std::string const& currencyName,
+                std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> const & callback
+            ) override;
+
+            void freshResetAll(
+                std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> const& callback
+            ) override;
 
         private:
             // General

@@ -10,10 +10,10 @@
 @import "thread_dispatcher.djinni"
 @import "websocket_client.djinni"
 
-# Class respresenting a set of services.
+# Class representing a set of services.
 Services = interface +c {
     # Create a new instance of Services object.
-    # @param name, string, name of the Services object
+    # @param tenant, string, tenant of the Services object
     # @param password, string, password to lock (empty string means no password)
     # @param http, HttpClient object, http client used for all calls made by applications
     # @param webSocketClient, WebSocketClient object, socket through which applications observe and get notified (explorer, DBs ...)
@@ -25,7 +25,7 @@ Services = interface +c {
     # @param configuration, DynamicObject object, desired configuration
     # @return Services object, instance of Services
     static newInstance(
-        name: string,
+        tenant: string,
         password: string,
         httpClient: HttpClient,
         webSocketClient: WebSocketClient,
@@ -39,19 +39,19 @@ Services = interface +c {
 
     # Return used logger to dump logs in defined log path by PathResolver.
     # @return Logger object
-    getLogger(): Logger;
+    const getLogger(): Logger;
 
-    # Return the name of the Services object
+    # Return the tenant of the Services object
     # @return string
-    getName(): string;
+    const getTenant(): string;
 
     # Return preferences (deduced from configuration).
     # @return Preferences object
-    getPreferences(): Preferences;
+    const getPreferences(): Preferences;
 
     # Get event bus (handler).
     # @param EventBus object
-    getEventBus(): EventBus;
+    const getEventBus(): EventBus;
 
     # Return last block of blockchain of a given currency (if it is supported by the wallet pool).
     # @param name, string, name of currency we are interested into getting it's blockchain's last block
@@ -113,10 +113,10 @@ ServicesBuilder = interface +c {
     # @param ServicesBuilder object, instance with services thread dispatcher set
     setThreadDispatcher(dispatcher: ThreadDispatcher): ServicesBuilder;
 
-    # Set name.
-    # @param name, string
-    # @return ServicesBuilder object, instance with services name set
-    setName(name: string): ServicesBuilder;
+    # Set tenant.
+    # @param tenant, string
+    # @return ServicesBuilder object, instance with services tenant set
+    setTenant(tenant: string): ServicesBuilder;
 
     # Set password.
     # @param password, string

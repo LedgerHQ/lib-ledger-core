@@ -1,7 +1,8 @@
+#include <core/Services.hpp>
 #include <core/api/PoolConfiguration.hpp>
 #include <core/api/Configuration.hpp>
 #include <core/api/ConfigurationDefaults.hpp>
-#include <core/Services.hpp>
+#include <core/debug/LoggerApi.hpp>
 
 namespace ledger {
     namespace core {
@@ -133,11 +134,11 @@ namespace ledger {
             return _configuration;
         }
 
-        const std::string &Services::getTenant() const {
+        std::string Services::getTenant() const {
             return _tenant;
         }
 
-        const std::string Services::getPassword() const {
+        std::string Services::getPassword() const {
             return _password;
         }
 
@@ -216,6 +217,14 @@ namespace ledger {
             });
         }
 
+        void Services::changePassword(
+            const std::string & oldPassword,
+            const std::string & newPassword,
+            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            changePassword(oldPassword, newPassword).callback(_threadDispatcher->getMainExecutionContext(), callback);
+        }
+
         Future<api::ErrorCode> Services::freshResetAll() {
             auto self = shared_from_this();
 
@@ -240,6 +249,53 @@ namespace ledger {
 
         std::shared_ptr<api::ExecutionContext> Services::getThreadPoolExecutionContext() const {
             return _threadPoolExecutionContext;
+        }
+
+        std::shared_ptr<api::Logger> Services::getLogger() const {
+            return std::make_shared<LoggerApi>(_logger);
+        }
+
+        std::shared_ptr<api::Preferences> Services::getPreferences() const {
+            return getExternalPreferences();
+        }
+
+        void Services::getLastBlock(
+            std::string const& currencyName,
+            std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> const & callback
+        ) {
+            getLastBlock(currencyName).callback(_threadDispatcher->getMainExecutionContext(), callback);
+        }
+
+        void Services::freshResetAll(
+            std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> const& callback
+        ) {
+            freshResetAll().callback(_threadDispatcher->getMainExecutionContext(), callback);
+        }
+
+        std::shared_ptr<api::Services> api::Services::newInstance(
+            const std::string & name,
+            const std::string & password,
+            const std::shared_ptr<HttpClient> & httpClient,
+            const std::shared_ptr<WebSocketClient> & webSocketClient,
+            const std::shared_ptr<PathResolver> & pathResolver,
+            const std::shared_ptr<LogPrinter> & logPrinter,
+            const std::shared_ptr<ThreadDispatcher> & dispatcher,
+            const std::shared_ptr<RandomNumberGenerator> & rng,
+            const std::shared_ptr<DatabaseBackend> & backend,
+            const std::shared_ptr<DynamicObject> & configuration
+        ) {
+            return ledger::core::Services::newInstance(
+                name,
+                password,
+                httpClient,
+                webSocketClient,
+                pathResolver,
+                logPrinter,
+                dispatcher,
+                rng,
+                backend,
+                configuration
+            );
         }
     }
 }
