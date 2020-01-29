@@ -42,7 +42,7 @@
 
 #include <integration/BaseFixture.hpp>
 
-struct RippleKeychains : BaseFixture {
+class RippleKeychains : public BaseFixture {
 
 };
 
