@@ -5,7 +5,7 @@
 
 # Class representing a cache of wallets.
 WalletStore = interface +c {
-    # Return number of wallets instanciated under wallet pool.
+    # Return number of wallets instantiated under the store.
     # @param callback, Callback object returns a 32 bits integer, count of wallets
     getWalletCount(callback: callback2<void, optional<i32>, optional<Error>>);
 
@@ -28,14 +28,14 @@ WalletStore = interface +c {
     # > that might have been created before remain intact
     updateWalletConfig(name: string, configuration: DynamicObject, callback: callback2<void, optional<ErrorCode>, optional<Error>>);
 
-    # Instanciate a new wallet under wallet pool.
+    # Instantiate a new wallet under the store.
     # @param name, string, name of newly created wallet
     # @param currency, Currency object, currency of the wallet
     # @param configuration, DynamicObject object, configuration of wallet (preferences)
     # @param callback, Callback object returning a Wallet object
     createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: callback2<void, optional<Wallet>, optional<Error>>);
 
-    # Return all supported currencies by wallet pool, at least one wallet support one of returned currencies.
+    # Return all supported currencies by the wallet store, at least one wallet support one of returned currencies.
     # @param callback, ListCallback object, returns a list of Currency objects
     getCurrencies(callback: callback2<void, optional<list<Currency>>, optional<Error>>);
 
