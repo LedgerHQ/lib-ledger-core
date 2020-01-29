@@ -264,7 +264,7 @@ TEST_F(EthereumKeychains, EthereumDerivationSchemes) {
     auto configuration = DynamicObject::newInstance();
 
     auto walletStore = newWalletStore(services);
-    walletStore->addCurrency(ledger::core::currencies::ethereum());
+    wait(walletStore->addCurrency(ledger::core::currencies::ethereum()));
 
     auto factory = std::make_shared<EthereumLikeWalletFactory>(currencies::ethereum(), services);
     walletStore->registerFactory(currencies::ethereum(), factory);

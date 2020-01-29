@@ -62,7 +62,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         auto services = newDefaultServices();
 
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(ledger::core::currencies::ethereum());
+        wait(walletStore->addCurrency(ledger::core::currencies::ethereum()));
 
         auto factory = std::make_shared<EthereumLikeWalletFactory>(ledger::core::currencies::ethereum(), services);
         walletStore->registerFactory(ledger::core::currencies::ethereum(), factory);
@@ -162,7 +162,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         auto services = newDefaultServices();
 
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(ledger::core::currencies::ethereum());
+        wait(walletStore->addCurrency(ledger::core::currencies::ethereum()));
 
         auto factory = std::make_shared<EthereumLikeWalletFactory>(ledger::core::currencies::ethereum(), services);
         walletStore->registerFactory(ledger::core::currencies::ethereum(), factory);
@@ -181,7 +181,7 @@ TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
     {
         auto services = newDefaultServices();
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(ledger::core::currencies::ethereum());
+        wait(walletStore->addCurrency(ledger::core::currencies::ethereum()));
 
         auto factory = std::make_shared<EthereumLikeWalletFactory>(ledger::core::currencies::ethereum(), services);
         walletStore->registerFactory(ledger::core::currencies::ethereum(), factory);
@@ -239,7 +239,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
         //configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "http://eth-mainnet.explorers.dev.aws.ledger.fr:80");
 
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(ledger::core::currencies::ethereum());
+        wait(walletStore->addCurrency(ledger::core::currencies::ethereum()));
 
         auto factory = std::make_shared<EthereumLikeWalletFactory>(ledger::core::currencies::ethereum(), services);
         walletStore->registerFactory(ledger::core::currencies::ethereum(), factory);
@@ -314,7 +314,7 @@ TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/<account>");
 
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(ledger::core::currencies::ethereum_classic());
+        wait(walletStore->addCurrency(ledger::core::currencies::ethereum_classic()));
 
         auto factory = std::make_shared<EthereumLikeWalletFactory>(ledger::core::currencies::ethereum_classic(), services);
         walletStore->registerFactory(ledger::core::currencies::ethereum_classic(), factory);
@@ -407,7 +407,7 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
         );
 
         auto walletStore = newWalletStore(services);
-        walletStore->addCurrency(ledger::core::currencies::ethereum());
+        wait(walletStore->addCurrency(ledger::core::currencies::ethereum()));
 
         auto factory = std::make_shared<EthereumLikeWalletFactory>(ledger::core::currencies::ethereum(), services);
         walletStore->registerFactory(ledger::core::currencies::ethereum(), factory);
