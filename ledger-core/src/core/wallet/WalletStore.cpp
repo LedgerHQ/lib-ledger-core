@@ -19,8 +19,32 @@ namespace ledger {
             return Option<api::Currency>();
         }
 
+        void WalletStore::getCurrency(
+            const std::string & name,
+            const std::function<void(std::experimental::optional<api::Currency>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            auto self = shared_from_this();
+            Future<api::Currency>::async(_services->getDispatcher()->getMainExecutionContext(), [self, name] () {
+                auto currency = self->getCurrency(name);
+                if (currency.isEmpty()) {
+                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' doesn't exist", name);
+                }
+                return currency.getValue();
+            }).callback(self->_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         std::vector<api::Currency> const& WalletStore::getCurrencies() const {
             return _currencies;
+        }
+
+        void WalletStore::getCurrencies(
+            const std::function<void(std::experimental::optional<std::vector<api::Currency>>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            auto self = shared_from_this();
+            Future<std::vector<api::Currency>>::async(_services->getDispatcher()->getMainExecutionContext(), [self] () {
+                auto currencies = self->getCurrencies();
+                return currencies;
+            }).callback(self->_services->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         Future<Unit> WalletStore::addCurrency(api::Currency const& currency) {
@@ -73,6 +97,14 @@ namespace ledger {
             });
         }
 
+        void WalletStore::getWalletCount(
+            const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            getWalletCount().map<int32_t>(_services->getContext(), [] (const int64_t count) {
+                return (int32_t) count;
+            }).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         Future<std::vector<std::shared_ptr<AbstractWallet>>> WalletStore::getWallets(
             int64_t from,
             int64_t size
@@ -93,6 +125,22 @@ namespace ledger {
             });
         }
 
+        void WalletStore::getWallets(
+            int32_t from,
+            int32_t size,
+            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Wallet>>>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            getWallets(from, size)
+            .map<std::vector<std::shared_ptr<api::Wallet>>>(_services->getContext(), [] (const std::vector<std::shared_ptr<AbstractWallet>>& wallets) {
+                auto size = wallets.size();
+                std::vector<std::shared_ptr<api::Wallet>> out(size);
+                for (auto i = 0; i < size; i++) {
+                    out[i] = wallets[i];
+                }
+                return out;
+            }).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         FuturePtr<AbstractWallet> WalletStore::getWallet(std::string const& name) {
             auto it = _wallets.find(WalletDatabaseEntry::createWalletUid(_services->getTenant(), name));
             if (it != _wallets.end()) {
@@ -111,6 +159,13 @@ namespace ledger {
                 }
                 return self->buildWallet(entry.getValue());
             });
+        }
+
+        void WalletStore::getWallet(
+            const std::string & name,
+            const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            getWallet(name).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         Future<api::ErrorCode> WalletStore::updateWalletConfig(
@@ -138,6 +193,14 @@ namespace ledger {
                 self->_wallets[walletEntry.uid] = self->getFactory(walletEntry.currencyName)->build(walletEntry);
                 return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
             });
+        }
+
+        void WalletStore::updateWalletConfig(
+            const std::string & name,
+            const std::shared_ptr<api::DynamicObject> & configuration,
+            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            updateWalletConfig(name, configuration).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         Future<std::vector<std::string>> WalletStore::getWalletNames(
@@ -197,6 +260,15 @@ namespace ledger {
             });
         }
 
+        void WalletStore::createWallet(
+            const std::string & name,
+            const api::Currency & currency,
+            const std::shared_ptr<api::DynamicObject> & configuration,
+            const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            createWallet(name, currency.name, configuration).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         Future<api::ErrorCode> WalletStore::eraseDataSince(const std::chrono::system_clock::time_point & date) {
             auto self = shared_from_this();
             auto name = _services->getTenant();
@@ -248,6 +320,13 @@ namespace ledger {
                 self->_services->logger()->debug("Finish erasing data of WalletStore : {}",name);
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
+        }
+
+        void WalletStore::eraseDataSince(
+            const std::chrono::system_clock::time_point & date,
+            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            eraseDataSince(date).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         bool WalletStore::registerFactory(
