@@ -80,8 +80,6 @@ const std::vector<DerivationSchemeData> derivationSchemeTestData = {
 };
 
 TEST_F(RippleKeychains, RippleDerivationSchemes) {
-    using namespace std;
-
     auto services = newDefaultServices();
     auto configuration = DynamicObject::newInstance();
 
