@@ -35,10 +35,6 @@
 #include "BaseFixture.hpp"
 #include "IntegrationEnvironment.hpp"
 
-api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO(
-        0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
-);
-
 api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO(
         0, {"main"}, {"84'/0'/0'"}, {"xpub6CMeLkY9TzXyLYXPWMXB5LWtprVABb6HwPEPXnEgESMNrSUBsvhXNsA7zKS1ZRKhUyQG4HjZysEP8v7gDNU4J6PvN5yLx4meEm3mpEapLMN"}
 );
@@ -119,7 +115,6 @@ void BaseFixture::SetUp() {
 void BaseFixture::TearDown() {
     ::testing::Test::TearDown();
 
-    qDebug() << "TEAR DOWN";
     resolver->clean();
 }
 
@@ -147,7 +142,7 @@ std::shared_ptr<WalletStore> BaseFixture::newWalletStore(
     return std::make_shared<WalletStore>(services);
 }
 
-void BaseFixture::createWallet(
+void BaseFixture::createWalletInDatabase(
     const std::shared_ptr<Services> &services,
     const std::string &walletName,
     const std::string &currencyName,
@@ -165,7 +160,7 @@ void BaseFixture::createWallet(
     WalletDatabaseHelper::putWallet(sql, entry);
 }
 
-void BaseFixture::createAccount( const std::shared_ptr<Services> &services,
+void BaseFixture::createAccountInDatabase(const std::shared_ptr<Services> &services,
     const std::string &walletName,
     int32_t index
 ) {
