@@ -41,6 +41,7 @@
 #include <bitcoin/BitcoinNetworks.hpp>
 #include <bitcoin/BitcoinLikeCurrencies.hpp>
 #include <bitcoin/BitcoinLikeWallet.hpp>
+#include <bitcoin/database/Migrations.hpp>
 #include <bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 #include <bitcoin/factories/BitcoinLikeCommonKeychainFactory.hpp>
 #include <bitcoin/factories/BitcoinLikeWalletFactory.hpp>
@@ -65,6 +66,8 @@ namespace ledger {
                 {api::KeychainEngines::BIP173_P2WPKH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2WPKHBitcoinLikeKeychain>>()},
                 {api::KeychainEngines::BIP173_P2WSH, std::make_shared<BitcoinLikeCommonKeychainFactory<P2WSHBitcoinLikeKeychain>>()}
             };
+
+            services->getDatabaseSessionPool()->forwardMigration<BitcoinMigration>();
         }
 
         std::shared_ptr<AbstractWallet> BitcoinLikeWalletFactory::build(const WalletDatabaseEntry &entry) {
