@@ -42,7 +42,7 @@
 #include <core/explorers/AbstractBlockchainExplorer.hpp>
 #include <core/math/BigInt.hpp>
 #include <core/utils/ConfigurationMatchable.hpp>
-#include <core/utils/optional.hpp>
+#include <core/utils/Optional.hpp>
 #include <core/utils/Option.hpp>
 
 namespace ledger {

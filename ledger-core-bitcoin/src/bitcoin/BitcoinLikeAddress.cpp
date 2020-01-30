@@ -37,7 +37,6 @@
 #include <core/crypto/HashAlgorithm.hpp>
 #include <core/crypto/HASH160.hpp>
 #include <core/math/Base58.hpp>
-#include <core/utils/DjinniHelpers.hpp>
 #include <core/utils/Exception.hpp>
 
 #include <bitcoin/BitcoinLikeAddress.hpp>
