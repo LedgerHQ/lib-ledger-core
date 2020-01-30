@@ -34,6 +34,7 @@
 #include <core/wallet/AbstractWallet.hpp>
 #include <core/wallet/WalletStore.hpp>
 #include <core/collections/DynamicObject.hpp>
+#include <core/api/ErrorCode.hpp>
 
 #include "BaseFixture.hpp"
 
@@ -51,6 +52,7 @@ public:
         std::string const &name,
         api::Currency const &currency,
         TestStrategy strategy,
+        std::shared_ptr<api::DynamicObject> configuration,
         FunctionType const &f) {
 
         auto services = newDefaultServices();
@@ -60,16 +62,14 @@ public:
         wait(walletStore->addCurrency(currency)); 
         walletStore->registerFactory(currency, factory);
 
-        auto wallet = [&]() {
-            switch (strategy) {
-                case TestStrategy::NEW_WALLET:
-                    return wait(walletStore->createWallet(name, currency.name, api::DynamicObject::newInstance()));
-                case TestStrategy::EXISTING_WALLET:
-                default:
-                    return wait(walletStore->getWallet(name));
+        if (strategy == TestStrategy::EXISTING_WALLET) {
+            if (configuration != nullptr) {
+                EXPECT_EQ(wait(walletStore->updateWalletConfig(name, configuration)), api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             }
-        }();
-             
-        f(wallet, walletStore);
+            f(wait(walletStore->getWallet(name)), walletStore);
+        }
+        else {
+            f(wait(walletStore->createWallet(name, currency.name, configuration)), walletStore);
+        }
     }
 };
