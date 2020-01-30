@@ -106,7 +106,7 @@ public:
         int32_t index
     );
 
-    template<class Account>
+    template<typename Account>
     std::shared_ptr<Account> createAccount(
         std::shared_ptr<AbstractWallet> const &wallet,
         int32_t index,
@@ -117,7 +117,7 @@ public:
         return std::dynamic_pointer_cast<Account>(wait(wallet->newAccountWithInfo(info)));
     }
 
-    template <class Account>
+    template <typename Account>
     std::shared_ptr<Account> createAccount(
         std::shared_ptr<AbstractWallet> const &wallet, 
         int32_t index,
