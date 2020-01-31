@@ -37,6 +37,13 @@ namespace ledger {
 			extern const std::string TX_4;
 			extern const std::string TX_5;
 			extern const std::string TX_6;
+			extern const core::api::ExtendedKeyAccountCreationInfo ETH_XPUB_INFO;
+			extern const core::api::ExtendedKeyAccountCreationInfo ETH_ROPSTEN_XPUB_INFO;
+			extern const core::api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO;
+			extern const core::api::AccountCreationInfo ETH_KEYS_INFO;
+			extern const core::api::AccountCreationInfo ETH_KEYS_INFO_VAULT;
+			extern const core::api::AccountCreationInfo ETH_KEYS_INFO_LIVE;
+			extern const core::api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
 
 			std::shared_ptr<core::EthereumLikeAccount> inflate(const std::shared_ptr<core::Services>& services, const std::shared_ptr<core::AbstractWallet>& wallet);
 		}
