@@ -38,15 +38,8 @@
 #include <core/Services.hpp>
 #include <core/api/Account.hpp>
 #include <core/api/AccountCreationInfo.hpp>
-#include <core/api/BigInt.hpp>
 #include <core/api/DynamicObject.hpp>
-#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
 #include <core/events/LambdaEventReceiver.hpp>
-#include <core/database/DatabaseSessionPool.hpp>
-#include <core/utils/JSONUtils.hpp>
-#include <core/wallet/AccountDatabaseHelper.hpp>
-#include <core/wallet/CurrencyBuilder.hpp>
-#include <core/wallet/WalletDatabaseHelper.hpp>
 #include <core/wallet/WalletStore.hpp>
 
 #include <async/AsyncWait.hpp>
@@ -59,23 +52,6 @@
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::qt; // Djeez
-
-extern api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO;
-extern api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO;
-extern api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO;
-extern api::ExtendedKeyAccountCreationInfo P2SH_XPUB_INFO;
-extern api::ExtendedKeyAccountCreationInfo ETH_XPUB_INFO;
-extern api::ExtendedKeyAccountCreationInfo ETH_ROPSTEN_XPUB_INFO;
-extern api::ExtendedKeyAccountCreationInfo ETH_MAIN_XPUB_INFO;
-extern api::AccountCreationInfo ETH_KEYS_INFO;
-extern api::AccountCreationInfo ETH_KEYS_INFO_VAULT;
-extern api::AccountCreationInfo ETH_KEYS_INFO_LIVE;
-extern api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
-extern api::AccountCreationInfo XTZ_KEYS_INFO;
-extern const std::string TX_1;
-extern const std::string TX_2;
-extern const std::string TX_3;
-extern const std::string TX_4;
 
 class BaseFixture : public ::testing::Test {
 public:
