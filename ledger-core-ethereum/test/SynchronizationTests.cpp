@@ -50,7 +50,10 @@
 
 #include <FakeHttpClient.hpp>
 
+#include "Fixtures.hpp"
+
 using namespace std;
+using namespace ledger::testing::eth_xpub;
 
 class EthereumLikeWalletSynchronization : public BaseFixture {
 };
