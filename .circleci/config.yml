@@ -5,6 +5,8 @@ dependencies:
     - ~/cmake-3.12.3
 jobs:
   build_linux_release:
+    environment:
+        CORE_SSL_1_1: arch_ssl_1_1
     docker:
       - image: debian:stretch
     working_directory: ~/lib-ledger-core
@@ -38,6 +40,14 @@ jobs:
           name: Copy_Artifacts
           command: |
             . .circleci/copy_artifacts.sh
+      - run:
+          name: Build_Library (with OpenSSL 1.1)
+          command: |
+            . .circleci/build_lib.sh Release $CORE_SSL_1_1
+      - run:
+          name: Copy_Artifacts (with OpenSSL 1.1)
+          command: |
+            . .circleci/copy_artifacts.sh Release $CORE_SSL_1_1
       - run:
           name: Build_Library_jni
           command: |

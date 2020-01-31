@@ -12,6 +12,8 @@ if [ "$unamestr" == "Linux" ]; then
 		export BUILD_TYPE=linux/jni
 	elif [ "$TARGET" == "android" ]; then
 		export BUILD_TYPE=android/${ARCH}
+	elif [ "$TARGET" == "$CORE_SSL_1_1" ]; then
+		export BUILD_TYPE=linux-$CORE_SSL_1_1
 	else
 		export BUILD_TYPE=linux
 	fi
