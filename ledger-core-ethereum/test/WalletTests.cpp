@@ -29,55 +29,52 @@
  *
  */
 
-#include <core/api/ErrorCode.hpp>
-#include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <gtest/gtest.h>
 
-#include <ethereum/EthereumLikeAccount.hpp>
+#include <core/api/ErrorCode.hpp>
+
 #include <ethereum/EthereumLikeCurrencies.hpp>
-#include <ethereum/EthereumLikeWallet.hpp>
 #include <ethereum/factories/EthereumLikeWalletFactory.hpp>
 
 #include <integration/WalletFixture.hpp>
-
-namespace {
-
-constexpr auto const OLD_NODE_ENDPOINT = "http://eth-ropsten.explorers.dev.aws.ledger.fr";
-constexpr auto const NEW_NODE_ENDPOINT = "http://eth-ropsten.explorers.prod.aws.ledger.fr";
-
-} // namespace
 
 class EthereumWallets : public WalletFixture<EthereumLikeWalletFactory> {
 
 };
 
 TEST_F(EthereumWallets, ChangeWalletConfig) {
-    auto currency = currencies::ethereum();
-    auto derivationScheme = "44'/<coin_type>'/<account>'/<node>/<address>";
+    auto const oldEndpoint = "http://eth-ropsten.explorers.dev.aws.ledger.fr";
+    auto const newEndpoint = "http://eth-ropsten.explorers.prod.aws.ledger.fr";
+    auto const derivationScheme = "44'/<coin_type>'/<account>'/<node>/<address>";
+    auto const walletName = "ethereum";
+    auto const currency = currencies::ethereum();
+
+    registerCurrency(currency);
     
     {
         auto configuration = api::DynamicObject::newInstance();
 
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, OLD_NODE_ENDPOINT);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, oldEndpoint);
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
         
-        testWallet("ethereum", currency, TestStrategy::NEW_WALLET, configuration, [&derivationScheme](auto wallet, auto walletStore) {
-            auto configuration = wallet->getConfiguration();
+        auto wallet = wait(walletStore->createWallet(walletName, currency.name, configuration));
+        auto walletConfiguration = wallet->getConfiguration();
             
-            EXPECT_EQ(configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), OLD_NODE_ENDPOINT);
-            EXPECT_EQ(configuration->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme); 
-        });
+        EXPECT_EQ(walletConfiguration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), oldEndpoint);
+        EXPECT_EQ(walletConfiguration->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);
     }
 
     {
         auto configuration = api::DynamicObject::newInstance();
 
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, NEW_NODE_ENDPOINT);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, newEndpoint);
 
-        testWallet("ethereum", currency, TestStrategy::EXISTING_WALLET, configuration, [&derivationScheme](auto wallet, auto walletStore) {
-            auto configuration = wallet->getConfiguration();
+        EXPECT_EQ(wait(walletStore->updateWalletConfig(walletName, configuration)), api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+        
+        auto wallet = wait(walletStore->getWallet(walletName));
+        auto walletConfiguration = wallet->getConfiguration();
             
-            EXPECT_EQ(configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), NEW_NODE_ENDPOINT);
-            EXPECT_EQ(configuration->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);  
-        });
+        EXPECT_EQ(walletConfiguration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), newEndpoint);
+        EXPECT_EQ(walletConfiguration->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);  
     }
 }

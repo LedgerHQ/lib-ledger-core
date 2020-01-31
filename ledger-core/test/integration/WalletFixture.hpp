@@ -40,36 +40,31 @@
 
 template <class WalletFactory>
 class WalletFixture : public BaseFixture {
-    using FunctionType = std::function<void(std::shared_ptr<AbstractWallet>, std::shared_ptr<WalletStore>)>;
-
 public:
-    enum class TestStrategy {
-        NEW_WALLET,
-        EXISTING_WALLET
-    };
+    static constexpr auto DEFAULT_PASSWORD = "";
+    static constexpr auto DEFAULT_TENANT = "default_tenant";
 
-    void testWallet(
-        std::string const &name,
-        api::Currency const &currency,
-        TestStrategy strategy,
-        std::shared_ptr<api::DynamicObject> configuration,
-        FunctionType const &f) {
+    void SetUp() override {
+        BaseFixture::SetUp();
 
-        auto services = newDefaultServices();
-        auto walletStore = newWalletStore(services);
-        auto factory = std::make_shared<WalletFactory>(currency, services);
+        services = newDefaultServices(DEFAULT_TENANT, DEFAULT_PASSWORD);
+        walletStore = newWalletStore(services);
+    }
+
+    void TearDown() override {
+        BaseFixture::TearDown();
+        
+        services.reset();
+        walletStore.reset();
+    }
+
+    void registerCurrency(api::Currency const &currency) {
+        auto walletFactory = std::make_shared<WalletFactory>(currency, services);
 
         wait(walletStore->addCurrency(currency)); 
-        walletStore->registerFactory(currency, factory);
-
-        if (strategy == TestStrategy::EXISTING_WALLET) {
-            if (configuration != nullptr) {
-                EXPECT_EQ(wait(walletStore->updateWalletConfig(name, configuration)), api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-            }
-            f(wait(walletStore->getWallet(name)), walletStore);
-        }
-        else {
-            f(wait(walletStore->createWallet(name, currency.name, configuration)), walletStore);
-        }
+        walletStore->registerFactory(currency, walletFactory);
     }
+
+    std::shared_ptr<Services> services;
+    std::shared_ptr<WalletStore> walletStore;
 };
