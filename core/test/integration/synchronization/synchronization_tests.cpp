@@ -135,7 +135,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumDGBXpubSynchronization) {
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-                EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "dgb11q9gmf0pv8jdymcly6lz6fl7lf6mhslsd7xydcrs");
+                EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6");
                 dispatcher->stop();
             });
 
