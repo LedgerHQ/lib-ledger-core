@@ -59,7 +59,7 @@ function generate_subcore_interface {
     # This option will be the name of the imported header and the correponding variable (defined
     # by EXPORT_MACRO_NAME option) should be exactly same name in upper case
 
-    ./djinni/src/run \
+    ../djinni/src/run \
         --idl $SUBCORE_DIR/idl/idl.djinni \
         --cpp-out $SUBCORE_API_DIR \
         --cpp-namespace ledger::core::api \

@@ -38,8 +38,10 @@
 #include <core/wallet/AbstractAccount.hpp>
 #include <core/wallet/Amount.hpp>
 
+#include <ripple/api/BoolCallback.hpp>
 #include <ripple/api/RippleLikeAccount.hpp>
 #include <ripple/api/RippleLikeTransactionBuilder.hpp>
+#include <ripple/api/StringCallback.hpp>
 #include <ripple/explorers/RippleLikeBlockchainExplorer.hpp>
 #include <ripple/observers/RippleLikeBlockchainObserver.hpp>
 #include <ripple/keychains/RippleLikeKeychain.hpp>
@@ -100,27 +102,27 @@ namespace ledger {
 
             void broadcastRawTransaction(
                 const std::vector<uint8_t> & transaction,
-                const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::StringCallback> & callback
             ) override;
 
             void broadcastTransaction(
                 const std::shared_ptr<api::RippleLikeTransaction> & transaction,
-                const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::StringCallback> & callback
             ) override;
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> buildTransaction() override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-            void getFees(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) override;
+            void getFees(const std::shared_ptr<api::AmountCallback> & callback) override;
             FuturePtr<api::Amount> getFees();
 
-            void getBaseReserve(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) override;
+            void getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) override;
             FuturePtr<api::Amount> getBaseReserve();
 
             void isAddressActivated(
                 const std::string& address,
-                const std::function<void(std::experimental::optional<bool>, std::experimental::optional<api::Error>)>& isActivated
+                const std::shared_ptr<api::BoolCallback> & isActivated
             ) override;
             Future<bool> isAddressActivated(const std::string &address);
 
