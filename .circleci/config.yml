@@ -47,7 +47,7 @@ jobs:
       - run:
           name: Copy_Artifacts (with OpenSSL 1.1)
           command: |
-            . .circleci/copy_artifacts.sh Release $CORE_SSL_1_1
+            . .circleci/copy_artifacts.sh $CORE_SSL_1_1 Release
       - run:
           name: Build_Library_jni
           command: |
