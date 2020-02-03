@@ -25,12 +25,12 @@ private:
     BitcoinLikeTransactionRequest();
     friend ::djinni::JniClass<BitcoinLikeTransactionRequest>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BitcoinLikeTransactionRequest") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/util/ArrayList;Ljava/util/ArrayList;LAmount;LAmount;Ljava/lang/Integer;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeTransactionRequest") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/util/ArrayList;Ljava/util/ArrayList;Lco/ledger/core/Amount;Lco/ledger/core/Amount;Ljava/lang/Integer;)V") };
     const jfieldID field_utxo { ::djinni::jniGetFieldID(clazz.get(), "utxo", "Ljava/util/ArrayList;") };
     const jfieldID field_outputs { ::djinni::jniGetFieldID(clazz.get(), "outputs", "Ljava/util/ArrayList;") };
-    const jfieldID field_baseFees { ::djinni::jniGetFieldID(clazz.get(), "baseFees", "LAmount;") };
-    const jfieldID field_totalFees { ::djinni::jniGetFieldID(clazz.get(), "totalFees", "LAmount;") };
+    const jfieldID field_baseFees { ::djinni::jniGetFieldID(clazz.get(), "baseFees", "Lco/ledger/core/Amount;") };
+    const jfieldID field_totalFees { ::djinni::jniGetFieldID(clazz.get(), "totalFees", "Lco/ledger/core/Amount;") };
     const jfieldID field_lockTime { ::djinni::jniGetFieldID(clazz.get(), "lockTime", "Ljava/lang/Integer;") };
 };
 

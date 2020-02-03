@@ -48,7 +48,7 @@ StellarLikeAsset = record {
 }
 
 StellarLikeOperationRecord = record {
-    hash: string;
+    operationHash: string;
     successful: bool;
     operationType: StellarLikeOperationType;
     transactionHash: string;

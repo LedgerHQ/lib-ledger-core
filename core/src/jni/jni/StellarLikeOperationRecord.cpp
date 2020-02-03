@@ -16,7 +16,7 @@ StellarLikeOperationRecord::~StellarLikeOperationRecord() = default;
 auto StellarLikeOperationRecord::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<JniType> {
     const auto& data = ::djinni::JniClass<StellarLikeOperationRecord>::get();
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
-                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.hash)),
+                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.operationHash)),
                                                            ::djinni::get(::djinni::Bool::fromCpp(jniEnv, c.successful)),
                                                            ::djinni::get(::djinni_generated::StellarLikeOperationType::fromCpp(jniEnv, c.operationType)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.transactionHash)),
@@ -31,7 +31,7 @@ auto StellarLikeOperationRecord::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     ::djinni::JniLocalScope jscope(jniEnv, 8);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<StellarLikeOperationRecord>::get();
-    return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_hash)),
+    return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_operationHash)),
             ::djinni::Bool::toCpp(jniEnv, jniEnv->GetBooleanField(j, data.field_successful)),
             ::djinni_generated::StellarLikeOperationType::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_operationType)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_transactionHash)),

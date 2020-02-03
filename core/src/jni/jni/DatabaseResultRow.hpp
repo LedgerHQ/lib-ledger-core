@@ -48,7 +48,7 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseResultRow, ::djinni_generated::DatabaseResultRow>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseResultRow") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseResultRow") };
     const jmethodID method_isNullAtPos { ::djinni::jniGetMethodID(clazz.get(), "isNullAtPos", "(I)Z") };
     const jmethodID method_getColumnName { ::djinni::jniGetMethodID(clazz.get(), "getColumnName", "(I)Ljava/lang/String;") };
     const jmethodID method_getShortByPos { ::djinni::jniGetMethodID(clazz.get(), "getShortByPos", "(I)S") };
@@ -57,7 +57,7 @@ private:
     const jmethodID method_getDoubleByPos { ::djinni::jniGetMethodID(clazz.get(), "getDoubleByPos", "(I)D") };
     const jmethodID method_getLongByPos { ::djinni::jniGetMethodID(clazz.get(), "getLongByPos", "(I)J") };
     const jmethodID method_getStringByPos { ::djinni::jniGetMethodID(clazz.get(), "getStringByPos", "(I)Ljava/lang/String;") };
-    const jmethodID method_getBlobByPos { ::djinni::jniGetMethodID(clazz.get(), "getBlobByPos", "(I)LDatabaseBlob;") };
+    const jmethodID method_getBlobByPos { ::djinni::jniGetMethodID(clazz.get(), "getBlobByPos", "(I)Lco/ledger/core/DatabaseBlob;") };
 };
 
 }  // namespace djinni_generated

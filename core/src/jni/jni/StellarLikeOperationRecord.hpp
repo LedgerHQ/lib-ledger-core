@@ -25,15 +25,15 @@ private:
     StellarLikeOperationRecord();
     friend ::djinni::JniClass<StellarLikeOperationRecord>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StellarLikeOperationRecord") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;ZLStellarLikeOperationType;Ljava/lang/String;LStellarLikeAsset;LStellarLikeAsset;LAmount;)V") };
-    const jfieldID field_hash { ::djinni::jniGetFieldID(clazz.get(), "hash", "Ljava/lang/String;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeOperationRecord") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;ZLco/ledger/core/StellarLikeOperationType;Ljava/lang/String;Lco/ledger/core/StellarLikeAsset;Lco/ledger/core/StellarLikeAsset;Lco/ledger/core/Amount;)V") };
+    const jfieldID field_operationHash { ::djinni::jniGetFieldID(clazz.get(), "operationHash", "Ljava/lang/String;") };
     const jfieldID field_successful { ::djinni::jniGetFieldID(clazz.get(), "successful", "Z") };
-    const jfieldID field_operationType { ::djinni::jniGetFieldID(clazz.get(), "operationType", "LStellarLikeOperationType;") };
+    const jfieldID field_operationType { ::djinni::jniGetFieldID(clazz.get(), "operationType", "Lco/ledger/core/StellarLikeOperationType;") };
     const jfieldID field_transactionHash { ::djinni::jniGetFieldID(clazz.get(), "transactionHash", "Ljava/lang/String;") };
-    const jfieldID field_asset { ::djinni::jniGetFieldID(clazz.get(), "asset", "LStellarLikeAsset;") };
-    const jfieldID field_sourceAsset { ::djinni::jniGetFieldID(clazz.get(), "sourceAsset", "LStellarLikeAsset;") };
-    const jfieldID field_sourceAmount { ::djinni::jniGetFieldID(clazz.get(), "sourceAmount", "LAmount;") };
+    const jfieldID field_asset { ::djinni::jniGetFieldID(clazz.get(), "asset", "Lco/ledger/core/StellarLikeAsset;") };
+    const jfieldID field_sourceAsset { ::djinni::jniGetFieldID(clazz.get(), "sourceAsset", "Lco/ledger/core/StellarLikeAsset;") };
+    const jfieldID field_sourceAmount { ::djinni::jniGetFieldID(clazz.get(), "sourceAmount", "Lco/ledger/core/Amount;") };
 };
 
 }  // namespace djinni_generated

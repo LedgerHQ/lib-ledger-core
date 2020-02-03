@@ -25,7 +25,7 @@ private:
     BitcoinLikeSignature();
     friend ::djinni::JniClass<BitcoinLikeSignature>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BitcoinLikeSignature") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikeSignature") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "([B[B[B)V") };
     const jfieldID field_r { ::djinni::jniGetFieldID(clazz.get(), "r", "[B") };
     const jfieldID field_s { ::djinni::jniGetFieldID(clazz.get(), "s", "[B") };

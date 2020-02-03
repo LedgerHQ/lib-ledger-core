@@ -43,11 +43,11 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::HttpUrlConnection, ::djinni_generated::HttpUrlConnection>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("HttpUrlConnection") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/HttpUrlConnection") };
     const jmethodID method_getStatusCode { ::djinni::jniGetMethodID(clazz.get(), "getStatusCode", "()I") };
     const jmethodID method_getStatusText { ::djinni::jniGetMethodID(clazz.get(), "getStatusText", "()Ljava/lang/String;") };
     const jmethodID method_getHeaders { ::djinni::jniGetMethodID(clazz.get(), "getHeaders", "()Ljava/util/HashMap;") };
-    const jmethodID method_readBody { ::djinni::jniGetMethodID(clazz.get(), "readBody", "()LHttpReadBodyResult;") };
+    const jmethodID method_readBody { ::djinni::jniGetMethodID(clazz.get(), "readBody", "()Lco/ledger/core/HttpReadBodyResult;") };
 };
 
 }  // namespace djinni_generated

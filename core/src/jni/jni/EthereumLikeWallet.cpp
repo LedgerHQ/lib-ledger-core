@@ -5,12 +5,12 @@
 
 namespace djinni_generated {
 
-EthereumLikeWallet::EthereumLikeWallet() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeWallet, EthereumLikeWallet>("EthereumLikeWallet$CppProxy") {}
+EthereumLikeWallet::EthereumLikeWallet() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeWallet, EthereumLikeWallet>("co/ledger/core/EthereumLikeWallet$CppProxy") {}
 
 EthereumLikeWallet::~EthereumLikeWallet() = default;
 
 
-CJNIEXPORT void JNICALL Java_EthereumLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

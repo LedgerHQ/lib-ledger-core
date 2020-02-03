@@ -17,7 +17,7 @@ namespace ledger { namespace core { namespace api {
 class Amount;
 
 struct StellarLikeOperationRecord final {
-    std::string hash;
+    std::string operationHash;
     bool successful;
     StellarLikeOperationType operationType;
     std::string transactionHash;
@@ -25,14 +25,14 @@ struct StellarLikeOperationRecord final {
     std::experimental::optional<StellarLikeAsset> sourceAsset;
     std::shared_ptr<Amount> sourceAmount;
 
-    StellarLikeOperationRecord(std::string hash_,
+    StellarLikeOperationRecord(std::string operationHash_,
                                bool successful_,
                                StellarLikeOperationType operationType_,
                                std::string transactionHash_,
                                StellarLikeAsset asset_,
                                std::experimental::optional<StellarLikeAsset> sourceAsset_,
                                std::shared_ptr<Amount> sourceAmount_)
-    : hash(std::move(hash_))
+    : operationHash(std::move(operationHash_))
     , successful(std::move(successful_))
     , operationType(std::move(operationType_))
     , transactionHash(std::move(transactionHash_))
@@ -42,7 +42,7 @@ struct StellarLikeOperationRecord final {
     {}
 
     StellarLikeOperationRecord(const StellarLikeOperationRecord& cpy) {
-       this->hash = cpy.hash;
+       this->operationHash = cpy.operationHash;
        this->successful = cpy.successful;
        this->operationType = cpy.operationType;
        this->transactionHash = cpy.transactionHash;
@@ -55,7 +55,7 @@ struct StellarLikeOperationRecord final {
 
 
     StellarLikeOperationRecord& operator=(const StellarLikeOperationRecord& cpy) {
-       this->hash = cpy.hash;
+       this->operationHash = cpy.operationHash;
        this->successful = cpy.successful;
        this->operationType = cpy.operationType;
        this->transactionHash = cpy.transactionHash;
@@ -67,12 +67,12 @@ struct StellarLikeOperationRecord final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(hash, successful, operationType, transactionHash, asset, sourceAsset, sourceAmount);
+        archive(operationHash, successful, operationType, transactionHash, asset, sourceAsset, sourceAmount);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(hash, successful, operationType, transactionHash, asset, sourceAsset, sourceAmount);
+        archive(operationHash, successful, operationType, transactionHash, asset, sourceAsset, sourceAmount);
     }
 };
 

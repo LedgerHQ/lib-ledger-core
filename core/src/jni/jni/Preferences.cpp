@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-Preferences::Preferences() : ::djinni::JniInterface<::ledger::core::api::Preferences, Preferences>("Preferences$CppProxy") {}
+Preferences::Preferences() : ::djinni::JniInterface<::ledger::core::api::Preferences, Preferences>("co/ledger/core/Preferences$CppProxy") {}
 
 Preferences::~Preferences() = default;
 
 
-CJNIEXPORT void JNICALL Java_Preferences_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Preferences_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_Preferences_00024CppProxy_nativeDestroy(JNIEnv* jni
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_Preferences_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_fallbackValue)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_fallbackValue)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -31,7 +31,7 @@ CJNIEXPORT jstring JNICALL Java_Preferences_00024CppProxy_native_1getString(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_Preferences_00024CppProxy_native_1getInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jint j_fallbackValue)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1getInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jint j_fallbackValue)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -42,7 +42,7 @@ CJNIEXPORT jint JNICALL Java_Preferences_00024CppProxy_native_1getInt(JNIEnv* jn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jlong JNICALL Java_Preferences_00024CppProxy_native_1getLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jlong j_fallbackValue)
+CJNIEXPORT jlong JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1getLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jlong j_fallbackValue)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -53,7 +53,7 @@ CJNIEXPORT jlong JNICALL Java_Preferences_00024CppProxy_native_1getLong(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_Preferences_00024CppProxy_native_1getBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jboolean j_fallbackValue)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1getBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jboolean j_fallbackValue)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +64,7 @@ CJNIEXPORT jboolean JNICALL Java_Preferences_00024CppProxy_native_1getBoolean(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Preferences_00024CppProxy_native_1getStringArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_fallbackValue)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1getStringArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_fallbackValue)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -75,7 +75,7 @@ CJNIEXPORT jobject JNICALL Java_Preferences_00024CppProxy_native_1getStringArray
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_Preferences_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_fallbackValue)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_fallbackValue)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -86,7 +86,7 @@ CJNIEXPORT jbyteArray JNICALL Java_Preferences_00024CppProxy_native_1getData(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_Preferences_00024CppProxy_native_1contains(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1contains(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -96,7 +96,7 @@ CJNIEXPORT jboolean JNICALL Java_Preferences_00024CppProxy_native_1contains(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Preferences_00024CppProxy_native_1edit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Preferences_00024CppProxy_native_1edit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
