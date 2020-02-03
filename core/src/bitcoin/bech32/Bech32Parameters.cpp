@@ -89,7 +89,7 @@ namespace ledger {
                     //https://github.com/litecoin-project/litecoin/blob/master/src/bech32.cpp
                     static const Bech32Struct LITECOIN = {
                             "litecoin",
-                            "ltc1",
+                            "ltc",
                             "1",
                             6,
                             {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
