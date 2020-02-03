@@ -24,7 +24,7 @@ function generate_core_interface {
     rm -rf $CORE_API_DIR
     mkdir -p $CORE_API_DIR
 
-    ./djinni/src/run \
+    ../djinni/src/run \
         --idl $CORE_IDL_DIR/core.djinni \
         --cpp-out $CORE_API_DIR \
         --cpp-namespace ledger::core::api \
@@ -32,7 +32,7 @@ function generate_core_interface {
         --cpp-optional-header "<core/utils/Optional.hpp>" \
         --export-header-name libcore_export \
         --jni-include-cpp-prefix "../../api/" \
-        --jni-out $CORE_CPP_JNI_DIRECTORY/jni \
+        --jni-out $CORE_CPP_JNI_DIR \
         --java-out api/core/java \
         --java-package co.ledger.core \
         --yaml-out $CORE_IDL_DIR \

@@ -3,6 +3,7 @@
 @import "amount.djinni"
 @import "block.djinni"
 @import "configuration.djinni"
+@import "callback.djinni"
 @import "crypto.djinni"
 @import "currency.djinni"
 @import "database.djinni"
