@@ -9,9 +9,13 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(
-    ledger-core-ethereum-tests main.cpp Fixtures.cpp
-    KeychainTests.cpp SynchronizationTests.cpp TransactionTests.cpp
+add_executable(ledger-core-ethereum-tests 
+    main.cpp 
+    Fixtures.cpp
+    WalletTests.cpp
+    KeychainTests.cpp 
+    SynchronizationTests.cpp 
+    TransactionTests.cpp
 )
 
 target_link_libraries(ledger-core-ethereum-tests Core::ledger-core-static)
@@ -25,6 +29,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE
 
 add_subdirectory(lib/googletest)
 
-add_test (NAME Ethereum-transaction COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumMakeTransaction.*)
-add_test (NAME Ethereum-keychain COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumKeychains.*)
-add_test (NAME Ethereum-synchronization COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumLikeWalletSynchronization.*)
+add_test(NAME Ethereum-wallet COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumWallets.*)
+add_test(NAME Ethereum-transaction COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumMakeTransaction.*)
+add_test(NAME Ethereum-keychain COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumKeychains.*)
+add_test(NAME Ethereum-synchronization COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumLikeWalletSynchronization.*)
