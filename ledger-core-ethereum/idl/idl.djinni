@@ -1,6 +1,7 @@
 @extern "../../ledger-core/idl/core.yaml"
 
 @import "addresses.djinni"
+@import "callback.djinni"
 @import "erc20.djinni"
 
 # Class representing a Ethereum transaction.
