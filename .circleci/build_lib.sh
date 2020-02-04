@@ -29,6 +29,10 @@ function command_Debug {
   add_to_cmake_params -DBUILD_TESTS=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
 }
 
+function command_arch_ssl_1_1 {
+  add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Release" "-DSYS_OPENSSL=ON" "-DOPENSSL_USE_STATIC_LIBS=TRUE"
+}
+
 function command_ios {
   export POLLY_IOS_BUNDLE_IDENTIFIER='com.ledger.core'
   #Needed for nocodesign toolchains
