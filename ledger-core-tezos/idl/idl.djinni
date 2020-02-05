@@ -98,7 +98,7 @@ TezosLikeTransactionBuilder = interface +c {
 	setStorageLimit(storageLimit: BigInt): TezosLikeTransactionBuilder;
 
 	# Build a transaction from the given builder parameters.
-	build(callback: callback2<void, TezosLikeTransaction, optional<Error>>);
+	build(callback: callback2<TezosLikeTransaction>);
 
 	# Creates a clone of this builder.
 	# @return A copy of the current builder instance.
@@ -113,21 +113,21 @@ TezosLikeTransactionBuilder = interface +c {
 
 #Class representing a Tezos account
 TezosLikeAccount = interface +c {
-	broadcastRawTransaction(transaction: binary, callback: callback2<void, optional<string>, optional<Error>>);
-	broadcastTransaction(transaction: TezosLikeTransaction, callback: callback2<void, optional<string>, optional<Error>>);
+	broadcastRawTransaction(transaction: binary, callback: callback2<optional<string>>);
+	broadcastTransaction(transaction: TezosLikeTransaction, callback: callback2<optional<string>>);
 	buildTransaction(): TezosLikeTransactionBuilder;
 	# Get needed storage to proceed a tx
 	# @param address to which we want to send tx
 	# @return needed storage to interact with address/contract
 	# Note: same note as for getGasPrice method on EthereumLikeAccount
-	getStorage(address: string, callback: callback2<void, optional<BigInt>, optional<Error>>);
+	getStorage(address: string, callback: callback2<optional<BigInt>>);
 	# Get estimated gas limit to set so the transaction will succeed
 	# The passed address could be implicit address or contract
 	# This estimation is based on X last incoming txs (to address) that succeeded
 	# Note: same note as for getFees method on BitcoinLikeAccount
-	getEstimatedGasLimit(address: string, callback: callback2<void, optional<BigInt>, optional<Error>>);
+	getEstimatedGasLimit(address: string, callback: callback2<optional<BigInt>>);
 	# Get fees from network
-	getFees(callback: callback2<void, optional<BigInt>, optional<Error>>);
+	getFees(callback: callback2<optional<BigInt>>);
 	# Get originated accounts by current account
 	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
 }
@@ -140,9 +140,9 @@ TezosLikeOriginatedAccount = interface +c {
 	# Could be empty if not yet revealed
 	getPublicKey(): optional<string>;
 	# Get balance of originated account
-	getBalance(callback: callback2<void, Amount, optional<Error>>);
+	getBalance(callback: callback2<Amount>);
 	# Get balance history of originated account
-	getBalanceHistory(start: date, end: date, period: TimePeriod, callback: callback2<void, optional<list<Amount>>, optional<Error>>);
+	getBalanceHistory(start: date, end: date, period: TimePeriod, callback: callback2<optional<list<Amount>>>);
 	# Know if possible to spend from this account
 	# By default originations from libcore set it to true
 	isSpendable(): bool;

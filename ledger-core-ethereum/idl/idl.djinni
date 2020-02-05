@@ -105,7 +105,7 @@ EthereumLikeTransactionBuilder = interface +c {
     setInputData(data: binary): EthereumLikeTransactionBuilder;
 
     # Build a transaction from the given builder parameters.
-    build(callback: callback2<void, optional<EthereumLikeTransaction>, optional<Error>>);
+    build(callback: callback2<optional<EthereumLikeTransaction>>);
 
     # Create a clone of this builder.
     # @return A copy of the current builder instance.
@@ -123,9 +123,9 @@ EthereumLikeTransactionBuilder = interface +c {
 # Class representing a Ethereum account.
 EthereumLikeAccount = interface +c {
     # Send a raw (binary) transaction on the Ethereum blockchain.
-    broadcastRawTransaction(transaction: binary, callback: callback2<void, optional<string>, optional<Error>>);
+    broadcastRawTransaction(transaction: binary, callback: callback2<optional<string>>);
     # Send a transaction on the Ethereum blockchain.
-    broadcastTransaction(transaction: EthereumLikeTransaction, callback: callback2<void, optional<string>, optional<Error>>);
+    broadcastTransaction(transaction: EthereumLikeTransaction, callback: callback2<optional<string>>);
     # Get a builder object to construct transactions.
     buildTransaction(): EthereumLikeTransactionBuilder;
     # Get the list of ERC20 accounts associated with this Ethereum account.
@@ -135,20 +135,20 @@ EthereumLikeAccount = interface +c {
     # but since EthereumLikeWallet is not used anywhere, it's better to keep all
     # specific methods under the same specific class so it will be easy to segratate
     # when the right time comes !
-    getGasPrice(callback: callback2<void, BigInt, optional<Error>>);
+    getGasPrice(callback: callback2<BigInt>);
     # Get estimated gas limit to set so the transaction will succeed
     # The passed address could be EOA or contract
     # This estimation is based on X last incoming txs (to address) that succeeded
     # Note: same note as above
-    getEstimatedGasLimit(address: string, callback: callback2<void, BigInt, optional<Error>>);
+    getEstimatedGasLimit(address: string, callback: callback2<BigInt>);
     # Get balance of ERC20 token
     # The passed address is an ERC20 account
     # Note: same note as above
-    getERC20Balance(erc20Address: string, callback: callback2<void, BigInt, optional<Error>>);
+    getERC20Balance(erc20Address: string, callback: callback2<BigInt>);
     # Get balance of ERC20 tokens
     # The passed addresses are ERC20 accounts
     # Note: same note as above
-    getERC20Balances(erc20Addresses: list<string>, callback: callback2<void, list<BigInt>, optional<Error>>);
+    getERC20Balances(erc20Addresses: list<string>, callback: callback2<list<BigInt>>);
 }
 
 # TODO I think we need to remove this (useful?) interface

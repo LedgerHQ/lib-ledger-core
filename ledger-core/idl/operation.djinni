@@ -97,7 +97,7 @@ OperationQuery = interface +c {
 
     # Execute query to retrieve operations.
     # @param callback, if execute method succeed, return a list of Operation objects
-    execute(callback: callback2<void, optional<list<Operation>>, optional<Error>>);
+    execute(callback: callback2<optional<list<Operation>>>);
 }
 
 # Class representing an operation.

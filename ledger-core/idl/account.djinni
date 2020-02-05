@@ -44,7 +44,7 @@ Account = interface +c {
 
     # Get balance of account.
     # @param callback, if getBalacne, Callback returning an Amount object which represents account's balance
-    getBalance(callback: callback2<void, optional<Amount>, optional<Error>>);
+    getBalance(callback: callback2<optional<Amount>>);
 
     # Get balance of account at a precise interval with a certain granularity.
     # @param start, lower bound of search range
@@ -55,7 +55,7 @@ Account = interface +c {
         start: string,
         end: string,
         period: TimePeriod,
-        callback: callback2<void, optional<list<Amount>>, optional<Error>>
+        callback: callback2<optional<list<Amount>>>
     );
 
     # Get synchronization status of account.
@@ -79,7 +79,7 @@ Account = interface +c {
     getOperationPreferences(uid: string): Preferences;
 
     #TODO
-    getFreshPublicAddresses(callback: callback2<void, optional<list<Address>>, optional<Error>>);
+    getFreshPublicAddresses(callback: callback2<optional<list<Address>>>);
 
     # Get event bus through which account is notified on synchronization status.
     # @return EventBus object
@@ -97,14 +97,14 @@ Account = interface +c {
 
     # Get Last block of blockchain on which account operates.
     # @param callback, Callback returning, if getLastBlock succeeds, a Block object
-    getLastBlock(callback: callback2<void, optional<Block>, optional<Error>>);
+    getLastBlock(callback: callback2<optional<Block>>);
 
     # Get the key used to generate the account.
     getRestoreKey(): string;
 
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
-    eraseDataSince(date: date, callback: callback2<void, optional<ErrorCode>, optional<Error>>);
+    eraseDataSince(date: date, callback: callback2<optional<ErrorCode>>);
 }
 
 # Structure of informations needed for account creation.
