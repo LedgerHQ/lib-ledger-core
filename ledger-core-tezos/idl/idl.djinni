@@ -1,6 +1,7 @@
 @extern "../../ledger-core/idl/core.yaml"
 
 @import "addresses.djinni"
+@import "callback.djinni"
 @import "configuration.djinni"
 
 TezosOperationTag = enum {

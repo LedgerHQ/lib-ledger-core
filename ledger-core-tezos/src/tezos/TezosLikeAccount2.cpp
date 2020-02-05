@@ -198,8 +198,10 @@ namespace ledger {
             return _keychain->getRestoreKey();
         }
 
-        void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                                       const std::function<void(std::experimental::optional<std::string>, const std::experimental::optional<api::Error>)> &callback) {
+        void TezosLikeAccount::broadcastRawTransaction(
+            const std::vector<uint8_t> &transaction,
+            const std::shared_ptr<api::StringCallback> & callback
+        ) {
             _explorer->pushTransaction(transaction)
                     .map<std::string>(getContext(),
                                       [](const String &seq) -> std::string {
@@ -216,8 +218,10 @@ namespace ledger {
                     .callback(getMainExecutionContext(), callback);
         }
 
-        void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
-                                                    const std::function<void(std::experimental::optional<std::string>, const std::experimental::optional<api::Error>)> &callback) {
+        void TezosLikeAccount::broadcastTransaction(
+            const std::shared_ptr<api::TezosLikeTransaction> &transaction,
+            const std::shared_ptr<api::StringCallback> & callback
+        ) {
             broadcastRawTransaction(transaction->serialize(), callback);
         }
 
@@ -397,7 +401,8 @@ namespace ledger {
         }
 
         void TezosLikeAccount::getFees(
-            const std::function<void(std::experimental::optional<std::shared_ptr<api::BigInt>>, std::experimental::optional<api::Error>)> & callback) {
+            const std::shared_ptr<api::BigIntCallback> & callback
+        ) {
             getFees().mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &fees) -> std::shared_ptr<api::BigInt>
             {
                 if (!fees) {

@@ -32,6 +32,8 @@
 
 #include <time.h>
 
+#include <tezos/api/BigIntCallback.hpp>
+#include <tezos/api/StringCallback.hpp>
 #include <tezos/api/TezosLikeAccount.hpp>
 #include <tezos/api/TezosLikeTransactionBuilder.hpp>
 #include <tezos/explorers/TezosLikeBlockchainExplorer.hpp>
@@ -101,11 +103,15 @@ namespace ledger {
 
             std::string getRestoreKey() override;
 
-            void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                         const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)>& callback) override;
+            void broadcastRawTransaction(
+                const std::vector<uint8_t> &transaction,
+                const std::shared_ptr<api::StringCallback> & callback
+            ) override;
 
-            void broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
-                                      const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)>& callback) override;
+            void broadcastTransaction(
+                const std::shared_ptr<api::TezosLikeTransaction> &transaction,
+                const std::shared_ptr<api::StringCallback> & callback
+            ) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder> buildTransaction() override;
             std::shared_ptr<api::TezosLikeTransactionBuilder> buildTransaction(const std::string &senderAddress);
@@ -114,12 +120,14 @@ namespace ledger {
 
             void getEstimatedGasLimit(
                 const std::string & address,
-                const std::function<void(std::experimental::optional<std::shared_ptr<api::BigInt>>, std::experimental::optional<api::Error>)> & callback) override;
+                const std::shared_ptr<api::BigIntCallback> & callback
+            ) override;
             FuturePtr<BigInt> getEstimatedGasLimit(const std::string &address);
 
             void getStorage(
                 const std::string & address,
-                const std::function<void(std::experimental::optional<std::shared_ptr<api::BigInt>>, std::experimental::optional<api::Error>)> & callback) override;
+                const std::shared_ptr<api::BigIntCallback> & callback
+            ) override;
 
             FuturePtr<BigInt> getStorage(const std::string &address);
 
@@ -128,8 +136,9 @@ namespace ledger {
             void addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries);
 
             void getFees(
-                const std::function<void(std::experimental::optional<std::shared_ptr<api::BigInt>>, std::experimental::optional<api::Error>)> & callback) override;
-            
+                const std::shared_ptr<api::BigIntCallback> & callback
+            ) override;
+
             FuturePtr<BigInt> getFees();
 
         private:

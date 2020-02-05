@@ -33,6 +33,7 @@
 #include <spdlog/logger.h>
 
 #include <tezos/api/TezosLikeTransactionBuilder.hpp>
+#include <tezos/api/TezosLikeTransactionCallback.hpp>
 #include <tezos/api/TezosOperationTag.hpp>
 #include <tezos/explorers/TezosLikeBlockchainExplorer.hpp>
 
@@ -93,7 +94,7 @@ namespace ledger {
             std::shared_ptr<api::TezosLikeTransactionBuilder>
             setStorageLimit(const std::shared_ptr<api::BigInt> & storageLimit) override;
 
-            void build(const std::function<void(std::shared_ptr<api::TezosLikeTransaction>, std::experimental::optional<api::Error>)> &callback) override;
+            void build(const std::shared_ptr<api::TezosLikeTransactionCallback> & callback) override;
 
             Future<std::shared_ptr<api::TezosLikeTransaction>> build();
 
