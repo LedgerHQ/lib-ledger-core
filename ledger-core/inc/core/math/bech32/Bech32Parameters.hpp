@@ -48,7 +48,6 @@ namespace ledger {
                 std::vector<uint8_t> P2WPKHVersion;
                 std::vector<uint8_t> P2WSHVersion;
 
-                Bech32Struct() = default;
                 Bech32Struct(const std::string &_name,
                              const std::string &_hrp,
                              const std::string &_separator,

@@ -52,6 +52,7 @@ namespace ledger {
     namespace core {
         class Bech32 {
         public:
+            Bech32(Bech32Parameters::Bech32Struct bech32Params) : _bech32Params(bech32Params) {}
             // Find the polynomial with value coefficients mod the generator as 64-bit.
             virtual uint64_t polymod(const std::vector<uint8_t>& values) = 0;
 
@@ -81,13 +82,13 @@ namespace ledger {
                                     bool pad,
                                     std::vector<uint8_t>& out);
 
-            Bech32Parameters::Bech32Struct getBech32Params() {
+            Bech32Parameters::Bech32Struct getBech32Params() const {
                 return _bech32Params;
             }
 
         protected:
             std::string encodeBech32(const std::vector<uint8_t>& values);
-            Bech32Parameters::Bech32Struct _bech32Params {};
+            Bech32Parameters::Bech32Struct _bech32Params;
         };
     }
 }

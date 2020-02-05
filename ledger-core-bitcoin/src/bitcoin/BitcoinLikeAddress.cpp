@@ -43,7 +43,7 @@
 #include <bitcoin/BitcoinNetworks.hpp>
 #include <core/math/bech32/Bech32.hpp>
 #include <bitcoin/bech32/BitcoinLikeBech32Factory.hpp>
-#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelper.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelpers.hpp>
 #include <bitcoin/scripts/BitcoinLikeScriptOperators.hpp>
 
 
@@ -74,10 +74,10 @@ namespace ledger {
             } else if (keychainEngine == api::KeychainEngines::BIP49_P2SH) {
                 return params.P2SHVersion;
             } else if (keychainEngine == api::KeychainEngines::BIP173_P2WPKH) {
-                auto bech32Params = BitcoinLikeBech32ParametersHelper::getBech32Params(params.Identifier);
+                auto bech32Params = bitcoin::getBech32Params(params.Identifier);
                 return bech32Params.P2WPKHVersion;
             } else if (keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
-                auto bech32Params = BitcoinLikeBech32ParametersHelper::getBech32Params(params.Identifier);
+                auto bech32Params = bitcoin::getBech32Params(params.Identifier);
                 return bech32Params.P2WSHVersion;
             }
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);

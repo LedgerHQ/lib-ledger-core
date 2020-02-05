@@ -31,15 +31,14 @@
 #pragma once
 
 #include <core/math/bech32/Bech32.hpp>
-#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelper.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelpers.hpp>
 
 // Reference: https://github.com/sipa/bech32
 namespace ledger {
     namespace core {
         class BTCBech32 : public Bech32 {
         public:
-            BTCBech32(const std::string &networkIdentifier) {
-                _bech32Params = BitcoinLikeBech32ParametersHelper::getBech32Params(networkIdentifier);
+            BTCBech32(const std::string &networkIdentifier) : Bech32(bitcoin::getBech32Params(networkIdentifier)) {
             };
 
             uint64_t polymod(const std::vector<uint8_t>& values) override;

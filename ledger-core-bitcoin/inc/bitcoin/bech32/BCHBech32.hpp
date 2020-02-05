@@ -31,16 +31,14 @@
 #pragma once
 
 #include <core/math/bech32/Bech32.hpp>
-#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelper.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelpers.hpp>
 
 // Reference: https://github.com/bitcoincashjs/cashaddrjs
 namespace ledger {
     namespace core {
         class BCHBech32 : public Bech32 {
         public:
-            BCHBech32() {
-                _bech32Params = BitcoinLikeBech32ParametersHelper::getBech32Params("abc");
-            };
+            BCHBech32() : Bech32(bitcoin::getBech32Params("abc")) {};
 
             uint64_t polymod(const std::vector<uint8_t>& values) override;
 
