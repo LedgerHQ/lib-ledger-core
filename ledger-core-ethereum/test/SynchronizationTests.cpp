@@ -395,6 +395,8 @@ std::pair<std::shared_ptr<LambdaEventReceiver>, ledger::core::Future<bool>> crea
 TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     {
+        backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+
         auto fakeHttp = std::make_shared<test::FakeHttpClient>();
         auto services = Services::newInstance(
             "my_ppol",
