@@ -40,6 +40,7 @@
 #include <core/wallet/Amount.hpp>
 
 #include <ethereum/EthereumLikeTransaction.hpp>
+#include <ethereum/api/EthereumLikeTransactionCallback.hpp>
 #include <ethereum/api/EthereumLikeTransactionBuilder.hpp>
 #include <ethereum/explorers/EthereumLikeBlockchainExplorer.hpp>
 
@@ -61,10 +62,10 @@ namespace ledger {
         };
 
         using EthereumLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::EthereumLikeTransaction>> (const EthereumLikeTransactionBuildRequest&, const std::shared_ptr<EthereumLikeBlockchainExplorer> &)>;
-        
+
         class EthereumLikeTransactionBuilder : public api::EthereumLikeTransactionBuilder, public std::enable_shared_from_this<EthereumLikeTransactionBuilder>{
         public:
-            
+
             explicit EthereumLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext>& context,
                                                     const api::Currency& params,
                                                     const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer,
@@ -72,22 +73,22 @@ namespace ledger {
                                                     const EthereumLikeTransactionBuildFunction& buildFunction);
 
             EthereumLikeTransactionBuilder(const EthereumLikeTransactionBuilder& cpy);
-            
+
             std::shared_ptr<api::EthereumLikeTransactionBuilder> sendToAddress(const std::shared_ptr<api::Amount> & amount,
                                                                                const std::string & address) override;
 
             std::shared_ptr<api::EthereumLikeTransactionBuilder> wipeToAddress(const std::string & address) override;
-            
+
             std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasPrice(const std::shared_ptr<api::Amount> & gasPrice) override;
             std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) override;
             std::shared_ptr<api::EthereumLikeTransactionBuilder> setInputData(const std::vector<uint8_t> & data) override;
 
-            void build(const std::function<void(std::shared_ptr<api::EthereumLikeTransaction>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override;
+            void build(const std::shared_ptr<api::EthereumLikeTransactionCallback> & callback) override;
 
             Future<std::shared_ptr<api::EthereumLikeTransaction>> build();
 
             std::shared_ptr<api::EthereumLikeTransactionBuilder> clone() override;
-            
+
             void reset() override;
 
             static std::shared_ptr<api::EthereumLikeTransaction> parseRawTransaction(const api::Currency & currency,
@@ -100,7 +101,7 @@ namespace ledger {
             EthereumLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
             std::shared_ptr<spdlog::logger> _logger;
-            
-        };       
+
+        };
     }
 }

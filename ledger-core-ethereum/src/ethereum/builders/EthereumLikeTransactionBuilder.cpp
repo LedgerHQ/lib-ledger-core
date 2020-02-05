@@ -92,7 +92,7 @@ namespace ledger {
             return shared_from_this();
         }
 
-        void EthereumLikeTransactionBuilder::build(const std::function<void(std::shared_ptr<api::EthereumLikeTransaction>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+        void EthereumLikeTransactionBuilder::build(const std::shared_ptr<api::EthereumLikeTransactionCallback> & callback) {
             build().callback(_context, callback);
         }
 

@@ -135,20 +135,20 @@ EthereumLikeAccount = interface +c {
     # but since EthereumLikeWallet is not used anywhere, it's better to keep all
     # specific methods under the same specific class so it will be easy to segratate
     # when the right time comes !
-    getGasPrice(callback: callback2<void, optional<BigInt>, optional<Error>>);
+    getGasPrice(callback: callback2<void, BigInt, optional<Error>>);
     # Get estimated gas limit to set so the transaction will succeed
     # The passed address could be EOA or contract
     # This estimation is based on X last incoming txs (to address) that succeeded
     # Note: same note as above
-    getEstimatedGasLimit(address: string, callback: callback2<void, optional<BigInt>, optional<Error>>);
+    getEstimatedGasLimit(address: string, callback: callback2<void, BigInt, optional<Error>>);
     # Get balance of ERC20 token
     # The passed address is an ERC20 account
     # Note: same note as above
-    getERC20Balance(erc20Address: string, callback: callback2<void, optional<BigInt>, optional<Error>>);
+    getERC20Balance(erc20Address: string, callback: callback2<void, BigInt, optional<Error>>);
     # Get balance of ERC20 tokens
     # The passed addresses are ERC20 accounts
     # Note: same note as above
-    getERC20Balances(erc20Addresses: list<string>, callback: callback2<void, optional<list<BigInt>>, optional<Error>>);
+    getERC20Balances(erc20Addresses: list<string>, callback: callback2<void, list<BigInt>, optional<Error>>);
 }
 
 # TODO I think we need to remove this (useful?) interface

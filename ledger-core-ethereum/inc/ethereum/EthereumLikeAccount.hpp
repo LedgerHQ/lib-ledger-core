@@ -38,8 +38,11 @@
 #include <core/wallet/AbstractAccount.hpp>
 #include <core/wallet/Amount.hpp>
 
+#include <ethereum/api/BigIntCallback.hpp>
+#include <ethereum/api/BigIntListCallback.hpp>
 #include <ethereum/api/EthereumLikeAccount.hpp>
 #include <ethereum/api/EthereumLikeTransactionBuilder.hpp>
+#include <ethereum/api/StringCallback.hpp>
 #include <ethereum/explorers/EthereumLikeBlockchainExplorer.hpp>
 #include <ethereum/synchronizers/EthereumLikeAccountSynchronizer.hpp>
 #include <ethereum/observers/EthereumLikeBlockchainObserver.hpp>
@@ -104,28 +107,28 @@ namespace ledger {
                                                                                                      const std::string &txHash,
                                                                                                      const std::vector<uint8_t> &rawTx);
 
-            void broadcastRawTransaction(const std::vector<uint8_t> & transaction, const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override;
+            void broadcastRawTransaction(const std::vector<uint8_t> & transaction, const std::shared_ptr<api::StringCallback> & callback) override;
 
             void broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
-                                      const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override;
+                                      const std::shared_ptr<api::StringCallback> & callback) override;
 
             std::shared_ptr<api::EthereumLikeTransactionBuilder> buildTransaction() override;
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
             std::vector<std::shared_ptr<api::ERC20LikeAccount>> getERC20Accounts() override ;
 
-            void getGasPrice(const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override;
+            void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
 
-            void getEstimatedGasLimit(const std::string & address, const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override ;
+            void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) override ;
             FuturePtr<api::BigInt> getERC20Balance(const std::string & erc20Address);
-            void getERC20Balance(const std::string & erc20Address, const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override;
+            void getERC20Balance(const std::string & erc20Address, const std::shared_ptr<api::BigIntCallback> & callback) override;
 
             Future<std::vector<std::shared_ptr<api::BigInt>>> getERC20Balances(
                 const std::vector<std::string>& erc20Addresses
             );
             void getERC20Balances(
                 const std::vector<std::string> & erc20Addresses,
-                const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BigInt>>>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::BigIntListCallback> & callback
             ) override;
 
             void addERC20Accounts(soci::session &sql,

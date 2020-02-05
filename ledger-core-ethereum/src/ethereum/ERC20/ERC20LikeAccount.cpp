@@ -82,7 +82,7 @@ namespace ledger {
             return parentAccount->getERC20Balance(_token.contractAddress);
         }
 
-        void ERC20LikeAccount::getBalance(const std::function<void(std::shared_ptr<::ledger::core::api::BigInt>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+        void ERC20LikeAccount::getBalance(const std::shared_ptr<api::BigIntCallback> & callback) {
             getBalance().callback(getContext(), callback);
         }
 
@@ -236,9 +236,11 @@ namespace ledger {
             });
         }
 
-        void ERC20LikeAccount::getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
-                                                        const std::string &address,
-                                                        const std::function<void(std::experimental::optional<std::vector<uint8_t>>, std::experimental::optional<::ledger::core::api::Error>)> &data) {
+        void ERC20LikeAccount::getTransferToAddressData(
+            const std::shared_ptr<api::BigInt> &amount,
+            const std::string &address,
+            const std::shared_ptr<api::BinaryCallback> & data
+        ) {
             auto context = _account.lock()->getWallet()->getMainExecutionContext();
             getTransferToAddressData(amount, address).callback(context, data);
         }
