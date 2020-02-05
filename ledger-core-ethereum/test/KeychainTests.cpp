@@ -43,48 +43,45 @@
 #include <core/utils/DerivationPath.hpp>
 #include <core/utils/Optional.hpp>
 
-#include <integration/BaseFixture.hpp>
+#include <integration/KeychainFixture.hpp>
 
-using namespace std;
-
-class EthereumKeychains : public BaseFixture {
-public:
-    void testEthKeychain(
-        const api::Currency& currency,
-        const std::string& xpub,
-        const std::string& derivationPath,
-        std::function<void (EthereumLikeKeychain&)> f
-    ) {
-        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-            "/preferences/tests.db",
-            dispatcher->getMainExecutionContext(),
-            resolver
-        );
-        auto configuration = std::make_shared<DynamicObject>();
-        dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
-            EthereumLikeKeychain keychain(
-                    configuration,
-                    currency,
-                    0,
-                    ledger::core::EthereumLikeExtendedPublicKey::fromBase58(
-                        currency,
-                        xpub,
-                        optional<std::string>(derivationPath)
-                    ),
-                    backend->getPreferences("keychain")
-            );
-            f(keychain);
-            dispatcher->stop();
-        }));
-        dispatcher->waitUntilStopped();
-    };
-};
+namespace {
 
 const std::string ETH_XPUB = "xpub6DQva5oVJA2gMT4Z2hUfuXMgss4MdGVUoPohC2qp3cZYM7oKyLTaENeRbm42mxF5Y6r1VZK2vmsvxWtwzMBsyYztNQub8natARB2Dk1bdgJ";
 const std::string ETH_DERIVATION_PATH = "44'/60'/0'";
 
+KeychainData ETH_DATA{
+    ledger::core::currencies::ethereum(),
+    ETH_XPUB,
+    ETH_DERIVATION_PATH
+};
+
+class EthereumKeychains : public KeychainFixture<EthereumKeychains, EthereumLikeKeychain> {
+public:
+    EthereumLikeKeychain makeKeychain(
+        std::shared_ptr<ledger::core::PreferencesBackend> backend,
+        std::shared_ptr<ledger::core::DynamicObject> configuration,
+        KeychainData const &data
+    ) {
+        return {
+            configuration,
+            data.currency,
+            0,
+            ledger::core::EthereumLikeExtendedPublicKey::fromBase58(
+                data.currency,
+                data.xpub,
+                optional<std::string>(data.derivationPath)
+            ),
+            backend->getPreferences("keychain")
+        };
+    }
+};
+
+} // namespace
+
+
 TEST_F(EthereumKeychains, KeychainDerivation) {
-    testEthKeychain(ledger::core::currencies::ethereum(), ETH_XPUB, ETH_DERIVATION_PATH, [] (EthereumLikeKeychain& keychain) {
+    testKeychain(ETH_DATA, [] (EthereumLikeKeychain& keychain) {
         auto ethDerivedAddress = keychain.getAllObservableAddresses(0, 0)[0];
         EXPECT_EQ(ethDerivedAddress->getDerivationPath().value_or(""), "0/0");
         EXPECT_EQ(ethDerivedAddress->toEIP55(), "0xE8F7Dc1A12F180d49c80D1c3DbEff48ee38bD1DA");

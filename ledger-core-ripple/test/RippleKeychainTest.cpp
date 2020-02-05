@@ -42,38 +42,8 @@
 
 #include <integration/BaseFixture.hpp>
 
-using namespace std;
-
 class RippleKeychains : public BaseFixture {
-public:
-    void testXrpKeychain(
-        const api::Currency& currency,
-        const std::string& xpub,
-        const std::string& derivationPath,
-        std::function<void (RippleLikeKeychain&)> f
-    ) {
-        auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
-                dispatcher->getMainExecutionContext(),
-                resolver
-        );
-        auto configuration = std::make_shared<DynamicObject>();
-        dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
-            RippleLikeKeychain keychain(
-                    configuration,
-                    currency,
-                    0,
-                    ledger::core::RippleLikeExtendedPublicKey::fromBase58(
-                        currency,
-                        xpub,
-                        optional<std::string>(derivationPath)),
-                    backend->getPreferences("keychain")
-            );
-            f(keychain);
-            dispatcher->stop();
-        }));
-        dispatcher->waitUntilStopped();
-    };
+
 };
 
 struct DerivationSchemeData {
@@ -83,6 +53,7 @@ struct DerivationSchemeData {
     std::string chainCode;
     std::string expectedAddress;
 };
+
 // Data taken from nanoS of dev
 const std::vector<DerivationSchemeData> derivationSchemeTestData = {
         {
