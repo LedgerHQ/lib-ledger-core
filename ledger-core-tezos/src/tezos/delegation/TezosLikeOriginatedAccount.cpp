@@ -98,7 +98,7 @@ namespace ledger {
                             break;
                     }
                 }
-                return std::make_shared<Amount>(currencies::TEZOS, 0, result);
+                return std::make_shared<Amount>(currencies::tezos(), 0, result);
             });
         }
 
@@ -131,7 +131,7 @@ namespace ledger {
                     }
 
                     static inline std::shared_ptr<api::Amount> value_constructor(const BigInt& v) {
-                        return std::make_shared<Amount>(currencies::TEZOS, 0, v);
+                        return std::make_shared<Amount>(currencies::tezos(), 0, v);
                     }
 
                     static inline void update_balance(std::shared_ptr<api::Operation>& op, BigInt& sum) {

@@ -169,7 +169,7 @@ namespace ledger {
                     TezosLikeBlockchainExplorer::Block block;
                     block.blockHash = value;
                     // TODO find a proper way to get currency name
-                    block.currencyName = currencies::TEZOS.name;
+                    block.currencyName = currencies::tezos().name;
                     _transaction->block = block;
                 } else if (_lastKey == "timestamp" || _lastKey == "time") {
                     auto pos = value.find('+');

@@ -74,6 +74,13 @@ namespace ledger {
                                                                 const Option<std::string> &derivationPath = Option<std::string>());
 
             static std::vector<uint8_t> getPrefixFromImplicitVersion(const std::vector<uint8_t> &implicitVersion, api::TezosCurve curve);
+
+            static bool isValid(
+                const std::string &address,
+                const api::Currency &currency,
+                const Option<std::string>& derivationPath = Option<std::string>()
+            );
+
         private:
             static std::vector<uint8_t> getPublicKeyHash160(const std::vector<uint8_t> &pubKey, api::TezosCurve curve);
 

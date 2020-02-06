@@ -161,5 +161,12 @@ namespace ledger {
             );
         }
 
+        bool TezosLikeAddress::isValid(
+            const std::string &address,
+            const api::Currency &currency,
+            const Option<std::string>& derivationPath
+        ) {
+            return TezosLikeAddress::parse(address, currency, derivationPath) != nullptr;
+        }
     }
 }

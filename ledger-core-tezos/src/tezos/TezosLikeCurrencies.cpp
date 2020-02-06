@@ -37,12 +37,15 @@
 namespace ledger {
     namespace core {
         namespace currencies {
-            api::Currency const TEZOS =
-                CurrencyBuilder("ripple")
-                .bip44(TEZOS_COIN_ID)
-                .paymentUri("tezos")
-                .unit("mXTZ", 0, "mXTZ")
-                .unit("XTZ", 3, "mXTZ");
+            api::Currency tezos() {
+                static api::Currency const CURRENCY = CurrencyBuilder("tezos")
+                    .bip44(TEZOS_COIN_ID)
+                    .paymentUri("tezos")
+                    .unit("mXTZ", 0, "mXTZ")
+                    .unit("XTZ", 3, "mXTZ");
+
+                return CURRENCY;
+            }
         }
     }
 }

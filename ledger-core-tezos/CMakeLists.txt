@@ -46,7 +46,7 @@ string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
     message(STATUS "Test are enabled")
     enable_testing()
-    #add_subdirectory(test) TODO: uncomment to enable tests
+    add_subdirectory(test)
 else()
     message(STATUS "Test are disabled")
 endif()
