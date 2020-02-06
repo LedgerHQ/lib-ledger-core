@@ -141,7 +141,7 @@ namespace ledger {
         }
 
         void
-        BitcoinLikeTransactionBuilder::build(const std::function<void(std::shared_ptr<api::BitcoinLikeTransaction>, std::experimental::optional<api::Error>)> & callback) {
+        BitcoinLikeTransactionBuilder::build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> & callback) {
             build().callback(_context, callback);
         }
 

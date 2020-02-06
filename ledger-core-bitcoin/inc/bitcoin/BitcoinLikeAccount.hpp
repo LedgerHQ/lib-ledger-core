@@ -38,11 +38,14 @@
 #include <core/wallet/AbstractAccount.hpp>
 
 #include <bitcoin/BitcoinLikeWallet.hpp>
+#include <bitcoin/api/BigIntListCallback.hpp>
 #include <bitcoin/api/BitcoinLikeAccount.hpp>
 #include <bitcoin/api/BitcoinLikePickingStrategy.hpp>
 #include <bitcoin/api/BitcoinLikePreparedTransaction.hpp>
 #include <bitcoin/api/BitcoinLikeOutput.hpp>
+#include <bitcoin/api/BitcoinLikeOutputListCallback.hpp>
 #include <bitcoin/api/BitcoinLikeTransactionRequest.hpp>
+#include <bitcoin/api/StringCallback.hpp>
 #include <bitcoin/operations/BitcoinLikeOperation.hpp>
 #include <bitcoin/keychains/BitcoinLikeKeychain.hpp>
 #include <bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
@@ -106,21 +109,28 @@ namespace ledger {
 
             std::shared_ptr<api::EventBus> synchronize() override;
 
-            void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                         const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback) override;
+            void broadcastRawTransaction(
+				const std::vector<uint8_t> &transaction,
+				const std::shared_ptr<api::StringCallback> & callback
+			) override;
 
-            void broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
-                                      const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback) override;
+            void broadcastTransaction(
+				const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
+				const std::shared_ptr<api::StringCallback> & callback
+			) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> buildTransaction(std::experimental::optional<bool> partial) override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-            void getUTXO(int32_t from, int32_t to,
-                         const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>, std::experimental::optional<api::Error>)> & callback) override;
+            void getUTXO(
+				int32_t from,
+				int32_t to,
+				const std::shared_ptr<api::BitcoinLikeOutputListCallback> & callback
+			) override;
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO();
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO(int32_t from, int32_t to);
-            void getUTXOCount(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback) override;
+            void getUTXOCount(const std::shared_ptr<api::I32Callback> & callback) override;
             Future<int32_t> getUTXOCount();
 
             Future<AddressList> getFreshPublicAddresses() override;
@@ -133,7 +143,7 @@ namespace ledger {
 
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
 
-            void getFees(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BigInt>>>, std::experimental::optional<api::Error>)> & callback) override ;
+            void getFees(const std::shared_ptr<api::BigIntListCallback> & callback) override ;
         protected:
             bool checkIfWalletIsEmpty();
 

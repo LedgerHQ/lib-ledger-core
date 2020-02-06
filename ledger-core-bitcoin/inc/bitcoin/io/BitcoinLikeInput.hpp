@@ -31,6 +31,7 @@
 
 #pragma once
 
+#include <bitcoin/api/BinaryCallback.hpp>
 #include <bitcoin/api/BitcoinLikeInput.hpp>
 #include <bitcoin/api/BitcoinLikeOperation.hpp>
 #include <bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
@@ -68,11 +69,7 @@ public:
 
   int64_t getSequence() override;
 
-  void getPreviousTransaction(
-      const std::function<void(
-          std::experimental::optional<std::vector<uint8_t>>,
-          std::experimental::optional<::ledger::core::api::Error>)> &callback)
-      override;
+  void getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> & callback) override;
 
   void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
 

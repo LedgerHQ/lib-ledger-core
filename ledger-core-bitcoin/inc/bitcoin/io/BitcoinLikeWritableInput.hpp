@@ -34,6 +34,7 @@
 #include <core/utils/DerivationPath.hpp>
 
 #include <bitcoin/BitcoinLikeAccount.hpp>
+#include <bitcoin/api/BinaryCallback.hpp>
 #include <bitcoin/api/BitcoinLikeInput.hpp>
 #include <bitcoin/scripts/BitcoinLikeScript.hpp>
 
@@ -72,7 +73,7 @@ namespace ledger {
             void pushToScriptSig(const std::vector<uint8_t> &data) override;
             void setSequence(int32_t sequence) override;
             int64_t getSequence() override;
-            void getPreviousTransaction(const std::function<void(std::experimental::optional<std::vector<uint8_t>>, std::experimental::optional<api::Error>)> & callback) override;
+            void getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> & callback) override;
             Future<std::vector<uint8_t>> getPreviousTransaction();
             void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
 
