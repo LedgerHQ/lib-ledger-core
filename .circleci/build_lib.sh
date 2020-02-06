@@ -16,7 +16,7 @@ export PATH=$PATH:~/cmake_folder/bin
 ###
 
 function command_target_jni {
-  add_to_cmake_params -DTARGET_JNI=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
+  add_to_cmake_params -DTARGET_JNI=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DSSL_SUPPORT=ON #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
 }
 
 function command_Release {
