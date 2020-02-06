@@ -174,6 +174,11 @@ else()
     target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
     target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
 endif()
+
+if(SSL_SUPPORT)
+    target_link_libraries(ledger-core-interface INTERFACE ssl)
+endif()
+
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/boost)
 target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)

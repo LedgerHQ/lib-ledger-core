@@ -54,6 +54,7 @@ namespace ledger {
                                 const std::string & newPassword,
                                 soci::session &session) override;
 
+            static void initSSLLibraries();
         private:
             // Resolved path to db
             std::string _dbName;
