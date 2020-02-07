@@ -11,8 +11,8 @@ endif (APPLE)
 
 add_executable(
     ledger-core-tezos-tests main.cpp
-    AddressTest.cpp
-    #Fixtures.cpp RippleKeychainTest.cpp TransactionTest.cpp SynchronizationTest.cpp
+    AddressTest.cpp Fixtures.cpp
+    # RippleKeychainTest.cpp TransactionTest.cpp SynchronizationTest.cpp
 )
 
 target_link_libraries(ledger-core-tezos-tests Core::ledger-core-static)
