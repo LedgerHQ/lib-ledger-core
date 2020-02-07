@@ -142,7 +142,7 @@ namespace ledger {
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     emitNewOperationEvent(operation);
                 }
-                if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
+                if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
                     updateOriginatedAccounts(sql, operation);
                 }
                 result = static_cast<int>(transaction.type);
@@ -155,7 +155,7 @@ namespace ledger {
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     emitNewOperationEvent(operation);
                 }
-                if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION) {
+                if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
                     updateOriginatedAccounts(sql, operation);
                 }
                 result = static_cast<int>(transaction.type);
