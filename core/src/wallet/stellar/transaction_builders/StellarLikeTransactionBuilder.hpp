@@ -35,6 +35,7 @@
 #include <api/StellarLikeTransactionBuilder.hpp>
 #include <async/Future.hpp>
 #include <wallet/stellar/xdr/models.hpp>
+#include <wallet/stellar/stellar.hpp>
 #include "StellarLikeTransaction.hpp"
 
 namespace ledger {

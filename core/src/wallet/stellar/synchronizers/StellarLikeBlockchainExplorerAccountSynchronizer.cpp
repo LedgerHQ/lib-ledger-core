@@ -126,41 +126,6 @@ namespace ledger {
                         preferences->editor()->putObject("state", newState)->commit();
                         self->synchronizeTransactions(account, Option<SavedState>(newState));
                     } else {
-                        self->synchronizeOperations(account, newState);
-                    }
-                }
-            });
-        }
-
-        void StellarLikeBlockchainExplorerAccountSynchronizer::synchronizeOperations(
-                const std::shared_ptr<StellarLikeAccount> &account,
-                const StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
-            auto address = account->getKeychain()->getAddress()->toString();
-            auto operationCursor = state.operationPagingToken.empty() ?
-                       Option<std::string>() : Option<std::string>(state.operationPagingToken);
-
-
-            auto self = shared_from_this();
-            _explorer->getOperations(address, operationCursor).onComplete(account->getContext(), [=] (const Try<stellar::OperationVector>& ops) {
-                SavedState newState = state;
-                if (ops.isFailure()) {
-                    self->failSynchronization(ops.getFailure());
-                } else {
-                    {
-                        soci::session sql(_database->getPool());
-                        soci::transaction tr(sql);
-
-                        for (const auto &op : ops.getValue()) {
-                            account->putOperation(sql, *op);
-                        }
-                        tr.commit();
-                    }
-                    if (!ops.getValue().empty()) {
-                        newState.operationPagingToken = ops.getValue().back()->pagingToken;
-                        auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
-                        preferences->editor()->putObject("state", newState)->commit();
-                        self->synchronizeOperations(account, newState);
-                    } else {
                         self->endSynchronization();
                     }
                 }

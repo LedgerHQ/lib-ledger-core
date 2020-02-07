@@ -55,17 +55,13 @@ namespace ledger {
                  */
                 int algorithmVersion;
                 /**
-                 * Last paging token used by the synchronizer for synchronizing operations.
-                 */
-                std::string operationPagingToken;
-                /**
                  * Last paging token used by the synchronizer for synchronizing transactions.
                  */
                 std::string transactionPagingToken;
 
                 template<class Archive>
                 void serialize(Archive & archive) {
-                    archive(operationPagingToken, transactionPagingToken);
+                    archive(transactionPagingToken);
                 };
             };
 
@@ -87,8 +83,6 @@ namespace ledger {
                                     const Option<SavedState>& state);
             void synchronizeTransactions(const std::shared_ptr<StellarLikeAccount>& account,
                                          const Option<SavedState>& state);
-            void synchronizeOperations(const std::shared_ptr<StellarLikeAccount>& account,
-                                       const SavedState& state);
             inline void failSynchronization(const Exception& ex);
             inline void endSynchronization();
 

@@ -36,6 +36,8 @@
 #include <unordered_map>
 #include <math/BigInt.h>
 #include <chrono>
+#include <wallet/stellar/xdr/models.hpp>
+#include <api/StellarLikeNetworkParameters.hpp>
 
 namespace ledger {
     namespace core {
@@ -93,8 +95,7 @@ namespace ledger {
                 Flags flags;
             };
 
-            enum class OperationType : uint32_t  {CREATE_ACCOUNT = 0, PAYMENT = 1, PATH_PAYMENT = 2, MANAGE_OFFER = 3, CREATE_PASSIVE_OFFER = 4, SET_OPTIONS = 5,
-                                                 CHANGE_TRUST = 6, ALLOW_TRUST = 7, ACCOUNT_MERGE = 8, INFLATION = 9, MANAGE_DATA = 10, BUMP_SEQUENCE = 11, MANAGE_BUY_OFFER = 12};
+            using OperationType = xdr::OperationType;
 
             struct Operation {
                 std::string id;
@@ -126,10 +127,13 @@ namespace ledger {
                 std::string memoType;
                 std::string memo;
                 std::string pagingToken;
+                stellar::xdr::TransactionEnvelope envelope;
             };
 
             using OperationVector = std::vector<std::shared_ptr<Operation>>;
             using TransactionVector = std::vector<std::shared_ptr<Transaction>>;
+
+            void xdrAssetToAsset(const xdr::Asset& asset, const api::StellarLikeNetworkParameters& params, stellar::Asset& out);
         }
     }
 }

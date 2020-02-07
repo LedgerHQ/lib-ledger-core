@@ -80,12 +80,14 @@ BEGIN_ENCODER(Asset)
             break;
         case AssetType::ASSET_TYPE_CREDIT_ALPHANUM4:
             encoder << boost::get<AssetCode4>(object.assetCode);
+            encoder << object.issuer;
             break;
         case AssetType::ASSET_TYPE_CREDIT_ALPHANUM12:
             encoder << boost::get<AssetCode12>(object.assetCode);
+            encoder << object.issuer;
             break;
     }
-    encoder << object.issuer;
+
 END_ENCODER
 
 BEGIN_ENCODER(Price)
@@ -315,13 +317,15 @@ BEGIN_DECODER(Asset)
         case AssetType::ASSET_TYPE_CREDIT_ALPHANUM4:
             object.assetCode = AssetCode4();
             decoder >> boost::get<AssetCode4>(object.assetCode);
+            decoder >> object.issuer;
             break;
         case AssetType::ASSET_TYPE_CREDIT_ALPHANUM12:
             object.assetCode = AssetCode12();
             decoder >> boost::get<AssetCode12>(object.assetCode);
+            decoder >> object.issuer;
             break;
     }
-    decoder >> object.issuer;
+
 END_DECODER
 
 BEGIN_DECODER(Price)

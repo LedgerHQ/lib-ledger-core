@@ -31,6 +31,8 @@
 
 #include "HorizonTransactionParser.hpp"
 #include <utils/DateUtils.hpp>
+#include <wallet/stellar/xdr/XDRDecoder.hpp>
+#include <math/BaseConverter.hpp>
 
 using namespace ledger::core;
 
@@ -44,6 +46,7 @@ static const JsonParserPathMatcher FEE_MATCHER("/fee_paid");
 static const JsonParserPathMatcher MEMO_TYPE_MATCHER("/memo_type");
 static const JsonParserPathMatcher MEMO_MATCHER("/memo");
 static const JsonParserPathMatcher PAGING_TOKEN_MATCHER("/paging_token");
+static const JsonParserPathMatcher ENVELOPE_XDR("/envelope_xdr");
 
 namespace ledger {
     namespace core {
@@ -106,6 +109,11 @@ namespace ledger {
                 _transaction->sourceAccountSequence = BigInt::fromString(std::string(str, length));
             } else if (_path.match(PAGING_TOKEN_MATCHER)) {
                 _transaction->pagingToken = std::string(str, length);
+            } else if (_path.match(ENVELOPE_XDR)) {
+                std::vector<uint8_t> buffer;
+                BaseConverter::decode(std::string(str, length), BaseConverter::BASE64_RFC4648, buffer);
+                stellar::xdr::Decoder decoder(buffer);
+                decoder >> _transaction->envelope;
             }
             return true;
         }

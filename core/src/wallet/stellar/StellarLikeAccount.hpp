@@ -80,8 +80,8 @@ namespace ledger {
             std::shared_ptr<StellarLikeKeychain> getKeychain() const { return _params.keychain; };
 
             // Data insertion methods
-            void putTransaction(soci::session& sql, stellar::Transaction& tx);
-            int putOperation(soci::session& sql, stellar::Operation& op);
+            int putTransaction(soci::session& sql, const stellar::Transaction& tx);
+
             int putLedger(soci::session& sql, stellar::Ledger& ledger);
             void updateAccountInfo(soci::session& sql, stellar::Account& account);
 
@@ -95,7 +95,7 @@ namespace ledger {
                                          const std::shared_ptr<api::StringCallback> &callback) override;
             Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &tx);
 
-            const StellarLikeAccountParams params() const { return _params; };
+            const StellarLikeAccountParams& params() const { return _params; };
 
             void getBaseReserve(const std::shared_ptr<api::AmountCallback> &callback) override;
             FuturePtr<Amount> getBaseReserve();

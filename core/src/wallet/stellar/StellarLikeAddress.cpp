@@ -114,5 +114,10 @@ namespace ledger {
             return checksum == expectedChecksum;
         }
 
+        std::string StellarLikeAddress::convertXdrAccountToAddress(const stellar::xdr::AccountID &accountId,
+                                                                   const api::StellarLikeNetworkParameters &params) {
+            return convertPubkeyToAddress(std::vector<uint8_t>(accountId.content.begin(), accountId.content.end()), params);
+        }
+
     }
 }

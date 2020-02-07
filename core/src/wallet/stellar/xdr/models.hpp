@@ -36,7 +36,6 @@
 #include <utils/Option.hpp>
 #include <boost/variant.hpp>
 #include <array>
-#include <wallet/stellar/stellar.hpp>
 
 namespace ledger {
     namespace core {
@@ -257,6 +256,9 @@ namespace ledger {
                 {
                     SequenceNumber bumpTo;
                 };
+
+                enum class OperationType : uint32_t  {CREATE_ACCOUNT = 0, PAYMENT = 1, PATH_PAYMENT = 2, MANAGE_OFFER = 3, CREATE_PASSIVE_OFFER = 4, SET_OPTIONS = 5,
+                    CHANGE_TRUST = 6, ALLOW_TRUST = 7, ACCOUNT_MERGE = 8, INFLATION = 9, MANAGE_DATA = 10, BUMP_SEQUENCE = 11, MANAGE_BUY_OFFER = 12};
 
                 using OperationVariant = boost::variant<
                         CreateAccountOp, PaymentOp, PathPaymentOp, ManageSellOfferOp,

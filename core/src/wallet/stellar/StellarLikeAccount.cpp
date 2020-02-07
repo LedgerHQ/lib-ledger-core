@@ -47,6 +47,8 @@
 #include <api/BigIntCallback.hpp>
 #include <database/soci-date.h>
 #include <api/StringCallback.hpp>
+#include <api/StellarLikeOperationType.hpp>
+
 
 using namespace ledger::core;
 
@@ -256,30 +258,13 @@ namespace ledger {
             return StellarLikeLedgerDatabaseHelper::putLedger(sql, getWallet()->getCurrency(), ledger) ? 1 : 0;
         }
 
-        void StellarLikeAccount::putTransaction(soci::session &sql, stellar::Transaction &tx) {
+        int StellarLikeAccount::putTransaction(soci::session &sql, const stellar::Transaction &tx) {
+            int createdOperations = 0;
             StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
-        }
-
-        int StellarLikeAccount::putOperation(soci::session &sql, stellar::Operation &op) {
-            auto address = _params.keychain->getAddress()->toString();
-            if ((op.from != address && op.to != address) || (op.sourceAmount.nonEmpty() && op.asset.type != "native"))
-                return 0;
-
-            stellar::Transaction tx;
-
-            // Retrieve the transaction containing this operation to get some additional data.
-            if (StellarLikeTransactionDatabaseHelper::getTransaction(sql, op.transactionHash, tx) == 0) {
-                return 0;
-            }
-
             Operation operation;
             operation.accountUid = getAccountUid();
-            operation.stellarOperation = op;
             operation.currencyName = getWallet()->getCurrency().name;
-            operation.amount = op.amount;
-            operation.recipients = {op.to};
-            operation.senders = {op.from};
-            operation.date = op.createdAt;
+            operation.date = tx.createdAt;
             operation.walletType = getWallet()->getWalletType();
             operation.walletUid = getWallet()->getWalletUid();
             operation.trust = std::make_shared<TrustIndicator>();
@@ -292,37 +277,187 @@ namespace ledger {
             block.hash = fmt::format("{}", block.height);
 
             operation.block = block;
+            operation.fees = tx.feePaid;
+            operation.senders.emplace_back(tx.sourceAccount);
 
-            if (op.type == stellar::OperationType::CREATE_ACCOUNT) {
-                operation.stellarOperation.getValue().asset.type = "native";
-            }
+            auto accountAddress = getKeychain()->getAddress()->toString();
+             auto networkParams = getWallet()->getCurrency().stellarLikeNetworkParameters.value();
+            auto toAddr = [&] (const stellar::xdr::AccountID& accountId) {
+                return StellarLikeAddress::convertXdrAccountToAddress(accountId, networkParams);
+            };
 
-            if (op.from == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
-                (op.type == stellar::OperationType::PATH_PAYMENT &&
-                 op.sourceAsset.getValueOr({}).type == "native"))) {
-                auto operationCount = 0;
-                operation.type = api::OperationType::SEND;
-                if (op.type == stellar::OperationType::PATH_PAYMENT) {
-                    // Small hack until path_payment is completely integrated
-                    operation.amount = op.sourceAmount.getValueOr(op.amount);
-                }
-                if (operationCount == 0) {
-                    // First operation inserted with fees
-                    operation.fees = tx.feePaid;
-                }
+            auto putOp = [&] (api::OperationType type, stellar::Operation stellarOperation) {
+                operation.type = type;
+                stellarOperation.from = operation.senders[0];
+                if (!operation.recipients.empty())
+                    stellarOperation.to = operation.recipients[0];
+                operation.stellarOperation = stellarOperation;
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
-            }
-            if (op.to == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
-                                       (op.type == stellar::OperationType::PATH_PAYMENT &&
-                                        op.asset.type == "native")))  {
-                operation.type = api::OperationType::RECEIVE;
-                operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
-            }
+                createdOperations += 1;
+            };
 
-            return 0;
+            auto opIndex = 0;
+            for (const auto& op : tx.envelope.tx.operations) {
+                stellar::Operation stellarOperation;
+                stellarOperation.createdAt = tx.createdAt;
+                stellarOperation.transactionFee = tx.feePaid;
+                stellarOperation.transactionSequence = tx.sourceAccountSequence;
+                stellarOperation.transactionHash = tx.hash;
+                stellarOperation.transactionSuccessful = tx.successful;
+                stellarOperation.id = fmt::format("{}::{}", tx.hash, opIndex);
+                stellarOperation.type = op.type;
+                if (op.sourceAccount.nonEmpty()) {
+                    operation.senders[0] = toAddr(op.sourceAccount.getValue());
+                }
+
+                switch (op.type) {
+                    case stellar::OperationType::CREATE_ACCOUNT: {
+                        auto& sop = boost::get<stellar::xdr::CreateAccountOp>(op.content);
+                        operation.recipients.emplace_back(toAddr(sop.destination));
+                        operation.amount.assignI64(sop.startingBalance);
+                        stellarOperation.asset.type = "native";
+                        if (operation.senders[0] == accountAddress) {
+                            putOp(api::OperationType::SEND, stellarOperation);
+                        }
+                        if (operation.recipients[0] == accountAddress) {
+                            putOp(api::OperationType::RECEIVE, stellarOperation);
+                        }
+                    }
+                        break;
+                    case stellar::OperationType::PAYMENT: {
+                        auto &sop = boost::get<stellar::xdr::PaymentOp>(op.content);
+                        if (sop.asset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
+                            operation.amount.assignI64(sop.amount);
+                            operation.recipients.emplace_back(toAddr(sop.destination));
+                            stellar::xdrAssetToAsset(sop.asset, networkParams, stellarOperation.asset);
+                            if (operation.senders[0] == accountAddress) {
+                                putOp(api::OperationType::SEND, stellarOperation);
+                            }
+                            if (operation.recipients[0] == accountAddress) {
+                                putOp(api::OperationType::RECEIVE, stellarOperation);
+                            }
+                        }
+                    }
+                        break;
+                    case stellar::OperationType::PATH_PAYMENT: {
+                        // Create op if sending or receiving native token, otherwise if source account is self
+                        // create fees op
+                        auto& sop = boost::get<stellar::xdr::PathPaymentOp>(op.content);
+                        operation.recipients.emplace_back(toAddr(sop.destination));
+                        stellar::xdrAssetToAsset(sop.destAsset, networkParams, stellarOperation.asset);
+                        stellar::Asset sourceAsset;
+                        stellar::xdrAssetToAsset(sop.sendAsset, networkParams, sourceAsset);
+                        stellarOperation.sourceAsset = sourceAsset;
+                        stellarOperation.sourceAmount = BigInt(sop.sendMax);
+                        stellarOperation.amount = BigInt(sop.destAmount);
+                        if (operation.senders[0] == accountAddress &&
+                            sop.sendAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
+                            operation.amount = BigInt(sop.sendMax);
+                            putOp(api::OperationType::SEND, stellarOperation);
+                        }
+                        if (operation.recipients[0] == accountAddress &&
+                            sop.destAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
+                            putOp(api::OperationType::RECEIVE, stellarOperation);
+                        }
+                        if (operation.senders[0] == accountAddress && opIndex >= tx.envelope.tx.operations.size() - 1
+                            && createdOperations == 0) {
+                            operation.amount = BigInt::ZERO;
+                            putOp(api::OperationType::SEND, stellarOperation);
+                        }
+                    }
+                        break;
+                    case stellar::OperationType::ACCOUNT_MERGE:
+                    case stellar::OperationType::MANAGE_OFFER:
+                    case stellar::OperationType::CREATE_PASSIVE_OFFER:
+                    case stellar::OperationType::SET_OPTIONS:
+                    case stellar::OperationType::CHANGE_TRUST:
+                    case stellar::OperationType::ALLOW_TRUST:
+                    case stellar::OperationType::INFLATION:
+                    case stellar::OperationType::MANAGE_DATA:
+                    case stellar::OperationType::BUMP_SEQUENCE:
+                    case stellar::OperationType::MANAGE_BUY_OFFER:
+                        // Create fees operation if source Account is accountAdddress
+                        if (operation.senders[0] == accountAddress &&
+                            opIndex >= tx.envelope.tx.operations.size() - 1 &&
+                            createdOperations == 0) {
+                            operation.amount = BigInt::ZERO;
+                            putOp(api::OperationType::SEND, stellarOperation);
+                        }
+                        break;
+                }
+                if (op.sourceAccount.nonEmpty()) {
+                    operation.senders[0] = tx.sourceAccount;
+                }
+                operation.recipients.clear();
+                opIndex += 1;
+            }
+            return createdOperations;
         }
+
+//        int StellarLikeAccount::putOperation(soci::session &sql, stellar::Transaction &tx, stellar::Operation &op) {
+//            auto address = _params.keychain->getAddress()->toString();
+//            if ((op.from != address && op.to != address) || (op.sourceAmount.nonEmpty() && op.asset.type != "native"))
+//                return 0;
+//
+//            stellar::Transaction tx;
+//
+//            // Retrieve the transaction containing this operation to get some additional data.
+//            if (StellarLikeTransactionDatabaseHelper::getTransaction(sql, op.transactionHash, tx) == 0) {
+//                return 0;
+//            }
+//
+//            Operation operation;
+//            operation.accountUid = getAccountUid();
+//            operation.stellarOperation = op;
+//            operation.currencyName = getWallet()->getCurrency().name;
+//            operation.amount = op.amount;
+//            operation.recipients = {op.to};
+//            operation.senders = {op.from};
+//            operation.date = op.createdAt;
+//            operation.walletType = getWallet()->getWalletType();
+//            operation.walletUid = getWallet()->getWalletUid();
+//            operation.trust = std::make_shared<TrustIndicator>();
+//            operation.trust->setTrustLevel(api::TrustLevel::TRUSTED);
+//
+//            Block block;
+//            block.currencyName = getWallet()->getCurrency().name;
+//            block.time = tx.createdAt;
+//            block.height = tx.ledger;
+//            block.hash = fmt::format("{}", block.height);
+//
+//            operation.block = block;
+//
+//            if (op.type == stellar::OperationType::CREATE_ACCOUNT) {
+//                operation.stellarOperation.getValue().asset.type = "native";
+//            }
+//
+//            if (op.from == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
+//                (op.type == stellar::OperationType::PATH_PAYMENT &&
+//                 op.sourceAsset.getValueOr({}).type == "native"))) {
+//                auto operationCount = 0;
+//                operation.type = api::OperationType::SEND;
+//                if (op.type == stellar::OperationType::PATH_PAYMENT) {
+//                    // Small hack until path_payment is completely integrated
+//                    operation.amount = op.sourceAmount.getValueOr(op.amount);
+//                }
+//                if (operationCount == 0) {
+//                    // First operation inserted with fees
+//                    operation.fees = tx.feePaid;
+//                }
+//                operation.refreshUid();
+//                OperationDatabaseHelper::putOperation(sql, operation);
+//            }
+//            if (op.to == address && (ACCEPTED_PAYMENT_TYPES.find(op.type) != ACCEPTED_PAYMENT_TYPES.end() ||
+//                                       (op.type == stellar::OperationType::PATH_PAYMENT &&
+//                                        op.asset.type == "native")))  {
+//                operation.type = api::OperationType::RECEIVE;
+//                operation.refreshUid();
+//                OperationDatabaseHelper::putOperation(sql, operation);
+//            }
+//
+//            return 0;
+//        }
 
         void StellarLikeAccount::updateAccountInfo(soci::session &sql, stellar::Account &account) {
             if (account.accountId == _params.keychain->getAddress()->toString()) {
