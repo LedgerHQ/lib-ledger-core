@@ -32,7 +32,7 @@
 
 #include "DatabaseBackend.hpp"
 #include <memory>
-
+#include <mutex>
 namespace ledger {
     namespace core {
         class PostgreSQLBackend : public DatabaseBackend {
@@ -53,7 +53,7 @@ namespace ledger {
             void changePassword(const std::string & oldPassword,
                                 const std::string & newPassword,
                                 soci::session &session) override;
-
+            static std::once_flag sslFlag;
             static void initSSLLibraries();
         private:
             // Resolved path to db

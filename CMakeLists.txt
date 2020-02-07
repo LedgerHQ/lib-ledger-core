@@ -39,6 +39,11 @@ if (PG_SUPPORT)
     add_definitions("-DPG_SUPPORT")
 endif()
 
+# To add SSL support
+if (SSL_SUPPORT)
+    add_definitions("-DSSL_SUPPORT")
+endif()
+
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTING OFF CACHE BOOL "iOS build fail otherwise" FORCE)

@@ -34,6 +34,7 @@
 #include <soci-postgresql.h>
 
 #ifdef SSL_SUPPORT
+    #include <thread>
     #include <openssl/ssl.h>
 #endif
 
@@ -80,13 +81,16 @@ namespace ledger {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Change of password is not handled with PostgreSQL backend.");
         }
 
+        std::once_flag PostgreSQLBackend::sslFlag;
         void PostgreSQLBackend::initSSLLibraries() {
 #ifdef SSL_SUPPORT
-    #if OPENSSL_VERSION_NUMBER < 0x10100000L
-            SSL_library_init();
-    #else
-            OPENSSL_init_ssl(0, NULL);
-    #endif
+            std::call_once(PostgreSQLBackend::sslFlag, [] () {
+            #if OPENSSL_VERSION_NUMBER < 0x10100000L
+                SSL_library_init();
+            #else
+                OPENSSL_init_ssl(0, NULL);
+            #endif
+            });
 #endif
         }
     }
