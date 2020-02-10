@@ -43,6 +43,40 @@
 
 namespace ledger {
     namespace core {
+        TezosLikeOriginatedOperationQuery::TezosLikeOriginatedOperationQuery(
+            const std::shared_ptr<api::QueryFilter>& headFilter,
+            const std::shared_ptr<DatabaseSessionPool>& pool,
+            const std::shared_ptr<api::ExecutionContext>& context,
+            const std::shared_ptr<api::ExecutionContext>& mainContext
+        ): OperationQuery(headFilter, pool, context, mainContext) {
+        }
+
+        soci::rowset<soci::row> TezosLikeOriginatedOperationQuery::performExecute(soci::session &sql) {
+            return _builder.select(
+                "o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
+                "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid"
+            )
+                .from("operations").to("o")
+                .outerJoin("blocks AS b", "o.block_uid = b.uid")
+                .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
+                .execute(sql);
+        }
+
+        void TezosLikeOriginatedOperationQuery::inflateCompleteTransaction(
+                soci::session& sql,
+                std::string const& accountUid,
+                TezosLikeOperation& operation
+        ) {
+        }
+
+        std::shared_ptr<TezosLikeOperation> TezosLikeOriginatedOperationQuery::createOperation(
+            std::shared_ptr<AbstractAccount>& account
+        ) {
+            TezosLikeBlockchainExplorerTransaction tx;
+
+            return std::make_shared<TezosLikeOperation>(account->getWallet(), tx);
+        }
+
         TezosLikeOriginatedAccount::TezosLikeOriginatedAccount(const std::string &uid,
                                                                const std::string &address,
                                                                const std::shared_ptr<TezosLikeAccount> &originatorAccount,
@@ -179,7 +213,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
             auto filter = std::make_shared<ConditionQueryFilter<std::string>>("originated_account_uid", "=", _accountUid, "orig_op");
-            auto query = std::make_shared<TezosLikeOperationQuery>(
+            auto query = std::make_shared<TezosLikeOriginatedOperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
                     localAccount->getWallet()->getServices()->getThreadPoolExecutionContext(),

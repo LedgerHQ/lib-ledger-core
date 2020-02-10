@@ -38,25 +38,15 @@ namespace ledger {
             const std::shared_ptr<api::QueryFilter>& headFilter,
             const std::shared_ptr<DatabaseSessionPool>& pool,
             const std::shared_ptr<api::ExecutionContext>& context,
-            const std::shared_ptr<api::ExecutionContext>& mainContext) 
+            const std::shared_ptr<api::ExecutionContext>& mainContext)
             : OperationQuery(headFilter, pool, context, mainContext) {
 
             }
 
-        soci::rowset<soci::row> TezosLikeOperationQuery::performExecute(soci::session &sql) {
-            return _builder.select("o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
-                                            "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid"
-                    )
-                    .from("operations").to("o")
-                    .outerJoin("blocks AS b", "o.block_uid = b.uid")
-                    .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
-                    .execute(sql);
-         }
-
         void TezosLikeOperationQuery::inflateCompleteTransaction(
                 soci::session &sql, const std::string &accountUid, TezosLikeOperation& operation) {
             TezosLikeBlockchainExplorerTransaction tx;
-                
+
             operation.setExplorerTransaction(tx);
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM tezos_operations WHERE uid = :uid"

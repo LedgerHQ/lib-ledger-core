@@ -43,6 +43,26 @@
 
 namespace ledger {
     namespace core {
+        class TezosLikeOriginatedOperationQuery : public OperationQuery<TezosLikeOperation> {
+        public:
+            TezosLikeOriginatedOperationQuery(
+                const std::shared_ptr<api::QueryFilter>& headFilter,
+                const std::shared_ptr<DatabaseSessionPool>& pool,
+                const std::shared_ptr<api::ExecutionContext>& context,
+                const std::shared_ptr<api::ExecutionContext>& mainContext
+            );
+
+        protected:
+            soci::rowset<soci::row> performExecute(soci::session &sql) override;
+
+            void inflateCompleteTransaction(
+                soci::session& sql,
+                std::string const& accountUid,
+                TezosLikeOperation& operation
+            ) override;
+
+            std::shared_ptr<TezosLikeOperation> createOperation(std::shared_ptr<AbstractAccount>& account) override;
+        };
 
         class TezosLikeOriginatedAccount : public api::TezosLikeOriginatedAccount {
         public:

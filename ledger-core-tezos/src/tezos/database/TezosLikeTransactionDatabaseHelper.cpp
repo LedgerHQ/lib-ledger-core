@@ -119,7 +119,7 @@ namespace ledger {
                                                                        const std::string &accountUid,
                                                                        const TezosLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([](const TezosLikeBlockchainExplorer::Block &block) {
-                return block.uid;
+                return BlockDatabaseHelper::createBlockUid(block.blockHash, block.currencyName);
             });
 
             auto tezosTxUid = createTezosTransactionUid(accountUid, tx.hash, tx.type);

@@ -1,4 +1,4 @@
-        
+
 /*
  *
  * TezosLikeOperationQuery
@@ -41,7 +41,7 @@
 
 namespace ledger {
     namespace core {
-        
+
         class TezosLikeOperationQuery : public OperationQuery<TezosLikeOperation> {
         public:
             TezosLikeOperationQuery(const std::shared_ptr<api::QueryFilter>& headFilter,
@@ -49,8 +49,6 @@ namespace ledger {
                                 const std::shared_ptr<api::ExecutionContext>& context,
                                 const std::shared_ptr<api::ExecutionContext>& mainContext);
         protected:
-            virtual soci::rowset<soci::row> performExecute(soci::session &sql) override;
-
             virtual void inflateCompleteTransaction(
                 soci::session &sql, const std::string &accountUid, TezosLikeOperation& operation) override;
 

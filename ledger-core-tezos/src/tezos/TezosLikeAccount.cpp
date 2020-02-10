@@ -113,7 +113,6 @@ namespace ledger {
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
 
-
             // Check if it's an operation related to an originated account
             // It can be the case if we are putting transaction operations
             // for originated account.
@@ -121,7 +120,13 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = transaction.sender == originatedAccountAddress ? api::OperationType::SEND : api::OperationType::RECEIVE;
                 operation.refreshUid(originatedAccountUid);
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+
+                auto put = OperationDatabaseHelper::putOperation(sql, operation);
+                auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, transaction);
+
+                if (put) {
+                    sql << "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(tezosTxUid), use(transaction.hash);
+
                     // Update publicKey field for originated account
                     if (transaction.type == api::TezosOperationTag::OPERATION_TAG_REVEAL && transaction.publicKey.hasValue()) {
                         TezosLikeAccountDatabaseHelper::updatePubKeyField(sql, originatedAccountUid, transaction.publicKey.getValue());
@@ -131,6 +136,7 @@ namespace ledger {
                     TezosLikeAccountDatabaseHelper::addOriginatedAccountOperation(sql, operation.uid, tezosTxUid, originatedAccountUid);
                     emitNewOperationEvent(operation);
                 }
+
                 result = static_cast<int>(transaction.type);
                 return result;
             }
@@ -139,9 +145,15 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+
+                auto put = OperationDatabaseHelper::putOperation(sql, operation);
+                auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, transaction);
+
+                if (put) {
+                    sql << "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(tezosTxUid), use(transaction.hash);
                     emitNewOperationEvent(operation);
                 }
+
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
                     updateOriginatedAccounts(sql, operation);
                 }
@@ -152,9 +164,15 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+
+                auto put = OperationDatabaseHelper::putOperation(sql, operation);
+                auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, transaction);
+
+                if (put) {
+                    sql << "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(tezosTxUid), use(transaction.hash);
                     emitNewOperationEvent(operation);
                 }
+
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
                     updateOriginatedAccounts(sql, operation);
                 }

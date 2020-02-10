@@ -164,7 +164,6 @@ namespace ledger {
                 params += fmt::format("&offset={}",localOffset);
             }
 
-
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             return _http->GET(fmt::format("account/{}/op{}", addresses[0], params))
                     .template json<TransactionsBulk, Exception>(

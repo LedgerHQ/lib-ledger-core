@@ -137,7 +137,7 @@ namespace ledger {
 
                                     // Get offset to not start sync from beginning
                                     auto offset = session ? Future<std::vector<std::shared_ptr<api::Operation>>>::successful(std::vector<std::shared_ptr<api::Operation>>()) :
-                                            std::dynamic_pointer_cast<TezosLikeOperationQuery>(
+                                            std::dynamic_pointer_cast<TezosLikeOriginatedOperationQuery>(
                                                 account->_originatedAccounts[id]->queryOperations()->partial()
                                             )->execute();
 

@@ -11,8 +11,8 @@ endif (APPLE)
 
 add_executable(
     ledger-core-tezos-tests main.cpp
-    AddressTest.cpp Fixtures.cpp
-    # RippleKeychainTest.cpp TransactionTest.cpp SynchronizationTest.cpp
+    AddressTest.cpp Fixtures.cpp TransactionTests.cpp
+    # RippleKeychainTest.cpp  SynchronizationTest.cpp
 )
 
 target_link_libraries(ledger-core-tezos-tests Core::ledger-core-static)
@@ -27,6 +27,5 @@ set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE
 add_subdirectory(lib/googletest)
 
 add_test (NAME Tezos-address COMMAND ledger-core-tezos-tests --gtest_filter=TezosAddress.*)
-#add_test (NAME Ripple-keychain COMMAND ledger-core-tezos-tests --gtest_filter=RippleKeychains.*)
-#add_test (NAME Ripple-transaction COMMAND ledger-core-tezos-tests --gtest_filter=RippleMakeTransaction.*)
+add_test (NAME Tezos-transaction COMMAND ledger-core-tezos-tests --gtest_filter=TezosMakeTransaction.*)
 #add_test (NAME Ripple-sync COMMAND ledger-core-tezos-tests --gtest_filter=RippleLikeWalletSynchronization.*)
