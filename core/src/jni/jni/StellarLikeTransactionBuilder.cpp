@@ -4,7 +4,9 @@
 #include "StellarLikeTransactionBuilder.hpp"  // my header
 #include "Amount.hpp"
 #include "BigInt.hpp"
+#include "Currency.hpp"
 #include "Marshal.hpp"
+#include "StellarLikeTransaction.hpp"
 #include "StellarLikeTransactionCallback.hpp"
 
 namespace djinni_generated {
@@ -111,6 +113,26 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_00024C
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransactionBuilder>(nativeRef);
         ref->build(::djinni_generated::StellarLikeTransactionCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_parseRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::StellarLikeTransactionBuilder::parseRawTransaction(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
+                                                                                         ::djinni::Binary::toCpp(jniEnv, j_rawTransaction));
+        return ::djinni::release(::djinni_generated::StellarLikeTransaction::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransactionBuilder_parseSignatureBase(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::StellarLikeTransactionBuilder::parseSignatureBase(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
+                                                                                        ::djinni::Binary::toCpp(jniEnv, j_rawTransaction));
+        return ::djinni::release(::djinni_generated::StellarLikeTransaction::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

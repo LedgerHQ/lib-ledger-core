@@ -305,7 +305,7 @@ namespace ledger {
                 stellarOperation.transactionSequence = tx.sourceAccountSequence;
                 stellarOperation.transactionHash = tx.hash;
                 stellarOperation.transactionSuccessful = tx.successful;
-                stellarOperation.id = fmt::format("{}::{}", tx.hash, opIndex);
+                stellarOperation.id = (BigInt(tx.pagingToken) + BigInt(opIndex + 1)).toString();
                 stellarOperation.type = op.type;
                 if (op.sourceAccount.nonEmpty()) {
                     operation.senders[0] = toAddr(op.sourceAccount.getValue());
@@ -337,6 +337,11 @@ namespace ledger {
                             if (operation.recipients[0] == accountAddress) {
                                 putOp(api::OperationType::RECEIVE, stellarOperation);
                             }
+                        }
+                        if (operation.senders[0] == accountAddress && opIndex >= tx.envelope.tx.operations.size() - 1
+                            && createdOperations == 0) {
+                            operation.amount = BigInt::ZERO;
+                            putOp(api::OperationType::SEND, stellarOperation);
                         }
                     }
                         break;
