@@ -102,7 +102,7 @@ namespace ledger {
             TezosLikeTransaction &setBlockHash(const std::string &blockHash);
 
             TezosLikeTransaction & setGasLimit(const std::shared_ptr<BigInt>& gasLimit);
-            
+
             TezosLikeTransaction & setCounter(const std::shared_ptr<BigInt>& counter);
 
             TezosLikeTransaction & setStorage(const std::shared_ptr<BigInt>& storage);
@@ -118,6 +118,7 @@ namespace ledger {
 
             TezosLikeTransaction &reveal(bool needReveal);
             bool toReveal() const;
+
         private:
             std::chrono::system_clock::time_point _time;
             std::shared_ptr<TezosLikeBlock> _block;

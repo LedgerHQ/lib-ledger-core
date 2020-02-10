@@ -40,23 +40,42 @@ namespace ledger {
     namespace core {
         class TezosLikeAccountDatabaseHelper {
         public:
-            static void createAccount(soci::session& sql,
-                                      const std::string walletUid,
-                                      int32_t index,
-                                      const std::string& publicKey);
-            static bool queryAccount(soci::session& sql,
-                                     const std::string& accountUid,
-                                     TezosLikeAccountDatabaseEntry& entry);
-            static std::string createOriginatedAccountUid(const std::string &xtzAccountUid, const std::string &originatedAddress);
-            static void updatePubKeyField(soci::session &sql, const std::string &accountUid, const std::string &pubKey);
-            static void addOriginatedAccountOperation(soci::session &sql,
-                                                      const std::string &opUid,
-                                                      const std::string &tezosTxUid,
-                                                      const std::string &originatedAccountUid);
-            static size_t queryOperations(soci::session &sql,
-                                          const std::string &accountUid,
-                                          std::vector<TezosLikeOperation> &operations,
-                                          std::function<bool(const std::string &address)> filter);
+            static void createAccount(
+                soci::session& sql,
+                const std::string walletUid,
+                int32_t index,
+                const std::string& publicKey
+            );
+
+            static bool queryAccount(
+                soci::session& sql,
+                const std::string &accountUid,
+                TezosLikeAccountDatabaseEntry& entry
+            );
+
+            static std::string createOriginatedAccountUid(
+                const std::string &xtzAccountUid,
+                const std::string &originatedAddress
+            );
+
+            static void updatePubKeyField(soci::session &sql,
+                const std::string &accountUid,
+                const std::string &pubKey
+            );
+
+            static void addOriginatedAccountOperation(
+                soci::session &sql,
+                const std::string &opUid,
+                const std::string &tezosTxUid,
+                const std::string &originatedAccountUid
+            );
+
+            static size_t queryOperations(
+                soci::session &sql,
+                std::shared_ptr<AbstractAccount> const& account,
+                std::vector<TezosLikeOperation> &operations,
+                std::function<bool(const std::string &address)> filter
+            );
         };
     }
 }

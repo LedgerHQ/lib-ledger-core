@@ -103,7 +103,7 @@ namespace ledger {
 
             int result = FLAG_TRANSACTION_IGNORED;
 
-            TezosLikeOperation operation(getWallet(), transaction);
+            TezosLikeOperation operation(shared_from_this(), transaction);
             inflateOperation(operation, wallet, transaction);
             std::vector<std::string> senders{transaction.sender};
             operation.senders = std::move(senders);
@@ -321,7 +321,7 @@ namespace ledger {
                 };
 
                 //Get operations related to an account
-                TezosLikeAccountDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                TezosLikeAccountDatabaseHelper::queryOperations(sql, self, operations, filter);
 
                 auto lowerDate = startDate;
                 auto upperDate = DateUtils::incrementDate(startDate, precision);
