@@ -34,12 +34,14 @@
 #include <tezos/api/TezosConfigurationDefaults.hpp>
 #include <tezos/api/TezosBlockchainExplorerEngines.hpp>
 #include <tezos/api/TezosBlockchainObserverEngines.hpp>
+#include <tezos/database/Migrations.hpp>
 #include <tezos/explorers/NodeTezosLikeBlockchainExplorer.hpp>
 #include <tezos/explorers/ExternalTezosLikeBlockchainExplorer.hpp>
 #include <tezos/factories/TezosLikeWalletFactory.hpp>
 #include <tezos/factories/TezosLikeKeychainFactory.hpp>
 #include <tezos/observers/TezosLikeBlockchainObserver.hpp>
 #include <tezos/synchronizers/TezosLikeBlockchainExplorerAccountSynchronizer.hpp>
+
 
 #include <core/Services.hpp>
 #include <core/api/KeychainEngines.hpp>
@@ -57,6 +59,9 @@ namespace ledger {
                                                        const std::shared_ptr<Services> &services) :
                 AbstractWalletFactory(currency, services) {
             _keychainFactories = {{api::KeychainEngines::BIP49_P2SH, std::make_shared<TezosLikeKeychainFactory>()}};
+
+            // create the DB structure if not already created
+            services->getDatabaseSessionPool()->forwardMigration<TezosMigration>();
         }
 
         std::shared_ptr<AbstractWallet> TezosLikeWalletFactory::build(const WalletDatabaseEntry &entry) {
@@ -65,11 +70,9 @@ namespace ledger {
                                  entry.currencyName, entry.configuration->dump());
 
             // Get currency
-            auto isSupportedCurrency = [entry](auto const& networkParameters) {
-                return entry.currencyName == networkParameters.Identifier;
-            };
-
-            if (std::none_of(std::begin(networks::ALL_TEZOS), std::end(networks::ALL_TEZOS), isSupportedCurrency)) {
+            try {
+                auto currency = networks::getTezosLikeNetworkParameters(entry.currencyName);
+            } catch (Exception) {
                 throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, "Unsupported currency '{}'.", entry.currencyName);
             }
 
