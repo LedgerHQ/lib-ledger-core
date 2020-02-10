@@ -32,17 +32,27 @@
 #include <utils/Exception.hpp>
 #include <api/ConfigurationDefaults.hpp>
 #include <soci-postgresql.h>
+
+#ifdef SSL_SUPPORT
+    #include <thread>
+    #include <openssl/ssl.h>
+#endif
+
 using namespace soci;
 
 namespace ledger {
     namespace core {
         PostgreSQLBackend::PostgreSQLBackend() : DatabaseBackend(),
                                                  _connectionPoolSize(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE)
-        {}
+        {
+            initSSLLibraries();
+        }
 
         PostgreSQLBackend::PostgreSQLBackend(int32_t connectionPoolSize) : DatabaseBackend(),
                                                                            _connectionPoolSize(connectionPoolSize)
-        {}
+        {
+            initSSLLibraries();
+        }
 
         int32_t PostgreSQLBackend::getConnectionPoolSize() {
             return _connectionPoolSize;
@@ -69,6 +79,19 @@ namespace ledger {
                                             const std::string & newPassword,
                                             soci::session &session) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Change of password is not handled with PostgreSQL backend.");
+        }
+
+        std::once_flag PostgreSQLBackend::sslFlag;
+        void PostgreSQLBackend::initSSLLibraries() {
+#ifdef SSL_SUPPORT
+            std::call_once(PostgreSQLBackend::sslFlag, [] () {
+            #if OPENSSL_VERSION_NUMBER < 0x10100000L
+                SSL_library_init();
+            #else
+                OPENSSL_init_ssl(0, NULL);
+            #endif
+            });
+#endif
         }
     }
 }
