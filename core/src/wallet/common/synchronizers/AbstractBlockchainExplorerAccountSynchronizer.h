@@ -46,6 +46,7 @@
 #include <utils/Unit.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/DurationUtils.h>
+#include <utils/Try.hpp>
 #include <preferences/Preferences.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -236,7 +237,16 @@ namespace ledger {
                 }).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
                     return self->synchronizeBatches(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy] (const Unit&) {
-                    return self->_explorer->killSession(buddy->token.getValue());
+                    auto tryKillSession = Try<Unit>::from([=](){
+                        return self->_explorer->killSession(buddy->token.getValue());
+                    });
+                    if (tryKillSession.isFailure()) {
+
+                        buddy->logger->warn("Failed to delete synchronization token {} for account#{} of wallet {}", * buddy->token.getValue(), buddy->account->getIndex(),
+                                            buddy->account->getWallet()->getName());
+                        return unit;
+                    }
+                    return tryKillSession.getValue();
                 }).template map<Unit>(ImmediateExecutionContext::INSTANCE, [self, buddy] (const Unit&) {
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
