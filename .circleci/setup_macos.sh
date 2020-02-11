@@ -34,6 +34,9 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
 	export PATH="/usr/local/Cellar/qt/5.*/bin:$PATH"
 fi
 
+echo "========> Install PostgreSQL"
+brew install postgresql
+
 echo "========> Install Sqlite"
 brew install sqlite
 

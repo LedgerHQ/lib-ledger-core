@@ -34,15 +34,25 @@
 #include <set>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <api/KeychainEngines.hpp>
+#include <api/PoolConfiguration.hpp>
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 };
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
+    auto configuration = DynamicObject::newInstance();
+#ifdef PG_SUPPORT
+    const bool usePostgreSQL = true;
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+#else
     auto pool = newDefaultPool();
+#endif
+
     {
-        auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://bitcoin-mainnet.explorers.dev.aws.ledger.fr:443");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
                                               configuration));
         std::set<std::string> emittedOperations;
@@ -79,6 +89,13 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                                        ->build());
                 EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
 
+                auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Ops: " << ops.size() << std::endl;
+                for (auto& op : ops) {
+                    std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
+                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                }
                 dispatcher->stop();
             });
 
@@ -235,6 +252,13 @@ TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
                     std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
                     std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
                 }
+
+
+                // Test UTXOs
+                auto utxoCount = wait(account->getUTXOCount());
+                auto utxos = wait(account->getUTXO(0, 1000000));
+                EXPECT_EQ(utxos.size(), utxoCount);
+
                 dispatcher->stop();
             });
 

@@ -63,27 +63,15 @@ namespace ledger {
             Option<Block> block;
             uint64_t confirmations;
             Option<uint64_t> destinationTag;
-
             std::vector<api::RippleLikeMemo> memos;
+            int32_t status;
 
-            RippleLikeBlockchainExplorerTransaction() {
-                confirmations = 0;
+            RippleLikeBlockchainExplorerTransaction(): confirmations(0) {
             }
 
-            RippleLikeBlockchainExplorerTransaction(const RippleLikeBlockchainExplorerTransaction &cpy) {
-                this->block = cpy.block;
-                this->hash = cpy.hash;
-                this->receivedAt = cpy.receivedAt;
-                this->confirmations = cpy.confirmations;
-                this->fees = cpy.fees;
-                this->sequence = cpy.sequence;
-                this->receiver = cpy.receiver;
-                this->sender = cpy.sender;
-                this->value = cpy.value;
-                this->memos = cpy.memos;
-                this->destinationTag = cpy.destinationTag;
-            }
-
+            RippleLikeBlockchainExplorerTransaction(
+                RippleLikeBlockchainExplorerTransaction const& cpy
+            ) = default;
         };
 
         class RippleLikeBlockchainExplorer : public ConfigurationMatchable,

@@ -20,7 +20,7 @@ if (MSVC OR MINGW OR CMAKE_OSX_SYSROOT STREQUAL iphoneos)
     set(COMPILE_FLAGS USE_FIELD_10X26 USE_SCALAR_8X32)
     set(COMPILE_OPTIONS -fPIC)
 else()
-    if (ANDROID)
+    if (ANDROID OR CMAKE_TOOLCHAIN_FILE MATCHES "linux-gcc-armhf")
         set(COMPILE_FLAGS USE_FIELD_10X26 USE_SCALAR_8X32 HAVE_BUILTIN_EXPECT)
     else()
         set(COMPILE_FLAGS USE_FIELD_5X52 USE_SCALAR_4X64 HAVE_BUILTIN_EXPECT HAVE___INT128)
@@ -35,7 +35,7 @@ target_compile_options(secp256k1 PRIVATE ${COMPILE_OPTIONS})
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 
-if(IS_IOS GREATER_EQUAL 0 OR ANDROID)
+if(IS_IOS GREATER_EQUAL 0 OR ANDROID OR CMAKE_TOOLCHAIN_FILE MATCHES "linux-gcc-armhf")
 configure_file("${CMAKE_INSTALL_PREFIX}/gen_context/ecmult_static_context.h" "${CMAKE_SOURCE_DIR}/src/ecmult_static_context.h" COPY_ONLY)
     add_custom_command(
             TARGET secp256k1

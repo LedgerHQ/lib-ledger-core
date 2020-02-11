@@ -46,6 +46,7 @@
 #include <utils/Unit.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/DurationUtils.h>
+#include <utils/Try.hpp>
 #include <preferences/Preferences.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
@@ -236,7 +237,18 @@ namespace ledger {
                 }).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
                     return self->synchronizeBatches(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy] (const Unit&) {
-                    return self->_explorer->killSession(buddy->token.getValue());
+                    auto tryKillSession = Try<Future<Unit>>::from([=](){
+                        return self->_explorer->killSession(buddy->token.getValue());
+                    });
+                    if (tryKillSession.isFailure()) {
+                        buddy->logger->warn("Failed to delete synchronization token {} for account#{} of wallet {}",
+                                            static_cast<char *>(buddy->token.getValue()), buddy->account->getIndex(),
+                                            buddy->account->getWallet()->getName());
+                        // We return a successful Unit because deleting the sync token should not be a "failure"
+                        // Note: in a near future we'll try to get rid of sync token mechanism
+                        return Future<Unit>::successful(unit);
+                    }
+                    return tryKillSession.getValue();
                 }).template map<Unit>(ImmediateExecutionContext::INSTANCE, [self, buddy] (const Unit&) {
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
@@ -264,7 +276,7 @@ namespace ledger {
                     buddy->logger->error("Error during during synchronization for account#{} of wallet {} in {} ms", buddy->account->getIndex(),
                                          buddy->account->getWallet()->getName(), duration.count());
                     buddy->logger->error("Due to {}, {}", api::to_string(ex.getErrorCode()), ex.getMessage());
-                    throw ex;
+                    return unit;
                 });
             };
 
@@ -407,7 +419,14 @@ namespace ledger {
                         soci::transaction tr(sql);
                         buddy->logger->info("Got {} txs", bulk->transactions.size());
                         for (const auto& tx : bulk->transactions) {
-                            buddy->account->putTransaction(sql, tx);
+                            // A lot of things could happen here, better to wrap it
+                            auto tryPutTx = Try<int>::from([&] () {
+                                return buddy->account->putTransaction(sql, tx);
+                            });
+
+                            if (tryPutTx.isFailure()) {
+                                buddy->logger->error("Failed to put transaction {} for account {}, reason: {}", tx.hash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
+                            }
 
                             //Update first pendingTxHash in savedState
                             auto it = buddy->transactionsToDrop.find(tx.hash);

@@ -41,6 +41,9 @@ public:
 
     /** Default TTL for cache */
     static int32_t const DEFAULT_TTL_CACHE;
+
+    /** Default connection pool size for PostgreSQL */
+    static int32_t const DEFAULT_PG_CONNECTION_POOL_SIZE;
 };
 
 } } }  // namespace ledger::core::api

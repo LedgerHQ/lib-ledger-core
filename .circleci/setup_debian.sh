@@ -34,6 +34,9 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
     apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev
 fi
 
+echo "========> Install PostgreSQL"
+apt-get install -y postgresql-9.6 libpq-dev postgresql-server-dev-all
+
 echo "========> Install Sqlite"
 apt-get install -y sqlite3 sqlite libsqlite3-dev
 

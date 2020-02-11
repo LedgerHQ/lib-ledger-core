@@ -10,8 +10,8 @@ include(UseBackportedModules)
 
 # The project version number.
 set(VERSION_MAJOR   3   CACHE STRING "Project major version number.")
-set(VERSION_MINOR   2   CACHE STRING "Project minor version number.")
-set(VERSION_PATCH   1   CACHE STRING "Project patch version number.")
+set(VERSION_MINOR   3   CACHE STRING "Project minor version number.")
+set(VERSION_PATCH   0   CACHE STRING "Project patch version number.")
 mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
@@ -33,6 +33,16 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X version to tar
 set(CMAKE_MACOSX_RPATH 1)
 
 add_definitions("-DSQLITE_HAS_CODEC")
+
+# To compile with PostgreSQL support
+if (PG_SUPPORT)
+    add_definitions("-DPG_SUPPORT")
+endif()
+
+# To add SSL support
+if (SSL_SUPPORT)
+    add_definitions("-DSSL_SUPPORT")
+endif()
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)

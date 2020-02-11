@@ -37,6 +37,7 @@
 #include <async/Future.hpp>
 #include <database/DatabaseBackend.hpp>
 #include <debug/LoggerStreamBuffer.h>
+#include <api/DatabaseBackendType.hpp>
 
 namespace ledger {
     namespace core {
@@ -59,7 +60,7 @@ namespace ledger {
                 const std::string &password = ""
             );
 
-            static const int CURRENT_DATABASE_SCHEME_VERSION = 17;
+            static const int CURRENT_DATABASE_SCHEME_VERSION = 18;
 
             void performDatabaseMigration();
             void performDatabaseRollback();
@@ -71,6 +72,7 @@ namespace ledger {
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;
+            api::DatabaseBackendType _type;
         };
     }
 }
