@@ -33,7 +33,7 @@
 
 #include <bitcoin/api/BinaryCallback.hpp>
 #include <bitcoin/api/BitcoinLikeInput.hpp>
-#include <bitcoin/api/BitcoinLikeOperation.hpp>
+#include <bitcoin/operations/BitcoinLikeOperation.hpp>
 #include <bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 
 namespace ledger {
@@ -41,8 +41,10 @@ namespace core {
 
 class BitcoinLikeInput : public api::BitcoinLikeInput {
 public:
-  BitcoinLikeInput(const std::shared_ptr<api::BitcoinLikeOperation> &operation,
-                   int32_t inputIndex);
+  BitcoinLikeInput(
+    const BitcoinLikeBlockchainExplorerTransaction &transaction,
+    api::Currency const &currency,
+    int32_t inputIndex);
   optional<std::string> getAddress() override;
   std::shared_ptr<api::Amount> getValue() override;
   bool isCoinbase() override;
@@ -74,10 +76,11 @@ public:
   void setP2PKHSigScript(const std::vector<uint8_t> &signature) override;
 
 private:
-  inline api::BitcoinLikeInput &getInput();
+  inline BitcoinLikeBlockchainExplorerInput &getInput();
 
 private:
-  std::shared_ptr<api::BitcoinLikeOperation> _operation;
+  BitcoinLikeBlockchainExplorerTransaction _transaction;
+  api::Currency _currency;
   int32_t _inputIndex;
 };
 

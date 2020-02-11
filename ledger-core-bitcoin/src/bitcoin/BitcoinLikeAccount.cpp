@@ -35,7 +35,6 @@
     #include <core/collections/Functional.hpp>
     #include <core/utils/DateUtils.hpp>
     #include <core/operation/Operation.hpp>
-    #include <core/operation/OperationDatabaseHelper.hpp>
     #include <core/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.hpp>
     #include <core/api/EventCode.hpp>
     #include <core/events/EventPublisher.hpp>
@@ -55,7 +54,7 @@
     #include <bitcoin/database/BitcoinLikeTransactionDatabaseHelper.hpp>
     #include <bitcoin/transactions/BitcoinLikeTransaction.hpp>
     #include <bitcoin/operations/BitcoinLikeOperationQuery.hpp>
-
+    #include <bitcoin/database/BitcoinLikeOperationDatabaseHelper.hpp>
     namespace ledger {
         namespace core {
 
@@ -177,7 +176,7 @@
                 std::stringstream snds;
                 strings::join(senders, snds, ",");
 
-                BitcoinLikeOperation operation(getWallet(), transaction);
+                BitcoinLikeOperation operation(shared_from_this(), transaction);
                 inflateOperation(operation, transaction);
                 
                 operation.senders = std::move(senders);
@@ -202,8 +201,14 @@
                     operation.amount.assignI64(sentAmount);
                     operation.type = api::OperationType::SEND;
                     operation.refreshUid();
-                    if (OperationDatabaseHelper::putOperation(sql, operation))
+                    
+                    auto inserted = BitcoinLikeOperationDatabaseHelper::putOperation(sql, operation);
+
+                    if (inserted) {
                         emitNewOperationEvent(operation);
+                    }
+
+                    BitcoinLikeOperationDatabaseHelper::updateOperation(sql, operation, inserted);
                 }
 
                 if (accountOutputs.size() > 0) {
@@ -228,8 +233,14 @@
                         operation.amount = finalAmount;
                         operation.type = api::OperationType::RECEIVE;
                         operation.refreshUid();
-                        if (OperationDatabaseHelper::putOperation(sql, operation))
+                        
+                        auto inserted = BitcoinLikeOperationDatabaseHelper::putOperation(sql, operation);
+
+                        if (inserted) {
                             emitNewOperationEvent(operation);
+                        }
+
+                        BitcoinLikeOperationDatabaseHelper::updateOperation(sql, operation, inserted);
                     }
 
                 }
@@ -439,7 +450,7 @@
                     };
 
                     //Get operations related to an account
-                    OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                    BitcoinLikeOperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
 
                     auto lowerDate = startDate;
                     auto upperDate = DateUtils::incrementDate(startDate, precision);

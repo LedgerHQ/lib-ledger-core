@@ -36,6 +36,7 @@
 #include <core/wallet/Amount.hpp>
 
 #include <bitcoin/api/BitcoinLikeOutput.hpp>
+#include <bitcoin/api/BitcoinLikeTransaction.hpp>
 #include <bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <bitcoin/operations/BitcoinLikeOperation.hpp>
 
@@ -43,12 +44,17 @@ namespace ledger {
     namespace core {
         class BitcoinLikeOutput : public api::BitcoinLikeOutput {
         public:
-            BitcoinLikeOutput(const std::shared_ptr<::ledger::core::BitcoinLikeOperation>& operation, int32_t outputIndex);
-            BitcoinLikeOutput(const BitcoinLikeBlockchainExplorerOutput& output, const api::Currency& currency);
             BitcoinLikeOutput(
-                    const BitcoinLikeBlockchainExplorerOutput& output,
-                    const api::Currency& currency,
-                    const std::shared_ptr<api::DerivationPath>& path
+                BitcoinLikeBlockchainExplorerTransaction const &transaction,
+                api::Currency const &currency,
+                int32_t outputIndex);
+            BitcoinLikeOutput(
+                const BitcoinLikeBlockchainExplorerOutput& output,
+                const api::Currency& currency);
+            BitcoinLikeOutput(
+                const BitcoinLikeBlockchainExplorerOutput& output,
+                const api::Currency& currency,
+                const std::shared_ptr<api::DerivationPath>& path
             );
             std::string getTransactionHash() override;
             int32_t getOutputIndex() override;
@@ -68,7 +74,7 @@ namespace ledger {
             BitcoinLikeBlockchainExplorerOutput &getOutput();
 
         private:
-            Either<std::shared_ptr<::ledger::core::BitcoinLikeOperation>, BitcoinLikeBlockchainExplorerOutput>  _backend;
+            Either<BitcoinLikeBlockchainExplorerTransaction, BitcoinLikeBlockchainExplorerOutput>  _backend;
             std::shared_ptr<api::DerivationPath> _path;
             int32_t _outputIndex;
             api::Currency _currency;

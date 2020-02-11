@@ -38,17 +38,17 @@ namespace ledger {
     namespace core {
 
         BitcoinLikeOperation::BitcoinLikeOperation(
-            const std::shared_ptr<const AbstractWallet>& wallet,
-            BitcoinLikeBlockchainExplorerTransaction const& tx)
-                : _tx(std::make_shared<BitcoinLikeTransaction>(wallet->getCurrency())),
-                  _explorerTx(tx)
+            std::shared_ptr<AbstractAccount> account,
+            BitcoinLikeBlockchainExplorerTransaction const& tx) : 
+                Operation(account),
+                _explorerTx(tx),
+                _tx(std::make_shared<BitcoinLikeTransaction>(tx, account->getWallet()->getCurrency()))
         {}
 
-        BitcoinLikeOperation::BitcoinLikeOperation(
-            const std::shared_ptr<BitcoinLikeOperation> &operation,
-            BitcoinLikeBlockchainExplorerTransaction const& tx) 
-                : _tx(std::make_shared<BitcoinLikeTransaction>(operation, operation->getCurrency())),
-                  _explorerTx(tx)
+        BitcoinLikeOperation::BitcoinLikeOperation(const std::shared_ptr<BitcoinLikeOperation> &operation) :
+                Operation(operation->getAccount()),
+                _explorerTx(operation->_explorerTx),
+                _tx(std::make_shared<BitcoinLikeTransaction>(operation->_explorerTx, operation->getCurrency()))
         {}
         
         std::shared_ptr<api::BitcoinLikeTransaction> BitcoinLikeOperation::getTransaction() {
@@ -59,12 +59,17 @@ namespace ledger {
             return _explorerTx;
         }
 
+        BitcoinLikeBlockchainExplorerTransaction const& BitcoinLikeOperation::getExplorerTransaction() const {
+            return _explorerTx;
+        }
+
         void BitcoinLikeOperation::setExplorerTransaction(BitcoinLikeBlockchainExplorerTransaction const& tx) {
             _explorerTx = tx;
+            _tx = std::make_shared<BitcoinLikeTransaction>(_explorerTx, this->getCurrency());
         }
 
         void BitcoinLikeOperation::refreshUid(std::string const&) {
-            uid = OperationDatabaseHelper::createUid(accountUid, _tx->getHash(), type);
+            uid = OperationDatabaseHelper::createUid(accountUid, _tx->getHash(), getOperationType());
         }
 
         bool BitcoinLikeOperation::isComplete() {

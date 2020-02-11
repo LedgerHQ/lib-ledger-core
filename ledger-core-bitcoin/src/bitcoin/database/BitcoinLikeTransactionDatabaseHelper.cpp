@@ -60,7 +60,7 @@ namespace ledger {
                                                                   const std::string& accountUid,
                                                                   const BitcoinLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
-                                   return block.uid;
+                                   return BlockDatabaseHelper::createBlockUid(block.blockHash, block.currencyName);
                                });
 
             auto btcTxUid = createBitcoinTransactionUid(accountUid, tx.hash);
