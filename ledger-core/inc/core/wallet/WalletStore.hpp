@@ -5,9 +5,15 @@
 #include <unordered_map>
 
 #include <core/Services.hpp>
+#include <core/api/CurrencyCallback.hpp>
+#include <core/api/CurrencyListCallback.hpp>
 #include <core/api/Currency.hpp>
-#include <core/api/ErrorCode.hpp>
 #include <core/api/DynamicObject.hpp>
+#include <core/api/ErrorCode.hpp>
+#include <core/api/ErrorCodeCallback.hpp>
+#include <core/api/I32Callback.hpp>
+#include <core/api/WalletCallback.hpp>
+#include <core/api/WalletListCallback.hpp>
 #include <core/api/WalletStore.hpp>
 #include <core/async/DedicatedContext.hpp>
 #include <core/async/Future.hpp>
@@ -48,12 +54,12 @@ namespace ledger {
             Option<api::Currency> getCurrency(std::string const& name) const;
             void getCurrency(
                 const std::string & name,
-                const std::function<void(std::experimental::optional<api::Currency>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::CurrencyCallback> & callback
             ) override;
 
             std::vector<api::Currency> const& getCurrencies() const;
             void getCurrencies(
-                const std::function<void(std::experimental::optional<std::vector<api::Currency>>, std::experimental::optional<api::Error>)> & callback
+                    const std::shared_ptr<api::CurrencyListCallback> & callback
             ) override;
 
             Future<Unit> addCurrency(api::Currency const& currency);
@@ -62,20 +68,20 @@ namespace ledger {
             // Fetch wallet
             Future<int64_t> getWalletCount() const;
             void getWalletCount(
-                const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::I32Callback> & callback
             ) override;
 
             Future<std::vector<std::shared_ptr<AbstractWallet>>> getWallets(int64_t from, int64_t size);
             void getWallets(
                 int32_t from,
                 int32_t size,
-                const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Wallet>>>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::WalletListCallback> & callback
             ) override;
 
             FuturePtr<AbstractWallet> getWallet(const std::string& name);
             void getWallet(
                 const std::string & name,
-                const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::WalletCallback> & callback
             ) override;
 
             Future<api::ErrorCode> updateWalletConfig(
@@ -85,7 +91,7 @@ namespace ledger {
             void updateWalletConfig(
                 const std::string & name,
                 const std::shared_ptr<api::DynamicObject> & configuration,
-                const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::ErrorCodeCallback> & callback
             ) override;
 
             Future<std::vector<std::string>> getWalletNames(int64_t from, int64_t size) const;
@@ -100,14 +106,14 @@ namespace ledger {
                 const std::string & name,
                 const api::Currency & currency,
                 const std::shared_ptr<api::DynamicObject> & configuration,
-                const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::WalletCallback> & callback
             ) override;
 
             // Deletion
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
             void eraseDataSince(
                 const std::chrono::system_clock::time_point & date,
-                const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::ErrorCodeCallback> & callback
             ) override;
 
             // Factories
