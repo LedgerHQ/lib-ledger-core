@@ -244,6 +244,8 @@ namespace ledger {
                         buddy->logger->warn("Failed to delete synchronization token {} for account#{} of wallet {}",
                                             static_cast<char *>(buddy->token.getValue()), buddy->account->getIndex(),
                                             buddy->account->getWallet()->getName());
+                        // We return a successful Unit because deleting the sync token should not be a "failure"
+                        // Note: in a near future we'll try to get rid of sync token mechanism
                         return Future<Unit>::successful(unit);
                     }
                     return tryKillSession.getValue();

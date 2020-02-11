@@ -217,12 +217,12 @@ namespace ledger {
                     std::istringstream issNonce(value);
                     issNonce >> _transaction->nonce;
                 } else if (_lastKey == "input") {
-                    auto inputData = fromStringToBytes(value);
+                    const auto inputData = fromStringToBytes(value);
                     if (inputData.size() <= ledger::core::MAX_LENGTH_VAR_CHAR) {
                         if (isInternalTx) {
-                            _transaction->internalTransactions.back().inputData = inputData;
+                            _transaction->internalTransactions.back().inputData = std::move(inputData);
                         } else {
-                            _transaction->inputData = inputData;
+                            _transaction->inputData = std::move(inputData);
                         }
                     }
                 } else if (_lastKey == "contract" && !_transaction->erc20Transactions.empty()) {
