@@ -149,7 +149,7 @@ namespace ledger {
         }
 
         void AbstractWallet::getNextAccountIndex(
-            const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::I32Callback> & callback
         ) {
             getNextAccountIndex().callback(getMainExecutionContext(), callback);
         }
@@ -178,20 +178,18 @@ namespace ledger {
             });
         }
 
-        void AbstractWallet::getAccountCount(
-            const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback
-        ) {
+        void AbstractWallet::getAccountCount(const std::shared_ptr<api::I32Callback> & callback) {
             getAccountCount().callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::getNextAccountCreationInfo(
-            const std::function<void(std::experimental::optional<api::AccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::AccountCreationInfoCallback> & callback
         ) {
             this->getNextAccountCreationInfo().callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::getNextExtendedKeyAccountCreationInfo(
-            const std::function<void(std::experimental::optional<api::ExtendedKeyAccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> & callback
         ) {
             this->getNextExtendedKeyAccountCreationInfo().callback(getMainExecutionContext(), callback);
         }
@@ -214,36 +212,37 @@ namespace ledger {
             );
         }
 
-        void AbstractWallet::getAccountCreationInfo(int32_t accountIndex,
-            const std::function<void(std::experimental::optional<api::AccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+        void AbstractWallet::getAccountCreationInfo(
+            int32_t accountIndex,
+            const std::shared_ptr<api::AccountCreationInfoCallback> & callback
         ) {
             getAccountCreationInfo(accountIndex).callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::getExtendedKeyAccountCreationInfo(
             int32_t accountIndex,
-            const std::function<void(std::experimental::optional<api::ExtendedKeyAccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> & callback
         ) {
             getExtendedKeyAccountCreationInfo(accountIndex).callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::newAccountWithInfo(
             const api::AccountCreationInfo & accountCreationInfo,
-            const std::function<void(std::shared_ptr<api::Account>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::AccountCallback> & callback
         ) {
             newAccountWithInfo(accountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::newAccountWithExtendedKeyInfo(
             const api::ExtendedKeyAccountCreationInfo & extendedKeyAccountCreationInfo,
-            const std::function<void(std::shared_ptr<api::Account>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::AccountCallback> & callback
         ) {
             newAccountWithExtendedKeyInfo(extendedKeyAccountCreationInfo).callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::getAccount(
             int32_t index,
-            const std::function<void(std::shared_ptr<api::Account>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::AccountCallback> & callback
         ) {
             getAccount(index).callback(getMainExecutionContext(), callback);
         }
@@ -275,7 +274,7 @@ namespace ledger {
         void AbstractWallet::getAccounts(
             int32_t offset,
             int32_t count,
-            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Account>>>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::AccountListCallback> & callback
         ) {
             getAccounts(offset, count).callback(getMainExecutionContext(), callback);
         }
@@ -311,14 +310,14 @@ namespace ledger {
         }
 
         void AbstractWallet::getLastBlock(
-            const std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::BlockCallback> & callback
         ) {
             getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
         void AbstractWallet::eraseDataSince(
             const std::chrono::system_clock::time_point & date,
-            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::ErrorCodeCallback> & callback
         ) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }

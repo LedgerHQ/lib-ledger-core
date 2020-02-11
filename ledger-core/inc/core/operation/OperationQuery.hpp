@@ -34,6 +34,7 @@
 #include <type_traits>
 #include <unordered_map>
 
+#include <core/api/OperationListCallback.hpp>
 #include <core/api/OperationQuery.hpp>
 #include <core/api/OperationOrderKey.hpp>
 #include <core/api/enum_from_string.hpp>
@@ -136,7 +137,7 @@ namespace ledger {
                 return this->shared_from_this();
             }
 
-            void execute(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Operation>>>, std::experimental::optional<api::Error>)> & callback) override
+            void execute(const std::shared_ptr<api::OperationListCallback> & callback) override
             {
                 execute().callback(_mainContext, callback);
             }

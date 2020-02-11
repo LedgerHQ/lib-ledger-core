@@ -19,14 +19,14 @@ ERC20LikeAccount = interface +c {
     # Get the address of this ERC20 account.
     getAddress(): string;
     # Get the current balance of this ERC20 account.
-    getBalance(callback: callback2<void, BigInt, optional<Error>>);
+    getBalance(callback: callback2<BigInt>);
     # Get the balance history of this ERC20 account from a starting date (included) to an ending
     # date (included).
     getBalanceHistoryFor(start: date, end: date, period: TimePeriod): list<BigInt>;
     # Get the list of operations performed on this ERC20 account.
     getOperations(): list<ERC20LikeOperation>;
     # Retrieve raw data concerning a transaction of a given amount to a given address.
-    getTransferToAddressData(amount: BigInt, address: string, data: callback2<void, optional<binary>, optional<Error>>);
+    getTransferToAddressData(amount: BigInt, address: string, data: callback2<optional<binary>>);
     queryOperations(): OperationQuery;
 }
 

@@ -70,7 +70,7 @@ namespace ledger {
             return _publicKey.toOptional();
         }
 
-        void TezosLikeOriginatedAccount::getBalance(const std::function<void(std::shared_ptr<api::Amount>, std::experimental::optional<api::Error>)> & callback) {
+        void TezosLikeOriginatedAccount::getBalance(const std::shared_ptr<api::AmountCallback> & callback) {
             auto localAccount = _originatorAccount.lock();
             if (!localAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
@@ -103,10 +103,12 @@ namespace ledger {
         }
 
 
-        void TezosLikeOriginatedAccount::getBalanceHistory(const std::chrono::system_clock::time_point & start,
-                                                           const std::chrono::system_clock::time_point & end,
-                                                           api::TimePeriod period,
-                                                           const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)> & callback) {
+        void TezosLikeOriginatedAccount::getBalanceHistory(
+            const std::chrono::system_clock::time_point & start,
+            const std::chrono::system_clock::time_point & end,
+            api::TimePeriod period,
+            const std::shared_ptr<api::AmountListCallback> & callback
+        ) {
             auto localAccount = _originatorAccount.lock();
             if (!localAccount) {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");

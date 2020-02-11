@@ -400,7 +400,7 @@ namespace ledger {
 
         void RippleLikeAccount::broadcastRawTransaction(
             const std::vector<uint8_t> & transaction,
-            const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::StringCallback> & callback
         ) {
             _explorer->pushTransaction(transaction).map<std::string>(getContext(),
                                                                      [](const String &seq) -> std::string {
@@ -411,7 +411,7 @@ namespace ledger {
 
         void RippleLikeAccount::broadcastTransaction(
             const std::shared_ptr<api::RippleLikeTransaction> & transaction,
-            const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::StringCallback> & callback
         ) {
             broadcastRawTransaction(transaction->serialize(), callback);
         }
@@ -473,7 +473,7 @@ namespace ledger {
                                                                   buildFunction);
         }
 
-        void RippleLikeAccount::getFees(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) {
+        void RippleLikeAccount::getFees(const std::shared_ptr<api::AmountCallback> & callback) {
             getFees().callback(getMainExecutionContext(), callback);
         }
 
@@ -485,7 +485,7 @@ namespace ledger {
             });
         }
 
-        void RippleLikeAccount::getBaseReserve(const std::function<void(std::experimental::optional<std::shared_ptr<api::Amount>>, std::experimental::optional<api::Error>)> & callback) {
+        void RippleLikeAccount::getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) {
             getBaseReserve().callback(getMainExecutionContext(), callback);
         }
 
@@ -499,7 +499,7 @@ namespace ledger {
 
         void RippleLikeAccount::isAddressActivated(
             const std::string& address,
-            const std::function<void(std::experimental::optional<bool>, std::experimental::optional<api::Error>)>& isActivated
+            const std::shared_ptr<api::BoolCallback> & isActivated
         ) {
             isAddressActivated(address).callback(getMainExecutionContext(), isActivated);
         }

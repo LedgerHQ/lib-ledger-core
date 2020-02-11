@@ -590,8 +590,10 @@ namespace ledger {
             return txExplorer;
         }
 
-        void EthereumLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> & transaction,
-                                                          const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+        void EthereumLikeAccount::broadcastRawTransaction(
+            const std::vector<uint8_t> & transaction,
+            const std::shared_ptr<api::StringCallback> & callback
+        ) {
             auto self = getSelf();
             _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
                 auto txHash = seq.str();
@@ -606,8 +608,10 @@ namespace ledger {
             }).callback(getMainExecutionContext(), callback);
         }
 
-        void EthereumLikeAccount::broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
-                                                       const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+        void EthereumLikeAccount::broadcastTransaction(
+            const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
+            const std::shared_ptr<api::StringCallback> & callback
+        ) {
                 broadcastRawTransaction(transaction->serialize(), callback);
         }
 
@@ -617,34 +621,38 @@ namespace ledger {
         }
 
         void EthereumLikeAccount::getGasPrice(
-            const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+            const std::shared_ptr<api::BigIntCallback> & callback
+        ) {
             _explorer->getGasPrice().mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
-                return std::make_shared<BigInt>(*gasPrice);
+                return std::static_pointer_cast<api::BigInt>(gasPrice);
             }).callback(getMainExecutionContext(), callback);
         }
 
         void EthereumLikeAccount::getEstimatedGasLimit(
             const std::string & address,
-            const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)>& callback) {
+            const std::shared_ptr<api::BigIntCallback> & callback
+        ) {
             _explorer->getEstimatedGasLimit(address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
-                return std::make_shared<BigInt>(*gasPrice);
+                return std::static_pointer_cast<api::BigInt>(gasPrice);
             }).callback(getMainExecutionContext(), callback);
         }
 
         FuturePtr<api::BigInt> EthereumLikeAccount::getERC20Balance(const std::string & erc20Address) {
             return _explorer->getERC20Balance(_keychain->getAddress()->toEIP55(), erc20Address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &erc20Balance) -> std::shared_ptr<api::BigInt> {
-                return std::make_shared<BigInt>(*erc20Balance);
+                return std::static_pointer_cast<api::BigInt>(erc20Balance);
             });
         }
 
-        void EthereumLikeAccount::getERC20Balance(const std::string & erc20Address,
-                                                  const std::function<void(std::experimental::optional<std::shared_ptr<::ledger::core::api::BigInt>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+        void EthereumLikeAccount::getERC20Balance(
+            const std::string & erc20Address,
+            const std::shared_ptr<api::BigIntCallback> & callback
+        ) {
             getERC20Balance(erc20Address).callback(getMainExecutionContext(), callback);
         }
 
         void EthereumLikeAccount::getERC20Balances(
             const std::vector<std::string> & erc20Addresses,
-            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BigInt>>>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::BigIntListCallback> & callback
         ) {
             getERC20Balances(erc20Addresses).callback(getMainExecutionContext(), callback);
         }

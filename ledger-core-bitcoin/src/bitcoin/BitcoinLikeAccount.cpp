@@ -84,7 +84,7 @@
                 out.currencyName = getWallet()->getCurrency().name;
                 out.walletUid = wallet->getWalletUid();
                 out.date = tx.receivedAt;
-                
+
                 if (out.block.nonEmpty())
                     out.block.getValue().currencyName = wallet->getCurrency().name;
             }
@@ -171,9 +171,9 @@
                 strings::join(senders, snds, ",");
 
                 BitcoinLikeOperation operation(getWallet(), transaction);
-                
+
                 inflateOperation(operation, wallet, transaction);
-                
+
                 operation.senders = std::move(senders);
                 operation.recipients = std::move(recipients);
                 operation.fees = std::move(BigInt().assignI64(fees));
@@ -322,8 +322,11 @@
                 return eventPublisher->getEventBus();
             }
 
-            void BitcoinLikeAccount::getUTXO(int32_t from, int32_t to,
-                                            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>, std::experimental::optional<api::Error>)> & callback) {
+            void BitcoinLikeAccount::getUTXO(
+				int32_t from,
+				int32_t to,
+				const std::shared_ptr<api::BitcoinLikeOutputListCallback> & callback
+			) {
                 getUTXO(from, to).callback(getMainExecutionContext(), callback);
             }
 
@@ -344,7 +347,7 @@
                 });
             }
 
-            void BitcoinLikeAccount::getUTXOCount(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback) {
+            void BitcoinLikeAccount::getUTXOCount(const std::shared_ptr<api::I32Callback> & callback) {
                 getUTXOCount().callback(getMainExecutionContext(), callback);
             }
 
@@ -537,8 +540,10 @@
                 return lastBlock.hasValue() ? static_cast<uint64_t >(lastBlock->height) : LLONG_MAX;
             }
 
-            void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                                             const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+            void BitcoinLikeAccount::broadcastRawTransaction(
+				const std::vector<uint8_t> &transaction,
+				const std::shared_ptr<api::StringCallback> & callback
+			) {
                 auto self = getSelf();
                 _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
                     //Store newly broadcasted tx in db
@@ -612,8 +617,10 @@
                 }).callback(getContext(), callback);
             }
 
-            void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
-                                                          const std::function<void(std::experimental::optional<std::string>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+            void BitcoinLikeAccount::broadcastTransaction(
+				const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
+				const std::shared_ptr<api::StringCallback> & callback
+			) {
                 broadcastRawTransaction(transaction->serialize(), callback);
             }
 
@@ -689,7 +696,7 @@
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             }
 
-            void BitcoinLikeAccount::getFees(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::BigInt>>>, std::experimental::optional<api::Error>)> & callback) {
+            void BitcoinLikeAccount::getFees(const std::shared_ptr<api::BigIntListCallback> & callback) {
                 return _explorer->getFees().callback(getContext(), callback);;
             }
 

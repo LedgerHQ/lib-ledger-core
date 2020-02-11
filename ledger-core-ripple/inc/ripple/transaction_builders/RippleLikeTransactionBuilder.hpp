@@ -40,6 +40,7 @@
 #include <core/wallet/Amount.hpp>
 
 #include <ripple/api/RippleLikeTransactionBuilder.hpp>
+#include <ripple/api/RippleLikeTransactionCallback.hpp>
 #include <ripple/explorers/RippleLikeBlockchainExplorer.hpp>
 #include <ripple/transaction_builders/RippleLikeTransactionBuildRequest.hpp>
 
@@ -72,7 +73,7 @@ namespace ledger {
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> setDestinationTag(int64_t tag) override;
 
-            void build(const std::function<void(std::shared_ptr<api::RippleLikeTransaction>, std::experimental::optional<api::Error>)> & callback) override;
+            void build(const std::shared_ptr<api::RippleLikeTransactionCallback> & callback) override;
 
             Future<std::shared_ptr<api::RippleLikeTransaction>> build();
 

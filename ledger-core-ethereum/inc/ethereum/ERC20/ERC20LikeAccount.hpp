@@ -37,6 +37,8 @@
 #include <core/database/SociNumber.hpp>
 #include <core/operation/OperationQuery.hpp>
 
+#include <ethereum/api/BigIntCallback.hpp>
+#include <ethereum/api/BinaryCallback.hpp>
 #include <ethereum/api/ERC20LikeAccount.hpp>
 #include <ethereum/api/ERC20Token.hpp>
 #include <ethereum/ERC20/ERC20LikeOperation.hpp>
@@ -45,10 +47,8 @@
 #include <ethereum/database/EthereumLikeTransactionDatabaseHelper.hpp>
 #include <ethereum/operations/EthereumLikeOperationDatabaseHelper.hpp>
 
-
 namespace ledger {
     namespace core {
-
         class ERC20LikeAccount : public api::ERC20LikeAccount {
         public:
             ERC20LikeAccount(const std::string &accountUid,
@@ -59,7 +59,7 @@ namespace ledger {
             api::ERC20Token getToken() override ;
             std::string getAddress() override ;
             FuturePtr<api::BigInt> getBalance();
-            void getBalance(const std::function<void(std::shared_ptr<::ledger::core::api::BigInt>, std::experimental::optional<::ledger::core::api::Error>)> & callback) override ;
+            void getBalance(const std::shared_ptr<api::BigIntCallback> & callback) override ;
 
             std::vector<std::shared_ptr<api::BigInt>> getBalanceHistoryFor(
                 const std::chrono::system_clock::time_point& startDate,
@@ -78,9 +78,11 @@ namespace ledger {
             Future<std::vector<uint8_t>> getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
                                                                   const std::string &address);
 
-            void getTransferToAddressData(const std::shared_ptr<api::BigInt> &amount,
-                                          const std::string &address,
-                                          const std::function<void(std::experimental::optional<std::vector<uint8_t>>, std::experimental::optional<::ledger::core::api::Error>)> &data) override;
+            void getTransferToAddressData(
+                const std::shared_ptr<api::BigInt> &amount,
+                const std::string &address,
+                const std::shared_ptr<api::BinaryCallback> & data
+            ) override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override ;
             void putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation = false);

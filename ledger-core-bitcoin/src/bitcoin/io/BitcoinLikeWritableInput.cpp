@@ -126,7 +126,7 @@ namespace ledger {
             pushToScriptSig(_pubKeys[0]);
         }
 
-        void BitcoinLikeWritableInput::getPreviousTransaction(const std::function<void(std::experimental::optional<std::vector<uint8_t>>, std::experimental::optional<api::Error>)> & callback) {
+        void BitcoinLikeWritableInput::getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> & callback) {
             getPreviousTransaction().callback(_context, callback);
         }
 

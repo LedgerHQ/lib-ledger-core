@@ -110,7 +110,8 @@ namespace ledger {
         }
 
         void TezosLikeTransactionBuilder::build(
-            const std::function<void(std::shared_ptr<api::TezosLikeTransaction>, std::experimental::optional<api::Error>)> &callback) {
+                const std::shared_ptr<api::TezosLikeTransactionCallback> & callback
+        ) {
             build().callback(_context, callback);
         }
 

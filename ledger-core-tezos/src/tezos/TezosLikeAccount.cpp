@@ -240,7 +240,8 @@ namespace ledger {
 
         void TezosLikeAccount::getEstimatedGasLimit(
             const std::string & address,
-            const std::function<void(std::experimental::optional<std::shared_ptr<api::BigInt>>, std::experimental::optional<api::Error>)> & callback) {
+            const std::shared_ptr<api::BigIntCallback> & callback
+        ) {
             getEstimatedGasLimit(address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<BigInt>(*gasLimit);
             }).callback(getMainExecutionContext(), callback);
@@ -252,7 +253,8 @@ namespace ledger {
 
         void TezosLikeAccount::getStorage(
             const std::string & address,
-            const std::function<void(std::experimental::optional<std::shared_ptr<api::BigInt>>, std::experimental::optional<api::Error>)> & callback) {
+            const std::shared_ptr<api::BigIntCallback> & callback
+        ) {
             getStorage(address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &storage) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<BigInt>(*storage);
             }).callback(getMainExecutionContext(), callback);

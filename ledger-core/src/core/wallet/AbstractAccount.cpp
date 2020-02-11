@@ -121,11 +121,11 @@ namespace ledger {
             return _externalPreferences;
         }
 
-        void AbstractAccount::getFreshPublicAddresses(const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Address>>>, std::experimental::optional<api::Error>)> & callback) {
+        void AbstractAccount::getFreshPublicAddresses(const std::shared_ptr<api::AddressListCallback> & callback) {
             getFreshPublicAddresses().callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractAccount::getBalance(const std::function<void(std::shared_ptr<api::Amount>, std::experimental::optional<api::Error>)> & callback) {
+        void AbstractAccount::getBalance(const std::shared_ptr<api::AmountCallback> & callback) {
             getBalance().callback(getMainExecutionContext(), callback);
         }
 
@@ -133,7 +133,7 @@ namespace ledger {
             const std::string & start,
             const std::string & end,
             api::TimePeriod period,
-            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::AmountListCallback> & callback
         ) {
             getBalanceHistory(start, end, period).callback(getMainExecutionContext(), callback);
         }
@@ -186,11 +186,11 @@ namespace ledger {
             return getWallet()->getLastBlock();
         }
 
-        void AbstractAccount::getLastBlock(const std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> & callback) {
+        void AbstractAccount::getLastBlock(const std::shared_ptr<api::BlockCallback> & callback) {
             getLastBlock().callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback) {
+        void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
     }

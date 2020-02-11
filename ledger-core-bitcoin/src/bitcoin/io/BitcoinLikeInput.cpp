@@ -111,7 +111,7 @@ namespace ledger {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInput::setP2PKHSigScript(const std::vector<uint8_t> &signature)");
         }
 
-        void BitcoinLikeInput::getPreviousTransaction(const std::function<void(std::experimental::optional<std::vector<uint8_t>>, std::experimental::optional<::ledger::core::api::Error>)> & callback) {
+        void BitcoinLikeInput::getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> & callback) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "void BitcoinLikeInput::getPreviousTransaction(const std::shared_ptr<api::BinaryCallback> &callback)");
         }
     }

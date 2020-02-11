@@ -33,11 +33,18 @@
 
 #include <core/Services.hpp>
 #include <core/api/Account.hpp>
+#include <core/api/AccountCallback.hpp>
+#include <core/api/AccountListCallback.hpp>
 #include <core/api/AccountCreationInfo.hpp>
+#include <core/api/AccountCreationInfoCallback.hpp>
 #include <core/api/Block.hpp>
+#include <core/api/BlockCallback.hpp>
 #include <core/api/Currency.hpp>
 #include <core/api/DynamicObject.hpp>
+#include <core/api/ErrorCodeCallback.hpp>
 #include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <core/api/ExtendedKeyAccountCreationInfoCallback.hpp>
+#include <core/api/I32Callback.hpp>
 #include <core/api/Wallet.hpp>
 #include <core/async/DedicatedContext.hpp>
 #include <core/collections/DynamicObject.hpp>
@@ -78,60 +85,60 @@ namespace ledger {
             /// Ripple.
             virtual bool hasMultipleAddresses() const = 0;
 
-            void getNextAccountIndex(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback) override;
+            void getNextAccountIndex(const std::shared_ptr<api::I32Callback> & callback) override;
             Future<int32_t> getNextAccountIndex();
 
             Future<int32_t> getAccountCount();
-            void getAccountCount(const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback) override;
+            void getAccountCount(const std::shared_ptr<api::I32Callback> & callback) override;
 
-            void getLastBlock(const std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> & callback) override;
+            void getLastBlock(const std::shared_ptr<api::BlockCallback> & callback) override;
             Future<api::Block> getLastBlock();
 
             void getAccount(
                 int32_t index,
-                const std::function<void(std::shared_ptr<api::Account>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::AccountCallback> & callback
             ) override;
             FuturePtr<api::Account> getAccount(int32_t index);
 
             void getAccounts(
                 int32_t offset,
                 int32_t count,
-                const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Account>>>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::AccountListCallback> & callback
             ) override;
             Future<std::vector<std::shared_ptr<api::Account>>> getAccounts(int32_t offset, int32_t count);
 
             void getNextAccountCreationInfo(
-                const std::function<void(std::experimental::optional<api::AccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::AccountCreationInfoCallback> & callback
             ) override;
 
             void getNextExtendedKeyAccountCreationInfo(
-                const std::function<void(std::experimental::optional<api::ExtendedKeyAccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> & callback
             ) override;
 
             void getAccountCreationInfo(
                 int32_t accountIndex,
-                const std::function<void(std::experimental::optional<api::AccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::AccountCreationInfoCallback> & callback
             ) override;
 
             void getExtendedKeyAccountCreationInfo(
                 int32_t accountIndex,
-                const std::function<void(std::experimental::optional<api::ExtendedKeyAccountCreationInfo>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::ExtendedKeyAccountCreationInfoCallback> & callback
             ) override;
 
             void newAccountWithInfo(
                 const api::AccountCreationInfo & accountCreationInfo,
-                const std::function<void(std::shared_ptr<api::Account>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::AccountCallback> & callback
             ) override;
 
             void newAccountWithExtendedKeyInfo(
                 const api::ExtendedKeyAccountCreationInfo & extendedKeyAccountCreationInfo,
-                const std::function<void(std::shared_ptr<api::Account>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::AccountCallback> & callback
             ) override;
 
             void eraseDataSince(
                 const std::chrono::system_clock::time_point & date,
-                const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
-            ) override ;
+                const std::shared_ptr<api::ErrorCodeCallback> & callback
+            ) override;
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date);
 
             std::shared_ptr<api::DynamicObject> getConfiguration() override;

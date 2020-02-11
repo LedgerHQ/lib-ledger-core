@@ -43,7 +43,7 @@
 
 namespace ledger {
     namespace core {
-        
+
         class TezosLikeOriginatedAccount : public api::TezosLikeOriginatedAccount {
         public:
             TezosLikeOriginatedAccount(const std::string &uid,
@@ -59,13 +59,15 @@ namespace ledger {
 
             std::experimental::optional<std::string> getPublicKey() override;
 
-            void getBalance(const std::function<void(std::shared_ptr<api::Amount>, std::experimental::optional<api::Error>)> & callback) override;
+            void getBalance(const std::shared_ptr<api::AmountCallback> & callback) override;
             FuturePtr<api::Amount> getBalance(const std::shared_ptr<api::ExecutionContext>& context);
 
-            void getBalanceHistory(const std::chrono::system_clock::time_point & start,
-                                   const std::chrono::system_clock::time_point & end,
-                                   api::TimePeriod period,
-                                   const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Amount>>>, std::experimental::optional<api::Error>)>& callback) override;
+            void getBalanceHistory(
+                const std::chrono::system_clock::time_point & start,
+                const std::chrono::system_clock::time_point & end,
+                api::TimePeriod period,
+                const std::shared_ptr<api::AmountListCallback> & callback
+            ) override;
 
             Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::shared_ptr<api::ExecutionContext>& context,
                                                                                 const std::chrono::system_clock::time_point & start,

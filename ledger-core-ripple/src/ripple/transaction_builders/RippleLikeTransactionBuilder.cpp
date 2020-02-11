@@ -109,7 +109,7 @@ namespace ledger {
             _request.destinationTag = tag;
             return shared_from_this();
         }
-        void RippleLikeTransactionBuilder::build(const std::function<void(std::shared_ptr<api::RippleLikeTransaction>, std::experimental::optional<api::Error>)> & callback) {
+        void RippleLikeTransactionBuilder::build(const std::shared_ptr<api::RippleLikeTransactionCallback> & callback) {
             build().callback(_context, callback);
         }
 

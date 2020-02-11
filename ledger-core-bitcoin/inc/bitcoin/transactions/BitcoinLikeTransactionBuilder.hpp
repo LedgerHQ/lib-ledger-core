@@ -41,6 +41,7 @@
 #include <core/async/Future.hpp>
 #include <core/math/BigInt.hpp>
 
+#include <bitcoin/api/BitcoinLikeTransactionCallback.hpp>
 #include <bitcoin/api/BitcoinLikeNetworkParameters.hpp>
 #include <bitcoin/api/BitcoinLikePickingStrategy.hpp>
 #include <bitcoin/api/BitcoinLikeTransaction.hpp>
@@ -108,7 +109,7 @@ namespace ledger {
 
             void reset() override;
 
-            void build(const std::function<void(std::shared_ptr<api::BitcoinLikeTransaction>, std::experimental::optional<api::Error>)> & callback) override;
+            void build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> & callback) override;
             Future<std::shared_ptr<api::BitcoinLikeTransaction>> build();
         private:
             api::Currency _currency;

@@ -1,6 +1,7 @@
 @extern "../../ledger-core/idl/core.yaml"
 
 @import "addresses.djinni"
+@import "callback.djinni"
 @import "script.djinni"
 
 
@@ -70,7 +71,7 @@ BitcoinLikeInput = interface +c {
     getSequence(): i64;
 
     # Get the previous transaction associated with the input.
-    getPreviousTransaction(callback: callback2<void, optional<binary>, optional<Error>>);
+    getPreviousTransaction(callback: callback2<optional<binary>>);
 
     # Easy way to set the P2PKH script signature. Shorthand for input.pushToScriptSig(input.getPublicKeys()[0], signature).
     setP2PKHSigScript(signature: binary);
@@ -167,11 +168,11 @@ BitcoinLikeTransaction = interface +c {
     # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
     # size.
     getEstimatedSize(): EstimatedSize;
-    # Sign all inputs for given transaction. 
+    # Sign all inputs for given transaction.
     # Build DER encoded signature from RSV data.
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
     setSignatures(signatures: list<BitcoinLikeSignature>, override: bool): BitcoinLikeSignatureState;
-    # Sign all inputs for given transaction. 
+    # Sign all inputs for given transaction.
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
     setDERSignatures(signatures: list<binary>, override: bool): BitcoinLikeSignatureState;
 }
@@ -276,7 +277,7 @@ BitcoinLikeTransactionBuilder = interface +c {
     setFeesPerByte(fees: Amount): BitcoinLikeTransactionBuilder;
 
     # Build a transaction from the given builder parameters.
-    build(callback: callback2<void, optional<BitcoinLikeTransaction>, optional<Error>>);
+    build(callback: callback2<optional<BitcoinLikeTransaction>>);
 
     # Creates a clone of this builder.
     # @return A copy of the current builder instance.
@@ -296,19 +297,19 @@ BitcoinLikeAccount = interface +c {
     # @param from, integer, lower bound for account's UTXO's index
     # @param to, integer, upper bound for account's UTXO's index
     # @param callback, ListCallback object which returns a list of BitcoinLikeOutput if getUTXO succeed
-    getUTXO(from: i32, to: i32, callback: callback2<void, optional<list<BitcoinLikeOutput>>, optional<Error>>);
+    getUTXO(from: i32, to: i32, callback: callback2<optional<list<BitcoinLikeOutput>>>);
     # Get UTXOs count of account.
     # @param callback, Callback object which returns number of UTXO owned by this account
-    getUTXOCount(callback: callback2<void, optional<i32>, optional<Error>>);
-    broadcastRawTransaction(transaction: binary, callback: callback2<void, optional<string>, optional<Error>>);
-    broadcastTransaction(transaction: BitcoinLikeTransaction, callback: callback2<void, optional<string>, optional<Error>>);
+    getUTXOCount(callback: callback2<optional<i32>>);
+    broadcastRawTransaction(transaction: binary, callback: callback2<optional<string>>);
+    broadcastTransaction(transaction: BitcoinLikeTransaction, callback: callback2<optional<string>>);
     buildTransaction(partial: optional<bool>): BitcoinLikeTransactionBuilder;
     # Get fees from network, fees are ordered in descending order (i.e. fastest to slowest confirmation)
     # Note: it would have been better to have this method on BitcoinLikeWallet
     # but since BitcoinLikeWallet is not used anywhere, it's better to keep all
     # specific methods under the same specific class so it will be easy to segratate
     # when the right time comes !
-    getFees(callback: callback2<void, optional<list<BigInt>>, optional<Error>>);
+    getFees(callback: callback2<optional<list<BigInt>>>);
 }
 
 # A bitcoin-like wallet.
