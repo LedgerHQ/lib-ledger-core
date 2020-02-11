@@ -39,6 +39,9 @@
 
 namespace ledger {
     namespace core {
+        /// Maximum length of stored VARCHAR
+        static const int MAX_LENGTH_VAR_CHAR = 255;
+
         /// Get the current database migration version.
         int getDatabaseMigrationVersion(soci::session& sql);
 
