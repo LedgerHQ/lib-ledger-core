@@ -77,10 +77,10 @@ TEST_F(StellarFixture, PaymentTransaction) {
 }
 
 TEST_F(StellarFixture, ParseRawTransaction) {
-    auto strTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4"
-                 "f00000064015dc2cc0000000300000000000000000000000100000000000000010000000"
-                 "03a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a500000000"
-                 "000000000000000000ee6b2800000000000000000";
+    auto strTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f0"
+                 "0000064015dc2cc000000030000000000000000000000010000000000000001000000003a"
+                 "83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a5000000000000"
+                 "00000000000000000000000000000";
 
     auto tx = api::StellarLikeTransactionBuilder::parseRawTransaction(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
 
@@ -92,11 +92,11 @@ TEST_F(StellarFixture, ParseRawTransaction) {
 }
 
 TEST_F(StellarFixture, ParseSignatureBase) {
-    auto strTx = "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a97900000002"
-                 "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f"
-                 "00000064015dc2cc00000003000000000000000000000001000000000000000100000000"
-                 "3a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a5000000000"
-                 "00000000000000000ee6b28000000000";
+    auto strTx = "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a9790000000200"
+                 "000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f0000"
+                 "0064015dc2cc000000030000000000000000000000010000000000000001000000003a8393"
+                 "5fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a500000000000000000"
+                 "0000000000000000";
 
     auto tx = api::StellarLikeTransactionBuilder::parseSignatureBase(ledger::core::currencies::STELLAR, hex::toByteArray(strTx));
 

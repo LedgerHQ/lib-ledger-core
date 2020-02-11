@@ -100,10 +100,10 @@ TEST_F(StellarFixture, XDRCreateAccountDecode) {
 
 
 TEST_F(StellarFixture, XDRPaymentEncode) {
-    auto hexTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4"
-                 "f00000064015dc2cc0000000300000000000000000000000100000000000000010000000"
-                 "03a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a500000000"
-                 "000000000000000000ee6b2800000000000000000";
+    auto hexTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b6"
+                 "3de77a4f00000064015dc2cc0000000300000000000000000000000100000000"
+                 "00000001000000003a83935fabfdc44749ad4d042dbc4df9b59442f325a27960"
+                 "519fba516adb8a5000000000000000000ee6b2800000000000000000";
     auto source = std::dynamic_pointer_cast<StellarLikeAddress>(StellarLikeAddress::parse(SOURCE_ADDR, getCurrency()))->toPublicKey();
     auto dest = std::dynamic_pointer_cast<StellarLikeAddress>(StellarLikeAddress::parse(DEST_ADDR, getCurrency()))->toPublicKey();
     Encoder encoder;
@@ -130,10 +130,10 @@ TEST_F(StellarFixture, XDRPaymentEncode) {
 }
 
 TEST_F(StellarFixture, XDRPaymentDecode) {
-    auto hexTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4"
-                 "f00000064015dc2cc0000000300000000000000000000000100000000000000010000000"
-                 "03a83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a500000000"
-                 "000000000000000000ee6b2800000000000000000";
+    auto hexTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b6"
+                 "3de77a4f00000064015dc2cc0000000300000000000000000000000100000000"
+                 "00000001000000003a83935fabfdc44749ad4d042dbc4df9b59442f325a27960"
+                 "519fba516adb8a5000000000000000000ee6b2800000000000000000";
 
     Decoder decoder(hex::toByteArray(hexTx));
     TransactionEnvelope envelope;
