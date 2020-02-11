@@ -19,14 +19,38 @@ namespace ledger {
             return Option<api::Currency>();
         }
 
+        void WalletStore::getCurrency(
+            const std::string & name,
+            const std::function<void(std::experimental::optional<api::Currency>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            auto self = shared_from_this();
+
+            Future<api::Currency>::async(_services->getDispatcher()->getMainExecutionContext(), [self, name] () {
+                auto currency = self->getCurrency(name);
+                if (currency.isEmpty()) {
+                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' doesn't exist", name);
+                }
+                return currency.getValue();
+            }).callback(self->_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         std::vector<api::Currency> const& WalletStore::getCurrencies() const {
             return _currencies;
         }
 
-        Future<Unit> WalletStore::addCurrency(api::Currency const& currency) {
+        void WalletStore::getCurrencies(
+            const std::function<void(std::experimental::optional<std::vector<api::Currency>>, std::experimental::optional<api::Error>)> & callback
+        ) {
             auto self = shared_from_this();
 
-            return async<Unit>([=] () {
+            Future<std::vector<api::Currency>>::async(_services->getDispatcher()->getMainExecutionContext(), [self] () {
+                auto currencies = self->getCurrencies();
+                return currencies;
+            }).callback(self->_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
+        Future<Unit> WalletStore::addCurrency(api::Currency const& currency) {
+            return async<Unit>([=, self = shared_from_this()] () {
                 auto factory = self->getFactory(currency.name);
                 if (factory != nullptr) {
                     throw Exception(api::ErrorCode::CURRENCY_ALREADY_EXISTS, fmt::format("Currency '{}' already exists.", currency.name));
@@ -41,9 +65,7 @@ namespace ledger {
         }
 
         Future<Unit> WalletStore::removeCurrency(std::string const& currencyName) {
-            auto self = shared_from_this();
-
-            return async<Unit>([=] () {
+            return async<Unit>([=, self = shared_from_this()] () {
                 auto factory = self->getFactory(currencyName);
                 if (factory == nullptr) {
                     throw Exception(api::ErrorCode::CURRENCY_NOT_FOUND, fmt::format("Currency '{}' not found.", currencyName));
@@ -67,19 +89,25 @@ namespace ledger {
         Future<int64_t> WalletStore::getWalletCount() const {
             auto services = _services;
 
-            return async<int64_t>([=] () -> int64_t {
+            return async<int64_t>([services = _services] () -> int64_t {
                 soci::session sql(services->getDatabaseSessionPool()->getPool());
                 return WalletDatabaseHelper::getWalletCount(sql);
             });
+        }
+
+        void WalletStore::getWalletCount(
+            const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            getWalletCount().map<int32_t>(_services->getContext(), [] (const int64_t count) {
+                return static_cast<int32_t>(count);
+            }).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         Future<std::vector<std::shared_ptr<AbstractWallet>>> WalletStore::getWallets(
             int64_t from,
             int64_t size
         ) {
-            auto self = shared_from_this();
-
-            return Future<std::vector<std::shared_ptr<AbstractWallet>>>::async(_services->getThreadPoolExecutionContext(), [=] () {
+            return Future<std::vector<std::shared_ptr<AbstractWallet>>>::async(_services->getThreadPoolExecutionContext(), [=, self = shared_from_this()] () {
                 std::vector<WalletDatabaseEntry> entries((size_t) size);
                 soci::session sql(self->_services->getDatabaseSessionPool()->getPool());
                 auto count = WalletDatabaseHelper::getWallets(sql, from, entries);
@@ -93,6 +121,22 @@ namespace ledger {
             });
         }
 
+        void WalletStore::getWallets(
+            int32_t from,
+            int32_t size,
+            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Wallet>>>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            getWallets(from, size)
+            .map<std::vector<std::shared_ptr<api::Wallet>>>(_services->getContext(), [] (const std::vector<std::shared_ptr<AbstractWallet>>& wallets) {
+                auto size = wallets.size();
+                std::vector<std::shared_ptr<api::Wallet>> out(size);
+                for (auto i = 0; i < size; i++) {
+                    out[i] = wallets[i];
+                }
+                return out;
+            }).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         FuturePtr<AbstractWallet> WalletStore::getWallet(std::string const& name) {
             auto it = _wallets.find(WalletDatabaseEntry::createWalletUid(_services->getTenant(), name));
             if (it != _wallets.end()) {
@@ -102,9 +146,7 @@ namespace ledger {
                 }
             }
 
-            auto self = shared_from_this();
-
-            return Future<std::shared_ptr<AbstractWallet>>::async(_services->getDispatcher()->getMainExecutionContext(), [=] () {
+            return Future<std::shared_ptr<AbstractWallet>>::async(_services->getDispatcher()->getMainExecutionContext(), [=, self = shared_from_this()] () {
                 auto entry = getWalletEntryFromDatabase(name);
                 if (!entry.hasValue()) {
                     throw Exception(api::ErrorCode::WALLET_NOT_FOUND, fmt::format("Wallet '{}' doesn't exist.", name));
@@ -113,13 +155,18 @@ namespace ledger {
             });
         }
 
+        void WalletStore::getWallet(
+            const std::string & name,
+            const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            getWallet(name).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         Future<api::ErrorCode> WalletStore::updateWalletConfig(
             const std::string &name,
             const std::shared_ptr<api::DynamicObject> &configuration
         ) {
-            auto self = shared_from_this();
-
-            return async<api::ErrorCode>([=] () {
+            return async<api::ErrorCode>([=, self = shared_from_this()] () {
                 auto entry = self->getWalletEntryFromDatabase(name);
 
                 if (!entry.hasValue()) {
@@ -140,13 +187,19 @@ namespace ledger {
             });
         }
 
+        void WalletStore::updateWalletConfig(
+            const std::string & name,
+            const std::shared_ptr<api::DynamicObject> & configuration,
+            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            updateWalletConfig(name, configuration).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
+        }
+
         Future<std::vector<std::string>> WalletStore::getWalletNames(
             int64_t from,
             int64_t size
         ) const {
-            auto self = shared_from_this();
-
-            return async<std::vector<std::string>>([=] () -> std::vector<std::string> {
+            return async<std::vector<std::string>>([=, self = shared_from_this()] () -> std::vector<std::string> {
                 soci::session sql(self->_services->getDatabaseSessionPool()->getPool());
                 std::vector<WalletDatabaseEntry> entries((size_t) size);
 
@@ -168,9 +221,7 @@ namespace ledger {
             std::string const& currencyName,
             std::shared_ptr<api::DynamicObject> const& configuration
         ) {
-            auto self = shared_from_this();
-
-            return async<std::shared_ptr<AbstractWallet>>([=] () {
+            return async<std::shared_ptr<AbstractWallet>>([=, self = shared_from_this()] () {
                 auto factory = self->getFactory(currencyName);
                 if (factory == nullptr) {
                     throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.");
@@ -195,6 +246,15 @@ namespace ledger {
 
                 return wallet;
             });
+        }
+
+        void WalletStore::createWallet(
+            const std::string & name,
+            const api::Currency & currency,
+            const std::shared_ptr<api::DynamicObject> & configuration,
+            const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            createWallet(name, currency.name, configuration).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         Future<api::ErrorCode> WalletStore::eraseDataSince(const std::chrono::system_clock::time_point & date) {
@@ -248,6 +308,13 @@ namespace ledger {
                 self->_services->logger()->debug("Finish erasing data of WalletStore : {}",name);
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
             });
+        }
+
+        void WalletStore::eraseDataSince(
+            const std::chrono::system_clock::time_point & date,
+            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+        ) {
+            eraseDataSince(date).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         bool WalletStore::registerFactory(

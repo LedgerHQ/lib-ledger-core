@@ -24,6 +24,7 @@
 @import "trust.djinni"
 @import "tuples.djinni"
 @import "wallet.djinni"
+@import "wallet_store.djinni"
 @import "websocket_client.djinni"
 
 LedgerCore = interface +c {
