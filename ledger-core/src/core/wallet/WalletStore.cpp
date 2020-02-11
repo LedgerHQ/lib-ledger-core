@@ -21,7 +21,7 @@ namespace ledger {
 
         void WalletStore::getCurrency(
             const std::string & name,
-            const std::function<void(std::experimental::optional<api::Currency>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::CurrencyCallback> & callback
         ) {
             auto self = shared_from_this();
 
@@ -39,7 +39,7 @@ namespace ledger {
         }
 
         void WalletStore::getCurrencies(
-            const std::function<void(std::experimental::optional<std::vector<api::Currency>>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::CurrencyListCallback> & callback
         ) {
             auto self = shared_from_this();
 
@@ -96,7 +96,7 @@ namespace ledger {
         }
 
         void WalletStore::getWalletCount(
-            const std::function<void(std::experimental::optional<int32_t>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::I32Callback> & callback
         ) {
             getWalletCount().map<int32_t>(_services->getContext(), [] (const int64_t count) {
                 return static_cast<int32_t>(count);
@@ -124,7 +124,7 @@ namespace ledger {
         void WalletStore::getWallets(
             int32_t from,
             int32_t size,
-            const std::function<void(std::experimental::optional<std::vector<std::shared_ptr<api::Wallet>>>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::WalletListCallback> & callback
         ) {
             getWallets(from, size)
             .map<std::vector<std::shared_ptr<api::Wallet>>>(_services->getContext(), [] (const std::vector<std::shared_ptr<AbstractWallet>>& wallets) {
@@ -157,7 +157,7 @@ namespace ledger {
 
         void WalletStore::getWallet(
             const std::string & name,
-            const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::WalletCallback> & callback
         ) {
             getWallet(name).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
@@ -190,7 +190,7 @@ namespace ledger {
         void WalletStore::updateWalletConfig(
             const std::string & name,
             const std::shared_ptr<api::DynamicObject> & configuration,
-            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::ErrorCodeCallback> & callback
         ) {
             updateWalletConfig(name, configuration).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
@@ -252,7 +252,7 @@ namespace ledger {
             const std::string & name,
             const api::Currency & currency,
             const std::shared_ptr<api::DynamicObject> & configuration,
-            const std::function<void(std::shared_ptr<api::Wallet>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::WalletCallback> & callback
         ) {
             createWallet(name, currency.name, configuration).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }
@@ -312,7 +312,7 @@ namespace ledger {
 
         void WalletStore::eraseDataSince(
             const std::chrono::system_clock::time_point & date,
-            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::ErrorCodeCallback> & callback
         ) {
             eraseDataSince(date).callback(_services->getDispatcher()->getMainExecutionContext(), callback);
         }

@@ -220,7 +220,7 @@ namespace ledger {
         void Services::changePassword(
             const std::string & oldPassword,
             const std::string & newPassword,
-            const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+            const std::shared_ptr<api::ErrorCodeCallback> & callback
         ) {
             changePassword(oldPassword, newPassword).callback(_threadDispatcher->getMainExecutionContext(), callback);
         }
@@ -261,13 +261,13 @@ namespace ledger {
 
         void Services::getLastBlock(
             std::string const& currencyName,
-            std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> const & callback
+            const std::shared_ptr<api::BlockCallback> & callback
         ) {
             getLastBlock(currencyName).callback(_threadDispatcher->getMainExecutionContext(), callback);
         }
 
         void Services::freshResetAll(
-            std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> const& callback
+            const std::shared_ptr<api::ErrorCodeCallback> & callback
         ) {
             freshResetAll().callback(_threadDispatcher->getMainExecutionContext(), callback);
         }

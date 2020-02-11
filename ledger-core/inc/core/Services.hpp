@@ -36,7 +36,9 @@
 #include <spdlog/spdlog.h>
 
 #include <core/api/Block.hpp>
+#include <core/api/BlockCallback.hpp>
 #include <core/api/ErrorCode.hpp>
+#include <core/api/ErrorCodeCallback.hpp>
 #include <core/api/EventBus.hpp>
 #include <core/api/PathResolver.hpp>
 #include <core/api/RandomNumberGenerator.hpp>
@@ -108,7 +110,7 @@ namespace ledger {
             void changePassword(
                 const std::string & oldPassword,
                 const std::string & newPassword,
-                const std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> & callback
+                const std::shared_ptr<api::ErrorCodeCallback> & callback
             ) override;
 
             std::shared_ptr<HttpClient> getHttpClient(const std::string& baseUrl);
@@ -154,11 +156,11 @@ namespace ledger {
 
             void getLastBlock(
                 std::string const& currencyName,
-                std::function<void(std::experimental::optional<api::Block>, std::experimental::optional<api::Error>)> const & callback
+                const std::shared_ptr<api::BlockCallback> & callback
             ) override;
 
             void freshResetAll(
-                std::function<void(std::experimental::optional<api::ErrorCode>, std::experimental::optional<api::Error>)> const& callback
+                const std::shared_ptr<api::ErrorCodeCallback> & callback
             ) override;
 
         private:
