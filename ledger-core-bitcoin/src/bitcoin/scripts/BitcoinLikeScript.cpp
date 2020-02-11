@@ -37,7 +37,7 @@
 #include <core/utils/Hex.hpp>
 
 #include <bitcoin/BitcoinNetworks.hpp>
-#include <bitcoin/bech32/Bech32Factory.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32Factory.hpp>
 #include <bitcoin/scripts/BitcoinLikeScript.hpp>
 
 namespace ledger {

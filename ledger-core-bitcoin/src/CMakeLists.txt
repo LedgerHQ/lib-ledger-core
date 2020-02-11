@@ -37,9 +37,7 @@ endif ()
 set(SRC_FILES
     # bech32
     bitcoin/bech32/BCHBech32.cpp
-    bitcoin/bech32/Bech32.cpp
-    bitcoin/bech32/Bech32Factory.cpp
-    bitcoin/bech32/Bech32Parameters.cpp
+    bitcoin/bech32/BitcoinLikeBech32Factory.cpp
     bitcoin/bech32/BTCBech32.cpp
     # block
     bitcoin/block/BitcoinLikeBlock.cpp

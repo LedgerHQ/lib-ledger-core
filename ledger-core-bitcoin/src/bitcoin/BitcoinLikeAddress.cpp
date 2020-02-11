@@ -41,8 +41,9 @@
 
 #include <bitcoin/BitcoinLikeAddress.hpp>
 #include <bitcoin/BitcoinNetworks.hpp>
-#include <bitcoin/bech32/Bech32.hpp>
-#include <bitcoin/bech32/Bech32Factory.hpp>
+#include <core/math/bech32/Bech32.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32Factory.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32ParametersHelpers.hpp>
 #include <bitcoin/scripts/BitcoinLikeScriptOperators.hpp>
 
 
@@ -73,10 +74,10 @@ namespace ledger {
             } else if (keychainEngine == api::KeychainEngines::BIP49_P2SH) {
                 return params.P2SHVersion;
             } else if (keychainEngine == api::KeychainEngines::BIP173_P2WPKH) {
-                auto bech32Params = Bech32Parameters::getBech32Params(params.Identifier);
+                auto bech32Params = bitcoin::getBech32Params(params.Identifier);
                 return bech32Params.P2WPKHVersion;
             } else if (keychainEngine == api::KeychainEngines::BIP173_P2WSH) {
-                auto bech32Params = Bech32Parameters::getBech32Params(params.Identifier);
+                auto bech32Params = bitcoin::getBech32Params(params.Identifier);
                 return bech32Params.P2WSHVersion;
             }
             throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Keychain Engine: ", keychainEngine);
@@ -100,7 +101,7 @@ namespace ledger {
                                    const std::vector<uint8_t> &hash160,
                                    const api::BitcoinLikeNetworkParameters &params) {
 
-            auto bech32 = Bech32Factory::newBech32Instance(params.Identifier).getValue();
+            auto bech32 = BitcoinLikeBech32Factory::newBech32Instance(params.Identifier).getValue();
             auto witnessVersion = (keychainEngine == api::KeychainEngines::BIP173_P2WPKH) ? bech32->getBech32Params().P2WPKHVersion : bech32->getBech32Params().P2WSHVersion;
             return bech32->encode(hash160, witnessVersion);
         }
@@ -147,7 +148,7 @@ namespace ledger {
                                   const ledger::core::api::Currency &currency,
                                   const Option<std::string>& derivationPath) {
             auto result = Try<std::shared_ptr<Address>>::from([&] () {
-                auto bech32 = Bech32Factory::newBech32Instance(networks::getBitcoinLikeNetworkParameters(currency.name).Identifier);
+                auto bech32 = BitcoinLikeBech32Factory::newBech32Instance(networks::getBitcoinLikeNetworkParameters(currency.name).Identifier);
                 auto isBech32 = bech32.hasValue() && (bech32.getValue()->getBech32Params().hrp == address.substr(0, bech32.getValue()->getBech32Params().hrp.size()));
                 return isBech32 ? fromBech32(address, currency, derivationPath) : fromBase58(address, currency, derivationPath);
             });
@@ -195,7 +196,7 @@ namespace ledger {
                                                                            const api::Currency& currency,
                                                                            const Option<std::string>& derivationPath) {
             auto& params = networks::getBitcoinLikeNetworkParameters(currency.name);
-            auto bech32 = Bech32Factory::newBech32Instance(params.Identifier).getValue();
+            auto bech32 = BitcoinLikeBech32Factory::newBech32Instance(params.Identifier).getValue();
             auto decoded = bech32->decode(address);
             auto keychainEngine = (decoded.second.size() == 32 || decoded.first == bech32->getBech32Params().P2WSHVersion) ? api::KeychainEngines::BIP173_P2WSH : api::KeychainEngines::BIP173_P2WPKH;
             return std::make_shared<ledger::core::BitcoinLikeAddress>(currency,

@@ -1,6 +1,6 @@
 /*
  *
- * Bech32Factory
+ * BitcoinLikeBech32Factory
  *
  * Created by El Khalil Bellakrid on 18/02/2019.
  *
@@ -28,21 +28,20 @@
  *
  */
 
-#include <core/utils/Exception.hpp>
+#pragma once
 
-#include <bitcoin/bech32/Bech32Factory.hpp>
-#include <bitcoin/bech32/BTCBech32.hpp>
-#include <bitcoin/bech32/BCHBech32.hpp>
+#include <string>
+#include <memory>
+
+#include <core/utils/Option.hpp>
+
+#include <core/math/bech32/Bech32.hpp>
 
 namespace ledger {
     namespace core {
-        Option<std::shared_ptr<Bech32>> Bech32Factory::newBech32Instance(const std::string &networkIdentifier) {
-            if (networkIdentifier == "btc" || networkIdentifier == "btc_testnet") {
-                return Option<std::shared_ptr<Bech32>>(std::make_shared<BTCBech32>(networkIdentifier));
-            } else if (networkIdentifier == "abc") {
-                return Option<std::shared_ptr<Bech32>>(std::make_shared<BCHBech32>());
-            }
-            return Option<std::shared_ptr<Bech32>>();
-        }
+        class BitcoinLikeBech32Factory {
+        public:
+            static Option<std::shared_ptr<Bech32>> newBech32Instance(const std::string &networkIdentifier);
+        };
     }
 }

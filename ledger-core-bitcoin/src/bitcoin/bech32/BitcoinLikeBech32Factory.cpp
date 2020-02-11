@@ -28,21 +28,21 @@
  *
  */
 
-#pragma once
+#include <core/utils/Exception.hpp>
 
-#include <string>
-#include <memory>
-
-#include <core/utils/Option.hpp>
-
-#include <bitcoin/bech32/Bech32.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32Factory.hpp>
+#include <bitcoin/bech32/BTCBech32.hpp>
+#include <bitcoin/bech32/BCHBech32.hpp>
 
 namespace ledger {
     namespace core {
-        class Bech32Factory {
-        public:
-            static Option<std::shared_ptr<Bech32>> newBech32Instance(const std::string &networkIdentifier);
-        };
+        Option<std::shared_ptr<Bech32>> BitcoinLikeBech32Factory::newBech32Instance(const std::string &networkIdentifier) {
+            if (networkIdentifier == "btc" || networkIdentifier == "btc_testnet") {
+                return Option<std::shared_ptr<Bech32>>(std::make_shared<BTCBech32>(networkIdentifier));
+            } else if (networkIdentifier == "abc") {
+                return Option<std::shared_ptr<Bech32>>(std::make_shared<BCHBech32>());
+            }
+            return Option<std::shared_ptr<Bech32>>();
+        }
     }
 }
-
