@@ -33,42 +33,50 @@
 #include <core/wallet/AbstractAccount.hpp>
 
 #include <bitcoin/io/BitcoinLikeInput.hpp>
-#include <bitcoin/transactions/BitcoinLikeTransaction.hpp>
+#include <bitcoin/operations/BitcoinLikeOperation.hpp>
 
 namespace ledger {
     namespace core {
 
-        BitcoinLikeInput::BitcoinLikeInput(const std::shared_ptr<api::BitcoinLikeOperation> &operation, int32_t inputIndex) {
-            _operation = operation;
-            _inputIndex = inputIndex;
+        BitcoinLikeInput::BitcoinLikeInput(
+            const BitcoinLikeBlockchainExplorerTransaction &transaction,
+            api::Currency const &currency,
+            int32_t inputIndex) 
+            : _transaction(transaction),  _inputIndex(inputIndex)
+        {
+            _currency = currency;
         }
 
         optional<std::string> BitcoinLikeInput::getAddress() {
-            return getInput().getAddress();
+            return getInput().address;
         }
 
         std::shared_ptr<api::Amount> BitcoinLikeInput::getValue() {
-            return getInput().getValue();
+            if (getInput().value.isEmpty())
+                return nullptr;
+            return std::make_shared<Amount>(_currency, 0, getInput().value.getValue());
         }
 
         bool BitcoinLikeInput::isCoinbase() {
-            return static_cast<bool>(getInput().getCoinbase());
+            return getInput().coinbase.nonEmpty();
         }
 
         optional<std::string> BitcoinLikeInput::getCoinbase() {
-            return getInput().getCoinbase();
+            return getInput().coinbase.toOptional();
         }
 
-        api::BitcoinLikeInput &BitcoinLikeInput::getInput() {
-            return *(_operation->getTransaction()->getInputs()[_inputIndex]);
+        BitcoinLikeBlockchainExplorerInput &BitcoinLikeInput::getInput() {
+            return _transaction.inputs[_inputIndex];
         }
 
         optional<std::string> BitcoinLikeInput::getPreviousTxHash() {
-            return getInput().getPreviousTxHash();
+            return getInput().previousTxHash.toOptional();
         }
 
         optional<int32_t> BitcoinLikeInput::getPreviousOutputIndex() {
-            return getInput().getPreviousOutputIndex();
+            return getInput().previousTxOutputIndex.map<int32_t>([] (const uint32_t& v) {
+                return (int32_t)v;
+            }).toOptional();
         }
 
         std::vector<std::vector<uint8_t>> BitcoinLikeInput::getPublicKeys() {

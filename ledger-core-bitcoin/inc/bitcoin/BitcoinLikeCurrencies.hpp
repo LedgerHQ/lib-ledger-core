@@ -43,6 +43,7 @@
 namespace ledger {
     namespace core {
         namespace currencies {
+            // TODO: change to constexpr variables
             api::Currency bitcoin();
             api::Currency bitcoin_testnet();
             api::Currency bitcoin_cash();

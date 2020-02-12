@@ -44,6 +44,7 @@
 #include <bitcoin/io/BitcoinLikeInput.hpp>
 #include <bitcoin/io/BitcoinLikeOutput.hpp>
 #include <bitcoin/io/BitcoinLikeWritableInput.hpp>
+#include <bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {
@@ -87,7 +88,7 @@ namespace ledger {
                                             uint64_t currentBlockHeight = 0);
 
             BitcoinLikeTransaction(
-                const std::shared_ptr<BitcoinLikeOperation>& operation,
+                const BitcoinLikeBlockchainExplorerTransaction &transaction,
                 const api::Currency &currency,
                 const std::string &keychainEngine = api::KeychainEngines::BIP32_P2PKH,
                 uint64_t currentBlockHeight = 0);

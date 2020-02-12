@@ -55,39 +55,37 @@ namespace ledger {
         }
 
         BitcoinLikeTransaction::BitcoinLikeTransaction(
-                const std::shared_ptr<BitcoinLikeOperation>& operation,
+                const BitcoinLikeBlockchainExplorerTransaction &transaction,
                 const api::Currency &currency,
                 const std::string &keychainEngine,
                 uint64_t currentBlockHeight)
                 : BitcoinLikeTransaction(currency, keychainEngine, currentBlockHeight) {
 
-            auto& tx = operation->getExplorerTransaction();
-
-            _time = tx.receivedAt;
-            _lockTime = tx.lockTime;
+            _time = transaction.receivedAt;
+            _lockTime = transaction.lockTime;
             _writable = false;
 
-            if (tx.fees.nonEmpty())
-                _fees = std::make_shared<Amount>(currency, 0, tx.fees.getValue());
+            if (transaction.fees.nonEmpty())
+                _fees = std::make_shared<Amount>(currency, 0, transaction.fees.getValue());
             else
                 _fees = nullptr;
 
-            auto inputCount = tx.inputs.size();
+            auto inputCount = transaction.inputs.size();
             for (auto index = 0; index < inputCount; index++) {
-                _inputs.push_back(std::make_shared<BitcoinLikeInput>(operation, index));
+                _inputs.push_back(std::make_shared<BitcoinLikeInput>(transaction, currency, index));
             }
 
-            auto outputCount = tx.outputs.size();
+            auto outputCount = transaction.outputs.size();
             for (auto index = 0; index < outputCount; index++) {
-                _outputs.push_back(std::make_shared<BitcoinLikeOutput>(operation, index));
+                _outputs.push_back(std::make_shared<BitcoinLikeOutput>(transaction, currency, index));
             }
 
-            if (tx.block.nonEmpty()) {
-                _block = std::make_shared<BitcoinLikeBlock>(tx.block.getValue());
+            if (transaction.block.nonEmpty()) {
+                _block = std::make_shared<BitcoinLikeBlock>(transaction.block.getValue());
             } else {
                 _block = nullptr;
             }
-            _hash = tx.hash;
+            _hash = transaction.hash;
         }
 
         std::vector<std::shared_ptr<api::BitcoinLikeInput>> BitcoinLikeTransaction::getInputs() {

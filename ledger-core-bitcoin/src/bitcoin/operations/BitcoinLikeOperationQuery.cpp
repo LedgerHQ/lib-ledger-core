@@ -46,16 +46,18 @@ namespace ledger {
         void BitcoinLikeOperationQuery::inflateCompleteTransaction(
                 soci::session &sql, const std::string &accountUid, BitcoinLikeOperation& operation) {
             BitcoinLikeBlockchainExplorerTransaction tx;
-            operation.setExplorerTransaction(tx);
             std::string transactionHash;
-            sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getUid()), soci::into(transactionHash);
-            BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, accountUid, operation.getExplorerTransaction());
+
+            sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.uid), soci::into(transactionHash);
+            BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, accountUid, tx);
+
+            operation.setExplorerTransaction(tx);
         }
 
         std::shared_ptr<BitcoinLikeOperation> BitcoinLikeOperationQuery::createOperation(std::shared_ptr<AbstractAccount> &account) {
              BitcoinLikeBlockchainExplorerTransaction tx;
 
-            return std::make_shared<BitcoinLikeOperation>(account->getWallet(), tx);
+            return std::make_shared<BitcoinLikeOperation>(account, tx);
         }
     }
 }

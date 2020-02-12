@@ -35,6 +35,7 @@
 
 #include <core/operation/Operation.hpp>
 #include <core/wallet/AbstractWallet.hpp>
+#include <core/api/Currency.hpp>
 
 #include <bitcoin/api/BitcoinLikeOperation.hpp>
 #include <bitcoin/api/BitcoinLikeTransaction.hpp>
@@ -42,17 +43,15 @@
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeOperation : public api::BitcoinLikeOperation, public Operation {
+        class BitcoinLikeOperation : public api::BitcoinLikeOperation, public Operation, std::enable_shared_from_this<BitcoinLikeOperation> {
         public:
             BitcoinLikeOperation() = default;
 
             BitcoinLikeOperation(
-                const std::shared_ptr<const AbstractWallet>& wallet,
+                std::shared_ptr<AbstractAccount> account,
                 BitcoinLikeBlockchainExplorerTransaction const& tx);
 
-            BitcoinLikeOperation(
-                const std::shared_ptr<BitcoinLikeOperation>& operation,
-                BitcoinLikeBlockchainExplorerTransaction const& tx);
+            BitcoinLikeOperation(const std::shared_ptr<BitcoinLikeOperation>& operation);
 
             std::shared_ptr<api::BitcoinLikeTransaction> getTransaction() override;
 
@@ -61,10 +60,10 @@ namespace ledger {
 
             void setExplorerTransaction(BitcoinLikeBlockchainExplorerTransaction const& tx);
             BitcoinLikeBlockchainExplorerTransaction& getExplorerTransaction();
-
+            BitcoinLikeBlockchainExplorerTransaction const& getExplorerTransaction() const;
         private:
-            std::shared_ptr<api::BitcoinLikeTransaction> _tx;
             BitcoinLikeBlockchainExplorerTransaction _explorerTx;
+            std::shared_ptr<api::BitcoinLikeTransaction> _tx;
         };
     }
 }

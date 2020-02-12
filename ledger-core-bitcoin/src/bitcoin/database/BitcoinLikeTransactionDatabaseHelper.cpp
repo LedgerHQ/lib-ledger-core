@@ -60,7 +60,7 @@ namespace ledger {
                                                                   const std::string& accountUid,
                                                                   const BitcoinLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([] (const BitcoinLikeBlockchainExplorer::Block& block) {
-                                   return block.uid;
+                                   return BlockDatabaseHelper::createBlockUid(block.blockHash, block.currencyName);
                                });
 
             auto btcTxUid = createBitcoinTransactionUid(accountUid, tx.hash);
@@ -248,7 +248,7 @@ namespace ledger {
                 output.script = outputRow.get<std::string>(2);
                 output.address = outputRow.get<Option<std::string>>(3);
                 if (outputRow.get_indicator(4) != i_null) {
-                    output.blockHeight = row.get<BigInt>(4).toUint64();
+                    output.blockHeight = row.get<BigInt>(5).toUint64();
                 }
                 out.outputs.push_back(std::move(output));
             }

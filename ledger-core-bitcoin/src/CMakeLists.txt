@@ -48,6 +48,7 @@ set(SRC_FILES
     bitcoin/database/BitcoinLikeTransactionDatabaseHelper.cpp
     bitcoin/database/BitcoinLikeUTXODatabaseHelper.cpp
     bitcoin/database/BitcoinLikeWalletDatabase.cpp
+    bitcoin/database/BitcoinLikeOperationDatabaseHelper.cpp
     bitcoin/database/Migrations.cpp
     # explorers
     bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp

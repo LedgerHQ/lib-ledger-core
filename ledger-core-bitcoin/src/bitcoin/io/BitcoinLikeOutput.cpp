@@ -37,25 +37,30 @@
 #include <bitcoin/io/BitcoinLikeOutput.hpp>
 #include <bitcoin/scripts/BitcoinLikeScript.hpp>
 #include <bitcoin/scripts/BitcoinLikeInternalScript.hpp>
-#include <bitcoin/transactions/BitcoinLikeTransaction.hpp>
 
 namespace ledger {
     namespace core {
 
-        BitcoinLikeOutput::BitcoinLikeOutput(const std::shared_ptr<::ledger::core::BitcoinLikeOperation> &operation,
-                                                   int32_t outputIndex) : _backend(operation) {
-            _outputIndex = outputIndex;
-            _currency = operation->getAccount()->getWallet()->getCurrency();
+        BitcoinLikeOutput::BitcoinLikeOutput(
+                BitcoinLikeBlockchainExplorerTransaction const &transaction,
+                api::Currency const &currency,
+                int32_t outputIndex
+            ) : _backend(transaction), _outputIndex(outputIndex) {
+            // Currency doesn't provide copy constructor
+            _currency = currency;
         }
 
-        BitcoinLikeOutput::BitcoinLikeOutput(const BitcoinLikeBlockchainExplorerOutput &output, const api::Currency& currency) : _backend(output) {
-            _outputIndex = static_cast<int32_t>(output.index);
-            _currency = currency;
+        BitcoinLikeOutput::BitcoinLikeOutput(
+                const BitcoinLikeBlockchainExplorerOutput &output,
+                const api::Currency& currency
+            ) : _backend(output), _outputIndex(static_cast<int32_t>(output.index)) {
+            // Currency doesn't provide copy constructor
+            _currency = currency; 
         }
 
         std::string BitcoinLikeOutput::getTransactionHash() {
             if (_backend.isLeft())
-                return _backend.getLeft()->getTransaction()->getHash();
+                return _backend.getLeft().hash;
             else
                 return _backend.getRight().transactionHash;
         }
@@ -78,7 +83,7 @@ namespace ledger {
 
         BitcoinLikeBlockchainExplorerOutput &BitcoinLikeOutput::getOutput() {
             if (_backend.isLeft())
-                return _backend.getLeft()->getExplorerTransaction().outputs[_outputIndex];
+                return _backend.getLeft().outputs[_outputIndex];
             return _backend.getRight();
         }
 
@@ -98,8 +103,8 @@ namespace ledger {
         }
 
         BitcoinLikeOutput::BitcoinLikeOutput(const BitcoinLikeBlockchainExplorerOutput &output,
-                                                   const api::Currency &currency,
-                                                   const std::shared_ptr<api::DerivationPath> &path)
+                                             const api::Currency &currency,
+                                             const std::shared_ptr<api::DerivationPath> &path)
                 : BitcoinLikeOutput(output, currency) {
             _path = path;
         }

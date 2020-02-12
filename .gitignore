@@ -27,3 +27,4 @@ tags
 /ledger-core/idl/core.yaml
 /**/inc/**/api
 /**/jni
+/install
