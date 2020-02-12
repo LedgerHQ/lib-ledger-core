@@ -23,6 +23,7 @@ TEST_F(TezosAccounts, FirstXTZAccountInfo) {
     EXPECT_EQ(info.derivations.size(), 1);
     EXPECT_EQ(info.owners[0], "main");
     // TODO: XTZ is account-based; the expected derivation is completely
-    // questionable. 
-    // EXPECT_EQ(info.derivations[0], "44'/1729'/0'/0/0");
+    // questionable. However we check the derivation starts with "44'/1729'"
+    // as BIP44 suggests 
+    EXPECT_EQ(info.derivations[0].find("44'/1729'"), 0);
 }
