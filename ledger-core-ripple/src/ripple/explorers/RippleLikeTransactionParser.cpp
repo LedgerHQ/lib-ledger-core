@@ -141,7 +141,7 @@ namespace ledger {
                   // which is 2000/01/01, which is 946684800 after the Unix epoch
                   //
                   // <https://xrpl.org/basic-data-types.html#specifying-time>
-                  std::chrono::system_clock::time_point date(std::chrono::seconds(value.toUint64() - XRP_EPOCH_SECONDS_FROM_UNIX_EPOCH));
+                  std::chrono::system_clock::time_point date(std::chrono::seconds(value.toUint64() + XRP_EPOCH_SECONDS_FROM_UNIX_EPOCH));
 
                   _transaction->receivedAt = date;
                   if (_transaction->block.hasValue()) {
