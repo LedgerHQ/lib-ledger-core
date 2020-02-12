@@ -12,6 +12,7 @@ endif (APPLE)
 add_executable(
     ledger-core-tezos-tests main.cpp
     AddressTest.cpp Fixtures.cpp TransactionTests.cpp SynchronizationTests.cpp
+    AccountTests.cpp
 )
 
 target_link_libraries(ledger-core-tezos-tests Core::ledger-core-static)
@@ -28,3 +29,4 @@ add_subdirectory(lib/googletest)
 add_test (NAME Tezos-address COMMAND ledger-core-tezos-tests --gtest_filter=TezosAddress.*)
 add_test (NAME Tezos-transaction COMMAND ledger-core-tezos-tests --gtest_filter=TezosMakeTransaction.*)
 add_test (NAME Tezos-sync COMMAND ledger-core-tezos-tests --gtest_filter=TezosLikeWalletSynchronization.*)
+add_test (NAME Tezos-account COMMAND ledger-core-tezos-tests --gtest_filter=TezosAccounts.*)
