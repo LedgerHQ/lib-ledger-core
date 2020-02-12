@@ -39,7 +39,7 @@ namespace ledger {
         /// The Ripple tag type.
         struct XRPMigration {
           static int constexpr COIN_ID = RIPPLE_COIN_ID;
-          static uint32_t constexpr CURRENT_VERSION = 4;
+          static uint32_t constexpr CURRENT_VERSION = 5;
         };
 
         // migrations
@@ -51,5 +51,7 @@ namespace ledger {
         template <> void rollback<3, XRPMigration>(soci::session& sql);
         template <> void migrate<4, XRPMigration>(soci::session& sql);
         template <> void rollback<4, XRPMigration>(soci::session& sql);
+        template <> void migrate<5, XRPMigration>(soci::session& sql);
+        template <> void rollback<5, XRPMigration>(soci::session& sql);
   }
 }

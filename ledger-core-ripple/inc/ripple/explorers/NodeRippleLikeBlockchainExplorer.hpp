@@ -112,6 +112,7 @@ namespace ledger {
                            FieldTypes);
 
             api::RippleLikeNetworkParameters _parameters;
+            std::string _paginationMarker;
         };
     }
 }

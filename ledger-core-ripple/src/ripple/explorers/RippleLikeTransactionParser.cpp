@@ -178,6 +178,8 @@ namespace ledger {
                     _transaction->memos.back().fmt = value;
                 } else if (_lastKey == "MemoType" && !_transaction->memos.empty()) {
                     _transaction->memos.back().ty = value;
+                } else if (_lastKey == "TransactionResult") {
+                    _transaction->status = value == "tesSUCCESS" ? 1 : 0;
                 }
                 return true;
             }

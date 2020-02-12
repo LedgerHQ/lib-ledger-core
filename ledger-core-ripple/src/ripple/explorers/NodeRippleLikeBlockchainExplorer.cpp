@@ -77,6 +77,39 @@ namespace ledger {
                 return *this;
             };
 
+            NodeRippleLikeBodyRequest& pushPagination(
+                const std::string &ledger,
+                const std::string &seq
+            ) {
+                std::string key = "marker";
+                std::string ledgerKeyStr = "ledger";
+                std::string seqKeyStr = "seq";
+
+                rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
+
+                rapidjson::Value vKeyParam(rapidjson::kStringType);
+                vKeyParam.SetString(key.c_str(), static_cast<rapidjson::SizeType>(key.length()), allocator);
+
+                rapidjson::Value object(rapidjson::kObjectType);
+
+                rapidjson::Value ledgerKey(rapidjson::kStringType);
+                ledgerKey.SetString(ledgerKeyStr.c_str(), static_cast<rapidjson::SizeType>(ledgerKeyStr.length()), allocator);
+                rapidjson::Value ledgerParam(rapidjson::kNumberType);
+                ledgerParam.SetString(ledger.c_str(), static_cast<rapidjson::SizeType>(ledger.length()), allocator);
+
+                rapidjson::Value seqKey(rapidjson::kStringType);
+                seqKey.SetString(seqKeyStr.c_str(), static_cast<rapidjson::SizeType>(seqKeyStr.length()), allocator);
+                rapidjson::Value seqParam(rapidjson::kNumberType);
+                seqParam.SetString(seq.c_str(), static_cast<rapidjson::SizeType>(seq.length()), allocator);
+
+                object.AddMember(ledgerKey, ledgerParam, allocator);
+                object.AddMember(seqKey, seqParam, allocator);
+
+                _params.AddMember(vKeyParam, object, allocator);
+
+                return *this;
+            }
+
             std::string getString() {
                 rapidjson::Document::AllocatorType &allocator = _document.GetAllocator();
                 rapidjson::Value container(rapidjson::kArrayType);
@@ -279,15 +312,27 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "Can only get transactions for 1 address from Ripple Node, but got {} addresses", addresses.size());
             }
+
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("account_tx");
             bodyRequest.pushParameter("account", addresses[0]);
+
+            // handle transaction pagination in the case we have a pagination marker, which happens
+            // when a getTransactions returns a TransactionsBulk containing such a marker
+            if (!_paginationMarker.empty()) {
+                auto marker = strings::split(_paginationMarker, "-");
+                bodyRequest.pushPagination(marker[0], marker[1]);
+            }
+
             auto requestBody = bodyRequest.getString();
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+
+            auto self = shared_from_this();
+
             return _http->POST("", std::vector<uint8_t>(requestBody.begin(), requestBody.end()), headers)
                     .template json<TransactionsBulk, Exception>(
                             LedgerApiParser<TransactionsBulk, RippleLikeTransactionsBulkParser>())
-                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash](
+                    .template mapPtr<TransactionsBulk>(getExplorerContext(), [self, fromBlockHash](
                             const Either<Exception, std::shared_ptr<TransactionsBulk>> &result) {
                         if (result.isLeft()) {
                             if (fromBlockHash.isEmpty()) {
@@ -297,7 +342,17 @@ namespace ledger {
                                                      "Unable to find block with hash {}", fromBlockHash.getValue());
                             }
                         } else {
-                            return result.getRight();
+                            // handle pagination if a pagination marker is present
+                            auto bulk = result.getRight();
+
+                            if (!bulk->paginationMarker.empty()) {
+                                bulk->hasNext = true;
+                                self->_paginationMarker = bulk->paginationMarker;
+                            } else {
+                                self->_paginationMarker = "";
+                            }
+
+                            return bulk;
                         }
                     });
         }
