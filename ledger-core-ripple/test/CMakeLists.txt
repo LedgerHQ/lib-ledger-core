@@ -12,7 +12,7 @@ endif (APPLE)
 add_executable(
     ledger-core-ripple-tests main.cpp
     AddressTest.cpp Fixtures.cpp RippleKeychainTest.cpp TransactionTest.cpp
-    SynchronizationTest.cpp
+    SynchronizationTest.cpp AccountTests.cpp
 )
 
 target_link_libraries(ledger-core-ripple-tests Core::ledger-core-static)
@@ -30,3 +30,4 @@ add_test (NAME Ripple-address COMMAND ledger-core-ripple-tests --gtest_filter=Ri
 add_test (NAME Ripple-keychain COMMAND ledger-core-ripple-tests --gtest_filter=RippleKeychains.*)
 add_test (NAME Ripple-transaction COMMAND ledger-core-ripple-tests --gtest_filter=RippleMakeTransaction.*)
 add_test (NAME Ripple-sync COMMAND ledger-core-ripple-tests --gtest_filter=RippleLikeWalletSynchronization.*)
+add_test (NAME Ripple-account COMMAND ledger-core-ripple-test --gtest_filter=RippleAccounts.*)
