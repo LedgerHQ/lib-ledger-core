@@ -38,7 +38,7 @@ namespace ledger {
         namespace currencies {
             api::Currency ethereum() {
                 static api::Currency const CURRENCY = CurrencyBuilder("ethereum")
-                    .bip44(ETHEREUM_CLASSIC_COIN_ID)
+                    .bip44(ETHEREUM_COIN_ID)
                     .paymentUri("ethereum")
                     .unit("wei", 0, "wei")
                     .unit("ether", 18, "ETH")

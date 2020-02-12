@@ -16,6 +16,7 @@ add_executable(ledger-core-ethereum-tests
     KeychainTests.cpp 
     SynchronizationTests.cpp 
     TransactionTests.cpp
+    AccountTests.cpp
 )
 
 target_link_libraries(ledger-core-ethereum-tests Core::ledger-core-static)
@@ -33,3 +34,4 @@ add_test(NAME Ethereum-wallet COMMAND ledger-core-ethereum-tests --gtest_filter=
 add_test(NAME Ethereum-transaction COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumMakeTransaction.*)
 add_test(NAME Ethereum-keychain COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumKeychains.*)
 add_test(NAME Ethereum-synchronization COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumLikeWalletSynchronization.*)
+add_test(NAME Ethereum-account COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumAccounts.*)
