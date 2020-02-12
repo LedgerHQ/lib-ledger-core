@@ -86,6 +86,8 @@ namespace ledger {
                 _input->signatureScript = Option<std::string>(value);
             } else if (_lastKey == "coinbase") {
                 _input->coinbase = Option<std::string>(value);
+            } else if (_lastKey == "value") {
+                _input->value = Option<BigInt>(BigInt::fromString(value));
             }
             return true;
         }

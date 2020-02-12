@@ -96,6 +96,12 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                     std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
                     std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
                 }
+
+                 // Test UTXOs
+                auto utxoCount = wait(account->getUTXOCount());
+                auto utxos = wait(account->getUTXO(0, 1000000));
+                EXPECT_EQ(utxos.size(), utxoCount);
+
                 dispatcher->stop();
             });
 

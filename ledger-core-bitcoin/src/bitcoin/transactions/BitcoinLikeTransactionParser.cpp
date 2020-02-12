@@ -62,6 +62,7 @@ namespace ledger {
 
             if (currentObject == "inputs") {
                 BitcoinLikeBlockchainExplorerInput input;
+                input.index = _transaction->inputs.size();
                 _transaction->inputs.push_back(input);
                 _inputParser.init(&_transaction->inputs.back());
             } else if (currentObject == "outputs") {
