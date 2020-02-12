@@ -819,11 +819,15 @@ namespace ledger {
         }
         
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
-            // Stellar operations
+            // Stellar ledgers
+            sql << "DROP TABLE stellar_ledgers";
+            // Stellar account <> operation link table
+            sql << "DROP TABLE stellar_account_operations";
+            // Stellar "native" operations
             sql << "DROP TABLE stellar_operations";
             // Stellar transactions
             sql << "DROP TABLE stellar_transactions";
-            // Stellar balances per account
+            // Stellar balances
             sql << "DROP TABLE stellar_account_balances";
             // Stellar accounts
             sql << "DROP TABLE stellar_accounts";
