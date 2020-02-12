@@ -97,10 +97,6 @@
 
             int BitcoinLikeAccount::putTransaction(soci::session &sql,
                                                 const BitcoinLikeBlockchainExplorerTransaction &transaction) {
-                auto wallet = getWallet();
-                if (wallet == nullptr) {
-                    throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
-                }
                 if (transaction.block.nonEmpty())
                     putBlock(sql, transaction.block.getValue());
                 auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);

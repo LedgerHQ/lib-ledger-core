@@ -36,7 +36,7 @@
 #include <bitcoin/transactions/BitcoinLikeTransactionBuilder.hpp>
 #include <bitcoin/io/BitcoinLikeWritableInput.hpp>
 #include <bitcoin/transactions/BitcoinLikeTransaction.hpp>
-#include <bitcoin/bech32/Bech32Factory.hpp>
+#include <bitcoin/bech32/BitcoinLikeBech32Factory.hpp>
 
 #include <integration/TransactionTestHelper.hpp>
 
@@ -383,7 +383,7 @@ TEST_F(BitcoinP2WPKHTransactions, CreateStandardP2WPKHWithOneOutput) {
     auto address = "bc1qshh6mmfq8fucahzxe4zc7pc5zdhk6zkt4uv8md";
     auto builder = tx_builder();
     auto freshAddress = wait(account->getFreshPublicAddresses())[0];
-    auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
+    auto hrp = BitcoinLikeBech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
     auto freshAddressStr = std::dynamic_pointer_cast<BitcoinLikeAddress>(freshAddress)->toBech32();
     auto derivationPath = freshAddress->getDerivationPath().value_or("");
     EXPECT_EQ(derivationPath, "0/0");
@@ -421,7 +421,7 @@ TEST_F(BitcoinP2WPKHTransactions, ParseSignedTx) {
 TEST_F(BitcoinP2WSHTransactions, CreateStandardP2WSHWithOneOutput) {
     auto builder = tx_builder();
     auto freshAddress = wait(account->getFreshPublicAddresses())[0];
-    auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
+    auto hrp = BitcoinLikeBech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
     auto freshAddressStr = std::dynamic_pointer_cast<BitcoinLikeAddress>(freshAddress)->toBech32();
     EXPECT_EQ(freshAddressStr.substr(0, hrp.size()), hrp);
     auto balance = wait(account->getBalance());
