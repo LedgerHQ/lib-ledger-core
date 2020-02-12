@@ -104,19 +104,19 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>>
-        LedgerApiEthereumLikeBlockchainExplorer::getDryrunGasLimit(
+        LedgerApiEthereumLikeBlockchainExplorer::getDryRunGasLimit(
             const std::string &address,
             const api::EthereumGasLimitRequest &request) {
-          auto explorerVersion = getExplorerVersion();
+          const auto explorerVersion = getExplorerVersion();
 
-          auto endpoint =
+          const auto endpoint =
               fmt::format("/blockchain/{}/addresses/{}/estimate-gas-limit",
                           explorerVersion, address);
           std::unordered_map<std::string, std::string> headers{
               {"Content-Type", "application/json"}};
-          bool jsonParseNumbersAsString = true;
+          const bool jsonParseNumbersAsString = true;
 
-          auto interesting_field = "estimated_gas_limit";
+          const auto interestingField = "estimated_gas_limit";
           rapidjson::Document body;
           body.SetObject();
           auto &allocator = body.GetAllocator();
@@ -182,21 +182,21 @@ namespace ledger {
               .mapPtr<BigInt>(
                   getContext(),
                   [endpoint,
-                   interesting_field](const HttpRequest::JsonResult &result)
+                   interestingField](const HttpRequest::JsonResult &result)
                       -> std::shared_ptr<BigInt> {
                     auto &json = *std::get<1>(result);
 
                     if (!json.IsObject() ||
-                        !json.GetObject().HasMember(interesting_field) ||
-                        !json.GetObject()[interesting_field].IsString()) {
+                        !json.GetObject().HasMember(interestingField) ||
+                        !json.GetObject()[interestingField].IsString()) {
                       throw make_exception(
                           api::ErrorCode::HTTP_ERROR,
                           fmt::format("Failed to get {} for {}",
-                                      interesting_field, endpoint));
+                                      interestingField, endpoint));
                     }
 
                     return std::make_shared<BigInt>(
-                        json.GetObject()[interesting_field].GetString());
+                        json.GetObject()[interestingField].GetString());
                   });
         }
 

@@ -122,7 +122,7 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) = 0;
             virtual Future<std::shared_ptr<BigInt>> getGasPrice() = 0;
             virtual Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(const std::string &address) = 0;
-            virtual Future<std::shared_ptr<BigInt>> getDryrunGasLimit(const std::string &address, const api::EthereumGasLimitRequest &request) = 0;
+            virtual Future<std::shared_ptr<BigInt>> getDryRunGasLimit(const std::string &address, const api::EthereumGasLimitRequest &request) = 0;
             virtual Future<std::shared_ptr<BigInt>> getERC20Balance(const std::string &address,
                                                                     const std::string &erc20Address) = 0;
             virtual Future<std::vector<BigInt>> getERC20Balances(const std::string &address,

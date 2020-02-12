@@ -66,7 +66,7 @@ public:
      * This estimation is based on a dry-run on the node, and it will fail if the request is ill-formed
      * Note: same note as above
      */
-    virtual void getDryrunGasLimit(const std::string & address, const EthereumGasLimitRequest & request, const std::shared_ptr<BigIntCallback> & callback) = 0;
+    virtual void getDryRunGasLimit(const std::string & address, const EthereumGasLimitRequest & request, const std::shared_ptr<BigIntCallback> & callback) = 0;
 
     /**
      * Get balance of ERC20 token

@@ -631,8 +631,8 @@ namespace ledger {
             }).callback(getMainExecutionContext(), callback);
         }
 
-        void EthereumLikeAccount::getDryrunGasLimit(const std::string & address, const api::EthereumGasLimitRequest &request, const std::shared_ptr<api::BigIntCallback> & callback) {
-            _explorer->getDryrunGasLimit(address, request).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
+        void EthereumLikeAccount::getDryRunGasLimit(const std::string & address, const api::EthereumGasLimitRequest &request, const std::shared_ptr<api::BigIntCallback> & callback) {
+            _explorer->getDryRunGasLimit(address, request).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<api::BigIntImpl>(*gasPrice);
             }).callback(getMainExecutionContext(), callback);
         }

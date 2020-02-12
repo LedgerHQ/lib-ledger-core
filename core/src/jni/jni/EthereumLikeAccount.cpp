@@ -85,12 +85,12 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getDryrunGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_request, jobject j_callback)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getDryRunGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_request, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAccount>(nativeRef);
-        ref->getDryrunGasLimit(::djinni::String::toCpp(jniEnv, j_address),
+        ref->getDryRunGasLimit(::djinni::String::toCpp(jniEnv, j_address),
                                ::djinni_generated::EthereumGasLimitRequest::toCpp(jniEnv, j_request),
                                ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
