@@ -50,6 +50,20 @@ TEST_F(EthereumAccounts, FirstEthAccountInfo) {
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
-    // TODO: info.derivations[0] is equal to "44'/61'/0'". Is it a regression ?
+    EXPECT_EQ(info.derivations[0], "44'/60'/0'");
+}
+
+TEST_F(EthereumAccounts, FirstEthCustomDerivationAccountInfo) {
+    auto const currency = currencies::ethereum();
+    auto configuration = api::DynamicObject::newInstance();
+
+    registerCurrency(currency);
+
+    configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
+
+    auto wallet = wait(walletStore->createWallet("my_wallet", currency.name, configuration));
+    auto info = wait(wallet->getNextAccountCreationInfo());
+    EXPECT_EQ(info.index, 0);
+    EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/60'/0'");
 }
