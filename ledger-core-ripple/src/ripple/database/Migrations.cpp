@@ -104,5 +104,14 @@ namespace ledger {
 
         template <> void rollback<4, XRPMigration>(soci::session& sql) {
         }
+
+        template <> void migrate<5, XRPMigration>(soci::session& sql) {
+            // 1 if success, 0 otherwise
+            // <https://xrpl.org/transaction-results.html>
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN status INTEGER";
+        }
+
+        template <> void rollback<5, XRPMigration>(soci::session& sql) {
+        }
     }
 }
