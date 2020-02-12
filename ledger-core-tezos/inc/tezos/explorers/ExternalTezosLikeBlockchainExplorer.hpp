@@ -41,16 +41,16 @@
 namespace ledger {
     namespace core {
         using ExternalApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<
-                TezosLikeBlockchainExplorerTransaction, 
-                TezosLikeBlockchainExplorer::TransactionsBulk, 
+                TezosLikeBlockchainExplorerTransaction,
+                TezosLikeBlockchainExplorer::TransactionsBulk,
                 TezosLikeTransactionsParser,
                 TezosLikeTransactionsBulkParser,
-                TezosLikeBlockParser, 
+                TezosLikeBlockParser,
                 api::TezosLikeNetworkParameters>;
 
-        class ExternalTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer, 
+        class ExternalTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
                                                     public ExternalApiBlockchainExplorer,
-                                                    public DedicatedContext, 
+                                                    public DedicatedContext,
                                                     public std::enable_shared_from_this<ExternalTezosLikeBlockchainExplorer> {
         public:
             ExternalTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
@@ -76,7 +76,7 @@ namespace ledger {
 
             FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,
-                            Option<std::string> fromBlockHash = Option<std::string>(),
+                            Option<std::string> offset = Option<std::string>(),
                             Option<void *> session = Option<void *>()) override;
 
             FuturePtr<api::Block> getCurrentBlock() const override;

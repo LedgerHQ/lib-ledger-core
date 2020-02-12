@@ -45,11 +45,12 @@ using namespace soci;
 namespace ledger {
     namespace core {
 
-        bool TezosLikeTransactionDatabaseHelper::getTransactionByHash(soci::session &sql,
-                                                                      const std::string &hash,
-                                                                      const std::string &operationUid,
-                                                                      TezosLikeBlockchainExplorerTransaction &tx) {
-
+        bool TezosLikeTransactionDatabaseHelper::getTransactionByHash(
+            soci::session &sql,
+            const std::string &hash,
+            const std::string &operationUid,
+            TezosLikeBlockchainExplorerTransaction &tx
+        ) {
             rowset<row> rows = (sql.prepare << "SELECT tx.hash, tx.value, tx.time, "
                     " tx.sender, tx.receiver, tx.fees, tx.gas_limit, tx.storage_limit, tx.confirmations, tx.type, tx.public_key, tx.originated_account, tx.status, "
                     "block.height, block.hash, block.time, block.currency_name "
@@ -119,7 +120,7 @@ namespace ledger {
                                                                        const std::string &accountUid,
                                                                        const TezosLikeBlockchainExplorerTransaction &tx) {
             auto blockUid = tx.block.map<std::string>([](const TezosLikeBlockchainExplorer::Block &block) {
-                return block.uid;
+                return BlockDatabaseHelper::createBlockUid(block.blockHash, block.currencyName);
             });
 
             auto tezosTxUid = createTezosTransactionUid(accountUid, tx.hash, tx.type);
@@ -127,8 +128,10 @@ namespace ledger {
             if (transactionExists(sql, tezosTxUid)) {
                 // UPDATE (we only update block information)
                 if (tx.block.nonEmpty()) {
-                    sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash",
-                            use(blockUid), use(tx.status), use(tx.hash);
+                   auto type = api::to_string(tx.type);
+                   use(blockUid), use(tx.status), use(tx.hash);
+                   sql << "UPDATE tezos_transactions SET block_uid = :uid, status = :code WHERE hash = :tx_hash AND type = :type",
+                          use(blockUid), use(tx.status), use(tx.hash), use(type);
                 }
                 return tezosTxUid;
             } else {

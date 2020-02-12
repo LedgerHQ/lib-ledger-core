@@ -409,11 +409,14 @@ namespace ledger {
         void TezosLikeAccount::addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             for (auto &originatedEntry : originatedEntries) {
-                auto newOriginatedAccount = std::make_shared<TezosLikeOriginatedAccount>(originatedEntry.uid,
-                                                                                    originatedEntry.address,
-                                                                                    self, originatedEntry.spendable,
-                                                                                    originatedEntry.delegatable,
-                                                                                    originatedEntry.publicKey);
+                auto newOriginatedAccount = std::make_shared<TezosLikeOriginatedAccount>(
+                    originatedEntry.uid,
+                    originatedEntry.address,
+                    self, originatedEntry.spendable,
+                    originatedEntry.delegatable,
+                    originatedEntry.publicKey
+                );
+
                 _originatedAccounts.push_back(newOriginatedAccount);
             }
         }

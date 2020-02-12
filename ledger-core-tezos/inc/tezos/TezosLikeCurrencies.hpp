@@ -43,7 +43,7 @@
 namespace ledger {
     namespace core {
         namespace currencies {
-            extern LIBCORE_EXPORT const api::Currency TEZOS;
+            api::Currency tezos();
         }
     }
 }

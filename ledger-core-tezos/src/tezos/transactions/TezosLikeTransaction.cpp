@@ -49,12 +49,14 @@
 
 namespace ledger {
     namespace core {
-
-        TezosLikeTransaction::TezosLikeTransaction(const api::Currency &currency,
-                                                         const std::string &protocolUpdate) :
-                _currency(currency),
-                _protocolUpdate(protocolUpdate),
-                _needReveal(false){
+        TezosLikeTransaction::TezosLikeTransaction(
+            const api::Currency &currency,
+            const std::string &protocolUpdate
+        ) :
+            _currency(currency),
+            _protocolUpdate(protocolUpdate),
+            _needReveal(false)
+        {
             _block = std::make_shared<TezosLikeBlock>(api::Block{});
             _type = api::TezosOperationTag::OPERATION_TAG_TRANSACTION;
         }
@@ -62,8 +64,9 @@ namespace ledger {
         TezosLikeTransaction::TezosLikeTransaction(
             const TezosLikeBlockchainExplorerTransaction& tx,
             const api::Currency& currency,
-            const std::string &protocolUpdate) : _needReveal(false) {
-           
+            const std::string &protocolUpdate
+        ) : _needReveal(false)
+        {
             // TODD: check why this line is missing in the current legacy code
             // _protocolUpdate = protocolUpdate;
             _time = tx.receivedAt;

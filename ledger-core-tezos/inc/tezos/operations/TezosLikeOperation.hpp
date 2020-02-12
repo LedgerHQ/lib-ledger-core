@@ -41,19 +41,21 @@ namespace ledger {
     namespace core {
         class TezosLikeOperation : public api::TezosLikeOperation, public Operation {
         public:
-            TezosLikeOperation() = default;
+            TezosLikeOperation() = delete;
 
+            TezosLikeOperation(std::shared_ptr<AbstractAccount> const& account);
             TezosLikeOperation(
-                const std::shared_ptr<const AbstractWallet>& wallet,
-                TezosLikeBlockchainExplorerTransaction const& tx);
-            
+                std::shared_ptr<AbstractAccount> const& account,
+                TezosLikeBlockchainExplorerTransaction const& tx
+            );
+
             std::shared_ptr<api::TezosLikeTransaction> getTransaction() const override;
 
-            void refreshUid(const std::string &additional = "") override;            
+            void refreshUid(const std::string &additional = "") override;
             bool isComplete() override;
 
             const TezosLikeBlockchainExplorerTransaction& getExplorerTransaction() const;
-            TezosLikeBlockchainExplorerTransaction& getExplorerTransaction();            
+            TezosLikeBlockchainExplorerTransaction& getExplorerTransaction();
             void setExplorerTransaction(TezosLikeBlockchainExplorerTransaction const& tx);
         private:
             std::shared_ptr<api::TezosLikeTransaction> _tx;

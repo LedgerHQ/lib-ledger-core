@@ -32,6 +32,7 @@
 
 #include <fmt/format.h>
 
+#include <core/wallet/AbstractAccount.hpp>
 #include <core/wallet/AccountDatabaseHelper.hpp>
 #include <core/crypto/SHA256.hpp>
 #include <core/utils/DateUtils.hpp>
@@ -41,17 +42,21 @@ using namespace soci;
 
 namespace ledger {
     namespace core {
-        void TezosLikeAccountDatabaseHelper::createAccount(soci::session &sql,
-                                                           const std::string walletUid,
-                                                           int32_t index,
-                                                           const std::string &publicKey) {
+        void TezosLikeAccountDatabaseHelper::createAccount(
+            soci::session &sql,
+            const std::string walletUid,
+            int32_t index,
+            const std::string &publicKey
+        ) {
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
             sql << "INSERT INTO tezos_accounts VALUES(:uid, :wallet_uid, :idx, :publicKey)",use(uid), use(walletUid), use(index), use(publicKey);
         }
 
-        bool TezosLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
-                                                          const std::string &accountUid,
-                                                          TezosLikeAccountDatabaseEntry &entry) {
+        bool TezosLikeAccountDatabaseHelper::queryAccount(
+            soci::session &sql,
+            const std::string &accountUid,
+            TezosLikeAccountDatabaseEntry &entry
+        ) {
             rowset<row> rows = (sql.prepare << "SELECT xtz.idx, xtz.public_key, "
                     "orig.uid, orig.address, orig.spendable, orig.delegatable, orig.public_key "
                     "FROM tezos_accounts AS xtz "
@@ -78,32 +83,42 @@ namespace ledger {
             return !entry.publicKey.empty();
         }
 
-        std::string TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(const std::string &xtzAccountUid, const std::string &originatedAddress) {
+        std::string TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(
+            const std::string &xtzAccountUid,
+            const std::string &originatedAddress
+        ) {
             return SHA256::stringToHexHash(fmt::format("uid:{}+{}", xtzAccountUid, originatedAddress));
         }
 
-        void TezosLikeAccountDatabaseHelper::updatePubKeyField(soci::session &sql, const std::string &accountUid, const std::string &pubKey) {
+        void TezosLikeAccountDatabaseHelper::updatePubKeyField(
+            soci::session &sql,
+            const std::string &accountUid,
+            const std::string &pubKey
+        ) {
             sql << "UPDATE tezos_originated_accounts SET public_key = :public_key WHERE uid = :uid", use(pubKey), use(accountUid);
         }
 
-        void TezosLikeAccountDatabaseHelper::addOriginatedAccountOperation(soci::session &sql,
-                                                                           const std::string &opUid,
-                                                                           const std::string &tezosTxUid,
-                                                                           const std::string &originatedAccountUid) {
-
-                sql << "INSERT INTO tezos_originated_operations VALUES(:uid, :transaction_uid, :originated_account_uid)", use(opUid), use(tezosTxUid), use(originatedAccountUid);
+        void TezosLikeAccountDatabaseHelper::addOriginatedAccountOperation(
+            soci::session &sql,
+            const std::string &opUid,
+            const std::string &tezosTxUid,
+            const std::string &originatedAccountUid
+        ) {
+            sql << "INSERT INTO tezos_originated_operations VALUES(:uid, :transaction_uid, :originated_account_uid)", use(opUid), use(tezosTxUid), use(originatedAccountUid);
         }
 
-        std::size_t
-        TezosLikeAccountDatabaseHelper::queryOperations(soci::session &sql,
-                                                        const std::string &accountUid,
-                                                        std::vector<TezosLikeOperation> &operations,
-                                                        std::function<bool(const std::string &address)> filter) {
+        std::size_t TezosLikeAccountDatabaseHelper::queryOperations(
+            soci::session &sql,
+            std::shared_ptr<AbstractAccount> const& account,
+            std::vector<TezosLikeOperation> &operations,
+            std::function<bool(const std::string &address)> filter
+        ) {
             std::string query = "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients, op.uid "
                     "FROM operations AS op "
                     "LEFT JOIN tezos_originated_operations AS orig_op ON op.uid = orig_op.uid "
                     "WHERE op.account_uid = :uid AND orig_op.uid IS NULL ORDER BY op.date";
-            
+
+            auto accountUid = account->getAccountUid();
             rowset<row> rows = (sql.prepare << query, use(accountUid));
 
             auto filterList = [&] (const std::vector<std::string> &list) -> bool {
@@ -122,7 +137,7 @@ namespace ledger {
                 auto recipients = strings::split(row.get<std::string>(5), ",");
                 if ((type == api::OperationType::SEND && row.get_indicator(4) != i_null && filterList(senders)) ||
                     (type == api::OperationType::RECEIVE && row.get_indicator(5) != i_null && filterList(recipients))) {
-                    TezosLikeOperation operation;
+                    TezosLikeOperation operation(account);
 
                     operation.amount = BigInt::fromHex(row.get<std::string>(0));
                     operation.fees = BigInt::fromHex(row.get<std::string>(1));
@@ -136,6 +151,5 @@ namespace ledger {
             }
             return c;
         }
-
     }
 }

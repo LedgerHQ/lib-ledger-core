@@ -141,12 +141,17 @@ namespace ledger {
 
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
         ExternalTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
-                                                             Option<std::string> fromBlockHash,
+                                                             Option<std::string> offset,
                                                              Option<void *> session) {
-            uint64_t offset = 0, limit = 100;
+            auto tryOffset = Try<uint64_t>::from([=]() -> uint64_t {
+                return std::stoul(offset.getValue(), nullptr, 10);
+            });
+
+            uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
+            uint64_t limit = 100;
             if (session.hasValue()) {
                 auto s = _sessions[*((std::string *)session.getValue())];
-                offset = limit * s;
+                localOffset += limit * s;
                 _sessions[*reinterpret_cast<std::string *>(session.getValue())]++;
             }
             if (addresses.size() != 1) {
@@ -155,20 +160,22 @@ namespace ledger {
                                      addresses.size());
             }
             std::string params = fmt::format("?limit={}",limit);
-            if (offset > 0) {
-                params += fmt::format("&offset={}",offset);
+            if (localOffset > 0) {
+                params += fmt::format("&offset={}",localOffset);
             }
+
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             return _http->GET(fmt::format("account/{}/op{}", addresses[0], params))
                     .template json<TransactionsBulk, Exception>(
                             LedgerApiParser<TransactionsBulk,
                             TezosLikeTransactionsBulkParser>())
                     .template mapPtr<TransactionsBulk>(getExplorerContext(),
-                                                           [](const EitherTransactionsBulk &result) {
+                                                           [limit](const EitherTransactionsBulk &result) {
                                                                if (result.isLeft()) {
                                                                    // Because it fails when there are no ops
                                                                    return std::make_shared<TransactionsBulk>();
                                                                } else {
+                                                                   result.getRight()->hasNext = result.getRight()->transactions.size() == limit;
                                                                    return result.getRight();
                                                                }
                                                            });

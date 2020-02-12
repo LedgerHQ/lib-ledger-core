@@ -43,6 +43,39 @@
 
 namespace ledger {
     namespace core {
+        TezosLikeOriginatedOperationQuery::TezosLikeOriginatedOperationQuery(
+            const std::shared_ptr<api::QueryFilter>& headFilter,
+            const std::shared_ptr<DatabaseSessionPool>& pool,
+            const std::shared_ptr<api::ExecutionContext>& context,
+            const std::shared_ptr<api::ExecutionContext>& mainContext
+        ): OperationQuery(headFilter, pool, context, mainContext) {
+        }
+
+        soci::rowset<soci::row> TezosLikeOriginatedOperationQuery::performExecute(soci::session &sql) {
+            return _builder.select(
+                "o.account_uid, o.uid, o.wallet_uid, o.type, o.date, o.senders, o.recipients,"
+                "o.amount, o.fees, o.currency_name, o.trust, b.hash, b.height, b.time, orig_op.uid"
+            )
+                .from("operations").to("o")
+                .outerJoin("blocks AS b", "o.block_uid = b.uid")
+                .outerJoin("tezos_originated_operations AS orig_op", "o.uid = orig_op.uid")
+                .execute(sql);
+        }
+
+        void TezosLikeOriginatedOperationQuery::inflateCompleteTransaction(
+                soci::session& sql,
+                std::string const& accountUid,
+                TezosLikeOperation& operation
+        ) {
+        }
+
+        std::shared_ptr<TezosLikeOperation> TezosLikeOriginatedOperationQuery::createOperation(
+            std::shared_ptr<AbstractAccount>& account
+        ) {
+            TezosLikeBlockchainExplorerTransaction tx;
+            return std::make_shared<TezosLikeOperation>(account, tx);
+        }
+
         TezosLikeOriginatedAccount::TezosLikeOriginatedAccount(const std::string &uid,
                                                                const std::string &address,
                                                                const std::shared_ptr<TezosLikeAccount> &originatorAccount,
@@ -79,7 +112,7 @@ namespace ledger {
         }
 
         FuturePtr<api::Amount> TezosLikeOriginatedAccount::getBalance(const std::shared_ptr<api::ExecutionContext>& context) {
-            return std::dynamic_pointer_cast<TezosLikeOperationQuery>(queryOperations()->complete())->execute()
+            return std::dynamic_pointer_cast<TezosLikeOriginatedOperationQuery>(queryOperations()->complete())->execute()
                     .mapPtr<api::Amount>(context, [] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
                 auto result = BigInt::ZERO;
                 for (auto &op : ops) {
@@ -98,7 +131,7 @@ namespace ledger {
                             break;
                     }
                 }
-                return std::make_shared<Amount>(currencies::TEZOS, 0, result);
+                return std::make_shared<Amount>(currencies::tezos(), 0, result);
             });
         }
 
@@ -122,7 +155,7 @@ namespace ledger {
                                                       const std::chrono::system_clock::time_point & end,
                                                       api::TimePeriod period) {
             bool descending = false;
-            return std::dynamic_pointer_cast<TezosLikeOperationQuery>(queryOperations()->addOrder(api::OperationOrderKey::DATE, descending)->complete())->execute()
+            return std::dynamic_pointer_cast<TezosLikeOriginatedOperationQuery>(queryOperations()->addOrder(api::OperationOrderKey::DATE, descending)->complete())->execute()
                     .map<std::vector<std::shared_ptr<api::Amount>>>(context, [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
                 struct OperationStrategy {
 
@@ -131,7 +164,7 @@ namespace ledger {
                     }
 
                     static inline std::shared_ptr<api::Amount> value_constructor(const BigInt& v) {
-                        return std::make_shared<Amount>(currencies::TEZOS, 0, v);
+                        return std::make_shared<Amount>(currencies::tezos(), 0, v);
                     }
 
                     static inline void update_balance(std::shared_ptr<api::Operation>& op, BigInt& sum) {
@@ -179,7 +212,7 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
             }
             auto filter = std::make_shared<ConditionQueryFilter<std::string>>("originated_account_uid", "=", _accountUid, "orig_op");
-            auto query = std::make_shared<TezosLikeOperationQuery>(
+            auto query = std::make_shared<TezosLikeOriginatedOperationQuery>(
                     filter,
                     localAccount->getWallet()->getDatabase(),
                     localAccount->getWallet()->getServices()->getThreadPoolExecutionContext(),
