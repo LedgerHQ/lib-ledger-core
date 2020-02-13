@@ -75,20 +75,48 @@ namespace ledger {
                 soci::transaction tr(sql);
                 Migration<T::CURRENT_VERSION, T>::forward(sql, version);
 
+                // register rollback migration
+                _rollbackMigrations.emplace_back([](soci::session& sql) {
+                    int version = getDatabaseMigrationVersion<T>(sql);
+
+                    soci::transaction tr(sql);
+                    Migration<T::CURRENT_VERSION, T>::backward(sql, version);
+                    tr.commit();
+                });
+
                 tr.commit();
             }
 
-            /// Rollback a migration for a given migration system.
-            template <typename T>
-            void rollbackMigration() {
+            /// Run migration forward for the ledger-core library.
+            ///
+            /// This is a special case because we don’t want to register ourselves for rollback,
+            /// since we will call that function explicitly.
+            template <>
+            void forwardMigration<CoreMigration>() {
                 soci::session sql(getPool());
-                int version = getDatabaseMigrationVersion<T>(sql);
+                int version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
                 soci::transaction tr(sql);
-                Migration<T::CURRENT_VERSION, T>::backward(sql, version);
+                Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
 
-                unsetupMigrations(sql);
+                tr.commit();
+            }
 
+            /// Rollback all migrations for a given migration system.
+            void rollbackMigrations() {
+                soci::session sql(getPool());
+
+                // rollback coins first
+                for (auto rollbackCoinMigration : _rollbackMigrations) {
+                    rollbackCoinMigration(sql);
+                }
+
+                _rollbackMigrations.clear();
+
+                int version = getDatabaseMigrationVersion<CoreMigration>(sql);
+
+                soci::transaction tr(sql);
+                Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::backward(sql, version);
                 tr.commit();
             }
 
@@ -100,6 +128,11 @@ namespace ledger {
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;
+
+            // list of rollback migrations to play when dropping the database; this is a necessary
+            // object to ensure we drop all “registered coin” before trying to remove everything from
+            // the database
+            std::vector<std::function<void (soci::session& sql)>> _rollbackMigrations;
         };
     }
 }

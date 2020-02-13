@@ -100,7 +100,7 @@ namespace ledger {
         }
 
         void DatabaseSessionPool::performDatabaseMigrationUnsetup() {
-            rollbackMigration<CoreMigration>();
+            rollbackMigrations();
         }
 
         void DatabaseSessionPool::performChangePassword(const std::string &oldPassword,

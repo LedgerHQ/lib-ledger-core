@@ -232,7 +232,7 @@ namespace ledger {
                 // FIXME: drop coins first
 
                 // drop the main database first
-                //self->getDatabaseSessionPool()->performDatabaseMigrationUnsetup();
+                self->getDatabaseSessionPool()->performDatabaseMigrationUnsetup();
 
                 // then reset preferences
                 _externalPreferencesBackend->clear();
