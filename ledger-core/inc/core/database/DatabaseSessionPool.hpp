@@ -107,13 +107,13 @@ namespace ledger {
                 soci::session sql(getPool());
 
                 // rollback coins first
-                for (auto rollbackCoinMigration : _rollbackMigrations) {
+                for (auto& rollbackCoinMigration : _rollbackMigrations) {
                     rollbackCoinMigration(sql);
                 }
 
                 _rollbackMigrations.clear();
 
-                int version = getDatabaseMigrationVersion<CoreMigration>(sql);
+                int const version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
                 soci::transaction tr(sql);
                 Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::backward(sql, version);

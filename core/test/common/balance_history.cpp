@@ -193,7 +193,7 @@ TEST(BalanceHistory, CorrectBalancesPerDay2) {
     }
 
     for (auto i = 3; i < 18; ++i) {
-        EXPECT_EQ(*balances[4], 22);
+        EXPECT_EQ(*balances[i], 22);
     }
 
     for (auto i = 18; i < 21; ++i) {
