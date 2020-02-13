@@ -70,14 +70,14 @@ namespace ledger {
             template <typename T>
             void forwardMigration() {
                 soci::session sql(getPool());
-                int version = getDatabaseMigrationVersion<T>(sql);
+                uint32_t const version = getDatabaseMigrationVersion<T>(sql);
 
                 soci::transaction tr(sql);
                 Migration<T::CURRENT_VERSION, T>::forward(sql, version);
 
                 // register rollback migration
                 _rollbackMigrations.emplace_back([](soci::session& sql) {
-                    int version = getDatabaseMigrationVersion<T>(sql);
+                    uint32_t const version = getDatabaseMigrationVersion<T>(sql);
 
                     soci::transaction tr(sql);
                     Migration<T::CURRENT_VERSION, T>::backward(sql, version);
@@ -94,7 +94,7 @@ namespace ledger {
             template <>
             void forwardMigration<CoreMigration>() {
                 soci::session sql(getPool());
-                int version = getDatabaseMigrationVersion<CoreMigration>(sql);
+                uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
                 soci::transaction tr(sql);
                 Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
@@ -113,7 +113,7 @@ namespace ledger {
 
                 _rollbackMigrations.clear();
 
-                int const version = getDatabaseMigrationVersion<CoreMigration>(sql);
+                uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
                 soci::transaction tr(sql);
                 Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::backward(sql, version);

@@ -85,10 +85,10 @@ namespace ledger {
 
         void DatabaseSessionPool::performDatabaseMigrationSetup() {
             soci::session sql(getPool());
-            int version = getDatabaseMigrationVersion<CoreMigration>(sql);
+            uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
             // if the database doesn’t exist, we need to create its structure
-            if (version == -1) {
+            if (version == 0) {
               setupMigrations(sql);
             }
 
