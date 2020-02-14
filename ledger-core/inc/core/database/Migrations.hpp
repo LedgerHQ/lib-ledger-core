@@ -40,31 +40,31 @@ namespace ledger {
     namespace core {
         /// Get the current database migration version.
         template <typename T>
-        int getDatabaseMigrationVersion(soci::session& sql) {
-            int version = -1;
+        uint32_t getDatabaseMigrationVersion(soci::session& sql) {
+            uint32_t version = 0;
 
             try {
                 soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = :id", soci::use(T::COIN_ID), soci::into(version));
                 st.execute();
                 st.fetch();
             } catch (...) {
-                // if we cannot find the version, it stays set to -1
+                // if we cannot find the version, it stays set to 0
             }
 
             return version;
         }
 
-        template <int version, typename T>
+        template <uint32_t version, typename T>
         void migrate(soci::session& sql) {
             std::cerr << "No specified migration for version " << version << std::endl;
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified migration for version {}", version);
         }
 
-        template <int version, typename T>
+        template <uint32_t version, typename T>
         void migrate(soci::session& sql, int currentVersion) {
         };
 
-        template <int version, typename T>
+        template <uint32_t version, typename T>
         void rollback(soci::session&) {
         }
 
@@ -78,10 +78,10 @@ namespace ledger {
         ///     See <https://github.com/satoshilabs/slips/blob/master/slip-0044.md> to correctly
         ///     implement this function.
         ///   - T::CURRENT_VERSION: current version of the migration system.
-        template <int version, typename T>
+        template <uint32_t version, typename T>
         struct Migration final {
           /// Advance the migration system up to version.
-          static void forward(soci::session& sql, int currentVersion) {
+          static void forward(soci::session& sql, uint32_t currentVersion) {
               if (currentVersion < version) {
                   Migration<version - 1, T>::forward(sql, currentVersion);
                   migrate<version, T>(sql);
@@ -91,26 +91,26 @@ namespace ledger {
                           "VALUES (:id, 1)",
                           soci::use(T::COIN_ID);
                   } else {
-                      sql << "UPDATE __database_meta__ SET version = :version where id = :id", soci::use(version), soci::use(T::COIN_ID);
+                      sql << "UPDATE __database_meta__ SET version = :version WHERE id = :id", soci::use(version), soci::use(T::COIN_ID);
                   }
               }
           }
 
           /// Rollback from migrationNumber.
-          static void backward(soci::session& sql, int currentVersion) {
+          static void backward(soci::session& sql, uint32_t currentVersion) {
               if (currentVersion == version) {
                   // we’re in sync with the database; perform the rollback normally
                   rollback<version, T>(sql);
 
-                  if (currentVersion >= 0) {
-                      // after rolling back this migration, we won’t have anything left, so we only
-                      // update the version for > 0
-                      if (currentVersion != 0) {
-                          auto prevVersion = version - 1;
-                          sql << "UPDATE __database_meta__ SET id = :id, version = :version", soci::use(T::COIN_ID), soci::use(prevVersion);
-                      }
+                  if (currentVersion > 0) {
+                      // if the migration number is greater than 0, we just perform the regular migration
+                      auto constexpr prevVersion = version - 1;
+                      sql << "UPDATE __database_meta__ SET version = :version WHERE id = :id", soci::use(prevVersion), soci::use(T::COIN_ID);
 
-                      Migration<version - 1, T>::backward(sql, currentVersion - 1);
+                      Migration<prevVersion, T>::backward(sql, currentVersion - 1);
+                  } else {
+                      // here we want to remove the coin from the metadata table
+                      sql << "DELETE FROM __database_meta__ WHERE id = :id", soci::use(T::COIN_ID);
                   }
               } else if (currentVersion < version) {
                   // we’re trying to rollback a migration that hasn’t been applied; try the previous
