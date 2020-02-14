@@ -87,21 +87,6 @@ namespace ledger {
                 tr.commit();
             }
 
-            /// Run migration forward for the ledger-core library.
-            ///
-            /// This is a special case because we don’t want to register ourselves for rollback,
-            /// since we will call that function explicitly.
-            template <>
-            void forwardMigration<CoreMigration>() {
-                soci::session sql(getPool());
-                uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
-
-                soci::transaction tr(sql);
-                Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
-
-                tr.commit();
-            }
-
             /// Rollback all migrations for a given migration system.
             void rollbackMigrations() {
                 soci::session sql(getPool());
@@ -134,5 +119,20 @@ namespace ledger {
             // the database
             std::vector<std::function<void (soci::session& sql)>> _rollbackMigrations;
         };
+
+        /// Run migration forward for the ledger-core library.
+        ///
+        /// This is a special case because we don’t want to register ourselves for rollback,
+        /// since we will call that function explicitly.
+        template <>
+        void DatabaseSessionPool::forwardMigration<CoreMigration>() {
+          soci::session sql(getPool());
+          uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
+
+          soci::transaction tr(sql);
+          Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
+
+          tr.commit();
+        }
     }
 }
