@@ -322,6 +322,10 @@ namespace ledger {
                         buddy->savedState.nonEmpty()) {
                         buddy->logger->info("Recovering from reorganization");
 
+                        // WARNING: we have too many issues with that sync token because of blockchain explorer,
+                        // when we fail on reorg we try without sync token
+                        buddy->token = Option<void *>();
+
                         //Get its block/block height
                         auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
                         auto failedBlockHeight = failedBatch.blockHeight;
