@@ -241,3 +241,29 @@ TEST_F(BitcoinKeychains, CheckIfEmpty) {
         EXPECT_FALSE(keychain.isEmpty());
     });
 }
+
+TEST_F(BitcoinKeychains, GetChainCode) {
+    std::vector<std::string> xpubs = {
+            "xpub6C6dC6TfrTcxEDLrycfNwRArHYCGjZ7usWYXESbKd6b6SLjipMpxbtBQuesDBYjiLV6xjKScnxh5W8XrZS3D75JiN9ZWw3HfHwTKQtDoJWC",
+            "xpub6CyUnhyZCh9xRfSt4s3f3GQQSDxSU9KNXGXXsJCRajvm5bKr6kCq9gwxW9XTvdwYGn4XtkegTFiBHJ78gpaeLHdVEbpHpUuTx77rQwREByX",
+            "xpub6D4RHaQLPz862BpFVz444WWfy4aQ9GEeM4Ckma8UEcxwSiuqWaxEDDTTRstC84c1PHr1to1rZe6NTjJpEYexs772cYkhKddANtKwEkbcTGb",
+            "xpub6C3hkmDKqMgVR5JXnmj7g3Zm5fDdyfAqciXaTK6nubYHuwPZVyfq6mVPqRfe4kisVqZibNWgz7euv5EucEgHJCt7DjnoeVUrKoaqdoNQBsc"
+    };
+    for (auto x : xpubs) {
+        BitcoinLikeExtendedPublicKey::fromBase58(currencies::BITCOIN,
+                                                 x,
+                                                 Option<std::string>(),
+                                                 std::make_shared<ledger::core::DynamicObject>());
+    }
+
+    xpubs = {
+            "Ltub2ZDeUnG62EVg6VFxEgSRi4cd6tajrxJP2wbrDhZdw3omAiCmn1N1ZZdEYHM5TxnCPEMbuiVxxYEyynYQYnq1JmKviTsB8CkENgQS4N1UKXg",
+            "Ltub2Yw5wCDWmsrhL78Lh8b1xYGdn2Hgq6nkav54oXHgXKLzdPXno8YoPp4AeNSiQW4XRcxRa7h23k1h7Pw8tLZe5qZGzDMe8xB2s9rRVFuTMtp"
+    };
+    for (auto x : xpubs) {
+        BitcoinLikeExtendedPublicKey::fromBase58(currencies::LITECOIN,
+                                                 x,
+                                                 Option<std::string>(),
+                                                 std::make_shared<ledger::core::DynamicObject>());
+    }
+}
