@@ -5,7 +5,7 @@ namespace ledger {
         int constexpr BitcoinMigration::COIN_ID;
         uint32_t constexpr BitcoinMigration::CURRENT_VERSION;
 
-        template <> void migrate<1, BitcoinMigration>(soci::session& sql) {
+        template <> void migrate<1, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             // Bitcoin currency table
             sql << "CREATE TABLE bitcoin_currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -78,7 +78,7 @@ namespace ledger {
                 ")";
         }
 
-        template <> void rollback<1, BitcoinMigration>(soci::session& sql) {
+        template <> void rollback<1, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             // Bitcoin operation table
             sql << "DROP TABLE bitcoin_operations";
 
@@ -101,24 +101,24 @@ namespace ledger {
             sql << "DROP TABLE bitcoin_currencies";
         }
 
-        template <> void migrate<2, BitcoinMigration>(soci::session& sql) {
+        template <> void migrate<2, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN timestamp_delay BIGINT DEFAULT 0";
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN sighash_type VARCHAR(255) DEFAULT 01";
         }
 
-        template <> void rollback<2, BitcoinMigration>(soci::session& sql) {
+        template <> void rollback<2, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<3, BitcoinMigration>(soci::session& sql) {
+        template <> void migrate<3, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN additional_BIPs TEXT DEFAULT ''";
         }
 
-        template <> void rollback<3, BitcoinMigration>(soci::session& sql) {
+        template <> void rollback<3, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<4, BitcoinMigration>(soci::session& sql) {
+        template <> void migrate<4, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             auto count = 0;
             sql << "SELECT COUNT(*) FROM bitcoin_currencies WHERE identifier = 'dgb'", soci::into(count);
             if (count > 0) {
@@ -126,11 +126,11 @@ namespace ledger {
             }
         }
 
-        template <> void rollback<4, BitcoinMigration>(soci::session& sql) {
+        template <> void rollback<4, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             // cannot rollback
         }
 
-        template <> void migrate<5, BitcoinMigration>(soci::session& sql) {
+        template <> void migrate<5, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "CREATE TABLE bech32_parameters("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "hrp VARCHAR(255) NOT NULL,"
@@ -141,15 +141,15 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<5, BitcoinMigration>(soci::session& sql) {
+        template <> void rollback<5, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "DROP TABLE bech32_parameters";
         }
 
-        template <> void migrate<6, BitcoinMigration>(soci::session& sql) {
+        template <> void migrate<6, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE bitcoin_outputs ADD COLUMN block_height BIGINT";
         }
 
-        template <> void rollback<6, BitcoinMigration>(soci::session& sql) {
+        template <> void rollback<6, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType) {
         }
     }
 }
