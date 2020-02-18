@@ -30,4 +30,4 @@ add_test (NAME Ripple-address COMMAND ledger-core-ripple-tests --gtest_filter=Ri
 add_test (NAME Ripple-keychain COMMAND ledger-core-ripple-tests --gtest_filter=RippleKeychains.*)
 add_test (NAME Ripple-transaction COMMAND ledger-core-ripple-tests --gtest_filter=RippleMakeTransaction.*)
 add_test (NAME Ripple-sync COMMAND ledger-core-ripple-tests --gtest_filter=RippleLikeWalletSynchronization.*)
-add_test (NAME Ripple-account COMMAND ledger-core-ripple-test --gtest_filter=RippleAccounts.*)
+add_test (NAME Ripple-account COMMAND ledger-core-ripple-tests --gtest_filter=RippleAccounts.*)
