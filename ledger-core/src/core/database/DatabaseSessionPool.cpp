@@ -111,5 +111,16 @@ namespace ledger {
                 _backend->changePassword(oldPassword, newPassword, session);
             }
         }
+
+        template <>
+        void DatabaseSessionPool::forwardMigration<CoreMigration>() {
+          soci::session sql(getPool());
+          uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
+
+          soci::transaction tr(sql);
+          Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
+
+          tr.commit();
+        }
     }
 }
