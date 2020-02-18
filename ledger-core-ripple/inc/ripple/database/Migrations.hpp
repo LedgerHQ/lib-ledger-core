@@ -30,6 +30,7 @@
 
 #pragma once
 
+#include <core/api/DatabaseBackendType.hpp>
 #include <core/database/Migrations.hpp>
 
 #include <ripple/RippleLikeCoinID.hpp>
@@ -43,15 +44,15 @@ namespace ledger {
         };
 
         // migrations
-        template <> void migrate<1, XRPMigration>(soci::session& sql);
-        template <> void rollback<1, XRPMigration>(soci::session& sql);
-        template <> void migrate<2, XRPMigration>(soci::session& sql);
-        template <> void rollback<2, XRPMigration>(soci::session& sql);
-        template <> void migrate<3, XRPMigration>(soci::session& sql);
-        template <> void rollback<3, XRPMigration>(soci::session& sql);
-        template <> void migrate<4, XRPMigration>(soci::session& sql);
-        template <> void rollback<4, XRPMigration>(soci::session& sql);
-        template <> void migrate<5, XRPMigration>(soci::session& sql);
-        template <> void rollback<5, XRPMigration>(soci::session& sql);
+        template <> void migrate<1, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<1, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void migrate<2, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<2, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void migrate<3, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<3, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void migrate<4, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<4, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void migrate<5, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<5, XRPMigration>(soci::session& sql, api::DatabaseBackendType type);
   }
 }

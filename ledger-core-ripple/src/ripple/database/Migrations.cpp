@@ -35,7 +35,7 @@ namespace ledger {
         int constexpr XRPMigration::COIN_ID;
         uint32_t constexpr XRPMigration::CURRENT_VERSION;
 
-        template <> void migrate<1, XRPMigration>(soci::session& sql) {
+        template <> void migrate<1, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "CREATE TABLE ripple_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
@@ -70,14 +70,14 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<1, XRPMigration>(soci::session& sql) {
+        template <> void rollback<1, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "DROP TABLE ripple_operations";
             sql << "DROP TABLE ripple_transactions";
             sql << "DROP TABLE ripple_accounts";
             sql << "DROP TABLE ripple_currencies";
         }
 
-        template <> void migrate<2, XRPMigration>(soci::session& sql) {
+        template <> void migrate<2, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "CREATE TABLE ripple_memos("
                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid) ON DELETE CASCADE,"
                    "data VARCHAR(1024),"
@@ -87,31 +87,31 @@ namespace ledger {
                    ")";
         }
 
-        template <> void rollback<2, XRPMigration>(soci::session& sql) {
+        template <> void rollback<2, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "DROP TABLE ripple_memos";
         }
 
-        template <> void migrate<3, XRPMigration>(soci::session& sql) {
+        template <> void migrate<3, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE ripple_transactions ADD COLUMN sequence BIGINT";
         }
 
-        template <> void rollback<3, XRPMigration>(soci::session& sql) {
+        template <> void rollback<3, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
         }
 
-        template <> void migrate<4, XRPMigration>(soci::session& sql) {
+        template <> void migrate<4, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE ripple_transactions ADD COLUMN destination_tag BIGINT";
         }
 
-        template <> void rollback<4, XRPMigration>(soci::session& sql) {
+        template <> void rollback<4, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
         }
 
-        template <> void migrate<5, XRPMigration>(soci::session& sql) {
+        template <> void migrate<5, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
             // 1 if success, 0 otherwise
             // <https://xrpl.org/transaction-results.html>
             sql << "ALTER TABLE ripple_transactions ADD COLUMN status INTEGER";
         }
 
-        template <> void rollback<5, XRPMigration>(soci::session& sql) {
+        template <> void rollback<5, XRPMigration>(soci::session& sql, api::DatabaseBackendType) {
         }
     }
 }
