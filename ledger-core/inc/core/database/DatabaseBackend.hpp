@@ -63,6 +63,8 @@ namespace ledger {
 
             bool isLoggingEnabled() override;
 
+            static bool isPostgreSQLSupported();
+
         private:
             bool _enableLogging;
         };

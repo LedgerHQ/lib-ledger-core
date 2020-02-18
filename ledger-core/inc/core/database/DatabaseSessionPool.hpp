@@ -34,6 +34,7 @@
 #include <soci.h>
 
 #include <core/api/ExecutionContext.hpp>
+#include <core/api/DatabaseBackendType.hpp>
 #include <core/async/Future.hpp>
 #include <core/database/DatabaseBackend.hpp>
 #include <core/database/Migrations.hpp>
@@ -73,14 +74,14 @@ namespace ledger {
                 uint32_t const version = getDatabaseMigrationVersion<T>(sql);
 
                 soci::transaction tr(sql);
-                Migration<T::CURRENT_VERSION, T>::forward(sql, version);
+                Migration<T::CURRENT_VERSION, T>::forward(sql, version, _type);
 
                 // register rollback migration
-                _rollbackMigrations.emplace_back([](soci::session& sql) {
+                _rollbackMigrations.emplace_back([type = _type](soci::session& sql) {
                     uint32_t const version = getDatabaseMigrationVersion<T>(sql);
 
                     soci::transaction tr(sql);
-                    Migration<T::CURRENT_VERSION, T>::backward(sql, version);
+                    Migration<T::CURRENT_VERSION, T>::backward(sql, version, type);
                     tr.commit();
                 });
 
@@ -101,7 +102,7 @@ namespace ledger {
                 uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
                 soci::transaction tr(sql);
-                Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::backward(sql, version);
+                Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::backward(sql, version, _type);
                 tr.commit();
             }
 
@@ -113,13 +114,14 @@ namespace ledger {
             soci::connection_pool _pool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;
+            api::DatabaseBackendType _type;
 
             // list of rollback migrations to play when dropping the database; this is a necessary
             // object to ensure we drop all “registered coin” before trying to remove everything from
             // the database
             std::vector<std::function<void (soci::session& sql)>> _rollbackMigrations;
         };
-
+        
         /// Run migration forward for the ledger-core library.
         ///
         /// This is a special case because we don’t want to register ourselves for rollback,
