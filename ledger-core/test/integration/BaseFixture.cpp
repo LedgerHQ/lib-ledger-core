@@ -60,7 +60,8 @@ void BaseFixture::TearDown() {
 
 std::shared_ptr<Services> BaseFixture::newDefaultServices(
     const std::string &tenant,
-    const std::string &password
+    const std::string &password,
+    const std::shared_ptr<api::DynamicObject> &configuration
 ) {
     return Services::newInstance(
         tenant,
@@ -72,7 +73,7 @@ std::shared_ptr<Services> BaseFixture::newDefaultServices(
         dispatcher,
         rng,
         backend,
-        api::DynamicObject::newInstance()
+        configuration
     );
 }
 
