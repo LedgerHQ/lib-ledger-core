@@ -5,7 +5,7 @@ namespace ledger {
         int constexpr TezosMigration::COIN_ID;
         uint32_t constexpr TezosMigration::CURRENT_VERSION;
 
-        template <> void migrate<1, TezosMigration>(soci::session& sql) {
+        template <> void migrate<1, TezosMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "CREATE TABLE tezos_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
@@ -63,7 +63,7 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<1, TezosMigration>(soci::session& sql) {
+        template <> void rollback<1, TezosMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "DROP TABLE tezos_originated_operations";
 
             sql << "DROP TABLE tezos_originated_accounts";
@@ -78,19 +78,19 @@ namespace ledger {
         }
 
 
-        template <> void migrate<2, TezosMigration>(soci::session& sql) {
+        template <> void migrate<2, TezosMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE tezos_accounts RENAME COLUMN address TO public_key";
         }
 
-        template <> void rollback<2, TezosMigration>(soci::session& sql) {
+        template <> void rollback<2, TezosMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE tezos_accounts RENAME COLUMN public_key TO address";
         }
 
-        template <> void migrate<3, TezosMigration>(soci::session& sql) {
+        template <> void migrate<3, TezosMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE tezos_transactions ADD COLUMN status BIGINT";
         }
 
-        template <> void rollback<3, TezosMigration>(soci::session& sql) {
+        template <> void rollback<3, TezosMigration>(soci::session& sql, api::DatabaseBackendType) {
         }
     }
 }

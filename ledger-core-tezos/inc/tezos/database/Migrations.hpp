@@ -1,8 +1,9 @@
 #pragma once
 
-#include <tezos/TezosLikeCoinID.hpp>
-
+#include <core/api/DatabaseBackendType.hpp>
 #include <core/database/Migrations.hpp>
+
+#include <tezos/TezosLikeCoinID.hpp>
 
 namespace ledger {
     namespace core {
@@ -13,13 +14,13 @@ namespace ledger {
         };
 
         // migrations
-        template <> void migrate<1, TezosMigration>(soci::session& sql);
-        template <> void rollback<1, TezosMigration>(soci::session& sql);
+        template <> void migrate<1, TezosMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<1, TezosMigration>(soci::session& sql, api::DatabaseBackendType type);
 
-        template <> void migrate<2, TezosMigration>(soci::session& sql);
-        template <> void rollback<2, TezosMigration>(soci::session& sql);
+        template <> void migrate<2, TezosMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<2, TezosMigration>(soci::session& sql, api::DatabaseBackendType type);
 
-        template <> void migrate<3, TezosMigration>(soci::session& sql);
-        template <> void rollback<3, TezosMigration>(soci::session& sql);
+        template <> void migrate<3, TezosMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<3, TezosMigration>(soci::session& sql, api::DatabaseBackendType type);
   }
 }
