@@ -676,12 +676,16 @@ namespace ledger {
         }
 
         Future<api::ErrorCode> BitcoinLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point & date) {
+
+            std::lock_guard<std::mutex> lock(_synchronizationLock);
+            _currentSyncEventBus = nullptr;
+
             auto log = logger();
 
             log->debug(" Start erasing data of account : {}", getAccountUid());
             soci::session sql(getWallet()->getDatabase()->getPool());
             //Update account's internal preferences (for synchronization)
-            auto savedState = getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+            auto savedState = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
             if (savedState.nonEmpty()) {
                 //Reset batches to blocks mined before given date
                 auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
@@ -694,7 +698,7 @@ namespace ledger {
                         batch.blockHash = "";
                     }
                 }
-                getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
+                getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
             }
             auto accountUid = getAccountUid();
             sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(accountUid), soci::use(date);

@@ -491,7 +491,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
             auto date = "2000-03-27T09:10:22Z";
             auto formatedDate = DateUtils::fromJSON(date);
 
-            static std::function<void (int)> syncAccount = [formatedDate, account, receiver, this](bool shouldStop){
+            static std::function<Future<Unit> (bool)> syncAccount = [formatedDate, account, this](bool shouldStop) -> Future<Unit> {
                 auto localReceiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
                     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -508,24 +508,21 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
                     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
                     ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-                    //EXPECT_EQ(ops.size(), 0);
+                    EXPECT_EQ(ops.size(), 0);
 
                     if (shouldStop) {
                         dispatcher->stop();
                     } else {
-                        syncAccount(true);
+                        wait(syncAccount(true));
                     }
                 });
 
                 account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), localReceiver);
                 dispatcher->waitUntilStopped();
-//                if (shouldStop) {
-//                    dispatcher->waitUntilStopped();
-//                } else {
-//                    //syncAccount(true);
-//                }
+                return Future<Unit>::successful(unit);
             };
-            syncAccount(false);
+            wait(syncAccount(false));
+            dispatcher->waitUntilStopped();
         }
     }
 }
