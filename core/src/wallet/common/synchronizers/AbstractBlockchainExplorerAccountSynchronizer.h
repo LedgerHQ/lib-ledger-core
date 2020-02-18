@@ -230,13 +230,21 @@ namespace ledger {
                 updateCurrentBlock(buddy, account->getContext());
 
                 auto self = getSharedFromThis();
-                return _explorer->startSession().template map<Unit>(account->getContext(), [buddy] (void * const& t) -> Unit {
+                const auto deactivateToken =
+                        buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+                auto getSyncToken = deactivateToken ? Future<Unit>::successful(unit) : _explorer->startSession();
+                return getSyncToken.template map<Unit>(account->getContext(), [buddy, deactivateToken] (void * const& t) -> Unit {
                     buddy->logger->info("Synchronization token obtained");
-                    buddy->token = Option<void *>(t);
+                    if (!deactivateToken) {
+                        buddy->token = Option<void *>(t);
+                    }
                     return unit;
                 }).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
                     return self->synchronizeBatches(0, buddy);
-                }).template flatMap<Unit>(account->getContext(), [self, buddy] (const Unit&) {
+                }).template flatMap<Unit>(account->getContext(), [self, buddy, deactivateToken] (const Unit&) {
+                    if (deactivateToken) {
+                        return Future<Unit>::successful(unit);
+                    }
                     auto tryKillSession = Try<Future<Unit>>::from([=](){
                         return self->_explorer->killSession(buddy->token.getValue());
                     });
@@ -322,9 +330,25 @@ namespace ledger {
                         buddy->savedState.nonEmpty()) {
                         buddy->logger->info("Recovering from reorganization");
 
-                        // WARNING: we have too many issues with that sync token because of blockchain explorer,
-                        // when we fail on reorg we try without sync token
-                        buddy->token = Option<void *>();
+                        const auto deactivateToken =
+                                buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+                        if (!deactivateToken) {
+                            auto tryStartSession = Try<Future<void *>>::from([=](){
+                                return self->_explorer->startSession();
+                            });
+                            if (tryStartSession.isFailure()) {
+                                buddy->logger->warn("Failed to get new synchronization token for account#{} of wallet {}",
+                                        buddy->account->getIndex(),
+                                        buddy->account->getWallet()->getName());
+                                // WARNING: we have too many issues with that sync token because of blockchain explorer,
+                                // when we fail on reorg we try without sync token
+                                buddy->token = Option<void *>();
+                            } else {
+                                buddy->token = tryStartSession.getValue();
+                            }
+                        } else {
+                            buddy->token = Option<void *>();
+                        }
 
                         //Get its block/block height
                         auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
