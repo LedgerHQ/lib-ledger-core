@@ -33,7 +33,9 @@
 
 #include <gtest/gtest.h>
 
+#include <core/api/ConfigurationDefaults.hpp>
 #include <core/api/KeychainEngines.hpp>
+#include <core/api/PoolConfiguration.hpp>
 
 #include <bitcoin/BitcoinLikeCurrencies.hpp>
 #include <bitcoin/database/BitcoinLikeAccountDatabaseHelper.hpp>
@@ -54,12 +56,22 @@ using namespace ledger::testing;
 
 TEST_F(BitcoinSynchronizations, MediumXpubSynchronization) {
     auto const currency = currencies::bitcoin();
+    auto configuration = api::DynamicObject::newInstance();
+
+    if (DatabaseBackend::isPostgreSQLSupported()) {
+        backend = std::static_pointer_cast<DatabaseBackend>(
+                DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE));
+        configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        services = newDefaultServices(DEFAULT_TENANT, DEFAULT_PASSWORD, configuration);
+        walletStore = newWalletStore(services);
+    }
 
     registerCurrency(currency);
 
     {
-        auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE, api::KeychainEngines::BIP173_P2WPKH);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://bitcoin-mainnet.explorers.dev.aws.ledger.fr:443");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
 
         auto wallet = wait(walletStore->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", currency.name, configuration));
 
@@ -97,6 +109,14 @@ TEST_F(BitcoinSynchronizations, MediumXpubSynchronization) {
                                                                                                     ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
                                        ->build());
                 EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
+
+                auto ops = wait(std::dynamic_pointer_cast<BitcoinLikeOperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Ops: " << ops.size() << std::endl;
+                for (auto& op : ops) {
+                    std::cout << "op: " << std::dynamic_pointer_cast<BitcoinLikeOperation>(op)->getTransaction()->getHash() << std::endl;
+                    std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
+                    std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                }
 
                 dispatcher->stop();
             });
@@ -141,8 +161,9 @@ TEST_F(BitcoinSynchronizations, SynchronizeOnceAtATime) {
 }
 
 TEST_F(BitcoinSynchronizations, SynchronizeAndFreshResetAll) {
+    auto const currency = currencies::bitcoin();
+
     {
-        auto const currency = currencies::bitcoin();
         
         registerCurrency(currency);
 
@@ -175,8 +196,9 @@ TEST_F(BitcoinSynchronizations, SynchronizeAndFreshResetAll) {
         }
     }
     {
-        // TODO: uncomment this line when `freshResetAll` will be fixed
-        //EXPECT_EQ(wait(walletStore->getWalletCount()), 0);
+        SetUp();
+
+        EXPECT_EQ(wait(walletStore->getWalletCount()), 0);
     }
 }
 
