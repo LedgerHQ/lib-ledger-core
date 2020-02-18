@@ -125,14 +125,6 @@ namespace ledger {
         /// This is a special case because we don’t want to register ourselves for rollback,
         /// since we will call that function explicitly.
         template <>
-        void DatabaseSessionPool::forwardMigration<CoreMigration>() {
-          soci::session sql(getPool());
-          uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
-
-          soci::transaction tr(sql);
-          Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
-
-          tr.commit();
-        }
+        void DatabaseSessionPool::forwardMigration<CoreMigration>();
     }
 }
