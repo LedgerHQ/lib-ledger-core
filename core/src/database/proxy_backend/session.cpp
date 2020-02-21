@@ -72,3 +72,7 @@ proxy_rowid_backend *proxy_session_backend::make_rowid_backend() {
 proxy_blob_backend *proxy_session_backend::make_blob_backend() {
     return new proxy_blob_backend(_conn->newBlob());
 }
+
+bool proxy_session_backend::is_alive() const {
+    return _conn->is_alive();
+}

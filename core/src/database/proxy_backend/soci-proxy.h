@@ -199,6 +199,8 @@ namespace soci
         proxy_rowid_backend* make_rowid_backend() SOCI_OVERRIDE;
         proxy_blob_backend* make_blob_backend() SOCI_OVERRIDE;
 
+        bool is_alive() const SOCI_OVERRIDE;
+
     private:
         std::shared_ptr<ledger::core::api::DatabaseConnection> _conn;
     };

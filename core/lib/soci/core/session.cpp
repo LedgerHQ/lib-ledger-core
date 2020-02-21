@@ -80,12 +80,20 @@ session::session(std::string const & connectString)
 session::session(connection_pool & pool)
     : logStream_(NULL), isFromPool_(true), pool_(&pool)
 {
-    poolPosition_ = pool.lease();
-    session & pooledSession = pool.at(poolPosition_);
+    while (true) {
+        poolPosition_ = pool.lease();
+        session & pooledSession = pool.at(poolPosition_);
 
-    once.set_session(&pooledSession);
-    prepare.set_session(&pooledSession);
-    backEnd_ = pooledSession.get_backend();
+        if (pooledSession.is_alive()) {
+            once.set_session(&pooledSession);
+            prepare.set_session(&pooledSession);
+            backEnd_ = pooledSession.get_backend();
+            break;
+        } else {
+            // invalidate the session in the pool, and try again
+            pool.give_back(poolPosition_);
+        }
+    }
 }
 
 session::~session()
@@ -387,4 +395,11 @@ blob_backend * session::make_blob_backend()
     ensureConnected(backEnd_);
 
     return backEnd_->make_blob_backend();
+}
+
+bool session::is_alive() const
+{
+    ensureConnected(backEnd_);
+
+    return backEnd_->is_alive();
 }

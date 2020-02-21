@@ -122,6 +122,12 @@ public:
     details::rowid_backend * make_rowid_backend();
     details::blob_backend * make_blob_backend();
 
+    // check the status of a session; some backends might drop idleing connections,
+    // resulting in invalidated connection_pool; when that occurs, this function
+    // should return false to indicate the connection_pool to discard the session
+    // and try again; the default implementation assumes no timeout
+    bool is_alive() const;
+
 private:
     session(session const &);
     session& operator=(session const &);

@@ -128,3 +128,7 @@ postgresql_blob_backend * postgresql_session_backend::make_blob_backend()
 {
     return new postgresql_blob_backend(*this);
 }
+
+bool postgresql_session_backend::is_alive() const {
+    return conn_ != nullptr && PQstatus(conn_) == CONNECTION_OK;
+}

@@ -205,6 +205,9 @@ DatabaseConnection = interface +j +n +o {
     # Create a new empty blob.
     # @return An empty blob
     newBlob(): DatabaseBlob;
+
+    # Check whether the connection is still alive.
+    is_alive(): bool;
 }
 
 # A pool of connections to a single database.
