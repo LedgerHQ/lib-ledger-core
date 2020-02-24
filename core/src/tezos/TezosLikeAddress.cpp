@@ -36,17 +36,18 @@
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
 #include <crypto/BLAKE.h>
+
 namespace ledger {
     namespace core {
         TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
                                            const std::vector<uint8_t> &hash160,
                                            const std::vector<uint8_t> &version,
                                            const Option<std::string> &derivationPath) :
-                _params(currency.tezosLikeNetworkParameters.value()),
+                AbstractAddress(currency, derivationPath),
                 _hash160(hash160),
                 _version(version),
-                _derivationPath(derivationPath),
-                AbstractAddress(currency, derivationPath)
+                _params(currency.tezosLikeNetworkParameters.value()),
+                _derivationPath(derivationPath)
         {}
 
         TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
@@ -59,6 +60,7 @@ namespace ledger {
                                  getPrefixFromImplicitVersion(version, curve),
                                  derivationPath)
         {}
+
         std::vector<uint8_t> TezosLikeAddress::getVersion() {
             return _version;
         }
