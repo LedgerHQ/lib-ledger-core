@@ -80,7 +80,8 @@ session::session(std::string const & connectString)
 session::session(connection_pool & pool)
     : logStream_(NULL), isFromPool_(true), pool_(&pool)
 {
-    while (true) {
+    // this is just a safe guard hack, in case we cannot join the database
+    for (uint32_t failoverRetries = 100u; failoverRetries > 0; --failoverRetries) {
         poolPosition_ = pool.lease();
         session & pooledSession = pool.at(poolPosition_);
 
