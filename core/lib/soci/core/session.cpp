@@ -84,7 +84,7 @@ session::session(connection_pool & pool)
         poolPosition_ = pool.lease();
         session & pooledSession = pool.at(poolPosition_);
 
-        if (pooledSession.is_alive()) {
+        if (pooledSession.isAlive()) {
             once.set_session(&pooledSession);
             prepare.set_session(&pooledSession);
             backEnd_ = pooledSession.get_backend();
@@ -229,7 +229,7 @@ std::string session::get_query() const
     else
     {
         // preserve logical constness of get_query,
-        // stream used as read-only here, 
+        // stream used as read-only here,
         session* pthis = const_cast<session*>(this);
 
         // sole place where any user-defined query transformation is applied
@@ -397,9 +397,9 @@ blob_backend * session::make_blob_backend()
     return backEnd_->make_blob_backend();
 }
 
-bool session::is_alive() const
+bool session::isAlive() const
 {
     ensureConnected(backEnd_);
 
-    return backEnd_->is_alive();
+    return backEnd_->isAlive();
 }

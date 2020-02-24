@@ -55,7 +55,7 @@ public:
     virtual std::shared_ptr<DatabaseBlob> newBlob() = 0;
 
     /** Check whether the connection is still alive. */
-    virtual bool is_alive() = 0;
+    virtual bool isAlive() = 0;
 };
 
 } } }  // namespace ledger::core::api

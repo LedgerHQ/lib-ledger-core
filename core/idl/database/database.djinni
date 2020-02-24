@@ -207,7 +207,7 @@ DatabaseConnection = interface +j +n +o {
     newBlob(): DatabaseBlob;
 
     # Check whether the connection is still alive.
-    is_alive(): bool;
+    isAlive(): bool;
 }
 
 # A pool of connections to a single database.

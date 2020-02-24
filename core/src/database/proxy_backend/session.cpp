@@ -73,6 +73,6 @@ proxy_blob_backend *proxy_session_backend::make_blob_backend() {
     return new proxy_blob_backend(_conn->newBlob());
 }
 
-bool proxy_session_backend::is_alive() const {
-    return _conn->is_alive();
+bool proxy_session_backend::isAlive() const {
+    return _conn->isAlive();
 }

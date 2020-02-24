@@ -40,7 +40,7 @@ private:
         void commit() override;
         void close() override;
         std::shared_ptr<::ledger::core::api::DatabaseBlob> newBlob() override;
-        bool is_alive() override;
+        bool isAlive() override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseConnection, ::djinni_generated::DatabaseConnection>;

@@ -126,7 +126,7 @@ public:
     // resulting in invalidated connection_pool; when that occurs, this function
     // should return false to indicate the connection_pool to discard the session
     // and try again; the default implementation assumes no timeout
-    bool is_alive() const;
+    bool isAlive() const;
 
 private:
     session(session const &);

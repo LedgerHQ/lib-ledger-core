@@ -266,6 +266,6 @@ sqlite3_blob_backend * sqlite3_session_backend::make_blob_backend()
     return new sqlite3_blob_backend(*this);
 }
 
-bool sqlite3_session_backend::is_alive() const {
+bool sqlite3_session_backend::isAlive() const {
     return true;
 }

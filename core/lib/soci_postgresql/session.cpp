@@ -129,7 +129,7 @@ postgresql_blob_backend * postgresql_session_backend::make_blob_backend()
     return new postgresql_blob_backend(*this);
 }
 
-bool postgresql_session_backend::is_alive() const {
+bool postgresql_session_backend::isAlive() const {
     auto res = PQexec(conn_, "SELECT 1");
     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
         // reset the connection; we do it here because the current interface

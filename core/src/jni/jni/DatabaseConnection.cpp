@@ -62,7 +62,7 @@ std::shared_ptr<::ledger::core::api::DatabaseBlob> DatabaseConnection::JavaProxy
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni_generated::DatabaseBlob::toCpp(jniEnv, jret);
 }
-bool DatabaseConnection::JavaProxy::is_alive() {
+bool DatabaseConnection::JavaProxy::isAlive() {
     auto jniEnv = ::djinni::jniGetThreadEnv();
     ::djinni::JniLocalScope jscope(jniEnv, 10);
     const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseConnection>::get();

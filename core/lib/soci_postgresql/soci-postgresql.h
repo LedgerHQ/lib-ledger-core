@@ -330,7 +330,7 @@ struct postgresql_session_backend : details::session_backend
     virtual postgresql_rowid_backend * make_rowid_backend() override;
     virtual postgresql_blob_backend * make_blob_backend() override;
 
-    bool is_alive() const override;
+    bool isAlive() const override;
 
     std::string get_next_statement_name();
 
