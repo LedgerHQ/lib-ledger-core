@@ -45,5 +45,4 @@ private:
     std::shared_ptr<ConnectionPool> _pool;
 };
 
-
 #endif //LEDGER_CORE_MEMORYDATABASEPROXY_H
