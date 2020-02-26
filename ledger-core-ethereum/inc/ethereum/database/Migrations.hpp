@@ -1,6 +1,8 @@
 #pragma once
 
+#include <core/api/DatabaseBackendType.hpp>
 #include <core/database/Migrations.hpp>
+
 #include <ethereum/EthereumLikeCoinID.hpp>
 
 namespace ledger {
@@ -12,11 +14,11 @@ namespace ledger {
         };
 
         // migrations
-        template <> void migrate<1, EthereumMigration>(soci::session& sql);
-        template <> void rollback<1, EthereumMigration>(soci::session& sql);
-        template <> void migrate<2, EthereumMigration>(soci::session& sql);
-        template <> void rollback<2, EthereumMigration>(soci::session& sql);
-        template <> void migrate<3, EthereumMigration>(soci::session& sql);
-        template <> void rollback<3, EthereumMigration>(soci::session& sql);
+        template <> void migrate<1, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<1, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void migrate<2, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<2, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void migrate<3, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<3, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type);
   }
 }

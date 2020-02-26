@@ -30,9 +30,14 @@
  */
 
 #include <core/api/DatabaseEngine.hpp>
+#include <core/api/Error.hpp>
 #include <core/database/DatabaseBackend.hpp>
 #include <core/database/SQLite3Backend.hpp>
 #include <core/database/ProxyBackend.hpp>
+#include <core/utils/Exception.hpp>
+#ifdef PG_SUPPORT
+#include <core/database/PostgreSQLBackend.hpp>
+#endif
 
 namespace ledger {
     namespace core {
@@ -52,6 +57,22 @@ namespace ledger {
 
         bool DatabaseBackend::isLoggingEnabled() {
             return _enableLogging;
+        }
+
+        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize) {
+#ifdef PG_SUPPORT
+            return std::make_shared<PostgreSQLBackend>(connectionPoolSize);
+#else
+            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Libcore should be compiled with PG_SUPPORT flag.");
+#endif
+        }
+
+        bool DatabaseBackend::isPostgreSQLSupported() {
+#ifdef PG_SUPPORT
+            return true;
+#else
+            return false;
+#endif
         }
     }
 }

@@ -34,6 +34,7 @@
 #include <soci.h>
 #include <iostream>
 
+#include <core/api/DatabaseBackendType.hpp>
 #include <core/utils/Exception.hpp>
 
 namespace ledger {
@@ -47,6 +48,8 @@ namespace ledger {
                 soci::statement st = (sql.prepare << "SELECT version FROM __database_meta__ WHERE id = :id", soci::use(T::COIN_ID), soci::into(version));
                 st.execute();
                 st.fetch();
+            // TODO: Ellipsis catch is considered unsafe on windows
+            // (see https://stackoverflow.com/questions/2183113/using-catch-ellipsis-for-post-mortem-analysis)
             } catch (...) {
                 // if we cannot find the version, it stays set to 0
             }
@@ -55,17 +58,17 @@ namespace ledger {
         }
 
         template <uint32_t version, typename T>
-        void migrate(soci::session& sql) {
+        void migrate(soci::session&, api::DatabaseBackendType) {
             std::cerr << "No specified migration for version " << version << std::endl;
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "No specified migration for version {}", version);
         }
 
         template <uint32_t version, typename T>
-        void migrate(soci::session& sql, int currentVersion) {
+        void migrate(soci::session&, int currentVersion, api::DatabaseBackendType) {
         };
 
         template <uint32_t version, typename T>
-        void rollback(soci::session&) {
+        void rollback(soci::session&, api::DatabaseBackendType) {
         }
 
         /// Migration system.
@@ -81,10 +84,10 @@ namespace ledger {
         template <uint32_t version, typename T>
         struct Migration final {
           /// Advance the migration system up to version.
-          static void forward(soci::session& sql, uint32_t currentVersion) {
+          static void forward(soci::session& sql, uint32_t currentVersion, api::DatabaseBackendType type) {
               if (currentVersion < version) {
-                  Migration<version - 1, T>::forward(sql, currentVersion);
-                  migrate<version, T>(sql);
+                  Migration<version - 1, T>::forward(sql, currentVersion, type);
+                  migrate<version, T>(sql, type);
 
                   if (version == 1) {
                       sql << "INSERT INTO __database_meta__ (id, version)"
@@ -97,17 +100,17 @@ namespace ledger {
           }
 
           /// Rollback from migrationNumber.
-          static void backward(soci::session& sql, uint32_t currentVersion) {
+          static void backward(soci::session& sql, uint32_t currentVersion, api::DatabaseBackendType type) {
               if (currentVersion == version) {
                   // we’re in sync with the database; perform the rollback normally
-                  rollback<version, T>(sql);
+                  rollback<version, T>(sql, type);
 
                   if (currentVersion > 0) {
                       // if the migration number is greater than 0, we just perform the regular migration
                       auto constexpr prevVersion = version - 1;
                       sql << "UPDATE __database_meta__ SET version = :version WHERE id = :id", soci::use(prevVersion), soci::use(T::COIN_ID);
 
-                      Migration<prevVersion, T>::backward(sql, currentVersion - 1);
+                      Migration<prevVersion, T>::backward(sql, currentVersion - 1, type);
                   } else {
                       // here we want to remove the coin from the metadata table
                       sql << "DELETE FROM __database_meta__ WHERE id = :id", soci::use(T::COIN_ID);
@@ -115,7 +118,7 @@ namespace ledger {
               } else if (currentVersion < version) {
                   // we’re trying to rollback a migration that hasn’t been applied; try the previous
                   // rollback
-                  Migration<version - 1, T>::backward(sql, currentVersion);
+                  Migration<version - 1, T>::backward(sql, currentVersion, type);
               } else {
                   // we’re trying to rollback a migration but we have missed some others; apply the
                   // next ones first
@@ -126,10 +129,10 @@ namespace ledger {
 
         template <typename T>
         struct Migration<0, T> final {
-           static void forward(soci::session&, int) {
+           static void forward(soci::session&, int, api::DatabaseBackendType) {
            }
 
-           static void backward(soci::session&, int) {
+           static void backward(soci::session&, int, api::DatabaseBackendType) {
            }
         };
 
@@ -148,9 +151,9 @@ namespace ledger {
         };
 
         // migrations
-        template <> void migrate<1, CoreMigration>(soci::session& sql);
-        template <> void rollback<1, CoreMigration>(soci::session& sql);
-        template <> void migrate<2, CoreMigration>(soci::session& sql);
-        template <> void rollback<2, CoreMigration>(soci::session& sql);
+        template <> void migrate<1, CoreMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<1, CoreMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void migrate<2, CoreMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<2, CoreMigration>(soci::session& sql, api::DatabaseBackendType type);
     }
 }

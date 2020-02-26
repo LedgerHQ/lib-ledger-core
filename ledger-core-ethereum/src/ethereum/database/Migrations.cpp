@@ -6,7 +6,7 @@ namespace ledger {
 
         uint32_t constexpr EthereumMigration::CURRENT_VERSION;
 
-        template <> void migrate<1, EthereumMigration>(soci::session& sql) {
+        template <> void migrate<1, EthereumMigration>(soci::session& sql, api::DatabaseBackendType) {
             // ETH currencies
             sql << "CREATE TABLE ethereum_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -86,7 +86,7 @@ namespace ledger {
 
         }
 
-        template <> void rollback<1, EthereumMigration>(soci::session& sql) {
+        template <> void rollback<1, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type) {
             // ERC20 tokens
             sql << "DROP TABLE erc20_tokens";
 
@@ -96,11 +96,19 @@ namespace ledger {
             // ERC20 accounts
             sql << "DROP TABLE erc20_accounts";
 
-            // ETH operations
-            sql << "DROP TABLE ethereum_operations";
-
-            // ETH transactions
-            sql << "DROP TABLE ethereum_transactions";
+            // ETH transactions and operations
+            switch (type) {
+                case api::DatabaseBackendType::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_operations CASCADE";
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_operations";
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
+            }
 
             // ETH accounts
             sql << "DROP TABLE ethereum_accounts";
@@ -109,7 +117,7 @@ namespace ledger {
             sql << "DROP TABLE ethereum_currencies";
         }
 
-        template <> void migrate<2, EthereumMigration>(soci::session& sql) {
+        template <> void migrate<2, EthereumMigration>(soci::session& sql, api::DatabaseBackendType) {
             // Since ALTER TABLE for changing data is non standard we have no choice but create a swap table, migrate all data from the legacy table to the swap and
             // then remove the legacy table and rename the swap table to the final table name. We are doing this to change input_data for ET and ERC txs data type from
             // VARCHAR(255) to TEXT since nothings prevents those fields to be bigger than 255 characters long.
@@ -164,7 +172,7 @@ namespace ledger {
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
         }
 
-        template <> void rollback<2, EthereumMigration>(soci::session& sql) {
+        template <> void rollback<2, EthereumMigration>(soci::session& sql, api::DatabaseBackendType type) {
              // ETH transactions
             sql << "CREATE TABLE eth_swap("
                 "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -186,7 +194,18 @@ namespace ledger {
              sql << "INSERT INTO eth_swap "
                 "SELECT transaction_uid, hash, nonce, value, block_uid, time, sender, receiver, input_data, gas_price, gas_limit, gas_used, confirmations, status "
                 "FROM ethereum_transactions";
-            sql << "DROP TABLE ethereum_transactions";
+
+            switch (type) {
+                case api::DatabaseBackendType::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
+            }
+
             sql << "ALTER TABLE eth_swap RENAME TO ethereum_transactions";
 
              // ERC20 operations
@@ -215,11 +234,11 @@ namespace ledger {
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
         }
 
-        template <> void migrate<3, EthereumMigration>(soci::session& sql) {
+        template <> void migrate<3, EthereumMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "ALTER TABLE erc20_operations ADD COLUMN block_height BIGINT";
         }
 
-        template <> void rollback<3, EthereumMigration>(soci::session& sql) {
+        template <> void rollback<3, EthereumMigration>(soci::session& sql, api::DatabaseBackendType) {
         }
     }
 }

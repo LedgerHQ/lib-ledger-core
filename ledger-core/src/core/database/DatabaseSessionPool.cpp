@@ -31,6 +31,10 @@
 
 #include <core/database/DatabaseSessionPool.hpp>
 #include <core/database/Migrations.hpp>
+#ifdef PG_SUPPORT
+#include <core/database/PostgreSQLBackend.hpp>
+#endif
+
 
 namespace ledger {
     namespace core {
@@ -39,8 +43,8 @@ namespace ledger {
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
-            const std::string &password
-        ) : _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            const std::string &password) : 
+                _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
@@ -55,6 +59,12 @@ namespace ledger {
                     session.set_log_stream(_logger);
             }
 
+#ifdef PG_SUPPORT
+            _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
+                    api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
+#else
+            _type = api::DatabaseBackendType::SQLITE3;
+#endif
             // Setup database
             performDatabaseMigrationSetup();
         }
@@ -94,7 +104,7 @@ namespace ledger {
 
             // play migrations
             soci::transaction tr(sql);
-            Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
+            Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version, _type);
 
             tr.commit();
         }
@@ -118,7 +128,7 @@ namespace ledger {
           uint32_t const version = getDatabaseMigrationVersion<CoreMigration>(sql);
 
           soci::transaction tr(sql);
-          Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version);
+          Migration<CoreMigration::CURRENT_VERSION, CoreMigration>::forward(sql, version, _type);
 
           tr.commit();
         }

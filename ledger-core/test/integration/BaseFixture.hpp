@@ -62,7 +62,8 @@ public:
 
     std::shared_ptr<Services> newDefaultServices(
         const std::string &tenant = "default_tenant",
-        const std::string &password = "test"
+        const std::string &password = "test",
+        const std::shared_ptr<api::DynamicObject> &configuration = api::DynamicObject::newInstance()
     );
 
     std::shared_ptr<WalletStore> newWalletStore(

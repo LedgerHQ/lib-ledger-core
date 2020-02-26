@@ -37,6 +37,11 @@ link_directories(${CMAKE_BINARY_DIR}/lib)
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES ../inc/*.{h,hpp})
 
+if (NOT PG_SUPPORT)
+    list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/core/database/PostgreSQLBackend.cpp)
+    list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/core/database/PostgreSQLBackend.hpp)
+endif()
+
 # Interface library used to hold shared properties
 add_library(ledger-core-interface INTERFACE)
 
@@ -117,6 +122,10 @@ target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 target_link_libraries(ledger-core-interface INTERFACE leveldb)
 
+if (PG_SUPPORT)
+    target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
+endif()
+
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
@@ -150,6 +159,7 @@ target_include_directories(
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/fmt/include>          $<INSTALL_INTERFACE:include/ledger-core/lib/fmt/include>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/spdlog/include>       $<INSTALL_INTERFACE:include/ledger-core/lib/spdlog/include>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci_postgresql>      $<INSTALL_INTERFACE:include/ledger-core/lib/soci_postgresql>
 
     # Hack: work around to find the ledger-core API header files in dependent projects
     $<INSTALL_INTERFACE:include/ledger-core/core/api>

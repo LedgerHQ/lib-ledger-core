@@ -1,13 +1,12 @@
 /*
  *
- * DatabaseBackend
- * ledger-core
+ * PostgreSQL
  *
- * Created by Pierre Pollastri on 20/12/2016.
+ * Created by El Khalil Bellakrid on 06/12/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -31,42 +30,39 @@
 
 #pragma once
 
-#include <soci.h>
 #include <memory>
+#include <string>
 
-#include <core/api/DatabaseBackend.hpp>
+#include <soci.h>
+
 #include <core/api/PathResolver.hpp>
+#include <core/database/DatabaseBackend.hpp>
 
 namespace ledger {
     namespace core {
-        class DatabaseBackend : public api::DatabaseBackend, public std::enable_shared_from_this<DatabaseBackend> {
+        class PostgreSQLBackend : public DatabaseBackend {
         public:
-            DatabaseBackend() : _enableLogging(false) {}
+            PostgreSQLBackend();
+            PostgreSQLBackend(int32_t connectionPoolSize);
 
-            virtual void init(
-                    const std::shared_ptr<api::PathResolver> &resolver,
-                    const std::string &dbName,
-                    const std::string &password,
-                    soci::session &session
-            ) = 0;
+            int32_t getConnectionPoolSize() override;
 
-            virtual void setPassword(const std::string &password,
-                                     soci::session &session) = 0;
+            void init(const std::shared_ptr<api::PathResolver> &resolver,
+                      const std::string &dbName,
+                      const std::string &password,
+                      soci::session &session) override;
 
-            virtual void changePassword(
-                    const std::string &oldPassword,
-                    const std::string &newPassword,
-                    soci::session &session
-            ) = 0;
+            void setPassword(const std::string &password,
+                             soci::session &session) override;
 
-            std::shared_ptr<api::DatabaseBackend> enableQueryLogging(bool enable) override;
-
-            bool isLoggingEnabled() override;
-
-            static bool isPostgreSQLSupported();
+            void changePassword(const std::string & oldPassword,
+                                const std::string & newPassword,
+                                soci::session &session) override;
 
         private:
-            bool _enableLogging;
+            // Resolved path to db
+            std::string _dbName;
+            int32_t _connectionPoolSize;
         };
     }
 }

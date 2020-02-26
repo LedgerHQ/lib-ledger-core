@@ -59,6 +59,9 @@ ConfigurationDefaults = interface +c {
 
     # Default TTL for cache
     const DEFAULT_TTL_CACHE : i32 = 30;
+
+    # Default connection pool size for PostgreSQL
+    const DEFAULT_PG_CONNECTION_POOL_SIZE: i32 = 25;
 }
 
 # Overall configuration.

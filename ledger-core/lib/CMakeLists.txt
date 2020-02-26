@@ -35,4 +35,6 @@ set(SOCI_SHARED OFF CACHE BOOL "USE ONLY STATIC" FORCE)
 add_subdirectory(soci)
 add_subdirectory(soci_sqlite3)
 
-#add_subdirectory(soci_mysql)
+if (PG_SUPPORT)
+    add_subdirectory(soci_postgresql)
+endif()

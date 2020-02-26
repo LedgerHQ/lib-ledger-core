@@ -1,5 +1,6 @@
 #pragma once
 
+#include <core/api/DatabaseBackendType.hpp>
 #include <core/database/Migrations.hpp>
 
 #include <bitcoin/BitcoinLikeCoinID.hpp>
@@ -13,22 +14,22 @@ namespace ledger {
         };
 
         // migrations
-        template <> void migrate<1, BitcoinMigration>(soci::session& sql);
-        template <> void rollback<1, BitcoinMigration>(soci::session& sql);
+        template <> void migrate<1, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<1, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
 
-        template <> void migrate<2, BitcoinMigration>(soci::session& sql);
-        template <> void rollback<2, BitcoinMigration>(soci::session& sql);
+        template <> void migrate<2, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<2, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
 
-        template <> void migrate<3, BitcoinMigration>(soci::session& sql);
-        template <> void rollback<3, BitcoinMigration>(soci::session& sql);
+        template <> void migrate<3, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<3, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
 
-        template <> void migrate<4, BitcoinMigration>(soci::session& sql);
-        template <> void rollback<4, BitcoinMigration>(soci::session& sql);
+        template <> void migrate<4, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<4, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
 
-        template <> void migrate<5, BitcoinMigration>(soci::session& sql);
-        template <> void rollback<5, BitcoinMigration>(soci::session& sql);
+        template <> void migrate<5, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<5, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
 
-        template <> void migrate<6, BitcoinMigration>(soci::session& sql);
-        template <> void rollback<6, BitcoinMigration>(soci::session& sql);
+        template <> void migrate<6, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<6, BitcoinMigration>(soci::session& sql, api::DatabaseBackendType type);
   }
 }

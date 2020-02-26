@@ -47,7 +47,7 @@ namespace ledger {
             sql << "DROP TABLE __database_meta__";
         }
 
-        template <> void migrate<1, CoreMigration>(soci::session& sql) {
+        template <> void migrate<1, CoreMigration>(soci::session& sql, api::DatabaseBackendType) {
             // Abstract currency table
             sql << "CREATE TABLE currencies("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -107,7 +107,7 @@ namespace ledger {
             ")";
         }
 
-        template <> void rollback<1, CoreMigration>(soci::session& sql) {
+        template <> void rollback<1, CoreMigration>(soci::session& sql, api::DatabaseBackendType) {
             // Abstract operation table
             sql << "DROP TABLE operations";
 
@@ -127,7 +127,7 @@ namespace ledger {
             sql << "DROP TABLE currencies";
         }
 
-        template <> void migrate<2, CoreMigration>(soci::session& sql) {
+        template <> void migrate<2, CoreMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "CREATE TABLE internal_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
                     "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
@@ -141,7 +141,7 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<2, CoreMigration>(soci::session& sql) {
+        template <> void rollback<2, CoreMigration>(soci::session& sql, api::DatabaseBackendType) {
             sql << "DROP TABLE internal_operations";
         }
     }
