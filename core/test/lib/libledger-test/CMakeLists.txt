@@ -14,11 +14,19 @@ add_library(ledger-test STATIC
             FakeHttpClient.hpp FakeHttpClient.cpp
             FakeUrlConnection.hpp FakeUrlConnection.cpp)
 
+
+# OpenSSL / crypto
+if(OPENSSL_PKG_VERSION STREQUAL "1.0")
+    find_package(OpenSSL 1.0 EXACT REQUIRED COMPONENTS SSL Crypto)
+elseif(OPENSSL_PKG_VERSION STREQUAL "1.1")
+    find_package(OpenSSL 1.1 EXACT REQUIRED COMPONENTS SSL Crypto)
+endif()
+
 target_link_libraries(ledger-test INTERFACE OpenSSL::Crypto)
 
 if (SYS_OPENSSL)
     set(OPENSSL_USE_STATIC_LIBS TRUE)
-else()
+endif()
 
 if (MSVC)
     target_include_directories(ledger-test PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core)
