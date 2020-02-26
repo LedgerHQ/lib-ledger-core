@@ -25,6 +25,13 @@ if (TARGET_JNI)
     add_definitions(-DTARGET_JNI=1)
 endif ()
 
+# OpenSSL / crypto
+if(OPENSSL_PKG_VERSION STREQUAL "1.0")
+    find_package(OpenSSL 1.0 EXACT REQUIRED COMPONENTS SSL Crypto)
+elseif(OPENSSL_PKG_VERSION STREQUAL "1.1")
+    find_package(OpenSSL 1.1 EXACT REQUIRED COMPONENTS SSL Crypto)
+endif()
+
 link_directories(${CMAKE_BINARY_DIR}/lib)
 
 file(GLOB_RECURSE SRC_FILES *.cpp)
@@ -111,11 +118,14 @@ else()
     target_link_libraries(ledger-core-interface INTERFACE fmt)
 endif(MINGW OR MSVC)
 
-if (SYS_OPENSSL)
-    target_link_libraries(ledger-core-interface INTERFACE blake)
-else()
-    target_link_libraries(ledger-core-interface INTERFACE crypto)
+target_link_libraries(ledger-core-interface INTERFACE OpenSSL::Crypto)
+target_link_libraries(ledger-core-interface INTERFACE blake)
+
+if (NOT SYS_OPENSSL)
+    message("Statically linking against OpenSSL")
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
 endif()
+
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 
 if (PG_SUPPORT)
@@ -167,16 +177,13 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/incl
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_postgresql)
-if (SYS_OPENSSL)
-    target_include_directories(ledger-core-interface INTERFACE ${OPENSSL_INCLUDE_DIR})
-    target_include_directories(ledger-core-interface INTERFACE ../lib/blake)
-else()
-    target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
-    target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
+
+if (NOT SYS_OPENSSL)
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
 endif()
 
 if(SSL_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE ssl)
+    target_include_directories(ledger-core-interface INTERFACE OpenSSL::SSL)
 endif()
 
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)

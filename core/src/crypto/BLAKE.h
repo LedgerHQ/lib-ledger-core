@@ -32,10 +32,18 @@
 #ifndef LEDGER_CORE_BLAKE_H
 #define LEDGER_CORE_BLAKE_H
 
-
 #include <vector>
 #include <string>
+
+#include <openssl/opensslv.h>
+
+extern "C" {
+#if OPENSSL_VERSION_NUMBER < 0x10100000L
 #include <blake2b.h>
+#else
+#include <blake2_local.h>
+#endif
+}
 
 namespace ledger {
     namespace core {
@@ -49,6 +57,5 @@ namespace ledger {
         };
     }
 }
-
 
 #endif //LEDGER_CORE_BLAKE_H

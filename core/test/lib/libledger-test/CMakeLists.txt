@@ -13,11 +13,13 @@ add_library(ledger-test STATIC
             route.cc route.h OpenSSLRandomNumberGenerator.cpp OpenSSLRandomNumberGenerator.hpp callbacks.cpp callbacks.hpp AsioHttpClient.cpp AsioHttpClient.hpp FakeWebSocketClient.cpp FakeWebSocketClient.h
             FakeHttpClient.hpp FakeHttpClient.cpp
             FakeUrlConnection.hpp FakeUrlConnection.cpp)
+
+target_link_libraries(ledger-test INTERFACE OpenSSL::Crypto)
+
 if (SYS_OPENSSL)
-    include_directories(${CMAKE_BINARY_DIR}/include ${OPENSSL_INCLUDE_DIR})
+    set(OPENSSL_USE_STATIC_LIBS TRUE)
 else()
-    include_directories(${CMAKE_BINARY_DIR}/include ../../../lib/openssl/include)
-endif()
+
 if (MSVC)
     target_include_directories(ledger-test PUBLIC ${CMAKE_BINARY_DIR}/include/ledger/core)
 endif ()

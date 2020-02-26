@@ -4,6 +4,7 @@ project(ledger-core)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 option(TARGET_JNI "Indicates wheter or not the toolchain must build for JNI or not" OFF)
 option(BUILD_TESTS "Indicates wheter or not the toolchain must build the test or not" ON)
+set(OPENSSL_PKG_VERSION "1.0" CACHE STRING "Indicates the version of OpenSSL to use.")
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(UseBackportedModules)
