@@ -32,6 +32,7 @@
 #include "url.h"
 #include <sstream>
 #include <iomanip>
+#include <cctype>
 #include "hex.h"
 
 namespace ledger {
