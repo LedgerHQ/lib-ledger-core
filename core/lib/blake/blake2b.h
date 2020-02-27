@@ -42,9 +42,6 @@
 #  define ossl_inline inline
 # endif
 # endif
-#ifdef  __cplusplus
-extern "C" {
-#endif
 
 #define BLAKE2S_BLOCKBYTES    64
 #define BLAKE2S_OUTBYTES      32
@@ -57,6 +54,8 @@ extern "C" {
 #define BLAKE2B_KEYBYTES      64
 #define BLAKE2B_SALTBYTES     16
 #define BLAKE2B_PERSONALBYTES 16
+
+namespace ledger { namespace core { namespace hacky {
 
 struct blake2s_param_st {
     uint8_t  digest_length; /* 1 */
@@ -253,6 +252,4 @@ static ossl_inline uint64_t rotr64(const uint64_t w, const unsigned int c)
     return (w >> c) | (w << (64 - c));
 }
 
-#ifdef  __cplusplus
-}
-#endif
+} } } // ledger::core::hacky namespace

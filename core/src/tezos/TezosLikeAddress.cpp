@@ -133,7 +133,7 @@ namespace ledger {
                         throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid ED25519 public key: should be 33 bytes.");
                     }
 
-                    return BLAKE::blake2b(pubKey, 20, 0);
+                    return BLAKE::blake2b(std::vector<uint8_t>{pubKey.begin() + 1, pubKey.end()}, 20);
                 }
 
                 default : {

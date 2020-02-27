@@ -1,6 +1,6 @@
 project(blake)
 
-add_library(blake STATIC blake2b.c blake2b.h blake256.c blake256.h)
+add_library(blake STATIC blake2b.cpp blake2b.h blake256.c blake256.h)
 
 target_link_libraries(blake PUBLIC ${CMAKE_DL_LIBS})
 target_link_libraries(blake PUBLIC OpenSSL::Crypto)
