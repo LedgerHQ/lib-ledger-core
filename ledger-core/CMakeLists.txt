@@ -31,10 +31,6 @@ set(CMAKE_MACOSX_RPATH 1)
 
 add_definitions("-DSQLITE_HAS_CODEC")
 
-set(INSTALL_TARGETS
-
-)
-
 if (PG_SUPPORT)
     add_definitions("-DPG_SUPPORT")
 endif()
