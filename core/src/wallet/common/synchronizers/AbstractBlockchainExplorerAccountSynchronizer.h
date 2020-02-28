@@ -233,7 +233,7 @@ namespace ledger {
                 const auto deactivateToken =
                         buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
                 auto getSyncToken = deactivateToken ? Future<void *>::successful(nullptr) : _explorer->startSession();
-                return getSyncToken.template map<Unit>(account->getContext(), [buddy, deactivateToken] (void * const& t) -> Unit {
+                return getSyncToken.template map<Unit>(account->getContext(), [buddy, deactivateToken] (void * const t) -> Unit {
                     buddy->logger->info("Synchronization token obtained");
                     if (!deactivateToken && t) {
                         buddy->token = Option<void *>(t);
@@ -340,7 +340,7 @@ namespace ledger {
                             return self->_explorer->startSession();
                         });
 
-                        return startSession.template flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (void * const &session) {
+                        return startSession.template flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (void * const session) {
                             if (!deactivateToken && session) {
                                 buddy->token = Option<void *>(session);
                             } else {
@@ -355,8 +355,8 @@ namespace ledger {
 
                             //Get its block/block height
                             auto &failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
-                            auto failedBlockHeight = failedBatch.blockHeight;
-                            auto failedBlockHash = failedBatch.blockHash;
+                            auto const failedBlockHeight = failedBatch.blockHeight;
+                            auto const failedBlockHash = failedBatch.blockHash;
 
                             if (failedBlockHeight > 0) {
                                 //Delete data related to failedBlock (and all blocks above it)
