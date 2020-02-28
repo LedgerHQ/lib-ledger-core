@@ -9,7 +9,7 @@ std::string const StellarConfiguration::BLOCKCHAIN_EXPLORER_ENGINE = {"BLOCKCHAI
 
 std::string const StellarConfiguration::HORIZON_EXPLORER_ENGINE = {"HORIZON_EXPLORER_ENGINE"};
 
-std::string const StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL = {"https://xlm.dev.aws.ledger.fr/"};
+std::string const StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL = {"https://stellar.coin-proxy.dev.aws.ledger.fr/"};
 
 std::string const StellarConfiguration::HORIZON_TESTNET_BLOCKCHAIN_EXPLORER_URL = {"https://horizon-testnet.stellar.org/"};
 

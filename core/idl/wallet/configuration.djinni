@@ -2,7 +2,7 @@
 StellarConfiguration = interface +c {
     const BLOCKCHAIN_EXPLORER_ENGINE: string = "BLOCKCHAIN_EXPLORER_ENGINE";
     const HORIZON_EXPLORER_ENGINE: string = "HORIZON_EXPLORER_ENGINE";
-    const HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL: string = "https://xlm.dev.aws.ledger.fr/";
+    const HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL: string = "https://stellar.coin-proxy.dev.aws.ledger.fr/";
     const HORIZON_TESTNET_BLOCKCHAIN_EXPLORER_URL: string = "https://horizon-testnet.stellar.org/";
 }
 
