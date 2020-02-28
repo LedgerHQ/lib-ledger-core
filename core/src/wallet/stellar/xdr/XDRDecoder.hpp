@@ -79,8 +79,8 @@ namespace ledger {
                     Decoder& operator>>(std::vector<Object> &list) {
                         list.clear();
                         auto listLength = _reader.readNextBeInt();
-                        list.reserve(listLength);
-                        for (int i=0 ; i<listLength ; i++) {
+                        list.resize(listLength);
+                        for (int i=0 ; i < listLength ; i++) {
                             Object item;
                             *this >> item;
                             list[i] = item;

@@ -59,7 +59,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
         // Insert network parameters
         switch (currency.walletType) {
             case api::WalletType::BITCOIN: {
-                auto &params = currency.bitcoinLikeNetworkParameters.value();
+                const auto &params = currency.bitcoinLikeNetworkParameters.value();
 
                 std::stringstream additionalBIPs;
                 std::string separator(";");
@@ -70,6 +70,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 auto hexXPUBVersion = hex::toString(params.XPUBVersion);
                 auto feePolicy = api::to_string(params.FeePolicy);
                 auto sigHash = hex::toString(params.SigHash);
+                auto useTimestampedTransaction = params.UsesTimestampedTransaction ? 1 : 0;
                 sql
                 << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType, :additionalBIPs)",
                 use(currency.name),
@@ -80,14 +81,14 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 use(params.DustAmount),
                 use(feePolicy),
                 use(params.MessagePrefix),
-                use(params.UsesTimestampedTransaction ? 1 : 0),
+                use(useTimestampedTransaction),
                 use(params.TimestampDelay),
                 use(sigHash),
                 use(BIPs);
                 break;
             }
             case api::WalletType::ETHEREUM: {
-                auto &params = currency.ethereumLikeNetworkParameters.value();
+                const auto &params = currency.ethereumLikeNetworkParameters.value();
 
                 std::stringstream additionalEIPs;
                 std::string separator(";");
@@ -104,7 +105,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break;
             }
             case api::WalletType::RIPPLE: {
-                auto &params = currency.rippleLikeNetworkParameters.value();
+                const auto &params = currency.rippleLikeNetworkParameters.value();
 
                 std::stringstream additionalRIPs;
                 std::string separator(";");
@@ -120,7 +121,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break;
             }
             case api::WalletType::TEZOS: {
-                auto &params = currency.tezosLikeNetworkParameters.value();
+                const auto &params = currency.tezosLikeNetworkParameters.value();
                 std::stringstream additionalTIPs;
                 std::string separator(";");
                 strings::join(params.AdditionalTIPs, additionalTIPs, separator);
@@ -140,17 +141,18 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             }
             case api::WalletType::MONERO:break;
             case api::WalletType::STELLAR: {
-                auto &params = currency.stellarLikeNetworkParameters.value();
+                const auto &params = currency.stellarLikeNetworkParameters.value();
 
                 std::stringstream seps;
                 std::string separator(";");
+                auto addrVersion = hex::toString(params.Version);
                 strings::join(params.AdditionalSEPs, seps, separator);
                 auto SEPs = seps.str();
 
                 sql << "INSERT INTO stellar_currencies VALUES(:name, :identifier, :version, :reserve, :fee, :pass, :seps)",
                     use(currency.name),
                     use(params.Identifier),
-                    use(hex::toString(params.Version)),
+                    use(addrVersion),
                     use(params.BaseReserve),
                     use(params.BaseFee),
                     use(params.NetworkPassphrase),

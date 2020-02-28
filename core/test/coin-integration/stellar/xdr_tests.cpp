@@ -197,3 +197,38 @@ TEST_F(StellarFixture, XDRStringsEncodeDecode) {
     }
 
 }
+
+TEST_F(StellarFixture, XDRDecodeEnvelopeWithCustomAsset4) {
+    auto strEnvelope = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f00002710015dc2cc0000000"
+                       "a0000000000000001000000124575726f207472616e73666572206261636b0000000000010000000000000001000000"
+                       "007d3631c2cc8a5ade977d7c504e66837cd557fc46973087cb8fcc4b2e6dd20d9f0000000145555254000000001fd59"
+                       "26eafb0827b58033be94c606be2377f25184d269d30460c65498ec80ee7000000000000138800000000000000013de7"
+                       "7a4f0000004031ac4f37907cf12f793865dff5e3455656c0622c07e38f2e1a4f18851ca3fd96dfdcc03795e9954b20c"
+                       "29f2596837999ad18f24365dc0025f6d0d0042ed37d0f";
+    auto rawEnvelope = hex::toByteArray(strEnvelope);
+    Decoder decoder(rawEnvelope);
+    TransactionEnvelope envelope;
+    try {
+        decoder >> envelope;
+    } catch (...) {
+
+    }
+    EXPECT_EQ(envelope.tx.fee, 10000);
+    EXPECT_EQ(envelope.tx.memo.type, MemoType::MEMO_TEXT);
+    EXPECT_EQ(boost::get<string28>(envelope.tx.memo.content), "Euro transfer back");
+    EXPECT_EQ(envelope.tx.operations.size(), 1);
+    EXPECT_EQ(envelope.tx.seqNum, 98448948301135882UL);
+    EXPECT_EQ(envelope.tx.timeBounds.isEmpty(), true);
+    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(envelope.tx.sourceAccount.content.begin(), envelope.tx.sourceAccount.content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    EXPECT_EQ(sourceAddr, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
+    EXPECT_EQ(envelope.tx.operations.begin()->type, OperationType::PAYMENT);
+    auto operation = boost::get<PaymentOp>(envelope.tx.operations.begin()->content);
+    auto destAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(operation.destination.content.begin(), operation.destination.content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    EXPECT_EQ(destAddr, "GB6TMMOCZSFFVXUXPV6FATTGQN6NKV74I2LTBB6LR7GEWLTN2IGZ6L6X");
+    EXPECT_EQ(operation.asset.type, AssetType::ASSET_TYPE_CREDIT_ALPHANUM4);
+    auto asset = boost::get<AssetCode4>(operation.asset.assetCode);
+    EXPECT_EQ(operation.asset.issuer.nonEmpty(), true);
+    EXPECT_EQ(std::string(asset.begin(), asset.end()), "EURT");
+    auto issuer = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(operation.asset.issuer.getValue().content.begin(), operation.asset.issuer.getValue().content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    EXPECT_EQ(issuer, "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S");
+}

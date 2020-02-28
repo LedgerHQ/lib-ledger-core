@@ -54,7 +54,8 @@ namespace ledger {
 
             if (currentVersion < version) {
                 migrate<version>(sql, type);
-                sql << "UPDATE __database_meta__ SET version = :version", soci::use(version);
+                const auto ver = version; // Make ASAN happy.
+                sql << "UPDATE __database_meta__ SET version = :version", soci::use(ver);
                 return true;
             }
 
