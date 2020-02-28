@@ -385,7 +385,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MultipleSynchronization) {
                         return;
                     EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                     auto amount = wait(accounts[index]->getBalance());
-                    std::cout << "Amount: " << amount->toLong() << std::endl;
+                    fmt::print("Amount: {}\n", amount->toLong());
                     if (index == accounts.size() - 1) {
                         dispatcher->stop();
                     }
@@ -436,7 +436,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
                         return;
                     EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                     auto amount = wait(account->getBalance());
-                    std::cout << "Amount: " << amount->toLong() << std::endl;
+                    fmt::print("Amount: {}\n", amount->toLong());
 
                     auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
                     EXPECT_GT(ops.size(), 0);
