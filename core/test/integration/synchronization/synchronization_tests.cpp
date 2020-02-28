@@ -146,6 +146,46 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumDGBXpubSynchronization) {
     }
 }
 
+TEST_F(BitcoinLikeWalletSynchronization, MediumLTCXpubSynchronization) {
+    auto pool = newDefaultPool();
+    {
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "litecoin", configuration));
+        std::set<std::string> emittedOperations;
+        {
+            auto nextIndex = wait(wallet->getNextAccountIndex());
+            EXPECT_EQ(nextIndex, 0);
+
+            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2WPKH_LTC_MEDIUM_KEYS_INFO);
+
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+                if (event->getCode() == api::EventCode::NEW_OPERATION) {
+                    auto uid = event->getPayload()->getString(
+                            api::Account::EV_NEW_OP_UID).value();
+                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
+                }
+            });
+
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+
+            receiver.reset();
+            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd");
+                dispatcher->stop();
+            });
+
+            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+
+            dispatcher->waitUntilStopped();
+        }
+    }
+}
+
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnceAtATime) {
     auto pool = newDefaultPool();
     {
