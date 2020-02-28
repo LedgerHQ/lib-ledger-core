@@ -95,6 +95,9 @@ Configuration = interface +c {
 
     # Time to Live for block cache
     const TTL_CACHE: string = "TTL_CACHE";
+
+    # Syncronization token deactivation
+    const DEACTIVATE_SYNC_TOKEN: string = "DEACTIVATE_SYNC_TOKEN";
 }
 
 # Configuration of wallet pools.
