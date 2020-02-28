@@ -32,32 +32,11 @@ set(CMAKE_MACOSX_RPATH 1)
 add_definitions("-DSQLITE_HAS_CODEC")
 
 set(INSTALL_TARGETS
-    ledger-core
-    ledger-core-static
-    ledger-core-obj
-    ledger-core-interface
-    bigd
-    fmt
-    crypto
-    soci_sqlite3
-    soci_postgresql
-    soci_core_static
-    leveldb
-    spdlog
-    sqlcipher
-    ethash
-    ledger-test
-    ledger-qt-host
-    ledger-core-integration-test
-    mongoose
-    ssl
-    gtest gtest_main
+
 )
 
 if (PG_SUPPORT)
     add_definitions("-DPG_SUPPORT")
-else()
-    list(REMOVE_ITEM INSTALL_TARGETS soci_postgresql)
 endif()
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
@@ -104,12 +83,43 @@ install(
 )
 
 install(
-    TARGETS ${INSTALL_TARGETS}
+    TARGETS
+        ledger-core
+        ledger-core-static
+        ledger-core-obj
+        ledger-core-interface
+        bigd
+        fmt
+        crypto
+        soci_sqlite3
+        soci_core_static
+        leveldb
+        spdlog
+        sqlcipher
+        ethash
+        ledger-test
+        ledger-qt-host
+        ledger-core-integration-test
+        mongoose
+        ssl
+        gtest
+        gtest_main
     EXPORT ledger-core
     ARCHIVE       DESTINATION lib/ledger-core
     LIBRARY       DESTINATION lib/ledger-core
     FRAMEWORK     DESTINATION lib/ledger-core
 )
+
+if(PG_SUPPORT)
+    install(
+        TARGETS
+            soci_postgresql
+        EXPORT ledger-core
+        ARCHIVE       DESTINATION lib/ledger-core
+        LIBRARY       DESTINATION lib/ledger-core
+        FRAMEWORK     DESTINATION lib/ledger-core
+    )
+endif()
 
 install(
     DIRECTORY
