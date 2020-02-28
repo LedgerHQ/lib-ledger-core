@@ -35,7 +35,8 @@
 namespace ledger {
     namespace core {
         Option<std::shared_ptr<Bech32>> Bech32Factory::newBech32Instance(const std::string &networkIdentifier) {
-            if (networkIdentifier == "btc" || networkIdentifier == "btc_testnet") {
+            auto btcBech32Identifiers = std::vector<std::string>{"btc", "btc_testnet", "dgb"};
+            if (std::find(btcBech32Identifiers.begin(), btcBech32Identifiers.end(), networkIdentifier) != btcBech32Identifiers.end()) {
                 return Option<std::shared_ptr<Bech32>>(std::make_shared<BTCBech32>(networkIdentifier));
             } else if (networkIdentifier == "abc") {
                 return Option<std::shared_ptr<Bech32>>(std::make_shared<BCHBech32>());

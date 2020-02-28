@@ -49,6 +49,15 @@ api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO(
         {hex::toByteArray("d1bb833ecd3beed6ec5f6aa79d3a424d53f5b99147b21dbc00456b05bc978a71"), hex::toByteArray("88c2281acd51737c912af74cc1d1a8ba564eb7925e0d58a5500b004ba76099cb")}
 );
 
+// Test writting based on NanoS of QA
+// xpub6DFGdRPjroChgYV1heGwjnPBVi9ANtLGDp8oFSgZMezMimPBQweUmH4co6pkP1zUMSvK1NAmNJqFpewnqM1dc2UA62MhdjcZemCGtjWWK9s
+// dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6
+api::AccountCreationInfo P2WPKH_DGB_MEDIUM_KEYS_INFO(
+        0, {"main", "main"}, {"84'/20'/0'", "84'/20'"},
+        {hex::toByteArray("04b59967a8adf3fa0c42f608310af1db961097c23188bcd9d6fb6e48f661af3618c6598a86a9241643723a903fa64f0db24b20978e421dc9704525f7f61c24d4d8"), hex::toByteArray("048e69f8dc1da188b42ae85fe951323b2735e14a5f4f5c69009635c5ccf144ae45b9ed674d84e90ab402cf44974fac59ce099d13021b0072abde6030984454c698")},
+        {hex::toByteArray("4d7b7a9c35d7b1219f4daa3bc04ea631dfc9fc92aa950dac14cd7d7f4a42a272"), hex::toByteArray("a2d69b1f53c5f8d2a91b3be04886421006096b4090f8276c3acb3b4c5851a098")}
+);
+
 api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6CThYZbX4PTeA7KRYZ8YXP3F6HwT2eVKPQap3Avieds3p1eos35UzSsJtTbJ3vQ8d3fjRwk4bCEz4m4H6mkFW49q29ZZ6gS8tvahs4WCZ9X"}
 );
