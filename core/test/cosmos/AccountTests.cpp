@@ -1,13 +1,13 @@
 /*
  *
- * Networks
- * ledger-core
+ * AccountTests
+ * ledger-core-cosmos
  *
- * Created by Pierre Pollastri on 13/02/2017.
+ * Created by Gerry Agbobada on 2020/02/12.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,16 +27,31 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *
+ *
  */
-#ifndef LEDGER_CORE_NETWORKS_HPP
-#define LEDGER_CORE_NETWORKS_HPP
 
-#include <api/BitcoinLikeNetworkParameters.hpp>
-#include <api/CosmosLikeNetworkParameters.hpp>
-#include <api/EthereumLikeNetworkParameters.hpp>
-#include <api/RippleLikeNetworkParameters.hpp>
-#include <api/TezosLikeNetworkParameters.hpp>
-#include <api/Networks.hpp>
+#include <gtest/gtest.h>
 
+#include <cosmos/CosmosLikeWallet.hpp>
+#include <cosmos/CosmosLikeCurrencies.hpp>
+#include <cosmos/factories/CosmosLikeWalletFactory.hpp>
 
-#endif //LEDGER_CORE_NETWORKS_HPP
+#include <integration/WalletFixture.hpp>
+
+struct CosmosAccounts : public WalletFixture<CosmosLikeWalletFactory> {
+
+};
+
+TEST_F(CosmosAccounts, FirstATOMAccountInfo) {
+    auto const currency = currencies::ATOM;
+    registerCurrency(currency);
+
+    auto wallet = wait(walletStore->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));
+    auto info = wait(wallet->getNextAccountCreationInfo());
+
+    EXPECT_EQ(info.index, 0);
+    EXPECT_EQ(info.owners.size(), 1);
+    EXPECT_EQ(info.derivations.size(), 1);
+    EXPECT_EQ(info.owners[0], "main");
+    EXPECT_EQ(info.derivations[0], "44'/118'/0'/0/0");
+}

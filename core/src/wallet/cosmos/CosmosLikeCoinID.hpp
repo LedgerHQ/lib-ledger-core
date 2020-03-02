@@ -1,13 +1,12 @@
 /*
  *
- * Networks
- * ledger-core
+ * CosmosLikeCoinID
  *
- * Created by Pierre Pollastri on 13/02/2017.
+ * Created by Gerry Agbobada on 21/01/2020
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,15 +27,13 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NETWORKS_HPP
-#define LEDGER_CORE_NETWORKS_HPP
 
-#include <api/BitcoinLikeNetworkParameters.hpp>
-#include <api/CosmosLikeNetworkParameters.hpp>
-#include <api/EthereumLikeNetworkParameters.hpp>
-#include <api/RippleLikeNetworkParameters.hpp>
-#include <api/TezosLikeNetworkParameters.hpp>
-#include <api/Networks.hpp>
+#pragma once
 
+#include <stdint.h>
 
-#endif //LEDGER_CORE_NETWORKS_HPP
+namespace ledger {
+    namespace core {
+        static uint64_t constexpr ATOM_COIN_ID = 118;
+    }
+}

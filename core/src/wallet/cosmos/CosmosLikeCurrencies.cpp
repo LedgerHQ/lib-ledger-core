@@ -1,13 +1,12 @@
 /*
  *
- * Networks
- * ledger-core
+ * CosmosLikeCurrencies
  *
- * Created by Pierre Pollastri on 13/02/2017.
+ * Created by Gerry Agbobada on 21/01/2020
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,15 +27,25 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NETWORKS_HPP
-#define LEDGER_CORE_NETWORKS_HPP
 
-#include <api/BitcoinLikeNetworkParameters.hpp>
-#include <api/CosmosLikeNetworkParameters.hpp>
-#include <api/EthereumLikeNetworkParameters.hpp>
-#include <api/RippleLikeNetworkParameters.hpp>
-#include <api/TezosLikeNetworkParameters.hpp>
-#include <api/Networks.hpp>
+#include <core/wallet/CurrencyBuilder.hpp>
 
+#include <cosmos/CosmosLikeCoinID.hpp>
+#include <cosmos/CosmosLikeCurrencies.hpp>
+#include <cosmos/CosmosNetworks.hpp>
 
-#endif //LEDGER_CORE_NETWORKS_HPP
+namespace ledger {
+    namespace core {
+        namespace currencies {
+            // Minimum value is uatom according to
+            // https://github.com/cosmos/gaia/blob/ba8d2b3177e1b891b72d6f40538fc2c6344bdeac/docs/delegators/delegator-guide-cli.md#sending-transactions
+            api::Currency const ATOM =
+                CurrencyBuilder("atom")
+                .bip44(ATOM_COIN_ID)
+                .paymentUri("cosmos")
+                .unit("uatom", 0, "uatom")
+                .unit("matom", 3, "matom")
+                .unit("atom", 6, "atom");
+        }
+    }
+}

@@ -1,0 +1,102 @@
+@import "../../errors.djinni"
+@import "../amount.djinni"
+@import "messages.djinni"
+@import "callback.djinni"
+@import "../../cosmos/addresses.djinni"
+
+#Class representing a Cosmos transaction
+CosmosLikeTransaction = interface +c {
+        # Get the hash of the transaction.
+        const getHash(): string;
+        # Get Fee (in drop)
+        const getFee(): Amount;
+        # Serialize the transaction to its JSON format.
+        serialize(): string;
+        # Get the list of messages
+        const getMessages(): list<CosmosLikeMessage>;
+        # Get memo
+        const getMemo(): string;
+        # Set signature of transaction, when a signature is set serialize method gives back serialized Tx
+        setSignature(rSignature: binary, sSignature: binary);
+        setDERSignature(signature: binary);
+        # Get the time when the transaction was issued or the time of the block including
+        # this transaction
+        const getDate(): date;
+        # Get Signing public Key
+        const getSigningPubKey(): binary;
+        const getGas(): Amount;
+}
+
+#Class representing a Cosmos Operation
+CosmosLikeOperation = interface +c {
+        #Get operation's transaction
+        #@return CosmosLikeTransaction object
+        getTransaction(): CosmosLikeTransaction;
+
+        # Get message which created this operation
+        # @return CosmosLikeMessage object
+        getMessage(): CosmosLikeMessage;
+}
+
+#Class representing Cosmos block
+CosmosLikeBlock = interface +c {
+        #Hash of block
+        #@return string representing hash of this block
+        getHash(): string;
+        #Height of block in blockchain
+        #@return 64 bits integer, height of block
+        getHeight(): i64;
+        #Timestamp when block was mined
+        #@return Date object, date when block was appended to blockchain
+        getTime(): date;
+}
+
+CosmosLikeTransactionBuilder = interface +c {
+        # Set memo
+        # @param memo the memo to set
+        setMemo(memo: string): CosmosLikeTransactionBuilder;
+
+        # Set sequence
+        # @param sequence The sequence to set
+        setSequence(sequence: string): CosmosLikeTransactionBuilder;
+
+        # Add a new message in the internal range of messages
+        # @param msg a new message
+        addMessage(msg: CosmosLikeMessage): CosmosLikeTransactionBuilder;
+
+        # Set gas price
+        # @param gas The gas to set
+        setGas(gas: Amount): CosmosLikeTransactionBuilder;
+
+        # Set fee
+        # Here the fee represents the gas price multiplied by the gas used
+        # @param fee The fee to set
+        setFee(fee: Amount): CosmosLikeTransactionBuilder;
+
+        # Build a transaction from the given builder parameters.
+        build(callback: callback2<optional<CosmosLikeTransaction>>);
+
+        # Creates a clone of this builder.
+        # @return A copy of the current builder instance.
+        clone(): CosmosLikeTransactionBuilder;
+
+        # Reset the current instance to its initial state
+        reset();
+
+        static parseRawUnsignedTransaction(currency: Currency, rawTransaction: string): CosmosLikeTransaction;
+        static parseRawSignedTransaction(currency: Currency, rawTransaction: string): CosmosLikeTransaction;
+}
+
+#Class representing a Cosmos account
+CosmosLikeAccount = interface +c {
+        broadcastRawTransaction(transaction: string, callback: callback2<optional<string>>);
+        broadcastTransaction(transaction: CosmosLikeTransaction, callback: callback2<optional<string>>);
+        buildTransaction(): CosmosLikeTransactionBuilder;
+        # Get estimated gas limit to set so the transaction will succeed
+        getEstimatedGasLimit(transaction: CosmosLikeTransaction, callback: callback2<optional<BigInt>>);
+}
+
+CosmosConfigurationDefaults = interface +c {
+        const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmos.coin-proxy.dev.aws.ledger.fr/";
+        const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
+}

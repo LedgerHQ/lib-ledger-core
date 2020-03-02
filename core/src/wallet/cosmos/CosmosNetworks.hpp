@@ -1,13 +1,12 @@
 /*
  *
- * Networks
- * ledger-core
+ * cosmosNetworks
  *
- * Created by Pierre Pollastri on 13/02/2017.
+ * Created by Gerry Agbobada on 21/01/2020.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,15 +27,40 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NETWORKS_HPP
-#define LEDGER_CORE_NETWORKS_HPP
 
-#include <api/BitcoinLikeNetworkParameters.hpp>
+#pragma once
+
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
+
 #include <api/CosmosLikeNetworkParameters.hpp>
-#include <api/EthereumLikeNetworkParameters.hpp>
-#include <api/RippleLikeNetworkParameters.hpp>
-#include <api/TezosLikeNetworkParameters.hpp>
-#include <api/Networks.hpp>
 
+namespace ledger {
+    namespace core {
+        namespace networks {
+            extern LIBCORE_EXPORT const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(const std::string& chainID);
+            extern LIBCORE_EXPORT const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS;
 
-#endif //LEDGER_CORE_NETWORKS_HPP
+            template<class Archive>
+            void serialize(Archive & archive,
+                           api::CosmosLikeNetworkParameters & p)
+            {
+                archive(
+                        p.Identifier,
+                        p.MessagePrefix,
+                        p.XPUBVersion,
+                        p.PubKeyPrefix,
+                        p.AddressPrefix,
+                        p.ChainId,
+                        p.AdditionalCIPs
+                );
+            }
+
+        }
+    }
+}

@@ -1,13 +1,12 @@
 /*
  *
- * Networks
- * ledger-core
+ * CosmosLikeAccountDatabaseEntry
  *
- * Created by Pierre Pollastri on 13/02/2017.
+ * Created by El Khalil Bellakrid on 06/01/2019.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2019 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,15 +27,22 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_NETWORKS_HPP
-#define LEDGER_CORE_NETWORKS_HPP
-
-#include <api/BitcoinLikeNetworkParameters.hpp>
-#include <api/CosmosLikeNetworkParameters.hpp>
-#include <api/EthereumLikeNetworkParameters.hpp>
-#include <api/RippleLikeNetworkParameters.hpp>
-#include <api/TezosLikeNetworkParameters.hpp>
-#include <api/Networks.hpp>
 
 
-#endif //LEDGER_CORE_NETWORKS_HPP
+#ifndef LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEENTRY_H
+#define LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEENTRY_H
+
+#include <string>
+#include <cosmos/cosmos.hpp>
+
+namespace ledger {
+    namespace core {
+        struct CosmosLikeAccountDatabaseEntry {
+            int32_t index;
+            std::string address;
+            cosmos::Account details;
+            std::chrono::system_clock::time_point lastUpdate;
+        };
+    }
+}
+#endif //LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEENTRY_H
