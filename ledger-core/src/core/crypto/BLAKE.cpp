@@ -29,6 +29,10 @@
  */
 
 #include <blake256.h>
+#if OPENSSL_VERSION_NUMBER >= 0x10100000L
+    #include <assert.h>
+    #include <openssl/evp.h>
+#endif
 
 #include <core/crypto/BLAKE.hpp>
 
@@ -56,10 +60,10 @@ namespace ledger {
 
         std::vector<uint8_t> BLAKE::blake2b(const std::vector<uint8_t>& data, size_t outLength, size_t offset) {
             std::vector<uint8_t> hash(outLength);
-            BLAKE2B_CTX blakeState;
-            BLAKE2b_Init_default(&blakeState, outLength);
-            BLAKE2b_Update(&blakeState, data.data() + offset, (data.size() - offset));
-            BLAKE2b_Final(hash.data(), &blakeState);
+            hacky::BLAKE2B_CTX blakeState;
+            hacky::BLAKE2b_Init_default(&blakeState, outLength);
+            hacky::BLAKE2b_Update(&blakeState, data.data() + offset, (data.size() - offset));
+            hacky::BLAKE2b_Final(hash.data(), &blakeState);
             return hash;
         }
 

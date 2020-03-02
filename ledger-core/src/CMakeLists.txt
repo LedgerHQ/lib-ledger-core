@@ -117,17 +117,30 @@ else()
     target_link_libraries(ledger-core-interface INTERFACE fmt)
 endif(MINGW OR MSVC)
 
-target_link_libraries(ledger-core-interface INTERFACE crypto)
+# Crypto
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    target_link_libraries(ledger-core-interface INTERFACE OpenSSL::Crypto)
+else()
+    target_link_libraries(ledger-core-interface INTERFACE crypto)
+endif()
+target_link_libraries(ledger-core-interface INTERFACE blake)
+
+# SSL
+if(SSL_SUPPORT)
+    if (SYS_OPENSSL)
+        target_link_libraries(ledger-core-interface INTERFACE OpenSSL::SSL)
+    else()
+        target_link_libraries(ledger-core-interface INTERFACE ssl)
+    endif()
+endif()
+
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 target_link_libraries(ledger-core-interface INTERFACE leveldb)
 
 if (PG_SUPPORT)
     target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
-endif()
-
-if(SSL_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE ssl)
 endif()
 
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
@@ -153,7 +166,7 @@ target_include_directories(
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci/core>            $<INSTALL_INTERFACE:include/ledger-core/lib/soci/core>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci_sqlite3>         $<INSTALL_INTERFACE:include/ledger-core/lib/soci_sqlite3>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/openssl/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/openssl/include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/openssl/crypto/blake> $<INSTALL_INTERFACE:include/ledger-core/lib/openssl/crypto/blake>
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/blake>                $<INSTALL_INTERFACE:include/ledger-core/lib/blake>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/leveldb/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/leveldb/include>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/boost>                $<INSTALL_INTERFACE:include/ledger-core/lib/boost>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/cereal>               $<INSTALL_INTERFACE:include/ledger-core/lib/cereal>
