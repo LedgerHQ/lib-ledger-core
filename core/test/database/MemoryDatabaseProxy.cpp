@@ -334,7 +334,7 @@ private:
 class Connection : public api::DatabaseConnection {
 public:
     Connection(sqlite3* db, const std::string &dbName) : _db(db), _dbName(dbName) {};
-    
+
     std::shared_ptr<api::DatabaseStatement> prepareStatement(const std::string &query, bool repeatable) override {
         return std::make_shared<Statement>(_db, query);
     };
@@ -383,6 +383,10 @@ public:
             check_sqlite_err(_db, res, "Failed to encrypt database. ");
         }
     };
+
+    bool isAlive() override {
+        return true;
+    }
 
 private:
     sqlite3* _db;
