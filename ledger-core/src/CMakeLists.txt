@@ -117,9 +117,22 @@ else()
     target_link_libraries(ledger-core-interface INTERFACE fmt)
 endif(MINGW OR MSVC)
 
-target_link_libraries(ledger-core-interface INTERFACE blake)
-if (NOT SYS_OPENSSL)
+# Crypto
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    target_link_libraries(ledger-core-interface INTERFACE OpenSSL::Crypto)
+else()
     target_link_libraries(ledger-core-interface INTERFACE crypto)
+endif()
+target_link_libraries(ledger-core-interface INTERFACE blake)
+
+# SSL
+if(SSL_SUPPORT)
+    if (SYS_OPENSSL)
+        target_link_libraries(ledger-core-interface INTERFACE OpenSSL::SSL)
+    else()
+        target_link_libraries(ledger-core-interface INTERFACE ssl)
+    endif()
 endif()
 
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
@@ -128,10 +141,6 @@ target_link_libraries(ledger-core-interface INTERFACE leveldb)
 
 if (PG_SUPPORT)
     target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
-endif()
-
-if(SSL_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE ssl)
 endif()
 
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
