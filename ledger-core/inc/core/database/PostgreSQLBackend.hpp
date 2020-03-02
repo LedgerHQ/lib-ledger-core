@@ -31,6 +31,7 @@
 #pragma once
 
 #include <memory>
+#include <mutex>
 #include <string>
 
 #include <soci.h>
@@ -63,6 +64,9 @@ namespace ledger {
             // Resolved path to db
             std::string _dbName;
             int32_t _connectionPoolSize;
+
+            static std::once_flag sslFlag;
+            static void initSSLLibraries();
         };
     }
 }
