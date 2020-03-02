@@ -384,6 +384,10 @@ public:
         }
     };
 
+    bool isAlive() override {
+        return true;
+    }
+
 private:
     sqlite3* _db;
     std::string _dbName;

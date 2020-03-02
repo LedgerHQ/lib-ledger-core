@@ -253,18 +253,20 @@ struct sqlite3_session_backend : details::session_backend
 
     ~sqlite3_session_backend();
 
-    virtual void begin();
-    virtual void commit();
-    virtual void rollback();
+    virtual void begin() override;
+    virtual void commit() override;
+    virtual void rollback() override;
 
-    virtual std::string get_backend_name() const { return "sqlite3"; }
+    virtual std::string get_backend_name() const override { return "sqlite3"; }
 
     void post_connection(std::string const& dbname, int connection_flags, int timeout, std::string const& synchronous);
     void clean_up();
 
-    virtual sqlite3_statement_backend * make_statement_backend();
-    virtual sqlite3_rowid_backend * make_rowid_backend();
-    virtual sqlite3_blob_backend * make_blob_backend();
+    virtual sqlite3_statement_backend * make_statement_backend() override;
+    virtual sqlite3_rowid_backend * make_rowid_backend() override;
+    virtual sqlite3_blob_backend * make_blob_backend() override;
+
+    virtual bool isAlive() const override;
 
     sqlite_api::sqlite3 *conn_;
 };
