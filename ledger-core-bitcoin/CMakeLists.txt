@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.12)
 project(ledger-core-bitcoin)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-option(TARGET_JNI "Indicates wheter or not the toolchain must build for JNI or not" OFF)
-option(BUILD_TESTS "Indicates wheter or not the toolchain must build the test or not" OFF)
+option(TARGET_JNI "Indicates whether or not the toolchain must build for JNI or not" OFF)
+option(BUILD_TESTS "Indicates whether or not the toolchain must build the test or not" ON)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(UseBackportedModules)
