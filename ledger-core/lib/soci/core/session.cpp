@@ -80,12 +80,21 @@ session::session(std::string const & connectString)
 session::session(connection_pool & pool)
     : logStream_(NULL), isFromPool_(true), pool_(&pool)
 {
-    poolPosition_ = pool.lease();
-    session & pooledSession = pool.at(poolPosition_);
+    // this is just a safe guard hack, in case we cannot join the database
+    for (uint32_t failoverRetries = 100u; failoverRetries > 0; --failoverRetries) {
+        poolPosition_ = pool.lease();
+        session & pooledSession = pool.at(poolPosition_);
 
-    once.set_session(&pooledSession);
-    prepare.set_session(&pooledSession);
-    backEnd_ = pooledSession.get_backend();
+        if (pooledSession.isAlive()) {
+            once.set_session(&pooledSession);
+            prepare.set_session(&pooledSession);
+            backEnd_ = pooledSession.get_backend();
+            break;
+        } else {
+            // invalidate the session in the pool, and try again
+            pool.give_back(poolPosition_);
+        }
+    }
 }
 
 session::~session()
@@ -221,7 +230,7 @@ std::string session::get_query() const
     else
     {
         // preserve logical constness of get_query,
-        // stream used as read-only here, 
+        // stream used as read-only here,
         session* pthis = const_cast<session*>(this);
 
         // sole place where any user-defined query transformation is applied
@@ -387,4 +396,11 @@ blob_backend * session::make_blob_backend()
     ensureConnected(backEnd_);
 
     return backEnd_->make_blob_backend();
+}
+
+bool session::isAlive() const
+{
+    ensureConnected(backEnd_);
+
+    return backEnd_->isAlive();
 }

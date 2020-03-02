@@ -310,22 +310,27 @@ struct postgresql_session_backend : details::session_backend
 
     ~postgresql_session_backend();
 
-    virtual void begin();
-    virtual void commit();
-    virtual void rollback();
+    virtual void begin() override;
+    virtual void commit() override;
+    virtual void rollback() override;
 
     void deallocate_prepared_statement(const std::string & statementName);
 
-    virtual bool get_next_sequence_value(session & s,
-        std::string const & sequence, long & value);
+    virtual bool get_next_sequence_value(
+        session & s,
+        std::string const & sequence,
+        long & value
+    ) override;
 
-    virtual std::string get_backend_name() const { return "postgresql"; }
+    virtual std::string get_backend_name() const override { return "postgresql"; }
 
     void clean_up();
 
-    virtual postgresql_statement_backend * make_statement_backend();
-    virtual postgresql_rowid_backend * make_rowid_backend();
-    virtual postgresql_blob_backend * make_blob_backend();
+    virtual postgresql_statement_backend * make_statement_backend() override;
+    virtual postgresql_rowid_backend * make_rowid_backend() override;
+    virtual postgresql_blob_backend * make_blob_backend() override;
+
+    bool isAlive() const override;
 
     std::string get_next_statement_name();
 
