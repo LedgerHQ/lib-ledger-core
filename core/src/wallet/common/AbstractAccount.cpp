@@ -37,6 +37,7 @@
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 
 namespace ledger {
     namespace core {
@@ -228,5 +229,25 @@ namespace ledger {
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
+
+        void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
+            //Update account's internal preferences (for synchronization)
+            auto savedState = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+            if (savedState.nonEmpty()) {
+                //Reset batches to blocks mined before given date
+                auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
+                for (auto& batch : savedState.getValue().batches) {
+                    if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
+                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
+                        batch.blockHash = previousBlock.getValue().blockHash;
+                    } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
+                        batch.blockHeight = 0;
+                        batch.blockHash = "";
+                    }
+                }
+                getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
+            }
+        }
+
     }
 }
