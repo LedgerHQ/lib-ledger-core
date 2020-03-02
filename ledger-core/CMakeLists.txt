@@ -88,7 +88,6 @@ install(
         fmt
         crypto
         soci_sqlite3
-        soci_postgresql
         soci_core_static
         leveldb
         spdlog
@@ -99,12 +98,24 @@ install(
         ledger-core-integration-test
         mongoose
         ssl
-        gtest gtest_main
+        gtest
+        gtest_main
     EXPORT ledger-core
     ARCHIVE       DESTINATION lib/ledger-core
     LIBRARY       DESTINATION lib/ledger-core
     FRAMEWORK     DESTINATION lib/ledger-core
 )
+
+if(PG_SUPPORT)
+    install(
+        TARGETS
+            soci_postgresql
+        EXPORT ledger-core
+        ARCHIVE       DESTINATION lib/ledger-core
+        LIBRARY       DESTINATION lib/ledger-core
+        FRAMEWORK     DESTINATION lib/ledger-core
+    )
+endif()
 
 install(
     DIRECTORY
