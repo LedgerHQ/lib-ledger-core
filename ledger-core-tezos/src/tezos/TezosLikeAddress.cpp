@@ -46,11 +46,11 @@ namespace ledger {
             const std::vector<uint8_t> &version,
             const Option<std::string> &derivationPath
         ) :
-            Address(currency, derivationPath)
+            Address(currency, derivationPath),
             _hash160(hash160),
             _version(version),
             _params(networks::getTezosLikeNetworkParameters(currency.name)),
-            _derivationPath(derivationPath),
+            _derivationPath(derivationPath)
         {}
 
         TezosLikeAddress::TezosLikeAddress(const api::Currency &currency,
