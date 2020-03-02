@@ -43,7 +43,7 @@ if( MINGW OR MSVC)
 endif()
 
 add_subdirectory( crypto )
-if(BUILD_TESTS)
+if(SSL_SUPPORT OR BUILD_TESTS)
   add_subdirectory( ssl )#needed for tests
 endif()
 # add_subdirectory( apps )

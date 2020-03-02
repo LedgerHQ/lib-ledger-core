@@ -29,10 +29,15 @@ set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X version to tar
 
 set(CMAKE_MACOSX_RPATH 1)
 
+# Various definitions used to conditionally compile some part of our code or dependencies
 add_definitions("-DSQLITE_HAS_CODEC")
 
 if (PG_SUPPORT)
     add_definitions("-DPG_SUPPORT")
+endif()
+
+if (SSL_SUPPORT)
+    add_definitions("-DSSL_SUPPORT")
 endif()
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)

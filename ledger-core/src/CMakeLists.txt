@@ -126,6 +126,10 @@ if (PG_SUPPORT)
     target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
 endif()
 
+if(SSL_SUPPORT)
+    target_link_libraries(ledger-core-interface INTERFACE ssl)
+endif()
+
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
