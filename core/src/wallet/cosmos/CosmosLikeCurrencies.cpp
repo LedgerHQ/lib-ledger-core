@@ -28,11 +28,11 @@
  *
  */
 
-#include <core/wallet/CurrencyBuilder.hpp>
+#include <wallet/common/CurrencyBuilder.hpp>
 
-#include <cosmos/CosmosLikeCoinID.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
-#include <cosmos/CosmosNetworks.hpp>
+#include <wallet/cosmos/CosmosLikeCoinID.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosNetworks.hpp>
 
 namespace ledger {
     namespace core {

@@ -31,16 +31,16 @@
 
 #include <cosmos/CosmosLikeAddress.hpp>
 
-#include <core/utils/Exception.hpp>
-#include <core/math/Base58.hpp>
-#include <core/collections/Vector.hpp>
-#include <core/utils/Hex.hpp>
-#include <core/crypto/Keccak.hpp>
-#include <core/collections/DynamicObject.hpp>
+#include <utils/Exception.hpp>
+#include <math/Base58.hpp>
+#include <collections/vector.hpp>
+#include <utils/hex.h>
+#include <crypto/Keccak.h>
+#include <collections/DynamicObject.hpp>
 
-#include <cosmos/CosmosNetworks.hpp>
+#include <wallet/cosmos/CosmosNetworks.hpp>
 #include <cosmos/bech32/CosmosBech32.hpp>
-#include <cosmos/api/CosmosBech32Type.hpp>
+#include <api/CosmosBech32Type.hpp>
 #include <cosmos/bech32/CosmosLikeBech32ParametersHelpers.hpp>
 
 namespace ledger {
@@ -56,7 +56,7 @@ namespace ledger {
             _hash160(hash160),
             _version(version),
             _type(type),
-            Address(currency, derivationPath) {
+            AbstractAddress(currency, derivationPath) {
 
         }
 
@@ -85,14 +85,14 @@ namespace ledger {
             return toBech32();
         }
 
-        std::shared_ptr<Address>
+        std::shared_ptr<AbstractAddress>
         CosmosLikeAddress::parse(const std::string &address,
                                  const api::Currency &currency,
                                  const Option<std::string> &derivationPath) {
-            auto result = Try<std::shared_ptr<ledger::core::Address>>::from([&]() {
+            auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&]() {
                 return fromBech32(address, currency, derivationPath);
             });
-            return std::dynamic_pointer_cast<Address>(result.toOption().getValueOr(nullptr));
+            return std::dynamic_pointer_cast<AbstractAddress>(result.toOption().getValueOr(nullptr));
         }
 
         std::shared_ptr<CosmosLikeAddress> CosmosLikeAddress::fromBech32(const std::string &address,

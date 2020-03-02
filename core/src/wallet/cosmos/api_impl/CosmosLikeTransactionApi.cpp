@@ -29,7 +29,7 @@
  */
 
 
-#include <cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 
 #include <fmt/format.h>
 #include <rapidjson/document.h>
@@ -37,19 +37,19 @@
 #include <rapidjson/writer.h>
 #include <cereal/external/base64.hpp>
 
-#include <core/wallet/Amount.hpp>
-#include <core/wallet/AbstractAccount.hpp>
-#include <core/wallet/AbstractWallet.hpp>
-#include <core/bytes/BytesWriter.hpp>
-#include <core/bytes/BytesReader.hpp>
-#include <core/utils/Hex.hpp>
-#include <core/math/BigInt.hpp>
+#include <api/Amount.hpp>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/AbstractWallet.hpp>
+#include <bytes/BytesWriter.h>
+#include <bytes/BytesReader.h>
+#include <utils/hex.h>
+#include <math/BigInt.h>
 
 #include <cosmos/CosmosLikeAddress.hpp>
-#include <cosmos/api/CosmosLikeMsgType.hpp>
-#include <cosmos/CosmosLikeMessage.hpp>
-#include <cosmos/CosmosLikeConstants.hpp>
-#include <cosmos/CosmosNetworks.hpp>
+#include <api/CosmosLikeMsgType.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/CosmosNetworks.hpp>
 
 using namespace rapidjson;
 

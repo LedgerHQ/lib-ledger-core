@@ -29,8 +29,8 @@
  *
  */
 
-#include <cosmos/database/SociCosmosAmount.hpp>
-#include <cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/database/SociCosmosAmount.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
 
 
 namespace soci {

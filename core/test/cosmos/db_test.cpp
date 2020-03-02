@@ -1,14 +1,15 @@
+#include "../integration/BaseFixture.h"
 #include "Fixtures.hpp"
 
-#include <cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
-#include <cosmos/CosmosLikeOperationQuery.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
-#include <cosmos/CosmosLikeMessage.hpp>
-#include <cosmos/CosmosLikeWallet.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
+#include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
 
-#include <core/Services.hpp>
-#include <core/utils/DateUtils.hpp>
+#include <wallet/pool/WalletPool.hpp>
+#include <utils/DateUtils.hpp>
 
 #include <gtest/gtest.h>
 
@@ -18,29 +19,23 @@ class CosmosDBTests : public BaseFixture {
 public:
     void SetUp() override {
         BaseFixture::SetUp();
-        //backend->enableQueryLogging(true);
+        backend->enableQueryLogging(true);
     }
 
-    void setupTest(std::shared_ptr<Services>& services,
+    void setupTest(std::shared_ptr<WalletPool>& pool,
                    std::shared_ptr<CosmosLikeAccount>& account,
                    std::shared_ptr<CosmosLikeWallet>& wallet) {
-
-        services = newDefaultServices();
-
-        auto walletStore = newWalletStore(services);
-        wait(walletStore->addCurrency(currencies::ATOM));
-
-        auto factory = std::make_shared<CosmosLikeWalletFactory>(currencies::ATOM, services);
-        walletStore->registerFactory(currencies::ATOM, factory);
-
         auto configuration = DynamicObject::newInstance();
-        //configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
-        wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
-                            wait(walletStore->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration)));
+        configuration->putString(
+            api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+            "44'/<coin_type>'/<account>'/<node>/<address>");
+        wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(wait(
+            pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration)));
 
         auto accountInfo = wait(wallet->getNextAccountCreationInfo());
         EXPECT_EQ(accountInfo.index, 0);
-        accountInfo.publicKeys.push_back(hex::toByteArray(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY));
+        accountInfo.publicKeys.push_back(
+            hex::toByteArray(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY));
 
         account = ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
     }
@@ -48,10 +43,10 @@ public:
 
 TEST_F(CosmosDBTests, BasicDBTest) {
 
-    std::shared_ptr<Services> services;
+    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(services, account, wallet);
+    setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -63,13 +58,13 @@ TEST_F(CosmosDBTests, BasicDBTest) {
 
     // Test writing into DB
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         CosmosLikeTransactionDatabaseHelper::putTransaction(sql, account->getAccountUid(), tx);
     }
 
     // Test reading from DB
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         Transaction txRetrieved;
         auto result = CosmosLikeTransactionDatabaseHelper::getTransactionByHash(sql, tx.hash, txRetrieved);
         EXPECT_EQ(result, true);
@@ -89,10 +84,10 @@ TEST_F(CosmosDBTests, BasicDBTest) {
 }
 
 TEST_F(CosmosDBTests, OperationQueryTest) {
-    std::shared_ptr<Services> services;
+    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(services, account, wallet);
+    setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -103,12 +98,12 @@ TEST_F(CosmosDBTests, OperationQueryTest) {
     setupTransaction(tx, std::vector<Message>{ msg }, timeRef);
 
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         account->putTransaction(sql, tx);
     }
 
     {
-        auto ops = wait(std::dynamic_pointer_cast<CosmosLikeOperationQuery>(account->queryOperations()->complete())->execute());
+        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
         EXPECT_EQ(ops.size(), 1);
         auto op = ops[0];
 
@@ -138,10 +133,10 @@ TEST_F(CosmosDBTests, OperationQueryTest) {
 }
 
 TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
-    std::shared_ptr<Services> services;
+    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(services, account, wallet);
+    setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -155,12 +150,12 @@ TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
     tx.messages[0].type = "unknown-message-type";
 
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         account->putTransaction(sql, tx);
     }
 
     {
-        auto ops = wait(std::dynamic_pointer_cast<CosmosLikeOperationQuery>(account->queryOperations()->complete())->execute());
+        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
         EXPECT_EQ(ops.size(), 1);
 
         auto op = ops[0];
@@ -172,10 +167,10 @@ TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
 }
 
 TEST_F(CosmosDBTests, MultipleMsgTest) {
-    std::shared_ptr<Services> services;
+    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(services, account, wallet);
+    setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -189,12 +184,12 @@ TEST_F(CosmosDBTests, MultipleMsgTest) {
     setupTransaction(tx, std::vector<Message>{ msgSend, msgVote }, timeRef);
 
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         account->putTransaction(sql, tx);
     }
 
     {
-        auto ops = wait(std::dynamic_pointer_cast<CosmosLikeOperationQuery>(account->queryOperations()->complete())->execute());
+        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
         EXPECT_EQ(ops.size(), 2);
 
         {

@@ -33,16 +33,16 @@
 #define LEDGER_CORE_COSMOSLIKEADDRESS_H
 
 
-#include <core/utils/Optional.hpp>
-#include <core/address/Address.hpp>
+#include <utils/optional.hpp>
+#include <wallet/common/AbstractAddress.h>
 
-#include <cosmos/api/CosmosLikeAddress.hpp>
-#include <cosmos/api/CosmosLikeNetworkParameters.hpp>
-#include <cosmos/api/CosmosBech32Type.hpp>
+#include <api/CosmosLikeAddress.hpp>
+#include <api/CosmosLikeNetworkParameters.hpp>
+#include <api/CosmosBech32Type.hpp>
 
 namespace ledger {
     namespace core {
-        class CosmosLikeAddress : public api::CosmosLikeAddress, public Address {
+        class CosmosLikeAddress : public api::CosmosLikeAddress, public AbstractAddress {
         public:
             CosmosLikeAddress(const ledger::core::api::Currency &currency,
                               const std::vector<uint8_t> &hash160,
@@ -62,7 +62,7 @@ namespace ledger {
 
             std::string toString() override;
 
-            static std::shared_ptr<Address> parse(const std::string &address, const api::Currency &currency,
+            static std::shared_ptr<AbstractAddress> parse(const std::string &address, const api::Currency &currency,
                                                           const Option<std::string> &derivationPath = Option<std::string>());
 
             static std::shared_ptr<CosmosLikeAddress> fromBech32(const std::string &address,

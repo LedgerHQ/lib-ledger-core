@@ -29,35 +29,37 @@
  */
 
 
-#include <cosmos/CosmosLikeWallet.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
 
 #include <algorithm>
 
-#include <cosmos/CosmosLikeAccount.hpp>
-#include <cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
+#include <wallet/cosmos/CosmosLikeAccount.hpp>
+#include <wallet/cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
 #include <cosmos/CosmosLikeExtendedPublicKey.hpp>
-#include <cosmos/api/CosmosCurve.hpp>
+#include <api/CosmosCurve.hpp>
 
-#include <core/async/Wait.hpp>
-#include <core/api/ErrorCode.hpp>
-#include <core/api/ConfigurationDefaults.hpp>
-#include <core/api/KeychainEngines.hpp>
-#include <core/wallet/AccountDatabaseHelper.hpp>
+#include <async/wait.h>
+#include <api/ErrorCode.hpp>
+#include <api/ConfigurationDefaults.hpp>
+#include <api/KeychainEngines.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
+
+        const api::WalletType CosmosLikeWallet::type = api::WalletType::COSMOS;
 
         CosmosLikeWallet::CosmosLikeWallet(const std::string &name,
                                            const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
                                            const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
                                            const std::shared_ptr<CosmosLikeKeychainFactory> &keychainFactory,
                                            const CosmosLikeAccountSynchronizerFactory &synchronizer,
-                                           const std::shared_ptr<Services> &services,
+                                           const std::shared_ptr<WalletPool> &pool,
                                            const api::Currency &network,
                                            const std::shared_ptr<DynamicObject> &configuration,
                                            const DerivationScheme &scheme
         )
-                : AbstractWallet(name, network, services, configuration, scheme) {
+                : AbstractWallet(name, network, pool, configuration, scheme) {
             _explorer = explorer;
             _observer = observer;
             _keychainFactory = keychainFactory;

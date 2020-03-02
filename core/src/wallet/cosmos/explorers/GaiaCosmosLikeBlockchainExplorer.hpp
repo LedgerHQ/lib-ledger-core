@@ -31,11 +31,11 @@
 
 #pragma once
 
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 
-#include <core/async/DedicatedContext.hpp>
-#include <core/net/HttpClient.hpp>
-#include <core/api/Block.hpp>
+#include <async/DedicatedContext.hpp>
+#include <net/HttpClient.hpp>
+#include <wallet/common/Block.h>
 
 #include <experimental/string_view>
 
@@ -96,7 +96,7 @@ namespace ledger {
             FuturePtr<TransactionsBulk> getTransactions(const std::vector<std::string>& addresses,
                                                                 Option<std::string> fromBlockHash = Option<std::string>(),
                                                                 Option<void*> session = Option<void *>()) override;
-            FuturePtr<cosmos::Block> getCurrentBlock() const override;
+            FuturePtr<ledger::core::Block> getCurrentBlock() const override;
             [[ noreturn ]] Future<Bytes> getRawTransaction(const String& transactionHash) override;
             FuturePtr<cosmos::Transaction> getTransactionByHash(const String& transactionHash) const override;
             Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;

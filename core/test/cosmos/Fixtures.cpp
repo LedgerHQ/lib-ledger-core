@@ -1,7 +1,7 @@
 #include "Fixtures.hpp"
 
-#include <cosmos/CosmosLikeConstants.hpp>
-#include <cosmos/api/CosmosLikeVoteOption.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <api/CosmosLikeVoteOption.hpp>
 
 namespace ledger {
         namespace testing {
@@ -69,8 +69,8 @@ namespace ledger {
 
                         void setupTransaction(Transaction& tx, const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef) {
                                 tx.hash = "A1E44688B429AF17322EC33CE62876FA415EFC8D9244A2F51454BD025F416594";
-                                api::Block block;
-                                block.blockHash = "52B39D45B438C6995CD448B09963954883B0F7A57E9EFC7A95E0A6C5BAC09C00";
+                                ledger::core::Block block;
+                                block.hash = "52B39D45B438C6995CD448B09963954883B0F7A57E9EFC7A95E0A6C5BAC09C00";
                                 block.currencyName = "atom";
                                 block.height = 744795;
                                 block.time = timeRef;
@@ -138,7 +138,7 @@ namespace ledger {
                                 EXPECT_EQ(txResult.timestamp, txRef.timestamp);
 
                                 EXPECT_EQ(txResult.block.hasValue(), txRef.block.hasValue());
-                                EXPECT_EQ(txResult.block.getValue().blockHash, txRef.block.getValue().blockHash);
+                                EXPECT_EQ(txResult.block.getValue().hash, txRef.block.getValue().hash);
                                 EXPECT_EQ(txResult.block.getValue().currencyName, txRef.block.getValue().currencyName);
                                 EXPECT_EQ(txResult.block.getValue().height, txRef.block.getValue().height);
                                 EXPECT_EQ(txResult.block.getValue().time, txRef.block.getValue().time);

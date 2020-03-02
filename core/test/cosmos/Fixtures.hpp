@@ -1,10 +1,10 @@
 #ifndef __FIXTURES_H_
 #define __FIXTURES_H_
 
-#include <integration/BaseFixture.hpp>
+#include <test/integration/BaseFixture.h>
 
-#include <cosmos/CosmosLikeAccount.hpp>
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/CosmosLikeAccount.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
 
 using namespace ledger::core::cosmos;

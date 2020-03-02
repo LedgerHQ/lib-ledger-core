@@ -36,9 +36,9 @@
 
 #include <soci.h>
 
-#include <core/operation/Operation.hpp>
+#include <api/Operation.hpp>
 
-#include <cosmos/database/CosmosLikeAccountDatabaseEntry.hpp>
+#include <wallet/cosmos/database/CosmosLikeAccountDatabaseEntry.hpp>
 
 namespace ledger {
     namespace core {

@@ -29,15 +29,15 @@
  */
 
 
-#include <cosmos/explorers/NodeCosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/NodeCosmosLikeBlockchainExplorer.hpp>
 
 #include <rapidjson/document.h>
 
-#include <core/api/Configuration.hpp>
-#include <core/collections/Collections.hpp>
+#include <api/Configuration.hpp>
+#include <collections/collections.hpp>
 
-#include <cosmos/api/CosmosConfigurationDefaults.hpp>
-#include <cosmos/explorers/RpcsParsers.hpp>
+#include <api/CosmosConfigurationDefaults.hpp>
+#include <wallet/cosmos/explorers/RpcsParsers.hpp>
 
 // TODO COSMOS Compute gas price
 

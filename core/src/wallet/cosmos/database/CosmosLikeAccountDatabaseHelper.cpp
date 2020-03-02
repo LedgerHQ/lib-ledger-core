@@ -29,14 +29,14 @@
  */
 
 
-#include <cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
+#include <wallet/cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
 
-#include <core/wallet/AccountDatabaseHelper.hpp>
-#include <core/utils/DateUtils.hpp>
-#include <core/database/SociOption.hpp>
-#include <core/database/SociDate.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
+#include <utils/DateUtils.hpp>
+#include <database/soci-option.h>
+#include <database/soci-date.h>
 
-#include <cosmos/database/SociCosmosAmount.hpp>
+#include <wallet/cosmos/database/SociCosmosAmount.hpp>
 
 using namespace soci;
 

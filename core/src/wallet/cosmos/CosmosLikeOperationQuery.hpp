@@ -30,31 +30,32 @@
 
 #pragma once
 
-#include <cosmos/api/CosmosLikeTransaction.hpp>
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <cosmos/api_impl/CosmosLikeOperation.hpp>
+#include <api/CosmosLikeTransaction.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 
-#include <core/operation/Operation.hpp>
-#include <core/operation/OperationQuery.hpp>
-#include <core/wallet/AbstractWallet.hpp>
+#include <wallet/common/Operation.h>
+#include <wallet/common/OperationQuery.h>
+#include <wallet/common/AbstractWallet.hpp>
 
-namespace ledger {
-    namespace core {
+// XXX : The code below only works on modularized (hence the template parent class)
+// namespace ledger {
+//     namespace core {
 
-        class CosmosLikeOperationQuery : public OperationQuery<CosmosLikeOperation> {
+//         class CosmosLikeOperationQuery : public OperationQuery<CosmosLikeOperation> {
 
-            public:
+//             public:
 
-                CosmosLikeOperationQuery(const std::shared_ptr<api::QueryFilter>& headFilter,
-                                         const std::shared_ptr<DatabaseSessionPool>& pool,
-                                         const std::shared_ptr<api::ExecutionContext>& context,
-                                         const std::shared_ptr<api::ExecutionContext>& mainContext);
+//                 CosmosLikeOperationQuery(const std::shared_ptr<api::QueryFilter>& headFilter,
+//                                          const std::shared_ptr<DatabaseSessionPool>& pool,
+//                                          const std::shared_ptr<api::ExecutionContext>& context,
+//                                          const std::shared_ptr<api::ExecutionContext>& mainContext);
 
-            protected:
+//             protected:
 
-                virtual void inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, CosmosLikeOperation& operation) override;
+//                 virtual void inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, CosmosLikeOperation& operation) override;
 
-                virtual std::shared_ptr<CosmosLikeOperation> createOperation(std::shared_ptr<AbstractAccount> &account) override;
-        };
-    }
-}
+//                 virtual std::shared_ptr<CosmosLikeOperation> createOperation(std::shared_ptr<AbstractAccount> &account) override;
+//         };
+//     }
+// }

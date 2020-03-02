@@ -29,17 +29,17 @@
  */
 
 
-#include <cosmos/CosmosLikeAccount.hpp>
-#include <cosmos/synchronizers/CosmosLikeBlockchainExplorerAccountSynchronizer.hpp>
+#include <wallet/cosmos/CosmosLikeAccount.hpp>
+#include <wallet/cosmos/synchronizers/CosmosLikeBlockchainExplorerAccountSynchronizer.hpp>
 
 namespace ledger {
 namespace core {
 CosmosLikeBlockchainExplorerAccountSynchronizer::CosmosLikeBlockchainExplorerAccountSynchronizer(
-    const std::shared_ptr<Services> &services,
+    const std::shared_ptr<WalletPool> &pool,
     const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer)
-    : DedicatedContext(services->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
+    : DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers")) {
     _explorer = explorer;
-    _database = services->getDatabaseSessionPool();
+    _database = pool->getDatabaseSessionPool();
 }
 
 std::shared_ptr<ProgressNotifier<Unit>>
@@ -60,10 +60,10 @@ void CosmosLikeBlockchainExplorerAccountSynchronizer::updateCurrentBlock(
     std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer::SynchronizationBuddy> &buddy,
     const std::shared_ptr<api::ExecutionContext> &context) {
     _explorer->getCurrentBlock().onComplete(
-        context, [buddy](const TryPtr<api::Block> &block) {
+        context, [buddy](const TryPtr<ledger::core::Block> &block) {
             if (block.isSuccess()) {
              soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
-             buddy->account->putBlock(sql, *block.getValue());
+             buddy->account->putBlock(sql, block.getValue()->toApiBlock());
             }
         });
 }

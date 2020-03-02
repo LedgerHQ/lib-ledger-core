@@ -29,7 +29,7 @@
  */
 
 
-#include <cosmos/api_impl/CosmosLikeBlockApi.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeBlockApi.hpp>
 
 namespace ledger {
     namespace core {

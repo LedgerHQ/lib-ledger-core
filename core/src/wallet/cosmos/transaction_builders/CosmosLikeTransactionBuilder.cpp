@@ -28,29 +28,30 @@
  *
  */
 
-#include <cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
+#include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
 
-#include <core/math/BigInt.hpp>
-#include <core/api/enum_from_string.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
-#include <core/bytes/BytesReader.hpp>
-#include <core/utils/DateUtils.hpp>
+#include <math/BigInt.h>
+#include <api/enum_from_string.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <bytes/BytesReader.h>
+#include <utils/DateUtils.hpp>
 
-#include <cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <cosmos/api/CosmosLikeMessage.hpp>
-#include <cosmos/CosmosLikeConstants.hpp>
-#include <cosmos/api/CosmosLikeMsgType.hpp>
-#include <cosmos/api/CosmosLikeMsgSend.hpp>
-#include <cosmos/api/CosmosLikeMsgDelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgUndelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgRedelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgSubmitProposal.hpp>
-#include <cosmos/api/CosmosLikeMsgVote.hpp>
-#include <cosmos/api/CosmosLikeMsgDeposit.hpp>
-#include <cosmos/api/CosmosLikeMsgWithdrawDelegationReward.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/common/Amount.h>
+#include <api/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <api/CosmosLikeMsgType.hpp>
+#include <api/CosmosLikeMsgSend.hpp>
+#include <api/CosmosLikeMsgDelegate.hpp>
+#include <api/CosmosLikeMsgUndelegate.hpp>
+#include <api/CosmosLikeMsgRedelegate.hpp>
+#include <api/CosmosLikeMsgSubmitProposal.hpp>
+#include <api/CosmosLikeMsgVote.hpp>
+#include <api/CosmosLikeMsgDeposit.hpp>
+#include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
 
 using namespace rapidjson;
 namespace ledger {
@@ -545,7 +546,7 @@ namespace ledger {
                             throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Unknown unit while parsing transaction");
                         }
                         //TODO: Fix Amount::toUnit
-                        return Amount(currency, 0, BigInt(amount) * BigInt(10).powu(static_cast<unsigned short>((*unit).numberOfDecimal)));
+                        return Amount(currency, 0, BigInt(amount) * BigInt(10).pow(static_cast<unsigned short>((*unit).numberOfDecimal)));
                     };
 
                     // accumlate all types of fee

@@ -29,7 +29,7 @@
  */
 
 #pragma once
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
         namespace core {

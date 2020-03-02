@@ -100,3 +100,8 @@ CosmosConfigurationDefaults = interface +c {
         const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmos.coin-proxy.dev.aws.ledger.fr/";
         const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
 }
+
+# A cosmos-like wallet.
+CosmosLikeWallet = interface +c {
+
+}

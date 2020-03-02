@@ -35,9 +35,9 @@
 #include <string>
 #include <vector>
 
-#include <core/utils/DerivationPath.hpp>
-#include <core/preferences/Preferences.hpp>
-#include <core/api/Currency.hpp>
+#include <utils/DerivationPath.hpp>
+#include <preferences/Preferences.hpp>
+#include <api/Currency.hpp>
 
 #include <cosmos/CosmosLikeAddress.hpp>
 

@@ -30,23 +30,49 @@
 
 #include <gtest/gtest.h>
 
-#include <core/api/Address.hpp>
-#include <core/utils/Hex.hpp>
-#include <core/collections/Vector.hpp>
-#include <core/crypto/HashAlgorithm.hpp>
-#include <core/crypto/HASH160.hpp>
-#include <core/crypto/BLAKE.hpp>
-#include <core/collections/DynamicObject.hpp>
-#include <core/math/Base58.hpp>
+#include <api/Address.hpp>
+#include <utils/hex.h>
+#include <collections/vector.hpp>
+#include <crypto/HashAlgorithm.h>
+#include <crypto/HASH160.hpp>
+#include <crypto/BLAKE.h>
+#include <collections/DynamicObject.hpp>
+#include <math/Base58.hpp>
 
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <cosmos/bech32/CosmosBech32.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <cosmos/CosmosLikeExtendedPublicKey.hpp>
 #include <cosmos/CosmosLikeAddress.hpp>
-#include <cosmos/api/CosmosCurve.hpp>
+#include <api/CosmosCurve.hpp>
 
 using namespace ledger::core::api;
 using namespace ledger::core;
+
+
+TEST(CosmosLikeBlockchainExplorer, FilterBuilder) {
+    auto filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters(
+        {GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
+             cosmos::constants::kEventTypeMessage,
+             cosmos::constants::kAttributeKeyAction,
+             cosmos::constants::kEventTypeDelegate),
+         GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
+             cosmos::constants::kEventTypeMessage,
+             cosmos::constants::kAttributeKeySender,
+             "cosmostestaddress")});
+
+    ASSERT_STREQ(filter.c_str(), "message.action=delegate&message.sender=cosmostestaddress" );
+
+    filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters({
+        GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
+            cosmos::constants::kEventTypeTransfer,
+            cosmos::constants::kAttributeKeyRecipient,
+            "cosmosvalopertestaddress")});
+
+
+    ASSERT_STREQ(filter.c_str(), "transfer.recipient=cosmosvalopertestaddress");
+}
 
 TEST(CosmosAddress, AddressFromPubKey) {
     {

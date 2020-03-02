@@ -29,7 +29,7 @@
  */
 
 
-#include <cosmos/factories/CosmosLikeKeychainFactory.hpp>
+#include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 
 #include <cosmos/CosmosLikeExtendedPublicKey.hpp>
 

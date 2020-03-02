@@ -30,29 +30,30 @@
 
 #pragma once
 
-#include <cosmos/api/CosmosLikeMsgType.hpp>
-#include <cosmos/api/CosmosLikeMsgSend.hpp>
-#include <cosmos/api/CosmosLikeMsgDelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgDeposit.hpp>
-#include <cosmos/api/CosmosLikeMsgDeposit.hpp>
-#include <cosmos/api/CosmosLikeMsgRedelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgSend.hpp>
-#include <cosmos/api/CosmosLikeMsgSubmitProposal.hpp>
-#include <cosmos/api/CosmosLikeMsgType.hpp>
-#include <cosmos/api/CosmosLikeMsgUndelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgVote.hpp>
-#include <cosmos/api/CosmosLikeMsgWithdrawDelegationReward.hpp>
-#include <cosmos/api/CosmosLikeMsgMultiSend.hpp>
-#include <cosmos/api/CosmosLikeMsgCreateValidator.hpp>
-#include <cosmos/api/CosmosLikeMsgEditValidator.hpp>
-#include <cosmos/api/CosmosLikeMsgSetWithdrawAddress.hpp>
-#include <cosmos/api/CosmosLikeMsgWithdrawDelegatorReward.hpp>
-#include <cosmos/api/CosmosLikeMsgWithdrawValidatorCommission.hpp>
-#include <cosmos/api/CosmosLikeMsgUnjail.hpp>
-#include <core/api/Block.hpp>
+#include <api/CosmosLikeMsgType.hpp>
+#include <api/CosmosLikeMsgSend.hpp>
+#include <api/CosmosLikeMsgDelegate.hpp>
+#include <api/CosmosLikeMsgDeposit.hpp>
+#include <api/CosmosLikeMsgDeposit.hpp>
+#include <api/CosmosLikeMsgRedelegate.hpp>
+#include <api/CosmosLikeMsgSend.hpp>
+#include <api/CosmosLikeMsgSubmitProposal.hpp>
+#include <api/CosmosLikeMsgType.hpp>
+#include <api/CosmosLikeMsgUndelegate.hpp>
+#include <api/CosmosLikeMsgVote.hpp>
+#include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
+#include <api/CosmosLikeMsgMultiSend.hpp>
+#include <api/CosmosLikeMsgCreateValidator.hpp>
+#include <api/CosmosLikeMsgEditValidator.hpp>
+#include <api/CosmosLikeMsgSetWithdrawAddress.hpp>
+#include <api/CosmosLikeMsgWithdrawDelegatorReward.hpp>
+#include <api/CosmosLikeMsgWithdrawValidatorCommission.hpp>
+#include <api/CosmosLikeMsgUnjail.hpp>
 
-#include <core/math/BigInt.hpp>
-#include <core/utils/Option.hpp>
+#include <wallet/common/Block.h>
+
+#include <math/BigInt.h>
+#include <utils/Option.hpp>
 
 #include <boost/variant.hpp>
 
@@ -63,7 +64,7 @@ namespace ledger {
         namespace core {
                 namespace cosmos {
 
-                        using Block = ledger::core::api::Block;
+                        using Block = ledger::core::Block;
 
                         using ProposalContent = api::CosmosLikeContent;
                         using VoteOption = api::CosmosLikeVoteOption;

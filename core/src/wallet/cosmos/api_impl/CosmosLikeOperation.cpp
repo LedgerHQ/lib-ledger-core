@@ -29,17 +29,22 @@
  */
 
 
-#include <cosmos/api_impl/CosmosLikeOperation.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 
-#include <core/api/ErrorCode.hpp>
-#include <core/utils/Exception.hpp>
-#include <core/operation/OperationDatabaseHelper.hpp>
+#include <api/ErrorCode.hpp>
+#include <utils/Exception.hpp>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
-#include <cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
 
 namespace ledger {
     namespace core {
+
+        CosmosLikeOperation::CosmosLikeOperation(const std::shared_ptr<OperationApi> &baseOp) {
+            _txApi = std::make_shared<CosmosLikeTransactionApi>(*baseOp);
+            _msgApi = nullptr;
+        }
 
         CosmosLikeOperation::CosmosLikeOperation(ledger::core::cosmos::Transaction const& tx,
                                                  ledger::core::cosmos::Message const& msg) :
@@ -78,12 +83,6 @@ namespace ledger {
 		std::shared_ptr<api::CosmosLikeMessage> CosmosLikeOperation::getMessage() {
 			return _msgApi;
 		}
-
-        void CosmosLikeOperation::refreshUid(const std::string &msgIndex) {
-            auto final = fmt::format("{}+{}+{}", _txApi->getHash(), msgIndex, api::to_string(_msgApi->getMessageType()));
-
-            uid = OperationDatabaseHelper::createUid(accountUid, final, getOperationType());
-        }
 
     }
 }

@@ -23,6 +23,7 @@ class AccountCreationInfoCallback;
 class AccountListCallback;
 class BitcoinLikeWallet;
 class BlockCallback;
+class CosmosLikeWallet;
 class DynamicObject;
 class ErrorCodeCallback;
 class EventBus;
@@ -117,6 +118,12 @@ public:
     virtual std::shared_ptr<BitcoinLikeWallet> asBitcoinLikeWallet() = 0;
 
     /**
+     * Convert wallet to a Cosmos one.
+     * @return CosmosWallet object
+     */
+    virtual std::shared_ptr<CosmosLikeWallet> asCosmosLikeWallet() = 0;
+
+    /**
      * Get currency of wallet.
      * @return Currency object
      */
@@ -127,6 +134,12 @@ public:
      * @return bool
      */
     virtual bool isInstanceOfBitcoinLikeWallet() = 0;
+
+    /**
+     * Tell whether wallet is a Cosmos one.
+     * @return bool
+     */
+    virtual bool isInstanceOfCosmosLikeWallet() = 0;
 
     /**
      * Tell whether wallet is a Ethereum one.

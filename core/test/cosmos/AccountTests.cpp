@@ -32,21 +32,23 @@
 
 #include <gtest/gtest.h>
 
-#include <cosmos/CosmosLikeWallet.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
-#include <cosmos/factories/CosmosLikeWalletFactory.hpp>
+#include "../integration/BaseFixture.h"
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 
-#include <integration/WalletFixture.hpp>
+// XXX : won't compile because WalletFixture is a modularized feature.
+// #include <test/integration/WalletFixture.hpp>
 
-struct CosmosAccounts : public WalletFixture<CosmosLikeWalletFactory> {
+struct CosmosAccounts : public BaseFixture {
 
 };
 
 TEST_F(CosmosAccounts, FirstATOMAccountInfo) {
     auto const currency = currencies::ATOM;
-    registerCurrency(currency);
+    auto pool = newDefaultPool();
 
-    auto wallet = wait(walletStore->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));
+    auto wallet = wait(pool->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
 
     EXPECT_EQ(info.index, 0);

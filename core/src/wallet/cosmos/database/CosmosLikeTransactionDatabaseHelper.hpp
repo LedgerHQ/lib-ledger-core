@@ -32,7 +32,7 @@
 #ifndef LEDGER_CORE_COSMOSLIKETRANSACTIONDATABASEHELPER_H
 #define LEDGER_CORE_COSMOSLIKETRANSACTIONDATABASEHELPER_H
 
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
 #include <soci.h>
 #include <string>

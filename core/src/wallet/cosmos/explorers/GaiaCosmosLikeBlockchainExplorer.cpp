@@ -29,14 +29,14 @@
  *
  */
 
-#include <cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 
-#include <core/async/Algorithm.hpp>
-#include <core/api/Configuration.hpp>
-#include <core/utils/Exception.hpp>
+#include <async/algorithm.h>
+#include <api/Configuration.hpp>
+#include <utils/Exception.hpp>
 
-#include <cosmos/explorers/RpcsParsers.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/explorers/RpcsParsers.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 
 #include <numeric>
 #include <algorithm>
@@ -246,14 +246,14 @@ namespace ledger {
             return Future<Unit>::successful(unit);
         }
 
-        FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() const {
+        FuturePtr<ledger::core::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() const {
             return _http->GET("/blocks/latest")
                 .json(true)
-                .mapPtr<cosmos::Block>(getContext(), [=](const HttpRequest::JsonResult& response) {
+                .mapPtr<ledger::core::Block>(getContext(), [=](const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     auto block = std::make_shared<cosmos::Block>();
                     rpcs_parsers::parseBlock(document, currencies::ATOM.name, *block);
-                    return block;
+                    return std::make_shared<ledger::core::Block>(*block);
                 });
         }
 

@@ -33,7 +33,7 @@
 #define LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEENTRY_H
 
 #include <string>
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
     namespace core {

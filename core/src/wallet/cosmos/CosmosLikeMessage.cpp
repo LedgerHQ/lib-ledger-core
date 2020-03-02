@@ -31,11 +31,11 @@
 #include <fmt/format.h>
 
 #include <algorithm>
-#include <core/api/ErrorCode.hpp>
-#include <core/api/enum_from_string.hpp>
-#include <core/utils/DateUtils.hpp>
-#include <cosmos/CosmosLikeConstants.hpp>
-#include <cosmos/CosmosLikeMessage.hpp>
+#include <api/ErrorCode.hpp>
+#include <api/enum_from_string.hpp>
+#include <utils/DateUtils.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
 #include <functional>
 
 namespace ledger {

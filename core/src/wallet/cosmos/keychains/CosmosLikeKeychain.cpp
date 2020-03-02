@@ -29,10 +29,10 @@
  */
 
 
-#include <cosmos/keychains/CosmosLikeKeychain.hpp>
+#include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
 
-#include <core/api/Currency.hpp>
-#include <core/crypto/HASH160.hpp>
+#include <api/Currency.hpp>
+#include <crypto/HASH160.hpp>
 
 #include <cosmos/bech32/CosmosBech32.hpp>
 

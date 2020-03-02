@@ -38,17 +38,17 @@
 
 #include <spdlog/logger.h>
 
-#include <core/utils/ConfigurationMatchable.hpp>
-#include <core/async/DedicatedContext.hpp>
-#include <core/api/ExecutionContext.hpp>
-#include <core/api/Currency.hpp>
-#include <core/api/DynamicObject.hpp>
-#include <core/observers/AbstractBlockchainObserver.hpp>
-#include <core/observers/AbstractLedgerApiBlockchainObserver.hpp>
-#include <core/net/WebSocketClient.hpp>
-#include <core/net/WebSocketConnection.hpp>
+#include <utils/ConfigurationMatchable.h>
+#include <async/DedicatedContext.hpp>
+#include <api/ExecutionContext.hpp>
+#include <api/Currency.hpp>
+#include <api/DynamicObject.hpp>
+#include <wallet/common/observers/AbstractBlockchainObserver.h>
+#include <wallet/common/observers/AbstractLedgerApiBlockchainObserver.h>
+#include <api/WebSocketClient.hpp>
+#include <api/WebSocketConnection.hpp>
 
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {

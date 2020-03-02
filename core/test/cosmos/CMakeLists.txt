@@ -1,19 +1,19 @@
-project(ledger-core-cosmos-tests)
+set( COSMOS_TESTS_NAME "ledger-core-cosmos-tests" )
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
-
-find_package(ledger-core 0.1.0 REQUIRED)
-
-add_subdirectory(lib/googletest)
-
-set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE)
+include_directories(${gtest_SOURCE_DIR}/include ${gtest_SOURCE_DIR})
+include_directories(${CMAKE_BINARY_DIR}/include)
 
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(${PROJECT_NAME}
+file(GLOB ledger-core-fixtures-srcs
+        "../fixtures/*.cpp"
+        "../fixtures/*.h"
+        )
+
+add_executable(${COSMOS_TESTS_NAME}
   main.cpp
   Fixtures.cpp
   address_test.cpp
@@ -21,15 +21,23 @@ add_executable(${PROJECT_NAME}
   transactions_test.cpp
   synchronization_test.cpp
   AccountTests.cpp
+  ${ledger-core-fixtures-srcs}
+  ../integration/BaseFixture.cpp
+  ../integration/IntegrationEnvironment.cpp
   )
 
-target_link_libraries(${PROJECT_NAME} ledger-core-cosmos-static)
-target_link_libraries(${PROJECT_NAME} Core::ledger-core-static)
-target_link_libraries(${PROJECT_NAME} Core::ledger-test)
-target_link_libraries(${PROJECT_NAME} Core::ledger-core-integration-test)
-target_link_libraries(${PROJECT_NAME} Core::ledger-qt-host)
-target_link_libraries(${PROJECT_NAME} gtest gtest_main)
+target_link_libraries(${COSMOS_TESTS_NAME} gtest gtest_main)
+target_link_libraries(${COSMOS_TESTS_NAME} ledger-core-static)
+target_link_libraries(${COSMOS_TESTS_NAME} ledger-test)
+target_link_libraries(${COSMOS_TESTS_NAME} ledger-qt-host)
+target_link_libraries(${COSMOS_TESTS_NAME} leveldb)
+target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../../../qt-host)
+target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../lib/libledger-test)
+target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../../../core/lib/leveldb/include)
+include_directories(../lib/libledger-test/)
 
+include(CopyAndInstallImportedTargets)
+copy_install_imported_targets(${COSMOS_TESTS_NAME} crypto ledger-core)
 
 include(GoogleTest)
-gtest_discover_tests(${PROJECT_NAME})
+gtest_discover_tests(${COSMOS_TESTS_NAME})

@@ -33,9 +33,9 @@
 #define LEDGER_CORE_NODECOSMOSLIKEBLOCKCHAINEXPLORER_H
 
 
-#include <core/explorers/AbstractLedgerApiBlockchainExplorer.hpp>
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <cosmos/api/CosmosLikeNetworkParameters.hpp>
+#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <api/CosmosLikeNetworkParameters.hpp>
 
 namespace ledger {
     namespace core {

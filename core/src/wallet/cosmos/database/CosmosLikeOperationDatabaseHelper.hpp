@@ -36,7 +36,7 @@
 
 #include <soci.h>
 
-#include <core/operation/OperationDatabaseHelper.hpp>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
 namespace ledger {
     namespace core {

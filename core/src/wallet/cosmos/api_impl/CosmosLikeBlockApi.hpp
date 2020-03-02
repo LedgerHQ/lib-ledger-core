@@ -32,8 +32,8 @@
 #ifndef LEDGER_CORE_COSMOSLIKEBLOCKAPI_H
 #define LEDGER_CORE_COSMOSLIKEBLOCKAPI_H
 
-#include <cosmos/api/CosmosLikeBlock.hpp>
-#include <core/wallet/Block.hpp>
+#include <api/CosmosLikeBlock.hpp>
+#include <wallet/common/Block.h>
 
 namespace ledger {
     namespace core {

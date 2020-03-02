@@ -31,12 +31,12 @@
 
 #include <cosmos/CosmosLikeExtendedPublicKey.hpp>
 
-#include <core/math/Base58.hpp>
-#include <core/bytes/BytesReader.hpp>
-#include <core/bytes/BytesWriter.hpp>
-#include <core/collections/Vector.hpp>
-#include <core/crypto/SHA256.hpp>
-#include <core/crypto/HASH160.hpp>
+#include <math/Base58.hpp>
+#include <bytes/BytesReader.h>
+#include <bytes/BytesWriter.h>
+#include <collections/vector.hpp>
+#include <crypto/SHA256.hpp>
+#include <crypto/HASH160.hpp>
 
 #include <cosmos/bech32/CosmosBech32.hpp>
 #include <cosmos/CosmosLikeAddress.hpp>

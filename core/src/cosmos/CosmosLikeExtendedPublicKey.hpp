@@ -34,22 +34,22 @@
 
 #include <memory>
 
-#include <core/key/ExtendedPublicKey.hpp>
-#include <core/crypto/DeterministicPublicKey.hpp>
-#include <core/utils/Option.hpp>
-#include <core/utils/DerivationPath.hpp>
-#include <core/api/Currency.hpp>
+#include <common/AbstractExtendedPublicKey.h>
+#include <crypto/DeterministicPublicKey.hpp>
+#include <utils/Option.hpp>
+#include <utils/DerivationPath.hpp>
+#include <api/Currency.hpp>
 
-#include <cosmos/api/CosmosLikeExtendedPublicKey.hpp>
-#include <cosmos/api/CosmosLikeNetworkParameters.hpp>
-#include <cosmos/api/CosmosBech32Type.hpp>
-#include <cosmos/api/CosmosLikeAddress.hpp>
-#include <cosmos/api/CosmosCurve.hpp>
-#include <cosmos/CosmosNetworks.hpp>
+#include <api/CosmosLikeExtendedPublicKey.hpp>
+#include <api/CosmosLikeNetworkParameters.hpp>
+#include <api/CosmosBech32Type.hpp>
+#include <api/CosmosLikeAddress.hpp>
+#include <api/CosmosCurve.hpp>
+#include <wallet/cosmos/CosmosNetworks.hpp>
 
 namespace ledger {
     namespace core {
-        using CosmosExtendedPublicKey = ExtendedPublicKey<api::CosmosLikeNetworkParameters>;
+        using CosmosExtendedPublicKey = AbstractExtendedPublicKey<api::CosmosLikeNetworkParameters>;
 
         class CosmosLikeExtendedPublicKey : public CosmosExtendedPublicKey, public api::CosmosLikeExtendedPublicKey {
         public:
@@ -92,8 +92,9 @@ namespace ledger {
                                                                            const Option<std::string>& path);
 
         protected:
-            virtual const api::CosmosLikeNetworkParameters params() const override {
-                return networks::getCosmosLikeNetworkParameters(_currency.name);
+            virtual const api::CosmosLikeNetworkParameters &params() const override {
+                // return networks::getCosmosLikeNetworkParameters(_currency.name);
+                return _currency.cosmosLikeNetworkParameters.value();
             };
 
             const DeterministicPublicKey &getKey() const override {

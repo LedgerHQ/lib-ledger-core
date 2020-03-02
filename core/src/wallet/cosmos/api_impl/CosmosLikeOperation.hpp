@@ -33,14 +33,15 @@
 #define LEDGER_CORE_COSMOSLIKEOPERATION_H
 
 
-#include <cosmos/cosmos.hpp>
-#include <cosmos/api/CosmosLikeOperation.hpp>
-#include <cosmos/api/CosmosLikeTransaction.hpp>
-#include <cosmos/api/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/cosmos.hpp>
+#include <api/CosmosLikeOperation.hpp>
+#include <api/CosmosLikeTransaction.hpp>
+#include <api/CosmosLikeMessage.hpp>
 
-#include <core/operation/Operation.hpp>
-#include <core/wallet/AbstractWallet.hpp>
-#include <core/wallet/AbstractAccount.hpp>
+#include <wallet/common/Operation.h>
+#include <wallet/common/api_impl/OperationApi.h>
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {
@@ -49,6 +50,7 @@ namespace ledger {
             public:
 
                 CosmosLikeOperation() = default;
+                CosmosLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
 
                 CosmosLikeOperation(ledger::core::cosmos::Transaction const& tx,
                                     ledger::core::cosmos::Message const& msg);
@@ -59,8 +61,6 @@ namespace ledger {
 
                 virtual std::shared_ptr<api::CosmosLikeTransaction> getTransaction() override;
                 virtual std::shared_ptr<api::CosmosLikeMessage> getMessage() override;
-
-                virtual void refreshUid(const std::string &msgIndex) override;
 
             private:
 

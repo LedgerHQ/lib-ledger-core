@@ -31,13 +31,13 @@
 
 #pragma once
 
-#include <core/api/ErrorCode.hpp>
-#include <core/collections/Strings.hpp>
-#include <core/math/BigInt.hpp>
-#include <core/math/bech32/Bech32Parameters.hpp>
-#include <core/utils/Exception.hpp>
-#include <core/utils/Hex.hpp>
-#include <cosmos/api/CosmosBech32Type.hpp>
+#include <api/ErrorCode.hpp>
+#include <collections/strings.hpp>
+#include <math/BigInt.h>
+#include <math/bech32/Bech32Parameters.h>
+#include <utils/Exception.hpp>
+#include <utils/hex.h>
+#include <api/CosmosBech32Type.hpp>
 
 
 namespace ledger {

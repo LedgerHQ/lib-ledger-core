@@ -36,14 +36,14 @@
 
 #include <rapidjson/document.h>
 
-#include <core/utils/Option.hpp>
-#include <core/utils/DateUtils.hpp>
-#include <core/api/Block.hpp>
+#include <utils/Option.hpp>
+#include <utils/DateUtils.hpp>
+#include <wallet/common/Block.h>
 
-#include <cosmos/CosmosLikeConstants.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
-#include <cosmos/CosmosLikeMessage.hpp>
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
 #define COSMOS_PARSE_MSG_CONTENT(MsgType) if (out.type == "cosmos-sdk/"#MsgType) return parse##MsgType(contentNode, out.content);
 
@@ -136,7 +136,7 @@ namespace ledger {
             template <class T>
             void parseBlock(const T& node, const std::string& currencyName, cosmos::Block& out) {
                 out.currencyName = currencyName;
-                out.blockHash = node[kBlockMeta].GetObject()[kBlockId].GetObject()[kHash].GetString();
+                out.hash = node[kBlockMeta].GetObject()[kBlockId].GetObject()[kHash].GetString();
                 out.height = BigInt::fromString(node[kBlockMeta].GetObject()[kHeader].GetObject()[kHeight].GetString()).toUint64();
                 out.time = DateUtils::fromJSON(node[kBlockMeta].GetObject()[kHeader].GetObject()[kTime].GetString());
             }

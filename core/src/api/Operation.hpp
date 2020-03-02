@@ -22,6 +22,7 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class BitcoinLikeOperation;
+class CosmosLikeOperation;
 class EthereumLikeOperation;
 class Preferences;
 class RippleLikeOperation;
@@ -109,6 +110,12 @@ public:
     virtual std::shared_ptr<BitcoinLikeOperation> asBitcoinLikeOperation() = 0;
 
     /**
+     * Convert operation as Cosmos operation.
+     * @return CosmosLikeOperation object
+     */
+    virtual std::shared_ptr<CosmosLikeOperation> asCosmosLikeOperation() = 0;
+
+    /**
      * Convert operation as Ethereum operation.
      * @return EthereumLikeOperation object
      */
@@ -128,6 +135,9 @@ public:
 
     /** Same as isInstanceOfBitcoinLikeOperation for bitcoin. */
     virtual bool isInstanceOfBitcoinLikeOperation() = 0;
+
+    /** Same as isInstanceOfCosmosLikeOperation for cosmos. */
+    virtual bool isInstanceOfCosmosLikeOperation() = 0;
 
     /** Same as isInstanceOfEthereumLikeOperation for ethereum. */
     virtual bool isInstanceOfEthereumLikeOperation() = 0;

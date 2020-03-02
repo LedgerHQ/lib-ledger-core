@@ -31,22 +31,22 @@
 #include <rapidjson/reader.h>
 #include <rapidjson/writer.h>
 
-#include <core/utils/Hex.hpp>
-#include <core/collections/Vector.hpp>
-#include <core/utils/Either.hpp>
-#include <core/utils/DateUtils.hpp>
-#include <core/bytes/BytesWriter.hpp>
-#include <core/crypto/SHA256.hpp>
+#include <utils/hex.h>
+#include <collections/vector.hpp>
+#include <utils/Either.hpp>
+#include <utils/DateUtils.hpp>
+#include <bytes/BytesWriter.h>
+#include <crypto/SHA256.hpp>
 
-#include <cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <cosmos/bech32/CosmosBech32.hpp>
-#include <cosmos/api/CosmosLikeTransactionBuilder.hpp>
-#include <cosmos/api/CosmosLikeTransaction.hpp>
-#include <cosmos/api/CosmosLikeAddress.hpp>
-#include <cosmos/CosmosLikeCurrencies.hpp>
+#include <api/CosmosLikeTransactionBuilder.hpp>
+#include <api/CosmosLikeTransaction.hpp>
+#include <api/CosmosLikeAddress.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <cosmos/CosmosLikeExtendedPublicKey.hpp>
-#include <cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
 
 using namespace ledger::core::api;
 using namespace ledger::core;

@@ -41,6 +41,7 @@
 #include "TrustIndicator.h"
 #include <memory>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
@@ -65,6 +66,7 @@ namespace ledger {
             api::OperationType type;
             std::shared_ptr<TrustIndicator> trust;
             Option<BitcoinLikeBlockchainExplorerTransaction> bitcoinTransaction;
+            Option<cosmos::Transaction> cosmosTransaction;
             Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
             Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Option<TezosLikeBlockchainExplorerTransaction> tezosTransaction;

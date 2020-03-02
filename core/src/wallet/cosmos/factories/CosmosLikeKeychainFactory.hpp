@@ -31,12 +31,12 @@
 #ifndef LEDGER_CORE_COSMOSLIKEKEYCHAINFACTORY_H
 #define LEDGER_CORE_COSMOSLIKEKEYCHAINFACTORY_H
 
-#include <core/collections/DynamicObject.hpp>
-#include <core/api/AccountCreationInfo.hpp>
-#include <core/api/Currency.hpp>
-#include <core/preferences/Preferences.hpp>
+#include <collections/DynamicObject.hpp>
+#include <api/AccountCreationInfo.hpp>
+#include <api/Currency.hpp>
+#include <preferences/Preferences.hpp>
 
-#include <cosmos/keychains/CosmosLikeKeychain.hpp>
+#include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
 
 namespace ledger {
         namespace core {

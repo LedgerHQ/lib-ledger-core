@@ -35,22 +35,22 @@
 
 #include <string>
 
-#include <core/api/Block.hpp>
-#include <core/api/DynamicObject.hpp>
-#include <core/api/ExecutionContext.hpp>
-#include <core/async/DedicatedContext.hpp>
-#include <core/collections/DynamicObject.hpp>
-#include <core/explorers/AbstractBlockchainExplorer.hpp>
-#include <core/math/BigInt.hpp>
-#include <core/net/HttpClient.hpp>
-#include <core/utils/ConfigurationMatchable.hpp>
-#include <core/utils/Option.hpp>
+#include <wallet/common/Block.h>
+#include <api/DynamicObject.hpp>
+#include <api/ExecutionContext.hpp>
+#include <async/DedicatedContext.hpp>
+#include <collections/DynamicObject.hpp>
+#include <wallet/common/explorers/AbstractBlockchainExplorer.h>
+#include <math/BigInt.h>
+#include <net/HttpClient.hpp>
+#include <utils/ConfigurationMatchable.h>
+#include <utils/Option.hpp>
 
-#include <cosmos/keychains/CosmosLikeKeychain.hpp>
-#include <cosmos/api/CosmosLikeNetworkParameters.hpp>
-#include <cosmos/api/CosmosLikeTransaction.hpp>
-#include <cosmos/cosmos.hpp>
-#include <cosmos/CosmosLikeMessage.hpp>
+#include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
+#include <api/CosmosLikeNetworkParameters.hpp>
+#include <api/CosmosLikeTransaction.hpp>
+#include <wallet/cosmos/cosmos.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
 
 namespace ledger {
     namespace core {

@@ -14,6 +14,8 @@ include_directories(../lib/libledger-test/)
 file(GLOB ledger-core-fixtures-srcs
         "../fixtures/*.cpp"
         "../fixtures/*.h"
+        "../cosmos/Fixtures.cpp"
+        "../cosmos/Fixtures.hpp"
         )
 
 file(GLOB_RECURSE TEST_FILES *.cpp)
@@ -200,3 +202,11 @@ add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawTransa
 add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawRevealTransaction COMMAND ledger-core-integration-tests --gtest_filter=TezosMakeTransaction.ParseSignedRawRevealTransaction)
 add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawOriginationTransaction COMMAND ledger-core-integration-tests --gtest_filter=TezosMakeTransaction.ParseSignedRawOriginationTransaction)
 add_test (NAME ledger-core-integration-TezosLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=TezosLikeWalletSynchronization.MediumXpubSynchronization)
+
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.MediumXpubSynchronization)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetAccountWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetAccountWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetWithdrawDelegationRewardWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetWithdrawDelegationRewardWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetErrorTransaction COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetErrorTransaction)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetSendWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetSendWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetDelegateWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetDelegateWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetCurrentBlockWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetCurrentBlockWithExplorer)

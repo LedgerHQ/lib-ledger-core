@@ -29,18 +29,18 @@
  */
 
 
-#include <cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
+#include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
 
-#include <core/database/SociOption.hpp>
-#include <core/database/SociDate.hpp>
-#include <core/database/SociNumber.hpp>
-#include <core/crypto/SHA256.hpp>
-#include <core/wallet/BlockDatabaseHelper.hpp>
+#include <database/soci-option.h>
+#include <database/soci-date.h>
+#include <database/soci-number.h>
+#include <crypto/SHA256.hpp>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 
-#include <cosmos/database/SociCosmosAmount.hpp>
-#include <cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/database/SociCosmosAmount.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
 
-#include <core/api/enum_from_string.hpp>
+#include <api/enum_from_string.hpp>
 
 #include <boost/lexical_cast.hpp>
 
@@ -186,7 +186,7 @@ namespace ledger {
             tx.memo = row.get<Option<std::string>>(COL_TX_MEMO).getValueOr("");
 
             if (row.get_indicator(COL_TX_BLOCKUID) != soci::i_null) {
-                cosmos::Block block;
+                ledger::core::api::Block block;
                 block.uid = row.get<std::string>(COL_TX_BLOCKUID);
                 block.blockHash = row.get<std::string>(COL_BLK_HASH);
                 block.height = soci::get_number<uint64_t>(row, COL_BLK_HEIGHT);
@@ -396,7 +396,7 @@ namespace ledger {
 
         static void insertTransaction(soci::session& sql, cosmos::Transaction const& tx) {
             Option<std::string> blockUid;
-            if (tx.block.nonEmpty() && !tx.block.getValue().blockHash.empty()) {
+            if (tx.block.nonEmpty() && !tx.block.getValue().hash.empty()) {
                 blockUid = BlockDatabaseHelper::createBlockUid(tx.block.getValue());
             }
 
@@ -438,9 +438,9 @@ namespace ledger {
             if (transactionExists(sql, tx.uid)) {
 
                 // UPDATE (we only update block information and gasUsed)
-                if (tx.block.nonEmpty() && tx.block.getValue().blockHash.size() > 0) {
+                if (tx.block.nonEmpty() && tx.block.getValue().hash.size() > 0) {
                     auto blockUid = tx.block.map<std::string>([](const cosmos::Block &block) {
-                        return block.uid;
+                        return block.getUid();
                     });
 
                     auto gasUsed = tx.gasUsed.flatMap<std::string>([] (const BigInt& g) {
@@ -455,7 +455,7 @@ namespace ledger {
             } else {
 
                 // Insert block
-                if (tx.block.nonEmpty() && !tx.block.getValue().blockHash.empty()) {
+                if (tx.block.nonEmpty() && !tx.block.getValue().hash.empty()) {
                     BlockDatabaseHelper::putBlock(sql, tx.block.getValue());
                 }
 

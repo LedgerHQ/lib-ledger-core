@@ -34,16 +34,16 @@
 
 #include <spdlog/logger.h>
 
-#include <core/api/Currency.hpp>
-#include <core/api/ExecutionContext.hpp>
-#include <core/api/Amount.hpp>
-#include <core/wallet/Amount.hpp>
-#include <core/math/BigInt.hpp>
-#include <core/async/Future.hpp>
+#include <api/Currency.hpp>
+#include <api/ExecutionContext.hpp>
+#include <api/Amount.hpp>
+#include <api/Amount.hpp>
+#include <math/BigInt.h>
+#include <async/Future.hpp>
 
-#include <cosmos/api/CosmosLikeTransactionBuilder.hpp>
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <cosmos/api/CosmosLikeTransactionCallback.hpp>
+#include <api/CosmosLikeTransactionBuilder.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <api/CosmosLikeTransactionCallback.hpp>
 
 namespace ledger {
     namespace core {

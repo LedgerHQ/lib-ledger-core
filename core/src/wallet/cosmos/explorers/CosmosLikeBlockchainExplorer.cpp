@@ -29,7 +29,7 @@
  */
 
 
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 
 namespace ledger {
     namespace core {

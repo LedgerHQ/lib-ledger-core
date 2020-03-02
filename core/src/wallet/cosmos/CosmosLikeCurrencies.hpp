@@ -38,7 +38,7 @@
     #endif
 #endif
 
-#include <core/api/Currency.hpp>
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {

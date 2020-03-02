@@ -34,20 +34,20 @@
 
 #include <time.h>
 
-#include <core/api/Address.hpp>
-#include <core/api/Event.hpp>
-#include <core/api/ErrorCodeCallback.hpp>
-#include <core/wallet/AbstractWallet.hpp>
-#include <core/wallet/AbstractAccount.hpp>
-#include <core/wallet/Amount.hpp>
+#include <api/Address.hpp>
+#include <api/Event.hpp>
+#include <api/ErrorCodeCallback.hpp>
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/common/AbstractAccount.hpp>
+#include <api/Amount.hpp>
 
-#include <cosmos/api/CosmosLikeAccount.hpp>
-#include <cosmos/api_impl/CosmosLikeOperation.hpp>
-#include <cosmos/api/CosmosLikeTransactionBuilder.hpp>
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
-#include <cosmos/observers/CosmosLikeBlockchainObserver.hpp>
-#include <cosmos/keychains/CosmosLikeKeychain.hpp>
+#include <api/CosmosLikeAccount.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
+#include <api/CosmosLikeTransactionBuilder.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
+#include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
+#include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
 
 namespace ledger {
         namespace core {
@@ -62,7 +62,7 @@ namespace ledger {
                                                   const std::shared_ptr<CosmosLikeAccountSynchronizer> &synchronizer,
                                                   const std::shared_ptr<CosmosLikeKeychain> &keychain);
 
-                                std::shared_ptr<api::CosmosLikeAccount> asCosmosLikeAccount();
+                                std::shared_ptr<api::CosmosLikeAccount> asCosmosLikeAccount() override;
 
                                 void inflateOperation(CosmosLikeOperation &out,
                                                       const std::shared_ptr<const AbstractWallet> &wallet,

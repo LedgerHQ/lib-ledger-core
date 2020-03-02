@@ -32,10 +32,10 @@
 #ifndef LEDGER_CORE_COSMOSBECH32_H
 #define LEDGER_CORE_COSMOSBECH32_H
 
-#include <core/math/bech32/Bech32.hpp>
+#include <math/bech32/Bech32.h>
 #include <cosmos/bech32/CosmosLikeBech32ParametersHelpers.hpp>
 
-#include <cosmos/api/CosmosBech32Type.hpp>
+#include <api/CosmosBech32Type.hpp>
 
 namespace ledger {
         namespace core {

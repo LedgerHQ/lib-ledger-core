@@ -34,22 +34,18 @@
 
 #include <vector>
 
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
-#include <core/operation/Operation.hpp>
-#include <core/api/Amount.hpp>
-#include <core/api/Currency.hpp>
-#include <core/math/BigInt.hpp>
+#include <wallet/common/api_impl/OperationApi.h>
+#include <api/Amount.hpp>
+#include <api/Currency.hpp>
+#include <math/BigInt.h>
 
-#include <cosmos/cosmos.hpp>
-
-//#include <cosmos/api_impl/CosmosLikeBlockApi.hpp>
-//#include <cosmos/api_impl/CosmosLikeOperation.hpp>
-#include <cosmos/api/CosmosLikeBlock.hpp>
-#include <cosmos/api/CosmosLikeOperation.hpp>
-#include <cosmos/api/CosmosLikeTransaction.hpp>
-#include <cosmos/api/CosmosLikeAmount.hpp>
-#include <cosmos/api/CosmosLikeMessage.hpp>
+#include <api/CosmosLikeBlock.hpp>
+#include <api/CosmosLikeOperation.hpp>
+#include <api/CosmosLikeTransaction.hpp>
+#include <api/CosmosLikeAmount.hpp>
+#include <api/CosmosLikeMessage.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,6 +54,10 @@ namespace ledger {
             explicit CosmosLikeTransactionApi() {}
 
             explicit CosmosLikeTransactionApi(const cosmos::Transaction& txData);
+
+            explicit CosmosLikeTransactionApi(const OperationApi& baseOp) {
+                exit(1);
+            }
 
             std::string getHash() const override;
             std::shared_ptr<api::Amount> getFee() const override;

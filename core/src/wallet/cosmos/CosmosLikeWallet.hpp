@@ -31,26 +31,27 @@
 
 #ifndef LEDGER_CORE_COSMOSLIKEWALLET_H
 #define LEDGER_CORE_COSMOSLIKEWALLET_H
-#include <core/wallet/AbstractWallet.hpp>
-#include <core/Services.hpp>
+#include <wallet/common/AbstractWallet.hpp>
+#include <api/CosmosLikeWallet.hpp>
 
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <cosmos/observers/CosmosLikeBlockchainObserver.hpp>
-#include <cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
-#include <cosmos/factories/CosmosLikeWalletFactory.hpp>
-#include <cosmos/factories/CosmosLikeKeychainFactory.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
+#include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
+#include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
+#include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 
 namespace ledger {
     namespace core {
-        class CosmosLikeWallet : public AbstractWallet {
+        class CosmosLikeWallet : public virtual api::CosmosLikeWallet, public virtual AbstractWallet {
         public:
+            static const api::WalletType type;
             CosmosLikeWallet(
                     const std::string &name,
                     const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
                     const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
                     const std::shared_ptr<CosmosLikeKeychainFactory> &keychainFactory,
                     const CosmosLikeAccountSynchronizerFactory &synchronizerFactory,
-                    const std::shared_ptr<Services> &services,
+                    const std::shared_ptr<WalletPool> &pool,
                     const api::Currency &network,
                     const std::shared_ptr<DynamicObject> &configuration,
                     const DerivationScheme &scheme
@@ -73,7 +74,7 @@ namespace ledger {
 
             std::shared_ptr<CosmosLikeBlockchainExplorer> getBlockchainExplorer();
 
-            bool hasMultipleAddresses() const override;
+            bool hasMultipleAddresses() const;
 
         protected:
             std::shared_ptr<AbstractAccount>

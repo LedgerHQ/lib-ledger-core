@@ -32,25 +32,23 @@
 
 #include <rapidjson/document.h>
 
-#include <core/collections/DynamicObject.hpp>
+#include <collections/DynamicObject.hpp>
 
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
-#include <cosmos/api/CosmosLikeAmount.hpp>
-#include <cosmos/api/CosmosLikeContent.hpp>
-#include <cosmos/api/CosmosLikeVoteOption.hpp>
-#include <cosmos/api/CosmosLikeMsgSend.hpp>
-#include <cosmos/api/CosmosLikeMsgDelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgUndelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgRedelegate.hpp>
-#include <cosmos/api/CosmosLikeMsgSubmitProposal.hpp>
-#include <cosmos/api/CosmosLikeMsgVote.hpp>
-#include <cosmos/api/CosmosLikeMsgDeposit.hpp>
-#include <cosmos/api/CosmosLikeMsgWithdrawDelegationReward.hpp>
-#include <cosmos/api/CosmosLikeMessage.hpp>
-#include <cosmos/api/CosmosLikeMsgType.hpp>
-
-#include <cosmos/cosmos.hpp>
+#include <api/CosmosLikeAmount.hpp>
+#include <api/CosmosLikeContent.hpp>
+#include <api/CosmosLikeVoteOption.hpp>
+#include <api/CosmosLikeMsgSend.hpp>
+#include <api/CosmosLikeMsgDelegate.hpp>
+#include <api/CosmosLikeMsgUndelegate.hpp>
+#include <api/CosmosLikeMsgRedelegate.hpp>
+#include <api/CosmosLikeMsgSubmitProposal.hpp>
+#include <api/CosmosLikeMsgVote.hpp>
+#include <api/CosmosLikeMsgDeposit.hpp>
+#include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
+#include <api/CosmosLikeMessage.hpp>
+#include <api/CosmosLikeMsgType.hpp>
 
 namespace ledger {
 	namespace core {

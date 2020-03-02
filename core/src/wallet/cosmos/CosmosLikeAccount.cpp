@@ -29,35 +29,36 @@
  */
 
 
-#include <cosmos/CosmosLikeAccount.hpp>
+#include <wallet/cosmos/CosmosLikeAccount.hpp>
 
 #include <soci.h>
 
-#include <cosmos/CosmosLikeConstants.hpp>
-#include <cosmos/api/CosmosLikeAddress.hpp>
-#include <cosmos/CosmosLikeWallet.hpp>
-#include <cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
-#include <cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
-#include <cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
-#include <cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
-#include <cosmos/CosmosLikeOperationQuery.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <api/CosmosLikeAddress.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
+#include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
+#include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
+#include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
+#include <wallet/common/Block.h>
 
-#include <core/database/SociNumber.hpp>
-#include <core/database/SociDate.hpp>
-#include <core/database/SociOption.hpp>
-#include <core/database/query/ConditionQueryFilter.hpp>
-#include <core/async/Future.hpp>
-#include <core/events/Event.hpp>
-#include <core/math/Base58.hpp>
-#include <core/utils/Option.hpp>
-#include <core/utils/DateUtils.hpp>
-#include <core/collections/Vector.hpp>
-#include <core/operation/OperationDatabaseHelper.hpp>
-#include <core/wallet/BlockDatabaseHelper.hpp>
-#include <core/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.hpp>
-#include <core/wallet/CurrenciesDatabaseHelper.hpp>
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
+#include <database/query/ConditionQueryFilter.h>
+#include <async/Future.hpp>
+#include <events/Event.hpp>
+#include <math/Base58.hpp>
+#include <utils/Option.hpp>
+#include <utils/DateUtils.hpp>
+#include <collections/vector.hpp>
+#include <wallet/common/database/OperationDatabaseHelper.h>
+#include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
+#include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -69,7 +70,7 @@ namespace ledger {
                                                      const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
                                                      const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
                                                      const std::shared_ptr<CosmosLikeAccountSynchronizer> &synchronizer,
-                                                     const std::shared_ptr<CosmosLikeKeychain> &keychain) : AbstractAccount(wallet->getServices(), wallet, index) {
+                                                     const std::shared_ptr<CosmosLikeKeychain> &keychain) : AbstractAccount(wallet, index) {
                         _explorer = explorer;
                         _observer = observer;
                         _synchronizer = synchronizer;
@@ -128,9 +129,13 @@ namespace ledger {
 
                         computeAndSetAmount(out, msg);
 
-                        out._account = shared_from_this();
+                        // out._account = shared_from_this();
                         out.accountUid = getAccountUid();
-                        out.block = tx.block;
+                        if (tx.block){
+                                out.block = Option<Block>(Block(tx.block.getValue()));
+                        } else {
+                                out.block = Option<Block>();
+                        }
                         if (out.block.nonEmpty()) {
                                 out.block.getValue().currencyName = wallet->getCurrency().name;
                         }
@@ -159,7 +164,7 @@ namespace ledger {
                         }
 
                         if (tx.block.nonEmpty()) {
-                                putBlock(sql, tx.block.getValue());
+                                putBlock(sql, tx.block.getValue().toApiBlock());
                         }
 
                         int result = FLAG_TRANSACTION_IGNORED;
@@ -277,7 +282,7 @@ namespace ledger {
 
                 std::shared_ptr<api::OperationQuery> CosmosLikeAccount::queryOperations() {
                         auto headFilter = api::QueryFilter::accountEq(getAccountUid());
-                        auto query = std::make_shared<CosmosLikeOperationQuery>(
+                        auto query = std::make_shared<OperationQuery>(
                                 headFilter,
                                 getWallet()->getDatabase(),
                                 getWallet()->getContext(),
@@ -317,7 +322,7 @@ namespace ledger {
 
                                         const auto &uid = self->getAccountUid();
                                         soci::session sql(self->getWallet()->getDatabase()->getPool());
-                                        std::vector<CosmosLikeOperation> operations;
+                                        std::vector<Operation> operations;
 
                                         auto keychain = self->getKeychain();
                                         std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
@@ -325,7 +330,11 @@ namespace ledger {
                                         };
 
                                         //Get operations related to an account
-                                        OperationDatabaseHelper::queryOperations(sql, uid, operations, filter);
+                                        OperationDatabaseHelper::queryOperations(
+                                            sql,
+                                            uid,
+                                            operations,
+                                            filter);
 
                                         auto lowerDate = startDate;
                                         auto upperDate = DateUtils::incrementDate(startDate, precision);

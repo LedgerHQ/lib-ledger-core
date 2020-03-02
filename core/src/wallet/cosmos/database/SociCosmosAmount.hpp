@@ -37,7 +37,7 @@
 #include <rapidjson/reader.h>
 #include <rapidjson/writer.h>
 
-#include <cosmos/cosmos.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
 namespace soci {
 

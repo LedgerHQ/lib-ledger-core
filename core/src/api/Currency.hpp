@@ -6,6 +6,7 @@
 
 #include "../utils/optional.hpp"
 #include "BitcoinLikeNetworkParameters.hpp"
+#include "CosmosLikeNetworkParameters.hpp"
 #include "CurrencyUnit.hpp"
 #include "EthereumLikeNetworkParameters.hpp"
 #include "RippleLikeNetworkParameters.hpp"
@@ -39,6 +40,8 @@ struct Currency final {
      * Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
      */
     std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters;
+    /** Optional CosmosLikeNetworkParameters, for more details refer to CosmosLikeNetworkParameters doc */
+    std::experimental::optional<CosmosLikeNetworkParameters> cosmosLikeNetworkParameters;
     /** Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
     std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters;
     /**Optional RippleLikeNetworkParameters, for more details refer to RippleLikeNetworkParameters doc */
@@ -52,6 +55,7 @@ struct Currency final {
              std::string paymentUriScheme_,
              std::vector<CurrencyUnit> units_,
              std::experimental::optional<BitcoinLikeNetworkParameters> bitcoinLikeNetworkParameters_,
+             std::experimental::optional<CosmosLikeNetworkParameters> cosmosLikeNetworkParameters_,
              std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters_,
              std::experimental::optional<RippleLikeNetworkParameters> rippleLikeNetworkParameters_,
              std::experimental::optional<TezosLikeNetworkParameters> tezosLikeNetworkParameters_)
@@ -61,6 +65,7 @@ struct Currency final {
     , paymentUriScheme(std::move(paymentUriScheme_))
     , units(std::move(units_))
     , bitcoinLikeNetworkParameters(std::move(bitcoinLikeNetworkParameters_))
+    , cosmosLikeNetworkParameters(std::move(cosmosLikeNetworkParameters_))
     , ethereumLikeNetworkParameters(std::move(ethereumLikeNetworkParameters_))
     , rippleLikeNetworkParameters(std::move(rippleLikeNetworkParameters_))
     , tezosLikeNetworkParameters(std::move(tezosLikeNetworkParameters_))
@@ -73,6 +78,7 @@ struct Currency final {
        this->paymentUriScheme = cpy.paymentUriScheme;
        this->units = cpy.units;
        this->bitcoinLikeNetworkParameters = cpy.bitcoinLikeNetworkParameters;
+       this->cosmosLikeNetworkParameters = cpy.cosmosLikeNetworkParameters;
        this->ethereumLikeNetworkParameters = cpy.ethereumLikeNetworkParameters;
        this->rippleLikeNetworkParameters = cpy.rippleLikeNetworkParameters;
        this->tezosLikeNetworkParameters = cpy.tezosLikeNetworkParameters;
@@ -88,6 +94,7 @@ struct Currency final {
        this->paymentUriScheme = cpy.paymentUriScheme;
        this->units = cpy.units;
        this->bitcoinLikeNetworkParameters = cpy.bitcoinLikeNetworkParameters;
+       this->cosmosLikeNetworkParameters = cpy.cosmosLikeNetworkParameters;
        this->ethereumLikeNetworkParameters = cpy.ethereumLikeNetworkParameters;
        this->rippleLikeNetworkParameters = cpy.rippleLikeNetworkParameters;
        this->tezosLikeNetworkParameters = cpy.tezosLikeNetworkParameters;
@@ -96,12 +103,12 @@ struct Currency final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters);
     }
 };
 
