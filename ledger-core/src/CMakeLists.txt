@@ -159,7 +159,9 @@ target_include_directories(
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/fmt/include>          $<INSTALL_INTERFACE:include/ledger-core/lib/fmt/include>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/spdlog/include>       $<INSTALL_INTERFACE:include/ledger-core/lib/spdlog/include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci_postgresql>      $<INSTALL_INTERFACE:include/ledger-core/lib/soci_postgresql>
+
+    # PG support
+    $<$<BOOL:${PG_SUPPORT}>:$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci_postgresql>>
 
     # Hack: work around to find the ledger-core API header files in dependent projects
     $<INSTALL_INTERFACE:include/ledger-core/core/api>
