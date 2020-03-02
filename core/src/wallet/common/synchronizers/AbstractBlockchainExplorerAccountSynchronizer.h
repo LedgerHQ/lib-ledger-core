@@ -230,13 +230,21 @@ namespace ledger {
                 updateCurrentBlock(buddy, account->getContext());
 
                 auto self = getSharedFromThis();
-                return _explorer->startSession().template map<Unit>(account->getContext(), [buddy] (void * const& t) -> Unit {
+                const auto deactivateToken =
+                        buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+                auto getSyncToken = deactivateToken ? Future<void *>::successful(nullptr) : _explorer->startSession();
+                return getSyncToken.template map<Unit>(account->getContext(), [buddy, deactivateToken] (void * const t) -> Unit {
                     buddy->logger->info("Synchronization token obtained");
-                    buddy->token = Option<void *>(t);
+                    if (!deactivateToken && t) {
+                        buddy->token = Option<void *>(t);
+                    }
                     return unit;
                 }).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
                     return self->synchronizeBatches(0, buddy);
-                }).template flatMap<Unit>(account->getContext(), [self, buddy] (const Unit&) {
+                }).template flatMap<Unit>(account->getContext(), [self, buddy, deactivateToken] (const Unit&) {
+                    if (deactivateToken) {
+                        return Future<Unit>::successful(unit);
+                    }
                     auto tryKillSession = Try<Future<Unit>>::from([=](){
                         return self->_explorer->killSession(buddy->token.getValue());
                     });
@@ -322,52 +330,82 @@ namespace ledger {
                         buddy->savedState.nonEmpty()) {
                         buddy->logger->info("Recovering from reorganization");
 
-                        //Get its block/block height
-                        auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
-                        auto failedBlockHeight = failedBatch.blockHeight;
-                        auto failedBlockHash = failedBatch.blockHash;
+                        // Try to get a new sync token
+                        const auto deactivateToken =
+                                buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+                        auto startSession = Future<void *>::async(ImmediateExecutionContext::INSTANCE, [=](){
+                            if (deactivateToken) {
+                                return Future<void *>::successful(nullptr);
+                            }
+                            return self->_explorer->startSession();
+                        });
 
-                        if (failedBlockHeight > 0) {
-                            //Delete data related to failedBlock (and all blocks above it)
-                            buddy->logger->info("Deleting blocks above block height: {}", failedBlockHeight);
-
-                            soci::session sql(buddy->wallet->getDatabase()->getPool());
-                            sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(failedBlockHeight);
-
-                            //Get last block not part from reorg
-                            auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
-
-                            //Resync from the "beginning" if no last block in DB
-                            int64_t lastBlockHeight = 0;
-                            std::string lastBlockHash;
-                            if (lastBlock.nonEmpty()) {
-                                lastBlockHeight = lastBlock.getValue().height;
-                                lastBlockHash = lastBlock.getValue().blockHash;
+                        return startSession.template flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (void * const session) {
+                            if (!deactivateToken && session) {
+                                buddy->token = Option<void *>(session);
+                            } else {
+                                buddy->logger->warn(
+                                        "Failed to get new synchronization token for account#{} of wallet {}",
+                                        buddy->account->getIndex(),
+                                        buddy->account->getWallet()->getName());
+                                // WARNING: we have too many issues with that sync token because of blockchain explorer,
+                                // when we fail on reorg we try without sync token
+                                buddy->token = Option<void *>();
                             }
 
-                            //Update savedState's batches
-                            for (auto &batch : buddy->savedState.getValue().batches) {
-                                if (batch.blockHeight > lastBlockHeight) {
-                                    batch.blockHeight = (uint32_t)lastBlockHeight;
-                                    batch.blockHash = lastBlockHash;
+                            //Get its block/block height
+                            auto &failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
+                            auto const failedBlockHeight = failedBatch.blockHeight;
+                            auto const failedBlockHash = failedBatch.blockHash;
+
+                            if (failedBlockHeight > 0) {
+                                //Delete data related to failedBlock (and all blocks above it)
+                                buddy->logger->info("Deleting blocks above block height: {}", failedBlockHeight);
+
+                                soci::session sql(buddy->wallet->getDatabase()->getPool());
+                                sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(
+                                        failedBlockHeight);
+
+                                //Get last block not part from reorg
+                                auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
+                                                                                   buddy->wallet->getCurrency().name);
+
+                                //Resync from the "beginning" if no last block in DB
+                                int64_t lastBlockHeight = 0;
+                                std::string lastBlockHash;
+                                if (lastBlock.nonEmpty()) {
+                                    lastBlockHeight = lastBlock.getValue().height;
+                                    lastBlockHash = lastBlock.getValue().blockHash;
                                 }
+
+                                //Update savedState's batches
+                                for (auto &batch : buddy->savedState.getValue().batches) {
+                                    if (batch.blockHeight > lastBlockHeight) {
+                                        batch.blockHeight = (uint32_t) lastBlockHeight;
+                                        batch.blockHash = lastBlockHash;
+                                    }
+                                }
+
+                                //Save new savedState
+                                buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>(
+                                        "state", buddy->savedState.getValue())->commit();
+
+                                //Synchronize same batch now with an existing block (of hash lastBlockHash)
+                                //if failedBatch was not the deepest block part of that reorg, this recursive call
+                                //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
+                                buddy->logger->info("Relaunch synchronization after recovering from reorganization");
+
+                                return self->synchronizeBatches(currentBatchIndex, buddy);
                             }
-
-                            //Save new savedState
-                            buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>(
-                                    "state", buddy->savedState.getValue())->commit();
-
-                            //Synchronize same batch now with an existing block (of hash lastBlockHash)
-                            //if failedBatch was not the deepest block part of that reorg, this recursive call
-                            //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
-                            buddy->logger->info("Relaunch synchronization after recovering from reorganization");
-
-                            return self->synchronizeBatches(currentBatchIndex, buddy);
-                        }
-                    } else {
-                        return Future<Unit>::failure(exception);
+                            return Future<Unit>::successful(unit);
+                        }).recover(ImmediateExecutionContext::INSTANCE, [buddy] (const Exception& ex) -> Unit {
+                            buddy->logger->warn(
+                                    "Failed to recover from reorganisation for account#{} of wallet {}",
+                                    buddy->account->getIndex(),
+                                    buddy->account->getWallet()->getName());
+                            return unit;
+                        });
                     }
-
                     return Future<Unit>::successful(unit);
                 });
             };

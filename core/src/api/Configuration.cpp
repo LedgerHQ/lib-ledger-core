@@ -31,4 +31,6 @@ std::string const Configuration::TRUST_LIMIT = {"TRUST_LIMIT"};
 
 std::string const Configuration::TTL_CACHE = {"TTL_CACHE"};
 
+std::string const Configuration::DEACTIVATE_SYNC_TOKEN = {"DEACTIVATE_SYNC_TOKEN"};
+
 } } }  // namespace ledger::core::api

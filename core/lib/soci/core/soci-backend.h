@@ -250,6 +250,8 @@ public:
     virtual rowid_backend* make_rowid_backend() = 0;
     virtual blob_backend* make_blob_backend() = 0;
 
+    virtual bool isAlive() const = 0;
+
 private:
     // noncopyable
     session_backend(session_backend const&);

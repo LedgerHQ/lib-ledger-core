@@ -49,6 +49,25 @@ api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO(
         {hex::toByteArray("d1bb833ecd3beed6ec5f6aa79d3a424d53f5b99147b21dbc00456b05bc978a71"), hex::toByteArray("88c2281acd51737c912af74cc1d1a8ba564eb7925e0d58a5500b004ba76099cb")}
 );
 
+// Test writting based on NanoS of QA
+// xpub6DFGdRPjroChgYV1heGwjnPBVi9ANtLGDp8oFSgZMezMimPBQweUmH4co6pkP1zUMSvK1NAmNJqFpewnqM1dc2UA62MhdjcZemCGtjWWK9s
+// dgb1qgdg3hdysnpmaxpdpqqzhey2f5888av488hq0z6
+api::AccountCreationInfo P2WPKH_DGB_MEDIUM_KEYS_INFO(
+        0, {"main", "main"}, {"84'/20'/0'", "84'/20'"},
+        {hex::toByteArray("04b59967a8adf3fa0c42f608310af1db961097c23188bcd9d6fb6e48f661af3618c6598a86a9241643723a903fa64f0db24b20978e421dc9704525f7f61c24d4d8"), hex::toByteArray("048e69f8dc1da188b42ae85fe951323b2735e14a5f4f5c69009635c5ccf144ae45b9ed674d84e90ab402cf44974fac59ce099d13021b0072abde6030984454c698")},
+        {hex::toByteArray("4d7b7a9c35d7b1219f4daa3bc04ea631dfc9fc92aa950dac14cd7d7f4a42a272"), hex::toByteArray("a2d69b1f53c5f8d2a91b3be04886421006096b4090f8276c3acb3b4c5851a098")}
+);
+
+
+// Test writting based on NanoS of QA
+// Ltub2YC8XgcRjMJqvX8LsuBxdM7PKE5uih6247CpgK2rfEdzEGt1YHVHW4L865ss5eEy2K1KixTMkrHJbzTtqxpiGpM4wyrxYRFJFxuACSJqkyo
+// ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd
+api::AccountCreationInfo P2WPKH_LTC_MEDIUM_KEYS_INFO(
+        0, {"main", "main"}, {"84'/20'/0'", "84'/20'"},
+        {hex::toByteArray("04349a0419ac120a827fbd5647e85af4bcb26fcdc104b8ba16a600e6fe1a7603499d2b430c75e926158343a89f8c25dc20d4027476e2b45580c688152276e140b5"), hex::toByteArray("047ee781c8dd69b179ffb21790bc932e98c97ae3fc6519a5265295bb550597b7295b29821553305474cc32e3da5eccbec547f5595627d9c02293bbf457691ac366")},
+        {hex::toByteArray("a580bde62ea624ad9b8c755f821f1eb1e42c54a5bea8337dbea56ef5d3f05785"), hex::toByteArray("ba86c83732fc128b2496c93dac3d58188c4d005e7ae4e1f8535eb31f8e74d23c")}
+);
+
 api::ExtendedKeyAccountCreationInfo P2PKH_BIG_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6CThYZbX4PTeA7KRYZ8YXP3F6HwT2eVKPQap3Avieds3p1eos35UzSsJtTbJ3vQ8d3fjRwk4bCEz4m4H6mkFW49q29ZZ6gS8tvahs4WCZ9X"}
 );
