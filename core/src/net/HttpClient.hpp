@@ -102,10 +102,8 @@ namespace ledger {
             Option<std::shared_ptr<spdlog::logger>> _logger;
 
             static api::ErrorCode getErrorCode(int32_t statusCode) {
-                if (statusCode >= 200 && statusCode < 300 ) {
-                    return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
-                }
-                return statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST :
+                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL :
+                statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST :
                 statusCode >= 400 ? api::ErrorCode::HTTP_ERROR :
                 api::ErrorCode::TOO_MANY_REDIRECT;
             };
