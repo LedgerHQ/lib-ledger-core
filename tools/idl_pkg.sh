@@ -40,10 +40,10 @@ function generate_npm_interface {
         --cpp-out $CORE_API_DIR \
         --cpp-namespace ledger::core::api \
         --cpp-optional-template std::experimental::optional \
-        --cpp-optional-header "<core/utils/Optional.hpp>" \
+        --cpp-optional-header "\"utils/Optional.hpp\"" \
         --node-out $CORE_NODE_SRC_DIR \
         --node-type-prefix NJS \
-        --node-include-cpp "../include" \
+        --node-include-cpp "../include/core" \
         --node-package $CORE_NODE_PKG_NAME \
         --export-header-name libcore_export \
         --yaml-out $CORE_IDL_DIR \
@@ -51,20 +51,25 @@ function generate_npm_interface {
         --trace $trace
 
     # copy include files
+    echo "Copying header files…"
     rm -rf $CORE_NODE_DIR/include/core
-    cp -r $CORE_API_DIR $CORE_NODE_DIR/include/core
+    mkdir -p $CORE_NODE_DIR/include/core
+    cp -r $CORE_API_DIR/* $CORE_NODE_DIR/include/core
 
     # copy util files
+    echo "Copying utils files…"
     rm -rf $CORE_NODE_DIR/include/core/utils
-    mkdir $CORE_NODE_DIR/include/core/utils
+    mkdir -p $CORE_NODE_DIR/include/core/utils
     cp -r ledger-core/inc/core/utils/Optional.hpp $CORE_NODE_DIR/include/core/utils
     cp -r ledger-core/inc/core/LibCoreExport.hpp $CORE_NODE_DIR/include/core
 
     # copy lib files
+    echo "Copying lib files"
     rm -rf $CORE_NODE_DIR/lib
-    mkdir $CORE_NODE_DIR/lib
+    mkdir -p $CORE_NODE_DIR/lib
 
     # copy dynamic library
+    echo "Copying the dynamic library"
     cp $CORE_BUILD/src/libledger-core.* $CORE_NODE_DIR/lib
 
     # create tmp folder if needed
