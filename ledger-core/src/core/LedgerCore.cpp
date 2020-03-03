@@ -32,6 +32,7 @@
 #include <boost/preprocessor.hpp>
 
 #include <core/LedgerCore.hpp>
+#include <core/api/LedgerCore.hpp>
 
 namespace ledger {
     namespace core {
@@ -43,5 +44,13 @@ namespace ledger {
                         BOOST_PP_STRINGIZE(LIB_VERSION_MAJOR) "."
                         BOOST_PP_STRINGIZE(LIB_VERSION_MINOR) "."
                         BOOST_PP_STRINGIZE(LIB_VERSION_PATCH);
+
+        std::string api::LedgerCore::getStringVersion() {
+          return LIB_STRING_VERSION;
+        }
+
+        int32_t api::LedgerCore::getIntVersion() {
+          return LIB_VERSION;
+        }
     }
 }
