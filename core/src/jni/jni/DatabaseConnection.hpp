@@ -40,6 +40,7 @@ private:
         void commit() override;
         void close() override;
         std::shared_ptr<::ledger::core::api::DatabaseBlob> newBlob() override;
+        bool isAlive() override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseConnection, ::djinni_generated::DatabaseConnection>;
@@ -52,6 +53,7 @@ private:
     const jmethodID method_commit { ::djinni::jniGetMethodID(clazz.get(), "commit", "()V") };
     const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
     const jmethodID method_newBlob { ::djinni::jniGetMethodID(clazz.get(), "newBlob", "()Lco/ledger/core/DatabaseBlob;") };
+    const jmethodID method_isAlive { ::djinni::jniGetMethodID(clazz.get(), "isAlive", "()Z") };
 };
 
 }  // namespace djinni_generated

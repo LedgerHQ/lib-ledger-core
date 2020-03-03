@@ -53,6 +53,9 @@ public:
      * @return An empty blob
      */
     virtual std::shared_ptr<DatabaseBlob> newBlob() = 0;
+
+    /** Check whether the connection is still alive. */
+    virtual bool isAlive() = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -106,6 +106,7 @@ namespace ledger {
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
+            void eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point & date);
 
         protected:
             void emitNewOperationEvent(const Operation& operation);

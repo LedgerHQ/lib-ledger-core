@@ -65,7 +65,7 @@ namespace // anonymous
         res = sqlite3_busy_timeout(conn, timeout * 1000);
         check_sqlite_err(conn, res, "Failed to set busy timeout for connection. ");
     }
-    
+
     void sqlcipher_export(sqlite_api::sqlite3* conn,
                           int flags,
                           int timeout,
@@ -264,4 +264,8 @@ sqlite3_rowid_backend * sqlite3_session_backend::make_rowid_backend()
 sqlite3_blob_backend * sqlite3_session_backend::make_blob_backend()
 {
     return new sqlite3_blob_backend(*this);
+}
+
+bool sqlite3_session_backend::isAlive() const {
+    return true;
 }
