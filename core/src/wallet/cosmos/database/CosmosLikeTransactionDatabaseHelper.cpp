@@ -196,7 +196,7 @@ namespace ledger {
             }
 
             soci::rowset<soci::row> msgRows = (sql.prepare <<
-                    "SELECT * FROM cosmos_messages WHERE transaction_uid = :txUid ORDER BY cosmos_messages.uid",
+                    "SELECT * FROM cosmos_messages WHERE transaction_uid = :txUid ORDER BY cosmos_messages.msg_index",
                     soci::use(tx.uid));
 
             for (auto &msgRow : msgRows) {
