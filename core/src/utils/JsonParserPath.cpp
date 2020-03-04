@@ -107,19 +107,24 @@ namespace ledger {
         bool JsonParserPath::match(const JsonParserPathMatcher& matcher, int depth) const {
             if ((_path.size() - depth) < matcher.getElements().size())
                 return false;
+
             auto node = _path.begin();
             std::advance(node, depth);
             const JsonParserPathNode *parent = nullptr;
             auto element = matcher.getElements().begin();
-            while (node != _path.end()) {
-                if (element->filter == JsonParserPathMatcherFilter::MATCH_ALL)
+            auto elementEnd = matcher.getElements().end();
+            while (node != _path.end() && element != elementEnd) {
+                if (element->filter == JsonParserPathMatcherFilter::MATCH_ALL) {
                     return true;
-                if (node->type != element->node.type)
+                }
+                if (node->type != element->node.type) {
                     return false;
+                }
                 if (node->type == JsonParserPathNodeType::VALUE &&
                     element->filter == JsonParserPathMatcherFilter::EXACT) {
-                    if (!parent)
+                    if (!parent) {
                         return false;
+                    }
                     if (parent->type == JsonParserPathNodeType::ARRAY &&
                         node->index() != element->node.index()) {
                         return false;
@@ -132,7 +137,7 @@ namespace ledger {
                 node++;
                 element++;
             }
-            return true;
+            return node == _path.end() && element == elementEnd;
         }
 
         void JsonParserPath::value() {
@@ -240,7 +245,9 @@ namespace ledger {
                         ss << "[";
                         break;
                     case JsonParserPathNodeType::VALUE:
-                        if (parent->type == JsonParserPathNodeType::OBJECT) {
+                        if (elem.filter == JsonParserPathMatcherFilter::MATCH_ALL) {
+                            ss << "?";
+                        } else if (parent != nullptr && parent->type == JsonParserPathNodeType::OBJECT) {
                             ss << (elem.filter == JsonParserPathMatcherFilter::WILDCARD ? "*" : elem.node.key());
                         } else if (elem.filter != JsonParserPathMatcherFilter::WILDCARD) {
                             ss << elem.node.index();

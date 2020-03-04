@@ -106,7 +106,8 @@ TEST_F(StellarFixture, GetTransactions) {
     );
     auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
     auto transactions = wait(explorer->getTransactions(accountId, Option<std::string>::NONE));
-    EXPECT_TRUE(transactions.size() >= 5);
+    fmt::print("SIZE {}\n", transactions.size());
+    EXPECT_GE(transactions.size(), 5);
     const auto& tx = transactions.front();
     EXPECT_EQ(tx->hash, "93645afbd9f1c60f364e5acf77acd542883549262e84fd813f7cfefd4dc5bad6");
     EXPECT_EQ(tx->successful, true);
@@ -159,18 +160,19 @@ TEST_F(StellarFixture, GetOperations) {
     }
 }
 
-TEST_F(StellarFixture, GetRecommendedFees) {
-    auto pool = newPool();
-    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-            pool->getHttpClient(MAINNET_URL),
-            std::make_shared<DynamicObject>()
-    );
-    auto fees = wait(explorer->getRecommendedFees());
-    auto t = fees->maxFee.toString();
-    EXPECT_TRUE(!fees->lastLedger.empty());
-    EXPECT_TRUE(fees->lastBaseFee >= BigInt(100));
-    EXPECT_TRUE(fees->modeAcceptedFee >= BigInt(100));
-    EXPECT_TRUE(fees->minAccepted >= BigInt(100));
-    EXPECT_TRUE(fees->maxFee >= BigInt(100));
-}
+// This test is disabled until our nodes can support the feature
+//TEST_F(StellarFixture, GetRecommendedFees) {
+//    auto pool = newPool();
+//    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+//            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+//            pool->getHttpClient(MAINNET_URL),
+//            std::make_shared<DynamicObject>()
+//    );
+//    auto fees = wait(explorer->getRecommendedFees());
+//    auto t = fees->maxFee.toString();
+//    EXPECT_TRUE(!fees->lastLedger.empty());
+//    EXPECT_TRUE(fees->lastBaseFee >= BigInt(100));
+//    EXPECT_TRUE(fees->modeAcceptedFee >= BigInt(100));
+//    EXPECT_TRUE(fees->minAccepted >= BigInt(100));
+//    EXPECT_TRUE(fees->maxFee >= BigInt(100));
+//}

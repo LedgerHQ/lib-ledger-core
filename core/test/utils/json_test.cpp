@@ -178,3 +178,17 @@ TEST(JsonParserPath, MatchViews) {
     path.endArray();
     path.endObject();
 }
+
+TEST(JsonsParserPath, MatchViews2) {
+    JsonParserPathMatcher m_1("/hash");
+    JsonParserPath path;
+    path.startObject();
+    path.key("_embedded");
+    path.startObject();
+    path.key("records");
+    path.startArray();
+    path.startObject();
+    path.key("hash");
+    path.value();
+    EXPECT_TRUE(path.view(6).match(m_1));
+}

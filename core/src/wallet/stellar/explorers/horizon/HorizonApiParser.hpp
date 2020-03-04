@@ -51,7 +51,7 @@ namespace ledger {
             using Result = ResultType;
             using Response = Either<Exception, std::shared_ptr<ResultType>>;
 
-            HorizonApiParser() : _contentMatcher("/_embedded") {
+            HorizonApiParser() : _contentMatcher("/_embedded/?") {
                 _result = std::make_shared<ResultType>();
                 _parser.init(_result.get());
                 _parser.setPathView(_path.view(HasEmbedded ? 2 : 0));
@@ -61,7 +61,7 @@ namespace ledger {
                 _error(cpy._error),
                 _result(cpy._result),
                 _path(cpy._path),
-                _contentMatcher("/_embedded") {
+                _contentMatcher("/_embedded/?") {
                 _parser.init(_result.get());
                 _parser.setPathView(_path.view(HasEmbedded ? 2 : 0));
             }

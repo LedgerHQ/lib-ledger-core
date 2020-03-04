@@ -42,7 +42,7 @@ static const JsonParserPathMatcher LEDGER_MATCHER("/ledger");
 static const JsonParserPathMatcher DATE_MATCHER("/created_at");
 static const JsonParserPathMatcher ACCOUNT_MATCHER("/source_account");
 static const JsonParserPathMatcher ACCOUNT_SEQUENCE_MATCHER("/source_account_sequence");
-static const JsonParserPathMatcher FEE_MATCHER("/fee_paid");
+static const JsonParserPathMatcher FEE_MATCHER("/fee_charged");
 static const JsonParserPathMatcher MEMO_TYPE_MATCHER("/memo_type");
 static const JsonParserPathMatcher MEMO_MATCHER("/memo");
 static const JsonParserPathMatcher PAGING_TOKEN_MATCHER("/paging_token");

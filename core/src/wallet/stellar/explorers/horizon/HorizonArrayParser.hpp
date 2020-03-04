@@ -34,6 +34,7 @@
 
 #include <rapidjson/reader.h>
 #include <utils/JsonParserPath.hpp>
+#include <fmt/printf.h>
 
 namespace ledger {
     namespace core {
@@ -92,7 +93,6 @@ namespace ledger {
             }
 
             bool StartObject() {
-                auto t = _path.toString();
                 if (_path.match(_arrayMatcher)) {
                     _array->emplace_back(std::make_shared<Item>());
                     _parser.init(_array->back().get());
@@ -133,6 +133,7 @@ namespace ledger {
             std::vector<std::shared_ptr<Item>>* _array;
         };
 
+    #undef DELEGATE
     }
 }
 

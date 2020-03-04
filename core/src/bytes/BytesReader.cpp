@@ -31,11 +31,9 @@
 
 #include "BytesReader.h"
 #include "../utils/endian.h"
-#include "../../../cmake-build-debug/include/ledger/core/api/ErrorCode.hpp"
 #include <fmt/format.h>
 #include <sstream>
 #include <algorithm>
-#include <api/Runnable.hpp>
 #include <utils/hex.h>
 #include <utils/Exception.hpp>
 
@@ -104,8 +102,7 @@ namespace ledger {
 
         uint8_t BytesReader::readNextByte() {
             if (_cursor >= _bytes.size()) {
-                fmt::print("Read {} of {}\n", _cursor, hex::toString(_bytes));
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Read {} of {}", _cursor, hex::toString(_bytes));
+                throw std::out_of_range(fmt::format("Read {} of {}", _cursor, hex::toString(_bytes)));
             }
             uint8_t result = _bytes[_cursor];
             seek(1, Seek::CUR);

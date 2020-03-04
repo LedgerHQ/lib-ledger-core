@@ -100,7 +100,7 @@ namespace ledger {
         Future<std::vector<std::shared_ptr<stellar::Operation>>> HorizonBlockchainExplorer::getOperations(const std::string& address,
                                                               const Option<std::string>& cursor) {
             auto cursorParam = cursor.isEmpty() ? "" : fmt::format("&cursor={}", cursor.getValue());
-            return http->GET(fmt::format("/accounts/{}/operations?limit=50&order=asc&include_failed{}", address, cursorParam))
+            return http->GET(fmt::format("/accounts/{}/operations?limit=50&order=asc{}", address, cursorParam))
                     .template json<OperationsParser::Result, Exception>(OperationsParser())
                     .map<std::vector<std::shared_ptr<stellar::Operation>>>(getContext(), [] (const OperationsParser::Response& response) -> std::vector<std::shared_ptr<stellar::Operation>> {
                         if (response.isLeft()) {
@@ -114,8 +114,8 @@ namespace ledger {
                                                                   const Option<std::string>& cursor) {
 
             auto cursorParam = cursor.isEmpty() ? "" : fmt::format("&cursor={}", cursor.getValue());
-            return http->GET(fmt::format("/accounts/{}/transactions?limit=50&order=asc&include_failed{}", address, cursorParam))
-                    .template json<TransactionsParser ::Result, Exception>(TransactionsParser())
+            return http->GET(fmt::format("/accounts/{}/transactions?limit=50&order=asc{}", address, cursorParam))
+                    .template json<TransactionsParser::Result, Exception>(TransactionsParser())
                     .map<std::vector<std::shared_ptr<stellar::Transaction>>>(getContext(), [] (const TransactionsParser::Response& response) -> std::vector<std::shared_ptr<stellar::Transaction>> {
                         if (response.isLeft()) {
                             throw response.getLeft();
