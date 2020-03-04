@@ -205,8 +205,12 @@ namespace ledger {
             cosmos::Transaction tx;
             operation.getBackend().cosmosTransaction = Option<cosmos::Transaction>(tx);
             std::string transactionHash;
-            sql << "SELECT transaction_hash FROM cosmos_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            CosmosLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, operation.getBackend().cosmosTransaction.getValue());
+            sql << "SELECT tx.hash FROM cosmos_operations AS op LEFT JOIN cosmos_messages AS msg "
+                   "ON msg.uid = op.uid LEFT JOIN cosmos_transactions as tx ON tx.uid = "
+                   "msg.transaction_uid WHERE op.uid = :uid",
+                soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            CosmosLikeTransactionDatabaseHelper::getTransactionByHash(
+                sql, transactionHash, operation.getBackend().cosmosTransaction.getValue());
         }
 
         void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation) {

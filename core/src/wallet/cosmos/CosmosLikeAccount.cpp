@@ -130,6 +130,7 @@ namespace ledger {
                         computeAndSetAmount(out, msg);
 
                         // out._account = shared_from_this();
+                        out.cosmosTransaction = Option<cosmos::Transaction>(tx);
                         out.accountUid = getAccountUid();
                         if (tx.block){
                                 out.block = Option<Block>(Block(tx.block.getValue()));
@@ -139,6 +140,7 @@ namespace ledger {
                         if (out.block.nonEmpty()) {
                                 out.block.getValue().currencyName = wallet->getCurrency().name;
                         }
+                        out.cosmosTransaction.getValue().block = out.block;
                         out.currencyName = getWallet()->getCurrency().name;
                         out.date = tx.timestamp;
                         out.trust = std::make_shared<TrustIndicator>();
