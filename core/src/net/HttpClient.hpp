@@ -101,6 +101,19 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> _context;
             Option<std::shared_ptr<spdlog::logger>> _logger;
 
+            static api::ErrorCode getErrorCode(int32_t statusCode) {
+                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL :
+                statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST :
+                statusCode >= 400 ? api::ErrorCode::HTTP_ERROR :
+                api::ErrorCode::TOO_MANY_REDIRECT;
+            };
+
+            static bool isHttpError(api::ErrorCode errorCode) {
+                return errorCode == api::ErrorCode::HTTP_ERROR ||
+                errorCode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST ||
+                errorCode == api::ErrorCode::TOO_MANY_REDIRECT;
+            };
+
             class ApiRequest : public api::HttpRequest {
             public:
                 ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self);
