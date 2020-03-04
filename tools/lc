@@ -83,12 +83,11 @@ cmd_pkg() {
 
   PKG_METHOD="$1"
   IDL_PATH="$2"
-  PROJECT_DIR=${IDL_PATH%/idl/*}
 
   case $PKG_METHOD in
     "npm")
       echo "Packaging for NPM"
-      ./tools/idl_pkg.sh $PROJECT_DIR $PKG_METHOD
+      ./tools/idl_pkg.sh $IDL_PATH $PKG_METHOD
       ;;
 
     *)

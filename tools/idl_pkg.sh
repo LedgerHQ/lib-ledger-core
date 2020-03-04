@@ -19,62 +19,60 @@ fi
 
 
 function generate_npm_interface {
-    CORE_PROJECT=$1 # project library
-    CORE_DIR=$CORE_PROJECT
-    CORE_IDL_DIR=$CORE_DIR/idl
-    CORE_API_DIR=$CORE_DIR/inc/${CORE_PROJECT#ledger-}/api
-    CORE_CPP_JNI_DIR=$CORE_DIR/inc/core/jni
-    CORE_NODE_DIR=$CORE_DIR/bindings/node
-    CORE_NODE_SRC_DIR=$CORE_NODE_DIR/src
-    CORE_NODE_PKG_NAME=ledgercore
-    CORE_BUILD=ledger-core/build
+    IDL_PATH=$1
+    PROJECT_NAME=${IDL_PATH%/idl/*}
+    CURRENCY_NAME=${PROJECT_NAME##*-}
+    API_DIR=$PROJECT_NAME/inc/$CURRENCY_NAME/api
+    CPP_JNI_DIR=$PROJECT_NAME/inc/$CURRENCY_NAME/jni
+    NODE_DIR=$PROJECT_NAME/bindings/node
+    NODE_SRC_DIR=$NODE_DIR/src
+    NODE_PKG_NAME=ledgercore
+    BUILD=$PROJECT_NAME/build
 
-    echo -e "Generating $CORE_PROJECT JS binding code"
+    echo -e "Generating $PROJECT_NAME ($CURRENCY_NAME) JS binding code"
 
     # recreate node directory
-    rm -rf $CORE_NODE_SRC_DIR
-    mkdir -p $CORE_NODE_SRC_DIR
+    rm -rf $NODE_SRC_DIR
+    mkdir -p $NODE_SRC_DIR
 
     ./djinni/src/run \
-        --idl $CORE_IDL_DIR/core.djinni \
-        --cpp-out $CORE_API_DIR \
+        --idl $IDL_PATH \
+        --cpp-out $API_DIR \
         --cpp-namespace ledger::core::api \
         --cpp-optional-template std::experimental::optional \
         --cpp-optional-header "\"utils/Optional.hpp\"" \
-        --node-out $CORE_NODE_SRC_DIR \
+        --node-out $NODE_SRC_DIR \
         --node-type-prefix NJS \
-        --node-include-cpp "../include/core" \
-        --node-package $CORE_NODE_PKG_NAME \
+        --node-include-cpp "../include/$CURRENCY_NAME" \
+        --node-package $NODE_PKG_NAME \
         --export-header-name libcore_export \
-        --yaml-out $CORE_IDL_DIR \
-        --yaml-out-file core.yaml \
         --trace $trace
 
     # copy include files
     echo "Copying header files…"
-    rm -rf $CORE_NODE_DIR/include/core
-    mkdir -p $CORE_NODE_DIR/include/core
-    cp -r $CORE_API_DIR/* $CORE_NODE_DIR/include/core
+    rm -rf $NODE_DIR/include/$CURRENCY_NAME
+    mkdir -p $NODE_DIR/include/$CURRENCY_NAME
+    cp -r $API_DIR/* $NODE_DIR/include/$CURRENCY_NAME
 
     # copy util files
     echo "Copying utils files…"
-    rm -rf $CORE_NODE_DIR/include/core/utils
-    mkdir -p $CORE_NODE_DIR/include/core/utils
-    cp -r ledger-core/inc/core/utils/Optional.hpp $CORE_NODE_DIR/include/core/utils
-    cp -r ledger-core/inc/core/LibCoreExport.hpp $CORE_NODE_DIR/include/core
+    rm -rf $NODE_DIR/include/$CURRENCY_NAME/utils
+    mkdir -p $NODE_DIR/include/$CURRENCY_NAME/utils
+    cp -r ledger-core/inc/core/utils/Optional.hpp $NODE_DIR/include/$CURRENCY_NAME/utils
+    cp -r ledger-core/inc/core/LibCoreExport.hpp $NODE_DIR/include/$CURRENCY_NAME
 
     # copy lib files
     echo "Copying lib files"
-    rm -rf $CORE_NODE_DIR/lib
-    mkdir -p $CORE_NODE_DIR/lib
+    rm -rf $NODE_DIR/lib
+    mkdir -p $NODE_DIR/lib
 
     # copy dynamic library
     echo "Copying the dynamic library"
-    cp $CORE_BUILD/src/libledger-core.* $CORE_NODE_DIR/lib
+    cp $BUILD/src/lib$PROJECT_NAME.* $NODE_DIR/lib
 
     # create tmp folder if needed
-    if [ ! -e $CORE_NODE_DIR/js/tmp ]; then
-      mkdir -p $CORE_NODE_DIR/js/tmp
+    if [ ! -e $NODE_DIR/js/tmp ]; then
+      mkdir -p $NODE_DIR/js/tmp
     fi
 }
 
@@ -88,4 +86,3 @@ case "$2" in
     exit 1
     ;;
 esac
-
