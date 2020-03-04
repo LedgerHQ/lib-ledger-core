@@ -110,12 +110,13 @@ TEST_F(CosmosDBTests, OperationQueryTest) {
 
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.set_log_stream(&std::cerr);
         account->putTransaction(sql, tx);
     }
 
     {
         auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-        EXPECT_EQ(ops.size(), 1);
+        ASSERT_EQ(ops.size(), 1);
         auto op = ops[0];
 
         /* TODO
@@ -162,12 +163,13 @@ TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
 
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.set_log_stream(&std::cerr);
         account->putTransaction(sql, tx);
     }
 
     {
         auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-        EXPECT_EQ(ops.size(), 1);
+        ASSERT_EQ(ops.size(), 1);
 
         auto op = ops[0];
         // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
@@ -196,12 +198,13 @@ TEST_F(CosmosDBTests, MultipleMsgTest) {
 
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.set_log_stream(&std::cerr);
         account->putTransaction(sql, tx);
     }
 
     {
         auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
-        EXPECT_EQ(ops.size(), 2);
+        ASSERT_EQ(ops.size(), 2);
 
         {
             auto op = ops[0];
@@ -217,15 +220,25 @@ TEST_F(CosmosDBTests, MultipleMsgTest) {
             ASSERT_NE(msgPtr, nullptr);
             auto msgRetrieved = msgPtr->getRawData();
 
-            assertSameSendMessage(msgSend, msgRetrieved);
             assertSameTransaction(tx, txRetrieved);
+            assertSameSendMessage(msgSend, msgRetrieved);
         }
 
         {
             auto op = ops[1];
-            auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
-            auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
-            auto msgRetrieved = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage())->getRawData();
+            // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
+            // auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
+            // auto msgRetrieved = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage())->getRawData();
+            auto cosmosOp = op->asCosmosLikeOperation();
+            ASSERT_NE(cosmosOp, nullptr);
+            ASSERT_NE(cosmosOp->getMessage(), nullptr);
+            ASSERT_NE(cosmosOp->getTransaction(), nullptr);
+            auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
+            ASSERT_NE(txPtr, nullptr);
+            auto txRetrieved = txPtr->getRawData();
+            auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
+            ASSERT_NE(msgPtr, nullptr);
+            auto msgRetrieved = msgPtr->getRawData();
 
             assertSameTransaction(tx, txRetrieved);
             assertSameVoteMessage(msgVote, msgRetrieved);

@@ -30,13 +30,27 @@
 
 #pragma once
 
-#include <api/CosmosLikeTransaction.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 
-#include <wallet/common/Operation.h>
-#include <wallet/common/OperationQuery.h>
-#include <wallet/common/AbstractWallet.hpp>
+
+// #include <api/CosmosLikeTransaction.hpp>
+// #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
+
+// #include <wallet/common/Operation.h>
+// #include <wallet/common/OperationQuery.h>
+// #include <wallet/common/AbstractWallet.hpp>
+
+namespace ledger {
+namespace core {
+namespace cosmos {
+struct OperationQueryResult {
+    Transaction tx;
+    Message msg;
+};
+}  // namespace cosmos
+}  // namespace core
+}  // namespace ledger
 
 // XXX : The code below only works on modularized (hence the template parent class)
 // namespace ledger {

@@ -90,7 +90,7 @@ namespace ledger {
         }
 
         CosmosLikeTransactionApi::CosmosLikeTransactionApi(const std::shared_ptr<OperationApi>& baseOp):
-        CosmosLikeTransactionApi(baseOp->getBackend().cosmosTransaction.getValue()){
+        CosmosLikeTransactionApi(baseOp->getBackend().cosmosTransaction.getValue().tx){
             _currency = baseOp->getCurrency();
         }
 

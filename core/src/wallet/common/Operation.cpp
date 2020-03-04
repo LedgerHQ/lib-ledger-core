@@ -44,7 +44,7 @@ namespace ledger {
                 // Getting a transaction hash here is very wrong for Cosmos since all operations
                 // are actually modelled better with MESSAGES, so the message index and the message
                 // type MUST be part of the hash here.
-                auto final = cosmosTransaction.getValue().hash;
+                auto final = cosmosTransaction.getValue().tx.hash;
                 if (!additional.empty()){
                     final = fmt::format("{}+{}", final, additional);
                 }

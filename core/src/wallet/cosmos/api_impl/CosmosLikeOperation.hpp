@@ -40,8 +40,6 @@
 
 #include <wallet/common/Operation.h>
 #include <wallet/common/api_impl/OperationApi.h>
-#include <wallet/common/AbstractWallet.hpp>
-#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
     namespace core {

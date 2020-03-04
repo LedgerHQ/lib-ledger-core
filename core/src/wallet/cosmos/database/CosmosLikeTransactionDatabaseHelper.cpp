@@ -199,7 +199,10 @@ namespace ledger {
                     "SELECT * FROM cosmos_messages WHERE transaction_uid = :txUid ORDER BY cosmos_messages.msg_index",
                     soci::use(tx.uid));
 
+
+                auto msgCount = 0;
             for (auto &msgRow : msgRows) {
+                msgCount++;
                 // See Migrations.cpp for column names
                 const auto COL_MSG_LOG = 3;
                 const auto COL_MSG_SUCCESS = 4;
@@ -214,6 +217,7 @@ namespace ledger {
                 log.messageIndex = soci::get_number<int32_t>(msgRow, COL_MSG_INDEX);
                 tx.logs.push_back(log);
             }
+            std::cerr << "Messages : " << msgCount << std::endl;
         }
 
         static void insertMessage(soci::session& sql,

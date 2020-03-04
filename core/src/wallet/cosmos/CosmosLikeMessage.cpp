@@ -149,9 +149,25 @@ inline auto addOptionalString(
 
 CosmosLikeMessage::CosmosLikeMessage(const cosmos::Message& msg) : _msgData(msg) {}
 
-    CosmosLikeMessage::CosmosLikeMessage(const std::shared_ptr<OperationApi>& baseOp) {
+CosmosLikeMessage::CosmosLikeMessage(const std::shared_ptr<OperationApi>& baseOp) {
+    // Necessary for design/mod backport
+    // Basically we need to separate the code from CosmosLikeOperationQuery in 2 parts.
+    // The part regarding the Transaction information is in OperationQuery::inflateCosmosLikeTransaction.
+    // We still need to construct a message from an OperationApi. This is done here.
+                // ledger::core::cosmos::Message msg;
 
-    }
+                // std::string msgUid;
+                // sql << "SELECT msg.uid "
+                //     "FROM cosmos_messages AS msg "
+                //     "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
+                //     "WHERE op.uid = :uid",
+                //     soci::use(operation.getUid()),
+                //     soci::into(msgUid);
+
+                // CosmosLikeTransactionDatabaseHelper::getMessageByUid(sql, msgUid, msg);
+
+                // setRawData(msg);
+}
 
 void CosmosLikeMessage::setRawData(const cosmos::Message& msgData) { _msgData = msgData; }
 

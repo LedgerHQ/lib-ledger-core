@@ -133,6 +133,7 @@ namespace ledger {
                         }
 
                         void assertSameTransaction(const Transaction& txRef, const Transaction& txResult) {
+                                std::cerr << "Tx check !!!" << std::endl;
 
                                 EXPECT_EQ(txResult.hash, txRef.hash);
                                 EXPECT_EQ(txResult.timestamp, txRef.timestamp);
@@ -154,7 +155,7 @@ namespace ledger {
                                 EXPECT_EQ(txResult.messages.size(), txRef.messages.size());
                                 EXPECT_EQ(txResult.logs.size(), txRef.logs.size());
                                 for (int i=0 ; i<txResult.messages.size() ; i++) {
-                                        EXPECT_EQ(txResult.messages[i].type, txRef.messages[i].type);
+                                        EXPECT_EQ(txResult.messages[i].type, txRef.messages[i].type) << "Type " << i << " differs";
                                         switch (ledger::core::cosmos::stringToMsgType(txResult.messages[i].type.c_str())) {
                                                 case (api::CosmosLikeMsgType::MSGDELEGATE):
                                                         assertSameDelegateMessage(txRef.messages[i], txResult.messages[i]);
