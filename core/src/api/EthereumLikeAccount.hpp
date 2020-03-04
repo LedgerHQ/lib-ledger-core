@@ -24,6 +24,7 @@ class ERC20LikeAccount;
 class EthereumLikeTransaction;
 class EthereumLikeTransactionBuilder;
 class StringCallback;
+struct EthereumGasLimitRequest;
 
 /** Class representing a Ethereum account. */
 class LIBCORE_EXPORT EthereumLikeAccount {
@@ -58,6 +59,14 @@ public:
      * Note: same note as above
      */
     virtual void getEstimatedGasLimit(const std::string & address, const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /**
+     * Get estimated gas limit to set so the transaction will succeed
+     * The passed address could be EOA or contract
+     * This estimation is based on a dry-run on the node, and it will fail if the request is ill-formed
+     * Note: same note as above
+     */
+    virtual void getDryRunGasLimit(const std::string & address, const EthereumGasLimitRequest & request, const std::shared_ptr<BigIntCallback> & callback) = 0;
 
     /**
      * Get balance of ERC20 token
