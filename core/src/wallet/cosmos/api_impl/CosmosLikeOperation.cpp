@@ -42,13 +42,13 @@ namespace ledger {
     namespace core {
 
         CosmosLikeOperation::CosmosLikeOperation(const std::shared_ptr<OperationApi> &baseOp) {
-            _txApi = std::make_shared<CosmosLikeTransactionApi>(*baseOp);
-            _msgApi = nullptr;
+            _txApi = std::make_shared<CosmosLikeTransactionApi>(baseOp);
+            _msgApi = std::make_shared<CosmosLikeMessage>(baseOp);
         }
 
         CosmosLikeOperation::CosmosLikeOperation(ledger::core::cosmos::Transaction const& tx,
                                                  ledger::core::cosmos::Message const& msg) :
-            //Operation(account), // TODO Need this?
+            // Operation(account), // TODO Need this?
             _txApi(std::make_shared<CosmosLikeTransactionApi>(tx)),
             _msgApi(std::make_shared<CosmosLikeMessage>(msg))
         {

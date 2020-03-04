@@ -45,6 +45,7 @@
 #include <utils/hex.h>
 #include <math/BigInt.h>
 
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <cosmos/CosmosLikeAddress.hpp>
 #include <api/CosmosLikeMsgType.hpp>
 #include <wallet/cosmos/CosmosLikeMessage.hpp>
@@ -84,7 +85,14 @@ namespace ledger {
 
         CosmosLikeTransactionApi::CosmosLikeTransactionApi(const cosmos::Transaction& txData) :
             _txData(txData)
-        {}
+        {
+            _currency = currencies::ATOM;
+        }
+
+        CosmosLikeTransactionApi::CosmosLikeTransactionApi(const std::shared_ptr<OperationApi>& baseOp):
+        CosmosLikeTransactionApi(baseOp->getBackend().cosmosTransaction.getValue()){
+            _currency = baseOp->getCurrency();
+        }
 
         std::string CosmosLikeTransactionApi::getMemo() const {
             return _txData.memo;

@@ -50,7 +50,6 @@
 #include <api/CosmosLikeNetworkParameters.hpp>
 #include <api/CosmosLikeTransaction.hpp>
 #include <wallet/cosmos/cosmos.hpp>
-#include <wallet/cosmos/CosmosLikeMessage.hpp>
 
 namespace ledger {
     namespace core {

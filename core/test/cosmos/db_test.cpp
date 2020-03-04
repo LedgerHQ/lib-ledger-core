@@ -134,7 +134,8 @@ TEST_F(CosmosDBTests, OperationQueryTest) {
         EXPECT_EQ(op->isComplete(), ?);
         */
 
-        auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
+        // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
+        auto cosmosOp = op->asCosmosLikeOperation();
 
         auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
         assertSameTransaction(tx, txRetrieved);
@@ -169,7 +170,8 @@ TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
         EXPECT_EQ(ops.size(), 1);
 
         auto op = ops[0];
-        auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
+        // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
+        auto cosmosOp = op->asCosmosLikeOperation();
         auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
 
         assertSameTransaction(tx, txRetrieved);
@@ -203,12 +205,20 @@ TEST_F(CosmosDBTests, MultipleMsgTest) {
 
         {
             auto op = ops[0];
-            auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
-            auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
-            auto msgRetrieved = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage())->getRawData();
+            // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
+            auto cosmosOp = op->asCosmosLikeOperation();
+            ASSERT_NE(cosmosOp, nullptr);
+            ASSERT_NE(cosmosOp->getMessage(), nullptr);
+            ASSERT_NE(cosmosOp->getTransaction(), nullptr);
+            auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
+            ASSERT_NE(txPtr, nullptr);
+            auto txRetrieved = txPtr->getRawData();
+            auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
+            ASSERT_NE(msgPtr, nullptr);
+            auto msgRetrieved = msgPtr->getRawData();
 
-            assertSameTransaction(tx, txRetrieved);
             assertSameSendMessage(msgSend, msgRetrieved);
+            assertSameTransaction(tx, txRetrieved);
         }
 
         {

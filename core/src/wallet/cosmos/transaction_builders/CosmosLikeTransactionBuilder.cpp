@@ -53,6 +53,8 @@
 #include <api/CosmosLikeMsgDeposit.hpp>
 #include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
 
+#include <wallet/cosmos/CosmosLikeMessage.hpp> // Included only for the Unsupported case
+
 using namespace rapidjson;
 namespace ledger {
     namespace core {

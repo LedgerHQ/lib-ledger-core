@@ -149,6 +149,10 @@ inline auto addOptionalString(
 
 CosmosLikeMessage::CosmosLikeMessage(const cosmos::Message& msg) : _msgData(msg) {}
 
+    CosmosLikeMessage::CosmosLikeMessage(const std::shared_ptr<OperationApi>& baseOp) {
+
+    }
+
 void CosmosLikeMessage::setRawData(const cosmos::Message& msgData) { _msgData = msgData; }
 
 const cosmos::Message& CosmosLikeMessage::getRawData() const { return _msgData; }

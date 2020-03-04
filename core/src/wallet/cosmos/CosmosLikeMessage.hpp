@@ -35,6 +35,7 @@
 #include <collections/DynamicObject.hpp>
 
 #include <wallet/cosmos/cosmos.hpp>
+#include <wallet/common/api_impl/OperationApi.h>
 
 #include <api/CosmosLikeAmount.hpp>
 #include <api/CosmosLikeContent.hpp>
@@ -58,6 +59,7 @@ namespace ledger {
 		public:
 
         	CosmosLikeMessage(const cosmos::Message& msgData);
+        	CosmosLikeMessage(const std::shared_ptr<OperationApi>& baseOp);
 
 			virtual api::CosmosLikeMsgType getMessageType() const override;
 			virtual std::string getRawMessageType() const override;

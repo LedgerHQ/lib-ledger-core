@@ -55,9 +55,7 @@ namespace ledger {
 
             explicit CosmosLikeTransactionApi(const cosmos::Transaction& txData);
 
-            explicit CosmosLikeTransactionApi(const OperationApi& baseOp) {
-                exit(1);
-            }
+            explicit CosmosLikeTransactionApi(const std::shared_ptr<OperationApi>& baseOp);
 
             std::string getHash() const override;
             std::shared_ptr<api::Amount> getFee() const override;
