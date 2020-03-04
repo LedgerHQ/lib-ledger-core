@@ -176,6 +176,9 @@ namespace ledger {
                 case api::WalletType::BITCOIN:
                     _factories.push_back(make_factory<api::WalletType::BITCOIN>(currency, shared_from_this()));
                     break;
+                case api::WalletType::COSMOS:
+                    _factories.push_back(make_factory<api::WalletType::COSMOS>(currency, shared_from_this()));
+                    break;
                 case api::WalletType::ETHEREUM:
                     _factories.push_back(make_factory<api::WalletType::ETHEREUM>(currency, shared_from_this()));
                     break;

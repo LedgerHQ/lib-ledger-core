@@ -62,7 +62,6 @@ class CosmosLikeWalletSynchronization : public BaseFixture {
 public:
     void SetUp() override {
         BaseFixture::SetUp();
-        backend->enableQueryLogging(true);
         auto worker = dispatcher->getSerialExecutionContext("worker");
         auto client = std::make_shared<HttpClient>(
             api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT, http, worker);
@@ -230,6 +229,7 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
 #else
     auto pool = newDefaultPool();
 #endif
+    backend->enableQueryLogging(true);
 
     {
         auto configuration = DynamicObject::newInstance();

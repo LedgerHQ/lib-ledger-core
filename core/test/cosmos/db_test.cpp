@@ -17,33 +17,45 @@ using namespace ledger::testing::cosmos;
 
 class CosmosDBTests : public BaseFixture {
 public:
-    void SetUp() override {
-        BaseFixture::SetUp();
-        backend->enableQueryLogging(true);
-    }
+ void SetUp() override
+ {
+     BaseFixture::SetUp();
+#ifdef PG_SUPPORT
+     const bool usePostgreSQL = true;
+     configuration->putString(
+         api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+     pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+#else
+     pool = newDefaultPool();
+#endif
+     backend->enableQueryLogging(true);
+ }
 
-    void setupTest(std::shared_ptr<WalletPool>& pool,
-                   std::shared_ptr<CosmosLikeAccount>& account,
-                   std::shared_ptr<CosmosLikeWallet>& wallet) {
-        auto configuration = DynamicObject::newInstance();
-        configuration->putString(
-            api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
-            "44'/<coin_type>'/<account>'/<node>/<address>");
-        wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(wait(
-            pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration)));
+ void setupTest(
+     std::shared_ptr<WalletPool> &pool,
+     std::shared_ptr<CosmosLikeAccount> &account,
+     std::shared_ptr<CosmosLikeWallet> &wallet)
+ {
+     auto configuration = DynamicObject::newInstance();
+     configuration->putString(
+         api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+         "44'/<coin_type>'/<account>'/<node>/<address>");
+     wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
+         wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration)));
 
-        auto accountInfo = wait(wallet->getNextAccountCreationInfo());
-        EXPECT_EQ(accountInfo.index, 0);
-        accountInfo.publicKeys.push_back(
-            hex::toByteArray(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY));
+     auto accountInfo = wait(wallet->getNextAccountCreationInfo());
+     EXPECT_EQ(accountInfo.index, 0);
+     accountInfo.publicKeys.push_back(
+         hex::toByteArray(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY));
 
-        account = ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
-    }
+     account =
+         ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+ }
+
+ std::shared_ptr<WalletPool> pool;
 };
 
 TEST_F(CosmosDBTests, BasicDBTest) {
-
-    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);
@@ -84,7 +96,6 @@ TEST_F(CosmosDBTests, BasicDBTest) {
 }
 
 TEST_F(CosmosDBTests, OperationQueryTest) {
-    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);
@@ -133,7 +144,6 @@ TEST_F(CosmosDBTests, OperationQueryTest) {
 }
 
 TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
-    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);
@@ -167,7 +177,6 @@ TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
 }
 
 TEST_F(CosmosDBTests, MultipleMsgTest) {
-    std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);

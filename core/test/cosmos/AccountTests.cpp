@@ -47,6 +47,7 @@ struct CosmosAccounts : public BaseFixture {
 TEST_F(CosmosAccounts, FirstATOMAccountInfo) {
     auto const currency = currencies::ATOM;
     auto pool = newDefaultPool();
+    backend->enableQueryLogging(true);
 
     auto wallet = wait(pool->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());

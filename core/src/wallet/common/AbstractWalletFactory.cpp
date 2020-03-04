@@ -30,6 +30,7 @@
  */
 #include "AbstractWalletFactory.hpp"
 #include <wallet/bitcoin/factories/BitcoinLikeWalletFactory.hpp>
+#include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 #include <wallet/ethereum/factories/EthereumLikeWalletFactory.h>
 #include <wallet/ripple/factories/RippleLikeWalletFactory.h>
 #include <wallet/tezos/factories/TezosLikeWalletFactory.h>
@@ -58,6 +59,13 @@ namespace ledger {
         std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::BITCOIN>(const api::Currency& currency,
                                                                                       const std::shared_ptr<WalletPool>& pool) {
             return std::make_shared<BitcoinLikeWalletFactory>(currency, pool);
+        }
+
+        template <>
+        std::shared_ptr<AbstractWalletFactory> make_factory<api::WalletType::COSMOS>(
+            const api::Currency &currency, const std::shared_ptr<WalletPool> &pool)
+        {
+            return std::make_shared<CosmosLikeWalletFactory>(currency, pool);
         }
 
         template <>

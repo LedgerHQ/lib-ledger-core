@@ -30,6 +30,7 @@
  */
 
 #include "migrations.hpp"
+#include <boost/exception/diagnostic_information.hpp>
 
 namespace ledger {
     namespace core {
@@ -42,6 +43,9 @@ namespace ledger {
                 st.fetch();
             } catch (...) {
                 // if we cannot find the version, it stays set to -1
+                // TODO : properly log this
+                std::cerr << "Version detected as -1 because : "
+                          << boost::current_exception_diagnostic_information() << std::endl;
             }
 
             return version;
