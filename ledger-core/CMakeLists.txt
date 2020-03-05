@@ -91,7 +91,6 @@ install(
         ledger-core-interface
         bigd
         fmt
-        crypto
         blake
         soci_sqlite3
         soci_core_static
@@ -99,18 +98,49 @@ install(
         spdlog
         sqlcipher
         ethash
-        ledger-test
-        ledger-qt-host
-        ledger-core-integration-test
-        mongoose
-        ssl
-        gtest
-        gtest_main
     EXPORT ledger-core
     ARCHIVE       DESTINATION lib/ledger-core
     LIBRARY       DESTINATION lib/ledger-core
     FRAMEWORK     DESTINATION lib/ledger-core
 )
+
+if(BUILD_TESTS)
+    install(
+        TARGETS
+            ledger-test
+            ledger-qt-host
+            ledger-core-integration-test
+            mongoose
+            gtest
+            gtest_main
+        EXPORT ledger-core
+        ARCHIVE       DESTINATION lib/ledger-core
+        LIBRARY       DESTINATION lib/ledger-core
+        FRAMEWORK     DESTINATION lib/ledger-core
+    )
+endif()
+
+if(NOT SYS_OPENSSL)
+    install(
+        TARGETS
+            crypto
+        EXPORT ledger-core
+        ARCHIVE       DESTINATION lib/ledger-core
+        LIBRARY       DESTINATION lib/ledger-core
+        FRAMEWORK     DESTINATION lib/ledger-core
+    )
+
+    if (SSL_SUPPORT)
+        install(
+            TARGETS
+                ssl
+            EXPORT ledger-core
+            ARCHIVE       DESTINATION lib/ledger-core
+            LIBRARY       DESTINATION lib/ledger-core
+            FRAMEWORK     DESTINATION lib/ledger-core
+        )
+    endif()
+endif()
 
 if(PG_SUPPORT)
     install(
