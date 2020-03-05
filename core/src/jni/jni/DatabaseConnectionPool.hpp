@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseConnectionPool, ::djinni_generated::DatabaseConnectionPool>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseConnectionPool") };
-    const jmethodID method_getConnection { ::djinni::jniGetMethodID(clazz.get(), "getConnection", "()Lco/ledger/core/DatabaseConnection;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseConnectionPool") };
+    const jmethodID method_getConnection { ::djinni::jniGetMethodID(clazz.get(), "getConnection", "()LDatabaseConnection;") };
 };
 
 }  // namespace djinni_generated

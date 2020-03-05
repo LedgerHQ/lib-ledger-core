@@ -22,12 +22,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeMessage::CosmosLikeMessage() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeMessage, CosmosLikeMessage>("co/ledger/core/CosmosLikeMessage$CppProxy") {}
+CosmosLikeMessage::CosmosLikeMessage() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeMessage, CosmosLikeMessage>("CosmosLikeMessage$CppProxy") {}
 
 CosmosLikeMessage::~CosmosLikeMessage() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_CosmosLikeMessage_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -35,7 +35,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_native_1getMessageType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_00024CppProxy_native_1getMessageType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -45,7 +45,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_native_1getRawMessageType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_CosmosLikeMessage_00024CppProxy_native_1getRawMessageType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -55,7 +55,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -64,7 +64,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgSend(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -73,7 +73,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgSend(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgDelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgDelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -82,7 +82,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgDelegate
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgDelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgDelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -91,7 +91,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgDelega
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgUndelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgUndelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -100,7 +100,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgUndelega
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgUndelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgUndelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -109,7 +109,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgUndele
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgRedelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgRedelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -118,7 +118,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgRedelega
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgRedelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgRedelegate(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -127,7 +127,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgRedele
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgSubmitProposal(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgSubmitProposal(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -136,7 +136,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgSubmitPr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgSubmitProposal(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgSubmitProposal(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -145,7 +145,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgSubmit
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgVote(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgVote(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -154,7 +154,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgVote(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgVote(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgVote(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -163,7 +163,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgVote(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgDeposit(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgDeposit(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -172,7 +172,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgDeposit(
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgDeposit(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgDeposit(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -181,7 +181,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgDeposi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgWithdrawDelegationReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgWithdrawDelegationReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -190,7 +190,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgWithdraw
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgWithdrawDelegationReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgWithdrawDelegationReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -199,7 +199,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgWithdr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgMultiSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgMultiSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -208,7 +208,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgMultiSen
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgMultiSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgMultiSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -217,7 +217,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgMultiS
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgCreateValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgCreateValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -226,7 +226,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgCreateVa
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgCreateValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgCreateValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -235,7 +235,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgCreate
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgEditValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgEditValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -244,7 +244,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgEditVali
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgEditValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgEditValidator(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -253,7 +253,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgEditVa
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgSetWithdrawAddress(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgSetWithdrawAddress(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -262,7 +262,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgSetWithd
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgSetWithdrawAddress(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgSetWithdrawAddress(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -271,7 +271,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgSetWit
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgWithdrawDelegatorReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgWithdrawDelegatorReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -280,7 +280,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgWithdraw
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgWithdrawDelegatorReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgWithdrawDelegatorReward(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -289,7 +289,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgWithdr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgWithdrawValidatorCommission(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgWithdrawValidatorCommission(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -298,7 +298,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgWithdraw
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgWithdrawValidatorCommission(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgWithdrawValidatorCommission(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -307,7 +307,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgWithdr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgUnjail(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_wrapMsgUnjail(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -316,7 +316,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgUnjail(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_unwrapMsgUnjail(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeMessage_unwrapMsgUnjail(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

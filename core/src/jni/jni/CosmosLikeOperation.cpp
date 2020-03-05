@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeOperation::CosmosLikeOperation() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeOperation, CosmosLikeOperation>("co/ledger/core/CosmosLikeOperation$CppProxy") {}
+CosmosLikeOperation::CosmosLikeOperation() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeOperation, CosmosLikeOperation>("CosmosLikeOperation$CppProxy") {}
 
 CosmosLikeOperation::~CosmosLikeOperation() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_CosmosLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeOperation_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeOperation_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeOperation_00024CppProxy_native_1getMessage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeOperation_00024CppProxy_native_1getMessage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

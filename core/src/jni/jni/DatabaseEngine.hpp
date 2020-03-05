@@ -41,8 +41,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseEngine, ::djinni_generated::DatabaseEngine>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseEngine") };
-    const jmethodID method_connect { ::djinni::jniGetMethodID(clazz.get(), "connect", "(Ljava/lang/String;)Lco/ledger/core/DatabaseConnectionPool;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseEngine") };
+    const jmethodID method_connect { ::djinni::jniGetMethodID(clazz.get(), "connect", "(Ljava/lang/String;)LDatabaseConnectionPool;") };
     const jmethodID method_getPoolSize { ::djinni::jniGetMethodID(clazz.get(), "getPoolSize", "()I") };
 };
 

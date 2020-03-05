@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::WalletPoolCallback, ::djinni_generated::WalletPoolCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/WalletPoolCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/WalletPool;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("WalletPoolCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LWalletPool;LError;)V") };
 };
 
 }  // namespace djinni_generated

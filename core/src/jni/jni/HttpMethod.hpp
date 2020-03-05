@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<HttpMethod>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    HttpMethod() : JniEnum("co/ledger/core/HttpMethod") {}
+    HttpMethod() : JniEnum("HttpMethod") {}
     friend ::djinni::JniClass<HttpMethod>;
 };
 

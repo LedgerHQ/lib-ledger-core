@@ -25,7 +25,7 @@ private:
     BitcoinLikePreparedTransaction();
     friend ::djinni::JniClass<BitcoinLikePreparedTransaction>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/BitcoinLikePreparedTransaction") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("BitcoinLikePreparedTransaction") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(ILjava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;I)V") };
     const jfieldID field_version { ::djinni::jniGetFieldID(clazz.get(), "version", "I") };
     const jfieldID field_inputs { ::djinni::jniGetFieldID(clazz.get(), "inputs", "Ljava/util/ArrayList;") };

@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-BitcoinLikeOperation::BitcoinLikeOperation() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeOperation, BitcoinLikeOperation>("co/ledger/core/BitcoinLikeOperation$CppProxy") {}
+BitcoinLikeOperation::BitcoinLikeOperation() : ::djinni::JniInterface<::ledger::core::api::BitcoinLikeOperation, BitcoinLikeOperation>("BitcoinLikeOperation$CppProxy") {}
 
 BitcoinLikeOperation::~BitcoinLikeOperation() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_BitcoinLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeOperation_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_BitcoinLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

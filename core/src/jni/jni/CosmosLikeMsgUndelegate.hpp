@@ -25,11 +25,11 @@ private:
     CosmosLikeMsgUndelegate();
     friend ::djinni::JniClass<CosmosLikeMsgUndelegate>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMsgUndelegate") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Lco/ledger/core/CosmosLikeAmount;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeMsgUndelegate") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;LCosmosLikeAmount;)V") };
     const jfieldID field_delegatorAddress { ::djinni::jniGetFieldID(clazz.get(), "delegatorAddress", "Ljava/lang/String;") };
     const jfieldID field_validatorAddress { ::djinni::jniGetFieldID(clazz.get(), "validatorAddress", "Ljava/lang/String;") };
-    const jfieldID field_amount { ::djinni::jniGetFieldID(clazz.get(), "amount", "Lco/ledger/core/CosmosLikeAmount;") };
+    const jfieldID field_amount { ::djinni::jniGetFieldID(clazz.get(), "amount", "LCosmosLikeAmount;") };
 };
 
 }  // namespace djinni_generated

@@ -25,15 +25,15 @@ private:
     CosmosLikeMsgCreateValidator();
     friend ::djinni::JniClass<CosmosLikeMsgCreateValidator>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMsgCreateValidator") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/CosmosLikeValidatorDescription;Lco/ledger/core/CosmosLikeValidatorCommission;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Lco/ledger/core/CosmosLikeAmount;)V") };
-    const jfieldID field_description { ::djinni::jniGetFieldID(clazz.get(), "description", "Lco/ledger/core/CosmosLikeValidatorDescription;") };
-    const jfieldID field_commission { ::djinni::jniGetFieldID(clazz.get(), "commission", "Lco/ledger/core/CosmosLikeValidatorCommission;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeMsgCreateValidator") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LCosmosLikeValidatorDescription;LCosmosLikeValidatorCommission;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;LCosmosLikeAmount;)V") };
+    const jfieldID field_description { ::djinni::jniGetFieldID(clazz.get(), "description", "LCosmosLikeValidatorDescription;") };
+    const jfieldID field_commission { ::djinni::jniGetFieldID(clazz.get(), "commission", "LCosmosLikeValidatorCommission;") };
     const jfieldID field_minSelfDelegation { ::djinni::jniGetFieldID(clazz.get(), "minSelfDelegation", "Ljava/lang/String;") };
     const jfieldID field_delegatorAddress { ::djinni::jniGetFieldID(clazz.get(), "delegatorAddress", "Ljava/lang/String;") };
     const jfieldID field_validatorAddress { ::djinni::jniGetFieldID(clazz.get(), "validatorAddress", "Ljava/lang/String;") };
     const jfieldID field_pubkey { ::djinni::jniGetFieldID(clazz.get(), "pubkey", "Ljava/lang/String;") };
-    const jfieldID field_value { ::djinni::jniGetFieldID(clazz.get(), "value", "Lco/ledger/core/CosmosLikeAmount;") };
+    const jfieldID field_value { ::djinni::jniGetFieldID(clazz.get(), "value", "LCosmosLikeAmount;") };
 };
 
 }  // namespace djinni_generated
