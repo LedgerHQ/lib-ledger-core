@@ -202,6 +202,29 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 }
                 break;
             }
+            case api::WalletType::COSMOS: {
+                rowset<row> cosmos_rows =
+                    (sql.prepare
+                         << "SELECT cosmos_currencies.name, cosmos_currencies.identifier, "
+                            "cosmos_currencies.xpub_version, cosmos_currencies.pubkey_prefix, "
+                            "cosmos_currencies.address_prefix, cosmos_currencies.message_prefix, "
+                            "cosmos_currencies.chain_id, cosmos_currencies.additional_CIPs"
+                            " FROM cosmos_currencies "
+                            " WHERE cosmos_currencies.name = :currency_name",
+                     use(currency.name));
+                for (auto &cosmos_row : cosmos_rows) {
+                    api::CosmosLikeNetworkParameters params;
+                    params.Identifier = cosmos_row.get<std::string>(1);
+                    params.XPUBVersion = hex::toByteArray(cosmos_row.get<std::string>(2));
+                    params.PubKeyPrefix = hex::toByteArray(cosmos_row.get<std::string>(3));
+                    params.AddressPrefix = hex::toByteArray(cosmos_row.get<std::string>(4));
+                    params.MessagePrefix = cosmos_row.get<std::string>(5);
+                    params.ChainId = cosmos_row.get<std::string>(6);
+                    params.AdditionalCIPs = strings::split(cosmos_row.get<std::string>(7), ",");
+                    currency.cosmosLikeNetworkParameters = params;
+                }
+                break;
+            }
             case api::WalletType::ETHEREUM: {
                 rowset<row> eth_rows = (sql.prepare << "SELECT ethereum_currencies.chain_id, ethereum_currencies.xpub_version,"
                         " ethereum_currencies.message_prefix, ethereum_currencies.identifier,"

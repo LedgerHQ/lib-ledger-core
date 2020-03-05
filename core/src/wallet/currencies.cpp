@@ -315,7 +315,7 @@ namespace ledger {
                 CLUBCOIN,
                 DECRED,
                 STAKENET,
-                // ATOM is defined in wallet/cosmos/CsomosLikeCurrencies.cpp
+                // ATOM is defined in wallet/cosmos/CosmosLikeCurrencies.cpp
                 // (design/mod backport)
                 ATOM,
                 ETHEREUM,
