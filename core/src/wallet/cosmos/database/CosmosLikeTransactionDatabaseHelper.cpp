@@ -229,7 +229,7 @@ namespace ledger {
                 case api::CosmosLikeMsgType::MSGSEND:
                     {
                         const auto& m = boost::get<cosmos::MsgSend>(msg.content);
-                        std::string coins = soci::coinsToString(m.amount);
+                        const auto coins = soci::coinsToString(m.amount);
                         sql << "INSERT INTO cosmos_messages (uid,"
                                "transaction_uid, message_type, log,"
                                "success, msg_index, from_address, to_address, amount) "
@@ -242,30 +242,33 @@ namespace ledger {
                 case api::CosmosLikeMsgType::MSGDELEGATE:
                     {
                         const auto& m = boost::get<cosmos::MsgDelegate>(msg.content);
+                        const auto coin = soci::coinToString(m.amount);
                         sql << "INSERT INTO cosmos_messages (uid,"
                                "transaction_uid, message_type, log,"
                                "success, msg_index, delegator_address, validator_address, amount) "
                                "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount)",
                                 soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
                                 soci::use(log.success ? 1 : 0), soci::use(log.messageIndex),
-                                soci::use(m.delegatorAddress), soci::use(m.validatorAddress), soci::use(m.amount);
+                                soci::use(m.delegatorAddress), soci::use(m.validatorAddress), soci::use(coin);
                     }
                     break;
                 case api::CosmosLikeMsgType::MSGUNDELEGATE:
                     {
                         const auto& m = boost::get<cosmos::MsgUndelegate>(msg.content);
+                        const auto coin = soci::coinToString(m.amount);
                         sql << "INSERT INTO cosmos_messages (uid,"
                                "transaction_uid, message_type, log,"
                                "success, msg_index, delegator_address, validator_address, amount) "
                                "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount)",
                                 soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
                                 soci::use(log.success ? 1 : 0), soci::use(log.messageIndex),
-                                soci::use(m.delegatorAddress), soci::use(m.validatorAddress), soci::use(m.amount);
+                                soci::use(m.delegatorAddress), soci::use(m.validatorAddress), soci::use(coin);
                     }
                     break;
                 case api::CosmosLikeMsgType::MSGREDELEGATE:
                     {
                         const auto& m = boost::get<cosmos::MsgRedelegate>(msg.content);
+                        const auto coin = soci::coinToString(m.amount);
                         sql << "INSERT INTO cosmos_messages (uid,"
                                "transaction_uid, message_type, log,"
                                "success, msg_index, delegator_address, validator_src_address,"
@@ -274,13 +277,13 @@ namespace ledger {
                                 soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
                                 soci::use(log.success ? 1 : 0), soci::use(log.messageIndex),
                                 soci::use(m.delegatorAddress), soci::use(m.validatorSourceAddress),
-                                soci::use(m.validatorDestinationAddress), soci::use(m.amount);
+                                soci::use(m.validatorDestinationAddress), soci::use(coin);
                     }
                     break;
                 case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL:
                     {
                         const auto& m = boost::get<cosmos::MsgSubmitProposal>(msg.content);
-                        std::string coins = soci::coinsToString(m.initialDeposit);
+                        const auto coins = soci::coinsToString(m.initialDeposit);
                         sql << "INSERT INTO cosmos_messages (uid,"
                                "transaction_uid, message_type, log,"
                                "success, msg_index, proposer, content_type,"
@@ -310,7 +313,7 @@ namespace ledger {
                 case api::CosmosLikeMsgType::MSGDEPOSIT:
                     {
                         const auto& m = boost::get<cosmos::MsgDeposit>(msg.content);
-                        std::string coins = soci::coinsToString(m.amount);
+                        const auto coins = soci::coinsToString(m.amount);
                         sql << "INSERT INTO cosmos_messages (uid, transaction_uid, "
                                "message_type, log, success, "
                                "msg_index, depositor, proposal_id, amount) "

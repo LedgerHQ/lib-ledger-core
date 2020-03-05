@@ -40,6 +40,7 @@
 #include <api/Configuration.hpp>
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
+#include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
 
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
@@ -51,6 +52,7 @@
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <cosmos/bech32/CosmosBech32.hpp>
 
 using namespace std;
 using namespace ledger::core;
@@ -72,6 +74,51 @@ public:
             COSMOS,
             std::make_shared<DynamicObject>());
     }
+
+    void setupTest(std::shared_ptr<WalletPool>& pool,
+                   std::shared_ptr<CosmosLikeAccount>& account,
+                   std::shared_ptr<AbstractWallet>& wallet,
+                   std::string& pubKey) {
+
+#ifdef PG_SUPPORT
+    const bool usePostgreSQL = true;
+    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+#else
+    pool = newDefaultPool();
+#endif
+
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
+        wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration));
+
+        auto accountInfo = wait(wallet->getNextAccountCreationInfo());
+        EXPECT_EQ(accountInfo.index, 0);
+        accountInfo.publicKeys.push_back(hex::toByteArray(pubKey));
+
+        account = ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+    }
+
+    void performSynchro(const std::shared_ptr<CosmosLikeAccount>& account) {
+        auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            fmt::print("Received event {}\n", api::to_string(event->getCode()));
+            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                return;
+            EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+
+            auto balance = wait(account->getBalance());
+            fmt::print("Balance: {} uatom\n", balance->toString());
+
+            auto block = wait(account->getLastBlock());
+            fmt::print("Block height: {}\n", block.height);
+            EXPECT_GT(block.height, 0);
+
+            dispatcher->stop();
+        });
+
+        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        dispatcher->waitUntilStopped();
+     }
 
     std::shared_ptr<GaiaCosmosLikeBlockchainExplorer> explorer;
 };
@@ -276,8 +323,112 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto block = wait(account->getLastBlock());
             fmt::print("Block height: {}\n", block.height);
+            EXPECT_GT(block.height, 0);
+
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             fmt::print("Ops: {}\n", ops.size());
+            EXPECT_GT(ops.size(), 0);
         }
     }
 }
+
+
+TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
+    // FIXME Use an account that has all expected types of transactions
+    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(pool, account, wallet, hexPubKey);
+
+    performSynchro(account);
+
+    auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    fmt::print("Ops: {}\n", ops.size());
+    EXPECT_GT(ops.size(), 0);
+
+    auto foundMsgSend = false;
+    auto foundMsgDelegate = false;
+    auto foundMsgRedelegate = false;
+    auto foundMsgUndelegate = false;
+    auto foundMsgSubmitProposal = false;
+    auto foundMsgVote = false;
+    auto foundMsgDeposit = false;
+    auto foundMsgWithdrawDelegationReward = false;
+    auto foundMsgMultiSend = false;
+    auto foundMsgCreateValidator = false;
+    auto foundMsgEditValidator = false;
+    auto foundMsgSetWithdrawAddress = false;
+    auto foundMsgWithdrawDelegatorReward = false;
+    auto foundMsgWithdrawValidatorCommission = false;
+    auto foundMsgUnjail = false;
+
+    for (auto op : ops) {
+        auto cosmosOp = op->asCosmosLikeOperation();
+
+        std::cout << "Found operation type: " << cosmosOp->getMessage()->getRawMessageType() << std::endl;
+
+        switch (cosmosOp->getMessage()->getMessageType()) {
+            case api::CosmosLikeMsgType::MSGSEND: foundMsgSend = true; break;
+            case api::CosmosLikeMsgType::MSGDELEGATE: foundMsgDelegate = true; break;
+            case api::CosmosLikeMsgType::MSGREDELEGATE: foundMsgRedelegate = true; break;
+            case api::CosmosLikeMsgType::MSGUNDELEGATE: foundMsgUndelegate = true; break;
+            case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL: foundMsgSubmitProposal = true; break;
+            case api::CosmosLikeMsgType::MSGVOTE: foundMsgVote = true; break;
+            case api::CosmosLikeMsgType::MSGDEPOSIT: foundMsgDeposit = true; break;
+            case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD: foundMsgWithdrawDelegationReward = true; break;
+            case api::CosmosLikeMsgType::MSGMULTISEND: foundMsgMultiSend = true; break;
+            case api::CosmosLikeMsgType::MSGCREATEVALIDATOR: foundMsgCreateValidator = true; break;
+            case api::CosmosLikeMsgType::MSGEDITVALIDATOR: foundMsgEditValidator = true; break;
+            case api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS: foundMsgSetWithdrawAddress = true; break;
+            case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD: foundMsgWithdrawDelegatorReward = true; break;
+            case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION: foundMsgWithdrawValidatorCommission = true; break;
+            case api::CosmosLikeMsgType::MSGUNJAIL: foundMsgUnjail = true; break;
+            case api::CosmosLikeMsgType::UNSUPPORTED: break;
+        }
+    }
+
+    EXPECT_TRUE(foundMsgSend);
+    EXPECT_TRUE(foundMsgDelegate);
+    EXPECT_TRUE(foundMsgRedelegate);
+    EXPECT_TRUE(foundMsgUndelegate);
+    EXPECT_TRUE(foundMsgSubmitProposal);
+    EXPECT_TRUE(foundMsgVote);
+    EXPECT_TRUE(foundMsgDeposit);
+    EXPECT_TRUE(foundMsgWithdrawDelegationReward);
+    EXPECT_TRUE(foundMsgMultiSend);
+    EXPECT_TRUE(foundMsgCreateValidator);
+    EXPECT_TRUE(foundMsgEditValidator);
+    EXPECT_TRUE(foundMsgSetWithdrawAddress);
+    EXPECT_TRUE(foundMsgWithdrawDelegatorReward);
+    EXPECT_TRUE(foundMsgWithdrawValidatorCommission);
+    EXPECT_TRUE(foundMsgUnjail);
+}
+
+/*
+TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    std::string pubKey(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY);
+    setupTest(pool, account, wallet, pubKey);
+
+    // First synchro
+    performSynchro(account);
+    auto blockHeight1 = wait(account->getLastBlock()).height;
+
+    // Wait 8s (new Cosmos block every 7s)
+    fmt::print("Waiting new Cosmos block for 8s...\n");
+    std::this_thread::sleep_for(std::chrono::seconds(8));
+
+    // Second synchro
+    // FIXME Fails due to limitation of test framework??
+    performSynchro(account);
+    auto blockHeight2 = wait(account->getLastBlock()).height;
+
+    EXPECT_NE(blockHeight1, blockHeight2);
+}
+*/

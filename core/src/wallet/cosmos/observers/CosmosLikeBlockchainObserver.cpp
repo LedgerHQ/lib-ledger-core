@@ -81,7 +81,7 @@ namespace ledger {
             }
         }
 
-        void CosmosLikeBlockchainObserver::putBlock(const CosmosLikeBlockchainExplorer::Block &block) {
+        void CosmosLikeBlockchainObserver::putBlock(const cosmos::Block &block) {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto &account : _accounts) {
                 account->run([account, block]() {

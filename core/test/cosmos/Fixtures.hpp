@@ -25,15 +25,16 @@ namespace ledger {
                                 int32_t index,
                                 const core::api::ExtendedKeyAccountCreationInfo &info);
 
-                        void setupDelegateMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);                        void setupDepositMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);
-                        void setupRedelegateMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);
-                        void setupSendMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);
-                        void setupSubmitProposalMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);
-                        void setupUndelegateMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);
-                        void setupVoteMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);
-                        void setupWithdrawDelegationRewardMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef);
+                        Message setupDelegateMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupDepositMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupRedelegateMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupSendMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupSubmitProposalMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupUndelegateMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupVoteMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupWithdrawDelegationRewardMessage(const std::chrono::system_clock::time_point& timeRef);
 
-                        void setupTransaction(Transaction& tx, const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef);
+                        Transaction setupTransaction(const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef);
 
                         void assertSameDelegateMessage(const Message& msgRef, const Message& msgResult);
                         void assertSameDepositMessage(const Message& msgRef, const Message& msgResult);

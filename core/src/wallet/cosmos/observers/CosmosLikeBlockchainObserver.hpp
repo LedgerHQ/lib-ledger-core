@@ -78,7 +78,7 @@ namespace ledger {
         protected:
             void putTransaction(const cosmos::Transaction &tx) override;
 
-            void putBlock(const CosmosLikeBlockchainExplorer::Block &block) override;
+            void putBlock(const cosmos::Block &block) override;
 
             const api::Currency &getCurrency() const {
                 return _currency;

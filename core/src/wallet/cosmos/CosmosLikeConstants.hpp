@@ -127,6 +127,7 @@ namespace ledger {
                                 constexpr const char kAttributeKeyModule[] = "module";
                                 constexpr const char kAttributeKeySender[] = "sender";
                                 constexpr const char kAttributeKeyAmount[] = "amount";
+                                constexpr const char kAttributeWithdrawDelegationReward[] = "withdraw_delegator_reward";
 
                                 // Staking
                                 constexpr const char kEventTypeCompleteUnbonding[] =

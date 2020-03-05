@@ -40,7 +40,7 @@
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
-#include <wallet/cosmos/synchronizers/CosmosLikeBlockchainExplorerAccountSynchronizer.hpp>
+#include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
 #include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 #include <api/CosmosConfigurationDefaults.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
@@ -91,7 +91,7 @@ namespace ledger {
                     std::weak_ptr<WalletPool> p = pool;
                     synchronizerFactory = Option<CosmosLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
-                        return std::make_shared<CosmosLikeBlockchainExplorerAccountSynchronizer>(pool, explorer);
+                        return std::make_shared<CosmosLikeAccountSynchronizer>(pool, explorer);
                     });
                 }
             }

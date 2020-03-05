@@ -54,33 +54,37 @@
 namespace ledger {
     namespace core {
 
-        using ExternalApiBlockchainExplorer = AbstractBlockchainExplorer<cosmos::Transaction>;
-
-        class CosmosLikeBlockchainExplorer : public ConfigurationMatchable,
-                                             public ExternalApiBlockchainExplorer {
+        class CosmosLikeBlockchainExplorer : public ConfigurationMatchable {
         public:
-            using Block = cosmos::Block;
             using TransactionFilter = std::string;
 
-            using TransactionList = std::list<std::shared_ptr<cosmos::Transaction>>;
-
             CosmosLikeBlockchainExplorer(
-                const std::shared_ptr<ledger::core::api::DynamicObject>
-                    &configuration,
+                const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
                 const std::vector<std::string> &matchableKeys);
 
 
-            virtual const std::vector<TransactionFilter>& getTransactionFilters() = 0;
-            virtual FuturePtr<Block> getBlock(uint64_t& blockHeight) = 0;
+            // Everything below is c/p from AbstractBlockchainExplorer, in sole purpose
+            // of being able to use fromBlockHeight instead of fromBlockHash in getTransaction (see below)
+            // TODO Maybe some code cleanup and/or factorization
+
+            virtual Future<void *> startSession() = 0;
+            virtual Future<Unit> killSession(void *session) = 0;
+            virtual Future<Bytes> getRawTransaction(const String& transactionHash) = 0;
+            virtual Future<String> pushTransaction(const std::vector<uint8_t>& transaction) = 0;
+            virtual Future<int64_t> getTimestamp() const = 0;
+            virtual FuturePtr<cosmos::Block> getCurrentBlock() const = 0;
+            virtual FuturePtr<cosmos::Block> getCurrentBlock() = 0;
+            virtual FuturePtr<cosmos::Block> getBlock(uint64_t& blockHeight) = 0;
             virtual FuturePtr<cosmos::Account> getAccount(const std::string& account) = 0;
-            virtual FuturePtr<Block> getCurrentBlock() = 0;
-            virtual Future<cosmos::TransactionList> getTransactions(
-                const TransactionFilter& filter, int page, int limit) const = 0;
-            virtual Future<std::shared_ptr<cosmos::Transaction>> getTransactionByHash(
-                const std::string& hash) = 0;
-            virtual FuturePtr<TransactionsBulk> getTransactions(const std::vector<std::string>& addresses,
-                                                                Option<std::string> fromBlockHash = Option<std::string>(),
-                                                                Option<void*> session = Option<void *>()) = 0;
+            virtual const std::vector<TransactionFilter>& getTransactionFilters() = 0;
+
+            virtual FuturePtr<cosmos::Transaction> getTransactionByHash(const String& transactionHash) const = 0;
+            virtual Future<std::shared_ptr<cosmos::Transaction>> getTransactionByHash(const std::string& hash) = 0;
+            virtual Future<cosmos::TransactionList> getTransactions(const TransactionFilter& filter, int page, int limit) const = 0;
+            virtual FuturePtr<cosmos::TransactionsBulk> getTransactions(const std::vector<std::string>& addresses,
+                                                                        uint32_t fromBlockHeight = 0,
+                                                                        Option<void*> session = Option<void *>()) = 0;
+
         };
     }
 }

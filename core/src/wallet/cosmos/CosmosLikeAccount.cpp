@@ -42,6 +42,7 @@
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
+#include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
 #include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
 #include <wallet/common/Block.h>
 
@@ -57,7 +58,6 @@
 #include <collections/vector.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 
 using namespace soci;
@@ -386,7 +386,7 @@ namespace ledger {
                         log->debug(" Start erasing data of account : {}", getAccountUid());
                         soci::session sql(getWallet()->getDatabase()->getPool());
                         //Update account's internal preferences (for synchronization)
-                        auto savedState = getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+                        auto savedState = getInternalPreferences()->getSubPreferences("CosmosLikeAccountSynchronizer")->getObject<cosmos::AccountSynchronizationSavedState>("state");
                         if (savedState.nonEmpty()) {
                                 //Reset batches to blocks mined before given date
                                 auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql,
@@ -401,7 +401,11 @@ namespace ledger {
                                                 batch.blockHash = "";
                                         }
                                 }
-                                getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
+                                getInternalPreferences()
+                                        ->getSubPreferences("CosmosLikeAccountSynchronizer")
+                                        ->editor()
+                                        ->putObject<cosmos::AccountSynchronizationSavedState>("state", savedState.getValue())
+                                        ->commit();
                         }
                         auto accountUid = getAccountUid();
                         sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
@@ -423,13 +427,13 @@ namespace ledger {
                         auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
                         _currentSyncEventBus = eventPublisher->getEventBus();
-                        auto future = _synchronizer->synchronize(
+                        auto future = _synchronizer->synchronizeAccount(
                                 std::static_pointer_cast<CosmosLikeAccount>(shared_from_this()))->getFuture();
                         auto self = std::static_pointer_cast<CosmosLikeAccount>(shared_from_this());
 
                         //Update current block height (needed to compute trust level)
                         _explorer->getCurrentBlock().onComplete(getContext(),
-                                                                [self](const TryPtr<CosmosLikeBlockchainExplorer::Block> &block) mutable {
+                                                                [self](const TryPtr<cosmos::Block> &block) mutable {
                                                                         if (block.isSuccess()) {
                                                                                 self->_currentBlockHeight = block.getValue()->height;
                                                                         }

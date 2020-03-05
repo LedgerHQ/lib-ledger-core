@@ -25,49 +25,66 @@ namespace ledger {
                                 return std::dynamic_pointer_cast<CosmosLikeAccount>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
                         }
 
-                        void setupDelegateMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
-                                // TODO
+                        Message setupDelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
+                                 // TODO
+                                return msg;
                         }
 
-                        void setupDepositMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
-                                // TODO
+                        Message setupDepositMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
+                                 // TODO
+                                return msg;
                         }
 
-                        void setupRedelegateMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
-                                // TODO
+                        Message setupRedelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
+                                 // TODO
+                                return msg;
                         }
 
-                        void setupSendMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupSendMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
                                 msg.type = constants::kMsgSend;
                                 MsgSend sendMsg;
                                 sendMsg.fromAddress = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
                                 sendMsg.toAddress = "cosmos1sd4tl9aljmmezzudugs7zlaya7pg2895tyn79r";
                                 sendMsg.amount.emplace_back("900000", "uatom");
                                 msg.content = sendMsg;
+                                return msg;
                         }
 
-                        void setupSubmitProposalMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupSubmitProposalMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
+                                 // TODO
+                                return msg;
+                        }
+
+                        Message setupUndelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
                                 // TODO
+                                return msg;
                         }
 
-                        void setupUndelegateMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
-                                // TODO
-                        }
-
-                        void setupVoteMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupVoteMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
                                 msg.type = constants::kMsgVote;
                                 MsgVote voteMsg;
                                 voteMsg.voter = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
                                 voteMsg.proposalId = "42";
                                 voteMsg.option = api::CosmosLikeVoteOption::NO;
                                 msg.content = voteMsg;
+                                return msg;
                         }
 
-                        void setupWithdrawDelegationRewardMessage(Message& msg, const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupWithdrawDelegationRewardMessage(const std::chrono::system_clock::time_point& timeRef) {
+                                Message msg;
                                 // TODO
+                                return msg;
                         }
 
-                        void setupTransaction(Transaction& tx, const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef) {
+                        Transaction setupTransaction(const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef) {
+                                Transaction tx;
                                 tx.hash = "A1E44688B429AF17322EC33CE62876FA415EFC8D9244A2F51454BD025F416594";
                                 ledger::core::Block block;
                                 block.hash = "52B39D45B438C6995CD448B09963954883B0F7A57E9EFC7A95E0A6C5BAC09C00";
@@ -88,6 +105,7 @@ namespace ledger {
                                         log.log = "Success";
                                         tx.logs.push_back(log);
                                 }
+                                return tx;
                         }
 
                         void assertSameDelegateMessage(const Message& msgRef, const Message& msgResult) {

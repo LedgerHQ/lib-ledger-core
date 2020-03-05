@@ -45,12 +45,13 @@
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <api/CosmosLikeTransactionBuilder.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
-#include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
 #include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 #include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
 
 namespace ledger {
         namespace core {
+                class CosmosLikeAccountSynchronizer;
+
                 class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount {
                         public:
                                 static const int FLAG_TRANSACTION_IGNORED = 0x00;

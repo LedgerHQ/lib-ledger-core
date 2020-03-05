@@ -75,15 +75,15 @@ namespace ledger {
             // Get all transactions relevant to an address
             // Concatenates multiple API calls for all relevant transaction types
             Future<cosmos::TransactionList> getTransactionsForAddress(
-                const std::string &address, Option<std::string> fromBlockHash) const;
+                const std::string &address, uint32_t fromBlockHeight = 0) const;
 
             // Get all transactions relevant to a list of addresses
             // Concatenates multiple API calls for all relevant transaction types
             Future<cosmos::TransactionList> getTransactionsForAddresses(
-                const std::vector<std::string> &addresses, Option<std::string> fromBlockHash) const;
+                const std::vector<std::string> &addresses, uint32_t fromBlockHeight = 0) const;
 
             // Helper function to get transactions following a given filter.
-            Future<TransactionList> getTransactions(
+            Future<cosmos::TransactionList> getTransactions(
                 const TransactionFilter &filter, int page, int limit) const override;
 
             // Single transaction querier (found by hash)
@@ -93,8 +93,8 @@ namespace ledger {
 
             Future<void *> startSession() override;
             Future<Unit> killSession(void* session) override;
-            FuturePtr<TransactionsBulk> getTransactions(const std::vector<std::string>& addresses,
-                                                                Option<std::string> fromBlockHash = Option<std::string>(),
+            FuturePtr<cosmos::TransactionsBulk> getTransactions(const std::vector<std::string>& addresses,
+                                                                uint32_t fromBlockHeight = 0,
                                                                 Option<void*> session = Option<void *>()) override;
             FuturePtr<ledger::core::Block> getCurrentBlock() const override;
             [[ noreturn ]] Future<Bytes> getRawTransaction(const String& transactionHash) override;

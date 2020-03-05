@@ -111,9 +111,9 @@ namespace ledger {
 
         FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() {
             return _http->GET(fmt::format("/blocks/latest")).json(true)
-            .map<std::shared_ptr<Block>>(getContext(),
+            .map<std::shared_ptr<cosmos::Block>>(getContext(),
              [=] (const HttpRequest::JsonResult& response) {
-                 auto result = std::make_shared<Block>();
+                 auto result = std::make_shared<cosmos::Block>();
                  const auto& document = std::get<1>(response)->GetObject();
                  rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
                  return result;
@@ -151,38 +151,31 @@ namespace ledger {
                 });
         }
 
-        Future<cosmos::TransactionList> GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddress(
-            const std::string& address, Option<std::string> fromBlockHash) const {
+        Future<cosmos::TransactionList>
+        GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddress(const std::string& address,
+                                                                    uint32_t fromBlockHeight) const {
+
+
+            auto blockHeightFilter = filterWithAttribute(kTx, kMinHeight, std::to_string(fromBlockHeight));
+
+            // NOTE: MsgUn/Re/Delegate + MsgWithdrawDelegatorReward are all covered by 'message.sender'
             auto sent_transactions = getTransactions(
-                fuseFilters({filterWithAttribute(kEventTypeMessage, kAttributeKeySender, address)}),
+                fuseFilters({
+                    blockHeightFilter,
+                    filterWithAttribute(kEventTypeMessage, kAttributeKeySender, address)
+                }),
                 1,
                 50);
             auto received_transactions = getTransactions(
-                fuseFilters(
-                    {filterWithAttribute(kEventTypeTransfer, kAttributeKeyRecipient, address)}),
-                1,
-                50);
-            auto delegator_transactions = getTransactions(
-                fuseFilters(
-                    {filterWithAttribute(kEventTypeDelegate, kAttributeKeyDelegator, address)}),
-                1,
-                50);
-            auto redelegator_transactions = getTransactions(
-                fuseFilters(
-                    {filterWithAttribute(kEventTypeRedelegate, kAttributeKeyDelegator, address)}),
-                1,
-                50);
-            auto undelegator_transactions = getTransactions(
-                fuseFilters(
-                    {filterWithAttribute(kEventTypeUnbond, kAttributeKeyDelegator, address)}),
+                fuseFilters({
+                    blockHeightFilter,
+                    filterWithAttribute(kEventTypeTransfer, kAttributeKeyRecipient, address)
+                }),
                 1,
                 50);
             std::vector<Future<cosmos::TransactionList>> transaction_promises(
                 {sent_transactions,
-                 received_transactions,
-                 delegator_transactions,
-                 redelegator_transactions,
-                 undelegator_transactions});
+                 received_transactions});
 
             return async::sequence(getContext(), transaction_promises)
                 .flatMap<cosmos::TransactionList>(getContext(), [](auto& vector_of_lists) {
@@ -196,11 +189,11 @@ namespace ledger {
         }
 
         Future<cosmos::TransactionList> GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddresses(
-            const std::vector<std::string>& addresses, Option<std::string> fromBlockHash) const {
+            const std::vector<std::string>& addresses, uint32_t fromBlockHeight) const {
             std::vector<Future<cosmos::TransactionList>> address_transactions;
             std::transform(addresses.begin(), addresses.end(), std::back_inserter(address_transactions),
                            [&] (const auto& address) -> Future<cosmos::TransactionList> {
-                               return getTransactionsForAddress(address, fromBlockHash);
+                               return getTransactionsForAddress(address, fromBlockHeight);
                            });
             return async::sequence(getContext(), address_transactions)
                 .flatMap<cosmos::TransactionList>(getContext(), [](auto& vector_of_lists) {
@@ -213,19 +206,18 @@ namespace ledger {
                 });
         }
 
-        FuturePtr<CosmosLikeBlockchainExplorer::TransactionsBulk>
+        FuturePtr<cosmos::TransactionsBulk>
         GaiaCosmosLikeBlockchainExplorer::getTransactions(
             const std::vector<std::string>& addresses,
-            Option<std::string> fromBlockHash,
+            uint32_t fromBlockHeight,
             Option<void*> session) {
-            // TODO : Not only with addresses.front()
-            // We should use more addresses and fuse all of them
-            return getTransactionsForAddresses(addresses, fromBlockHash)
-                .mapPtr<GaiaCosmosLikeBlockchainExplorer::TransactionsBulk>(
+
+            return getTransactionsForAddresses(addresses, fromBlockHeight)
+                .mapPtr<cosmos::TransactionsBulk>(
                     getContext(), [](auto& transaction_list) {
                         std::vector<cosmos::Transaction> c_transaction_list;
                         auto result =
-                            std::make_shared<CosmosLikeBlockchainExplorer::TransactionsBulk>();
+                            std::make_shared<cosmos::TransactionsBulk>();
                         std::transform(
                             transaction_list.begin(),
                             transaction_list.end(),
@@ -233,7 +225,6 @@ namespace ledger {
                             [](auto transaction) -> cosmos::Transaction { return *transaction; });
                         result->transactions = c_transaction_list;
                         result->hasNext = false;
-                        result->paginationMarker = "";
                         return result;
                     });
         }
