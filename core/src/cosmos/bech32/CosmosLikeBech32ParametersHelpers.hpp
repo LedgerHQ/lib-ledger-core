@@ -49,7 +49,7 @@ static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Typ
         case api::CosmosBech32Type::PUBLIC_KEY:
 
             static const Bech32Struct COSMOS_PUB = {
-                "cosmos",
+                "cosmospub",
                 "cosmospub",
                 "1",
                 6,
@@ -59,7 +59,7 @@ static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Typ
             return COSMOS_PUB;
         case api::CosmosBech32Type::PUBLIC_KEY_VAL:
             static const Bech32Parameters::Bech32Struct COSMOS_PUB_VAL = {
-                "cosmos",
+                "cosmosvaloperpub",
                 "cosmosvaloperpub",
                 "1",
                 6,
@@ -79,7 +79,7 @@ static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Typ
             return COSMOS;
         case api::CosmosBech32Type::ADDRESS_VAL:
             static const Bech32Parameters::Bech32Struct COSMOS_VAL = {
-                "cosmos",
+                "cosmosvaloper",
                 "cosmosvaloper",
                 "1",
                 6,
