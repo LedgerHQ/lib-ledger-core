@@ -49,6 +49,11 @@ namespace ledger {
                 );
             }
 
+            // XXX : duplicate code
+            // ledger::core::api::Networks::cosmos(string&) (this function)
+            // is the same as
+            // ledger::core::networks::getCosmosLikeNetworkParameters(string&) (in src/wallet/cosmos/CosmosNetworks.cpp)
+            // A check to see if one of these function can be removed is necessary
             CosmosLikeNetworkParameters Networks::cosmos(const std::string& chainID) {
                 if (chainID == "atom") {
                     static const api::CosmosLikeNetworkParameters COSMOSHUB_3(

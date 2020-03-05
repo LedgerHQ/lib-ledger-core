@@ -33,13 +33,11 @@
 #include <wallet/cosmos/cosmos.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 
-
-// #include <api/CosmosLikeTransaction.hpp>
-// #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
-
-// #include <wallet/common/Operation.h>
-// #include <wallet/common/OperationQuery.h>
-// #include <wallet/common/AbstractWallet.hpp>
+// XXX : This file is very different from its design/modularization version
+// Most of the code that was in design/modularization now lives in
+// OperationQuery::inflateCosmosLikeTransaction.
+// Also, specific CosmosLikeOperation constructors have been added to
+// answer the Operation::asCosmosLikeOperation() calls.
 
 namespace ledger {
 namespace core {
@@ -51,25 +49,3 @@ struct OperationQueryResult {
 }  // namespace cosmos
 }  // namespace core
 }  // namespace ledger
-
-// XXX : The code below only works on modularized (hence the template parent class)
-// namespace ledger {
-//     namespace core {
-
-//         class CosmosLikeOperationQuery : public OperationQuery<CosmosLikeOperation> {
-
-//             public:
-
-//                 CosmosLikeOperationQuery(const std::shared_ptr<api::QueryFilter>& headFilter,
-//                                          const std::shared_ptr<DatabaseSessionPool>& pool,
-//                                          const std::shared_ptr<api::ExecutionContext>& context,
-//                                          const std::shared_ptr<api::ExecutionContext>& mainContext);
-
-//             protected:
-
-//                 virtual void inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, CosmosLikeOperation& operation) override;
-
-//                 virtual std::shared_ptr<CosmosLikeOperation> createOperation(std::shared_ptr<AbstractAccount> &account) override;
-//         };
-//     }
-// }

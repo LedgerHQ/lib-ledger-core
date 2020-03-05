@@ -207,9 +207,6 @@ namespace ledger {
             cosmos::Transaction tx;
             cosmos::Message msg;
             operation.getBackend().cosmosTransaction = Option<cosmos::OperationQueryResult>({tx, msg});
-            std::cerr << "Operation UID before refresh : " << operation.getBackend().uid << std::endl;
-            // operation.getBackend().refreshUid();
-            // std::cerr << "Operation UID after refresh : " << operation.getBackend().uid << std::endl;
             std::string transactionHash;
             sql << "SELECT tx.hash "
                    "FROM cosmos_transactions AS tx "

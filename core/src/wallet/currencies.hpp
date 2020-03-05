@@ -40,6 +40,7 @@
 #endif
 
 #include <api/Currency.hpp>
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>  // Declares ATOM
 
 namespace ledger {
     namespace core {

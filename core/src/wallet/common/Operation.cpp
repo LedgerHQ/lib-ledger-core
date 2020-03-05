@@ -40,10 +40,6 @@ namespace ledger {
                 uid = OperationDatabaseHelper::createUid(accountUid, bitcoinTransaction.getValue().hash, type);
             }
             else if (cosmosTransaction.nonEmpty()) {
-                // TODO : where is the "additional" computed ?
-                // Getting a transaction hash here is very wrong for Cosmos since all operations
-                // are actually modelled better with MESSAGES, so the message index and the message
-                // type MUST be part of the hash here.
                 auto final = cosmosTransaction.getValue().tx.hash;
                 if (!additional.empty()){
                     final = fmt::format("{}+{}", final, additional);
