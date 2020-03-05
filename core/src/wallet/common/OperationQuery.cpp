@@ -214,7 +214,8 @@ namespace ledger {
                    "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
                    "WHERE op.uid = :uid",
                 soci::use(operation.getBackend().uid), soci::into(transactionHash);
-            std::cerr << "Tx Hash after second fetch : " << transactionHash << std::endl;
+            // To log
+            std::cerr << "Tx Hash found : " << transactionHash << std::endl;
             CosmosLikeTransactionDatabaseHelper::getTransactionByHash(
                 sql, transactionHash, operation.getBackend().cosmosTransaction.getValue().tx);
             std::string msgUid;
@@ -223,6 +224,8 @@ namespace ledger {
                    "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
                    "WHERE op.uid = :uid",
                 soci::use(operation.getUid()), soci::into(msgUid);
+            // To log
+            std::cerr << "Message id found : " << msgUid << std::endl;
 
             CosmosLikeTransactionDatabaseHelper::getMessageByUid(
                 sql, msgUid, operation.getBackend().cosmosTransaction.getValue().msg);
