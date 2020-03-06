@@ -262,10 +262,12 @@ namespace ledger {
             return getTransactionByHash(transactionHash);
         }
 
-        Future<String> GaiaCosmosLikeBlockchainExplorer::pushTransaction(
-            const std::vector<uint8_t>& transaction) {
-            return Future<String>::failure(Exception(
-                api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Push Transaction is unimplemented"));
+        Future<String> GaiaCosmosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction) {
+            return _http->POST("/txs", transaction)
+                        .json().template map<String>(_executionContext, [] (const HttpRequest::JsonResult& result) -> String {
+                            auto& json = *std::get<1>(result);
+                            return json["result"].GetString();
+                        });
         }
 
         Future<int64_t> GaiaCosmosLikeBlockchainExplorer::getTimestamp() const {

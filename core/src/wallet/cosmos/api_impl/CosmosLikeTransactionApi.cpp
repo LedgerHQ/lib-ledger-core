@@ -186,94 +186,97 @@ namespace ledger {
         }
 
         std::string CosmosLikeTransactionApi::serialize() {
+
             using namespace cosmos::constants;
+            Value vString(kStringType);
 
             Document document;
             document.SetObject();
-
             Document::AllocatorType& allocator = document.GetAllocator();
 
-            Value vString(rapidjson::kStringType);
-            vString.SetString(_accountNumber.c_str(), static_cast<rapidjson::SizeType>(_accountNumber.length()), allocator);
-            document.AddMember(kAccountNumber, vString, allocator);
+            Value txObject(kObjectType);
+            {
+                Value msgArray(kArrayType);
+                for (const auto& msg: _txData.messages) {
+                    msgArray.PushBack(std::make_shared<CosmosLikeMessage>(msg)->toJson(allocator), allocator);
+                }
+                txObject.AddMember(kMessage, msgArray, allocator);
 
-            auto chainID = networks::getCosmosLikeNetworkParameters(_currency.name).ChainId;
-            vString.SetString(chainID.c_str(), static_cast<rapidjson::SizeType>(chainID.length()), allocator);
-            document.AddMember(kChainId, vString, allocator);
+                // Add fees
+                Value feeObject(kObjectType);
+                Value feeArray(kArrayType);
+                {
+                    auto gas = _txData.fee.gas.toString();
+                    vString.SetString(gas.c_str(), static_cast<SizeType>(gas.length()), allocator);
+                    feeObject.AddMember(kGas, vString, allocator);
 
-            auto getAmountObject = [&] (const std::string &denom, const std::string &amount) {
-                Value amountObject(kObjectType);
-                Value vStringLocal(rapidjson::kStringType);
-                vStringLocal.SetString(amount.c_str(), static_cast<rapidjson::SizeType>(amount.length()), allocator);
-                amountObject.AddMember(kAmount, vStringLocal, allocator);
-                vStringLocal.SetString(denom.c_str(), static_cast<rapidjson::SizeType>(denom.length()), allocator);
-                amountObject.AddMember(kDenom, vStringLocal, allocator);
-                return amountObject;
-            };
+                    Value feeAmountArray(kArrayType);
+                    auto getAmountObject = [&] (const std::string &denom, const std::string &amount) {
+                        Value amountObject(kObjectType);
+                        vString.SetString(amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
+                        amountObject.AddMember(kAmount, vString, allocator);
+                        vString.SetString(denom.c_str(), static_cast<SizeType>(denom.length()), allocator);
+                        amountObject.AddMember(kDenom, vString, allocator);
+                        return amountObject;
+                    };
 
-            // Fee object
-            auto feeAmountObj = getAmountObject(_txData.fee.amount[0].denom, _txData.fee.amount[0].amount);
-            // Technically the feeArray can contain all fee.amount[i] ;
-            // But Cosmoshub only accepts uatom as a fee denom so the
-            // array is always length 1 for the time being
-            Value feeArray(kArrayType);
-            feeArray.PushBack(feeAmountObj, allocator);
-            Value feeAmountObject(kObjectType);
-            feeAmountObject.AddMember(kAmount, feeArray, allocator);
-            auto gas = _txData.fee.gas.toString();
-            vString.SetString(gas.c_str(), static_cast<rapidjson::SizeType>(gas.length()), allocator);
-            feeAmountObject.AddMember(kGas, vString, allocator);
-            document.AddMember(kFee, feeAmountObject, allocator);
+                    // Technically the feeArray can contain all fee.amount[i] ;
+                    // But Cosmoshub only accepts uatom as a fee denom so the
+                    // array is always length 1 for the time being
+                    auto feeAmountObj = getAmountObject(_txData.fee.amount[0].denom, _txData.fee.amount[0].amount);
+                    feeArray.PushBack(feeAmountObj, allocator);
+                    feeObject.AddMember(kAmount, feeArray, allocator);
+                }
+                txObject.AddMember(kFee, feeObject, allocator);
 
-            vString.SetString(_txData.memo.c_str(), static_cast<rapidjson::SizeType>(_txData.memo.length()), allocator);
-            document.AddMember(kMemo, vString, allocator);
+                // Add signatures
+                if (!_sSignature.empty() && !_rSignature.empty()) {
+                    Value sigArray(kArrayType);
+                    Value sigObject(kObjectType);
 
-            Value msgArray(kArrayType);
-            for (auto msg: _txData.messages) {
-                msgArray.PushBack(std::make_shared<CosmosLikeMessage>(msg)->toJson(allocator), allocator);
-            }
-            document.AddMember(kMessages, msgArray, allocator);
+                    { // Set pub key
+                        Value pubKeyObject(kObjectType);
+                        // TODO store it somewhere
+                        std::string pubKeyType = "tendermint/PubKeySecp256k1";
+                        vString.SetString(pubKeyType.c_str(), static_cast<SizeType>(pubKeyType.length()), allocator);
+                        pubKeyObject.AddMember(kType, vString, allocator);
 
-            // Add signatures
-            if (!_sSignature.empty() && !_rSignature.empty()) {
-                Value sigArray(kArrayType);
-
-                Value pubKeyObject(kObjectType);
-                // TODO store it somewhere
-                std::string pubKeyType = "tendermint/PubKeySecp256k1";
-                vString.SetString(pubKeyType.c_str(), static_cast<rapidjson::SizeType>(pubKeyType.length()), allocator);
-                pubKeyObject.AddMember(kType, vString, allocator);
-
-                auto pubKeyValue = cereal::base64::encode(_signingPubKey.data(), _signingPubKey.size());
-                vString.SetString(pubKeyValue.c_str(), static_cast<rapidjson::SizeType>(pubKeyValue.length()), allocator);
-                pubKeyObject.AddMember(kValue, vString, allocator);
-
-                auto pad = [] (const std::vector<uint8_t> &input) {
-                    auto output = input;
-                    while(output.size() < 32) {
-                        output.emplace(output.begin(), 0x00);
+                        auto pubKeyValue = cereal::base64::encode(_signingPubKey.data(), _signingPubKey.size());
+                        vString.SetString(pubKeyValue.c_str(), static_cast<SizeType>(pubKeyValue.length()), allocator);
+                        pubKeyObject.AddMember(kValue, vString, allocator);
+                        sigObject.AddMember(kPubKey, pubKeyObject, allocator);
                     }
-                    return output;
-                };
-                auto signature = vector::concat(pad(_rSignature), pad(_sSignature));
-                if (signature.size() != 64) {
-                    throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid signature when serializing transaction");
+
+                    { // Set signature
+                        auto pad = [] (const std::vector<uint8_t> &input) {
+                            auto output = input;
+                            while(output.size() < 32) {
+                                output.emplace(output.begin(), 0x00);
+                            }
+                            return output;
+                        };
+                        auto signature = vector::concat(pad(_rSignature), pad(_sSignature));
+                        if (signature.size() != 64) {
+                            throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid signature when serializing transaction");
+                        }
+                        auto strSignature = cereal::base64::encode(signature.data(), signature.size());
+                        vString.SetString(strSignature.c_str(), static_cast<SizeType>(strSignature.length()), allocator);
+                        sigObject.AddMember(kSignature, vString, allocator);
+                    }
+
+                    sigArray.PushBack(sigObject, allocator);
+                    txObject.AddMember(kSignatures, sigArray, allocator);
                 }
 
-                // Set pub key
-                Value sigObject(kObjectType);
-                sigObject.AddMember(kPubKey, pubKeyObject, allocator);
-                // Set signature
-                auto strSignature = cereal::base64::encode(signature.data(), signature.size());
-                vString.SetString(strSignature.c_str(), static_cast<rapidjson::SizeType>(strSignature.length()), allocator);
-                sigObject.AddMember(kSignature, vString, allocator);
-
-                sigArray.PushBack(sigObject, allocator);
-                document.AddMember(kSignature, sigArray, allocator);
+                vString.SetString(_txData.memo.c_str(), static_cast<SizeType>(_txData.memo.length()), allocator);
+                txObject.AddMember(kMemo, vString, allocator);
             }
+            document.AddMember(kTx, txObject, allocator);
 
-            vString.SetString(_accountSequence.c_str(), static_cast<rapidjson::SizeType>(_accountSequence.length()), allocator);
-            document.AddMember(kSequence, vString, allocator);
+            // Set mode
+            // FIXME What mode do we want? (sync|async|block)
+            vString.SetString("async", static_cast<SizeType>(5), allocator);
+            document.AddMember(kMode, vString, allocator);
 
             StringBuffer buffer;
             Writer<StringBuffer> writer(buffer);

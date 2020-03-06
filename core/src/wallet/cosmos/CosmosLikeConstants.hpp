@@ -99,6 +99,7 @@ namespace ledger {
                                 constexpr const char kPubKey[] = "pub_key";
                                 constexpr const char kSequence[] = "sequence";
                                 constexpr const char kSignature[] = "signature";
+                                constexpr const char kSignatures[] = "signatures";
                                 constexpr const char kSuccess[] = "success";
                                 constexpr const char kTimestamp[] = "timestamp";
                                 constexpr const char kTitle[] = "title";
@@ -122,6 +123,7 @@ namespace ledger {
                                 constexpr const char kHash[] = "hash";
                                 constexpr const char kHeader[] = "header";
                                 constexpr const char kTime[] = "time";
+                                constexpr const char kMode[] = "mode";
 
                                 // cosmos/cosmos-sdk Event / Attribute types as of
                                 // https://github.com/cosmos/cosmos-sdk/tree/43137ee893cefbdb2aacd25ef4ec39eacf6ae70c
@@ -241,7 +243,7 @@ namespace ledger {
                                 constexpr const char kAttributeKeyInflation[] = "inflation";
                                 constexpr const char kAttributeKeyAnnualProvisions[] =
                                     "annual_provisions";
-                                }  // namespace constants
+                        }  // namespace constants
 
                         static constexpr const char* msgTypeToChars(MsgType type) {
                                 switch (type) {
