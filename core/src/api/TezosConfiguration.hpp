@@ -24,6 +24,8 @@ public:
     static std::string const TEZOS_PROTOCOL_UPDATE;
 
     static std::string const TEZOS_NODE;
+
+    static std::string const TZSTATS_API_ENDPOINT;
 };
 
 } } }  // namespace ledger::core::api
