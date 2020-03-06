@@ -74,12 +74,12 @@ namespace ledger {
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         //Is there a fees field ?
-                        if (!json.IsObject() || !json.HasMember("fees") ||
-                            !json["fees"].IsString()) {
+                        if (!json.IsObject() || !json.HasMember("fee") ||
+                            !json["fee"].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get fees from network, no (or malformed) field \"result\" in response");
                         }
-                        std::string fees = json["fees"].GetString();
+                        std::string fees = json["fee"].GetString();
                         // Sometimes network is sending 0 for fees
                         if (fees == "0") {
                             fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
