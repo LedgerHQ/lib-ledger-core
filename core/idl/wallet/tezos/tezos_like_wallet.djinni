@@ -154,10 +154,9 @@ TezosLikeOriginatedAccount = interface +c {
 }
 
 TezosConfiguration = interface +c {
-  const TEZOS_XPUB_CURVE: string = "TEZOS_XPUB_CURVE";
+  	const TEZOS_XPUB_CURVE: string = "TEZOS_XPUB_CURVE";
 	const TEZOS_PROTOCOL_UPDATE: string = "TEZOS_PROTOCOL_UPDATE";
 	const TEZOS_NODE: string = "TEZOS_NODE";
-  const TZSTATS_API_ENDPOINT: string = "TZSTATS_API_ENDPOINT";
 }
 
 TezosConfigurationDefaults = interface +c {

@@ -29,7 +29,6 @@
  */
 
 #include "ExternalTezosLikeBlockchainExplorer.h"
-#include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
 #include <rapidjson/document.h>
@@ -71,8 +70,8 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getFees() {
             const bool parseNumbersAsString = true;
             auto feesField =
-              getConfiguration()->getString(api::TezosConfiguration::TZSTATS_API_ENDPOINT)
-                .value_or(api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT) == api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT ?
+              getConfiguration()->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT) == api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT ?
                   "fee" :
                   "fees";
 

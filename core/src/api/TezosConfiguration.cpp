@@ -11,6 +11,4 @@ std::string const TezosConfiguration::TEZOS_PROTOCOL_UPDATE = {"TEZOS_PROTOCOL_U
 
 std::string const TezosConfiguration::TEZOS_NODE = {"TEZOS_NODE"};
 
-std::string const TezosConfiguration::TZSTATS_API_ENDPOINT = {"TZSTATS_API_ENDPOINT"};
-
 } } }  // namespace ledger::core::api
