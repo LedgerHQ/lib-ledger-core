@@ -15,7 +15,7 @@
 
 using namespace ledger::testing::cosmos;
 
-class CosmosDBTests : public BaseFixture {
+class CosmosDBTest : public BaseFixture {
 public:
  void SetUp() override
  {
@@ -45,25 +45,23 @@ public:
 
      auto accountInfo = wait(wallet->getNextAccountCreationInfo());
      EXPECT_EQ(accountInfo.index, 0);
-     accountInfo.publicKeys.push_back(
-         hex::toByteArray(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY));
+     accountInfo.publicKeys.push_back(hex::toByteArray(DEFAULT_HEX_PUB_KEY));
 
-     account =
-         ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+     account = createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
  }
 
  std::shared_ptr<WalletPool> pool;
 };
 
-TEST_F(CosmosDBTests, BasicDBTest) {
+TEST_F(CosmosDBTest, BasicDBTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    Message msg = setupSendMessage(timeRef);
-    Transaction tx = setupTransaction(std::vector<Message>{ msg }, timeRef);
+    auto msg = setupSendMessage();
+    auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
 
     // Test writing into DB
     {
@@ -92,15 +90,15 @@ TEST_F(CosmosDBTests, BasicDBTest) {
 
 }
 
-TEST_F(CosmosDBTests, OperationQueryTest) {
+TEST_F(CosmosDBTest, OperationQueryTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    Message msg = setupSendMessage(timeRef);
-    Transaction tx = setupTransaction(std::vector<Message>{ msg }, timeRef);
+    auto msg = setupSendMessage();
+    auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
 
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
@@ -139,15 +137,15 @@ TEST_F(CosmosDBTests, OperationQueryTest) {
     }
 }
 
-TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
+TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    Message msg = setupSendMessage(timeRef);
-    Transaction tx = setupTransaction(std::vector<Message>{ msg }, timeRef);
+    auto msg = setupSendMessage();
+    auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
 
     // Change message type
     tx.messages[0].type = "unknown-message-type";
@@ -171,16 +169,16 @@ TEST_F(CosmosDBTests, UnsuportedMsgTypeTest) {
     }
 }
 
-TEST_F(CosmosDBTests, MultipleMsgTest) {
+TEST_F(CosmosDBTest, MultipleMsgTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet);
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    Message msgSend = setupSendMessage(timeRef);
-    Message msgVote = setupVoteMessage(timeRef);
-    Transaction tx = setupTransaction(std::vector<Message>{ msgSend, msgVote }, timeRef);
+    auto msgSend = setupSendMessage();
+    auto msgVote = setupVoteMessage();
+    auto tx = setupTransactionResponse(std::vector<Message>{ msgSend, msgVote }, timeRef);
 
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());

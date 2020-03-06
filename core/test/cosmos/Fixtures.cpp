@@ -25,65 +25,80 @@ namespace ledger {
                                 return std::dynamic_pointer_cast<CosmosLikeAccount>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
                         }
 
-                        Message setupDelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupDelegateMessage() {
                                 Message msg;
                                  // TODO
                                 return msg;
                         }
 
-                        Message setupDepositMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupDepositMessage() {
                                 Message msg;
                                  // TODO
                                 return msg;
                         }
 
-                        Message setupBeginRedelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupBeginRedelegateMessage() {
                                 Message msg;
                                  // TODO
                                 return msg;
                         }
 
-                        Message setupSendMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupSendMessage() {
                                 Message msg;
                                 msg.type = constants::kMsgSend;
                                 MsgSend sendMsg;
-                                sendMsg.fromAddress = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
+                                //sendMsg.fromAddress = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
+                                sendMsg.fromAddress = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl"; // Obelix
                                 sendMsg.toAddress = "cosmos1sd4tl9aljmmezzudugs7zlaya7pg2895tyn79r";
-                                sendMsg.amount.emplace_back("900000", "uatom");
+                                sendMsg.amount.emplace_back("1000", "uatom");
                                 msg.content = sendMsg;
                                 return msg;
                         }
 
-                        Message setupSubmitProposalMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupSubmitProposalMessage() {
                                 Message msg;
                                  // TODO
                                 return msg;
                         }
 
-                        Message setupUndelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupUndelegateMessage() {
                                 Message msg;
                                 // TODO
                                 return msg;
                         }
 
-                        Message setupVoteMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupVoteMessage() {
                                 Message msg;
                                 msg.type = constants::kMsgVote;
                                 MsgVote voteMsg;
-                                voteMsg.voter = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
+                                //voteMsg.voter = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
+                                voteMsg.voter = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl"; // Obelix
                                 voteMsg.proposalId = "42";
                                 voteMsg.option = api::CosmosLikeVoteOption::NO;
                                 msg.content = voteMsg;
                                 return msg;
                         }
 
-                        Message setupWithdrawDelegationRewardMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupWithdrawDelegationRewardMessage() {
                                 Message msg;
                                 // TODO
                                 return msg;
                         }
 
-                        Transaction setupTransaction(const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef) {
+                        Transaction setupTransactionRequest(const std::vector<Message>& msgs) {
+                                // cf. https://cosmos.network/rpc/#/Transactions/post_txs
+
+                                Transaction tx;
+                                tx.fee.gas = BigInt(30000);
+                                tx.fee.amount.emplace_back("30", "uatom");
+                                tx.memo = "Sent by Ledger";
+                                for (const auto& msg : msgs) {
+                                        tx.messages.push_back(msg);
+                                }
+                                return tx;
+                        }
+
+                        Transaction setupTransactionResponse(const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef) {
                                 Transaction tx;
                                 tx.hash = "A1E44688B429AF17322EC33CE62876FA415EFC8D9244A2F51454BD025F416594";
                                 ledger::core::Block block;
@@ -151,8 +166,6 @@ namespace ledger {
                         }
 
                         void assertSameTransaction(const Transaction& txRef, const Transaction& txResult) {
-                                std::cerr << "Tx check !!!" << std::endl;
-
                                 EXPECT_EQ(txResult.hash, txRef.hash);
                                 EXPECT_EQ(txResult.timestamp, txRef.timestamp);
 
