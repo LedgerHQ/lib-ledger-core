@@ -765,6 +765,14 @@ namespace ledger {
                    "sequence VARCHAR(255) DEFAULT '0'"
                    ")";
 
+            // Stellar account signers
+            sql << "CREATE TABLE stellar_account_signers("
+                   "account_uid VARCHAR(255) REFERENCES stellar_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "weight INTEGER NOT NULL,"
+                   "signer_key VARCHAR(255) NOT NULL,"
+                   "key_type VARCHAR(255) NOT NULL"
+                   ")";
+
             // Stellar balances
             sql << "CREATE TABLE stellar_account_balances("
                    "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -829,6 +837,8 @@ namespace ledger {
             sql << "DROP TABLE stellar_transactions";
             // Stellar balances
             sql << "DROP TABLE stellar_account_balances";
+            // Stellar account signers
+            sql << "DROP TABLE stellar_account_signers";
             // Stellar accounts
             sql << "DROP TABLE stellar_accounts";
             // Stellar assets

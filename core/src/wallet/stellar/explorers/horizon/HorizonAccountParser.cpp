@@ -38,6 +38,10 @@ static const JsonParserPathMatcher FLAGS_MATCHER("/flags/?");
 static const JsonParserPathMatcher BALANCES_MATCHER("/balances[*]/?");
 static const JsonParserPathMatcher BALANCES_OBJECT_MATCHER("/balances[*]/");
 static const JsonParserPathMatcher SUBENTRY_COUNT_MATCHER("/subentry_count");
+static const JsonParserPathMatcher ACCOUNT_SIGNER_MATCHER("/signers[*]/");
+static const JsonParserPathMatcher ACCOUNT_SIGNER_KEY_MATCHER("/signers[*]/key");
+static const JsonParserPathMatcher ACCOUNT_SIGNER_TYPE_MATCHER("/signers[*]/type");
+static const JsonParserPathMatcher ACCOUNT_SIGNER_WEIGHT_MATCHER("/signers[*]/weight");
 
 
 namespace ledger {
@@ -74,6 +78,8 @@ namespace ledger {
         bool HorizonAccountParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
             if (_path.match(SUBENTRY_COUNT_MATCHER)) {
                 _account->subentryCount = BigInt::fromString(std::string(str, length)).toInt();
+            } else if (_path.match(ACCOUNT_SIGNER_WEIGHT_MATCHER) && !_account->signers.empty()) {
+                _account->signers.back().weight = static_cast<int32_t>(BigInt::fromString(std::string(str, length)).toInt());
             }
             return true;
         }
@@ -85,6 +91,10 @@ namespace ledger {
                 _account->sequence = std::string(str, length);
             } else if (_path.match(BALANCES_MATCHER)) {
                 _balancesParser.String(str, length, copy);
+            } else if (_path.match(ACCOUNT_SIGNER_KEY_MATCHER) && !_account->signers.empty()) {
+                _account->signers.back().key = std::string(str, length);
+            } else if (_path.match(ACCOUNT_SIGNER_TYPE_MATCHER) && !_account->signers.empty()) {
+                _account->signers.back().type = std::string(str, length);
             }
             return true;
         }
@@ -93,6 +103,8 @@ namespace ledger {
             if (_path.match(BALANCES_OBJECT_MATCHER)) {
                 _account->balances.emplace_back(stellar::Balance());
                 _balancesParser.init(&_account->balances.back());
+            } else if (_path.match(ACCOUNT_SIGNER_MATCHER)) {
+                _account->signers.emplace_back(stellar::AccountSigner());
             }
             return true;
         }

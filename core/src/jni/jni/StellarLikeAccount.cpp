@@ -6,6 +6,7 @@
 #include "BigIntCallback.hpp"
 #include "BoolCallback.hpp"
 #include "Marshal.hpp"
+#include "StellarLikeAccountSignerListCallback.hpp"
 #include "StellarLikeFeeStatsCallback.hpp"
 #include "StellarLikeTransactionBuilder.hpp"
 #include "StringCallback.hpp"
@@ -78,6 +79,15 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeAccount_00024CppProxy_nat
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeAccount>(nativeRef);
         ref->getFeeStats(::djinni_generated::StellarLikeFeeStatsCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeAccount_00024CppProxy_native_1getSigners(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeAccount>(nativeRef);
+        ref->getSigners(::djinni_generated::StellarLikeAccountSignerListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

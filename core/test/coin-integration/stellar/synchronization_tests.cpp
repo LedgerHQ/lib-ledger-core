@@ -151,3 +151,67 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
     auto reserve = wait(account->getBaseReserve());
     EXPECT_TRUE(reserve->toLong() > 2 * 5000000);
 }
+
+TEST_F(StellarFixture, SynchronizeStellarAccountWithManageBuyOffer) {
+    auto pool = newPool();
+    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto account = newAccount(wallet, 0, accountInfoFromAddress("GDDU4HHNCSZ2BI6ELSSFKPSOBL2TEB4A3ZJWOCT2DILQKVJTZBNSOZA2"));
+    auto exists = ::wait(account->exists());
+    EXPECT_TRUE(exists);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
+            make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+            return;
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(),
+                  api::EventCode::SYNCHRONIZATION_SUCCEED);
+        dispatcher->stop();
+    }));
+    EXPECT_EQ(bus, account->synchronize());
+    dispatcher->waitUntilStopped();
+    auto balance = ::wait(account->getBalance());
+    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->addOrder(api::OperationOrderKey::DATE, false)->complete())->execute());
+    EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
+    EXPECT_TRUE(operations.size() >= 5);
+}
+
+TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
+    auto pool = newPool();
+    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto account = newAccount(wallet, 0, accountInfoFromAddress("GAJTWW4OGH5BWFTH24C7SGIDALKI2HUVC2LXHFD533A5FIMSXE5AB3TJ"));
+    auto exists = ::wait(account->exists());
+    EXPECT_TRUE(exists);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
+                   make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                       fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                           return;
+                       EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                       EXPECT_EQ(event->getCode(),
+                                 api::EventCode::SYNCHRONIZATION_SUCCEED);
+                       dispatcher->stop();
+                   }));
+    EXPECT_EQ(bus, account->synchronize());
+    dispatcher->waitUntilStopped();
+    auto signers = ::wait(account->getSigners());
+    EXPECT_EQ(signers.size(), 2);
+    const auto& signer_1 = std::find_if(signers.begin(), signers.end(), [] (const stellar::AccountSigner& s) {
+        return s.key == "GAJTWW4OGH5BWFTH24C7SGIDALKI2HUVC2LXHFD533A5FIMSXE5AB3TJ";
+    });
+    const auto& signer_2 = std::find_if(signers.begin(), signers.end(), [] (const stellar::AccountSigner& s) {
+        return s.key == "GDDU4HHNCSZ2BI6ELSSFKPSOBL2TEB4A3ZJWOCT2DILQKVJTZBNSOZA2";
+    });
+    EXPECT_NE(signer_1, signers.end());
+    EXPECT_NE(signer_2, signers.end());
+
+    EXPECT_EQ(signer_1->type, "ed25519_public_key");
+    EXPECT_EQ(signer_1->weight, 10);
+
+    EXPECT_EQ(signer_2->type, "ed25519_public_key");
+    EXPECT_EQ(signer_2->weight, 10);
+}

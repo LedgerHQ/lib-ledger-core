@@ -46,7 +46,8 @@ namespace ledger {
             static void putAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
             static void createAccount(soci::session& sql, const std::string& walletUid, int32_t accountIndex, const stellar::Account& in);
 
-
+            static void getAccountSigners(soci::session& sql, const std::string& accountUid, std::vector<stellar::AccountSigner>& signers);
+            static void putAccountSigner(soci::session& sql, const std::string& accountUid, const stellar::AccountSigner& signer);
             static bool putAccountBalance(soci::session& sql, const std::string& accountUid, const stellar::Balance& balance);
             static std::string createAccountBalanceUid(const std::string& accountUid, const std::string& assetUid);
 

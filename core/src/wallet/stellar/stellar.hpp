@@ -38,6 +38,7 @@
 #include <chrono>
 #include <wallet/stellar/xdr/models.hpp>
 #include <api/StellarLikeNetworkParameters.hpp>
+#include <api/StellarLikeAccountSigner.hpp>
 
 namespace ledger {
     namespace core {
@@ -78,6 +79,8 @@ namespace ledger {
 
             };
 
+            using AccountSigner = api::StellarLikeAccountSigner;
+
             struct Account {
                 std::string accountId;
                 uint32_t accountIndex;
@@ -86,6 +89,7 @@ namespace ledger {
                 std::vector<Balance> balances;
                 std::unordered_map<std::string, std::string> data;
                 Flags flags;
+                std::vector<AccountSigner> signers;
              };
 
             struct Asset {

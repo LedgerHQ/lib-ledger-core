@@ -56,6 +56,7 @@ namespace ledger {
                 out.accountIndex = soci::get_number<uint32_t>(row, 1);
                 out.sequence = row.get<std::string>(2);
                 out.subentryCount = static_cast<uint32_t>(row.get<int>(3));
+                getAccountSigners(sql, accountUid, out.signers);
                 return true;
             }
 
@@ -70,6 +71,17 @@ namespace ledger {
             for (const auto& balance : in.balances) {
                 putAccountBalance(sql, accountUid, balance);
             }
+            // Clear signers
+            sql << "DELETE FROM stellar_account_signers WHERE account_uid = :uid", use(accountUid);
+            for (const auto& signer : in.signers) {
+               putAccountSigner(sql, accountUid, signer);
+            }
+        }
+
+        void StellarLikeAccountDatabaseHelper::putAccountSigner(soci::session &sql, const std::string &accountUid,
+                                                                const stellar::AccountSigner &signer) {
+            sql << "INSERT INTO stellar_account_signers VALUES(:auid, :w, :sk, :kt)",
+            use(accountUid), use(signer.weight), use(signer.key), use(signer.type);
         }
 
         bool StellarLikeAccountDatabaseHelper::putAccountBalance(soci::session &sql, const std::string &accountUid,
@@ -136,6 +148,20 @@ namespace ledger {
                     return BigInt::fromString(s);
                 });
                 out.balances.emplace_back(balance);
+            }
+        }
+
+        void StellarLikeAccountDatabaseHelper::getAccountSigners(soci::session &sql, const std::string &accountUid,
+                                                                 std::vector<stellar::AccountSigner> &signers) {
+            rowset<row> rows = (sql.prepare <<
+                    "SELECT weight, signer_key, key_type FROM stellar_account_signers WHERE account_uid = :uid",
+                    use(accountUid));
+            for (const auto& row : rows) {
+                stellar::AccountSigner signer;
+                signer.weight = get_number<int32_t>(row, 0);
+                signer.key = row.get<std::string>(1);
+                signer.type = row.get<std::string>(2);
+                signers.emplace_back(std::move(signer));
             }
         }
 

@@ -20,6 +20,7 @@ namespace ledger { namespace core { namespace api {
 class AmountCallback;
 class BigIntCallback;
 class BoolCallback;
+class StellarLikeAccountSignerListCallback;
 class StellarLikeFeeStatsCallback;
 class StellarLikeTransactionBuilder;
 class StringCallback;
@@ -52,6 +53,9 @@ public:
 
     /** Get recommended fee */
     virtual void getFeeStats(const std::shared_ptr<StellarLikeFeeStatsCallback> & callback) = 0;
+
+    /** Get signers for this account */
+    virtual void getSigners(const std::shared_ptr<StellarLikeAccountSignerListCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

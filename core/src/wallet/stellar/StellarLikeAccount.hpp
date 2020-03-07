@@ -40,6 +40,7 @@
 #include <api/StellarLikeTransactionBuilder.hpp>
 #include <api/StellarLikeFeeStats.hpp>
 #include <api/StellarLikeFeeStatsCallback.hpp>
+#include <api/StellarLikeAccountSignerListCallback.hpp>
 
 
 namespace ledger {
@@ -105,6 +106,9 @@ namespace ledger {
 
             void getSequence(const std::shared_ptr<api::BigIntCallback> &callback) override;
             Future<BigInt> getSequence();
+
+            void getSigners(const std::shared_ptr<api::StellarLikeAccountSignerListCallback> &callback) override;
+            Future<std::vector<stellar::AccountSigner>> getSigners();
 
         protected:
             std::shared_ptr<StellarLikeAccount> getSelf();

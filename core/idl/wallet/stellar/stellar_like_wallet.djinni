@@ -1,8 +1,8 @@
 @import "../amount.djinni"
 
 StellarLikeOperationType = enum {
-    CREATE_ACCOUNT; PAYMENT; PATH_PAYMENT; MANAGE_OFFER; CREATE_PASSIVE_OFFER; SET_OPTIONALS;
-    CHANGE_TRUST; ALLOW_TRUST; ACCOUNT_MERGE; INFLATION; MANAGE_DATA; BUMP_SEQUENCE;
+    CREATE_ACCOUNT; PAYMENT; PATH_PAYMENT; MANAGE_OFFER; CREATE_PASSIVE_OFFER; SET_OPTIONS;
+    CHANGE_TRUST; ALLOW_TRUST; ACCOUNT_MERGE; INFLATION; MANAGE_DATA; BUMP_SEQUENCE; MANAGE_BUY_OFFER;
 }
 
 
@@ -75,6 +75,12 @@ StellarLikeFeeStats = record {
     maxFee: i64;
 }
 
+StellarLikeAccountSigner = record {
+    key: string;
+    type: string;
+    weight: i32;
+}
+
 StellarLikeAccount = interface +c {
     # Checks if the current account exists on the stellar Network. If it doesn't the account needs to be activated by
     # sending an account creation operation with an amount of at least the base reserve.
@@ -96,6 +102,9 @@ StellarLikeAccount = interface +c {
 
     # Get recommended fee
     getFeeStats(callback: Callback<StellarLikeFeeStats>);
+
+    # Get signers for this account
+    getSigners(callback: ListCallback<StellarLikeAccountSigner>);
 }
 
 StellarLikeWallet = interface +c {
