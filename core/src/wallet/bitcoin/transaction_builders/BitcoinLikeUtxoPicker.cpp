@@ -225,10 +225,14 @@ namespace ledger {
         BitcoinLikeGetUtxoFunction
         BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
+            auto minUtxoAmount = getCurrency().bitcoinLikeNetworkParameters.value().DustAmount;
             return [=] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
                 return getUtxo().map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [=] (const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo) {
                     std::vector<std::shared_ptr<api::BitcoinLikeOutput>> filtered;
                     auto isExcluded = [&] (const std::shared_ptr<api::BitcoinLikeOutput>& output) -> bool {
+                        if (output->getValue()->toLong() < minUtxoAmount) {
+                            return true;
+                        }
                         for (auto& o : request.excludedUtxo) {
                             auto hash = std::get<0>(o);
                             auto index = std::get<1>(o);
