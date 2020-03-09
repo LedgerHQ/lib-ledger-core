@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-WebSocketConnection::WebSocketConnection() : ::djinni::JniInterface<::ledger::core::api::WebSocketConnection, WebSocketConnection>("co/ledger/core/WebSocketConnection$CppProxy") {}
+WebSocketConnection::WebSocketConnection() : ::djinni::JniInterface<::ledger::core::api::WebSocketConnection, WebSocketConnection>("WebSocketConnection$CppProxy") {}
 
 WebSocketConnection::~WebSocketConnection() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_WebSocketConnection_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_native_1onConnect(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_connectionId)
+CJNIEXPORT void JNICALL Java_WebSocketConnection_00024CppProxy_native_1onConnect(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_connectionId)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -29,7 +29,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_native_1onClose(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_WebSocketConnection_00024CppProxy_native_1onClose(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -38,7 +38,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_native_1onMessage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_data)
+CJNIEXPORT void JNICALL Java_WebSocketConnection_00024CppProxy_native_1onMessage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_data)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -47,7 +47,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_native_1onError(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_code, jstring j_message)
+CJNIEXPORT void JNICALL Java_WebSocketConnection_00024CppProxy_native_1onError(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_code, jstring j_message)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -57,7 +57,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jint JNICALL Java_co_ledger_core_WebSocketConnection_00024CppProxy_native_1getConnectionId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_WebSocketConnection_00024CppProxy_native_1getConnectionId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

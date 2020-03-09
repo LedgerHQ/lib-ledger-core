@@ -44,7 +44,7 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseBlob, ::djinni_generated::DatabaseBlob>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseBlob") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseBlob") };
     const jmethodID method_read { ::djinni::jniGetMethodID(clazz.get(), "read", "(JJ)[B") };
     const jmethodID method_write { ::djinni::jniGetMethodID(clazz.get(), "write", "(J[B)J") };
     const jmethodID method_append { ::djinni::jniGetMethodID(clazz.get(), "append", "([B)J") };

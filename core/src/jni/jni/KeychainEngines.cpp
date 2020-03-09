@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-KeychainEngines::KeychainEngines() : ::djinni::JniInterface<::ledger::core::api::KeychainEngines, KeychainEngines>("co/ledger/core/KeychainEngines$CppProxy") {}
+KeychainEngines::KeychainEngines() : ::djinni::JniInterface<::ledger::core::api::KeychainEngines, KeychainEngines>("KeychainEngines$CppProxy") {}
 
 KeychainEngines::~KeychainEngines() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_KeychainEngines_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_KeychainEngines_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

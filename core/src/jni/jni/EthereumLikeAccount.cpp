@@ -13,12 +13,12 @@
 
 namespace djinni_generated {
 
-EthereumLikeAccount::EthereumLikeAccount() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeAccount, EthereumLikeAccount>("co/ledger/core/EthereumLikeAccount$CppProxy") {}
+EthereumLikeAccount::EthereumLikeAccount() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeAccount, EthereumLikeAccount>("EthereumLikeAccount$CppProxy") {}
 
 EthereumLikeAccount::~EthereumLikeAccount() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -26,7 +26,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1broadcastRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_transaction, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1broadcastRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_transaction, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -36,7 +36,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1broadcastTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1broadcastTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -46,7 +46,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1buildTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1buildTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -56,7 +56,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getERC20Accounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1getERC20Accounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -66,7 +66,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getGasPrice(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1getGasPrice(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -75,7 +75,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getEstimatedGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1getEstimatedGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -85,7 +85,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getDryRunGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_request, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1getDryRunGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_request, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -96,7 +96,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getERC20Balance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_erc20Address, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1getERC20Balance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_erc20Address, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -106,7 +106,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1getERC20Balances(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_erc20Addresses, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeAccount_00024CppProxy_native_1getERC20Balances(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_erc20Addresses, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

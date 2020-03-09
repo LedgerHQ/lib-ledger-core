@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<TimePeriod>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    TimePeriod() : JniEnum("co/ledger/core/TimePeriod") {}
+    TimePeriod() : JniEnum("TimePeriod") {}
     friend ::djinni::JniClass<TimePeriod>;
 };
 
