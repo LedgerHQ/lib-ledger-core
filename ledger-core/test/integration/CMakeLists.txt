@@ -18,7 +18,13 @@ target_include_directories(
 )
 
 target_link_libraries(ledger-core-integration-test gtest gtest_main)
-target_link_libraries(ledger-core-integration-test crypto)
+
+if(SYS_OPENSSL)
+    find_package(OpenSSL)
+    target_link_libraries(ledger-core-integration-test OpenSSL::crypto)
+else()
+    target_link_libraries(ledger-core-integration-test crypto)
+endif()
 
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # We need this otherwise link fails (for Linux),

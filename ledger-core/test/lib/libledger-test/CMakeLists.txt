@@ -3,7 +3,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 add_library(mongoose STATIC mongoose.c mongoose.h)
 
-target_link_libraries(mongoose ssl)
+if(SYS_OPENSSL)
+    find_package(OpenSSL)
+    target_link_libraries(mongoose OpenSSL::SSL)
+else()
+    target_link_libraries(mongoose ssl)
+endif()
 
 add_library(ledger-test STATIC
     EventLooper.cpp EventLooper.hpp EventThread.cpp EventThread.hpp NativeThreadDispatcher.cpp
