@@ -57,7 +57,7 @@ cmd_project_idl() {
     usage "please provide the name of the currency" 1
   fi
 
-  ./tools/idl_interfaces.sh ledger-core $1
+  ./tools/idl_interfaces.sh $1
 }
 
 cmd_project() {
@@ -84,7 +84,7 @@ cmd_idl() {
     usage "too many arguments; generating the API for Ledger Core doesn’t require any argument" 1
   fi
 
-  ./tools/idl_interfaces.sh ledger-core
+  ./tools/idl_interfaces.sh core
 }
 
 case "$1" in

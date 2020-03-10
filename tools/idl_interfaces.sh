@@ -12,40 +12,18 @@ else
     trace="false";
 fi
 
-function generate_core_interface {
-    CORE_DIR=$1 # Ledger Core library directory
-    CORE_IDL_DIR=$CORE_DIR/idl
-    CORE_API_DIR=$CORE_DIR/inc/core/api
-    CORE_CPP_JNI_DIR=$CORE_DIR/inc/core/jni
+function generate_interface {
+    COIN_NAME="$1"
 
-    echo -e "Generating ledger-core API"
+    if [[ "$COIN_NAME" == "core" ]]; then
+        SUBCORE_DIR=ledger-core
+    else
+        SUBCORE_DIR=ledger-core-$COIN_NAME
+    fi
 
-    # recreate API directory
-    rm -rf $CORE_API_DIR
-    mkdir -p $CORE_API_DIR
-
-    ./djinni/src/run \
-        --idl $CORE_IDL_DIR/core.djinni \
-        --cpp-out $CORE_API_DIR \
-        --cpp-namespace ledger::core::api \
-        --cpp-optional-template std::experimental::optional \
-        --cpp-optional-header "<core/utils/Optional.hpp>" \
-        --export-header-name libcore_export \
-        --jni-include-cpp-prefix "../../api/" \
-        --jni-out $CORE_CPP_JNI_DIR \
-        --java-out api/core/java \
-        --java-package co.ledger.core \
-        --yaml-out $CORE_IDL_DIR \
-        --yaml-out-file core.yaml \
-        --trace $trace
-}
-
-function generate_subcore_interface {
-    CORE_DIR=$1 # Ledger Core library directory
-    COIN_NAME="$2"
-    SUBCORE_DIR=ledger-core-$COIN_NAME # Sub Core library directory
     SUBCORE_NAME=$(basename $SUBCORE_DIR)
     SUBCORE_API_DIR=$SUBCORE_DIR/inc/$COIN_NAME/api
+    SUBCORE_CPP_JNI_DIR=$SUBCORE_DIR/inc/$COIN_NAME/jni
 
     echo -e "Generating $SUBCORE_NAME API"
 
@@ -59,27 +37,27 @@ function generate_subcore_interface {
     # This option will be the name of the imported header and the correponding variable (defined
     # by EXPORT_MACRO_NAME option) should be exactly same name in upper case
 
-    ./djinni/src/run \
+    ../djinni/src/run \
         --idl $SUBCORE_DIR/idl/idl.djinni \
         --cpp-out $SUBCORE_API_DIR \
         --cpp-namespace ledger::core::api \
         --cpp-optional-template std::experimental::optional \
         --cpp-optional-header "<core/utils/Optional.hpp>" \
         --export-header-name libcore_export \
+        --jni-include-cpp-prefix "../../api/" \
+        --jni-out $SUBCORE_CPP_JNI_DIR \
+        --java-out api/core/java \
+        --java-package co.ledger.core \
         --trace $trace
 }
 
 case "$#" in
     "1")
-        generate_core_interface $1
-        ;;
-
-    "2")
-        generate_subcore_interface $1 $2
+        generate_interface $1 $2
         ;;
 
     *)
-        echo "Wrong number of arguments; please provide 1 to 2."
+        echo "Wrong number of arguments; please provide the name of the core to generate the API for."
         exit 1
         ;;
 esac
