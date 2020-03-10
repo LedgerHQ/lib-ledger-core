@@ -73,7 +73,8 @@ namespace ledger {
             template <typename Success, typename Failure, typename Handler>
             Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler) const {
                 return operator()().recover(_context, [] (const Exception& exception) {
-                    if (exception.getErrorCode() == api::ErrorCode::HTTP_ERROR && exception.getUserData().nonEmpty()) {
+                    if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                        exception.getUserData().nonEmpty()) {
                         return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
                     }
                     throw exception;
