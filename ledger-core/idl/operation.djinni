@@ -1,6 +1,7 @@
 @import "amount.djinni"
 @import "currency.djinni"
 @import "error.djinni"
+@import "preferences.djinni"
 @import "trust.djinni"
 
 OperationOrderKey = enum {
@@ -97,7 +98,7 @@ OperationQuery = interface +c {
 
     # Execute query to retrieve operations.
     # @param callback, if execute method succeed, return a list of Operation objects
-    execute(callback: callback2<optional<list<Operation>>>);
+    execute(callback: ListCallback<Operation>);
 }
 
 # Class representing an operation.

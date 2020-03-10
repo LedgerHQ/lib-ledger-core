@@ -45,6 +45,7 @@ cmd_project_new() {
   echo "—> generating IDL entry point"
   cp ./tools/templates/idl.djinni $project_name/idl/
   cp ./tools/templates/callback.djinni $project_name/idl/
+  ln -sf ../../ledger-core/idl $project_name/idl/ledger-core
 
   echo "—> creating migrations files"
   sed s/\$project_name/$capitalized_coin_name/g ./tools/templates/Migrations.hpp > $project_name/inc/$coin_name/database/Migrations.hpp

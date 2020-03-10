@@ -1,5 +1,3 @@
-@extern "../../ledger-core/idl/core.yaml"
-
 TezosCurve = enum {
 	ed25519;
 	secp256k1;
