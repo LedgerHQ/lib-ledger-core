@@ -76,24 +76,12 @@ cmd_idl() {
 }
 
 cmd_pkg() {
-  if [[ "$#" -ne "2" ]];
+  if [[ "$#" -lt "2" ]];
   then
-    usage "generating bindings requires only two arguments: the package system to target (npm) and the path to the project’s main IDL file"
+    usage "generating bindings requires at least two arguments: the package system to target (npm) and a list of coin project names"
   fi
 
-  PKG_METHOD="$1"
-  IDL_PATH="$2"
-
-  case $PKG_METHOD in
-    "npm")
-      echo "Packaging for NPM"
-      ./tools/idl_pkg.sh $IDL_PATH $PKG_METHOD
-      ;;
-
-    *)
-      usage "unknown package system" 1
-      ;;
-  esac
+  ./tools/idl_pkg.sh $*
 }
 
 case "$1" in
