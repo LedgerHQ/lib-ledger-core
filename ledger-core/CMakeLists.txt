@@ -130,7 +130,7 @@ if(NOT SYS_OPENSSL)
         FRAMEWORK     DESTINATION lib/ledger-core
     )
 
-    if (SSL_SUPPORT)
+    if (SSL_SUPPORT OR BUILD_TESTS)
         install(
             TARGETS
                 ssl
