@@ -64,7 +64,7 @@ CosmosLikeMsgUndelegate = record {
         amount: CosmosLikeAmount;
 }
 
-CosmosLikeMsgRedelegate = record {
+CosmosLikeMsgBeginRedelegate = record {
         delegatorAddress: string;
         validatorSourceAddress: string;
         validatorDestinationAddress: string;
@@ -139,7 +139,7 @@ CosmosLikeMsgType = enum {
         MsgSend;
         MsgDelegate;
         MsgUndelegate;
-        MsgRedelegate;
+        MsgBeginRedelegate;
         MsgSubmitProposal;
         MsgVote;
         MsgDeposit;
@@ -191,14 +191,14 @@ CosmosLikeMessage = interface +c {
         # @return CosmosLikeMsgUndelegate the unwrapped message
         static unwrapMsgUndelegate(msg: CosmosLikeMessage): CosmosLikeMsgUndelegate;
 
-        # Wrap the given CosmosLikeMsgRedelegate into a CosmosLikeMessage
+        # Wrap the given CosmosLikeMsgBeginRedelegate into a CosmosLikeMessage
         # @param msg The message you need to wrap.
         # @return CosmosLikeMessage A wrapped message.
-        static wrapMsgRedelegate(msg: CosmosLikeMsgRedelegate): CosmosLikeMessage;
-        # Unwrap a message to a CosmosLikeMsgRedelegate
+        static wrapMsgBeginRedelegate(msg: CosmosLikeMsgBeginRedelegate): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgBeginRedelegate
         # @param msg The message to unwrap
-        # @return CosmosLikeMsgRedelegate the unwrapped message
-        static unwrapMsgRedelegate(msg: CosmosLikeMessage): CosmosLikeMsgRedelegate;
+        # @return CosmosLikeMsgBeginRedelegate the unwrapped message
+        static unwrapMsgBeginRedelegate(msg: CosmosLikeMessage): CosmosLikeMsgBeginRedelegate;
 
         # Wrap the given CosmosLikeMsgSubmitProposal into a CosmosLikeMessage
         # @param msg The message you need to wrap.

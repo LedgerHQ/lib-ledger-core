@@ -47,7 +47,7 @@
 #include <api/CosmosLikeMsgSend.hpp>
 #include <api/CosmosLikeMsgDelegate.hpp>
 #include <api/CosmosLikeMsgUndelegate.hpp>
-#include <api/CosmosLikeMsgRedelegate.hpp>
+#include <api/CosmosLikeMsgBeginRedelegate.hpp>
 #include <api/CosmosLikeMsgSubmitProposal.hpp>
 #include <api/CosmosLikeMsgVote.hpp>
 #include <api/CosmosLikeMsgDeposit.hpp>
@@ -154,7 +154,7 @@ namespace ledger {
                 };
             }
 
-             cosmos::MsgRedelegate buildMsgRedelegateFromRawMessage(Object const& object) {
+             cosmos::MsgBeginRedelegate buildMsgBeginRedelegateFromRawMessage(Object const& object) {
                 auto valueObject = object[kValue].GetObject();
                 auto amountObject = valueObject[kAmount].GetObject();
 
@@ -585,9 +585,9 @@ namespace ledger {
                                 messages.push_back(api::CosmosLikeMessage::wrapMsgUndelegate(
                                     buildMsgUndelegateFromRawMessage(msgObject)));
                                 break;
-                            case api::CosmosLikeMsgType::MSGREDELEGATE:
-                                messages.push_back(api::CosmosLikeMessage::wrapMsgRedelegate(
-                                    buildMsgRedelegateFromRawMessage(msgObject)));
+                            case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
+                                messages.push_back(api::CosmosLikeMessage::wrapMsgBeginRedelegate(
+                                    buildMsgBeginRedelegateFromRawMessage(msgObject)));
                                 break;
                             case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL:
                                 messages.push_back(api::CosmosLikeMessage::wrapMsgSubmitProposal(

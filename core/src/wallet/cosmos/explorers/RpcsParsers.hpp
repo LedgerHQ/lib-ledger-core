@@ -211,8 +211,8 @@ namespace ledger {
             }
 
             template <typename T>
-            void parseMsgRedelegate(const T& n, cosmos::MessageContent &out) {
-                cosmos::MsgRedelegate msg;
+            void parseMsgBeginRedelegate(const T& n, cosmos::MessageContent &out) {
+                cosmos::MsgBeginRedelegate msg;
 
                 msg.delegatorAddress = n[kDelegatorAddress].GetString();
                 msg.validatorSourceAddress = n[kValidatorSrcAddress].GetString();
@@ -377,7 +377,7 @@ namespace ledger {
                 const auto& contentNode = messageNode[kValue].GetObject();
                 COSMOS_PARSE_MSG_CONTENT(MsgSend)
                 COSMOS_PARSE_MSG_CONTENT(MsgDelegate)
-                COSMOS_PARSE_MSG_CONTENT(MsgRedelegate)
+                COSMOS_PARSE_MSG_CONTENT(MsgBeginRedelegate)
                 COSMOS_PARSE_MSG_CONTENT(MsgUndelegate)
                 COSMOS_PARSE_MSG_CONTENT(MsgSubmitProposal)
                 COSMOS_PARSE_MSG_CONTENT(MsgVote)

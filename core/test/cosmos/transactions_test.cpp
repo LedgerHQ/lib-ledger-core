@@ -143,12 +143,12 @@ TEST(CosmosTransaction, ParseRawMsgUndelegateTransaction) {
     EXPECT_EQ(tx->serialize(), strTx);
 }
 
-TEST(CosmosTransaction, ParseRawMsgRedelegateTransaction) {
+TEST(CosmosTransaction, ParseRawMsgBeginRedelegateTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgBeginRedelegate\",\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"validator_dst_address\":\"cosmosvaloper1sd4tl9aljmmezzudugs7zlaya7pg2895ws8tfs\",\"validator_src_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
     auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(ledger::core::currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
-    auto redelegateMessage = api::CosmosLikeMessage::unwrapMsgRedelegate(message);
+    auto redelegateMessage = api::CosmosLikeMessage::unwrapMsgBeginRedelegate(message);
     EXPECT_EQ(tx->getFee()->toLong(), 5000L);
     EXPECT_EQ(tx->getGas()->toLong(), 200000L);
     EXPECT_EQ(redelegateMessage.delegatorAddress, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");

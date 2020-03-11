@@ -35,7 +35,7 @@
 #include <api/CosmosLikeMsgDelegate.hpp>
 #include <api/CosmosLikeMsgDeposit.hpp>
 #include <api/CosmosLikeMsgDeposit.hpp>
-#include <api/CosmosLikeMsgRedelegate.hpp>
+#include <api/CosmosLikeMsgBeginRedelegate.hpp>
 #include <api/CosmosLikeMsgSend.hpp>
 #include <api/CosmosLikeMsgSubmitProposal.hpp>
 #include <api/CosmosLikeMsgType.hpp>
@@ -81,7 +81,7 @@ namespace ledger {
                         using MsgSend = api::CosmosLikeMsgSend;
                         using MsgDelegate = api::CosmosLikeMsgDelegate;
                         using MsgUndelegate = api::CosmosLikeMsgUndelegate;
-                        using MsgRedelegate = api::CosmosLikeMsgRedelegate;
+                        using MsgBeginRedelegate = api::CosmosLikeMsgBeginRedelegate;
                         using MsgSubmitProposal = api::CosmosLikeMsgSubmitProposal;
                         using MsgVote = api::CosmosLikeMsgVote;
                         using MsgDeposit = api::CosmosLikeMsgDeposit;
@@ -101,7 +101,7 @@ namespace ledger {
                         using MessageContent = boost::variant<
                             MsgSend,
                             MsgDelegate,
-                            MsgRedelegate,
+                            MsgBeginRedelegate,
                             MsgUndelegate,
                             MsgSubmitProposal,
                             MsgVote,

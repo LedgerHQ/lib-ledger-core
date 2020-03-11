@@ -232,20 +232,20 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         // cosmos::MsgUndelegate::amount
         addAmount(kAmount, content.amount, jsonContent, allocator);
 
-    } else if (_msgData.type == kMsgRedelegate) {
-        const auto& content = boost::get<cosmos::MsgRedelegate>(_msgData.content);
+    } else if (_msgData.type == kMsgBeginRedelegate) {
+        const auto& content = boost::get<cosmos::MsgBeginRedelegate>(_msgData.content);
 
-        // cosmos::MsgRedelegate::delegatorAddress
+        // cosmos::MsgBeginRedelegate::delegatorAddress
         addString(kDelegatorAddress, content.delegatorAddress, jsonContent, allocator);
 
-        // cosmos::MsgRedelegate::validatorSourceAddress
+        // cosmos::MsgBeginRedelegate::validatorSourceAddress
         addString(kValidatorSrcAddress, content.validatorSourceAddress, jsonContent, allocator);
 
-        // cosmos::MsgRedelegate::validatorDestinationAddress
+        // cosmos::MsgBeginRedelegate::validatorDestinationAddress
         addString(
             kValidatorDstAddress, content.validatorDestinationAddress, jsonContent, allocator);
 
-        // cosmos::MsgRedelegate::amount
+        // cosmos::MsgBeginRedelegate::amount
         addAmount(kAmount, content.amount, jsonContent, allocator);
 
     } else if (_msgData.type == kMsgSubmitProposal) {
@@ -462,21 +462,21 @@ api::CosmosLikeMsgUndelegate api::CosmosLikeMessage::unwrapMsgUndelegate(
     return boost::get<cosmos::MsgUndelegate>(cosmosMsg->getRawData().content);
 }
 
-std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgRedelegate(
-    const api::CosmosLikeMsgRedelegate& msgContent) {
+std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgBeginRedelegate(
+    const api::CosmosLikeMsgBeginRedelegate& msgContent) {
     cosmos::Message msg;
-    msg.type = kMsgRedelegate;
+    msg.type = kMsgBeginRedelegate;
     msg.content = msgContent;
     return std::make_shared<::ledger::core::CosmosLikeMessage>(msg);
 }
 
-api::CosmosLikeMsgRedelegate api::CosmosLikeMessage::unwrapMsgRedelegate(
+api::CosmosLikeMsgBeginRedelegate api::CosmosLikeMessage::unwrapMsgBeginRedelegate(
     const std::shared_ptr<api::CosmosLikeMessage>& msg) {
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
-    if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGREDELEGATE) {
-        throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgRedelegate");
+    if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGBEGINREDELEGATE) {
+        throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgBeginRedelegate");
     }
-    return boost::get<cosmos::MsgRedelegate>(cosmosMsg->getRawData().content);
+    return boost::get<cosmos::MsgBeginRedelegate>(cosmosMsg->getRawData().content);
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSubmitProposal(
