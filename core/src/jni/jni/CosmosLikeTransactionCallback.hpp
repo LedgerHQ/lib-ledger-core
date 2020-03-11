@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::CosmosLikeTransactionCallback, ::djinni_generated::CosmosLikeTransactionCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeTransactionCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LCosmosLikeTransaction;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeTransactionCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/CosmosLikeTransaction;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

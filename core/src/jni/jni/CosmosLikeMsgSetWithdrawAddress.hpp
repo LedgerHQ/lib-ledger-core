@@ -25,7 +25,7 @@ private:
     CosmosLikeMsgSetWithdrawAddress();
     friend ::djinni::JniClass<CosmosLikeMsgSetWithdrawAddress>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeMsgSetWithdrawAddress") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMsgSetWithdrawAddress") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_delegatorAddress { ::djinni::jniGetFieldID(clazz.get(), "delegatorAddress", "Ljava/lang/String;") };
     const jfieldID field_withdrawAddress { ::djinni::jniGetFieldID(clazz.get(), "withdrawAddress", "Ljava/lang/String;") };

@@ -42,10 +42,10 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::WebSocketClient, ::djinni_generated::WebSocketClient>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("WebSocketClient") };
-    const jmethodID method_connect { ::djinni::jniGetMethodID(clazz.get(), "connect", "(Ljava/lang/String;LWebSocketConnection;)V") };
-    const jmethodID method_send { ::djinni::jniGetMethodID(clazz.get(), "send", "(LWebSocketConnection;Ljava/lang/String;)V") };
-    const jmethodID method_disconnect { ::djinni::jniGetMethodID(clazz.get(), "disconnect", "(LWebSocketConnection;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/WebSocketClient") };
+    const jmethodID method_connect { ::djinni::jniGetMethodID(clazz.get(), "connect", "(Ljava/lang/String;Lco/ledger/core/WebSocketConnection;)V") };
+    const jmethodID method_send { ::djinni::jniGetMethodID(clazz.get(), "send", "(Lco/ledger/core/WebSocketConnection;Ljava/lang/String;)V") };
+    const jmethodID method_disconnect { ::djinni::jniGetMethodID(clazz.get(), "disconnect", "(Lco/ledger/core/WebSocketConnection;)V") };
 };
 
 }  // namespace djinni_generated

@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeAddress::CosmosLikeAddress() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeAddress, CosmosLikeAddress>("CosmosLikeAddress$CppProxy") {}
+CosmosLikeAddress::CosmosLikeAddress() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeAddress, CosmosLikeAddress>("co/ledger/core/CosmosLikeAddress$CppProxy") {}
 
 CosmosLikeAddress::~CosmosLikeAddress() = default;
 
 
-CJNIEXPORT void JNICALL Java_CosmosLikeAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_CosmosLikeAddress_00024CppProxy_nativeDestroy(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_CosmosLikeAddress_00024CppProxy_native_1getVersion(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_CosmosLikeAddress_00024CppProxy_native_1getVersion(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jbyteArray JNICALL Java_CosmosLikeAddress_00024CppProxy_native_1getVe
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_CosmosLikeAddress_00024CppProxy_native_1getHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_CosmosLikeAddress_00024CppProxy_native_1getHash160(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jbyteArray JNICALL Java_CosmosLikeAddress_00024CppProxy_native_1getHa
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_CosmosLikeAddress_00024CppProxy_native_1getNetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeAddress_00024CppProxy_native_1getNetworkParameters(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -50,7 +50,7 @@ CJNIEXPORT jobject JNICALL Java_CosmosLikeAddress_00024CppProxy_native_1getNetwo
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_CosmosLikeAddress_00024CppProxy_native_1toBech32(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeAddress_00024CppProxy_native_1toBech32(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

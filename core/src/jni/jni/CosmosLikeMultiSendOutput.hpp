@@ -25,7 +25,7 @@ private:
     CosmosLikeMultiSendOutput();
     friend ::djinni::JniClass<CosmosLikeMultiSendOutput>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeMultiSendOutput") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMultiSendOutput") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/util/ArrayList;)V") };
     const jfieldID field_toAddress { ::djinni::jniGetFieldID(clazz.get(), "toAddress", "Ljava/lang/String;") };
     const jfieldID field_coins { ::djinni::jniGetFieldID(clazz.get(), "coins", "Ljava/util/ArrayList;") };

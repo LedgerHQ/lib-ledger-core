@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-CosmosConfigurationDefaults::CosmosConfigurationDefaults() : ::djinni::JniInterface<::ledger::core::api::CosmosConfigurationDefaults, CosmosConfigurationDefaults>("CosmosConfigurationDefaults$CppProxy") {}
+CosmosConfigurationDefaults::CosmosConfigurationDefaults() : ::djinni::JniInterface<::ledger::core::api::CosmosConfigurationDefaults, CosmosConfigurationDefaults>("co/ledger/core/CosmosConfigurationDefaults$CppProxy") {}
 
 CosmosConfigurationDefaults::~CosmosConfigurationDefaults() = default;
 
 
-CJNIEXPORT void JNICALL Java_CosmosConfigurationDefaults_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosConfigurationDefaults_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

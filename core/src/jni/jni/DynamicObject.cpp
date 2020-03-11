@@ -8,12 +8,12 @@
 
 namespace djinni_generated {
 
-DynamicObject::DynamicObject() : ::djinni::JniInterface<::ledger::core::api::DynamicObject, DynamicObject>("DynamicObject$CppProxy") {}
+DynamicObject::DynamicObject() : ::djinni::JniInterface<::ledger::core::api::DynamicObject, DynamicObject>("co/ledger/core/DynamicObject$CppProxy") {}
 
 DynamicObject::~DynamicObject() = default;
 
 
-CJNIEXPORT void JNICALL Java_DynamicObject_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -21,7 +21,7 @@ CJNIEXPORT void JNICALL Java_DynamicObject_00024CppProxy_nativeDestroy(JNIEnv* j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jstring j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -32,7 +32,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putString(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jint j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jint j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -43,7 +43,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putInt(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jlong j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jlong j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +54,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putLong(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jdouble j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jdouble j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -65,7 +65,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putDouble(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jbyteArray j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -76,7 +76,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putData(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jboolean j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jboolean j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -87,7 +87,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putBoolean(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putObject(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putObject(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -98,7 +98,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putObject(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_value)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1putArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key, jobject j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -109,7 +109,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1putArray(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_DynamicObject_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -119,7 +119,7 @@ CJNIEXPORT jstring JNICALL Java_DynamicObject_00024CppProxy_native_1getString(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -129,7 +129,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getInt(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -139,7 +139,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getLong(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -149,7 +149,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getDouble(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_DynamicObject_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -159,7 +159,7 @@ CJNIEXPORT jbyteArray JNICALL Java_DynamicObject_00024CppProxy_native_1getData(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getBoolean(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -169,7 +169,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getBoolean(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getObject(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getObject(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -179,7 +179,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getObject(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -189,7 +189,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getArray(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_DynamicObject_00024CppProxy_native_1contains(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1contains(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -199,7 +199,7 @@ CJNIEXPORT jboolean JNICALL Java_DynamicObject_00024CppProxy_native_1contains(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_DynamicObject_00024CppProxy_native_1remove(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1remove(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -209,7 +209,7 @@ CJNIEXPORT jboolean JNICALL Java_DynamicObject_00024CppProxy_native_1remove(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getKeys(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getKeys(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -219,7 +219,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getKeys(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1getType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -229,7 +229,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_00024CppProxy_native_1getType(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_DynamicObject_00024CppProxy_native_1dump(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1dump(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -239,7 +239,7 @@ CJNIEXPORT jstring JNICALL Java_DynamicObject_00024CppProxy_native_1dump(JNIEnv*
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_DynamicObject_00024CppProxy_native_1serialize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1serialize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -249,7 +249,7 @@ CJNIEXPORT jbyteArray JNICALL Java_DynamicObject_00024CppProxy_native_1serialize
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_DynamicObject_00024CppProxy_native_1isReadOnly(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1isReadOnly(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -259,7 +259,7 @@ CJNIEXPORT jboolean JNICALL Java_DynamicObject_00024CppProxy_native_1isReadOnly(
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jlong JNICALL Java_DynamicObject_00024CppProxy_native_1size(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jlong JNICALL Java_co_ledger_core_DynamicObject_00024CppProxy_native_1size(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -269,7 +269,7 @@ CJNIEXPORT jlong JNICALL Java_DynamicObject_00024CppProxy_native_1size(JNIEnv* j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_newInstance(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_newInstance(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -278,7 +278,7 @@ CJNIEXPORT jobject JNICALL Java_DynamicObject_newInstance(JNIEnv* jniEnv, jobjec
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DynamicObject_load(JNIEnv* jniEnv, jobject /*this*/, jbyteArray j_serialized)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DynamicObject_load(JNIEnv* jniEnv, jobject /*this*/, jbyteArray j_serialized)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

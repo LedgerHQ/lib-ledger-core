@@ -9,12 +9,12 @@
 
 namespace djinni_generated {
 
-QueryFilter::QueryFilter() : ::djinni::JniInterface<::ledger::core::api::QueryFilter, QueryFilter>("QueryFilter$CppProxy") {}
+QueryFilter::QueryFilter() : ::djinni::JniInterface<::ledger::core::api::QueryFilter, QueryFilter>("co/ledger/core/QueryFilter$CppProxy") {}
 
 QueryFilter::~QueryFilter() = default;
 
 
-CJNIEXPORT void JNICALL Java_QueryFilter_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -22,7 +22,7 @@ CJNIEXPORT void JNICALL Java_QueryFilter_00024CppProxy_nativeDestroy(JNIEnv* jni
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_accountEq(JNIEnv* jniEnv, jobject /*this*/, jstring j_accountUid)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_accountEq(JNIEnv* jniEnv, jobject /*this*/, jstring j_accountUid)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -31,7 +31,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_accountEq(JNIEnv* jniEnv, jobject /*
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_accountNeq(JNIEnv* jniEnv, jobject /*this*/, jstring j_accountUid)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_accountNeq(JNIEnv* jniEnv, jobject /*this*/, jstring j_accountUid)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -40,7 +40,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_accountNeq(JNIEnv* jniEnv, jobject /
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_dateLte(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateLte(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -49,7 +49,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_dateLte(JNIEnv* jniEnv, jobject /*th
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_dateLt(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateLt(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -58,7 +58,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_dateLt(JNIEnv* jniEnv, jobject /*thi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_dateGt(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateGt(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -67,7 +67,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_dateGt(JNIEnv* jniEnv, jobject /*thi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_dateGte(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateGte(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -76,7 +76,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_dateGte(JNIEnv* jniEnv, jobject /*th
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_dateEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -85,7 +85,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_dateEq(JNIEnv* jniEnv, jobject /*thi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_dateNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_dateNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_time)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -94,7 +94,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_dateNeq(JNIEnv* jniEnv, jobject /*th
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_containsRecipient(JNIEnv* jniEnv, jobject /*this*/, jstring j_recipientAddress)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_containsRecipient(JNIEnv* jniEnv, jobject /*this*/, jstring j_recipientAddress)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -103,7 +103,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_containsRecipient(JNIEnv* jniEnv, jo
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_containsSender(JNIEnv* jniEnv, jobject /*this*/, jstring j_senderAddress)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_containsSender(JNIEnv* jniEnv, jobject /*this*/, jstring j_senderAddress)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -112,7 +112,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_containsSender(JNIEnv* jniEnv, jobje
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_currencyEq(JNIEnv* jniEnv, jobject /*this*/, jstring j_currencyName)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_currencyEq(JNIEnv* jniEnv, jobject /*this*/, jstring j_currencyName)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -121,7 +121,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_currencyEq(JNIEnv* jniEnv, jobject /
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_operationUidEq(JNIEnv* jniEnv, jobject /*this*/, jstring j_operationUid)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationUidEq(JNIEnv* jniEnv, jobject /*this*/, jstring j_operationUid)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -130,7 +130,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_operationUidEq(JNIEnv* jniEnv, jobje
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_operationUidNeq(JNIEnv* jniEnv, jobject /*this*/, jstring j_operationUid)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationUidNeq(JNIEnv* jniEnv, jobject /*this*/, jstring j_operationUid)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -139,7 +139,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_operationUidNeq(JNIEnv* jniEnv, jobj
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_trustEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_trust)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_trustEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_trust)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -148,7 +148,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_trustEq(JNIEnv* jniEnv, jobject /*th
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_trustNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_trust)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_trustNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_trust)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -157,7 +157,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_trustNeq(JNIEnv* jniEnv, jobject /*t
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_feesEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -166,7 +166,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_feesEq(JNIEnv* jniEnv, jobject /*thi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_feesNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -175,7 +175,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_feesNeq(JNIEnv* jniEnv, jobject /*th
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_feesGte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesGte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -184,7 +184,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_feesGte(JNIEnv* jniEnv, jobject /*th
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_feesGt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesGt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -193,7 +193,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_feesGt(JNIEnv* jniEnv, jobject /*thi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_feesLte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesLte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -202,7 +202,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_feesLte(JNIEnv* jniEnv, jobject /*th
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_feesLt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_feesLt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -211,7 +211,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_feesLt(JNIEnv* jniEnv, jobject /*thi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_amountEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -220,7 +220,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_amountEq(JNIEnv* jniEnv, jobject /*t
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_amountNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -229,7 +229,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_amountNeq(JNIEnv* jniEnv, jobject /*
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_amountGte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountGte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -238,7 +238,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_amountGte(JNIEnv* jniEnv, jobject /*
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_amountGt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountGt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -247,7 +247,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_amountGt(JNIEnv* jniEnv, jobject /*t
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_amountLte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountLte(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -256,7 +256,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_amountLte(JNIEnv* jniEnv, jobject /*
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_amountLt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_amountLt(JNIEnv* jniEnv, jobject /*this*/, jobject j_amount)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -265,7 +265,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_amountLt(JNIEnv* jniEnv, jobject /*t
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightEq(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightEq(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -274,7 +274,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightEq(JNIEnv* jniEnv, jobjec
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightNeq(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightNeq(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -283,7 +283,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightNeq(JNIEnv* jniEnv, jobje
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightGte(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightGte(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -292,7 +292,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightGte(JNIEnv* jniEnv, jobje
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightGt(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightGt(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -301,7 +301,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightGt(JNIEnv* jniEnv, jobjec
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightLte(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightLte(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -310,7 +310,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightLte(JNIEnv* jniEnv, jobje
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightLt(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightLt(JNIEnv* jniEnv, jobject /*this*/, jlong j_blockHeight)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -319,7 +319,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightLt(JNIEnv* jniEnv, jobjec
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightIsNull(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_blockHeightIsNull(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -328,7 +328,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_blockHeightIsNull(JNIEnv* jniEnv, jo
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_operationTypeEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_operationType)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationTypeEq(JNIEnv* jniEnv, jobject /*this*/, jobject j_operationType)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -337,7 +337,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_operationTypeEq(JNIEnv* jniEnv, jobj
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_operationTypeNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_operationType)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_operationTypeNeq(JNIEnv* jniEnv, jobject /*this*/, jobject j_operationType)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -346,7 +346,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_operationTypeNeq(JNIEnv* jniEnv, job
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_00024CppProxy_native_1opAnd(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_1opAnd(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -356,7 +356,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_00024CppProxy_native_1opAnd(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_00024CppProxy_native_1opOr(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_1opOr(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -366,7 +366,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_00024CppProxy_native_1opOr(JNIEnv* j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_00024CppProxy_native_1opAndNot(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_1opAndNot(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -376,7 +376,7 @@ CJNIEXPORT jobject JNICALL Java_QueryFilter_00024CppProxy_native_1opAndNot(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_QueryFilter_00024CppProxy_native_1opOrNot(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_QueryFilter_00024CppProxy_native_1opOrNot(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_filter)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
