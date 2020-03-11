@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-DerivationPath::DerivationPath() : ::djinni::JniInterface<::ledger::core::api::DerivationPath, DerivationPath>("DerivationPath$CppProxy") {}
+DerivationPath::DerivationPath() : ::djinni::JniInterface<::ledger::core::api::DerivationPath, DerivationPath>("co/ledger/core/DerivationPath$CppProxy") {}
 
 DerivationPath::~DerivationPath() = default;
 
 
-CJNIEXPORT void JNICALL Java_DerivationPath_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_DerivationPath_00024CppProxy_nativeDestroy(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jint JNICALL Java_DerivationPath_00024CppProxy_native_1getDepth(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_native_1getDepth(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -29,7 +29,7 @@ CJNIEXPORT jint JNICALL Java_DerivationPath_00024CppProxy_native_1getDepth(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_DerivationPath_00024CppProxy_native_1getChildNum(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_native_1getChildNum(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -39,7 +39,7 @@ CJNIEXPORT jint JNICALL Java_DerivationPath_00024CppProxy_native_1getChildNum(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_DerivationPath_00024CppProxy_native_1getUnhardenedChildNum(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_native_1getUnhardenedChildNum(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -49,7 +49,7 @@ CJNIEXPORT jint JNICALL Java_DerivationPath_00024CppProxy_native_1getUnhardenedC
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_DerivationPath_00024CppProxy_native_1isHardened(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_native_1isHardened(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_index)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -59,7 +59,7 @@ CJNIEXPORT jboolean JNICALL Java_DerivationPath_00024CppProxy_native_1isHardened
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_DerivationPath_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -69,7 +69,7 @@ CJNIEXPORT jstring JNICALL Java_DerivationPath_00024CppProxy_native_1toString(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DerivationPath_00024CppProxy_native_1getParent(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_native_1getParent(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -79,7 +79,7 @@ CJNIEXPORT jobject JNICALL Java_DerivationPath_00024CppProxy_native_1getParent(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DerivationPath_00024CppProxy_native_1toArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DerivationPath_00024CppProxy_native_1toArray(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -89,7 +89,7 @@ CJNIEXPORT jobject JNICALL Java_DerivationPath_00024CppProxy_native_1toArray(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_DerivationPath_parse(JNIEnv* jniEnv, jobject /*this*/, jstring j_path)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DerivationPath_parse(JNIEnv* jniEnv, jobject /*this*/, jstring j_path)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

@@ -46,14 +46,14 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseResultSet, ::djinni_generated::DatabaseResultSet>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseResultSet") };
-    const jmethodID method_getRow { ::djinni::jniGetMethodID(clazz.get(), "getRow", "()LDatabaseResultRow;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseResultSet") };
+    const jmethodID method_getRow { ::djinni::jniGetMethodID(clazz.get(), "getRow", "()Lco/ledger/core/DatabaseResultRow;") };
     const jmethodID method_getUpdateCount { ::djinni::jniGetMethodID(clazz.get(), "getUpdateCount", "()I") };
     const jmethodID method_hasNext { ::djinni::jniGetMethodID(clazz.get(), "hasNext", "()Z") };
     const jmethodID method_available { ::djinni::jniGetMethodID(clazz.get(), "available", "()I") };
     const jmethodID method_next { ::djinni::jniGetMethodID(clazz.get(), "next", "()V") };
     const jmethodID method_close { ::djinni::jniGetMethodID(clazz.get(), "close", "()V") };
-    const jmethodID method_getError { ::djinni::jniGetMethodID(clazz.get(), "getError", "()LDatabaseError;") };
+    const jmethodID method_getError { ::djinni::jniGetMethodID(clazz.get(), "getError", "()Lco/ledger/core/DatabaseError;") };
 };
 
 }  // namespace djinni_generated

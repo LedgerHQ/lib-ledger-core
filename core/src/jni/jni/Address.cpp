@@ -9,12 +9,12 @@
 
 namespace djinni_generated {
 
-Address::Address() : ::djinni::JniInterface<::ledger::core::api::Address, Address>("Address$CppProxy") {}
+Address::Address() : ::djinni::JniInterface<::ledger::core::api::Address, Address>("co/ledger/core/Address$CppProxy") {}
 
 Address::~Address() = default;
 
 
-CJNIEXPORT void JNICALL Java_Address_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Address_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -22,7 +22,7 @@ CJNIEXPORT void JNICALL Java_Address_00024CppProxy_nativeDestroy(JNIEnv* jniEnv,
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_Address_00024CppProxy_native_1getDerivationPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_Address_00024CppProxy_native_1getDerivationPath(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -32,7 +32,7 @@ CJNIEXPORT jstring JNICALL Java_Address_00024CppProxy_native_1getDerivationPath(
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_Address_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_Address_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -42,7 +42,7 @@ CJNIEXPORT jstring JNICALL Java_Address_00024CppProxy_native_1toString(JNIEnv* j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Address_00024CppProxy_native_1asBitcoinLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Address_00024CppProxy_native_1asBitcoinLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -52,7 +52,7 @@ CJNIEXPORT jobject JNICALL Java_Address_00024CppProxy_native_1asBitcoinLikeAddre
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_Address_00024CppProxy_native_1isInstanceOfBitcoinLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Address_00024CppProxy_native_1isInstanceOfBitcoinLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -62,7 +62,7 @@ CJNIEXPORT jboolean JNICALL Java_Address_00024CppProxy_native_1isInstanceOfBitco
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Address_00024CppProxy_native_1asStellarLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Address_00024CppProxy_native_1asStellarLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -72,7 +72,7 @@ CJNIEXPORT jobject JNICALL Java_Address_00024CppProxy_native_1asStellarLikeAddre
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_Address_00024CppProxy_native_1isInstanceOfStellarLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Address_00024CppProxy_native_1isInstanceOfStellarLikeAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -82,7 +82,7 @@ CJNIEXPORT jboolean JNICALL Java_Address_00024CppProxy_native_1isInstanceOfStell
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Address_00024CppProxy_native_1getCurrency(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Address_00024CppProxy_native_1getCurrency(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -92,7 +92,7 @@ CJNIEXPORT jobject JNICALL Java_Address_00024CppProxy_native_1getCurrency(JNIEnv
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Address_parse(JNIEnv* jniEnv, jobject /*this*/, jstring j_address, jobject j_currency)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Address_parse(JNIEnv* jniEnv, jobject /*this*/, jstring j_address, jobject j_currency)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -102,7 +102,7 @@ CJNIEXPORT jobject JNICALL Java_Address_parse(JNIEnv* jniEnv, jobject /*this*/, 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_Address_isValid(JNIEnv* jniEnv, jobject /*this*/, jstring j_address, jobject j_currency)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Address_isValid(JNIEnv* jniEnv, jobject /*this*/, jstring j_address, jobject j_currency)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

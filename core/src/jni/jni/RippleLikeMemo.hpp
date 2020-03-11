@@ -25,7 +25,7 @@ private:
     RippleLikeMemo();
     friend ::djinni::JniClass<RippleLikeMemo>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("RippleLikeMemo") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/RippleLikeMemo") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_data { ::djinni::jniGetFieldID(clazz.get(), "data", "Ljava/lang/String;") };
     const jfieldID field_fmt { ::djinni::jniGetFieldID(clazz.get(), "fmt", "Ljava/lang/String;") };

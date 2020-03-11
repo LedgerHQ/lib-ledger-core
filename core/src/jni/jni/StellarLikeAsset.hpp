@@ -25,7 +25,7 @@ private:
     StellarLikeAsset();
     friend ::djinni::JniClass<StellarLikeAsset>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StellarLikeAsset") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeAsset") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_type { ::djinni::jniGetFieldID(clazz.get(), "type", "Ljava/lang/String;") };
     const jfieldID field_code { ::djinni::jniGetFieldID(clazz.get(), "code", "Ljava/lang/String;") };

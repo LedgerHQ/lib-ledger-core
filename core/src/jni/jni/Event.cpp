@@ -8,12 +8,12 @@
 
 namespace djinni_generated {
 
-Event::Event() : ::djinni::JniInterface<::ledger::core::api::Event, Event>("Event$CppProxy") {}
+Event::Event() : ::djinni::JniInterface<::ledger::core::api::Event, Event>("co/ledger/core/Event$CppProxy") {}
 
 Event::~Event() = default;
 
 
-CJNIEXPORT void JNICALL Java_Event_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Event_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -21,7 +21,7 @@ CJNIEXPORT void JNICALL Java_Event_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_Event_00024CppProxy_native_1getCode(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1getCode(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -31,7 +31,7 @@ CJNIEXPORT jobject JNICALL Java_Event_00024CppProxy_native_1getCode(JNIEnv* jniE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Event_00024CppProxy_native_1getPayload(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1getPayload(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -41,7 +41,7 @@ CJNIEXPORT jobject JNICALL Java_Event_00024CppProxy_native_1getPayload(JNIEnv* j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_Event_00024CppProxy_native_1isSticky(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1isSticky(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -51,7 +51,7 @@ CJNIEXPORT jboolean JNICALL Java_Event_00024CppProxy_native_1isSticky(JNIEnv* jn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_Event_00024CppProxy_native_1getStickyTag(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_Event_00024CppProxy_native_1getStickyTag(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -61,7 +61,7 @@ CJNIEXPORT jint JNICALL Java_Event_00024CppProxy_native_1getStickyTag(JNIEnv* jn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Event_newInstance(JNIEnv* jniEnv, jobject /*this*/, jobject j_code, jobject j_payload)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Event_newInstance(JNIEnv* jniEnv, jobject /*this*/, jobject j_code, jobject j_payload)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

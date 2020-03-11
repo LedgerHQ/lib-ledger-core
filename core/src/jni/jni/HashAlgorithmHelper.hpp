@@ -42,7 +42,7 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::HashAlgorithmHelper, ::djinni_generated::HashAlgorithmHelper>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("HashAlgorithmHelper") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/HashAlgorithmHelper") };
     const jmethodID method_ripemd160 { ::djinni::jniGetMethodID(clazz.get(), "ripemd160", "([B)[B") };
     const jmethodID method_sha256 { ::djinni::jniGetMethodID(clazz.get(), "sha256", "([B)[B") };
     const jmethodID method_keccak256 { ::djinni::jniGetMethodID(clazz.get(), "keccak256", "([B)[B") };
