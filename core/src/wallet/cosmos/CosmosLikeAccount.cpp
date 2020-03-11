@@ -113,10 +113,80 @@ namespace ledger {
                                 } break;
                                 case api::CosmosLikeMsgType::MSGVOTE:
                                 case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD:
+                                case api::CosmosLikeMsgType::MSGMULTISEND: // TODO : this operation has an amount for the user
+                                case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
+                                case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
+                                case api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS:
+                                case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
+                                case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION:
+                                case api::CosmosLikeMsgType::MSGUNJAIL:
                                 case api::CosmosLikeMsgType::UNSUPPORTED:
                                         // No amount-like data for these types of operation
                                 break;
                         }
+                }
+
+                static void setOperationType(
+                    CosmosLikeOperation &out,
+                    const cosmos::Message &msg,
+                    const std::string &address)
+                {
+                    switch (cosmos::stringToMsgType(msg.type.c_str())) {
+                    case api::CosmosLikeMsgType::MSGSEND: {
+                        const auto &sender = boost::get<cosmos::MsgSend>(msg.content).fromAddress;
+                        const auto &receiver = boost::get<cosmos::MsgSend>(msg.content).toAddress;
+                        if (sender == address) {
+                            out.type = api::OperationType::SEND;
+                        }
+                        else if (receiver == address) {
+                            out.type = api::OperationType::RECEIVE;
+                        }
+                        else {
+                            out.type = api::OperationType::NONE;
+                        }
+                    } break;
+                    case api::CosmosLikeMsgType::MSGDELEGATE: {
+                        // out.amount = boost::get<cosmos::MsgDelegate>(msg.content).amount.amount;
+                        out.type = api::OperationType::SEND;
+                    } break;
+                    case api::CosmosLikeMsgType::MSGUNDELEGATE: {
+                        // out.amount =
+                        // boost::get<cosmos::MsgUndelegate>(msg.content).amount.amount;
+                        out.type = api::OperationType::NONE;
+                    } break;
+                    case api::CosmosLikeMsgType::MSGREDELEGATE: {
+                        // out.amount =
+                        // boost::get<cosmos::MsgRedelegate>(msg.content).amount.amount;
+                        out.type = api::OperationType::NONE;
+                    } break;
+                    case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL: {
+                        // const auto& coins =
+                        // boost::get<cosmos::MsgSubmitProposal>(msg.content).initialDeposit;
+                        // std::for_each(coins.begin(), coins.end(), [&] (cosmos::Coin amount) {
+                        //         out.amount = out.amount + BigInt::fromDecimal(amount.amount);
+                        // });
+                        out.type = api::OperationType::NONE;
+                    } break;
+                    case api::CosmosLikeMsgType::MSGDEPOSIT: {
+                        // const auto& coins = boost::get<cosmos::MsgDeposit>(msg.content).amount;
+                        // std::for_each(coins.begin(), coins.end(), [&] (cosmos::Coin amount) {
+                        //         out.amount = out.amount + BigInt::fromDecimal(amount.amount);
+                        // });
+                        out.type = api::OperationType::NONE;
+                    } break;
+                    case api::CosmosLikeMsgType::MSGVOTE:
+                    case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD:
+                    case api::CosmosLikeMsgType::MSGMULTISEND: // TODO : check the addresses
+                    case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
+                    case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
+                    case api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS:
+                    case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
+                    case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION:
+                    case api::CosmosLikeMsgType::MSGUNJAIL:
+                    case api::CosmosLikeMsgType::UNSUPPORTED:
+                        out.type = api::OperationType::NONE;
+                        break;
+                    }
                 }
 
                 void CosmosLikeAccount::inflateOperation(CosmosLikeOperation &out,
@@ -128,10 +198,13 @@ namespace ledger {
                         out.setMessageData(msg);
 
                         computeAndSetAmount(out, msg);
+                        setOperationType(out, msg, _accountAddress);
+
 
                         // out._account = shared_from_this();
                         out.cosmosTransaction = Option<cosmos::OperationQueryResult>({tx, msg});
                         out.accountUid = getAccountUid();
+
                         if (tx.block){
                                 out.block = Option<Block>(Block(tx.block.getValue()));
                         } else {
@@ -150,7 +223,6 @@ namespace ledger {
                                 fees += BigInt::fromDecimal(amount.amount).toInt();
                         });
                         out.fees = BigInt(fees);
-                        out.type = api::OperationType::NONE; // TODO Correct management of operation type for Cosmos
                         out.walletUid = wallet->getWalletUid();
                 }
 
