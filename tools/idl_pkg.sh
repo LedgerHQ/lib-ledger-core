@@ -21,7 +21,6 @@ fi
 function generate_npm_interface {
   NODE_DIR=./bindings/node
   NODE_SRC_DIR=$NODE_DIR/src
-  NODE_PKG_NAME=ledgercore
 
   # recreate node directory
   rm -rf $NODE_SRC_DIR
@@ -41,8 +40,10 @@ function generate_npm_interface {
   for coin in $*; do
     if [ "$coin" == "core" ]; then
       PROJECT_NAME=ledger-core
+      NODE_PKG_NAME=ledgercore
     else
       PROJECT_NAME=ledger-core-$coin
+      NODE_PKG_NAME=ledgercore-$coin
     fi
 
     CURRENCY_NAME=$coin
@@ -52,7 +53,7 @@ function generate_npm_interface {
 
     echo -e "Generating $PROJECT_NAME ($CURRENCY_NAME) JS binding code"
 
-    ../djinni/src/run \
+    ./djinni/src/run \
       --idl $PROJECT_NAME/idl/idl.djinni \
       --cpp-out $API_DIR \
       --cpp-namespace ledger::core::api \
@@ -82,6 +83,25 @@ function generate_npm_interface {
     echo "Copying the dynamic library"
     cp $BUILD/src/lib$PROJECT_NAME.* $NODE_DIR/lib
   done
+
+  # Gather all #include
+  echo "Generating the final output C++ one-source concatenated interface"
+  OUTPUT_CPP=$NODE_SRC_DIR/final-output.cpp
+
+  (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "\#include" '{}' \;) > $OUTPUT_CPP
+  echo "using namespace v8;" >> $OUTPUT_CPP
+  echo "using namespace node;" >> $OUTPUT_CPP
+  echo "static void initAll(Local<Object> target) {" >> $OUTPUT_CPP
+  echo -e "    Nan::HandleScope scope;" >> $OUTPUT_CPP
+  (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "Initialize(target)" '{}' \;) >> $OUTPUT_CPP
+  echo "}" >> $OUTPUT_CPP
+  echo "NODE_MODULE(ledgercore,initAll);" >> $OUTPUT_CPP
+
+  echo "Removing temporary C++ source interface"
+  rm $NODE_SRC_DIR/ledgercore*cpp
+
+  echo "Generating the binding.gyp file…"
+  ./tools/gyp_generator.py $*
 }
 
 case "$1" in

@@ -29,3 +29,8 @@ tags
 /**/jni
 /install
 /.clangd/
+bindings/node/include
+bindings/node/lib
+bindings/node/src
+bindings/node/binding.gyp
+bindings/node/yarn.lock

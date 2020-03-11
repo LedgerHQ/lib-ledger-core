@@ -1,8 +1,8 @@
 {
-  "name": "@ledgerhq/ledger-core",
-  "version": "4.0.0",
+  "name": "@ledgerhq/ledger-core-node-modularized",
+  "version": "0.1.0",
   "libcoreVersion": "",
-  "description": "Ledger Core Library cross-platform C++ bindings for NodeJs",
+  "description": "Ledger Core Library cross-platform C++ bindings for NodeJs (modularized version)",
   "main": "js/index.js",
   "repository": {
     "type": "git",

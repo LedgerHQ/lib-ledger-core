@@ -1,30 +1,30 @@
-{
-  'variables': {
+{{
+  'variables': {{
     'core_library%': 'lib',
     'source_path%': 'src',
     'conditions': [
-      ['OS=="win"', { 'lib_name': 'ledger-core' }],
-      ['OS!="win"', { 'lib_name': 'libledger-core' }],
+      ['OS=="win"', {{ 'lib_name_base': 'ledger-core' }}],
+      ['OS!="win"', {{ 'lib_name_base': 'libledger-core' }}],
     ]
-  },
-  'targets': [{
+  }},
+  'targets': [{{
     'target_name': 'ledger-core-node',
     'sources': ["<!@(python glob.py <@(source_path) *.cpp *.hpp)"],
     'include_dirs': [
       "<!(node -e \"require('nan')\")",
       "<(module_root_dir)/include",
     ],
-    'all_dependent_settings': {
+    'all_dependent_settings': {{
       'include_dirs': ["<!(node -e \"require('nan')\")"],
-    },
+    }},
     "copies": [
-      {
-        'files': [ '<(module_root_dir)/<(core_library)/<(lib_name)<(SHARED_LIB_SUFFIX)' ],
+      {{
+        'files': [ '<(module_root_dir)/<(core_library)/<(lib_name_base)<(SHARED_LIB_SUFFIX)', {copies} ],
         'destination': '<(module_root_dir)/build/Release/',
-      },
+      }},
     ],
     'conditions': [
-      ['OS=="mac"', {
+      ['OS=="mac"', {{
         'LDFLAGS': [
           '-framework IOKit',
           '-framework CoreFoundation',
@@ -32,9 +32,10 @@
         ],
         'libraries': [
           '-L<(module_root_dir)/<@(core_library)',
-          '-lledger-core'
+          '-lledger-core',
+          {llibs}
         ],
-        'xcode_settings': {
+        'xcode_settings': {{
           'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
           'OTHER_CFLAGS': [
             '-ObjC++',
@@ -45,41 +46,42 @@
             '-framework CoreFoundation',
             '-Xlinker -rpath -Xlinker @loader_path/'
           ],
-        },
-      }],
-      ['OS=="win"', {
+        }},
+      }}],
+      ['OS=="win"', {{
         'GCC_ENABLE_CPP_EXCEPTIONS': 'YES',
         'OTHER_CFLAGS': ['-std=c++14'],
         "copies": [
-          {
-            'files': [ '<(module_root_dir)/<(core_library)/<(lib_name)<(SHARED_LIB_SUFFIX)' ],
+          {{
+            'files': [ '<(module_root_dir)/<(core_library)/<(lib_name_base)<(SHARED_LIB_SUFFIX)', {copies}],
             'destination': '<(module_root_dir)/build/Release/',
-          },
-          {
+          }},
+          {{
             'files': [ '<(module_root_dir)/<(core_library)/crypto<(SHARED_LIB_SUFFIX)' ],
             'destination': '<(module_root_dir)/build/Release/',
-          },
-          {
-            'files': [ '<(module_root_dir)/<(core_library)/<(lib_name).lib' ],
+          }},
+          {{
+            'files': [ '<(module_root_dir)/<(core_library)/<(lib_name_base).lib' ],
             'destination': '<(module_root_dir)/build/',
-          },
+          }},
         ],
         'include_dirs': ['$(UCRT_BASED_PATH)'],
-        'libraries': ['ledger-core'],
-      }],
-      ['OS=="linux"', {
+        'libraries': ['ledger-core', {libs}],
+      }}],
+      ['OS=="linux"', {{
         'ldflags': [
           '-Wl,-R,\'$$ORIGIN\'',
         ],
         'libraries': [
           '-L<(module_root_dir)/<@(core_library)',
           '-lledger-core',
+          {llibs}
         ],
-      }],
+      }}],
     ],
     'cflags!': ['-ansi', '-fno-exceptions'],
     'cflags_cc!': ['-fno-exceptions'],
     'cflags': ['-g', '-exceptions'],
     'cflags_cc': ['-g', '-exceptions']
-  }]
-}
+  }}]
+}}
