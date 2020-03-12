@@ -147,7 +147,7 @@ namespace ledger {
                     } break;
                     case api::CosmosLikeMsgType::MSGDELEGATE: {
                         // out.amount = boost::get<cosmos::MsgDelegate>(msg.content).amount.amount;
-                        out.type = api::OperationType::SEND;
+                        out.type = api::OperationType::NONE;
                     } break;
                     case api::CosmosLikeMsgType::MSGUNDELEGATE: {
                         // out.amount =
