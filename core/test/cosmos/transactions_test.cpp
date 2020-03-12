@@ -460,30 +460,3 @@ TEST_F(CosmosTransactionTest, ParseRawMsgUnjailTransaction) {
 
     EXPECT_EQ(tx->serialize(), strTx);
 }
-
-// TODO Assert success
-TEST_F(CosmosTransactionTest, BroadcastSendTransaction) {
-
-    class JsonCallback : public api::StringCallback {
-        public:
-        void onCallback(const std::experimental::optional<std::string> & result, const std::experimental::optional<api::Error> & error) override {
-            if (result) {
-                std::cout << "Result: " << result.value() << std::endl;
-            }
-            if (error) {
-                std::cout << "Error: " << api::to_string(error.value().code) << " " << error.value().message << std::endl;
-            }
-        }
-    };
-
-    std::shared_ptr<CosmosLikeAccount> account;
-    std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(account, wallet);
-
-    auto msg = setupSendMessage();
-    auto tx = setupTransactionRequest(std::vector<Message>{ msg });
-
-    account->broadcastTransaction(std::make_shared<CosmosLikeTransactionApi>(tx), std::make_shared<JsonCallback>());
-
-    FAIL() << "(CONSIDERED FAILED UNTIL PROVEN SUCCESSFUL)";
-}
