@@ -30,6 +30,7 @@
 
 #include <core/math/Base58.hpp>
 #include <core/utils/DateUtils.hpp>
+#include <core/database/Migrations.hpp>
 
 #include <ethereum/explorers/EthereumLikeTransactionParser.hpp>
 
@@ -62,7 +63,7 @@ namespace ledger {
 
             if (currentObject == "block") {
                 EthereumLikeBlockchainExplorer::Block block;
-            
+
                 _transaction->block = Option<EthereumLikeBlockchainExplorer::Block>(block);
                 _blockParser.init(&_transaction->block.getValue());
             } else if (currentObject == "list" && _arrayDepth == 1) {
@@ -222,10 +223,14 @@ namespace ledger {
                     }
                     _transaction->nonce = result;
                 } else if (_lastKey == "input") {
-                    if (isInternalTx) {
-                        _transaction->internalTransactions.back().inputData = fromStringToBytes(value);
-                    } else {
-                        _transaction->inputData = fromStringToBytes(value);
+                    const auto inputData = fromStringToBytes(value);
+
+                    if (inputData.size() <= ledger::core::MAX_LENGTH_VAR_CHAR) {
+                        if (isInternalTx) {
+                            _transaction->internalTransactions.back().inputData = std::move(inputData);
+                        } else {
+                            _transaction->inputData = std::move(inputData);
+                        }
                     }
                 } else if (_lastKey == "contract" && !_transaction->erc20Transactions.empty()) {
                     _transaction->erc20Transactions.back().contractAddress = value;
