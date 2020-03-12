@@ -32,6 +32,7 @@
 #include <core/utils/Exception.hpp>
 #include <core/api/ErrorCode.hpp>
 #include <core/events/Event.hpp>
+#include <core/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.hpp>
 #include <core/wallet/AbstractAccount.hpp>
 #include <core/wallet/BlockDatabaseHelper.hpp>
 #include <core/wallet/AccountDatabaseHelper.hpp>
@@ -192,6 +193,25 @@ namespace ledger {
 
         void AbstractAccount::eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
+        }
+
+        void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
+            //Update account's internal preferences (for synchronization)
+            auto savedState = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
+            if (savedState.nonEmpty()) {
+                //Reset batches to blocks mined before given date
+                auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
+                for (auto& batch : savedState.getValue().batches) {
+                    if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
+                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
+                        batch.blockHash = previousBlock.getValue().blockHash;
+                    } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
+                        batch.blockHeight = 0;
+                        batch.blockHash = "";
+                    }
+                }
+                getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
+            }
         }
     }
 }

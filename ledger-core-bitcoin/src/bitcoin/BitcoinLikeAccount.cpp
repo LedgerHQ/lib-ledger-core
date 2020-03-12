@@ -174,7 +174,7 @@
 
                 BitcoinLikeOperation operation(shared_from_this(), transaction);
                 inflateOperation(operation, transaction);
-                
+
                 operation.senders = std::move(senders);
                 operation.recipients = std::move(recipients);
                 operation.fees = std::move(BigInt().assignI64(fees));
@@ -197,7 +197,7 @@
                     operation.amount.assignI64(sentAmount);
                     operation.type = api::OperationType::SEND;
                     operation.refreshUid();
-                    
+
                     auto inserted = BitcoinLikeOperationDatabaseHelper::putOperation(sql, operation);
 
                     if (inserted) {
@@ -229,7 +229,7 @@
                         operation.amount = finalAmount;
                         operation.type = api::OperationType::RECEIVE;
                         operation.refreshUid();
-                        
+
                         auto inserted = BitcoinLikeOperationDatabaseHelper::putOperation(sql, operation);
 
                         if (inserted) {
@@ -661,23 +661,15 @@
                 auto log = logger();
 
                 log->debug(" Start erasing data of account : {}", getAccountUid());
+
+                std::lock_guard<std::mutex> lock(_synchronizationLock);
+                 _currentSyncEventBus = nullptr;
+
                 soci::session sql(getWallet()->getDatabase()->getPool());
-                //Update account's internal preferences (for synchronization)
-                auto savedState = getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
-                if (savedState.nonEmpty()) {
-                    //Reset batches to blocks mined before given date
-                    auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
-                    for (auto& batch : savedState.getValue().batches) {
-                        if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
-                            batch.blockHeight = (uint32_t) previousBlock.getValue().height;
-                            batch.blockHash = previousBlock.getValue().blockHash;
-                        } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
-                            batch.blockHeight = 0;
-                            batch.blockHash = "";
-                        }
-                    }
-                    getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
-                }
+
+                // Clear synchronizer state
+                eraseSynchronizerDataSince(sql, date);
+
                 auto accountUid = getAccountUid();
                 sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(accountUid), soci::use(date);
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
