@@ -37,6 +37,7 @@
 
 #include <wallet/cosmos/explorers/RpcsParsers.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
 
 #include <numeric>
 #include <algorithm>
@@ -289,7 +290,7 @@ namespace ledger {
             return async::sequence(getContext(), balance_promises)
                 .flatMap<std::shared_ptr<BigInt>>(getContext(), [](auto& vector_of_balances) {
                     BigInt result;
-                    for (const auto balance : vector_of_balances) {
+                    for (const auto& balance : vector_of_balances) {
                         result = result + *balance;
                     }
                     return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(result));
@@ -299,7 +300,7 @@ namespace ledger {
         FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getDelegatedBalance(
             const std::string &account) const
         {
-            const auto endpoint = fmt::format("/staking/delegators/{}/delegations", account);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaDelegationsEndpoint, account);
 
             std::unordered_map<std::string, std::string> headers{
                 {"Content-Type", "application/json"}};
@@ -326,7 +327,7 @@ namespace ledger {
         FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getPendingRewards(
             const std::string &account) const
         {
-            const auto endpoint = fmt::format("/distribution/delegators/{}/rewards", account);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaRewardsEndpoint, account);
 
             std::unordered_map<std::string, std::string> headers{
                 {"Content-Type", "application/json"}};
@@ -358,7 +359,7 @@ namespace ledger {
                             .GetArray()[0]
                             .GetObject()["amount"]
                             .GetString();
-                        floating_amount.erase(floating_amount.find("."), std::string::npos);
+                        floating_amount.erase(floating_amount.find('.'), std::string::npos);
                         return std::make_shared<BigInt>(floating_amount);
                     });
         }
@@ -367,7 +368,7 @@ namespace ledger {
         FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getUnbondingBalance(
             const std::string &account) const
         {
-            const auto endpoint = fmt::format("/staking/delegators/{}/unbonding_delegations", account);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaUnbondingsEndpoint, account);
 
             std::unordered_map<std::string, std::string> headers{
                 {"Content-Type", "application/json"}};
@@ -397,7 +398,7 @@ namespace ledger {
         FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getSpendableBalance(
             const std::string &account) const
         {
-            const auto endpoint = fmt::format("/bank/balances/{}", account);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaBalancesEndpoint, account);
 
             std::unordered_map<std::string, std::string> headers{
                 {"Content-Type", "application/json"}};
@@ -415,7 +416,7 @@ namespace ledger {
                         BigInt total_amt = BigInt::ZERO;
                         // HACK : Assuming only uatom is in the balances array
                         for (const auto& balance_entry : balances) {
-                            total_amt = total_amt + BigInt::fromDecimal(balance_entry.GetObject()["amount"].GetString());
+                            total_amt = total_amt + BigInt::fromDecimal(balance_entry.GetObject()[cosmos::constants::kAmount].GetString());
                         }
 
                         return std::make_shared<BigInt>(total_amt);
