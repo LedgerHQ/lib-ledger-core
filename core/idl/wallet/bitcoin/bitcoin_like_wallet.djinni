@@ -310,6 +310,9 @@ BitcoinLikeAccount = interface +c {
     # specific methods under the same specific class so it will be easy to segratate
     # when the right time comes !
     getFees(callback: ListCallback<BigInt>);
+    # Get addresses given a range of indices
+    # Note: this will return public and change addresses
+    getAddresses(from: i64, to: i64, callback: ListCallback<Address>);
 }
 
 # A bitcoin-like wallet.
