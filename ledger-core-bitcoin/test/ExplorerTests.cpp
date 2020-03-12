@@ -1,7 +1,7 @@
 /*
  *
  * ExplorerTests
- * 
+ *
  * ledger-core-bitcoin
  *
  * Created by Alexis Le Provost on 04/02/2020.
@@ -36,35 +36,7 @@
 #include <bitcoin/api/BitcoinLikeNetworkParameters.hpp>
 #include <bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 
-#include <integration/BaseFixture.hpp>
-
-template <typename CurrencyExplorer, typename NetworkParameters>
-class ExplorerFixture : public BaseFixture {
-public:
-    void SetUp() override {
-        BaseFixture::SetUp();
-       
-        auto worker = dispatcher->getSerialExecutionContext("worker");
-        auto client = std::make_shared<HttpClient>(explorerEndpoint, http, worker);
-        explorer = std::make_shared<CurrencyExplorer>(worker, client, params, api::DynamicObject::newInstance());
-        logger = ledger::core::logger::create("test_logs",
-                                              dispatcher->getSerialExecutionContext("logger"),
-                                              resolver,
-                                              printer,
-                                              2000000000
-        );
-    }
-
-    void TearDown() override {
-        logger.reset();
-        explorer.reset();
-    }
-
-    NetworkParameters params;
-    std::string explorerEndpoint;
-    std::shared_ptr<spdlog::logger> logger;
-    std::shared_ptr<CurrencyExplorer> explorer;
-};
+#include <integration/ExplorerFixture.hpp>
 
 class BitcoinExplorers : public ExplorerFixture<LedgerApiBitcoinLikeBlockchainExplorer, api::BitcoinLikeNetworkParameters> {
 public:
@@ -90,7 +62,7 @@ TEST_F(BitcoinExplorers, GetRawTransaction) {
 TEST_F(BitcoinExplorers, GetTransactionByHash) {
     auto transaction = wait(explorer->getTransactionByHash("9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda"));
     auto &explorerTransaction = *transaction.get();
-    
+
     EXPECT_EQ(explorerTransaction.inputs.size(), 1);
     EXPECT_EQ(explorerTransaction.hash, "9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda");
     EXPECT_EQ(explorerTransaction.inputs[0].value.getValue().toString(), "1634001");
