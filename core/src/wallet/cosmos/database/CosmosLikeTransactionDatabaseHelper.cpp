@@ -273,7 +273,7 @@ namespace ledger {
                                "transaction_uid, message_type, log,"
                                "success, msg_index, delegator_address, validator_src_address,"
                                "validator_dst_address, amount) "
-                               "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount)",
+                               "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :da, :fa, :ta, :amount)",
                                 soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
                                 soci::use(log.success ? 1 : 0), soci::use(log.messageIndex),
                                 soci::use(m.delegatorAddress), soci::use(m.validatorSourceAddress),

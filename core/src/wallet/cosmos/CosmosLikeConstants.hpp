@@ -35,6 +35,12 @@ namespace ledger {
         namespace core {
                 namespace cosmos {
                         namespace constants {
+                                // Explorer endpoints.
+                                constexpr const char kGaiaDelegationsEndpoint[] = "/staking/delegators/{}/delegations";
+                                constexpr const char kGaiaRewardsEndpoint[] = "/distribution/delegators/{}/rewards";
+                                constexpr const char kGaiaUnbondingsEndpoint[] = "/staking/delegators/{}/unbonding_delegations";
+                                constexpr const char kGaiaBalancesEndpoint[] = "/bank/balances/{}";
+
                                 // use raw char array here to be compliant with rapidjson
                                 constexpr const char kMsgDelegate[] = "cosmos-sdk/MsgDelegate";
                                 constexpr const char kMsgDeposit[] = "cosmos-sdk/MsgDeposit";
