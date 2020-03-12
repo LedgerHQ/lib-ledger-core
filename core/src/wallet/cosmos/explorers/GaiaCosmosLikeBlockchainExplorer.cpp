@@ -274,5 +274,153 @@ namespace ledger {
                     .count());
         }
 
+        // Balances
+        /// Get Total Balance
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getTotalBalance(
+            const std::string &account) const
+        {
+            std::vector<FuturePtr<BigInt>> balance_promises({
+                getSpendableBalance(account),
+                getDelegatedBalance(account),
+                getUnbondingBalance(account),
+                getPendingRewards(account)
+                });
+
+            return async::sequence(getContext(), balance_promises)
+                .flatMap<std::shared_ptr<BigInt>>(getContext(), [](auto& vector_of_balances) {
+                    BigInt result;
+                    for (const auto balance : vector_of_balances) {
+                        result = result + *balance;
+                    }
+                    return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(result));
+                });
+        }
+        /// Get total balance in delegation
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getDelegatedBalance(
+            const std::string &account) const
+        {
+            const auto endpoint = fmt::format("/staking/delegators/{}/delegations", account);
+
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = true;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .mapPtr<BigInt>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
+                        auto &json = *std::get<1>(result);
+                        // TODO : clean error handling
+
+                        const auto &del_val_entries = json.GetObject()["result"].GetArray();
+                        BigInt total_amt = BigInt::ZERO;
+                        for (const auto& delegation_entry : del_val_entries) {
+                            total_amt = total_amt + BigInt::fromDecimal(delegation_entry.GetObject()["balance"].GetString());
+                        }
+
+                        return std::make_shared<BigInt>(total_amt);
+                    });
+        }
+        /// Get total pending rewards
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getPendingRewards(
+            const std::string &account) const
+        {
+            const auto endpoint = fmt::format("/distribution/delegators/{}/rewards", account);
+
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = true;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .mapPtr<BigInt>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
+                        auto &json = *std::get<1>(result);
+
+                        if (!json.IsObject() ||
+                            !json.GetObject().HasMember("result") ||
+                            !json.GetObject()["result"].IsObject() ||
+                            !json.GetObject()["result"].GetObject().HasMember("total") ||
+                            !json.GetObject()["result"].GetObject()["total"].IsArray()
+                            ) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                fmt::format("Failed to get total for {}", endpoint));
+                        }
+
+                        if (json.GetObject()["result"].GetObject()["total"].GetArray().Size() <= 0) {
+                            return std::make_shared<BigInt>(BigInt::ZERO);
+                        }
+
+                        std::string floating_amount = json.GetObject()["result"].GetObject()["total"]
+                            .GetArray()[0]
+                            .GetObject()["amount"]
+                            .GetString();
+                        floating_amount.erase(floating_amount.find("."), std::string::npos);
+                        return std::make_shared<BigInt>(floating_amount);
+                    });
+        }
+
+        /// Get total unbonding balance
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getUnbondingBalance(
+            const std::string &account) const
+        {
+            const auto endpoint = fmt::format("/staking/delegators/{}/unbonding_delegations", account);
+
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = true;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .mapPtr<BigInt>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
+                        auto &json = *std::get<1>(result);
+                        // TODO : clean error handling
+
+                        const auto &del_entries = json.GetObject()["result"].GetArray();
+                        BigInt total_amt = BigInt::ZERO;
+                        for (const auto& del_val_entries : del_entries) {
+                            const auto &entries = del_val_entries.GetObject()["entries"].GetArray();
+                            for (const auto &unbonding_entry : entries) {
+                                total_amt = total_amt + BigInt::fromDecimal(unbonding_entry.GetObject()["balance"].GetString());
+                            }
+                        }
+
+                        return std::make_shared<BigInt>(total_amt);
+                    });
+        }
+        /// Get total available (spendable) balance
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getSpendableBalance(
+            const std::string &account) const
+        {
+            const auto endpoint = fmt::format("/bank/balances/{}", account);
+
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = true;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .mapPtr<BigInt>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
+                        auto &json = *std::get<1>(result);
+                        // TODO : clean error handling
+
+                        const auto &balances = json.GetObject()["result"].GetArray();
+                        BigInt total_amt = BigInt::ZERO;
+                        // HACK : Assuming only uatom is in the balances array
+                        for (const auto& balance_entry : balances) {
+                            total_amt = total_amt + BigInt::fromDecimal(balance_entry.GetObject()["amount"].GetString());
+                        }
+
+                        return std::make_shared<BigInt>(total_amt);
+                    });
+        }
+
         }  // namespace core
 }

@@ -102,7 +102,19 @@ namespace ledger {
             Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
             Future<int64_t> getTimestamp() const override;
 
-        private:
+            // Balances
+            /// Get Total Balance
+            FuturePtr<BigInt> getTotalBalance(const std::string &account) const override;
+            /// Get total balance in delegation
+            FuturePtr<BigInt> getDelegatedBalance(const std::string &account) const override;
+            /// Get total pending rewards
+            FuturePtr<BigInt> getPendingRewards(const std::string &account) const override;
+            /// Get total unbonding balance
+            FuturePtr<BigInt> getUnbondingBalance(const std::string &account) const override;
+            /// Get total available (spendable) balance
+            FuturePtr<BigInt> getSpendableBalance(const std::string &account) const override;
+
+           private:
             std::shared_ptr<HttpClient> _http;
             api::CosmosLikeNetworkParameters _parameters;
         };

@@ -78,6 +78,19 @@ namespace ledger {
             virtual FuturePtr<cosmos::Account> getAccount(const std::string& account) = 0;
             virtual const std::vector<TransactionFilter>& getTransactionFilters() = 0;
 
+
+            // Balances
+            /// Get Total Balance
+            virtual FuturePtr<BigInt> getTotalBalance(const std::string& account) const = 0;
+            /// Get total balance in delegation
+            virtual FuturePtr<BigInt> getDelegatedBalance(const std::string& account) const = 0;
+            /// Get total pending rewards
+            virtual FuturePtr<BigInt> getPendingRewards(const std::string& account) const = 0;
+            /// Get total unbonding balance
+            virtual FuturePtr<BigInt> getUnbondingBalance(const std::string& account) const = 0;
+            /// Get total available (spendable) balance
+            virtual FuturePtr<BigInt> getSpendableBalance(const std::string& account) const = 0;
+
             virtual FuturePtr<cosmos::Transaction> getTransactionByHash(const String& transactionHash) const = 0;
             virtual Future<std::shared_ptr<cosmos::Transaction>> getTransactionByHash(const std::string& hash) = 0;
             virtual Future<cosmos::TransactionList> getTransactions(const TransactionFilter& filter, int page, int limit) const = 0;

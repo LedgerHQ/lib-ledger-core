@@ -265,21 +265,15 @@ namespace ledger {
 
                 FuturePtr<Amount> CosmosLikeAccount::getBalance() {
                     auto currency = getWallet()->getCurrency();
-                    return _explorer->getAccount(_keychain->getAddress()->toBech32())
+                    return _explorer->getTotalBalance(_keychain->getAddress()->toBech32())
                             .mapPtr<Amount>(
-                            getContext(),
-                            [currency](auto account) {
-                                // We get an array of balances because cosmos app wants to be
-                                // generalist. But there should always be only 1 element in the
-                                // array with the uatom denom
-                                // TODO : add exception / warning if above preconditions are false
+                                    getContext(),
+                                    [currency](const auto& rawAmount){
                                 return std::make_shared<Amount>(
                                     currency,
                                     0,
-                                    account->balances.size() > 0
-                                        ? BigInt::fromDecimal(account->balances[0].amount)
-                                        : BigInt::ZERO);
-                            });
+                                    *rawAmount);
+                                    });
                 }
 
                 std::shared_ptr<api::OperationQuery> CosmosLikeAccount::queryOperations() {
