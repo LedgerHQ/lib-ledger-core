@@ -261,11 +261,10 @@ namespace ledger {
         }
 
         std::vector<std::shared_ptr<api::Address>> BitcoinLikeAccount::fromBitcoinAddressesToAddresses(const std::vector<std::shared_ptr<BitcoinLikeAddress>> &addresses) {
-            AbstractAccount::AddressList result(addresses.size());
-            auto i = 0;
+            AbstractAccount::AddressList result;
+            result.reserve(addresses.size());
             for (auto& addr : addresses) {
-                result[i] = std::dynamic_pointer_cast<api::Address>(addr);
-                i += 1;
+                result.push_back(std::dynamic_pointer_cast<api::Address>(addr));
             }
             return result;
         }
