@@ -357,7 +357,7 @@ namespace ledger {
                                                 if (operation.date <= upperDate) {
                                                         switch (operation.type) {
                                                                 case api::OperationType::RECEIVE: {
-                                                                        sum = sum + operation.amount;
+                                                                        sum = sum + operation.amount - operation.fees.getValueOr(BigInt::ZERO);
                                                                         break;
                                                                 }
                                                                 case api::OperationType::SEND: {
@@ -365,6 +365,7 @@ namespace ledger {
                                                                         break;
                                                                 }
                                                                 default:
+                                                                        sum = sum - operation.fees.getValueOr(BigInt::ZERO);
                                                                         break;
                                                         }
                                                 }
