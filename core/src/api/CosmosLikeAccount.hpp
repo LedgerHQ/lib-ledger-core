@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
        #include <libcore_export.h>
@@ -18,8 +19,12 @@ namespace ledger { namespace core { namespace api {
 
 class AmountCallback;
 class BigIntCallback;
+<<<<<<< HEAD
 class CosmosLikeDelegationListCallback;
 class CosmosLikeRewardListCallback;
+=======
+class CosmosLikeDelegation;
+>>>>>>> Add getDelegations() to CosmosLikeAccount API (not implemented yet)
 class CosmosLikeTransaction;
 class CosmosLikeTransactionBuilder;
 class CosmosLikeValidatorCallback;

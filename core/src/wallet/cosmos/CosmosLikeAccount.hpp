@@ -36,6 +36,7 @@
 #include <api/CosmosLikeDelegationListCallback.hpp>
 #include <api/CosmosLikeRewardListCallback.hpp>
 #include <api/CosmosLikeTransactionBuilder.hpp>
+#include <api/CosmosLikeDelegation.hpp>
 #include <api/Address.hpp>
 #include <api/Amount.hpp>
 #include <api/ErrorCodeCallback.hpp>
@@ -140,6 +141,7 @@ namespace ledger {
                                 void getLatestValidatorSet(const std::shared_ptr<api::CosmosLikeValidatorListCallback>& callback) override;
                                 Future<cosmos::Validator> getValidatorInfo(const std::string& validatorAddress) const;
                                 void getValidatorInfo(const std::string &validatorAddress, const std::shared_ptr<api::CosmosLikeValidatorCallback>&callback) override;
+                                std::vector<std::shared_ptr<api::CosmosLikeDelegation>> getDelegations() override;
 
                                 void getDelegations(const std::shared_ptr<api::CosmosLikeDelegationListCallback> & callback) override;
                                 Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>> getDelegations();

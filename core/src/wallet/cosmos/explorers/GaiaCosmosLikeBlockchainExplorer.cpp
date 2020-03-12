@@ -496,6 +496,7 @@ namespace ledger {
                     });
         }
 
+<<<<<<< HEAD
         FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::getDelegations(const std::string& delegatorAddr) const {
             return _http->GET(fmt::format("/staking/delegators/{}/delegations", delegatorAddr), ACCEPT_HEADER)
                 .json(true)
@@ -526,6 +527,14 @@ namespace ledger {
                     }
                     return rewards;
                 });
+=======
+        std::vector<cosmos::Delegation> GaiaCosmosLikeBlockchainExplorer::getDelegations() const {
+            std::vector<cosmos::Delegation> delegations;
+
+            // TODO COIN-244
+
+            return delegations;
+>>>>>>> Add getDelegations() to CosmosLikeAccount API (not implemented yet)
         }
 
     }  // namespace core

@@ -710,6 +710,7 @@ namespace ledger {
                 Future<cosmos::Validator> CosmosLikeAccount::getValidatorInfo(const std::string& validatorAddress) const {
                         return _explorer->getValidatorInfo(validatorAddress);
                 }
+
                 void CosmosLikeAccount::getValidatorInfo(const std::string &validatorAddress, const std::shared_ptr<api::CosmosLikeValidatorCallback>&callback) {
                         getValidatorInfo(validatorAddress).callback(getContext(), callback);
                 }
