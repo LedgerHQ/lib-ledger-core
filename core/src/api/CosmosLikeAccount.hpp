@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
        #include <libcore_export.h>
@@ -18,6 +19,7 @@ namespace ledger { namespace core { namespace api {
 
 class AmountCallback;
 class BigIntCallback;
+class CosmosLikeDelegation;
 class CosmosLikeTransaction;
 class CosmosLikeTransactionBuilder;
 class CosmosLikeValidatorCallback;
@@ -58,6 +60,7 @@ public:
 
     /** Get Total spendable balance of account. */
     virtual void getSpendableBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
+    virtual std::vector<std::shared_ptr<CosmosLikeDelegation>> getDelegations() = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -702,7 +702,6 @@ namespace ledger {
                 Future<cosmos::ValidatorList> CosmosLikeAccount::getActiveValidatorSet() const {
                         return _explorer->getActiveValidatorSet();
                 }
-
                 void CosmosLikeAccount::getLatestValidatorSet(const std::shared_ptr<api::CosmosLikeValidatorListCallback> &callback) {
                         getActiveValidatorSet().callback(getContext(), callback);
                 }
@@ -712,6 +711,12 @@ namespace ledger {
                 }
                 void CosmosLikeAccount::getValidatorInfo(const std::string &validatorAddress, const std::shared_ptr<api::CosmosLikeValidatorCallback>&callback) {
                         getValidatorInfo(validatorAddress).callback(getContext(), callback);
+                }
+
+                std::vector<std::shared_ptr<api::CosmosLikeDelegation>> CosmosLikeAccount::getDelegations() {
+                        std::vector<std::shared_ptr<api::CosmosLikeDelegation>> delegations;
+                        // TODO COIN-244
+                        return delegations;
                 }
         }
 }

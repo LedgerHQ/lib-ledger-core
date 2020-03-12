@@ -446,7 +446,7 @@ namespace ledger {
                     });
         }
 
-            // Validators
+        // Validators
         Future<cosmos::ValidatorList> GaiaCosmosLikeBlockchainExplorer::getActiveValidatorSet() const {
             const bool parseJsonNumbersAsStrings = true;
             auto basicValidatorList =_http->GET("/staking/validators?status=bonded&page=1&limit=130")
@@ -491,5 +491,13 @@ namespace ledger {
                     });
         }
 
-        }  // namespace core
+        std::vector<cosmos::Delegation> GaiaCosmosLikeBlockchainExplorer::getDelegations() const {
+            std::vector<cosmos::Delegation> delegations;
+
+            // TODO COIN-244
+
+            return delegations;
+        }
+
+    }  // namespace core
 }

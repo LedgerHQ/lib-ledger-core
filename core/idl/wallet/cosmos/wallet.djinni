@@ -109,6 +109,16 @@ CosmosLikeAccount = interface +c {
         getUnbondingBalance(callback: Callback<Amount>);
         # Get Total spendable balance of account.
         getSpendableBalance(callback: Callback<Amount>);
+
+        getDelegations() : list<CosmosLikeDelegation>;
+}
+
+#Class representing a Cosmos delegation
+CosmosLikeDelegation = interface +c {
+        const getDelegatorAddress() : string;
+        const getValidatorAddress() : string;
+        const getDelegatedAmount() : Amount;
+        const getPendingReward() : Amount;
 }
 
 CosmosConfigurationDefaults = interface +c {

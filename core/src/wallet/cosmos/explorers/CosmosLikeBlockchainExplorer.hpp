@@ -63,8 +63,10 @@ namespace ledger {
                 const std::vector<std::string> &matchableKeys);
 
 
+            virtual std::vector<cosmos::Delegation> getDelegations() const = 0;
+
             // Everything below is c/p from AbstractBlockchainExplorer, in sole purpose
-            // of being able to use fromBlockHeight instead of fromBlockHash in getTransaction (see below)
+            // of being able to use fromBlockHeight instead of fromBlockHash in getTransactions (see below)
             // TODO Maybe some code cleanup and/or factorization
 
             virtual Future<void *> startSession() = 0;
