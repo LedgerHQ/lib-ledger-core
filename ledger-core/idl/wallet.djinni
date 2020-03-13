@@ -16,21 +16,21 @@ Wallet = interface +c {
     # Get account with specific index.
     # @param index, 32-bit integer, index of account in wallet
     # @param callback, Callback returning, if getAccount succeed, an Account object with given index
-    getAccount(index: i32, callback: callback2<optional<Account>>);
+    getAccount(index: i32, callback: Callback<Account>);
 
     # Get number of accounts instanciated under wallet.
     # @param callback, Callback returning, if getAccountCount succeed, a 32-bit integer representing number of accounts
-    getAccountCount(callback: callback2<optional<i32>>);
+    getAccountCount(callback: Callback<i32>);
 
     # Get list of accounts instanciated under wallet in a given range.
     # @param offset, 32-bit integer from which we retrieve accounts
     # @param count, 32-bit integer, number of accounts to retrieve
     # @param callback, ListCallback returning, if getAccounts succeed, list of Accounts object
-    getAccounts(offset: i32, count: i32, callback: callback2<optional<list<Account>>>);
+    getAccounts(offset: i32, count: i32, callback: ListCallback<Account>);
 
     # Get index of next account to create.
     # @return callback, Callback returning a 32-bit integer
-    getNextAccountIndex(callback: callback2<optional<i32>>);
+    getNextAccountIndex(callback: Callback<i32>);
 
     # Return event bus through which wallet synchronizes it's accounts and interact with blockchain.
     # @return EventBus object
@@ -63,31 +63,31 @@ Wallet = interface +c {
 
     # Get last block of blockchain the wallet operates on.
     # @param callback, Callback returning a Block object
-    getLastBlock(callback: callback2<optional<Block>>);
+    getLastBlock(callback: Callback<Block>);
 
     # Return infos about the creation of specific account.
     # @param accountIndex, 32-bit account, index of account in wallet
     # @param callback, Callback returning an AccountCreationInfo
     getAccountCreationInfo(
         accountIndex: i32,
-        callback: callback2<optional<AccountCreationInfo>>
+        callback: Callback<AccountCreationInfo>
     );
 
     #TODO
     getExtendedKeyAccountCreationInfo(
         accountIndex: i32,
-        callback: callback2<optional<ExtendedKeyAccountCreationInfo>>
+        callback: Callback<ExtendedKeyAccountCreationInfo>
     );
 
     # Return infos about the next created account.
     # @param callback, Callback returning an AccountCreationInfo
     getNextAccountCreationInfo(
-        callback: callback2<optional<AccountCreationInfo>>
+        callback: Callback<AccountCreationInfo>
     );
 
     #TODO
     getNextExtendedKeyAccountCreationInfo(
-        callback: callback2<optional<ExtendedKeyAccountCreationInfo>>
+        callback: Callback<ExtendedKeyAccountCreationInfo>
     );
 
     # Get account from given account creation infos.
@@ -95,20 +95,20 @@ Wallet = interface +c {
     # @param callback, Callback returning an Account object with given creation infos
     newAccountWithInfo(
         accountCreationInfo: AccountCreationInfo,
-        callback: callback2<optional<Account>>
+        callback: Callback<Account>
     );
 
     #TODO
     newAccountWithExtendedKeyInfo(
         extendedKeyAccountCreationInfo: ExtendedKeyAccountCreationInfo,
-        callback: callback2<optional<Account>>
+        callback: Callback<Account>
     );
 
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
     eraseDataSince(
         date: date,
-        callback: callback2<optional<ErrorCode>>
+        callback: Callback<ErrorCode>
     );
 
     # Return wallet's configuration
