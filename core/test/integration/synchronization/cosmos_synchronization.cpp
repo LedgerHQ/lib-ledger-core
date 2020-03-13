@@ -266,7 +266,6 @@ TEST_F(CosmosLikeWalletSynchronization, GetCurrentBlockWithExplorer) {
     EXPECT_TRUE(block->height > 0);
 }
 
-// TODO : make the test compile
 TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
 #ifdef PG_SUPPORT
@@ -332,6 +331,52 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
     }
 }
 
+TEST_F(CosmosLikeWalletSynchronization, Balances)
+{
+    std::string hexPubKey =
+        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(pool, account, wallet, hexPubKey);
+
+    performSynchro(account);
+
+    const std::string address = account->getKeychain()->getAddress()->toBech32();
+    const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
+
+    const auto totalBalance = wait(account->getTotalBalance())->toLong();
+    const auto delegatedBalance = wait(account->getDelegatedBalance())->toLong();
+    const auto pendingRewards = wait(account->getPendingRewards())->toLong();
+    const auto unbondingBalance = wait(account->getUnbondingBalance())->toLong();
+    const auto spendableBalance = wait(account->getSpendableBalance())->toLong();
+
+    EXPECT_LE(delegatedBalance, totalBalance)
+        << "Delegated Coins fall under Total Balance, so delegatedBalance <= totalBalance";
+    // Strict comparison here because
+    // it's impossible to have pending rewards without
+    // at least some delegatedBalance or unbonding balance
+    EXPECT_LT(pendingRewards, totalBalance)
+        << "Pending rewards fall under Total Balance, so pendingRewards < totalBalance";
+    EXPECT_LE(unbondingBalance, totalBalance)
+        << "Unbondings fall under Total Balance, so unbondingBalance <= totalBalance";
+    EXPECT_LE(spendableBalance, totalBalance)
+        << "Spendable Coins fall under Total Balance, so spendableBalance <= totalBalance";
+
+    EXPECT_GE(pendingRewards, 1) << fmt::format(
+        "Check {}  to see if the account really has <1 uatom of pending rewards", mintscanExplorer);
+    EXPECT_GE(totalBalance, 1000000) << fmt::format(
+        "Check {}  to see if the account really has <1 ATOM of total balance", mintscanExplorer);
+    EXPECT_GE(delegatedBalance, 2800) << fmt::format(
+        "Check {}  to see if the account really has <0.002800 ATOM of total delegations",
+        mintscanExplorer);
+    EXPECT_GE(spendableBalance, 1000) << fmt::format(
+        "Check {}  to see if the account really has <0.001 ATOM of available (spendable) balance",
+        mintscanExplorer);
+    // Unbondings are moving too much to assert the amount.
+}
 
 TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     // FIXME Use an account that has all expected types of transactions
