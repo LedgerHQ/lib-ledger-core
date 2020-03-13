@@ -17,12 +17,12 @@
 namespace ledger { namespace core { namespace api {
 
 enum class CosmosLikeMsgType;
+struct CosmosLikeMsgBeginRedelegate;
 struct CosmosLikeMsgCreateValidator;
 struct CosmosLikeMsgDelegate;
 struct CosmosLikeMsgDeposit;
 struct CosmosLikeMsgEditValidator;
 struct CosmosLikeMsgMultiSend;
-struct CosmosLikeMsgRedelegate;
 struct CosmosLikeMsgSend;
 struct CosmosLikeMsgSetWithdrawAddress;
 struct CosmosLikeMsgSubmitProposal;
@@ -92,18 +92,18 @@ public:
     static CosmosLikeMsgUndelegate unwrapMsgUndelegate(const std::shared_ptr<CosmosLikeMessage> & msg);
 
     /**
-     * Wrap the given CosmosLikeMsgRedelegate into a CosmosLikeMessage
+     * Wrap the given CosmosLikeMsgBeginRedelegate into a CosmosLikeMessage
      * @param msg The message you need to wrap.
      * @return CosmosLikeMessage A wrapped message.
      */
-    static std::shared_ptr<CosmosLikeMessage> wrapMsgRedelegate(const CosmosLikeMsgRedelegate & msg);
+    static std::shared_ptr<CosmosLikeMessage> wrapMsgBeginRedelegate(const CosmosLikeMsgBeginRedelegate & msg);
 
     /**
-     * Unwrap a message to a CosmosLikeMsgRedelegate
+     * Unwrap a message to a CosmosLikeMsgBeginRedelegate
      * @param msg The message to unwrap
-     * @return CosmosLikeMsgRedelegate the unwrapped message
+     * @return CosmosLikeMsgBeginRedelegate the unwrapped message
      */
-    static CosmosLikeMsgRedelegate unwrapMsgRedelegate(const std::shared_ptr<CosmosLikeMessage> & msg);
+    static CosmosLikeMsgBeginRedelegate unwrapMsgBeginRedelegate(const std::shared_ptr<CosmosLikeMessage> & msg);
 
     /**
      * Wrap the given CosmosLikeMsgSubmitProposal into a CosmosLikeMessage

@@ -351,7 +351,7 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
 
     auto foundMsgSend = false;
     auto foundMsgDelegate = false;
-    auto foundMsgRedelegate = false;
+    auto foundMsgBeginRedelegate = false;
     auto foundMsgUndelegate = false;
     auto foundMsgSubmitProposal = false;
     auto foundMsgVote = false;
@@ -373,7 +373,7 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
         switch (cosmosOp->getMessage()->getMessageType()) {
             case api::CosmosLikeMsgType::MSGSEND: foundMsgSend = true; break;
             case api::CosmosLikeMsgType::MSGDELEGATE: foundMsgDelegate = true; break;
-            case api::CosmosLikeMsgType::MSGREDELEGATE: foundMsgRedelegate = true; break;
+            case api::CosmosLikeMsgType::MSGBEGINREDELEGATE: foundMsgBeginRedelegate = true; break;
             case api::CosmosLikeMsgType::MSGUNDELEGATE: foundMsgUndelegate = true; break;
             case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL: foundMsgSubmitProposal = true; break;
             case api::CosmosLikeMsgType::MSGVOTE: foundMsgVote = true; break;
@@ -392,7 +392,7 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
 
     EXPECT_TRUE(foundMsgSend);
     EXPECT_TRUE(foundMsgDelegate);
-    EXPECT_TRUE(foundMsgRedelegate);
+    EXPECT_TRUE(foundMsgBeginRedelegate);
     EXPECT_TRUE(foundMsgUndelegate);
     EXPECT_TRUE(foundMsgSubmitProposal);
     EXPECT_TRUE(foundMsgVote);

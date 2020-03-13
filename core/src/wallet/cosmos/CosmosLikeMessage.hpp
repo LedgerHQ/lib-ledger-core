@@ -43,7 +43,7 @@
 #include <api/CosmosLikeMsgSend.hpp>
 #include <api/CosmosLikeMsgDelegate.hpp>
 #include <api/CosmosLikeMsgUndelegate.hpp>
-#include <api/CosmosLikeMsgRedelegate.hpp>
+#include <api/CosmosLikeMsgBeginRedelegate.hpp>
 #include <api/CosmosLikeMsgSubmitProposal.hpp>
 #include <api/CosmosLikeMsgVote.hpp>
 #include <api/CosmosLikeMsgDeposit.hpp>

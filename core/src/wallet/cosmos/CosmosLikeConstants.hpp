@@ -42,9 +42,9 @@ namespace ledger {
                                 constexpr const char kGaiaBalancesEndpoint[] = "/bank/balances/{}";
 
                                 // use raw char array here to be compliant with rapidjson
+                                constexpr const char kMsgBeginRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";
                                 constexpr const char kMsgDelegate[] = "cosmos-sdk/MsgDelegate";
                                 constexpr const char kMsgDeposit[] = "cosmos-sdk/MsgDeposit";
-                                constexpr const char kMsgRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";
                                 constexpr const char kMsgSend[] = "cosmos-sdk/MsgSend";
                                 constexpr const char kMsgSubmitProposal[] = "cosmos-sdk/MsgSubmitProposal";
                                 constexpr const char kMsgUndelegate[] = "cosmos-sdk/MsgUndelegate";
@@ -251,8 +251,8 @@ namespace ledger {
                                                 return constants::kMsgDelegate;
                                         case MsgType::MSGUNDELEGATE:
                                                 return constants::kMsgUndelegate;
-                                        case MsgType::MSGREDELEGATE:
-                                                return constants::kMsgRedelegate;
+                                        case MsgType::MSGBEGINREDELEGATE:
+                                                return constants::kMsgBeginRedelegate;
                                         case MsgType::MSGSUBMITPROPOSAL:
                                                 return constants::kMsgSubmitProposal;
                                         case MsgType::MSGVOTE:
@@ -292,8 +292,8 @@ namespace ledger {
                                         return MsgType::MSGDELEGATE;
                                 } else if (strings_equal(string, constants::kMsgUndelegate)) {
                                         return MsgType::MSGUNDELEGATE;
-                                } else if (strings_equal(string, constants::kMsgRedelegate)) {
-                                        return MsgType::MSGREDELEGATE;
+                                } else if (strings_equal(string, constants::kMsgBeginRedelegate)) {
+                                        return MsgType::MSGBEGINREDELEGATE;
                                 } else if (strings_equal(string, constants::kMsgSubmitProposal)) {
                                         return MsgType::MSGSUBMITPROPOSAL;
                                 } else if (strings_equal(string, constants::kMsgVote)) {

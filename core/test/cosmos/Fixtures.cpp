@@ -37,7 +37,7 @@ namespace ledger {
                                 return msg;
                         }
 
-                        Message setupRedelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
+                        Message setupBeginRedelegateMessage(const std::chrono::system_clock::time_point& timeRef) {
                                 Message msg;
                                  // TODO
                                 return msg;
@@ -116,7 +116,7 @@ namespace ledger {
                                 // TODO
                         }
 
-                        void assertSameRedelegateMessage(const Message& msgRef, const Message& msgResult) {
+                        void assertSameBeginRedelegateMessage(const Message& msgRef, const Message& msgResult) {
                                 // TODO
                         }
 
@@ -181,8 +181,8 @@ namespace ledger {
                                                 case (api::CosmosLikeMsgType::MSGDEPOSIT):
                                                         assertSameDepositMessage(txRef.messages[i], txResult.messages[i]);
                                                         break;
-                                                case (api::CosmosLikeMsgType::MSGREDELEGATE):
-                                                        assertSameRedelegateMessage(txRef.messages[i], txResult.messages[i]);
+                                                case (api::CosmosLikeMsgType::MSGBEGINREDELEGATE):
+                                                        assertSameBeginRedelegateMessage(txRef.messages[i], txResult.messages[i]);
                                                         break;
                                                 case (api::CosmosLikeMsgType::MSGSEND):
                                                         assertSameSendMessage(txRef.messages[i], txResult.messages[i]);

@@ -102,10 +102,10 @@ namespace ledger {
                         soci::stringToCoin(row.get<std::string>(COL_AMOUNT), content.amount);
                     }
                     break;
-                case api::CosmosLikeMsgType::MSGREDELEGATE:
+                case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
                     {
-                        msg.content = cosmos::MsgRedelegate();
-                        auto &content = boost::get<cosmos::MsgRedelegate>(msg.content);
+                        msg.content = cosmos::MsgBeginRedelegate();
+                        auto &content = boost::get<cosmos::MsgBeginRedelegate>(msg.content);
                         content.delegatorAddress = row.get<std::string>(COL_DELADDR);
                         content.validatorSourceAddress = row.get<std::string>(COL_VALSRCADDR);
                         content.validatorDestinationAddress = row.get<std::string>(COL_VALDESTADDR);
@@ -265,9 +265,9 @@ namespace ledger {
                                 soci::use(m.delegatorAddress), soci::use(m.validatorAddress), soci::use(coin);
                     }
                     break;
-                case api::CosmosLikeMsgType::MSGREDELEGATE:
+                case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
                     {
-                        const auto& m = boost::get<cosmos::MsgRedelegate>(msg.content);
+                        const auto& m = boost::get<cosmos::MsgBeginRedelegate>(msg.content);
                         const auto coin = soci::coinToString(m.amount);
                         sql << "INSERT INTO cosmos_messages (uid,"
                                "transaction_uid, message_type, log,"

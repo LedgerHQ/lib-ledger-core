@@ -11,7 +11,7 @@ std::string to_string(const CosmosLikeMsgType& cosmosLikeMsgType) {
         case CosmosLikeMsgType::MSGSEND: return "MSGSEND";
         case CosmosLikeMsgType::MSGDELEGATE: return "MSGDELEGATE";
         case CosmosLikeMsgType::MSGUNDELEGATE: return "MSGUNDELEGATE";
-        case CosmosLikeMsgType::MSGREDELEGATE: return "MSGREDELEGATE";
+        case CosmosLikeMsgType::MSGBEGINREDELEGATE: return "MSGBEGINREDELEGATE";
         case CosmosLikeMsgType::MSGSUBMITPROPOSAL: return "MSGSUBMITPROPOSAL";
         case CosmosLikeMsgType::MSGVOTE: return "MSGVOTE";
         case CosmosLikeMsgType::MSGDEPOSIT: return "MSGDEPOSIT";
@@ -31,7 +31,7 @@ CosmosLikeMsgType from_string(const std::string& cosmosLikeMsgType) {
     if (cosmosLikeMsgType == "MSGSEND") return CosmosLikeMsgType::MSGSEND;
     else if (cosmosLikeMsgType == "MSGDELEGATE") return CosmosLikeMsgType::MSGDELEGATE;
     else if (cosmosLikeMsgType == "MSGUNDELEGATE") return CosmosLikeMsgType::MSGUNDELEGATE;
-    else if (cosmosLikeMsgType == "MSGREDELEGATE") return CosmosLikeMsgType::MSGREDELEGATE;
+    else if (cosmosLikeMsgType == "MSGBEGINREDELEGATE") return CosmosLikeMsgType::MSGBEGINREDELEGATE;
     else if (cosmosLikeMsgType == "MSGSUBMITPROPOSAL") return CosmosLikeMsgType::MSGSUBMITPROPOSAL;
     else if (cosmosLikeMsgType == "MSGVOTE") return CosmosLikeMsgType::MSGVOTE;
     else if (cosmosLikeMsgType == "MSGDEPOSIT") return CosmosLikeMsgType::MSGDEPOSIT;
@@ -52,7 +52,7 @@ std::ostream &operator<<(std::ostream &os, const CosmosLikeMsgType &o)
         case CosmosLikeMsgType::MSGSEND:  return os << "MSGSEND";
         case CosmosLikeMsgType::MSGDELEGATE:  return os << "MSGDELEGATE";
         case CosmosLikeMsgType::MSGUNDELEGATE:  return os << "MSGUNDELEGATE";
-        case CosmosLikeMsgType::MSGREDELEGATE:  return os << "MSGREDELEGATE";
+        case CosmosLikeMsgType::MSGBEGINREDELEGATE:  return os << "MSGBEGINREDELEGATE";
         case CosmosLikeMsgType::MSGSUBMITPROPOSAL:  return os << "MSGSUBMITPROPOSAL";
         case CosmosLikeMsgType::MSGVOTE:  return os << "MSGVOTE";
         case CosmosLikeMsgType::MSGDEPOSIT:  return os << "MSGDEPOSIT";

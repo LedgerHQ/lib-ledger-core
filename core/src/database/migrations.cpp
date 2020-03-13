@@ -833,7 +833,7 @@ namespace ledger {
                 // MsgDelegate & MsgUndelegate
                 "delegator_address VARCHAR(255),"
                 "validator_address VARCHAR(255),"
-                // MsgRedelegate
+                // MsgBeginRedelegate
                 "validator_src_address VARCHAR(255),"
                 "validator_dst_address VARCHAR(255),"
                 // MsgSubmitProposal
