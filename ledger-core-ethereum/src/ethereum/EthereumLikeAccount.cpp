@@ -629,6 +629,13 @@ namespace ledger {
             }).callback(getMainExecutionContext(), callback);
         }
 
+        void EthereumLikeAccount::getDryRunGasLimit(const std::string & address, const api::EthereumGasLimitRequest &request, const std::shared_ptr<api::BigIntCallback> & callback) {
+            _explorer->getDryRunGasLimit(address, request).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<BigInt>(*gasPrice);
+            }).callback(getMainExecutionContext(), callback);
+        }
+
+
         FuturePtr<api::BigInt> EthereumLikeAccount::getERC20Balance(const std::string & erc20Address) {
             return _explorer->getERC20Balance(_keychain->getAddress()->toEIP55(), erc20Address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &erc20Balance) -> std::shared_ptr<api::BigInt> {
                 return std::static_pointer_cast<api::BigInt>(erc20Balance);
