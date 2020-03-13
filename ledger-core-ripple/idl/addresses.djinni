@@ -1,5 +1,3 @@
-@extern "../../ledger-core/idl/core.yaml"
-
 RippleLikeNetworkParameters = record {
 	Identifier: string;
 	MessagePrefix: string;

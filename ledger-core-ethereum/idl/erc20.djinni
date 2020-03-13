@@ -1,4 +1,7 @@
-@extern "../../ledger-core/idl/core.yaml"
+@import "ledger-core/callback.djinni"
+@import "ledger-core/math/big_int.djinni"
+@import "ledger-core/preferences.djinni"
+@import "ledger-core/time_period.djinni"
 
 # Representation of ERC20Tokens.
 ERC20Token = record {
@@ -26,7 +29,7 @@ ERC20LikeAccount = interface +c {
     # Get the list of operations performed on this ERC20 account.
     getOperations(): list<ERC20LikeOperation>;
     # Retrieve raw data concerning a transaction of a given amount to a given address.
-    getTransferToAddressData(amount: BigInt, address: string, data: callback2<optional<binary>>);
+    getTransferToAddressData(amount: BigInt, address: string, data: Callback<binary>);
     queryOperations(): OperationQuery;
 }
 

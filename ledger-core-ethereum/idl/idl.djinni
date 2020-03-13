@@ -1,7 +1,9 @@
-@extern "../../ledger-core/idl/core.yaml"
+@import "ledger-core/amount.djinni"
+@import "ledger-core/callback.djinni"
+@import "ledger-core/math/big_int.djinni"
+@import "ledger-core/operation.djinni"
 
 @import "addresses.djinni"
-@import "callback.djinni"
 @import "erc20.djinni"
 
 # Class representing a Ethereum transaction.
@@ -105,7 +107,7 @@ EthereumLikeTransactionBuilder = interface +c {
     setInputData(data: binary): EthereumLikeTransactionBuilder;
 
     # Build a transaction from the given builder parameters.
-    build(callback: callback2<optional<EthereumLikeTransaction>>);
+    build(callback: Callback<EthereumLikeTransaction>);
 
     # Create a clone of this builder.
     # @return A copy of the current builder instance.
@@ -123,9 +125,9 @@ EthereumLikeTransactionBuilder = interface +c {
 # Class representing a Ethereum account.
 EthereumLikeAccount = interface +c {
     # Send a raw (binary) transaction on the Ethereum blockchain.
-    broadcastRawTransaction(transaction: binary, callback: callback2<optional<string>>);
+    broadcastRawTransaction(transaction: binary, callback: Callback<string>);
     # Send a transaction on the Ethereum blockchain.
-    broadcastTransaction(transaction: EthereumLikeTransaction, callback: callback2<optional<string>>);
+    broadcastTransaction(transaction: EthereumLikeTransaction, callback: Callback<string>);
     # Get a builder object to construct transactions.
     buildTransaction(): EthereumLikeTransactionBuilder;
     # Get the list of ERC20 accounts associated with this Ethereum account.
@@ -148,7 +150,7 @@ EthereumLikeAccount = interface +c {
     # Get balance of ERC20 tokens
     # The passed addresses are ERC20 accounts
     # Note: same note as above
-    getERC20Balances(erc20Addresses: list<string>, callback: callback2<list<BigInt>>);
+    getERC20Balances(erc20Addresses: list<string>, callback: ListCallback<BigInt>);
 }
 
 # TODO I think we need to remove this (useful?) interface

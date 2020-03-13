@@ -1,5 +1,3 @@
-@extern "../../ledger-core/idl/core.yaml"
-
 TezosBlockchainExplorerEngines = interface +c {
     const TEZOS_NODE: string = "TEZOS_NODE";
     const TZSTATS_API: string = "TZSTATS_API";

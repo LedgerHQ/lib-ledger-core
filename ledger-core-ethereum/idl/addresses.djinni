@@ -1,5 +1,3 @@
-@extern "../../ledger-core/idl/core.yaml"
-
 EthereumLikeNetworkParameters = record {
     # Name of the network.
     Identifier: string;
