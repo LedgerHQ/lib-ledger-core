@@ -1,0 +1,27 @@
+@import "../../errors.djinni"
+
+# Structure holding Validator related information
+CosmosLikeValidator = record {
+    # Description of the validator as given at Creation/Edition
+    description: CosmosLikeValidatorDescription;
+    # Current commission rates and last commission update
+    commission: CosmosLikeValidatorCommission;
+    # Last time an unbonding has been called. 0 if no unbonding called
+    unbondingHeight: i32;
+    # Timestamp for the end of the unbonding
+    unbondingTime: optional<date>;
+    # Minimum self delegation (in uatom for CosmosHub)
+    minSelfDelegation: string;
+    # Jailed status
+    jailed: bool;
+    # Voting Power
+    tokens: string;
+    # Operator address (cosmosvaloper)
+    operatorAddress: string;
+    # Consensus address (cosmosvalconspub)
+    consensusPubkey: string;
+    # Status (Unbonded - Unbonding - Bonded) Goes from 0 to 2 or 1 to 3 depending on API (see https://github.com/cosmos/cosmos-sdk/commit/53bf2271d5bac054a8f74723732f21055c1b72d4#diff-f54554903608b8b89649f532c8f1a78cL43)
+    status: i32;
+    # Timestamps of slash events (no option = do not trust the info ; empty list in option = trust that it's clean)
+    slashTimestamps: optional<list<date>>;
+}
