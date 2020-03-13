@@ -137,16 +137,16 @@ EthereumLikeAccount = interface +c {
     # but since EthereumLikeWallet is not used anywhere, it's better to keep all
     # specific methods under the same specific class so it will be easy to segratate
     # when the right time comes !
-    getGasPrice(callback: callback2<BigInt>);
+    getGasPrice(callback: Callback<BigInt>);
     # Get estimated gas limit to set so the transaction will succeed
     # The passed address could be EOA or contract
     # This estimation is based on X last incoming txs (to address) that succeeded
     # Note: same note as above
-    getEstimatedGasLimit(address: string, callback: callback2<BigInt>);
+    getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
     # Get balance of ERC20 token
     # The passed address is an ERC20 account
     # Note: same note as above
-    getERC20Balance(erc20Address: string, callback: callback2<BigInt>);
+    getERC20Balance(erc20Address: string, callback: Callback<BigInt>);
     # Get balance of ERC20 tokens
     # The passed addresses are ERC20 accounts
     # Note: same note as above

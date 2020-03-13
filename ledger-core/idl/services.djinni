@@ -56,7 +56,7 @@ Services = interface +c {
     # Return last block of blockchain of a given currency (if it is supported by the wallet pool).
     # @param name, string, name of currency we are interested into getting it's blockchain's last block
     # @param callback, Callback object returns a Block object
-    getLastBlock(currencyName: string, callback: callback2<optional<Block>>);
+    getLastBlock(currencyName: string, callback: Callback<Block>);
 
     # Reset wallet pool.
     #
@@ -74,7 +74,7 @@ Services = interface +c {
     # > that doesn’t include having lots of objects in memory.
     #
     # The return value is always true and doesn’t convey any useful information for now.
-    freshResetAll(callback: callback2<optional<ErrorCode>>);
+    freshResetAll(callback: Callback<ErrorCode>);
 
     # Change Database password.
     #
@@ -83,7 +83,7 @@ Services = interface +c {
     #
     # WARNING: be careful to have no other instances of Services using
     # same database / preferences.
-    changePassword(oldPassword: string, newPassword: string, callback: callback2<optional<ErrorCode>>);
+    changePassword(oldPassword: string, newPassword: string, callback: Callback<ErrorCode>);
 }
 
 # Class representing a services builder.
@@ -140,7 +140,7 @@ ServicesBuilder = interface +c {
 
     # Create services.
     # @param callback, callback returning a Services instance
-    build(listener: callback2<optional<Services>>);
+    build(listener: Callback<Services>);
 
     # Create an instance of the services builder.
     # @return ServicesBuilder object

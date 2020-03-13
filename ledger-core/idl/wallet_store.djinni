@@ -7,18 +7,18 @@
 WalletStore = interface +c {
     # Return number of wallets instantiated under the store.
     # @param callback, Callback object returns a 32 bits integer, count of wallets
-    getWalletCount(callback: callback2<i32>);
+    getWalletCount(callback: Callback<i32>);
 
     # Get instanciated wallets having index in a given range.
     # @param from, 32 bits integer, lower bound of indices to pick
     # @param to, 32 bits integer, upper bound of indices to pick
     # @param callback, ListCallback object returns a list of Wallet objects
-    getWallets(from: i32, size: i32, callback: callback2<list<Wallet>>);
+    getWallets(from: i32, size: i32, callback: ListCallback<Wallet>);
 
     # Get wallet with a giver name.
     # @param name, string, name of wallet to look for
     # @param callback, Callback object returns a Wallet object
-    getWallet(name: string, callback: callback2<Wallet>);
+    getWallet(name: string, callback: Callback<Wallet>);
 
     # Update wallet configuration
     # @param name, string, name of wallet to update
@@ -26,25 +26,25 @@ WalletStore = interface +c {
     # @param callback, Callback object returns the error code, returns ErrorCode::FUTURE_WAS_SUCCESSFULL if everything is fine
     # > Note: other fields that are not passed in 'configuration' parameter
     # > that might have been created before remain intact
-    updateWalletConfig(name: string, configuration: DynamicObject, callback: callback2<ErrorCode>);
+    updateWalletConfig(name: string, configuration: DynamicObject, callback: Callback<ErrorCode>);
 
     # Instantiate a new wallet under the store.
     # @param name, string, name of newly created wallet
     # @param currency, Currency object, currency of the wallet
     # @param configuration, DynamicObject object, configuration of wallet (preferences)
     # @param callback, Callback object returning a Wallet object
-    createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: callback2<Wallet>);
+    createWallet(name: string, currency: Currency, configuration: DynamicObject, callback: Callback<Wallet>);
 
     # Return all supported currencies by the wallet store, at least one wallet support one of returned currencies.
     # @param callback, ListCallback object, returns a list of Currency objects
-    getCurrencies(callback: callback2<list<Currency>>);
+    getCurrencies(callback: ListCallback<Currency>);
 
     # Return currency of a specific wallet.
     # @param name, wallet's name to look for
     # @param callback, Callback object returning a Currency object
-    getCurrency(name: string, callback: callback2<Currency>);
+    getCurrency(name: string, callback: Callback<Currency>);
 
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
-    eraseDataSince(date: date, callback: callback2<ErrorCode>);
+    eraseDataSince(date: date, callback: Callback<ErrorCode>);
 }

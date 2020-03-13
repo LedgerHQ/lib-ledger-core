@@ -22,7 +22,7 @@ ERC20LikeAccount = interface +c {
     # Get the address of this ERC20 account.
     getAddress(): string;
     # Get the current balance of this ERC20 account.
-    getBalance(callback: callback2<BigInt>);
+    getBalance(callback: Callback<BigInt>);
     # Get the balance history of this ERC20 account from a starting date (included) to an ending
     # date (included).
     getBalanceHistoryFor(start: date, end: date, period: TimePeriod): list<BigInt>;
