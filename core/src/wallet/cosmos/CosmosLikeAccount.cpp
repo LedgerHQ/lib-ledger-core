@@ -347,16 +347,7 @@ namespace ledger {
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getBalance() {
-                    auto currency = getWallet()->getCurrency();
-                    return _explorer->getTotalBalance(_keychain->getAddress()->toBech32())
-                            .mapPtr<Amount>(
-                                    getContext(),
-                                    [currency](const auto& rawAmount){
-                                return std::make_shared<Amount>(
-                                    currency,
-                                    0,
-                                    *rawAmount);
-                                    });
+                        return getTotalBalance();
                 }
 
                 std::shared_ptr<api::OperationQuery> CosmosLikeAccount::queryOperations() {
