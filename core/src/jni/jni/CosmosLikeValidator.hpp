@@ -33,7 +33,7 @@ private:
     const jfieldID field_unbondingTime { ::djinni::jniGetFieldID(clazz.get(), "unbondingTime", "Ljava/util/Date;") };
     const jfieldID field_minSelfDelegation { ::djinni::jniGetFieldID(clazz.get(), "minSelfDelegation", "Ljava/lang/String;") };
     const jfieldID field_jailed { ::djinni::jniGetFieldID(clazz.get(), "jailed", "Z") };
-    const jfieldID field_tokens { ::djinni::jniGetFieldID(clazz.get(), "tokens", "Ljava/lang/String;") };
+    const jfieldID field_votingPower { ::djinni::jniGetFieldID(clazz.get(), "votingPower", "Ljava/lang/String;") };
     const jfieldID field_operatorAddress { ::djinni::jniGetFieldID(clazz.get(), "operatorAddress", "Ljava/lang/String;") };
     const jfieldID field_consensusPubkey { ::djinni::jniGetFieldID(clazz.get(), "consensusPubkey", "Ljava/lang/String;") };
     const jfieldID field_status { ::djinni::jniGetFieldID(clazz.get(), "status", "I") };

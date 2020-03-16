@@ -427,5 +427,27 @@ namespace ledger {
                     });
         }
 
+            // Validators
+        Future<cosmos::ValidatorList> GaiaCosmosLikeBlockchainExplorer::getActiveValidatorSet() const {
+            const bool parseJsonNumbersAsStrings = true;
+            auto basicValidatorList =_http->GET("/staking/validators?status=bonded&page=1&limit=130")
+                .json(parseJsonNumbersAsStrings)
+                .map<cosmos::ValidatorList>(
+                    getContext(), [=](const HttpRequest::JsonResult& response) {
+                        cosmos::ValidatorList result;
+                        const auto& document = std::get<1>(response)->GetObject();
+                        // TODO : raise a clean exception when document has no "txs" member
+                        const auto& validators = document["result"].GetArray();
+                        for (const auto& node : validators) {
+                            auto val = std::make_shared<cosmos::Validator>();
+                            rpcs_parsers::parseValidatorSetEntry(node.GetObject(), *val);
+                            result.emplace_back(val);
+                        }
+                        return result;
+                    });
+
+            return basicValidatorList;
+        }
+
         }  // namespace core
 }

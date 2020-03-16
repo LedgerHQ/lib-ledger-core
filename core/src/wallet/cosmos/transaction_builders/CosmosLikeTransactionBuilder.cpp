@@ -391,9 +391,9 @@ namespace ledger {
                 }
 
                 validatorAddress = getString(valueObject, kValidatorAddress);
-                if (valueObject.HasMember(kCommissionRate) &&
-                    valueObject[kCommissionRate].IsString()) {
-                    commissionRate = optional<std::string>(getString(valueObject, kCommissionRate));
+                if (valueObject.HasMember(kEditValCommissionRate) &&
+                    valueObject[kEditValCommissionRate].IsString()) {
+                    commissionRate = optional<std::string>(getString(valueObject, kEditValCommissionRate));
                 }
                 if (valueObject.HasMember(kMinSelfDelegation) &&
                     valueObject[kMinSelfDelegation].IsString()) {

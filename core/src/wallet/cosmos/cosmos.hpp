@@ -50,6 +50,8 @@
 #include <api/CosmosLikeMsgWithdrawValidatorCommission.hpp>
 #include <api/CosmosLikeMsgUnjail.hpp>
 
+#include <api/CosmosLikeValidator.hpp>
+
 #include <wallet/common/Block.h>
 
 #include <math/BigInt.h>
@@ -72,6 +74,7 @@ namespace ledger {
                         using ValidatorDescription = api::CosmosLikeValidatorDescription;
                         using ValidatorCommission = api::CosmosLikeValidatorCommission;
 
+                        using Validator = api::CosmosLikeValidator;
                         using CommissionRates = api::CosmosLikeCommissionRates;
 
                         using MultiSendInput = api::CosmosLikeMultiSendInput;
@@ -163,6 +166,7 @@ namespace ledger {
 
                         // Small helpers to avoid very long types
                         using TransactionList = std::list<std::shared_ptr<Transaction>>;
+                        using ValidatorList = std::list<std::shared_ptr<Validator>>;
                         using MsgType = ::ledger::core::api::CosmosLikeMsgType;
 
                         struct TransactionsBulk {

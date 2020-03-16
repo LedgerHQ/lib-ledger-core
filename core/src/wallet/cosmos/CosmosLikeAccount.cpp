@@ -661,5 +661,9 @@ namespace ledger {
                                     });
                 }
 
+                Future<cosmos::ValidatorList> CosmosLikeAccount::getActiveValidatorSet() const {
+                        return _explorer->getActiveValidatorSet();
+                }
+
         }
 }

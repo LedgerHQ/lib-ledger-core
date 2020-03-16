@@ -452,7 +452,7 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     EXPECT_TRUE(foundMsgUnjail);
 }
 
-/*
+
 TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
@@ -465,9 +465,9 @@ TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
     performSynchro(account);
     auto blockHeight1 = wait(account->getLastBlock()).height;
 
-    // Wait 8s (new Cosmos block every 7s)
-    fmt::print("Waiting new Cosmos block for 8s...\n");
-    std::this_thread::sleep_for(std::chrono::seconds(8));
+    // Wait 30s (new Cosmos block every 7s)
+    fmt::print("Waiting new Cosmos block for 30s...\n");
+    std::this_thread::sleep_for(std::chrono::seconds(30));
 
     // Second synchro
     // FIXME Fails due to limitation of test framework??
@@ -476,4 +476,28 @@ TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
 
     EXPECT_NE(blockHeight1, blockHeight2);
 }
-*/
+
+TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
+    // This test assumes that HuobiPool and BinanceStaking are always in the validator set
+    const auto huobi_pool_address = "cosmosvaloper1kn3wugetjuy4zetlq6wadchfhvu3x740ae6z6x";
+    bool foundHuobi = false;
+    const auto binance_staking_pub_address = "cosmosvalconspub1zcjduepqtw8862dhw8uty58d6t2szfd6kqram2t234zjteaaeem6l45wclaq8l60gn";
+    bool foundBinance = false;
+
+    auto set = ::wait(explorer->getActiveValidatorSet());
+
+    EXPECT_EQ(set.size(), 125) << "currently cosmoshub-3 has 125 active validators";
+
+    for (const auto & validator : set) {
+        if (validator->consensusPubkey == binance_staking_pub_address) {
+            foundBinance = true;
+        } else if (validator->operatorAddress == huobi_pool_address){
+            foundHuobi = true;
+        } else {
+            continue;
+        }
+    }
+
+    EXPECT_TRUE(foundHuobi) << "Huobi Pool is expected to always be in the validator set";
+    EXPECT_TRUE(foundBinance) << "Binance Staking is expected to always be in the validator set";
+}

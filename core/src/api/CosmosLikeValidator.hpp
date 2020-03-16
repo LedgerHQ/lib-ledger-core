@@ -24,17 +24,17 @@ struct CosmosLikeValidator final {
     CosmosLikeValidatorCommission commission;
     /** Last time an unbonding has been called. 0 if no unbonding called */
     int32_t unbondingHeight;
-    /** Timestamp for the end of the unbonding */
+    /** Timestamp for the end of the last unbonding that happened */
     std::experimental::optional<std::chrono::system_clock::time_point> unbondingTime;
     /** Minimum self delegation (in uatom for CosmosHub) */
     std::string minSelfDelegation;
     /** Jailed status */
     bool jailed;
     /** Voting Power */
-    std::string tokens;
+    std::string votingPower;
     /** Operator address (cosmosvaloper) */
     std::string operatorAddress;
-    /** Consensus address (cosmosvalconspub) */
+    /** Consensus public key (cosmosvalconspub) */
     std::string consensusPubkey;
     /** Status (Unbonded - Unbonding - Bonded) Goes from 0 to 2 or 1 to 3 depending on API (see https://github.com/cosmos/cosmos-sdk/commit/53bf2271d5bac054a8f74723732f21055c1b72d4#diff-f54554903608b8b89649f532c8f1a78cL43) */
     int32_t status;
@@ -47,7 +47,7 @@ struct CosmosLikeValidator final {
                         std::experimental::optional<std::chrono::system_clock::time_point> unbondingTime_,
                         std::string minSelfDelegation_,
                         bool jailed_,
-                        std::string tokens_,
+                        std::string votingPower_,
                         std::string operatorAddress_,
                         std::string consensusPubkey_,
                         int32_t status_,
@@ -58,7 +58,7 @@ struct CosmosLikeValidator final {
     , unbondingTime(std::move(unbondingTime_))
     , minSelfDelegation(std::move(minSelfDelegation_))
     , jailed(std::move(jailed_))
-    , tokens(std::move(tokens_))
+    , votingPower(std::move(votingPower_))
     , operatorAddress(std::move(operatorAddress_))
     , consensusPubkey(std::move(consensusPubkey_))
     , status(std::move(status_))
@@ -72,7 +72,7 @@ struct CosmosLikeValidator final {
        this->unbondingTime = cpy.unbondingTime;
        this->minSelfDelegation = cpy.minSelfDelegation;
        this->jailed = cpy.jailed;
-       this->tokens = cpy.tokens;
+       this->votingPower = cpy.votingPower;
        this->operatorAddress = cpy.operatorAddress;
        this->consensusPubkey = cpy.consensusPubkey;
        this->status = cpy.status;
@@ -89,7 +89,7 @@ struct CosmosLikeValidator final {
        this->unbondingTime = cpy.unbondingTime;
        this->minSelfDelegation = cpy.minSelfDelegation;
        this->jailed = cpy.jailed;
-       this->tokens = cpy.tokens;
+       this->votingPower = cpy.votingPower;
        this->operatorAddress = cpy.operatorAddress;
        this->consensusPubkey = cpy.consensusPubkey;
        this->status = cpy.status;
@@ -99,12 +99,12 @@ struct CosmosLikeValidator final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(description, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, tokens, operatorAddress, consensusPubkey, status, slashTimestamps);
+        archive(description, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, votingPower, operatorAddress, consensusPubkey, status, slashTimestamps);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(description, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, tokens, operatorAddress, consensusPubkey, status, slashTimestamps);
+        archive(description, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, votingPower, operatorAddress, consensusPubkey, status, slashTimestamps);
     }
 };
 

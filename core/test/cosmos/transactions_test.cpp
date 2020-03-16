@@ -293,6 +293,8 @@ TEST_F(CosmosTransactionTest, ParseRawMsgMultiSendTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgCreateValidatorTransaction) {
     // TODO : find a transaction in Explorer to confirm the format here
+    // For the time being we're using protobuf from cosmos-sdk as source :
+    // https://github.com/cosmos/cosmos-sdk/blob/53bf2271d5bac054a8f74723732f21055c1b72d4/x/staking/types/types.pb.go
     const auto strTx = "{\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
@@ -300,7 +302,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgCreateValidatorTransaction) {
         "\"msgs\":["
         "{\"type\":\"cosmos-sdk/MsgCreateValidator\","
         "\"value\":{"
-        "\"commission\":{\"commission_max_change_rate\":\"0.05\",\"commission_max_rate\":\"0.60\",\"commission_rate\":\"0.45\",\"update_time\":\"2020-02-25T13:42:29Z\"},"
+        "\"commission\":{\"max_change_rate\":\"0.05\",\"max_rate\":\"0.60\",\"rate\":\"0.45\",\"update_time\":\"2020-02-25T13:42:29Z\"},"
         "\"delegator_address\":\"cosmostest\","
         "\"description\":{\"details\":\"It flies well\\\\nnewline\",\"identity\":\"Pocket Monsters\",\"moniker\":\"Hélédelle\",\"website\":\"https://www.pokepedia.fr/H%C3%A9l%C3%A9delle\"},"
         "\"min_self_delegation\":\"1\","
@@ -335,6 +337,8 @@ TEST_F(CosmosTransactionTest, ParseRawMsgCreateValidatorTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgEditValidatorTransaction) {
     // TODO : find a transaction in Explorer to confirm the format here
+    // For the time being we're using protobuf from cosmos-sdk as source :
+    // https://github.com/cosmos/cosmos-sdk/blob/53bf2271d5bac054a8f74723732f21055c1b72d4/x/staking/types/types.pb.go
     const auto strTx = "{\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
@@ -354,12 +358,18 @@ TEST_F(CosmosTransactionTest, ParseRawMsgEditValidatorTransaction) {
     auto editValidatorMessage = api::CosmosLikeMessage::unwrapMsgEditValidator(message);
     EXPECT_EQ(tx->getFee()->toLong(), 5001L);
     EXPECT_EQ(tx->getGas()->toLong(), 200020L);
+    ASSERT_TRUE(editValidatorMessage.description);
     EXPECT_EQ(editValidatorMessage.description.value().moniker, "Wailord");
+    ASSERT_TRUE(editValidatorMessage.description.value().identity);
     EXPECT_EQ(editValidatorMessage.description.value().identity.value(), "évolution de Wailmer");
+    ASSERT_TRUE(editValidatorMessage.description.value().website);
     EXPECT_EQ(editValidatorMessage.description.value().website.value(), "https://www.pokepedia.fr/Wailord");
+    ASSERT_TRUE(editValidatorMessage.description.value().details);
     EXPECT_EQ(editValidatorMessage.description.value().details.value(), "Cachabouée");
     EXPECT_EQ(editValidatorMessage.validatorAddress, "cosmostest");
+    ASSERT_TRUE(editValidatorMessage.commissionRate);
     EXPECT_EQ(editValidatorMessage.commissionRate.value(), "0.50");
+    ASSERT_TRUE(editValidatorMessage.minSelfDelegation);
     EXPECT_EQ(editValidatorMessage.minSelfDelegation.value(), "800");
 
     EXPECT_EQ(tx->serialize(), strTx);

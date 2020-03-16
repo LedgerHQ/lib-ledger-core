@@ -375,7 +375,7 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         }
 
         addString(kValidatorAddress, content.validatorAddress, jsonContent, allocator);
-        addOptionalString(kCommissionRate, content.commissionRate, jsonContent, allocator);
+        addOptionalString(kEditValCommissionRate, content.commissionRate, jsonContent, allocator);
         addOptionalString(kMinSelfDelegation, content.minSelfDelegation, jsonContent, allocator);
 
     } else if (_msgData.type == kMsgSetWithdrawAddress) {

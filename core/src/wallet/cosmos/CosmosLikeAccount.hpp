@@ -117,6 +117,8 @@ namespace ledger {
                                 FuturePtr<Amount> getUnbondingBalance() const;
                                 FuturePtr<Amount> getSpendableBalance() const;
 
+                                Future<cosmos::ValidatorList> getActiveValidatorSet() const;
+
                         private:
                                 std::shared_ptr<CosmosLikeAccount> getSelf();
 

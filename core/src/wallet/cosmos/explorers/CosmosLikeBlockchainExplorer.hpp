@@ -98,6 +98,9 @@ namespace ledger {
                                                                         uint32_t fromBlockHeight = 0,
                                                                         Option<void*> session = Option<void *>()) = 0;
 
+            // Validators
+            virtual Future<cosmos::ValidatorList> getActiveValidatorSet() const = 0;
+
         };
     }
 }
