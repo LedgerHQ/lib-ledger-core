@@ -42,6 +42,7 @@
 #include <api/StringCallback.hpp>
 #include <api/AmountCallback.hpp>
 
+#include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
@@ -114,6 +115,7 @@ namespace ledger {
                                 std::shared_ptr<api::CosmosLikeTransactionBuilder> buildTransaction(const std::string &senderAddress);
 
                                 std::shared_ptr<api::OperationQuery> queryOperations() override;
+
                                 void getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction, const std::shared_ptr<api::BigIntCallback> &callback) override;
 
                                 // Balances
@@ -137,7 +139,8 @@ namespace ledger {
                                 Future<cosmos::Validator> getValidatorInfo(const std::string& validatorAddress) const;
                                 void getValidatorInfo(const std::string &validatorAddress, const std::shared_ptr<api::CosmosLikeValidatorCallback>&callback) override;
 
-                                std::vector<std::shared_ptr<api::CosmosLikeDelegation>> getDelegations() override;
+                                void getDelegations(const std::shared_ptr<api::CosmosLikeDelegationListCallback> & callback) override;
+                                Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>> getDelegations();
 
                         private:
                                 std::shared_ptr<CosmosLikeAccount> getSelf();

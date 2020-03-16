@@ -62,6 +62,7 @@ namespace ledger {
                                 constexpr const char kAccountNumber[] = "account_number";
                                 constexpr const char kAddress[] = "address";
                                 constexpr const char kAmount[] = "amount";
+                                constexpr const char kBalance[] = "balance";
                                 constexpr const char kChainId[] = "chain_id";
                                 constexpr const char kCoins[] = "coins";
                                 constexpr const char kCommission[] = "commission";

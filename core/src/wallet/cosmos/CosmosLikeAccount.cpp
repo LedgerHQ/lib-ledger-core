@@ -36,6 +36,7 @@
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <api/CosmosLikeAddress.hpp>
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
+//#include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 #include <wallet/cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
 #include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
@@ -713,10 +714,24 @@ namespace ledger {
                         getValidatorInfo(validatorAddress).callback(getContext(), callback);
                 }
 
-                std::vector<std::shared_ptr<api::CosmosLikeDelegation>> CosmosLikeAccount::getDelegations() {
-                        std::vector<std::shared_ptr<api::CosmosLikeDelegation>> delegations;
-                        // TODO COIN-244
-                        return delegations;
+                void CosmosLikeAccount::getDelegations(const std::shared_ptr<api::CosmosLikeDelegationListCallback> &callback) {
+                        getDelegations().callback(getMainExecutionContext(), callback); // FIXME Make this work!
+                }
+
+                Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>
+                CosmosLikeAccount::getDelegations() {
+                        return _explorer->getDelegations(_accountAddress)
+                                .map<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>(
+                                        getContext(),
+                                        [] (const std::shared_ptr<std::vector<cosmos::Delegation>>& delegations) -> std::vector<std::shared_ptr<api::CosmosLikeDelegation>> {
+                                                std::vector<std::shared_ptr<api::CosmosLikeDelegation>> delegationList;
+
+                                                for (auto& delegation : *delegations) {
+                                                        delegationList.push_back(std::make_shared<CosmosLikeDelegation>(delegation));
+                                                }
+                                                return delegationList;
+                                        }
+                                );
                 }
         }
 }

@@ -110,7 +110,7 @@ CosmosLikeAccount = interface +c {
         # Get Total spendable balance of account.
         getSpendableBalance(callback: Callback<Amount>);
 
-        getDelegations() : list<CosmosLikeDelegation>;
+        getDelegations(callback: ListCallback<CosmosLikeDelegation>);
 }
 
 #Class representing a Cosmos delegation
@@ -122,7 +122,7 @@ CosmosLikeDelegation = interface +c {
 }
 
 CosmosConfigurationDefaults = interface +c {
-        const COSMOS_DEFAULT_API_ENDPOINT: string = "http://lite-client-0e27eefb-4031-4859-a88e-249fd241989d.cosmos.bison.run:1317";
+        const COSMOS_DEFAULT_API_ENDPOINT: string = "http://lite-client-0e27eefb-4031-4859-a88e-249fd241989d.cosmos.bison.run:1317/";
         const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
 }
 

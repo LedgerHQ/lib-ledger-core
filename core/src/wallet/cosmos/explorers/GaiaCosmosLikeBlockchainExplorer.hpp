@@ -118,7 +118,7 @@ namespace ledger {
             Future<cosmos::ValidatorList> getActiveValidatorSet() const override;
             Future<cosmos::Validator> getValidatorInfo(const std::string& valOperAddress) const override;
 
-            std::vector<cosmos::Delegation> getDelegations() const override;
+            FuturePtr<std::vector<cosmos::Delegation>> getDelegations(const std::string& delegatorAddr) const override;
 
         private:
             std::shared_ptr<HttpClient> _http;

@@ -491,12 +491,20 @@ namespace ledger {
                     });
         }
 
-        std::vector<cosmos::Delegation> GaiaCosmosLikeBlockchainExplorer::getDelegations() const {
-            std::vector<cosmos::Delegation> delegations;
-
-            // TODO COIN-244
-
-            return delegations;
+        FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::getDelegations(const std::string& delegatorAddr) const {
+            return _http->GET(fmt::format("/staking/delegators/{}/delegations", delegatorAddr))
+                .json(true)
+                .mapPtr<std::vector<cosmos::Delegation>>(getContext(), [=](const HttpRequest::JsonResult& response) {
+                    const auto& document = std::get<1>(response)->GetObject();
+                    const auto& results = document["result"].GetArray();
+                    auto delegations = std::make_shared<std::vector<cosmos::Delegation>>();
+                    for (auto& result : results) {
+                        cosmos::Delegation delegation;
+                        rpcs_parsers::parseDelegation(result, delegation);
+                        delegations->push_back(delegation);
+                    }
+                    return delegations;
+                });
         }
 
     }  // namespace core

@@ -136,6 +136,18 @@ namespace ledger {
                 out.rates.maxChangeRate = rateObject[kCommissionMaxChangeRate].GetString();
             }
 
+            template <typename T>
+            void parseDelegation(const T& delegationNode, cosmos::Delegation& out) {
+                assert(delegationNode.HasMember(kDelegatorAddress));
+                assert(delegationNode.HasMember(kValidatorAddress));
+                assert(delegationNode.HasMember(kBalance));
+                //assert(delegationNode.HasMember(TODO));
+                out.delegatorAddress = delegationNode[kDelegatorAddress].GetString();
+                out.validatorAddress = delegationNode[kValidatorAddress].GetString();
+                out.delegatedAmount = BigInt::fromString(delegationNode[kBalance].GetString());
+                //out.pendingReward = BigInt::fromString(TODO);
+            }
+
             template <class T>
             void parseBlock(const T& node, const std::string& currencyName, cosmos::Block& out) {
                 out.currencyName = currencyName;
