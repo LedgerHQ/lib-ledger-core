@@ -4,7 +4,7 @@
 #include "CosmosLikeAccount.hpp"  // my header
 #include "AmountCallback.hpp"
 #include "BigIntCallback.hpp"
-#include "CosmosLikeDelegation.hpp"
+#include "CosmosLikeDelegationListCallback.hpp"
 #include "CosmosLikeTransaction.hpp"
 #include "CosmosLikeTransactionBuilder.hpp"
 #include "CosmosLikeValidatorCallback.hpp"
@@ -69,6 +69,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
 
 CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getLatestValidatorSet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 CJNIEXPORT jobject JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getDelegations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getDelegations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -88,6 +89,8 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
         auto r = ref->getDelegations();
         return ::djinni::release(::djinni::List<::djinni_generated::CosmosLikeDelegation>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+        ref->getDelegations(::djinni_generated::CosmosLikeDelegationListCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getTotalBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
