@@ -25,16 +25,20 @@ namespace ledger {
                                 int32_t index,
                                 const core::api::ExtendedKeyAccountCreationInfo &info);
 
-                        Message setupDelegateMessage(const std::chrono::system_clock::time_point& timeRef);
-                        Message setupDepositMessage(const std::chrono::system_clock::time_point& timeRef);
-                        Message setupRedelegateMessage(const std::chrono::system_clock::time_point& timeRef);
-                        Message setupSendMessage(const std::chrono::system_clock::time_point& timeRef);
-                        Message setupSubmitProposalMessage(const std::chrono::system_clock::time_point& timeRef);
-                        Message setupUndelegateMessage(const std::chrono::system_clock::time_point& timeRef);
-                        Message setupVoteMessage(const std::chrono::system_clock::time_point& timeRef);
-                        Message setupWithdrawDelegationRewardMessage(const std::chrono::system_clock::time_point& timeRef);
+                        Message setupDelegateMessage();
+                        Message setupDepositMessage();
+                        Message setupRedelegateMessage();
+                        Message setupSendMessage();
+                        Message setupSubmitProposalMessage();
+                        Message setupUndelegateMessage();
+                        Message setupVoteMessage();
+                        Message setupWithdrawDelegationRewardMessage();
 
-                        Transaction setupTransaction(const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef);
+                        // Build a transaction to be broadcasted to the blockhain
+                        Transaction setupTransactionRequest(const std::vector<Message>& msgs);
+
+                        // Build a transaction as it is received from the blockhain
+                        Transaction setupTransactionResponse(const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef);
 
                         void assertSameDelegateMessage(const Message& msgRef, const Message& msgResult);
                         void assertSameDepositMessage(const Message& msgRef, const Message& msgResult);

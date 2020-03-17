@@ -30,6 +30,7 @@
 
 #pragma once
 #include <wallet/cosmos/cosmos.hpp>
+#include <api/CosmosLikeVoteOption.hpp>
 
 namespace ledger {
         namespace core {
@@ -99,6 +100,7 @@ namespace ledger {
                                 constexpr const char kPubKey[] = "pub_key";
                                 constexpr const char kSequence[] = "sequence";
                                 constexpr const char kSignature[] = "signature";
+                                constexpr const char kSignatures[] = "signatures";
                                 constexpr const char kSuccess[] = "success";
                                 constexpr const char kTimestamp[] = "timestamp";
                                 constexpr const char kTitle[] = "title";
@@ -122,6 +124,7 @@ namespace ledger {
                                 constexpr const char kHash[] = "hash";
                                 constexpr const char kHeader[] = "header";
                                 constexpr const char kTime[] = "time";
+                                constexpr const char kMode[] = "mode";
 
                                 // cosmos/cosmos-sdk Event / Attribute types as of
                                 // https://github.com/cosmos/cosmos-sdk/tree/43137ee893cefbdb2aacd25ef4ec39eacf6ae70c
@@ -205,6 +208,11 @@ namespace ledger {
                                     "proposal_failed";  // error on proposal handler
                                 constexpr const char kAttributeKeyProposalType[] = "proposal_type";
 
+                                constexpr const char kVoteOptionAbstain[] = "Abstain";
+                                constexpr const char kVoteOptionNo[] = "No";
+                                constexpr const char kVoteOptionNoWithVeto[] = "NoWithVeto";
+                                constexpr const char kVoteOptionYes[] = "Yes";
+
                                 // bank
                                 constexpr const char kEventTypeTransfer[] = "transfer";
 
@@ -241,7 +249,7 @@ namespace ledger {
                                 constexpr const char kAttributeKeyInflation[] = "inflation";
                                 constexpr const char kAttributeKeyAnnualProvisions[] =
                                     "annual_provisions";
-                                }  // namespace constants
+                        }  // namespace constants
 
                         static constexpr const char* msgTypeToChars(MsgType type) {
                                 switch (type) {
@@ -318,6 +326,31 @@ namespace ledger {
                                         return MsgType::MSGUNJAIL;
                                 } else {
                                         return MsgType::UNSUPPORTED;
+                                }
+                        }
+
+                        static constexpr const char* voteOptionToChars(api::CosmosLikeVoteOption option) {
+                                switch (option) {
+                                        case api::CosmosLikeVoteOption::ABSTAIN:
+                                                return constants::kVoteOptionAbstain;
+                                        case api::CosmosLikeVoteOption::NO:
+                                                return constants::kVoteOptionNo;
+                                        case api::CosmosLikeVoteOption::NOWITHVETO:
+                                                return constants::kVoteOptionNoWithVeto;
+                                        case api::CosmosLikeVoteOption::YES:
+                                                return constants::kVoteOptionYes;
+                                }
+                        }
+
+                        static constexpr api::CosmosLikeVoteOption stringToVoteOption(const char* string) {
+                                if (strings_equal(string, constants::kVoteOptionAbstain)) {
+                                        return api::CosmosLikeVoteOption::ABSTAIN;
+                                } else if (strings_equal(string, constants::kVoteOptionNo)) {
+                                        return api::CosmosLikeVoteOption::NO;
+                                } else if (strings_equal(string, constants::kVoteOptionNoWithVeto)) {
+                                        return api::CosmosLikeVoteOption::NOWITHVETO;
+                                } else {
+                                        return api::CosmosLikeVoteOption::YES;
                                 }
                         }
                 }

@@ -32,21 +32,23 @@
 #ifndef LEDGER_CORE_COSMOSLIKEACCOUNT_H
 #define LEDGER_CORE_COSMOSLIKEACCOUNT_H
 
-#include <time.h>
-
-#include <api/Address.hpp>
-#include <api/Event.hpp>
-#include <api/ErrorCodeCallback.hpp>
-#include <wallet/common/AbstractWallet.hpp>
-#include <wallet/common/AbstractAccount.hpp>
-#include <api/Amount.hpp>
-
 #include <api/CosmosLikeAccount.hpp>
-#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <api/CosmosLikeTransactionBuilder.hpp>
+#include <api/Address.hpp>
+#include <api/Amount.hpp>
+#include <api/ErrorCodeCallback.hpp>
+#include <api/Event.hpp>
+#include <api/StringCallback.hpp>
+
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 #include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
+#include <wallet/common/AbstractWallet.hpp>
+#include <wallet/common/AbstractAccount.hpp>
+
+#include <time.h>
+
 
 namespace ledger {
         namespace core {
