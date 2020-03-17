@@ -263,7 +263,9 @@ namespace ledger {
         }
 
         Future<String> GaiaCosmosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction) {
-            return _http->POST("/txs", transaction)
+            std::unordered_map<std::string, std::string> headers{{"Accept", "application/json"}};
+
+            return _http->POST("/txs", transaction, headers)
                         .json().template map<String>(_executionContext, [] (const HttpRequest::JsonResult& result) -> String {
                             auto& json = *std::get<1>(result);
                             return json["result"].GetString();
