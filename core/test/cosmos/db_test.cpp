@@ -60,7 +60,7 @@ TEST_F(CosmosDBTest, BasicDBTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    auto msg = setupSendMessage();
+    const auto msg = setupSendMessage();
     auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
 
     // Test writing into DB
@@ -97,8 +97,8 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    auto msg = setupSendMessage();
-    auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
+    const auto msg = setupSendMessage();
+    const auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
 
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
@@ -144,7 +144,7 @@ TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    auto msg = setupSendMessage();
+    const auto msg = setupSendMessage();
     auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
 
     // Change message type
@@ -163,7 +163,7 @@ TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
         auto op = ops[0];
         // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
         auto cosmosOp = op->asCosmosLikeOperation();
-        auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
+        const auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
 
         assertSameTransaction(tx, txRetrieved);
     }
@@ -176,9 +176,9 @@ TEST_F(CosmosDBTest, MultipleMsgTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    auto msgSend = setupSendMessage();
-    auto msgVote = setupVoteMessage();
-    auto tx = setupTransactionResponse(std::vector<Message>{ msgSend, msgVote }, timeRef);
+    const auto msgSend = setupSendMessage();
+    const auto msgVote = setupVoteMessage();
+    const auto tx = setupTransactionResponse(std::vector<Message>{ msgSend, msgVote }, timeRef);
 
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());

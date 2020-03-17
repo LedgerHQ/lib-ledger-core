@@ -86,7 +86,7 @@ public:
 
 TEST_F(CosmosTransactionTest, EncodeToJSON) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgSend\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"denom\":\"uatom\"}],\"from_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"to_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto sendMessage = api::CosmosLikeMessage::unwrapMsgSend(message);
@@ -104,7 +104,7 @@ TEST_F(CosmosTransactionTest, EncodeToJSON) {
 
 TEST_F(CosmosTransactionTest, ParseRawSignedMsgSendTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgSend\",\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},\"from_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"to_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
 
     //Put public key
     auto pubKeyBech32 = "cosmospub1addwnpepqtztanmggwrgm92kafpagegck5dp8jc6frxkcpdzrspfafprrlx7gmvhdq6";
@@ -146,7 +146,7 @@ TEST_F(CosmosTransactionTest, ParseRawSignedMsgSendTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgDelegateTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgDelegate\",\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"validator_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto delegateMessage = api::CosmosLikeMessage::unwrapMsgDelegate(message);
@@ -162,7 +162,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgDelegateTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgUndelegateTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgUndelegate\",\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"validator_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto undelegateMessage = api::CosmosLikeMessage::unwrapMsgUndelegate(message);
@@ -178,7 +178,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgUndelegateTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgBeginRedelegateTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgBeginRedelegate\",\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"validator_dst_address\":\"cosmosvaloper1sd4tl9aljmmezzudugs7zlaya7pg2895ws8tfs\",\"validator_src_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto redelegateMessage = api::CosmosLikeMessage::unwrapMsgBeginRedelegate(message);
@@ -195,7 +195,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgBeginRedelegateTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgSubmitProposalTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgSubmitProposal\",\"value\":{\"content\":{\"description\":\"My awesome proposal\",\"title\":\"Test Proposal\",\"type\":\"Text\"},\"initial_deposit\":[{\"amount\":\"1000000\",\"denom\":\"uatom\"}],\"proposer\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto submitProposalMessage = api::CosmosLikeMessage::unwrapMsgSubmitProposal(message);
@@ -213,7 +213,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgSubmitProposalTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgVoteTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgVote\",\"value\":{\"option\":\"YES\",\"proposal_id\":\"123\",\"voter\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto voteMessage = api::CosmosLikeMessage::unwrapMsgVote(message);
@@ -228,7 +228,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgVoteTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgDepositTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgDeposit\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"denom\":\"uatom\"}],\"depositor\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"proposal_id\":\"123\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto depositMessage = api::CosmosLikeMessage::unwrapMsgDeposit(message);
@@ -245,7 +245,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgDepositTransaction) {
 
 TEST_F(CosmosTransactionTest, ParseRawMsgWithdrawDelegationRewardTransaction) {
     auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgWithdrawDelegationReward\",\"value\":{\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"validator_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto withdrawMessage = api::CosmosLikeMessage::unwrapMsgWithdrawDelegationReward(message);
@@ -271,7 +271,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgMultiSendTransaction) {
         ",\"outputs\":[{\"address\":\"cosmos1da6hgur4wsmpnjyg\",\"coins\":[{\"amount\":\"10\",\"denom\":\"atom\"}]}]}}"
         "],"
         "\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto multiSendMessage = api::CosmosLikeMessage::unwrapMsgMultiSend(message);
@@ -309,7 +309,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgCreateValidatorTransaction) {
         "\"value\":{\"amount\":\"1059860\",\"denom\":\"uatom\"}"
         "}}],"
         "\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto createValidatorMessage = api::CosmosLikeMessage::unwrapMsgCreateValidator(message);
@@ -348,7 +348,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgEditValidatorTransaction) {
         "\"validator_address\":\"cosmostest\""
         "}}],"
         "\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto editValidatorMessage = api::CosmosLikeMessage::unwrapMsgEditValidator(message);
@@ -378,7 +378,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgSetWithdrawAddressTransaction) {
         "\"withdraw_address\":\"cosmos1erfdsa\""
         "}}],"
         "\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto setWithdrawAddressMessage = api::CosmosLikeMessage::unwrapMsgSetWithdrawAddress(message);
@@ -403,7 +403,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgWithdrawDelegatorRewardsTransaction) {
         "\"validator_address\":\"cosmosvaloperwdfae\""
         "}}],"
         "\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto withdrawDorRewardMessage = api::CosmosLikeMessage::unwrapMsgWithdrawDelegatorReward(message);
@@ -427,7 +427,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgWithdrawValidatorCommissionTransaction)
         "\"validator_address\":\"cosmosvaloper1234567890\""
         "}}],"
         "\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto withdrawVorCommissionMessage = api::CosmosLikeMessage::unwrapMsgWithdrawValidatorCommission(message);
@@ -450,7 +450,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgUnjailTransaction) {
         "\"validator_address\":\"cosmosvaloper1dalton\""
         "}}],"
         "\"sequence\":\"0\"}";
-    auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawUnsignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
     auto unjailMessage = api::CosmosLikeMessage::unwrapMsgUnjail(message);
