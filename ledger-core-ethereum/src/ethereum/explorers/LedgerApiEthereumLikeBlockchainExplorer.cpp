@@ -104,8 +104,108 @@ namespace ledger {
             return getHelper(fmt::format("/blockchain/{}/{}/fees", getExplorerVersion(), getNetworkParameters().Identifier), "gas_price");
         }
 
-        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getEstimatedGasLimit(const std::string &address) {
-            return getHelper(fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit", getExplorerVersion(), getNetworkParameters().Identifier, address), "estimated_gas_limit");
+        Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getDryRunGasLimit(
+            const std::string &address, const api::EthereumGasLimitRequest &request) {
+          const auto explorerVersion = getExplorerVersion();
+
+          const auto endpoint =
+              fmt::format("/blockchain/{}/addresses/{}/estimate-gas-limit",
+                          explorerVersion, address);
+          std::unordered_map<std::string, std::string> headers{
+              {"Content-Type", "application/json"}};
+          const bool jsonParseNumbersAsString = true;
+
+          const auto interestingField = "estimated_gas_limit";
+          rapidjson::Document body;
+          body.SetObject();
+          auto &allocator = body.GetAllocator();
+
+          if (request.from) {
+            body.AddMember(
+                "from",
+                rapidjson::Value(request.from.value().c_str(), allocator).Move(),
+                allocator);
+          }
+          if (request.data) {
+            body.AddMember(
+                "data",
+                rapidjson::Value(request.data.value().c_str(), allocator).Move(),
+                allocator);
+          }
+          if (request.value) {
+            body.AddMember(
+                "value",
+                rapidjson::Value(request.value.value().c_str(), allocator).Move(),
+                allocator);
+          }
+          if (request.amplifier) {
+            body.AddMember(
+                "amplifier",
+                request.amplifier.value(), allocator);
+          }
+          if (request.gas) {
+            body.AddMember(
+                "gas",
+                rapidjson::Value(request.gas.value().c_str(), allocator).Move(),
+                allocator);
+          }
+          if (request.gasPrice) {
+            body.AddMember(
+                "gasPrice",
+                rapidjson::Value(request.gasPrice.value().c_str(), allocator).Move(),
+                allocator);
+          }
+
+          rapidjson::StringBuffer buffer;
+          rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+          body.Accept(writer);
+          std::string requestBody(buffer.GetString());
+
+          return _http
+              ->POST(
+                  endpoint,
+                  std::vector<uint8_t>(requestBody.begin(), requestBody.end()),
+                  headers)
+              .json(jsonParseNumbersAsString)
+              // Catching the 5** internal server error the explorer gives when
+              // the given arguments aren't good enough to produce a gas limit
+              // estimate
+              .recover(
+                  getContext(),
+                  [](const Exception &exc)
+                      -> HttpRequest::JsonResult { // doesn't return
+                    throw make_exception(
+                        api::ErrorCode::INVALID_ARGUMENT,
+                        "The argument is not valid for gas limit computation");
+                  })
+              .mapPtr<BigInt>(
+                  getContext(),
+                  [endpoint,
+                   interestingField](const HttpRequest::JsonResult &result)
+                      -> std::shared_ptr<BigInt> {
+                    auto &json = *std::get<1>(result);
+
+                    if (!json.IsObject() ||
+                        !json.GetObject().HasMember(interestingField) ||
+                        !json.GetObject()[interestingField].IsString()) {
+                      throw make_exception(
+                          api::ErrorCode::HTTP_ERROR,
+                          fmt::format("Failed to get {} for {}",
+                                      interestingField, endpoint));
+                    }
+
+                    return std::make_shared<BigInt>(
+                        json.GetObject()[interestingField].GetString());
+                  });
+        }
+
+        Future<std::shared_ptr<BigInt>>  LedgerApiEthereumLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::string &address) {
+          return getHelper(
+              fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit",
+                          getExplorerVersion(), getNetworkParameters().Identifier,
+                          address),
+              "estimated_gas_limit");
         }
 
         Future<std::shared_ptr<BigInt>> LedgerApiEthereumLikeBlockchainExplorer::getERC20Balance(const std::string &address, const std::string &erc20Address) {

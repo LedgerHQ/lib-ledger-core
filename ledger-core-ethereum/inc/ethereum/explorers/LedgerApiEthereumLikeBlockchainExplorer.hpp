@@ -33,6 +33,7 @@
 #include <core/explorers/AbstractLedgerApiBlockchainExplorer.hpp>
 
 #include <ethereum/api/EthereumLikeNetworkParameters.hpp>
+#include <ethereum/api/EthereumGasLimitRequest.hpp>
 #include <ethereum/explorers/EthereumLikeBlockchainExplorer.hpp>
 #include <ethereum/explorers/EthereumLikeTransactionsParser.hpp>
 #include <ethereum/explorers/EthereumLikeTransactionsBulkParser.hpp>
@@ -54,6 +55,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>> getBalance(const std::vector<EthereumLikeKeychain::Address> &addresses) override;
             Future<std::shared_ptr<BigInt>> getGasPrice() override;
             Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(const std::string &address) override;
+            Future<std::shared_ptr<BigInt>> getDryRunGasLimit(const std::string &address, const api::EthereumGasLimitRequest &request) override;
             Future<std::shared_ptr<BigInt>> getERC20Balance(const std::string &address, const std::string &erc20Address) override;
             Future<std::vector<BigInt>> getERC20Balances(
                 const std::string &address,

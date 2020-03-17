@@ -122,6 +122,24 @@ EthereumLikeTransactionBuilder = interface +c {
     static parseRawSignedTransaction(currency: Currency, rawTransaction: binary): EthereumLikeTransaction;
 }
 
+# Class representing a GasLimit request for the Eth explorers
+EthereumGasLimitRequest = record {
+    # From address used in the contract transaction
+    from: optional<string>;
+    # To address used in the contract transaction (so the contract address)
+    to: optional<string>;
+    # Value field of the contract transaction
+    value: optional<string>;
+    # Data field of the contract transaction
+    data: optional<string>;
+    # Gas sent to the contract transaction
+    gas: optional<string>;
+    # Current gas price
+    gasPrice: optional<string>;
+    # Amplifier coefficient for safety
+    amplifier: optional<f64>;
+}
+
 # Class representing a Ethereum account.
 EthereumLikeAccount = interface +c {
     # Send a raw (binary) transaction on the Ethereum blockchain.
@@ -143,6 +161,11 @@ EthereumLikeAccount = interface +c {
     # This estimation is based on X last incoming txs (to address) that succeeded
     # Note: same note as above
     getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
+    # Get estimated gas limit to set so the transaction will succeed
+    # The passed address could be EOA or contract
+    # This estimation is based on a dry-run on the node, and it will fail if the request is ill-formed
+    # Note: same note as above
+    getDryRunGasLimit(address: string, request: EthereumGasLimitRequest, callback: Callback<BigInt>);
     # Get balance of ERC20 token
     # The passed address is an ERC20 account
     # Note: same note as above
