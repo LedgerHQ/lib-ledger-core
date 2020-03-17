@@ -166,7 +166,7 @@ namespace ledger {
 
                         // Small helpers to avoid very long types
                         using TransactionList = std::list<std::shared_ptr<Transaction>>;
-                        using ValidatorList = std::list<std::shared_ptr<Validator>>;
+                        using ValidatorList = std::vector<Validator>;
                         using MsgType = ::ledger::core::api::CosmosLikeMsgType;
 
                         struct TransactionsBulk {

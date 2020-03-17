@@ -467,6 +467,8 @@ TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
 
     // Wait 30s (new Cosmos block every 7s)
     fmt::print("Waiting new Cosmos block for 30s...\n");
+    std::flush(std::cerr);
+    std::flush(std::cout);
     std::this_thread::sleep_for(std::chrono::seconds(30));
 
     // Second synchro
@@ -489,9 +491,9 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
     EXPECT_EQ(set.size(), 125) << "currently cosmoshub-3 has 125 active validators";
 
     for (const auto & validator : set) {
-        if (validator->consensusPubkey == binance_staking_pub_address) {
+        if (validator.consensusPubkey == binance_staking_pub_address) {
             foundBinance = true;
-        } else if (validator->operatorAddress == huobi_pool_address){
+        } else if (validator.operatorAddress == huobi_pool_address){
             foundHuobi = true;
         } else {
             continue;

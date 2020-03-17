@@ -439,9 +439,9 @@ namespace ledger {
                         // TODO : raise a clean exception when document has no "txs" member
                         const auto& validators = document["result"].GetArray();
                         for (const auto& node : validators) {
-                            auto val = std::make_shared<cosmos::Validator>();
-                            rpcs_parsers::parseValidatorSetEntry(node.GetObject(), *val);
-                            result.emplace_back(val);
+                            cosmos::Validator val;
+                            rpcs_parsers::parseValidatorSetEntry(node.GetObject(), val);
+                            result.emplace_back(std::move(val));
                         }
                         return result;
                     });

@@ -5,6 +5,7 @@
 #include "BigIntCallback.hpp"
 #include "CosmosLikeTransaction.hpp"
 #include "CosmosLikeTransactionBuilder.hpp"
+#include "CosmosLikeValidatorListCallback.hpp"
 #include "Marshal.hpp"
 #include "StringCallback.hpp"
 
@@ -60,6 +61,15 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
         ref->getEstimatedGasLimit(::djinni_generated::CosmosLikeTransaction::toCpp(jniEnv, j_transaction),
                                   ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getLatestValidatorSet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
+        ref->getLatestValidatorSet(::djinni_generated::CosmosLikeValidatorListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

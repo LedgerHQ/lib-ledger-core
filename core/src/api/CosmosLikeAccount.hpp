@@ -19,6 +19,7 @@ namespace ledger { namespace core { namespace api {
 class BigIntCallback;
 class CosmosLikeTransaction;
 class CosmosLikeTransactionBuilder;
+class CosmosLikeValidatorListCallback;
 class StringCallback;
 
 /**Class representing a Cosmos account */
@@ -34,6 +35,9 @@ public:
 
     /** Get estimated gas limit to set so the transaction will succeed */
     virtual void getEstimatedGasLimit(const std::shared_ptr<CosmosLikeTransaction> & transaction, const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /** Get the latest active validator set */
+    virtual void getLatestValidatorSet(const std::shared_ptr<CosmosLikeValidatorListCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api
