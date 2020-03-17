@@ -18,16 +18,8 @@ namespace ledger { namespace core { namespace api {
 
 class AmountCallback;
 class BigIntCallback;
-<<<<<<< HEAD
-<<<<<<< HEAD
 class CosmosLikeDelegationListCallback;
 class CosmosLikeRewardListCallback;
-=======
-class CosmosLikeDelegation;
->>>>>>> Add getDelegations() to CosmosLikeAccount API (not implemented yet)
-=======
-class CosmosLikeDelegationListCallback;
->>>>>>> Attempt to add callback mechanism to getDelegations() API
 class CosmosLikeTransaction;
 class CosmosLikeTransactionBuilder;
 class CosmosLikeValidatorCallback;
