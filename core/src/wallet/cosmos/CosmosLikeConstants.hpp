@@ -349,7 +349,7 @@ namespace ledger {
                                         return api::CosmosLikeVoteOption::NO;
                                 } else if (strings_equal(string, constants::kVoteOptionNoWithVeto)) {
                                         return api::CosmosLikeVoteOption::NOWITHVETO;
-                                } else if (strings_equal(string, constants::kVoteOptionYes)) {
+                                } else {
                                         return api::CosmosLikeVoteOption::YES;
                                 }
                         }
