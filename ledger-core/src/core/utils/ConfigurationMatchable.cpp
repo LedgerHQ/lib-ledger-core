@@ -91,3 +91,7 @@ void ledger::core::ConfigurationMatchable::setConfiguration(
         const std::shared_ptr<ledger::core::api::DynamicObject> &configuration) {
     _configuration = configuration;
 }
+
+std::shared_ptr<ledger::core::api::DynamicObject> const & ledger::core::ConfigurationMatchable::getConfiguration() const {
+  return _configuration;
+}
