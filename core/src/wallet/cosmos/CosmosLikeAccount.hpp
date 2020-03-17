@@ -33,6 +33,7 @@
 #define LEDGER_CORE_COSMOSLIKEACCOUNT_H
 
 #include <api/CosmosLikeAccount.hpp>
+#include <api/CosmosLikeDelegationListCallback.hpp>
 #include <api/CosmosLikeTransactionBuilder.hpp>
 #include <api/CosmosLikeDelegation.hpp>
 #include <api/Address.hpp>
