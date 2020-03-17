@@ -59,11 +59,13 @@ TEST_F(EthereumExplorers, GetEstimatedGasLimit) {
 
 TEST_F(EthereumExplorers, PostEstimatedGasLimit) {
   auto request = api::EthereumGasLimitRequest(
-      optional<std::string>(), optional<std::string>(), optional<std::string>(),
-      "0xa9059cbb00000000000000000000000013C5d95f25688f8A"
-      "7544582D9e311f201A56de6300000000000000000000000000"
-      "00000000000000000000000000000000000000",
-      optional<std::string>(), optional<std::string>(), optional<double>(1.5));
+      optional<std::string>(),
+      optional<std::string>(),
+      optional<std::string>(),
+      std::string("0xa9059cbb00000000000000000000000013C5d95f25688f8A7544582D9e311f201A56de630000000000000000000000000000000000000000000000000000000000000000"),
+      optional<std::string>(),
+      optional<std::string>(),
+      1.5);
   auto result = wait(explorer->getDryRunGasLimit(
       "0x57e8ba2a915285f984988282ab9346c1336a4e11", request));
   EXPECT_GE(result->toUint64(), 10000);
