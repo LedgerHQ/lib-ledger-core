@@ -40,6 +40,7 @@ namespace ledger {
             ConfigurationMatchable(const std::vector<std::string>& matchableKeys);
             bool match(const std::shared_ptr<api::DynamicObject>& configuration);
             void setConfiguration(const std::shared_ptr<api::DynamicObject>& configuration);
+            std::shared_ptr<api::DynamicObject> const & getConfiguration() const;
 
         private:
             std::vector<std::string> _matchableKeys;
