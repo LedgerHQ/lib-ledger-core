@@ -168,7 +168,6 @@ namespace ledger {
                                 std::string delegatorAddress;
                                 std::string validatorAddress;
                                 BigInt delegatedAmount;
-                                BigInt pendingReward;
                         };
 
                         // Small helpers to avoid very long types

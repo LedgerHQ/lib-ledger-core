@@ -715,7 +715,7 @@ namespace ledger {
                 }
 
                 void CosmosLikeAccount::getDelegations(const std::shared_ptr<api::CosmosLikeDelegationListCallback> &callback) {
-                        getDelegations().callback(getMainExecutionContext(), callback); // FIXME Make this work!
+                        getDelegations().callback(getMainExecutionContext(), callback);
                 }
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>
@@ -723,9 +723,8 @@ namespace ledger {
                         return _explorer->getDelegations(_accountAddress)
                                 .map<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>(
                                         getContext(),
-                                        [] (const std::shared_ptr<std::vector<cosmos::Delegation>>& delegations) -> std::vector<std::shared_ptr<api::CosmosLikeDelegation>> {
+                                        [] (auto& delegations) {
                                                 std::vector<std::shared_ptr<api::CosmosLikeDelegation>> delegationList;
-
                                                 for (auto& delegation : *delegations) {
                                                         delegationList.push_back(std::make_shared<CosmosLikeDelegation>(delegation));
                                                 }

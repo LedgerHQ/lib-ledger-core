@@ -141,11 +141,9 @@ namespace ledger {
                 assert(delegationNode.HasMember(kDelegatorAddress));
                 assert(delegationNode.HasMember(kValidatorAddress));
                 assert(delegationNode.HasMember(kBalance));
-                //assert(delegationNode.HasMember(TODO));
                 out.delegatorAddress = delegationNode[kDelegatorAddress].GetString();
                 out.validatorAddress = delegationNode[kValidatorAddress].GetString();
                 out.delegatedAmount = BigInt::fromString(delegationNode[kBalance].GetString());
-                //out.pendingReward = BigInt::fromString(TODO);
             }
 
             template <class T>

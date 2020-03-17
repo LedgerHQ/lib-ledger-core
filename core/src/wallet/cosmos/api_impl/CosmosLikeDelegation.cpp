@@ -54,9 +54,5 @@ namespace ledger {
         std::shared_ptr<api::Amount> CosmosLikeDelegation::getDelegatedAmount() const {
             return std::make_shared<Amount>(currencies::ATOM, 0, _delegationData.delegatedAmount);
         }
-
-        std::shared_ptr<api::Amount> CosmosLikeDelegation::getPendingReward() const {
-            return std::make_shared<Amount>(currencies::ATOM, 0, _delegationData.pendingReward);
-        }
     }
 }

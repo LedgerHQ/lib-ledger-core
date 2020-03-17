@@ -53,8 +53,6 @@ namespace ledger {
 
             std::shared_ptr<api::Amount> getDelegatedAmount() const override;
 
-            std::shared_ptr<api::Amount> getPendingReward() const override;
-
         private:
 
             cosmos::Delegation _delegationData;

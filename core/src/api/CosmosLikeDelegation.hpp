@@ -28,8 +28,6 @@ public:
     virtual std::string getValidatorAddress() const = 0;
 
     virtual std::shared_ptr<Amount> getDelegatedAmount() const = 0;
-
-    virtual std::shared_ptr<Amount> getPendingReward() const = 0;
 };
 
 } } }  // namespace ledger::core::api
