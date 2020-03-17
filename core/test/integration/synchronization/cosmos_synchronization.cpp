@@ -42,6 +42,7 @@
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
+#include <math/BigInt.h>
 
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
@@ -550,10 +551,8 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     EXPECT_FALSE(valInfo.slashTimestamps) << "Previous jail events fetching is not implemented. slashTimestamps (*as an option*) should be None.";
 }
 
-TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery)
-{
-    std::string hexPubKey =
-        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {
+    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
 
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
@@ -580,4 +579,24 @@ TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery)
         filter);
 
     ASSERT_GE(operations.size(), 17) << "As of 2020-03-19, there are 17 operations picked up by the query";
+}
+
+TEST_F(CosmosLikeWalletSynchronization, GetAccountDelegations) {
+    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(pool, account, wallet, hexPubKey);
+
+    auto delegations = wait(account->getDelegations());
+    EXPECT_GE(delegations.size(), 2);
+
+    BigInt delegatedAmount;
+    for (auto& delegation : delegations) {
+        delegatedAmount = delegatedAmount + *(std::dynamic_pointer_cast<ledger::core::Amount>(delegation->getDelegatedAmount())->value());
+    }
+    EXPECT_GE(delegatedAmount.toUint64(), 1000000UL); // 1 ATOM
+
 }
