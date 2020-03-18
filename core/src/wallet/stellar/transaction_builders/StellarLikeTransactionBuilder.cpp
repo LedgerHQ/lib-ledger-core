@@ -48,7 +48,7 @@ namespace ledger {
         StellarLikeTransactionBuilder::addNativePayment(const std::string &address,
                                                         const std::shared_ptr<api::Amount> &amount) {
             if (!StellarLikeAddress::isValid(address, _account->getWallet()->getCurrency())) {
-                throw make_exception(api::ErrorCode::INVALID_ADDRESS_FORMAT,
+                throw make_exception(api::ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT,
                                      "{} is not a valid stellar address", address);
             }
             stellar::xdr::Operation operation;
@@ -75,7 +75,7 @@ namespace ledger {
         StellarLikeTransactionBuilder::addCreateAccount(const std::string &address,
                                                         const std::shared_ptr<api::Amount> &amount) {
             if (!StellarLikeAddress::isValid(address, _account->getWallet()->getCurrency())) {
-                throw make_exception(api::ErrorCode::INVALID_ADDRESS_FORMAT,
+                throw make_exception(api::ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT,
                         "{} is not a valid stellar address", address);
             }
             stellar::xdr::Operation operation;
