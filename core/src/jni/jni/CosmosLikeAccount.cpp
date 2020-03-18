@@ -15,7 +15,7 @@
 
 namespace djinni_generated {
 
-CosmosLikeAccount::CosmosLikeAccount() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeAccount, CosmosLikeAccount>("co/ledger/core/CosmosLikeAccount$CppProxy") {}
+CosmosLikeAccount::CosmosLikeAccount() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeAccount, CosmosLikeAccount>("CosmosLikeAccount$CppProxy") {}
 
 CosmosLikeAccount::~CosmosLikeAccount() = default;
 
