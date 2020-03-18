@@ -100,6 +100,7 @@ namespace ledger {
 
             // Validators
             virtual Future<cosmos::ValidatorList> getActiveValidatorSet() const = 0;
+            virtual Future<cosmos::Validator> getValidatorInfo(const std::string& valOperAddress) const = 0;
 
         };
     }

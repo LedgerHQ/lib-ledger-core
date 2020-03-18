@@ -111,10 +111,10 @@ namespace ledger {
                 assert((descriptionNode.HasMember(kMoniker)));
                 out.moniker = descriptionNode[kMoniker].GetString();
                 if (descriptionNode.HasMember(kWebsite) && descriptionNode[kWebsite].IsString()) {
-                    out.identity = optional<std::string>(descriptionNode[kWebsite].GetString());
+                    out.website = optional<std::string>(descriptionNode[kWebsite].GetString());
                 }
                 if (descriptionNode.HasMember(kIdentity) && descriptionNode[kIdentity].IsString()) {
-                    out.website = optional<std::string>(descriptionNode[kIdentity].GetString());
+                    out.identity = optional<std::string>(descriptionNode[kIdentity].GetString());
                 }
                 if (descriptionNode.HasMember(kDetails) && descriptionNode[kDetails].IsString()) {
                     out.details = optional<std::string>(descriptionNode[kDetails].GetString());

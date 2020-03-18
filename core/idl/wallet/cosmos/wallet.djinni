@@ -97,6 +97,8 @@ CosmosLikeAccount = interface +c {
         getEstimatedGasLimit(transaction: CosmosLikeTransaction, callback: callback2<optional<BigInt>>);
         # Get the latest active validator set
         getLatestValidatorSet(callback: ListCallback<CosmosLikeValidator>);
+        # Get information about one validator
+        getValidatorInfo(validatorAddress: string, callback: callback2<optional<CosmosLikeValidator>>);
 }
 
 CosmosConfigurationDefaults = interface +c {

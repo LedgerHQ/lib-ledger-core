@@ -449,5 +449,20 @@ namespace ledger {
             return basicValidatorList;
         }
 
+        Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(const std::string& valOperAddress) const {
+            const bool parseJsonNumbersAsStrings = true;
+            return _http->GET(fmt::format("/staking/validators/{}", valOperAddress))
+                .json(parseJsonNumbersAsStrings)
+                .map<cosmos::Validator>(
+                    getContext(), [=](const HttpRequest::JsonResult& response) {
+                        const auto& document = std::get<1>(response)->GetObject();
+                        // TODO : raise a clean exception when document has no "txs" member
+                        const auto& validatorNode = document["result"].GetObject();
+                        cosmos::Validator val;
+                        rpcs_parsers::parseValidatorSetEntry(validatorNode, val);
+                        return val;
+                    });
+        }
+
         }  // namespace core
 }
