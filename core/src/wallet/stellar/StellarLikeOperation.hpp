@@ -41,14 +41,16 @@ namespace ledger {
     namespace core {
         class StellarLikeOperation : public api::StellarLikeOperation {
         public:
-            explicit StellarLikeOperation(const std::shared_ptr<OperationApi>& api) : _api(api) {};
+            explicit StellarLikeOperation(const std::shared_ptr<OperationApi>& api);
 
             api::StellarLikeOperationRecord getRecord() override;
 
             std::shared_ptr<api::StellarLikeTransaction> getTransaction() override;
 
         private:
-            std::shared_ptr<OperationApi> _api;
+            api::StellarLikeOperationRecord _record;
+            stellar::xdr::TransactionEnvelope _envelope;
+            api::Currency _currency;
         };
     }
 }

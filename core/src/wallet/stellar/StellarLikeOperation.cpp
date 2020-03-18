@@ -39,8 +39,9 @@
 namespace ledger {
     namespace core {
 
-        api::StellarLikeOperationRecord StellarLikeOperation::getRecord() {
-            const auto& op = _api->getBackend().stellarOperation.getValueOr(stellar::Operation());
+        StellarLikeOperation::StellarLikeOperation(const std::shared_ptr<OperationApi> &api) : _currency(api->getCurrency()) {
+            // Create record from API backend
+            const auto& op = api->getBackend().stellarOperation.getValueOr(stellar::Operation());
             api::StellarLikeAsset asset(
                     op.asset.type,
                     op.asset.code.empty() ? Option<std::string>() : Option<std::string>(op.asset.code),
@@ -48,29 +49,35 @@ namespace ledger {
             );
             auto sourceAsset = op.sourceAsset.map<api::StellarLikeAsset>([] (const auto& a) {
                 return api::StellarLikeAsset(
-                    a.type,
-                    a.code.empty() ? Option<std::string>() : Option<std::string>(a.code),
-                    a.issuer.empty() ? Option<std::string>() : Option<std::string>(a.issuer)
+                        a.type,
+                        a.code.empty() ? Option<std::string>() : Option<std::string>(a.code),
+                        a.issuer.empty() ? Option<std::string>() : Option<std::string>(a.issuer)
                 );
             });
             std::shared_ptr<api::Amount> sourceAmount;
             if (op.sourceAmount.nonEmpty()) {
                 sourceAmount = std::make_shared<Amount>(
-                        _api->getAccount()->getWallet()->getCurrency(), 0, op.sourceAmount.getValue());
+                        api->getAccount()->getWallet()->getCurrency(), 0, op.sourceAmount.getValue());
             }
-            return api::StellarLikeOperationRecord(
-                        op.id, op.transactionSuccessful, (api::StellarLikeOperationType) op.type,
-                        op.transactionHash, asset, sourceAsset, sourceAmount
-                    );
+            _record = api::StellarLikeOperationRecord(
+                    op.id, op.transactionSuccessful, static_cast<api::StellarLikeOperationType>(op.type),
+                    op.transactionHash, asset, sourceAsset, sourceAmount
+            );
+
+            // Create the envelope object
+            const auto& backend = api->getBackend().stellarOperation.getValue();
+            _envelope.tx.sourceAccount = StellarLikeAddress(backend.from, api->getCurrency(), Option<std::string>::NONE).toXdrPublicKey();
+            _envelope.tx.seqNum = backend.transactionSequence.toUint64();
+            _envelope.tx.fee = backend.transactionFee.toUnsignedInt();
+        }
+
+        api::StellarLikeOperationRecord StellarLikeOperation::getRecord() {
+           return _record;
         }
 
         std::shared_ptr<api::StellarLikeTransaction> StellarLikeOperation::getTransaction() {
-            stellar::xdr::TransactionEnvelope envelope;
-            const auto& backend = _api->getBackend().stellarOperation.getValue();
-            envelope.tx.sourceAccount = StellarLikeAddress(backend.from, _api->getCurrency(), Option<std::string>::NONE).toXdrPublicKey();
-            envelope.tx.seqNum = backend.transactionSequence.toUint64();
-            envelope.tx.fee = backend.transactionFee.toUnsignedInt();
-            return std::make_shared<StellarLikeTransaction>(_api->getCurrency(), std::move(envelope));
+           return std::make_shared<StellarLikeTransaction>(_currency, _envelope);
         }
+
     }
 }

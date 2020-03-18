@@ -154,7 +154,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
 
 TEST_F(StellarFixture, SynchronizeStellarAccountWithManageBuyOffer) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto wallet = newWallet(pool, "my_wallet_1", "stellar", api::DynamicObject::newInstance());
     auto info = ::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GDDU4HHNCSZ2BI6ELSSFKPSOBL2TEB4A3ZJWOCT2DILQKVJTZBNSOZA2"));
     auto exists = ::wait(account->exists());
@@ -180,7 +180,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithManageBuyOffer) {
 
 TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto wallet = newWallet(pool, "my_wallet_2", "stellar", api::DynamicObject::newInstance());
     auto info = ::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GAJTWW4OGH5BWFTH24C7SGIDALKI2HUVC2LXHFD533A5FIMSXE5AB3TJ"));
     auto exists = ::wait(account->exists());

@@ -49,8 +49,8 @@ public:
 
 private:
     std::shared_ptr<ledger::core::api::ExecutionContext> _context;
-  asio::ssl::context _sslContext;
-  asio::io_service _io_service;
+    asio::ssl::context _sslContext;
+    asio::io_service _io_service;
 };
 
 
