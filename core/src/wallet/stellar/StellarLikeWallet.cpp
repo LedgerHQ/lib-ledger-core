@@ -55,11 +55,11 @@ namespace ledger {
 
 
         bool StellarLikeWallet::isSynchronizing() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+           return false;
         }
 
         std::shared_ptr<api::EventBus> StellarLikeWallet::synchronize() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
+            return nullptr;
         }
 
         bool StellarLikeWallet::isInstanceOfStellarLikeWallet() {
