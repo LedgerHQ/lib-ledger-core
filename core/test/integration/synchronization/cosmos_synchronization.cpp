@@ -101,7 +101,7 @@ public:
         EXPECT_EQ(accountInfo.index, 0);
         accountInfo.publicKeys.push_back(hex::toByteArray(pubKey));
 
-        account = ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+        return ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
     }
 
     void performSynchro(const std::shared_ptr<CosmosLikeAccount>& account) {
@@ -385,12 +385,7 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
 TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     // FIXME Use an account that has all expected types of transactions
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
-
-    std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<CosmosLikeAccount> account;
-    std::shared_ptr<AbstractWallet> wallet;
-
-    setupTest(pool, account, wallet, hexPubKey);
+    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
 
     performSynchro(account);
 
