@@ -121,7 +121,6 @@ namespace ledger {
             Future<cosmos::Validator> getValidatorInfo(const std::string& valOperAddress) const override;
 
             FuturePtr<std::vector<cosmos::Delegation>> getDelegations(const std::string& delegatorAddr) const override;
-
             FuturePtr<std::vector<cosmos::Reward>> getPendingRewards(const std::string& delegatorAddr) const override;
 
         private:
