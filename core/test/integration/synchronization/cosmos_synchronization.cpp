@@ -78,10 +78,10 @@ public:
             std::make_shared<DynamicObject>());
     }
 
-    void setupTest(std::shared_ptr<WalletPool>& pool,
-                   std::shared_ptr<CosmosLikeAccount>& account,
-                   std::shared_ptr<AbstractWallet>& wallet,
-                   std::string& pubKey) {
+    std::shared_ptr<CosmosLikeAccount> setupAccount(std::string& pubKey) {
+
+        std::shared_ptr<WalletPool> pool;
+        std::shared_ptr<AbstractWallet> wallet;
 
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
@@ -99,7 +99,7 @@ public:
         EXPECT_EQ(accountInfo.index, 0);
         accountInfo.publicKeys.push_back(hex::toByteArray(pubKey));
 
-        account = ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+        return ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
     }
 
     void performSynchro(const std::shared_ptr<CosmosLikeAccount>& account) {
@@ -384,12 +384,7 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
 TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     // FIXME Use an account that has all expected types of transactions
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
-
-    std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<CosmosLikeAccount> account;
-    std::shared_ptr<AbstractWallet> wallet;
-
-    setupTest(pool, account, wallet, hexPubKey);
+    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
 
     performSynchro(account);
 
@@ -457,12 +452,8 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
 
 
 TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
-    std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<CosmosLikeAccount> account;
-    std::shared_ptr<AbstractWallet> wallet;
-
     std::string pubKey(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY);
-    setupTest(pool, account, wallet, pubKey);
+    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
 
     // First synchro
     performSynchro(account);
@@ -552,43 +543,9 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
 }
 
 TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {
-    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
 
-    std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<CosmosLikeAccount> account;
-    std::shared_ptr<AbstractWallet> wallet;
-
-    setupTest(pool, account, wallet, hexPubKey);
-
-    performSynchro(account);
-
-    const auto &uid = account->getAccountUid();
-    soci::session sql(wallet->getDatabase()->getPool());
-    std::vector<Operation> operations;
-
-    auto keychain = account->getKeychain();
-    std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
-        return keychain->contains(addr);
-    };
-
-    //Get operations related to an account
-    CosmosLikeOperationDatabaseHelper::queryOperations(
-        sql,
-        uid,
-        operations,
-        filter);
-
-    ASSERT_GE(operations.size(), 17) << "As of 2020-03-19, there are 17 operations picked up by the query";
-}
-
-TEST_F(CosmosLikeWalletSynchronization, GetAccountDelegations) {
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
-
-    std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<CosmosLikeAccount> account;
-    std::shared_ptr<AbstractWallet> wallet;
-
-    setupTest(pool, account, wallet, hexPubKey);
+    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
 
     auto delegations = wait(account->getDelegations());
     EXPECT_GE(delegations.size(), 2);
@@ -598,5 +555,23 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountDelegations) {
         delegatedAmount = delegatedAmount + *(std::dynamic_pointer_cast<ledger::core::Amount>(delegation->getDelegatedAmount())->value());
     }
     EXPECT_GE(delegatedAmount.toUint64(), 1000000UL); // 1 ATOM
+
+}
+
+TEST_F(CosmosLikeWalletSynchronization, GetAccountPendingRewards) {
+
+    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
+    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
+
+    auto rewards = wait(account->getPendingRewards());
+    std::cout << "rewards.size(): " << rewards.size() << std::endl;
+    EXPECT_GE(rewards.size(), 2);
+
+    BigInt pendingReward;
+    for (auto& reward : rewards) {
+        pendingReward = pendingReward + *(std::dynamic_pointer_cast<ledger::core::Amount>(reward->getRewardAmount())->value());
+    }
+    std::cout << "total pendingReward: " << pendingReward.toString() << std::endl;
+    EXPECT_GE(pendingReward.toUint64(), 1000UL); // 1000 uATOM
 
 }
