@@ -78,7 +78,7 @@ namespace ledger {
         }
 
         std::shared_ptr<StellarLikeBlockchainExplorer> StellarLikeWalletFactory::getExplorer(const WalletDatabaseEntry& entry) {
-            auto engine = STRING(api::StellarConfiguration::BLOCKCHAIN_EXPLORER_ENGINE, api::StellarConfiguration::HORIZON_EXPLORER_ENGINE);
+            auto engine = STRING(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::StellarConfiguration::HORIZON_EXPLORER_ENGINE);
             std::shared_ptr<StellarLikeBlockchainExplorer> explorer;
             if (engine == api::StellarConfiguration::HORIZON_EXPLORER_ENGINE) {
                 auto baseUrl = STRING(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, api::StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL);

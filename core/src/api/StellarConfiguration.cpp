@@ -5,12 +5,10 @@
 
 namespace ledger { namespace core { namespace api {
 
-std::string const StellarConfiguration::BLOCKCHAIN_EXPLORER_ENGINE = {"BLOCKCHAIN_EXPLORER_ENGINE"};
-
 std::string const StellarConfiguration::HORIZON_EXPLORER_ENGINE = {"HORIZON_EXPLORER_ENGINE"};
 
-std::string const StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL = {"https://stellar.coin-proxy.dev.aws.ledger.fr/"};
+std::string const StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL = {"https://horizon.stellar.org"};
 
-std::string const StellarConfiguration::HORIZON_TESTNET_BLOCKCHAIN_EXPLORER_URL = {"https://horizon-testnet.stellar.org/"};
+std::string const StellarConfiguration::HORIZON_TESTNET_BLOCKCHAIN_EXPLORER_URL = {"https://horizon-testnet.stellar.org"};
 
 } } }  // namespace ledger::core::api

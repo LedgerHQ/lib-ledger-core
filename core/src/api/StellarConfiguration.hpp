@@ -20,8 +20,6 @@ class LIBCORE_EXPORT StellarConfiguration {
 public:
     virtual ~StellarConfiguration() {}
 
-    static std::string const BLOCKCHAIN_EXPLORER_ENGINE;
-
     static std::string const HORIZON_EXPLORER_ENGINE;
 
     static std::string const HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL;
