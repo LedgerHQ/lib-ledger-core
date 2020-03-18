@@ -468,11 +468,11 @@ namespace ledger {
             return async<std::shared_ptr<Amount>>([=] () {
                 return queryLastLedgerAndGetReserve();
             }).recoverWith(getContext(), [=] (const Exception& ex) {
-                Promise<Unit> p;
-                self->synchronize()->subscribe(self->getContext(), make_promise_receiver(p,
+                Promise<Unit> promise;
+                self->synchronize()->subscribe(self->getContext(), make_promise_receiver(promise,
                         {api::EventCode::SYNCHRONIZATION_SUCCEED, api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT},
                                                                                          {api::EventCode::SYNCHRONIZATION_FAILED}));
-                return p.getFuture().mapPtr<Amount>(getContext(), [=] (const Unit&) { return queryLastLedgerAndGetReserve(); });
+                return promise.getFuture().mapPtr<Amount>(getContext(), [=] (const Unit&) { return queryLastLedgerAndGetReserve(); });
             });
         }
 
