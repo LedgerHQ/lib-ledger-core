@@ -78,10 +78,10 @@ public:
             std::make_shared<DynamicObject>());
     }
 
-    std::shared_ptr<CosmosLikeAccount> setupAccount(std::string& pubKey) {
-
-        std::shared_ptr<WalletPool> pool;
-        std::shared_ptr<AbstractWallet> wallet;
+    void setupTest(std::shared_ptr<WalletPool>& pool,
+                   std::shared_ptr<AbstractWallet>& wallet,
+                   std::shared_ptr<CosmosLikeAccount>& account,
+                   const std::string& pubKey) {
 
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
@@ -99,7 +99,7 @@ public:
         EXPECT_EQ(accountInfo.index, 0);
         accountInfo.publicKeys.push_back(hex::toByteArray(pubKey));
 
-        return ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+        account = ledger::testing::cosmos::createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
     }
 
     void performSynchro(const std::shared_ptr<CosmosLikeAccount>& account) {
@@ -340,12 +340,10 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
         "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
 
     std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<CosmosLikeAccount> account;
 
-    setupTest(pool, account, wallet, hexPubKey);
-
-    performSynchro(account);
+    setupTest(pool, wallet, account, hexPubKey);
 
     const std::string address = account->getKeychain()->getAddress()->toBech32();
     const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
@@ -384,7 +382,12 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
 TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     // FIXME Use an account that has all expected types of transactions
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
-    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<CosmosLikeAccount> account;
+
+    setupTest(pool, wallet, account, hexPubKey);
 
     performSynchro(account);
 
@@ -453,7 +456,12 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
 
 TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
     std::string pubKey(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY);
-    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<CosmosLikeAccount> account;
+
+    setupTest(pool, wallet, account, hexPubKey);
 
     // First synchro
     performSynchro(account);
@@ -545,7 +553,12 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
 TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {
 
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
-    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<CosmosLikeAccount> account;
+
+    setupTest(pool, wallet, account, hexPubKey);
 
     auto delegations = wait(account->getDelegations());
     EXPECT_GE(delegations.size(), 2);
@@ -561,17 +574,20 @@ TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {
 TEST_F(CosmosLikeWalletSynchronization, GetAccountPendingRewards) {
 
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
-    std::shared_ptr<CosmosLikeAccount> account = setupAccount(hexPubKey);
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<AbstractWallet> wallet;
+    std::shared_ptr<CosmosLikeAccount> account;
+
+    setupTest(pool, wallet, account, hexPubKey);
 
     auto rewards = wait(account->getPendingRewards());
-    std::cout << "rewards.size(): " << rewards.size() << std::endl;
     EXPECT_GE(rewards.size(), 2);
 
     BigInt pendingReward;
     for (auto& reward : rewards) {
         pendingReward = pendingReward + *(std::dynamic_pointer_cast<ledger::core::Amount>(reward->getRewardAmount())->value());
     }
-    std::cout << "total pendingReward: " << pendingReward.toString() << std::endl;
     EXPECT_GE(pendingReward.toUint64(), 1000UL); // 1000 uATOM
 
 }
