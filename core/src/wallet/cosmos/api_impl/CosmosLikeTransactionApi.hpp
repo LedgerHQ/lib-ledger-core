@@ -81,6 +81,7 @@ namespace ledger {
             void setRawData(const cosmos::Transaction &txData);
             const cosmos::Transaction & getRawData() const;
 
+            std::string serializeTransfer() const;
 
         private:
 

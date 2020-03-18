@@ -115,6 +115,8 @@ namespace ledger {
             FuturePtr<BigInt> getUnbondingBalance(const std::string &account) const override;
             /// Get total available (spendable) balance
             FuturePtr<BigInt> getSpendableBalance(const std::string &account) const override;
+            /// Get the estimated gas needed to broadcast the transaction
+            FuturePtr<BigInt> getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction) const override;
 
             // Validators
             Future<cosmos::ValidatorList> getActiveValidatorSet() const override;

@@ -63,6 +63,7 @@ namespace ledger {
                                 constexpr const char kAddress[] = "address";
                                 constexpr const char kAmount[] = "amount";
                                 constexpr const char kBalance[] = "balance";
+                                constexpr const char kBaseReq[] = "base_req";
                                 constexpr const char kChainId[] = "chain_id";
                                 constexpr const char kCoins[] = "coins";
                                 constexpr const char kCommission[] = "commission";
@@ -78,8 +79,11 @@ namespace ledger {
                                 constexpr const char kDetails[] = "details";
                                 constexpr const char kEditValCommissionRate[] = "commission_rate";
                                 constexpr const char kFee[] = "fee";
+                                constexpr const char kFees[] = "fees";
+                                constexpr const char kFrom[] = "from";
                                 constexpr const char kFromAddress[] = "from_address";
                                 constexpr const char kGas[] = "gas";
+                                constexpr const char kGasEstimate[] = "gas_estimate";
                                 constexpr const char kGasUsed[] = "gas_used";
                                 constexpr const char kHeight[] = "height";
                                 constexpr const char kIdentity[] = "identity";
@@ -104,6 +108,7 @@ namespace ledger {
                                 constexpr const char kRewards[] = "rewards";
                                 constexpr const char kSequence[] = "sequence";
                                 constexpr const char kSignature[] = "signature";
+                                constexpr const char kSimulate[] = "simulate";
                                 constexpr const char kSignatures[] = "signatures";
                                 constexpr const char kSuccess[] = "success";
                                 constexpr const char kTimestamp[] = "timestamp";

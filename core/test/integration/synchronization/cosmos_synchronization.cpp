@@ -606,6 +606,13 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountPendingRewards) {
 
 }
 
+TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimation) {
+    auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgSend\",\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},\"from_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"to_address\":\"cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv\"}}],\"sequence\":\"0\"}";
+    auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::ATOM, strTx);
+    const auto estimatedGasLimit = ::wait(explorer->getEstimatedGasLimit(tx));
+    EXPECT_GE(estimatedGasLimit->toUint64(), 0);
+}
+
 // FIXME This test fails ; put at the end because it also messes up the other tests
 // This test is also highly dependent on external state ( how well the chain is
 // doing). Until a better solution is found, this test is deactivated

@@ -340,5 +340,79 @@ namespace ledger {
             return *this;
         }
 
+        std::string CosmosLikeTransactionApi::serializeTransfer() const {
+            auto document = rapidjson::Document();
+            document.SetObject();
+            auto& allocator = document.GetAllocator();
+
+            auto baseReq = rapidjson::Value(rapidjson::kObjectType);
+            for (const auto &message : _txData.messages) {
+                const auto tmpMessage = std::make_shared<CosmosLikeMessage>(message);
+                if (!(tmpMessage->getMessageType() == api::CosmosLikeMsgType::MSGSEND)) continue;
+
+                auto buffer = rapidjson::Value(rapidjson::kStringType);
+                auto makeStringValue = [&allocator](const std::string &str) {
+                    auto res = rapidjson::Value(rapidjson::kStringType);
+                    res.SetString(str.c_str(), static_cast<rapidjson::SizeType>(str.size()), allocator);
+                    return res;
+                };
+
+                const auto msgSend = CosmosLikeMessage::unwrapMsgSend(tmpMessage);
+
+                buffer = makeStringValue(msgSend.fromAddress);
+                baseReq.AddMember(cosmos::constants::kFrom, buffer, allocator);
+
+                buffer = makeStringValue(_txData.memo);
+                baseReq.AddMember(cosmos::constants::kMemo, buffer, allocator);
+
+                buffer = makeStringValue(networks::getCosmosLikeNetworkParameters(_currency.name).ChainId);
+                baseReq.AddMember(cosmos::constants::kChainId, buffer, allocator);
+
+                buffer = makeStringValue(_accountNumber);
+                baseReq.AddMember(cosmos::constants::kAccountNumber, buffer, allocator);
+
+                buffer = makeStringValue(_accountSequence);
+                baseReq.AddMember(cosmos::constants::kSequence, buffer, allocator);
+
+                buffer = makeStringValue(_txData.fee.gas.toString());
+                baseReq.AddMember(cosmos::constants::kGas, buffer, allocator);
+
+                // todo : remove duplicated code
+                auto getAmountObject = [&] (const std::string &denom, const std::string &amount) {
+                    auto tmp = rapidjson::Value(rapidjson::kStringType);
+                    auto amountObject = rapidjson::Value(rapidjson::kObjectType);
+                    tmp.SetString(amount.c_str(), static_cast<rapidjson::SizeType>(amount.length()), allocator);
+                    amountObject.AddMember(cosmos::constants::kAmount, tmp, allocator);
+                    tmp.SetString(denom.c_str(), static_cast<rapidjson::SizeType>(denom.length()), allocator);
+                    amountObject.AddMember(cosmos::constants::kDenom, tmp, allocator);
+                    return amountObject;
+                };
+
+                auto fees = rapidjson::Value(rapidjson::kArrayType);
+                auto feeAmount = getAmountObject(_txData.fee.amount[0].denom, _txData.fee.amount[0].amount);
+                fees.PushBack(feeAmount, allocator);
+                baseReq.AddMember(cosmos::constants::kFees, fees, allocator);
+
+                auto simulate = rapidjson::Value(rapidjson::kTrueType);
+                baseReq.AddMember(cosmos::constants::kSimulate, simulate, allocator);
+
+                document.AddMember(cosmos::constants::kBaseReq, baseReq, allocator);
+
+
+                auto amount = rapidjson::Value(rapidjson::kArrayType);
+                auto amountObj = getAmountObject(msgSend.amount[0].denom, msgSend.amount[0].amount);
+                amount.PushBack(amountObj, allocator);
+                document.AddMember(cosmos::constants::kAmount, amount, allocator);
+
+                break;
+            }
+
+            auto buffer = rapidjson::StringBuffer();
+            auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
+            sortJson(document);
+            document.Accept(writer);
+            return buffer.GetString();
+        }
+
     }
 }

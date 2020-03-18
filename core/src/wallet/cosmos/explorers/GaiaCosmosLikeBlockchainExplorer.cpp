@@ -38,6 +38,7 @@
 #include <wallet/cosmos/explorers/RpcsParsers.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 
 #include <numeric>
 #include <algorithm>
@@ -528,5 +529,29 @@ namespace ledger {
                 });
         }
 
-    }  // namespace core
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction) const
+        {
+            const auto receiverAddress = [&transaction]() {
+                for (const auto msg : transaction->getMessages())
+                    if (msg->getMessageType() == api::CosmosLikeMsgType::MSGSEND)
+                        return CosmosLikeMessage::unwrapMsgSend(msg).toAddress;
+
+                return std::string();
+            }();
+
+            const auto serializedTx = dynamic_cast<CosmosLikeTransactionApi*>(transaction.get())->serializeTransfer();
+            const auto tx = std::vector<uint8_t>(std::begin(serializedTx), std::end(serializedTx));
+
+            const auto headers = std::unordered_map<std::string, std::string>{ { "Content-Type", "application/json" } };
+
+            return _http->POST(fmt::format("/bank/accounts/{}/transfers", receiverAddress), tx, headers)
+                .json(true)
+                .mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
+                        auto& json = *std::get<1>(result);
+                        const auto estimatedGasLimit = json.GetObject()[cosmos::constants::kGasEstimate].GetString();
+                        return std::make_shared<BigInt>(BigInt::fromString(estimatedGasLimit));
+                    });
+        }
+
+        }  // namespace core
 }
