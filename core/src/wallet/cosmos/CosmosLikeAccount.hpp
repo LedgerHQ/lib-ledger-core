@@ -34,8 +34,8 @@
 
 #include <api/CosmosLikeAccount.hpp>
 #include <api/CosmosLikeDelegationListCallback.hpp>
+#include <api/CosmosLikeRewardListCallback.hpp>
 #include <api/CosmosLikeTransactionBuilder.hpp>
-#include <api/CosmosLikeDelegation.hpp>
 #include <api/Address.hpp>
 #include <api/Amount.hpp>
 #include <api/ErrorCodeCallback.hpp>
@@ -45,6 +45,7 @@
 
 #include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeReward.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 #include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
@@ -142,6 +143,9 @@ namespace ledger {
 
                                 void getDelegations(const std::shared_ptr<api::CosmosLikeDelegationListCallback> & callback) override;
                                 Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>> getDelegations();
+
+                                void getPendingRewards(const std::shared_ptr<api::CosmosLikeRewardListCallback> & callback) override;
+                                Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>> getPendingRewards();
 
                         private:
                                 std::shared_ptr<CosmosLikeAccount> getSelf();

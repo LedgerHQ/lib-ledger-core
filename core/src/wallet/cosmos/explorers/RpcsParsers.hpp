@@ -146,6 +146,14 @@ namespace ledger {
                 out.delegatedAmount = BigInt::fromString(delegationNode[kBalance].GetString());
             }
 
+            template <typename T>
+            void parseReward(const T& rewardNode, cosmos::Reward& out) {
+                assert(rewardNode.HasMember(kValidatorAddress));
+                assert(rewardNode.HasMember(kReward));
+                out.validatorAddress = rewardNode[kValidatorAddress].GetString();
+                parseCoin(rewardNode[kReward].GetArray()[0], out.pendingReward); // Assuming only one reward per validator
+            }
+
             template <class T>
             void parseBlock(const T& node, const std::string& currencyName, cosmos::Block& out) {
                 out.currencyName = currencyName;

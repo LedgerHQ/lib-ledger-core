@@ -1,8 +1,8 @@
 /*
  *
- * CosmosLikeDelegation
+ * CosmosLikeReward
  *
- * Created by Hakim Aammar on 12/03/2020.
+ * Created by Hakim Aammar on 17/03/2020.
  *
  * The MIT License (MIT)
  *
@@ -28,29 +28,35 @@
  *
  */
 
-
-#include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeReward.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/common/Amount.h>
+
+#include <cmath>
+
 
 
 namespace ledger {
     namespace core {
 
-        CosmosLikeDelegation::CosmosLikeDelegation(const cosmos::Delegation& delegationData) :
-            _delegationData(delegationData)
+        CosmosLikeReward::CosmosLikeReward(const cosmos::Reward& rewardData, const std::string& delegatorAddress) :
+            _rewardData(rewardData),
+            _delegatorAddress(delegatorAddress)
         {}
 
-        std::string CosmosLikeDelegation::getDelegatorAddress() const {
-            return _delegationData.delegatorAddress;
+        std::string CosmosLikeReward::getDelegatorAddress() const {
+            return _delegatorAddress;
         }
 
-        std::string CosmosLikeDelegation::getValidatorAddress() const {
-            return _delegationData.validatorAddress;
+        std::string CosmosLikeReward::getValidatorAddress() const {
+            return _rewardData.validatorAddress;
         }
 
-        std::shared_ptr<api::Amount> CosmosLikeDelegation::getDelegatedAmount() const {
-            return std::make_shared<Amount>(currencies::ATOM, 0, _delegationData.delegatedAmount);
+        std::shared_ptr<api::Amount> CosmosLikeReward::getRewardAmount() const {
+            // FIXME std::stod uses radix from current locale (can be . or ,)
+            // resulting in incorrect rounding for any locale where the radix is not '.'
+            auto roundedReward = std::to_string(std::lround(std::stod(_rewardData.pendingReward.amount)));
+            return std::make_shared<Amount>(currencies::ATOM, 0, BigInt::fromDecimal(roundedReward));
         }
     }
 }

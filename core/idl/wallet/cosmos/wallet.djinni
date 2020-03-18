@@ -111,6 +111,7 @@ CosmosLikeAccount = interface +c {
         getSpendableBalance(callback: Callback<Amount>);
 
         getDelegations(callback: ListCallback<CosmosLikeDelegation>);
+        getPendingRewards(callback: ListCallback<CosmosLikeReward>);
 }
 
 #Class representing a Cosmos delegation
@@ -118,6 +119,13 @@ CosmosLikeDelegation = interface +c {
         const getDelegatorAddress() : string;
         const getValidatorAddress() : string;
         const getDelegatedAmount() : Amount;
+}
+
+#Class representing a Cosmos reward
+CosmosLikeReward = interface +c {
+        const getDelegatorAddress() : string;
+        const getValidatorAddress() : string;
+        const getRewardAmount() : Amount;
 }
 
 CosmosConfigurationDefaults = interface +c {

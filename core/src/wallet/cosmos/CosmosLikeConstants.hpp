@@ -100,6 +100,8 @@ namespace ledger {
                                 constexpr const char kProposalId[] = "proposal_id";
                                 constexpr const char kProposer[] = "proposer";
                                 constexpr const char kPubKey[] = "pub_key";
+                                constexpr const char kReward[] = "reward";
+                                constexpr const char kRewards[] = "rewards";
                                 constexpr const char kSequence[] = "sequence";
                                 constexpr const char kSignature[] = "signature";
                                 constexpr const char kSignatures[] = "signatures";

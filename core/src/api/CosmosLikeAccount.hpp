@@ -19,6 +19,7 @@ namespace ledger { namespace core { namespace api {
 class AmountCallback;
 class BigIntCallback;
 class CosmosLikeDelegationListCallback;
+class CosmosLikeRewardListCallback;
 class CosmosLikeTransaction;
 class CosmosLikeTransactionBuilder;
 class CosmosLikeValidatorCallback;
@@ -61,6 +62,8 @@ public:
     virtual void getSpendableBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
     virtual std::vector<std::shared_ptr<CosmosLikeDelegation>> getDelegations() = 0;
     virtual void getDelegations(const std::shared_ptr<CosmosLikeDelegationListCallback> & callback) = 0;
+
+    virtual void getPendingRewards(const std::shared_ptr<CosmosLikeRewardListCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

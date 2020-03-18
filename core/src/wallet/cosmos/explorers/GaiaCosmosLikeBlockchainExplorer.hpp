@@ -42,6 +42,8 @@
 namespace ledger {
     namespace core {
 
+        static const std::unordered_map<std::string, std::string> ACCEPT_HEADER{{"Accept", "application/json"}};
+
         class GaiaCosmosLikeBlockchainExplorer :
                 public CosmosLikeBlockchainExplorer,
                 public DedicatedContext {
@@ -119,6 +121,8 @@ namespace ledger {
             Future<cosmos::Validator> getValidatorInfo(const std::string& valOperAddress) const override;
 
             FuturePtr<std::vector<cosmos::Delegation>> getDelegations(const std::string& delegatorAddr) const override;
+
+            FuturePtr<std::vector<cosmos::Reward>> getPendingRewards(const std::string& delegatorAddr) const override;
 
         private:
             std::shared_ptr<HttpClient> _http;

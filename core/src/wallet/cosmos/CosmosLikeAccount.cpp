@@ -36,7 +36,6 @@
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <api/CosmosLikeAddress.hpp>
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
-//#include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 #include <wallet/cosmos/database/CosmosLikeAccountDatabaseHelper.hpp>
 #include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
@@ -729,6 +728,25 @@ namespace ledger {
                                                         delegationList.push_back(std::make_shared<CosmosLikeDelegation>(delegation));
                                                 }
                                                 return delegationList;
+                                        }
+                                );
+                }
+
+                void CosmosLikeAccount::getPendingRewards(const std::shared_ptr<api::CosmosLikeRewardListCallback> &callback) {
+                        getPendingRewards().callback(getMainExecutionContext(), callback);
+                }
+
+                Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>>
+                CosmosLikeAccount::getPendingRewards() {
+                        return _explorer->getPendingRewards(_accountAddress)
+                                .map<std::vector<std::shared_ptr<api::CosmosLikeReward>>>(
+                                        getContext(),
+                                        [&] (auto& rewards) {
+                                                std::vector<std::shared_ptr<api::CosmosLikeReward>> rewardList;
+                                                for (auto& reward : *rewards) {
+                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, _accountAddress));
+                                                }
+                                                return rewardList;
                                         }
                                 );
                 }

@@ -1,8 +1,8 @@
 /*
  *
- * CosmosLikeDelegation
+ * CosmosLikeReward
  *
- * Created by Hakim Aammar on 12/03/2020.
+ * Created by Hakim Aammar on 17/03/2020.
  *
  * The MIT License (MIT)
  *
@@ -29,28 +29,38 @@
  */
 
 
-#include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
-#include <wallet/common/Amount.h>
+#ifndef LEDGER_CORE_COSMOSLIKEREWARD_H
+#define LEDGER_CORE_COSMOSLIKEREWARD_H
+
+#include <api/CosmosLikeReward.hpp>
+#include <api/Amount.hpp>
+
+#include <wallet/cosmos/cosmos.hpp>
 
 
 namespace ledger {
     namespace core {
+        class CosmosLikeReward : public api::CosmosLikeReward {
 
-        CosmosLikeDelegation::CosmosLikeDelegation(const cosmos::Delegation& delegationData) :
-            _delegationData(delegationData)
-        {}
+        public:
+            explicit CosmosLikeReward() {}
 
-        std::string CosmosLikeDelegation::getDelegatorAddress() const {
-            return _delegationData.delegatorAddress;
-        }
+            explicit CosmosLikeReward(const cosmos::Reward& rewardData, const std::string& delegatorAddress);
 
-        std::string CosmosLikeDelegation::getValidatorAddress() const {
-            return _delegationData.validatorAddress;
-        }
+            std::string getDelegatorAddress() const override;
 
-        std::shared_ptr<api::Amount> CosmosLikeDelegation::getDelegatedAmount() const {
-            return std::make_shared<Amount>(currencies::ATOM, 0, _delegationData.delegatedAmount);
-        }
+            std::string getValidatorAddress() const override;
+
+            std::shared_ptr<api::Amount> getRewardAmount() const override;
+
+        private:
+
+            cosmos::Reward _rewardData;
+            std::string _delegatorAddress;
+
+        };
     }
 }
+
+
+#endif //LEDGER_CORE_COSMOSLIKEREWARD_H
