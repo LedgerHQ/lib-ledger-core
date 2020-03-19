@@ -91,7 +91,7 @@ namespace ledger {
         }
 
         FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight) {
-            return _http->GET(fmt::format("/blocks/{}", blockHeight)).json(true).mapPtr<cosmos::Block>(getContext(), [=] (const HttpRequest::JsonResult& response) {
+            return _http->GET(fmt::format("/blocks/{}", blockHeight)).json(true).mapPtr<cosmos::Block>(getContext(), [] (const HttpRequest::JsonResult& response) {
                 auto result = std::make_shared<cosmos::Block>();
                 const auto& document = std::get<1>(response)->GetObject();
                 rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
@@ -101,10 +101,14 @@ namespace ledger {
 
         FuturePtr<ledger::core::cosmos::Account>
         GaiaCosmosLikeBlockchainExplorer::getAccount(const std::string &account) {
-            return _http->GET(fmt::format("/auth/accounts/{}", account)).json(true).mapPtr<cosmos::Account>(getContext(), [=] (const HttpRequest::JsonResult& response) {
+            return _http->GET(fmt::format("/auth/accounts/{}", account)).json(true).mapPtr<cosmos::Account>(getContext(), [] (const HttpRequest::JsonResult& response) {
                 auto result = std::make_shared<cosmos::Account>();
                 const auto& document = std::get<1>(response)->GetObject();
-                // TODO : raise a clean exception when document has no "result" member
+                if (!document.HasMember("result")) {
+                    throw make_exception(
+                        api::ErrorCode::API_ERROR,
+                        "The API response from explorer is missing the \"result\" key");
+                }
                 rpcs_parsers::parseAccount(document["result"], *result);
                 return result;
             });
@@ -113,7 +117,7 @@ namespace ledger {
         FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() {
             return _http->GET(fmt::format("/blocks/latest")).json(true)
             .map<std::shared_ptr<cosmos::Block>>(getContext(),
-             [=] (const HttpRequest::JsonResult& response) {
+             [] (const HttpRequest::JsonResult& response) {
                  auto result = std::make_shared<cosmos::Block>();
                  const auto& document = std::get<1>(response)->GetObject();
                  rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
@@ -126,10 +130,15 @@ namespace ledger {
             return _http->GET(fmt::format("/txs?{}&page={}&limit={}", filter, page, limit))
                 .json(true)
                 .map<cosmos::TransactionList>(
-                    getContext(), [=](const HttpRequest::JsonResult& response) {
+                    getContext(), [](const HttpRequest::JsonResult& response) {
                         cosmos::TransactionList result;
                         const auto& document = std::get<1>(response)->GetObject();
-                        // TODO : raise a clean exception when document has no "txs" member
+                        if (!document.HasMember("txs") ||
+                            !document["txs"].IsArray()) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"txs\" key");
+                        }
                         const auto& transactions = document["txs"].GetArray();
                         for (const auto& node : transactions) {
                             auto tx = std::make_shared<cosmos::Transaction>();
@@ -316,7 +325,11 @@ namespace ledger {
                     getContext(),
                     [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
                         auto &json = *std::get<1>(result);
-                        // TODO : clean error handling
+                        if (!json.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
 
                         const auto &del_val_entries = json.GetObject()["result"].GetArray();
                         BigInt total_amt = BigInt::ZERO;
@@ -384,7 +397,11 @@ namespace ledger {
                     getContext(),
                     [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
                         auto &json = *std::get<1>(result);
-                        // TODO : clean error handling
+                        if (!json.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
 
                         const auto &del_entries = json.GetObject()["result"].GetArray();
                         BigInt total_amt = BigInt::ZERO;
@@ -414,7 +431,11 @@ namespace ledger {
                     getContext(),
                     [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
                         auto &json = *std::get<1>(result);
-                        // TODO : clean error handling
+                        if (!json.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
 
                         const auto &balances = json.GetObject()["result"].GetArray();
                         BigInt total_amt = BigInt::ZERO;
@@ -433,10 +454,14 @@ namespace ledger {
             auto basicValidatorList =_http->GET("/staking/validators?status=bonded&page=1&limit=130")
                 .json(parseJsonNumbersAsStrings)
                 .map<cosmos::ValidatorList>(
-                    getContext(), [=](const HttpRequest::JsonResult& response) {
+                    getContext(), [](const HttpRequest::JsonResult& response) {
                         cosmos::ValidatorList result;
                         const auto& document = std::get<1>(response)->GetObject();
-                        // TODO : raise a clean exception when document has no "txs" member
+                        if (!document.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
                         const auto& validators = document["result"].GetArray();
                         for (const auto& node : validators) {
                             cosmos::Validator val;
@@ -454,9 +479,13 @@ namespace ledger {
             return _http->GET(fmt::format("/staking/validators/{}", valOperAddress))
                 .json(parseJsonNumbersAsStrings)
                 .map<cosmos::Validator>(
-                    getContext(), [=](const HttpRequest::JsonResult& response) {
+                    getContext(), [](const HttpRequest::JsonResult& response) {
                         const auto& document = std::get<1>(response)->GetObject();
-                        // TODO : raise a clean exception when document has no "txs" member
+                        if (!document.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
                         const auto& validatorNode = document["result"].GetObject();
                         cosmos::Validator val;
                         rpcs_parsers::parseValidatorSetEntry(validatorNode, val);
