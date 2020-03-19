@@ -1,6 +1,4 @@
 cmake_minimum_required(VERSION 3.15)
-cmake_policy(SET CMP0091 NEW) # allow MSVC_RUNTIME_LIBRARY property
-set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 project(ledger-core)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
