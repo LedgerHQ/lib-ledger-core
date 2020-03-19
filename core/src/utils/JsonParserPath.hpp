@@ -43,6 +43,9 @@ namespace ledger {
 
         struct JsonParserPathValue {};
 
+        /**
+         * Represents a single element in a json path. This class shouldn't be used outside of JsonParserPath
+         */
         struct JsonParserPathNode {
             JsonParserPathNodeType type;
             boost::variant<int /* index in array */, std::string /* key in object */> content;
@@ -62,6 +65,10 @@ namespace ledger {
 
         enum class JsonParserPathMatcherFilter {WILDCARD, EXACT, MATCH_ALL};
 
+        /**
+         * Represents a single element in a json path matcher.
+         * This class shouldn't be used outside of JsonParserPathMatcher
+         */
         struct JsonParserPathMatcherElement {
             JsonParserPathMatcherFilter filter;
             JsonParserPathNode node;
@@ -71,6 +78,18 @@ namespace ledger {
                     const JsonParserPathNode& n) : filter(f), node(n) {};
         };
 
+        /**
+         * A structure used to match a JSON path.
+         * The matcher is represented by a string:
+         *    '/': represents the beginning of a json object
+         *    '[': represents the beginning of a json array
+         *    'this_key': will exactly match 'this_key' as the key of a json object
+         *    '*': will match any key in a json object
+         *    '[42]': will match exactly if the path is currently at the given index (here 42)
+         *    '[*]': will match any index in a json array
+         *    '?': match everything after this point. This must be put at the end of the matcher filter
+         *
+         */
         class JsonParserPathMatcher {
         public:
             JsonParserPathMatcher(const std::string& filter);
@@ -82,6 +101,9 @@ namespace ledger {
 
         class JsonParserPath;
 
+        /**
+         * Limited view over a JSON path. The view is immutable and can create others views.
+         */
         class JsonParserPathView {
         public:
             JsonParserPathView() {};
@@ -107,6 +129,12 @@ namespace ledger {
             friend class JsonParserPath;
         };
 
+        /**
+         * Helper class to create JSON path. JSON path represents the current location of a SAX
+         * parser in a JSON document. This path can be then used to match specific locations
+         * and help SAX parsers to parse documents. JsonParserPath is a mutable class, it should
+         * be used to build the path and create views which will be then used to match locations.
+         */
         class JsonParserPath {
         public:
             JsonParserPath();
@@ -153,10 +181,29 @@ namespace ledger {
             inline const JsonParserPathNode& getCurrent() const;
             inline const JsonParserPathNode& getParent() const;
 
+            /**
+             * Creates a view at the root of the path.
+             * @return A view at the root of the path.
+             */
             JsonParserPathView view();
+            /**
+             * Creates a view for the given depth in the path.
+             * @param depth
+             * @return a view for the given depth in the path.
+             */
             JsonParserPathView view(int depth);
-            JsonParserPathView root() { return view(0); };
+            /**
+             * Alias for JsonParserPathView::view.
+             * @return  A view at the root of the path.
+             */
+            inline JsonParserPathView root() { return view(0); };
 
+            /**
+             * Matches the current path with the given matcher from the given depth.
+             * @param matcher A matcher to test the path against.
+             * @param depth The depth at which the path will be matched.
+             * @return true if it matches, false otherwise.
+             */
             bool match(const JsonParserPathMatcher& matcher, int depth) const;
 
         private:

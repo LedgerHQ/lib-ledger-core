@@ -56,7 +56,7 @@ static const std::set<stellar::OperationType> ACCEPTED_PAYMENT_TYPES {
     stellar::OperationType::PAYMENT, stellar::OperationType::CREATE_ACCOUNT
 };
 
-static const auto INVALID_SYNCHRONIZATION_DELAY = 60 * 60 * 1000;
+static const auto INVALID_SYNCHRONIZATION_DELAY_MS = 60 * 60 * 1000;
 
 namespace ledger {
     namespace core {
@@ -458,7 +458,7 @@ namespace ledger {
                 stellar::Ledger lgr;
                 auto now = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now().time_since_epoch()).count();
                 if (!StellarLikeLedgerDatabaseHelper::getLastLedger(sql, self->getWallet()->getCurrency(), lgr) ||
-                      now - std::chrono::duration_cast<std::chrono::milliseconds>(lgr.time.time_since_epoch()).count() >  INVALID_SYNCHRONIZATION_DELAY) {
+                      now - std::chrono::duration_cast<std::chrono::milliseconds>(lgr.time.time_since_epoch()).count() > INVALID_SYNCHRONIZATION_DELAY_MS) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Last ledger is out dated");
                 }
                 stellar::Account acc;
