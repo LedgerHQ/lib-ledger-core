@@ -148,15 +148,13 @@ namespace ledger {
                 auto accountId = AccountDatabaseHelper::createAccountUid(self->getWallet()->getWalletUid(), self->_params.index);
                 StellarLikeAccountDatabaseHelper::getAccount(sql, accountId, account);
                 StellarLikeAccountDatabaseHelper::getAccountBalances(sql, accountId, account);
-                BigInt amount;
+                
+                auto balanceIt = std::find_if(account.balances.begin(), account.balances.end(),
+                        [] (const stellar::Balance& balance) {
+                    return balance.assetType == "native";
+                });
 
-                for (const auto& balance : account.balances) {
-                    if (balance.assetType == "native") {
-                        amount = balance.value;
-                        break;
-                    }
-                }
-
+                BigInt amount = (balanceIt != account.balances.end()) ? balanceIt->value : 0;
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, amount);
             });
         }
