@@ -16,6 +16,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class AmountCallback;
 class BigIntCallback;
 class CosmosLikeTransaction;
 class CosmosLikeTransactionBuilder;
@@ -42,6 +43,21 @@ public:
 
     /** Get information about one validator */
     virtual void getValidatorInfo(const std::string & validatorAddress, const std::shared_ptr<CosmosLikeValidatorCallback> & callback) = 0;
+
+    /** Get Total balance of account. Sum of spendable, delegated, pending rewards, and pending unbondings */
+    virtual void getTotalBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /** Get Total amount in delegation of account. */
+    virtual void getDelegatedBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /** Get Total pending rewards of account. */
+    virtual void getPendingRewards(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /** Get Total unbondings funds of account. */
+    virtual void getUnbondingBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
+
+    /** Get Total spendable balance of account. */
+    virtual void getSpendableBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

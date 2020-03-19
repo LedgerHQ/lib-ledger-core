@@ -611,56 +611,74 @@ namespace ledger {
                                     });
                 }
 
+                void CosmosLikeAccount::getTotalBalance(const std::shared_ptr<api::AmountCallback> &callback) {
+                        getTotalBalance().callback(getContext(), callback);
+                }
+
+
                 FuturePtr<Amount> CosmosLikeAccount::getDelegatedBalance() const {
-                    auto currency = getWallet()->getCurrency();
-                    return _explorer->getDelegatedBalance(_keychain->getAddress()->toBech32())
-                            .mapPtr<Amount>(
-                                    getContext(),
-                                    [currency](const auto& rawAmount){
-                                return std::make_shared<Amount>(
-                                    currency,
-                                    0,
-                                    *rawAmount);
-                                    });
+                        auto currency = getWallet()->getCurrency();
+                        return _explorer->getDelegatedBalance(_keychain->getAddress()->toBech32())
+                                .mapPtr<Amount>(
+                                        getContext(),
+                                        [currency](const auto& rawAmount){
+                                                return std::make_shared<Amount>(
+                                                        currency,
+                                                        0,
+                                                        *rawAmount);
+                                        });
+                }
+
+                void CosmosLikeAccount::getDelegatedBalance(const std::shared_ptr<api::AmountCallback> &callback) {
+                        getDelegatedBalance().callback(getContext(), callback);
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getPendingRewards() const {
-                    auto currency = getWallet()->getCurrency();
-                    return _explorer->getPendingRewards(_keychain->getAddress()->toBech32())
-                            .mapPtr<Amount>(
-                                    getContext(),
-                                    [currency](const auto& rawAmount){
-                                return std::make_shared<Amount>(
-                                    currency,
-                                    0,
-                                    *rawAmount);
-                                    });
+                        auto currency = getWallet()->getCurrency();
+                        return _explorer->getPendingRewards(_keychain->getAddress()->toBech32())
+                                .mapPtr<Amount>(
+                                        getContext(),
+                                        [currency](const auto& rawAmount){
+                                                return std::make_shared<Amount>(
+                                                        currency,
+                                                        0,
+                                                        *rawAmount);
+                                        });
+                }
+                void CosmosLikeAccount::getPendingRewards(const std::shared_ptr<api::AmountCallback> &callback) {
+                        getPendingRewards().callback(getContext(), callback);
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getUnbondingBalance() const {
-                    auto currency = getWallet()->getCurrency();
-                    return _explorer->getUnbondingBalance(_keychain->getAddress()->toBech32())
-                            .mapPtr<Amount>(
-                                    getContext(),
-                                    [currency](const auto& rawAmount){
-                                return std::make_shared<Amount>(
-                                    currency,
-                                    0,
-                                    *rawAmount);
-                                    });
+                        auto currency = getWallet()->getCurrency();
+                        return _explorer->getUnbondingBalance(_keychain->getAddress()->toBech32())
+                                .mapPtr<Amount>(
+                                        getContext(),
+                                        [currency](const auto& rawAmount){
+                                                return std::make_shared<Amount>(
+                                                        currency,
+                                                        0,
+                                                        *rawAmount);
+                                        });
+                }
+                void CosmosLikeAccount::getUnbondingBalance(const std::shared_ptr<api::AmountCallback> &callback) {
+                        getUnbondingBalance().callback(getContext(), callback);
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getSpendableBalance() const {
-                    auto currency = getWallet()->getCurrency();
-                    return _explorer->getSpendableBalance(_keychain->getAddress()->toBech32())
-                            .mapPtr<Amount>(
-                                    getContext(),
-                                    [currency](const auto& rawAmount){
-                                return std::make_shared<Amount>(
-                                    currency,
-                                    0,
-                                    *rawAmount);
-                                    });
+                        auto currency = getWallet()->getCurrency();
+                        return _explorer->getSpendableBalance(_keychain->getAddress()->toBech32())
+                                .mapPtr<Amount>(
+                                        getContext(),
+                                        [currency](const auto& rawAmount){
+                                                return std::make_shared<Amount>(
+                                                        currency,
+                                                        0,
+                                                        *rawAmount);
+                                        });
+                }
+                void CosmosLikeAccount::getSpendableBalance(const std::shared_ptr<api::AmountCallback> &callback) {
+                        getSpendableBalance().callback(getContext(), callback);
                 }
 
                 Future<cosmos::ValidatorList> CosmosLikeAccount::getActiveValidatorSet() const {
