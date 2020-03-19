@@ -33,29 +33,18 @@
 #include <rapidjson/rapidjson.h>
 #include <rapidjson/document.h>
 
-#include <math/BigInt.h>
 #include <api/enum_from_string.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
-#include <bytes/BytesReader.h>
 #include <utils/DateUtils.hpp>
 
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 #include <wallet/common/Amount.h>
-#include <api/CosmosLikeMessage.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
-#include <api/CosmosLikeMsgType.hpp>
-#include <api/CosmosLikeMsgSend.hpp>
-#include <api/CosmosLikeMsgDelegate.hpp>
-#include <api/CosmosLikeMsgUndelegate.hpp>
-#include <api/CosmosLikeMsgBeginRedelegate.hpp>
-#include <api/CosmosLikeMsgSubmitProposal.hpp>
-#include <api/CosmosLikeMsgVote.hpp>
-#include <api/CosmosLikeMsgDeposit.hpp>
-#include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
 
-#include <wallet/cosmos/CosmosLikeMessage.hpp> // Included only for the Unsupported case
 
 using namespace rapidjson;
+
 namespace ledger {
     namespace core {
 
@@ -404,15 +393,13 @@ namespace ledger {
                 return {description, validatorAddress, commissionRate, minSelfDelegation};
             }
 
-            cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(
-                Object const& object) {
+            cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(Object const& object) {
                 auto valueObject = object[kValue].GetObject();
                 return cosmos::MsgSetWithdrawAddress{getString(valueObject, kDelegatorAddress),
                                                      getString(valueObject, kWithdrawAddress)};
             }
 
-            cosmos::MsgWithdrawDelegatorReward buildMsgWithdrawDelegatorRewardFromRawMessage(
-                Object const& object) {
+            cosmos::MsgWithdrawDelegatorReward buildMsgWithdrawDelegatorRewardFromRawMessage(Object const& object) {
                 auto valueObject = object[kValue].GetObject();
                 return cosmos::MsgWithdrawDelegatorReward{
                     getString(valueObject, kDelegatorAddress),
@@ -432,44 +419,29 @@ namespace ledger {
             }
         }
 
-        CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(
-                const std::shared_ptr<api::ExecutionContext> &context,
-                const api::Currency &currency,
-                const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-                const std::shared_ptr<spdlog::logger> &logger,
-                const CosmosLikeTransactionBuildFunction &buildFunction) {
+        CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext> &context,
+                                                                   const CosmosLikeTransactionBuildFunction &buildFunction) {
             _context = context;
-            _currency = currency;
-            _explorer = explorer;
-            _build = buildFunction;
-            _logger = logger;
-            _request.wipe = false;
+            _buildFunction = buildFunction;
         }
 
         CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(const CosmosLikeTransactionBuilder &cpy) {
-            _currency = cpy._currency;
-            _build = cpy._build;
+            _buildFunction = cpy._buildFunction;
             _request = cpy._request;
             _context = cpy._context;
-            _logger = cpy._logger;
         }
 
-         std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setSequence(const std::string & sequence) {
-            _request.sequence = sequence;
-            return shared_from_this();
-        }
-
-        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setMemo(const std::string & memo) {
+        std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setMemo(const std::string & memo) {
             _request.memo = memo;
             return shared_from_this();
         }
 
-        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setGas(const std::shared_ptr<api::Amount> & gas) {
+        std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setGas(const std::shared_ptr<api::Amount> & gas) {
             _request.gas = std::make_shared<BigInt>(gas->toString());
             return shared_from_this();
         }
 
-        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setFee(const std::shared_ptr<api::Amount> & fee) {
+        std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setFee(const std::shared_ptr<api::Amount> & fee) {
             _request.fee = std::make_shared<BigInt>(fee->toString());
             return shared_from_this();
         }
@@ -484,7 +456,7 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<api::CosmosLikeTransaction>> CosmosLikeTransactionBuilder::build() {
-            return _build(_request, _explorer);
+            return _buildFunction(_request);
         }
 
         std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::clone() {
@@ -516,9 +488,7 @@ namespace ledger {
 
             auto tx = std::make_shared<CosmosLikeTransactionApi>();
             tx->setCurrency(currency);
-            tx->setAccountNumber(getString(document.GetObject(), kAccountNumber));
             tx->setMemo(getString(document.GetObject(), kMemo));
-            tx->setSequence(getString(document.GetObject(), kSequence));
 
             //Get fees
             if (document[kFee].IsObject()) {

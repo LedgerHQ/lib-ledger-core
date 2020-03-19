@@ -595,25 +595,19 @@ namespace ledger {
 
                 std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTransaction(const std::string &senderAddress) {
                         auto self = std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
-                        auto buildFunction = [self, senderAddress](const CosmosLikeTransactionBuildRequest &request,
-                                                                   const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer) {
+                        auto buildFunction = [self](const CosmosLikeTransactionBuildRequest &request) {
                                 auto currency = self->getWallet()->getCurrency();
                                 auto tx = std::make_shared<CosmosLikeTransactionApi>();
-                                tx->setAccountNumber(self->getAccountUid());
                                 tx->setCurrency(self->getWallet()->getCurrency());
                                 tx->setFee(request.fee);
                                 tx->setGas(request.gas);
                                 tx->setMessages(request.messages);
                                 tx->setSigningPubKey(self->getKeychain()->getPublicKey());
-                                tx->setSequence(request.sequence);
                                 tx->setMemo(request.memo);
                                 return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                         };
-                        return std::make_shared<CosmosLikeTransactionBuilder>(getContext(),
-                                                                              getWallet()->getCurrency(),
-                                                                              _explorer,
-                                                                              logger(),
-                                                                              buildFunction);
+
+                        return std::make_shared<CosmosLikeTransactionBuilder>(getContext(), buildFunction);
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getTotalBalance() const {

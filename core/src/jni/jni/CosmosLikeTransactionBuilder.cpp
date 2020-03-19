@@ -11,12 +11,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeTransactionBuilder, CosmosLikeTransactionBuilder>("co/ledger/core/CosmosLikeTransactionBuilder$CppProxy") {}
+CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeTransactionBuilder, CosmosLikeTransactionBuilder>("CosmosLikeTransactionBuilder$CppProxy") {}
 
 CosmosLikeTransactionBuilder::~CosmosLikeTransactionBuilder() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -24,7 +24,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1setMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_memo)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_native_1setMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_memo)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -34,17 +34,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1setSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_sequence)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeTransactionBuilder>(nativeRef);
-        auto r = ref->setSequence(::djinni::String::toCpp(jniEnv, j_sequence));
-        return ::djinni::release(::djinni_generated::CosmosLikeTransactionBuilder::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1addMessage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_msg)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_native_1addMessage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_msg)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +44,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1setGas(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gas)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_native_1setGas(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gas)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +54,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1setFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_fee)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_native_1setFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_fee)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +64,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -83,7 +73,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -93,7 +83,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_CosmosLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -102,7 +92,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jstring j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jstring j_rawTransaction)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -112,7 +102,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_pars
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jstring j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jstring j_rawTransaction)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

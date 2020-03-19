@@ -74,9 +74,7 @@ namespace ledger {
             CosmosLikeTransactionApi & setHash(const std::string &hash);
             CosmosLikeTransactionApi & setGas(const std::shared_ptr<BigInt>& gas);
             CosmosLikeTransactionApi & setFee(const std::shared_ptr<BigInt>& fee);
-            CosmosLikeTransactionApi & setSequence(const std::string &sequence);
             CosmosLikeTransactionApi & setMemo(const std::string &memo);
-            CosmosLikeTransactionApi & setAccountNumber(const std::string &accountNumber);
 
             void setRawData(const cosmos::Transaction &txData);
             const cosmos::Transaction & getRawData() const;
@@ -85,8 +83,6 @@ namespace ledger {
         private:
 
             api::Currency _currency;
-            std::string _accountNumber;
-            std::string _accountSequence;
             cosmos::Transaction _txData;
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;

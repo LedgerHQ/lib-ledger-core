@@ -57,10 +57,6 @@ CosmosLikeTransactionBuilder = interface +c {
         # @param memo the memo to set
         setMemo(memo: string): CosmosLikeTransactionBuilder;
 
-        # Set sequence
-        # @param sequence The sequence to set
-        setSequence(sequence: string): CosmosLikeTransactionBuilder;
-
         # Add a new message in the internal range of messages
         # @param msg a new message
         addMessage(msg: CosmosLikeMessage): CosmosLikeTransactionBuilder;

@@ -325,18 +325,8 @@ namespace ledger {
             return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setSequence(const std::string &sequence) {
-            _accountSequence = sequence;
-            return *this;
-        }
-
         CosmosLikeTransactionApi &CosmosLikeTransactionApi::setMemo(const std::string &rhs_memo) {
             _txData.memo = rhs_memo;
-            return *this;
-        }
-
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setAccountNumber(const std::string &accountNumber) {
-            _accountNumber = accountNumber;
             return *this;
         }
 

@@ -33,12 +33,6 @@ public:
     virtual std::shared_ptr<CosmosLikeTransactionBuilder> setMemo(const std::string & memo) = 0;
 
     /**
-     * Set sequence
-     * @param sequence The sequence to set
-     */
-    virtual std::shared_ptr<CosmosLikeTransactionBuilder> setSequence(const std::string & sequence) = 0;
-
-    /**
      * Add a new message in the internal range of messages
      * @param msg a new message
      */
