@@ -171,16 +171,14 @@ namespace ledger {
             // NOTE: MsgUn/Re/Delegate + MsgWithdrawDelegatorReward are all covered by 'message.sender'
             auto sent_transactions = getTransactions(
                 fuseFilters({
-                    // TODO : commented out until our backend supports the filter
-                    // blockHeightFilter,
+                    blockHeightFilter,
                     filterWithAttribute(kEventTypeMessage, kAttributeKeySender, address)
                 }),
                 1,
                 50);
             auto received_transactions = getTransactions(
                 fuseFilters({
-                    // TODO : commented out until our backend supports the filter
-                    // blockHeightFilter,
+                    blockHeightFilter,
                     filterWithAttribute(kEventTypeTransfer, kAttributeKeyRecipient, address)
                 }),
                 1,
