@@ -148,7 +148,7 @@ namespace ledger {
                 auto accountId = AccountDatabaseHelper::createAccountUid(self->getWallet()->getWalletUid(), self->_params.index);
                 StellarLikeAccountDatabaseHelper::getAccount(sql, accountId, account);
                 StellarLikeAccountDatabaseHelper::getAccountBalances(sql, accountId, account);
-                
+
                 auto balanceIt = std::find_if(account.balances.begin(), account.balances.end(),
                         [] (const stellar::Balance& balance) {
                     return balance.assetType == "native";
@@ -321,8 +321,8 @@ namespace ledger {
                         if (operation.recipients[0] == accountAddress) {
                             putOp(api::OperationType::RECEIVE, stellarOperation);
                         }
-                    }
                         break;
+                    }
                     case stellar::OperationType::PAYMENT: {
                         auto &sop = boost::get<stellar::xdr::PaymentOp>(op.content);
                         if (sop.asset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
@@ -341,8 +341,8 @@ namespace ledger {
                             operation.amount = BigInt::ZERO;
                             putOp(api::OperationType::SEND, stellarOperation);
                         }
-                    }
                         break;
+                    }
                     case stellar::OperationType::PATH_PAYMENT: {
                         // Create op if sending or receiving native token, otherwise if source account is self
                         // create fees op
@@ -368,8 +368,8 @@ namespace ledger {
                             operation.amount = BigInt::ZERO;
                             putOp(api::OperationType::SEND, stellarOperation);
                         }
-                    }
                         break;
+                    }
                     case stellar::OperationType::ACCOUNT_MERGE:
                     case stellar::OperationType::MANAGE_OFFER:
                     case stellar::OperationType::CREATE_PASSIVE_OFFER:
