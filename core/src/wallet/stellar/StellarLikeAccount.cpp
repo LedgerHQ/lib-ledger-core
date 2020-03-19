@@ -154,7 +154,7 @@ namespace ledger {
                     return balance.assetType == "native";
                 });
 
-                BigInt amount = (balanceIt != account.balances.end()) ? balanceIt->value : 0;
+                BigInt amount = (balanceIt != account.balances.end()) ? balanceIt->value : BigInt::ZERO;
                 return std::make_shared<Amount>(self->getWallet()->getCurrency(), 0, amount);
             });
         }
