@@ -217,7 +217,6 @@ namespace ledger {
                 log.messageIndex = soci::get_number<int32_t>(msgRow, COL_MSG_INDEX);
                 tx.logs.push_back(log);
             }
-            std::cerr << "Messages : " << msgCount << std::endl;
         }
 
         static void insertMessage(soci::session& sql,
