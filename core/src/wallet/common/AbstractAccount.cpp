@@ -235,7 +235,7 @@ namespace ledger {
             return std::dynamic_pointer_cast<api::StellarLikeAccount>(shared_from_this());
         }
 
-        bool AbstractAccount::isInstanceOfStellarLikeAccount() {
+        bool AbstractAccount::isInstanceOfStellarLikeAccount() const {
             return _type == api::WalletType::STELLAR;
         }
 

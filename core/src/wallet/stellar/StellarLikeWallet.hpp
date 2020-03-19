@@ -62,7 +62,7 @@ namespace ledger {
 
             std::shared_ptr<api::EventBus> synchronize() override;
 
-            bool isInstanceOfStellarLikeWallet() override;
+            bool isInstanceOfStellarLikeWallet() const override;
 
             std::shared_ptr<api::StellarLikeWallet> asStellarLikeWallet() override;
 

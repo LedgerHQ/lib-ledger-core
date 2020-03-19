@@ -149,7 +149,7 @@ Operation = interface +c {
     # Same as isInstanceOfTezosLikeOperation for tezos.
     isInstanceOfTezosLikeOperation(): bool;
     # Same as isInstanceOfBitcoinLikeOperation for ripple.
-    isInstanceOfStellarLikeOperation(): bool;
+    const isInstanceOfStellarLikeOperation(): bool;
 
     # Tells if the operation is complete.
     # @return boolean
@@ -270,7 +270,7 @@ Address = interface +c {
 
     # Cast the address to a stellar like one
     asStellarLikeAddress(): optional<StellarLikeAddress>;
-    isInstanceOfStellarLikeAddress(): bool;
+    const isInstanceOfStellarLikeAddress(): bool;
 
     getCurrency(): Currency;
 
@@ -366,7 +366,7 @@ Account = interface +c {
     isInstanceOfEthereumLikeAccount(): bool;
     # Check if account is a Stellar one.
     # @return bool
-    isInstanceOfStellarLikeAccount(): bool;
+    const isInstanceOfStellarLikeAccount(): bool;
     # Check if account is a Ripple one.
     # @return bool
     isInstanceOfRippleLikeAccount(): bool;
@@ -452,7 +452,7 @@ Wallet = interface +c {
     isInstanceOfRippleLikeWallet(): bool;
     # Tell whether wallet is a Stellar one.
     # @return bool
-    isInstanceOfStellarLikeWallet(): bool;
+    const isInstanceOfStellarLikeWallet(): bool;
     # Cast the instance to StellarLIkeWallet
     asStellarLikeWallet(): StellarLikeWallet;
     # Get wallet type.

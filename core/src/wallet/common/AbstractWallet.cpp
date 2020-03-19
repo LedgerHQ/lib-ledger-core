@@ -354,8 +354,8 @@ namespace ledger {
 
         }
 
-        bool AbstractWallet::isInstanceOfStellarLikeWallet() {
-            return getWalletType() == api::WalletType::STELLAR;
+        bool AbstractWallet::isInstanceOfStellarLikeWallet() const {
+            return _currency.walletType == api::WalletType::STELLAR;
         }
 
         std::shared_ptr<api::StellarLikeWallet> AbstractWallet::asStellarLikeWallet() {

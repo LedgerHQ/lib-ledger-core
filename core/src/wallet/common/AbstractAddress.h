@@ -53,7 +53,7 @@ namespace ledger {
 
             std::shared_ptr<api::StellarLikeAddress> asStellarLikeAddress() override;
 
-            bool isInstanceOfStellarLikeAddress() override;
+            bool isInstanceOfStellarLikeAddress() const override;
 
         private:
             api::Currency _currency;

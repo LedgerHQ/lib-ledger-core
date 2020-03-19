@@ -63,7 +63,7 @@ namespace ledger {
 
             std::shared_ptr<api::StellarLikeOperation> asStellarLikeOperation() override;
 
-            bool isInstanceOfStellarLikeOperation() override;
+            bool isInstanceOfStellarLikeOperation() const override;
 
             bool isComplete() override;
             api::WalletType getWalletType() override;

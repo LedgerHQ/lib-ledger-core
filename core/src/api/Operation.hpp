@@ -147,7 +147,7 @@ public:
     virtual bool isInstanceOfTezosLikeOperation() = 0;
 
     /** Same as isInstanceOfBitcoinLikeOperation for ripple. */
-    virtual bool isInstanceOfStellarLikeOperation() = 0;
+    virtual bool isInstanceOfStellarLikeOperation() const = 0;
 
     /**
      * Tells if the operation is complete.

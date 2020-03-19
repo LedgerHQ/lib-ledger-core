@@ -145,7 +145,7 @@ public:
      * Tell whether wallet is a Stellar one.
      * @return bool
      */
-    virtual bool isInstanceOfStellarLikeWallet() = 0;
+    virtual bool isInstanceOfStellarLikeWallet() const = 0;
 
     /** Cast the instance to StellarLIkeWallet */
     virtual std::shared_ptr<StellarLikeWallet> asStellarLikeWallet() = 0;

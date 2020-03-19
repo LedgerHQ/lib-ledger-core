@@ -71,7 +71,7 @@ namespace ledger {
             bool isInstanceOfBitcoinLikeWallet() override;
             bool isInstanceOfEthereumLikeWallet() override;
 
-            bool isInstanceOfStellarLikeWallet() override;
+            bool isInstanceOfStellarLikeWallet() const override;
 
             std::shared_ptr<api::StellarLikeWallet> asStellarLikeWallet() override;
 

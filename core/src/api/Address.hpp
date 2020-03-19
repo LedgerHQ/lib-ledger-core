@@ -44,7 +44,7 @@ public:
     /** Cast the address to a stellar like one */
     virtual std::shared_ptr<StellarLikeAddress> asStellarLikeAddress() = 0;
 
-    virtual bool isInstanceOfStellarLikeAddress() = 0;
+    virtual bool isInstanceOfStellarLikeAddress() const = 0;
 
     virtual Currency getCurrency() = 0;
 

@@ -62,7 +62,7 @@ namespace ledger {
             return nullptr;
         }
 
-        bool StellarLikeWallet::isInstanceOfStellarLikeWallet() {
+        bool StellarLikeWallet::isInstanceOfStellarLikeWallet() const {
             return true;
         }
 

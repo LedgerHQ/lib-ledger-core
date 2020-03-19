@@ -173,7 +173,7 @@ namespace ledger {
             return std::make_shared<StellarLikeOperation>(shared_from_this());
         }
 
-        bool OperationApi::isInstanceOfStellarLikeOperation() {
+        bool OperationApi::isInstanceOfStellarLikeOperation() const {
             return _backend.walletType == api::WalletType::STELLAR;
         }
 

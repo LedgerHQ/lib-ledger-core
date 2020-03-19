@@ -162,7 +162,7 @@ public:
      * Check if account is a Stellar one.
      * @return bool
      */
-    virtual bool isInstanceOfStellarLikeAccount() = 0;
+    virtual bool isInstanceOfStellarLikeAccount() const = 0;
 
     /**
      * Check if account is a Ripple one.
