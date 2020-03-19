@@ -215,3 +215,4 @@ add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetSendWi
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetDelegateWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetDelegateWithExplorer)
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetCurrentBlockWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetCurrentBlockWithExplorer)
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.AllTransactionsSynchronization COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.AllTransactionsSynchronization)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.BalanceHistoryOperationQuery COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.BalanceHistoryOperationQuery)

@@ -97,6 +97,8 @@ namespace ledger {
                         });
                         const auto &sender = boost::get<cosmos::MsgSend>(msg.content).fromAddress;
                         const auto &receiver = boost::get<cosmos::MsgSend>(msg.content).toAddress;
+                        out.senders = {sender};
+                        out.recipients = {receiver};
                         if (sender == address) {
                             out.type = api::OperationType::SEND;
                         }
@@ -114,8 +116,11 @@ namespace ledger {
                         const auto &outputs = boost::get<cosmos::MsgMultiSend>(msg.content).outputs;
                         BigInt recv_amount;
                         BigInt sent_amount;
+                        std::vector<std::string> senders;
+                        std::vector<std::string> receivers;
                         std::for_each(
                             inputs.begin(), inputs.end(), [&](cosmos::MultiSendInput input) {
+                                senders.push_back(input.fromAddress);
                                 if (input.fromAddress == address) {
                                     std::for_each(
                                         input.coins.begin(),
@@ -129,6 +134,7 @@ namespace ledger {
 
                         std::for_each(
                             outputs.begin(), outputs.end(), [&](cosmos::MultiSendOutput output) {
+                                receivers.push_back(output.toAddress);
                                 if (output.toAddress == address) {
                                     std::for_each(
                                         output.coins.begin(),
@@ -151,16 +157,22 @@ namespace ledger {
                                out.type = api::OperationType::SEND;
                         }
 
+                        out.senders = senders;
+                        out.recipients = receivers;
+
                     } break;
                     case api::CosmosLikeMsgType::MSGDELEGATE: {
+                        out.senders = {address};
                         out.amount = boost::get<cosmos::MsgDelegate>(msg.content).amount.amount;
                         out.type = api::OperationType::NONE;
                     } break;
                     case api::CosmosLikeMsgType::MSGUNDELEGATE: {
+                        out.senders = {address};
                         out.amount = boost::get<cosmos::MsgUndelegate>(msg.content).amount.amount;
                         out.type = api::OperationType::NONE;
                     } break;
                     case api::CosmosLikeMsgType::MSGBEGINREDELEGATE: {
+                        out.senders = {address};
                         out.amount =
                             boost::get<cosmos::MsgBeginRedelegate>(msg.content).amount.amount;
                         out.type = api::OperationType::NONE;
@@ -173,6 +185,7 @@ namespace ledger {
                         });
                         const auto &sender =
                             boost::get<cosmos::MsgSubmitProposal>(msg.content).proposer;
+                        out.senders = {sender};
                         if (sender == address) {
                             out.type = api::OperationType::SEND;
                         }
@@ -184,6 +197,7 @@ namespace ledger {
                             out.amount = out.amount + BigInt::fromDecimal(amount.amount);
                         });
                         const auto &sender = boost::get<cosmos::MsgDeposit>(msg.content).depositor;
+                        out.senders = {sender};
                         if (sender == address) {
                             out.type = api::OperationType::SEND;
                         }
@@ -198,6 +212,7 @@ namespace ledger {
                     case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION:
                     case api::CosmosLikeMsgType::MSGUNJAIL:
                     case api::CosmosLikeMsgType::UNSUPPORTED:
+                        out.senders = {address};
                         out.type = api::OperationType::NONE;
                         break;
                     }
@@ -402,7 +417,7 @@ namespace ledger {
                                         };
 
                                         //Get operations related to an account
-                                        OperationDatabaseHelper::queryOperations(
+                                        CosmosLikeOperationDatabaseHelper::queryOperations(
                                             sql,
                                             uid,
                                             operations,
@@ -417,6 +432,7 @@ namespace ledger {
                                         while (lowerDate <= endDate && operationsCount < operations.size()) {
 
                                                 auto operation = operations[operationsCount];
+                                                // Fill the time slices until next operation with the running value of the accumulator
                                                 while (operation.date > upperDate && lowerDate < endDate) {
                                                         lowerDate = DateUtils::incrementDate(lowerDate, precision);
                                                         upperDate = DateUtils::incrementDate(upperDate, precision);
@@ -431,17 +447,19 @@ namespace ledger {
                                                                         break;
                                                                 }
                                                                 case api::OperationType::SEND: {
-                                                                        sum = sum - operation.amount;
+                                                                        sum = sum - operation.amount - operation.fees.getValueOr(BigInt::ZERO);
                                                                         break;
                                                                 }
-                                                                default:
+                                                                default: {
+                                                                        sum = sum - operation.fees.getValueOr(BigInt::ZERO);
+                                                                }
                                                                         break;
                                                         }
-                                                        sum = sum - operation.fees.getValueOr(BigInt::ZERO);
                                                 }
                                                 operationsCount += 1;
                                         }
 
+                                        // Fill the remainder of the period with constant time slices using end value of the accumulator
                                         while (lowerDate < endDate) {
                                                 lowerDate = DateUtils::incrementDate(lowerDate, precision);
                                                 amounts.emplace_back(

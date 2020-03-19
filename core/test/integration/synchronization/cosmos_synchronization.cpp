@@ -54,6 +54,8 @@
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <cosmos/bech32/CosmosBech32.hpp>
 
+#include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
+
 using namespace std;
 using namespace ledger::core;
 using namespace ledger::testing::cosmos;
@@ -546,4 +548,36 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
         fmt::format("Expecting BisonTrails to be active (and that currently the explorer returns 2 for this status). Check {} to see if the assertion holds", mintscanAddress);
 
     EXPECT_FALSE(valInfo.slashTimestamps) << "Previous jail events fetching is not implemented. slashTimestamps (*as an option*) should be None.";
+}
+
+TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery)
+{
+    std::string hexPubKey =
+        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(pool, account, wallet, hexPubKey);
+
+    performSynchro(account);
+
+    const auto &uid = account->getAccountUid();
+    soci::session sql(wallet->getDatabase()->getPool());
+    std::vector<Operation> operations;
+
+    auto keychain = account->getKeychain();
+    std::function<bool(const std::string &)> filter = [&keychain](const std::string addr) -> bool {
+        return keychain->contains(addr);
+    };
+
+    //Get operations related to an account
+    CosmosLikeOperationDatabaseHelper::queryOperations(
+        sql,
+        uid,
+        operations,
+        filter);
+
+    ASSERT_GE(operations.size(), 17) << "As of 2020-03-19, there are 17 operations picked up by the query";
 }
