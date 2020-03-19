@@ -455,7 +455,7 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
 
 
 TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
-    std::string pubKey(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY);
+    std::string hexPubKey(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY);
 
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<AbstractWallet> wallet;

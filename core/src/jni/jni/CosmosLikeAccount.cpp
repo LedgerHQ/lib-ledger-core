@@ -20,7 +20,7 @@ CosmosLikeAccount::CosmosLikeAccount() : ::djinni::JniInterface<::ledger::core::
 CosmosLikeAccount::~CosmosLikeAccount() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -28,7 +28,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1broadcastRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_transaction, jobject j_callback)
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1broadcastRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_transaction, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -38,7 +38,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1broadcastTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1broadcastTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -48,7 +48,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1buildTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1buildTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -58,7 +58,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getEstimatedGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getEstimatedGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -68,9 +68,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getLatestValidatorSet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
-CJNIEXPORT jobject JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getDelegations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getDelegations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getLatestValidatorSet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -79,7 +77,7 @@ CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getDelegati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getValidatorInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_validatorAddress, jobject j_callback)
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getValidatorInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_validatorAddress, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -87,9 +85,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
         ref->getValidatorInfo(::djinni::String::toCpp(jniEnv, j_validatorAddress),
                               ::djinni_generated::CosmosLikeValidatorCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-        auto r = ref->getDelegations();
-        return ::djinni::release(::djinni::List<::djinni_generated::CosmosLikeDelegation>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_CosmosLikeAccount_00024CppProxy_native_1getDelegations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
         ref->getDelegations(::djinni_generated::CosmosLikeDelegationListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
