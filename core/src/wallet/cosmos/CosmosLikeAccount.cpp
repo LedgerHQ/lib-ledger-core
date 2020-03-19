@@ -60,6 +60,8 @@
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 
+#include <api/CosmosLikeValidatorListCallback.hpp>
+
 using namespace soci;
 
 namespace ledger {
@@ -661,5 +663,19 @@ namespace ledger {
                                     });
                 }
 
+                Future<cosmos::ValidatorList> CosmosLikeAccount::getActiveValidatorSet() const {
+                        return _explorer->getActiveValidatorSet();
+                }
+
+                void CosmosLikeAccount::getLatestValidatorSet(const std::shared_ptr<api::CosmosLikeValidatorListCallback> &callback) {
+                        getActiveValidatorSet().callback(getContext(), callback);
+                }
+
+                Future<cosmos::Validator> CosmosLikeAccount::getValidatorInfo(const std::string& validatorAddress) const {
+                        return _explorer->getValidatorInfo(validatorAddress);
+                }
+                void CosmosLikeAccount::getValidatorInfo(const std::string &validatorAddress, const std::shared_ptr<api::CosmosLikeValidatorCallback>&callback) {
+                        getValidatorInfo(validatorAddress).callback(getContext(), callback);
+                }
         }
 }

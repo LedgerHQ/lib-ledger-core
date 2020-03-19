@@ -111,10 +111,10 @@ namespace ledger {
                 assert((descriptionNode.HasMember(kMoniker)));
                 out.moniker = descriptionNode[kMoniker].GetString();
                 if (descriptionNode.HasMember(kWebsite) && descriptionNode[kWebsite].IsString()) {
-                    out.identity = optional<std::string>(descriptionNode[kWebsite].GetString());
+                    out.website = optional<std::string>(descriptionNode[kWebsite].GetString());
                 }
                 if (descriptionNode.HasMember(kIdentity) && descriptionNode[kIdentity].IsString()) {
-                    out.website = optional<std::string>(descriptionNode[kIdentity].GetString());
+                    out.identity = optional<std::string>(descriptionNode[kIdentity].GetString());
                 }
                 if (descriptionNode.HasMember(kDetails) && descriptionNode[kDetails].IsString()) {
                     out.details = optional<std::string>(descriptionNode[kDetails].GetString());
@@ -124,13 +124,16 @@ namespace ledger {
             template <typename T>
             void parseCommission(const T& commissionNode, cosmos::ValidatorCommission& out) {
                 assert((commissionNode.HasMember(kUpdateTime)));
-                assert((commissionNode.HasMember(kCommissionRate)));
-                assert((commissionNode.HasMember(kCommissionMaxRate)));
-                assert((commissionNode.HasMember(kCommissionMaxChangeRate)));
-                out.updateTime = DateUtils::fromJSON(commissionNode[kMoniker].GetString());
-                out.rates.rate = commissionNode[kWebsite].GetString();
-                out.rates.maxRate = commissionNode[kIdentity].GetString();
-                out.rates.maxChangeRate = commissionNode[kDetails].GetString();
+                out.updateTime = DateUtils::fromJSON(commissionNode[kUpdateTime].GetString());
+                assert((commissionNode.HasMember(kCommissionRates)));
+                const auto rateObject = commissionNode[kCommissionRates].GetObject();
+
+                assert((rateObject.HasMember(kCommissionRate)));
+                assert((rateObject.HasMember(kCommissionMaxRate)));
+                assert((rateObject.HasMember(kCommissionMaxChangeRate)));
+                out.rates.rate = rateObject[kCommissionRate].GetString();
+                out.rates.maxRate = rateObject[kCommissionMaxRate].GetString();
+                out.rates.maxChangeRate = rateObject[kCommissionMaxChangeRate].GetString();
             }
 
             template <class T>
@@ -323,8 +326,8 @@ namespace ledger {
                 cosmos::MsgEditValidator msg;
 
                 msg.validatorAddress = n[kValidatorAddress].GetString();
-                if (n.HasMember(kCommissionRate) && n[kCommissionRate].IsString()) {
-                    msg.commissionRate = optional<std::string>(n[kCommissionRate].GetString());
+                if (n.HasMember(kEditValCommissionRate) && n[kEditValCommissionRate].IsString()) {
+                    msg.commissionRate = optional<std::string>(n[kEditValCommissionRate].GetString());
                 }
                 if (n.HasMember(kMinSelfDelegation) && n[kMinSelfDelegation].IsString()) {
                     msg.minSelfDelegation = optional<std::string>(n[kMinSelfDelegation].GetString());
@@ -442,6 +445,49 @@ namespace ledger {
                 }
                 assert((vNode.HasMember(kFee)));
                 parseFee(vNode[kFee].GetObject(), transaction.fee);
+            }
+
+            template <typename T>
+            void parseValidatorSetEntry(const T& n, cosmos::Validator &out) {
+                assert((n.HasMember(kDescription)));
+                parseDescription(n[kDescription].GetObject(), out.description);
+
+                assert((n.HasMember(kCommission)));
+                parseCommission(n[kCommission].GetObject(), out.commission);
+
+                assert((n.HasMember("unbonding_height")));
+                out.unbondingHeight = BigInt::fromString(n["unbonding_height"].GetString()).toInt();
+
+                assert((n.HasMember("unbonding_time")));
+                if (out.unbondingHeight == 0) {
+                    out.unbondingTime = optional<std::chrono::system_clock::time_point>();
+                }
+                else {
+                    out.unbondingTime = optional<std::chrono::system_clock::time_point>(
+                        DateUtils::fromJSON(n["unbonding_time"].GetString()));
+                }
+
+                assert((n.HasMember(kMinSelfDelegation)));
+                out.minSelfDelegation = n[kMinSelfDelegation].GetString();
+
+                assert((n.HasMember("jailed")));
+                out.jailed = n["jailed"].GetBool();
+
+                // Note : we ignore delegator_shares, as it seems the actual
+                // voting power is the tokens key, in uatom
+                assert((n.HasMember("tokens")));
+                out.votingPower = n["tokens"].GetString();
+
+                assert((n.HasMember("operator_address")));
+                out.operatorAddress = n["operator_address"].GetString();
+
+                assert((n.HasMember("consensus_pubkey")));
+                out.consensusPubkey = n["consensus_pubkey"].GetString();
+
+                assert((n.HasMember("status")));
+                out.status = BigInt::fromString(n["status"].GetString()).toInt();
+
+                out.slashTimestamps = optional<std::vector<std::chrono::system_clock::time_point>>();
             }
 
         }

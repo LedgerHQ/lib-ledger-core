@@ -50,6 +50,9 @@
 #include <time.h>
 
 
+#include <api/CosmosLikeValidatorListCallback.hpp>
+#include <api/CosmosLikeValidatorCallback.hpp>
+
 namespace ledger {
         namespace core {
                 class CosmosLikeAccountSynchronizer;
@@ -116,6 +119,11 @@ namespace ledger {
                                 FuturePtr<Amount> getPendingRewards() const;
                                 FuturePtr<Amount> getUnbondingBalance() const;
                                 FuturePtr<Amount> getSpendableBalance() const;
+
+                                Future<cosmos::ValidatorList> getActiveValidatorSet() const;
+                                void getLatestValidatorSet(const std::shared_ptr<api::CosmosLikeValidatorListCallback>& callback) override;
+                                Future<cosmos::Validator> getValidatorInfo(const std::string& validatorAddress) const;
+                                void getValidatorInfo(const std::string &validatorAddress, const std::shared_ptr<api::CosmosLikeValidatorCallback>&callback) override;
 
                         private:
                                 std::shared_ptr<CosmosLikeAccount> getSelf();

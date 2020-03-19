@@ -452,7 +452,7 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     EXPECT_TRUE(foundMsgUnjail);
 }
 
-/*
+
 TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
@@ -465,9 +465,11 @@ TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
     performSynchro(account);
     auto blockHeight1 = wait(account->getLastBlock()).height;
 
-    // Wait 8s (new Cosmos block every 7s)
-    fmt::print("Waiting new Cosmos block for 8s...\n");
-    std::this_thread::sleep_for(std::chrono::seconds(8));
+    // Wait 30s (new Cosmos block every 7s)
+    fmt::print("Waiting new Cosmos block for 30s...\n");
+    std::flush(std::cerr);
+    std::flush(std::cout);
+    std::this_thread::sleep_for(std::chrono::seconds(30));
 
     // Second synchro
     // FIXME Fails due to limitation of test framework??
@@ -476,4 +478,72 @@ TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
 
     EXPECT_NE(blockHeight1, blockHeight2);
 }
-*/
+
+TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
+    // This test assumes that HuobiPool and BinanceStaking are always in the validator set
+    const auto huobi_pool_address = "cosmosvaloper1kn3wugetjuy4zetlq6wadchfhvu3x740ae6z6x";
+    bool foundHuobi = false;
+    const auto binance_staking_pub_address = "cosmosvalconspub1zcjduepqtw8862dhw8uty58d6t2szfd6kqram2t234zjteaaeem6l45wclaq8l60gn";
+    bool foundBinance = false;
+
+    auto set = ::wait(explorer->getActiveValidatorSet());
+
+    EXPECT_EQ(set.size(), 125) << "currently cosmoshub-3 has 125 active validators";
+
+    for (const auto & validator : set) {
+        if (validator.consensusPubkey == binance_staking_pub_address) {
+            foundBinance = true;
+        } else if (validator.operatorAddress == huobi_pool_address){
+            foundHuobi = true;
+        } else {
+            continue;
+        }
+    }
+
+    EXPECT_TRUE(foundHuobi) << "Huobi Pool is expected to always be in the validator set";
+    EXPECT_TRUE(foundBinance) << "Binance Staking is expected to always be in the validator set";
+}
+
+TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
+    // This test assumes that HuobiPool and BinanceStaking are always in the validator set
+    const auto bisonTrailsAddress = "cosmosvaloper1uxh465053nq3at4dn0jywgwq3s9sme3la3drx6";
+    const auto bisonTrailsValConsPubAddress = "cosmosvalconspub1zcjduepqc5y2du793cjut0cn6v7thp3xlvphggk6rt2dhw9ekjla5wtkm7nstmv5vy";
+    const auto mintscanAddress = fmt::format("https://www.mintscan.io/validators/{}", bisonTrailsAddress);
+
+
+    auto valInfo = ::wait(explorer->getValidatorInfo(bisonTrailsAddress));
+    ASSERT_EQ(valInfo.operatorAddress, bisonTrailsAddress) << "We should fetch the expected validator";
+    ASSERT_EQ(valInfo.consensusPubkey, bisonTrailsValConsPubAddress) << "We should fetch the expected validator";
+
+
+    EXPECT_EQ(valInfo.description.moniker, "Bison Trails");
+    ASSERT_TRUE(valInfo.description.identity);
+    EXPECT_EQ(valInfo.description.identity.value(), "A296556FF603197C");
+    ASSERT_TRUE(valInfo.description.website);
+    EXPECT_EQ(valInfo.description.website.value(), "https://bisontrails.co");
+    ASSERT_TRUE(valInfo.description.details);
+    EXPECT_EQ(valInfo.description.details.value(), "Bison Trails is the easiest way to run infrastructure on multiple blockchains.");
+
+    EXPECT_EQ(valInfo.commission.rates.maxRate, "0.500000000000000000");
+    EXPECT_EQ(valInfo.commission.rates.maxChangeRate, "0.010000000000000000");
+    EXPECT_GE(valInfo.commission.updateTime, DateUtils::fromJSON("2019-03-13T23:00:00Z")) <<
+        "As of this test writing, last update was on 2019-03-13T23:00:00Z. So updateTime should be at least as recent as this timestamp.";
+    // Specify locale for std::stof -- Also, why we just pass strings instead of parsing as much as possible
+    std::setlocale(LC_NUMERIC, "C");
+    EXPECT_LE(std::stof(valInfo.commission.rates.rate), std::stof(valInfo.commission.rates.maxRate));
+
+    EXPECT_EQ(valInfo.unbondingHeight, 0) <<
+        fmt::format("Expecting BisonTrails to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
+    EXPECT_FALSE(valInfo.unbondingTime) <<
+        fmt::format("Expecting BisonTrails to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
+    EXPECT_EQ(valInfo.minSelfDelegation, "1") <<
+        fmt::format("Expecting BisonTrails to have '1' minimum self delegation. Check {} to see if the assertion holds", mintscanAddress);
+    EXPECT_FALSE(valInfo.jailed) <<
+        fmt::format("Expecting BisonTrails to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
+    EXPECT_GE(BigInt::fromString(valInfo.votingPower).toUint64(), BigInt::fromString("400000000000").toUint64()) <<
+        fmt::format("Expecting BisonTrails voting power to be > 400_000 ATOM. Check {} to see if the assertion holds", mintscanAddress);
+    EXPECT_EQ(valInfo.status, 2) <<
+        fmt::format("Expecting BisonTrails to be active (and that currently the explorer returns 2 for this status). Check {} to see if the assertion holds", mintscanAddress);
+
+    EXPECT_FALSE(valInfo.slashTimestamps) << "Previous jail events fetching is not implemented. slashTimestamps (*as an option*) should be None.";
+}

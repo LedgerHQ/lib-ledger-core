@@ -114,6 +114,10 @@ namespace ledger {
             /// Get total available (spendable) balance
             FuturePtr<BigInt> getSpendableBalance(const std::string &account) const override;
 
+            // Validators
+            Future<cosmos::ValidatorList> getActiveValidatorSet() const override;
+            Future<cosmos::Validator> getValidatorInfo(const std::string& valOperAddress) const override;
+
            private:
             std::shared_ptr<HttpClient> _http;
             api::CosmosLikeNetworkParameters _parameters;

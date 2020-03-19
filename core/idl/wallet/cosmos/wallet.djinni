@@ -2,6 +2,7 @@
 @import "../amount.djinni"
 @import "messages.djinni"
 @import "callback.djinni"
+@import "validators.djinni"
 @import "../../cosmos/addresses.djinni"
 
 #Class representing a Cosmos transaction
@@ -94,6 +95,10 @@ CosmosLikeAccount = interface +c {
         buildTransaction(): CosmosLikeTransactionBuilder;
         # Get estimated gas limit to set so the transaction will succeed
         getEstimatedGasLimit(transaction: CosmosLikeTransaction, callback: callback2<optional<BigInt>>);
+        # Get the latest active validator set
+        getLatestValidatorSet(callback: ListCallback<CosmosLikeValidator>);
+        # Get information about one validator
+        getValidatorInfo(validatorAddress: string, callback: callback2<optional<CosmosLikeValidator>>);
 }
 
 CosmosConfigurationDefaults = interface +c {
