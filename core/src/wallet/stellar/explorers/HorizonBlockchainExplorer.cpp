@@ -41,7 +41,7 @@
 #include "horizon/HorizonFeeStatsParser.hpp"
 #include <utils/Exception.hpp>
 #include <math/BaseConverter.hpp>
-#include <utils/url.h>
+#include <utils/URL.h>
 
 namespace ledger {
     namespace core {

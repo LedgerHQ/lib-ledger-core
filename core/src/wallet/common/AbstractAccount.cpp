@@ -237,7 +237,7 @@ namespace ledger {
 
         bool AbstractAccount::isInstanceOfStellarLikeAccount() {
             return _type == api::WalletType::STELLAR;
-		}
+        }
 
 		void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
             //Update account's internal preferences (for synchronization)
