@@ -93,7 +93,7 @@ namespace ledger {
         FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight) {
             return _http->GET(fmt::format("/blocks/{}", blockHeight), ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<cosmos::Block>(getContext(), [=] (const HttpRequest::JsonResult& response) {
+                .mapPtr<cosmos::Block>(getContext(), [] (const HttpRequest::JsonResult& response) {
                     auto result = std::make_shared<cosmos::Block>();
                     const auto& document = std::get<1>(response)->GetObject();
                     rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
@@ -105,7 +105,7 @@ namespace ledger {
         GaiaCosmosLikeBlockchainExplorer::getAccount(const std::string &account) {
             return _http->GET(fmt::format("/auth/accounts/{}", account), ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<cosmos::Account>(getContext(), [=] (const HttpRequest::JsonResult& response) {
+                .mapPtr<cosmos::Account>(getContext(), [] (const HttpRequest::JsonResult& response) {
                     auto result = std::make_shared<cosmos::Account>();
                     const auto& document = std::get<1>(response)->GetObject();
                     if (!document.HasMember("result")) {
@@ -122,7 +122,7 @@ namespace ledger {
             return _http->GET(fmt::format("/blocks/latest"), ACCEPT_HEADER)
                 .json(true)
                 .map<std::shared_ptr<cosmos::Block>>(getContext(),
-                [=] (const HttpRequest::JsonResult& response) {
+                [] (const HttpRequest::JsonResult& response) {
                     auto result = std::make_shared<cosmos::Block>();
                     const auto& document = std::get<1>(response)->GetObject();
                     rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
@@ -158,7 +158,7 @@ namespace ledger {
         GaiaCosmosLikeBlockchainExplorer::getTransactionByHash(const std::string &hash) {
             return _http->GET(fmt::format("/txs/{}", hash), ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<cosmos::Transaction>(getContext(), [=] (const HttpRequest::JsonResult& response) {
+                .mapPtr<cosmos::Transaction>(getContext(), [] (const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     auto tx = std::make_shared<cosmos::Transaction>();
                     rpcs_parsers::parseTransaction(document, *tx);
@@ -255,7 +255,7 @@ namespace ledger {
         FuturePtr<ledger::core::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() const {
             return _http->GET("/blocks/latest", ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<ledger::core::Block>(getContext(), [=](const HttpRequest::JsonResult& response) {
+                .mapPtr<ledger::core::Block>(getContext(), [](const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     auto block = std::make_shared<cosmos::Block>();
                     rpcs_parsers::parseBlock(document, currencies::ATOM.name, *block);
@@ -499,7 +499,7 @@ namespace ledger {
         FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::getDelegations(const std::string& delegatorAddr) const {
             return _http->GET(fmt::format("/staking/delegators/{}/delegations", delegatorAddr), ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<std::vector<cosmos::Delegation>>(getContext(), [=](const HttpRequest::JsonResult& response) {
+                .mapPtr<std::vector<cosmos::Delegation>>(getContext(), [](const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     const auto& results = document["result"].GetArray();
                     auto delegations = std::make_shared<std::vector<cosmos::Delegation>>();
@@ -515,7 +515,7 @@ namespace ledger {
         FuturePtr<std::vector<cosmos::Reward>> GaiaCosmosLikeBlockchainExplorer::getPendingRewards(const std::string& delegatorAddr) const {
             return _http->GET(fmt::format("/distribution/delegators/{}/rewards", delegatorAddr), ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<std::vector<cosmos::Reward>>(getContext(), [=](const HttpRequest::JsonResult& response) {
+                .mapPtr<std::vector<cosmos::Reward>>(getContext(), [](const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     const auto& results = document["result"].GetObject()[kRewards].GetArray();
                     auto rewards = std::make_shared<std::vector<cosmos::Reward>>();
