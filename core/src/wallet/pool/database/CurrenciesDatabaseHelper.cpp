@@ -70,7 +70,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 auto hexXPUBVersion = hex::toString(params.XPUBVersion);
                 auto feePolicy = api::to_string(params.FeePolicy);
                 auto sigHash = hex::toString(params.SigHash);
-                auto useTimestampedTransaction = params.UsesTimestampedTransaction ? 1 : 0;
+                auto useTimestampedTransaction = static_cast<int>(params.UsesTimestampedTransaction);
                 sql
                 << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType, :additionalBIPs)",
                 use(currency.name),
