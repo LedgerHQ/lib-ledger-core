@@ -108,7 +108,7 @@ namespace ledger {
             /// Get total balance in delegation
             FuturePtr<BigInt> getDelegatedBalance(const std::string &account) const override;
             /// Get total pending rewards
-            FuturePtr<BigInt> getPendingRewards(const std::string &account) const override;
+            FuturePtr<BigInt> getPendingRewardsBalance(const std::string &account) const override;
             /// Get total unbonding balance
             FuturePtr<BigInt> getUnbondingBalance(const std::string &account) const override;
             /// Get total available (spendable) balance

@@ -51,7 +51,7 @@ public:
     virtual void getDelegatedBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
 
     /** Get Total pending rewards of account. */
-    virtual void getPendingRewards(const std::shared_ptr<AmountCallback> & callback) = 0;
+    virtual void getPendingRewardsBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
 
     /** Get Total unbondings funds of account. */
     virtual void getUnbondingBalance(const std::shared_ptr<AmountCallback> & callback) = 0;

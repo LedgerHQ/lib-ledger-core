@@ -122,8 +122,8 @@ namespace ledger {
                                 FuturePtr<Amount> getDelegatedBalance() const;
                                 void getDelegatedBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
 
-                                FuturePtr<Amount> getPendingRewards() const;
-                                void getPendingRewards(const std::shared_ptr<api::AmountCallback> &callback) override;
+                                FuturePtr<Amount> getPendingRewardsBalance() const;
+                                void getPendingRewardsBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
 
                                 FuturePtr<Amount> getUnbondingBalance() const;
                                 void getUnbondingBalance(const std::shared_ptr<api::AmountCallback> &callback) override;

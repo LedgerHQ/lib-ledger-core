@@ -349,7 +349,7 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
 
     const auto totalBalance = wait(account->getTotalBalance())->toLong();
     const auto delegatedBalance = wait(account->getDelegatedBalance())->toLong();
-    const auto pendingRewards = wait(account->getPendingRewards())->toLong();
+    const auto pendingRewards = wait(account->getPendingRewardsBalance())->toLong();
     const auto unbondingBalance = wait(account->getUnbondingBalance())->toLong();
     const auto spendableBalance = wait(account->getSpendableBalance())->toLong();
 

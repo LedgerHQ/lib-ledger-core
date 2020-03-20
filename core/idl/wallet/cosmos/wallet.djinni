@@ -104,7 +104,7 @@ CosmosLikeAccount = interface +c {
         # Get Total amount in delegation of account.
         getDelegatedBalance(callback: Callback<Amount>);
         # Get Total pending rewards of account.
-        getPendingRewards(callback: Callback<Amount>);
+        getPendingRewardsBalance(callback: Callback<Amount>);
         # Get Total unbondings funds of account.
         getUnbondingBalance(callback: Callback<Amount>);
         # Get Total spendable balance of account.
