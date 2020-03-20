@@ -664,17 +664,8 @@ namespace ledger {
                                         });
                 }
 
-                FuturePtr<Amount> CosmosLikeAccount::getPendingRewardsBalance() const {
-                    auto currency = getWallet()->getCurrency();
-                    return _explorer->getPendingRewardsAmount(_keychain->getAddress()->toBech32())
-                            .mapPtr<Amount>(
-                                    getContext(),
-                                    [currency](const auto& rawAmount){
-                                return std::make_shared<Amount>(
-                                    currency,
-                                    0,
-                                    *rawAmount);
-                                    });
+                void CosmosLikeAccount::getPendingRewardsBalance(const std::shared_ptr<api::AmountCallback> &callback) {
+                        getPendingRewardsBalance().callback(getContext(), callback);
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getUnbondingBalance() const {
