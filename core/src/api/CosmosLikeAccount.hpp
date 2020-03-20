@@ -60,7 +60,7 @@ public:
 
     /** Get Total spendable balance of account. */
     virtual void getSpendableBalance(const std::shared_ptr<AmountCallback> & callback) = 0;
-    virtual std::vector<std::shared_ptr<CosmosLikeDelegation>> getDelegations() = 0;
+
     virtual void getDelegations(const std::shared_ptr<CosmosLikeDelegationListCallback> & callback) = 0;
 
     virtual void getPendingRewards(const std::shared_ptr<CosmosLikeRewardListCallback> & callback) = 0;
