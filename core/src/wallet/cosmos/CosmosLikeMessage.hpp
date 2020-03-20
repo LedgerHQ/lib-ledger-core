@@ -68,6 +68,7 @@ namespace ledger {
 
             void setRawData(const cosmos::Message &msgData);
 			const cosmos::Message& getRawData() const;
+            const std::string& getFromAddress() const;
 
 		private:
 

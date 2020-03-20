@@ -414,5 +414,25 @@ namespace ledger {
             return buffer.GetString();
         }
 
+        const std::string& CosmosLikeTransactionApi::getAccountNumber() const
+        {
+            return _accountNumber;
+        }
+
+        const std::string& CosmosLikeTransactionApi::getAccountSequence() const
+        {
+            return _accountSequence;
+        }
+
+        const api::Currency& CosmosLikeTransactionApi::getCurrency() const
+        {
+            return _currency;
+        }
+
+        const cosmos::Transaction& CosmosLikeTransactionApi::getTxData() const
+        {
+            return _txData;
+        }
+
     }
 }

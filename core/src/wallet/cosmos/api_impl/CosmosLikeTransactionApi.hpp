@@ -82,6 +82,10 @@ namespace ledger {
             const cosmos::Transaction & getRawData() const;
 
             std::string serializeTransfer() const;
+            const std::string& getAccountNumber() const;
+            const std::string& getAccountSequence() const;
+            const api::Currency& getCurrency() const;
+            const cosmos::Transaction& getTxData() const;
 
         private:
 
