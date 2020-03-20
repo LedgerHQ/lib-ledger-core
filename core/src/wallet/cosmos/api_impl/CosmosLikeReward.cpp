@@ -53,10 +53,9 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> CosmosLikeReward::getRewardAmount() const {
-            // FIXME std::stod uses radix from current locale (can be . or ,)
-            // resulting in incorrect rounding for any locale where the radix is not '.'
-            auto roundedReward = std::to_string(std::lround(std::stod(_rewardData.pendingReward.amount)));
-            return std::make_shared<Amount>(currencies::ATOM, 0, BigInt::fromDecimal(roundedReward));
+            auto reward = _rewardData.pendingReward.amount;
+            reward.erase(reward.find('.'), std::string::npos);
+            return std::make_shared<Amount>(currencies::ATOM, 0, BigInt::fromDecimal(reward));
         }
     }
 }
