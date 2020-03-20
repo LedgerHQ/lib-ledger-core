@@ -375,7 +375,7 @@ TEST_F(CosmosTransactionTest, ParseRawMsgCreateValidatorTransaction) {
         "\"msg\":[{"
             "\"type\":\"cosmos-sdk/MsgCreateValidator\","
             "\"value\":{"
-                "\"commission\":{\"commission_max_change_rate\":\"0.05\",\"commission_max_rate\":\"0.60\",\"commission_rate\":\"0.45\",\"update_time\":\"2020-02-25T13:42:29Z\"},"
+                "\"commission\":{\"max_change_rate\":\"0.05\",\"max_rate\":\"0.60\",\"rate\":\"0.45\",\"update_time\":\"2020-02-25T13:42:29Z\"},"
                 "\"delegator_address\":\"cosmostest\","
                 "\"description\":{\"details\":\"It flies well\\\\nnewline\",\"identity\":\"Pocket Monsters\",\"moniker\":\"Hélédelle\",\"website\":\"https://www.pokepedia.fr/H%C3%A9l%C3%A9delle\"},"
                 "\"min_self_delegation\":\"1\","
