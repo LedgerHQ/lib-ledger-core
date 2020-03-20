@@ -50,31 +50,33 @@
 namespace ledger {
     namespace core {
         class CosmosLikeTransactionApi : public api::CosmosLikeTransaction {
+
         public:
+
             explicit CosmosLikeTransactionApi() {}
-
             explicit CosmosLikeTransactionApi(const cosmos::Transaction& txData);
-
             explicit CosmosLikeTransactionApi(const std::shared_ptr<OperationApi>& baseOp);
 
-            std::string getHash() const override;
-            std::shared_ptr<api::Amount> getFee() const override;
-            std::vector<std::shared_ptr<api::CosmosLikeMessage>> getMessages() const override;
-            std::string serialize() override;
-            std::string getMemo() const override;
-            std::chrono::system_clock::time_point getDate() const override;
+            void setCurrency(const api::Currency& currency);
+            void setFee(const std::shared_ptr<BigInt>& fee);
+            void setGas(const std::shared_ptr<BigInt>& gas);
+            void setHash(const std::string &hash);
+            void setMemo(const std::string &memo);
+            void setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & messages);
+            void setSigningPubKey(const std::vector<uint8_t> &pubKey);
+
             void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) override ;
             void setDERSignature(const std::vector<uint8_t> & signature) override;
-            std::vector<uint8_t> getSigningPubKey() const override;
-            std::shared_ptr<api::Amount> getGas() const override;
 
-            CosmosLikeTransactionApi & setCurrency(const api::Currency& currency);
-            CosmosLikeTransactionApi & setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & messages);
-            CosmosLikeTransactionApi & setSigningPubKey(const std::vector<uint8_t> &pubKey);
-            CosmosLikeTransactionApi & setHash(const std::string &hash);
-            CosmosLikeTransactionApi & setGas(const std::shared_ptr<BigInt>& gas);
-            CosmosLikeTransactionApi & setFee(const std::shared_ptr<BigInt>& fee);
-            CosmosLikeTransactionApi & setMemo(const std::string &memo);
+            std::chrono::system_clock::time_point getDate() const override;
+            std::shared_ptr<api::Amount> getFee() const override;
+            std::shared_ptr<api::Amount> getGas() const override;
+            std::string getHash() const override;
+            std::string getMemo() const override;
+            std::vector<std::shared_ptr<api::CosmosLikeMessage>> getMessages() const override;
+            std::vector<uint8_t> getSigningPubKey() const override;
+
+            std::string serialize() override;
 
             void setRawData(const cosmos::Transaction &txData);
             const cosmos::Transaction & getRawData() const;

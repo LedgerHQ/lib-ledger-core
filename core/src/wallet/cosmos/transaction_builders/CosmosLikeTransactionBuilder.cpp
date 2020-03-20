@@ -30,17 +30,17 @@
 
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 
-#include <rapidjson/rapidjson.h>
-#include <rapidjson/document.h>
-
-#include <api/enum_from_string.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/common/Amount.h>
+
 #include <utils/DateUtils.hpp>
 
-#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <wallet/common/Amount.h>
-#include <wallet/cosmos/CosmosLikeConstants.hpp>
-#include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <cereal/external/base64.hpp>
+#include <rapidjson/document.h>
+#include <rapidjson/rapidjson.h>
 
 
 using namespace rapidjson;
@@ -192,7 +192,7 @@ namespace ledger {
                 return {
                     getString(valueObject, kVoter),
                     getString(valueObject, kProposalId),
-                    api::from_string<api::CosmosLikeVoteOption>(getString(valueObject, kOption))
+                    cosmos::stringToVoteOption(getString(valueObject, kOption))
                 };
             }
 
@@ -483,6 +483,9 @@ namespace ledger {
         CosmosLikeTransactionBuilder::parseRawTransaction(const api::Currency &currency,
                                                           const std::string &rawTransaction,
                                                           bool isSigned) {
+
+            // Parse broadcast format (cf. https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/types/stdtx.go#L23-L30)
+
             Document document;
             document.Parse(rawTransaction.c_str());
 
@@ -490,7 +493,7 @@ namespace ledger {
             tx->setCurrency(currency);
             tx->setMemo(getString(document.GetObject(), kMemo));
 
-            //Get fees
+            // Fees
             if (document[kFee].IsObject()) {
                 auto feeObject = document[kFee].GetObject();
 
@@ -532,13 +535,13 @@ namespace ledger {
                 }
             }
 
-            // Msgs object
-            if (document[kMessages].IsArray()) {
+            // Messages
+            if (document[kMessage].IsArray()) {
                 std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
 
-                messages.reserve(document[kMessages].GetArray().Size());
+                messages.reserve(document[kMessage].GetArray().Size());
 
-                for (auto& msg: document[kMessages].GetArray()) {
+                for (auto& msg: document[kMessage].GetArray()) {
                     if (msg.IsObject()) {
                         auto msgObject = msg.GetObject();
 
@@ -616,6 +619,29 @@ namespace ledger {
                 }
 
                 tx->setMessages(messages);
+            }
+
+            // FIXME Fix signature management
+            if (isSigned
+                &&  document.HasMember(kSignatures)
+                &&  document[kSignatures].IsArray()
+                && !document[kSignatures].GetArray().Empty()) {
+
+                auto firstSignature = document[kSignatures].GetArray()[0].GetObject();
+
+                { // Signature
+                    std::string sig = getString(firstSignature, kSignature);
+                    std::vector<uint8_t> sigBytes(sig.begin(), sig.end()); // FIXME Not the right way to do it...
+                    tx->setDERSignature(sigBytes);
+                }
+
+                { // Optional public key
+                    std::string pubKey = getString(firstSignature, kPubKey);
+                    if (!pubKey.empty()) {
+                        std::vector<uint8_t> pubKeyBytes(pubKey.begin(), pubKey.end()); // FIXME Not the right way to do it...
+                        tx->setSigningPubKey(pubKeyBytes);
+                    }
+                }
             }
 
             return tx;

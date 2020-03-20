@@ -7,25 +7,25 @@
 
 #Class representing a Cosmos transaction
 CosmosLikeTransaction = interface +c {
-        # Get the hash of the transaction.
-        const getHash(): string;
+        # Get the time when the transaction was issued or the time of the block including this transaction
+        const getDate(): date;
         # Get Fee (in drop)
         const getFee(): Amount;
-        # Serialize the transaction to its JSON format.
-        serialize(): string;
-        # Get the list of messages
-        const getMessages(): list<CosmosLikeMessage>;
+        # Get gas
+        const getGas(): Amount;
+        # Get the hash of the transaction.
+        const getHash(): string;
         # Get memo
         const getMemo(): string;
+        # Get the list of messages
+        const getMessages(): list<CosmosLikeMessage>;
+        # Get Signing public Key
+        const getSigningPubKey(): binary;
         # Set signature of transaction, when a signature is set serialize method gives back serialized Tx
         setSignature(rSignature: binary, sSignature: binary);
         setDERSignature(signature: binary);
-        # Get the time when the transaction was issued or the time of the block including
-        # this transaction
-        const getDate(): date;
-        # Get Signing public Key
-        const getSigningPubKey(): binary;
-        const getGas(): Amount;
+        # Serialize the transaction to its JSON (broadcast) format
+        serialize(): string;
 }
 
 #Class representing a Cosmos Operation

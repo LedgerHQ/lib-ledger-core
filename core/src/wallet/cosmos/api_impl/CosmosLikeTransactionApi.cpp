@@ -108,7 +108,7 @@ namespace ledger {
             return result;
         }
 
-        CosmosLikeTransactionApi & CosmosLikeTransactionApi::setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & cmessages) {
+        void CosmosLikeTransactionApi::setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & cmessages) {
             auto result = std::vector<cosmos::Message>();
             for (auto& message : cmessages) {
                 auto concrete_message = std::dynamic_pointer_cast<CosmosLikeMessage>(message);
@@ -120,7 +120,6 @@ namespace ledger {
                 result.push_back(concrete_message->getRawData());
             }
             _txData.messages = result;
-            return *this;
         }
 
         std::string CosmosLikeTransactionApi::getHash() const {
@@ -185,6 +184,10 @@ namespace ledger {
             return _txData;
         }
 
+        // Builds the payload for a transaction broadcast.
+        // NOTE The produced payload is not a 1:1 mapping of this
+        // CosmosLikeTransactionApi because a "mode" is added to the json.
+        // (cf. broadcast format https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/client/rest/broadcast.go#L13-L16)
         std::string CosmosLikeTransactionApi::serialize() {
 
             using namespace cosmos::constants;
@@ -274,7 +277,7 @@ namespace ledger {
             document.AddMember(kTx, txObject, allocator);
 
             // Set mode
-            // FIXME What mode do we want? (sync|async|block)
+            // TODO What mode do we want? (sync|async|block)
             vString.SetString("async", static_cast<SizeType>(5), allocator);
             document.AddMember(kMode, vString, allocator);
 
@@ -285,31 +288,27 @@ namespace ledger {
             return buffer.GetString();
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setCurrency(const api::Currency& currency) {
+        void CosmosLikeTransactionApi::setCurrency(const api::Currency& currency) {
             _currency = currency;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setSigningPubKey(const std::vector<uint8_t> &pubKey) {
+        void CosmosLikeTransactionApi::setSigningPubKey(const std::vector<uint8_t> &pubKey) {
             _signingPubKey = pubKey;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setHash(const std::string &rhs_hash) {
+        void CosmosLikeTransactionApi::setHash(const std::string &rhs_hash) {
             _txData.hash = rhs_hash;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setGas(const std::shared_ptr<BigInt> &rhs_gas) {
+        void CosmosLikeTransactionApi::setGas(const std::shared_ptr<BigInt> &rhs_gas) {
             if (!rhs_gas) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "CosmosLikeTransactionApi::setGas: Invalid gas");
             }
             _txData.fee.gas = *rhs_gas;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setFee(const std::shared_ptr<BigInt> &rhs_fee) {
+        void CosmosLikeTransactionApi::setFee(const std::shared_ptr<BigInt> &rhs_fee) {
             if (!rhs_fee) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "CosmosLikeTransactionApi::setGasPrice: Invalid fee");
@@ -321,13 +320,10 @@ namespace ledger {
             } else {
                 _txData.fee.amount.emplace_back(rhs_fee->toString(), _currency.units.front().name);
             }
-
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setMemo(const std::string &rhs_memo) {
+        void CosmosLikeTransactionApi::setMemo(const std::string &rhs_memo) {
             _txData.memo = rhs_memo;
-            return *this;
         }
 
     }
