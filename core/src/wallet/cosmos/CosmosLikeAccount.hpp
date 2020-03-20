@@ -39,6 +39,7 @@
 #include <api/ErrorCodeCallback.hpp>
 #include <api/Event.hpp>
 #include <api/StringCallback.hpp>
+#include <api/AmountCallback.hpp>
 
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
@@ -114,11 +115,21 @@ namespace ledger {
                                 std::shared_ptr<api::OperationQuery> queryOperations() override;
                                 void getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction, const std::shared_ptr<api::BigIntCallback> &callback) override;
 
+                                // Balances
                                 FuturePtr<Amount> getTotalBalance() const;
+                                void getTotalBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+
                                 FuturePtr<Amount> getDelegatedBalance() const;
-                                FuturePtr<Amount> getPendingRewards() const;
+                                void getDelegatedBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+
+                                FuturePtr<Amount> getPendingRewardsBalance() const;
+                                void getPendingRewardsBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+
                                 FuturePtr<Amount> getUnbondingBalance() const;
+                                void getUnbondingBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
+
                                 FuturePtr<Amount> getSpendableBalance() const;
+                                void getSpendableBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
 
                                 Future<cosmos::ValidatorList> getActiveValidatorSet() const;
                                 void getLatestValidatorSet(const std::shared_ptr<api::CosmosLikeValidatorListCallback>& callback) override;

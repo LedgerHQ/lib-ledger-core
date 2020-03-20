@@ -99,6 +99,16 @@ CosmosLikeAccount = interface +c {
         getLatestValidatorSet(callback: ListCallback<CosmosLikeValidator>);
         # Get information about one validator
         getValidatorInfo(validatorAddress: string, callback: callback2<optional<CosmosLikeValidator>>);
+        # Get Total balance of account. Sum of spendable, delegated, pending rewards, and pending unbondings
+        getTotalBalance(callback: Callback<Amount>);
+        # Get Total amount in delegation of account.
+        getDelegatedBalance(callback: Callback<Amount>);
+        # Get Total pending rewards of account.
+        getPendingRewardsBalance(callback: Callback<Amount>);
+        # Get Total unbondings funds of account.
+        getUnbondingBalance(callback: Callback<Amount>);
+        # Get Total spendable balance of account.
+        getSpendableBalance(callback: Callback<Amount>);
 }
 
 CosmosConfigurationDefaults = interface +c {

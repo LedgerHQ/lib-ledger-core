@@ -295,7 +295,7 @@ namespace ledger {
                 getSpendableBalance(account),
                 getDelegatedBalance(account),
                 getUnbondingBalance(account),
-                getPendingRewards(account)
+                getPendingRewardsBalance(account)
                 });
 
             return async::sequence(getContext(), balance_promises)
@@ -339,7 +339,7 @@ namespace ledger {
                     });
         }
         /// Get total pending rewards
-        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getPendingRewards(
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getPendingRewardsBalance(
             const std::string &account) const
         {
             const auto endpoint = fmt::format(cosmos::constants::kGaiaRewardsEndpoint, account);
