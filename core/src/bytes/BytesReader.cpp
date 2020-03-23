@@ -104,7 +104,7 @@ namespace ledger {
             if (_cursor >= _bytes.size()) {
                 throw std::out_of_range(fmt::format("Read {} of {}", _cursor, hex::toString(_bytes)));
             }
-            uint8_t result = _bytes[_cursor];
+            uint8_t const result = _bytes[_cursor];
             seek(1, Seek::CUR);
             return result;
         }
