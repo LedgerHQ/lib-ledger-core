@@ -216,7 +216,7 @@ namespace ledger {
                 case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
                     {
                     throw make_exception(
-                        api::ErrorCode::IMPLEMENTATION_IS_MISSING,
+                        api::ErrorCode::UNSUPPORTED_OPERATION,
                         "inflate MsgCreateValidator / MsgEditValidator");
                     }
                     break;
