@@ -194,14 +194,14 @@ namespace ledger {
              * Read a value (int, long, short, byte, struct) from the reader using big endian bytes ordering.
              * @return
              */
-            template<typename T> T readNextBeValue() {
+            template<typename T, ledger::core::endianness:Endianness = ledger::core::endianness::Endianness::BIG> T readNextValue() {
                 T result;
                 uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
                 for (auto i = 0; i < sizeof(result); i++) {
                     ptr[i] = readNextByte();
                 }
                 ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                            ledger::core::endianness::Endianness::BIG,
+                                                            Endianness,
                                                             ledger::core::endianness::getSystemEndianness());
                 return result;
             }
