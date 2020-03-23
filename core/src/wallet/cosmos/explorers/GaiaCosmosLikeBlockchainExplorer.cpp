@@ -536,7 +536,7 @@ namespace ledger {
 
         namespace {
 
-        // TODO: probably move most of these in TransactionApi
+        // TODO: probably move most of these in a separate folder/file
 
         rapidjson::Value makeAmount(const api::CosmosLikeAmount& amount,
                                     rapidjson::Document::AllocatorType& allocator)
@@ -877,6 +877,13 @@ namespace ledger {
                         return getEstimatedGasLimit(transaction, message);
                     });
 
+            /// Because of limitations in the REST API, we cannot estimate
+            /// directly the gas needed for a transaction with several messages.
+            /// As a workaround, we split the transaction in several transactions
+            /// containing only one message and sum the costs of all transactions.
+            /// This implies that the cost of the signature is paid as many times
+            /// as there are messages, instead of one. We assume that this cost is
+            /// low compared to the total cost.
             return async::sequence(getContext(), estimations)
                 .flatMapPtr<BigInt>(getContext(), [](const auto& estimations) {
                         const auto result = std::accumulate(std::begin(estimations),
