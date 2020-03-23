@@ -849,6 +849,16 @@ namespace ledger {
                 "depositor VARCHAR(255)"
                 ")";
 
+            sql << "CREATE TABLE cosmos_multisend_io("
+                "message_uid NOT NULL REFERENCES cosmos_messages(uid),"
+                // not null when input
+                "from_address VARCHAR(255),"
+                // not null when output
+                "to_address VARCHAR(255),"
+                "amount NOT NULL VARCHAR(255)"
+                ")"
+                ;
+
             sql << "CREATE TABLE cosmos_operations("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
                 "message_uid VARCHAR(255) NOT NULL REFERENCES cosmos_messages(uid)"
