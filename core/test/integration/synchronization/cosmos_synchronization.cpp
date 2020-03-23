@@ -387,10 +387,10 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
 
     std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<AbstractWallet> wallet;
     std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
 
-    setupTest(pool, wallet, account, hexPubKey);
+    setupTest(pool, account, wallet, hexPubKey);
 
     performSynchro(account);
 
