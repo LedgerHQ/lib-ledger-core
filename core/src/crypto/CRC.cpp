@@ -37,24 +37,14 @@ namespace ledger {
     namespace core {
 
         struct CRC::CRC16Profile {
-            CRC16Profile(const ::CRC::Parameters<uint16_t, 16>& params) : _params(params) {}
-            ::CRC::Table<uint16_t, 16>& getTable() {
-                std::lock_guard<std::mutex> lock(_mutex);
-                if (_table.isEmpty())
-                    _table = _params.MakeTable();
-                return _table.getValue();
-            };
-
-        private:
-            ::CRC::Parameters<uint16_t, 16> _params;
-            Option<::CRC::Table<uint16_t, 16>> _table;
-            std::mutex _mutex;
+            explicit CRC16Profile(const ::CRC::Parameters<uint16_t, 16>& params) : table(params.MakeTable()) {}
+            const ::CRC::Table<uint16_t, 16> table;
         };
 
         CRC::CRC16Profile CRC::XMODEM {::CRC::CRC_16_XMODEM()};
 
         uint16_t CRC::calculate(const std::vector<uint8_t> &bytes, CRC16Profile& profile) {
-            return ::CRC::Calculate(bytes.data(), bytes.size(), profile.getTable());
+            return ::CRC::Calculate(bytes.data(), bytes.size(), profile.table);
         }
     }
 }
