@@ -1,3 +1,4 @@
+@import "ledger-core/account.djinni"
 @import "ledger-core/amount.djinni"
 @import "ledger-core/callback.djinni"
 @import "ledger-core/math/big_int.djinni"
@@ -142,6 +143,7 @@ EthereumGasLimitRequest = record {
 
 # Class representing a Ethereum account.
 EthereumLikeAccount = interface +c {
+    static fromCoreAccount(coreAccount: Account): optional<EthereumLikeAccount>;
     # Send a raw (binary) transaction on the Ethereum blockchain.
     broadcastRawTransaction(transaction: binary, callback: Callback<string>);
     # Send a transaction on the Ethereum blockchain.

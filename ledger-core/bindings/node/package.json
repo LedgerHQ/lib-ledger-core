@@ -1,5 +1,5 @@
 {
-  "name": "@ledgerhq/ledger-core-node-modularized",
+  "name": "@ledgerhq/ledger-core-modularized",
   "version": "0.1.0",
   "libcoreVersion": "",
   "description": "Ledger Core Library cross-platform C++ bindings for NodeJs (modularized version)",

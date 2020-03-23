@@ -366,5 +366,8 @@ namespace ledger {
             });
         }
 
+        std::shared_ptr<api::TezosLikeAccount> fromCoreAccount(const std::shared_ptr<api::Account> & coreAccount) {
+            return std::dynamic_pointer_cast<api::TezosLikeAccount>(coreAccount);
+        }
     }
 }

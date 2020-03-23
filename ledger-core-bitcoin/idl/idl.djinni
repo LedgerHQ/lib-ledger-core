@@ -1,3 +1,4 @@
+@import "ledger-core/account.djinni"
 @import "ledger-core/amount.djinni"
 @import "ledger-core/callback.djinni"
 @import "ledger-core/currency.djinni"
@@ -296,6 +297,7 @@ BitcoinLikeTransactionBuilder = interface +c {
 
 # Class representing a Bitcoin account.
 BitcoinLikeAccount = interface +c {
+    static fromCoreAccount(coreAccount: Account): optional<BitcoinLikeAccount>;
     # Get UTXOs of account in a given range.
     # @param from, integer, lower bound for account's UTXO's index
     # @param to, integer, upper bound for account's UTXO's index

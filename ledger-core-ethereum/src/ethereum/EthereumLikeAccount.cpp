@@ -720,5 +720,9 @@ namespace ledger {
                                                                         buildFunction);
         }
 
+        std::shared_ptr<api::EthereumLikeAccount> fromCoreAccount(const std::shared_ptr<api::Account> & coreAccount) {
+          return std::dynamic_pointer_cast<api::EthereumLikeAccount>(coreAccount);
+        }
+
     }
 }

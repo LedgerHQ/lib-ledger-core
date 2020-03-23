@@ -1,3 +1,4 @@
+@import "ledger-core/account.djinni"
 @import "ledger-core/amount.djinni"
 @import "ledger-core/callback.djinni"
 @import "ledger-core/currency.djinni"
@@ -149,6 +150,7 @@ RippleLikeTransactionBuilder = interface +c {
 
 #Class representing a Ripple account
 RippleLikeAccount = interface +c {
+	static fromCoreAccount(coreAccount: Account): optional<RippleLikeAccount>;
 	broadcastRawTransaction(transaction: binary, callback: Callback<string>);
 	broadcastTransaction(transaction: RippleLikeTransaction, callback: Callback<string>);
 	buildTransaction(): RippleLikeTransactionBuilder;

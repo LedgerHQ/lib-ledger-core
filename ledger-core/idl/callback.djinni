@@ -1,4 +1,5 @@
 @import "error.djinni"
+
 # Callback triggered by main completed task, returning optional result as list of template type T.
 ListCallback = interface[T] +j +o +s +n {
     # Method triggered when main task complete.

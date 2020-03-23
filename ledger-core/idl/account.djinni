@@ -1,3 +1,4 @@
+@import "address.djinni"
 @import "amount.djinni"
 @import "block.djinni"
 @import "error.djinni"

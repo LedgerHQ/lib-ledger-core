@@ -524,5 +524,11 @@ namespace ledger {
                 });
             });
         }
+
+        std::shared_ptr<api::RippleLikeAccount> api::RippleLikeAccount::fromCoreAccount(
+            const std::shared_ptr<api::Account> & coreAccount
+        ) {
+          return std::dynamic_pointer_cast<api::RippleLikeAccount>(coreAccount);
+        }
     }
 }
