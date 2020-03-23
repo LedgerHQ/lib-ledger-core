@@ -48,8 +48,8 @@ namespace ledger {
         }
 
         StellarLikeAddress::StellarLikeAddress(const std::vector<uint8_t> &pubKey, const api::Currency &currency,
-                                               const Option<std::string> &path) : AbstractAddress(currency, path) {
-            _address = convertPubkeyToAddress(pubKey, *currency.stellarLikeNetworkParameters);
+                                               const Option<std::string> &path) : AbstractAddress(currency, path),
+                                               _address(convertPubkeyToAddress(pubKey, *currency.stellarLikeNetworkParameters)) {
         }
 
         std::string StellarLikeAddress::toString() {
