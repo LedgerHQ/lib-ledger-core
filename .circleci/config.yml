@@ -265,14 +265,26 @@ jobs:
           name: Check that the index file is present
           command: test -f build/doc/html/index.html
       - run:
-          name: Setup the SSH private key
+          name: Update GitHub pages
           command: |
-            install -d -m 700 ~/.ssh/
-            gpg -d --passphrase "${GPG_PASSPHRASE}" --batch -o ~/.ssh/id_ed25519 .circleci/id_ed25519.gpg
-            chmod 400 ~/.ssh/id_ed25519
-      - run: >
-          rsync -e "ssh -o StrictHostKeyChecking=no" -a --chown :www-data --delete
-          build/doc/html/ docs.libcore.ledger.com@statics.ledger.fr:.
+            git checkout gh-pages
+            git rm -r .
+            git checkout HEAD -- .gitignore README.md .nojekyll
+            cp -r build/doc/html/* .
+            git stage .
+            git commit --allow-empty-message -m ''
+            git push origin gh-pages --set-upstream
+          working_directory: ~/project
+#
+#      - run:
+#          name: Setup the SSH private key
+#          command: |
+#            install -d -m 700 ~/.ssh/
+#            gpg -d --passphrase "${GPG_PASSPHRASE}" --batch -o ~/.ssh/id_ed25519 .circleci/id_ed25519.gpg
+#            chmod 400 ~/.ssh/id_ed25519
+#      - run: >
+#          rsync -e "ssh -o StrictHostKeyChecking=no" -a --chown :www-data --delete
+#          build/doc/html/ docs.libcore.ledger.com@statics.ledger.fr:.
 
 workflows:
   version: 2
