@@ -34,8 +34,9 @@
 #include <cstdint>
 #include <array>
 #include <vector>
-#include "../math/BigInt.h"
+#include <math/BigInt.h>
 #include "../ledger-core.h"
+#include <utils/endian.h>
 
 namespace ledger {
 
@@ -194,15 +195,15 @@ namespace ledger {
              * Read a value (int, long, short, byte, struct) from the reader using big endian bytes ordering.
              * @return
              */
-            template<typename T, ledger::core::endianness:Endianness = ledger::core::endianness::Endianness::BIG> T readNextValue() {
+            template<typename T, endianness::Endianness endianness> T readNextValue() {
                 T result;
-                uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
+                auto ptr = reinterpret_cast<uint8_t *>(&result);
                 for (auto i = 0; i < sizeof(result); i++) {
                     ptr[i] = readNextByte();
                 }
                 ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                            Endianness,
-                                                            ledger::core::endianness::getSystemEndianness());
+                                                            endianness,
+                                                            endianness::getSystemEndianness());
                 return result;
             }
 
