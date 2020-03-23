@@ -10,6 +10,9 @@ std::string to_string(const OperationType& operationType) {
     switch (operationType) {
         case OperationType::SEND: return "SEND";
         case OperationType::RECEIVE: return "RECEIVE";
+        case OperationType::DELEGATE: return "DELEGATE";
+        case OperationType::UNDELEGATE: return "UNDELEGATE";
+        case OperationType::REWARDS: return "REWARDS";
         case OperationType::NONE: return "NONE";
     };
 };
@@ -17,6 +20,9 @@ template <>
 OperationType from_string(const std::string& operationType) {
     if (operationType == "SEND") return OperationType::SEND;
     else if (operationType == "RECEIVE") return OperationType::RECEIVE;
+    else if (operationType == "DELEGATE") return OperationType::DELEGATE;
+    else if (operationType == "UNDELEGATE") return OperationType::UNDELEGATE;
+    else if (operationType == "REWARDS") return OperationType::REWARDS;
     else return OperationType::NONE;
 };
 
@@ -25,6 +31,9 @@ std::ostream &operator<<(std::ostream &os, const OperationType &o)
     switch (o) {
         case OperationType::SEND:  return os << "SEND";
         case OperationType::RECEIVE:  return os << "RECEIVE";
+        case OperationType::DELEGATE:  return os << "DELEGATE";
+        case OperationType::UNDELEGATE:  return os << "UNDELEGATE";
+        case OperationType::REWARDS:  return os << "REWARDS";
         case OperationType::NONE:  return os << "NONE";
     }
 }
