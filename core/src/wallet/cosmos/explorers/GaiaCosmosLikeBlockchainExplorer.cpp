@@ -91,43 +91,48 @@ namespace ledger {
         }
 
         FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight) {
-            return _http->GET(fmt::format("/blocks/{}", blockHeight)).json(true).mapPtr<cosmos::Block>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                auto result = std::make_shared<cosmos::Block>();
-                const auto& document = std::get<1>(response)->GetObject();
-                rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
-                return result;
-            });
+            return _http->GET(fmt::format("/blocks/{}", blockHeight), ACCEPT_HEADER)
+                .json(true)
+                .mapPtr<cosmos::Block>(getContext(), [] (const HttpRequest::JsonResult& response) {
+                    auto result = std::make_shared<cosmos::Block>();
+                    const auto& document = std::get<1>(response)->GetObject();
+                    rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
+                    return result;
+                });
         }
 
         FuturePtr<ledger::core::cosmos::Account>
         GaiaCosmosLikeBlockchainExplorer::getAccount(const std::string &account) {
-            return _http->GET(fmt::format("/auth/accounts/{}", account)).json(true).mapPtr<cosmos::Account>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                auto result = std::make_shared<cosmos::Account>();
-                const auto& document = std::get<1>(response)->GetObject();
-                if (!document.HasMember("result")) {
-                    throw make_exception(
-                        api::ErrorCode::API_ERROR,
-                        "The API response from explorer is missing the \"result\" key");
-                }
-                rpcs_parsers::parseAccount(document["result"], *result);
-                return result;
-            });
+            return _http->GET(fmt::format("/auth/accounts/{}", account), ACCEPT_HEADER)
+                .json(true)
+                .mapPtr<cosmos::Account>(getContext(), [] (const HttpRequest::JsonResult& response) {
+                    auto result = std::make_shared<cosmos::Account>();
+                    const auto& document = std::get<1>(response)->GetObject();
+                    if (!document.HasMember("result")) {
+                        throw make_exception(
+                            api::ErrorCode::API_ERROR,
+                            "The API response from explorer is missing the \"result\" key");
+                    }
+                    rpcs_parsers::parseAccount(document["result"], *result);
+                    return result;
+                });
         }
 
         FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() {
-            return _http->GET(fmt::format("/blocks/latest")).json(true)
-            .map<std::shared_ptr<cosmos::Block>>(getContext(),
-             [] (const HttpRequest::JsonResult& response) {
-                 auto result = std::make_shared<cosmos::Block>();
-                 const auto& document = std::get<1>(response)->GetObject();
-                 rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
-                 return result;
-             });
+            return _http->GET(fmt::format("/blocks/latest"), ACCEPT_HEADER)
+                .json(true)
+                .map<std::shared_ptr<cosmos::Block>>(getContext(),
+                [] (const HttpRequest::JsonResult& response) {
+                    auto result = std::make_shared<cosmos::Block>();
+                    const auto& document = std::get<1>(response)->GetObject();
+                    rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
+                    return result;
+                });
         }
 
         Future<cosmos::TransactionList> GaiaCosmosLikeBlockchainExplorer::getTransactions(
             const CosmosLikeBlockchainExplorer::TransactionFilter& filter, int page, int limit) const {
-            return _http->GET(fmt::format("/txs?{}&page={}&limit={}", filter, page, limit))
+            return _http->GET(fmt::format("/txs?{}&page={}&limit={}", filter, page, limit), ACCEPT_HEADER)
                 .json(true)
                 .map<cosmos::TransactionList>(
                     getContext(), [](const HttpRequest::JsonResult& response) {
@@ -151,9 +156,9 @@ namespace ledger {
 
         FuturePtr<cosmos::Transaction>
         GaiaCosmosLikeBlockchainExplorer::getTransactionByHash(const std::string &hash) {
-            return _http->GET(fmt::format("/txs/{}", hash))
+            return _http->GET(fmt::format("/txs/{}", hash), ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<cosmos::Transaction>(getContext(), [=] (const HttpRequest::JsonResult& response) {
+                .mapPtr<cosmos::Transaction>(getContext(), [] (const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     auto tx = std::make_shared<cosmos::Transaction>();
                     rpcs_parsers::parseTransaction(document, *tx);
@@ -248,9 +253,9 @@ namespace ledger {
         }
 
         FuturePtr<ledger::core::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() const {
-            return _http->GET("/blocks/latest")
+            return _http->GET("/blocks/latest", ACCEPT_HEADER)
                 .json(true)
-                .mapPtr<ledger::core::Block>(getContext(), [=](const HttpRequest::JsonResult& response) {
+                .mapPtr<ledger::core::Block>(getContext(), [](const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     auto block = std::make_shared<cosmos::Block>();
                     rpcs_parsers::parseBlock(document, currencies::ATOM.name, *block);
@@ -446,7 +451,7 @@ namespace ledger {
                     });
         }
 
-            // Validators
+        // Validators
         Future<cosmos::ValidatorList> GaiaCosmosLikeBlockchainExplorer::getActiveValidatorSet() const {
             const bool parseJsonNumbersAsStrings = true;
             auto basicValidatorList =_http->GET("/staking/validators?status=bonded&page=1&limit=130")
@@ -491,5 +496,37 @@ namespace ledger {
                     });
         }
 
-        }  // namespace core
+        FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::getDelegations(const std::string& delegatorAddr) const {
+            return _http->GET(fmt::format("/staking/delegators/{}/delegations", delegatorAddr), ACCEPT_HEADER)
+                .json(true)
+                .mapPtr<std::vector<cosmos::Delegation>>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& document = std::get<1>(response)->GetObject();
+                    const auto& results = document["result"].GetArray();
+                    auto delegations = std::make_shared<std::vector<cosmos::Delegation>>();
+                    for (auto& result : results) {
+                        cosmos::Delegation delegation;
+                        rpcs_parsers::parseDelegation(result, delegation);
+                        delegations->push_back(delegation);
+                    }
+                    return delegations;
+                });
+        }
+
+        FuturePtr<std::vector<cosmos::Reward>> GaiaCosmosLikeBlockchainExplorer::getPendingRewards(const std::string& delegatorAddr) const {
+            return _http->GET(fmt::format("/distribution/delegators/{}/rewards", delegatorAddr), ACCEPT_HEADER)
+                .json(true)
+                .mapPtr<std::vector<cosmos::Reward>>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& document = std::get<1>(response)->GetObject();
+                    const auto& results = document["result"].GetObject()[kRewards].GetArray();
+                    auto rewards = std::make_shared<std::vector<cosmos::Reward>>();
+                    for (auto& result : results) {
+                        cosmos::Reward reward;
+                        rpcs_parsers::parseReward(result, reward);
+                        rewards->push_back(reward);
+                    }
+                    return rewards;
+                });
+        }
+
+    }  // namespace core
 }

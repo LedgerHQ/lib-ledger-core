@@ -663,6 +663,7 @@ namespace ledger {
                                                         *rawAmount);
                                         });
                 }
+
                 void CosmosLikeAccount::getPendingRewardsBalance(const std::shared_ptr<api::AmountCallback> &callback) {
                         getPendingRewardsBalance().callback(getContext(), callback);
                 }
@@ -702,7 +703,6 @@ namespace ledger {
                 Future<cosmos::ValidatorList> CosmosLikeAccount::getActiveValidatorSet() const {
                         return _explorer->getActiveValidatorSet();
                 }
-
                 void CosmosLikeAccount::getLatestValidatorSet(const std::shared_ptr<api::CosmosLikeValidatorListCallback> &callback) {
                         getActiveValidatorSet().callback(getContext(), callback);
                 }
@@ -712,6 +712,44 @@ namespace ledger {
                 }
                 void CosmosLikeAccount::getValidatorInfo(const std::string &validatorAddress, const std::shared_ptr<api::CosmosLikeValidatorCallback>&callback) {
                         getValidatorInfo(validatorAddress).callback(getContext(), callback);
+                }
+
+                void CosmosLikeAccount::getDelegations(const std::shared_ptr<api::CosmosLikeDelegationListCallback> &callback) {
+                        getDelegations().callback(getMainExecutionContext(), callback);
+                }
+
+                Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>
+                CosmosLikeAccount::getDelegations() {
+                        return _explorer->getDelegations(_accountAddress)
+                                .map<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>(
+                                        getContext(),
+                                        [] (auto& delegations) {
+                                                std::vector<std::shared_ptr<api::CosmosLikeDelegation>> delegationList;
+                                                for (auto& delegation : *delegations) {
+                                                        delegationList.push_back(std::make_shared<CosmosLikeDelegation>(delegation));
+                                                }
+                                                return delegationList;
+                                        }
+                                );
+                }
+
+                void CosmosLikeAccount::getPendingRewards(const std::shared_ptr<api::CosmosLikeRewardListCallback> &callback) {
+                        getPendingRewards().callback(getMainExecutionContext(), callback);
+                }
+
+                Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>>
+                CosmosLikeAccount::getPendingRewards() {
+                        return _explorer->getPendingRewards(_accountAddress)
+                                .map<std::vector<std::shared_ptr<api::CosmosLikeReward>>>(
+                                        getContext(),
+                                        [&] (auto& rewards) {
+                                                std::vector<std::shared_ptr<api::CosmosLikeReward>> rewardList;
+                                                for (auto& reward : *rewards) {
+                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, _accountAddress));
+                                                }
+                                                return rewardList;
+                                        }
+                                );
                 }
         }
 }

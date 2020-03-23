@@ -164,6 +164,17 @@ namespace ledger {
                                 std::chrono::system_clock::time_point lastUpdate;
                         };
 
+                        struct Delegation {
+                                std::string delegatorAddress;
+                                std::string validatorAddress;
+                                BigInt delegatedAmount;
+                        };
+
+                        struct Reward {
+                                std::string validatorAddress;
+                                Coin pendingReward;
+                        };
+
                         // Small helpers to avoid very long types
                         using TransactionList = std::list<std::shared_ptr<Transaction>>;
                         using ValidatorList = std::vector<Validator>;

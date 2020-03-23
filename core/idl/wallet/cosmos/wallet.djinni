@@ -109,10 +109,27 @@ CosmosLikeAccount = interface +c {
         getUnbondingBalance(callback: Callback<Amount>);
         # Get Total spendable balance of account.
         getSpendableBalance(callback: Callback<Amount>);
+
+        getDelegations(callback: ListCallback<CosmosLikeDelegation>);
+        getPendingRewards(callback: ListCallback<CosmosLikeReward>);
+}
+
+#Class representing a Cosmos delegation
+CosmosLikeDelegation = interface +c {
+        const getDelegatorAddress() : string;
+        const getValidatorAddress() : string;
+        const getDelegatedAmount() : Amount;
+}
+
+#Class representing a Cosmos reward
+CosmosLikeReward = interface +c {
+        const getDelegatorAddress() : string;
+        const getValidatorAddress() : string;
+        const getRewardAmount() : Amount;
 }
 
 CosmosConfigurationDefaults = interface +c {
-        const COSMOS_DEFAULT_API_ENDPOINT: string = "http://lite-client-0e27eefb-4031-4859-a88e-249fd241989d.cosmos.bison.run:1317";
+        const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmos.coin-proxy.dev.aws.ledger.fr/";
         const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
 }
 

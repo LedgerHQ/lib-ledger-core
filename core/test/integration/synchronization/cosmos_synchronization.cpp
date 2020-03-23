@@ -42,6 +42,7 @@
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
+#include <math/BigInt.h>
 
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
@@ -80,7 +81,7 @@ public:
     void setupTest(std::shared_ptr<WalletPool>& pool,
                    std::shared_ptr<CosmosLikeAccount>& account,
                    std::shared_ptr<AbstractWallet>& wallet,
-                   std::string& pubKey) {
+                   const std::string& pubKey) {
 
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
@@ -344,8 +345,6 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
 
     setupTest(pool, account, wallet, hexPubKey);
 
-    performSynchro(account);
-
     const std::string address = account->getKeychain()->getAddress()->toBech32();
     const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
 
@@ -454,33 +453,6 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
     EXPECT_TRUE(foundMsgUnjail);
 }
 
-
-TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
-    std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<CosmosLikeAccount> account;
-    std::shared_ptr<AbstractWallet> wallet;
-
-    std::string pubKey(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY);
-    setupTest(pool, account, wallet, pubKey);
-
-    // First synchro
-    performSynchro(account);
-    auto blockHeight1 = wait(account->getLastBlock()).height;
-
-    // Wait 30s (new Cosmos block every 7s)
-    fmt::print("Waiting new Cosmos block for 30s...\n");
-    std::flush(std::cerr);
-    std::flush(std::cout);
-    std::this_thread::sleep_for(std::chrono::seconds(30));
-
-    // Second synchro
-    // FIXME Fails due to limitation of test framework??
-    performSynchro(account);
-    auto blockHeight2 = wait(account->getLastBlock()).height;
-
-    EXPECT_NE(blockHeight1, blockHeight2);
-}
-
 TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
     // This test assumes that HuobiPool and BinanceStaking are always in the validator set
     const auto huobi_pool_address = "cosmosvaloper1kn3wugetjuy4zetlq6wadchfhvu3x740ae6z6x";
@@ -550,10 +522,9 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     EXPECT_FALSE(valInfo.slashTimestamps) << "Previous jail events fetching is not implemented. slashTimestamps (*as an option*) should be None.";
 }
 
-TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery)
-{
-    std::string hexPubKey =
-        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {
+
+    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
 
     std::shared_ptr<WalletPool> pool;
     std::shared_ptr<CosmosLikeAccount> account;
@@ -581,3 +552,74 @@ TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery)
 
     ASSERT_GE(operations.size(), 17) << "As of 2020-03-19, there are 17 operations picked up by the query";
 }
+
+TEST_F(CosmosLikeWalletSynchronization, GetAccountDelegations) {
+
+    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(pool, account, wallet, hexPubKey);
+
+    auto delegations = wait(account->getDelegations());
+    EXPECT_GE(delegations.size(), 2);
+
+    BigInt delegatedAmount;
+    for (auto& delegation : delegations) {
+        delegatedAmount = delegatedAmount + *(std::dynamic_pointer_cast<ledger::core::Amount>(delegation->getDelegatedAmount())->value());
+    }
+    EXPECT_GE(delegatedAmount.toUint64(), 1000000UL); // 1 ATOM
+
+}
+
+TEST_F(CosmosLikeWalletSynchronization, GetAccountPendingRewards) {
+
+    std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(pool, account, wallet, hexPubKey);
+
+    auto rewards = wait(account->getPendingRewards());
+    EXPECT_GE(rewards.size(), 2);
+
+    BigInt pendingReward;
+    for (auto& reward : rewards) {
+        pendingReward = pendingReward + *(std::dynamic_pointer_cast<ledger::core::Amount>(reward->getRewardAmount())->value());
+    }
+    EXPECT_GE(pendingReward.toUint64(), 1000UL); // 1000 uATOM
+
+}
+
+// FIXME This test fails ; put at the end because it also messes up the other tests
+TEST_F(CosmosLikeWalletSynchronization, SuccessiveSynchronizations) {
+    std::string hexPubKey(ledger::testing::cosmos::DEFAULT_HEX_PUB_KEY);
+
+    std::shared_ptr<WalletPool> pool;
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(pool, account, wallet, hexPubKey);
+
+    // First synchro
+    performSynchro(account);
+    auto blockHeight1 = wait(account->getLastBlock()).height;
+
+    // Wait 30s (new Cosmos block every 7s)
+    fmt::print("Waiting new Cosmos block for 30s...\n");
+    std::flush(std::cerr);
+    std::flush(std::cout);
+    std::this_thread::sleep_for(std::chrono::seconds(30));
+
+    // Second synchro
+    // FIXME Fails due to limitation of test framework??
+    performSynchro(account);
+    auto blockHeight2 = wait(account->getLastBlock()).height;
+
+    EXPECT_NE(blockHeight1, blockHeight2);
+}
+
