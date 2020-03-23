@@ -106,7 +106,6 @@ namespace ledger {
 
             auto self = shared_from_this();
             _explorer->getTransactions(address, transactionCursor).onComplete(account->getContext(), [=] (const Try<stellar::TransactionVector>& txs) {
-                SavedState newState = state.getValueOr(SavedState());
                 if (txs.isFailure()) {
                     self->failSynchronization(txs.getFailure());
                 } else {
@@ -120,6 +119,7 @@ namespace ledger {
                         tr.commit();
                     }
                     if (!txs.getValue().empty()) {
+                        SavedState newState = state.getValueOr(SavedState());
                         newState.algorithmVersion = SYNCHRONIZATION_ALGORITHM_VERSION;
                         newState.transactionPagingToken = txs.getValue().back()->pagingToken;
                         auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
