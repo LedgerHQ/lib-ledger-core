@@ -52,11 +52,13 @@
 
 using namespace ledger::core;
 
-static const std::set<stellar::OperationType> ACCEPTED_PAYMENT_TYPES {
-    stellar::OperationType::PAYMENT, stellar::OperationType::CREATE_ACCOUNT
-};
+namespace {
+    const std::set<stellar::OperationType> ACCEPTED_PAYMENT_TYPES{
+            stellar::OperationType::PAYMENT, stellar::OperationType::CREATE_ACCOUNT
+    };
 
-static const auto INVALID_SYNCHRONIZATION_DELAY_MS = 60 * 60 * 1000;
+    static const auto INVALID_SYNCHRONIZATION_DELAY_MS = 60 * 60 * 1000;
+}
 
 namespace ledger {
     namespace core {
