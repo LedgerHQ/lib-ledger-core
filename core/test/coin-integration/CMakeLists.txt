@@ -37,4 +37,4 @@ target_include_directories(ledger-core-coin-integration-tests PUBLIC ../../../qt
 include(CopyAndInstallImportedTargets)
 copy_install_imported_targets(ledger-core-coin-integration-tests crypto)
 
-add_test (NAME ledger-core-integration-TezosLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-coin-integration-tests --gtest_filter="")
+add_test (NAME ledger-core-coin-integration COMMAND ledger-core-coin-integration-tests)
