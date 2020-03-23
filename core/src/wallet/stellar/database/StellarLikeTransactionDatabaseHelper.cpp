@@ -87,7 +87,7 @@ namespace ledger {
             if (op.sourceAsset)  {
                 StellarLikeAssetDatabaseHelper::putAsset(sql, op.sourceAsset.getValue());
             }
-            int type = (int)op.type;
+            int type = static_cast<int>(op.type);
             if (!operationExists(sql, uid)) {
                 sql << "INSERT INTO stellar_operations VALUES("
                        ":uid, :tx_uid, :hash, :time, :asset_uid, :src_asset_uid, :amount, :src_amount, :from, :to, :type"
