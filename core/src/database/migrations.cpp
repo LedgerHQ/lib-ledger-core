@@ -774,50 +774,20 @@ namespace ledger {
                 "memo TEXT"
                 ")";
 
-            // * TODO : handle missing Msg types
+            // * NOTE : Special Msg types
             // ** MsgMultiSend
-            // // MsgMultiSend - high level transaction of the coin module
-            // type MsgMultiSend struct {
-            //  Inputs  []Input  `json:"inputs"`
-            //  Outputs []Output `json:"outputs"`
-            // }
-            // // Input models transaction input
-            // type Input struct {
-            //  Address sdk.AccAddress `json:"address"`
-            //  Coins   sdk.Coins      `json:"coins"`
-            // }
-            // // Output models transaction outputs
-            // type Output struct {
-            //  Address sdk.AccAddress `json:"address"`
-            //  Coins   sdk.Coins      `json:"coins"`
-            // }
+            // MsgMultiSend can have an arbitrary number of inputs and outputs
+            // (only invariant is sum(inputs) == sum(outputs))
+            // Therefore the various inputs and outputs are stored in another
+            // table to avoid varchars longer than 256 bytes
             //
             // ** MsgCreateValidator
-            // // MsgCreateValidator - struct for bonding transactions
-            // type MsgCreateValidator struct {
-            //  Description       Description    `json:"description"`
-            //  Commission        CommissionMsg  `json:"commission"`
-            //  MinSelfDelegation sdk.Int        `json:"min_self_delegation"`
-            //  DelegatorAddress  sdk.AccAddress `json:"delegator_address"`
-            //  ValidatorAddress  sdk.ValAddress `json:"validator_address"`
-            //  PubKey            crypto.PubKey  `json:"pubkey"`
-            //  Value             sdk.Coin       `json:"value"`
-            // }
+            // This message is not handled in database, and behaviour with these
+            // messages is undefined.
             //
             // ** MsgEditValidator
-            // // MsgEditValidator - struct for editing a validator
-            // type MsgEditValidator struct {
-            //  Description
-            //  ValidatorAddress sdk.ValAddress `json:"address"`
-            //
-            //  // We pass a reference to the new commission rate and min self delegation as it's not mandatory to
-            //  // update. If not updated, the deserialized rate will be zero with no way to
-            //  // distinguish if an update was intended.
-            //  //
-            //  // REF: #2373
-            //  CommissionRate    *sdk.Dec `json:"commission_rate"`
-            //  MinSelfDelegation *sdk.Int `json:"min_self_delegation"`
-            // }
+            // This message is not handled in database, and behaviour with these
+            // messages is undefined.
             sql << "CREATE TABLE cosmos_messages("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                 "transaction_uid VARCHAR(255) NOT NULL "
