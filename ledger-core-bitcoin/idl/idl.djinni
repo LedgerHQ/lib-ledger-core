@@ -4,6 +4,7 @@
 @import "ledger-core/currency.djinni"
 @import "ledger-core/derivation.djinni"
 @import "ledger-core/math/big_int.djinni"
+@import "ledger-core/operation.djinni"
 @import "ledger-core/tuples.djinni"
 
 @import "addresses.djinni"
@@ -183,6 +184,7 @@ BitcoinLikeTransaction = interface +c {
 
 # Class representing a Bitcoin Operation.
 BitcoinLikeOperation = interface +c {
+    static fromCoreOperation(coreOperation: Operation): optional<BitcoinLikeOperation>;
     # Get operation's transaction.
     # @return BitcoinLikeTransaction object
     getTransaction(): BitcoinLikeTransaction;

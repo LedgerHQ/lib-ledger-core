@@ -92,6 +92,7 @@ RippleLikeTransaction = interface +c {
 
 #Class representing a Ripple Operation
 RippleLikeOperation = interface +c {
+	static fromCoreOperation(coreOperation: Operation): optional<RippleLikeOperation>;
 	#Get operation's transaction
 	#@return RippleLikeTransaction object
 	getTransaction(): RippleLikeTransaction;

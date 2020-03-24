@@ -61,6 +61,7 @@ InternalTransaction = interface +c {
 }
 # Class representing a Ethereum Operation.
 EthereumLikeOperation = interface +c {
+    static fromCoreOperation(coreOperation: Operation): optional<EthereumLikeOperation>;
     # Get operation's transaction.
     # @return EthereumLikeTransaction object
     const getTransaction(): EthereumLikeTransaction;

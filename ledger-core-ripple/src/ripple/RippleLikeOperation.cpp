@@ -53,5 +53,9 @@ namespace ledger {
               getOperationType()
           );
         }
+
+        std::shared_ptr<api::RippleLikeOperation> fromCoreOperation(const std::shared_ptr<api::Operation> & coreOperation) {
+          return std::dynamic_pointer_cast<api::RippleLikeOperation>(coreOperation);
+        }
     }
 }

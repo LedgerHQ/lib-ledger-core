@@ -56,6 +56,7 @@ TezosLikeTransaction = interface +c {
 
 #Class representing a Tezos Operation
 TezosLikeOperation = interface +c {
+	static fromCoreOperation(coreOperation: Operation): optional<TezosLikeOperation>;
 	#Get operation's transaction
 	#@return TezosLikeTransaction object
 	const getTransaction(): TezosLikeTransaction;

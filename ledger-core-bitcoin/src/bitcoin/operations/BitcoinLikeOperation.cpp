@@ -39,7 +39,7 @@ namespace ledger {
 
         BitcoinLikeOperation::BitcoinLikeOperation(
             std::shared_ptr<AbstractAccount> account,
-            BitcoinLikeBlockchainExplorerTransaction const& tx) : 
+            BitcoinLikeBlockchainExplorerTransaction const& tx) :
                 Operation(account),
                 _explorerTx(tx),
                 _tx(std::make_shared<BitcoinLikeTransaction>(tx, account->getWallet()->getCurrency()))
@@ -50,7 +50,7 @@ namespace ledger {
                 _explorerTx(operation->_explorerTx),
                 _tx(std::make_shared<BitcoinLikeTransaction>(operation->_explorerTx, operation->getCurrency()))
         {}
-        
+
         std::shared_ptr<api::BitcoinLikeTransaction> BitcoinLikeOperation::getTransaction() {
             return _tx;
         }
@@ -74,6 +74,10 @@ namespace ledger {
 
         bool BitcoinLikeOperation::isComplete() {
             return static_cast<bool>(_tx);
+        }
+
+        std::shared_ptr<api::BitcoinLikeOperation> fromCoreOperation(const std::shared_ptr<api::Operation> & coreOperation) {
+          return std::dynamic_pointer_cast<api::BitcoinLikeOperation>(coreOperation);
         }
     }
 }
