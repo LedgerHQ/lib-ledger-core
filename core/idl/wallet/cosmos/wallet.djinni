@@ -21,11 +21,16 @@ CosmosLikeTransaction = interface +c {
         const getMessages(): list<CosmosLikeMessage>;
         # Get Signing public Key
         const getSigningPubKey(): binary;
-        # Set signature of transaction, when a signature is set serialize method gives back serialized Tx
+
+        # Serialize the transaction to be signed
+        serializeForSignature(): string;
+
+        # Set signature of transaction, when a signature is set it can be broadcasted
         setSignature(rSignature: binary, sSignature: binary);
         setDERSignature(signature: binary);
-        # Serialize the transaction to its JSON (broadcast) format
-        serialize(): string;
+
+        # Serialize the transaction to be broadcast
+        serializeForBroadcast(): string;
 }
 
 #Class representing a Cosmos Operation
@@ -56,6 +61,10 @@ CosmosLikeTransactionBuilder = interface +c {
         # Set memo
         # @param memo the memo to set
         setMemo(memo: string): CosmosLikeTransactionBuilder;
+
+        # Set sequence
+        # @param sequence The sequence to set
+        setSequence(sequence: string): CosmosLikeTransactionBuilder;
 
         # Add a new message in the internal range of messages
         # @param msg a new message

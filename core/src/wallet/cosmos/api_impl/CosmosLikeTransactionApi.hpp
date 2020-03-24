@@ -61,7 +61,9 @@ namespace ledger {
             void setFee(const std::shared_ptr<BigInt>& fee);
             void setGas(const std::shared_ptr<BigInt>& gas);
             void setHash(const std::string &hash);
+            void setSequence(const std::string &sequence);
             void setMemo(const std::string &memo);
+            void setAccountNumber(const std::string &accountNumber);
             void setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & messages);
             void setSigningPubKey(const std::vector<uint8_t> &pubKey);
 
@@ -76,7 +78,8 @@ namespace ledger {
             std::vector<std::shared_ptr<api::CosmosLikeMessage>> getMessages() const override;
             std::vector<uint8_t> getSigningPubKey() const override;
 
-            std::string serialize() override;
+            std::string serializeForSignature() override;
+            std::string serializeForBroadcast() override;
 
             void setRawData(const cosmos::Transaction &txData);
             const cosmos::Transaction & getRawData() const;
@@ -84,8 +87,11 @@ namespace ledger {
 
         private:
 
-            api::Currency _currency;
             cosmos::Transaction _txData;
+
+            std::string _accountNumber;
+            std::string _accountSequence;
+            api::Currency _currency;
             std::vector<uint8_t> _rSignature;
             std::vector<uint8_t> _sSignature;
             std::vector<uint8_t> _signingPubKey;

@@ -431,6 +431,11 @@ namespace ledger {
             _context = cpy._context;
         }
 
+        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setSequence(const std::string & sequence) {
+            _request.sequence = sequence;
+            return shared_from_this();
+        }
+
         std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setMemo(const std::string & memo) {
             _request.memo = memo;
             return shared_from_this();
@@ -493,6 +498,13 @@ namespace ledger {
             tx->setCurrency(currency);
             tx->setMemo(getString(document.GetObject(), kMemo));
 
+            if (document.HasMember(kAccountNumber)) {
+                tx->setAccountNumber(getString(document.GetObject(), kAccountNumber));
+            }
+            if (document.HasMember(kSequence)) {
+                tx->setSequence(getString(document.GetObject(), kSequence));
+            }
+
             // Fees
             if (document[kFee].IsObject()) {
                 auto feeObject = document[kFee].GetObject();
@@ -536,12 +548,19 @@ namespace ledger {
             }
 
             // Messages
-            if (document[kMessage].IsArray()) {
+            std::string msgKey = "";
+            if (document.HasMember(kMessage)) {
+                msgKey = kMessage;
+            } else if (document.HasMember(kMessages)) {
+                msgKey = kMessages;
+            }
+
+            if (!msgKey.empty()) {
                 std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
 
-                messages.reserve(document[kMessage].GetArray().Size());
+                messages.reserve(document[msgKey.c_str()].GetArray().Size());
 
-                for (auto& msg: document[kMessage].GetArray()) {
+                for (auto& msg: document[msgKey.c_str()].GetArray()) {
                     if (msg.IsObject()) {
                         auto msgObject = msg.GetObject();
 
@@ -621,7 +640,7 @@ namespace ledger {
                 tx->setMessages(messages);
             }
 
-            // FIXME Fix signature management
+            // TODO signature management
             if (isSigned
                 &&  document.HasMember(kSignatures)
                 &&  document[kSignatures].IsArray()
@@ -636,8 +655,8 @@ namespace ledger {
                 }
 
                 { // Optional public key
-                    std::string pubKey = getString(firstSignature, kPubKey);
-                    if (!pubKey.empty()) {
+                    if (firstSignature.HasMember(kPubKey) && firstSignature[kPubKey].IsString()) {
+                        std::string pubKey = firstSignature[kPubKey].GetString();
                         std::vector<uint8_t> pubKeyBytes(pubKey.begin(), pubKey.end()); // FIXME Not the right way to do it...
                         tx->setSigningPubKey(pubKeyBytes);
                     }

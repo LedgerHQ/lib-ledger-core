@@ -184,11 +184,78 @@ namespace ledger {
             return _txData;
         }
 
-        // Builds the payload for a transaction broadcast.
-        // NOTE The produced payload is not a 1:1 mapping of this
-        // CosmosLikeTransactionApi because a "mode" is added to the json.
-        // (cf. broadcast format https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/client/rest/broadcast.go#L13-L16)
-        std::string CosmosLikeTransactionApi::serialize() {
+        // Build the payload to send to the device to be signed
+        // (cf. https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md#format)
+        std::string CosmosLikeTransactionApi::serializeForSignature() {
+
+            using namespace cosmos::constants;
+            Value vString(kStringType);
+
+            Document document;
+            document.SetObject();
+            Document::AllocatorType& allocator = document.GetAllocator();
+
+            // Account nb
+            vString.SetString(_accountNumber.c_str(), static_cast<SizeType>(_accountNumber.length()), allocator);
+            document.AddMember(kAccountNumber, vString, allocator);
+
+            // Chain ID
+            std::string chainId = "cosmoshub-3"; // FIXME Should this be set by user?
+            vString.SetString(chainId.c_str(), static_cast<SizeType>(chainId.length()), allocator);
+            document.AddMember(kChainId, vString, allocator);
+
+            // Fees
+            Value feeObject(kObjectType);
+            {
+                auto gas = _txData.fee.gas.toString();
+                vString.SetString(gas.c_str(), static_cast<SizeType>(gas.length()), allocator);
+                feeObject.AddMember(kGas, vString, allocator);
+
+                auto getAmountObject = [&] (const std::string &denom, const std::string &amount) {
+                    Value amountObject(kObjectType);
+                    vString.SetString(amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
+                    amountObject.AddMember(kAmount, vString, allocator);
+                    vString.SetString(denom.c_str(), static_cast<SizeType>(denom.length()), allocator);
+                    amountObject.AddMember(kDenom, vString, allocator);
+                    return amountObject;
+                };
+
+                Value feeAmountArray(kArrayType);
+                // Technically the feeArray can contain all fee.amount[i] ;
+                // But Cosmoshub only accepts uatom as a fee denom so the
+                // array is always length 1 for the time being
+                auto feeAmountObj = getAmountObject(_txData.fee.amount[0].denom, _txData.fee.amount[0].amount);
+                feeAmountArray.PushBack(feeAmountObj, allocator);
+                feeObject.AddMember(kAmount, feeAmountArray, allocator);
+            }
+            document.AddMember(kFee, feeObject, allocator);
+
+            // Memo
+            vString.SetString(_txData.memo.c_str(), static_cast<SizeType>(_txData.memo.length()), allocator);
+            document.AddMember(kMemo, vString, allocator);
+
+            // Messages
+            Value msgArray(kArrayType);
+            for (const auto& msg: _txData.messages) {
+                msgArray.PushBack(std::make_shared<CosmosLikeMessage>(msg)->toJson(allocator), allocator);
+            }
+            document.AddMember(kMessages, msgArray, allocator);
+
+            // Sequence
+            vString.SetString(_accountSequence.c_str(), static_cast<SizeType>(_accountSequence.length()), allocator);
+            document.AddMember(kSequence, vString, allocator);
+
+            StringBuffer buffer;
+            Writer<StringBuffer> writer(buffer);
+            sortJson(document);
+            document.Accept(writer);
+            return buffer.GetString();
+        }
+
+        // Builds the payload to broadcast the transaction
+        // NOTE The produced payload is not a 1:1 mapping of this CosmosLikeTransactionApi because a "mode" is added to the json.
+        // (cf.https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/client/rest/broadcast.go#L13-L16))
+        std::string CosmosLikeTransactionApi::serializeForBroadcast() {
 
             using namespace cosmos::constants;
             Value vString(kStringType);
@@ -322,8 +389,16 @@ namespace ledger {
             }
         }
 
+        void CosmosLikeTransactionApi::setSequence(const std::string &sequence) {
+            _accountSequence = sequence;
+        }
+
         void CosmosLikeTransactionApi::setMemo(const std::string &rhs_memo) {
             _txData.memo = rhs_memo;
+        }
+
+        void CosmosLikeTransactionApi::setAccountNumber(const std::string &accountNumber) {
+            _accountNumber = accountNumber;
         }
 
     }

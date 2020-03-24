@@ -586,7 +586,7 @@ namespace ledger {
                 }
 
                 void CosmosLikeAccount::broadcastTransaction(const std::shared_ptr<api::CosmosLikeTransaction> &transaction, const std::shared_ptr<api::StringCallback>& callback) {
-                        broadcastRawTransaction(transaction->serialize(), callback);
+                        broadcastRawTransaction(transaction->serializeForBroadcast(), callback);
                 }
 
                 std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTransaction() {
@@ -598,12 +598,14 @@ namespace ledger {
                         auto buildFunction = [self](const CosmosLikeTransactionBuildRequest &request) {
                                 auto currency = self->getWallet()->getCurrency();
                                 auto tx = std::make_shared<CosmosLikeTransactionApi>();
+                                tx->setAccountNumber(self->getAccountUid());
                                 tx->setCurrency(self->getWallet()->getCurrency());
                                 tx->setFee(request.fee);
                                 tx->setGas(request.gas);
-                                tx->setMessages(request.messages);
-                                tx->setSigningPubKey(self->getKeychain()->getPublicKey());
                                 tx->setMemo(request.memo);
+                                tx->setMessages(request.messages);
+                                tx->setSequence(request.sequence);
+                                tx->setSigningPubKey(self->getKeychain()->getPublicKey());
                                 return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                         };
 

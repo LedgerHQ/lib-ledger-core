@@ -48,13 +48,16 @@ public:
     /** Get Signing public Key */
     virtual std::vector<uint8_t> getSigningPubKey() const = 0;
 
-    /** Set signature of transaction, when a signature is set serialize method gives back serialized Tx */
+    /** Serialize the transaction to be signed */
+    virtual std::string serializeForSignature() = 0;
+
+    /** Set signature of transaction, when a signature is set it can be broadcasted */
     virtual void setSignature(const std::vector<uint8_t> & rSignature, const std::vector<uint8_t> & sSignature) = 0;
 
     virtual void setDERSignature(const std::vector<uint8_t> & signature) = 0;
 
-    /** Serialize the transaction to its JSON (broadcast) format */
-    virtual std::string serialize() = 0;
+    /** Serialize the transaction to be broadcast */
+    virtual std::string serializeForBroadcast() = 0;
 };
 
 } } }  // namespace ledger::core::api
