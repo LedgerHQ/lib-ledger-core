@@ -111,6 +111,10 @@ if (SOCI_STATIC)
 
   add_library(${SOCI_CORE_TARGET_STATIC} STATIC ${SOCI_CORE_HEADERS} ${SOCI_CORE_SOURCES})
 
+  if(UNIX)
+    target_link_libraries(${SOCI_CORE_TARGET_STATIC} ${CMAKE_DL_LIBS})
+  endif()
+
   set_target_properties(${SOCI_CORE_TARGET_STATIC}
     PROPERTIES
     OUTPUT_NAME ${SOCI_CORE_TARGET_OUTPUT_NAME}
