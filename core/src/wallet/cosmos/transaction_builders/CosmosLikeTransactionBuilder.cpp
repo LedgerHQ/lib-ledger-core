@@ -640,7 +640,6 @@ namespace ledger {
                 tx->setMessages(messages);
             }
 
-            // TODO signature management
             if (isSigned
                 &&  document.HasMember(kSignatures)
                 &&  document[kSignatures].IsArray()
@@ -650,15 +649,18 @@ namespace ledger {
 
                 { // Signature
                     std::string sig = getString(firstSignature, kSignature);
-                    std::vector<uint8_t> sigBytes(sig.begin(), sig.end()); // FIXME Not the right way to do it...
-                    tx->setDERSignature(sigBytes);
+                    auto decoded = cereal::base64::decode(sig);
+                    std::vector<uint8_t> rSig(decoded.begin(), decoded.begin() + 32);
+                    std::vector<uint8_t> sSig(decoded.begin() + 32, decoded.begin() + 64);
+                    tx->setSignature(rSig, sSig);
                 }
 
                 { // Optional public key
-                    if (firstSignature.HasMember(kPubKey) && firstSignature[kPubKey].IsString()) {
-                        std::string pubKey = firstSignature[kPubKey].GetString();
-                        std::vector<uint8_t> pubKeyBytes(pubKey.begin(), pubKey.end()); // FIXME Not the right way to do it...
-                        tx->setSigningPubKey(pubKeyBytes);
+                    if (firstSignature.HasMember(kPubKey) && firstSignature[kPubKey].GetObject().HasMember(kValue)) {
+                        std::string pubKey = firstSignature[kPubKey].GetObject()[kValue].GetString();
+                        auto decoded = cereal::base64::decode(pubKey);
+                        std::vector<uint8_t> publicKey(decoded.begin(), decoded.end());
+                        tx->setSigningPubKey(publicKey);
                     }
                 }
             }
