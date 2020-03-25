@@ -201,12 +201,12 @@ namespace ledger {
                             if (!inputAddress.empty()) {
                                 cosmos::MultiSendInput newInput;
                                 newInput.fromAddress = inputAddress;
-                                soci::stringToCoins(multiSendRow.get<std::string>(COL_MULTI_TO), newInput.coins);
+                                soci::stringToCoins(multiSendRow.get<std::string>(COL_MULTI_AMT), newInput.coins);
                                 content.inputs.push_back(newInput);
                             } else if (!outputAddress.empty()) {
                                 cosmos::MultiSendOutput newOutput;
                                 newOutput.toAddress = outputAddress;
-                                soci::stringToCoins(multiSendRow.get<std::string>(COL_MULTI_TO), newOutput.coins);
+                                soci::stringToCoins(multiSendRow.get<std::string>(COL_MULTI_AMT), newOutput.coins);
                                 content.outputs.push_back(newOutput);
                             }
                         }
@@ -495,7 +495,7 @@ namespace ledger {
                         sql << "INSERT INTO cosmos_messages (uid,"
                                "transaction_uid, message_type, log,"
                                "success, msg_index, amount) "
-                               "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :ta, :amount)",
+                               "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :amount)",
                                soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
                                soci::use(log.success ? 1 : 0), soci::use(log.messageIndex),
                                soci::use(coins);
