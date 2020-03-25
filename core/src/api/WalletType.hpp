@@ -28,6 +28,8 @@ enum class WalletType : int {
     MONERO,
     /** A Tezos-like wallet. */
     TEZOS,
+    /** A Stellar-like wallet. */
+    STELLAR,
 };
 LIBCORE_EXPORT  std::string to_string(const WalletType& walletType);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const WalletType &o);

@@ -1,3 +1,10 @@
+# Available API to use with Stellar wallets
+StellarConfiguration = interface +c {
+    const HORIZON_EXPLORER_ENGINE: string = "HORIZON_EXPLORER_ENGINE";
+    const HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL: string = "https://horizon.stellar.org";
+    const HORIZON_TESTNET_BLOCKCHAIN_EXPLORER_URL: string = "https://horizon-testnet.stellar.org";
+}
+
 # Available API to use with explorers.
 BlockchainExplorerEngines = interface +c {
     const LEDGER_API: string = "LEDGER_API";

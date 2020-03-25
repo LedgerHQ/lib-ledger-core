@@ -54,6 +54,7 @@ namespace ledger {
                     std::size_t maxSize,
                     std::size_t maxFiles
             );
+
             virtual void sink_it_(const spdlog::details::log_msg &msg) override;
             virtual void flush_() override;
 

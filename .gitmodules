@@ -22,3 +22,6 @@
 [submodule "core/lib/fmt"]
     path = core/lib/fmt
     url = https://github.com/fmtlib/fmt.git
+[submodule "core/lib/CRCpp"]
+	path = core/lib/CRCpp
+	url = https://github.com/d-bahr/CRCpp.git

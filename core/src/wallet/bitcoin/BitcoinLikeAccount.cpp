@@ -446,7 +446,7 @@ namespace ledger {
                 auto endDate = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
-                                         "Start date should be strictly greater than end date");
+                                         "Start date should be strictly lower than end date");
                 }
 
                 const auto &uid = self->getAccountUid();

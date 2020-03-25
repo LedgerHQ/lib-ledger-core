@@ -37,6 +37,7 @@
 #include <events/Event.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/stellar/StellarLikeAccount.hpp>
 #include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 
 namespace ledger {
@@ -230,7 +231,15 @@ namespace ledger {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
 
-        void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
+        std::shared_ptr<api::StellarLikeAccount> AbstractAccount::asStellarLikeAccount() {
+            return std::dynamic_pointer_cast<api::StellarLikeAccount>(shared_from_this());
+        }
+
+        bool AbstractAccount::isInstanceOfStellarLikeAccount() const {
+            return _type == api::WalletType::STELLAR;
+        }
+
+		void AbstractAccount::eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point &date) {
             //Update account's internal preferences (for synchronization)
             auto savedState = getInternalPreferences()->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
             if (savedState.nonEmpty()) {

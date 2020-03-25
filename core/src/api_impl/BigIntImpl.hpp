@@ -67,6 +67,8 @@ namespace ledger { namespace core { namespace api {
 
             virtual std::string toString(int32_t radix) override;
 
+            const ledger::core::BigInt& backend() const { return _bigi; };
+
         private:
             const ledger::core::BigInt _bigi;
         };

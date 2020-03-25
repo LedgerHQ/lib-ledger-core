@@ -60,6 +60,11 @@ namespace ledger {
             bool isInstanceOfEthereumLikeOperation() override;
             bool isInstanceOfRippleLikeOperation() override;
             bool isInstanceOfTezosLikeOperation() override;
+
+            std::shared_ptr<api::StellarLikeOperation> asStellarLikeOperation() override;
+
+            bool isInstanceOfStellarLikeOperation() const override;
+
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();

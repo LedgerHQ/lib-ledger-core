@@ -97,6 +97,9 @@ namespace ledger {
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
+            std::shared_ptr<api::StellarLikeAccount> asStellarLikeAccount() override;
+            bool isInstanceOfStellarLikeAccount() const override;
+
             std::shared_ptr<api::EventBus> getEventBus() override;
 
             void emitEventsNow();

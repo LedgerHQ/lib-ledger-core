@@ -41,8 +41,7 @@ namespace soci {
         static void from_base(base_type const & in, indicator ind, ledger::core::Option<T> & out) {
             if (ind == i_null) {
                 out = ledger::core::Option<T>();
-            }
-            else {
+            } else {
                 T tmp = T();
                 type_conversion<T>::from_base(in, ind, tmp);
                 out = ledger::core::Option<T>(tmp);
@@ -52,8 +51,7 @@ namespace soci {
         static void to_base(ledger::core::Option<T> const & in, base_type & out, indicator & ind) {
             if (!in.isEmpty()) {
                 type_conversion<T>::to_base(in.getValue(), out, ind);
-            }
-            else {
+            } else {
                 ind = i_null;
             }
         }

@@ -36,6 +36,7 @@
 #include <wallet/ripple/api_impl/RippleLikeOperation.h>
 #include <wallet/tezos/api_impl/TezosLikeOperation.h>
 #include <api/WalletType.hpp>
+#include <wallet/stellar/StellarLikeOperation.hpp>
 
 namespace ledger {
     namespace core {
@@ -101,6 +102,8 @@ namespace ledger {
                 return _backend.rippleTransaction.nonEmpty();
             } else if (_backend.walletType == api::WalletType::TEZOS) {
                 return _backend.tezosTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::STELLAR) {
+                return _backend.stellarOperation.nonEmpty();
             }
             return false;
         }
@@ -164,6 +167,14 @@ namespace ledger {
 
         api::Currency OperationApi::getCurrency() {
             return _account->getWallet()->getCurrency();
+        }
+
+        std::shared_ptr<api::StellarLikeOperation> OperationApi::asStellarLikeOperation() {
+            return std::make_shared<StellarLikeOperation>(shared_from_this());
+        }
+
+        bool OperationApi::isInstanceOfStellarLikeOperation() const {
+            return _backend.walletType == api::WalletType::STELLAR;
         }
 
     }
