@@ -3,6 +3,8 @@
 @import "ledger-core/callback.djinni"
 @import "ledger-core/currency.djinni"
 @import "ledger-core/math/big_int.djinni"
+@import "ledger-core/services.djinni"
+@import "ledger-core/wallet_store.djinni"
 
 @import "addresses.djinni"
 @import "memo.djinni"
@@ -15,6 +17,12 @@
 # You are supposed to add whatever you see fit in this file and then a code generator (using
 # djinni) must be called to both generate the interface files you need to implement (C++) and the
 # foreign languages bindings.
+
+# The Ripple currency.
+Ripple = interface +c {
+  # Register the currency into a wallet store and associated services.
+  static registerInto(services: Services, walletStore: WalletStore): bool;
+}
 
 # Ripple network parameters.
 RippleLikeNetworkParameters = record {

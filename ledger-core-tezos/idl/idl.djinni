@@ -3,10 +3,18 @@
 @import "ledger-core/callback.djinni"
 @import "ledger-core/math/big_int.djinni"
 @import "ledger-core/operation.djinni"
+@import "ledger-core/services.djinni"
 @import "ledger-core/time_period.djinni"
+@import "ledger-core/wallet_store.djinni"
 
 @import "addresses.djinni"
 @import "configuration.djinni"
+
+# The Tezos currency.
+Tezos = interface +c {
+  # Register the currency into a wallet store and associated services.
+  static registerInto(services: Services, walletStore: WalletStore): bool;
+}
 
 TezosOperationTag = enum {
 	OPERATION_TAG_NONE;

@@ -5,10 +5,17 @@
 @import "ledger-core/derivation.djinni"
 @import "ledger-core/math/big_int.djinni"
 @import "ledger-core/operation.djinni"
+@import "ledger-core/services.djinni"
 @import "ledger-core/tuples.djinni"
+@import "ledger-core/wallet_store.djinni"
 
 @import "addresses.djinni"
 @import "script.djinni"
+
+# The Bitcoin currency.
+Bitcoin = interface +c +n {
+  static registerInto(services: Services, walletStore: WalletStore): bool;
+}
 
 # Class of constants to set Bitcoin like wallet configurations.
 BitcoinLikeWalletConfiguration = interface +c {
