@@ -99,3 +99,25 @@ TEST_F(AccountInfoTests, AnotherAccountInfo) {
     EXPECT_EQ(info.owners[1], "main");
     EXPECT_EQ(info.derivations[1], "44'/0'/20'");
 }
+
+TEST_F(AccountInfoTests, GetAddressFromRange) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+    auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+
+    auto freshAddresses = wait(account->getFreshPublicAddresses());
+
+    auto from = 10, to = 100;
+    auto addresses = wait(account->getAddresses(from, to));
+
+    EXPECT_EQ(addresses.size(), 2 * (to - from + 1));
+    
+    // Observable range gives us 20 so it should be fine
+    if (freshAddresses.size() > 12) {
+        EXPECT_EQ(addresses[0]->toString(), freshAddresses[10]->toString());
+        EXPECT_EQ(addresses[2]->toString(), freshAddresses[11]->toString());
+        EXPECT_EQ(addresses[4]->toString(), freshAddresses[12]->toString());
+    }
+
+    EXPECT_EQ(addresses[2 * (to - from + 1) - 1]->toString(), "1167QbGjTWVK3etniJwua6wybBKkS7Lr8w");
+}
