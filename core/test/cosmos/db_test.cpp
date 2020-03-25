@@ -9,6 +9,7 @@
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 
 #include <wallet/pool/WalletPool.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <utils/DateUtils.hpp>
 
 #include <gtest/gtest.h>
@@ -22,9 +23,9 @@ public:
      BaseFixture::SetUp();
 #ifdef PG_SUPPORT
      const bool usePostgreSQL = true;
-     configuration->putString(
-         api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-     pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+     auto poolConfig = DynamicObject::newInstance();
+     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+     auto pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
 #else
      pool = newDefaultPool();
 #endif

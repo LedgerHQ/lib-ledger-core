@@ -825,9 +825,8 @@ namespace ledger {
                 "from_address VARCHAR(255),"
                 // not null when output
                 "to_address VARCHAR(255),"
-                "amount NOT NULL VARCHAR(255)"
-                ")"
-                ;
+                "amount VARCHAR(255) NOT NULL"
+                ")";
 
             sql << "CREATE TABLE cosmos_operations("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
@@ -845,6 +844,8 @@ namespace ledger {
             sql << "DROP TABLE cosmos_currencies";
 
             sql << "DROP TABLE cosmos_messages";
+
+            sql << "DROP TABLE cosmos_multisend_io";
         }
     }
 }
