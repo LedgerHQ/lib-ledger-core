@@ -1,0 +1,5 @@
+---
+Checks:             '*,hicpp-multiway-paths-covered,-abseil-*,-fuchsia-*,-google-*,-llvm-*,-cppcoreguidelines-*,-modernize-use-trailing-return-type,-readability-named-parameter'
+WarningsAsErrors:   '1'
+HeaderFilterRegex:  '<(core|bitcoin|ripple|ethereum|tezos)/(^api/).*'
+FormatStyle:        none
