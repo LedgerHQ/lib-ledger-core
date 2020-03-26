@@ -2,7 +2,9 @@ project(ledger-core-ripple-tests)
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-find_package(ledger-core 0.1.0 REQUIRED)
+if(NOT TARGET Core::ledger-core)
+    find_package(ledger-core 0.1.0 REQUIRED)
+endif()
 
 if (APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)

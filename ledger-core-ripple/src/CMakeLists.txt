@@ -5,12 +5,14 @@ set(ANDROID_CPP_FEATURES exceptions)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(ledger-core 0.1.0 REQUIRED)
+if(NOT TARGET Core::ledger-core)
+    find_package(ledger-core 0.1.0 REQUIRED)
+endif()
 
 # Automatically add API files to the library
 file(
     GLOB ledger-core-ripple-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/ripple/api/*"
+    "${PROJECT_SOURCE_DIR}/inc/ripple/api/*"
 )
 list(APPEND ledger-core-ripple-sources ${ledger-core-ripple-api-sources})
 
@@ -101,6 +103,10 @@ else()
     toggle_compiler_warnings(ledger-core-ripple-obj)
     disable_compiler_warnings(ledger-core-ripple-api-obj)
 
+    # add compiler warnings
+    include(CompilerWarnings)
+    set_enabled_compiler_warnings(ledger-core-ripple-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-ripple SHARED)
     target_link_libraries(ledger-core-ripple PUBLIC ledger-core-ripple-obj ledger-core-ripple-api-obj)
@@ -122,7 +128,7 @@ if (TARGET_JNI)
     target_link_libraries(ledger-core-ripple-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
 
-target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
-target_include_directories(ledger-core-ripple-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/ripple/api)
+target_include_directories(ledger-core-ripple-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc)
+target_include_directories(ledger-core-ripple-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc/ripple/api)
 
 install(TARGETS ledger-core-ripple DESTINATION lib)

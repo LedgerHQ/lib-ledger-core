@@ -5,12 +5,14 @@ set(ANDROID_CPP_FEATURES exceptions)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(ledger-core 0.1.0 REQUIRED)
+if(NOT TARGET Core::ledger-core)
+    find_package(ledger-core 0.1.0 REQUIRED)
+endif()
 
 # Automatically add API files to the library
 file(
     GLOB ledger-core-tezos-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/tezos/api/*"
+    "${PROJECT_SOURCE_DIR}/inc/tezos/api/*"
 )
 list(APPEND ledger-core-tezos-sources ${ledger-core-tezos-api-sources})
 
@@ -102,6 +104,10 @@ else()
     toggle_compiler_warnings(ledger-core-tezos-obj)
     disable_compiler_warnings(ledger-core-tezos-api-obj)
 
+    # add compiler warnings
+    include(CompilerWarnings)
+    set_enabled_compiler_warnings(ledger-core-tezos-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-tezos SHARED)
     target_link_libraries(ledger-core-tezos PUBLIC ledger-core-tezos-obj ledger-core-tezos-api-obj)
@@ -123,7 +129,7 @@ if (TARGET_JNI)
     target_link_libraries(ledger-core-tezos-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
 
-target_include_directories(ledger-core-tezos-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
-target_include_directories(ledger-core-tezos-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/ripple/api)
+target_include_directories(ledger-core-tezos-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc)
+target_include_directories(ledger-core-tezos-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc/ripple/api)
 
 install(TARGETS ledger-core-tezos DESTINATION "lib")

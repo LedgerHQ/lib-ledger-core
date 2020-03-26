@@ -69,7 +69,7 @@ write_basic_package_version_file(
 
 install(
     FILES
-    ${CMAKE_SOURCE_DIR}/ledger-core-config.cmake
+    ${CMAKE_CURRENT_SOURCE_DIR}/ledger-core-config.cmake
     ${CMAKE_CURRENT_BINARY_DIR}/ledger-core-config-version.cmake
     DESTINATION ${ledger-core-pkg-location}
 )
@@ -90,21 +90,21 @@ install(
         spdlog
         sqlcipher
         ethash
-    EXPORT ledger-core
-    ARCHIVE       DESTINATION lib/ledger-core
-    LIBRARY       DESTINATION lib/ledger-core
-    FRAMEWORK     DESTINATION lib/ledger-core
-)
-
-if(BUILD_TESTS)
-    install(
-        TARGETS
-            ledger-test
-            ledger-qt-host
-            ledger-core-integration-test
-            mongoose
-            gtest
-            gtest_main
+        EXPORT ledger-core
+        ARCHIVE       DESTINATION lib/ledger-core
+        LIBRARY       DESTINATION lib/ledger-core
+        FRAMEWORK     DESTINATION lib/ledger-core
+    )
+    
+    if(BUILD_TESTS)
+        install(
+            TARGETS
+        ledger-test
+        ledger-qt-host
+        ledger-core-integration-test
+        mongoose
+        gtest
+        gtest_main
         EXPORT ledger-core
         ARCHIVE       DESTINATION lib/ledger-core
         LIBRARY       DESTINATION lib/ledger-core
@@ -126,11 +126,11 @@ if(NOT SYS_OPENSSL)
         install(
             TARGETS
                 ssl
-            EXPORT ledger-core
-            ARCHIVE       DESTINATION lib/ledger-core
-            LIBRARY       DESTINATION lib/ledger-core
-            FRAMEWORK     DESTINATION lib/ledger-core
-        )
+        EXPORT ledger-core
+        ARCHIVE       DESTINATION lib/ledger-core
+        LIBRARY       DESTINATION lib/ledger-core
+        FRAMEWORK     DESTINATION lib/ledger-core
+    )
     endif()
 endif()
 
@@ -147,7 +147,7 @@ endif()
 
 install(
     DIRECTORY
-        ${CMAKE_SOURCE_DIR}/inc/
+        ${CMAKE_CURRENT_SOURCE_DIR}/inc/
     DESTINATION include/ledger-core
     FILES_MATCHING PATTERN "*.hpp"
 )
@@ -157,34 +157,34 @@ install(
 # need to fix that.
 install(
     DIRECTORY
-        ${CMAKE_SOURCE_DIR}/lib/
+        ${CMAKE_CURRENT_SOURCE_DIR}/lib/
     DESTINATION include/ledger-core/lib
 )
 
 install(
     DIRECTORY
-        ${CMAKE_SOURCE_DIR}/test/lib/libledger-test/
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/lib/libledger-test/
     DESTINATION include/ledger-test
     FILES_MATCHING PATTERN "*.hpp"
 )
 
 install(
     DIRECTORY
-        ${CMAKE_SOURCE_DIR}/test/lib/qt-host/
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/lib/qt-host/
     DESTINATION include/ledger-test-qt
     FILES_MATCHING PATTERN "*.hpp"
 )
 
 install (
     DIRECTORY
-        ${CMAKE_SOURCE_DIR}/test/integration/
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/integration/
     DESTINATION include/ledger-test/integration
     FILES_MATCHING PATTERN "*.hpp"
 )
 
 install (
     DIRECTORY
-        ${CMAKE_SOURCE_DIR}/test/database/
+        ${CMAKE_CURRENT_SOURCE_DIR}/test/database/
     DESTINATION include/ledger-test/database
     FILES_MATCHING PATTERN "*.hpp"
 )

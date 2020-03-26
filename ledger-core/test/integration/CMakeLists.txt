@@ -12,9 +12,13 @@ add_library(ledger-core-integration-test
     ${TEST_FILES}
 )
 
+add_library(Core::ledger-core-integration-test ALIAS ledger-core-integration-test)
+
 target_include_directories(
     ledger-core-integration-test PUBLIC
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/ledger-test>
+    # hack for centralized build
+    # including parent directory allows header inclusions such as "<integration/...>"
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/ledger-test>
 )
 
 target_link_libraries(ledger-core-integration-test gtest gtest_main)
