@@ -37,42 +37,32 @@
 #include <api/Currency.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/Amount.hpp>
-#include <api/Amount.hpp>
 #include <math/BigInt.h>
 #include <async/Future.hpp>
 
 #include <api/CosmosLikeTransactionBuilder.hpp>
-#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <api/CosmosLikeTransactionCallback.hpp>
 
 namespace ledger {
     namespace core {
 
         struct CosmosLikeTransactionBuildRequest {
-            CosmosLikeTransactionBuildRequest() {
-                wipe = false;
-            };
             std::shared_ptr<BigInt> fee;
             std::shared_ptr<BigInt> gas;
             std::string memo;
             std::string sequence;
             std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
-
-            bool wipe;
         };
 
-        using CosmosLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::CosmosLikeTransaction>>(
-                const CosmosLikeTransactionBuildRequest &, const std::shared_ptr<CosmosLikeBlockchainExplorer> &)>;
+        using CosmosLikeTransactionBuildFunction = std::function<
+            Future<std::shared_ptr<api::CosmosLikeTransaction>>(const CosmosLikeTransactionBuildRequest &)
+            >;
 
-        class CosmosLikeTransactionBuilder
-                : public api::CosmosLikeTransactionBuilder,
-                  public std::enable_shared_from_this<CosmosLikeTransactionBuilder> {
+        class CosmosLikeTransactionBuilder : public api::CosmosLikeTransactionBuilder,
+                                             public std::enable_shared_from_this<CosmosLikeTransactionBuilder> {
         public:
 
             explicit CosmosLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext> &context,
-                                                  const api::Currency &params,
-                                                  const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-                                                  const std::shared_ptr<spdlog::logger> &logger,
                                                   const CosmosLikeTransactionBuildFunction &buildFunction);
 
             CosmosLikeTransactionBuilder(const CosmosLikeTransactionBuilder &cpy);
@@ -88,7 +78,6 @@ namespace ledger {
             std::shared_ptr<api::CosmosLikeTransactionBuilder> setFee(const std::shared_ptr<api::Amount> & fee) override;
 
             void build(const std::shared_ptr<api::CosmosLikeTransactionCallback> &callback) override;
-
             Future<std::shared_ptr<api::CosmosLikeTransaction>> build();
 
             std::shared_ptr<api::CosmosLikeTransactionBuilder> clone() override;
@@ -100,12 +89,9 @@ namespace ledger {
                                                                                    bool isSigned);
 
         private:
-            api::Currency _currency;
-            std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;
-            CosmosLikeTransactionBuildFunction _build;
+            CosmosLikeTransactionBuildFunction _buildFunction;
             CosmosLikeTransactionBuildRequest _request;
             std::shared_ptr<api::ExecutionContext> _context;
-            std::shared_ptr<spdlog::logger> _logger;
 
         };
     }

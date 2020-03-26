@@ -30,32 +30,21 @@
 
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 
-#include <rapidjson/rapidjson.h>
-#include <rapidjson/document.h>
-
-#include <math/BigInt.h>
-#include <api/enum_from_string.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
+#include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
-#include <bytes/BytesReader.h>
+#include <wallet/cosmos/CosmosLikeMessage.hpp>
+#include <wallet/common/Amount.h>
+
 #include <utils/DateUtils.hpp>
 
-#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
-#include <wallet/common/Amount.h>
-#include <api/CosmosLikeMessage.hpp>
-#include <wallet/cosmos/CosmosLikeConstants.hpp>
-#include <api/CosmosLikeMsgType.hpp>
-#include <api/CosmosLikeMsgSend.hpp>
-#include <api/CosmosLikeMsgDelegate.hpp>
-#include <api/CosmosLikeMsgUndelegate.hpp>
-#include <api/CosmosLikeMsgBeginRedelegate.hpp>
-#include <api/CosmosLikeMsgSubmitProposal.hpp>
-#include <api/CosmosLikeMsgVote.hpp>
-#include <api/CosmosLikeMsgDeposit.hpp>
-#include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
+#include <cereal/external/base64.hpp>
+#include <rapidjson/document.h>
+#include <rapidjson/rapidjson.h>
 
-#include <wallet/cosmos/CosmosLikeMessage.hpp> // Included only for the Unsupported case
 
 using namespace rapidjson;
+
 namespace ledger {
     namespace core {
 
@@ -203,7 +192,7 @@ namespace ledger {
                 return {
                     getString(valueObject, kVoter),
                     getString(valueObject, kProposalId),
-                    api::from_string<api::CosmosLikeVoteOption>(getString(valueObject, kOption))
+                    cosmos::stringToVoteOption(getString(valueObject, kOption))
                 };
             }
 
@@ -404,15 +393,13 @@ namespace ledger {
                 return {description, validatorAddress, commissionRate, minSelfDelegation};
             }
 
-            cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(
-                Object const& object) {
+            cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(Object const& object) {
                 auto valueObject = object[kValue].GetObject();
                 return cosmos::MsgSetWithdrawAddress{getString(valueObject, kDelegatorAddress),
                                                      getString(valueObject, kWithdrawAddress)};
             }
 
-            cosmos::MsgWithdrawDelegatorReward buildMsgWithdrawDelegatorRewardFromRawMessage(
-                Object const& object) {
+            cosmos::MsgWithdrawDelegatorReward buildMsgWithdrawDelegatorRewardFromRawMessage(Object const& object) {
                 auto valueObject = object[kValue].GetObject();
                 return cosmos::MsgWithdrawDelegatorReward{
                     getString(valueObject, kDelegatorAddress),
@@ -432,44 +419,34 @@ namespace ledger {
             }
         }
 
-        CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(
-                const std::shared_ptr<api::ExecutionContext> &context,
-                const api::Currency &currency,
-                const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-                const std::shared_ptr<spdlog::logger> &logger,
-                const CosmosLikeTransactionBuildFunction &buildFunction) {
+        CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext> &context,
+                                                                   const CosmosLikeTransactionBuildFunction &buildFunction) {
             _context = context;
-            _currency = currency;
-            _explorer = explorer;
-            _build = buildFunction;
-            _logger = logger;
-            _request.wipe = false;
+            _buildFunction = buildFunction;
         }
 
         CosmosLikeTransactionBuilder::CosmosLikeTransactionBuilder(const CosmosLikeTransactionBuilder &cpy) {
-            _currency = cpy._currency;
-            _build = cpy._build;
+            _buildFunction = cpy._buildFunction;
             _request = cpy._request;
             _context = cpy._context;
-            _logger = cpy._logger;
         }
 
-         std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setSequence(const std::string & sequence) {
+        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setSequence(const std::string & sequence) {
             _request.sequence = sequence;
             return shared_from_this();
         }
 
-        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setMemo(const std::string & memo) {
+        std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setMemo(const std::string & memo) {
             _request.memo = memo;
             return shared_from_this();
         }
 
-        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setGas(const std::shared_ptr<api::Amount> & gas) {
+        std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setGas(const std::shared_ptr<api::Amount> & gas) {
             _request.gas = std::make_shared<BigInt>(gas->toString());
             return shared_from_this();
         }
 
-        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setFee(const std::shared_ptr<api::Amount> & fee) {
+        std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setFee(const std::shared_ptr<api::Amount> & fee) {
             _request.fee = std::make_shared<BigInt>(fee->toString());
             return shared_from_this();
         }
@@ -484,7 +461,7 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<api::CosmosLikeTransaction>> CosmosLikeTransactionBuilder::build() {
-            return _build(_request, _explorer);
+            return _buildFunction(_request);
         }
 
         std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::clone() {
@@ -507,20 +484,33 @@ namespace ledger {
             return ::ledger::core::CosmosLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction, true);
         }
 
+        // Parse a raw transaction, formatted either
+        // to be signed by the device : https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md#format
+        // or to be broadcast to the network : https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/types/stdtx.go#L23-L30
         std::shared_ptr<api::CosmosLikeTransaction>
         CosmosLikeTransactionBuilder::parseRawTransaction(const api::Currency &currency,
                                                           const std::string &rawTransaction,
                                                           bool isSigned) {
+
             Document document;
             document.Parse(rawTransaction.c_str());
 
             auto tx = std::make_shared<CosmosLikeTransactionApi>();
-            tx->setCurrency(currency);
-            tx->setAccountNumber(getString(document.GetObject(), kAccountNumber));
-            tx->setMemo(getString(document.GetObject(), kMemo));
-            tx->setSequence(getString(document.GetObject(), kSequence));
 
-            //Get fees
+            tx->setCurrency(currency);
+            tx->setMemo(getString(document.GetObject(), kMemo));
+
+            // Raw tx has similar format for broadcast and for signature,
+            // but with some differences: e.g "account_number" and "sequence"
+            // are present for signature but not for broadcast
+            if (document.HasMember(kAccountNumber)) {
+                tx->setAccountNumber(getString(document.GetObject(), kAccountNumber));
+            }
+            if (document.HasMember(kSequence)) {
+                tx->setSequence(getString(document.GetObject(), kSequence));
+            }
+
+            // Fees
             if (document[kFee].IsObject()) {
                 auto feeObject = document[kFee].GetObject();
 
@@ -562,13 +552,22 @@ namespace ledger {
                 }
             }
 
-            // Msgs object
-            if (document[kMessages].IsArray()) {
+            // Messages
+            // Raw tx has similar format for broadcast and for signature,
+            // but with some differences: e.g "msgs" for signature and "msg" for broadcast
+            std::string msgKey = "";
+            if (document.HasMember(kMessage)) {
+                msgKey = kMessage;
+            } else if (document.HasMember(kMessages)) {
+                msgKey = kMessages;
+            }
+
+            if (!msgKey.empty()) {
                 std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
 
-                messages.reserve(document[kMessages].GetArray().Size());
+                messages.reserve(document[msgKey.c_str()].GetArray().Size());
 
-                for (auto& msg: document[kMessages].GetArray()) {
+                for (auto& msg: document[msgKey.c_str()].GetArray()) {
                     if (msg.IsObject()) {
                         auto msgObject = msg.GetObject();
 
@@ -646,6 +645,32 @@ namespace ledger {
                 }
 
                 tx->setMessages(messages);
+            }
+
+            // Signatures (only in broadcast format)
+            if (isSigned
+                &&  document.HasMember(kSignatures)
+                &&  document[kSignatures].IsArray()
+                && !document[kSignatures].GetArray().Empty()) {
+
+                auto firstSignature = document[kSignatures].GetArray()[0].GetObject();
+
+                { // Signature
+                    std::string sig = getString(firstSignature, kSignature);
+                    auto decoded = cereal::base64::decode(sig);
+                    std::vector<uint8_t> rSig(decoded.begin(), decoded.begin() + 32);
+                    std::vector<uint8_t> sSig(decoded.begin() + 32, decoded.begin() + 64);
+                    tx->setSignature(rSig, sSig);
+                }
+
+                { // Optional public key
+                    if (firstSignature.HasMember(kPubKey) && firstSignature[kPubKey].GetObject().HasMember(kValue)) {
+                        std::string pubKey = firstSignature[kPubKey].GetObject()[kValue].GetString();
+                        auto decoded = cereal::base64::decode(pubKey);
+                        std::vector<uint8_t> publicKey(decoded.begin(), decoded.end());
+                        tx->setSigningPubKey(publicKey);
+                    }
+                }
             }
 
             return tx;

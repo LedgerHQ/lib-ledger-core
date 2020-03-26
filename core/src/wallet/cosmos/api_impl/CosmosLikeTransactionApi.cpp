@@ -108,7 +108,7 @@ namespace ledger {
             return result;
         }
 
-        CosmosLikeTransactionApi & CosmosLikeTransactionApi::setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & cmessages) {
+        void CosmosLikeTransactionApi::setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> & cmessages) {
             auto result = std::vector<cosmos::Message>();
             for (auto& message : cmessages) {
                 auto concrete_message = std::dynamic_pointer_cast<CosmosLikeMessage>(message);
@@ -120,7 +120,6 @@ namespace ledger {
                 result.push_back(concrete_message->getRawData());
             }
             _txData.messages = result;
-            return *this;
         }
 
         std::string CosmosLikeTransactionApi::getHash() const {
@@ -185,7 +184,78 @@ namespace ledger {
             return _txData;
         }
 
-        std::string CosmosLikeTransactionApi::serialize() {
+        // Build the payload to send to the device to be signed
+        // (cf. https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md#format)
+        std::string CosmosLikeTransactionApi::serializeForSignature() {
+
+            using namespace cosmos::constants;
+            Value vString(kStringType);
+
+            Document document;
+            document.SetObject();
+            Document::AllocatorType& allocator = document.GetAllocator();
+
+            // Account nb
+            vString.SetString(_accountNumber.c_str(), static_cast<SizeType>(_accountNumber.length()), allocator);
+            document.AddMember(kAccountNumber, vString, allocator);
+
+            // Chain ID
+            std::string chainId = "cosmoshub-3"; // FIXME Should this be set by user?
+            vString.SetString(chainId.c_str(), static_cast<SizeType>(chainId.length()), allocator);
+            document.AddMember(kChainId, vString, allocator);
+
+            // Fees
+            Value feeObject(kObjectType);
+            {
+                auto gas = _txData.fee.gas.toString();
+                vString.SetString(gas.c_str(), static_cast<SizeType>(gas.length()), allocator);
+                feeObject.AddMember(kGas, vString, allocator);
+
+                auto getAmountObject = [&] (const std::string &denom, const std::string &amount) {
+                    Value amountObject(kObjectType);
+                    vString.SetString(amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
+                    amountObject.AddMember(kAmount, vString, allocator);
+                    vString.SetString(denom.c_str(), static_cast<SizeType>(denom.length()), allocator);
+                    amountObject.AddMember(kDenom, vString, allocator);
+                    return amountObject;
+                };
+
+                Value feeAmountArray(kArrayType);
+                // Technically the feeArray can contain all fee.amount[i] ;
+                // But Cosmoshub only accepts uatom as a fee denom so the
+                // array is always length 1 for the time being
+                auto feeAmountObj = getAmountObject(_txData.fee.amount[0].denom, _txData.fee.amount[0].amount);
+                feeAmountArray.PushBack(feeAmountObj, allocator);
+                feeObject.AddMember(kAmount, feeAmountArray, allocator);
+            }
+            document.AddMember(kFee, feeObject, allocator);
+
+            // Memo
+            vString.SetString(_txData.memo.c_str(), static_cast<SizeType>(_txData.memo.length()), allocator);
+            document.AddMember(kMemo, vString, allocator);
+
+            // Messages
+            Value msgArray(kArrayType);
+            for (const auto& msg: _txData.messages) {
+                msgArray.PushBack(std::make_shared<CosmosLikeMessage>(msg)->toJson(allocator), allocator);
+            }
+            document.AddMember(kMessages, msgArray, allocator);
+
+            // Sequence
+            vString.SetString(_accountSequence.c_str(), static_cast<SizeType>(_accountSequence.length()), allocator);
+            document.AddMember(kSequence, vString, allocator);
+
+            StringBuffer buffer;
+            Writer<StringBuffer> writer(buffer);
+            sortJson(document);
+            document.Accept(writer);
+            return buffer.GetString();
+        }
+
+        // Builds the payload to broadcast the transaction
+        // NOTE The produced payload is not a 1:1 mapping of this CosmosLikeTransactionApi because a "mode" is added to the json.
+        // (cf.https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/client/rest/broadcast.go#L13-L16))
+        std::string CosmosLikeTransactionApi::serializeForBroadcast() {
 
             using namespace cosmos::constants;
             Value vString(kStringType);
@@ -274,7 +344,7 @@ namespace ledger {
             document.AddMember(kTx, txObject, allocator);
 
             // Set mode
-            // FIXME What mode do we want? (sync|async|block)
+            // TODO What mode do we want? (sync|async|block)
             vString.SetString("async", static_cast<SizeType>(5), allocator);
             document.AddMember(kMode, vString, allocator);
 
@@ -285,31 +355,27 @@ namespace ledger {
             return buffer.GetString();
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setCurrency(const api::Currency& currency) {
+        void CosmosLikeTransactionApi::setCurrency(const api::Currency& currency) {
             _currency = currency;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setSigningPubKey(const std::vector<uint8_t> &pubKey) {
+        void CosmosLikeTransactionApi::setSigningPubKey(const std::vector<uint8_t> &pubKey) {
             _signingPubKey = pubKey;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setHash(const std::string &rhs_hash) {
+        void CosmosLikeTransactionApi::setHash(const std::string &rhs_hash) {
             _txData.hash = rhs_hash;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setGas(const std::shared_ptr<BigInt> &rhs_gas) {
+        void CosmosLikeTransactionApi::setGas(const std::shared_ptr<BigInt> &rhs_gas) {
             if (!rhs_gas) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "CosmosLikeTransactionApi::setGas: Invalid gas");
             }
             _txData.fee.gas = *rhs_gas;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setFee(const std::shared_ptr<BigInt> &rhs_fee) {
+        void CosmosLikeTransactionApi::setFee(const std::shared_ptr<BigInt> &rhs_fee) {
             if (!rhs_fee) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                      "CosmosLikeTransactionApi::setGasPrice: Invalid fee");
@@ -321,23 +387,18 @@ namespace ledger {
             } else {
                 _txData.fee.amount.emplace_back(rhs_fee->toString(), _currency.units.front().name);
             }
-
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setSequence(const std::string &sequence) {
+        void CosmosLikeTransactionApi::setSequence(const std::string &sequence) {
             _accountSequence = sequence;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setMemo(const std::string &rhs_memo) {
+        void CosmosLikeTransactionApi::setMemo(const std::string &rhs_memo) {
             _txData.memo = rhs_memo;
-            return *this;
         }
 
-        CosmosLikeTransactionApi &CosmosLikeTransactionApi::setAccountNumber(const std::string &accountNumber) {
+        void CosmosLikeTransactionApi::setAccountNumber(const std::string &accountNumber) {
             _accountNumber = accountNumber;
-            return *this;
         }
 
     }
