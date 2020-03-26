@@ -154,9 +154,8 @@ namespace ledger {
                         private:
                                 std::shared_ptr<CosmosLikeAccount> getSelf();
 
-                                std::shared_ptr<cosmos::Account> _accData;
+                                std::shared_ptr<cosmos::Account> _accountData;
                                 std::shared_ptr<CosmosLikeKeychain> _keychain;
-                                std::string _accountAddress;
                                 std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;
                                 std::shared_ptr<CosmosLikeAccountSynchronizer> _synchronizer;
                                 std::shared_ptr<CosmosLikeBlockchainObserver> _observer;

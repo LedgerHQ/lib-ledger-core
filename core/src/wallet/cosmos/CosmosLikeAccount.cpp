@@ -78,7 +78,8 @@ namespace ledger {
                         _observer = observer;
                         _synchronizer = synchronizer;
                         _keychain = keychain;
-                        _accountAddress = keychain->getAddress()->toString();
+                        _accountData = std::make_shared<cosmos::Account>();
+                        _accountData->address = keychain->getAddress()->toString();
                 }
 
                 std::shared_ptr<api::CosmosLikeAccount> CosmosLikeAccount::asCosmosLikeAccount() {
@@ -227,7 +228,7 @@ namespace ledger {
                         out.setTransactionData(tx);
                         out.setMessageData(msg);
 
-                        computeAndSetTypeAmount(out, msg, _accountAddress);
+                        computeAndSetTypeAmount(out, msg, _accountData->address);
 
 
                         // out._account = shared_from_this();
@@ -328,7 +329,7 @@ namespace ledger {
                         // operation.trust = std::make_shared<TrustIndicator>();
                         // operation.date = transaction.receivedAt;
 
-                        // if (_accountAddress == transaction.sender) {
+                        // if (_accountData->address == transaction.sender) {
                         //     operation.amount = transaction.value;
                         //     operation.type = api::OperationType::SEND;
                         //     operation.refreshUid();
@@ -338,7 +339,7 @@ namespace ledger {
                         //     result = static_cast<int>(operation.type);
                         // }
 
-                        // if (_accountAddress == transaction.receiver) {
+                        // if (_accountData->address == transaction.receiver) {
                         //     operation.amount = transaction.value;
                         //     operation.type = api::OperationType::RECEIVE;
                         //     operation.refreshUid();
@@ -531,12 +532,12 @@ namespace ledger {
                                                                 });
 
                         // Update account level data (sequence, accountnumber...)
-                        _explorer->getAccount(_accountAddress)
+                        _explorer->getAccount(_accountData->address)
                             .onComplete(
                                 getContext(),
                                 [self](const TryPtr<cosmos::Account> &accountData) mutable {
                                     if (accountData.isSuccess()) {
-                                        self->_accData = accountData.getValue();
+                                        self->_accountData = accountData.getValue();
                                     }
                                 });
 
@@ -626,20 +627,22 @@ namespace ledger {
 
                 std::string CosmosLikeAccount::getSequence()
                 {
-                    if (!_accData) {
+                    // Assuming _accountData is only valid if accountNumber has been fetched
+                    if (!_accountData || _accountData->accountNumber.empty()) {
                         throw make_exception(
                             api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
                     }
-                    return _accData->sequence;
+                    return _accountData->sequence;
                 }
 
                 std::string CosmosLikeAccount::getAccountNumber()
                 {
-                    if (!_accData) {
+                    // Assuming _accountData is only valid if accountNumber has been fetched
+                    if (!_accountData || _accountData->accountNumber.empty()) {
                         throw make_exception(
                             api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
                     }
-                    return _accData->accountNumber;
+                    return _accountData->accountNumber;
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getTotalBalance() const {
@@ -747,7 +750,7 @@ namespace ledger {
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>
                 CosmosLikeAccount::getDelegations() {
-                        return _explorer->getDelegations(_accountAddress)
+                        return _explorer->getDelegations(_accountData->address)
                                 .map<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>(
                                         getContext(),
                                         [] (auto& delegations) {
@@ -766,13 +769,13 @@ namespace ledger {
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>>
                 CosmosLikeAccount::getPendingRewards() {
-                        return _explorer->getPendingRewards(_accountAddress)
+                        return _explorer->getPendingRewards(_accountData->address)
                                 .map<std::vector<std::shared_ptr<api::CosmosLikeReward>>>(
                                         getContext(),
                                         [&] (auto& rewards) {
                                                 std::vector<std::shared_ptr<api::CosmosLikeReward>> rewardList;
                                                 for (auto& reward : *rewards) {
-                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, _accountAddress));
+                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, _accountData->address));
                                                 }
                                                 return rewardList;
                                         }
