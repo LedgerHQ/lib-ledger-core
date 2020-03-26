@@ -812,7 +812,7 @@ namespace ledger {
                 "content_description TEXT,"
                 "proposer VARCHAR(255),"
                 // MsgVote
-                "voter VARCHAR(40),"
+                "voter VARCHAR(255),"
                 "proposal_id VARCHAR(255),"
                 "vote_option VARCHAR(255),"
                 // MsgDeposit
@@ -820,7 +820,8 @@ namespace ledger {
                 ")";
 
             sql << "CREATE TABLE cosmos_multisend_io("
-                "message_uid VARCHAR(255) NOT NULL REFERENCES cosmos_messages(uid),"
+                "message_uid VARCHAR(255) NOT NULL "
+                "REFERENCES cosmos_messages(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                 // not null when input
                 "from_address VARCHAR(255),"
                 // not null when output
@@ -829,23 +830,21 @@ namespace ledger {
                 ")";
 
             sql << "CREATE TABLE cosmos_operations("
-                "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
-                "message_uid VARCHAR(255) NOT NULL REFERENCES cosmos_messages(uid)"
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL "
+                "REFERENCES operations(uid) ON DELETE CASCADE,"
+                "message_uid VARCHAR(255) NOT NULL "
+                "REFERENCES cosmos_messages(uid) ON DELETE CASCADE ON UPDATE CASCADE"
                 ")";
         }
 
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "DROP TABLE cosmos_transactions";
-
+            sql << "DROP TABLE cosmos_multisend_io";
             sql << "DROP TABLE cosmos_operations";
-
+            sql << "DROP TABLE cosmos_messages";
+            sql << "DROP TABLE cosmos_transactions";
             sql << "DROP TABLE cosmos_accounts";
-
             sql << "DROP TABLE cosmos_currencies";
 
-            sql << "DROP TABLE cosmos_messages";
-
-            sql << "DROP TABLE cosmos_multisend_io";
         }
     }
 }
