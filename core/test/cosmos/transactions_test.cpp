@@ -108,28 +108,8 @@ TEST_F(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
     // ensure the values are correct
     EXPECT_EQ(tx->getFee()->toLong(), 5000L);
     EXPECT_EQ(tx->getGas()->toLong(), 200000L);
-    EXPECT_EQ(sendMessage.fromAddress, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");
-    EXPECT_EQ(sendMessage.toAddress, "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7");
-    EXPECT_EQ(sendMessage.amount.size(), 1);
-    EXPECT_EQ(sendMessage.amount.front().amount, "1000000");
-    EXPECT_EQ(sendMessage.amount.front().denom, "uatom");
-
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
-    EXPECT_EQ(tx->serializeForBroadcast(), expected);
-}
-
-TEST_F(CosmosTransactionTest, EncodeToJSON) {
-    const auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgSend\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"denom\":\"uatom\"}],\"from_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"to_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
-    const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
-
-    auto message = tx->getMessages().front();
-    auto sendMessage = api::CosmosLikeMessage::unwrapMsgSend(message);
-
-    // ensure the values are correct
-    EXPECT_EQ(tx->getFee()->toLong(), 5000L);
-    EXPECT_EQ(tx->getGas()->toLong(), 200000L);
-    EXPECT_EQ(sendMessage.fromAddress, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");
-    EXPECT_EQ(sendMessage.toAddress, "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7");
+    EXPECT_EQ(sendMessage.fromAddress, "cosmos1d9h8qat57ljhcm");
+    EXPECT_EQ(sendMessage.toAddress, "cosmos1da6hgur4wsmpnjyg");
     EXPECT_EQ(sendMessage.amount.size(), 1);
     EXPECT_EQ(sendMessage.amount.front().amount, "1000000");
     EXPECT_EQ(sendMessage.amount.front().denom, "uatom");
