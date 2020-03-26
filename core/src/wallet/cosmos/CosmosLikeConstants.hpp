@@ -350,6 +350,8 @@ namespace ledger {
                                                 return constants::kVoteOptionNoWithVeto;
                                         case api::CosmosLikeVoteOption::YES:
                                                 return constants::kVoteOptionYes;
+                                        default:
+                                                return "unknown";
                                 }
                         }
 
