@@ -31,6 +31,10 @@
 
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
+
 #include <async/algorithm.h>
 #include <api/Configuration.hpp>
 #include <utils/Exception.hpp>
@@ -38,6 +42,8 @@
 #include <wallet/cosmos/explorers/RpcsParsers.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <wallet/cosmos/CosmosNetworks.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 
 #include <numeric>
 #include <algorithm>
@@ -528,5 +534,390 @@ namespace ledger {
                 });
         }
 
-    }  // namespace core
+        namespace {
+
+        // TODO: probably move most of these in a separate folder/file
+
+        void makeAmount(const api::CosmosLikeAmount& amount,
+                        rapidjson::Value& value,
+                        rapidjson::Document::AllocatorType& allocator)
+        {
+            auto buffer = rapidjson::Value(rapidjson::kStringType);
+            buffer.SetString(amount.amount.c_str(), allocator);
+            value.AddMember(cosmos::constants::kAmount, buffer, allocator);
+            buffer.SetString(amount.denom.c_str(), allocator);
+            value.AddMember(cosmos::constants::kDenom, buffer, allocator);
+        }
+
+        void makeAmountArray(const std::vector<api::CosmosLikeAmount>& amounts,
+                             rapidjson::Value& value,
+                             rapidjson::Document::AllocatorType& allocator)
+        {
+            for (const auto& amount : amounts) {
+                auto amountObject = rapidjson::Value(rapidjson::kObjectType);
+                makeAmount(amount, amountObject, allocator);
+                value.PushBack(amountObject, allocator);
+            }
+        }
+
+        void makeStringValue(const std::string& str,
+                             rapidjson::Value& value,
+                             rapidjson::Document::AllocatorType& allocator)
+        {
+            value.SetString(str.c_str(), allocator);
+        }
+
+        class BaseReq
+        {
+        public:
+            BaseReq(std::string from,
+                    std::string memo,
+                    std::string chainId,
+                    std::string accountNumber,
+                    std::string accountSequence,
+                    std::string gas,
+                    std::string gasAdjustment,
+                    cosmos::Fee fees,
+                    bool simulate)
+                : from_(std::move(from))
+                , memo_(std::move(memo))
+                , chainId_(std::move(chainId))
+                , accountNumber_(std::move(accountNumber))
+                , accountSequence_(std::move(accountSequence))
+                , gas_(std::move(gas))
+                , gasAdjustment_(std::move(gasAdjustment))
+                , fees_(std::move(fees))
+                , simulate_(simulate)
+            {}
+
+            void toJson(rapidjson::Value& value,
+                        rapidjson::Document::AllocatorType& allocator) const
+            {
+                auto buffer = rapidjson::Value(rapidjson::kStringType);
+
+                makeStringValue(from_, buffer, allocator);
+                value.AddMember(cosmos::constants::kFrom, buffer, allocator);
+
+                makeStringValue(memo_, buffer, allocator);
+                value.AddMember(cosmos::constants::kMemo, buffer, allocator);
+
+                makeStringValue(chainId_, buffer, allocator);
+                value.AddMember(cosmos::constants::kChainId, buffer, allocator);
+
+                makeStringValue(accountNumber_, buffer, allocator);
+                value.AddMember(cosmos::constants::kAccountNumber, buffer, allocator);
+
+                makeStringValue(accountSequence_, buffer, allocator);
+                value.AddMember(cosmos::constants::kSequence, buffer, allocator);
+
+                makeStringValue(gas_, buffer, allocator);
+                value.AddMember(cosmos::constants::kGas, buffer, allocator);
+
+                auto fees = rapidjson::Value(rapidjson::kArrayType);
+                makeAmountArray(fees_.amount, fees, allocator);
+                value.AddMember(cosmos::constants::kFees, fees, allocator);
+
+                auto simulate = rapidjson::Value(rapidjson::kTrueType);
+                value.AddMember(cosmos::constants::kSimulate, simulate, allocator);
+            }
+
+        private:
+            std::string from_;
+            std::string memo_;
+            std::string chainId_;
+            std::string accountNumber_;
+            std::string accountSequence_;
+            std::string gas_;
+            std::string gasAdjustment_;
+            cosmos::Fee fees_;
+            bool simulate_;
+        };
+
+        void makeBaseReq(const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                         const std::shared_ptr<api::CosmosLikeMessage>& message,
+                         rapidjson::Value& value,
+                         rapidjson::Document::AllocatorType& allocator)
+        {
+            const auto tx = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(transaction);
+            const auto msg = std::dynamic_pointer_cast<CosmosLikeMessage>(message);
+            const auto baseReq = BaseReq(
+                    msg->getFromAddress(),
+                    tx->getMemo(),
+                    networks::getCosmosLikeNetworkParameters(tx->getCurrency().name).ChainId,
+                    tx->getAccountNumber(),
+                    tx->getAccountSequence(),
+                    tx->getTxData().fee.gas.toString(),
+                    std::string("1"),
+                    tx->getTxData().fee,
+                    true);
+
+            baseReq.toJson(value, allocator);
+        }
+
+        struct JsonObject
+        {
+            rapidjson::GenericStringRef<char> name;
+            rapidjson::Value& value;
+
+            JsonObject(const char* name, rapidjson::Value& value)
+                : name(rapidjson::StringRef(name)), value(value)
+            {}
+        };
+
+        template <typename... JsonObj>
+        std::string makeJsonFrom(rapidjson::Document& document,
+                                 JsonObj&&... jsonObject)
+        {
+            auto& allocator = document.GetAllocator();
+
+            // TODO: use fold expression when C++17
+            // (document.AddMember(std::forward<JsonObj>(jsonObject).name, std::forward<JsonObj>(jsonObject).value, allocator), ...);
+            using _t = int[];
+            (void)_t{0, (document.AddMember(std::forward<JsonObj>(jsonObject).name,
+                        std::forward<JsonObj>(jsonObject).value, allocator), 0)...};
+
+            auto buffer = rapidjson::StringBuffer();
+            auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
+            // TODO: sortJson is defined static in CosmosLikeTransactionApi.cpp (either make it visible or move this to CosmosLikeTransactionApi)
+            // sortJson(document);
+            document.Accept(writer);
+
+            return buffer.GetString();
+        }
+
+        } // namespace
+
+        Future<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::genericPostRequestForSimulation(
+                const std::string& endpoint,
+                const std::string& transaction) const
+        {
+            const auto tx = std::vector<uint8_t>(std::begin(transaction), std::end(transaction));
+            const auto headers =
+                std::unordered_map<std::string, std::string>{ { "Content-Type", "application/json" } };
+            return _http->POST(endpoint, tx, headers)
+                .json(true)
+                .map<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
+                        auto& json = *std::get<1>(result);
+                        const auto estimatedGasLimit =
+                            json.GetObject()[cosmos::constants::kGasEstimate].GetString();
+                        return BigInt::fromString(estimatedGasLimit);
+                    });
+        }
+
+        Future<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForTransfer(
+                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        {
+            auto document = rapidjson::Document();
+            document.SetObject();
+            auto& allocator = document.GetAllocator();
+
+            auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
+            makeBaseReq(transaction, message, baseReqValue, allocator);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+
+            const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgSend(message);
+
+            auto amountValue = rapidjson::Value(rapidjson::kArrayType);
+            makeAmountArray(unwrappedMessage.amount, amountValue, allocator);
+            auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
+
+            const auto rawTransaction = makeJsonFrom(document, baseReq, amount);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaTransfersEndpoint,
+                    unwrappedMessage.toAddress);
+
+            return genericPostRequestForSimulation(endpoint, rawTransaction);
+        }
+
+        Future<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForRewards(
+                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        {
+            auto document = rapidjson::Document();
+            document.SetObject();
+            auto& allocator = document.GetAllocator();
+
+            auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
+            makeBaseReq(transaction, message, baseReqValue, allocator);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+
+            const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgWithdrawDelegatorReward(message);
+
+            const auto rawTransaction = makeJsonFrom(document, baseReq);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaRewardsEndpoint,
+                    unwrappedMessage.delegatorAddress);
+
+            return genericPostRequestForSimulation(endpoint, rawTransaction);
+        }
+
+        Future<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForDelegations(
+                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        {
+            auto document = rapidjson::Document();
+            document.SetObject();
+            auto& allocator = document.GetAllocator();
+
+            auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
+            makeBaseReq(transaction, message, baseReqValue, allocator);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+
+            const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgDelegate(message);
+
+            auto delegatorAddressValue = rapidjson::Value(rapidjson::kStringType);
+            makeStringValue(unwrappedMessage.delegatorAddress, delegatorAddressValue, allocator);
+            const auto delegatorAddress = JsonObject(cosmos::constants::kDelegatorAddress, delegatorAddressValue);
+
+            auto validatorAddressValue = rapidjson::Value(rapidjson::kStringType);
+            makeStringValue(unwrappedMessage.validatorAddress, validatorAddressValue, allocator);
+            const auto validatorAddress = JsonObject(cosmos::constants::kValidatorAddress, validatorAddressValue);
+
+            auto amountValue = rapidjson::Value(rapidjson::kObjectType);
+            makeAmount(unwrappedMessage.amount, amountValue, allocator);
+            const auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
+
+            const auto rawTransaction = makeJsonFrom(document, baseReq, delegatorAddress,
+                    validatorAddress, amount);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaDelegationsEndpoint,
+                    unwrappedMessage.delegatorAddress);
+
+            return genericPostRequestForSimulation(endpoint, rawTransaction);
+        }
+
+        Future<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForUnbounding(
+                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        {
+            auto document = rapidjson::Document();
+            document.SetObject();
+            auto& allocator = document.GetAllocator();
+
+            auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
+            makeBaseReq(transaction, message, baseReqValue, allocator);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+
+            const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgUndelegate(message);
+
+            auto delegatorAddressValue = rapidjson::Value(rapidjson::kStringType);
+            makeStringValue(unwrappedMessage.delegatorAddress, delegatorAddressValue, allocator);
+            const auto delegatorAddress = JsonObject(cosmos::constants::kDelegatorAddress, delegatorAddressValue);
+
+            auto validatorAddressValue = rapidjson::Value(rapidjson::kStringType);
+            makeStringValue(unwrappedMessage.validatorAddress, validatorAddressValue, allocator);
+            const auto validatorAddress = JsonObject(cosmos::constants::kValidatorAddress, validatorAddressValue);
+
+            auto amountValue = rapidjson::Value(rapidjson::kObjectType);
+            makeAmount(unwrappedMessage.amount, amountValue, allocator);
+            const auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
+
+            const auto rawTransaction = makeJsonFrom(document, baseReq, delegatorAddress,
+                    validatorAddress, amount);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaUnbondingsEndpoint,
+                    unwrappedMessage.delegatorAddress);
+
+            return genericPostRequestForSimulation(endpoint, rawTransaction);
+        }
+
+        Future<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForRedelegations(
+                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        {
+            auto document = rapidjson::Document();
+            document.SetObject();
+            auto& allocator = document.GetAllocator();
+
+            auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
+            makeBaseReq(transaction, message, baseReqValue, allocator);
+            auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
+
+            const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgBeginRedelegate(message);
+
+            auto delegatorAddressValue = rapidjson::Value(rapidjson::kStringType);
+            makeStringValue(unwrappedMessage.delegatorAddress, delegatorAddressValue, allocator);
+            const auto delegatorAddress = JsonObject(cosmos::constants::kDelegatorAddress, delegatorAddressValue);
+
+            auto validatorSourceAddressValue = rapidjson::Value(rapidjson::kStringType);
+            makeStringValue(unwrappedMessage.validatorSourceAddress,
+                    validatorSourceAddressValue, allocator);
+            const auto validatorSourceAddress =
+                JsonObject(cosmos::constants::kValidatorSrcAddress,
+                        validatorSourceAddressValue);
+
+            auto validatorDestinationAddressValueAddress = rapidjson::Value(rapidjson::kStringType);
+            makeStringValue(unwrappedMessage.validatorDestinationAddress,
+                    validatorDestinationAddressValueAddress, allocator);
+            const auto validatorDestinationAddress =
+                JsonObject(cosmos::constants::kValidatorDstAddress,
+                        validatorDestinationAddressValueAddress);
+
+            auto amountValue = rapidjson::Value(rapidjson::kObjectType);
+            makeAmount(unwrappedMessage.amount, amountValue, allocator);
+            const auto amount = JsonObject(cosmos::constants::kAmount, amountValue);
+
+            const auto rawTransaction = makeJsonFrom(document, baseReq, delegatorAddress,
+                    validatorSourceAddress, validatorDestinationAddress, amount);
+            const auto endpoint = fmt::format(cosmos::constants::kGaiaRedelegationsEndpoint,
+                    unwrappedMessage.delegatorAddress);
+
+            return genericPostRequestForSimulation(endpoint, rawTransaction);
+        }
+
+        Future<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
+                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        {
+            switch (message->getMessageType()) {
+                case api::CosmosLikeMsgType::MSGSEND:
+                    return getEstimatedGasLimitForTransfer(transaction, message);
+                case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
+                    return getEstimatedGasLimitForRewards(transaction, message);
+                case api::CosmosLikeMsgType::MSGDELEGATE:
+                    return getEstimatedGasLimitForDelegations(transaction, message);
+                case api::CosmosLikeMsgType::MSGUNDELEGATE:
+                    return getEstimatedGasLimitForUnbounding(transaction, message);
+                case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
+                    return getEstimatedGasLimitForRedelegations(transaction, message);
+                default:
+                    return Future<BigInt>(nullptr)
+                        .map<BigInt>(getContext(), [](BigInt) {
+                                return BigInt::ZERO;
+                        });
+            }
+        }
+
+        FuturePtr<BigInt>
+        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
+                const std::shared_ptr<api::CosmosLikeTransaction>& transaction) const
+        {
+            const auto& messages = transaction->getMessages();
+            auto estimations = std::vector<Future<BigInt>>();
+            std::transform(std::begin(messages), std::end(messages),
+                    std::back_inserter(estimations),
+                    [&](const std::shared_ptr<api::CosmosLikeMessage>& message) {
+                        return getEstimatedGasLimit(transaction, message);
+                    });
+
+            /// Because of limitations in the REST API, we cannot estimate
+            /// directly the gas needed for a transaction with several messages.
+            /// As a workaround, we split the transaction in several transactions
+            /// containing only one message and sum the costs of all transactions.
+            /// This implies that the cost of the signature is paid as many times
+            /// as there are messages, instead of one. We assume that this cost is
+            /// low compared to the total cost.
+            return async::sequence(getContext(), estimations)
+                .flatMapPtr<BigInt>(getContext(), [](const auto& estimations) {
+                        const auto result = std::accumulate(std::begin(estimations),
+                                std::end(estimations), BigInt::ZERO);
+                        return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(result));
+                });
+        }
+
+        }  // namespace core
 }

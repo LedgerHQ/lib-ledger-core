@@ -34,6 +34,7 @@
 #include <soci.h>
 
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
+#include <api/BigIntCallback.hpp>
 #include <api/CosmosLikeAddress.hpp>
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
@@ -380,9 +381,10 @@ namespace ledger {
                 }
 
                 void CosmosLikeAccount::getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction, const std::shared_ptr<api::BigIntCallback> &callback) {
-                        // _explorer->getEstimatedGasLimit(transaction).mapPtr<api::BigInt>(getContext(), [] (const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
-                        //                 return std::make_shared<api::BigIntImpl>(*gasLimit);
-                        //         }).callback(getContext(), callback);
+                        _explorer->getEstimatedGasLimit(transaction)
+                                .mapPtr<api::BigInt>(getContext(), [](const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
+                                        return std::make_shared<api::BigIntImpl>(*gasLimit);
+                                }).callback(getContext(), callback);
                 }
 
                 Future<AbstractAccount::AddressList> CosmosLikeAccount::getFreshPublicAddresses() {

@@ -122,6 +122,33 @@ namespace ledger {
 
             FuturePtr<std::vector<cosmos::Delegation>> getDelegations(const std::string& delegatorAddr) const override;
             FuturePtr<std::vector<cosmos::Reward>> getPendingRewards(const std::string& delegatorAddr) const override;
+            /// Get the estimated gas needed to broadcast the transaction
+            FuturePtr<BigInt> getEstimatedGasLimit(
+                    const std::shared_ptr<api::CosmosLikeTransaction>& transaction) const override;
+
+        private:
+            Future<BigInt> genericPostRequestForSimulation(
+                    const std::string& endpoint,
+                    const std::string& transaction) const;
+
+            Future<BigInt> getEstimatedGasLimit(
+                    const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                    const std::shared_ptr<api::CosmosLikeMessage>& message) const;
+            Future<BigInt> getEstimatedGasLimitForTransfer(
+                    const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                    const std::shared_ptr<api::CosmosLikeMessage>& message) const;
+            Future<BigInt> getEstimatedGasLimitForRewards(
+                    const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                    const std::shared_ptr<api::CosmosLikeMessage>& message) const;
+            Future<BigInt> getEstimatedGasLimitForDelegations(
+                    const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                    const std::shared_ptr<api::CosmosLikeMessage>& message) const;
+            Future<BigInt> getEstimatedGasLimitForUnbounding(
+                    const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                    const std::shared_ptr<api::CosmosLikeMessage>& message) const;
+            Future<BigInt> getEstimatedGasLimitForRedelegations(
+                    const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+                    const std::shared_ptr<api::CosmosLikeMessage>& message) const;
 
         private:
             std::shared_ptr<HttpClient> _http;

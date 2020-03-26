@@ -609,6 +609,96 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountPendingRewards) {
 
 }
 
+namespace {
+
+void GenericGasLimitEstimationTest(const std::string& strTx, CosmosLikeWalletSynchronization& t)
+{
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::ATOM, strTx);
+    const auto estimatedGasLimit = ::wait(t.explorer->getEstimatedGasLimit(tx));
+    EXPECT_GE(estimatedGasLimit->toUint64(), 0);
+}
+
+} // namespace
+
+TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForTransfer) {
+    const auto strTx = "{\"account_number\":\"6571\","
+        "\"chain_id\":\"cosmoshub-3\","
+        "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
+        "\"memo\":\"Sent from Ledger\","
+        "\"msgs\":["
+        "{\"type\":\"cosmos-sdk/MsgSend\","
+        "\"value\":{"
+        "\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},"
+        "\"from_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\","
+        "\"to_address\":\"cosmos16xyempempp92x9hyzz9wrgf94r6j9h5f06pxxv\""
+        "}}],"
+        "\"sequence\":\"0\"}";
+    GenericGasLimitEstimationTest(strTx, *this);
+}
+
+TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForWithdrawingRewards) {
+    const auto strTx = "{\"account_number\":\"6571\","
+        "\"chain_id\":\"cosmoshub-3\","
+        "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
+        "\"memo\":\"Sent from Ledger\","
+        "\"msgs\":["
+        "{\"type\":\"cosmos-sdk/MsgWithdrawDelegatorReward\""
+        ",\"value\":{"
+        "\"delegator_address\":\"cosmos167w96tdvmazakdwkw2u57227eduula2cy572lf\","
+        "\"validator_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\""
+        "}}],"
+        "\"sequence\":\"0\"}";
+    GenericGasLimitEstimationTest(strTx, *this);
+}
+
+TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForDelegation) {
+    const auto strTx = "{\"account_number\":\"6571\","
+        "\"chain_id\":\"cosmoshub-3\","
+        "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
+        "\"memo\":\"Sent from Ledger\","
+        "\"msgs\":["
+        "{\"type\":\"cosmos-sdk/MsgDelegate\","
+        "\"value\":{"
+        "\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},"
+        "\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\","
+        "\"validator_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\""
+        "}}],"
+        "\"sequence\":\"0\"}";
+    GenericGasLimitEstimationTest(strTx, *this);
+}
+
+TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForUnDelegation) {
+    const auto strTx = "{\"account_number\":\"6571\","
+        "\"chain_id\":\"cosmoshub-3\","
+        "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
+        "\"memo\":\"Sent from Ledger\","
+        "\"msgs\":["
+        "{\"type\":\"cosmos-sdk/MsgUndelegate\","
+        "\"value\":{"
+        "\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},"
+        "\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\","
+        "\"validator_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\""
+        "}}],"
+        "\"sequence\":\"0\"}";
+    GenericGasLimitEstimationTest(strTx, *this);
+}
+
+TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForRedelegation) {
+    const auto strTx = "{\"account_number\":\"6571\","
+        "\"chain_id\":\"cosmoshub-3\","
+        "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
+        "\"memo\":\"Sent from Ledger\","
+        "\"msgs\":["
+        "{\"type\":\"cosmos-sdk/MsgBeginRedelegate\","
+        "\"value\":{\"amount\":{\"amount\":\"1000000\",\"denom\":\"uatom\"},"
+        "\"delegator_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\","
+        "\"validator_dst_address\":\"cosmosvaloper1sd4tl9aljmmezzudugs7zlaya7pg2895ws8tfs\","
+        "\"validator_src_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\""
+        "}}],"
+        "\"sequence\":\"0\"}";
+    GenericGasLimitEstimationTest(strTx, *this);
+}
+
 // FIXME This test fails ; put at the end because it also messes up the other tests
 // This test is also highly dependent on external state ( how well the chain is
 // doing). Until a better solution is found, this test is deactivated

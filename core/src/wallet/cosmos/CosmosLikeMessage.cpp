@@ -173,6 +173,24 @@ void CosmosLikeMessage::setRawData(const cosmos::Message& msgData) { _msgData = 
 
 const cosmos::Message& CosmosLikeMessage::getRawData() const { return _msgData; }
 
+const std::string& CosmosLikeMessage::getFromAddress() const
+{
+    switch (getMessageType()) {
+        case api::CosmosLikeMsgType::MSGSEND:
+            return boost::get<cosmos::MsgSend>(_msgData.content).fromAddress;
+        case api::CosmosLikeMsgType::MSGDELEGATE:
+            return boost::get<cosmos::MsgDelegate>(_msgData.content).delegatorAddress;
+        case api::CosmosLikeMsgType::MSGUNDELEGATE:
+            return boost::get<cosmos::MsgUndelegate>(_msgData.content).delegatorAddress;
+        case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
+            return boost::get<cosmos::MsgBeginRedelegate>(_msgData.content).delegatorAddress;
+        case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
+            return boost::get<cosmos::MsgWithdrawDelegatorReward>(_msgData.content).delegatorAddress;
+        default:
+            throw Exception(api::ErrorCode::UNSUPPORTED_OPERATION, "message type not handled");
+    }
+}
+
 api::CosmosLikeMsgType CosmosLikeMessage::getMessageType() const {
     return cosmos::stringToMsgType(_msgData.type.c_str());
 }
