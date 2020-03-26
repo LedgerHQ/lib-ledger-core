@@ -31,8 +31,6 @@ if (TARGET_JNI)
     add_definitions(-DTARGET_JNI=1)
 endif ()
 
-link_directories(${CMAKE_BINARY_DIR}/lib)
-
 # Add files to compile to the project
 file(GLOB_RECURSE SRC_FILES *.cpp)
 file(GLOB_RECURSE HEADERS_FILES ../inc/*.hpp)
@@ -102,6 +100,11 @@ else()
     include(StaticAnalyzers)
     set_enabled_static_analyzers(ledger-core-obj)
 
+    # set compiler warnings
+    include(CompilerWarnings)
+    toggle_compiler_warnings(ledger-core-obj)
+    disable_compiler_warnings(ledger-core-api-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core SHARED)
     target_link_libraries(ledger-core PUBLIC ledger-core-obj ledger-core-api-obj)
@@ -163,7 +166,7 @@ target_link_libraries(ledger-core-interface INTERFACE ethash)
 target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
 target_include_directories(
-    ledger-core-interface INTERFACE
+    ledger-core-interface SYSTEM INTERFACE
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/inc>                      $<INSTALL_INTERFACE:include/ledger-core>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/bigd>                 $<INSTALL_INTERFACE:include/ledger-core/lib/bigd>
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/rapidjson/include>    $<INSTALL_INTERFACE:include/ledger-core/lib/rapidjson/include>
