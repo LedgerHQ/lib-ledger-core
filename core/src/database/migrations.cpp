@@ -820,7 +820,7 @@ namespace ledger {
                 ")";
 
             sql << "CREATE TABLE cosmos_multisend_io("
-                "message_uid NOT NULL REFERENCES cosmos_messages(uid),"
+                "message_uid VARCHAR(255) NOT NULL REFERENCES cosmos_messages(uid),"
                 // not null when input
                 "from_address VARCHAR(255),"
                 // not null when output
