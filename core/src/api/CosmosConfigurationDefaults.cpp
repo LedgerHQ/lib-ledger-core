@@ -5,7 +5,7 @@
 
 namespace ledger { namespace core { namespace api {
 
-std::string const CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT = {"https://cosmos.coin-proxy.dev.aws.ledger.fr/"};
+std::string const CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT = {"http://lite-client-0e27eefb-4031-4859-a88e-249fd241989d.cosmos.bison.run:1317"};
 
 std::string const CosmosConfigurationDefaults::COSMOS_OBSERVER_WS_ENDPOINT = {""};
 

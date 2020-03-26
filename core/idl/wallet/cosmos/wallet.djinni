@@ -134,7 +134,7 @@ CosmosLikeReward = interface +c {
 }
 
 CosmosConfigurationDefaults = interface +c {
-        const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmos.coin-proxy.dev.aws.ledger.fr/";
+        const COSMOS_DEFAULT_API_ENDPOINT: string = "http://lite-client-0e27eefb-4031-4859-a88e-249fd241989d.cosmos.bison.run:1317";
         const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
 }
 

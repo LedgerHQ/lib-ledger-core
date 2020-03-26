@@ -484,20 +484,25 @@ namespace ledger {
             return ::ledger::core::CosmosLikeTransactionBuilder::parseRawTransaction(currency, rawTransaction, true);
         }
 
+        // Parse a raw transaction, formatted either
+        // to be signed by the device : https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md#format
+        // or to be broadcast to the network : https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/types/stdtx.go#L23-L30
         std::shared_ptr<api::CosmosLikeTransaction>
         CosmosLikeTransactionBuilder::parseRawTransaction(const api::Currency &currency,
                                                           const std::string &rawTransaction,
                                                           bool isSigned) {
 
-            // Parse broadcast format (cf. https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/types/stdtx.go#L23-L30)
-
             Document document;
             document.Parse(rawTransaction.c_str());
 
             auto tx = std::make_shared<CosmosLikeTransactionApi>();
+
             tx->setCurrency(currency);
             tx->setMemo(getString(document.GetObject(), kMemo));
 
+            // Raw tx has similar format for broadcast and for signature,
+            // but with some differences: e.g "account_number" and "sequence"
+            // are present for signature but not for broadcast
             if (document.HasMember(kAccountNumber)) {
                 tx->setAccountNumber(getString(document.GetObject(), kAccountNumber));
             }
@@ -548,6 +553,8 @@ namespace ledger {
             }
 
             // Messages
+            // Raw tx has similar format for broadcast and for signature,
+            // but with some differences: e.g "msgs" for signature and "msg" for broadcast
             std::string msgKey = "";
             if (document.HasMember(kMessage)) {
                 msgKey = kMessage;
@@ -640,6 +647,7 @@ namespace ledger {
                 tx->setMessages(messages);
             }
 
+            // Signatures (only in broadcast format)
             if (isSigned
                 &&  document.HasMember(kSignatures)
                 &&  document[kSignatures].IsArray()
