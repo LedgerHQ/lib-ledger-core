@@ -617,7 +617,7 @@ namespace ledger {
                                 tx->setGas(request.gas);
                                 tx->setMemo(request.memo);
                                 tx->setMessages(request.messages);
-                                tx->setSequence(self->getSequence());
+                                tx->setSequence(request.sequence.empty() ? self->getSequence() : request.sequence);
                                 tx->setSigningPubKey(self->getKeychain()->getPublicKey());
                                 return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                         };
