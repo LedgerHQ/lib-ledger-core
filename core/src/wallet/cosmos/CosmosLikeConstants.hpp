@@ -305,39 +305,52 @@ namespace ledger {
                         }
 
                         static constexpr MsgType stringToMsgType(const char* string) {
-                                if (strings_equal(string, constants::kMsgSend)) {
-                                        return MsgType::MSGSEND;
-                                } else if (strings_equal(string, constants::kMsgDelegate)) {
-                                        return MsgType::MSGDELEGATE;
-                                } else if (strings_equal(string, constants::kMsgUndelegate)) {
-                                        return MsgType::MSGUNDELEGATE;
-                                } else if (strings_equal(string, constants::kMsgBeginRedelegate)) {
-                                        return MsgType::MSGBEGINREDELEGATE;
-                                } else if (strings_equal(string, constants::kMsgSubmitProposal)) {
-                                        return MsgType::MSGSUBMITPROPOSAL;
-                                } else if (strings_equal(string, constants::kMsgVote)) {
-                                        return MsgType::MSGVOTE;
-                                } else if (strings_equal(string, constants::kMsgDeposit)) {
-                                        return MsgType::MSGDEPOSIT;
-                                } else if (strings_equal(string, constants::kMsgWithdrawDelegationReward)) {
-                                        return MsgType::MSGWITHDRAWDELEGATIONREWARD;
-                                } else if (strings_equal(string, constants::kMsgMultiSend)) {
-                                        return MsgType::MSGMULTISEND;
-                                } else if (strings_equal(string, constants::kMsgCreateValidator)) {
-                                        return MsgType::MSGCREATEVALIDATOR;
-                                } else if (strings_equal(string, constants::kMsgEditValidator)) {
-                                        return MsgType::MSGEDITVALIDATOR;
-                                } else if (strings_equal(string, constants::kMsgSetWithdrawAddress)) {
-                                        return MsgType::MSGSETWITHDRAWADDRESS;
-                                } else if (strings_equal(string, constants::kMsgWithdrawDelegatorReward)) {
-                                        return MsgType::MSGWITHDRAWDELEGATORREWARD;
-                                } else if (strings_equal(string, constants::kMsgWithdrawValidatorCommission)) {
-                                        return MsgType::MSGWITHDRAWVALIDATORCOMMISSION;
-                                } else if (strings_equal(string, constants::kMsgUnjail)) {
-                                        return MsgType::MSGUNJAIL;
-                                } else {
-                                        return MsgType::UNSUPPORTED;
-                                }
+                            if (strings_equal(string, constants::kMsgSend)) {
+                                return MsgType::MSGSEND;
+                            }
+                            if (strings_equal(string, constants::kMsgDelegate)) {
+                                return MsgType::MSGDELEGATE;
+                            }
+                            if (strings_equal(string, constants::kMsgUndelegate)) {
+                                return MsgType::MSGUNDELEGATE;
+                            }
+                            if (strings_equal(string, constants::kMsgBeginRedelegate)) {
+                                return MsgType::MSGBEGINREDELEGATE;
+                            }
+                            if (strings_equal(string, constants::kMsgSubmitProposal)) {
+                                return MsgType::MSGSUBMITPROPOSAL;
+                            }
+                            if (strings_equal(string, constants::kMsgVote)) {
+                                return MsgType::MSGVOTE;
+                            }
+                            if (strings_equal(string, constants::kMsgDeposit)) {
+                                return MsgType::MSGDEPOSIT;
+                            }
+                            if (strings_equal(string, constants::kMsgWithdrawDelegationReward)) {
+                                return MsgType::MSGWITHDRAWDELEGATIONREWARD;
+                            }
+                            if (strings_equal(string, constants::kMsgMultiSend)) {
+                                return MsgType::MSGMULTISEND;
+                            }
+                            if (strings_equal(string, constants::kMsgCreateValidator)) {
+                                return MsgType::MSGCREATEVALIDATOR;
+                            }
+                            if (strings_equal(string, constants::kMsgEditValidator)) {
+                                return MsgType::MSGEDITVALIDATOR;
+                            }
+                            if (strings_equal(string, constants::kMsgSetWithdrawAddress)) {
+                                return MsgType::MSGSETWITHDRAWADDRESS;
+                            }
+                            if (strings_equal(string, constants::kMsgWithdrawDelegatorReward)) {
+                                return MsgType::MSGWITHDRAWDELEGATORREWARD;
+                            }
+                            if (strings_equal(string, constants::kMsgWithdrawValidatorCommission)) {
+                                return MsgType::MSGWITHDRAWVALIDATORCOMMISSION;
+                            }
+                            if (strings_equal(string, constants::kMsgUnjail)) {
+                                return MsgType::MSGUNJAIL;
+                            }
+                            return MsgType::UNSUPPORTED;
                         }
 
                         static constexpr const char* voteOptionToChars(api::CosmosLikeVoteOption option) {
