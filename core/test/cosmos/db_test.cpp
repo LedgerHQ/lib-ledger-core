@@ -25,7 +25,7 @@ public:
      const bool usePostgreSQL = true;
      auto poolConfig = DynamicObject::newInstance();
      poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-     auto pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+     pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
 #else
      pool = newDefaultPool();
 #endif
@@ -49,6 +49,11 @@ public:
      accountInfo.publicKeys.push_back(hex::toByteArray(DEFAULT_HEX_PUB_KEY));
 
      account = createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+ }
+
+ void TearDown() override {
+     wait(pool->freshResetAll());
+     BaseFixture::TearDown();
  }
 
  std::shared_ptr<WalletPool> pool;

@@ -49,7 +49,41 @@
 using namespace ledger::testing::cosmos;
 using namespace ledger::core;
 
-class CosmosTransactionTest : public BaseFixture {};
+class CosmosTransactionTest : public BaseFixture {
+public:
+ void SetUp() override
+ {
+     BaseFixture::SetUp();
+#ifdef PG_SUPPORT
+     const bool usePostgreSQL = true;
+     auto poolConfig = DynamicObject::newInstance();
+     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+     pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+#else
+     pool = newDefaultPool();
+#endif
+     backend->enableQueryLogging(true);
+ }
+
+ void setupTest(std::shared_ptr<CosmosLikeAccount> &account,
+                std::shared_ptr<CosmosLikeWallet> &wallet)
+ {
+     auto configuration = DynamicObject::newInstance();
+     configuration->putString(
+         api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
+         "44'/<coin_type>'/<account>'/<node>/<address>");
+     wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
+         wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration)));
+
+     auto accountInfo = wait(wallet->getNextAccountCreationInfo());
+     EXPECT_EQ(accountInfo.index, 0);
+     accountInfo.publicKeys.push_back(hex::toByteArray(DEFAULT_HEX_PUB_KEY));
+
+     account = createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
+ }
+
+ std::shared_ptr<WalletPool> pool;
+};
 
 TEST_F(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
     const std::string strTx = "{"
@@ -66,6 +100,26 @@ TEST_F(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
             "\"pub_key\":{\"type\":\"tendermint/PubKeySecp256k1\",\"value\":\"AsS+z2hDho2VVupD1GUYtRoTyxpIzWwFohwCnqQjH83k\"},"
             "\"signature\":\"9Nn7Az62vDLW0bMgdcO26kzOeVrtd/M0GxXFsePghch7lY098oi6/MFnr0zKoeyoPxLUjCISn6JRvpVJ22WmBg==\""
         "}]}";
+    const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
+
+    auto message = tx->getMessages().front();
+    auto sendMessage = api::CosmosLikeMessage::unwrapMsgSend(message);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getFee()->toLong(), 5000L);
+    EXPECT_EQ(tx->getGas()->toLong(), 200000L);
+    EXPECT_EQ(sendMessage.fromAddress, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");
+    EXPECT_EQ(sendMessage.toAddress, "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7");
+    EXPECT_EQ(sendMessage.amount.size(), 1);
+    EXPECT_EQ(sendMessage.amount.front().amount, "1000000");
+    EXPECT_EQ(sendMessage.amount.front().denom, "uatom");
+
+    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    EXPECT_EQ(tx->serializeForBroadcast(), expected);
+}
+
+TEST_F(CosmosTransactionTest, EncodeToJSON) {
+    const auto strTx = "{\"account_number\":\"6571\",\"chain_id\":\"cosmoshub-3\",\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},\"memo\":\"Sent from Ledger\",\"msgs\":[{\"type\":\"cosmos-sdk/MsgSend\",\"value\":{\"amount\":[{\"amount\":\"1000000\",\"denom\":\"uatom\"}],\"from_address\":\"cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl\",\"to_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\"}}],\"sequence\":\"0\"}";
     const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
 
     auto message = tx->getMessages().front();
