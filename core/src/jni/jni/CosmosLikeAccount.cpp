@@ -150,4 +150,24 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
+        auto r = ref->getSequence();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getAccountNumber(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
+        auto r = ref->getAccountNumber();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 }  // namespace djinni_generated

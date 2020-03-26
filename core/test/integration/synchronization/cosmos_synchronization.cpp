@@ -338,6 +338,13 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             fmt::print("Ops: {}\n", ops.size());
             EXPECT_GT(ops.size(), 0);
+
+            const auto sequenceNumber = account->getSequence();
+            const int sequence = std::atoi(sequenceNumber.c_str());
+            EXPECT_GE(sequence, 1226) << "Sequence was at 1226 on 2020-03-26";
+
+            const auto accountNumber = account->getAccountNumber();
+            EXPECT_EQ(accountNumber, "12850");
         }
     }
 }

@@ -530,6 +530,16 @@ namespace ledger {
                                                                         }
                                                                 });
 
+                        // Update account level data (sequence, accountnumber...)
+                        _explorer->getAccount(_accountAddress)
+                            .onComplete(
+                                getContext(),
+                                [self](const TryPtr<cosmos::Account> &accountData) mutable {
+                                    if (accountData.isSuccess()) {
+                                        self->_accData = accountData.getValue();
+                                    }
+                                });
+
                         auto startTime = DateUtils::now();
                         eventPublisher->postSticky(
                                 std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
@@ -600,18 +610,36 @@ namespace ledger {
                         auto buildFunction = [self](const CosmosLikeTransactionBuildRequest &request) {
                                 auto currency = self->getWallet()->getCurrency();
                                 auto tx = std::make_shared<CosmosLikeTransactionApi>();
-                                tx->setAccountNumber(self->getAccountUid());
+                                tx->setAccountNumber(self->getAccountNumber());
                                 tx->setCurrency(self->getWallet()->getCurrency());
                                 tx->setFee(request.fee);
                                 tx->setGas(request.gas);
                                 tx->setMemo(request.memo);
                                 tx->setMessages(request.messages);
-                                tx->setSequence(request.sequence);
+                                tx->setSequence(self->getSequence());
                                 tx->setSigningPubKey(self->getKeychain()->getPublicKey());
                                 return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                         };
 
                         return std::make_shared<CosmosLikeTransactionBuilder>(getContext(), buildFunction);
+                }
+
+                std::string CosmosLikeAccount::getSequence()
+                {
+                    if (!_accData) {
+                        throw make_exception(
+                            api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
+                    }
+                    return _accData->sequence;
+                }
+
+                std::string CosmosLikeAccount::getAccountNumber()
+                {
+                    if (!_accData) {
+                        throw make_exception(
+                            api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
+                    }
+                    return _accData->accountNumber;
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getTotalBalance() const {
