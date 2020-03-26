@@ -92,6 +92,9 @@ if(IS_IOS GREATER_EQUAL 0)
     )
 else()
     add_library(ledger-core-api-obj OBJECT ${ledger-core-api-sources})
+    target_compile_options(ledger-core-api-obj PRIVATE
+        -Wno-return-type
+    )
 
     add_library(ledger-core-obj OBJECT ${SRC_FILES} ${HEADERS_FILES})
     target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
@@ -104,6 +107,10 @@ else()
     include(CompilerWarnings)
     toggle_compiler_warnings(ledger-core-obj)
     disable_compiler_warnings(ledger-core-api-obj)
+
+    # add compiler warnings
+    include(CompilerWarnings)
+    set_enabled_compiler_warnings(ledger-core-obj)
 
     # shared and static libraries built from the same object files
     add_library(ledger-core SHARED)

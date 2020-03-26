@@ -101,6 +101,10 @@ else()
     toggle_compiler_warnings(ledger-core-ripple-obj)
     disable_compiler_warnings(ledger-core-ripple-api-obj)
 
+    # add compiler warnings
+    include(CompilerWarnings)
+    set_enabled_compiler_warnings(ledger-core-ripple-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-ripple SHARED)
     target_link_libraries(ledger-core-ripple PUBLIC ledger-core-ripple-obj ledger-core-ripple-api-obj)

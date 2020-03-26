@@ -101,6 +101,10 @@ else()
     toggle_compiler_warnings(ledger-core-bitcoin-obj)
     disable_compiler_warnings(ledger-core-bitcoin-api-obj)
 
+    # add compiler warnings
+    include(CompilerWarnings)
+    set_enabled_compiler_warnings(ledger-core-bitcoin-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-bitcoin SHARED)
     target_link_libraries(ledger-core-bitcoin PUBLIC ledger-core-bitcoin-obj ledger-core-bitcoin-api-obj)
