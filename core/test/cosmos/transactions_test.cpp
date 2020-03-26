@@ -35,7 +35,6 @@
 #include <wallet/cosmos/CosmosLikeAccount.hpp>
 
 #include <api/CosmosLikeTransactionBuilder.hpp>
-#include <api/PoolConfiguration.hpp>
 #include <api/CosmosLikeMessage.hpp>
 #include <api/StringCallback.hpp>
 
@@ -49,43 +48,7 @@
 using namespace ledger::testing::cosmos;
 using namespace ledger::core;
 
-class CosmosTransactionTest : public BaseFixture {
-public:
- void SetUp() override
- {
-     BaseFixture::SetUp();
-#ifdef PG_SUPPORT
-     const bool usePostgreSQL = true;
-     auto poolConfig = DynamicObject::newInstance();
-     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-     pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
-#else
-     pool = newDefaultPool();
-#endif
-     backend->enableQueryLogging(true);
- }
-
- void setupTest(std::shared_ptr<CosmosLikeAccount> &account,
-                std::shared_ptr<CosmosLikeWallet> &wallet)
- {
-     auto configuration = DynamicObject::newInstance();
-     configuration->putString(
-         api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
-         "44'/<coin_type>'/<account>'/<node>/<address>");
-     wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
-         wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration)));
-
-     auto accountInfo = wait(wallet->getNextAccountCreationInfo());
-     EXPECT_EQ(accountInfo.index, 0);
-     accountInfo.publicKeys.push_back(hex::toByteArray(DEFAULT_HEX_PUB_KEY));
-
-     account = createCosmosLikeAccount(wallet, accountInfo.index, accountInfo);
- }
-
- std::shared_ptr<WalletPool> pool;
-};
-
-TEST_F(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -118,7 +81,7 @@ TEST_F(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildDelegateTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildDelegateTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -144,7 +107,7 @@ TEST_F(CosmosTransactionTest, BuildDelegateTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildUndelegateTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildUndelegateTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -170,7 +133,7 @@ TEST_F(CosmosTransactionTest, BuildUndelegateTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildBeginRedelegateTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildBeginRedelegateTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -198,7 +161,7 @@ TEST_F(CosmosTransactionTest, BuildBeginRedelegateTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildSubmitProposalTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildSubmitProposalTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -229,7 +192,7 @@ TEST_F(CosmosTransactionTest, BuildSubmitProposalTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildVoteTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildVoteTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -254,7 +217,7 @@ TEST_F(CosmosTransactionTest, BuildVoteTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildDepositTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildDepositTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -281,7 +244,7 @@ TEST_F(CosmosTransactionTest, BuildDepositTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildWithdrawDelegationRewardTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildWithdrawDelegationRewardTxForBroadcast) {
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
@@ -305,7 +268,7 @@ TEST_F(CosmosTransactionTest, BuildWithdrawDelegationRewardTxForBroadcast) {
 }
 
 
-TEST_F(CosmosTransactionTest, BuildMultiSendTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildMultiSendTxForBroadcast) {
     // From cosmos/cosmos-sdk tests :
     // https://github.com/cosmos/cosmos-sdk/blob/ebbfaf2a47d3e97a4720f643ca21d5a41676cdc0/x/bank/types/msgs_test.go#L217-L229
     const std::string strTx = "{"
@@ -338,7 +301,7 @@ TEST_F(CosmosTransactionTest, BuildMultiSendTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildCreateValidatorTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildCreateValidatorTxForBroadcast) {
     // TODO : find a transaction in Explorer to confirm the format here
     // For the time being we're using protobuf from cosmos-sdk as source :
     // https://github.com/cosmos/cosmos-sdk/blob/53bf2271d5bac054a8f74723732f21055c1b72d4/x/staking/types/types.pb.go
@@ -381,7 +344,7 @@ TEST_F(CosmosTransactionTest, BuildCreateValidatorTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildEditValidatorTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildEditValidatorTxForBroadcast) {
     // TODO : find a transaction in Explorer to confirm the format here
     // For the time being we're using protobuf from cosmos-sdk as source :
     // https://github.com/cosmos/cosmos-sdk/blob/53bf2271d5bac054a8f74723732f21055c1b72d4/x/staking/types/types.pb.go
@@ -420,7 +383,7 @@ TEST_F(CosmosTransactionTest, BuildEditValidatorTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildSetWithdrawAddressTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildSetWithdrawAddressTxForBroadcast) {
     // TODO : find a transaction in Explorer to confirm the format here
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
@@ -444,7 +407,7 @@ TEST_F(CosmosTransactionTest, BuildSetWithdrawAddressTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildWithdrawDelegatorRewardsTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildWithdrawDelegatorRewardsTxForBroadcast) {
     // TODO : find a transaction in Explorer to confirm the format here
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
@@ -468,7 +431,7 @@ TEST_F(CosmosTransactionTest, BuildWithdrawDelegatorRewardsTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildWithdrawValidatorCommissionTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildWithdrawValidatorCommissionTxForBroadcast) {
     // TODO : find a transaction in Explorer to confirm the format here
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
@@ -489,7 +452,7 @@ TEST_F(CosmosTransactionTest, BuildWithdrawValidatorCommissionTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildUnjailTxForBroadcast) {
+TEST(CosmosTransactionTest, BuildUnjailTxForBroadcast) {
     // TODO : find a transaction in Explorer to confirm the format here
     const std::string strTx = "{"
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
@@ -510,7 +473,7 @@ TEST_F(CosmosTransactionTest, BuildUnjailTxForBroadcast) {
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
-TEST_F(CosmosTransactionTest, BuildSendTxForSignature) {
+TEST(CosmosTransactionTest, BuildSendTxForSignature) {
     const std::string strTx = "{"
         "\"account_number\":\"6571\","
         "\"chain_id\":\"cosmoshub-3\","
