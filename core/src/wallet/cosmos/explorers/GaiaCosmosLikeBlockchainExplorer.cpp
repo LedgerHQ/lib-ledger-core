@@ -208,7 +208,7 @@ namespace ledger {
             std::vector<Future<cosmos::TransactionList>> address_transactions;
             std::transform(addresses.begin(), addresses.end(), std::back_inserter(address_transactions),
                            [&] (const auto& address) -> Future<cosmos::TransactionList> {
-                               return getTransactionsForAddress(address, fromBlockHeight);
+                               return this->getTransactionsForAddress(address, fromBlockHeight);
                            });
             return async::sequence(getContext(), address_transactions)
                 .flatMap<cosmos::TransactionList>(getContext(), [](auto& vector_of_lists) {

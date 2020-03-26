@@ -44,11 +44,15 @@
 
 #include <boost/lexical_cast.hpp>
 
+#include <algorithm>
+#include <unordered_map>
+
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {
 
-        static void inflateMessage(soci::row const& row, cosmos::Message& msg) {
+        static void inflateMessage(soci::session& sql, soci::row const& row, cosmos::Message& msg) {
             // See Migrations.cpp for column numbers
             const auto COL_UID = 0;
             const auto COL_TXUID = 1;
@@ -149,7 +153,75 @@ namespace ledger {
                         content.validatorAddress = row.get<std::string>(COL_VALADDR);
                     }
                     break;
+                case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
+                    {
+                        msg.content = cosmos::MsgWithdrawDelegatorReward();
+                        auto &content = boost::get<cosmos::MsgWithdrawDelegatorReward>(msg.content);
+                        content.delegatorAddress = row.get<std::string>(COL_DELADDR);
+                        content.validatorAddress = row.get<std::string>(COL_VALADDR);
+                    }
+                    break;
+                case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION:
+                    {
+                        msg.content = cosmos::MsgWithdrawValidatorCommission();
+                        auto &content = boost::get<cosmos::MsgWithdrawValidatorCommission>(msg.content);
+                        content.validatorAddress = row.get<std::string>(COL_VALADDR);
+                    }
+                    break;
+                case api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS:
+                    {
+                        msg.content = cosmos::MsgSetWithdrawAddress();
+                        auto &content = boost::get<cosmos::MsgSetWithdrawAddress>(msg.content);
+                        content.delegatorAddress = row.get<std::string>(COL_DELADDR);
+                        content.withdrawAddress = row.get<std::string>(COL_TOADDR);
+                    }
+                    break;
+                case api::CosmosLikeMsgType::MSGUNJAIL:
+                    {
+                        msg.content = cosmos::MsgUnjail();
+                        auto &content = boost::get<cosmos::MsgUnjail>(msg.content);
+                        content.validatorAddress = row.get<std::string>(COL_VALADDR);
+                    }
+                    break;
+                case api::CosmosLikeMsgType::MSGMULTISEND:
+                    {
+                        msg.content = cosmos::MsgMultiSend();
+                        auto &content = boost::get<cosmos::MsgMultiSend>(msg.content);
+                        // Make a join on cosmos_multisend_io to fill the message
+                        soci::rowset<soci::row> multiSendRows = (sql.prepare <<
+                                "SELECT * FROM cosmos_multisend_io WHERE message_uid = :msgUid",
+                                soci::use(msg.uid));
+                        // See migrations.cpp for column names
+                        const auto COL_MULTI_FROM = 1;
+                        const auto COL_MULTI_TO = 2;
+                        const auto COL_MULTI_AMT = 3;
+                        for (auto &multiSendRow : multiSendRows) {
+                            const auto inputAddress = multiSendRow.get<Option<std::string>>(COL_MULTI_FROM).getValueOr("");
+                            const auto outputAddress = multiSendRow.get<Option<std::string>>(COL_MULTI_TO).getValueOr("");
+                            if (!inputAddress.empty()) {
+                                cosmos::MultiSendInput newInput;
+                                newInput.fromAddress = inputAddress;
+                                soci::stringToCoins(multiSendRow.get<std::string>(COL_MULTI_AMT), newInput.coins);
+                                content.inputs.push_back(newInput);
+                            } else if (!outputAddress.empty()) {
+                                cosmos::MultiSendOutput newOutput;
+                                newOutput.toAddress = outputAddress;
+                                soci::stringToCoins(multiSendRow.get<std::string>(COL_MULTI_AMT), newOutput.coins);
+                                content.outputs.push_back(newOutput);
+                            }
+                        }
+                    }
+                    break;
+                case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
+                case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
+                    {
+                    throw make_exception(
+                        api::ErrorCode::UNSUPPORTED_OPERATION,
+                        "inflate MsgCreateValidator / MsgEditValidator");
+                    }
+                    break;
                 case api::CosmosLikeMsgType::UNSUPPORTED:
+                default:
                     {
                         msg.content = cosmos::MsgUnsupported();
                     }
@@ -208,7 +280,7 @@ namespace ledger {
                 const auto COL_MSG_SUCCESS = 4;
                 const auto COL_MSG_INDEX = 5;
                 cosmos::Message msg;
-                inflateMessage(msgRow, msg);
+                inflateMessage(sql, msgRow, msg);
                 tx.messages.push_back(msg);
 
                 cosmos::MessageLog log;
@@ -383,6 +455,73 @@ namespace ledger {
                     }
                     break;
                 case api::CosmosLikeMsgType::MSGMULTISEND:
+                    {
+                        const auto& m = boost::get<cosmos::MsgMultiSend>(msg.content);
+                        std::vector<cosmos::Coin> totalAmount;
+
+                        // HACK : this snippet left-folds a iterable<vector<cosmos::Coin>>
+                        // into vector<cosmos::Coin> using addition.
+                        // Hopefully transform_reduce or flatten functions can help us later.
+                        // The map intermediate helps for out-of-order denominations.
+                        std::unordered_map<std::string, BigInt> denomToAmt;
+                        std::for_each(
+                            m.inputs.cbegin(),
+                            m.inputs.cend(),
+                            [&denomToAmt](const auto &input) {
+                                std::for_each(
+                                    input.coins.cbegin(),
+                                    input.coins.cend(),
+                                    [&denomToAmt](const auto &amountDenom) {
+                                        auto searchDenom = denomToAmt.find(amountDenom.denom);
+                                        if (searchDenom == denomToAmt.end()) {
+                                            denomToAmt.insert(
+                                                {amountDenom.denom,
+                                                 BigInt::fromString(amountDenom.amount)});
+                                            return;
+                                        }
+                                        searchDenom->second =
+                                            searchDenom->second +
+                                            BigInt::fromString(amountDenom.amount);
+                                    });
+                            });
+                        // Add each pair of denomToAmt into totalAmount
+                        totalAmount.reserve(denomToAmt.size());
+                        for (const auto &pair : denomToAmt) {
+                            totalAmount.emplace_back(pair.second.toString(),pair.first);
+                        }
+
+                        // Insert the global message information in cosmos_messages
+                        const auto coins = soci::coinsToString(totalAmount);
+                        sql << "INSERT INTO cosmos_messages (uid,"
+                               "transaction_uid, message_type, log,"
+                               "success, msg_index, amount) "
+                               "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :amount)",
+                               soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
+                               soci::use(log.success ? 1 : 0), soci::use(log.messageIndex),
+                               soci::use(coins);
+
+                        // Insert each input and each output to the cosmos_multisend_io table
+                        std::for_each(
+                            m.inputs.cbegin(),
+                            m.inputs.cend(),
+                            [&sql, &msg] (const auto& input) {
+                                const auto inputCoins = soci::coinsToString(input.coins);
+                                sql << "INSERT INTO cosmos_multisend_io (uid, from_address, amount) "
+                                    "VALUES (:uid, :fa, :amt)",
+                                    soci::use(msg.uid), soci::use(input.fromAddress), soci::use(inputCoins);
+                            });
+
+                        std::for_each(
+                            m.outputs.cbegin(),
+                            m.outputs.cend(),
+                            [&sql, &msg] (const auto& output) {
+                                const auto outputCoins = soci::coinsToString(output.coins);
+                                sql << "INSERT INTO cosmos_multisend_io (uid, to_address, amount) "
+                                    "VALUES (:uid, :ta, :amt)",
+                                    soci::use(msg.uid), soci::use(output.toAddress), soci::use(outputCoins);
+                            });
+                    }
+                    break;
                 case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
                 case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
                 case api::CosmosLikeMsgType::UNSUPPORTED:
@@ -506,7 +645,7 @@ namespace ledger {
                     soci::use(msgUid));
 
             for (auto &row : rows) {
-                inflateMessage(row, msg);
+                inflateMessage(sql, row, msg);
                 return true;
             }
 

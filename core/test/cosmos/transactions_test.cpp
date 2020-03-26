@@ -35,6 +35,7 @@
 #include <wallet/cosmos/CosmosLikeAccount.hpp>
 
 #include <api/CosmosLikeTransactionBuilder.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <api/CosmosLikeMessage.hpp>
 #include <api/StringCallback.hpp>
 
@@ -55,9 +56,9 @@ public:
      BaseFixture::SetUp();
 #ifdef PG_SUPPORT
      const bool usePostgreSQL = true;
-     configuration->putString(
-         api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-     pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+     auto poolConfig = DynamicObject::newInstance();
+     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+     auto pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
 #else
      pool = newDefaultPool();
 #endif

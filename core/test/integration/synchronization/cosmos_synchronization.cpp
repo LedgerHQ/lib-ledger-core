@@ -39,6 +39,7 @@
 
 #include <api/Configuration.hpp>
 #include <api/KeychainEngines.hpp>
+#include <api/PoolConfiguration.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 #include <collections/DynamicObject.hpp>
@@ -85,8 +86,9 @@ public:
 
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+    auto poolConfig = DynamicObject::newInstance();
+    poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
 #else
     pool = newDefaultPool();
 #endif
@@ -273,8 +275,9 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
-    configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+    auto poolConfig = DynamicObject::newInstance();
+    poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+    auto pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
 #else
     auto pool = newDefaultPool();
 #endif
