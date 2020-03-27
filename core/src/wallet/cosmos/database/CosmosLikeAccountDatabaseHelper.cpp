@@ -98,7 +98,7 @@ namespace ledger {
                    "sequence = :sequence,"
                    "balances = :balances,"
                    "account_type = :account_type,"
-                   "last_update = :last_update,"
+                   "last_update = :last_update "
                    "WHERE uid = :uid",
                    use(entry.details.accountNumber),
                    use(entry.details.sequence),
