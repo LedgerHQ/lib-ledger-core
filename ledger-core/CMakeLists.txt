@@ -46,8 +46,6 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
-enable_testing()
-
 add_subdirectory(lib)
 add_subdirectory(src)
 
@@ -88,6 +86,7 @@ install(
         ledger-core
         ledger-core-static
         ledger-core-obj
+        ledger-core-api-obj
         ledger-core-interface
         bigd
         fmt

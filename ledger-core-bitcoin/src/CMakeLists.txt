@@ -34,66 +34,7 @@ if (TARGET_JNI)
 endif ()
 
 # Add files to compile to the project
-set(SRC_FILES
-    # bech32
-    bitcoin/bech32/BCHBech32.cpp
-    bitcoin/bech32/BitcoinLikeBech32Factory.cpp
-    bitcoin/bech32/BTCBech32.cpp
-    # block
-    bitcoin/block/BitcoinLikeBlock.cpp
-    # database
-    bitcoin/database/BitcoinLikeAccountDatabase.cpp
-    bitcoin/database/BitcoinLikeAccountDatabaseHelper.cpp
-    bitcoin/database/BitcoinLikeBlockDatabaseHelper.cpp
-    bitcoin/database/BitcoinLikeTransactionDatabaseHelper.cpp
-    bitcoin/database/BitcoinLikeUTXODatabaseHelper.cpp
-    bitcoin/database/BitcoinLikeWalletDatabase.cpp
-    bitcoin/database/BitcoinLikeOperationDatabaseHelper.cpp
-    bitcoin/database/Migrations.cpp
-    # explorers
-    bitcoin/explorers/BitcoinLikeBlockchainExplorer.cpp
-    bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.cpp
-    # factories
-    bitcoin/factories/BitcoinLikeWalletFactory.cpp
-    # io
-    bitcoin/io/BitcoinLikeInput.cpp
-    bitcoin/io/BitcoinLikeInputParser.cpp
-    bitcoin/io/BitcoinLikeOutput.cpp
-    bitcoin/io/BitcoinLikeOutputParser.cpp
-    bitcoin/io/BitcoinLikeWritableInput.cpp
-    # keychains
-    bitcoin/keychains/BitcoinLikeKeychain.cpp
-    bitcoin/keychains/CommonBitcoinLikeKeychains.cpp
-    bitcoin/keychains/P2PKHBitcoinLikeKeychain.cpp
-    bitcoin/keychains/P2SHBitcoinLikeKeychain.cpp
-    bitcoin/keychains/P2WPKHBitcoinLikeKeychain.cpp
-    bitcoin/keychains/P2WSHBitcoinLikeKeychain.cpp
-    # observers
-    bitcoin/observers/BitcoinLikeBlockchainObserver.cpp
-    bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.cpp
-    # operations
-    bitcoin/operations/BitcoinLikeOperation.cpp
-    bitcoin/operations/BitcoinLikeOperationQuery.cpp
-    # scripts
-    bitcoin/scripts/BitcoinLikeScriptOperators.cpp
-    bitcoin/scripts/BitcoinLikeScript.cpp
-    bitcoin/scripts/BitcoinLikeInternalScript.cpp
-    # synchronizers
-    bitcoin/synchronizers/BitcoinLikeBlockchainExplorerAccountSynchronizer.cpp
-    # transactions
-    bitcoin/transactions/BitcoinLikeStrategyUTXOPicker.cpp
-    bitcoin/transactions/BitcoinLikeTransaction.cpp
-    bitcoin/transactions/BitcoinLikeTransactionBuilder.cpp
-    bitcoin/transactions/BitcoinLikeTransactionParser.cpp
-    bitcoin/transactions/BitcoinLikeUTXOPicker.cpp
-    # others
-    bitcoin/BitcoinLikeAccount.cpp
-    bitcoin/BitcoinLikeAddress.cpp
-    bitcoin/BitcoinLikeCurrencies.cpp
-    bitcoin/BitcoinLikeExtendedPublicKey.cpp
-    bitcoin/BitcoinLikeWallet.cpp
-    bitcoin/BitcoinNetworks.cpp
-)
+file(GLOB_RECURSE SRC_FILES *.cpp)
 
 # Interface library used to hold shared properties
 add_library(ledger-core-bitcoin-interface INTERFACE)
@@ -146,20 +87,21 @@ if(IS_IOS GREATER_EQUAL 0)
         \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
     )
 else()
-    add_library(ledger-core-bitcoin-obj OBJECT
-        ${ledger-core-bitcoin-sources}
-        ${SRC_FILES}
-        ${CORE_SRC_FILES}
-        ${HEADERS_FILES}
-        ${CORE_HEADER_FILES})
+    add_library(ledger-core-bitcoin-api-obj OBJECT ${ledger-core-bitcoin-api-sources})
+
+    add_library(ledger-core-bitcoin-obj OBJECT ${SRC_FILES} ${CORE_SRC_FILES} ${CORE_HEADER_FILES})
     target_link_libraries(ledger-core-bitcoin-obj PUBLIC ledger-core-bitcoin-interface)
+
+    # enable static analyzers if requested
+    include(StaticAnalyzers)
+    set_enabled_static_analyzers(ledger-core-bitcoin-obj)
 
     # shared and static libraries built from the same object files
     add_library(ledger-core-bitcoin SHARED)
-    target_link_libraries(ledger-core-bitcoin PUBLIC ledger-core-bitcoin-obj)
+    target_link_libraries(ledger-core-bitcoin PUBLIC ledger-core-bitcoin-obj ledger-core-bitcoin-api-obj)
 
     add_library(ledger-core-bitcoin-static STATIC)
-    target_link_libraries(ledger-core-bitcoin-static PUBLIC ledger-core-bitcoin-obj)
+    target_link_libraries(ledger-core-bitcoin-static PUBLIC ledger-core-bitcoin-obj ledger-core-bitcoin-api-obj)
     install(TARGETS ledger-core-bitcoin-static DESTINATION "lib")
 endif()
 

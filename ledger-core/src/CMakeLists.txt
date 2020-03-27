@@ -8,7 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Automatically add API files to the library
 file(
     GLOB ledger-core-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/core/api/*.cpp"
+    "${CMAKE_SOURCE_DIR}/inc/core/api/*"
 )
 list(APPEND ledger-core-sources ${ledger-core-api-sources})
 
@@ -35,7 +35,8 @@ link_directories(${CMAKE_BINARY_DIR}/lib)
 
 # Add files to compile to the project
 file(GLOB_RECURSE SRC_FILES *.cpp)
-file(GLOB_RECURSE HEADERS_FILES ../inc/*.{h,hpp})
+file(GLOB_RECURSE HEADERS_FILES ../inc/*.hpp)
+list(REMOVE_ITEM HEADERS_FILES ../inc/api/*.hpp)
 
 if (NOT PG_SUPPORT)
     list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/core/database/PostgreSQLBackend.cpp)
@@ -92,18 +93,21 @@ if(IS_IOS GREATER_EQUAL 0)
         \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
     )
 else()
-    add_library(ledger-core-obj OBJECT
-        ${ledger-core-sources}
-        ${SRC_FILES}
-        ${HEADERS_FILES})
+    add_library(ledger-core-api-obj OBJECT ${ledger-core-api-sources})
+
+    add_library(ledger-core-obj OBJECT ${SRC_FILES} ${HEADERS_FILES})
     target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
+
+    # enable static analyzers if requested
+    include(StaticAnalyzers)
+    set_enabled_static_analyzers(ledger-core-obj)
 
     # shared and static libraries built from the same object files
     add_library(ledger-core SHARED)
-    target_link_libraries(ledger-core PUBLIC ledger-core-obj)
+    target_link_libraries(ledger-core PUBLIC ledger-core-obj ledger-core-api-obj)
 
     add_library(ledger-core-static STATIC)
-    target_link_libraries(ledger-core-static PUBLIC ledger-core-obj)
+    target_link_libraries(ledger-core-static PUBLIC ledger-core-obj ledger-core-api-obj)
 endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
@@ -188,3 +192,4 @@ if (TARGET_JNI)
     target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
+

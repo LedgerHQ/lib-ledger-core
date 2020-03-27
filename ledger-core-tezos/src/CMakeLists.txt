@@ -87,20 +87,22 @@ if(IS_IOS GREATER_EQUAL 0)
         \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
     )
 else()
-    add_library(ledger-core-tezos-obj OBJECT
-        ${ledger-core-tezos-sources}
-        ${SRC_FILES}
-        ${CORE_SRC_FILES}
-        ${HEADERS_FILES}
-        ${CORE_HEADER_FILES})
+
+    add_library(ledger-core-tezos-api-obj OBJECT ${ledger-core-tezos-api-sources})
+
+    add_library(ledger-core-tezos-obj OBJECT ${SRC_FILES} ${CORE_SRC_FILES} ${CORE_HEADER_FILES})
     target_link_libraries(ledger-core-tezos-obj PUBLIC ledger-core-tezos-interface)
+
+    # Enable static analyzers if requested
+    include(StaticAnalyzers)
+    set_enabled_static_analyzers(ledger-core-tezos-obj)
 
     # shared and static libraries built from the same object files
     add_library(ledger-core-tezos SHARED)
-    target_link_libraries(ledger-core-tezos PUBLIC ledger-core-tezos-obj)
+    target_link_libraries(ledger-core-tezos PUBLIC ledger-core-tezos-obj ledger-core-tezos-api-obj)
 
     add_library(ledger-core-tezos-static STATIC)
-    target_link_libraries(ledger-core-tezos-static PUBLIC ledger-core-tezos-obj)
+    target_link_libraries(ledger-core-tezos-static PUBLIC ledger-core-tezos-obj ledger-core-tezos-api-obj)
     install(TARGETS ledger-core-tezos-static DESTINATION "lib")
 endif()
 

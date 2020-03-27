@@ -87,20 +87,21 @@ if(IS_IOS GREATER_EQUAL 0)
         \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
     )
 else()
-    add_library(ledger-core-ethereum-obj OBJECT
-        ${ledger-core-ethereum-sources}
-        ${SRC_FILES}
-        ${CORE_SRC_FILES}
-        ${HEADERS_FILES}
-        ${CORE_HEADER_FILES})
+    add_library(ledger-core-ethereum-api-obj OBJECT ${ledger-core-ethereum-api-sources})
+
+    add_library(ledger-core-ethereum-obj OBJECT ${SRC_FILES} ${CORE_SRC_FILES} ${CORE_HEADER_FILES})
     target_link_libraries(ledger-core-ethereum-obj PUBLIC ledger-core-ethereum-interface)
+
+    # enable static analyzers if requested
+    include(StaticAnalyzers)
+    set_enabled_static_analyzers(ledger-core-ethereum-obj)
 
     # shared and static libraries built from the same object files
     add_library(ledger-core-ethereum SHARED)
-    target_link_libraries(ledger-core-ethereum PUBLIC ledger-core-ethereum-obj)
+    target_link_libraries(ledger-core-ethereum PUBLIC ledger-core-ethereum-obj ledger-core-ethereum-api-obj)
 
     add_library(ledger-core-ethereum-static STATIC)
-    target_link_libraries(ledger-core-ethereum-static PUBLIC ledger-core-ethereum-obj)
+    target_link_libraries(ledger-core-ethereum-static PUBLIC ledger-core-ethereum-obj ledger-core-ethereum-api-obj)
     install(TARGETS ledger-core-ethereum-static DESTINATION "lib")
 endif()
 
