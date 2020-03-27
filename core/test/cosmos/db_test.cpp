@@ -35,14 +35,15 @@ public:
  void setupTest(
      std::shared_ptr<WalletPool> &pool,
      std::shared_ptr<CosmosLikeAccount> &account,
-     std::shared_ptr<CosmosLikeWallet> &wallet)
+     std::shared_ptr<CosmosLikeWallet> &wallet,
+     const std::string& walletName)
  {
      auto configuration = DynamicObject::newInstance();
      configuration->putString(
          api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
          "44'/<coin_type>'/<account>'/<node>/<address>");
      wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
-         wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration)));
+         wait(pool->createWallet(walletName, "atom", configuration)));
 
      auto accountInfo = wait(wallet->getNextAccountCreationInfo());
      EXPECT_EQ(accountInfo.index, 0);
@@ -62,7 +63,7 @@ public:
 TEST_F(CosmosDBTest, BasicDBTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet);
+    setupTest(pool, account, wallet, "90673bef-38d3-4a09-ad7c-f67dc4370210");
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -99,7 +100,7 @@ TEST_F(CosmosDBTest, BasicDBTest) {
 TEST_F(CosmosDBTest, OperationQueryTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet);
+    setupTest(pool, account, wallet, "38660eb1-2f89-4096-a8d5-fcaca0c44428");
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -146,7 +147,7 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
 TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet);
+    setupTest(pool, account, wallet, "f727a3d9-7e98-4bbf-b92c-c3976483ac89");
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -178,7 +179,7 @@ TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
 TEST_F(CosmosDBTest, MultipleMsgTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet);
+    setupTest(pool, account, wallet, "ee64142f-a695-4755-9eb1-6c5a2a2291c3");
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
