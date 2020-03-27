@@ -69,13 +69,13 @@ public:
      * Get the current account sequence (synchronize to get latest value)
      * string like "14"
      */
-    virtual std::string getSequence() = 0;
+    virtual void getSequence(const std::shared_ptr<StringCallback> & callback) = 0;
 
     /**
      * Get the account number
      * String like "15"
      */
-    virtual std::string getAccountNumber() = 0;
+    virtual void getAccountNumber(const std::shared_ptr<StringCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

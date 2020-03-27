@@ -44,6 +44,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1setAccountNumber(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_accountNumber)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setAccountNumber(::djinni::String::toCpp(jniEnv, j_accountNumber));
+        return ::djinni::release(::djinni_generated::CosmosLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1addMessage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_msg)
 {
     try {

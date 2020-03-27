@@ -436,6 +436,11 @@ namespace ledger {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::CosmosLikeTransactionBuilder>  CosmosLikeTransactionBuilder::setAccountNumber(const std::string & accountNumber) {
+            _request.accountNumber = accountNumber;
+            return shared_from_this();
+        }
+
         std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setMemo(const std::string & memo) {
             _request.memo = memo;
             return shared_from_this();
