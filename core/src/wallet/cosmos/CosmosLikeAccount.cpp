@@ -287,67 +287,8 @@ namespace ledger {
                                         CosmosLikeOperationDatabaseHelper::updateOperation(sql, operation.uid, msg.uid);
                                         emitNewOperationEvent(operation);
                                 }
+                                result = static_cast<int>(operation.type);
                        }
-
-
-//
-//             for (const auto& msg : tx.messages) {
-//                 operation.senders = {msg.sender};
-//                 operation.recipients = {msg.recipient};
-//                 operation.amount = msg.amount;
-//                 operation.fees = Option<BigInt>(msg.fees);
-//
-//                 if (msg.sender == address) {
-//                     // Do the send operation
-//                     operation.type = api::OperationType::SEND;
-//                     operation.refreshUid();
-//                     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-//                         emitNewOperationEvent(operation);
-//                     }
-//                     result = static_cast<int>(operation.type);
-//                 }
-//
-//                 if (msg.recipient == address) {
-//                     // Do the receive operation
-//                     operation.type = api::OperationType::RECEIVE;
-//                     operation.refreshUid();
-//                     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-//                         emitNewOperationEvent(operation);
-//                     }
-//                     result = static_cast<int>(operation.type);
-//                 }
-//
-//             }
-
-                        // Operation operation;
-                        // inflateOperation(operation, wallet, transaction);
-                        // std::vector<std::string> senders{transaction.sender};
-                        // operation.senders = std::move(senders);
-                        // std::vector<std::string> receivers{transaction.receiver};
-                        // operation.recipients = std::move(receivers);
-                        // operation.fees = transaction.gasLimit * transaction.gasPrice;
-                        // operation.trust = std::make_shared<TrustIndicator>();
-                        // operation.date = transaction.receivedAt;
-
-                        // if (_accountData->address == transaction.sender) {
-                        //     operation.amount = transaction.value;
-                        //     operation.type = api::OperationType::SEND;
-                        //     operation.refreshUid();
-                        //     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                        //         emitNewOperationEvent(operation);
-                        //     }
-                        //     result = static_cast<int>(operation.type);
-                        // }
-
-                        // if (_accountData->address == transaction.receiver) {
-                        //     operation.amount = transaction.value;
-                        //     operation.type = api::OperationType::RECEIVE;
-                        //     operation.refreshUid();
-                        //     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                        //         emitNewOperationEvent(operation);
-                        //     }
-                        //     result = static_cast<int>(operation.type);
-                        // }
 
                         return result;
                 }
