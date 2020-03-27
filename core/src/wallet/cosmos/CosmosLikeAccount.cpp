@@ -78,7 +78,8 @@ namespace ledger {
                         _observer = observer;
                         _synchronizer = synchronizer;
                         _keychain = keychain;
-                        _accountAddress = keychain->getAddress()->toString();
+                        _accountData = std::make_shared<cosmos::Account>();
+                        _accountData->address = keychain->getAddress()->toString();
                 }
 
                 std::shared_ptr<api::CosmosLikeAccount> CosmosLikeAccount::asCosmosLikeAccount() {
@@ -227,7 +228,7 @@ namespace ledger {
                         out.setTransactionData(tx);
                         out.setMessageData(msg);
 
-                        computeAndSetTypeAmount(out, msg, _accountAddress);
+                        computeAndSetTypeAmount(out, msg, _accountData->address);
 
 
                         // out._account = shared_from_this();
@@ -286,67 +287,8 @@ namespace ledger {
                                         CosmosLikeOperationDatabaseHelper::updateOperation(sql, operation.uid, msg.uid);
                                         emitNewOperationEvent(operation);
                                 }
+                                result = static_cast<int>(operation.type);
                        }
-
-
-//
-//             for (const auto& msg : tx.messages) {
-//                 operation.senders = {msg.sender};
-//                 operation.recipients = {msg.recipient};
-//                 operation.amount = msg.amount;
-//                 operation.fees = Option<BigInt>(msg.fees);
-//
-//                 if (msg.sender == address) {
-//                     // Do the send operation
-//                     operation.type = api::OperationType::SEND;
-//                     operation.refreshUid();
-//                     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-//                         emitNewOperationEvent(operation);
-//                     }
-//                     result = static_cast<int>(operation.type);
-//                 }
-//
-//                 if (msg.recipient == address) {
-//                     // Do the receive operation
-//                     operation.type = api::OperationType::RECEIVE;
-//                     operation.refreshUid();
-//                     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-//                         emitNewOperationEvent(operation);
-//                     }
-//                     result = static_cast<int>(operation.type);
-//                 }
-//
-//             }
-
-                        // Operation operation;
-                        // inflateOperation(operation, wallet, transaction);
-                        // std::vector<std::string> senders{transaction.sender};
-                        // operation.senders = std::move(senders);
-                        // std::vector<std::string> receivers{transaction.receiver};
-                        // operation.recipients = std::move(receivers);
-                        // operation.fees = transaction.gasLimit * transaction.gasPrice;
-                        // operation.trust = std::make_shared<TrustIndicator>();
-                        // operation.date = transaction.receivedAt;
-
-                        // if (_accountAddress == transaction.sender) {
-                        //     operation.amount = transaction.value;
-                        //     operation.type = api::OperationType::SEND;
-                        //     operation.refreshUid();
-                        //     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                        //         emitNewOperationEvent(operation);
-                        //     }
-                        //     result = static_cast<int>(operation.type);
-                        // }
-
-                        // if (_accountAddress == transaction.receiver) {
-                        //     operation.amount = transaction.value;
-                        //     operation.type = api::OperationType::RECEIVE;
-                        //     operation.refreshUid();
-                        //     if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                        //         emitNewOperationEvent(operation);
-                        //     }
-                        //     result = static_cast<int>(operation.type);
-                        // }
 
                         return result;
                 }
@@ -530,6 +472,38 @@ namespace ledger {
                                                                         }
                                                                 });
 
+                        // Update account level data (sequence, accountnumber...)
+                        // HACK : forcefully overwrite the current account address.
+                        // An account with 0 transaction can have an empty
+                        // address field in the received accountData.
+                        // Therefore we store the address and force it
+                        // back to the old value
+                        // Example result from Gaia explorer :
+                        // base_url/auth/accounts/{address} with a valid, 0 transaction address :
+                        // {
+                        //  "height": "1296656",
+                        //  "result": {
+                        //    "type": "cosmos-sdk/Account",
+                        //    "value": {
+                        //      "address": "",
+                        //      "coins": [],
+                        //      "public_key": null,
+                        //      "account_number": "0",
+                        //      "sequence": "0"
+                        //    }
+                        //  }
+                        //}
+                        const auto savedAddress = _accountData->address;
+                        _explorer->getAccount(_accountData->address)
+                            .onComplete(
+                                getContext(),
+                                [self, savedAddress](const TryPtr<cosmos::Account> &accountData) mutable {
+                                    if (accountData.isSuccess()) {
+                                        self->_accountData = accountData.getValue();
+                                        self->_accountData->address = savedAddress;
+                                    }
+                                });
+
                         auto startTime = DateUtils::now();
                         eventPublisher->postSticky(
                                 std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
@@ -600,18 +574,36 @@ namespace ledger {
                         auto buildFunction = [self](const CosmosLikeTransactionBuildRequest &request) {
                                 auto currency = self->getWallet()->getCurrency();
                                 auto tx = std::make_shared<CosmosLikeTransactionApi>();
-                                tx->setAccountNumber(self->getAccountUid());
+                                tx->setAccountNumber(self->getAccountNumber());
                                 tx->setCurrency(self->getWallet()->getCurrency());
                                 tx->setFee(request.fee);
                                 tx->setGas(request.gas);
                                 tx->setMemo(request.memo);
                                 tx->setMessages(request.messages);
-                                tx->setSequence(request.sequence);
+                                tx->setSequence(request.sequence.empty() ? self->getSequence() : request.sequence);
                                 tx->setSigningPubKey(self->getKeychain()->getPublicKey());
                                 return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                         };
 
                         return std::make_shared<CosmosLikeTransactionBuilder>(getContext(), buildFunction);
+                }
+
+                std::string CosmosLikeAccount::getSequence()
+                {
+                    if (!_accountData) {
+                        throw make_exception(
+                            api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
+                    }
+                    return _accountData->sequence;
+                }
+
+                std::string CosmosLikeAccount::getAccountNumber()
+                {
+                    if (!_accountData) {
+                        throw make_exception(
+                            api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
+                    }
+                    return _accountData->accountNumber;
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getTotalBalance() const {
@@ -719,7 +711,7 @@ namespace ledger {
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>
                 CosmosLikeAccount::getDelegations() {
-                        return _explorer->getDelegations(_accountAddress)
+                        return _explorer->getDelegations(_accountData->address)
                                 .map<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>(
                                         getContext(),
                                         [] (auto& delegations) {
@@ -738,13 +730,13 @@ namespace ledger {
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>>
                 CosmosLikeAccount::getPendingRewards() {
-                        return _explorer->getPendingRewards(_accountAddress)
+                        return _explorer->getPendingRewards(_accountData->address)
                                 .map<std::vector<std::shared_ptr<api::CosmosLikeReward>>>(
                                         getContext(),
                                         [&] (auto& rewards) {
                                                 std::vector<std::shared_ptr<api::CosmosLikeReward>> rewardList;
                                                 for (auto& reward : *rewards) {
-                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, _accountAddress));
+                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, _accountData->address));
                                                 }
                                                 return rewardList;
                                         }

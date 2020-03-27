@@ -64,6 +64,18 @@ public:
     virtual void getDelegations(const std::shared_ptr<CosmosLikeDelegationListCallback> & callback) = 0;
 
     virtual void getPendingRewards(const std::shared_ptr<CosmosLikeRewardListCallback> & callback) = 0;
+
+    /**
+     * Get the current account sequence (synchronize to get latest value)
+     * string like "14"
+     */
+    virtual std::string getSequence() = 0;
+
+    /**
+     * Get the account number
+     * String like "15"
+     */
+    virtual std::string getAccountNumber() = 0;
 };
 
 } } }  // namespace ledger::core::api

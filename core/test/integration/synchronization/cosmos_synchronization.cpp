@@ -277,7 +277,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetCurrentBlockWithExplorer) {
 }
 
 TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
-    auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
+    auto walletName = "8d99cc44-9061-43a4-9edd-f938d2007926";
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
     auto poolConfig = DynamicObject::newInstance();
@@ -338,6 +338,13 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             fmt::print("Ops: {}\n", ops.size());
             EXPECT_GT(ops.size(), 0);
+
+            const auto sequenceNumber = account->getSequence();
+            const int sequence = std::atoi(sequenceNumber.c_str());
+            EXPECT_GE(sequence, 1226) << "Sequence was at 1226 on 2020-03-26";
+
+            const auto accountNumber = account->getAccountNumber();
+            EXPECT_EQ(accountNumber, "12850");
         }
     }
 }

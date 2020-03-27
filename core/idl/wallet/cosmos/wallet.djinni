@@ -117,6 +117,14 @@ CosmosLikeAccount = interface +c {
 
         getDelegations(callback: ListCallback<CosmosLikeDelegation>);
         getPendingRewards(callback: ListCallback<CosmosLikeReward>);
+
+        # Get the current account sequence (synchronize to get latest value)
+        # string like "14"
+        getSequence(): string;
+
+        # Get the account number
+        # String like "15"
+        getAccountNumber(): string;
 }
 
 #Class representing a Cosmos delegation

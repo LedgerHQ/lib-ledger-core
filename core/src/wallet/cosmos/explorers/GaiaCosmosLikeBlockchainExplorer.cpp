@@ -108,7 +108,7 @@ namespace ledger {
         }
 
         FuturePtr<ledger::core::cosmos::Account>
-        GaiaCosmosLikeBlockchainExplorer::getAccount(const std::string &account) {
+        GaiaCosmosLikeBlockchainExplorer::getAccount(const std::string &account) const {
             return _http->GET(fmt::format("/auth/accounts/{}", account), ACCEPT_HEADER)
                 .json(true)
                 .mapPtr<cosmos::Account>(getContext(), [] (const HttpRequest::JsonResult& response) {

@@ -69,7 +69,7 @@ namespace ledger {
             FuturePtr<cosmos::Block> getBlock(uint64_t &blockHeight) override;
 
             // Account querier
-            FuturePtr<ledger::core::cosmos::Account> getAccount(const std::string &account) override;
+            FuturePtr<ledger::core::cosmos::Account> getAccount(const std::string &account) const override;
 
             // CurrentBlock querier
             FuturePtr<cosmos::Block> getCurrentBlock() override;

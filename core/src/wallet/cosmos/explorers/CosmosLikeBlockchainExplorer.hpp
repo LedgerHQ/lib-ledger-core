@@ -78,9 +78,8 @@ namespace ledger {
             virtual FuturePtr<cosmos::Block> getCurrentBlock() const = 0;
             virtual FuturePtr<cosmos::Block> getCurrentBlock() = 0;
             virtual FuturePtr<cosmos::Block> getBlock(uint64_t& blockHeight) = 0;
-            virtual FuturePtr<cosmos::Account> getAccount(const std::string& account) = 0;
+            virtual FuturePtr<cosmos::Account> getAccount(const std::string& account) const  = 0;
             virtual const std::vector<TransactionFilter>& getTransactionFilters() = 0;
-
 
             // Balances
             /// Get Total Balance
