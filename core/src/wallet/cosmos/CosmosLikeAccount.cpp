@@ -473,12 +473,34 @@ namespace ledger {
                                                                 });
 
                         // Update account level data (sequence, accountnumber...)
+                        // HACK : forcefully overwrite the current account address.
+                        // An account with 0 transaction can have an empty
+                        // address field in the received accountData.
+                        // Therefore we store the address and force it
+                        // back to the old value
+                        // Example result from Gaia explorer :
+                        // base_url/auth/accounts/{address} with a valid, 0 transaction address :
+                        // {
+                        //  "height": "1296656",
+                        //  "result": {
+                        //    "type": "cosmos-sdk/Account",
+                        //    "value": {
+                        //      "address": "",
+                        //      "coins": [],
+                        //      "public_key": null,
+                        //      "account_number": "0",
+                        //      "sequence": "0"
+                        //    }
+                        //  }
+                        //}
+                        const auto savedAddress = _accountData->address;
                         _explorer->getAccount(_accountData->address)
                             .onComplete(
                                 getContext(),
-                                [self](const TryPtr<cosmos::Account> &accountData) mutable {
+                                [self, savedAddress](const TryPtr<cosmos::Account> &accountData) mutable {
                                     if (accountData.isSuccess()) {
                                         self->_accountData = accountData.getValue();
+                                        self->_accountData->address = savedAddress;
                                     }
                                 });
 
