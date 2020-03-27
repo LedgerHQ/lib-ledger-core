@@ -679,8 +679,5 @@
                 return _explorer->getFees().callback(getContext(), callback);;
             }
 
-            std::shared_ptr<api::BitcoinLikeAccount> fromCoreAccount(const std::shared_ptr<api::Account> & coreAccount) {
-              return std::dynamic_pointer_cast<api::BitcoinLikeAccount>(coreAccount);
-            }
         }
     }

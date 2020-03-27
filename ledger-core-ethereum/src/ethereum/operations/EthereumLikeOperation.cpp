@@ -110,9 +110,5 @@ namespace ledger {
             // uses bool operator here from shared_ptr
             return static_cast<bool>(_tx);
         }
-
-        std::shared_ptr<api::EthereumLikeOperation> fromCoreOperation(const std::shared_ptr<api::Operation> & coreOperation) {
-          return std::dynamic_pointer_cast<api::EthereumLikeOperation>(coreOperation);
-        }
     }
 }

@@ -82,9 +82,5 @@ namespace ledger {
         bool TezosLikeOperation::isComplete() {
             return true;
         }
-
-        std::shared_ptr<api::TezosLikeOperation> fromCoreOperation(const std::shared_ptr<api::Operation> & coreOperation) {
-          return std::dynamic_pointer_cast<api::TezosLikeOperation>(coreOperation);
-        }
     }
 }

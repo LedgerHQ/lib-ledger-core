@@ -12,8 +12,16 @@
 
 # The Tezos currency.
 Tezos = interface +c {
+  static newInstance(): Tezos;
+
   # Register the currency into a wallet store and associated services.
-  static registerInto(services: Services, walletStore: WalletStore): bool;
+  registerInto(services: Services, walletStore: WalletStore, callback: Callback<ErrorCode>);
+
+  # Turn an Account into a TezosLikeAccount.
+  fromCoreAccount(coreAccount: Account): optional<TezosLikeAccount>;
+
+  # Turn an Operation into a TezosLikeOperation.
+  fromCoreOperation(coreOperation: Operation): optional<TezosLikeOperation>;
 }
 
 TezosOperationTag = enum {
@@ -64,7 +72,6 @@ TezosLikeTransaction = interface +c {
 
 #Class representing a Tezos Operation
 TezosLikeOperation = interface +c {
-	static fromCoreOperation(coreOperation: Operation): optional<TezosLikeOperation>;
 	#Get operation's transaction
 	#@return TezosLikeTransaction object
 	const getTransaction(): TezosLikeTransaction;
@@ -126,7 +133,6 @@ TezosLikeTransactionBuilder = interface +c {
 
 #Class representing a Tezos account
 TezosLikeAccount = interface +c {
-	static fromCoreAccount(coreAccount: Account): optional<TezosLikeAccount>;
 	broadcastRawTransaction(transaction: binary, callback: Callback<string>);
 	broadcastTransaction(transaction: TezosLikeTransaction, callback: Callback<string>);
 	buildTransaction(): TezosLikeTransactionBuilder;

@@ -76,8 +76,5 @@ namespace ledger {
             return static_cast<bool>(_tx);
         }
 
-        std::shared_ptr<api::BitcoinLikeOperation> fromCoreOperation(const std::shared_ptr<api::Operation> & coreOperation) {
-          return std::dynamic_pointer_cast<api::BitcoinLikeOperation>(coreOperation);
-        }
     }
 }

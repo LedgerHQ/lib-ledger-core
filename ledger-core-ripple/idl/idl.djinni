@@ -20,8 +20,15 @@
 
 # The Ripple currency.
 Ripple = interface +c {
-  # Register the currency into a wallet store and associated services.
-  static registerInto(services: Services, walletStore: WalletStore): bool;
+  static newInstance(): Ripple;
+
+  registerInto(services: Services, walletStore: WalletStore, callback: Callback<ErrorCode>);
+
+  # Turn an Account into a RippleLikeAccount.
+  fromCoreAccount(coreAccount: Account): optional<RippleLikeAccount>;
+
+  # Turn an Operation into a RippleLikeOperation.
+  fromCoreOperation(coreOperation: Operation): optional<RippleLikeOperation>;
 }
 
 # Ripple network parameters.
@@ -100,7 +107,6 @@ RippleLikeTransaction = interface +c {
 
 #Class representing a Ripple Operation
 RippleLikeOperation = interface +c {
-	static fromCoreOperation(coreOperation: Operation): optional<RippleLikeOperation>;
 	#Get operation's transaction
 	#@return RippleLikeTransaction object
 	getTransaction(): RippleLikeTransaction;
