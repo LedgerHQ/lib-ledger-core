@@ -243,36 +243,52 @@ jobs:
         command: |
           . .circleci/publish_jar.sh
   generate_doc:
-    docker:
-      - image: circleci/buildpack-deps:stretch
-    steps:
-      - run:
-          command: git clone --depth 1 -b "$CIRCLE_TAG" --recurse-submodules "$CIRCLE_REPOSITORY_URL" .
-          environment:
-            GIT_SSH_COMMAND: ssh -o StrictHostKeyChecking=no
-      - run:
-          name: Install dependencies
-          command: |
-            sudo apt-get update -q=2
-            sudo apt-get install -qy doxygen libqt5websockets5 libqt5websockets5-dev qt5-default rsync software-properties-common
-            sudo add-apt-repository --update "deb http://httpredir.debian.org/debian stretch-backports main"
-            sudo apt-get install -qy -t stretch-backports cmake
-      - run: cmake -H. -Bbuild
-      - run:
-          command: make doc
-          working_directory: ~/project/build
-      - run:
-          name: Check that the index file is present
-          command: test -f build/doc/html/index.html
-      - run:
-          name: Setup the SSH private key
-          command: |
-            install -d -m 700 ~/.ssh/
-            gpg -d --passphrase "${GPG_PASSPHRASE}" --batch -o ~/.ssh/id_ed25519 .circleci/id_ed25519.gpg
-            chmod 400 ~/.ssh/id_ed25519
-      - run: >
-          rsync -e "ssh -o StrictHostKeyChecking=no" -a --chown :www-data --delete
-          build/doc/html/ docs.libcore.ledger.com@statics.ledger.fr:.
+      docker:
+        - image: circleci/buildpack-deps:stretch
+      working_directory: ~/build
+      steps:
+        - checkout
+        - run:
+            name: "Pull Submodules"
+            command: |
+              git submodule init
+              git submodule update --remote
+        - run:
+            name: Install dependencies
+            command: |
+              sudo apt-get update -q=2
+              sudo apt-get install -qy doxygen graphviz
+        - run:
+            command: doxygen Doxyfile
+            working_directory: ~/build/doc
+        - run:
+            name: Check that the index file is present
+            command: test -f doc/html/index.html      
+        - persist_to_workspace:
+            root: ~/build/doc
+            paths: html
+    deploy_doc:
+        docker:
+          - image: node:8.10.0
+        steps:
+          - add_ssh_keys:
+              fingerprints:
+                - "b5:9d:98:49:ce:f3:cf:88:58:79:06:e1:1c:4d:03:f5"
+          - checkout
+          - attach_workspace:
+              at: doc
+          - run:
+              name: Install and configure dependencies
+              command: |
+                npm install -g --silent gh-pages@2.0.1
+                git config --global user.email "deploy-bot@ledger.fr"
+                git config --global user.name "Deploy Bot"
+          - run:
+              name: Deploy docs to gh-pages branch
+              command: gh-pages --dist doc/html
+          - run:
+              name: Create CNAME file
+              command: echo "docs.libcore.ledger.com" > doc/html/CNAME
 
 workflows:
   version: 2
@@ -299,7 +315,13 @@ workflows:
     jobs:
       - generate_doc:
           filters:
-            tags:
-              only: /.+/
+            # tags:
+            #   only: /.+/
             branches:
-              ignore: /.*/
+              only: master
+      - deploy_doc:
+          requires:
+            - generate_doc
+          filters:
+            branches:
+              only: master

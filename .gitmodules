@@ -13,6 +13,7 @@
 [submodule "core/lib/leveldb"]
     path = core/lib/leveldb
     url = https://github.com/LedgerHQ/leveldb.git
+    branch = bitcoin-fork
 [submodule "core/lib/ethash"]
     path = core/lib/ethash
     url = https://github.com/LedgerHQ/ethash.git

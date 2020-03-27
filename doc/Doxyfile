@@ -1,0 +1,16 @@
+PROJECT_NAME           = "ledger-core"
+PROJECT_NUMBER         = 
+STRIP_FROM_PATH        = ../core
+INPUT                  = ../README.md \
+                         ../core \
+                         ../doc \
+EXCLUDE_PATTERNS       = */lib/* \
+FILE_PATTERNS          = *.h \
+                         *.cpp \
+                         *.hpp \
+                         *.md
+RECURSIVE              = YES
+GENERATE_HTML          = YES
+HTML_COLORSTYLE_SAT    = 50
+HTML_DYNAMIC_SECTIONS  = YES
+USE_MDFILE_AS_MAINPAGE = README.md
