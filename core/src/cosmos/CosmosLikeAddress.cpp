@@ -78,7 +78,7 @@ namespace ledger {
         }
 
         std::experimental::optional<std::string> CosmosLikeAddress::getDerivationPath() {
-            return _derivationPath.toOptional();
+            return {}; // _derivationPath.toOptional();
         }
 
         std::string CosmosLikeAddress::toString() {
