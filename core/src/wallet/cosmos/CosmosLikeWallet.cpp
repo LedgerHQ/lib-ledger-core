@@ -152,7 +152,6 @@ namespace ledger {
         }
 
         bool CosmosLikeWallet::hasMultipleAddresses() const {
-            // TODO check if ATOM accepts multiple addresses
             return false;
         }
 
