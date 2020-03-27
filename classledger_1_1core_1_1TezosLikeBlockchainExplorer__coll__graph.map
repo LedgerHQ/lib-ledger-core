@@ -1,0 +1,4 @@
+<map id="ledger::core::TezosLikeBlockchainExplorer" name="ledger::core::TezosLikeBlockchainExplorer">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="47,5,242,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; TezosLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="5,71,284,127"/>
+</map>

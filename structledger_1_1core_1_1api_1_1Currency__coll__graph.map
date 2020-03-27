@@ -1,0 +1,6 @@
+<map id="ledger::core::api::Currency" name="ledger::core::api::Currency">
+<area shape="rect" id="node2" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::TezosLikeNetworkParameters \&gt;" alt="" coords="307,5,572,61"/>
+<area shape="rect" id="node4" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::BitcoinLikeNetworkParameters \&gt;" alt="" coords="302,85,577,141"/>
+<area shape="rect" id="node6" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::RippleLikeNetworkParameters \&gt;" alt="" coords="304,165,575,221"/>
+<area shape="rect" id="node8" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::EthereumLikeNetworkParameters \&gt;" alt="" coords="293,245,585,301"/>
+</map>

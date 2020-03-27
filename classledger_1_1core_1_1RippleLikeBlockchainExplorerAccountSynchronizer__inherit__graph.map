@@ -1,0 +1,6 @@
+<map id="ledger::core::RippleLikeBlockchainExplorerAccountSynchronizer" name="ledger::core::RippleLikeBlockchainExplorerAccountSynchronizer">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractBlockchainExplorerAccountSynchronizer.html" title="RippleBlockchainAccountSynchronizer" alt="" coords="309,5,580,32"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1RippleLikeAccountSynchronizer.html" title="ledger::core::RippleLike\lAccountSynchronizer" alt="" coords="357,57,532,98"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractAccountSynchronizer.html" title="ledger::core::AbstractAccount\lSynchronizer\&lt; RippleLikeAccount \&gt;" alt="" coords="5,57,261,98"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="333,123,557,149"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="ledger::core::AbstractLedgerApiBlockchainExplorer&lt; BlockchainExplorerTransaction, TransactionsBulk, TransactionsParser, TransactionsBulkParser, BlockParser, NetworkParameters &gt;" name="ledger::core::AbstractLedgerApiBlockchainExplorer&lt; BlockchainExplorerTransaction, TransactionsBulk, TransactionsParser, TransactionsBulkParser, BlockParser, NetworkParameters &gt;">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1ApiRippleLikeBlockchainExplorer.html" title="ledger::core::ApiRippleLike\lBlockchainExplorer" alt="" coords="382,5,578,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1ExternalTezosLikeBlockchainExplorer.html" title="ledger::core::ExternalTezos\lLikeBlockchainExplorer" alt="" coords="381,71,579,112"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1LedgerApiBitcoinLikeBlockchainExplorer.html" title="ledger::core::LedgerApiBitcoin\lLikeBlockchainExplorer" alt="" coords="371,136,589,177"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1LedgerApiEthereumLikeBlockchainExplorer.html" title="ledger::core::LedgerApiEthereum\lLikeBlockchainExplorer" alt="" coords="363,201,597,243"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1NodeRippleLikeBlockchainExplorer.html" title="ledger::core::NodeRipple\lLikeBlockchainExplorer" alt="" coords="389,267,571,308"/>
+<area shape="rect" id="node7" href="$classledger_1_1core_1_1NodeTezosLikeBlockchainExplorer.html" title="ledger::core::NodeTezosLike\lBlockchainExplorer" alt="" coords="378,332,582,373"/>
+</map>

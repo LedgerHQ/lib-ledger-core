@@ -1,0 +1,4 @@
+<map id="ledger::core::RippleLikeWebSocketNotificationParser" name="ledger::core::RippleLikeWebSocketNotificationParser">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractWebSocketNotificationParser.html" title="ledger::core::AbstractWeb\lSocketNotificationParser\l\&lt; RippleLikeBlockchainExplorerTransaction,\l RippleLikeBlockchainExplorer::Block,\l RippleLikeTransactionParser, RippleLikeBlockParser \&gt;" alt="" coords="416,5,791,91"/>
+<area shape="rect" id="node3" href="$structledger_1_1core_1_1AbstractWebSocketNotificationParser_1_1Result.html" title="ledger::core::AbstractWeb\lSocketNotificationParser\l\&lt; BlockchainExplorerTransaction,\l BlockchainExplorerBlock, TransactionParser,\l BlockParser \&gt;::Result" alt="" coords="5,5,319,91"/>
+</map>

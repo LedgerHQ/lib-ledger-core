@@ -1,0 +1,47 @@
+<map id="BaseFixture" name="BaseFixture">
+<area shape="rect" id="node3" href="$classAccountBlockchainObservationTests.html" title="AccountBlockchainObservation\lTests" alt="" coords="309,5,533,47"/>
+<area shape="rect" id="node4" href="$classAccountCreationTest.html" title="AccountCreationTest" alt="" coords="344,71,499,98"/>
+<area shape="rect" id="node5" href="$classAccountInfoTests.html" title="AccountInfoTests" alt="" coords="355,122,487,149"/>
+<area shape="rect" id="node6" href="$classAccountsPublicInterfaceTest.html" title="AccountsPublicInterfaceTest" alt="" coords="319,173,523,199"/>
+<area shape="rect" id="node7" href="$classBitcoinLikeWalletP2SHSynchronization.html" title="BitcoinLikeWalletP2SHSynchronization" alt="" coords="285,223,558,250"/>
+<area shape="rect" id="node8" href="$classBitcoinLikeWalletSynchronization.html" title="BitcoinLikeWalletSynchronization" alt="" coords="302,274,541,301"/>
+<area shape="rect" id="node9" href="$structBitcoinMakeBaseTransaction.html" title="BitcoinMakeBaseTransaction" alt="" coords="317,325,525,351"/>
+<area shape="rect" id="node18" href="$classBitcoinWalletDatabaseTests.html" title="BitcoinWalletDatabaseTests" alt="" coords="320,375,523,402"/>
+<area shape="rect" id="node19" href="$classEthereumKeychains.html" title="EthereumKeychains" alt="" coords="346,426,497,453"/>
+<area shape="rect" id="node20" href="$classEthereumLikeWalletSynchronization.html" title="EthereumLikeWalletSynchronization" alt="" coords="293,477,550,503"/>
+<area shape="rect" id="node21" href="$structEthereumMakeBaseTransaction.html" title="EthereumMakeBaseTransaction" alt="" coords="308,527,535,554"/>
+<area shape="rect" id="node23" href="$classKeychainFixture.html" title="KeychainFixture\&lt; Keychain \&gt;" alt="" coords="314,578,529,605"/>
+<area shape="rect" id="node24" href="$classKeychainFixture.html" title="KeychainFixture\&lt; P2PKHBitcoin\lLikeKeychain \&gt;" alt="" coords="307,629,535,671"/>
+<area shape="rect" id="node26" href="$classKeychainFixture.html" title="KeychainFixture\&lt; P2SHBitcoin\lLikeKeychain \&gt;" alt="" coords="312,695,531,736"/>
+<area shape="rect" id="node28" href="$classKeychainFixture.html" title="KeychainFixture\&lt; P2WPKHBitcoin\lLikeKeychain \&gt;" alt="" coords="301,760,542,801"/>
+<area shape="rect" id="node30" href="$classKeychainFixture.html" title="KeychainFixture\&lt; P2WSHBitcoin\lLikeKeychain \&gt;" alt="" coords="305,825,537,867"/>
+<area shape="rect" id="node32" href="$classLedgerApiBlockchainExplorerTests.html" title="LedgerApiBlockchainExplorer\lTests\&lt; CurrencyExplorer,\l NetworkParameters \&gt;" alt="" coords="315,891,527,947"/>
+<area shape="rect" id="node33" href="$classLedgerApiBlockchainExplorerTests.html" title="LedgerApiBlockchainExplorer\lTests\&lt; LedgerApiBitcoinLikeBlockchain\lExplorer, api::BitcoinLikeNetworkParameters \&gt;" alt="" coords="257,971,585,1027"/>
+<area shape="rect" id="node35" href="$classLedgerApiBlockchainExplorerTests.html" title="LedgerApiBlockchainExplorer\lTests\&lt; LedgerApiEthereumLikeBlockchain\lExplorer, api::EthereumLikeNetworkParameters \&gt;" alt="" coords="248,1051,595,1107"/>
+<area shape="rect" id="node37" href="$classQueryBuilderTest.html" title="QueryBuilderTest" alt="" coords="355,1131,488,1158"/>
+<area shape="rect" id="node38" href="$classRippleKeychains.html" title="RippleKeychains" alt="" coords="357,1182,486,1209"/>
+<area shape="rect" id="node39" href="$classRippleLikeWalletSynchronization.html" title="RippleLikeWalletSynchronization" alt="" coords="304,1233,539,1259"/>
+<area shape="rect" id="node40" href="$structRippleMakeBaseTransaction.html" title="RippleMakeBaseTransaction" alt="" coords="319,1283,523,1310"/>
+<area shape="rect" id="node42" href="$classSQLCipherTest.html" title="SQLCipherTest" alt="" coords="364,1334,479,1361"/>
+<area shape="rect" id="node43" href="$classTezosLikeWalletSynchronization.html" title="TezosLikeWalletSynchronization" alt="" coords="306,1385,537,1411"/>
+<area shape="rect" id="node44" href="$structTezosMakeBaseTransaction.html" title="TezosMakeBaseTransaction" alt="" coords="322,1435,521,1462"/>
+<area shape="rect" id="node46" href="$classWalletPoolTest.html" title="WalletPoolTest" alt="" coords="363,1486,480,1513"/>
+<area shape="rect" id="node47" href="$classWalletTests.html" title="WalletTests" alt="" coords="373,1537,469,1563"/>
+<area shape="rect" id="node10" href="$structBCHMakeP2PKHTransaction.html" title="BCHMakeP2PKHTransaction" alt="" coords="665,122,868,149"/>
+<area shape="rect" id="node11" href="$structBitcoinMakeP2PKHTransaction.html" title="BitcoinMakeP2PKHTransaction" alt="" coords="657,173,876,199"/>
+<area shape="rect" id="node12" href="$structBitcoinMakeP2SHTransaction.html" title="BitcoinMakeP2SHTransaction" alt="" coords="661,223,872,250"/>
+<area shape="rect" id="node13" href="$structBitcoinMakeP2WPKHTransaction.html" title="BitcoinMakeP2WPKHTransaction" alt="" coords="651,274,883,301"/>
+<area shape="rect" id="node14" href="$structBitcoinMakeP2WSHTransaction.html" title="BitcoinMakeP2WSHTransaction" alt="" coords="655,325,878,351"/>
+<area shape="rect" id="node15" href="$structBTGMakeP2SHTransaction.html" title="BTGMakeP2SHTransaction" alt="" coords="671,375,863,402"/>
+<area shape="rect" id="node16" href="$structCoinSelectionP2PKH.html" title="CoinSelectionP2PKH" alt="" coords="689,426,844,453"/>
+<area shape="rect" id="node17" href="$structZCASHMakeP2PKHTransaction.html" title="ZCASHMakeP2PKHTransaction" alt="" coords="657,477,876,503"/>
+<area shape="rect" id="node22" href="$structEthereumMakeTransaction.html" title="EthereumMakeTransaction" alt="" coords="669,527,864,554"/>
+<area shape="rect" id="node25" href="$classBitcoinKeychains.html" title="BitcoinKeychains" alt="" coords="700,637,833,663"/>
+<area shape="rect" id="node27" href="$classBitcoinP2SHKeychains.html" title="BitcoinP2SHKeychains" alt="" coords="683,702,850,729"/>
+<area shape="rect" id="node29" href="$classBitcoinP2WPKHKeychains.html" title="BitcoinP2WPKHKeychains" alt="" coords="672,767,861,794"/>
+<area shape="rect" id="node31" href="$classBitcoinP2WSHKeychains.html" title="BitcoinP2WSHKeychains" alt="" coords="677,833,857,859"/>
+<area shape="rect" id="node34" href="$classLedgerApiBitcoinLikeBlockchainExplorerTests.html" title="LedgerApiBitcoinLikeBlockchain\lExplorerTests" alt="" coords="651,979,882,1020"/>
+<area shape="rect" id="node36" href="$classLedgerApiEthereumLikeBlockchainExplorerTests.html" title="LedgerApiEthereumLikeBlockchain\lExplorerTests" alt="" coords="643,1059,891,1100"/>
+<area shape="rect" id="node41" href="$structRippleMakeTransaction.html" title="RippleMakeTransaction" alt="" coords="681,1283,853,1310"/>
+<area shape="rect" id="node45" href="$structTezosMakeTransaction.html" title="TezosMakeTransaction" alt="" coords="683,1435,850,1462"/>
+</map>

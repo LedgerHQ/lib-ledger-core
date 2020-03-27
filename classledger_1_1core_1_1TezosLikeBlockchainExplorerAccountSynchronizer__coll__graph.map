@@ -1,0 +1,6 @@
+<map id="ledger::core::TezosLikeBlockchainExplorerAccountSynchronizer" name="ledger::core::TezosLikeBlockchainExplorerAccountSynchronizer">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractBlockchainExplorerAccountSynchronizer.html" title="TezosBlockchainAccountSynchronizer" alt="" coords="304,5,569,32"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1TezosLikeAccountSynchronizer.html" title="ledger::core::TezosLikeAccount\lSynchronizer" alt="" coords="325,57,548,98"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractAccountSynchronizer.html" title="ledger::core::AbstractAccount\lSynchronizer\&lt; TezosLikeAccount \&gt;" alt="" coords="5,57,256,98"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="325,123,549,149"/>
+</map>

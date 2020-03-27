@@ -1,0 +1,7 @@
+<map id="ledger::core::CommonBitcoinLikeKeychains" name="ledger::core::CommonBitcoinLikeKeychains">
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1P2PKHBitcoinLikeKeychain.html" title="ledger::core::P2PKHBitcoin\lLikeKeychain" alt="" coords="497,5,692,47"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1P2SHBitcoinLikeKeychain.html" title="ledger::core::P2SHBitcoin\lLikeKeychain" alt="" coords="501,71,688,112"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1P2WPKHBitcoinLikeKeychain.html" title="ledger::core::P2WPKHBitcoin\lLikeKeychain" alt="" coords="491,136,699,177"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1P2WSHBitcoinLikeKeychain.html" title="ledger::core::P2WSHBitcoin\lLikeKeychain" alt="" coords="495,201,694,243"/>
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1BitcoinLikeKeychain.html" title="ledger::core::BitcoinLike\lKeychain" alt="" coords="5,104,184,145"/>
+</map>

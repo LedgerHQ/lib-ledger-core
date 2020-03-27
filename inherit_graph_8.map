@@ -1,0 +1,7 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classdjinni_1_1GlobalRef.html" title="djinni::GlobalRef\&lt;\l PointerType \&gt;" alt="" coords="165,5,305,47"/>
+<area shape="rect" id="node3" href="$classdjinni_1_1LocalRef.html" title="djinni::LocalRef\&lt; Pointer\lType \&gt;" alt="" coords="144,71,327,112"/>
+<area shape="rect" id="node4" href="$classdjinni_1_1GlobalRef.html" title="djinni::GlobalRef\&lt;\l jclass \&gt;" alt="" coords="165,136,305,177"/>
+<area shape="rect" id="node5" href="$classdjinni_1_1GlobalRef.html" title="djinni::GlobalRef\&lt;\l jobject \&gt;" alt="" coords="165,201,305,243"/>
+<area shape="rect" id="node6" href="$classdjinni_1_1GlobalRef.html" title="djinni::GlobalRef\&lt;\l jthrowable \&gt;" alt="" coords="165,267,305,308"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="ledger::core::EthereumLikeBlockchainExplorer" name="ledger::core::EthereumLikeBlockchainExplorer">
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1LedgerApiEthereumLikeBlockchainExplorer.html" title="ledger::core::LedgerApiEthereum\lLikeBlockchainExplorer" alt="" coords="605,43,840,84"/>
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="61,5,256,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; EthereumLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="5,71,312,127"/>
+</map>

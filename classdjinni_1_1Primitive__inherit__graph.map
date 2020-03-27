@@ -1,0 +1,8 @@
+<map id="djinni::Primitive&lt; Self, CppT, JniT &gt;" name="djinni::Primitive&lt; Self, CppT, JniT &gt;">
+<area shape="rect" id="node2" href="$classdjinni_1_1F32.html" title="djinni::F32\&lt; F32, float,\l jfloat \&gt;" alt="" coords="199,5,367,47"/>
+<area shape="rect" id="node3" href="$classdjinni_1_1F64.html" title="djinni::F64\&lt; F64, double,\l jdouble \&gt;" alt="" coords="192,71,375,112"/>
+<area shape="rect" id="node4" href="$classdjinni_1_1I16.html" title="djinni::I16\&lt; I16, int16\l_t, jshort \&gt;" alt="" coords="202,136,365,177"/>
+<area shape="rect" id="node5" href="$classdjinni_1_1I32.html" title="djinni::I32\&lt; I32, int32\l_t, jint \&gt;" alt="" coords="202,201,365,243"/>
+<area shape="rect" id="node6" href="$classdjinni_1_1I64.html" title="djinni::I64\&lt; I64, int64\l_t, jlong \&gt;" alt="" coords="202,267,365,308"/>
+<area shape="rect" id="node7" href="$classdjinni_1_1I8.html" title="djinni::I8\&lt; I8, int8\l_t, jbyte \&gt;" alt="" coords="214,332,353,373"/>
+</map>

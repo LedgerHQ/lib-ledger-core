@@ -1,0 +1,7 @@
+<map id="ledger::core::LedgerApiEthereumLikeBlockchainObserver" name="ledger::core::LedgerApiEthereumLikeBlockchainObserver">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractLedgerApiBlockchainObserver.html" title="ledger::core::AbstractLedger\lApiBlockchainObserver" alt="" coords="292,5,497,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1EthereumLikeBlockchainObserver.html" title="ledger::core::EthereumLike\lBlockchainObserver" alt="" coords="296,71,493,112"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractBlockchainObserver.html" title="EthereumBlockchainObserver" alt="" coords="10,27,225,54"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="5,78,229,105"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="20,129,215,171"/>
+</map>

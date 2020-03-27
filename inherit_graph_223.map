@@ -1,0 +1,4 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classledger_1_1core_1_1AbstractWebSocketNotificationParser.html" title="ledger::core::AbstractWeb\lSocketNotificationParser\l\&lt; EthereumLikeBlockchainExplorer\lTransaction, EthereumLikeBlockchainExplorer\l::Block, EthereumLikeTransactionParser,\l EthereumLikeBlockParser \&gt;" alt="" coords="5,5,324,105"/>
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1EthereumLikeWebSocketNotificationParser.html" title="ledger::core::EthereumLike\lWebSocketNotificationParser" alt="" coords="372,35,581,76"/>
+</map>

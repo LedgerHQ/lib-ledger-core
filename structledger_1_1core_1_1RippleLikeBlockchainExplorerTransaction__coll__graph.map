@@ -1,0 +1,5 @@
+<map id="ledger::core::RippleLikeBlockchainExplorerTransaction" name="ledger::core::RippleLikeBlockchainExplorerTransaction">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1Option.html" title="ledger::core::Option\l\&lt; ledger::core::Block \&gt;" alt="" coords="5,44,179,85"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1BigInt.html" title="ledger::core::BigInt" alt="" coords="19,178,165,205"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1Option.html" title="ledger::core::Option\l\&lt; uint64_t \&gt;" alt="" coords="17,268,167,309"/>
+</map>

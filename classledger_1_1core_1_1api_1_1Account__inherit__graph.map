@@ -1,0 +1,7 @@
+<map id="ledger::core::api::Account" name="ledger::core::api::Account">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractAccount.html" title="ledger::core::AbstractAccount" alt="" coords="188,111,401,138"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1BitcoinLikeAccount.html" title="ledger::core::BitcoinLike\lAccount" alt="" coords="471,5,650,47"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1EthereumLikeAccount.html" title="ledger::core::EthereumLike\lAccount" alt="" coords="462,71,659,112"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1RippleLikeAccount.html" title="ledger::core::RippleLike\lAccount" alt="" coords="473,136,648,177"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1TezosLikeAccount.html" title="ledger::core::TezosLikeAccount" alt="" coords="449,202,672,229"/>
+</map>

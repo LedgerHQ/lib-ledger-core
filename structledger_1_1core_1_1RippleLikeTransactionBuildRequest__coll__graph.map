@@ -1,0 +1,4 @@
+<map id="ledger::core::RippleLikeTransactionBuildRequest" name="ledger::core::RippleLikeTransactionBuildRequest">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1BigInt.html" title="ledger::core::BigInt" alt="" coords="5,14,151,41"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1Option.html" title="ledger::core::Option\l\&lt; int64_t \&gt;" alt="" coords="236,7,387,48"/>
+</map>

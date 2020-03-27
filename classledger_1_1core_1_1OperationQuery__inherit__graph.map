@@ -1,0 +1,7 @@
+<map id="ledger::core::OperationQuery" name="ledger::core::OperationQuery">
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1ERC20OperationQuery.html" title="ledger::core::ERC20Operation\lQuery" alt="" coords="536,5,748,47"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1TezosOperationQuery.html" title="ledger::core::TezosOperation\lQuery" alt="" coords="539,71,745,112"/>
+<area shape="rect" id="node7" href="$classledger_1_1core_1_1TezosOriginatedOperationQuery.html" title="ledger::core::TezosOriginated\lOperationQuery" alt="" coords="537,136,747,177"/>
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1api_1_1OperationQuery.html" title="ledger::core::api::\lOperationQuery" alt="" coords="50,5,185,47"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="5,137,229,163"/>
+</map>

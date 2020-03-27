@@ -1,0 +1,6 @@
+<map id="ledger::core::EthereumLikeBlockchainExplorerAccountSynchronizer" name="ledger::core::EthereumLikeBlockchainExplorerAccountSynchronizer">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractBlockchainExplorerAccountSynchronizer.html" title="EthereumBlockchainAccount\lSynchronizer" alt="" coords="361,5,569,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1EthereumLikeAccountSynchronizer.html" title="ledger::core::EthereumLike\lAccountSynchronizer" alt="" coords="367,71,564,112"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractAccountSynchronizer.html" title="ledger::core::AbstractAccount\lSynchronizer\&lt; EthereumLikeAccount \&gt;" alt="" coords="5,71,284,112"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="353,137,577,163"/>
+</map>

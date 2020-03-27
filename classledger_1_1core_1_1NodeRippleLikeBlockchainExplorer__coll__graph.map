@@ -1,0 +1,7 @@
+<map id="ledger::core::NodeRippleLikeBlockchainExplorer" name="ledger::core::NodeRippleLikeBlockchainExplorer">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1RippleLikeBlockchainExplorer.html" title="ledger::core::RippleLike\lBlockchainExplorer" alt="" coords="362,41,537,83"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="50,5,245,47"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; RippleLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="5,71,289,127"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1AbstractLedgerApiBlockchainExplorer.html" title="LedgerApiBlockchainExplorer" alt="" coords="343,107,555,134"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="337,158,561,185"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="ledger::core::AbstractBlockchainObserver&lt; Account, BlockchainExplorerTransaction, BlockchainExplorerBlock &gt;" name="ledger::core::AbstractBlockchainObserver&lt; Account, BlockchainExplorerTransaction, BlockchainExplorerBlock &gt;">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1BitcoinLikeBlockchainObserver.html" title="ledger::core::BitcoinLike\lBlockchainObserver" alt="" coords="366,5,545,47"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1EthereumLikeBlockchainObserver.html" title="ledger::core::EthereumLike\lBlockchainObserver" alt="" coords="357,71,554,112"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1RippleLikeBlockchainObserver.html" title="ledger::core::RippleLike\lBlockchainObserver" alt="" coords="368,136,543,177"/>
+<area shape="rect" id="node7" href="$classledger_1_1core_1_1TezosLikeBlockchainObserver.html" title="ledger::core::TezosLikeBlockchain\lObserver" alt="" coords="335,201,576,243"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1LedgerApiBitcoinLikeBlockchainObserver.html" title="ledger::core::LedgerApiBitcoin\lLikeBlockchainObserver" alt="" coords="633,5,850,47"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1LedgerApiEthereumLikeBlockchainObserver.html" title="ledger::core::LedgerApiEthereum\lLikeBlockchainObserver" alt="" coords="624,71,859,112"/>
+</map>

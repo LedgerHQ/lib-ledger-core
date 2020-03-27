@@ -1,0 +1,7 @@
+<map id="ledger::core::NodeTezosLikeBlockchainExplorer" name="ledger::core::NodeTezosLikeBlockchainExplorer">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1TezosLikeBlockchainExplorer.html" title="ledger::core::TezosLikeBlockchain\lExplorer" alt="" coords="349,41,590,83"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="47,5,242,47"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; TezosLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="5,71,284,127"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1AbstractLedgerApiBlockchainExplorer.html" title="LedgerApiBlockchainExplorer" alt="" coords="363,107,575,134"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="357,158,581,185"/>
+</map>

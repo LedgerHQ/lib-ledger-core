@@ -1,0 +1,6 @@
+<map id="ledger::core::AbstractWalletFactory" name="ledger::core::AbstractWalletFactory">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1BitcoinLikeWalletFactory.html" title="ledger::core::BitcoinLike\lWalletFactory" alt="" coords="272,5,451,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1EthereumLikeWalletFactory.html" title="ledger::core::EthereumLike\lWalletFactory" alt="" coords="263,71,460,112"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1RippleLikeWalletFactory.html" title="ledger::core::RippleLike\lWalletFactory" alt="" coords="274,136,449,177"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1TezosLikeWalletFactory.html" title="ledger::core::TezosLikeWallet\lFactory" alt="" coords="256,201,467,243"/>
+</map>

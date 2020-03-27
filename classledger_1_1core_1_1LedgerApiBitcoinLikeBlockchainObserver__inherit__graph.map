@@ -1,0 +1,7 @@
+<map id="ledger::core::LedgerApiBitcoinLikeBlockchainObserver" name="ledger::core::LedgerApiBitcoinLikeBlockchainObserver">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractLedgerApiBlockchainObserver.html" title="ledger::core::AbstractLedger\lApiBlockchainObserver" alt="" coords="283,5,488,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1BitcoinLikeBlockchainObserver.html" title="ledger::core::BitcoinLike\lBlockchainObserver" alt="" coords="296,71,475,112"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractBlockchainObserver.html" title="BitcoinBlockchainObserver" alt="" coords="19,27,216,54"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="5,78,229,105"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="20,129,215,171"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="ledger::core::EthereumLikeBlockchainExplorerTransaction" name="ledger::core::EthereumLikeBlockchainExplorerTransaction">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1Option.html" title="ledger::core::Option\l\&lt; ledger::core::Block \&gt;" alt="" coords="6,44,179,85"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1BigInt.html" title="ledger::core::BigInt" alt="" coords="20,178,165,205"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1Option.html" title="ledger::core::Option\l\&lt; ledger::core::BigInt \&gt;" alt="" coords="5,268,180,309"/>
+</map>

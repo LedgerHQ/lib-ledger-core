@@ -1,0 +1,9 @@
+<map id="KeychainTestData" name="KeychainTestData">
+<area shape="rect" id="node2" href="$structledger_1_1core_1_1api_1_1BitcoinLikeNetworkParameters.html" title="ledger::core::api::\lBitcoinLikeNetworkParameters" alt="" coords="867,63,1089,105"/>
+<area shape="rect" id="node3" href="$structledger_1_1core_1_1api_1_1Currency.html" title="ledger::core::api::\lCurrency" alt="" coords="911,129,1045,170"/>
+<area shape="rect" id="node4" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::TezosLikeNetworkParameters \&gt;" alt="" coords="307,5,572,61"/>
+<area shape="rect" id="node6" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::BitcoinLikeNetworkParameters \&gt;" alt="" coords="302,85,577,141"/>
+<area shape="rect" id="node8" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::RippleLikeNetworkParameters \&gt;" alt="" coords="304,165,575,221"/>
+<area shape="rect" id="node10" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::EthereumLikeNetworkParameters \&gt;" alt="" coords="293,245,585,301"/>
+<area shape="rect" id="node12" href="$structledger_1_1core_1_1api_1_1EthereumLikeNetworkParameters.html" title="ledger::core::api::\lEthereumLikeNetworkParameters" alt="" coords="857,194,1099,235"/>
+</map>

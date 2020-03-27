@@ -1,0 +1,119 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classledger_1_1core_1_1AbstractAccountSynchronizer.html" title="ledger::core::AbstractAccount\lSynchronizer\&lt; BitcoinLikeAccount \&gt;" alt="" coords="29,71,289,112"/>
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1BitcoinLikeAccountSynchronizer.html" title="ledger::core::BitcoinLike\lAccountSynchronizer" alt="" coords="425,71,604,112"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1BlockchainExplorerAccountSynchronizer.html" title="ledger::core::Blockchain\lExplorerAccountSynchronizer" alt="" coords="753,165,965,207"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1AbstractAccountSynchronizer.html" title="ledger::core::AbstractAccount\lSynchronizer\&lt; EthereumLikeAccount \&gt;" alt="" coords="19,5,298,47"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1EthereumLikeAccountSynchronizer.html" title="ledger::core::EthereumLike\lAccountSynchronizer" alt="" coords="416,5,613,47"/>
+<area shape="rect" id="node6" href="$classledger_1_1core_1_1EthereumLikeBlockchainExplorerAccountSynchronizer.html" title="ledger::core::EthereumLike\lBlockchainExplorerAccountSynchronizer" alt="" coords="717,100,1000,141"/>
+<area shape="rect" id="node7" href="$classledger_1_1core_1_1AbstractAccountSynchronizer.html" title="ledger::core::AbstractAccount\lSynchronizer\&lt; RippleLikeAccount \&gt;" alt="" coords="31,227,287,268"/>
+<area shape="rect" id="node8" href="$classledger_1_1core_1_1RippleLikeAccountSynchronizer.html" title="ledger::core::RippleLike\lAccountSynchronizer" alt="" coords="427,231,602,272"/>
+<area shape="rect" id="node9" href="$classledger_1_1core_1_1RippleLikeBlockchainExplorerAccountSynchronizer.html" title="ledger::core::RippleLike\lBlockchainExplorerAccountSynchronizer" alt="" coords="717,231,1000,272"/>
+<area shape="rect" id="node10" href="$classledger_1_1core_1_1AbstractAccountSynchronizer.html" title="ledger::core::AbstractAccount\lSynchronizer\&lt; TezosLikeAccount \&gt;" alt="" coords="33,292,284,333"/>
+<area shape="rect" id="node11" href="$classledger_1_1core_1_1TezosLikeAccountSynchronizer.html" title="ledger::core::TezosLikeAccount\lSynchronizer" alt="" coords="403,296,626,337"/>
+<area shape="rect" id="node12" href="$classledger_1_1core_1_1TezosLikeBlockchainExplorerAccountSynchronizer.html" title="ledger::core::TezosLikeBlockchain\lExplorerAccountSynchronizer" alt="" coords="738,296,979,337"/>
+<area shape="rect" id="node13" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; BitcoinLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="15,358,303,414"/>
+<area shape="rect" id="node14" href="$classledger_1_1core_1_1BitcoinLikeBlockchainExplorer.html" title="ledger::core::BitcoinLike\lBlockchainExplorer" alt="" coords="425,361,604,403"/>
+<area shape="rect" id="node15" href="$classledger_1_1core_1_1LedgerApiBitcoinLikeBlockchainExplorer.html" title="ledger::core::LedgerApiBitcoin\lLikeBlockchainExplorer" alt="" coords="750,361,967,403"/>
+<area shape="rect" id="node16" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; EthereumLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="5,589,312,645"/>
+<area shape="rect" id="node17" href="$classledger_1_1core_1_1EthereumLikeBlockchainExplorer.html" title="ledger::core::EthereumLike\lBlockchainExplorer" alt="" coords="416,603,613,644"/>
+<area shape="rect" id="node18" href="$classledger_1_1core_1_1LedgerApiEthereumLikeBlockchainExplorer.html" title="ledger::core::LedgerApiEthereum\lLikeBlockchainExplorer" alt="" coords="741,557,976,599"/>
+<area shape="rect" id="node19" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; RippleLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="17,438,301,494"/>
+<area shape="rect" id="node20" href="$classledger_1_1core_1_1RippleLikeBlockchainExplorer.html" title="ledger::core::RippleLike\lBlockchainExplorer" alt="" coords="427,427,602,468"/>
+<area shape="rect" id="node21" href="$classledger_1_1core_1_1ApiRippleLikeBlockchainExplorer.html" title="ledger::core::ApiRippleLike\lBlockchainExplorer" alt="" coords="761,427,957,468"/>
+<area shape="rect" id="node22" href="$classledger_1_1core_1_1NodeRippleLikeBlockchainExplorer.html" title="ledger::core::NodeRipple\lLikeBlockchainExplorer" alt="" coords="767,492,950,533"/>
+<area shape="rect" id="node23" href="$classledger_1_1core_1_1AbstractBlockchainExplorer.html" title="ledger::core::AbstractBlockchain\lExplorer\&lt; TezosLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="19,669,298,725"/>
+<area shape="rect" id="node24" href="$classledger_1_1core_1_1TezosLikeBlockchainExplorer.html" title="ledger::core::TezosLikeBlockchain\lExplorer" alt="" coords="394,668,635,709"/>
+<area shape="rect" id="node25" href="$classledger_1_1core_1_1ExternalTezosLikeBlockchainExplorer.html" title="ledger::core::ExternalTezos\lLikeBlockchainExplorer" alt="" coords="760,623,957,664"/>
+<area shape="rect" id="node26" href="$classledger_1_1core_1_1NodeTezosLikeBlockchainExplorer.html" title="ledger::core::NodeTezosLike\lBlockchainExplorer" alt="" coords="757,688,961,729"/>
+<area shape="rect" id="node27" href="$classledger_1_1core_1_1AbstractBlockchainExplorerAccountSynchronizer.html" title="ledger::core::AbstractBlockchain\lExplorerAccountSynchronizer\l\&lt; Account, AddressType, Keychain,\l Explorer \&gt;" alt="" coords="389,136,640,207"/>
+<area shape="rect" id="node28" href="$classledger_1_1core_1_1AbstractBlockchainObserver.html" title="ledger::core::AbstractBlockchain\lObserver\&lt; Account, BlockchainExplorer\lTransaction, BlockchainExplorerBlock \&gt;" alt="" coords="374,951,655,1007"/>
+<area shape="rect" id="node29" href="$classledger_1_1core_1_1BitcoinLikeBlockchainObserver.html" title="ledger::core::BitcoinLike\lBlockchainObserver" alt="" coords="769,936,948,977"/>
+<area shape="rect" id="node31" href="$classledger_1_1core_1_1EthereumLikeBlockchainObserver.html" title="ledger::core::EthereumLike\lBlockchainObserver" alt="" coords="760,871,957,912"/>
+<area shape="rect" id="node33" href="$classledger_1_1core_1_1RippleLikeBlockchainObserver.html" title="ledger::core::RippleLike\lBlockchainObserver" alt="" coords="771,1053,946,1095"/>
+<area shape="rect" id="node34" href="$classledger_1_1core_1_1TezosLikeBlockchainObserver.html" title="ledger::core::TezosLikeBlockchain\lObserver" alt="" coords="738,1119,979,1160"/>
+<area shape="rect" id="node30" href="$classledger_1_1core_1_1LedgerApiBitcoinLikeBlockchainObserver.html" title="ledger::core::LedgerApiBitcoin\lLikeBlockchainObserver" alt="" coords="1057,1236,1274,1277"/>
+<area shape="rect" id="node32" href="$classledger_1_1core_1_1LedgerApiEthereumLikeBlockchainObserver.html" title="ledger::core::LedgerApiEthereum\lLikeBlockchainObserver" alt="" coords="1048,1171,1283,1212"/>
+<area shape="rect" id="node35" href="$classledger_1_1core_1_1AbstractLedgerApiBlockchainExplorer.html" title="ledger::core::AbstractLedger\lApiBlockchainExplorer\&lt; Blockchain\lExplorerTransaction, TransactionsBulk,\l TransactionsParser, TransactionsBulkParser,\l BlockParser, NetworkParameters \&gt;" alt="" coords="360,493,669,578"/>
+<area shape="rect" id="node36" href="$classledger_1_1core_1_1AbstractLedgerApiBlockchainObserver.html" title="ledger::core::AbstractLedger\lApiBlockchainObserver" alt="" coords="412,1200,617,1241"/>
+<area shape="rect" id="node37" href="$classledger_1_1core_1_1api_1_1Account.html" title="ledger::core::api::\lAccount" alt="" coords="447,1901,582,1943"/>
+<area shape="rect" id="node38" href="$classledger_1_1core_1_1AbstractAccount.html" title="ledger::core::AbstractAccount" alt="" coords="752,1955,965,1982"/>
+<area shape="rect" id="node39" href="$classledger_1_1core_1_1BitcoinLikeAccount.html" title="ledger::core::BitcoinLike\lAccount" alt="" coords="1076,1865,1255,1907"/>
+<area shape="rect" id="node40" href="$classledger_1_1core_1_1EthereumLikeAccount.html" title="ledger::core::EthereumLike\lAccount" alt="" coords="1067,1947,1264,1988"/>
+<area shape="rect" id="node41" href="$classledger_1_1core_1_1RippleLikeAccount.html" title="ledger::core::RippleLike\lAccount" alt="" coords="1078,2185,1253,2227"/>
+<area shape="rect" id="node42" href="$classledger_1_1core_1_1TezosLikeAccount.html" title="ledger::core::TezosLikeAccount" alt="" coords="1054,2598,1277,2625"/>
+<area shape="rect" id="node43" href="$classledger_1_1core_1_1api_1_1Address.html" title="ledger::core::api::\lAddress" alt="" coords="447,3208,582,3249"/>
+<area shape="rect" id="node44" href="$classledger_1_1core_1_1AbstractAddress.html" title="ledger::core::AbstractAddress" alt="" coords="752,3215,965,3242"/>
+<area shape="rect" id="node45" href="$classledger_1_1core_1_1BitcoinLikeAddress.html" title="ledger::core::BitcoinLike\lAddress" alt="" coords="1076,3136,1255,3177"/>
+<area shape="rect" id="node46" href="$classledger_1_1core_1_1EthereumLikeAddress.html" title="ledger::core::EthereumLike\lAddress" alt="" coords="1067,3201,1264,3243"/>
+<area shape="rect" id="node47" href="$classledger_1_1core_1_1RippleLikeAddress.html" title="ledger::core::RippleLike\lAddress" alt="" coords="1078,3267,1253,3308"/>
+<area shape="rect" id="node48" href="$classledger_1_1core_1_1TezosLikeAddress.html" title="ledger::core::TezosLikeAddress" alt="" coords="1054,3335,1277,3362"/>
+<area shape="rect" id="node50" href="$classledger_1_1core_1_1RotatingEncryptableSink.html" title="ledger::core::RotatingEncryptableSink" alt="" coords="725,2006,992,2033"/>
+<area shape="rect" id="node51" href="$classledger_1_1core_1_1api_1_1BitcoinLikeAccount.html" title="ledger::core::api::\lBitcoinLikeAccount" alt="" coords="785,1824,932,1865"/>
+<area shape="rect" id="node52" href="$classledger_1_1core_1_1api_1_1BitcoinLikeAddress.html" title="ledger::core::api::\lBitcoinLikeAddress" alt="" coords="785,3084,932,3125"/>
+<area shape="rect" id="node53" href="$classledger_1_1core_1_1api_1_1BitcoinLikeScript.html" title="ledger::core::api::\lBitcoinLikeScript" alt="" coords="447,2019,582,2060"/>
+<area shape="rect" id="node54" href="$classledger_1_1core_1_1BitcoinLikeScriptApi.html" title="ledger::core::BitcoinLike\lScriptApi" alt="" coords="769,2057,948,2099"/>
+<area shape="rect" id="node55" href="$classledger_1_1core_1_1api_1_1BitcoinLikeTransactionBuilder.html" title="ledger::core::api::\lBitcoinLikeTransactionBuilder" alt="" coords="407,2084,622,2125"/>
+<area shape="rect" id="node56" href="$classledger_1_1core_1_1BitcoinLikeTransactionBuilder.html" title="ledger::core::BitcoinLike\lTransactionBuilder" alt="" coords="769,2123,948,2164"/>
+<area shape="rect" id="node57" href="$classledger_1_1core_1_1api_1_1BitcoinLikeWallet.html" title="ledger::core::api::\lBitcoinLikeWallet" alt="" coords="791,805,926,847"/>
+<area shape="rect" id="node58" href="$classledger_1_1core_1_1BitcoinLikeWallet.html" title="ledger::core::BitcoinLike\lWallet" alt="" coords="1076,805,1255,847"/>
+<area shape="rect" id="node59" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="61,792,256,833"/>
+<area shape="rect" id="node60" href="$classledger_1_1core_1_1api_1_1DatabaseBackend.html" title="ledger::core::api::\lDatabaseBackend" alt="" coords="445,2896,585,2937"/>
+<area shape="rect" id="node61" href="$classledger_1_1core_1_1DatabaseBackend.html" title="ledger::core::DatabaseBackend" alt="" coords="746,2903,971,2930"/>
+<area shape="rect" id="node62" href="$classledger_1_1core_1_1ProxyBackend.html" title="ledger::core::ProxyBackend" alt="" coords="1065,2889,1265,2915"/>
+<area shape="rect" id="node63" href="$classledger_1_1core_1_1SQLite3Backend.html" title="ledger::core::SQLite3Backend" alt="" coords="1059,2838,1272,2865"/>
+<area shape="rect" id="node64" href="$classledger_1_1core_1_1api_1_1DatabaseResultSet.html" title="ledger::core::api::\lDatabaseResultSet" alt="" coords="442,2149,587,2191"/>
+<area shape="rect" id="node65" href="$classResults.html" title="Results" alt="" coords="824,2189,893,2215"/>
+<area shape="rect" id="node66" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="403,799,627,826"/>
+<area shape="rect" id="node67" href="$classledger_1_1core_1_1AbstractWallet.html" title="ledger::core::AbstractWallet" alt="" coords="757,754,960,781"/>
+<area shape="rect" id="node71" href="$classledger_1_1core_1_1BitcoinLikeUtxoPicker.html" title="ledger::core::BitcoinLike\lUtxoPicker" alt="" coords="769,1337,948,1379"/>
+<area shape="rect" id="node73" href="$classledger_1_1core_1_1CurrenciesManager.html" title="ledger::core::Currencies\lManager" alt="" coords="771,1403,947,1444"/>
+<area shape="rect" id="node74" href="$classledger_1_1core_1_1EventBus.html" title="ledger::core::EventBus" alt="" coords="775,1002,943,1029"/>
+<area shape="rect" id="node75" href="$classledger_1_1core_1_1EventPublisher.html" title="ledger::core::EventPublisher" alt="" coords="757,1469,961,1495"/>
+<area shape="rect" id="node76" href="$classledger_1_1core_1_1OperationQuery.html" title="ledger::core::OperationQuery" alt="" coords="753,1621,964,1647"/>
+<area shape="rect" id="node80" href="$classledger_1_1core_1_1WalletPool.html" title="ledger::core::WalletPool" alt="" coords="771,1286,947,1313"/>
+<area shape="rect" id="node68" href="$classledger_1_1core_1_1EthereumLikeWallet.html" title="ledger::core::EthereumLike\lWallet" alt="" coords="1067,623,1264,664"/>
+<area shape="rect" id="node69" href="$classledger_1_1core_1_1RippleLikeWallet.html" title="ledger::core::RippleLike\lWallet" alt="" coords="1078,688,1253,729"/>
+<area shape="rect" id="node70" href="$classledger_1_1core_1_1TezosLikeWallet.html" title="ledger::core::TezosLikeWallet" alt="" coords="1060,754,1271,781"/>
+<area shape="rect" id="node72" href="$classledger_1_1core_1_1BitcoinLikeStrategyUtxoPicker.html" title="ledger::core::BitcoinLike\lStrategyUtxoPicker" alt="" coords="1076,1337,1255,1379"/>
+<area shape="rect" id="node77" href="$classledger_1_1core_1_1ERC20OperationQuery.html" title="ledger::core::ERC20Operation\lQuery" alt="" coords="1059,1548,1271,1589"/>
+<area shape="rect" id="node78" href="$classledger_1_1core_1_1TezosOperationQuery.html" title="ledger::core::TezosOperation\lQuery" alt="" coords="1062,1613,1269,1655"/>
+<area shape="rect" id="node79" href="$classledger_1_1core_1_1TezosOriginatedOperationQuery.html" title="ledger::core::TezosOriginated\lOperationQuery" alt="" coords="1060,1679,1271,1720"/>
+<area shape="rect" id="node81" href="$classledger_1_1core_1_1api_1_1DynamicArray.html" title="ledger::core::api::\lDynamicArray" alt="" coords="447,2215,582,2256"/>
+<area shape="rect" id="node82" href="$classledger_1_1core_1_1DynamicArray.html" title="ledger::core::DynamicArray" alt="" coords="759,2239,959,2266"/>
+<area shape="rect" id="node83" href="$classledger_1_1core_1_1api_1_1DynamicObject.html" title="ledger::core::api::\lDynamicObject" alt="" coords="447,2280,582,2321"/>
+<area shape="rect" id="node84" href="$classledger_1_1core_1_1DynamicObject.html" title="ledger::core::DynamicObject" alt="" coords="755,2290,962,2317"/>
+<area shape="rect" id="node86" href="$classledger_1_1core_1_1EthereumLikeTransactionBuilder.html" title="ledger::core::EthereumLike\lTransactionBuilder" alt="" coords="760,2341,957,2383"/>
+<area shape="rect" id="node87" href="$classledger_1_1core_1_1HttpRequest.html" title="ledger::core::HttpRequest" alt="" coords="765,1671,952,1698"/>
+<area shape="rect" id="node88" href="$classledger_1_1core_1_1OperationApi.html" title="ledger::core::OperationApi" alt="" coords="763,2407,955,2434"/>
+<area shape="rect" id="node89" href="$classledger_1_1core_1_1PreferencesEditor.html" title="ledger::core::Preferences\lEditor" alt="" coords="767,2459,951,2500"/>
+<area shape="rect" id="node90" href="$classledger_1_1core_1_1QueryFilter.html" title="ledger::core::QueryFilter" alt="" coords="769,2998,948,3025"/>
+<area shape="rect" id="node94" href="$classledger_1_1core_1_1RippleLikeTransactionBuilder.html" title="ledger::core::RippleLike\lTransactionBuilder" alt="" coords="771,2524,946,2565"/>
+<area shape="rect" id="node95" href="$classledger_1_1core_1_1RLPEncoder.html" title="ledger::core::RLPEncoder" alt="" coords="767,1773,950,1799"/>
+<area shape="rect" id="node98" href="$classledger_1_1core_1_1TezosLikeTransactionBuilder.html" title="ledger::core::TezosLikeTransaction\lBuilder" alt="" coords="737,2589,981,2631"/>
+<area shape="rect" id="node99" href="$classledger_1_1core_1_1WalletPoolApi.html" title="ledger::core::WalletPoolApi" alt="" coords="760,2655,957,2682"/>
+<area shape="rect" id="node100" href="$classledger_1_1core_1_1WalletPoolBuilder.html" title="ledger::core::WalletPool\lBuilder" alt="" coords="771,2707,947,2748"/>
+<area shape="rect" id="node101" href="$classledger_1_1core_1_1WebSocketConnection.html" title="ledger::core::WebSocketConnection" alt="" coords="733,1722,985,1749"/>
+<area shape="rect" id="node91" href="$classledger_1_1core_1_1CompoundQueryFilter.html" title="ledger::core::CompoundQuery\lFilter" alt="" coords="1057,3071,1273,3112"/>
+<area shape="rect" id="node92" href="$classledger_1_1core_1_1ConditionQueryFilter.html" title="ledger::core::ConditionQuery\lFilter\&lt; T \&gt;" alt="" coords="1061,2940,1269,2981"/>
+<area shape="rect" id="node93" href="$classledger_1_1core_1_1PlainTextConditionQueryFilter.html" title="ledger::core::PlainTextCondition\lQueryFilter" alt="" coords="1051,3005,1279,3047"/>
+<area shape="rect" id="node96" href="$classledger_1_1core_1_1RLPListEncoder.html" title="ledger::core::RLPListEncoder" alt="" coords="1062,1810,1269,1837"/>
+<area shape="rect" id="node97" href="$classledger_1_1core_1_1RLPStringEncoder.html" title="ledger::core::RLPStringEncoder" alt="" coords="1055,1759,1276,1786"/>
+<area shape="rect" id="node102" href="$classledger_1_1core_1_1api_1_1EthereumLikeAccount.html" title="ledger::core::api::\lEthereumLikeAccount" alt="" coords="777,1889,941,1931"/>
+<area shape="rect" id="node103" href="$classledger_1_1core_1_1api_1_1EthereumLikeAddress.html" title="ledger::core::api::\lEthereumLikeAddress" alt="" coords="777,3149,941,3191"/>
+<area shape="rect" id="node104" href="$classledger_1_1core_1_1api_1_1EthereumLikeTransactionBuilder.html" title="ledger::core::api::\lEthereumLikeTransactionBuilder" alt="" coords="399,2345,631,2387"/>
+<area shape="rect" id="node105" href="$classledger_1_1core_1_1api_1_1EventBus.html" title="ledger::core::api::\lEventBus" alt="" coords="447,1032,582,1073"/>
+<area shape="rect" id="node106" href="$classledger_1_1core_1_1api_1_1EventPublisher.html" title="ledger::core::api::\lEventPublisher" alt="" coords="447,1461,582,1503"/>
+<area shape="rect" id="node107" href="$classledger_1_1core_1_1api_1_1Operation.html" title="ledger::core::api::\lOperation" alt="" coords="447,2411,582,2452"/>
+<area shape="rect" id="node108" href="$classledger_1_1core_1_1api_1_1OperationQuery.html" title="ledger::core::api::\lOperationQuery" alt="" coords="447,1580,582,1621"/>
+<area shape="rect" id="node109" href="$classledger_1_1core_1_1api_1_1PreferencesEditor.html" title="ledger::core::api::\lPreferencesEditor" alt="" coords="446,2476,583,2517"/>
+<area shape="rect" id="node110" href="$classledger_1_1core_1_1api_1_1QueryFilter.html" title="ledger::core::api::\lQueryFilter" alt="" coords="447,2991,582,3032"/>
+<area shape="rect" id="node111" href="$classledger_1_1core_1_1api_1_1RippleLikeAccount.html" title="ledger::core::api::\lRippleLikeAccount" alt="" coords="787,2772,930,2813"/>
+<area shape="rect" id="node112" href="$classledger_1_1core_1_1api_1_1RippleLikeAddress.html" title="ledger::core::api::\lRippleLikeAddress" alt="" coords="787,3267,930,3308"/>
+<area shape="rect" id="node113" href="$classledger_1_1core_1_1api_1_1RippleLikeTransactionBuilder.html" title="ledger::core::api::\lRippleLikeTransactionBuilder" alt="" coords="409,2541,620,2583"/>
+<area shape="rect" id="node114" href="$classledger_1_1core_1_1api_1_1TezosLikeAccount.html" title="ledger::core::api::\lTezosLikeAccount" alt="" coords="790,2837,927,2879"/>
+<area shape="rect" id="node115" href="$classledger_1_1core_1_1api_1_1TezosLikeAddress.html" title="ledger::core::api::\lTezosLikeAddress" alt="" coords="790,3332,927,3373"/>
+<area shape="rect" id="node116" href="$classledger_1_1core_1_1api_1_1TezosLikeTransactionBuilder.html" title="ledger::core::api::\lTezosLikeTransactionBuilder" alt="" coords="412,2607,617,2648"/>
+<area shape="rect" id="node117" href="$classledger_1_1core_1_1api_1_1Wallet.html" title="ledger::core::api::\lWallet" alt="" coords="447,733,582,775"/>
+<area shape="rect" id="node118" href="$classledger_1_1core_1_1api_1_1WalletPool.html" title="ledger::core::api::\lWalletPool" alt="" coords="447,2672,582,2713"/>
+<area shape="rect" id="node119" href="$classledger_1_1core_1_1api_1_1WalletPoolBuilder.html" title="ledger::core::api::\lWalletPoolBuilder" alt="" coords="446,2737,583,2779"/>
+</map>

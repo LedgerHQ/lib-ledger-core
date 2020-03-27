@@ -1,0 +1,6 @@
+<map id="ledger::core::AbstractExtendedPublicKey&lt; NetworkParameters &gt;" name="ledger::core::AbstractExtendedPublicKey&lt; NetworkParameters &gt;">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1BitcoinLikeExtendedPublicKey.html" title="ledger::core::BitcoinLike\lExtendedPublicKey" alt="" coords="323,5,502,47"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1EthereumLikeExtendedPublicKey.html" title="ledger::core::EthereumLike\lExtendedPublicKey" alt="" coords="314,71,511,112"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1RippleLikeExtendedPublicKey.html" title="ledger::core::RippleLike\lExtendedPublicKey" alt="" coords="325,136,500,177"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1TezosLikeExtendedPublicKey.html" title="ledger::core::TezosLikeExtended\lPublicKey" alt="" coords="297,201,528,243"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="ledger::core::api::DatabaseBackend" name="ledger::core::api::DatabaseBackend">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1DatabaseBackend.html" title="ledger::core::DatabaseBackend" alt="" coords="107,95,333,121"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1ProxyBackend.html" title="ledger::core::ProxyBackend" alt="" coords="5,169,205,196"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1SQLite3Backend.html" title="ledger::core::SQLite3Backend" alt="" coords="229,169,443,196"/>
+</map>

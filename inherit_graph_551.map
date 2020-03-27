@@ -1,0 +1,35 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node2" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; BitcoinLikeScript\lOpCode \&gt;" alt="" coords="219,5,417,61"/>
+<area shape="rect" id="node3" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; int \&gt;" alt="" coords="245,86,391,127"/>
+<area shape="rect" id="node4" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; int32_t \&gt;" alt="" coords="243,151,393,193"/>
+<area shape="rect" id="node5" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; int64_t \&gt;" alt="" coords="243,217,393,258"/>
+<area shape="rect" id="node6" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::AESCipher \&gt;" alt="" coords="235,283,401,339"/>
+<area shape="rect" id="node7" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::BitcoinLikeNetworkParameters \&gt;" alt="" coords="181,363,455,419"/>
+<area shape="rect" id="node8" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::Error \&gt;" alt="" coords="235,443,401,499"/>
+<area shape="rect" id="node9" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::EthereumLikeNetworkParameters \&gt;" alt="" coords="172,523,464,579"/>
+<area shape="rect" id="node10" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::RippleLikeNetworkParameters \&gt;" alt="" coords="183,603,453,659"/>
+<area shape="rect" id="node11" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::api::TezosLikeNetworkParameters \&gt;" alt="" coords="185,683,451,739"/>
+<area shape="rect" id="node12" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::BigInt \&gt;" alt="" coords="235,763,401,819"/>
+<area shape="rect" id="node13" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::BitcoinLikeBlockchainExplorer\lOutput \&gt;" alt="" coords="205,843,431,914"/>
+<area shape="rect" id="node14" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::BitcoinLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="205,938,431,1009"/>
+<area shape="rect" id="node15" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::Block \&gt;" alt="" coords="235,1033,401,1089"/>
+<area shape="rect" id="node16" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::BlockchainExplorerAccountSynchronization\lSavedState \&gt;" alt="" coords="163,1114,473,1185"/>
+<area shape="rect" id="node17" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::EthereumLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="195,1209,441,1279"/>
+<area shape="rect" id="node18" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::Exception \&gt;" alt="" coords="235,1304,401,1360"/>
+<area shape="rect" id="node19" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::RippleLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="207,1385,429,1455"/>
+<area shape="rect" id="node20" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::TezosLikeBlockchainExplorer\lOriginatedAccount \&gt;" alt="" coords="209,1479,427,1550"/>
+<area shape="rect" id="node21" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::TezosLikeBlockchainExplorer\lTransaction \&gt;" alt="" coords="209,1574,427,1645"/>
+<area shape="rect" id="node22" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; ledger::core\l::Try\&lt; T \&gt; \&gt;" alt="" coords="235,1669,401,1725"/>
+<area shape="rect" id="node23" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; Left \&gt;" alt="" coords="245,1750,391,1791"/>
+<area shape="rect" id="node24" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; Right \&gt;" alt="" coords="245,1815,391,1857"/>
+<area shape="rect" id="node25" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; std::shared\l_ptr\&lt; ledger::core::Operation\lApi \&gt; \&gt;" alt="" coords="213,1881,423,1951"/>
+<area shape="rect" id="node26" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; std::shared\l_ptr\&lt; spdlog::logger \&gt; \&gt;" alt="" coords="226,1976,410,2032"/>
+<area shape="rect" id="node27" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; std::shared\l_ptr\&lt; void \&gt; \&gt;" alt="" coords="237,2056,399,2112"/>
+<area shape="rect" id="node28" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; std::string \&gt;" alt="" coords="233,2137,403,2178"/>
+<area shape="rect" id="node29" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; std::tuple\l\&lt; api::BitcoinLikePickingStrategy,\l uint32_t \&gt; \&gt;" alt="" coords="197,2202,439,2273"/>
+<area shape="rect" id="node30" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; std::vector\l\&lt; uint8_t \&gt; \&gt;" alt="" coords="239,2297,397,2353"/>
+<area shape="rect" id="node31" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; uint32_t \&gt;" alt="" coords="239,2378,397,2419"/>
+<area shape="rect" id="node32" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; uint64_t \&gt;" alt="" coords="239,2443,397,2485"/>
+<area shape="rect" id="node33" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; void *\&gt;" alt="" coords="245,2509,391,2550"/>
+<area shape="rect" id="node34" href="$classstd_1_1experimental_1_1optional.html" title="std::experimental::\loptional\&lt; T \&gt;" alt="" coords="245,2574,391,2615"/>
+</map>

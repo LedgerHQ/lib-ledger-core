@@ -1,0 +1,19 @@
+<map id="djinni::JniEnum" name="djinni::JniEnum">
+<area shape="rect" id="node2" href="$classdjinni_1_1JniFlags.html" title="djinni::JniFlags" alt="" coords="245,5,361,32"/>
+<area shape="rect" id="node3" href="$classdjinni__generated_1_1BitcoinLikeFeePolicy.html" title="djinni_generated::Bitcoin\lLikeFeePolicy" alt="" coords="211,57,395,98"/>
+<area shape="rect" id="node4" href="$classdjinni__generated_1_1BitcoinLikePickingStrategy.html" title="djinni_generated::Bitcoin\lLikePickingStrategy" alt="" coords="211,122,395,163"/>
+<area shape="rect" id="node5" href="$classdjinni__generated_1_1BitcoinLikeSignatureState.html" title="djinni_generated::Bitcoin\lLikeSignatureState" alt="" coords="211,187,395,229"/>
+<area shape="rect" id="node6" href="$classdjinni__generated_1_1DatabaseValueType.html" title="djinni_generated::Database\lValueType" alt="" coords="202,253,403,294"/>
+<area shape="rect" id="node7" href="$classdjinni__generated_1_1DynamicType.html" title="djinni_generated::DynamicType" alt="" coords="189,319,416,345"/>
+<area shape="rect" id="node8" href="$classdjinni__generated_1_1ErrorCode.html" title="djinni_generated::ErrorCode" alt="" coords="201,369,404,396"/>
+<area shape="rect" id="node9" href="$classdjinni__generated_1_1EventCode.html" title="djinni_generated::EventCode" alt="" coords="198,420,407,447"/>
+<area shape="rect" id="node10" href="$classdjinni__generated_1_1HttpMethod.html" title="djinni_generated::HttpMethod" alt="" coords="195,471,410,497"/>
+<area shape="rect" id="node11" href="$classdjinni__generated_1_1OperationOrderKey.html" title="djinni_generated::Operation\lOrderKey" alt="" coords="201,522,404,563"/>
+<area shape="rect" id="node12" href="$classdjinni__generated_1_1OperationType.html" title="djinni_generated::OperationType" alt="" coords="186,588,419,615"/>
+<area shape="rect" id="node13" href="$classdjinni__generated_1_1RoundingMode.html" title="djinni_generated::RoundingMode" alt="" coords="185,639,420,665"/>
+<area shape="rect" id="node14" href="$classdjinni__generated_1_1TezosCurve.html" title="djinni_generated::TezosCurve" alt="" coords="196,689,409,716"/>
+<area shape="rect" id="node15" href="$classdjinni__generated_1_1TezosOperationTag.html" title="djinni_generated::TezosOperationTag" alt="" coords="172,740,433,767"/>
+<area shape="rect" id="node16" href="$classdjinni__generated_1_1TimePeriod.html" title="djinni_generated::TimePeriod" alt="" coords="196,791,409,817"/>
+<area shape="rect" id="node17" href="$classdjinni__generated_1_1TrustLevel.html" title="djinni_generated::TrustLevel" alt="" coords="200,841,405,868"/>
+<area shape="rect" id="node18" href="$classdjinni__generated_1_1WalletType.html" title="djinni_generated::WalletType" alt="" coords="197,892,408,919"/>
+</map>

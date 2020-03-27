@@ -1,0 +1,6 @@
+<map id="ledger::core::RippleLikeBlockchainObserver" name="ledger::core::RippleLikeBlockchainObserver">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractBlockchainObserver.html" title="RippleBlockchainObserver" alt="" coords="31,5,225,32"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1AbstractLedgerApiBlockchainObserver.html" title="ledger::core::AbstractLedger\lApiBlockchainObserver" alt="" coords="25,57,231,98"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="16,123,240,149"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1ConfigurationMatchable.html" title="ledger::core::Configuration\lMatchable" alt="" coords="31,174,225,215"/>
+</map>

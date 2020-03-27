@@ -1,0 +1,5 @@
+<map id="ledger::core::TezosLikeWallet" name="ledger::core::TezosLikeWallet">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1AbstractWallet.html" title="ledger::core::AbstractWallet" alt="" coords="277,71,480,98"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1api_1_1Wallet.html" title="ledger::core::api::\lWallet" alt="" coords="50,5,185,47"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1DedicatedContext.html" title="ledger::core::DedicatedContext" alt="" coords="5,71,229,98"/>
+</map>

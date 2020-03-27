@@ -1,0 +1,6 @@
+<map id="ledger::core::BitcoinLikePreparedInput" name="ledger::core::BitcoinLikePreparedInput">
+<area shape="rect" id="node2" href="$structledger_1_1core_1_1BitcoinLikeBlockchainExplorerOutput.html" title="ledger::core::BitcoinLike\lBlockchainExplorerOutput" alt="" coords="287,163,477,205"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1BigInt.html" title="ledger::core::BigInt" alt="" coords="8,73,153,100"/>
+<area shape="rect" id="node4" href="$classledger_1_1core_1_1Option.html" title="ledger::core::Option\l\&lt; uint64_t \&gt;" alt="" coords="5,163,156,205"/>
+<area shape="rect" id="node5" href="$classledger_1_1core_1_1Option.html" title="ledger::core::Option\l\&lt; std::string \&gt;" alt="" coords="5,267,156,309"/>
+</map>

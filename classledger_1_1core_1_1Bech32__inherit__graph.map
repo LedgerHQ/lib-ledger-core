@@ -1,0 +1,4 @@
+<map id="ledger::core::Bech32" name="ledger::core::Bech32">
+<area shape="rect" id="node2" href="$classledger_1_1core_1_1BCHBech32.html" title="ledger::core::BCHBech32" alt="" coords="5,80,188,107"/>
+<area shape="rect" id="node3" href="$classledger_1_1core_1_1BTCBech32.html" title="ledger::core::BTCBech32" alt="" coords="212,80,392,107"/>
+</map>
