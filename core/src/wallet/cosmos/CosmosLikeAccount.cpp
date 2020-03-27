@@ -590,8 +590,7 @@ namespace ledger {
 
                 std::string CosmosLikeAccount::getSequence()
                 {
-                    // Assuming _accountData is only valid if accountNumber has been fetched
-                    if (!_accountData || _accountData->accountNumber.empty()) {
+                    if (!_accountData) {
                         throw make_exception(
                             api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
                     }
@@ -600,8 +599,7 @@ namespace ledger {
 
                 std::string CosmosLikeAccount::getAccountNumber()
                 {
-                    // Assuming _accountData is only valid if accountNumber has been fetched
-                    if (!_accountData || _accountData->accountNumber.empty()) {
+                    if (!_accountData) {
                         throw make_exception(
                             api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
                     }
