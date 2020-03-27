@@ -501,6 +501,16 @@ namespace ledger {
                                     if (accountData.isSuccess()) {
                                         self->_accountData = accountData.getValue();
                                         self->_accountData->address = savedAddress;
+                                        const CosmosLikeAccountDatabaseEntry update = {
+                                            0,  // unused in
+                                                 // CosmosLikeAccountDatabaseHelper::updateAccount
+                                             savedAddress,
+                                             *(self->_accountData),
+                                             std::chrono::system_clock::now()};
+                                        soci::session sql(
+                                            self->getWallet()->getDatabase()->getPool());
+                                        CosmosLikeAccountDatabaseHelper::updateAccount(
+                                            sql, self->getAccountUid(), update);
                                     }
                                 });
 
@@ -580,7 +590,7 @@ namespace ledger {
                                 tx->setGas(request.gas);
                                 tx->setMemo(request.memo);
                                 tx->setMessages(request.messages);
-                                tx->setSequence(request.sequence.empty() ? self->getSequence() : request.sequence);
+                                tx->setSequence(request.sequence.empty() ? std::to_string(std::stoi(self->getSequence()) + 1) : request.sequence);
                                 tx->setSigningPubKey(self->getKeychain()->getPublicKey());
                                 return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                         };
