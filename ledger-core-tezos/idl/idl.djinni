@@ -18,10 +18,10 @@ Tezos = interface +c {
   registerInto(services: Services, walletStore: WalletStore, callback: Callback<ErrorCode>);
 
   # Turn an Account into a TezosLikeAccount.
-  fromCoreAccount(coreAccount: Account): optional<TezosLikeAccount>;
+	fromCoreAccount(coreAccount: Account): optional<TezosLikeAccount>;
 
   # Turn an Operation into a TezosLikeOperation.
-  fromCoreOperation(coreOperation: Operation): optional<TezosLikeOperation>;
+	fromCoreOperation(coreOperation: Operation): optional<TezosLikeOperation>;
 }
 
 TezosOperationTag = enum {

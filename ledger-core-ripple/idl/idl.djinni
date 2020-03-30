@@ -28,7 +28,7 @@ Ripple = interface +c {
   fromCoreAccount(coreAccount: Account): optional<RippleLikeAccount>;
 
   # Turn an Operation into a RippleLikeOperation.
-  fromCoreOperation(coreOperation: Operation): optional<RippleLikeOperation>;
+	fromCoreOperation(coreOperation: Operation): optional<RippleLikeOperation>;
 }
 
 # Ripple network parameters.

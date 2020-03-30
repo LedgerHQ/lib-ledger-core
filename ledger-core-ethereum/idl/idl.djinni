@@ -19,7 +19,7 @@ Ethereum = interface +c {
   fromCoreAccount(coreAccount: Account): optional<EthereumLikeAccount>;
 
   # Turn an Operation into a EthereumLikeOperation.
-  fromCoreOperation(coreOperation: Operation): optional<EthereumLikeOperation>;
+	fromCoreOperation(coreOperation: Operation): optional<EthereumLikeOperation>;
 }
 
 # Class representing a Ethereum transaction.
