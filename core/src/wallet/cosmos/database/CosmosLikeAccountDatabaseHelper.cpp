@@ -67,17 +67,24 @@ namespace ledger {
                                                "FROM cosmos_accounts "
                                                "WHERE uid = :uid", use(
                     accountUid));
+            const auto COL_IDX = 0;
+            const auto COL_ADDRESS = 1;
+            const auto COL_ACC_TYPE = 2;
+            const auto COL_ACC_NUM = 3;
+            const auto COL_SEQUENCE = 4;
+            const auto COL_BALANCES = 5;
+            const auto COL_LAST_UPDATE = 6;
             for (auto &row : rows) {
-                entry.index = row.get<int32_t>(0);
-                entry.address = row.get<std::string>(1);
-                auto accountType = row.get<Option<std::string>>(2);
-                auto accountNumber = row.get<Option<std::string>>(3);
-                auto sequence = row.get<Option<std::string>>(4);
-                auto balances = row.get<Option<std::string>>(5);
-                auto lastUpdate = row.get<Option<std::chrono::system_clock::time_point>>(6);
+                entry.index = row.get<int32_t>(COL_IDX);
+                entry.address = row.get<std::string>(COL_ADDRESS);
+                auto accountType = row.get<Option<std::string>>(COL_ACC_TYPE);
+                auto accountNumber = row.get<Option<std::string>>(COL_ACC_NUM);
+                auto sequence = row.get<Option<std::string>>(COL_SEQUENCE);
+                auto balances = row.get<Option<std::string>>(COL_BALANCES);
+                auto lastUpdate = row.get<Option<std::chrono::system_clock::time_point>>(COL_LAST_UPDATE);
 
                 entry.details.type = accountType.getValueOr("");
-                entry.details.sequence = accountType.getValueOr("0");
+                entry.details.sequence = sequence.getValueOr("0");
                 entry.details.accountNumber = accountNumber.getValueOr("0");
                 if (balances.nonEmpty()) {
                     soci::stringToCoins(balances.getValue(), entry.details.balances);

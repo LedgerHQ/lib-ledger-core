@@ -84,7 +84,20 @@ namespace ledger {
                 }
 
                 std::shared_ptr<api::CosmosLikeAccount> CosmosLikeAccount::asCosmosLikeAccount() {
-                        return std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
+                        auto account = std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
+                        account->updateFromDb();
+                        return account;
+                }
+
+                void CosmosLikeAccount::updateFromDb()
+                {
+                    soci::session sql(this->getWallet()->getDatabase()->getPool());
+                    CosmosLikeAccountDatabaseEntry dbAccount;
+                    bool existingAccount = CosmosLikeAccountDatabaseHelper::queryAccount(
+                        sql, getAccountUid(), dbAccount);
+                    if (existingAccount) {
+                        *_accountData = dbAccount.details;
+                    }
                 }
 
                 static void computeAndSetTypeAmount(
