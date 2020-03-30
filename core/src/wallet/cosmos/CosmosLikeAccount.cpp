@@ -610,7 +610,7 @@ namespace ledger {
                                     tx->setGas(request.gas);
                                     return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                                 }
-                                return self->_explorer->getEstimatedGasLimit(tx)
+                                return self->_explorer->getEstimatedGasLimit(tx, request.gasAdjustment)
                                     .mapPtr<api::CosmosLikeTransaction>(
                                         self->getContext(),
                                         [tx](const std::shared_ptr<BigInt> &estimateValue) {
