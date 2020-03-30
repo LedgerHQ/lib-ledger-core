@@ -1,5 +1,5 @@
-- Proof of Concept: `0000-template`.
-- State: `draft`.
+- RFC name: `0000-template`.
+- Status: `draft`.
 - Author: [Your Name Here]()
 - Date Created: 2019/08/30
 - Date Updated: 2019/08/30

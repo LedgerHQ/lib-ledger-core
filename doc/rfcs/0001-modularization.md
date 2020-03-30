@@ -1,5 +1,5 @@
-- Proof of Concept: `0001-modularization`.
-- State: `draft`.
+- RFC name: `0001-modularization`.
+- Status: `implemented`.
 - Date Created: 2019/08/30
 - Date Updated: 2019/08/30
 - Author: [Dimitri Sabadie](https://github.com/phaazon)
@@ -9,21 +9,21 @@
 <!-- vim-markdown-toc GFM -->
 
 * [Motivation](#motivation)
-  * [TL;DR](#tldr)
+    * [TL;DR](#tldr)
 * [Content](#content)
-  * [Main and overall idea](#main-and-overall-idea)
-  * [Adding a new coin project](#adding-a-new-coin-project)
-  * [IDLs](#idls)
-  * [The database](#the-database)
-  * [The operation, transactions, blocks, etc.](#the-operation-transactions-blocks-etc)
-  * [The Services type](#the-services-type)
-  * [The AbstractAccount (revisited) type](#the-abstractaccount-revisited-type)
-  * [Implementing RippleLikeAccount](#implementing-ripplelikeaccount)
-  * [Reversing analysis from bottom-up to top-down](#reversing-analysis-from-bottom-up-to-top-down)
+    * [Main and overall idea](#main-and-overall-idea)
+    * [Adding a new coin project](#adding-a-new-coin-project)
+    * [IDLs](#idls)
+    * [The database](#the-database)
+    * [The operation, transactions, blocks, etc.](#the-operation-transactions-blocks-etc)
+    * [The Services type](#the-services-type)
+    * [The AbstractAccount (revisited) type](#the-abstractaccount-revisited-type)
+    * [Implementing RippleLikeAccount](#implementing-ripplelikeaccount)
+    * [Reversing analysis from bottom-up to top-down](#reversing-analysis-from-bottom-up-to-top-down)
 * [Rationale](#rationale)
 * [Related work](#related-work)
-  * [djinni modification](#djinni-modification)
-  * [Ubinder](#ubinder)
+    * [djinni modification](#djinni-modification)
+    * [Ubinder](#ubinder)
 
 <!-- vim-markdown-toc -->
 
