@@ -451,6 +451,11 @@ namespace ledger {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setGasAdjustment(double gasAdjusment) {
+            _request.gasAdjustment = gasAdjusment;
+            return shared_from_this();
+        }
+
         std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeTransactionBuilder::setFee(const std::shared_ptr<api::Amount> & fee) {
             _request.fee = std::make_shared<BigInt>(fee->toString());
             return shared_from_this();

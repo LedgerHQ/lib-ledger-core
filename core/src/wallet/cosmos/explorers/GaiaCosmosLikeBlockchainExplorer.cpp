@@ -642,11 +642,15 @@ namespace ledger {
 
         void makeBaseReq(const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
                          const std::shared_ptr<api::CosmosLikeMessage>& message,
+                         double gasAdjustment,
                          rapidjson::Value& value,
                          rapidjson::Document::AllocatorType& allocator)
         {
             const auto tx = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(transaction);
             const auto msg = std::dynamic_pointer_cast<CosmosLikeMessage>(message);
+            std::string gasAdjust = std::to_string(gasAdjustment);
+            // Ensure that to_string result uses '.' as separator
+            std::replace(gasAdjust.begin(), gasAdjust.end(), ',', '.');
             const auto baseReq = BaseReq(
                     msg->getFromAddress(),
                     tx->getMemo(),
@@ -654,7 +658,7 @@ namespace ledger {
                     tx->getAccountNumber(),
                     tx->getAccountSequence(),
                     tx->getTxData().fee.gas.toString(),
-                    std::string("1"),
+                    gasAdjust,
                     tx->getTxData().fee,
                     true);
 
@@ -712,17 +716,17 @@ namespace ledger {
                     });
         }
 
-        Future<BigInt>
-        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForTransfer(
-                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
-                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        Future<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForTransfer(
+            const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+            const std::shared_ptr<api::CosmosLikeMessage> &message,
+            double gasAdjustment) const
         {
             auto document = rapidjson::Document();
             document.SetObject();
             auto& allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
-            makeBaseReq(transaction, message, baseReqValue, allocator);
+            makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
             auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgSend(message);
@@ -738,17 +742,17 @@ namespace ledger {
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
 
-        Future<BigInt>
-        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForRewards(
-                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
-                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        Future<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForRewards(
+            const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+            const std::shared_ptr<api::CosmosLikeMessage> &message,
+            double gasAdjustment) const
         {
             auto document = rapidjson::Document();
             document.SetObject();
             auto& allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
-            makeBaseReq(transaction, message, baseReqValue, allocator);
+            makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
             auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgWithdrawDelegatorReward(message);
@@ -760,17 +764,17 @@ namespace ledger {
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
 
-        Future<BigInt>
-        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForDelegations(
-                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
-                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        Future<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForDelegations(
+            const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+            const std::shared_ptr<api::CosmosLikeMessage> &message,
+            double gasAdjustment) const
         {
             auto document = rapidjson::Document();
             document.SetObject();
             auto& allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
-            makeBaseReq(transaction, message, baseReqValue, allocator);
+            makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
             auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgDelegate(message);
@@ -795,17 +799,17 @@ namespace ledger {
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
 
-        Future<BigInt>
-        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForUnbounding(
-                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
-                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        Future<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForUnbounding(
+            const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+            const std::shared_ptr<api::CosmosLikeMessage> &message,
+            double gasAdjustment) const
         {
             auto document = rapidjson::Document();
             document.SetObject();
             auto& allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
-            makeBaseReq(transaction, message, baseReqValue, allocator);
+            makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
             auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgUndelegate(message);
@@ -830,17 +834,17 @@ namespace ledger {
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
 
-        Future<BigInt>
-        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForRedelegations(
-                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
-                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        Future<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimitForRedelegations(
+            const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+            const std::shared_ptr<api::CosmosLikeMessage> &message,
+            double gasAdjustment) const
         {
             auto document = rapidjson::Document();
             document.SetObject();
             auto& allocator = document.GetAllocator();
 
             auto baseReqValue = rapidjson::Value(rapidjson::kObjectType);
-            makeBaseReq(transaction, message, baseReqValue, allocator);
+            makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
             auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgBeginRedelegate(message);
@@ -875,22 +879,22 @@ namespace ledger {
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
 
-        Future<BigInt>
-        GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
-                const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
-                const std::shared_ptr<api::CosmosLikeMessage>& message) const
+        Future<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+            const std::shared_ptr<api::CosmosLikeMessage> &message,
+            double gasAdjustment) const
         {
             switch (message->getMessageType()) {
                 case api::CosmosLikeMsgType::MSGSEND:
-                    return getEstimatedGasLimitForTransfer(transaction, message);
+                    return getEstimatedGasLimitForTransfer(transaction, message, gasAdjustment);
                 case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
-                    return getEstimatedGasLimitForRewards(transaction, message);
+                    return getEstimatedGasLimitForRewards(transaction, message, gasAdjustment);
                 case api::CosmosLikeMsgType::MSGDELEGATE:
-                    return getEstimatedGasLimitForDelegations(transaction, message);
+                    return getEstimatedGasLimitForDelegations(transaction, message, gasAdjustment);
                 case api::CosmosLikeMsgType::MSGUNDELEGATE:
-                    return getEstimatedGasLimitForUnbounding(transaction, message);
+                    return getEstimatedGasLimitForUnbounding(transaction, message, gasAdjustment);
                 case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
-                    return getEstimatedGasLimitForRedelegations(transaction, message);
+                    return getEstimatedGasLimitForRedelegations(transaction, message, gasAdjustment);
                 default:
                     return Future<BigInt>(nullptr)
                         .map<BigInt>(getContext(), [](BigInt) {
@@ -901,14 +905,15 @@ namespace ledger {
 
         FuturePtr<BigInt>
         GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
-                const std::shared_ptr<api::CosmosLikeTransaction>& transaction) const
+            const std::shared_ptr<api::CosmosLikeTransaction>& transaction,
+            double gasAdjustment) const
         {
             const auto& messages = transaction->getMessages();
             auto estimations = std::vector<Future<BigInt>>();
             std::transform(std::begin(messages), std::end(messages),
                     std::back_inserter(estimations),
                     [&](const std::shared_ptr<api::CosmosLikeMessage>& message) {
-                        return getEstimatedGasLimit(transaction, message);
+                        return getEstimatedGasLimit(transaction, message, gasAdjustment);
                     });
 
             /// Because of limitations in the REST API, we cannot estimate

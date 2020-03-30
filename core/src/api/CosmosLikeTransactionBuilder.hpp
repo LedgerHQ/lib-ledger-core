@@ -57,6 +57,12 @@ public:
     virtual std::shared_ptr<CosmosLikeTransactionBuilder> setGas(const std::shared_ptr<Amount> & gas) = 0;
 
     /**
+     * Set gas Adjusment factor when estimating gas
+     * @param gasAdjustment The (multiplicative) factor for gas evaluation
+     */
+    virtual std::shared_ptr<CosmosLikeTransactionBuilder> setGasAdjustment(double gasAdjustment) = 0;
+
+    /**
      * Set fee
      * Here the fee represents the gas price multiplied by the gas used
      * @param fee The fee to set

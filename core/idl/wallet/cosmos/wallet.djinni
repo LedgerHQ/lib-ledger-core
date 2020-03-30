@@ -78,6 +78,10 @@ CosmosLikeTransactionBuilder = interface +c {
         # @param gas The gas to set
         setGas(gas: Amount): CosmosLikeTransactionBuilder;
 
+        # Set gas Adjusment factor when estimating gas
+        # @param gasAdjustment The (multiplicative) factor for gas evaluation
+        setGasAdjustment(gasAdjustment: f64): CosmosLikeTransactionBuilder;
+
         # Set fee
         # Here the fee represents the gas price multiplied by the gas used
         # @param fee The fee to set

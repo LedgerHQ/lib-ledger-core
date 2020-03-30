@@ -74,6 +74,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1setGasAdjustment(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jdouble j_gasAdjustment)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setGasAdjustment(::djinni::F64::toCpp(jniEnv, j_gasAdjustment));
+        return ::djinni::release(::djinni_generated::CosmosLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransactionBuilder_00024CppProxy_native_1setFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_fee)
 {
     try {
