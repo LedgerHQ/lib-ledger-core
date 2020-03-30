@@ -595,19 +595,29 @@ namespace ledger {
 
                 std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTransaction(const std::string &senderAddress) {
                         auto self = std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
-                        auto buildFunction = [self](const CosmosLikeTransactionBuildRequest &request) {
+                        auto buildFunction =
+                            [self](const CosmosLikeTransactionBuildRequest &request) {
                                 auto currency = self->getWallet()->getCurrency();
                                 auto tx = std::make_shared<CosmosLikeTransactionApi>();
                                 tx->setAccountNumber(self->_accountData->accountNumber);
                                 tx->setCurrency(self->getWallet()->getCurrency());
                                 tx->setFee(request.fee);
-                                tx->setGas(request.gas);
                                 tx->setMemo(request.memo);
                                 tx->setMessages(request.messages);
                                 tx->setSequence(request.sequence.empty() ? std::to_string(std::stoi(self->_accountData->sequence) + 1) : request.sequence);
                                 tx->setSigningPubKey(self->getKeychain()->getPublicKey());
-                                return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
-                        };
+                                if (request.gas && !(request.gas->isZero())) {
+                                    tx->setGas(request.gas);
+                                    return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
+                                }
+                                return self->_explorer->getEstimatedGasLimit(tx)
+                                    .mapPtr<api::CosmosLikeTransaction>(
+                                        self->getContext(),
+                                        [tx](const std::shared_ptr<BigInt> &estimateValue) {
+                                            tx->setGas(estimateValue);
+                                            return tx;
+                                        });
+                            };
 
                         return std::make_shared<CosmosLikeTransactionBuilder>(getContext(), buildFunction);
                 }
