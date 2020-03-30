@@ -121,8 +121,9 @@ namespace ledger {
                                 void getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction, const std::shared_ptr<api::BigIntCallback> &callback) override;
 
                                 // Account related data
-                                std::string getSequence() override;
-                                std::string getAccountNumber() override;
+                                void getSequence(const std::shared_ptr<api::StringCallback>& callback) override;
+                                void getAccountNumber(const std::shared_ptr<api::StringCallback>& callback) override;
+                                cosmos::Account getInfo() const;
 
                                 // Balances
                                 FuturePtr<Amount> getTotalBalance() const;
@@ -153,6 +154,7 @@ namespace ledger {
 
                         private:
                                 std::shared_ptr<CosmosLikeAccount> getSelf();
+                                void updateFromDb();
 
                                 std::shared_ptr<cosmos::Account> _accountData;
                                 std::shared_ptr<CosmosLikeKeychain> _keychain;

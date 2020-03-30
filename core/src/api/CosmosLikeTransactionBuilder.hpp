@@ -39,6 +39,12 @@ public:
     virtual std::shared_ptr<CosmosLikeTransactionBuilder> setSequence(const std::string & sequence) = 0;
 
     /**
+     * Set accountNumber
+     * @param accountNumber The accountNumber to set
+     */
+    virtual std::shared_ptr<CosmosLikeTransactionBuilder> setAccountNumber(const std::string & accountNumber) = 0;
+
+    /**
      * Add a new message in the internal range of messages
      * @param msg a new message
      */

@@ -66,6 +66,10 @@ CosmosLikeTransactionBuilder = interface +c {
         # @param sequence The sequence to set
         setSequence(sequence: string): CosmosLikeTransactionBuilder;
 
+        # Set accountNumber
+        # @param accountNumber The accountNumber to set
+        setAccountNumber(accountNumber: string): CosmosLikeTransactionBuilder;
+
         # Add a new message in the internal range of messages
         # @param msg a new message
         addMessage(msg: CosmosLikeMessage): CosmosLikeTransactionBuilder;
@@ -120,11 +124,11 @@ CosmosLikeAccount = interface +c {
 
         # Get the current account sequence (synchronize to get latest value)
         # string like "14"
-        getSequence(): string;
+        getSequence(callback: Callback<string>);
 
         # Get the account number
         # String like "15"
-        getAccountNumber(): string;
+        getAccountNumber(callback: Callback<string>);
 }
 
 #Class representing a Cosmos delegation

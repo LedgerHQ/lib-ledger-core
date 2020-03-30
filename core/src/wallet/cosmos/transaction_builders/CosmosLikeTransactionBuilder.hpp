@@ -49,6 +49,7 @@ namespace ledger {
         struct CosmosLikeTransactionBuildRequest {
             std::shared_ptr<BigInt> fee;
             std::shared_ptr<BigInt> gas;
+            std::string accountNumber;
             std::string memo;
             std::string sequence;
             std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
@@ -70,6 +71,8 @@ namespace ledger {
             std::shared_ptr<api::CosmosLikeTransactionBuilder> setMemo(const std::string & memo) override;
 
             std::shared_ptr<api::CosmosLikeTransactionBuilder> setSequence(const std::string & sequence) override;
+
+            std::shared_ptr<api::CosmosLikeTransactionBuilder> setAccountNumber(const std::string & accountNumber) override;
 
             std::shared_ptr<api::CosmosLikeTransactionBuilder> addMessage(const std::shared_ptr<api::CosmosLikeMessage> & msg) override;
 

@@ -35,6 +35,7 @@
 
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <api/BigIntCallback.hpp>
+#include <api/StringCallback.hpp>
 #include <api/CosmosLikeAddress.hpp>
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
@@ -83,7 +84,20 @@ namespace ledger {
                 }
 
                 std::shared_ptr<api::CosmosLikeAccount> CosmosLikeAccount::asCosmosLikeAccount() {
-                        return std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
+                        auto account = std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
+                        account->updateFromDb();
+                        return account;
+                }
+
+                void CosmosLikeAccount::updateFromDb()
+                {
+                    soci::session sql(this->getWallet()->getDatabase()->getPool());
+                    CosmosLikeAccountDatabaseEntry dbAccount;
+                    bool existingAccount = CosmosLikeAccountDatabaseHelper::queryAccount(
+                        sql, getAccountUid(), dbAccount);
+                    if (existingAccount) {
+                        *_accountData = dbAccount.details;
+                    }
                 }
 
                 static void computeAndSetTypeAmount(
@@ -501,6 +515,16 @@ namespace ledger {
                                     if (accountData.isSuccess()) {
                                         self->_accountData = accountData.getValue();
                                         self->_accountData->address = savedAddress;
+                                        const CosmosLikeAccountDatabaseEntry update = {
+                                            0,  // unused in
+                                                 // CosmosLikeAccountDatabaseHelper::updateAccount
+                                             savedAddress,
+                                             *(self->_accountData),
+                                             std::chrono::system_clock::now()};
+                                        soci::session sql(
+                                            self->getWallet()->getDatabase()->getPool());
+                                        CosmosLikeAccountDatabaseHelper::updateAccount(
+                                            sql, self->getAccountUid(), update);
                                     }
                                 });
 
@@ -574,13 +598,13 @@ namespace ledger {
                         auto buildFunction = [self](const CosmosLikeTransactionBuildRequest &request) {
                                 auto currency = self->getWallet()->getCurrency();
                                 auto tx = std::make_shared<CosmosLikeTransactionApi>();
-                                tx->setAccountNumber(self->getAccountNumber());
+                                tx->setAccountNumber(self->_accountData->accountNumber);
                                 tx->setCurrency(self->getWallet()->getCurrency());
                                 tx->setFee(request.fee);
                                 tx->setGas(request.gas);
                                 tx->setMemo(request.memo);
                                 tx->setMessages(request.messages);
-                                tx->setSequence(request.sequence.empty() ? self->getSequence() : request.sequence);
+                                tx->setSequence(request.sequence.empty() ? std::to_string(std::stoi(self->_accountData->sequence) + 1) : request.sequence);
                                 tx->setSigningPubKey(self->getKeychain()->getPublicKey());
                                 return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
                         };
@@ -588,22 +612,26 @@ namespace ledger {
                         return std::make_shared<CosmosLikeTransactionBuilder>(getContext(), buildFunction);
                 }
 
-                std::string CosmosLikeAccount::getSequence()
+                void CosmosLikeAccount::getSequence(const std::shared_ptr<api::StringCallback>& callback)
                 {
                     if (!_accountData) {
                         throw make_exception(
                             api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
                     }
-                    return _accountData->sequence;
+                    return Future<std::string>::successful(_accountData->sequence).callback(getContext(), callback);
                 }
 
-                std::string CosmosLikeAccount::getAccountNumber()
+                void CosmosLikeAccount::getAccountNumber(const std::shared_ptr<api::StringCallback>& callback)
                 {
                     if (!_accountData) {
                         throw make_exception(
                             api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
                     }
-                    return _accountData->accountNumber;
+                    return Future<std::string>::successful(_accountData->accountNumber).callback(getContext(), callback);
+                }
+
+                cosmos::Account CosmosLikeAccount::getInfo() const {
+                        return cosmos::Account(*_accountData);
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getTotalBalance() const {

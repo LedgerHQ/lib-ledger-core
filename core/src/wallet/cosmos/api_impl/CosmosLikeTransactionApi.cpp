@@ -345,7 +345,7 @@ namespace ledger {
 
             // Set mode
             // TODO What mode do we want? (sync|async|block)
-            vString.SetString("async", static_cast<SizeType>(5), allocator);
+            vString.SetString("block", static_cast<SizeType>(5), allocator);
             document.AddMember(kMode, vString, allocator);
 
             StringBuffer buffer;
