@@ -97,6 +97,11 @@ else()
     include(StaticAnalyzers)
     set_enabled_static_analyzers(ledger-core-tezos-obj)
 
+    # set compiler warnings
+    include(CompilerWarnings)
+    toggle_compiler_warnings(ledger-core-tezos-obj)
+    disable_compiler_warnings(ledger-core-tezos-api-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-tezos SHARED)
     target_link_libraries(ledger-core-tezos PUBLIC ledger-core-tezos-obj ledger-core-tezos-api-obj)

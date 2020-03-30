@@ -96,6 +96,11 @@ else()
     include(StaticAnalyzers)
     set_enabled_static_analyzers(ledger-core-ethereum-obj)
 
+    # set compiler warnings
+    include(CompilerWarnings)
+    toggle_compiler_warnings(ledger-core-ethereum-obj)
+    disable_compiler_warnings(ledger-core-ethereum-api-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-ethereum SHARED)
     target_link_libraries(ledger-core-ethereum PUBLIC ledger-core-ethereum-obj ledger-core-ethereum-api-obj)

@@ -96,6 +96,11 @@ else()
     include(StaticAnalyzers)
     set_enabled_static_analyzers(ledger-core-bitcoin-obj)
 
+    # set compiler warnings
+    include(CompilerWarnings)
+    toggle_compiler_warnings(ledger-core-bitcoin-obj)
+    disable_compiler_warnings(ledger-core-bitcoin-api-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-bitcoin SHARED)
     target_link_libraries(ledger-core-bitcoin PUBLIC ledger-core-bitcoin-obj ledger-core-bitcoin-api-obj)

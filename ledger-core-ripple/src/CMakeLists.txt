@@ -96,6 +96,11 @@ else()
     include(StaticAnalyzers)
     set_enabled_static_analyzers(ledger-core-ripple-obj)
 
+    # set compiler warnings
+    include(CompilerWarnings)
+    toggle_compiler_warnings(ledger-core-ripple-obj)
+    disable_compiler_warnings(ledger-core-ripple-api-obj)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core-ripple SHARED)
     target_link_libraries(ledger-core-ripple PUBLIC ledger-core-ripple-obj ledger-core-ripple-api-obj)
