@@ -98,7 +98,7 @@ else()
 
     # enable static analyzers if requested
     include(StaticAnalyzers)
-    set_enabled_static_analyzers(ledger-core-obj)
+    toggle_static_analyzers(ledger-core-obj)
 
     # set compiler warnings
     include(CompilerWarnings)

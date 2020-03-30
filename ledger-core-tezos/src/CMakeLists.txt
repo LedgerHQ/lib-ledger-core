@@ -95,7 +95,7 @@ else()
 
     # Enable static analyzers if requested
     include(StaticAnalyzers)
-    set_enabled_static_analyzers(ledger-core-tezos-obj)
+    toggle_static_analyzers(ledger-core-tezos-obj)
 
     # set compiler warnings
     include(CompilerWarnings)
