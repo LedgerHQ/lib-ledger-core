@@ -5,12 +5,13 @@ set(ANDROID_CPP_FEATURES exceptions)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(ledger-core 0.1.0 REQUIRED)
-
+if(NOT TARGET Core::ledger-core)
+    find_package(ledger-core 0.1.0 REQUIRED)
+endif()
 # Automatically add API files to the library
 file(
     GLOB ledger-core-bitcoin-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/bitcoin/api/*"
+    "${PROJECT_SOURCE_DIR}/inc/bitcoin/api/*"
 )
 list(APPEND ledger-core-bitcoin-sources ${ledger-core-bitcoin-api-sources})
 
@@ -126,7 +127,7 @@ if (TARGET_JNI)
     target_link_libraries(ledger-core-bitcoin-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
 
-target_include_directories(ledger-core-bitcoin-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
-target_include_directories(ledger-core-bitcoin-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/bitcoin/api)
+target_include_directories(ledger-core-bitcoin-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc)
+target_include_directories(ledger-core-bitcoin-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc/bitcoin/api)
 
 install(TARGETS ledger-core-bitcoin DESTINATION lib)

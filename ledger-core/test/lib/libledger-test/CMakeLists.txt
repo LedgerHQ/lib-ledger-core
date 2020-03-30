@@ -20,6 +20,8 @@ add_library(ledger-test STATIC
     FakeHttpClient.cpp FakeUrlConnection.hpp FakeUrlConnection.cpp
 )
 
+add_library(Core::ledger-test ALIAS ledger-test)
+
 target_include_directories(
     ledger-test INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/ledger-test>

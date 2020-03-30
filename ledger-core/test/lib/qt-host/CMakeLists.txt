@@ -16,6 +16,8 @@ add_library(ledger-qt-host STATIC
     utils/FilesystemUtils.hpp net/QtWebSocketClient.cpp net/QtWebSocketClient.hpp
 )
 
+add_library(Core::ledger-qt-host ALIAS ledger-qt-host)
+
 target_include_directories(
     ledger-qt-host INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/ledger-test-qt>

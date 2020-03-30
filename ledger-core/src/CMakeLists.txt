@@ -8,7 +8,7 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # Automatically add API files to the library
 file(
     GLOB ledger-core-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/core/api/*"
+    "${PROJECT_SOURCE_DIR}/inc/core/api/*.cpp"
 )
 list(APPEND ledger-core-sources ${ledger-core-api-sources})
 
@@ -118,7 +118,11 @@ else()
 
     add_library(ledger-core-static STATIC)
     target_link_libraries(ledger-core-static PUBLIC ledger-core-obj ledger-core-api-obj)
+
+    add_library(Core::ledger-core-static ALIAS ledger-core-static)
 endif()
+
+add_library(Core::ledger-core ALIAS ledger-core)
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
     target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
@@ -164,7 +168,7 @@ include(GNUInstallDirs)
 
 target_link_libraries(
     ledger-core-interface INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}>
     $<INSTALL_INTERFACE:${CMAKE_INSTALL_FULL_LIBDIR}/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}>
 )
 
@@ -174,25 +178,25 @@ target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
 
 target_include_directories(
     ledger-core-interface SYSTEM INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/inc>                      $<INSTALL_INTERFACE:include/ledger-core>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/bigd>                 $<INSTALL_INTERFACE:include/ledger-core/lib/bigd>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/rapidjson/include>    $<INSTALL_INTERFACE:include/ledger-core/lib/rapidjson/include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci/core>            $<INSTALL_INTERFACE:include/ledger-core/lib/soci/core>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci_sqlite3>         $<INSTALL_INTERFACE:include/ledger-core/lib/soci_sqlite3>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/openssl/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/openssl/include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/blake>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/leveldb/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/leveldb/include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/boost>                $<INSTALL_INTERFACE:include/ledger-core/lib/boost>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/cereal>               $<INSTALL_INTERFACE:include/ledger-core/lib/cereal>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/date>                 $<INSTALL_INTERFACE:include/ledger-core/lib/date>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/secp256k1>            $<INSTALL_INTERFACE:include/ledger-core/lib/secp256k1>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/fmt/include>          $<INSTALL_INTERFACE:include/ledger-core/lib/fmt/include>
-    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/spdlog/include>       $<INSTALL_INTERFACE:include/ledger-core/lib/spdlog/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/inc>                      $<INSTALL_INTERFACE:include/ledger-core>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/bigd>                 $<INSTALL_INTERFACE:include/ledger-core/lib/bigd>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/rapidjson/include>    $<INSTALL_INTERFACE:include/ledger-core/lib/rapidjson/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/soci/core>            $<INSTALL_INTERFACE:include/ledger-core/lib/soci/core>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/soci_sqlite3>         $<INSTALL_INTERFACE:include/ledger-core/lib/soci_sqlite3>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/openssl/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/openssl/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/blake>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/leveldb/include>      $<INSTALL_INTERFACE:include/ledger-core/lib/leveldb/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/boost>                $<INSTALL_INTERFACE:include/ledger-core/lib/boost>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/cereal>               $<INSTALL_INTERFACE:include/ledger-core/lib/cereal>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/date>                 $<INSTALL_INTERFACE:include/ledger-core/lib/date>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/secp256k1>            $<INSTALL_INTERFACE:include/ledger-core/lib/secp256k1>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/ethash/src>           $<INSTALL_INTERFACE:include/ledger-core/lib/ethash/src>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/fmt/include>          $<INSTALL_INTERFACE:include/ledger-core/lib/fmt/include>
+    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/spdlog/include>       $<INSTALL_INTERFACE:include/ledger-core/lib/spdlog/include>
 
     # PG support
-    $<$<BOOL:${PG_SUPPORT}>:$<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/lib/soci_postgresql>>
+    $<$<BOOL:${PG_SUPPORT}>:$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/lib/soci_postgresql>>
 
     # Hack: work around to find the ledger-core API header files in dependent projects
     $<INSTALL_INTERFACE:include/ledger-core/core/api>

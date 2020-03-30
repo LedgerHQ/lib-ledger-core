@@ -5,12 +5,14 @@ set(ANDROID_CPP_FEATURES exceptions)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-find_package(ledger-core 0.1.0 REQUIRED)
+if(NOT TARGET Core::ledger-core)
+    find_package(ledger-core 0.1.0 REQUIRED)
+endif()
 
 # Automatically add API files to the library
 file(
     GLOB ledger-core-ethereum-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/ethereum/api/*"
+    "${PROJECT_SOURCE_DIR}/inc/ethereum/api/*"
 )
 list(APPEND ledger-core-ethereum-sources ${ledger-core-ethereum-api-sources})
 
@@ -126,7 +128,7 @@ if (TARGET_JNI)
     target_link_libraries(ledger-core-ethereum-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
 
-target_include_directories(ledger-core-ethereum-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
-target_include_directories(ledger-core-ethereum-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/ethereum/api)
+target_include_directories(ledger-core-ethereum-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc)
+target_include_directories(ledger-core-ethereum-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc/ethereum/api)
 
 install(TARGETS ledger-core-ethereum DESTINATION lib)
