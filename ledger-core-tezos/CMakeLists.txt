@@ -8,15 +8,8 @@ option(BUILD_TESTS "Indicates whether or not the toolchain must build the test o
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(UseBackportedModules)
 
-# The project version number.
-set(VERSION_MAJOR   0   CACHE STRING "Project major version number.")
-set(VERSION_MINOR   1   CACHE STRING "Project minor version number.")
-set(VERSION_PATCH   0   CACHE STRING "Project patch version number.")
-mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
-
-# C++ version and standard
-set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_CXX_STANDARD_REQUIRED ON)
+include(ProjectSettings)
+set_project_settings(0.1.0)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
 
