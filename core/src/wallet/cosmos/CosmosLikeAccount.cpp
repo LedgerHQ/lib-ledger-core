@@ -622,6 +622,30 @@ namespace ledger {
                         return std::make_shared<CosmosLikeTransactionBuilder>(getContext(), buildFunction);
                 }
 
+                void CosmosLikeAccount::estimateGas(
+                    const api::CosmosGasLimitRequest &request,
+                    const std::shared_ptr<api::BigIntCallback> &callback)
+                {
+                    auto tx = std::make_shared<CosmosLikeTransactionApi>();
+                    tx->setAccountNumber(_accountData->accountNumber);
+                    tx->setCurrency(getWallet()->getCurrency());
+                    tx->setMessages(request.messages);
+                    // Sequence needs to be set or explorer might return an error.
+                    // The value here doesn't matter at all.
+                    tx->setSequence("0");
+                    if (request.memo) {
+                        tx->setMemo(request.memo.value());
+                    }
+                    return _explorer->getEstimatedGasLimit(tx, request.amplifier.value_or(1.0))
+                        .mapPtr<api::BigInt>(
+                            getContext(),
+                            [](const std::shared_ptr<BigInt> &gasLimit)
+                                -> std::shared_ptr<api::BigInt> {
+                                return std::make_shared<api::BigIntImpl>(*gasLimit);
+                            })
+                        .callback(getContext(), callback);
+                }
+
                 void CosmosLikeAccount::getSequence(const std::shared_ptr<api::StringCallback>& callback)
                 {
                     if (!_accountData) {

@@ -25,6 +25,7 @@ class CosmosLikeTransactionBuilder;
 class CosmosLikeValidatorCallback;
 class CosmosLikeValidatorListCallback;
 class StringCallback;
+struct CosmosGasLimitRequest;
 
 /**Class representing a Cosmos account */
 class LIBCORE_EXPORT CosmosLikeAccount {
@@ -39,6 +40,14 @@ public:
 
     /** Get estimated gas limit to set so the transaction will succeed */
     virtual void getEstimatedGasLimit(const std::shared_ptr<CosmosLikeTransaction> & transaction, const std::shared_ptr<BigIntCallback> & callback) = 0;
+
+    /**
+     * Ask the account to estimate the gas for a building transaction
+     * This function uses the underlying infrastructure to simulate the gas
+     * needed for the transaction as requested until now.
+     * @param request is the CosmosGasLimitRequest for the specifics of the simulation
+     */
+    virtual void estimateGas(const CosmosGasLimitRequest & buildingTx, const std::shared_ptr<BigIntCallback> & callback) = 0;
 
     /** Get the latest active validator set */
     virtual void getLatestValidatorSet(const std::shared_ptr<CosmosLikeValidatorListCallback> & callback) = 0;
