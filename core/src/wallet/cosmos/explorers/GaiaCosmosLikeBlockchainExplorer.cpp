@@ -620,6 +620,9 @@ namespace ledger {
                 makeStringValue(gas_, buffer, allocator);
                 value.AddMember(cosmos::constants::kGas, buffer, allocator);
 
+                makeStringValue(gasAdjustment_, buffer, allocator);
+                value.AddMember(cosmos::constants::kGasAdjustment, buffer, allocator);
+
                 auto fees = rapidjson::Value(rapidjson::kArrayType);
                 makeAmountArray(fees_.amount, fees, allocator);
                 value.AddMember(cosmos::constants::kFees, fees, allocator);
