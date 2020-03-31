@@ -175,7 +175,36 @@ namespace ledger {
                                 Coin pendingReward;
                         };
 
+                        struct UnbondingEntry {
+                                std::uint32_t creationHeight;
+                                std::chrono::system_clock::time_point completionTime;
+                                BigInt initialBalance;
+                                BigInt balance;
+                        };
+
+                        struct Unbonding {
+                                std::string delegatorAddress;
+                                std::string validatorAddress;
+                                std::list<UnbondingEntry> entries;
+                        };
+
+                        struct RedelegationEntry {
+                                std::uint32_t creationHeight;
+                                std::chrono::system_clock::time_point completionTime;
+                                BigInt initialBalance;
+                                BigInt balance;
+                        };
+
+                        struct Redelegation {
+                                std::string delegatorAddress;
+                                std::string srcValidatorAddress;
+                                std::string dstValidatorAddress;
+                                std::list<RedelegationEntry> entries;
+                        };
+
                         // Small helpers to avoid very long types
+                        using UnbondingList = std::list<std::shared_ptr<Unbonding>>;
+                        using RedelegationList = std::list<std::shared_ptr<Redelegation>>;
                         using TransactionList = std::list<std::shared_ptr<Transaction>>;
                         using ValidatorList = std::vector<Validator>;
                         using MsgType = ::ledger::core::api::CosmosLikeMsgType;

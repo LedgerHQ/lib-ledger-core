@@ -6,9 +6,11 @@
 #include "BigIntCallback.hpp"
 #include "CosmosGasLimitRequest.hpp"
 #include "CosmosLikeDelegationListCallback.hpp"
+#include "CosmosLikeRedelegationListCallback.hpp"
 #include "CosmosLikeRewardListCallback.hpp"
 #include "CosmosLikeTransaction.hpp"
 #include "CosmosLikeTransactionBuilder.hpp"
+#include "CosmosLikeUnbondingListCallback.hpp"
 #include "CosmosLikeValidatorCallback.hpp"
 #include "CosmosLikeValidatorListCallback.hpp"
 #include "Marshal.hpp"
@@ -158,6 +160,24 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
         ref->getPendingRewards(::djinni_generated::CosmosLikeRewardListCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getUnbondings(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
+        ref->getUnbondings(::djinni_generated::CosmosLikeUnbondingListCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getRedelegations(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
+        ref->getRedelegations(::djinni_generated::CosmosLikeRedelegationListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

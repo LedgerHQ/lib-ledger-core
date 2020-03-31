@@ -508,6 +508,87 @@ namespace ledger {
                 out.slashTimestamps = optional<std::vector<std::chrono::system_clock::time_point>>();
             }
 
+            // TODO : parse unbonding (/staking/delegators/{address}/unbonding_delegations)
+            // into cosmos::Unbonding
+            // {
+            //   "height": "1347301",
+            //   "result": [
+            //     {
+            //       "delegator_address": "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl",
+            //       "validator_address": "cosmosvaloper1vf44d85es37hwl9f4h9gv0e064m0lla60j9luj",
+            //       "entries": [
+            //         {
+            //           "creation_height": "1346685",
+            //           "completion_time": "2020-04-21T12:28:37.550789506Z",
+            //           "initial_balance": "20000",
+            //           "balance": "20000"
+            //         }
+            //       ]
+            //     },
+            //     {
+            //       "delegator_address": "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl",
+            //       "validator_address": "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn",
+            //       "entries": [
+            //         {
+            //           "creation_height": "1177125",
+            //           "completion_time": "2020-04-07T10:39:59.296697797Z",
+            //           "initial_balance": "500",
+            //           "balance": "500"
+            //         }
+            //       ]
+            //     }
+            //   ]
+            // }
+            template <typename T>
+            void parseUnbondingEntry(const T& n, cosmos::UnbondingEntry &out) {
+            }
+
+            template <typename T>
+            void parseUnbonding(const T& n, cosmos::Unbonding &out) {
+            }
+
+            // TODO : parse redelegation (/staking/redelegations?delegator={address})
+            // into cosmos::Redelegation
+            // {
+            //   "height": "1347368",
+            //   "result": [
+            //     {
+            //       "delegator_address": "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl",
+            //       "validator_src_address": "cosmosvaloper1sjllsnramtg3ewxqwwrwjxfgc4n4ef9u2lcnj0",
+            //       "validator_dst_address": "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn",
+            //       "entries": [
+            //         {
+            //           "creation_height": 1107334,
+            //           "completion_time": "2020-04-01T15:46:03.941380099Z",
+            //           "initial_balance": "1850",
+            //           "shares_dst": "1850.000000000000000000",
+            //           "balance": "1850"
+            //         }
+            //       ]
+            //     },
+            //     {
+            //       "delegator_address": "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl",
+            //       "validator_src_address": "cosmosvaloper1ey69r37gfxvxg62sh4r0ktpuc46pzjrm873ae8",
+            //       "validator_dst_address": "cosmosvaloper1vf44d85es37hwl9f4h9gv0e064m0lla60j9luj",
+            //       "entries": [
+            //         {
+            //           "creation_height": 1178354,
+            //           "completion_time": "2020-04-07T13:08:44.940330001Z",
+            //           "initial_balance": "1000000",
+            //           "shares_dst": "1000000.000000000000000000",
+            //           "balance": "1000000"
+            //         }
+            //       ]
+            //     }
+            //   ]
+            // }
+            template <typename T>
+            void parseRedelegationEntry(const T& n, cosmos::RedelegationEntry &out) {
+            }
+
+            template <typename T>
+            void parseRedelegation(const T& n, cosmos::Redelegation &out) {
+            }
         }
     }
 }

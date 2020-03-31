@@ -304,6 +304,22 @@ namespace ledger {
                     .count());
         }
 
+        // Pending statuses
+        Future<cosmos::UnbondingList> GaiaCosmosLikeBlockchainExplorer::getUnbondingsByDelegator(
+            const std::string &delegatorAddress) const
+        {
+            throw make_exception(
+                api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Gaia[...]Explorer::getUnbondingsByDelegator");
+        }
+
+        Future<cosmos::RedelegationList>
+        GaiaCosmosLikeBlockchainExplorer::getRedelegationsByDelegator(
+            const std::string &delegatorAddress) const
+        {
+            throw make_exception(
+                api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Gaia[...]Explorer::getRedelegationsByDelegator");
+        }
+
         // Balances
         /// Get Total Balance
         FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getTotalBalance(
