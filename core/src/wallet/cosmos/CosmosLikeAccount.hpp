@@ -42,6 +42,7 @@
 #include <api/Event.hpp>
 #include <api/StringCallback.hpp>
 #include <api/AmountCallback.hpp>
+#include <api/CosmosGasLimitRequest.hpp>
 
 #include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
@@ -119,6 +120,9 @@ namespace ledger {
                                 std::shared_ptr<api::OperationQuery> queryOperations() override;
 
                                 void getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction, const std::shared_ptr<api::BigIntCallback> &callback) override;
+
+                                void estimateGas(const api::CosmosGasLimitRequest &request,
+                                                 const std::shared_ptr<api::BigIntCallback> &callback) override;
 
                                 // Account related data
                                 void getSequence(const std::shared_ptr<api::StringCallback>& callback) override;

@@ -104,7 +104,8 @@ namespace ledger {
             virtual Future<cosmos::ValidatorList> getActiveValidatorSet() const = 0;
             virtual Future<cosmos::Validator> getValidatorInfo(const std::string& valOperAddress) const = 0;
 
-            virtual FuturePtr<BigInt> getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction) const = 0;
+            virtual FuturePtr<BigInt> getEstimatedGasLimit(const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+                                                           double gasAdjustment = 1.0) const = 0;
         };
     }
 }

@@ -85,6 +85,7 @@ namespace ledger {
                                 constexpr const char kFrom[] = "from";
                                 constexpr const char kFromAddress[] = "from_address";
                                 constexpr const char kGas[] = "gas";
+                                constexpr const char kGasAdjustment[] = "gas_adjustment";
                                 constexpr const char kGasEstimate[] = "gas_estimate";
                                 constexpr const char kGasUsed[] = "gas_used";
                                 constexpr const char kHeight[] = "height";

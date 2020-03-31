@@ -78,6 +78,10 @@ CosmosLikeTransactionBuilder = interface +c {
         # @param gas The gas to set
         setGas(gas: Amount): CosmosLikeTransactionBuilder;
 
+        # Set gas Adjusment factor when estimating gas
+        # @param gasAdjustment The (multiplicative) factor for gas evaluation
+        setGasAdjustment(gasAdjustment: f64): CosmosLikeTransactionBuilder;
+
         # Set fee
         # Here the fee represents the gas price multiplied by the gas used
         # @param fee The fee to set
@@ -97,6 +101,20 @@ CosmosLikeTransactionBuilder = interface +c {
         static parseRawSignedTransaction(currency: Currency, rawTransaction: string): CosmosLikeTransaction;
 }
 
+# Class representing a GasLimit request for the Gaia node
+CosmosGasLimitRequest = record {
+    # Memo field of the contract transaction
+    memo: optional<string>;
+    # Messages to query gas for
+    messages: list<CosmosLikeMessage>;
+    # Amplifier coefficient for safety
+    # The transaction is more expensive usually because we send a smaller
+    # payload than usual to the simulation backend (and gas is also consumed
+    # per tx byte)
+    amplifier: optional<f64>;
+}
+
+
 #Class representing a Cosmos account
 CosmosLikeAccount = interface +c {
         broadcastRawTransaction(transaction: string, callback: callback2<optional<string>>);
@@ -104,6 +122,11 @@ CosmosLikeAccount = interface +c {
         buildTransaction(): CosmosLikeTransactionBuilder;
         # Get estimated gas limit to set so the transaction will succeed
         getEstimatedGasLimit(transaction: CosmosLikeTransaction, callback: callback2<optional<BigInt>>);
+        # Ask the account to estimate the gas for a building transaction
+        # This function uses the underlying infrastructure to simulate the gas
+        # needed for the transaction as requested until now.
+        # @param request is the CosmosGasLimitRequest for the specifics of the simulation
+        estimateGas(buildingTx: CosmosGasLimitRequest, callback: callback2<optional<BigInt>>);
         # Get the latest active validator set
         getLatestValidatorSet(callback: ListCallback<CosmosLikeValidator>);
         # Get information about one validator
