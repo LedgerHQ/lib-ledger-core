@@ -582,6 +582,7 @@ namespace ledger {
             //     }
             //   ]
             // }
+
             template <typename T>
             void parseRedelegationEntry(const T& n, cosmos::RedelegationEntry &out) {
             }

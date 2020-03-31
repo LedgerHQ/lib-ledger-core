@@ -706,6 +706,38 @@ TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForRedelegation) {
     GenericGasLimitEstimationTest(strTx, *this);
 }
 
+TEST_F(CosmosLikeWalletSynchronization, PendingUnbondings) {
+    std::string hexPubKey =
+        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(account, wallet, hexPubKey);
+
+    // First synchro
+    performSynchro(account);
+
+    auto unbondings = account->getUnbondings();
+    FAIL() << "Add tests for account.getUnbondings()";
+}
+
+TEST_F(CosmosLikeWalletSynchronization, PendingRedelegations) {
+    std::string hexPubKey =
+        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(account, wallet, hexPubKey);
+
+    // First synchro
+    performSynchro(account);
+
+    auto redelegations = account->getRedelegations();
+    FAIL() << "Add tests for account.getRedelegations()";
+}
+
 // FIXME This test fails ; put at the end because it also messes up the other tests
 // This test is also highly dependent on external state ( how well the chain is
 // doing). Until a better solution is found, this test is deactivated

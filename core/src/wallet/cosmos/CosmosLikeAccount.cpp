@@ -805,8 +805,15 @@ namespace ledger {
                                 );
                 }
 
+                Future<cosmos::UnbondingList> CosmosLikeAccount::getUnbondings() const {
+                        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getUnbondings");
+                }
                 void CosmosLikeAccount::getUnbondings(const std::shared_ptr<api::CosmosLikeUnbondingListCallback>& callback) {
                         throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getUnbondings");
+                }
+
+                Future<cosmos::RedelegationList> CosmosLikeAccount::getRedelegations() const {
+                        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getRedelegations");
                 }
                 void CosmosLikeAccount::getRedelegations(const std::shared_ptr<api::CosmosLikeRedelegationListCallback>& callback) {
                         throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getRedelegations");

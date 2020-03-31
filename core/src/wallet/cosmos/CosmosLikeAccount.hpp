@@ -159,7 +159,9 @@ namespace ledger {
                                 Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>> getPendingRewards();
 
                                 // "Pending" status info
+                                Future<cosmos::UnbondingList> getUnbondings() const;
                                 void getUnbondings(const std::shared_ptr<api::CosmosLikeUnbondingListCallback>& callback) override;
+                                Future<cosmos::RedelegationList> getRedelegations() const;
                                 void getRedelegations(const std::shared_ptr<api::CosmosLikeRedelegationListCallback>& callback) override;
 
                         private:

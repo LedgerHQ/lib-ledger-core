@@ -40,21 +40,21 @@ namespace ledger {
     namespace core {
 		static HashAlgorithm COSMOS_HASH_ALGO("cosmos");
 
-		CosmosLikeKeychain::CosmosLikeKeychain(const std::vector<uint8_t>& pubKey,
-											   const DerivationPath& path,
-											   const api::Currency& currency) {
-			_pubKey = pubKey;
-			std::vector<uint8_t> payload{0xEB, 0x5A, 0xE9, 0x87,
-										 (uint8_t)_pubKey.size()};
-			payload.insert(payload.end(), _pubKey.begin(),
-						   _pubKey.end());
-			auto hash160 = HASH160::hash(_pubKey, COSMOS_HASH_ALGO);
-			_address =
-				std::make_shared<CosmosLikeAddress>(
-													currency, hash160, std::vector<uint8_t>(),
-													api::CosmosBech32Type::ADDRESS,
-													optional<std::string>(path.toString()));
-		}
+	    CosmosLikeKeychain::CosmosLikeKeychain(const std::vector<uint8_t>& pubKey,
+						   const DerivationPath& path,
+						   const api::Currency& currency) {
+		    _pubKey = pubKey;
+		    std::vector<uint8_t> payload{0xEB, 0x5A, 0xE9, 0x87,
+		    (uint8_t)_pubKey.size()};
+		    payload.insert(payload.end(), _pubKey.begin(),
+				   _pubKey.end());
+		    auto hash160 = HASH160::hash(_pubKey, COSMOS_HASH_ALGO);
+		    _address =
+			    std::make_shared<CosmosLikeAddress>(
+				    currency, hash160, std::vector<uint8_t>(),
+				    api::CosmosBech32Type::ADDRESS,
+				    optional<std::string>(path.toString()));
+	    }
 
 		CosmosLikeKeychain::Address CosmosLikeKeychain::getAddress() const {
 			return _address;

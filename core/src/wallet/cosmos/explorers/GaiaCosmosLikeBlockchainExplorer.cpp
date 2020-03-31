@@ -308,6 +308,7 @@ namespace ledger {
         Future<cosmos::UnbondingList> GaiaCosmosLikeBlockchainExplorer::getUnbondingsByDelegator(
             const std::string &delegatorAddress) const
         {
+            // TODO : parse unbonding (/staking/delegators/{address}/unbonding_delegations)
             throw make_exception(
                 api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Gaia[...]Explorer::getUnbondingsByDelegator");
         }
@@ -316,6 +317,7 @@ namespace ledger {
         GaiaCosmosLikeBlockchainExplorer::getRedelegationsByDelegator(
             const std::string &delegatorAddress) const
         {
+            // TODO : parse redelegation (/staking/redelegations?delegator={address})
             throw make_exception(
                 api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Gaia[...]Explorer::getRedelegationsByDelegator");
         }
