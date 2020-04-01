@@ -20,6 +20,7 @@ add_executable(${COSMOS_TESTS_NAME}
   db_test.cpp
   transactions_test.cpp
   AccountTests.cpp
+  parsers_test.cpp
   ${ledger-core-fixtures-srcs}
   ../integration/BaseFixture.cpp
   ../integration/IntegrationEnvironment.cpp
