@@ -176,7 +176,7 @@ namespace ledger {
                         };
 
                         struct UnbondingEntry {
-                                std::uint32_t creationHeight;
+                                BigInt creationHeight;
                                 std::chrono::system_clock::time_point completionTime;
                                 BigInt initialBalance;
                                 BigInt balance;
@@ -189,7 +189,7 @@ namespace ledger {
                         };
 
                         struct RedelegationEntry {
-                                std::uint32_t creationHeight;
+                                BigInt creationHeight;
                                 std::chrono::system_clock::time_point completionTime;
                                 BigInt initialBalance;
                                 BigInt balance;
