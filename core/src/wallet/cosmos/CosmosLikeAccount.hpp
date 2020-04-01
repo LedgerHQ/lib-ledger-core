@@ -46,6 +46,8 @@
 #include <api/AmountCallback.hpp>
 #include <api/CosmosGasLimitRequest.hpp>
 
+#include <wallet/cosmos/api_impl/CosmosLikeUnbonding.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeRedelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeReward.hpp>
@@ -159,9 +161,9 @@ namespace ledger {
                                 Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>> getPendingRewards();
 
                                 // "Pending" status info
-                                Future<cosmos::UnbondingList> getUnbondings() const;
+                                Future<std::vector<std::shared_ptr<CosmosLikeUnbonding>>> getUnbondings() const;
                                 void getUnbondings(const std::shared_ptr<api::CosmosLikeUnbondingListCallback>& callback) override;
-                                Future<cosmos::RedelegationList> getRedelegations() const;
+                                Future<std::vector<std::shared_ptr<CosmosLikeRedelegation>>> getRedelegations() const;
                                 void getRedelegations(const std::shared_ptr<api::CosmosLikeRedelegationListCallback>& callback) override;
 
                         private:

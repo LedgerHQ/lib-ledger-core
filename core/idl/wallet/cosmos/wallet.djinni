@@ -181,7 +181,7 @@ CosmosLikeUnbonding = interface +c {
 
 CosmosLikeUnbondingEntry = interface +c {
     # Block height of the unbonding request
-    getCreationHeight(): i32;
+    getCreationHeight(): BigInt;
     # Timestamp of the unbonding completion
     getCompletionTime(): date;
     # Balance requested to unbond
@@ -200,7 +200,7 @@ CosmosLikeRedelegation = interface +c {
 
 CosmosLikeRedelegationEntry = interface +c {
     # Block height of the begin redelegate request
-    getCreationHeight(): i32;
+    getCreationHeight(): BigInt;
     # Timestamp of the redelegation completion
     getCompletionTime(): date;
     # Balance requested to redelegate

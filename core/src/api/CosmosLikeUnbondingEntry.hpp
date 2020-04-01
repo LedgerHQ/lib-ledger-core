@@ -5,7 +5,6 @@
 #define DJINNI_GENERATED_COSMOSLIKEUNBONDINGENTRY_HPP
 
 #include <chrono>
-#include <cstdint>
 #include <memory>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -24,7 +23,7 @@ public:
     virtual ~CosmosLikeUnbondingEntry() {}
 
     /** Block height of the unbonding request */
-    virtual int32_t getCreationHeight() = 0;
+    virtual std::shared_ptr<BigInt> getCreationHeight() = 0;
 
     /** Timestamp of the unbonding completion */
     virtual std::chrono::system_clock::time_point getCompletionTime() = 0;

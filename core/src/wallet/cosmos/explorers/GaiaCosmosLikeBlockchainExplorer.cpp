@@ -308,18 +308,74 @@ namespace ledger {
         Future<cosmos::UnbondingList> GaiaCosmosLikeBlockchainExplorer::getUnbondingsByDelegator(
             const std::string &delegatorAddress) const
         {
-            // TODO : parse unbonding (/staking/delegators/{address}/unbonding_delegations)
-            throw make_exception(
-                api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Gaia[...]Explorer::getUnbondingsByDelegator");
+            const auto endpoint = fmt::format(kGaiaUnbondingsEndpoint, delegatorAddress);
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = false;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .map<cosmos::UnbondingList>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> cosmos::UnbondingList {
+                        auto &json = *std::get<1>(result);
+                        if (!json.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
+                        const auto &unbonding_entries = json.GetObject()["result"].GetArray();
+
+                        cosmos::UnbondingList resultingList;
+                        std::transform(
+                            unbonding_entries.Begin(),
+                            unbonding_entries.End(),
+                            resultingList.begin(),
+                            [](const auto& unbonding) -> std::shared_ptr<cosmos::Unbonding> {
+                                cosmos::Unbonding parsedResult;
+                                rpcs_parsers::parseUnbonding(unbonding.GetObject(), parsedResult);
+                                return std::make_shared<cosmos::Unbonding>(std::move(parsedResult));
+                            });
+
+                        return resultingList;
+                    });
         }
 
         Future<cosmos::RedelegationList>
         GaiaCosmosLikeBlockchainExplorer::getRedelegationsByDelegator(
             const std::string &delegatorAddress) const
         {
-            // TODO : parse redelegation (/staking/redelegations?delegator={address})
-            throw make_exception(
-                api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Gaia[...]Explorer::getRedelegationsByDelegator");
+            const auto endpoint = fmt::format("{}?delegator={}", kGaiaQueryRedelegationsEndpoint, delegatorAddress);
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = false;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .map<cosmos::RedelegationList>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> cosmos::RedelegationList {
+                        auto &json = *std::get<1>(result);
+                        if (!json.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
+                        const auto &redelegation_entries = json.GetObject()["result"].GetArray();
+
+                        cosmos::RedelegationList resultingList;
+                        std::transform(
+                            redelegation_entries.Begin(),
+                            redelegation_entries.End(),
+                            resultingList.begin(),
+                            [](const auto& redelegation) -> std::shared_ptr<cosmos::Redelegation> {
+                                cosmos::Redelegation parsedResult;
+                                rpcs_parsers::parseRedelegation(redelegation.GetObject(), parsedResult);
+                                return std::make_shared<cosmos::Redelegation>(std::move(parsedResult));
+                            });
+
+                        return resultingList;
+                    });
         }
 
         // Balances

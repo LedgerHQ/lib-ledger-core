@@ -20,13 +20,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeRedelegationEntry_00024Cpp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jint JNICALL Java_co_ledger_core_CosmosLikeRedelegationEntry_00024CppProxy_native_1getCreationHeight(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeRedelegationEntry_00024CppProxy_native_1getCreationHeight(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeRedelegationEntry>(nativeRef);
         auto r = ref->getCreationHeight();
-        return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

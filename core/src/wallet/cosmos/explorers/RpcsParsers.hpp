@@ -544,6 +544,17 @@ namespace ledger {
             // }
             template <typename T>
             void parseUnbonding(const T& n, cosmos::Unbonding &out) {
+                assert((n.HasMember(kDelegatorAddress)));
+                assert((n.HasMember(kValidatorAddress)));
+                assert((n.HasMember("entries")));
+                out.entries = std::list<cosmos::UnbondingEntry>();
+                out.delegatorAddress = n[kDelegatorAddress].GetString();
+                out.validatorAddress = n[kValidatorAddress].GetString();
+                for (const auto& entry : n["entries"].GetArray()) {
+                    cosmos::UnbondingEntry parsedEntry;
+                    parseUnbondingEntry(entry.GetObject(), parsedEntry);
+                    out.entries.emplace_back(std::move(parsedEntry));
+                }
             }
 
             // Parse unbonding result from (/staking/delegators/{address}/unbonding_delegations)
@@ -569,6 +580,14 @@ namespace ledger {
             // }
             template <typename T>
             void parseUnbondingList(const T& n, cosmos::UnbondingList &out) {
+                assert((n.HasMember("result")));
+                out.clear();
+
+                for (const auto& unbonding : n["result"].GetArray()) {
+                    cosmos::Unbonding parsedUnbonding;
+                    parseUnbonding(unbonding.GetObject(), parsedUnbonding);
+                    out.emplace_back(std::make_shared<cosmos::Unbonding>(std::move(parsedUnbonding)));
+                }
             }
 
             // Parse redelegation (/staking/redelegations?delegator={address} || any other query filter)
@@ -582,6 +601,15 @@ namespace ledger {
             // }
             template <typename T>
             void parseRedelegationEntry(const T& n, cosmos::RedelegationEntry &out) {
+                assert((n.HasMember(kCreationHeight)));
+                assert((n.HasMember(kCompletionTime)));
+                assert((n.HasMember(kInitialBalance)));
+                assert((n.HasMember(kBalance)));
+
+                out.creationHeight = BigInt(n[kCreationHeight].GetInt());
+                out.completionTime = DateUtils::fromJSON(n[kCompletionTime].GetString());
+                out.initialBalance = BigInt::fromString(n[kInitialBalance].GetString());
+                out.balance = BigInt::fromString(n[kBalance].GetString());
             }
 
             // Parse redelegation (/staking/redelegations?delegator={address})
@@ -602,6 +630,19 @@ namespace ledger {
             // }
             template <typename T>
             void parseRedelegation(const T& n, cosmos::Redelegation &out) {
+                assert((n.HasMember(kDelegatorAddress)));
+                assert((n.HasMember(kValidatorSrcAddress)));
+                assert((n.HasMember(kValidatorDstAddress)));
+                assert((n.HasMember("entries")));
+                out.entries = std::list<cosmos::RedelegationEntry>();
+                out.delegatorAddress = n[kDelegatorAddress].GetString();
+                out.srcValidatorAddress = n[kValidatorSrcAddress].GetString();
+                out.dstValidatorAddress = n[kValidatorDstAddress].GetString();
+                for (const auto& entry : n["entries"].GetArray()) {
+                    cosmos::RedelegationEntry parsedEntry;
+                    parseRedelegationEntry(entry.GetObject(), parsedEntry);
+                    out.entries.emplace_back(std::move(parsedEntry));
+                }
             }
 
             // Parse redelegation (/staking/redelegations?delegator={address})
@@ -641,6 +682,14 @@ namespace ledger {
             // }
             template <typename T>
             void parseRedelegationList(const T& n, cosmos::RedelegationList &out) {
+                assert((n.HasMember("result")));
+                out.clear();
+
+                for (const auto& redelegation : n["result"].GetArray()) {
+                    cosmos::Redelegation parsedRedelegation;
+                    parseRedelegation(redelegation.GetObject(), parsedRedelegation);
+                    out.emplace_back(std::make_shared<cosmos::Redelegation>(std::move(parsedRedelegation)));
+                }
             }
         }
     }

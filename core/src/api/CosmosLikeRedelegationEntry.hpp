@@ -5,7 +5,6 @@
 #define DJINNI_GENERATED_COSMOSLIKEREDELEGATIONENTRY_HPP
 
 #include <chrono>
-#include <cstdint>
 #include <memory>
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
@@ -24,7 +23,7 @@ public:
     virtual ~CosmosLikeRedelegationEntry() {}
 
     /** Block height of the begin redelegate request */
-    virtual int32_t getCreationHeight() = 0;
+    virtual std::shared_ptr<BigInt> getCreationHeight() = 0;
 
     /** Timestamp of the redelegation completion */
     virtual std::chrono::system_clock::time_point getCompletionTime() = 0;

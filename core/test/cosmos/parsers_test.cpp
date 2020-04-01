@@ -76,8 +76,7 @@ TEST(CosmosGaiaParser, Unbonding)
             EXPECT_EQ(unbonding->entries.size(), 1);
             for (const auto &entry : unbonding->entries) {
                 EXPECT_EQ(entry.creationHeight.toString(), "1346685");
-                EXPECT_EQ(
-                    DateUtils::toJSON(entry.completionTime), "2020-04-21T12:28:37.550789506Z");
+                EXPECT_EQ(DateUtils::toJSON(entry.completionTime), "2020-04-21T12:28:37Z");
                 EXPECT_EQ(entry.initialBalance.toString(), "20000");
                 EXPECT_EQ(entry.balance.toString(), "20000");
             }
@@ -87,14 +86,12 @@ TEST(CosmosGaiaParser, Unbonding)
             EXPECT_EQ(unbonding->entries.size(), 2);
             for (const auto &entry : unbonding->entries) {
                 if (entry.creationHeight.toString() == val_b_height_a) {
-                    EXPECT_EQ(
-                        DateUtils::toJSON(entry.completionTime), "2020-04-07T10:39:59.296697797Z");
+                    EXPECT_EQ(DateUtils::toJSON(entry.completionTime), "2020-04-07T10:39:59Z");
                     EXPECT_EQ(entry.initialBalance.toString(), "500");
                     EXPECT_EQ(entry.balance.toString(), "500");
                 }
                 else if (entry.creationHeight.toString() == val_b_height_b) {
-                    EXPECT_EQ(
-                        DateUtils::toJSON(entry.completionTime), "2020-04-21T12:28:37.550789506Z");
+                    EXPECT_EQ(DateUtils::toJSON(entry.completionTime), "2020-04-21T12:28:37Z");
                     EXPECT_EQ(entry.initialBalance.toString(), "7000");
                     EXPECT_EQ(entry.balance.toString(), "6500");
                 }
@@ -185,8 +182,7 @@ TEST(CosmosGaiaParser, Redelegation)
             EXPECT_EQ(redelegation->entries.size(), 1);
             for (const auto &entry : redelegation->entries) {
                 EXPECT_EQ(entry.creationHeight.toString(), "1107334");
-                EXPECT_EQ(
-                    DateUtils::toJSON(entry.completionTime), "2020-04-01T15:46:03.941380099Z");
+                EXPECT_EQ(DateUtils::toJSON(entry.completionTime), "2020-04-01T15:46:03Z");
                 EXPECT_EQ(entry.initialBalance.toString(), "1850");
                 EXPECT_EQ(entry.balance.toString(), "1850");
             }
@@ -198,8 +194,7 @@ TEST(CosmosGaiaParser, Redelegation)
             EXPECT_EQ(redelegation->entries.size(), 1);
             for (const auto &entry : redelegation->entries) {
                 EXPECT_EQ(entry.creationHeight.toString(), "1178354");
-                EXPECT_EQ(
-                    DateUtils::toJSON(entry.completionTime), "2020-04-07T13:08:44.940330001Z");
+                EXPECT_EQ(DateUtils::toJSON(entry.completionTime), "2020-04-07T13:08:44Z");
                 EXPECT_EQ(entry.initialBalance.toString(), "1000000");
                 EXPECT_EQ(entry.balance.toString(), "1000000");
             }
