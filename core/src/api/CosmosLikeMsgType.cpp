@@ -23,6 +23,7 @@ std::string to_string(const CosmosLikeMsgType& cosmosLikeMsgType) {
         case CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD: return "MSGWITHDRAWDELEGATORREWARD";
         case CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION: return "MSGWITHDRAWVALIDATORCOMMISSION";
         case CosmosLikeMsgType::MSGUNJAIL: return "MSGUNJAIL";
+        case CosmosLikeMsgType::MSGFEES: return "MSGFEES";
         case CosmosLikeMsgType::UNSUPPORTED: return "UNSUPPORTED";
     };
 };
@@ -43,6 +44,7 @@ CosmosLikeMsgType from_string(const std::string& cosmosLikeMsgType) {
     else if (cosmosLikeMsgType == "MSGWITHDRAWDELEGATORREWARD") return CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD;
     else if (cosmosLikeMsgType == "MSGWITHDRAWVALIDATORCOMMISSION") return CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION;
     else if (cosmosLikeMsgType == "MSGUNJAIL") return CosmosLikeMsgType::MSGUNJAIL;
+    else if (cosmosLikeMsgType == "MSGFEES") return CosmosLikeMsgType::MSGFEES;
     else return CosmosLikeMsgType::UNSUPPORTED;
 };
 
@@ -64,6 +66,7 @@ std::ostream &operator<<(std::ostream &os, const CosmosLikeMsgType &o)
         case CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:  return os << "MSGWITHDRAWDELEGATORREWARD";
         case CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION:  return os << "MSGWITHDRAWVALIDATORCOMMISSION";
         case CosmosLikeMsgType::MSGUNJAIL:  return os << "MSGUNJAIL";
+        case CosmosLikeMsgType::MSGFEES:  return os << "MSGFEES";
         case CosmosLikeMsgType::UNSUPPORTED:  return os << "UNSUPPORTED";
     }
 }

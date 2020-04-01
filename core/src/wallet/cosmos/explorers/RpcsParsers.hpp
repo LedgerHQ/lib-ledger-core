@@ -33,6 +33,7 @@
 #define LEDGER_CORE_RPCS_PARSERS_HPP
 
 #include <cassert>
+#include <numeric>
 
 #include <rapidjson/document.h>
 
@@ -44,6 +45,9 @@
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/CosmosLikeMessage.hpp>
 #include <wallet/cosmos/cosmos.hpp>
+#include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
+
+#include <cereal/external/base64.hpp>
 
 #define COSMOS_PARSE_MSG_CONTENT(MsgType) if (out.type == "cosmos-sdk/"#MsgType) return parse##MsgType(contentNode, out.content);
 
@@ -413,6 +417,19 @@ namespace ledger {
                 COSMOS_PARSE_MSG_CONTENT(MsgUnjail)
             }
 
+            template <typename T>
+            void parseSignerPubKey(const T& node, std::string& pubkey) {
+                assert((node.HasMember(kSignatures) &&
+                        node[kSignatures].IsArray() &&
+                        !node[kSignatures].GetArray().Empty()));
+
+                const auto firstSignature = node[kSignatures].GetArray()[0].GetObject();
+                if (firstSignature.HasMember(kPubKey) && firstSignature[kPubKey].GetObject().HasMember(kValue)) {
+                    const auto pub = firstSignature[kPubKey].GetObject()[kValue].GetString();
+                    pubkey = pub;
+                }
+            }
+
             template <class T>
             void parseTransaction(const T& node,
                     cosmos::Transaction& transaction) {
@@ -461,8 +478,36 @@ namespace ledger {
                         index++;
                     }
                 }
+
                 assert((vNode.HasMember(kFee)));
                 parseFee(vNode[kFee].GetObject(), transaction.fee);
+
+                // TODO(remibarjon): create a function to post treat the transaction after it is parsed
+                // (in the function calling this function).
+                const auto index = transaction.messages.size();
+                auto msgFeesContent = cosmos::MsgFees();
+                auto pubKey = std::string();
+                parseSignerPubKey(vNode, pubKey);
+                const auto decoded = cereal::base64::decode(pubKey);
+                const auto vPubKey = std::vector<uint8_t>(std::begin(decoded), std::end(decoded));
+                msgFeesContent.payerAddress = CosmosLikeKeychain(vPubKey,
+                        DerivationPath(""), currencies::ATOM).getAddress()->toBech32();
+                const auto fees =
+                    std::accumulate(std::begin(transaction.fee.amount),
+                                    std::end(transaction.fee.amount),
+                                    BigInt::ZERO,
+                                    [](BigInt sum, const api::CosmosLikeAmount& amount) {
+                                        assert(amount.denom == "uatom");
+                                        return sum + BigInt::fromString(amount.amount);
+                                    }).toString();
+                msgFeesContent.fees = api::CosmosLikeAmount(fees, "uatom");
+                auto msgFees = cosmos::Message();
+                msgFees.type =  cosmos::constants::kMsgFees;
+                msgFees.content = msgFeesContent;
+                const auto msgFeesLog =
+                    cosmos::MessageLog{static_cast<int32_t>(index), true, ""};
+                transaction.logs.push_back(msgFeesLog);
+                transaction.messages.push_back(msgFees);
             }
 
             template <typename T>

@@ -212,6 +212,14 @@ namespace ledger {
                         }
                     }
                     break;
+                case api::CosmosLikeMsgType::MSGFEES:
+                    {
+                        msg.content = cosmos::MsgFees();
+                        auto& content = boost::get<cosmos::MsgFees>(msg.content);
+                        content.payerAddress = row.get<std::string>(COL_FROMADDR);
+                        soci::stringToCoin(row.get<std::string>(COL_AMOUNT), content.fees);
+                    }
+                    break;
                 case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
                 case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
                     {
@@ -522,6 +530,19 @@ namespace ledger {
                             });
                     }
                     break;
+                case api::CosmosLikeMsgType::MSGFEES:
+                    {
+                        const auto& m = boost::get<cosmos::MsgFees>(msg.content);
+                        const auto& fees = soci::coinToString(m.fees);
+                        sql << "INSERT INTO cosmos_messages (uid,"
+                               "transaction_uid, message_type, log,"
+                               "success, msg_index, from_address, amount) "
+                               "VALUES (:uid, :tuid, :mt, :log, :success, :mi, :fa, :amount)",
+                               soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
+                               soci::use(log.success ? 1 : 0), soci::use(log.messageIndex),
+                               soci::use(m.payerAddress), soci::use(fees);
+                    }
+                    break;
                 case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
                 case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
                 case api::CosmosLikeMsgType::UNSUPPORTED:
@@ -608,7 +629,7 @@ namespace ledger {
                 insertTransaction(sql, tx);
 
                 // Insert messages
-                for (auto index = 0 ; index < tx.messages.size() ; index++) {
+                for (auto index = 0; index < tx.messages.size(); index++) {
                     auto& msg = tx.messages[index];
                     auto& log = tx.logs[index];
 
@@ -616,6 +637,8 @@ namespace ledger {
 
                     insertMessage(sql, tx.uid, msg, log);
                 }
+                /// There is nothing to do to handle the internal fee message
+                /// as it is stored in the transaction.
             }
         }
 

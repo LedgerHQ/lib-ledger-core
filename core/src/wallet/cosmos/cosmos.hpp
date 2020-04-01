@@ -53,6 +53,7 @@
 #include <api/CosmosLikeValidator.hpp>
 
 #include <wallet/common/Block.h>
+#include <wallet/cosmos/CosmosLikeMsgFees.hpp>
 
 #include <math/BigInt.h>
 #include <utils/Option.hpp>
@@ -98,6 +99,7 @@ namespace ledger {
                         using MsgWithdrawValidatorCommission =
                             api::CosmosLikeMsgWithdrawValidatorCommission;
                         using MsgUnjail = api::CosmosLikeMsgUnjail;
+                        using MsgFees = internal::CosmosLikeMsgFees;
 
                         struct MsgUnsupported {};
 
@@ -117,6 +119,7 @@ namespace ledger {
                             MsgWithdrawDelegatorReward,
                             MsgWithdrawValidatorCommission,
                             MsgUnjail,
+                            MsgFees,
                             MsgUnsupported>;
 
                         struct Message {

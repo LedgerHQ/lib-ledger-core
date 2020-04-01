@@ -61,6 +61,7 @@ namespace ledger {
                                 constexpr const char kMsgWithdrawDelegatorReward[] = "cosmos-sdk/MsgWithdrawDelegatorReward";
                                 constexpr const char kMsgWithdrawValidatorCommission[] = "cosmos-sdk/MsgWithdrawValidatorCommission";
                                 constexpr const char kMsgUnjail[] = "cosmos-sdk/MsgUnjail";
+                                constexpr const char kMsgFees[] = "internal/MsgFees";
 
                                 constexpr const char kAccountNumber[] = "account_number";
                                 constexpr const char kAddress[] = "address";
@@ -354,6 +355,9 @@ namespace ledger {
                             }
                             if (strings_equal(string, constants::kMsgUnjail)) {
                                 return MsgType::MSGUNJAIL;
+                            }
+                            if (strings_equal(string, constants::kMsgFees)) {
+                                return MsgType::MSGFEES;
                             }
                             return MsgType::UNSUPPORTED;
                         }
