@@ -319,22 +319,17 @@ namespace ledger {
                     getContext(),
                     [endpoint](const HttpRequest::JsonResult &result) -> cosmos::UnbondingList {
                         auto &json = *std::get<1>(result);
+                        // This is just an additional safety check on the content
+                        // which will get parsed
                         if (!json.HasMember("result")) {
                             throw make_exception(
                                 api::ErrorCode::API_ERROR,
                                 "The API response from explorer is missing the \"result\" key");
                         }
-                        const auto &unbonding_entries = json.GetObject()["result"].GetArray();
+                        const auto &fullExplorerResponse = json.GetObject();
 
                         cosmos::UnbondingList resultingList;
-                        std::for_each(
-                            unbonding_entries.Begin(),
-                            unbonding_entries.End(),
-                            [&resultingList](const auto& unbonding) {
-                                auto parsedResult = std::make_unique<cosmos::Unbonding>();
-                                rpcs_parsers::parseUnbonding(unbonding.GetObject(), *parsedResult);
-                                resultingList.emplace_back(std::move(parsedResult));
-                            });
+                        rpcs_parsers::parseUnbondingList(fullExplorerResponse, resultingList);
                         return resultingList;
                     });
         }
@@ -354,22 +349,17 @@ namespace ledger {
                     getContext(),
                     [endpoint](const HttpRequest::JsonResult &result) -> cosmos::RedelegationList {
                         auto &json = *std::get<1>(result);
+                        // This is just an additional safety check on the content
+                        // which will get parsed
                         if (!json.HasMember("result")) {
                             throw make_exception(
                                 api::ErrorCode::API_ERROR,
                                 "The API response from explorer is missing the \"result\" key");
                         }
-                        const auto &redelegation_entries = json.GetObject()["result"].GetArray();
+                        const auto &fullExplorerResponse = json.GetObject();
 
                         cosmos::RedelegationList resultingList;
-                        std::for_each(
-                            redelegation_entries.Begin(),
-                            redelegation_entries.End(),
-                            [&resultingList](const auto& redelegation) {
-                                auto parsedResult = std::make_unique<cosmos::Redelegation>();
-                                rpcs_parsers::parseRedelegation(redelegation.GetObject(), *parsedResult);
-                                resultingList.emplace_back(std::move(parsedResult));
-                            });
+                        rpcs_parsers::parseRedelegationList(fullExplorerResponse, resultingList);
                         return resultingList;
                     });
         }
