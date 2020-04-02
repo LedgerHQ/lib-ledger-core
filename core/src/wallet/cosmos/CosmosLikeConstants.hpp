@@ -41,6 +41,7 @@ namespace ledger {
                                 constexpr const char kGaiaRewardsEndpoint[] = "/distribution/delegators/{}/rewards";
                                 constexpr const char kGaiaUnbondingsEndpoint[] = "/staking/delegators/{}/unbonding_delegations";
                                 constexpr const char kGaiaRedelegationsEndpoint[] = "/staking/delegators/{}/redelegations";
+                                constexpr const char kGaiaQueryRedelegationsEndpoint[] = "/staking/redelegations";
                                 constexpr const char kGaiaBalancesEndpoint[] = "/bank/balances/{}";
                                 constexpr const char kGaiaTransfersEndpoint[] = "/bank/accounts/{}/transfers";
 
@@ -73,7 +74,9 @@ namespace ledger {
                                 constexpr const char kCommissionRates[] = "commission_rates";
                                 constexpr const char kCommissionMaxRate[] = "max_rate";
                                 constexpr const char kCommissionMaxChangeRate[] = "max_change_rate";
+                                constexpr const char kCompletionTime[] = "completion_time";
                                 constexpr const char kContent[] = "content";
+                                constexpr const char kCreationHeight[] = "creation_height";
                                 constexpr const char kDelegatorAddress[] = "delegator_address";
                                 constexpr const char kDenom[] = "denom";
                                 constexpr const char kDepositor[] = "depositor";
@@ -90,6 +93,7 @@ namespace ledger {
                                 constexpr const char kGasUsed[] = "gas_used";
                                 constexpr const char kHeight[] = "height";
                                 constexpr const char kIdentity[] = "identity";
+                                constexpr const char kInitialBalance[] = "initial_balance";
                                 constexpr const char kInitialDeposit[] = "initial_deposit";
                                 constexpr const char kInputs[] = "inputs";
                                 constexpr const char kLog[] = "log";

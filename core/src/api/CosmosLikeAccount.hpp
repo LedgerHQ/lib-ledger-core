@@ -19,9 +19,11 @@ namespace ledger { namespace core { namespace api {
 class AmountCallback;
 class BigIntCallback;
 class CosmosLikeDelegationListCallback;
+class CosmosLikeRedelegationListCallback;
 class CosmosLikeRewardListCallback;
 class CosmosLikeTransaction;
 class CosmosLikeTransactionBuilder;
+class CosmosLikeUnbondingListCallback;
 class CosmosLikeValidatorCallback;
 class CosmosLikeValidatorListCallback;
 class StringCallback;
@@ -73,6 +75,10 @@ public:
     virtual void getDelegations(const std::shared_ptr<CosmosLikeDelegationListCallback> & callback) = 0;
 
     virtual void getPendingRewards(const std::shared_ptr<CosmosLikeRewardListCallback> & callback) = 0;
+
+    virtual void getUnbondings(const std::shared_ptr<CosmosLikeUnbondingListCallback> & callback) = 0;
+
+    virtual void getRedelegations(const std::shared_ptr<CosmosLikeRedelegationListCallback> & callback) = 0;
 
     /**
      * Get the current account sequence (synchronize to get latest value)

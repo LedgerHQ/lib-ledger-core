@@ -104,6 +104,10 @@ namespace ledger {
             Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
             Future<int64_t> getTimestamp() const override;
 
+            // Pending statuses
+            Future<cosmos::UnbondingList> getUnbondingsByDelegator(const std::string& delegatorAddress) const override;
+            Future<cosmos::RedelegationList> getRedelegationsByDelegator(const std::string& delegatorAddress) const override;
+
             // Balances
             /// Get Total Balance
             FuturePtr<BigInt> getTotalBalance(const std::string &account) const override;

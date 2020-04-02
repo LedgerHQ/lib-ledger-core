@@ -77,7 +77,7 @@ TEST(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
     EXPECT_EQ(sendMessage.amount.front().amount, "1000000");
     EXPECT_EQ(sendMessage.amount.front().denom, "uatom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -103,7 +103,7 @@ TEST(CosmosTransactionTest, BuildDelegateTxForBroadcast) {
     EXPECT_EQ(delegateMessage.amount.amount, "1000000");
     EXPECT_EQ(delegateMessage.amount.denom, "uatom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -129,7 +129,7 @@ TEST(CosmosTransactionTest, BuildUndelegateTxForBroadcast) {
     EXPECT_EQ(undelegateMessage.amount.amount, "1000000");
     EXPECT_EQ(undelegateMessage.amount.denom, "uatom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -157,7 +157,7 @@ TEST(CosmosTransactionTest, BuildBeginRedelegateTxForBroadcast) {
     EXPECT_EQ(redelegateMessage.amount.amount, "1000000");
     EXPECT_EQ(redelegateMessage.amount.denom, "uatom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -188,7 +188,7 @@ TEST(CosmosTransactionTest, BuildSubmitProposalTxForBroadcast) {
     EXPECT_EQ(submitProposalMessage.initialDeposit.front().amount, "1000000");
     EXPECT_EQ(submitProposalMessage.initialDeposit.front().denom, "uatom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -213,7 +213,7 @@ TEST(CosmosTransactionTest, BuildVoteTxForBroadcast) {
     EXPECT_EQ(voteMessage.proposalId, "123");
     EXPECT_EQ(voteMessage.voter, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -240,7 +240,7 @@ TEST(CosmosTransactionTest, BuildDepositTxForBroadcast) {
     EXPECT_EQ(depositMessage.amount.front().amount, "1000000");
     EXPECT_EQ(depositMessage.amount.front().denom, "uatom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -263,7 +263,7 @@ TEST(CosmosTransactionTest, BuildWithdrawDelegationRewardTxForBroadcast) {
     EXPECT_EQ(withdrawMessage.delegatorAddress, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");
     EXPECT_EQ(withdrawMessage.validatorAddress, "cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -297,7 +297,7 @@ TEST(CosmosTransactionTest, BuildMultiSendTxForBroadcast) {
     EXPECT_EQ(multiSendMessage.outputs[0].coins[0].amount, "10");
     EXPECT_EQ(multiSendMessage.outputs[0].coins[0].denom, "atom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -340,7 +340,7 @@ TEST(CosmosTransactionTest, BuildCreateValidatorTxForBroadcast) {
     EXPECT_EQ(createValidatorMessage.value.amount, "1059860");
     EXPECT_EQ(createValidatorMessage.value.denom, "uatom");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -379,7 +379,7 @@ TEST(CosmosTransactionTest, BuildEditValidatorTxForBroadcast) {
     ASSERT_TRUE(editValidatorMessage.minSelfDelegation);
     EXPECT_EQ(editValidatorMessage.minSelfDelegation.value(), "800");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -403,7 +403,7 @@ TEST(CosmosTransactionTest, BuildSetWithdrawAddressTxForBroadcast) {
     EXPECT_EQ(setWithdrawAddressMessage.delegatorAddress, "cosmos1dafe");
     EXPECT_EQ(setWithdrawAddressMessage.withdrawAddress, "cosmos1erfdsa");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -427,7 +427,7 @@ TEST(CosmosTransactionTest, BuildWithdrawDelegatorRewardsTxForBroadcast) {
     EXPECT_EQ(withdrawDorRewardMessage.delegatorAddress, "cosmos1targ");
     EXPECT_EQ(withdrawDorRewardMessage.validatorAddress, "cosmosvaloperwdfae");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -448,7 +448,7 @@ TEST(CosmosTransactionTest, BuildWithdrawValidatorCommissionTxForBroadcast) {
     EXPECT_EQ(tx->getGas()->toLong(), 200020L);
     EXPECT_EQ(withdrawVorCommissionMessage.validatorAddress, "cosmosvaloper1234567890");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 
@@ -469,7 +469,7 @@ TEST(CosmosTransactionTest, BuildUnjailTxForBroadcast) {
     EXPECT_EQ(tx->getGas()->toLong(), 200020L);
     EXPECT_EQ(unjailMessage.validatorAddress, "cosmosvaloper1dalton");
 
-    const std::string expected = "{\"mode\":\"async\",\"tx\":" + strTx + "}";
+    const std::string expected = "{\"mode\":\"block\",\"tx\":" + strTx + "}";
     EXPECT_EQ(tx->serializeForBroadcast(), expected);
 }
 

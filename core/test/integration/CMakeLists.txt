@@ -221,3 +221,5 @@ add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitE
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForDelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForDelegation)
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForUnDelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForUnDelegation)
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForRedelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForRedelegation)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.PendingUnbondings COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.PendingUnbondings)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.PendingRedelegations COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.PendingRedelegations)

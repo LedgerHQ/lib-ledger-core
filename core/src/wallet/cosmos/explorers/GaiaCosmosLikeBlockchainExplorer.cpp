@@ -304,6 +304,66 @@ namespace ledger {
                     .count());
         }
 
+        // Pending statuses
+        Future<cosmos::UnbondingList> GaiaCosmosLikeBlockchainExplorer::getUnbondingsByDelegator(
+            const std::string &delegatorAddress) const
+        {
+            const auto endpoint = fmt::format(kGaiaUnbondingsEndpoint, delegatorAddress);
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = false;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .map<cosmos::UnbondingList>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> cosmos::UnbondingList {
+                        auto &json = *std::get<1>(result);
+                        // This is just an additional safety check on the content
+                        // which will get parsed
+                        if (!json.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
+                        const auto &fullExplorerResponse = json.GetObject();
+
+                        cosmos::UnbondingList resultingList;
+                        rpcs_parsers::parseUnbondingList(fullExplorerResponse, resultingList);
+                        return resultingList;
+                    });
+        }
+
+        Future<cosmos::RedelegationList>
+        GaiaCosmosLikeBlockchainExplorer::getRedelegationsByDelegator(
+            const std::string &delegatorAddress) const
+        {
+            const auto endpoint = fmt::format("{}?delegator={}", kGaiaQueryRedelegationsEndpoint, delegatorAddress);
+            std::unordered_map<std::string, std::string> headers{
+                {"Content-Type", "application/json"}};
+            const bool jsonParseNumbersAsString = false;
+
+            return _http->GET(endpoint, headers)
+                .json(jsonParseNumbersAsString)
+                .map<cosmos::RedelegationList>(
+                    getContext(),
+                    [endpoint](const HttpRequest::JsonResult &result) -> cosmos::RedelegationList {
+                        auto &json = *std::get<1>(result);
+                        // This is just an additional safety check on the content
+                        // which will get parsed
+                        if (!json.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
+                        const auto &fullExplorerResponse = json.GetObject();
+
+                        cosmos::RedelegationList resultingList;
+                        rpcs_parsers::parseRedelegationList(fullExplorerResponse, resultingList);
+                        return resultingList;
+                    });
+        }
+
         // Balances
         /// Get Total Balance
         FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getTotalBalance(

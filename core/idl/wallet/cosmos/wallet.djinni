@@ -144,6 +144,8 @@ CosmosLikeAccount = interface +c {
 
         getDelegations(callback: ListCallback<CosmosLikeDelegation>);
         getPendingRewards(callback: ListCallback<CosmosLikeReward>);
+        getUnbondings(callback: ListCallback<CosmosLikeUnbonding>);
+        getRedelegations(callback: ListCallback<CosmosLikeRedelegation>);
 
         # Get the current account sequence (synchronize to get latest value)
         # string like "14"
@@ -166,6 +168,45 @@ CosmosLikeReward = interface +c {
         const getDelegatorAddress() : string;
         const getValidatorAddress() : string;
         const getRewardAmount() : Amount;
+}
+
+# (Pending) Unbonding data
+CosmosLikeUnbonding = interface +c {
+    # Delegator address
+    getDelegatorAddress(): string;
+    # Validator address
+    getValidatorAddress(): string;
+    getEntries(): list<CosmosLikeUnbondingEntry>;
+}
+
+CosmosLikeUnbondingEntry = interface +c {
+    # Block height of the unbonding request
+    getCreationHeight(): BigInt;
+    # Timestamp of the unbonding completion
+    getCompletionTime(): date;
+    # Balance requested to unbond
+    getInitialBalance(): BigInt;
+    # Current amount coming back (i.e. less than initialBalance if slashed)
+    getBalance(): BigInt;
+}
+
+# (Pending) Redelegation data
+CosmosLikeRedelegation = interface +c {
+    getDelegatorAddress(): string;
+    getSrcValidatorAddress(): string;
+    getDstValidatorAddress(): string;
+    getEntries(): list<CosmosLikeRedelegationEntry>;
+}
+
+CosmosLikeRedelegationEntry = interface +c {
+    # Block height of the begin redelegate request
+    getCreationHeight(): BigInt;
+    # Timestamp of the redelegation completion
+    getCompletionTime(): date;
+    # Balance requested to redelegate
+    getInitialBalance(): BigInt;
+    # Current amount being redelegated (i.e. less than initialBalance if slashed)
+    getBalance(): BigInt;
 }
 
 CosmosConfigurationDefaults = interface +c {

@@ -106,8 +106,9 @@ public:
     void performSynchro(const std::shared_ptr<CosmosLikeAccount>& account) {
         auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
             fmt::print("Received event {}\n", api::to_string(event->getCode()));
-            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) {
                 return;
+            }
             EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
             auto balance = wait(account->getBalance());
@@ -704,6 +705,45 @@ TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForRedelegation) {
         "}}],"
         "\"sequence\":\"0\"}";
     GenericGasLimitEstimationTest(strTx, *this);
+}
+
+TEST_F(CosmosLikeWalletSynchronization, PendingUnbondings) {
+    std::string hexPubKey =
+        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(account, wallet, hexPubKey);
+    const std::string address = account->getKeychain()->getAddress()->toBech32();
+    const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
+
+    // First synchro
+    performSynchro(account);
+
+    auto unbondings = wait(account->getUnbondings());
+    EXPECT_GE(unbondings.size(), 1) << fmt::format(
+        "Expecting at least 1 unbonding here for Obelix (explorer link : {}).", mintscanExplorer);
+}
+
+TEST_F(CosmosLikeWalletSynchronization, PendingRedelegations) {
+    std::string hexPubKey =
+        "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
+
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<AbstractWallet> wallet;
+
+    setupTest(account, wallet, hexPubKey);
+    const std::string address = account->getKeychain()->getAddress()->toBech32();
+    const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
+
+    // First synchro
+    performSynchro(account);
+
+    auto redelegations = wait(account->getRedelegations());
+    EXPECT_GE(redelegations.size(), 1) << fmt::format(
+        "Expecting at least 1 redelegation here for Obelix (explorer link : {}).",
+        mintscanExplorer);
 }
 
 // FIXME This test fails ; put at the end because it also messes up the other tests
