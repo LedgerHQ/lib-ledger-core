@@ -805,18 +805,42 @@ namespace ledger {
                                 );
                 }
 
-                Future<std::vector<std::shared_ptr<CosmosLikeUnbonding>>> CosmosLikeAccount::getUnbondings() const {
-                        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getUnbondings");
-                }
-                void CosmosLikeAccount::getUnbondings(const std::shared_ptr<api::CosmosLikeUnbondingListCallback>& callback) {
-                        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getUnbondings");
+                Future<std::vector<std::shared_ptr<api::CosmosLikeUnbonding>>>
+                CosmosLikeAccount::getUnbondings() const
+                {
+                    return _explorer->getUnbondingsByDelegator(_accountData->address)
+                        .map<std::vector<std::shared_ptr<api::CosmosLikeUnbonding>>>(
+                            getContext(), [&](const auto &explorerUnbondings) {
+                                std::vector<std::shared_ptr<api::CosmosLikeUnbonding>>
+                                    unbondingList;
+                                for (const auto &unbonding : explorerUnbondings) {
+                                    unbondingList.push_back(
+                                        std::make_shared<CosmosLikeUnbonding>(*unbonding));
+                                }
+                                return unbondingList;
+                            });
                 }
 
-                Future<std::vector<std::shared_ptr<CosmosLikeRedelegation>>> CosmosLikeAccount::getRedelegations() const {
-                        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getRedelegations");
+                void CosmosLikeAccount::getUnbondings(const std::shared_ptr<api::CosmosLikeUnbondingListCallback>& callback) {
+                        getUnbondings().callback(getContext(), callback);
                 }
+
+                Future<std::vector<std::shared_ptr<api::CosmosLikeRedelegation>>> CosmosLikeAccount::getRedelegations() const {
+                        return _explorer->getRedelegationsByDelegator(_accountData->address)
+                        .map<std::vector<std::shared_ptr<api::CosmosLikeRedelegation>>>(
+                            getContext(), [&](const auto &explorerRedelegations) {
+                                std::vector<std::shared_ptr<api::CosmosLikeRedelegation>>
+                                    redelegationList;
+                                for (const auto &redelegation : explorerRedelegations) {
+                                    redelegationList.push_back(
+                                        std::make_shared<CosmosLikeRedelegation>(*redelegation));
+                                }
+                                return redelegationList;
+                            });
+                }
+
                 void CosmosLikeAccount::getRedelegations(const std::shared_ptr<api::CosmosLikeRedelegationListCallback>& callback) {
-                        throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "CosmosLikeAccount::getRedelegations");
+                        getRedelegations().callback(getContext(), callback);
                 }
         }
 }

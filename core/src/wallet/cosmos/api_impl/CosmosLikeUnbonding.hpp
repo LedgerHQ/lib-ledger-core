@@ -41,7 +41,7 @@ namespace ledger {
 namespace core {
 class CosmosLikeUnbondingEntry : public api::CosmosLikeUnbondingEntry {
    public:
-    CosmosLikeUnbondingEntry(cosmos::UnbondingEntry entry) : _unbondingEntryData(std::move(entry))
+    CosmosLikeUnbondingEntry(const cosmos::UnbondingEntry &entry) : _unbondingEntryData(entry)
     {
     }
 
@@ -68,7 +68,7 @@ class CosmosLikeUnbondingEntry : public api::CosmosLikeUnbondingEntry {
 
 class CosmosLikeUnbonding : public api::CosmosLikeUnbonding {
    public:
-    CosmosLikeUnbonding(cosmos::Unbonding unbonding) : _unbondingData(std::move(unbonding))
+    CosmosLikeUnbonding(const cosmos::Unbonding &unbonding) : _unbondingData(unbonding)
     {
     }
 

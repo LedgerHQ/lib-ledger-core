@@ -106,8 +106,9 @@ public:
     void performSynchro(const std::shared_ptr<CosmosLikeAccount>& account) {
         auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
             fmt::print("Received event {}\n", api::to_string(event->getCode()));
-            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) {
                 return;
+            }
             EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
             auto balance = wait(account->getBalance());
@@ -714,12 +715,15 @@ TEST_F(CosmosLikeWalletSynchronization, PendingUnbondings) {
     std::shared_ptr<AbstractWallet> wallet;
 
     setupTest(account, wallet, hexPubKey);
+    const std::string address = account->getKeychain()->getAddress()->toBech32();
+    const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
 
     // First synchro
     performSynchro(account);
 
-    auto unbondings = account->getUnbondings();
-    FAIL() << "Add tests for account.getUnbondings()";
+    auto unbondings = wait(account->getUnbondings());
+    EXPECT_GE(unbondings.size(), 1) << fmt::format(
+        "Expecting at least 1 unbonding here for Obelix (explorer link : {}).", mintscanExplorer);
 }
 
 TEST_F(CosmosLikeWalletSynchronization, PendingRedelegations) {
@@ -730,12 +734,16 @@ TEST_F(CosmosLikeWalletSynchronization, PendingRedelegations) {
     std::shared_ptr<AbstractWallet> wallet;
 
     setupTest(account, wallet, hexPubKey);
+    const std::string address = account->getKeychain()->getAddress()->toBech32();
+    const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
 
     // First synchro
     performSynchro(account);
 
-    auto redelegations = account->getRedelegations();
-    FAIL() << "Add tests for account.getRedelegations()";
+    auto redelegations = wait(account->getRedelegations());
+    EXPECT_GE(redelegations.size(), 1) << fmt::format(
+        "Expecting at least 1 redelegation here for Obelix (explorer link : {}).",
+        mintscanExplorer);
 }
 
 // FIXME This test fails ; put at the end because it also messes up the other tests

@@ -41,8 +41,8 @@ namespace ledger {
 namespace core {
 class CosmosLikeRedelegationEntry : public api::CosmosLikeRedelegationEntry {
    public:
-    CosmosLikeRedelegationEntry(cosmos::RedelegationEntry entry) :
-        _redelegationEntryData(std::move(entry))
+    CosmosLikeRedelegationEntry(const cosmos::RedelegationEntry &entry) :
+        _redelegationEntryData(entry)
     {
     }
 
@@ -69,8 +69,8 @@ class CosmosLikeRedelegationEntry : public api::CosmosLikeRedelegationEntry {
 
 class CosmosLikeRedelegation : public api::CosmosLikeRedelegation {
    public:
-    CosmosLikeRedelegation(cosmos::Redelegation redelegation) :
-        _redelegationData(std::move(redelegation))
+    CosmosLikeRedelegation(const cosmos::Redelegation &redelegation) :
+        _redelegationData(redelegation)
     {
     }
 

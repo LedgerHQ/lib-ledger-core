@@ -327,16 +327,14 @@ namespace ledger {
                         const auto &unbonding_entries = json.GetObject()["result"].GetArray();
 
                         cosmos::UnbondingList resultingList;
-                        std::transform(
+                        std::for_each(
                             unbonding_entries.Begin(),
                             unbonding_entries.End(),
-                            resultingList.begin(),
-                            [](const auto& unbonding) -> std::shared_ptr<cosmos::Unbonding> {
-                                cosmos::Unbonding parsedResult;
-                                rpcs_parsers::parseUnbonding(unbonding.GetObject(), parsedResult);
-                                return std::make_shared<cosmos::Unbonding>(std::move(parsedResult));
+                            [&resultingList](const auto& unbonding) {
+                                auto parsedResult = std::make_unique<cosmos::Unbonding>();
+                                rpcs_parsers::parseUnbonding(unbonding.GetObject(), *parsedResult);
+                                resultingList.emplace_back(std::move(parsedResult));
                             });
-
                         return resultingList;
                     });
         }
@@ -364,16 +362,14 @@ namespace ledger {
                         const auto &redelegation_entries = json.GetObject()["result"].GetArray();
 
                         cosmos::RedelegationList resultingList;
-                        std::transform(
+                        std::for_each(
                             redelegation_entries.Begin(),
                             redelegation_entries.End(),
-                            resultingList.begin(),
-                            [](const auto& redelegation) -> std::shared_ptr<cosmos::Redelegation> {
-                                cosmos::Redelegation parsedResult;
-                                rpcs_parsers::parseRedelegation(redelegation.GetObject(), parsedResult);
-                                return std::make_shared<cosmos::Redelegation>(std::move(parsedResult));
+                            [&resultingList](const auto& redelegation) {
+                                auto parsedResult = std::make_unique<cosmos::Redelegation>();
+                                rpcs_parsers::parseRedelegation(redelegation.GetObject(), *parsedResult);
+                                resultingList.emplace_back(std::move(parsedResult));
                             });
-
                         return resultingList;
                     });
         }

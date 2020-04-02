@@ -203,8 +203,8 @@ namespace ledger {
                         };
 
                         // Small helpers to avoid very long types
-                        using UnbondingList = std::list<std::shared_ptr<Unbonding>>;
-                        using RedelegationList = std::list<std::shared_ptr<Redelegation>>;
+                        using UnbondingList = std::vector<std::shared_ptr<Unbonding>>;
+                        using RedelegationList = std::vector<std::shared_ptr<Redelegation>>;
                         using TransactionList = std::list<std::shared_ptr<Transaction>>;
                         using ValidatorList = std::vector<Validator>;
                         using MsgType = ::ledger::core::api::CosmosLikeMsgType;
