@@ -33,6 +33,7 @@ namespace ledger {
                         Message setupUndelegateMessage();
                         Message setupVoteMessage();
                         Message setupWithdrawDelegationRewardMessage();
+                        Message setupFeesMessage();
 
                         // Build a transaction to be broadcasted to the blockhain
                         Transaction setupTransactionRequest(const std::vector<Message>& msgs);
@@ -48,6 +49,7 @@ namespace ledger {
                         void assertSameUndelegateMessage(const Message& msgRef, const Message& msgResult);
                         void assertSameVoteMessage(const Message& msgRef, const Message& msgResult);
                         void assertSameWithdrawDelegationRewardMessage(const Message& msgRef, const Message& msgResult);
+                        void assertSameFeesMessage(const Message& msgRef, const Message& msgResult);
                         void assertSameTransaction(const Transaction& txRef, const Transaction& txResult);
                 }
         }

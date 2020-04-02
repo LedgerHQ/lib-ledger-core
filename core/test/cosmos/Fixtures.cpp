@@ -85,6 +85,16 @@ namespace ledger {
                                 return msg;
                         }
 
+                        Message setupFeesMessage() {
+                            Message msg;
+                            msg.type = constants::kMsgFees;
+                            MsgFees feesMsg;
+                            feesMsg.payerAddress = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl";
+                            feesMsg.fees = api::CosmosLikeAmount("30", "uatom");
+                            msg.content = feesMsg;
+                            return msg;
+                        }
+
                         Transaction setupTransactionRequest(const std::vector<Message>& msgs) {
                                 // cf. https://cosmos.network/rpc/#/Transactions/post_txs
 
@@ -163,6 +173,14 @@ namespace ledger {
 
                         void assertSameWithdrawDelegationRewardMessage(const Message& msgRef, const Message& msgResult) {
                                 // TODO
+                        }
+
+                        void assertSameFeesMessage(const Message& msgRef, const Message& msgResult) {
+                            const auto& feesMsgRef = boost::get<MsgFees>(msgRef.content);
+                            const auto& feesMsgResult = boost::get<MsgFees>(msgResult.content);
+                            EXPECT_EQ(feesMsgRef.payerAddress, feesMsgResult.payerAddress);
+                            EXPECT_EQ(feesMsgRef.fees.amount, feesMsgResult.fees.amount);
+                            EXPECT_EQ(feesMsgRef.fees.denom, feesMsgResult.fees.denom);
                         }
 
                         void assertSameTransaction(const Transaction& txRef, const Transaction& txResult) {

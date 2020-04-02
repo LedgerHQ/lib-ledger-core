@@ -143,6 +143,39 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountWithExplorer) {
 }
 
 
+TEST_F(CosmosLikeWalletSynchronization, InternalFeesMessageInTransaction) {
+    /// This transaction contains 2 messages. One internal message to store fees
+    /// is added after the transaction is retrieved from the network, hence the
+    /// transaction should contain 3 messages, the last one being the one added
+    /// specifically for the fees.
+    const auto transaction = ::wait(explorer->getTransactionByHash("0DBFC4E8E9E5A64C2C9B5EAAAA0422D99A61CFC5354E15002A061E91200DC2D6"));
+
+    ASSERT_NE(transaction, nullptr);
+    EXPECT_EQ(transaction->messages.size(), 3);
+    EXPECT_EQ(transaction->logs.size(), 3);
+    const auto feeMessageIndex = transaction->messages.size() - 1;
+    const auto& feeMessage = transaction->messages[feeMessageIndex];
+    const auto& feeMessageLog = transaction->logs[feeMessageIndex];
+
+    auto reduceAmounts = [](const std::vector<cosmos::Coin>& coins) {
+        return std::accumulate(std::begin(coins), std::end(coins), BigInt::ZERO,
+                [](BigInt s, const cosmos::Coin& coin) {
+                    return s + BigInt::fromString(coin.amount);
+                });
+    };
+
+    // check the internal fees message content
+    ASSERT_EQ(feeMessage.type, cosmos::constants::kMsgFees);
+    const auto& feeMessageContent = boost::get<cosmos::MsgFees>(feeMessage.content);
+    EXPECT_EQ(reduceAmounts(transaction->fee.amount), BigInt::fromString(feeMessageContent.fees.amount));
+    EXPECT_EQ(feeMessageContent.payerAddress, DEFAULT_ADDRESS);
+
+    // check the logs for the fees message
+    EXPECT_EQ(feeMessageLog.messageIndex, feeMessageIndex);
+    EXPECT_EQ(feeMessageLog.success, true);
+    EXPECT_EQ(feeMessageLog.log, "");
+}
+
 
 TEST_F(CosmosLikeWalletSynchronization, GetWithdrawDelegationRewardWithExplorer) {
 
@@ -159,7 +192,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetWithdrawDelegationRewardWithExplorer)
         if (tx->hash == "0DBFC4E8E9E5A64C2C9B5EAAAA0422D99A61CFC5354E15002A061E91200DC2D6") {
             foundTx = true;
             EXPECT_EQ(tx->block->height, 237691);
-            EXPECT_EQ(tx->logs.size(), 2);
+            EXPECT_EQ(tx->logs.size(), 3);
             size_t withdraw_msg_index = 2;
             if (tx->messages[0].type == cosmos::constants::kMsgWithdrawDelegationReward) {
                 withdraw_msg_index = 0;
@@ -192,7 +225,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetErrorTransaction) {
     auto tx = ::wait(explorer->getTransactionByHash(tx_hash));
     ASSERT_EQ(tx->hash, tx_hash);
     EXPECT_EQ(tx->block->height, 768780);
-    EXPECT_EQ(tx->logs.size(), 1);
+    EXPECT_EQ(tx->logs.size(), 2);
     EXPECT_FALSE(tx->logs[0].success);
     EXPECT_EQ(tx->logs[0].log, "{\"codespace\":\"sdk\",\"code\":10,\"message\":\"insufficient account funds; 2412592uatom < 2417501uatom\"}");
     EXPECT_EQ(tx->messages[0].type, cosmos::constants::kMsgDelegate);
@@ -217,7 +250,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetSendWithExplorer) {
     auto tx = ::wait(explorer->getTransactionByHash(tx_hash));
     ASSERT_EQ(tx->hash, tx_hash);
     EXPECT_EQ(tx->block->height, 453223);
-    EXPECT_EQ(tx->logs.size(), 1);
+    EXPECT_EQ(tx->logs.size(), 2);
     EXPECT_TRUE(tx->logs[0].success);
     EXPECT_EQ(tx->messages[0].type, cosmos::constants::kMsgSend);
     const cosmos::MsgSend& msg = boost::get<cosmos::MsgSend>(tx->messages[0].content);
@@ -251,7 +284,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetDelegateWithExplorer) {
         if (tx->hash == "BD77DF6A76066AA79DAA7705B9F0DC6B66B7E6FBB3D1FD28A07D6A0EED7AE6B5") {
             foundTx = true;
             EXPECT_EQ(tx->block->height, 660081);
-            EXPECT_EQ(tx->logs.size(), 1);
+            EXPECT_EQ(tx->logs.size(), 2);
             EXPECT_TRUE(tx->logs[0].success);
             EXPECT_EQ(tx->messages[0].type, cosmos::constants::kMsgDelegate);
             const cosmos::MsgDelegate& msg = boost::get<cosmos::MsgDelegate>(tx->messages[0].content);
