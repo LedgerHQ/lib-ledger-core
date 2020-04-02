@@ -425,8 +425,7 @@ namespace ledger {
 
                 const auto firstSignature = node[kSignatures].GetArray()[0].GetObject();
                 if (firstSignature.HasMember(kPubKey) && firstSignature[kPubKey].GetObject().HasMember(kValue)) {
-                    const auto pub = firstSignature[kPubKey].GetObject()[kValue].GetString();
-                    pubkey = pub;
+                    pubkey = firstSignature[kPubKey].GetObject()[kValue].GetString();
                 }
             }
 
@@ -481,33 +480,6 @@ namespace ledger {
 
                 assert((vNode.HasMember(kFee)));
                 parseFee(vNode[kFee].GetObject(), transaction.fee);
-
-                // TODO(remibarjon): create a function to post treat the transaction after it is parsed
-                // (in the function calling this function).
-                const auto index = transaction.messages.size();
-                auto msgFeesContent = cosmos::MsgFees();
-                auto pubKey = std::string();
-                parseSignerPubKey(vNode, pubKey);
-                const auto decoded = cereal::base64::decode(pubKey);
-                const auto vPubKey = std::vector<uint8_t>(std::begin(decoded), std::end(decoded));
-                msgFeesContent.payerAddress = CosmosLikeKeychain(vPubKey,
-                        DerivationPath(""), currencies::ATOM).getAddress()->toBech32();
-                const auto fees =
-                    std::accumulate(std::begin(transaction.fee.amount),
-                                    std::end(transaction.fee.amount),
-                                    BigInt::ZERO,
-                                    [](BigInt sum, const api::CosmosLikeAmount& amount) {
-                                        assert(amount.denom == "uatom");
-                                        return sum + BigInt::fromString(amount.amount);
-                                    }).toString();
-                msgFeesContent.fees = api::CosmosLikeAmount(fees, "uatom");
-                auto msgFees = cosmos::Message();
-                msgFees.type =  cosmos::constants::kMsgFees;
-                msgFees.content = msgFeesContent;
-                const auto msgFeesLog =
-                    cosmos::MessageLog{static_cast<int32_t>(index), true, ""};
-                transaction.logs.push_back(msgFeesLog);
-                transaction.messages.push_back(msgFees);
             }
 
             template <typename T>

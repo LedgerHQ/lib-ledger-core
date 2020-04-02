@@ -136,6 +136,61 @@ namespace ledger {
                 });
         }
 
+        namespace {
+
+        template <typename T>
+        void addMsgFeesTo(cosmos::Transaction& transaction, const T& node)
+        {
+            /// No need to check for this as this check is done in
+            /// rpcs_parsers::parseTransaction and this function is
+            /// only called once parseTransaction has finished.
+            const auto& vNode = node[kTx].GetObject()[kValue].GetObject();
+
+            const auto index = transaction.messages.size();
+            auto msgFeesContent = cosmos::MsgFees();
+
+            auto pubKey = std::string();
+            rpcs_parsers::parseSignerPubKey(vNode, pubKey);
+            const auto decoded = cereal::base64::decode(pubKey);
+            const auto vPubKey = std::vector<uint8_t>(std::begin(decoded), std::end(decoded));
+            msgFeesContent.payerAddress = CosmosLikeKeychain(vPubKey,
+                    DerivationPath(""), currencies::ATOM).getAddress()->toBech32();
+
+            /// The array of fees is reduced to a single CosmosLikeAmount (summing
+            /// all the element of the array). The array cannot be stored directly
+            /// as it has to be reduced to be stored in the database, and it would
+            /// not be possible to recreate the array from the operation (with a
+            /// single CosmosLikeAmount) in the database.
+            const auto fees =
+                std::accumulate(std::begin(transaction.fee.amount),
+                                std::end(transaction.fee.amount),
+                                BigInt::ZERO,
+                                [](BigInt sum, const api::CosmosLikeAmount& amount) {
+                                /// The fees unit must be "uatom" as cosmoshub is not
+                                /// expected to take any other currencies to pay fees.
+                                    assert(amount.denom == "uatom");
+                                    return sum + BigInt::fromString(amount.amount);
+                                }).toString();
+
+            msgFeesContent.fees = api::CosmosLikeAmount(fees, "uatom");
+            auto msgFees = cosmos::Message();
+            msgFees.type =  cosmos::constants::kMsgFees;
+            msgFees.content = msgFeesContent;
+            const auto msgFeesLog =
+                cosmos::MessageLog{static_cast<int32_t>(index), true, ""};
+            transaction.logs.push_back(msgFeesLog);
+            transaction.messages.push_back(msgFees);
+        }
+
+        template <typename T>
+        void parseTransactionWithPosttreatment(const T& node, cosmos::Transaction& transaction)
+        {
+            rpcs_parsers::parseTransaction(node, transaction);
+            addMsgFeesTo(transaction, node);
+        }
+
+        } // namespace
+
         Future<cosmos::TransactionList> GaiaCosmosLikeBlockchainExplorer::getTransactions(
             const CosmosLikeBlockchainExplorer::TransactionFilter& filter, int page, int limit) const {
             return _http->GET(fmt::format("/txs?{}&page={}&limit={}", filter, page, limit), ACCEPT_HEADER)
@@ -153,7 +208,7 @@ namespace ledger {
                         const auto& transactions = document["txs"].GetArray();
                         for (const auto& node : transactions) {
                             auto tx = std::make_shared<cosmos::Transaction>();
-                            rpcs_parsers::parseTransaction(node, *tx);
+                            parseTransactionWithPosttreatment(node, *tx);
                             result.emplace_back(tx);
                         }
                         return result;
@@ -167,7 +222,7 @@ namespace ledger {
                 .mapPtr<cosmos::Transaction>(getContext(), [] (const HttpRequest::JsonResult& response) {
                     const auto& document = std::get<1>(response)->GetObject();
                     auto tx = std::make_shared<cosmos::Transaction>();
-                    rpcs_parsers::parseTransaction(document, *tx);
+                    parseTransactionWithPosttreatment(document, *tx);
                     return tx;
                 });
         }
