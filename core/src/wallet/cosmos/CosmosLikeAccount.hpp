@@ -160,6 +160,8 @@ namespace ledger {
                                 std::shared_ptr<CosmosLikeAccount> getSelf();
                                 void updateFromDb();
 
+                                std::string getAddress() const;
+
                                 std::shared_ptr<cosmos::Account> _accountData;
                                 std::shared_ptr<CosmosLikeKeychain> _keychain;
                                 std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;

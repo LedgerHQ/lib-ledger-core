@@ -157,7 +157,8 @@ namespace ledger {
 
                         struct Account {
                                 std::string type;
-                                std::string address;
+                                std::string pubkey;
+                                Option<std::string> address;
                                 std::vector<Coin> balances;
                                 std::string accountNumber;
                                 std::string sequence;
