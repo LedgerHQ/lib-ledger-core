@@ -224,6 +224,15 @@ namespace ledger {
                         }
                         out.type = api::OperationType::NONE;
                     } break;
+                    case api::CosmosLikeMsgType::MSGFEES: {
+                        const auto& msgfees = boost::get<cosmos::MsgFees>(msg.content);
+                        if (msgfees.payerAddress == address) {
+                            out.type = api::OperationType::SEND;
+                        } else {
+                            out.type = api::OperationType::NONE;
+                        }
+                        out.senders = { msgfees.payerAddress };
+                    } break;
                     case api::CosmosLikeMsgType::MSGVOTE:
                     case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD:
                     case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
@@ -267,10 +276,12 @@ namespace ledger {
                         out.date = tx.timestamp;
                         out.trust = std::make_shared<TrustIndicator>();
                         auto fees = 0;
-                        std::for_each(tx.fee.amount.begin(), tx.fee.amount.end(), [&] (cosmos::Coin amount) {
-                                assert(amount.denom == "uatom"); // FIXME Temporary until all units correctly supported
-                                fees += BigInt::fromDecimal(amount.amount).toInt();
-                        });
+                        if (cosmos::stringToMsgType(msg.type.c_str()) == api::CosmosLikeMsgType::MSGFEES) {
+                            std::for_each(tx.fee.amount.begin(), tx.fee.amount.end(), [&] (cosmos::Coin amount) {
+                                    assert(amount.denom == "uatom"); // FIXME Temporary until all units correctly supported
+                                    fees += BigInt::fromDecimal(amount.amount).toInt();
+                            });
+                        }
                         out.fees = BigInt(fees);
                         out.walletUid = wallet->getWalletUid();
                 }

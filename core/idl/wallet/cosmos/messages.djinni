@@ -151,6 +151,7 @@ CosmosLikeMsgType = enum {
         MsgWithdrawDelegatorReward;
         MsgWithdrawValidatorCommission;
         MsgUnjail;
+        MsgFees;
         Unsupported;
 }
 

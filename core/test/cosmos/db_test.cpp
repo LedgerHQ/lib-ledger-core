@@ -144,6 +144,44 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
     }
 }
 
+TEST_F(CosmosDBTest, FeesMsgTypeTest) {
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<CosmosLikeWallet> wallet;
+    setupTest(pool, account, wallet, "f727a3d9-7e98-4bbf-b92c-c3976483ac89");
+
+    std::chrono::system_clock::time_point timeRef = DateUtils::now();
+
+    const auto msgFees = setupFeesMessage();
+    auto tx = setupTransactionResponse(std::vector<Message>{ msgFees }, timeRef);
+
+    {
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.set_log_stream(&std::cerr);
+        account->putTransaction(sql, tx);
+    }
+
+    {
+        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+        ASSERT_EQ(ops.size(), 1);
+
+        auto op = ops[0];
+        // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
+        auto cosmosOp = op->asCosmosLikeOperation();
+        ASSERT_NE(cosmosOp, nullptr);
+        ASSERT_NE(cosmosOp->getMessage(), nullptr);
+        ASSERT_NE(cosmosOp->getTransaction(), nullptr);
+        auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
+        ASSERT_NE(txPtr, nullptr);
+        auto txRetrieved = txPtr->getRawData();
+        auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
+        ASSERT_NE(msgPtr, nullptr);
+        auto msgRetrieved = msgPtr->getRawData();
+
+        assertSameTransaction(tx, txRetrieved);
+        assertSameFeesMessage(msgFees, msgRetrieved);
+    }
+}
+
 TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;

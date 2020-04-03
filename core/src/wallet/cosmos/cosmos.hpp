@@ -99,6 +99,20 @@ namespace ledger {
                             api::CosmosLikeMsgWithdrawValidatorCommission;
                         using MsgUnjail = api::CosmosLikeMsgUnjail;
 
+                        struct MsgFees final
+                        {
+                            std::string payerAddress;
+                            api::CosmosLikeAmount fees;
+
+                            MsgFees(std::string payerAddress,
+                                            api::CosmosLikeAmount fees)
+                                : payerAddress(std::move(payerAddress))
+                                , fees(std::move(fees))
+                            {}
+
+                            MsgFees() = default;
+                        };
+
                         struct MsgUnsupported {};
 
                         using MessageContent = boost::variant<
@@ -117,6 +131,7 @@ namespace ledger {
                             MsgWithdrawDelegatorReward,
                             MsgWithdrawValidatorCommission,
                             MsgUnjail,
+                            MsgFees,
                             MsgUnsupported>;
 
                         struct Message {

@@ -33,6 +33,7 @@
 #define LEDGER_CORE_RPCS_PARSERS_HPP
 
 #include <cassert>
+#include <numeric>
 
 #include <rapidjson/document.h>
 
@@ -44,6 +45,9 @@
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/CosmosLikeMessage.hpp>
 #include <wallet/cosmos/cosmos.hpp>
+#include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
+
+#include <cereal/external/base64.hpp>
 
 #define COSMOS_PARSE_MSG_CONTENT(MsgType) if (out.type == "cosmos-sdk/"#MsgType) return parse##MsgType(contentNode, out.content);
 
@@ -413,6 +417,18 @@ namespace ledger {
                 COSMOS_PARSE_MSG_CONTENT(MsgUnjail)
             }
 
+            template <typename T>
+            void parseSignerPubKey(const T& node, std::string& pubkey) {
+                assert((node.HasMember(kSignatures) &&
+                        node[kSignatures].IsArray() &&
+                        !node[kSignatures].GetArray().Empty()));
+
+                const auto firstSignature = node[kSignatures].GetArray()[0].GetObject();
+                if (firstSignature.HasMember(kPubKey) && firstSignature[kPubKey].GetObject().HasMember(kValue)) {
+                    pubkey = firstSignature[kPubKey].GetObject()[kValue].GetString();
+                }
+            }
+
             template <class T>
             void parseTransaction(const T& node,
                     cosmos::Transaction& transaction) {
@@ -461,6 +477,7 @@ namespace ledger {
                         index++;
                     }
                 }
+
                 assert((vNode.HasMember(kFee)));
                 parseFee(vNode[kFee].GetObject(), transaction.fee);
             }

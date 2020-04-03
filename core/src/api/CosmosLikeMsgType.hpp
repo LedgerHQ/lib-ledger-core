@@ -33,6 +33,7 @@ enum class CosmosLikeMsgType : int {
     MSGWITHDRAWDELEGATORREWARD,
     MSGWITHDRAWVALIDATORCOMMISSION,
     MSGUNJAIL,
+    MSGFEES,
     UNSUPPORTED,
 };
 LIBCORE_EXPORT  std::string to_string(const CosmosLikeMsgType& cosmosLikeMsgType);
