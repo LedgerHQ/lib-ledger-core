@@ -136,7 +136,7 @@ namespace ledger {
             auto scheme = getDerivationScheme();
             scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(entry.index);
             auto path = scheme.getSchemeTo(DerivationSchemeLevel::ACCOUNT_INDEX).getPath();
-            auto keychain = _keychainFactory->restore(path, getConfig(), entry.address,
+            auto keychain = _keychainFactory->restore(path, getConfig(), entry.pubkey,
                                                       getAccountInternalPreferences(entry.index), getCurrency());
             auto account = std::make_shared<CosmosLikeAccount>(shared_from_this(),
                                                                entry.index,

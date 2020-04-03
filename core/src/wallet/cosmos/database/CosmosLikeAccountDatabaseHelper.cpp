@@ -44,16 +44,16 @@ namespace ledger {
     namespace core {
         void CosmosLikeAccountDatabaseHelper::createAccount(soci::session &sql,
                                                             const std::string& walletUid, int32_t index,
-                                                            const std::string &address) {
+                                                            const std::string &pubkey) {
 
             cosmos::Account acc;
             auto balances { soci::coinsToString(acc.balances) };
             std::string zero { "0" };
             auto date { DateUtils::toJSON(acc.lastUpdate) };
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
-            sql << "INSERT INTO cosmos_accounts VALUES(:uid, :wallet_uid, :idx, :address, :acc_type,"
+            sql << "INSERT INTO cosmos_accounts VALUES(:uid, :wallet_uid, :idx, :pubkey, :acc_type,"
                    ":acc_number, :sequence, :balances, :last_update)",
-            use(uid), use(walletUid), use(index), use(address), use(acc.type), use(acc.accountNumber),
+            use(uid), use(walletUid), use(index), use(pubkey), use(acc.type), use(acc.accountNumber),
             use(acc.sequence), use(balances), use(date);
         }
 
@@ -62,13 +62,13 @@ namespace ledger {
         bool CosmosLikeAccountDatabaseHelper::queryAccount(soci::session &sql,
                                                            const std::string &accountUid,
                                                            CosmosLikeAccountDatabaseEntry &entry) {
-            rowset<row> rows = (sql.prepare << "SELECT idx, address, account_type, account_number, "
+            rowset<row> rows = (sql.prepare << "SELECT idx, pubkey, account_type, account_number, "
                                                "sequence, balances, last_update "
                                                "FROM cosmos_accounts "
                                                "WHERE uid = :uid", use(
                     accountUid));
             const auto COL_IDX = 0;
-            const auto COL_ADDRESS = 1;
+            const auto COL_PUBKEY = 1;
             const auto COL_ACC_TYPE = 2;
             const auto COL_ACC_NUM = 3;
             const auto COL_SEQUENCE = 4;
@@ -76,7 +76,7 @@ namespace ledger {
             const auto COL_LAST_UPDATE = 6;
             for (auto &row : rows) {
                 entry.index = row.get<int32_t>(COL_IDX);
-                entry.address = row.get<std::string>(COL_ADDRESS);
+                entry.pubkey = row.get<std::string>(COL_PUBKEY);
                 auto accountType = row.get<Option<std::string>>(COL_ACC_TYPE);
                 auto accountNumber = row.get<Option<std::string>>(COL_ACC_NUM);
                 auto sequence = row.get<Option<std::string>>(COL_SEQUENCE);
@@ -89,7 +89,8 @@ namespace ledger {
                 if (balances.nonEmpty()) {
                     soci::stringToCoins(balances.getValue(), entry.details.balances);
                 }
-                entry.details.address = entry.address;
+
+                entry.details.pubkey = entry.pubkey;
                 entry.lastUpdate = lastUpdate.getValueOr({});
 
                 return true;

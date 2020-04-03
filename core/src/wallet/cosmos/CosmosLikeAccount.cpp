@@ -80,7 +80,7 @@ namespace ledger {
                         _synchronizer = synchronizer;
                         _keychain = keychain;
                         _accountData = std::make_shared<cosmos::Account>();
-                        _accountData->address = keychain->getAddress()->toString();
+                        _accountData->pubkey = keychain->getRestoreKey();
                 }
 
                 std::shared_ptr<api::CosmosLikeAccount> CosmosLikeAccount::asCosmosLikeAccount() {
@@ -98,6 +98,11 @@ namespace ledger {
                     if (existingAccount) {
                         *_accountData = dbAccount.details;
                     }
+                }
+
+
+                std::string CosmosLikeAccount::getAddress() const {
+                        return getKeychain()->getAddress()->toBech32();
                 }
 
                 static void computeAndSetTypeAmount(
@@ -242,7 +247,7 @@ namespace ledger {
                         out.setTransactionData(tx);
                         out.setMessageData(msg);
 
-                        computeAndSetTypeAmount(out, msg, _accountData->address);
+                        computeAndSetTypeAmount(out, msg, getAddress());
 
 
                         // out._account = shared_from_this();
@@ -286,7 +291,6 @@ namespace ledger {
                         }
 
                         int result = FLAG_TRANSACTION_IGNORED;
-                        auto address = getKeychain()->getAddress()->toBech32();
                         CosmosLikeTransactionDatabaseHelper::putTransaction(sql, getAccountUid(), tx);
 
                         for (auto msgIndex = 0 ; msgIndex < tx.messages.size() ; msgIndex++) {
@@ -487,11 +491,6 @@ namespace ledger {
                                                                 });
 
                         // Update account level data (sequence, accountnumber...)
-                        // HACK : forcefully overwrite the current account address.
-                        // An account with 0 transaction can have an empty
-                        // address field in the received accountData.
-                        // Therefore we store the address and force it
-                        // back to the old value
                         // Example result from Gaia explorer :
                         // base_url/auth/accounts/{address} with a valid, 0 transaction address :
                         // {
@@ -507,20 +506,19 @@ namespace ledger {
                         //    }
                         //  }
                         //}
-                        const auto savedAddress = _accountData->address;
-                        _explorer->getAccount(_accountData->address)
+                        _explorer->getAccount(getAddress())
                             .onComplete(
                                 getContext(),
-                                [self, savedAddress](const TryPtr<cosmos::Account> &accountData) mutable {
+                                [self](const TryPtr<cosmos::Account> &accountData) mutable {
                                     if (accountData.isSuccess()) {
                                         self->_accountData = accountData.getValue();
-                                        self->_accountData->address = savedAddress;
                                         const CosmosLikeAccountDatabaseEntry update = {
                                             0,  // unused in
+                                                // CosmosLikeAccountDatabaseHelper::updateAccount
+                                            "",  // unused in
                                                  // CosmosLikeAccountDatabaseHelper::updateAccount
-                                             savedAddress,
-                                             *(self->_accountData),
-                                             std::chrono::system_clock::now()};
+                                            *(self->_accountData),
+                                            std::chrono::system_clock::now()};
                                         soci::session sql(
                                             self->getWallet()->getDatabase()->getPool());
                                         CosmosLikeAccountDatabaseHelper::updateAccount(
@@ -722,7 +720,7 @@ namespace ledger {
 
                 FuturePtr<Amount> CosmosLikeAccount::getUnbondingBalance() const {
                         auto currency = getWallet()->getCurrency();
-                        return _explorer->getUnbondingBalance(_keychain->getAddress()->toBech32())
+                        return _explorer->getUnbondingBalance(getAddress())
                                 .mapPtr<Amount>(
                                         getContext(),
                                         [currency](const auto& rawAmount){
@@ -738,7 +736,7 @@ namespace ledger {
 
                 FuturePtr<Amount> CosmosLikeAccount::getSpendableBalance() const {
                         auto currency = getWallet()->getCurrency();
-                        return _explorer->getSpendableBalance(_keychain->getAddress()->toBech32())
+                        return _explorer->getSpendableBalance(getAddress())
                                 .mapPtr<Amount>(
                                         getContext(),
                                         [currency](const auto& rawAmount){
@@ -773,7 +771,7 @@ namespace ledger {
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>
                 CosmosLikeAccount::getDelegations() {
-                        return _explorer->getDelegations(_accountData->address)
+                        return _explorer->getDelegations(getAddress())
                                 .map<std::vector<std::shared_ptr<api::CosmosLikeDelegation>>>(
                                         getContext(),
                                         [] (auto& delegations) {
@@ -792,13 +790,13 @@ namespace ledger {
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeReward>>>
                 CosmosLikeAccount::getPendingRewards() {
-                        return _explorer->getPendingRewards(_accountData->address)
+                        return _explorer->getPendingRewards(getAddress())
                                 .map<std::vector<std::shared_ptr<api::CosmosLikeReward>>>(
                                         getContext(),
                                         [&] (auto& rewards) {
                                                 std::vector<std::shared_ptr<api::CosmosLikeReward>> rewardList;
                                                 for (auto& reward : *rewards) {
-                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, _accountData->address));
+                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, getAddress()));
                                                 }
                                                 return rewardList;
                                         }

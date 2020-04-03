@@ -39,7 +39,7 @@ namespace ledger {
     namespace core {
         struct CosmosLikeAccountDatabaseEntry {
             int32_t index;
-            std::string address;
+            std::string pubkey;
             cosmos::Account details;
             std::chrono::system_clock::time_point lastUpdate;
         };
