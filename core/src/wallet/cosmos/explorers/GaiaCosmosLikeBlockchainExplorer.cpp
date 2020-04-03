@@ -818,7 +818,7 @@ namespace ledger {
             makeBaseReq(transaction, message, gasAdjustment, baseReqValue, allocator);
             auto baseReq = JsonObject(cosmos::constants::kBaseReq, baseReqValue);
 
-            const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgWithdrawDelegatorReward(message);
+            const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgWithdrawDelegationReward(message);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq);
             const auto endpoint = fmt::format(cosmos::constants::kGaiaRewardsEndpoint,
