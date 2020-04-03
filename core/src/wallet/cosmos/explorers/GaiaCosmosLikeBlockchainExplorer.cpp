@@ -821,8 +821,8 @@ namespace ledger {
             const auto unwrappedMessage = CosmosLikeMessage::unwrapMsgWithdrawDelegationReward(message);
 
             const auto rawTransaction = makeJsonFrom(document, baseReq);
-            const auto endpoint = fmt::format(cosmos::constants::kGaiaRewardsEndpoint,
-                    unwrappedMessage.delegatorAddress);
+            const auto endpoint = fmt::format("{}/{}", fmt::format(cosmos::constants::kGaiaRewardsEndpoint,
+                    unwrappedMessage.delegatorAddress), unwrappedMessage.validatorAddress);
 
             return genericPostRequestForSimulation(endpoint, rawTransaction);
         }
@@ -950,7 +950,7 @@ namespace ledger {
             switch (message->getMessageType()) {
                 case api::CosmosLikeMsgType::MSGSEND:
                     return getEstimatedGasLimitForTransfer(transaction, message, gasAdjustment);
-                case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
+                case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD:
                     return getEstimatedGasLimitForRewards(transaction, message, gasAdjustment);
                 case api::CosmosLikeMsgType::MSGDELEGATE:
                     return getEstimatedGasLimitForDelegations(transaction, message, gasAdjustment);
@@ -959,10 +959,7 @@ namespace ledger {
                 case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
                     return getEstimatedGasLimitForRedelegations(transaction, message, gasAdjustment);
                 default:
-                    return Future<BigInt>(nullptr)
-                        .map<BigInt>(getContext(), [](BigInt) {
-                                return BigInt::ZERO;
-                        });
+                    return Future<BigInt>::successful(BigInt::ZERO);
             }
         }
 

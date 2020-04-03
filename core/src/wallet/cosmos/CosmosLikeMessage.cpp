@@ -186,6 +186,8 @@ const std::string& CosmosLikeMessage::getFromAddress() const
             return boost::get<cosmos::MsgBeginRedelegate>(_msgData.content).delegatorAddress;
         case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
             return boost::get<cosmos::MsgWithdrawDelegatorReward>(_msgData.content).delegatorAddress;
+        case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD:
+            return boost::get<cosmos::MsgWithdrawDelegationReward>(_msgData.content).delegatorAddress;
         default:
             throw Exception(api::ErrorCode::UNSUPPORTED_OPERATION, "message type not handled");
     }

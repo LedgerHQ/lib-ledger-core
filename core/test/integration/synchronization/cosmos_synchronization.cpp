@@ -650,7 +650,7 @@ TEST_F(CosmosLikeWalletSynchronization, GasLimitEstimationForWithdrawingRewards)
         "\"fee\":{\"amount\":[{\"amount\":\"5001\",\"denom\":\"uatom\"}],\"gas\":\"200020\"},"
         "\"memo\":\"Sent from Ledger\","
         "\"msgs\":["
-        "{\"type\":\"cosmos-sdk/MsgWithdrawDelegatorReward\""
+        "{\"type\":\"cosmos-sdk/MsgWithdrawDelegationReward\""
         ",\"value\":{"
         "\"delegator_address\":\"cosmos167w96tdvmazakdwkw2u57227eduula2cy572lf\","
         "\"validator_address\":\"cosmosvaloper1grgelyng2v6v3t8z87wu3sxgt9m5s03xfytvz7\""
