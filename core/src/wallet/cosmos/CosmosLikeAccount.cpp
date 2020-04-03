@@ -806,7 +806,7 @@ namespace ledger {
                 Future<std::vector<std::shared_ptr<api::CosmosLikeUnbonding>>>
                 CosmosLikeAccount::getUnbondings() const
                 {
-                    return _explorer->getUnbondingsByDelegator(_accountData->address)
+                    return _explorer->getUnbondingsByDelegator(getAddress())
                         .map<std::vector<std::shared_ptr<api::CosmosLikeUnbonding>>>(
                             getContext(), [&](const auto &explorerUnbondings) {
                                 std::vector<std::shared_ptr<api::CosmosLikeUnbonding>>
@@ -824,7 +824,7 @@ namespace ledger {
                 }
 
                 Future<std::vector<std::shared_ptr<api::CosmosLikeRedelegation>>> CosmosLikeAccount::getRedelegations() const {
-                        return _explorer->getRedelegationsByDelegator(_accountData->address)
+                        return _explorer->getRedelegationsByDelegator(getAddress())
                         .map<std::vector<std::shared_ptr<api::CosmosLikeRedelegation>>>(
                             getContext(), [&](const auto &explorerRedelegations) {
                                 std::vector<std::shared_ptr<api::CosmosLikeRedelegation>>
