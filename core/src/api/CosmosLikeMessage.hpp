@@ -50,6 +50,18 @@ public:
     virtual std::string getRawMessageType() const = 0;
 
     /**
+     * Get type
+     * @return bool if the message was successfully executed on the chain
+     */
+    virtual bool getSuccess() const = 0;
+
+    /**
+     * Get type
+     * @return string the log of the message execution (useful when getSuccess() == false)
+     */
+    virtual std::string getLog() const = 0;
+
+    /**
      * Wrap the given CosmosLikeMsgSend into a CosmosLikeMessage
      * @param msg The message you need to wrap.
      * @return CosmosLikeMessage A wrapped message.

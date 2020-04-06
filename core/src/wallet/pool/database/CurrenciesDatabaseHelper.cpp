@@ -85,6 +85,24 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 use(BIPs);
                 break;
             }
+            case api::WalletType::COSMOS: {
+                auto &params = currency.cosmosLikeNetworkParameters.value();
+
+                std::stringstream additionalCIPs;
+                std::string separator(",");
+                strings::join(params.AdditionalCIPs, additionalCIPs, separator);
+                auto CIPs = additionalCIPs.str();
+                auto hexXPUBVersion = hex::toString(params.XPUBVersion);
+                auto hexPubKeyPrefix = hex::toString(params.PubKeyPrefix);
+                auto hexAddressPrefix = hex::toString(params.AddressPrefix);
+                sql << "INSERT INTO cosmos_currencies VALUES(:name, :identifier, :xpub, "
+                       ":pubkey_prefix, :address_prefix, :message_prefix, :chain_id, "
+                       ":additionalCIPs)",
+                    use(currency.name), use(params.Identifier), use(hexXPUBVersion),
+                    use(hexPubKeyPrefix), use(hexAddressPrefix), use(params.MessagePrefix),
+                    use(params.ChainId), use(CIPs);
+                break;
+            }
             case api::WalletType::ETHEREUM: {
                 auto &params = currency.ethereumLikeNetworkParameters.value();
 

@@ -30,50 +30,46 @@
 
 #pragma once
 
-#include <rapidjson/document.h>
-
-#include <collections/DynamicObject.hpp>
-
-#include <wallet/cosmos/cosmos.hpp>
-#include <wallet/common/api_impl/OperationApi.h>
-
 #include <api/CosmosLikeAmount.hpp>
 #include <api/CosmosLikeContent.hpp>
-#include <api/CosmosLikeVoteOption.hpp>
-#include <api/CosmosLikeMsgSend.hpp>
-#include <api/CosmosLikeMsgDelegate.hpp>
-#include <api/CosmosLikeMsgUndelegate.hpp>
-#include <api/CosmosLikeMsgBeginRedelegate.hpp>
-#include <api/CosmosLikeMsgSubmitProposal.hpp>
-#include <api/CosmosLikeMsgVote.hpp>
-#include <api/CosmosLikeMsgDeposit.hpp>
-#include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
 #include <api/CosmosLikeMessage.hpp>
+#include <api/CosmosLikeMsgBeginRedelegate.hpp>
+#include <api/CosmosLikeMsgDelegate.hpp>
+#include <api/CosmosLikeMsgDeposit.hpp>
+#include <api/CosmosLikeMsgSend.hpp>
+#include <api/CosmosLikeMsgSubmitProposal.hpp>
 #include <api/CosmosLikeMsgType.hpp>
+#include <api/CosmosLikeMsgUndelegate.hpp>
+#include <api/CosmosLikeMsgVote.hpp>
+#include <api/CosmosLikeMsgWithdrawDelegationReward.hpp>
+#include <api/CosmosLikeVoteOption.hpp>
+#include <collections/DynamicObject.hpp>
+#include <rapidjson/document.h>
+#include <wallet/common/api_impl/OperationApi.h>
+#include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
-	namespace core {
-		class CosmosLikeMessage : public api::CosmosLikeMessage {
-			friend api::CosmosLikeMessage;
+namespace core {
+class CosmosLikeMessage : public api::CosmosLikeMessage {
+    friend api::CosmosLikeMessage;
 
-		public:
+   public:
+    CosmosLikeMessage(const cosmos::Message &msgData);
+    CosmosLikeMessage(const std::shared_ptr<OperationApi> &baseOp);
 
-        	CosmosLikeMessage(const cosmos::Message& msgData);
-        	CosmosLikeMessage(const std::shared_ptr<OperationApi>& baseOp);
+    api::CosmosLikeMsgType getMessageType() const override;
+    std::string getRawMessageType() const override;
+    bool getSuccess() const override;
+    std::string getLog() const override;
 
-			virtual api::CosmosLikeMsgType getMessageType() const override;
-			virtual std::string getRawMessageType() const override;
+    rapidjson::Value toJson(rapidjson::Document::AllocatorType &allocator) const;
 
-			rapidjson::Value toJson(rapidjson::Document::AllocatorType& allocator) const;
+    void setRawData(const cosmos::Message &msgData);
+    const cosmos::Message &getRawData() const;
+    const std::string &getFromAddress() const;
 
-            void setRawData(const cosmos::Message &msgData);
-			const cosmos::Message& getRawData() const;
-            const std::string& getFromAddress() const;
-
-		private:
-
-			cosmos::Message _msgData;
-
-		};
-	}
-}
+   private:
+    cosmos::Message _msgData;
+};
+}  // namespace core
+}  // namespace ledger

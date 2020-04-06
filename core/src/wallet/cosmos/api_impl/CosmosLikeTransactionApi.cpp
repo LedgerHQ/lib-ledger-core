@@ -255,7 +255,7 @@ namespace ledger {
         // Builds the payload to broadcast the transaction
         // NOTE The produced payload is not a 1:1 mapping of this CosmosLikeTransactionApi because a "mode" is added to the json.
         // (cf.https://github.com/cosmos/cosmos-sdk/blob/2e42f9cb745aaa4c1a52ee730a969a5eaa938360/x/auth/client/rest/broadcast.go#L13-L16))
-        std::string CosmosLikeTransactionApi::serializeForBroadcast() {
+        std::string CosmosLikeTransactionApi::serializeForBroadcast(const std::string& mode) {
 
             using namespace cosmos::constants;
             Value vString(kStringType);
@@ -345,7 +345,7 @@ namespace ledger {
 
             // Set mode
             // TODO What mode do we want? (sync|async|block)
-            vString.SetString("block", static_cast<SizeType>(5), allocator);
+            vString.SetString(mode.c_str(), static_cast<SizeType>(mode.length()), allocator);
             document.AddMember(kMode, vString, allocator);
 
             StringBuffer buffer;

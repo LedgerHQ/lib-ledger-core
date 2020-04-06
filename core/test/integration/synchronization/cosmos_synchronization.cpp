@@ -202,6 +202,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetWithdrawDelegationRewardWithExplorer)
                 FAIL() << cosmos::constants::kMsgWithdrawDelegationReward << " message not found in tx";
             }
             EXPECT_TRUE(tx->logs[withdraw_msg_index].success);
+            EXPECT_TRUE(tx->messages[withdraw_msg_index].log.success);
             EXPECT_EQ(tx->messages[withdraw_msg_index].type, cosmos::constants::kMsgWithdrawDelegationReward);
             const cosmos::MsgWithdrawDelegationReward& msg = boost::get<cosmos::MsgWithdrawDelegationReward>(tx->messages[0].content);
             EXPECT_EQ(msg.delegatorAddress, DEFAULT_ADDRESS);
@@ -226,8 +227,12 @@ TEST_F(CosmosLikeWalletSynchronization, GetErrorTransaction) {
     ASSERT_EQ(tx->hash, tx_hash);
     EXPECT_EQ(tx->block->height, 768780);
     EXPECT_EQ(tx->logs.size(), 2);
+    // Logs are stored twice now, but only in serialized types
+    // DB will only ever store logs in cosmos_messages table anyway
     EXPECT_FALSE(tx->logs[0].success);
     EXPECT_EQ(tx->logs[0].log, "{\"codespace\":\"sdk\",\"code\":10,\"message\":\"insufficient account funds; 2412592uatom < 2417501uatom\"}");
+    EXPECT_FALSE(tx->messages[0].log.success);
+    EXPECT_EQ(tx->messages[0].log.log, R"esc({"codespace":"sdk","code":10,"message":"insufficient account funds; 2412592uatom < 2417501uatom"})esc");
     EXPECT_EQ(tx->messages[0].type, cosmos::constants::kMsgDelegate);
     const cosmos::MsgDelegate& msg = boost::get<cosmos::MsgDelegate>(tx->messages[0].content);
     EXPECT_EQ(msg.delegatorAddress, delegator);
@@ -252,6 +257,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetSendWithExplorer) {
     EXPECT_EQ(tx->block->height, 453223);
     EXPECT_EQ(tx->logs.size(), 2);
     EXPECT_TRUE(tx->logs[0].success);
+    EXPECT_TRUE(tx->messages[0].log.success);
     EXPECT_EQ(tx->messages[0].type, cosmos::constants::kMsgSend);
     const cosmos::MsgSend& msg = boost::get<cosmos::MsgSend>(tx->messages[0].content);
     EXPECT_EQ(msg.fromAddress, sender);
@@ -286,6 +292,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetDelegateWithExplorer) {
             EXPECT_EQ(tx->block->height, 660081);
             EXPECT_EQ(tx->logs.size(), 2);
             EXPECT_TRUE(tx->logs[0].success);
+            EXPECT_TRUE(tx->messages[0].log.success);
             EXPECT_EQ(tx->messages[0].type, cosmos::constants::kMsgDelegate);
             const cosmos::MsgDelegate& msg = boost::get<cosmos::MsgDelegate>(tx->messages[0].content);
             EXPECT_EQ(msg.delegatorAddress, delegator);

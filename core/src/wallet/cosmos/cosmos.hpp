@@ -134,12 +134,6 @@ namespace ledger {
                             MsgFees,
                             MsgUnsupported>;
 
-                        struct Message {
-                                std::string uid;
-                                std::string type;
-                                MessageContent content;
-                        };
-
                         /**
                            Status of completion of a given message (success/failure and reason in case of failure),
                            MessageLog.messageIndex is the index of the message in the message list held by the transaction object.
@@ -149,6 +143,19 @@ namespace ledger {
                                 bool success;
                                 std::string log;
                         };
+
+                        /**
+                         * Structure containing message related information.
+                         * The message also contains a copy of the MessageLog structure
+                         * for easier bundling.
+                         */
+                        struct Message {
+                                std::string uid;
+                                std::string type;
+                                MessageLog log;
+                                MessageContent content;
+                        };
+
 
                         /**
                            Represents the fee object which is a combination of an amount of fee and the amount of gas that this fee holds.

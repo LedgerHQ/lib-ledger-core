@@ -56,8 +56,15 @@ public:
 
     virtual void setDERSignature(const std::vector<uint8_t> & signature) = 0;
 
-    /** Serialize the transaction to be broadcast */
-    virtual std::string serializeForBroadcast() = 0;
+    /**
+     * Serialize the transaction to be broadcast
+     * @param mode The supported broadcast modes include
+     *        "block"(return after tx commit), (https://docs.cosmos.network/master/basics/tx-lifecycle.html#commit)
+     *        "sync"(return afer CheckTx), (https://docs.cosmos.network/master/basics/tx-lifecycle.html#types-of-checks) and
+     *        "async"(return right away).
+     * @return string the json payload to broadcast on the network
+     */
+    virtual std::string serializeForBroadcast(const std::string & mode) = 0;
 };
 
 } } }  // namespace ledger::core::api

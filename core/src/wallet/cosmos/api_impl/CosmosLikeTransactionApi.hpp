@@ -79,7 +79,7 @@ namespace ledger {
             std::vector<uint8_t> getSigningPubKey() const override;
 
             std::string serializeForSignature() override;
-            std::string serializeForBroadcast() override;
+            std::string serializeForBroadcast(const std::string& mode) override;
 
             void setRawData(const cosmos::Transaction &txData);
             const cosmos::Transaction & getRawData() const;

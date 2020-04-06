@@ -78,6 +78,9 @@ namespace ledger {
             msg.uid = row.get<std::string>(COL_UID);
             auto msgType = row.get<std::string>(COL_MSGTYPE);
             msg.type = msgType;
+            msg.log.success = (row.get<int32_t>(COL_SUCCESS) == 1);
+            msg.log.log = row.get<std::string>(COL_LOG);
+            msg.log.messageIndex = row.get<int32_t>(COL_MSGINDEX);
             switch (cosmos::stringToMsgType(msgType.c_str())) {
                 case api::CosmosLikeMsgType::MSGSEND:
                     {

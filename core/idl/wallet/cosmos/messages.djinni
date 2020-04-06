@@ -164,6 +164,14 @@ CosmosLikeMessage = interface +c {
         # @return string a message type in string format
         const getRawMessageType(): string;
 
+        # Get type
+        # @return bool if the message was successfully executed on the chain
+        const getSuccess(): bool;
+
+        # Get type
+        # @return string the log of the message execution (useful when getSuccess() == false)
+        const getLog(): string;
+
         # Wrap the given CosmosLikeMsgSend into a CosmosLikeMessage
         # @param msg The message you need to wrap.
         # @return CosmosLikeMessage A wrapped message.

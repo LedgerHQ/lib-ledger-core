@@ -595,7 +595,7 @@ namespace ledger {
                 }
 
                 void CosmosLikeAccount::broadcastTransaction(const std::shared_ptr<api::CosmosLikeTransaction> &transaction, const std::shared_ptr<api::StringCallback>& callback) {
-                        broadcastRawTransaction(transaction->serializeForBroadcast(), callback);
+                        broadcastRawTransaction(transaction->serializeForBroadcast("block"), callback);
                 }
 
                 std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTransaction() {

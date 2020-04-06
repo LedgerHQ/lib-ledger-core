@@ -397,8 +397,9 @@ namespace ledger {
             }
 
             template <typename T>
-            void parseMessage(const T& messageNode, cosmos::Message& out) {
+            void parseMessage(const T& messageNode, cosmos::Message& out, const cosmos::MessageLog& associated_log) {
                 out.type = messageNode[kType].GetString();
+                out.log = associated_log;
                 const auto& contentNode = messageNode[kValue].GetObject();
                 COSMOS_PARSE_MSG_CONTENT(MsgSend)
                 COSMOS_PARSE_MSG_CONTENT(MsgDelegate)
@@ -473,7 +474,7 @@ namespace ledger {
                     transaction.messages.assign((std::size_t) msgArray.Capacity(), cosmos::Message());
                     auto index = 0;
                     for (const auto &mNode : msgArray) {
-                        parseMessage(mNode, transaction.messages[index]);
+                        parseMessage(mNode, transaction.messages[index], transaction.logs[index]);
                         index++;
                     }
                 }

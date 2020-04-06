@@ -199,6 +199,16 @@ api::CosmosLikeMsgType CosmosLikeMessage::getMessageType() const {
 
 std::string CosmosLikeMessage::getRawMessageType() const { return _msgData.type; }
 
+bool CosmosLikeMessage::getSuccess() const
+{
+    return _msgData.log.success;
+}
+
+std::string CosmosLikeMessage::getLog() const
+{
+    return _msgData.log.log;
+}
+
 // Note : this Json has not been sorted yet
 // This doesn't follow the spec
 // https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md
