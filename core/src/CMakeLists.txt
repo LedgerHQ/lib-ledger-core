@@ -112,12 +112,14 @@ else()
     target_link_libraries(ledger-core-interface INTERFACE fmt)
 endif(MINGW OR MSVC)
 
+
 if (SYS_OPENSSL)
     find_package(OpenSSL)
     target_link_libraries(ledger-core-interface INTERFACE OpenSSL::Crypto)
 else()
     target_link_libraries(ledger-core-interface INTERFACE crypto)
 endif()
+
 target_link_libraries(ledger-core-interface INTERFACE blake)
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
 
@@ -187,6 +189,7 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
 target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
+target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

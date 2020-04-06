@@ -19,6 +19,7 @@
 #include "Logger.hpp"
 #include "Marshal.hpp"
 #include "Preferences.hpp"
+#include "StellarLikeWallet.hpp"
 #include "WalletType.hpp"
 
 namespace djinni_generated {
@@ -212,6 +213,26 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isI
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
         auto r = ref->isInstanceOfRippleLikeWallet();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1isInstanceOfStellarLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        auto r = ref->isInstanceOfStellarLikeWallet();
+        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Wallet_00024CppProxy_native_1asStellarLikeWallet(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Wallet>(nativeRef);
+        auto r = ref->asStellarLikeWallet();
+        return ::djinni::release(::djinni_generated::StellarLikeWallet::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

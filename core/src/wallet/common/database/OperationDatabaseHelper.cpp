@@ -43,6 +43,7 @@
 #include <bytes/serialization.hpp>
 #include <collections/strings.hpp>
 #include <wallet/common/TrustIndicator.h>
+#include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -127,6 +128,12 @@ namespace ledger {
                 auto tezosTxUid = TezosLikeTransactionDatabaseHelper::putTransaction(sql, operation.accountUid, operationValue);
                 if (insert) {
                     sql << "INSERT INTO tezos_operations VALUES(:uid, :tx_uid, :tx_hash)", use(operation.uid), use(tezosTxUid), use(operationValue.hash);
+                }
+            } else if (operation.stellarOperation.nonEmpty())  {
+                auto& operationValue = operation.stellarOperation.getValue();
+                auto stellarOpId = StellarLikeTransactionDatabaseHelper::putOperation(sql, operation.accountUid, operation.currencyName, operationValue);
+                if (insert) {
+                    sql << "INSERT INTO stellar_account_operations VALUES(:uid, :op_uid)", use(operation.uid), use(stellarOpId);
                 }
             }
         }

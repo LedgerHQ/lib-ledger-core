@@ -16,6 +16,7 @@
 #include "OperationQuery.hpp"
 #include "Preferences.hpp"
 #include "RippleLikeAccount.hpp"
+#include "StellarLikeAccount.hpp"
 #include "TezosLikeAccount.hpp"
 #include "TimePeriod.hpp"
 #include "WalletType.hpp"
@@ -176,6 +177,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asT
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asStellarLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->asStellarLikeAccount();
+        return ::djinni::release(::djinni_generated::StellarLikeAccount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isInstanceOfBitcoinLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -202,6 +213,16 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1is
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
         auto r = ref->isInstanceOfEthereumLikeAccount();
+        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isInstanceOfStellarLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->isInstanceOfStellarLikeAccount();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

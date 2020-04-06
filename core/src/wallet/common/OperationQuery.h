@@ -74,6 +74,7 @@ namespace ledger {
             void inflateTezosLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
+            void inflateStellarLikeTransaction(soci::session& sql, OperationApi& operation);
 
         protected:
             virtual soci::rowset<soci::row> performExecute(soci::session &sql);

@@ -34,6 +34,7 @@
 #include "ethereum/ethereumNetworks.hpp"
 #include "ripple/rippleNetworks.h"
 #include "tezos/tezosNetworks.h"
+#include "stellar/stellarNetworks.h"
 #include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {
@@ -291,6 +292,15 @@ namespace ledger {
                             .unit("mXTZ", 0, "mXTZ")
                             .unit("XTZ", 3, "XTZ");
 
+                const api::Currency STELLAR =
+                    Currency("stellar")
+                            .bip44(148)
+                            .forkOfStellar(networks::getStellarLikeNetworkParameters("stellar"))
+                            .paymentUri("stellar")
+                            .unit("stroop", 0, "stroop")
+                            .unit("XLM", 7, "XLM");
+
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -322,7 +332,8 @@ namespace ledger {
                 ETHEREUM_ROPSTEN,
                 ETHEREUM_CLASSIC,
                 RIPPLE,
-                TEZOS
+                TEZOS,
+                STELLAR
             });
         }
     }

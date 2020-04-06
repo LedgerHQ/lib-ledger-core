@@ -1,0 +1,5 @@
+@import "network.djinni"
+
+StellarLikeAddress = interface +c {
+
+}

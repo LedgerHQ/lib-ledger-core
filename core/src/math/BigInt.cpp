@@ -34,9 +34,10 @@
 #include <iostream>
 #include <algorithm>
 #include "../collections/collections.hpp"
-
-
+#include <boost/multiprecision/cpp_dec_float.hpp>
+#include <boost/multiprecision/cpp_int.hpp>
 #include <cstdlib>
+#include <utils/endian.h>
 
 namespace ledger {
     namespace core {
@@ -324,12 +325,16 @@ namespace ledger {
             return this->_negative == rhs._negative && bdCompare(this->_bigd, rhs._bigd) == 0;
         }
 
+        bool BigInt::operator!=(const BigInt &rhs) const {
+            return !(*this == rhs);
+        }
+
         bool BigInt::operator>(const BigInt &rhs) const {
             return rhs < *this;
         }
 
-        bool BigInt::operator>=(const BigInt &) const {
-            return false;
+        bool BigInt::operator>=(const BigInt &rhs) const {
+            return rhs == *this || rhs < *this;
         }
 
         BigInt BigInt::pow(unsigned short p) const {
@@ -407,5 +412,39 @@ namespace ledger {
 
             return std::all_of(it, end, [](char c) { return isdigit(c); });
         }
+
+        BigInt BigInt::fromFloatString(const std::string &str, int scaleFactor) {
+            namespace mp = boost::multiprecision;
+
+            mp::cpp_dec_float_50 f(str);
+            mp::cpp_dec_float_50 scale = mp::pow(mp::cpp_dec_float_50(10), (float) scaleFactor);
+            f = f * scale;
+
+            bool isNegative = f < 0;
+
+            if (isNegative)
+                f = f * -1;
+
+            mp::uint256_t i;
+            i.assign(f);
+
+            auto size = i.backend().size();
+            auto *limbs = i.backend().limbs();
+
+            // Here is the weird part. Boost is dividing the number into "limbs", the limbs size may differ depending on the
+            // platform but there are always ordered like little endian (the least significant limb is always first).
+            // We can't forget that limb endianness depends on the architecture. To avoid having to perform multiple
+            // swaps for every architecture we forces the whole limb "byte array" to be ordered like a bit uint256 in little endian
+            // number and then swap all of it in big endian.
+            if (endianness::getSystemEndianness() == endianness::Endianness::BIG) {
+                for (auto offset = 0; offset < size; offset++) {
+                    endianness::swapToEndianness(limbs + offset, sizeof(mp::limb_type),
+                                                 endianness::getSystemEndianness(), endianness::Endianness::LITTLE);
+                }
+            }
+            endianness::swapToEndianness(limbs, size * sizeof(mp::limb_type), endianness::Endianness::LITTLE, endianness::Endianness::BIG);
+            return BigInt(limbs, size * sizeof(mp::limb_type), isNegative);
+        }
+
     }
 }

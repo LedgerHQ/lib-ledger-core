@@ -185,3 +185,4 @@ TEST_F(LedgerApiEthereumLikeBlockchainExplorerTests, PostEstimatedGasLimit) {
       "0x57e8ba2a915285f984988282ab9346c1336a4e11", request));
   EXPECT_GE(result->toUint64(), 10000);
 }
+

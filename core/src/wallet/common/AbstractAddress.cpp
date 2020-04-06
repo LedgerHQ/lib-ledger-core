@@ -36,6 +36,7 @@
 #include <ethereum/EthereumLikeAddress.h>
 #include <ripple/RippleLikeAddress.h>
 #include <tezos/TezosLikeAddress.h>
+#include <wallet/stellar/StellarLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
@@ -61,6 +62,19 @@ namespace ledger {
             return asBitcoinLikeAddress() != nullptr;
         }
 
+        std::shared_ptr<api::StellarLikeAddress> AbstractAddress::asStellarLikeAddress() {
+            return std::dynamic_pointer_cast<api::StellarLikeAddress>(shared_from_this());
+        }
+
+        bool AbstractAddress::isInstanceOfStellarLikeAddress() const {
+            return _currency.walletType == api::WalletType::STELLAR;
+        }
+
+        const api::Currency &AbstractAddress::getCurrency() const {
+            return _currency;
+        }
+
+
         std::shared_ptr<api::Address> api::Address::parse(const std::string &address, const Currency &currency) {
             switch (currency.walletType) {
                 case WalletType::BITCOIN:
@@ -69,6 +83,8 @@ namespace ledger {
                     return ledger::core::CosmosLikeAddress::parse(address, currency);
                 case WalletType::ETHEREUM:
                     return ledger::core::EthereumLikeAddress::parse(address, currency);
+                case WalletType::STELLAR:
+                    return ledger::core::StellarLikeAddress::parse(address, currency);
                 case WalletType::RIPPLE:
                     return ledger::core::RippleLikeAddress::parse(address, currency);
                 case WalletType::TEZOS:

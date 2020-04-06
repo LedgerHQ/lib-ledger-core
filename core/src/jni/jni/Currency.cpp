@@ -8,6 +8,7 @@
 #include "EthereumLikeNetworkParameters.hpp"
 #include "Marshal.hpp"
 #include "RippleLikeNetworkParameters.hpp"
+#include "StellarLikeNetworkParameters.hpp"
 #include "TezosLikeNetworkParameters.hpp"
 #include "WalletType.hpp"
 
@@ -29,13 +30,14 @@ auto Currency::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<J
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::CosmosLikeNetworkParameters>::fromCpp(jniEnv, c.cosmosLikeNetworkParameters)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::fromCpp(jniEnv, c.ethereumLikeNetworkParameters)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::fromCpp(jniEnv, c.rippleLikeNetworkParameters)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::TezosLikeNetworkParameters>::fromCpp(jniEnv, c.tezosLikeNetworkParameters)))};
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::TezosLikeNetworkParameters>::fromCpp(jniEnv, c.tezosLikeNetworkParameters)),
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni_generated::StellarLikeNetworkParameters>::fromCpp(jniEnv, c.stellarLikeNetworkParameters)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto Currency::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 11);
+    ::djinni::JniLocalScope jscope(jniEnv, 12);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<Currency>::get();
     return {::djinni_generated::WalletType::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_walletType)),
@@ -47,7 +49,8 @@ auto Currency::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::Optional<std::experimental::optional, ::djinni_generated::CosmosLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_cosmosLikeNetworkParameters)),
             ::djinni::Optional<std::experimental::optional, ::djinni_generated::EthereumLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_ethereumLikeNetworkParameters)),
             ::djinni::Optional<std::experimental::optional, ::djinni_generated::RippleLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_rippleLikeNetworkParameters)),
-            ::djinni::Optional<std::experimental::optional, ::djinni_generated::TezosLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_tezosLikeNetworkParameters))};
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::TezosLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_tezosLikeNetworkParameters)),
+            ::djinni::Optional<std::experimental::optional, ::djinni_generated::StellarLikeNetworkParameters>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_stellarLikeNetworkParameters))};
 }
 
 }  // namespace djinni_generated

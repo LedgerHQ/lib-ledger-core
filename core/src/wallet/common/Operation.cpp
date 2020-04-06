@@ -59,8 +59,9 @@ namespace ledger {
                     final = fmt::format("{}+{}", final, additional);
                 }
                 uid = OperationDatabaseHelper::createUid(accountUid, final, type);
-            }
-            else {
+            } else if (stellarOperation.nonEmpty()) {
+                uid = OperationDatabaseHelper::createUid(accountUid, stellarOperation.getValue().transactionHash, type);
+            } else {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Cannot refresh uid of an incomplete operation.");
             }
         }
