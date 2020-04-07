@@ -46,25 +46,11 @@ function(toggle_compiler_warnings target_name)
             -Wdouble-promotion # warn if float is implicit promoted to double
             -Wformat=2 # warn on security issues around functions that format output (ie printf)
         )
-        
+
         if(WARNINGS_AS_ERRORS)
             message("Treat compiler warnings as errors")
             set(CLANG_WARNINGS ${CLANG_WARNINGS} -Werror)
             set(MSVC_WARNINGS ${MSVC_WARNINGS} /WX)
-        endif()
-
-        if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-            set(CLANG_WARNINGS ${CLANG_WARNINGS} -O0 -g)
-            set(MSVC_WARNINGS ${MSVC_WARNINGS} /Od)
-        elseif(CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo")
-            set(CLANG_WARNINGS ${CLANG_WARNINGS} -O3 -g)
-            set(MSVC_WARNINGS ${MSVC_WARNINGS} /O2d)
-        elseif(CMAKE_BUILD_TYPE STREQUAL "MinSizeRel")
-            set(CLANG_WARNINGS ${CLANG_WARNINGS} -Os)
-            set(MSVC_WARNINGS ${MSVC_WARNINGS} /O1)
-        else()
-            set(CLANG_WARNINGS ${CLANG_WARNINGS} -O3)
-            set(MSVC_WARNINGS ${MSVC_WARNINGS} /O2)
         endif()
 
         set(GCC_WARNINGS
