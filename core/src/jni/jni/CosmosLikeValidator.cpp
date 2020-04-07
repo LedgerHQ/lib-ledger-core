@@ -15,7 +15,7 @@ CosmosLikeValidator::~CosmosLikeValidator() = default;
 auto CosmosLikeValidator::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<JniType> {
     const auto& data = ::djinni::JniClass<CosmosLikeValidator>::get();
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
-                                                           ::djinni::get(::djinni_generated::CosmosLikeValidatorDescription::fromCpp(jniEnv, c.description)),
+                                                           ::djinni::get(::djinni_generated::CosmosLikeValidatorDescription::fromCpp(jniEnv, c.validatorDetails)),
                                                            ::djinni::get(::djinni_generated::CosmosLikeValidatorCommission::fromCpp(jniEnv, c.commission)),
                                                            ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.unbondingHeight)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::Date>::fromCpp(jniEnv, c.unbondingTime)),
@@ -24,8 +24,8 @@ auto CosmosLikeValidator::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni:
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.votingPower)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.operatorAddress)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.consensusPubkey)),
-                                                           ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.status)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::List<::djinni::Date>>::fromCpp(jniEnv, c.slashTimestamps)))};
+                                                           ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.activeStatus)),
+                                                           ::djinni::get(::djinni::List<::djinni::Date>::fromCpp(jniEnv, c.slashTimestamps)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
@@ -34,7 +34,7 @@ auto CosmosLikeValidator::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     ::djinni::JniLocalScope jscope(jniEnv, 12);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<CosmosLikeValidator>::get();
-    return {::djinni_generated::CosmosLikeValidatorDescription::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_description)),
+    return {::djinni_generated::CosmosLikeValidatorDescription::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_validatorDetails)),
             ::djinni_generated::CosmosLikeValidatorCommission::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_commission)),
             ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_unbondingHeight)),
             ::djinni::Optional<std::experimental::optional, ::djinni::Date>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_unbondingTime)),
@@ -43,8 +43,8 @@ auto CosmosLikeValidator::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_votingPower)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_operatorAddress)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_consensusPubkey)),
-            ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_status)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::List<::djinni::Date>>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_slashTimestamps))};
+            ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_activeStatus)),
+            ::djinni::List<::djinni::Date>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_slashTimestamps))};
 }
 
 }  // namespace djinni_generated

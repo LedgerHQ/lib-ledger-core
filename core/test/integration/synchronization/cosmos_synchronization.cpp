@@ -555,13 +555,13 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     ASSERT_EQ(valInfo.consensusPubkey, bisonTrailsValConsPubAddress) << "We should fetch the expected validator";
 
 
-    EXPECT_EQ(valInfo.description.moniker, "Bison Trails");
-    ASSERT_TRUE(valInfo.description.identity);
-    EXPECT_EQ(valInfo.description.identity.value(), "A296556FF603197C");
-    ASSERT_TRUE(valInfo.description.website);
-    EXPECT_EQ(valInfo.description.website.value(), "https://bisontrails.co");
-    ASSERT_TRUE(valInfo.description.details);
-    EXPECT_EQ(valInfo.description.details.value(), "Bison Trails is the easiest way to run infrastructure on multiple blockchains.");
+    EXPECT_EQ(valInfo.validatorDetails.moniker, "Bison Trails");
+    ASSERT_TRUE(valInfo.validatorDetails.identity);
+    EXPECT_EQ(valInfo.validatorDetails.identity.value(), "A296556FF603197C");
+    ASSERT_TRUE(valInfo.validatorDetails.website);
+    EXPECT_EQ(valInfo.validatorDetails.website.value(), "https://bisontrails.co");
+    ASSERT_TRUE(valInfo.validatorDetails.details);
+    EXPECT_EQ(valInfo.validatorDetails.details.value(), "Bison Trails is the easiest way to run infrastructure on multiple blockchains.");
 
     EXPECT_EQ(valInfo.commission.rates.maxRate, "0.500000000000000000");
     EXPECT_EQ(valInfo.commission.rates.maxChangeRate, "0.010000000000000000");
@@ -581,10 +581,10 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
         fmt::format("Expecting BisonTrails to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
     EXPECT_GE(BigInt::fromString(valInfo.votingPower).toUint64(), BigInt::fromString("400000000000").toUint64()) <<
         fmt::format("Expecting BisonTrails voting power to be > 400_000 ATOM. Check {} to see if the assertion holds", mintscanAddress);
-    EXPECT_EQ(valInfo.status, 2) <<
+    EXPECT_EQ(valInfo.activeStatus, 2) <<
         fmt::format("Expecting BisonTrails to be active (and that currently the explorer returns 2 for this status). Check {} to see if the assertion holds", mintscanAddress);
 
-    EXPECT_FALSE(valInfo.slashTimestamps) << "Previous jail events fetching is not implemented. slashTimestamps (*as an option*) should be None.";
+    EXPECT_TRUE(valInfo.slashTimestamps.empty()) << "Previous jail events fetching is not implemented. slashTimestamps should be empty.";
 }
 
 TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {

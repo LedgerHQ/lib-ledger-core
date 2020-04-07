@@ -27,7 +27,7 @@ private:
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeValidator") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/CosmosLikeValidatorDescription;Lco/ledger/core/CosmosLikeValidatorCommission;ILjava/util/Date;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;ILjava/util/ArrayList;)V") };
-    const jfieldID field_description { ::djinni::jniGetFieldID(clazz.get(), "description", "Lco/ledger/core/CosmosLikeValidatorDescription;") };
+    const jfieldID field_validatorDetails { ::djinni::jniGetFieldID(clazz.get(), "validatorDetails", "Lco/ledger/core/CosmosLikeValidatorDescription;") };
     const jfieldID field_commission { ::djinni::jniGetFieldID(clazz.get(), "commission", "Lco/ledger/core/CosmosLikeValidatorCommission;") };
     const jfieldID field_unbondingHeight { ::djinni::jniGetFieldID(clazz.get(), "unbondingHeight", "I") };
     const jfieldID field_unbondingTime { ::djinni::jniGetFieldID(clazz.get(), "unbondingTime", "Ljava/util/Date;") };
@@ -36,7 +36,7 @@ private:
     const jfieldID field_votingPower { ::djinni::jniGetFieldID(clazz.get(), "votingPower", "Ljava/lang/String;") };
     const jfieldID field_operatorAddress { ::djinni::jniGetFieldID(clazz.get(), "operatorAddress", "Ljava/lang/String;") };
     const jfieldID field_consensusPubkey { ::djinni::jniGetFieldID(clazz.get(), "consensusPubkey", "Ljava/lang/String;") };
-    const jfieldID field_status { ::djinni::jniGetFieldID(clazz.get(), "status", "I") };
+    const jfieldID field_activeStatus { ::djinni::jniGetFieldID(clazz.get(), "activeStatus", "I") };
     const jfieldID field_slashTimestamps { ::djinni::jniGetFieldID(clazz.get(), "slashTimestamps", "Ljava/util/ArrayList;") };
 };
 

@@ -19,7 +19,7 @@ namespace ledger { namespace core { namespace api {
 /** Structure holding Validator related information */
 struct CosmosLikeValidator final {
     /** Description of the validator as given at Creation/Edition */
-    CosmosLikeValidatorDescription description;
+    CosmosLikeValidatorDescription validatorDetails;
     /** Current commission rates and last commission update */
     CosmosLikeValidatorCommission commission;
     /** Last time an unbonding has been called. 0 if no unbonding called */
@@ -37,11 +37,11 @@ struct CosmosLikeValidator final {
     /** Consensus public key (cosmosvalconspub) */
     std::string consensusPubkey;
     /** Status (Unbonded - Unbonding - Bonded) Goes from 0 to 2 or 1 to 3 depending on API (see https://github.com/cosmos/cosmos-sdk/commit/53bf2271d5bac054a8f74723732f21055c1b72d4#diff-f54554903608b8b89649f532c8f1a78cL43) */
-    int32_t status;
-    /** Timestamps of slash events (no option = do not trust the info ; empty list in option = trust that it's clean) */
-    std::experimental::optional<std::vector<std::chrono::system_clock::time_point>> slashTimestamps;
+    int32_t activeStatus;
+    /** Timestamps of slash events */
+    std::vector<std::chrono::system_clock::time_point> slashTimestamps;
 
-    CosmosLikeValidator(CosmosLikeValidatorDescription description_,
+    CosmosLikeValidator(CosmosLikeValidatorDescription validatorDetails_,
                         CosmosLikeValidatorCommission commission_,
                         int32_t unbondingHeight_,
                         std::experimental::optional<std::chrono::system_clock::time_point> unbondingTime_,
@@ -50,9 +50,9 @@ struct CosmosLikeValidator final {
                         std::string votingPower_,
                         std::string operatorAddress_,
                         std::string consensusPubkey_,
-                        int32_t status_,
-                        std::experimental::optional<std::vector<std::chrono::system_clock::time_point>> slashTimestamps_)
-    : description(std::move(description_))
+                        int32_t activeStatus_,
+                        std::vector<std::chrono::system_clock::time_point> slashTimestamps_)
+    : validatorDetails(std::move(validatorDetails_))
     , commission(std::move(commission_))
     , unbondingHeight(std::move(unbondingHeight_))
     , unbondingTime(std::move(unbondingTime_))
@@ -61,12 +61,12 @@ struct CosmosLikeValidator final {
     , votingPower(std::move(votingPower_))
     , operatorAddress(std::move(operatorAddress_))
     , consensusPubkey(std::move(consensusPubkey_))
-    , status(std::move(status_))
+    , activeStatus(std::move(activeStatus_))
     , slashTimestamps(std::move(slashTimestamps_))
     {}
 
     CosmosLikeValidator(const CosmosLikeValidator& cpy) {
-       this->description = cpy.description;
+       this->validatorDetails = cpy.validatorDetails;
        this->commission = cpy.commission;
        this->unbondingHeight = cpy.unbondingHeight;
        this->unbondingTime = cpy.unbondingTime;
@@ -75,7 +75,7 @@ struct CosmosLikeValidator final {
        this->votingPower = cpy.votingPower;
        this->operatorAddress = cpy.operatorAddress;
        this->consensusPubkey = cpy.consensusPubkey;
-       this->status = cpy.status;
+       this->activeStatus = cpy.activeStatus;
        this->slashTimestamps = cpy.slashTimestamps;
     }
 
@@ -83,7 +83,7 @@ struct CosmosLikeValidator final {
 
 
     CosmosLikeValidator& operator=(const CosmosLikeValidator& cpy) {
-       this->description = cpy.description;
+       this->validatorDetails = cpy.validatorDetails;
        this->commission = cpy.commission;
        this->unbondingHeight = cpy.unbondingHeight;
        this->unbondingTime = cpy.unbondingTime;
@@ -92,19 +92,19 @@ struct CosmosLikeValidator final {
        this->votingPower = cpy.votingPower;
        this->operatorAddress = cpy.operatorAddress;
        this->consensusPubkey = cpy.consensusPubkey;
-       this->status = cpy.status;
+       this->activeStatus = cpy.activeStatus;
        this->slashTimestamps = cpy.slashTimestamps;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(description, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, votingPower, operatorAddress, consensusPubkey, status, slashTimestamps);
+        archive(validatorDetails, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, votingPower, operatorAddress, consensusPubkey, activeStatus, slashTimestamps);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(description, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, votingPower, operatorAddress, consensusPubkey, status, slashTimestamps);
+        archive(validatorDetails, commission, unbondingHeight, unbondingTime, minSelfDelegation, jailed, votingPower, operatorAddress, consensusPubkey, activeStatus, slashTimestamps);
     }
 };
 

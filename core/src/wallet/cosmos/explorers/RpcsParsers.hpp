@@ -486,7 +486,7 @@ namespace ledger {
             template <typename T>
             void parseValidatorSetEntry(const T& n, cosmos::Validator &out) {
                 assert((n.HasMember(kDescription)));
-                parseDescription(n[kDescription].GetObject(), out.description);
+                parseDescription(n[kDescription].GetObject(), out.validatorDetails);
 
                 assert((n.HasMember(kCommission)));
                 parseCommission(n[kCommission].GetObject(), out.commission);
@@ -521,9 +521,9 @@ namespace ledger {
                 out.consensusPubkey = n["consensus_pubkey"].GetString();
 
                 assert((n.HasMember("status")));
-                out.status = BigInt::fromString(n["status"].GetString()).toInt();
+                out.activeStatus = BigInt::fromString(n["status"].GetString()).toInt();
 
-                out.slashTimestamps = optional<std::vector<std::chrono::system_clock::time_point>>();
+                out.slashTimestamps = std::vector<std::chrono::system_clock::time_point>();
             }
 
             //  Parse an unbonding entry from (/staking/delegators/{address}/unbonding_delegations)
