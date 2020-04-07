@@ -66,10 +66,10 @@ namespace ledger {
 
         CosmosLikeBlockchainExplorer::TransactionFilter
         GaiaCosmosLikeBlockchainExplorer::fuseFilters(
-            std::initializer_list<std::experimental::string_view> filters) {
+            std::initializer_list<boost::string_view> filters) {
             std::string filter;
             return std::accumulate(filters.begin(), filters.end(), filter,
-                                   [](std::string acc, std::experimental::string_view val) {
+                                   [](std::string acc, boost::string_view val) {
                                        if (acc.empty()) {
                                            return std::string(val.data());
                                        }

@@ -37,7 +37,7 @@
 #include <net/HttpClient.hpp>
 #include <wallet/common/Block.h>
 
-#include <experimental/string_view>
+#include <boost/utility/string_view.hpp>
 
 namespace ledger {
     namespace core {
@@ -60,7 +60,7 @@ namespace ledger {
                 const char eventType[], const char attributeKey[], const std::string &value);
 
             // Concatenate multiple URL encoded filters
-            static TransactionFilter fuseFilters(std::initializer_list<std::experimental::string_view> filters);
+            static TransactionFilter fuseFilters(std::initializer_list<boost::string_view> filters);
 
             // TransactionFilters getter
             const std::vector<TransactionFilter> &getTransactionFilters() override;
