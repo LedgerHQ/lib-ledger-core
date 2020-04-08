@@ -79,6 +79,7 @@ namespace ledger {
                                 constexpr const char kCommissionMaxChangeRate[] = "max_change_rate";
                                 constexpr const char kCompletionTime[] = "completion_time";
                                 constexpr const char kContent[] = "content";
+                                constexpr const char kCount[] = "count";
                                 constexpr const char kCreationHeight[] = "creation_height";
                                 constexpr const char kDelegatorAddress[] = "delegator_address";
                                 constexpr const char kDenom[] = "denom";
@@ -130,6 +131,7 @@ namespace ledger {
                                 constexpr const char kTitle[] = "title";
                                 constexpr const char kToAddress[] = "to_address";
                                 constexpr const char kTombstoned[] = "tombstoned";
+                                constexpr const char kTotalCount[] = "total_count";
                                 constexpr const char kTxArray[] = "txs";
                                 constexpr const char kTxHash[] = "txhash";
                                 constexpr const char kTx[] = "tx";
