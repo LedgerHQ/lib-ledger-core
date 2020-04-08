@@ -55,9 +55,16 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, tx] () {
-                    soci::session sql(account->getWallet()->getDatabase()->getPool());
-                    if (account->putTransaction(sql, tx) != EthereumLikeAccount::FLAG_TRANSACTION_IGNORED)
+                    bool shouldEmitNow = false;
+                    {
+                        soci::session sql(account->getWallet()->getDatabase()->getPool());
+                        soci::transaction tr(sql);
+                        shouldEmitNow = account->putTransaction(sql, tx) != EthereumLikeAccount::FLAG_TRANSACTION_IGNORED;
+                        tr.commit();
+                    }
+                    if (shouldEmitNow) {
                         account->emitEventsNow();
+                    }
                 });
             }
         }
@@ -69,10 +76,13 @@ namespace ledger {
                     bool shouldEmitNow = false;
                     {
                         soci::session sql(account->getWallet()->getDatabase()->getPool());
+                        soci::transaction tr(sql);
                         shouldEmitNow = account->putBlock(sql, block);
+                        tr.commit();
                     }
-                    if (shouldEmitNow)
+                    if (shouldEmitNow) {
                         account->emitEventsNow();
+                    }
                 });
             }
         }
