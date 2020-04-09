@@ -244,6 +244,26 @@ namespace ledger {
         std::shared_ptr<cosmos::TransactionsBulk> concatenateBulks(
                 const std::vector<std::shared_ptr<cosmos::TransactionsBulk>>& bulks)
         {
+            /// This has to be done because of the way the synchronizer synchronizes batches.
+            /// After receiving a batch, if hasNext is set to true in the fetched bulk, it
+            /// recursively asks for another batch, starting from the height of the last
+            /// element contained in the bulk.
+            /// This swap makes sure that, by putting at the end of the vector the bulk
+            /// with hasNext set to true whose last element has the lowest block height,
+            /// using the last transaction's block height in the concatenated bulk to
+            /// synchronize the next batch will not skip any blocks.
+            auto& cp = const_cast<std::vector<std::shared_ptr<cosmos::TransactionsBulk>>&>(bulks);
+            auto last = std::begin(cp);
+            for (auto it = std::begin(cp); it != std::end(cp); ++it) {
+                if ((*it)->hasNext) {
+                    if (!(*last)->hasNext || ((*it)->transactions.back().block->height
+                            < (*last)->transactions.back().block->height)) {
+                        last = it;
+                    }
+                }
+            }
+            std::iter_swap(--std::end(cp), last);
+
             auto result = std::make_shared<cosmos::TransactionsBulk>();
             for (const auto& bulk : bulks) {
                 // Forced to copy because of flatMap API
