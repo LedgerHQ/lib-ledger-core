@@ -160,19 +160,18 @@ TEST_F(StellarFixture, GetOperations) {
     }
 }
 
-// This test is disabled until our nodes can support the feature
-//TEST_F(StellarFixture, GetRecommendedFees) {
-//    auto pool = newPool();
-//    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
-//            pool->getDispatcher()->getSerialExecutionContext("explorer"),
-//            pool->getHttpClient(MAINNET_URL),
-//            std::make_shared<DynamicObject>()
-//    );
-//    auto fees = wait(explorer->getRecommendedFees());
-//    auto t = fees->maxFee.toString();
-//    EXPECT_TRUE(!fees->lastLedger.empty());
-//    EXPECT_TRUE(fees->lastBaseFee >= BigInt(100));
-//    EXPECT_TRUE(fees->modeAcceptedFee >= BigInt(100));
-//    EXPECT_TRUE(fees->minAccepted >= BigInt(100));
-//    EXPECT_TRUE(fees->maxFee >= BigInt(100));
-//}
+TEST_F(StellarFixture, GetRecommendedFees) {
+    auto pool = newPool();
+    auto explorer = std::make_shared<HorizonBlockchainExplorer>(
+            pool->getDispatcher()->getSerialExecutionContext("explorer"),
+            pool->getHttpClient(MAINNET_URL),
+            std::make_shared<DynamicObject>()
+    );
+    auto fees = wait(explorer->getRecommendedFees());
+    auto t = fees->maxFee.toString();
+    EXPECT_TRUE(!fees->lastLedger.empty());
+    EXPECT_TRUE(fees->lastBaseFee >= BigInt(100));
+    EXPECT_TRUE(fees->modeAcceptedFee >= BigInt(100));
+    EXPECT_TRUE(fees->minAccepted >= BigInt(100));
+    EXPECT_TRUE(fees->maxFee >= BigInt(100));
+}
