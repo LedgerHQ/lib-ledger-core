@@ -64,6 +64,7 @@ namespace ledger {
                                   soci::session &session) {
             _dbName = dbName;
             setPassword(password, session);
+            session << "SET SESSION CHARACTERISTICS AS TRANSACTION ISOLATION LEVEL SERIALIZABLE";
         }
 
         void PostgreSQLBackend::setPassword(const std::string &password,
