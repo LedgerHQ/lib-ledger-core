@@ -223,7 +223,7 @@ namespace ledger {
                    "FROM cosmos_messages AS msg "
                    "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
                    "WHERE op.uid = :uid",
-                soci::use(operation.getUid()), soci::into(msgUid);
+                soci::use(operation.getBackend().uid), soci::into(msgUid);
 
             CosmosLikeTransactionDatabaseHelper::getMessageByUid(
                 sql, msgUid, operation.getBackend().cosmosTransaction.getValue().msg);
