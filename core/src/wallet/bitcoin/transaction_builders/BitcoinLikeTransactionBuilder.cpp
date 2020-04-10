@@ -182,12 +182,10 @@ namespace ledger {
 
             // BCH has a fake P2WPKH and P2WSH
             // So for cash addresses we should still use P2PKH or P2SH
-            auto isP2PKH = a->isP2PKH() || (a->isP2WPKH() && _currency.name == currencies::BITCOIN_CASH.name);
-            auto isP2SH = a->isP2SH() || (a->isP2WSH() && _currency.name == currencies::BITCOIN_CASH.name);
-            if (isP2PKH) {
+            if (a->isP2PKH() || (a->isP2WPKH() && _currency.name == currencies::BITCOIN_CASH.name)) {
                 script << btccore::OP_DUP << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUALVERIFY
                        << btccore::OP_CHECKSIG;
-            } else if (isP2SH) {
+            } else if (a->isP2SH() || (a->isP2WSH() && _currency.name == currencies::BITCOIN_CASH.name)) {
                 script << btccore::OP_HASH160 << a->getHash160() << btccore::OP_EQUAL;
             } else if (a->isP2WPKH() || a->isP2WSH()) {
                 script << btccore::OP_0 << a->getHash160();
