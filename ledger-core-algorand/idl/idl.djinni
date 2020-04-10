@@ -1,10 +1,5 @@
-# Do not remove this line; it brings in everything from the ledger-core interface
-@extern "../../ledger-core/idl/core.yaml"
-# This line is important only if you plan to use the callback2 type in your IDL; it’s currently a
-# bit tricky and relates to LLC-532; every time you use the callback2 type, it will get erased and
-# replaced by either a specialization of Callback or ListCallback. For instance,
-# callback2<void, optional<Foo>, optional<Error>> will first be replaced by Callback<Foo> and in a
-# second and final phase, to FooCallback (FooCallback interface will be generated too).
+@import "ledger-core/amount.djinni"
+
 @import "callback.djinni"
 
 # Your interface goes here. You can create additional .djinni files in the idl/ directory and import

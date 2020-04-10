@@ -6,12 +6,12 @@ namespace ledger {
     namespace core {
         /// Tag type.
         struct AlgorandMigration {
-          static int constexpr COIN_ID = 99999; // TODO: edit
-          static uint32_t constexpr CURRENT_VERSION = 1; // TODO: edit
+          static int constexpr COIN_ID = 283;
+          static uint32_t constexpr CURRENT_VERSION = 1;
         };
 
         // migrations
-        template <> void migrate<1, AlgorandMigration>(soci::session& sql);
-        template <> void rollback<1, AlgorandMigration>(soci::session& sql);
+        template <> void migrate<1, AlgorandMigration>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<1, AlgorandMigration>(soci::session& sql, api::DatabaseBackendType type);
   }
 }

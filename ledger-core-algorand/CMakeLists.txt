@@ -37,14 +37,17 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
+enable_testing()
+
 add_subdirectory(src)
 
 string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
 
 if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
-    message(STATUS "Test are enabled")
+    message(STATUS "Tests are enabled")
     enable_testing()
     add_subdirectory(test)
 else()
-    message(STATUS "Test are disabled")
+    message(STATUS "Tests are disabled")
 endif()
+
