@@ -209,6 +209,14 @@ std::string CosmosLikeMessage::getLog() const
     return _msgData.log.log;
 }
 
+std::string CosmosLikeMessage::getIndex() const
+{
+    if (getMessageType() == api::CosmosLikeMsgType::MSGFEES) {
+        return "fees";
+    }
+    return std::to_string(_msgData.log.messageIndex);
+}
+
 // Note : this Json has not been sorted yet
 // This doesn't follow the spec
 // https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md

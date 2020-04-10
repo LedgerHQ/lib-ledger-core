@@ -172,6 +172,10 @@ CosmosLikeMessage = interface +c {
         # @return string the log of the message execution (useful when getSuccess() == false)
         const getLog(): string;
 
+        # Get message index in the tx
+        # @return string the 0-based index in the tx or "fees" for the fees in the tx
+        const getIndex(): string;
+
         # Wrap the given CosmosLikeMsgSend into a CosmosLikeMessage
         # @param msg The message you need to wrap.
         # @return CosmosLikeMessage A wrapped message.

@@ -75,6 +75,16 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeMessage_00024CppProxy_native_1getIndex(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeMessage>(nativeRef);
+        auto r = ref->getIndex();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeMessage_wrapMsgSend(JNIEnv* jniEnv, jobject /*this*/, jobject j_msg)
 {
     try {

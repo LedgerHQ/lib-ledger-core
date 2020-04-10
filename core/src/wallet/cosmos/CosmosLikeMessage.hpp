@@ -61,6 +61,7 @@ class CosmosLikeMessage : public api::CosmosLikeMessage {
     std::string getRawMessageType() const override;
     bool getSuccess() const override;
     std::string getLog() const override;
+    std::string getIndex() const override;
 
     rapidjson::Value toJson(rapidjson::Document::AllocatorType &allocator) const;
 

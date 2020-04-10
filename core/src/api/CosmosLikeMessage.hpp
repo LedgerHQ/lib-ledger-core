@@ -62,6 +62,12 @@ public:
     virtual std::string getLog() const = 0;
 
     /**
+     * Get message index in the tx
+     * @return string the 0-based index in the tx or "fees" for the fees in the tx
+     */
+    virtual std::string getIndex() const = 0;
+
+    /**
      * Wrap the given CosmosLikeMsgSend into a CosmosLikeMessage
      * @param msg The message you need to wrap.
      * @return CosmosLikeMessage A wrapped message.
