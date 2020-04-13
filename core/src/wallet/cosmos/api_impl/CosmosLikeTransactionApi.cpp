@@ -29,6 +29,7 @@
  */
 
 
+#include "api_impl/BigIntImpl.hpp"
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 
 #include <fmt/format.h>
@@ -140,6 +141,14 @@ namespace ledger {
 
         std::shared_ptr<api::Amount> CosmosLikeTransactionApi::getGas() const {
             return std::make_shared<Amount>(_currency, 0, _txData.fee.gas);
+        }
+
+        std::shared_ptr<api::BigInt> CosmosLikeTransactionApi::getGasUsed() const {
+            return std::make_shared<api::BigIntImpl>(_txData.gasUsed.getValueOr(BigInt::ZERO));
+        }
+
+        std::shared_ptr<api::BigInt> CosmosLikeTransactionApi::getGasWanted() const {
+            return std::make_shared<api::BigIntImpl>(_txData.fee.gas);
         }
 
         void CosmosLikeTransactionApi::setSignature(const std::vector<uint8_t> &rSignature,

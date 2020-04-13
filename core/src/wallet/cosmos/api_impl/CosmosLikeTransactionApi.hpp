@@ -73,6 +73,8 @@ namespace ledger {
             std::chrono::system_clock::time_point getDate() const override;
             std::shared_ptr<api::Amount> getFee() const override;
             std::shared_ptr<api::Amount> getGas() const override;
+            std::shared_ptr<api::BigInt> getGasUsed() const override;
+            std::shared_ptr<api::BigInt> getGasWanted() const override;
             std::string getHash() const override;
             std::string getMemo() const override;
             std::vector<std::shared_ptr<api::CosmosLikeMessage>> getMessages() const override;

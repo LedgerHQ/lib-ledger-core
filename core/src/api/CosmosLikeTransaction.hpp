@@ -20,6 +20,7 @@
 namespace ledger { namespace core { namespace api {
 
 class Amount;
+class BigInt;
 class CosmosLikeMessage;
 
 /**Class representing a Cosmos transaction */
@@ -33,8 +34,14 @@ public:
     /** Get Fee (in drop) */
     virtual std::shared_ptr<Amount> getFee() const = 0;
 
-    /** Get gas */
+    /** Get gas Wanted (maximum gas advertised in transaction) */
     virtual std::shared_ptr<Amount> getGas() const = 0;
+
+    /** Get gas used (gas actually used in the transaction) */
+    virtual std::shared_ptr<BigInt> getGasUsed() const = 0;
+
+    /** Get gas Wanted (in BigInt form) */
+    virtual std::shared_ptr<BigInt> getGasWanted() const = 0;
 
     /** Get the hash of the transaction. */
     virtual std::string getHash() const = 0;

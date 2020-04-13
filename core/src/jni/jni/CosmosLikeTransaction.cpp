@@ -3,6 +3,7 @@
 
 #include "CosmosLikeTransaction.hpp"  // my header
 #include "Amount.hpp"
+#include "BigInt.hpp"
 #include "CosmosLikeMessage.hpp"
 #include "Marshal.hpp"
 
@@ -48,6 +49,26 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransaction_00024CppPro
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeTransaction>(nativeRef);
         auto r = ref->getGas();
         return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransaction_00024CppProxy_native_1getGasUsed(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeTransaction>(nativeRef);
+        auto r = ref->getGasUsed();
+        return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeTransaction_00024CppProxy_native_1getGasWanted(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeTransaction>(nativeRef);
+        auto r = ref->getGasWanted();
+        return ::djinni::release(::djinni_generated::BigInt::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

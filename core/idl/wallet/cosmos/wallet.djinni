@@ -11,8 +11,12 @@ CosmosLikeTransaction = interface +c {
         const getDate(): date;
         # Get Fee (in drop)
         const getFee(): Amount;
-        # Get gas
+        # Get gas Wanted (maximum gas advertised in transaction)
         const getGas(): Amount;
+        # Get gas used (gas actually used in the transaction)
+        const getGasUsed(): BigInt;
+        # Get gas Wanted (in BigInt form)
+        const getGasWanted(): BigInt;
         # Get the hash of the transaction.
         const getHash(): string;
         # Get memo
