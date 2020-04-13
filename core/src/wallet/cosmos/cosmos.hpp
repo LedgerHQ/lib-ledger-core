@@ -73,6 +73,8 @@ namespace ledger {
 
                         using ValidatorDescription = api::CosmosLikeValidatorDescription;
                         using ValidatorCommission = api::CosmosLikeValidatorCommission;
+                        using ValidatorSigningInformation = api::CosmosLikeValidatorSigningInformation;
+                        using ValidatorDistributionInformation = api::CosmosLikeValidatorDistributionInformation;
 
                         using Validator = api::CosmosLikeValidator;
                         using CommissionRates = api::CosmosLikeCommissionRates;

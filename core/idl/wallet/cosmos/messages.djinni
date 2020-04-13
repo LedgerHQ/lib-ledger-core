@@ -21,18 +21,6 @@ CosmosLikeCommissionRates = record {
         maxChangeRate: string;
 }
 
-CosmosLikeValidatorCommission = record {
-        rates: CosmosLikeCommissionRates;
-        updateTime: date;
-}
-
-CosmosLikeValidatorDescription = record {
-        moniker: string;
-        identity: optional<string>;
-        website: optional<string>;
-        details: optional<string>;
-}
-
 CosmosLikeContent = record {
         type: string;
         title: string;

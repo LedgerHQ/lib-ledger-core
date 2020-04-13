@@ -522,8 +522,6 @@ namespace ledger {
 
                 assert((n.HasMember("status")));
                 out.activeStatus = BigInt::fromString(n["status"].GetString()).toInt();
-
-                out.slashTimestamps = std::vector<std::chrono::system_clock::time_point>();
             }
 
             //  Parse an unbonding entry from (/staking/delegators/{address}/unbonding_delegations)
@@ -709,6 +707,68 @@ namespace ledger {
                     out.emplace_back(std::make_shared<cosmos::Redelegation>(std::move(parsedRedelegation)));
                 }
             }
+
+            // Parse distribution information (/distribution/validators/{cosmosvaloperXXX})
+            // {
+            //   "height": "1442636",
+            //   "result": {
+            //     "operator_address": "cosmos1dse76yk5jmj85jsd77ewsczc4k3u4s7az2mm8p",
+            //     "self_bond_rewards": [
+            //       {
+            //         "denom": "uatom",
+            //         "amount": "193463.275560183888483154"
+            //       }
+            //     ],
+            //     "val_commission": [
+            //       {
+            //         "denom": "uatom",
+            //         "amount": "320461734.567745567162136783"
+            //       }
+            //     ]
+            //   }
+            // }
+            template <typename T>
+            void parseDistInfo(const T& n, cosmos::ValidatorDistributionInformation &out) {
+                assert((n.HasMember("result")));
+                auto resultObj = n["result"].GetObject();
+                assert((resultObj.HasMember(kSelfBondRewards)));
+                assert((resultObj.HasMember(kValCommission)));
+                // HACK : this function will only parse the first member of each array.
+                // For the time being Cosmos is only used on CosmosHub, and the only
+                // valid denom is "uatom" for those arrays
+                out.selfBondRewards = resultObj[kSelfBondRewards].GetArray()[0].GetObject()[kAmount].GetString();
+                out.validatorCommission = resultObj[kValCommission].GetArray()[0].GetObject()[kAmount].GetString();
+            }
+
+            // Parse signing information (/slashing/validators/{cosmosvalconspubXXX}/signing_info)
+            // {
+            //   "height": "1442169",
+            //   "result": {
+            //     "address": "",
+            //     "start_height": "0",
+            //     "index_offset": "4844166",
+            //     "jailed_until": "1970-01-01T00:00:00Z",
+            //     "tombstoned": false,
+            //     "missed_blocks_counter": "0"
+            //   }
+            // }
+            template <typename T>
+            void parseSignInfo(const T& n, cosmos::ValidatorSigningInformation &out) {
+                assert((n.HasMember("result")));
+                auto resultObj = n["result"].GetObject();
+                assert((resultObj.HasMember(kStartHeight)));
+                assert((resultObj.HasMember(kIndexOffset)));
+                assert((resultObj.HasMember(kJailedUntil)));
+                assert((resultObj.HasMember(kTombstoned)));
+                assert((resultObj.HasMember(kMissedBlocksCounter)));
+
+                out.startHeight = std::stoi(resultObj[kStartHeight].GetString());
+                out.indexOffset = std::stoi(resultObj[kIndexOffset].GetString());
+                out.jailedUntil = DateUtils::fromJSON(resultObj[kJailedUntil].GetString());
+                out.tombstoned = resultObj[kTombstoned].GetBool();
+                out.missedBlocksCounter = std::stoi(resultObj[kMissedBlocksCounter].GetString());
+            }
+
         }
     }
 }

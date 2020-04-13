@@ -584,7 +584,12 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     EXPECT_EQ(valInfo.activeStatus, 2) <<
         fmt::format("Expecting BisonTrails to be active (and that currently the explorer returns 2 for this status). Check {} to see if the assertion holds", mintscanAddress);
 
-    EXPECT_TRUE(valInfo.slashTimestamps.empty()) << "Previous jail events fetching is not implemented. slashTimestamps should be empty.";
+    EXPECT_FALSE(valInfo.distInfo.validatorCommission.empty()) << "Bison Trails should have accumulated at least *some* validator commission";
+    EXPECT_FALSE(valInfo.distInfo.selfBondRewards.empty()) << "Bison Trails should have accumulated at least *some* self delegation rewards";
+
+    EXPECT_FALSE(valInfo.signInfo.tombstoned) << "Bison Trails is not expected to be tombstoned";
+    EXPECT_GE(valInfo.signInfo.missedBlocksCounter, 0) << "This value cannot be negative";
+    EXPECT_GE(valInfo.signInfo.jailedUntil, DateUtils::fromJSON("1970-01-01T00:00:00Z")) << "This value cannot be before epoch";
 }
 
 TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {

@@ -606,21 +606,53 @@ namespace ledger {
         }
 
         Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(const std::string& valOperAddress) const {
+            // Chain 3 explorer calls to get all the relevant information
             const bool parseJsonNumbersAsStrings = true;
             return _http->GET(fmt::format("/staking/validators/{}", valOperAddress))
                 .json(parseJsonNumbersAsStrings)
-                .map<cosmos::Validator>(
-                    getContext(), [](const HttpRequest::JsonResult& response) {
-                        const auto& document = std::get<1>(response)->GetObject();
+                .template flatMap<cosmos::Validator>(
+                    getContext(),
+                    [this](const HttpRequest::JsonResult &response) -> Future<cosmos::Validator> {
+                        const auto &document = std::get<1>(response)->GetObject();
                         if (!document.HasMember("result")) {
                             throw make_exception(
                                 api::ErrorCode::API_ERROR,
                                 "The API response from explorer is missing the \"result\" key");
                         }
-                        const auto& validatorNode = document["result"].GetObject();
+                        const auto &validatorNode = document["result"].GetObject();
                         cosmos::Validator val;
                         rpcs_parsers::parseValidatorSetEntry(validatorNode, val);
-                        return val;
+                        return Future<cosmos::Validator>::successful(val);
+                    })
+                .template flatMap<cosmos::Validator>(
+                    getContext(),
+                    [this, parseJsonNumbersAsStrings](
+                        const cosmos::Validator &inputVal) -> Future<cosmos::Validator> {
+                        auto retval = cosmos::Validator(inputVal);
+                        return _http->GET(fmt::format(kGaiaDistInfoEndpoint, retval.operatorAddress))
+                            .json(parseJsonNumbersAsStrings)
+                            .template flatMap<cosmos::Validator> (
+                                getContext(),
+                                [retval](const HttpRequest::JsonResult &response) mutable -> Future<cosmos::Validator> {
+                                    const auto &document = std::get<1>(response)->GetObject();
+                                    rpcs_parsers::parseDistInfo(document, retval.distInfo);
+                                    return Future<cosmos::Validator>::successful(retval);
+                                });
+                    })
+                .template flatMap<cosmos::Validator>(
+                    getContext(),
+                    [this, parseJsonNumbersAsStrings](
+                        const cosmos::Validator &inputVal) -> Future<cosmos::Validator> {
+                        auto retval = cosmos::Validator(inputVal);
+                        return _http->GET(fmt::format(kGaiaSignInfoEndpoint, retval.consensusPubkey))
+                            .json(parseJsonNumbersAsStrings)
+                            .template flatMap<cosmos::Validator>(
+                                getContext(),
+                                [retval](const HttpRequest::JsonResult &response) mutable -> Future<cosmos::Validator> {
+                                    const auto &document = std::get<1>(response)->GetObject();
+                                    rpcs_parsers::parseSignInfo(document, retval.signInfo);
+                                    return Future<cosmos::Validator>::successful(retval);
+                                });
                     });
         }
 

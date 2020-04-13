@@ -44,6 +44,8 @@ namespace ledger {
                                 constexpr const char kGaiaQueryRedelegationsEndpoint[] = "/staking/redelegations";
                                 constexpr const char kGaiaBalancesEndpoint[] = "/bank/balances/{}";
                                 constexpr const char kGaiaTransfersEndpoint[] = "/bank/accounts/{}/transfers";
+                                constexpr const char kGaiaDistInfoEndpoint[] = "/distribution/validators/{}";
+                                constexpr const char kGaiaSignInfoEndpoint[] = "/slashing/validators/{}/signing_info";
 
                                 // use raw char array here to be compliant with rapidjson
                                 constexpr const char kMsgBeginRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";
@@ -94,9 +96,11 @@ namespace ledger {
                                 constexpr const char kGasUsed[] = "gas_used";
                                 constexpr const char kHeight[] = "height";
                                 constexpr const char kIdentity[] = "identity";
+                                constexpr const char kIndexOffset[] = "index_offset";
                                 constexpr const char kInitialBalance[] = "initial_balance";
                                 constexpr const char kInitialDeposit[] = "initial_deposit";
                                 constexpr const char kInputs[] = "inputs";
+                                constexpr const char kJailedUntil[] = "jailed_until";
                                 constexpr const char kLog[] = "log";
                                 constexpr const char kLogs[] = "logs";
                                 constexpr const char kMaxHeight[] = "maxheight";
@@ -105,6 +109,7 @@ namespace ledger {
                                 constexpr const char kMessages[] = "msgs";
                                 constexpr const char kMinHeight[] = "minheight";
                                 constexpr const char kMinSelfDelegation[] = "min_self_delegation";
+                                constexpr const char kMissedBlocksCounter[] = "missed_blocks_counter";
                                 constexpr const char kMoniker[] = "moniker";
                                 constexpr const char kMsgIndex[] = "msg_index";
                                 constexpr const char kOption[] = "option";
@@ -114,19 +119,23 @@ namespace ledger {
                                 constexpr const char kPubKey[] = "pub_key";
                                 constexpr const char kReward[] = "reward";
                                 constexpr const char kRewards[] = "rewards";
+                                constexpr const char kSelfBondRewards[] = "self_bond_rewards";
                                 constexpr const char kSequence[] = "sequence";
                                 constexpr const char kSignature[] = "signature";
                                 constexpr const char kSimulate[] = "simulate";
                                 constexpr const char kSignatures[] = "signatures";
+                                constexpr const char kStartHeight[] = "start_height";
                                 constexpr const char kSuccess[] = "success";
                                 constexpr const char kTimestamp[] = "timestamp";
                                 constexpr const char kTitle[] = "title";
                                 constexpr const char kToAddress[] = "to_address";
+                                constexpr const char kTombstoned[] = "tombstoned";
                                 constexpr const char kTxArray[] = "txs";
                                 constexpr const char kTxHash[] = "txhash";
                                 constexpr const char kTx[] = "tx";
                                 constexpr const char kType[] = "type";
                                 constexpr const char kUpdateTime[] = "update_time";
+                                constexpr const char kValCommission[] = "val_commission";
                                 constexpr const char kValidatorAddress[] = "validator_address";
                                 constexpr const char kValidatorDstAddress[] = "validator_dst_address";
                                 constexpr const char kValidatorSrcAddress[] = "validator_src_address";

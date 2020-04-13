@@ -1,8 +1,8 @@
 @import "../../errors.djinni"
 @import "../amount.djinni"
+@import "validators.djinni"
 @import "messages.djinni"
 @import "callback.djinni"
-@import "validators.djinni"
 @import "../../cosmos/addresses.djinni"
 
 #Class representing a Cosmos transaction
