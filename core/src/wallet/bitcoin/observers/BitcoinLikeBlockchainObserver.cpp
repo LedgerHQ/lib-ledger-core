@@ -51,12 +51,11 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, tx]() {
-                                 BitcoinBlockchainObserver::emitEvent(account, [tx](soci::session &sql,
+                    BitcoinBlockchainObserver::emitEvent(account, [tx](soci::session &sql,
                                                                                     const std::shared_ptr<BitcoinLikeAccount> &acc) {
-                                     return acc->putTransaction(sql, tx) != BitcoinLikeAccount::FLAG_TRANSACTION_IGNORED;
-                                 });
-                             }
-                );
+                        return acc->putTransaction(sql, tx) != BitcoinLikeAccount::FLAG_TRANSACTION_IGNORED;
+                    });
+                });
             }
         }
 
@@ -64,14 +63,12 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, block]() {
-                                 BitcoinBlockchainObserver::emitEvent(account, [block](soci::session &sql,
-                                                                                    const std::shared_ptr<BitcoinLikeAccount> &acc) {
-                                     return acc->putBlock(sql, block);
-                                 });
-                             }
-                );
+                    BitcoinBlockchainObserver::emitEvent(account, [block](soci::session &sql,
+                                                                          const std::shared_ptr<BitcoinLikeAccount> &acc) {
+                        return acc->putBlock(sql, block);
+                    });
+                });
             }
         }
-
     }
 }

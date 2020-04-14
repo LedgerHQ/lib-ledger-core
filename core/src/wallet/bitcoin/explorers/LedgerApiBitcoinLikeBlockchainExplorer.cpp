@@ -78,7 +78,7 @@ namespace ledger {
         LedgerApiBitcoinLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                                 Option<std::string> fromBlockHash,
                                                                 Option<void *> session) {
-            bool isSnakeCase = _explorerVersion == "v3";
+            bool const isSnakeCase = _explorerVersion == "v3";
             return getLedgerApiTransactions(addresses, fromBlockHash, session, isSnakeCase);
         }
 

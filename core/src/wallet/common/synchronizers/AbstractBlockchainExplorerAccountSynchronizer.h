@@ -269,18 +269,15 @@ namespace ledger {
                         //Check if tx is pending
                         auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
                         if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
-                            {
-                                soci::transaction tr(sql);
-                                buddy->logger->info("Drop transaction {}", tx.first);
-                                buddy->logger->info("Deleting operation from DB {}", tx.second);
-                                //delete tx.second from DB (from operations)
-                                try {
-                                    sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
-                                    tr.commit();
-                                } catch(...) {
-                                    buddy->logger->info("Failed to delete operation from DB {}, rollback ...", tx.second);
-                                    tr.rollback();
-                                }
+                            soci::transaction tr(sql);
+                            buddy->logger->info("Drop transaction {}", tx.first);
+                            buddy->logger->info("Deleting operation from DB {}", tx.second);
+                            try {
+                                sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                                tr.commit();
+                            } catch(std::exception& ex) {
+                                buddy->logger->info("Failed to delete operation from DB {} reason: {}, rollback ...", tx.second, ex.what());
+                                tr.rollback();
                             }
                         }
                     }
