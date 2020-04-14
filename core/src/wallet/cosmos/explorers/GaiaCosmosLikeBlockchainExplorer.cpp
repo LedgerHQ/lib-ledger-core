@@ -191,13 +191,14 @@ namespace ledger {
 
         } // namespace
 
-        Future<cosmos::TransactionList> GaiaCosmosLikeBlockchainExplorer::getTransactions(
+        FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransactions(
             const CosmosLikeBlockchainExplorer::TransactionFilter& filter, int page, int limit) const {
             return _http->GET(fmt::format("/txs?{}&page={}&limit={}", filter, page, limit), ACCEPT_HEADER)
                 .json(true)
-                .map<cosmos::TransactionList>(
+                .mapPtr<cosmos::TransactionsBulk>(
                     getContext(), [](const HttpRequest::JsonResult& response) {
-                        cosmos::TransactionList result;
+                        auto result = std::make_shared<cosmos::TransactionsBulk>();
+
                         const auto& document = std::get<1>(response)->GetObject();
                         if (!document.HasMember("txs") ||
                             !document["txs"].IsArray()) {
@@ -207,9 +208,20 @@ namespace ledger {
                         }
                         const auto& transactions = document["txs"].GetArray();
                         for (const auto& node : transactions) {
-                            auto tx = std::make_shared<cosmos::Transaction>();
-                            parseTransactionWithPosttreatment(node, *tx);
-                            result.emplace_back(tx);
+                            auto tx = cosmos::Transaction();
+                            parseTransactionWithPosttreatment(node, tx);
+                            result->transactions.emplace_back(tx);
+                        }
+
+                        if (!document.HasMember(cosmos::constants::kCount) ||
+                            !document[cosmos::constants::kCount].IsString() ||
+                            !document.HasMember(cosmos::constants::kTotalCount) ||
+                            !document[cosmos::constants::kTotalCount].IsString()) {
+                            result->hasNext = false;
+                        } else {
+                            const auto count = std::stoi(document[cosmos::constants::kCount].GetString());
+                            const auto total_count = std::stoi(document[cosmos::constants::kTotalCount].GetString());
+                            result->hasNext = (count < total_count);
                         }
                         return result;
                     });
@@ -227,10 +239,47 @@ namespace ledger {
                 });
         }
 
-        Future<cosmos::TransactionList>
+        namespace {
+
+        std::shared_ptr<cosmos::TransactionsBulk> concatenateBulks(
+                const std::vector<std::shared_ptr<cosmos::TransactionsBulk>>& bulks)
+        {
+            /// This has to be done because of the way the synchronizer synchronizes batches.
+            /// After receiving a batch, if hasNext is set to true in the fetched bulk, it
+            /// recursively asks for another batch, starting from the height of the last
+            /// element contained in the bulk.
+            /// This swap makes sure that, by putting at the end of the vector the bulk
+            /// with hasNext set to true whose last element has the lowest block height,
+            /// using the last transaction's block height in the concatenated bulk to
+            /// synchronize the next batch will not skip any blocks.
+            auto& cp = const_cast<std::vector<std::shared_ptr<cosmos::TransactionsBulk>>&>(bulks);
+            auto last = std::begin(cp);
+            for (auto it = std::begin(cp); it != std::end(cp); ++it) {
+                if ((*it)->hasNext) {
+                    if (!(*last)->hasNext || ((*it)->transactions.back().block->height
+                            < (*last)->transactions.back().block->height)) {
+                        last = it;
+                    }
+                }
+            }
+            std::iter_swap(--std::end(cp), last);
+
+            auto result = std::make_shared<cosmos::TransactionsBulk>();
+            for (const auto& bulk : bulks) {
+                // Forced to copy because of flatMap API
+                result->transactions.insert(result->transactions.end(),
+                                            bulk->transactions.begin(),
+                                            bulk->transactions.end());
+                result->hasNext |= bulk->hasNext;
+            }
+            return result;
+        }
+
+        } // namespace
+
+        FuturePtr<cosmos::TransactionsBulk>
         GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddress(const std::string& address,
                                                                     uint32_t fromBlockHeight) const {
-
 
             auto blockHeightFilter = filterWithAttribute(kTx, kMinHeight, std::to_string(fromBlockHeight));
 
@@ -239,46 +288,32 @@ namespace ledger {
                 fuseFilters({
                     blockHeightFilter,
                     filterWithAttribute(kEventTypeMessage, kAttributeKeySender, address)
-                }),
-                1,
-                50);
+                }), 1, 50);
             auto received_transactions = getTransactions(
                 fuseFilters({
                     blockHeightFilter,
                     filterWithAttribute(kEventTypeTransfer, kAttributeKeyRecipient, address)
-                }),
-                1,
-                50);
-            std::vector<Future<cosmos::TransactionList>> transaction_promises(
+                }), 1, 50);
+            std::vector<FuturePtr<cosmos::TransactionsBulk>> transaction_promises(
                 {sent_transactions,
                  received_transactions});
 
             return async::sequence(getContext(), transaction_promises)
-                .flatMap<cosmos::TransactionList>(getContext(), [](auto& vector_of_lists) {
-                    cosmos::TransactionList result;
-                    for (auto&& list : vector_of_lists) {
-                        // Forced to copy because of flatMap API
-                        result.insert(result.end(), list.begin(), list.end());
-                    }
-                    return Future<cosmos::TransactionList>::successful(result);
+                .flatMapPtr<cosmos::TransactionsBulk>(getContext(), [](const auto& vector_of_bulks) {
+                    return FuturePtr<cosmos::TransactionsBulk>::successful(concatenateBulks(vector_of_bulks));
                 });
         }
 
-        Future<cosmos::TransactionList> GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddresses(
+        FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddresses(
             const std::vector<std::string>& addresses, uint32_t fromBlockHeight) const {
-            std::vector<Future<cosmos::TransactionList>> address_transactions;
+            std::vector<FuturePtr<cosmos::TransactionsBulk>> address_transactions;
             std::transform(addresses.begin(), addresses.end(), std::back_inserter(address_transactions),
-                           [&] (const auto& address) -> Future<cosmos::TransactionList> {
-                               return this->getTransactionsForAddress(address, fromBlockHeight);
+                           [&] (const auto& address) {
+                               return getTransactionsForAddress(address, fromBlockHeight);
                            });
             return async::sequence(getContext(), address_transactions)
-                .flatMap<cosmos::TransactionList>(getContext(), [](auto& vector_of_lists) {
-                    cosmos::TransactionList result;
-                    for (auto&& list : vector_of_lists) {
-                        // Forced to copy because of flatMap API
-                        result.insert(result.end(), list.begin(), list.end());
-                    }
-                    return Future<cosmos::TransactionList>::successful(result);
+                .flatMapPtr<cosmos::TransactionsBulk>(getContext(), [](const auto& vector_of_bulks) {
+                    return FuturePtr<cosmos::TransactionsBulk>::successful(concatenateBulks(vector_of_bulks));
                 });
         }
 
@@ -288,21 +323,7 @@ namespace ledger {
             uint32_t fromBlockHeight,
             Option<void*> session) {
 
-            return getTransactionsForAddresses(addresses, fromBlockHeight)
-                .mapPtr<cosmos::TransactionsBulk>(
-                    getContext(), [](auto& transaction_list) {
-                        std::vector<cosmos::Transaction> c_transaction_list;
-                        auto result =
-                            std::make_shared<cosmos::TransactionsBulk>();
-                        std::transform(
-                            transaction_list.begin(),
-                            transaction_list.end(),
-                            std::back_inserter(c_transaction_list),
-                            [](auto transaction) -> cosmos::Transaction { return *transaction; });
-                        result->transactions = c_transaction_list;
-                        result->hasNext = false;
-                        return result;
-                    });
+            return getTransactionsForAddresses(addresses, fromBlockHeight);
         }
 
         Future<void *> GaiaCosmosLikeBlockchainExplorer::startSession() {

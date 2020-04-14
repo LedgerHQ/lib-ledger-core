@@ -74,19 +74,9 @@ namespace ledger {
             // CurrentBlock querier
             FuturePtr<cosmos::Block> getCurrentBlock() override;
 
-            // Get all transactions relevant to an address
-            // Concatenates multiple API calls for all relevant transaction types
-            Future<cosmos::TransactionList> getTransactionsForAddress(
-                const std::string &address, uint32_t fromBlockHeight = 0) const;
-
-            // Get all transactions relevant to a list of addresses
-            // Concatenates multiple API calls for all relevant transaction types
-            Future<cosmos::TransactionList> getTransactionsForAddresses(
-                const std::vector<std::string> &addresses, uint32_t fromBlockHeight = 0) const;
-
             // Helper function to get transactions following a given filter.
-            Future<cosmos::TransactionList> getTransactions(
-                const TransactionFilter &filter, int page, int limit) const override;
+            FuturePtr<cosmos::TransactionsBulk> getTransactions(
+                const TransactionFilter &filter, int page, int limit) const;
 
             // Single transaction querier (found by hash)
             FuturePtr<cosmos::Transaction>
@@ -131,7 +121,17 @@ namespace ledger {
                 const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
                 double gasAdjustment = 1.0) const override;
 
-           private:
+        private:
+            // Get all transactions relevant to an address
+            // Concatenates multiple API calls for all relevant transaction types
+            FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddress(
+                const std::string &address, uint32_t fromBlockHeight = 0) const;
+
+            // Get all transactions relevant to a list of addresses
+            // Concatenates multiple API calls for all relevant transaction types
+            FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddresses(
+                const std::vector<std::string> &addresses, uint32_t fromBlockHeight = 0) const;
+
             Future<BigInt> genericPostRequestForSimulation(
                 const std::string &endpoint,
                 const std::string &transaction) const;
