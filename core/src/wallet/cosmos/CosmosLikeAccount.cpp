@@ -673,6 +673,15 @@ namespace ledger {
                     return Future<std::string>::successful(_accountData->accountNumber).callback(getContext(), callback);
                 }
 
+                void CosmosLikeAccount::getWithdrawAddress(const std::shared_ptr<api::StringCallback>& callback)
+                {
+                    if (!_accountData) {
+                        throw make_exception(
+                            api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
+                    }
+                    return Future<std::string>::successful(_accountData->withdrawAddress).callback(getContext(), callback);
+                }
+
                 cosmos::Account CosmosLikeAccount::getInfo() const {
                         return cosmos::Account(*_accountData);
                 }

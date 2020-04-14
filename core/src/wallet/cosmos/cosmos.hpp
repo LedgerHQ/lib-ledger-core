@@ -186,6 +186,7 @@ namespace ledger {
                                 std::vector<Coin> balances;
                                 std::string accountNumber;
                                 std::string sequence;
+                                std::string withdrawAddress;
                                 std::chrono::system_clock::time_point lastUpdate;
                         };
 

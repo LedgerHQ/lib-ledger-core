@@ -107,21 +107,47 @@ namespace ledger {
                 });
         }
 
-        FuturePtr<ledger::core::cosmos::Account>
-        GaiaCosmosLikeBlockchainExplorer::getAccount(const std::string &account) const {
+        FuturePtr<ledger::core::cosmos::Account> GaiaCosmosLikeBlockchainExplorer::getAccount(
+            const std::string &account) const
+        {
+            // NOTE : those futures do not need to be chained
+            // as only "account" is needed as argument to the futures.
+            // First call gets the /auth/accounts information (general info)
+            // Second call gets the "withdrawAddress" (where rewards go)
+            const bool parseJsonNumbersAsStrings = true;
             return _http->GET(fmt::format("/auth/accounts/{}", account), ACCEPT_HEADER)
-                .json(true)
-                .mapPtr<cosmos::Account>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                    auto result = std::make_shared<cosmos::Account>();
-                    const auto& document = std::get<1>(response)->GetObject();
-                    if (!document.HasMember("result")) {
-                        throw make_exception(
-                            api::ErrorCode::API_ERROR,
-                            "The API response from explorer is missing the \"result\" key");
-                    }
-                    rpcs_parsers::parseAccount(document["result"], *result);
-                    return result;
-                });
+                .json(parseJsonNumbersAsStrings)
+                .template flatMap<cosmos::Account>(
+                    getContext(),
+                    [](const HttpRequest::JsonResult &response) {
+                        auto result = cosmos::Account();
+                        const auto &document = std::get<1>(response)->GetObject();
+                        if (!document.HasMember("result")) {
+                            throw make_exception(
+                                api::ErrorCode::API_ERROR,
+                                "The API response from explorer is missing the \"result\" key");
+                        }
+                        rpcs_parsers::parseAccount(document["result"], result);
+                        return Future<cosmos::Account>::successful(result);
+                    })
+                .template flatMapPtr<cosmos::Account>(
+                    getContext(),
+                    [this, parseJsonNumbersAsStrings, account](
+                        const cosmos::Account &inputAcc)
+                        -> FuturePtr<cosmos::Account> {
+                        auto retval = cosmos::Account(inputAcc);
+                        return _http->GET(fmt::format(kGaiaWithdrawAddressEndpoint, account))
+                            .json(parseJsonNumbersAsStrings)
+                            .template flatMapPtr<cosmos::Account>(
+                                getContext(),
+                                [retval](const HttpRequest::JsonResult &response) mutable
+                                -> FuturePtr<cosmos::Account> {
+                                    const auto &document = std::get<1>(response)->GetObject();
+                                    const auto withdrawAddress = document["result"].GetString();
+                                    retval.withdrawAddress = withdrawAddress;
+                                    return FuturePtr<cosmos::Account>::successful(std::make_shared<cosmos::Account>(retval));
+                                });
+                    });
         }
 
         FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock() {
@@ -309,7 +335,7 @@ namespace ledger {
             std::vector<FuturePtr<cosmos::TransactionsBulk>> address_transactions;
             std::transform(addresses.begin(), addresses.end(), std::back_inserter(address_transactions),
                            [&] (const auto& address) {
-                               return getTransactionsForAddress(address, fromBlockHeight);
+                               return this->getTransactionsForAddress(address, fromBlockHeight);
                            });
             return async::sequence(getContext(), address_transactions)
                 .flatMapPtr<cosmos::TransactionsBulk>(getContext(), [](const auto& vector_of_bulks) {

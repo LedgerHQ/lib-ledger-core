@@ -163,6 +163,10 @@ CosmosLikeAccount = interface +c {
         # Get the account number
         # String like "15"
         getAccountNumber(callback: Callback<string>);
+
+        # Get the rewards withdrawal address
+        # String Bech32 encoded string
+        getWithdrawAddress(callback: Callback<string>);
 }
 
 #Class representing a Cosmos delegation

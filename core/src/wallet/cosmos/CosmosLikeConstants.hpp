@@ -46,6 +46,7 @@ namespace ledger {
                                 constexpr const char kGaiaTransfersEndpoint[] = "/bank/accounts/{}/transfers";
                                 constexpr const char kGaiaDistInfoEndpoint[] = "/distribution/validators/{}";
                                 constexpr const char kGaiaSignInfoEndpoint[] = "/slashing/validators/{}/signing_info";
+                                constexpr const char kGaiaWithdrawAddressEndpoint[] = "/distribution/delegators/{}/withdraw_address";
 
                                 // use raw char array here to be compliant with rapidjson
                                 constexpr const char kMsgBeginRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";

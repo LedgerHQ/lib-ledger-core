@@ -91,6 +91,12 @@ public:
      * String like "15"
      */
     virtual void getAccountNumber(const std::shared_ptr<StringCallback> & callback) = 0;
+
+    /**
+     * Get the rewards withdrawal address
+     * String Bech32 encoded string
+     */
+    virtual void getWithdrawAddress(const std::shared_ptr<StringCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

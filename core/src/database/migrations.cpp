@@ -872,6 +872,7 @@ namespace ledger {
                 "account_number VARCHAR(255),"
                 "sequence VARCHAR(255),"
                 "balances VARCHAR(255),"
+                "withdraw_address VARCHAR(255),"
                 "last_update TEXT"
                 ")";
 

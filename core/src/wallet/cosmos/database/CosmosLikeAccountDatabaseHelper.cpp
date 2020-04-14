@@ -52,9 +52,9 @@ namespace ledger {
             auto date { DateUtils::toJSON(acc.lastUpdate) };
             auto uid = AccountDatabaseHelper::createAccountUid(walletUid, index);
             sql << "INSERT INTO cosmos_accounts VALUES(:uid, :wallet_uid, :idx, :pubkey, :acc_type,"
-                   ":acc_number, :sequence, :balances, :last_update)",
+                   ":acc_number, :sequence, :balances, :withdraw_address, :last_update)",
             use(uid), use(walletUid), use(index), use(pubkey), use(acc.type), use(acc.accountNumber),
-            use(acc.sequence), use(balances), use(date);
+                    use(acc.sequence), use(balances), use(acc.withdrawAddress), use(date);
         }
 
 
@@ -63,7 +63,7 @@ namespace ledger {
                                                            const std::string &accountUid,
                                                            CosmosLikeAccountDatabaseEntry &entry) {
             rowset<row> rows = (sql.prepare << "SELECT idx, pubkey, account_type, account_number, "
-                                               "sequence, balances, last_update "
+                                               "sequence, balances, withdraw_address, last_update "
                                                "FROM cosmos_accounts "
                                                "WHERE uid = :uid", use(
                     accountUid));
@@ -73,7 +73,8 @@ namespace ledger {
             const auto COL_ACC_NUM = 3;
             const auto COL_SEQUENCE = 4;
             const auto COL_BALANCES = 5;
-            const auto COL_LAST_UPDATE = 6;
+            const auto COL_WITHDRAW_ADDRESS = 6;
+            const auto COL_LAST_UPDATE = 7;
             for (auto &row : rows) {
                 entry.index = row.get<int32_t>(COL_IDX);
                 entry.pubkey = row.get<std::string>(COL_PUBKEY);
@@ -81,6 +82,7 @@ namespace ledger {
                 auto accountNumber = row.get<Option<std::string>>(COL_ACC_NUM);
                 auto sequence = row.get<Option<std::string>>(COL_SEQUENCE);
                 auto balances = row.get<Option<std::string>>(COL_BALANCES);
+                auto withdrawAddress = row.get<Option<std::string>>(COL_WITHDRAW_ADDRESS);
                 auto lastUpdate = row.get<Option<std::chrono::system_clock::time_point>>(COL_LAST_UPDATE);
 
                 entry.details.type = accountType.getValueOr("");
@@ -89,6 +91,7 @@ namespace ledger {
                 if (balances.nonEmpty()) {
                     soci::stringToCoins(balances.getValue(), entry.details.balances);
                 }
+                entry.details.withdrawAddress = withdrawAddress.getValueOr("");
 
                 entry.details.pubkey = entry.pubkey;
                 entry.lastUpdate = lastUpdate.getValueOr({});
@@ -106,12 +109,14 @@ namespace ledger {
                    "sequence = :sequence,"
                    "balances = :balances,"
                    "account_type = :account_type,"
+                   "withdraw_address = :withdraw_address,"
                    "last_update = :last_update "
                    "WHERE uid = :uid",
                    use(entry.details.accountNumber),
                    use(entry.details.sequence),
                    use(balances),
                    use(entry.details.type),
+                   use(entry.details.withdrawAddress),
                    use(entry.lastUpdate),
                    use(accountUid);
 

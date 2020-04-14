@@ -131,6 +131,7 @@ namespace ledger {
                                 // Account related data
                                 void getSequence(const std::shared_ptr<api::StringCallback>& callback) override;
                                 void getAccountNumber(const std::shared_ptr<api::StringCallback>& callback) override;
+                                void getWithdrawAddress(const std::shared_ptr<api::StringCallback>& callback) override;
                                 cosmos::Account getInfo() const;
 
                                 // Balances

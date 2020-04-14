@@ -137,9 +137,10 @@ public:
 TEST_F(CosmosLikeWalletSynchronization, GetAccountWithExplorer) {
 
     auto account = ::wait(explorer->getAccount(DEFAULT_ADDRESS));
-    ASSERT_EQ(account->address, DEFAULT_ADDRESS);
-    ASSERT_EQ(account->accountNumber, "12850");
-
+    EXPECT_EQ(account->address, DEFAULT_ADDRESS);
+    EXPECT_EQ(account->accountNumber, "12850");
+    EXPECT_EQ(account->withdrawAddress, DEFAULT_ADDRESS)
+        << "Withdraw address has not been modified on this address";
 }
 
 
@@ -387,7 +388,7 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
             EXPECT_GE(sequence, 1226) << "Sequence was at 1226 on 2020-03-26";
 
             const auto accountNumber = account->getInfo().accountNumber;
-            EXPECT_EQ(accountNumber, "12850");
+            EXPECT_EQ(accountNumber, "12850") << "Account number is a network constant for a given address";
         }
     }
 }

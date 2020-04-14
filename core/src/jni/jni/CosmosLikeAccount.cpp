@@ -199,4 +199,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeAccount_00024CppProxy_native_1getWithdrawAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::CosmosLikeAccount>(nativeRef);
+        ref->getWithdrawAddress(::djinni_generated::StringCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
 }  // namespace djinni_generated
