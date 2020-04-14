@@ -288,12 +288,12 @@ namespace ledger {
                 fuseFilters({
                     blockHeightFilter,
                     filterWithAttribute(kEventTypeMessage, kAttributeKeySender, address)
-                }), 1, 5);
+                }), 1, 50);
             auto received_transactions = getTransactions(
                 fuseFilters({
                     blockHeightFilter,
                     filterWithAttribute(kEventTypeTransfer, kAttributeKeyRecipient, address)
-                }), 1, 5);
+                }), 1, 50);
             std::vector<FuturePtr<cosmos::TransactionsBulk>> transaction_promises(
                 {sent_transactions,
                  received_transactions});

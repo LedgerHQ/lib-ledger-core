@@ -379,10 +379,6 @@ Future<bool> CosmosLikeAccountSynchronizer::synchronizeBatch(uint32_t currentBat
 
             auto hadTX = hadTransactions || bulk->transactions.size() > 0;
             if (bulk->hasNext) {
-                /// Must be done in order to prevent infinite recursion but can lead to
-                /// unread transactions if the current block was not completly fetched in
-                /// the current batch
-                ++batchState.blockHeight;
                 return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
             } else {
                 return Future<bool>::successful(hadTX);
