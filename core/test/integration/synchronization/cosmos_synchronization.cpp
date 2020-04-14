@@ -570,7 +570,7 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     EXPECT_GE(valInfo.commission.updateTime, DateUtils::fromJSON("2019-03-13T23:00:00Z")) <<
         "As of this test writing, last update was on 2019-03-13T23:00:00Z. So updateTime should be at least as recent as this timestamp.";
     // Specify locale for std::stof -- Also, why we just pass strings instead of parsing as much as possible
-    std::setlocale(LC_NUMERIC, "C");
+    setlocale(LC_NUMERIC, "C");
     EXPECT_LE(std::stof(valInfo.commission.rates.rate), std::stof(valInfo.commission.rates.maxRate));
 
     EXPECT_EQ(valInfo.unbondingHeight, 0) <<

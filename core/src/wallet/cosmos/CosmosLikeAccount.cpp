@@ -807,7 +807,7 @@ namespace ledger {
                                         [&] (auto& rewards) {
                                                 std::vector<std::shared_ptr<api::CosmosLikeReward>> rewardList;
                                                 for (auto& reward : *rewards) {
-                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, getAddress()));
+                                                        rewardList.push_back(std::make_shared<CosmosLikeReward>(reward, this->getAddress()));
                                                 }
                                                 return rewardList;
                                         }

@@ -45,51 +45,50 @@ namespace core {
 namespace cosmos {
 using namespace Bech32Parameters;
 static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Type type) {
+    static const Bech32Struct COSMOS_PUB = {
+        "cosmospub",
+        "cosmospub",
+        "1",
+        6,
+        {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+        {0x00},
+        {0x00}};
+    static const Bech32Parameters::Bech32Struct COSMOS_PUB_VAL = {
+        "cosmosvaloperpub",
+        "cosmosvaloperpub",
+        "1",
+        6,
+        {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+        {0x00},
+        {0x00}};
+    static const Bech32Parameters::Bech32Struct COSMOS = {
+        "cosmos",
+        "cosmos",
+        "1",
+        6,
+        {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+        {0x01},
+        {0x01}};
+    static const Bech32Parameters::Bech32Struct COSMOS_VAL = {
+        "cosmosvaloper",
+        "cosmosvaloper",
+        "1",
+        6,
+        {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+        {0x01},
+        {0x01}};
     switch (type) {
-        case api::CosmosBech32Type::PUBLIC_KEY:
-
-            static const Bech32Struct COSMOS_PUB = {
-                "cosmospub",
-                "cosmospub",
-                "1",
-                6,
-                {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
-                {0x00},
-                {0x00}};
-            return COSMOS_PUB;
-        case api::CosmosBech32Type::PUBLIC_KEY_VAL:
-            static const Bech32Parameters::Bech32Struct COSMOS_PUB_VAL = {
-                "cosmosvaloperpub",
-                "cosmosvaloperpub",
-                "1",
-                6,
-                {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
-                {0x00},
-                {0x00}};
-            return COSMOS_PUB_VAL;
-        case api::CosmosBech32Type::ADDRESS:
-            static const Bech32Parameters::Bech32Struct COSMOS = {
-                "cosmos",
-                "cosmos",
-                "1",
-                6,
-                {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
-                {0x01},
-                {0x01}};
-            return COSMOS;
-        case api::CosmosBech32Type::ADDRESS_VAL:
-            static const Bech32Parameters::Bech32Struct COSMOS_VAL = {
-                "cosmosvaloper",
-                "cosmosvaloper",
-                "1",
-                6,
-                {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
-                {0x01},
-                {0x01}};
-            return COSMOS_VAL;
-        default:
-            throw make_exception(
-                api::ErrorCode::INVALID_ARGUMENT, "No Bech32 parameters set for this Bech32 type");
+    case api::CosmosBech32Type::PUBLIC_KEY:
+        return COSMOS_PUB;
+    case api::CosmosBech32Type::PUBLIC_KEY_VAL:
+        return COSMOS_PUB_VAL;
+    case api::CosmosBech32Type::ADDRESS:
+        return COSMOS;
+    case api::CosmosBech32Type::ADDRESS_VAL:
+        return COSMOS_VAL;
+    default:
+        throw make_exception(
+            api::ErrorCode::INVALID_ARGUMENT, "No Bech32 parameters set for this Bech32 type");
     }
 }
 
