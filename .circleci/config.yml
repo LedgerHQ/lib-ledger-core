@@ -2,7 +2,7 @@ version: 2
 general:
 dependencies:
   cache_directories:
-    - ~/cmake-3.12.3
+    - ~/cmake-3.16.5
 jobs:
   build_linux_release:
     environment:
@@ -139,7 +139,7 @@ jobs:
                 # cd ../lib-ledger-core-build
                 # ~/cmake-3.13.3-Linux-x86_64/bin/ctest -VV -timeout 60
                 cd ../lib-ledger-core/ledger-core/build
-                ~/cmake-3.13.3-Linux-x86_64/bin/ctest -VV -timeout 60
+                ~/cmake-3.16.5-Linux-x86_64/bin/ctest -VV -timeout 60
   build_macos_release:
     macos:
       xcode: "10.0.0"

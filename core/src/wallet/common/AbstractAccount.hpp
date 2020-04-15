@@ -97,12 +97,16 @@ namespace ledger {
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
+            std::shared_ptr<api::StellarLikeAccount> asStellarLikeAccount() override;
+            bool isInstanceOfStellarLikeAccount() const override;
+
             std::shared_ptr<api::EventBus> getEventBus() override;
 
             void emitEventsNow();
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
+            void eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point & date);
 
         protected:
             void emitNewOperationEvent(const Operation& operation);

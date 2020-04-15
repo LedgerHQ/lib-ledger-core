@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.15)
 project(ledger-core)
 
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -7,6 +7,7 @@ option(BUILD_TESTS "Indicates wheter or not the toolchain must build the test or
 
 list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 include(UseBackportedModules)
+
 
 # The project version number.
 set(VERSION_MAJOR   3   CACHE STRING "Project major version number.")

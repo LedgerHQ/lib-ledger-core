@@ -260,6 +260,15 @@ namespace ledger {
             }
         }
 
+        std::vector<std::shared_ptr<api::Address>> BitcoinLikeAccount::fromBitcoinAddressesToAddresses(const std::vector<std::shared_ptr<BitcoinLikeAddress>> &addresses) {
+            AbstractAccount::AddressList result;
+            result.reserve(addresses.size());
+            for (auto& addr : addresses) {
+                result.push_back(std::dynamic_pointer_cast<api::Address>(addr));
+            }
+            return result;
+        }
+
         std::shared_ptr<BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
             return _keychain;
         }
@@ -382,14 +391,12 @@ namespace ledger {
         Future<AbstractAccount::AddressList> BitcoinLikeAccount::getFreshPublicAddresses() {
             auto keychain = getKeychain();
             return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
-                auto addrs = keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
-                AbstractAccount::AddressList result(addrs.size());
-                auto i = 0;
-                for (auto& addr : addrs) {
-                    result[i] = std::dynamic_pointer_cast<api::Address>(addr);
-                    i += 1;
-                }
-                return result;
+                return fromBitcoinAddressesToAddresses(
+                        keychain->getFreshAddresses(
+                                BitcoinLikeKeychain::KeyPurpose::RECEIVE,
+                                keychain->getObservableRangeSize()
+                                )
+                        );
             });
         }
 
@@ -439,7 +446,7 @@ namespace ledger {
                 auto endDate = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
-                                         "Start date should be strictly greater than end date");
+                                         "Start date should be strictly lower than end date");
                 }
 
                 const auto &uid = self->getAccountUid();
@@ -679,23 +686,16 @@ namespace ledger {
             auto log = logger();
 
             log->debug(" Start erasing data of account : {}", getAccountUid());
+
+            std::lock_guard<std::mutex> lock(_synchronizationLock);
+            _currentSyncEventBus = nullptr;
+
             soci::session sql(getWallet()->getDatabase()->getPool());
+
             //Update account's internal preferences (for synchronization)
-            auto savedState = getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
-            if (savedState.nonEmpty()) {
-                //Reset batches to blocks mined before given date
-                auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
-                for (auto& batch : savedState.getValue().batches) {
-                    if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
-                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
-                        batch.blockHash = previousBlock.getValue().blockHash;
-                    } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
-                        batch.blockHeight = 0;
-                        batch.blockHash = "";
-                    }
-                }
-                getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
-            }
+            // Clear synchronizer state
+            eraseSynchronizerDataSince(sql, date);
+
             auto accountUid = getAccountUid();
             sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(accountUid), soci::use(date);
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
@@ -705,5 +705,14 @@ namespace ledger {
             return _explorer->getFees().callback(getMainExecutionContext(), callback);
         }
 
+        Future<AbstractAccount::AddressList> BitcoinLikeAccount::getAddresses(int64_t from, int64_t to) {
+            auto keychain = getKeychain();
+            return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
+                return  fromBitcoinAddressesToAddresses(keychain->getAllObservableAddresses(from, to));
+            });
+        }
+        void BitcoinLikeAccount::getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) {
+            return getAddresses(from, to).callback(getMainExecutionContext(), callback);
+        }
     }
 }

@@ -6,7 +6,19 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-utils-tests main.cpp endian_tests.cpp hex_tests.cpp derivation_path_test.cpp option_test.cpp either_test.cpp lazy_test.cpp date_parser_tests.cpp derivation_scheme_tests.cpp configuration_matchable_tests.cpp)
+add_executable(ledger-core-utils-tests
+        main.cpp
+        endian_tests.cpp
+        hex_tests.cpp
+        derivation_path_test.cpp
+        option_test.cpp
+        either_test.cpp
+        lazy_test.cpp
+        date_parser_tests.cpp
+        derivation_scheme_tests.cpp
+        configuration_matchable_tests.cpp
+        json_test.cpp
+        )
 
 target_link_libraries(ledger-core-utils-tests gtest gtest_main)
 target_link_libraries(ledger-core-utils-tests ledger-core-static)

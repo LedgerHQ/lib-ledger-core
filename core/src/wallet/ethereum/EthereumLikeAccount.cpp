@@ -107,9 +107,9 @@ namespace ledger {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
 
-            if (transaction.block.nonEmpty())
+            if (transaction.block.nonEmpty()) {
                 putBlock(sql, transaction.block.getValue());
-
+            }
 
             int result = 0x00;
 
@@ -225,7 +225,12 @@ namespace ledger {
         void EthereumLikeAccount::updateInternalTransactions(soci::session &sql,
                                                              const Operation &operation) {
             auto transaction = operation.ethereumTransaction.getValue();
+            uint64_t index = 0;
             for (auto &internalTx : transaction.internalTransactions) {
+                // pre-increment so that we always increment the index, even when discarding
+                // internal transactions (that means we never use index = 0, but it’s okay)
+                index += 1;
+
                 // Since explorer is considering also wrapping tx as an internal action,
                 // we must filter it by considering that only internal action with same data,
                 // sender and receiver, is the one representing/corresponding to wrapping tx
@@ -235,7 +240,7 @@ namespace ledger {
                                 internalTx.to == _accountAddress ? api::OperationType::RECEIVE :
                                 api::OperationType::NONE;
 
-                    auto internalTxUid = OperationDatabaseHelper::createUid(operation.uid, fmt::format("{}-{}", internalTx.from, hex::toString(internalTx.inputData)), type);
+                    auto internalTxUid = OperationDatabaseHelper::createUid(operation.uid, fmt::format("{}-{}-{}", internalTx.from, hex::toString(internalTx.inputData), index), type);
                     auto actionCount = 0;
                     sql << "SELECT COUNT(*) FROM internal_operations WHERE uid = :uid", soci::use(internalTxUid), soci::into(actionCount);
                     if (actionCount == 0) {
@@ -243,10 +248,11 @@ namespace ledger {
                         auto gasLimit = internalTx.gasLimit.toHexString();
                         auto gasUsed = internalTx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
                         auto inputData = hex::toString(internalTx.inputData);
+                        auto operationType = api::to_string(type);
                         sql << "INSERT INTO internal_operations VALUES(:uid, :eth_op_uid, :type, :value, :sender, :receiver, :gas_limit, :gas_used, :input_data)",
                                 soci::use(internalTxUid),
                                 soci::use(operation.uid),
-                                soci::use(api::to_string(type)),
+                                soci::use(operationType),
                                 soci::use(value),
                                 soci::use(internalTx.from),
                                 soci::use(internalTx.to),
@@ -377,7 +383,7 @@ namespace ledger {
                     auto endDate = DateUtils::fromJSON(end);
                     if (startDate >= endDate) {
                         throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
-                                             "Start date should be strictly greater than end date");
+                                             "Start date should be strictly lower than end date");
                     }
 
                     const auto &uid = self->getAccountUid();
@@ -459,23 +465,16 @@ namespace ledger {
                 auto log = logger();
 
                 log->debug(" Start erasing data of account : {}", getAccountUid());
+
+                std::lock_guard<std::mutex> lock(_synchronizationLock);
+                _currentSyncEventBus = nullptr;
+
                 soci::session sql(getWallet()->getDatabase()->getPool());
+
                 //Update account's internal preferences (for synchronization)
-                auto savedState = getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>("state");
-                if (savedState.nonEmpty()) {
-                        //Reset batches to blocks mined before given date
-                        auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
-                        for (auto& batch : savedState.getValue().batches) {
-                                if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
-                                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
-                                        batch.blockHash = previousBlock.getValue().blockHash;
-                                } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
-                                        batch.blockHeight = 0;
-                                        batch.blockHash = "";
-                                }
-                        }
-                        getInternalPreferences()->getSubPreferences("BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", savedState.getValue())->commit();
-                }
+                // Clear synchronizer state
+                eraseSynchronizerDataSince(sql, date);
+
                 auto accountUid = getAccountUid();
                 sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(accountUid), soci::use(date);
                 return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
@@ -627,6 +626,12 @@ namespace ledger {
 
         void EthereumLikeAccount::getEstimatedGasLimit(const std::string & address, const std::shared_ptr<api::BigIntCallback> & callback) {
             _explorer->getEstimatedGasLimit(address).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
+                return std::make_shared<api::BigIntImpl>(*gasPrice);
+            }).callback(getMainExecutionContext(), callback);
+        }
+
+        void EthereumLikeAccount::getDryRunGasLimit(const std::string & address, const api::EthereumGasLimitRequest &request, const std::shared_ptr<api::BigIntCallback> & callback) {
+            _explorer->getDryRunGasLimit(address, request).mapPtr<api::BigInt>(getMainExecutionContext(), [] (const std::shared_ptr<BigInt> &gasPrice) -> std::shared_ptr<api::BigInt> {
                 return std::make_shared<api::BigIntImpl>(*gasPrice);
             }).callback(getMainExecutionContext(), callback);
         }

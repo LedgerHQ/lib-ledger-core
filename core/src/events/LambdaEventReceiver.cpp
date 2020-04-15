@@ -29,6 +29,9 @@
  *
  */
 #include "LambdaEventReceiver.hpp"
+#include <utils/Unit.hpp>
+#include <async/Promise.hpp>
+#include <api/DynamicObject.hpp>
 
 namespace ledger {
     namespace core {
@@ -44,5 +47,27 @@ namespace ledger {
         void LambdaEventReceiver::onEvent(const std::shared_ptr<api::Event> &event) {
             _function(event);
         }
+
+        std::shared_ptr<LambdaEventReceiver> make_promise_receiver(
+                Promise<Unit>& promise,
+                const std::vector<api::EventCode> &successCodes,
+                const std::vector<api::EventCode> &failureCodes
+        ) {
+            return make_receiver([=] (const std::shared_ptr<api::Event> &event) mutable {
+                for (const auto& code : successCodes) {
+                    if (code == event->getCode()) {
+                        promise.success(unit);
+                        return;
+                    }
+                }
+                for (const auto& code : failureCodes) {
+                    if (code == event->getCode()) {
+                        promise.failure(make_exception(api::ErrorCode::RUNTIME_ERROR, event->getPayload()->dump()));
+                        return;
+                    }
+                }
+            });
+        }
+
     }
 }

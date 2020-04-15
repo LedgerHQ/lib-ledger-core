@@ -1,0 +1,15 @@
+
+StellarLikeNetworkParameters = record {
+    # Name of the network.
+    Identifier: string;
+    # Address version bytes
+    Version: binary;
+    # The minimum account to enable an account
+    BaseReserve: i64;
+    # The price of one operation in a transaction
+    BaseFee: i64;
+    # Additional SEP to which the currency apply to
+    AdditionalSEPs: list<string>;
+    # Network passphrase used as a chain id during signature
+    NetworkPassphrase: string;
+}

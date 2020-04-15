@@ -28,3 +28,4 @@ tags
 /**/inc/**/api
 /**/jni
 /install
+/.clangd/

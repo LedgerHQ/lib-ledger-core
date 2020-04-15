@@ -57,7 +57,8 @@ namespace ledger {
 
             if (currentVersion < version) {
                 migrate<version>(sql, type);
-                sql << "UPDATE __database_meta__ SET version = :version", soci::use(version);
+                const auto ver = version; // Make ASAN happy.
+                sql << "UPDATE __database_meta__ SET version = :version", soci::use(ver);
                 return true;
             }
 
@@ -173,6 +174,11 @@ namespace ledger {
         // Add XRP transaction status
         template <> void migrate<18>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type);
+
+        // Stellar support
+        template <> void migrate<19>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type);
+
     }
 }
 

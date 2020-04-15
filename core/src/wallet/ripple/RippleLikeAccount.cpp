@@ -223,7 +223,7 @@ namespace ledger {
                 auto endDate = DateUtils::fromJSON(end);
                 if (startDate >= endDate) {
                     throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
-                                         "Start date should be strictly greater than end date");
+                                         "Start date should be strictly lower than end date");
                 }
 
                 const auto &uid = self->getAccountUid();
@@ -284,29 +284,16 @@ namespace ledger {
         Future<api::ErrorCode> RippleLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
             auto log = logger();
             log->debug(" Start erasing data of account : {}", getAccountUid());
+
+            std::lock_guard<std::mutex> lock(_synchronizationLock);
+            _currentSyncEventBus = nullptr;
+
             soci::session sql(getWallet()->getDatabase()->getPool());
+
             //Update account's internal preferences (for synchronization)
-            auto savedState = getInternalPreferences()->getSubPreferences(
-                    "BlockchainExplorerAccountSynchronizer")->getObject<BlockchainExplorerAccountSynchronizationSavedState>(
-                    "state");
-            if (savedState.nonEmpty()) {
-                //Reset batches to blocks mined before given date
-                auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql,
-                                                                                     getWallet()->getCurrency().name,
-                                                                                     date);
-                for (auto &batch : savedState.getValue().batches) {
-                    if (previousBlock.nonEmpty() && batch.blockHeight > previousBlock.getValue().height) {
-                        batch.blockHeight = (uint32_t) previousBlock.getValue().height;
-                        batch.blockHash = previousBlock.getValue().blockHash;
-                    } else if (!previousBlock.nonEmpty()) {//if no previous block, sync should go back from genesis block
-                        batch.blockHeight = 0;
-                        batch.blockHash = "";
-                    }
-                }
-                getInternalPreferences()->getSubPreferences(
-                        "BlockchainExplorerAccountSynchronizer")->editor()->putObject<BlockchainExplorerAccountSynchronizationSavedState>(
-                        "state", savedState.getValue())->commit();
-            }
+            // Clear synchronizer state
+            eraseSynchronizerDataSince(sql, date);
+
             auto accountUid = getAccountUid();
             sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
                     accountUid), soci::use(date);
