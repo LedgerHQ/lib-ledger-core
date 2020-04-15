@@ -41,7 +41,7 @@ namespace ledger {
 namespace core {
 class CosmosLikeUnbondingEntry : public api::CosmosLikeUnbondingEntry {
    public:
-    CosmosLikeUnbondingEntry(const cosmos::UnbondingEntry &entry) : _unbondingEntryData(entry)
+    CosmosLikeUnbondingEntry(cosmos::UnbondingEntry entry) : _unbondingEntryData(std::move(entry))
     {
     }
 
@@ -68,7 +68,7 @@ class CosmosLikeUnbondingEntry : public api::CosmosLikeUnbondingEntry {
 
 class CosmosLikeUnbonding : public api::CosmosLikeUnbonding {
    public:
-    CosmosLikeUnbonding(const cosmos::Unbonding &unbonding) : _unbondingData(unbonding)
+    CosmosLikeUnbonding(cosmos::Unbonding unbonding) : _unbondingData(std::move(unbonding))
     {
     }
 
@@ -86,7 +86,7 @@ class CosmosLikeUnbonding : public api::CosmosLikeUnbonding {
         std::transform(
             _unbondingData.entries.cbegin(),
             _unbondingData.entries.cend(),
-            result.begin(),
+            std::back_inserter(result),
             [](const cosmos::UnbondingEntry &entry)
                 -> std::shared_ptr<api::CosmosLikeUnbondingEntry> {
                 return std::make_shared<CosmosLikeUnbondingEntry>(entry);

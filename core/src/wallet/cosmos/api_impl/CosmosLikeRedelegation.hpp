@@ -41,8 +41,8 @@ namespace ledger {
 namespace core {
 class CosmosLikeRedelegationEntry : public api::CosmosLikeRedelegationEntry {
    public:
-    CosmosLikeRedelegationEntry(const cosmos::RedelegationEntry &entry) :
-        _redelegationEntryData(entry)
+    CosmosLikeRedelegationEntry(cosmos::RedelegationEntry entry) :
+        _redelegationEntryData(std::move(entry))
     {
     }
 
@@ -69,8 +69,8 @@ class CosmosLikeRedelegationEntry : public api::CosmosLikeRedelegationEntry {
 
 class CosmosLikeRedelegation : public api::CosmosLikeRedelegation {
    public:
-    CosmosLikeRedelegation(const cosmos::Redelegation &redelegation) :
-        _redelegationData(redelegation)
+    CosmosLikeRedelegation(cosmos::Redelegation redelegation) :
+        _redelegationData(std::move(redelegation))
     {
     }
 
@@ -92,7 +92,7 @@ class CosmosLikeRedelegation : public api::CosmosLikeRedelegation {
         std::transform(
             _redelegationData.entries.cbegin(),
             _redelegationData.entries.cend(),
-            result.begin(),
+            std::back_inserter(result),
             [](const cosmos::RedelegationEntry &entry)
                 -> std::shared_ptr<api::CosmosLikeRedelegationEntry> {
                 return std::make_shared<CosmosLikeRedelegationEntry>(entry);
