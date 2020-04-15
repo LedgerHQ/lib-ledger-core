@@ -75,7 +75,7 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
         recreate();
     }
 
-    void recreate() {
+    virtual void recreate() {
         pool = newDefaultPool();
         wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_btc(pool, wallet);

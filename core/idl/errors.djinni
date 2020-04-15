@@ -101,6 +101,9 @@ ErrorCode = enum {
 
     # Invalid bech32 format
     invalid_bech32_format;
+
+    # Stellar errors
+    invalid_stellar_address_format;
 }
 
 Error = record {

@@ -9,6 +9,10 @@
 @import "currency.djinni"
 @import "../../collections/dynamic.djinni"
 
+@import "../stellar/network.djinni"
+@import "../stellar/addresses.djinni"
+@import "../stellar/stellar_like_wallet.djinni"
+
 # Class of synchronization status constants.
 SynchronizationStatus = interface +c {
     const STATUS_DONE: i32 = 1;
@@ -133,6 +137,10 @@ Operation = interface +c {
     #@return TezosLikeOperation object
     asTezosLikeOperation(): TezosLikeOperation;
     # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
+    # Convert operation as Ethereum operation.
+    # @return EthereumLikeOperation object
+    asStellarLikeOperation(): StellarLikeOperation;
+    # Is this an instance of a Bitcoin-like operation?
     isInstanceOfBitcoinLikeOperation(): bool;
     # Same as isInstanceOfEthereumLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;
@@ -140,6 +148,9 @@ Operation = interface +c {
     isInstanceOfRippleLikeOperation(): bool;
     # Same as isInstanceOfTezosLikeOperation for tezos.
     isInstanceOfTezosLikeOperation(): bool;
+    # Same as isInstanceOfBitcoinLikeOperation for ripple.
+    const isInstanceOfStellarLikeOperation(): bool;
+
     # Tells if the operation is complete.
     # @return boolean
     isComplete(): bool;
@@ -257,6 +268,10 @@ Address = interface +c {
     asBitcoinLikeAddress(): optional<BitcoinLikeAddress>;
     isInstanceOfBitcoinLikeAddress(): bool;
 
+    # Cast the address to a stellar like one
+    asStellarLikeAddress(): optional<StellarLikeAddress>;
+    const isInstanceOfStellarLikeAddress(): bool;
+
     getCurrency(): Currency;
 
     # Attempt to parse a string address. If the address can be parse return it otherwise return a NONE
@@ -333,16 +348,25 @@ Account = interface +c {
     # Turn the account into an Ethereum one, allowing operations to be performrd on the Ethereum
     # network.
     asEthereumLikeAccount() : EthereumLikeAccount;
+
     # Turn the account into a Ripple one, allowing operations to be performed on the Ripple network.
     asRippleLikeAccount(): RippleLikeAccount;
     # Turn the account into a Tezos one, allowing operations to be performed on the Tezos network.
     asTezosLikeAccount(): TezosLikeAccount;
+
+    # Turn the account into a Stellar one, allowing operations to be performerd on the Stellar
+    # network.
+    asStellarLikeAccount() : StellarLikeAccount;
+
     # Check if account is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeAccount(): bool;
     # Check if account is an Ethereum one.
     # @return bool
     isInstanceOfEthereumLikeAccount(): bool;
+    # Check if account is a Stellar one.
+    # @return bool
+    const isInstanceOfStellarLikeAccount(): bool;
     # Check if account is a Ripple one.
     # @return bool
     isInstanceOfRippleLikeAccount(): bool;
@@ -426,6 +450,11 @@ Wallet = interface +c {
     # Tell whether wallet is a Ripple one.
     # @return bool
     isInstanceOfRippleLikeWallet(): bool;
+    # Tell whether wallet is a Stellar one.
+    # @return bool
+    const isInstanceOfStellarLikeWallet(): bool;
+    # Cast the instance to StellarLIkeWallet
+    asStellarLikeWallet(): StellarLikeWallet;
     # Get wallet type.
     # @return WalletType object
     getWalletType(): WalletType;

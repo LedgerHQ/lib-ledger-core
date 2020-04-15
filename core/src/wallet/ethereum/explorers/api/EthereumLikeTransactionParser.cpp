@@ -218,7 +218,7 @@ namespace ledger {
                     issNonce >> _transaction->nonce;
                 } else if (_lastKey == "input") {
                     const auto inputData = fromStringToBytes(value);
-                    if (inputData.size() <= ledger::core::MAX_LENGTH_VAR_CHAR) {
+                    if (value.size() <= ledger::core::MAX_LENGTH_VAR_CHAR) {
                         if (isInternalTx) {
                             _transaction->internalTransactions.back().inputData = std::move(inputData);
                         } else {

@@ -123,7 +123,7 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
     auto useBase58Dict = shouldUseNetworkBase58Dictionary(config);
     auto base58Dictionary = useBase58Dict ? getNetworkBase58Dictionary(config) : DIGITS;
     for (auto& c : str) {
-        if (c == '1' && intData == BigInt::ZERO) {
+        if (c == base58Dictionary[0] && intData == BigInt::ZERO) {
             prefix.push_back(0);
         } else {
             auto digitIndex = base58Dictionary.find(c);
@@ -133,11 +133,6 @@ std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
                 throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid base 58 format");
             }
         }
-    }
-
-    //For XRP, hash160 is preceeded by a null byte prefix
-    if (useBase58Dict && prefix.empty() && getNetworkIdentifier(config) == "xrp") {
-        prefix.push_back(0);
     }
 
     return vector::concat(prefix, intData.toByteArray());

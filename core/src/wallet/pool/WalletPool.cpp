@@ -187,6 +187,8 @@ namespace ledger {
                     break;
                 case api::WalletType::TEZOS:
                     _factories.push_back(make_factory<api::WalletType::TEZOS>(currency, shared_from_this()));
+                case api::WalletType::STELLAR:
+                    _factories.push_back(make_factory<api::WalletType::STELLAR>(currency, shared_from_this()));
                     break;
             }
         }
@@ -431,7 +433,7 @@ namespace ledger {
             return async<std::shared_ptr<AbstractWallet>>([=] () {
                 auto factory = self->getFactory(currencyName);
                 if (factory == nullptr) {
-                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.");
+                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.", currencyName);
                 }
                 // Create the entry
                 soci::session sql(self->getDatabaseSessionPool()->getPool());

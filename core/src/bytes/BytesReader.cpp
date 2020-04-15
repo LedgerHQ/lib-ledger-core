@@ -34,7 +34,8 @@
 #include <fmt/format.h>
 #include <sstream>
 #include <algorithm>
-
+#include <utils/hex.h>
+#include <utils/Exception.hpp>
 
 namespace ledger {
 
@@ -100,7 +101,10 @@ namespace ledger {
         }
 
         uint8_t BytesReader::readNextByte() {
-            uint8_t result = _bytes[_cursor];
+            if (_cursor >= _bytes.size()) {
+                throw std::out_of_range(fmt::format("Read {} of {}", _cursor, hex::toString(_bytes)));
+            }
+            uint8_t const result = _bytes[_cursor];
             seek(1, Seek::CUR);
             return result;
         }
@@ -116,52 +120,28 @@ namespace ledger {
             return oss.str();
         }
 
+        int32_t BytesReader::readNextBeInt() {
+            return readNextValue<int32_t, endianness::Endianness::BIG>();
+        }
+
         uint32_t BytesReader::readNextBeUint() {
-            uint32_t result;
-            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
-            for (auto i = 0; i < sizeof(result); i++) {
-                ptr[i] = readNextByte();
-            }
-            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                        ledger::core::endianness::Endianness::BIG,
-                                                        ledger::core::endianness::getSystemEndianness());
-            return result;
+            return readNextValue<uint32_t, endianness::Endianness::BIG>();
         }
 
         uint32_t BytesReader::readNextLeUint() {
-            uint32_t result;
-            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
-            for (auto i = 0; i < sizeof(result); i++) {
-                ptr[i] = readNextByte();
-            }
-            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                       ledger::core::endianness::Endianness::LITTLE,
-                                                       ledger::core::endianness::getSystemEndianness());
-            return result;
+            return readNextValue<uint32_t, endianness::Endianness::LITTLE>();
+        }
+
+        int64_t BytesReader::readNextBeLong() {
+            return readNextValue<int64_t, endianness::Endianness::BIG>();
         }
 
         uint64_t BytesReader::readNextBeUlong() {
-            uint64_t result;
-            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
-            for (auto i = 0; i < sizeof(result); i++) {
-                ptr[i] = readNextByte();
-            }
-            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                       ledger::core::endianness::Endianness::BIG,
-                                                       ledger::core::endianness::getSystemEndianness());
-            return result;
+            return readNextValue<uint64_t, endianness::Endianness::BIG>();
         }
 
         uint64_t BytesReader::readNextLeUlong() {
-            uint64_t result;
-            uint8_t* ptr = reinterpret_cast<uint8_t *>(&result);
-            for (auto i = 0; i < sizeof(result); i++) {
-                ptr[i] = readNextByte();
-            }
-            ledger::core::endianness::swapToEndianness(ptr, sizeof(result),
-                                                       ledger::core::endianness::Endianness::LITTLE,
-                                                       ledger::core::endianness::getSystemEndianness());
-            return result;
+            return readNextValue<uint64_t, endianness::Endianness::LITTLE>();
         }
 
         ledger::core::BigInt BytesReader::readNextBeBigInt(size_t bytes) {
@@ -213,6 +193,22 @@ namespace ledger {
                 data[i] = _bytes[_cursor];
                 seek(1, Seek::CUR);
             }
+        }
+
+        uint16_t BytesReader::readNextBeUint16() {
+            return readNextValue<uint16_t, endianness::Endianness::BIG>();
+        }
+
+        uint16_t BytesReader::readNextLeUint16() {
+            return readNextValue<uint16_t, endianness::Endianness::LITTLE>();
+        }
+
+        int16_t BytesReader::readNextBeInt16() {
+            return readNextValue<int16_t, endianness::Endianness::BIG>();
+        }
+
+        int16_t BytesReader::readNextLeInt16() {
+            return readNextValue<int16_t, endianness::Endianness::LITTLE>();
         }
 
 

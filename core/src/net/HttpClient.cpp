@@ -146,7 +146,7 @@ namespace ledger {
                     l->info("{} {} - {} {}", api::to_string(request->getMethod()), request->getUrl(),  connection->getStatusCode(), connection->getStatusText());
                 });
                 if (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300) {
-                    throw Exception(api::ErrorCode::HTTP_ERROR, connection->getStatusText(),
+                    throw Exception(HttpRequest::getErrorCode(connection->getStatusCode()), connection->getStatusText(),
                                     Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(connection)));
                 }
                 return connection;
@@ -155,7 +155,8 @@ namespace ledger {
 
         Future<HttpRequest::JsonResult> HttpRequest::json(bool parseNumbersAsString) const {
             return operator()().recover(_context, [] (const Exception& exception) {
-                if (exception.getErrorCode() == api::ErrorCode::HTTP_ERROR && exception.getUserData().nonEmpty()) {
+                if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                exception.getUserData().nonEmpty()) {
                     return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
                 }
                 throw exception;
@@ -171,7 +172,7 @@ namespace ledger {
                         }
                         std::shared_ptr<JsonResult> result(new std::tuple<std::shared_ptr<api::HttpUrlConnection>, std::shared_ptr<rapidjson::Document>>(std::make_tuple(connection, doc)));
                         if (connection->getStatusCode() < 200 || connection->getStatusCode() >= 300) {
-                            throw Exception(api::ErrorCode::HTTP_ERROR, connection->getStatusText(),
+                            throw Exception(HttpRequest::getErrorCode(connection->getStatusCode()), connection->getStatusText(),
                                             Option<std::shared_ptr<void>>(std::static_pointer_cast<void>(result)));
                         }
                         return std::make_tuple(connection, doc);

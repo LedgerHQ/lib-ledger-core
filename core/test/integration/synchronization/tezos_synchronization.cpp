@@ -54,9 +54,11 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool("xtz", "");
     static std::function<void (
             const std::string &,
+            const std::string &,
             const std::string &)> test = [=] (
                             const std::string &walletName,
-                            const std::string &nextWalletName) {
+                            const std::string &nextWalletName,
+                            const std::string &explorerURL) {
         if (walletName.empty()) {
             return;
         }
@@ -64,7 +66,7 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://xtz-explorer.api.live.ledger.com/explorer");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, explorerURL);
         auto wallet = wait(pool->createWallet(walletName, "tezos", configuration));
         std::set<std::string> emittedOperations;
         {
@@ -141,9 +143,12 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             auto gasLimit = wait(account->getEstimatedGasLimit("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
             EXPECT_GT(gasLimit->toUint64(), 0);
 
-            test(nextWalletName, "");
+            test(nextWalletName, "", explorerURL);
         }
     };
-    test("e847815f-488a-4301-b67c-378a5e9c8a61", "e847815f-488a-4301-b67c-378a5e9c8a60");
+
+    // TODO: uncomment when our node works
+    //test("e847815f-488a-4301-b67c-378a5e9c8a61", "e847815f-488a-4301-b67c-378a5e9c8a60", "https://xtz.explorers.prod.aws.ledger.fr/explorer");
+    test("e847815f-488a-4301-b67c-378a5e9c8a61", "e847815f-488a-4301-b67c-378a5e9c8a60", "https://api.tzstats.com/explorer");
 }
 
