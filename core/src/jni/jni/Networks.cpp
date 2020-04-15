@@ -3,7 +3,9 @@
 
 #include "Networks.hpp"  // my header
 #include "BitcoinLikeNetworkParameters.hpp"
+#include "CosmosLikeNetworkParameters.hpp"
 #include "EthereumLikeNetworkParameters.hpp"
+#include "Marshal.hpp"
 #include "RippleLikeNetworkParameters.hpp"
 #include "TezosLikeNetworkParameters.hpp"
 
@@ -28,6 +30,15 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_bitcoin(JNIEnv* jniEnv, 
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::Networks::bitcoin();
         return ::djinni::release(::djinni_generated::BitcoinLikeNetworkParameters::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_cosmos(JNIEnv* jniEnv, jobject /*this*/, jstring j_chainID)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE0(jniEnv);
+        auto r = ::ledger::core::api::Networks::cosmos(::djinni::String::toCpp(jniEnv, j_chainID));
+        return ::djinni::release(::djinni_generated::CosmosLikeNetworkParameters::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
