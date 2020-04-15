@@ -24,4 +24,3 @@ compile_commands.json
 install_manifest.txt
 tags
 *.a
-/.clangd/
