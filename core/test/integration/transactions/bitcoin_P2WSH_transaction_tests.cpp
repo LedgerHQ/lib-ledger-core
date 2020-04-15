@@ -30,7 +30,7 @@
 #include "../BaseFixture.h"
 #include "../../fixtures/medium_xpub_fixtures.h"
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
-#include <bitcoin/bech32/Bech32Factory.h>
+#include <math/bech32/Bech32Factory.h>
 #include "transaction_test_helper.h"
 #include <utils/hex.h>
 #include <api/KeychainEngines.hpp>

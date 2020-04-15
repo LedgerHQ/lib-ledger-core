@@ -32,15 +32,14 @@
 #ifndef LEDGER_CORE_BCHBECH32_H
 #define LEDGER_CORE_BCHBECH32_H
 
-#include "Bech32.h"
-#include "Bech32Parameters.h"
+#include <math/bech32/Bech32.h>
+#include <math/bech32/Bech32Parameters.h>
 // Refecrence: https://github.com/bitcoincashjs/cashaddrjs
 namespace ledger {
     namespace core {
         class BCHBech32 : public Bech32 {
         public:
-            BCHBech32() {
-                _bech32Params = Bech32Parameters::getBech32Params("abc");
+            BCHBech32() : Bech32(Bech32Parameters::getBech32Params("abc")) {
             };
 
             uint64_t polymod(const std::vector<uint8_t>& values) override;
