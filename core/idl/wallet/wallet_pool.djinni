@@ -1,5 +1,6 @@
 @import "bitcoin/bitcoin_like_wallet.djinni"
 @import "ethereum/ethereum_like_wallet.djinni"
+@import "cosmos/wallet.djinni"
 @import "../net/http_client.djinni"
 @import "../net/websocket_client.djinni"
 @import "../fs/path_resolver.djinni"
