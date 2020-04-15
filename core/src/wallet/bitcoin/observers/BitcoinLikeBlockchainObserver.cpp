@@ -50,10 +50,11 @@ namespace ledger {
         void BitcoinLikeBlockchainObserver::putTransaction(const BitcoinLikeBlockchainExplorerTransaction &tx) {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
-                account->run([account, tx] () {
-                    soci::session sql(account->getWallet()->getDatabase()->getPool());
-                    if (account->putTransaction(sql, tx) != BitcoinLikeAccount::FLAG_TRANSACTION_IGNORED)
-                        account->emitEventsNow();
+                account->run([account, tx]() {
+                    BitcoinBlockchainObserver::emitEvent(account, [tx](soci::session &sql,
+                                                                                    const std::shared_ptr<BitcoinLikeAccount> &acc) {
+                        return acc->putTransaction(sql, tx) != BitcoinLikeAccount::FLAG_TRANSACTION_IGNORED;
+                    });
                 });
             }
         }
@@ -61,17 +62,13 @@ namespace ledger {
         void BitcoinLikeBlockchainObserver::putBlock(const BitcoinLikeBlockchainExplorer::Block& block) {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
-                account->run([account, block] () {
-                    bool shouldEmitNow = false;
-                    {
-                        soci::session sql(account->getWallet()->getDatabase()->getPool());
-                        shouldEmitNow = account->putBlock(sql, block);
-                    }
-                    if (shouldEmitNow)
-                        account->emitEventsNow();
+                account->run([account, block]() {
+                    BitcoinBlockchainObserver::emitEvent(account, [block](soci::session &sql,
+                                                                          const std::shared_ptr<BitcoinLikeAccount> &acc) {
+                        return acc->putBlock(sql, block);
+                    });
                 });
             }
         }
-
     }
 }
