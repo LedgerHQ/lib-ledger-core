@@ -35,6 +35,7 @@
 #include <database/soci-option.h>
 #include <database/soci-number.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
@@ -185,6 +186,7 @@ namespace ledger {
         void OperationQuery::inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation) {
             switch (operation.getAccount()->getWalletType()) {
                 case (api::WalletType::BITCOIN): return inflateBitcoinLikeTransaction(sql, accountUid, operation);
+                case (api::WalletType::COSMOS): return inflateCosmosLikeTransaction(sql, accountUid, operation);
                 case (api::WalletType::ETHEREUM): return inflateEthereumLikeTransaction(sql, operation);
                 case (api::WalletType::RIPPLE): return inflateRippleLikeTransaction(sql, operation);
                 case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
@@ -199,6 +201,32 @@ namespace ledger {
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
             BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, accountUid, operation.getBackend().bitcoinTransaction.getValue());
+        }
+
+        void OperationQuery::inflateCosmosLikeTransaction(
+            soci::session &sql, const std::string &accountUid, OperationApi &operation)
+        {
+            cosmos::Transaction tx;
+            cosmos::Message msg;
+            operation.getBackend().cosmosTransaction = Option<cosmos::OperationQueryResult>({tx, msg});
+            std::string transactionHash;
+            sql << "SELECT tx.hash "
+                   "FROM cosmos_transactions AS tx "
+                   "LEFT JOIN cosmos_messages AS msg ON msg.transaction_uid = tx.uid "
+                   "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
+                   "WHERE op.uid = :uid",
+                soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            CosmosLikeTransactionDatabaseHelper::getTransactionByHash(
+                sql, transactionHash, operation.getBackend().cosmosTransaction.getValue().tx);
+            std::string msgUid;
+            sql << "SELECT msg.uid "
+                   "FROM cosmos_messages AS msg "
+                   "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
+                   "WHERE op.uid = :uid",
+                soci::use(operation.getBackend().uid), soci::into(msgUid);
+
+            CosmosLikeTransactionDatabaseHelper::getMessageByUid(
+                sql, msgUid, operation.getBackend().cosmosTransaction.getValue().msg);
         }
 
         void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation) {

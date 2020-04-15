@@ -40,6 +40,7 @@
 #include <api/Block.hpp>
 #include <api/BlockCallback.hpp>
 #include <api/BitcoinLikeAccount.hpp>
+#include <api/CosmosLikeAccount.hpp>
 #include <api/EthereumLikeAccount.hpp>
 #include <api/RippleLikeAccount.hpp>
 #include <api/TezosLikeAccount.hpp>
@@ -61,11 +62,13 @@ namespace ledger {
             std::shared_ptr<api::Preferences> getPreferences() override;
             std::shared_ptr<api::Logger> getLogger() override;
             bool isInstanceOfBitcoinLikeAccount() override;
+            bool isInstanceOfCosmosLikeAccount() override;
             bool isInstanceOfEthereumLikeAccount() override;
             bool isInstanceOfRippleLikeAccount() override;
             api::WalletType getWalletType() override;
             std::shared_ptr<api::Preferences> getOperationPreferences(const std::string &uid) override;
             std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
+            std::shared_ptr<api::CosmosLikeAccount> asCosmosLikeAccount() override;
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override;
             std::shared_ptr<api::RippleLikeAccount> asRippleLikeAccount() override;
             std::shared_ptr<api::TezosLikeAccount> asTezosLikeAccount() override;

@@ -37,7 +37,7 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <database/soci-date.h>
-#include <bitcoin/bech32/Bech32Parameters.h>
+#include <math/bech32/Bech32Parameters.h>
 
 namespace ledger {
     namespace core {
@@ -175,6 +175,9 @@ namespace ledger {
             switch (currency.walletType) {
                 case api::WalletType::BITCOIN:
                     _factories.push_back(make_factory<api::WalletType::BITCOIN>(currency, shared_from_this()));
+                    break;
+                case api::WalletType::COSMOS:
+                    _factories.push_back(make_factory<api::WalletType::COSMOS>(currency, shared_from_this()));
                     break;
                 case api::WalletType::ETHEREUM:
                     _factories.push_back(make_factory<api::WalletType::ETHEREUM>(currency, shared_from_this()));

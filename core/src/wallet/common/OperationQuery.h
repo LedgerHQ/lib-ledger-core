@@ -69,6 +69,7 @@ namespace ledger {
             void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations);
             void inflateCompleteTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
             void inflateBitcoinLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
+            void inflateCosmosLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
             void inflateRippleLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateTezosLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
