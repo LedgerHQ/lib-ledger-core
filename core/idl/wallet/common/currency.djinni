@@ -1,4 +1,5 @@
 @import "../../bitcoin/addresses.djinni"
+@import "../../cosmos/addresses.djinni"
 @import "../../ethereum/addresses.djinni"
 @import "../../ripple/addresses.djinni"
 @import "../../tezos/addresses.djinni"
@@ -8,6 +9,8 @@
 WalletType = enum {
     # A Bitcoin-like wallet.
     bitcoin;
+    # A Cosmos-like wallet.
+    cosmos;
     # An Ethereum-like wallet.
     ethereum;
     # A Ripple-like wallet.
@@ -47,6 +50,8 @@ Currency = record {
     #TODO: find a better solution to have only a networkParameters
     # Optional BitcoinLikeNetworkParameters, for more details refer to BitcoinLikeNetworkParameters doc
     bitcoinLikeNetworkParameters: optional<BitcoinLikeNetworkParameters>;
+    # Optional CosmosLikeNetworkParameters, for more details refer to CosmosLikeNetworkParameters doc
+    cosmosLikeNetworkParameters: optional<CosmosLikeNetworkParameters>;
     # Optional EthereumLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
     ethereumLikeNetworkParameters: optional<EthereumLikeNetworkParameters>;
     #Optional RippleLikeNetworkParameters, for more details refer to RippleLikeNetworkParameters doc

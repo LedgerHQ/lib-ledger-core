@@ -1,0 +1,233 @@
+@import "../../errors.djinni"
+@import "../amount.djinni"
+@import "validators.djinni"
+@import "messages.djinni"
+@import "callback.djinni"
+@import "../../cosmos/addresses.djinni"
+
+#Class representing a Cosmos transaction
+CosmosLikeTransaction = interface +c {
+        # Get the time when the transaction was issued or the time of the block including this transaction
+        const getDate(): date;
+        # Get Fee (in drop)
+        const getFee(): Amount;
+        # Get gas Wanted (maximum gas advertised in transaction)
+        const getGas(): Amount;
+        # Get gas used (gas actually used in the transaction)
+        const getGasUsed(): BigInt;
+        # Get gas Wanted (in BigInt form)
+        const getGasWanted(): BigInt;
+        # Get the hash of the transaction.
+        const getHash(): string;
+        # Get memo
+        const getMemo(): string;
+        # Get the list of messages
+        const getMessages(): list<CosmosLikeMessage>;
+        # Get Signing public Key
+        const getSigningPubKey(): binary;
+
+        # Serialize the transaction to be signed
+        serializeForSignature(): string;
+
+        # Set signature of transaction, when a signature is set it can be broadcasted
+        setSignature(rSignature: binary, sSignature: binary);
+        setDERSignature(signature: binary);
+
+        # Serialize the transaction to be broadcast
+        # @param mode The supported broadcast modes include
+        #        "block"(return after tx commit), (https://docs.cosmos.network/master/basics/tx-lifecycle.html#commit)
+        #        "sync"(return afer CheckTx), (https://docs.cosmos.network/master/basics/tx-lifecycle.html#types-of-checks) and
+        #        "async"(return right away).
+        # @return string the json payload to broadcast on the network
+        serializeForBroadcast(mode: string): string;
+}
+
+#Class representing a Cosmos Operation
+CosmosLikeOperation = interface +c {
+        #Get operation's transaction
+        #@return CosmosLikeTransaction object
+        getTransaction(): CosmosLikeTransaction;
+
+        # Get message which created this operation
+        # @return CosmosLikeMessage object
+        getMessage(): CosmosLikeMessage;
+}
+
+#Class representing Cosmos block
+CosmosLikeBlock = interface +c {
+        #Hash of block
+        #@return string representing hash of this block
+        getHash(): string;
+        #Height of block in blockchain
+        #@return 64 bits integer, height of block
+        getHeight(): i64;
+        #Timestamp when block was mined
+        #@return Date object, date when block was appended to blockchain
+        getTime(): date;
+}
+
+CosmosLikeTransactionBuilder = interface +c {
+        # Set memo
+        # @param memo the memo to set
+        setMemo(memo: string): CosmosLikeTransactionBuilder;
+
+        # Set sequence
+        # @param sequence The sequence to set
+        setSequence(sequence: string): CosmosLikeTransactionBuilder;
+
+        # Set accountNumber
+        # @param accountNumber The accountNumber to set
+        setAccountNumber(accountNumber: string): CosmosLikeTransactionBuilder;
+
+        # Add a new message in the internal range of messages
+        # @param msg a new message
+        addMessage(msg: CosmosLikeMessage): CosmosLikeTransactionBuilder;
+
+        # Set gas price
+        # @param gas The gas to set
+        setGas(gas: Amount): CosmosLikeTransactionBuilder;
+
+        # Set gas Adjusment factor when estimating gas
+        # @param gasAdjustment The (multiplicative) factor for gas evaluation
+        setGasAdjustment(gasAdjustment: f64): CosmosLikeTransactionBuilder;
+
+        # Set fee
+        # Here the fee represents the gas price multiplied by the gas used
+        # @param fee The fee to set
+        setFee(fee: Amount): CosmosLikeTransactionBuilder;
+
+        # Build a transaction from the given builder parameters.
+        build(callback: callback2<optional<CosmosLikeTransaction>>);
+
+        # Creates a clone of this builder.
+        # @return A copy of the current builder instance.
+        clone(): CosmosLikeTransactionBuilder;
+
+        # Reset the current instance to its initial state
+        reset();
+
+        static parseRawUnsignedTransaction(currency: Currency, rawTransaction: string): CosmosLikeTransaction;
+        static parseRawSignedTransaction(currency: Currency, rawTransaction: string): CosmosLikeTransaction;
+}
+
+# Class representing a GasLimit request for the Gaia node
+CosmosGasLimitRequest = record {
+    # Memo field of the contract transaction
+    memo: optional<string>;
+    # Messages to query gas for
+    messages: list<CosmosLikeMessage>;
+    # Amplifier coefficient for safety
+    # The transaction is more expensive usually because we send a smaller
+    # payload than usual to the simulation backend (and gas is also consumed
+    # per tx byte)
+    amplifier: optional<f64>;
+}
+
+
+#Class representing a Cosmos account
+CosmosLikeAccount = interface +c {
+        broadcastRawTransaction(transaction: string, callback: callback2<optional<string>>);
+        broadcastTransaction(transaction: CosmosLikeTransaction, callback: callback2<optional<string>>);
+        buildTransaction(): CosmosLikeTransactionBuilder;
+        # Get estimated gas limit to set so the transaction will succeed
+        getEstimatedGasLimit(transaction: CosmosLikeTransaction, callback: callback2<optional<BigInt>>);
+        # Ask the account to estimate the gas for a building transaction
+        # This function uses the underlying infrastructure to simulate the gas
+        # needed for the transaction as requested until now.
+        # @param request is the CosmosGasLimitRequest for the specifics of the simulation
+        estimateGas(buildingTx: CosmosGasLimitRequest, callback: callback2<optional<BigInt>>);
+        # Get the latest active validator set
+        getLatestValidatorSet(callback: ListCallback<CosmosLikeValidator>);
+        # Get information about one validator
+        getValidatorInfo(validatorAddress: string, callback: callback2<optional<CosmosLikeValidator>>);
+        # Get Total balance of account. Sum of spendable, delegated, pending rewards, and pending unbondings
+        getTotalBalance(callback: Callback<Amount>);
+        # Get Total amount in delegation of account.
+        getDelegatedBalance(callback: Callback<Amount>);
+        # Get Total pending rewards of account.
+        getPendingRewardsBalance(callback: Callback<Amount>);
+        # Get Total unbondings funds of account.
+        getUnbondingBalance(callback: Callback<Amount>);
+        # Get Total spendable balance of account.
+        getSpendableBalance(callback: Callback<Amount>);
+
+        getDelegations(callback: ListCallback<CosmosLikeDelegation>);
+        getPendingRewards(callback: ListCallback<CosmosLikeReward>);
+        getUnbondings(callback: ListCallback<CosmosLikeUnbonding>);
+        getRedelegations(callback: ListCallback<CosmosLikeRedelegation>);
+
+        # Get the current account sequence (synchronize to get latest value)
+        # string like "14"
+        getSequence(callback: Callback<string>);
+
+        # Get the account number
+        # String like "15"
+        getAccountNumber(callback: Callback<string>);
+
+        # Get the rewards withdrawal address
+        # String Bech32 encoded string
+        getWithdrawAddress(callback: Callback<string>);
+}
+
+#Class representing a Cosmos delegation
+CosmosLikeDelegation = interface +c {
+        const getDelegatorAddress() : string;
+        const getValidatorAddress() : string;
+        const getDelegatedAmount() : Amount;
+}
+
+#Class representing a Cosmos reward
+CosmosLikeReward = interface +c {
+        const getDelegatorAddress() : string;
+        const getValidatorAddress() : string;
+        const getRewardAmount() : Amount;
+}
+
+# (Pending) Unbonding data
+CosmosLikeUnbonding = interface +c {
+    # Delegator address
+    getDelegatorAddress(): string;
+    # Validator address
+    getValidatorAddress(): string;
+    getEntries(): list<CosmosLikeUnbondingEntry>;
+}
+
+CosmosLikeUnbondingEntry = interface +c {
+    # Block height of the unbonding request
+    getCreationHeight(): BigInt;
+    # Timestamp of the unbonding completion
+    getCompletionTime(): date;
+    # Balance requested to unbond
+    getInitialBalance(): BigInt;
+    # Current amount coming back (i.e. less than initialBalance if slashed)
+    getBalance(): BigInt;
+}
+
+# (Pending) Redelegation data
+CosmosLikeRedelegation = interface +c {
+    getDelegatorAddress(): string;
+    getSrcValidatorAddress(): string;
+    getDstValidatorAddress(): string;
+    getEntries(): list<CosmosLikeRedelegationEntry>;
+}
+
+CosmosLikeRedelegationEntry = interface +c {
+    # Block height of the begin redelegate request
+    getCreationHeight(): BigInt;
+    # Timestamp of the redelegation completion
+    getCompletionTime(): date;
+    # Balance requested to redelegate
+    getInitialBalance(): BigInt;
+    # Current amount being redelegated (i.e. less than initialBalance if slashed)
+    getBalance(): BigInt;
+}
+
+CosmosConfigurationDefaults = interface +c {
+        const COSMOS_DEFAULT_API_ENDPOINT: string = "http://lite-client-0e27eefb-4031-4859-a88e-249fd241989d.cosmos.bison.run:1317";
+        const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
+}
+
+# A cosmos-like wallet.
+CosmosLikeWallet = interface +c {
+
+}

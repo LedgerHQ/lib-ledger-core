@@ -4,8 +4,10 @@
 @import "../../preferences/preferences.djinni"
 @import "../../debug/logger.djinni"
 @import "../bitcoin/bitcoin_like_wallet.djinni"
+@import "../cosmos/wallet.djinni"
 @import "../ethereum/ethereum_like_wallet.djinni"
 @import "../../bitcoin/addresses.djinni"
+@import "../../cosmos/addresses.djinni"
 @import "currency.djinni"
 @import "../../collections/dynamic.djinni"
 
@@ -127,6 +129,9 @@ Operation = interface +c {
     # Convert operation as Bitcoin operation.
     # @return BitcoinLikeOperation object
     asBitcoinLikeOperation(): BitcoinLikeOperation;
+    # Convert operation as Cosmos operation.
+    # @return CosmosLikeOperation object
+    asCosmosLikeOperation(): CosmosLikeOperation;
     # Convert operation as Ethereum operation.
     # @return EthereumLikeOperation object
     asEthereumLikeOperation(): EthereumLikeOperation;
@@ -142,6 +147,8 @@ Operation = interface +c {
     asStellarLikeOperation(): StellarLikeOperation;
     # Is this an instance of a Bitcoin-like operation?
     isInstanceOfBitcoinLikeOperation(): bool;
+    # Same as isInstanceOfCosmosLikeOperation for cosmos.
+    isInstanceOfCosmosLikeOperation(): bool;
     # Same as isInstanceOfEthereumLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;
     # Same as isInstanceOfRippleLikeOperation for ripple.
@@ -345,6 +352,9 @@ Account = interface +c {
     # Turn the account into an Bitcoin one, allowing operations to be performed on the Bitcoin
     # network.
     asBitcoinLikeAccount() : BitcoinLikeAccount;
+    # Turn the account into an Cosmos one, allowing operations to be performed on the Cosmos
+    # network.
+    asCosmosLikeAccount() : CosmosLikeAccount;
     # Turn the account into an Ethereum one, allowing operations to be performrd on the Ethereum
     # network.
     asEthereumLikeAccount() : EthereumLikeAccount;
@@ -361,6 +371,9 @@ Account = interface +c {
     # Check if account is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeAccount(): bool;
+    # Check if account is a Cosmos one.
+    # @return bool
+    isInstanceOfCosmosLikeAccount(): bool;
     # Check if account is an Ethereum one.
     # @return bool
     isInstanceOfEthereumLikeAccount(): bool;
@@ -438,12 +451,18 @@ Wallet = interface +c {
     # Convert wallet to a Bitcoin one.
     # @return BitcoinWallet object
     asBitcoinLikeWallet(): BitcoinLikeWallet;
+    # Convert wallet to a Cosmos one.
+    # @return CosmosWallet object
+    asCosmosLikeWallet(): CosmosLikeWallet;
     # Get currency of wallet.
     # @return Currency object
     getCurrency(): Currency;
     # Tell whether wallet is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeWallet(): bool;
+    # Tell whether wallet is a Cosmos one.
+    # @return bool
+    isInstanceOfCosmosLikeWallet(): bool;
     # Tell whether wallet is a Ethereum one.
     # @return bool
     isInstanceOfEthereumLikeWallet(): bool;
