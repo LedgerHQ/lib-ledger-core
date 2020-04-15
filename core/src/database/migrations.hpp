@@ -179,6 +179,10 @@ namespace ledger {
         template <> void migrate<19>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type);
 
+        // Add cosmos (ATOM) tables
+        template <> void migrate<20>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<20>(soci::session& sql, api::DatabaseBackendType type);
+
     }
 }
 
