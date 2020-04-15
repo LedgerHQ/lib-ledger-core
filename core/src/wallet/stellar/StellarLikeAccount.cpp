@@ -499,13 +499,10 @@ namespace ledger {
 
         Future<BigInt> StellarLikeAccount::getSequence() {
             auto self = getSelf();
-            return async<BigInt>([=] () {
-                stellar::Account account;
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
-                if (StellarLikeAccountDatabaseHelper::getAccount(sql, self->getAccountUid(), account))
-                    return BigInt::fromString(account.sequence);
-                return BigInt::ZERO;
-            });
+            return self->_params.explorer->getAccount(self->_params.keychain->getAddress()->toString())
+                .map<BigInt>(getContext(), [=] (const std::shared_ptr<stellar::Account>& account) {
+                    return BigInt::fromString(account->sequence);
+                });
         }
 
         void StellarLikeAccount::getSigners(const std::shared_ptr<api::StellarLikeAccountSignerListCallback> &callback) {
