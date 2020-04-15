@@ -15,8 +15,8 @@ add_library(ledger-test STATIC
     NativeThreadDispatcher.hpp NativePathResolver.cpp NativePathResolver.hpp CoutLogPrinter.cpp
     CoutLogPrinter.hpp MongooseHttpClient.cpp MongooseHttpClient.hpp MongooseSimpleRestServer.cpp
     MongooseSimpleRestServer.hpp route.cc route.h OpenSSLRandomNumberGenerator.cpp
-    OpenSSLRandomNumberGenerator.hpp callbacks.cpp callbacks.hpp AsioHttpClient.cpp
-    AsioHttpClient.hpp FakeWebSocketClient.cpp FakeWebSocketClient.hpp FakeHttpClient.hpp
+    OpenSSLRandomNumberGenerator.hpp callbacks.cpp callbacks.hpp
+    FakeWebSocketClient.cpp FakeWebSocketClient.hpp FakeHttpClient.hpp
     FakeHttpClient.cpp FakeUrlConnection.hpp FakeUrlConnection.cpp
 )
 
