@@ -35,8 +35,8 @@
 #include "../collections/vector.hpp"
 #include "../utils/Exception.hpp"
 #include <collections/DynamicObject.hpp>
-#include <bitcoin/bech32/Bech32.h>
-#include <bitcoin/bech32/Bech32Factory.h>
+#include <math/bech32/Bech32.h>
+#include <math/bech32/Bech32Factory.h>
 #include <api/KeychainEngines.hpp>
 #include <api/Configuration.hpp>
 #include <crypto/HashAlgorithm.h>

@@ -36,7 +36,7 @@
 #include <wallet/bitcoin/networks.hpp>
 #include <api/KeychainEngines.hpp>
 #include <crypto/HASH160.hpp>
-#include <bitcoin/bech32/Bech32Factory.h>
+#include <math/bech32/Bech32Factory.h>
 #include <api/Currency.hpp>
 
 namespace ledger {

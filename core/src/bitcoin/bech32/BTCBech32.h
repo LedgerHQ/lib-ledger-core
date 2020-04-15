@@ -32,15 +32,14 @@
 #ifndef LEDGER_CORE_BTCBECH32_H
 #define LEDGER_CORE_BTCBECH32_H
 
-#include "Bech32.h"
-#include "Bech32Parameters.h"
+#include <math/bech32/Bech32.h>
+#include <math/bech32/Bech32Parameters.h>
 // Reference: https://github.com/sipa/bech32
 namespace ledger {
     namespace core {
         class BTCBech32 : public Bech32 {
         public:
-            BTCBech32(const std::string &networkIdentifier) {
-                _bech32Params = Bech32Parameters::getBech32Params(networkIdentifier);
+            BTCBech32(const std::string &networkIdentifier) : Bech32(Bech32Parameters::getBech32Params(networkIdentifier)){
             };
 
             uint64_t polymod(const std::vector<uint8_t>& values) override;
