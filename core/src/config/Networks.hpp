@@ -32,6 +32,7 @@
 #define LEDGER_CORE_NETWORKS_HPP
 
 #include <api/BitcoinLikeNetworkParameters.hpp>
+#include <api/CosmosLikeNetworkParameters.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <api/TezosLikeNetworkParameters.hpp>

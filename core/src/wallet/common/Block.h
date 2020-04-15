@@ -44,6 +44,15 @@ namespace ledger {
             std::string currencyName;
 
             Block() {};
+            // TODO : MARK AS EXPLICIT
+            // this is implicit because of the raw count
+            // of compilation errors to fight through. Once all errors are dealt with,
+            // make this constructor explicit to avoid implicit conversions
+            Block(const api::Block &apiBlock) :
+                hash(apiBlock.blockHash),
+                height(apiBlock.height),
+                time(apiBlock.time),
+                currencyName(apiBlock.currencyName){};
             std::string getUid() const;
             api::Block toApiBlock() const;
         };

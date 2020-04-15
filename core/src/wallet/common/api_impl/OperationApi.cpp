@@ -32,6 +32,7 @@
 #include <iterator>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeOperation.h>
 #include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
 #include <wallet/ripple/api_impl/RippleLikeOperation.h>
@@ -104,6 +105,10 @@ namespace ledger {
             return _backend.walletType == api::WalletType::BITCOIN;
         }
 
+        bool OperationApi::isInstanceOfCosmosLikeOperation() {
+            return _backend.walletType == api::WalletType::COSMOS;
+        }
+
         bool OperationApi::isInstanceOfEthereumLikeOperation() {
             return _backend.walletType == api::WalletType::ETHEREUM;
         }
@@ -119,6 +124,8 @@ namespace ledger {
         bool OperationApi::isComplete() {
             if (_backend.walletType == api::WalletType::BITCOIN) {
                 return _backend.bitcoinTransaction.nonEmpty();
+            } else if (_backend.walletType == api::WalletType::COSMOS) {
+                return _backend.cosmosTransaction.nonEmpty();
             } else if (_backend.walletType == api::WalletType::ETHEREUM) {
                 return _backend.ethereumTransaction.nonEmpty();
             } else if (_backend.walletType == api::WalletType::RIPPLE) {
@@ -161,6 +168,13 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Bitcoin type.");
             }
             return std::make_shared<BitcoinLikeOperation>(shared_from_this());
+        }
+
+        std::shared_ptr<api::CosmosLikeOperation> OperationApi::asCosmosLikeOperation() {
+            if (getWalletType() != api::WalletType::COSMOS) {
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Cosmos type.");
+            }
+            return std::make_shared<CosmosLikeOperation>(shared_from_this());
         }
 
         std::shared_ptr<api::EthereumLikeOperation> OperationApi::asEthereumLikeOperation() {

@@ -87,6 +87,24 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 use(BIPs);
                 break;
             }
+            case api::WalletType::COSMOS: {
+                auto &params = currency.cosmosLikeNetworkParameters.value();
+
+                std::stringstream additionalCIPs;
+                std::string separator(",");
+                strings::join(params.AdditionalCIPs, additionalCIPs, separator);
+                auto CIPs = additionalCIPs.str();
+                auto hexXPUBVersion = hex::toString(params.XPUBVersion);
+                auto hexPubKeyPrefix = hex::toString(params.PubKeyPrefix);
+                auto hexAddressPrefix = hex::toString(params.AddressPrefix);
+                sql << "INSERT INTO cosmos_currencies VALUES(:name, :identifier, :xpub, "
+                       ":pubkey_prefix, :address_prefix, :message_prefix, :chain_id, "
+                       ":additionalCIPs)",
+                    use(currency.name), use(params.Identifier), use(hexXPUBVersion),
+                    use(hexPubKeyPrefix), use(hexAddressPrefix), use(params.MessagePrefix),
+                    use(params.ChainId), use(CIPs);
+                break;
+            }
             case api::WalletType::ETHEREUM: {
                 const auto &params = currency.ethereumLikeNetworkParameters.value();
 
@@ -221,6 +239,29 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                     params.SigHash = hex::toByteArray(btc_row.get<std::string>(9));
                     params.AdditionalBIPs = strings::split(btc_row.get<std::string>(10), ",");
                     currency.bitcoinLikeNetworkParameters = params;
+                }
+                break;
+            }
+            case api::WalletType::COSMOS: {
+                rowset<row> cosmos_rows =
+                    (sql.prepare
+                         << "SELECT cosmos_currencies.name, cosmos_currencies.identifier, "
+                            "cosmos_currencies.xpub_version, cosmos_currencies.pubkey_prefix, "
+                            "cosmos_currencies.address_prefix, cosmos_currencies.message_prefix, "
+                            "cosmos_currencies.chain_id, cosmos_currencies.additional_CIPs"
+                            " FROM cosmos_currencies "
+                            " WHERE cosmos_currencies.name = :currency_name",
+                     use(currency.name));
+                for (auto &cosmos_row : cosmos_rows) {
+                    api::CosmosLikeNetworkParameters params;
+                    params.Identifier = cosmos_row.get<std::string>(1);
+                    params.XPUBVersion = hex::toByteArray(cosmos_row.get<std::string>(2));
+                    params.PubKeyPrefix = hex::toByteArray(cosmos_row.get<std::string>(3));
+                    params.AddressPrefix = hex::toByteArray(cosmos_row.get<std::string>(4));
+                    params.MessagePrefix = cosmos_row.get<std::string>(5);
+                    params.ChainId = cosmos_row.get<std::string>(6);
+                    params.AdditionalCIPs = strings::split(cosmos_row.get<std::string>(7), ",");
+                    currency.cosmosLikeNetworkParameters = params;
                 }
                 break;
             }

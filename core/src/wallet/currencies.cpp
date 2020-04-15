@@ -30,6 +30,7 @@
  */
 #include "currencies.hpp"
 #include "bitcoin/networks.hpp"
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include "ethereum/ethereumNetworks.hpp"
 #include "ripple/rippleNetworks.h"
 #include "tezos/tezosNetworks.h"
@@ -324,6 +325,9 @@ namespace ledger {
                 CLUBCOIN,
                 DECRED,
                 STAKENET,
+                // ATOM is defined in wallet/cosmos/CosmosLikeCurrencies.cpp
+                // (design/mod backport)
+                ATOM,
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
                 ETHEREUM_CLASSIC,
