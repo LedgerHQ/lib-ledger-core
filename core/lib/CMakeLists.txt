@@ -38,6 +38,9 @@ set(SOCI_STATIC ON)
 set(SOCI_SHARED OFF CACHE BOOL "USE ONLY STATIC" FORCE)
 
 add_subdirectory(soci)
+# Fix undefined symbol related to dl library on Unix system
+# The dl library is linked here to avoid to modify vendor cmake files
+target_link_libraries(soci_core_static ${CMAKE_DL_LIBS})
 add_subdirectory(soci_sqlite3)
 
 if (PG_SUPPORT)
