@@ -498,8 +498,7 @@ namespace ledger {
         }
 
         Future<BigInt> StellarLikeAccount::getSequence() {
-            auto self = getSelf();
-            return self->_params.explorer->getAccount(self->_params.keychain->getAddress()->toString())
+            return _params.explorer->getAccount(_params.keychain->getAddress()->toString())
                 .map<BigInt>(getContext(), [=] (const std::shared_ptr<stellar::Account>& account) {
                     return BigInt::fromString(account->sequence);
                 });
