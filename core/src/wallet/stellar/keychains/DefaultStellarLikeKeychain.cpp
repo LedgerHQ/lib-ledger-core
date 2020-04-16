@@ -52,7 +52,7 @@ namespace ledger {
         }
 
         std::string DefaultStellarLikeKeychain::getRestoreKey() const {
-            return _address->toString();
+            return hex::toString(_address->toPublicKey());
         }
     }
 }
