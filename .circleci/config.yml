@@ -253,6 +253,8 @@ jobs:
         name: Publish_jar
         command: |
           . .circleci/publish_jar.sh
+    - store_artifacts:
+        path: ~/lib-ledger-core-artifacts
   generate_doc:
     docker:
       - image: circleci/buildpack-deps:stretch
