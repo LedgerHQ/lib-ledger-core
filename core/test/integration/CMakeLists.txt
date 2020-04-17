@@ -153,6 +153,7 @@ add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickOneUTXOWithChange 
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickMultipleUTXO COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickMultipleUTXO)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickAllUTXO COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickAllUTXO)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickUTXOWithMergeOutputs COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickUTXOWithMergeOutputs)
+add_test (NAME ledger-core-integration-CoinSelectionP2PKH.CompareUTXOPickingStrategies COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.CompareUTXOPickingStrategies)
 add_test (NAME ledger-core-integration-BitcoinWalletDatabaseTests.EmptyWallet COMMAND ledger-core-integration-tests --gtest_filter=BitcoinWalletDatabaseTests.EmptyWallet)
 add_test (NAME ledger-core-integration-BitcoinWalletDatabaseTests.CreateWalletWithOneAccount COMMAND ledger-core-integration-tests --gtest_filter=BitcoinWalletDatabaseTests.CreateWalletWithOneAccount)
 add_test (NAME ledger-core-integration-BitcoinWalletDatabaseTests.CreateWalletWithMultipleAccountAndDelete COMMAND ledger-core-integration-tests --gtest_filter=BitcoinWalletDatabaseTests.CreateWalletWithMultipleAccountAndDelete)
