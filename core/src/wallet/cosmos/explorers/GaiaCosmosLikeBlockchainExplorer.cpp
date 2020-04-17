@@ -387,15 +387,15 @@ namespace ledger {
 
             return _http->POST("/txs", transaction, headers)
                         .json().template map<String>(_executionContext, [] (const HttpRequest::JsonResult& result) -> String {
-                            // TODO : the content of this payload actually depends on the mode of the transaction
+                            // The content of this payload actually depends on the mode of the transaction
                             // block has both check_tx and deliver_tx
                             // sync has check_tx
                             // async has nothing
-                            auto& json = *std::get<1>(result);
-                            if (json.HasMember("raw_log")) {
-                                return json["raw_log"].GetString();
-                            }
-                            return "";
+                            auto &json = *std::get<1>(result);
+                            rapidjson::StringBuffer buffer;
+                            rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                            json.Accept(writer);
+                            return buffer.GetString();
                         });
         }
 
