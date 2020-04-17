@@ -9,9 +9,9 @@
 
 * [Motivation](#motivation)
 * [Content](#content)
-    * [How packaging is done on the legacy path](#how-packaging-is-done-on-the-legacy-path)
-    * [How packaging is done on the modularized path](#how-packaging-is-done-on-the-modularized-path)
-    * [Implementation details](#implementation-details)
+  * [How packaging is done on the legacy path](#how-packaging-is-done-on-the-legacy-path)
+  * [How packaging is done on the modularized path](#how-packaging-is-done-on-the-modularized-path)
+  * [Implementation details](#implementation-details)
 * [Rationale](#rationale)
 * [Related work](#related-work)
 
@@ -70,10 +70,10 @@ lc pkg npm
 ```
 
 The rest of the arguments is a list of projects to bundle into the NPM package. Because all coins depend on
-the `ledger-core` project, you will want to add it to the list as well — typically added as first argument.
-Projects (`ledger-core` included) are added with their _names_, not folder names (i.e. use `abc` instead of
-`ledger-core-abc`), the same way you did when creating them with `lc new`. They are laid on the line and
-separated with commas.
+the `ledger-core` project, you will want to add it to the list as well — typically added as first argument with
+the special `core` name. Projects (`ledger-core` included) are added with their _names_, not folder names
+(i.e. use `abc` instead of `ledger-core-abc`), the same way you did when creating them with `lc new`. They are
+laid on the line and separated with commas.
 
 Example:
 
@@ -81,9 +81,9 @@ Example:
 lc pkg npm core bitcoin ethereum ripple tezos
 ```
 
-> As always, the script must be run from the root of the [lib-ledger-core] project.
+> As always, the script must be run from the root of the `lib-ledger-core` project.
 
-Once this is done, you will find the NPM package ready to be build in `bindings/node`, where you can simply
+Once this is done, you will find the NPM package ready to be built in `bindings/node`, where you can simply
 run `yarn` to build it.
 
 ## Implementation details
@@ -93,35 +93,10 @@ limitation in [djinni], some work must be done to achieve packaging with a modul
 `npm` path, this script will first clean the `binding/node` folder. Although the legacy Core has a
 (committed) `binding.gyp` file, we cannot use that file directly. [GYP] has a configuration files that
 doesn’t easily allow to depend on multiple libraries — remember we have one for `ledger-core` and one for
-each coin.
+each coin. For this reason, the GYP file is much bigger than what you will find on the legacy path.
 
-For this reason, a Python script (`tools/gyp_generator.py`) was created. That script takes the list of
-projects (the same passed to `lc pkg npm`) and generates a `bindings/node/binding.gyp` for the selected
-configuration of coins. The script is called at the end of packaging, after an important phase is done:
-the generation of C++ source files.
-
-C++ source files are used to make a bridge between `node` (by using the `Nan` library) and our Core library.
-Normally, we should write that code, but [djinni] takes care of that for us. Calling [djinni] with some
-arguments will generate C++ source files to be part of the [GYP] compilation that will generate a `node`
-package. The problem is that [djinni] has been designed to work with a single C++ library at a time, not
-several — we have several; one for each coin. The result of this is that, having [djinni] generate a C++
-source file for each project (in the form `ledgercore-$coin.cpp`) will duplicate the initialization
-process of the `Nan` library for each coin, resulting in a pretty bad situation. This is due to the fact
-that [djinni] assumes a strong correlation between a .cpp file and a node project.
-
-To fix that problem, after generation of the C++ source files, the `idl_pkg.sh` script will extract all the
-important information from all the `ledgercore{,-$coin}.cpp` files, like `#include` directives and
-specific objects’ initialization, and concatenate them inside a single file, called `final-output.cpp`. All
-the `ledgercore{,-$coin}.cpp` files will then be deleted to prevent [GYP] from compiling them.
-
-Once this is done, calling `yarn` will:
-
-- Copy all the libraries (1 for `ledger-core` and N for the N coins you asked for) into the `node` package.
-- Move the header files.
-- Move the C++ files.
-- Compile each C++ files.
-- Compile the entry point (i.e. `node` _module_) by using the `final-output.cpp` file.
-- Done.
+Currently, that GYP file is manually edited and the `lc pkg npm` command should be called with all the
+coins. Scripting this part will be done when we are sure the whole process works correctly.
 
 # Rationale
 > Should we go for it? Drop it?
