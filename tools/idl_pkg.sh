@@ -93,7 +93,7 @@ function generate_npm_interface {
   echo "using namespace node;" >> $OUTPUT_CPP
   echo "static void initAll(Local<Object> target) {" >> $OUTPUT_CPP
   echo -e "    Nan::HandleScope scope;" >> $OUTPUT_CPP
-  (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "Initialize(target)" '{}' \;) >> $OUTPUT_CPP
+  (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "Initialize(target)" '{}' \; | awk '!x[$0]++') >> $OUTPUT_CPP
   echo "}" >> $OUTPUT_CPP
   echo "NODE_MODULE(ledgercore,initAll);" >> $OUTPUT_CPP
 
