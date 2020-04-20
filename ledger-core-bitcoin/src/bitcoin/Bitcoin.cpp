@@ -10,7 +10,7 @@
 namespace ledger {
     namespace core {
         std::shared_ptr<api::Bitcoin> api::Bitcoin::newInstance() {
-          return std::shared_ptr<ledger::core::Bitcoin>();
+          return std::make_shared<ledger::core::Bitcoin>();
         }
 
         Future<api::ErrorCode> registerCurrenciesInto(
@@ -67,7 +67,8 @@ namespace ledger {
                 currencies::stakenet()
             });
 
-            registerCurrenciesInto(s, ws, currencies);
+            registerCurrenciesInto(s, ws, currencies)
+              .callback(s->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         std::shared_ptr<api::BitcoinLikeAccount> Bitcoin::fromCoreAccount(const std::shared_ptr<api::Account> & coreAccount) {

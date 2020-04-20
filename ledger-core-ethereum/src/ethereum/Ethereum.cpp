@@ -10,7 +10,7 @@
 namespace ledger {
     namespace core {
         std::shared_ptr<api::Ethereum> api::Ethereum::newInstance() {
-          return std::shared_ptr<ledger::core::Ethereum>();
+          return std::make_shared<ledger::core::Ethereum>();
         }
 
         Future<api::ErrorCode> registerCurrenciesInto(
@@ -47,7 +47,8 @@ namespace ledger {
                 currencies::ethereum_ropsten()
             });
 
-            registerCurrenciesInto(s, ws, currencies);
+            registerCurrenciesInto(s, ws, currencies)
+              .callback(s->getDispatcher()->getMainExecutionContext(), callback);
         }
 
         std::shared_ptr<api::EthereumLikeAccount> Ethereum::fromCoreAccount(const std::shared_ptr<api::Account> & coreAccount) {

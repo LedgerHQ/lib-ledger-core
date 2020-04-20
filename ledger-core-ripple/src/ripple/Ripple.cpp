@@ -10,7 +10,7 @@
 namespace ledger {
     namespace core {
         std::shared_ptr<api::Ripple> api::Ripple::newInstance() {
-          return std::shared_ptr<ledger::core::Ripple>();
+          return std::make_shared<ledger::core::Ripple>();
         }
 
         void Ripple::registerInto(
