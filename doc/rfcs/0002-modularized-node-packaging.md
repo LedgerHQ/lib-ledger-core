@@ -1,5 +1,5 @@
 - RFC name: `0002-modularized-node-packaging`.
-- Status: `draft`.
+- Status: `implemented`.
 - Author: [Dimitri Sabadie](https://github.com/phaazon)
 - Date Created: 2020/02/12
 - Date Updated: 2020/02/12
@@ -11,6 +11,9 @@
 * [Content](#content)
   * [How packaging is done on the legacy path](#how-packaging-is-done-on-the-legacy-path)
   * [How packaging is done on the modularized path](#how-packaging-is-done-on-the-modularized-path)
+  * [How to use the generated package](#how-to-use-the-generated-package)
+    * [Publishing](#publishing)
+    * [Adding the package as a dependency](#adding-the-package-as-a-dependency)
   * [Implementation details](#implementation-details)
 * [Rationale](#rationale)
 * [Related work](#related-work)
@@ -84,7 +87,40 @@ lc pkg npm core bitcoin ethereum ripple tezos
 > As always, the script must be run from the root of the `lib-ledger-core` project.
 
 Once this is done, you will find the NPM package ready to be built in `bindings/node`, where you can simply
-run `yarn` to build it.
+run `yarn` to build it. It’s currently named `@ledgerhq/ledger-core-modularized` to prevent clashing with the
+already existing node package, but the name is subject to change in the future after stabilization.
+
+## How to use the generated package
+
+### Publishing
+
+Once the package is generated, one can use any mean to add / link it to a Ledger Live project — or really,
+any project. It is highly recommended to use the `yalc` utility to register on your system the package:
+
+```
+yalc publish
+```
+
+Or, if you have already configured other projects with it, you can directly push the changes to them
+after having updated the local store:
+
+```
+# these two commands do exactly the same thing, so prefer the latter!
+yalc publish --push
+yalc push
+```
+
+### Adding the package as a dependency
+
+Here, again, it’s pretty simple: you use `yalc`. Inside your project, like `ledger-live-common/cli`, simply
+add the package as a dependency:
+
+```
+yalc add @ledgerhq/ledger-core-modularized
+```
+
+Don’t forget to `yarn` to rebuild your project. Everytime a change is made on the package, you need to
+re-publish it and either re-run the `yalc add` command, or use `yalc push` to automate that process.
 
 ## Implementation details
 
@@ -93,10 +129,35 @@ limitation in [djinni], some work must be done to achieve packaging with a modul
 `npm` path, this script will first clean the `binding/node` folder. Although the legacy Core has a
 (committed) `binding.gyp` file, we cannot use that file directly. [GYP] has a configuration files that
 doesn’t easily allow to depend on multiple libraries — remember we have one for `ledger-core` and one for
-each coin. For this reason, the GYP file is much bigger than what you will find on the legacy path.
+each coin.
 
-Currently, that GYP file is manually edited and the `lc pkg npm` command should be called with all the
-coins. Scripting this part will be done when we are sure the whole process works correctly.
+For this reason, a Python script (`tools/gyp_generator.py`) was created. That script takes the list of
+projects (the same passed to `lc pkg npm`) and generates a `bindings/node/binding.gyp` for the selected
+configuration of coins. The script is called at the end of packaging, after an important phase is done:
+the generation of C++ source files.
+
+C++ source files are used to make a bridge between `node` (by using the `Nan` library) and our Core library.
+Normally, we should write that code, but [djinni] takes care of that for us. Calling [djinni] with some
+arguments will generate C++ source files to be part of the [GYP] compilation that will generate a `node`
+package. The problem is that [djinni] has been designed to work with a single C++ library at a time, not
+several — we have several; one for each coin. The result of this is that, having [djinni] generate a C++
+source file for each project (in the form `ledgercore-$coin.cpp`) will duplicate the initialization
+process of the `Nan` library for each coin, resulting in a pretty bad situation. This is due to the fact
+that [djinni] assumes a strong correlation between a .cpp file and a node project.
+
+To fix that problem, after generation of the C++ source files, the `idl_pkg.sh` script will extract all the
+important information from all the `ledgercore{,-$coin}.cpp` files, like `#include` directives and
+specific objects’ initialization, and concatenate them inside a single file, called `final-output.cpp`. All
+the `ledgercore{,-$coin}.cpp` files will then be deleted to prevent [GYP] from compiling them.
+
+Once this is done, calling `yarn` will:
+
+- Copy all the libraries (1 for `ledger-core` and N for the N coins you asked for) into the `node` package.
+- Move the header files.
+- Move the C++ files.
+- Compile each C++ files.
+- Compile the entry point (i.e. `node` _module_) by using the `final-output.cpp` file.
+- Done.
 
 # Rationale
 > Should we go for it? Drop it?
