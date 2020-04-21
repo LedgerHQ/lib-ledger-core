@@ -99,11 +99,19 @@ namespace ledger {
                                                                          const api::Currency &currency,
                                                                          const Option<std::string> &derivationPath) {
             auto& params = networks::getCosmosLikeNetworkParameters(currency.name);
-            auto type =
-                address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL).hrp) ==
-                        std::string::npos
-                    ? api::CosmosBech32Type::ADDRESS
-                    : api::CosmosBech32Type::ADDRESS_VAL;
+            api::CosmosBech32Type type;
+            if (address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL).hrp) !=
+                std::string::npos) {
+                type = api::CosmosBech32Type::ADDRESS_VAL;
+            }
+            else if (
+                address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS).hrp) !=
+                std::string::npos) {
+                type = api::CosmosBech32Type::ADDRESS;
+            }
+            else {
+                throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid cosmos address");
+            }
             auto bech32 = std::make_shared<CosmosBech32>(type);
             auto decoded = bech32->decode(address);
             // Second supposed to be hash160 of pubKey
