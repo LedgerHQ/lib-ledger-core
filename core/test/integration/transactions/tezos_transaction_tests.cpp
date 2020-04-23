@@ -110,6 +110,8 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     auto originatedAccounts = account->getOriginatedAccounts();
     EXPECT_GT(originatedAccounts.size(), 0);
 
+    std::cout << originatedAccounts.size() << " originated accounts." << std::endl;
+
     auto txBuilder = std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(originatedAccounts[0]->buildTransaction());
     txBuilder->setFees(api::Amount::fromLong(currency, 250));
     txBuilder->setGasLimit(api::Amount::fromLong(currency, 10000));
