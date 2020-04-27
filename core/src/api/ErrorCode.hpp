@@ -104,6 +104,7 @@ enum class ErrorCode : int {
     INVALID_BECH32_FORMAT,
     /** Stellar errors */
     INVALID_STELLAR_ADDRESS_FORMAT,
+    INVALID_STELLAR_MEMO_TYPE,
 };
 LIBCORE_EXPORT  std::string to_string(const ErrorCode& errorCode);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const ErrorCode &o);
