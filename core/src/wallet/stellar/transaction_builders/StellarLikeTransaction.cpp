@@ -38,6 +38,7 @@
 #include <utils/Exception.hpp>
 #include <wallet/common/Amount.h>
 #include <api_impl/BigIntImpl.hpp>
+#include <wallet/stellar/StellarLikeMemo.hpp>
 
 namespace ledger {
     namespace core {
@@ -124,6 +125,10 @@ namespace ledger {
 
         std::shared_ptr<api::Amount> StellarLikeTransaction::getFee() {
             return std::make_shared<Amount>(_currency, 0, BigInt(_envelope.tx.fee));
+        }
+
+        std::shared_ptr<api::StellarLikeMemo> StellarLikeTransaction::getMemo() {
+            return std::make_shared<StellarLikeMemo>(_envelope.tx.memo);
         }
     }
 }
