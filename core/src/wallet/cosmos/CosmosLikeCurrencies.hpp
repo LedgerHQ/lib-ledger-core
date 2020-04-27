@@ -39,6 +39,9 @@
 #endif
 
 #include <api/Currency.hpp>
+#include <wallet/cosmos/CosmosLikeCoinID.hpp>
+#include <wallet/cosmos/CosmosNetworks.hpp>
+
 
 namespace ledger {
     namespace core {

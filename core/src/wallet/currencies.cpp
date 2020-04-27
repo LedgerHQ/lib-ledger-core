@@ -242,6 +242,17 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("stakenet", 8, "XSN");
 
+            // Minimum value is uatom according to
+            // https://github.com/cosmos/gaia/blob/ba8d2b3177e1b891b72d6f40538fc2c6344bdeac/docs/delegators/delegator-guide-cli.md#sending-transactions
+            const api::Currency ATOM =
+                Currency("atom")
+                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("atom"))
+                .bip44(ATOM_COIN_ID)
+                .paymentUri("cosmos")
+                .unit("uatom", 0, "uatom")
+                .unit("matom", 3, "matom")
+                .unit("atom", 6, "atom");
+
             //Reference for ETH coinTypes: https://github.com/LedgerHQ/ledger-live-common/blob/b0196ae9031447f41f8e641f0ec5d3e2b72be83c/src/data/cryptocurrencies.js
             const api::Currency ETHEREUM =
                     Currency("ethereum")
