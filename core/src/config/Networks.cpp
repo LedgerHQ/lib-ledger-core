@@ -29,6 +29,8 @@
  *
  */
 #include "Networks.hpp"
+#include <api/ErrorCode.hpp>
+#include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
         namespace api {
@@ -49,14 +51,10 @@ namespace ledger {
                 );
             }
 
-            // XXX : duplicate code
-            // ledger::core::api::Networks::cosmos(string&) (this function)
-            // is the same as
-            // ledger::core::networks::getCosmosLikeNetworkParameters(string&) (in src/wallet/cosmos/CosmosNetworks.cpp)
-            // A check to see if one of these function can be removed is necessary
             CosmosLikeNetworkParameters Networks::cosmos(const std::string& chainID) {
                 if (chainID == "atom") {
                     static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
+                        // The current version of the chain has the "cosmos" identifer
                         "cosmos",
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
@@ -79,6 +77,10 @@ namespace ledger {
                     );
                     return COSMOSHUB_2;
                 }
+                throw make_exception(
+                    api::ErrorCode::INVALID_ARGUMENT,
+                    "No network parameters set for chain {}",
+                    chainID);
             }
 
 

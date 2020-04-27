@@ -30,50 +30,17 @@
  */
 
 #include <wallet/cosmos/CosmosNetworks.hpp>
+#include <config/Networks.hpp>
 #include <api/ErrorCode.hpp>
 #include <utils/Exception.hpp>
 
 namespace ledger {
         namespace core {
                 namespace networks {
-                        // XXX : duplicate code
-                        // ledger::core::api::Networks::cosmos(string&) (in src/config/Networks.cpp)
-                        // is the same as
-                        // ledger::core::networks::getCosmosLikeNetworkParameters(string&) (this function)
-                        // A check to see if one of these function can be removed is necessary
                         const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(const std::string& chainID) {
-                                if (chainID == "atom") {
-                                static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
-                                        "cosmos",
-                                        "ATOM signed message:\n",
-                                        {0x04, 0x88, 0xB2, 0x1E},
-                                        {0xEB, 0x5A, 0xE9, 0x87},
-                                        {},
-                                        "cosmoshub-3",
-                                        {}
-                                );
-                                return COSMOSHUB_3;
-                                }
-                                if (chainID == "atom-cosmoshub-2") {
-                                static const api::CosmosLikeNetworkParameters COSMOSHUB_2(
-                                        "atom-cosmoshub-2",
-                                        "ATOM signed message:\n",
-                                        {0x04, 0x88, 0xB2, 0x1E},
-                                        {0xEB, 0x5A, 0xE9, 0x87},
-                                        {},
-                                        "cosmoshub-2",
-                                        {}
-                                );
-                                return COSMOSHUB_2;
-                                }
-                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for chain {}", chainID);
+                                return api::Networks::cosmos(chainID);
                         }
 
-                        // TODO : check that having 2 "atom" networkParamters.Identifiers is ok
-                        // Because of the way CosmosLikeWalletFactory::build() finds out if a currency is supported,
-                        // it's possible that :
-                        // - the order of NetworkParameters in the ALL_COSMOS vector actually matters
-                        // - having 2 chain_ids with the same currency is wrong
             const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS
                     ({
                              getCosmosLikeNetworkParameters("atom"),
