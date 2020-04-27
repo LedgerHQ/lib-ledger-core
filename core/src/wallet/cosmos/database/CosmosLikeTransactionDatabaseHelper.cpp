@@ -470,7 +470,7 @@ namespace ledger {
                         const auto& m = boost::get<cosmos::MsgMultiSend>(msg.content);
                         std::vector<cosmos::Coin> totalAmount;
 
-                        // HACK : this snippet left-folds a iterable<vector<cosmos::Coin>>
+                        // This snippet left-folds a iterable<vector<cosmos::Coin>>
                         // into vector<cosmos::Coin> using addition.
                         // Hopefully transform_reduce or flatten functions can help us later.
                         // The map intermediate helps for out-of-order denominations.

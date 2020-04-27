@@ -25,19 +25,18 @@ add_executable(${COSMOS_TESTS_NAME}
   ../integration/BaseFixture.cpp
   ../integration/IntegrationEnvironment.cpp
   )
-
 target_link_libraries(${COSMOS_TESTS_NAME} gtest gtest_main)
 target_link_libraries(${COSMOS_TESTS_NAME} ledger-core-static)
 target_link_libraries(${COSMOS_TESTS_NAME} ledger-test)
 target_link_libraries(${COSMOS_TESTS_NAME} ledger-qt-host)
 target_link_libraries(${COSMOS_TESTS_NAME} leveldb)
 target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../../../qt-host)
+target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../../../core/src)
 target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../lib/libledger-test)
 target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../../../core/lib/leveldb/include)
-include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(${COSMOS_TESTS_NAME} crypto ledger-core)
+copy_install_imported_targets(${COSMOS_TESTS_NAME} crypto)
 
 include(GoogleTest)
 gtest_discover_tests(${COSMOS_TESTS_NAME})

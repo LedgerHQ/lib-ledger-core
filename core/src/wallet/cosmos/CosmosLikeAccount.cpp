@@ -588,7 +588,9 @@ namespace ledger {
                         std::vector<uint8_t> tx{transaction.begin(), transaction.end()};
                         _explorer->pushTransaction(tx)
                                    .map<std::string>(getContext(), [](const String &seq) -> std::string {
-                                           //TODO: optimistic update
+                                           // With 7-10 seconds blocks, we skip optimistic update
+                                           // client code can just use the "block" mechanism to get
+                                           // all transaction information back from the push
                                            return seq.str();
                                         })
                                    .callback(getMainExecutionContext(), callback);

@@ -216,8 +216,7 @@ CosmosLikeAccountSynchronizer::synchronizeBatches(uint32_t currentBatchIndex,
 
     buddy->logger->info("SYNC BATCHES");
 
-    // XXX : Obviously false here. Just a backport quickpatch.
-    // TODO : is multipleAddresses always false for Cosmos
+    // NOTE : is multipleAddresses always false for Cosmos
     const bool hasMultipleAddresses = false;
     auto done = currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1;
     if (currentBatchIndex >= buddy->savedState.getValue().batches.size()) {

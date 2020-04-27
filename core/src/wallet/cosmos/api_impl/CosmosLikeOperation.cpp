@@ -48,19 +48,9 @@ namespace ledger {
 
         CosmosLikeOperation::CosmosLikeOperation(ledger::core::cosmos::Transaction const& tx,
                                                  ledger::core::cosmos::Message const& msg) :
-            // Operation(account), // TODO Need this?
             _txApi(std::make_shared<CosmosLikeTransactionApi>(tx)),
             _msgApi(std::make_shared<CosmosLikeMessage>(msg))
-        {
-            /* TODO Complete missing info for _txApi ?
-                api::Currency _currency;
-                std::string _accountNumber;
-                std::string _accountSequence;
-                std::vector<uint8_t> _rSignature;
-                std::vector<uint8_t> _sSignature;
-                std::vector<uint8_t> _signingPubKey;
-            */
-        }
+        {}
 
         void CosmosLikeOperation::setTransactionData(ledger::core::cosmos::Transaction const& tx) {
             if (_txApi == nullptr) {

@@ -733,7 +733,7 @@ namespace ledger {
                 auto resultObj = n["result"].GetObject();
                 assert((resultObj.HasMember(kSelfBondRewards)));
                 assert((resultObj.HasMember(kValCommission)));
-                // HACK : this function will only parse the first member of each array.
+                // NOTE : this function will only parse the first member of each array.
                 // For the time being Cosmos is only used on CosmosHub, and the only
                 // valid denom is "uatom" for those arrays
                 out.selfBondRewards = resultObj[kSelfBondRewards].GetArray()[0].GetObject()[kAmount].GetString();

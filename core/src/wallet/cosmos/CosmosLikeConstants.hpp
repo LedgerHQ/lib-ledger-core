@@ -167,6 +167,8 @@ namespace ledger {
                                 constexpr const char kAttributeKeyAmount[] = "amount";
                                 constexpr const char kAttributeWithdrawDelegationReward[] = "withdraw_delegator_reward";
 
+                                constexpr const char kPubKeySecp256k1[] = "tendermint/PubKeySecp256k1";
+
                                 // Staking
                                 constexpr const char kEventTypeCompleteUnbonding[] =
                                     "complete_unbonding";
