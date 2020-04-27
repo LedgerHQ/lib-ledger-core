@@ -94,7 +94,7 @@ public:
 
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
-        wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "atom", configuration));
+        wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "cosmos", configuration));
 
         auto accountInfo = wait(wallet->getNextAccountCreationInfo());
         EXPECT_EQ(accountInfo.index, 0);

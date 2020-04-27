@@ -93,7 +93,7 @@ namespace ledger {
                                              const std::string& path,
                                              api::CosmosCurve curve,
                                              api::CosmosBech32Type type) {
-            auto& params = networks::getCosmosLikeNetworkParameters(currency.name);
+            auto& params = currency.cosmosLikeNetworkParameters.value();
             DeterministicPublicKey k = CosmosExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, {}, path);
             DerivationPath p(path);
             return std::make_shared<CosmosLikeExtendedPublicKey>(currency, k, curve, type, p);
@@ -104,7 +104,7 @@ namespace ledger {
                                                 const std::string& xpub,
                                                 const Option<std::string>& path,
                                                 api::CosmosBech32Type type) {
-            auto &params = networks::getCosmosLikeNetworkParameters(currency.name);
+            auto &params = currency.cosmosLikeNetworkParameters.value();
             DeterministicPublicKey k = CosmosExtendedPublicKey::fromBase58(currency, params, xpub, path);
             return std::make_shared<ledger::core::CosmosLikeExtendedPublicKey>(currency, k, api::CosmosCurve::SECP256K1, type, DerivationPath(path.getValueOr("m")));
         }
@@ -113,7 +113,7 @@ namespace ledger {
         CosmosLikeExtendedPublicKey::fromBech32(const api::Currency& currency,
                                                 const std::string& bech32PubKey,
                                                 const Option<std::string>& path) {
-            auto &params = networks::getCosmosLikeNetworkParameters(currency.name);
+            auto &params = currency.cosmosLikeNetworkParameters.value();
             if (bech32PubKey.find(cosmos::getBech32Params(api::CosmosBech32Type::PUBLIC_KEY).hrp) == std::string::npos) {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Bech32 public Key: should be prefixed with \"cosmospub\"");
             }
