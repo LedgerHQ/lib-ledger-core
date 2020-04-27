@@ -851,7 +851,7 @@ namespace ledger {
             const auto baseReq = BaseReq(
                     msg->getFromAddress(),
                     tx->getMemo(),
-                    networks::getCosmosLikeNetworkParameters(tx->getCurrency().name).ChainId,
+                    tx->getCurrency().cosmosLikeNetworkParameters.value().ChainId,
                     tx->getAccountNumber(),
                     tx->getAccountSequence(),
                     tx->getTxData().fee.gas.toString(),

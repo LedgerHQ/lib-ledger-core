@@ -93,7 +93,6 @@ namespace ledger {
 
         protected:
             virtual const api::CosmosLikeNetworkParameters &params() const override {
-                // return networks::getCosmosLikeNetworkParameters(_currency.name);
                 return _currency.cosmosLikeNetworkParameters.value();
             };
 

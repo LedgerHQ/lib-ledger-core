@@ -140,7 +140,7 @@ namespace ledger {
                                                                 .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT))
                 );
                 auto context = pool->getDispatcher()->getSerialExecutionContext(api::BlockchainObserverEngines::COSMOS_NODE);
-                auto& networkParams = networks::getCosmosLikeNetworkParameters(getCurrency().name);
+                auto& networkParams = getCurrency().cosmosLikeNetworkParameters.value();
 
                 explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(context, http, networkParams,
                                                                               std::dynamic_pointer_cast<DynamicObject>(configuration));

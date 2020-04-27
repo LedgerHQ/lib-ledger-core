@@ -51,7 +51,7 @@ namespace ledger {
                                              const std::vector<uint8_t> &version,
                                              api::CosmosBech32Type type,
                                              const Option<std::string> &derivationPath) :
-            _params(networks::getCosmosLikeNetworkParameters(currency.name)),
+            _params(currency.cosmosLikeNetworkParameters.value()),
             _derivationPath(derivationPath),
             _hash160(hash160),
             _version(version),
@@ -98,7 +98,7 @@ namespace ledger {
         std::shared_ptr<CosmosLikeAddress> CosmosLikeAddress::fromBech32(const std::string &address,
                                                                          const api::Currency &currency,
                                                                          const Option<std::string> &derivationPath) {
-            auto& params = networks::getCosmosLikeNetworkParameters(currency.name);
+            auto& params = currency.cosmosLikeNetworkParameters.value();
             api::CosmosBech32Type type;
             if (address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL).hrp) !=
                 std::string::npos) {

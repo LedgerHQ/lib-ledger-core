@@ -43,7 +43,7 @@ public:
          api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
          "44'/<coin_type>'/<account>'/<node>/<address>");
      wallet = std::dynamic_pointer_cast<CosmosLikeWallet>(
-         wait(pool->createWallet(walletName, "atom", configuration)));
+         wait(pool->createWallet(walletName, "cosmos", configuration)));
 
      auto accountInfo = wait(wallet->getNextAccountCreationInfo());
      EXPECT_EQ(accountInfo.index, 0);

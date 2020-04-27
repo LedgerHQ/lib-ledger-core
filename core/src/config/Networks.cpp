@@ -57,7 +57,7 @@ namespace ledger {
             CosmosLikeNetworkParameters Networks::cosmos(const std::string& chainID) {
                 if (chainID == "atom") {
                     static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
-                        "atom",
+                        "cosmos",
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},
@@ -69,7 +69,7 @@ namespace ledger {
                 }
                 if (chainID == "atom-cosmoshub-2") {
                     static const api::CosmosLikeNetworkParameters COSMOSHUB_2(
-                        "atom",
+                        "atom-cosmoshub2",
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},

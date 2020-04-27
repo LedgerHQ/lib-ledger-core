@@ -245,7 +245,7 @@ namespace ledger {
             // Minimum value is uatom according to
             // https://github.com/cosmos/gaia/blob/ba8d2b3177e1b891b72d6f40538fc2c6344bdeac/docs/delegators/delegator-guide-cli.md#sending-transactions
             const api::Currency ATOM =
-                Currency("atom")
+                Currency("cosmos")
                 .forkOfCosmos(networks::getCosmosLikeNetworkParameters("atom"))
                 .bip44(ATOM_COIN_ID)
                 .paymentUri("cosmos")
@@ -336,8 +336,6 @@ namespace ledger {
                 CLUBCOIN,
                 DECRED,
                 STAKENET,
-                // ATOM is defined in wallet/cosmos/CosmosLikeCurrencies.cpp
-                // (design/mod backport)
                 ATOM,
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
