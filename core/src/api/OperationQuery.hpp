@@ -41,15 +41,15 @@ public:
 
     /**
      * Add offset to the operation query.
-     * @param from, 64-bit integer
+     * @param from, 32-bit integer
      */
-    virtual std::shared_ptr<OperationQuery> offset(int64_t from) = 0;
+    virtual std::shared_ptr<OperationQuery> offset(int32_t from) = 0;
 
     /**
      * Add limit to the operation query results.
-     * @param count, 64-bit integer
+     * @param count, 32-bit integer
      */
-    virtual std::shared_ptr<OperationQuery> limit(int64_t count) = 0;
+    virtual std::shared_ptr<OperationQuery> limit(int32_t count) = 0;
 
     /**
      *TODO

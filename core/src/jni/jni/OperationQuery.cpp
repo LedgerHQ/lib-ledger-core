@@ -43,22 +43,22 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1offset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_from)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1offset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_from)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        auto r = ref->offset(::djinni::I64::toCpp(jniEnv, j_from));
+        auto r = ref->offset(::djinni::I32::toCpp(jniEnv, j_from));
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1limit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_count)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1limit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_count)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::OperationQuery>(nativeRef);
-        auto r = ref->limit(::djinni::I64::toCpp(jniEnv, j_count));
+        auto r = ref->limit(::djinni::I32::toCpp(jniEnv, j_count));
         return ::djinni::release(::djinni_generated::OperationQuery::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
