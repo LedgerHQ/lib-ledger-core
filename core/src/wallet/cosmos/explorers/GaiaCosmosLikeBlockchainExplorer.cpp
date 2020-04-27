@@ -636,7 +636,7 @@ namespace ledger {
 
                         const auto &balances = json.GetObject()["result"].GetArray();
                         BigInt total_amt = BigInt::ZERO;
-                        // HACK : Assuming only uatom is in the balances array
+                        // NOTE : Assuming only uatom is in the balances array
                         for (const auto& balance_entry : balances) {
                             total_amt = total_amt + BigInt::fromDecimal(balance_entry.GetObject()[cosmos::constants::kAmount].GetString());
                         }
@@ -756,7 +756,7 @@ namespace ledger {
 
         namespace {
 
-        // TODO: probably move most of these in a separate folder/file
+        // JSON helpers to communicate with the explorer
 
         void makeAmount(const api::CosmosLikeAmount& amount,
                         rapidjson::Value& value,
@@ -905,7 +905,8 @@ namespace ledger {
 
             auto buffer = rapidjson::StringBuffer();
             auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
-            // TODO: sortJson is defined static in CosmosLikeTransactionApi.cpp (either make it visible or move this to CosmosLikeTransactionApi)
+            // The Json will start unsorted here.
+            // sortJson is defined static in CosmosLikeTransactionApi.cpp (either make it visible or move this to CosmosLikeTransactionApi)
             // sortJson(document);
             document.Accept(writer);
 

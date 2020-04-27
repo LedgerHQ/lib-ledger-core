@@ -320,8 +320,7 @@ namespace ledger {
 
                     { // Set pub key
                         Value pubKeyObject(kObjectType);
-                        // TODO store it somewhere
-                        std::string pubKeyType = "tendermint/PubKeySecp256k1";
+                        std::string pubKeyType = kPubKeySecp256k1;
                         vString.SetString(pubKeyType.c_str(), static_cast<SizeType>(pubKeyType.length()), allocator);
                         pubKeyObject.AddMember(kType, vString, allocator);
 
@@ -358,7 +357,6 @@ namespace ledger {
             document.AddMember(kTx, txObject, allocator);
 
             // Set mode
-            // TODO What mode do we want? (sync|async|block)
             vString.SetString(mode.c_str(), static_cast<SizeType>(mode.length()), allocator);
             document.AddMember(kMode, vString, allocator);
 

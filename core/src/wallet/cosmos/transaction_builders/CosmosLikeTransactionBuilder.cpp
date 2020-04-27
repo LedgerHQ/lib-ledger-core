@@ -530,7 +530,6 @@ namespace ledger {
 
                 // Total Tx fees
                 // Gas Price is then deduced with Total_Tx_fees / Gas Limit
-                // TODO figure out why the fee contains an array of amounts
                 if (feeObject[kAmount].IsArray()) {
                     auto fee = BigInt();
 
@@ -542,12 +541,13 @@ namespace ledger {
                             return unit.name == denom;
                         });
 
-                        assert(unit->name == "uatom"); // FIXME Temporary until all units correctly supported
+                        // NOTE until other units are wanted, we assume only uatom is used.
+                        // This will only fail in debug builds.
+                        assert(unit->name == "uatom");
 
                         if (unit == currency.units.end()) {
                             throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Unknown unit while parsing transaction");
                         }
-                        //TODO: Fix Amount::toUnit
                         return Amount(currency, 0, BigInt(amount) * BigInt(10).pow(static_cast<unsigned short>((*unit).numberOfDecimal)));
                     };
 

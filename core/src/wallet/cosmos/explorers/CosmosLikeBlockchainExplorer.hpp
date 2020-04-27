@@ -68,7 +68,6 @@ namespace ledger {
 
             // Everything below is c/p from AbstractBlockchainExplorer, in sole purpose
             // of being able to use fromBlockHeight instead of fromBlockHash in getTransactions (see below)
-            // TODO Maybe some code cleanup and/or factorization
 
             virtual Future<void *> startSession() = 0;
             virtual Future<Unit> killSession(void *session) = 0;

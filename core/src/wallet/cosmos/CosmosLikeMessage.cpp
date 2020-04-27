@@ -445,9 +445,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
     return json;
 }
 
-// TODO [refacto] Templatize all the following functions
-// Note that templating doesn't help much, as these names are exposed through djinni,
-// and need to be defined anyway.
+// We could try templating these functions, but since
+// these names are exposed through djinni, each individual
+// function needs to be defined anyway.
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSend(
     const api::CosmosLikeMsgSend& msgContent) {
