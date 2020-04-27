@@ -83,6 +83,76 @@ function generate_npm_interface {
     echo "Publishing and pushing to the local yalc store"
     yalc publish --push
   fi
+
+function generate_react_native_interface {
+  RN_DIR=./bindings/react-native
+  RN_IOS=$RN_DIR/ios/Sources/react-native-ios
+  RN_IOS_OBJC=$RN_DIR/ios/Sources/objc
+  RN_IOS_OBJCPP=$RN_DIR/ios/Sources/objcpp
+  RN_IOS_SOURCES=$RN_DIR/ios/Sources/include
+  RN_ANDROID=$RN_DIR/android/src/main/java/com/ledger/reactnative
+  RN_ANDROID_JAVA_IFACE=$RN_DIR/android/src/main/java/co/ledger/core
+
+  # prune export directories
+  rm -rf $RN_IOS
+  rm -rf $RN_IOS_OBJC
+  rm -rf $RN_IOS_OBJCPP
+  rm -rf $RN_IOS_SOURCES
+
+  rm -rf $RN_DIR/android/libs
+  mkdir -p $RN_DIR/android/libs/{x86,x86_64,armeabi-v7a,arm64-v8a}
+
+  for coin in $*; do
+    if [ "$coin" == "core" ]; then
+      PROJECT_NAME=ledger-core
+      RN_PKG_NAME=ledgercore
+    else
+      PROJECT_NAME=ledger-core-$coin
+      RN_PKG_NAME=ledgercore-$coin
+    fi
+
+    CURRENCY_NAME=$coin
+
+    echo -e "Generating $PROJECT_NAME ($CURRENCY_NAME) React Native binding code"
+
+    ./djinni/src/run \
+      --idl $PROJECT_NAME/idl/idl.djinni \
+      --cpp-out $RN_IOS_SOURCES \
+      --cpp-namespace ledger::core::api \
+      --cpp-optional-template std::experimental::optional \
+      --cpp-optional-header "\"../utils/optional.hpp\"" \
+      --objc-type-prefix LG \
+      --objc-out $RN_IOS_OBJC \
+      --objcpp-out $RN_IOS_OBJCPP \
+      --react-native-objc-out $RN_IOS \
+      --react-native-type-prefix RCTCore \
+      --react-include-objc-impl ../objc-impl \
+      --react-native-objc-impl-suffix Impl \
+      --react-native-java-out $RN_ANDROID \
+      --react-native-java-package com.ledger.reactnative \
+      --java-out $RN_ANDROID_JAVA_IFACE \
+      --java-package co.ledger.core \
+      --trace $trace
+  done
+
+  #    # Gather all #include
+  #    echo "Generating the final output C++ one-source concatenated interface"
+  #    OUTPUT_CPP=$NODE_SRC_DIR/final-output.cpp
+
+  #    (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "\#include" '{}' \;) > $OUTPUT_CPP
+  #    echo "using namespace v8;" >> $OUTPUT_CPP
+  #    echo "using namespace node;" >> $OUTPUT_CPP
+  #    echo "static void initAll(Local<Object> target) {" >> $OUTPUT_CPP
+  #    echo -e "    Nan::HandleScope scope;" >> $OUTPUT_CPP
+  #    (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "Initialize(target)" '{}' \;) >> $OUTPUT_CPP
+  #    echo "}" >> $OUTPUT_CPP
+  #    echo "NODE_MODULE(ledgercore,initAll);" >> $OUTPUT_CPP
+
+  #    echo "Removing temporary C++ source interface"
+  #    rm $NODE_SRC_DIR/ledgercore*cpp
+
+  #    echo "Generating the binding.gyp file…"
+  #    ./tools/gyp_generator.py $*
 }
 
 case "$1" in

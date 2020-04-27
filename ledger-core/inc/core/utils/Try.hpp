@@ -32,7 +32,7 @@
 #pragma once
 
 #ifdef TARGET_JNI
-#include <jni/jni/djinni_support.hpp>
+#include <core/jni/jni/djinni_support.hpp>
 #endif
 
 #include <boost/exception/diagnostic_information.hpp>
