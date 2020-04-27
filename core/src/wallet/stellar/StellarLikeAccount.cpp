@@ -291,7 +291,7 @@ namespace ledger {
                 stellarOperation.from = operation.senders[0];
                 if (!operation.recipients.empty())
                     stellarOperation.to = operation.recipients[0];
-                operation.stellarOperation = stellarOperation;
+                operation.stellarOperation = {stellarOperation, tx};
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
                 createdOperations += 1;

@@ -71,7 +71,7 @@ namespace ledger {
             Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
             Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Option<TezosLikeBlockchainExplorerTransaction> tezosTransaction;
-            Option<stellar::Operation> stellarOperation;
+            Option<stellar::OperationWithParentTransaction> stellarOperation;
 
             void refreshUid(const std::string &additional = "");
 

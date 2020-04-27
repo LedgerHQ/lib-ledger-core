@@ -63,7 +63,7 @@ namespace ledger {
         std::shared_ptr<api::BigInt> StellarLikeMemo::getMemoId() {
             if (_memo.type == stellar::xdr::MemoType::MEMO_ID)
                 return std::make_shared<api::BigIntImpl>(
-                        BigInt(boost::get<uint64_t>(_memo.content))
+                        BigInt::fromScalar(boost::get<uint64_t>(_memo.content))
                 );
             throw make_exception(api::ErrorCode::INVALID_STELLAR_MEMO_TYPE, "Memo type is not MEMO_ID");
         }
@@ -99,6 +99,43 @@ namespace ledger {
                             boost::get<stellar::xdr::Hash>(_memo.content).end())
                     );
             }
+        }
+
+        const stellar::xdr::Memo &StellarLikeMemo::getBackend() const {
+            return _memo;
+        }
+
+        Try<StellarLikeMemo> StellarLikeMemo::fromDatabase(const std::string &type, const std::string &content) {
+            stellar::xdr::Memo memo;
+            Try<StellarLikeMemo> result;
+
+            if (type == "text") {
+                memo.type = stellar::xdr::MemoType::MEMO_TEXT;
+                memo.content = content;
+                result.success(memo);
+            } else if (type == "none") {
+                memo.type = stellar::xdr::MemoType::MEMO_NONE;
+                result.success(memo);
+            } else if (type == "id") {
+                memo.type = stellar::xdr::MemoType::MEMO_ID;
+                memo.content = BigInt::fromString(content).toUint64();
+                result.success(memo);
+            } else if (type == "return" || type == "hash") {
+                memo.type = type == "return" ?
+                        stellar::xdr::MemoType::MEMO_RETURN : stellar::xdr::MemoType::MEMO_HASH;
+                stellar::xdr::Hash hash;
+                auto hashVector = hex::toByteArray(content);
+                if (hashVector.size() == hash.max_size()) {
+                    std::copy(hashVector.begin(), hashVector.end(), hash.begin());
+                    memo.content = hash;
+                    result.success(memo);
+                } else {
+                    result.fail(api::ErrorCode::ILLEGAL_ARGUMENT, "Unable to rebuild memo from database (bad content)");
+                }
+            } else {
+                result.fail(api::ErrorCode::ILLEGAL_ARGUMENT, "Unable to rebuild memo from database (unknown type)");
+            }
+            return result;
         }
     }
 }

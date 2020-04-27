@@ -34,6 +34,7 @@
 
 #include "stellar.hpp"
 #include <api/StellarLikeMemo.hpp>
+#include <utils/Try.hpp>
 
 namespace ledger {
     namespace core {
@@ -46,6 +47,10 @@ namespace ledger {
             std::vector<uint8_t> getMemoHash() override;
             std::vector<uint8_t> getMemoReturn() override;
             std::string memoValuetoString() override;
+
+            const stellar::xdr::Memo& getBackend() const;
+
+            static Try<StellarLikeMemo> fromDatabase(const std::string& type, const std::string& content);
 
         private:
             stellar::xdr::Memo _memo;
