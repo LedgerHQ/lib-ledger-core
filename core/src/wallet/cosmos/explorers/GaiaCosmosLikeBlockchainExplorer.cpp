@@ -487,6 +487,25 @@ namespace ledger {
                     return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(result));
                 });
         }
+        /// Get Total Balance
+        FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getTotalBalanceWithoutPendingRewards(
+            const std::string &account) const
+        {
+            std::vector<FuturePtr<BigInt>> balance_promises({
+                getSpendableBalance(account),
+                getDelegatedBalance(account),
+                getUnbondingBalance(account)
+                });
+
+            return async::sequence(getContext(), balance_promises)
+                .flatMap<std::shared_ptr<BigInt>>(getContext(), [](auto& vector_of_balances) {
+                    BigInt result;
+                    for (const auto& balance : vector_of_balances) {
+                        result = result + *balance;
+                    }
+                    return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(result));
+                });
+        }
         /// Get total balance in delegation
         FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getDelegatedBalance(
             const std::string &account) const

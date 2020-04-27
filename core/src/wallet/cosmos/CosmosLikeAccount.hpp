@@ -138,6 +138,8 @@ namespace ledger {
                                 FuturePtr<Amount> getTotalBalance() const;
                                 void getTotalBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
 
+                                FuturePtr<Amount> getTotalBalanceWithoutPendingRewards() const;
+
                                 FuturePtr<Amount> getDelegatedBalance() const;
                                 void getDelegatedBalance(const std::shared_ptr<api::AmountCallback> &callback) override;
 

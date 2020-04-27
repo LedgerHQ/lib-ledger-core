@@ -336,7 +336,7 @@ namespace ledger {
                 }
 
                 FuturePtr<Amount> CosmosLikeAccount::getBalance() {
-                        return getTotalBalance();
+                        return getTotalBalanceWithoutPendingRewards();
                 }
 
                 std::shared_ptr<api::OperationQuery> CosmosLikeAccount::queryOperations() {
@@ -703,6 +703,18 @@ namespace ledger {
                         getTotalBalance().callback(getContext(), callback);
                 }
 
+                FuturePtr<Amount> CosmosLikeAccount::getTotalBalanceWithoutPendingRewards() const {
+                    auto currency = getWallet()->getCurrency();
+                    return _explorer->getTotalBalanceWithoutPendingRewards(_keychain->getAddress()->toBech32())
+                            .mapPtr<Amount>(
+                                    getContext(),
+                                    [currency](const auto& rawAmount){
+                                return std::make_shared<Amount>(
+                                    currency,
+                                    0,
+                                    *rawAmount);
+                                    });
+                }
 
                 FuturePtr<Amount> CosmosLikeAccount::getDelegatedBalance() const {
                         auto currency = getWallet()->getCurrency();

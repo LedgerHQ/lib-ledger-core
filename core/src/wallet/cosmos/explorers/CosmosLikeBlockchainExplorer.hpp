@@ -88,6 +88,8 @@ namespace ledger {
             // Balances
             /// Get Total Balance
             virtual FuturePtr<BigInt> getTotalBalance(const std::string& account) const = 0;
+            /// Get Total Balance except pending rewards
+            virtual FuturePtr<BigInt> getTotalBalanceWithoutPendingRewards(const std::string& account) const = 0;
             /// Get total balance in delegation
             virtual FuturePtr<BigInt> getDelegatedBalance(const std::string& account) const = 0;
             /// Get total pending rewards
