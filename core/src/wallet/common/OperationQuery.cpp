@@ -230,9 +230,10 @@ namespace ledger {
         }
 
         void OperationQuery::inflateStellarLikeTransaction(soci::session &sql, OperationApi &operation) {
-            stellar::Operation op;
-            StellarLikeTransactionDatabaseHelper::getOperation(sql, operation.getBackend().uid, op);
-            operation.getBackend().stellarOperation = op;
+            stellar::OperationWithParentTransaction out;
+            StellarLikeTransactionDatabaseHelper::getOperation(sql, operation.getBackend().uid, out.operation);
+            StellarLikeTransactionDatabaseHelper::getTransaction(sql, out.operation.transactionHash, out.transaction);
+            operation.getBackend().stellarOperation = out;
         }
     }
 }

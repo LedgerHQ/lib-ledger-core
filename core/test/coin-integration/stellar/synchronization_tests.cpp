@@ -32,6 +32,8 @@
 #include "StellarFixture.hpp"
 #include <wallet/common/OperationQuery.h>
 #include <math/BigInt.h>
+#include <api/StellarLikeMemo.hpp>
+#include <api/StellarLikeMemoType.hpp>
 
 TEST_F(StellarFixture, SynchronizeStellarAccount) {
     auto pool = newPool();
@@ -87,6 +89,16 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     auto reserve = wait(account->getBaseReserve());
     EXPECT_TRUE(reserve->toLong() >= (2 * 5000000));
 
+    auto txFound = false;
+    for (auto& op : operations) {
+        if (op->asStellarLikeOperation()->getRecord().transactionHash == "6c084cdf56ff11b47baeab9a17fe8dc66d8009b7f4f86101758c9e99348af9a3") {
+            auto memo = op->asStellarLikeOperation()->getTransaction()->getMemo();
+            EXPECT_EQ(memo->getMemoType(), api::StellarLikeMemoType::MEMO_TEXT);
+            EXPECT_EQ(memo->getMemoText(), "Salut charlotte");
+            txFound = true;
+        }
+    }
+    EXPECT_TRUE(txFound);
 }
 
 TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {

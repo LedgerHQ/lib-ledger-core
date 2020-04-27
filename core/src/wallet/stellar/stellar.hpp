@@ -134,6 +134,11 @@ namespace ledger {
                 stellar::xdr::TransactionEnvelope envelope;
             };
 
+            struct OperationWithParentTransaction {
+                Operation operation;
+                Transaction transaction;
+            };
+
             using OperationVector = std::vector<std::shared_ptr<Operation>>;
             using TransactionVector = std::vector<std::shared_ptr<Transaction>>;
 
