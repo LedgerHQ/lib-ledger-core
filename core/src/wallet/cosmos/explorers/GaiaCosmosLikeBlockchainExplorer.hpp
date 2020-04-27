@@ -101,6 +101,8 @@ namespace ledger {
             // Balances
             /// Get Total Balance
             FuturePtr<BigInt> getTotalBalance(const std::string &account) const override;
+            /// Get Total Balance except pending rewards
+            FuturePtr<BigInt> getTotalBalanceWithoutPendingRewards(const std::string& account) const override;
             /// Get total balance in delegation
             FuturePtr<BigInt> getDelegatedBalance(const std::string &account) const override;
             /// Get total pending rewards
