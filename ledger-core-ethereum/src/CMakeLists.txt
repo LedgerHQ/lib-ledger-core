@@ -1,134 +1,50 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(ANDROID_CPP_FEATURES exceptions)
-
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-if(NOT TARGET Core::ledger-core)
-    find_package(ledger-core 0.1.0 REQUIRED)
-endif()
+# set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# set(ANDROID_CPP_FEATURES exceptions)
 
 # Automatically add API files to the library
-file(
-    GLOB ledger-core-ethereum-api-sources
-    "${PROJECT_SOURCE_DIR}/inc/ethereum/api/*"
-)
-list(APPEND ledger-core-ethereum-sources ${ledger-core-ethereum-api-sources})
+file(GLOB API_SRC_FILES "${PROJECT_SOURCE_DIR}/inc/ethereum/api/*.cpp")
+file(GLOB API_HEADER_FILES "${PROJECT_SOURCE_DIR}/inc/ethereum/api/*.hpp")
 
 # Configure JNI target
 if (TARGET_JNI)
-    message(STATUS "Configure project for JNI")
+    file(GLOB JNI_SRC_FILES "${PROJECT_SOURCE_DIR}/inc/ethereum/jni/*.cpp")
+    file(GLOB JNI_HEADER_FILES "${PROJECT_SOURCE_DIR}/inc/ethereum/jni/*.hpp")
 
-    file(
-        GLOB ledger-core-ethereum-jni-sources
-        "jni/*.cpp"
-        "jni/*.hpp"
-        "jni/jni/*"
-    )
-
-    if(NOT ANDROID)
-        find_package(JNI REQUIRED)
-    endif()
-
-    list(APPEND ledger-core-ethereum-sources ${ledger-core-ethereum-jni-sources})
-    add_definitions(-DTARGET_JNI=1)
+    list(APPEND API_SRC_FILES ${JNI_SRC_FILES})
+    list(APPEND API_HEADER_FILES ${JNI_HEADER_FILES})
 endif ()
 
 # Add files to compile to the project
-file(GLOB_RECURSE SRC_FILES *.cpp)
+file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ethereum/*.cpp)
+file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR}/inc/ethereum/*.hpp)
 
-# Interface library used to hold shared properties
-add_library(ledger-core-ethereum-interface INTERFACE)
+add_library(ledger-core-ethereum-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
+add_library(Core::ledger-core-ethereum-obj ALIAS ledger-core-ethereum-obj)
 
-target_compile_definitions(ledger-core-ethereum-interface INTERFACE ledger_core_EXPORTS)
-target_compile_definitions(ledger-core-ethereum-interface INTERFACE
-    LIB_VERSION_MAJOR=${VERSION_MAJOR}
-    LIB_VERSION_MINOR=${VERSION_MINOR}
-    LIB_VERSION_PATCH=${VERSION_PATCH}
-)
+# enable static analyzers if requested
+include(StaticAnalyzers)
+toggle_static_analyzers(ledger-core-ethereum-obj)
 
-string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
-if(IS_IOS GREATER_EQUAL 0)
-    add_library(ledger-core-ethereum SHARED
-        ${ledger-core-ethereum-sources}
-        ${SRC_FILES}
-        ${CORE_SRC_FILES}
-        ${HEADERS_FILES})
-    target_link_libraries(ledger-core-ethereum PUBLIC ledger-core-ethereum-interface)
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
-    set(FRAMEWORK_BUNDLE_IDENTIFIER "com.ledger.core")
-    set(DEPLOYMENT_TARGET 9.0)
-    set(DEVICE_FAMILY "1")
-    set(PRODUCT_NAME ledger_core)
-    set_target_properties(ledger-core-ethereum PROPERTIES
-        FRAMEWORK TRUE
-        FRAMEWORK_VERSION A
-        MACOSX_FRAMEWORK_IDENTIFIER ${FRAMEWORK_BUNDLE_IDENTIFIER}
-        MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION_MAJOR}
-        MACOSX_FRAMEWORK_SHORT_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
-        MACOSX_FRAMEWORK_INFO_PLIST ${CMAKE_BINARY_DIR}/framework.plist.in
-        # "current version" in semantic format in Mach-O binary file
-        VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
-        # "compatibility version" in semantic format in Mach-O binary file
-        SOVERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
-        PUBLIC_HEADER "${CMAKE_BINARY_DIR}/include/ledger/core"
-        XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET ${DEPLOYMENT_TARGET}
-        XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY ${DEVICE_FAMILY}
-        XCODE_ATTRIBUTE_SKIP_INSTALL "YES"
-    )
-    add_custom_command(
-        TARGET ledger-core-ethereum
-        POST_BUILD
-        COMMAND /bin/bash -c "${CMAKE_BINARY_DIR}/install_name.sh \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME} ${CMAKE_OSX_ARCHITECTURES}"
-    )
-    add_custom_command(
-        TARGET ledger-core-ethereum
-        POST_BUILD
-        COMMAND install_name_tool -id \"@rpath/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}\"
-        \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
-    )
-else()
-    add_library(ledger-core-ethereum-api-obj OBJECT ${ledger-core-ethereum-api-sources})
-
-    add_library(ledger-core-ethereum-obj OBJECT ${SRC_FILES} ${CORE_SRC_FILES} ${CORE_HEADER_FILES})
-    target_link_libraries(ledger-core-ethereum-obj PUBLIC ledger-core-ethereum-interface)
-
-    # enable static analyzers if requested
-    include(StaticAnalyzers)
-    toggle_static_analyzers(ledger-core-ethereum-obj)
-
-    # set compiler warnings
-    include(CompilerWarnings)
-    toggle_compiler_warnings(ledger-core-ethereum-obj)
-    disable_compiler_warnings(ledger-core-ethereum-api-obj)
-
-    # add compiler warnings
-    include(CompilerWarnings)
-    set_enabled_compiler_warnings(ledger-core-ethereum-obj)
-
-    # shared and static libraries built from the same object files
-    add_library(ledger-core-ethereum SHARED)
-    target_link_libraries(ledger-core-ethereum PUBLIC ledger-core-ethereum-obj ledger-core-ethereum-api-obj)
-
-    add_library(ledger-core-ethereum-static STATIC)
-    target_link_libraries(ledger-core-ethereum-static PUBLIC ledger-core-ethereum-obj ledger-core-ethereum-api-obj)
-    install(TARGETS ledger-core-ethereum-static DESTINATION "lib")
-endif()
+# set compiler warnings
+include(CompilerWarnings)
+toggle_compiler_warnings(ledger-core-ethereum-obj)
+disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core-ethereum-interface INTERFACE -static-libstdc++)
+    target_link_libraries(ledger-core-ethereum-obj PRIVATE -static-libstdc++)
 endif()
 
 # link the ledger-core library
-target_link_libraries(ledger-core-ethereum-interface INTERFACE Core::ledger-core)
+target_link_libraries(ledger-core-ethereum-obj PRIVATE Core::ledger-core-obj)
 
 if (TARGET_JNI)
-    target_include_directories(ledger-core-ethereum-interface INTERFACE ${JNI_INCLUDE_DIRS})
-    target_link_libraries(ledger-core-ethereum-interface INTERFACE ${JNI_LIBRARIES})
+    target_include_directories(ledger-core-ethereum-obj PRIVATE ${JNI_INCLUDE_DIRS})
+    target_link_libraries(ledger-core-ethereum-obj PRIVATE ${JNI_LIBRARIES})
 endif ()
 
-target_include_directories(ledger-core-ethereum-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc)
-target_include_directories(ledger-core-ethereum-interface INTERFACE ${PROJECT_SOURCE_DIR}/inc/ethereum/api)
-
-install(TARGETS ledger-core-ethereum DESTINATION lib)
+target_include_directories(ledger-core-ethereum-obj
+  PRIVATE ${PROJECT_SOURCE_DIR}/inc
+  PUBLIC ${PROJECT_SOURCE_DIR}/inc/ethereum/api
+)
