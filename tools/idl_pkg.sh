@@ -90,8 +90,10 @@ function generate_react_native_interface {
   RN_IOS_OBJC=$RN_DIR/ios/Sources/objc
   RN_IOS_OBJCPP=$RN_DIR/ios/Sources/objcpp
   RN_IOS_SOURCES=$RN_DIR/ios/Sources/include
-  RN_ANDROID=$RN_DIR/android/src/main/java/com/ledger/reactnative
+  RN_ANDROID_LIBS=$RN_DIR/android/libs
+  RN_ANDROID_JAVA_OUT=$RN_DIR/android/src/main/java/com/ledger/reactnative
   RN_ANDROID_JAVA_IFACE=$RN_DIR/android/src/main/java/co/ledger/core
+  BUILD=ledger-core/build
 
   # prune export directories
   rm -rf $RN_IOS
@@ -99,8 +101,7 @@ function generate_react_native_interface {
   rm -rf $RN_IOS_OBJCPP
   rm -rf $RN_IOS_SOURCES
 
-  rm -rf $RN_DIR/android/libs
-  mkdir -p $RN_DIR/android/libs/{x86,x86_64,armeabi-v7a,arm64-v8a}
+  rm -rf $RN_ANDROID_LIBS
 
   for coin in $*; do
     if [ "$coin" == "core" ]; then
@@ -128,31 +129,38 @@ function generate_react_native_interface {
       --react-native-type-prefix RCTCore \
       --react-include-objc-impl ../objc-impl \
       --react-native-objc-impl-suffix Impl \
-      --react-native-java-out $RN_ANDROID \
+      --react-native-java-out $RN_ANDROID_JAVA_OUT \
       --react-native-java-package com.ledger.reactnative \
       --java-out $RN_ANDROID_JAVA_IFACE \
       --java-package co.ledger.core \
       --trace $trace
   done
 
-  #    # Gather all #include
-  #    echo "Generating the final output C++ one-source concatenated interface"
-  #    OUTPUT_CPP=$NODE_SRC_DIR/final-output.cpp
+  # copy dynamic libraries
+  CORE_LIB_x86=${BUILD}_x86/src/libledger-core.so
+  if [[ -f $CORE_LIB_x86 ]]; then
+    echo "Copying the dynamic library (x86) for Android"
+    cp $CORE_LIB_x86 $RN_ANDROID_LIBS/x86
+  fi
 
-  #    (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "\#include" '{}' \;) > $OUTPUT_CPP
-  #    echo "using namespace v8;" >> $OUTPUT_CPP
-  #    echo "using namespace node;" >> $OUTPUT_CPP
-  #    echo "static void initAll(Local<Object> target) {" >> $OUTPUT_CPP
-  #    echo -e "    Nan::HandleScope scope;" >> $OUTPUT_CPP
-  #    (find $NODE_SRC_DIR -type f -name "ledgercore*cpp" -exec grep "Initialize(target)" '{}' \;) >> $OUTPUT_CPP
-  #    echo "}" >> $OUTPUT_CPP
-  #    echo "NODE_MODULE(ledgercore,initAll);" >> $OUTPUT_CPP
+  CORE_LIB_x86_64=${BUILD}_x86_64/src/libledger-core.so
+  if [[ -f $CORE_LIB_x86_64 ]]; then
+    echo "Copying the dynamic library (x86_64) for Android"
+    cp $CORE_LIB_x86_64 $RN_ANDROID_LIBS/x86_64
+  fi
 
-  #    echo "Removing temporary C++ source interface"
-  #    rm $NODE_SRC_DIR/ledgercore*cpp
+  CORE_LIB_armeabi_v7a=${BUILD}_armeabi-v7a/src/libledger-core.so
+  if [[ -f $CORE_LIB_armeabi_v7a ]]; then
+    echo "Copying the dynamic library (armeabi-v7a) for Android"
+    cp $CORE_LIB_armeabi_v7a $RN_ANDROID_LIBS/armeabi-v7a
+  fi
 
-  #    echo "Generating the binding.gyp file…"
-  #    ./tools/gyp_generator.py $*
+  CORE_LIB_arm64_v8a=${BUILD}_arm64-v8a/src/libledger-core.so
+  echo $CORE_LIB_arm64_v8a
+  if [[ -f $CORE_LIB_arm64_v8a ]]; then
+    echo "Copying the dynamic library (arm64-v8a) for Android"
+    cp $CORE_LIB_arm64_v8a $RN_ANDROID_LIBS/arm64-v8a
+  fi
 }
 
 case "$1" in
