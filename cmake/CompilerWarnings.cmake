@@ -91,3 +91,17 @@ function(disable_compiler_warnings target_name)
             $<$<CXX_COMPILER_ID:GNU>: -w>
     )
 endfunction()
+
+function(disable_compiler_warnings_for_source_files files)
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    set(WARNING -Wno-everything)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    set(WARNING -w)
+  elseif(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    set(WARNING /w)
+  endif()
+
+  foreach(file IN LISTS files)
+      set_source_files_properties(${file} PROPERTIES COMPILE_FLAGS ${WARNING})
+    endforeach()
+ endfunction()
