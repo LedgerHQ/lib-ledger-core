@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(ANDROID_CPP_FEATURES exceptions)
+# set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# set(ANDROID_CPP_FEATURES exceptions)
 
 # Automatically add API files to the library
 file(GLOB API_SRC_FILES "${PROJECT_SOURCE_DIR}/inc/core/api/*.cpp")
@@ -30,19 +30,15 @@ if (NOT PG_SUPPORT)
     list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/core/database/PostgreSQLBackend.hpp)
 endif()
 
-# Interface library used to hold shared properties
-add_library(ledger-core-interface INTERFACE)
+add_library(ledger-core-obj OBJECT ${SRC_FILES} ${HEADERS_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
+add_library(Core::ledger-core-obj ALIAS ledger-core-obj)
 
-target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
-target_compile_definitions(ledger-core-interface INTERFACE
+target_compile_definitions(ledger-core-obj PUBLIC ledger_core_EXPORTS)
+target_compile_definitions(ledger-core-obj PRIVATE
     LIB_VERSION_MAJOR=${VERSION_MAJOR}
     LIB_VERSION_MINOR=${VERSION_MINOR}
     LIB_VERSION_PATCH=${VERSION_PATCH}
 )
-
-add_library(ledger-core-obj OBJECT ${SRC_FILES} ${HEADERS_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
-target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
-add_library(Core::ledger-core-obj ALIAS ledger-core-obj)
 
 # enable static analyzers if requested
 include(StaticAnalyzers)
@@ -53,60 +49,54 @@ include(CompilerWarnings)
 toggle_compiler_warnings(ledger-core-obj)
 disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
-endif()
-
-target_link_libraries(ledger-core-interface INTERFACE bigd)
+target_link_libraries(ledger-core-obj PUBLIC bigd)
 
 if(MINGW OR MSVC)
-    target_link_libraries(ledger-core-interface INTERFACE fmt-header-only)
+    target_link_libraries(ledger-core-obj PUBLIC fmt-header-only)
 else()
-    target_link_libraries(ledger-core-interface INTERFACE fmt)
+    target_link_libraries(ledger-core-obj PUBLIC fmt)
 endif(MINGW OR MSVC)
 
 # Crypto
 if (SYS_OPENSSL)
     find_package(OpenSSL)
-    target_link_libraries(ledger-core-interface INTERFACE OpenSSL::Crypto)
+    target_link_libraries(ledger-core-obj PUBLIC OpenSSL::Crypto)
 else()
-    target_link_libraries(ledger-core-interface INTERFACE crypto)
+    target_link_libraries(ledger-core-obj PUBLIC crypto)
 endif()
-target_link_libraries(ledger-core-interface INTERFACE blake)
+target_link_libraries(ledger-core-obj PUBLIC blake)
 
 # SSL
 if(SSL_SUPPORT)
     if (SYS_OPENSSL)
-        target_link_libraries(ledger-core-interface INTERFACE OpenSSL::SSL)
+        target_link_libraries(ledger-core-obj PUBLIC OpenSSL::SSL)
     else()
-        target_link_libraries(ledger-core-interface INTERFACE ssl)
+        target_link_libraries(ledger-core-obj PUBLIC ssl)
     endif()
 endif()
 
-target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
-target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
-target_link_libraries(ledger-core-interface INTERFACE leveldb)
+target_link_libraries(ledger-core-obj PUBLIC soci_sqlite3)
+target_link_libraries(ledger-core-obj PUBLIC soci_core_static)
+target_link_libraries(ledger-core-obj PUBLIC leveldb)
 
 if (PG_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
+    target_link_libraries(ledger-core-obj PUBLIC soci_postgresql)
 endif()
 
-target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
-target_link_libraries(ledger-core-interface INTERFACE spdlog)
-
-include(GNUInstallDirs)
+target_compile_definitions(ledger-core-obj PUBLIC SPDLOG_WCHAR_FILENAMES)
+target_link_libraries(ledger-core-obj PUBLIC spdlog)
 
 target_link_libraries(
-  ledger-core-interface INTERFACE
+  ledger-core-obj PUBLIC
   ${PROJECT_SOURCE_DIR}/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}
 )
 
-target_link_libraries(ledger-core-interface INTERFACE ethash)
+target_link_libraries(ledger-core-obj PUBLIC ethash)
 
-target_link_libraries(ledger-core-interface INTERFACE ${SQLITE_LIB})
+target_link_libraries(ledger-core-obj PUBLIC ${SQLITE_LIB})
 
 target_include_directories(
-    ledger-core-interface SYSTEM INTERFACE
+    ledger-core-obj SYSTEM PUBLIC
     ${PROJECT_SOURCE_DIR}/inc
     ${PROJECT_SOURCE_DIR}/lib/bigd
     ${PROJECT_SOURCE_DIR}/lib/rapidjson/include
@@ -126,9 +116,3 @@ target_include_directories(
     # PG support
     $<$<BOOL:${PG_SUPPORT}>:${PROJECT_SOURCE_DIR}/lib/soci_postgresql>
 )
-
-if (TARGET_JNI)
-    target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
-    target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
-endif ()
-

@@ -32,17 +32,8 @@ include(CompilerWarnings)
 toggle_compiler_warnings(ledger-core-ethereum-obj)
 disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core-ethereum-obj PRIVATE -static-libstdc++)
-endif()
-
 # link the ledger-core library
 target_link_libraries(ledger-core-ethereum-obj PRIVATE Core::ledger-core-obj)
-
-if (TARGET_JNI)
-    target_include_directories(ledger-core-ethereum-obj PRIVATE ${JNI_INCLUDE_DIRS})
-    target_link_libraries(ledger-core-ethereum-obj PRIVATE ${JNI_LIBRARIES})
-endif ()
 
 target_include_directories(ledger-core-ethereum-obj
   PRIVATE ${PROJECT_SOURCE_DIR}/inc
