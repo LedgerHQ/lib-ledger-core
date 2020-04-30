@@ -4,7 +4,6 @@ cmake_minimum_required(VERSION 3.12)
 # set(ANDROID_CPP_FEATURES exceptions)
 
 # Automatically add API files to the library
-file(GLOB API_SRC_FILES "${PROJECT_SOURCE_DIR}/inc/bitcoin/api/*.cpp")
 file(GLOB API_HEADER_FILES "${PROJECT_SOURCE_DIR}/inc/bitcoin/api/*.hpp")
 
 # Configure JNI target
@@ -12,7 +11,6 @@ if (TARGET_JNI)
     file(GLOB JNI_SRC_FILES "${PROJECT_SOURCE_DIR}/inc/bitcoin/jni/*.cpp")
     file(GLOB JNI_HEADER_FILES "${PROJECT_SOURCE_DIR}/inc/bitcoin/jni/*.hpp")
 
-    list(APPEND API_SRC_FILES ${JNI_SRC_FILES})
     list(APPEND API_HEADER_FILES ${JNI_HEADER_FILES})
 endif ()
 
@@ -30,7 +28,6 @@ toggle_static_analyzers(ledger-core-bitcoin-obj)
 # set compiler warnings
 include(CompilerWarnings)
 toggle_compiler_warnings(ledger-core-bitcoin-obj)
-disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 
 # link the ledger-core objects
 target_link_libraries(ledger-core-bitcoin-obj PRIVATE Core::ledger-core-obj)

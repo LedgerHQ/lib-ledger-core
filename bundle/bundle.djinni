@@ -1,0 +1,2 @@
+@import "../ledger-core/idl/idl.djinni"
+@import "coins.djinni"
