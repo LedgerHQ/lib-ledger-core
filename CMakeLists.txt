@@ -54,9 +54,31 @@ add_subdirectory(ledger-core)
 add_library(ledger-core-bundle SHARED)
 target_link_libraries(ledger-core-bundle PUBLIC Core::ledger-core-obj)
 
-if(IS_IOS GREATER_EQUAL 0)
-  target_link_libraries(ledger-core-bundle PUBLIC Core::ledger-core-binding-obj)
+# TODO: this line is not mandatory on Ubuntu 19.04 - we have to confirm if this is mandatory in other platforms to work properly
+# if(UNIX AND NOT APPLE AND NOT ANDROID)
+#   target_link_libraries(ledger-core-bundle PUBLIC -static-libstdc++)
+# endif()
 
+if (TARGET_JNI)
+    target_include_directories(ledger-core-bundle PRIVATE ${JNI_INCLUDE_DIRS})
+    target_link_libraries(ledger-core-bundle PRIVATE ${JNI_LIBRARIES})
+endif ()
+
+# allows to provide coin list separated by commma or whitespace
+string(REPLACE " " ";" BUILD_COINS "${BUILD_COINS}")
+string(REPLACE "," ";" BUILD_COINS "${BUILD_COINS}")
+
+foreach(COIN ${BUILD_COINS})
+  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ledger-core-${COIN}/CMakeLists.txt")
+    add_subdirectory(ledger-core-${COIN})
+    target_link_libraries(ledger-core-bundle PUBLIC Core::ledger-core-${COIN}-obj)
+  else()
+    message(WARNING "coin '${COIN}' not found")
+  endif()
+endforeach()
+
+# TODO: move all the following into a cmake module
+if(IS_IOS GREATER_EQUAL 0)
   set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
   set(FRAMEWORK_BUNDLE_IDENTIFIER "com.ledger.core")
   set(DEPLOYMENT_TARGET 9.0)
@@ -92,16 +114,3 @@ if(IS_IOS GREATER_EQUAL 0)
       \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
   )
 endif()
-
-# allows to provide coin list separated by commma or whitespace
-string(REPLACE " " ";" BUILD_COINS "${BUILD_COINS}")
-string(REPLACE "," ";" BUILD_COINS "${BUILD_COINS}")
-
-foreach(COIN ${BUILD_COINS})
-  if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ledger-core-${COIN}/CMakeLists.txt")
-    add_subdirectory(ledger-core-${COIN})
-    target_link_libraries(ledger-core-bundle PUBLIC Core::ledger-core-${COIN}-obj)
-  else()
-    message(WARNING "coin '${COIN}' not found")
-  endif()
-endforeach()

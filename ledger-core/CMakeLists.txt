@@ -4,7 +4,7 @@ project(ledger-core)
 add_subdirectory(lib)
 add_subdirectory(src)
 
-if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
+if(BUILD_TESTS)
     message(STATUS "ledger-core tests are enabled")
     enable_testing()
     add_subdirectory(test/lib/qt-host)
