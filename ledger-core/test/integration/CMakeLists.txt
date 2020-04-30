@@ -37,7 +37,7 @@ if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # TODO: needs more investigation
     target_link_libraries(ledger-core-integration-test ledger-core)
 else()
-    target_link_libraries(ledger-core-integration-test ledger-core-static)
+    target_link_libraries(ledger-core-integration-test ledger-core-obj)
 endif()
 
 target_link_libraries(ledger-core-integration-test ledger-test)

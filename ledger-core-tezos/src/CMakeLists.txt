@@ -35,7 +35,7 @@ disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 # link the ledger-core library
 target_link_libraries(ledger-core-tezos-obj PRIVATE Core::ledger-core-obj)
 
-target_include_directories(ledger-core-tezos-obj
-  PRIVATE ${PROJECT_SOURCE_DIR}/inc
-  PUBLIC ${PROJECT_SOURCE_DIR}/inc/tezos/api
+target_include_directories(ledger-core-tezos-obj PUBLIC
+  ${PROJECT_SOURCE_DIR}/inc
+  ${PROJECT_SOURCE_DIR}/inc/tezos/api
 )
