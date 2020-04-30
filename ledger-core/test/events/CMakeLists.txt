@@ -10,7 +10,7 @@ endif (APPLE)
 add_executable(ledger-core-events-tests main.cpp EventsTest.cpp)
 
 target_link_libraries(ledger-core-events-tests gtest gtest_main)
-target_link_libraries(ledger-core-events-tests ledger-core-static)
+target_link_libraries(ledger-core-events-tests ledger-core-obj)
 target_link_libraries(ledger-core-events-tests ledger-test)
 target_link_libraries(ledger-core-events-tests ledger-qt-host)
 

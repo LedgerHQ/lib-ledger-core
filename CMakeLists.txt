@@ -49,6 +49,11 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
+if(BUILD_TESTS AND APPLE)
+    add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
+    add_definitions(-D__GLIBCXX__)
+endif()
+
 add_subdirectory(ledger-core)
 
 add_library(ledger-core-bundle SHARED)

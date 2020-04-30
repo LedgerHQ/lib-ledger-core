@@ -13,7 +13,7 @@ add_executable(ledger-core-parser-tests
 )
 
 target_link_libraries(ledger-core-parser-tests gtest gtest_main)
-target_link_libraries(ledger-core-parser-tests ledger-core-static)
+target_link_libraries(ledger-core-parser-tests ledger-core-obj)
 target_link_libraries(ledger-core-parser-tests ledger-test)
 target_link_libraries(ledger-core-parser-tests ledger-qt-host)
 

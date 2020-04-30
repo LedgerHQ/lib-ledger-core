@@ -11,6 +11,6 @@ add_executable(ledger-core-utils-tests
 )
 
 target_link_libraries(ledger-core-utils-tests gtest gtest_main)
-target_link_libraries(ledger-core-utils-tests ledger-core-static)
+target_link_libraries(ledger-core-utils-tests ledger-core-obj)
 
 add_test (NAME ledger-core-utils-tests COMMAND ledger-core-utils-tests)
