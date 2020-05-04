@@ -49,10 +49,9 @@ namespace ledger {
                 const std::shared_ptr<spdlog::logger> &logger,
                 const api::Currency &currency,
                 const std::vector<std::string> &matchableKeys) :
-                DedicatedContext(context), ConfigurationMatchable(matchableKeys) {
+            DedicatedContext(context), ConfigurationMatchable(matchableKeys),
+        _currency(currency), _configuration(configuration){
 
-            _currency = currency;
-            _configuration = configuration;
             setConfiguration(configuration);
             setLogger(logger);
         }

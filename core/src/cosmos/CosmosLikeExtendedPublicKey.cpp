@@ -59,8 +59,8 @@ namespace ledger {
         }
 
         std::shared_ptr<CosmosLikeExtendedPublicKey> CosmosLikeExtendedPublicKey::derive(const DerivationPath &path) {
-            auto dpk = _derive(0, path.toVector(), _key);
-            return std::make_shared<CosmosLikeExtendedPublicKey>(_currency, dpk, _curve, _type, _path + path);
+            auto key = _derive(0, path.toVector(), _key);
+            return std::make_shared<CosmosLikeExtendedPublicKey>(_currency, key, _curve, _type, _path + path);
         }
 
         std::vector<uint8_t> CosmosLikeExtendedPublicKey::derivePublicKey(const std::string & path) {
@@ -76,9 +76,9 @@ namespace ledger {
         }
 
         std::string CosmosLikeExtendedPublicKey::toBech32() {
-            auto pubKey = getKey().getPublicKey();
-            auto pkBech32 = std::make_shared<CosmosBech32>(_type);
-            return pkBech32->encode(pubKey, vector::concat(params().PubKeyPrefix, std::vector<uint8_t>(pubKey.size())));
+            auto const pubKey = getKey().getPublicKey();
+            auto const pkBech32 = CosmosBech32(_type);
+            return pkBech32.encode(pubKey, vector::concat(params().PubKeyPrefix, std::vector<uint8_t>(pubKey.size())));
         }
 
         std::string CosmosLikeExtendedPublicKey::getRootPath() {
@@ -93,7 +93,7 @@ namespace ledger {
                                              const std::string& path,
                                              api::CosmosCurve curve,
                                              api::CosmosBech32Type type) {
-            auto& params = currency.cosmosLikeNetworkParameters.value();
+            auto const& params = currency.cosmosLikeNetworkParameters.value();
             DeterministicPublicKey k = CosmosExtendedPublicKey::fromRaw(currency, params, parentPublicKey, publicKey, {}, path);
             DerivationPath p(path);
             return std::make_shared<CosmosLikeExtendedPublicKey>(currency, k, curve, type, p);
@@ -104,7 +104,7 @@ namespace ledger {
                                                 const std::string& xpub,
                                                 const Option<std::string>& path,
                                                 api::CosmosBech32Type type) {
-            auto &params = currency.cosmosLikeNetworkParameters.value();
+            auto const& params = currency.cosmosLikeNetworkParameters.value();
             DeterministicPublicKey k = CosmosExtendedPublicKey::fromBase58(currency, params, xpub, path);
             return std::make_shared<ledger::core::CosmosLikeExtendedPublicKey>(currency, k, api::CosmosCurve::SECP256K1, type, DerivationPath(path.getValueOr("m")));
         }
@@ -113,14 +113,14 @@ namespace ledger {
         CosmosLikeExtendedPublicKey::fromBech32(const api::Currency& currency,
                                                 const std::string& bech32PubKey,
                                                 const Option<std::string>& path) {
-            auto &params = currency.cosmosLikeNetworkParameters.value();
+            auto const& params = currency.cosmosLikeNetworkParameters.value();
             if (bech32PubKey.find(cosmos::getBech32Params(api::CosmosBech32Type::PUBLIC_KEY).hrp) == std::string::npos) {
                 throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid Bech32 public Key: should be prefixed with \"cosmospub\"");
             }
             // From bech32 pubKey to pubKeyHash160
-            auto type = bech32PubKey.find(cosmos::getBech32Params(api::CosmosBech32Type::PUBLIC_KEY_VAL).hrp) == std::string::npos ? api::CosmosBech32Type::PUBLIC_KEY : api::CosmosBech32Type::PUBLIC_KEY_VAL;
-            auto pkBech32 = std::make_shared<CosmosBech32>(type);
-            auto decodedPk = pkBech32->decode(bech32PubKey);
+            auto const type = bech32PubKey.find(cosmos::getBech32Params(api::CosmosBech32Type::PUBLIC_KEY_VAL).hrp) == std::string::npos ? api::CosmosBech32Type::PUBLIC_KEY : api::CosmosBech32Type::PUBLIC_KEY_VAL;
+            auto const pkBech32 = CosmosBech32(type);
+            auto const decodedPk = pkBech32.decode(bech32PubKey);
 
             //Check version
             if (std::vector<uint8_t>(decodedPk.second.begin(), decodedPk.second.begin() + params.PubKeyPrefix.size()) != params.PubKeyPrefix) {

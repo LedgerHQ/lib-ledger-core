@@ -74,12 +74,13 @@ namespace ledger {
                                                      const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
                                                      const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
                                                      const std::shared_ptr<CosmosLikeAccountSynchronizer> &synchronizer,
-                                                     const std::shared_ptr<CosmosLikeKeychain> &keychain) : AbstractAccount(wallet, index) {
-                        _explorer = explorer;
-                        _observer = observer;
-                        _synchronizer = synchronizer;
-                        _keychain = keychain;
-                        _accountData = std::make_shared<cosmos::Account>();
+                                                     const std::shared_ptr<CosmosLikeKeychain> &keychain) : AbstractAccount(wallet, index),
+                                                                                                            _explorer(explorer),
+                                                                                                            _observer(observer),
+                                                                                                            _synchronizer(synchronizer),
+                                                                                                            _keychain(keychain),
+                                                                                                            _accountData(std::make_shared<cosmos::Account>())
+                {
                         _accountData->pubkey = keychain->getRestoreKey();
                 }
 
@@ -93,7 +94,7 @@ namespace ledger {
                 {
                     soci::session sql(this->getWallet()->getDatabase()->getPool());
                     CosmosLikeAccountDatabaseEntry dbAccount;
-                    bool existingAccount = CosmosLikeAccountDatabaseHelper::queryAccount(
+                    bool const existingAccount = CosmosLikeAccountDatabaseHelper::queryAccount(
                         sql, getAccountUid(), dbAccount);
                     if (existingAccount) {
                         *_accountData = dbAccount.details;
@@ -377,7 +378,7 @@ namespace ledger {
                                         auto endDate = DateUtils::fromJSON(end);
                                         if (startDate >= endDate) {
                                                 throw make_exception(api::ErrorCode::INVALID_DATE_FORMAT,
-                                                                     "Start date should be strictly greater than end date");
+                                                                     "Start date should be strictly before end date");
                                         }
 
                                         const auto &uid = self->getAccountUid();

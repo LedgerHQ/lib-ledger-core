@@ -1,6 +1,6 @@
 /*
  *
- * CosmosBech32
+ * CosmosBech32 -- Implementation of Bech32 encoding specific to Cosmos
  *
  * Created by El Khalil Bellakrid on 15/06/2019.
  *
@@ -34,14 +34,18 @@
 
 namespace ledger {
     namespace core {
-        std::pair<std::vector<uint8_t>, std::vector<uint8_t>> CosmosBech32::decode(const std::string& str) {
-            auto decoded = decodeBech32(str);
+        std::pair<std::vector<uint8_t>, std::vector<uint8_t>> CosmosBech32::decode(const std::string& str) const {
+            auto const decoded = decodeBech32(str);
+            // Ensure that the decoded address has the correct prefix for this instance of CosmosBech32 decoder
             if (decoded.first != _bech32Params.hrp || decoded.second.size() < 1) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");
             }
+            // Convert the obtained number from base32 to base256 (to convert into bytearray)
+            // Each digit in converted is a byte.
             std::vector<uint8_t> converted;
-            int fromBits = 5, toBits = 8;
-            bool pad = false;
+            int const fromBits = 5;
+            int const toBits = 8;
+            bool const pad = false;
             auto result = Bech32::convertBits(std::vector<uint8_t>(decoded.second.begin() + _offsetConversion, decoded.second.end()),
                                               fromBits,
                                               toBits,
@@ -56,7 +60,7 @@ namespace ledger {
             return std::make_pair(version, converted);
         }
 
-        uint64_t CosmosBech32::polymod(const std::vector<uint8_t>& values) {
+        uint64_t CosmosBech32::polymod(const std::vector<uint8_t>& values) const {
             uint32_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint8_t top = chk >> 25;
@@ -70,7 +74,7 @@ namespace ledger {
             return chk;
         }
 
-        std::vector<uint8_t> CosmosBech32::expandHrp(const std::string& hrp) {
+        std::vector<uint8_t> CosmosBech32::expandHrp(const std::string& hrp) const {
             std::vector<uint8_t> ret;
             ret.resize(hrp.size() * 2 + 1);
             for (size_t i = 0; i < hrp.size(); ++i) {
@@ -83,12 +87,16 @@ namespace ledger {
         }
 
         std::string CosmosBech32::encode(const std::vector<uint8_t>& hash,
-                                         const std::vector<uint8_t>& version) {
+                                         const std::vector<uint8_t>& version) const {
+            // Convert the "hash" number from base256 (bytearray) to base32
+            // Each digit in data is a byte.
             std::vector<uint8_t> data(hash);
-            int fromBits = 8, toBits = 5;
-            bool pad = true;
+            int const fromBits = 8;
+            int const toBits = 5;
+            bool const pad = true;
             std::vector<uint8_t> converted;
             converted.insert(converted.end(), version.begin(), version.end());
+            // After this converted is [ version(base256) || hash(base32) ]
             Bech32::convertBits(data, fromBits, toBits, pad, converted);
             return encodeBech32(converted);
         }
