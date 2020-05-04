@@ -39,7 +39,7 @@ namespace core {
 namespace algorand {
 
     Address::Address(const std::vector<uint8_t> & pubKey) :
-        Address(
+        ledger::core::Address(
             currencies::algorand(),
             optional<std::string>("")),
         _publicKey(pubKey)
@@ -48,7 +48,7 @@ namespace algorand {
     }
 
     Address::Address(const std::string & address) :
-        Address(
+        ledger::core::Address(
             currencies::algorand(),
             optional<std::string>("")),
         _address(address)
@@ -86,7 +86,7 @@ namespace algorand {
         decoded.resize(PUBKEY_LEN_BYTES);
         return decoded;
     }
-    
+
 } // namespace algorand
 } // namespace core
 } // namespace ledger

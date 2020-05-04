@@ -52,6 +52,7 @@
 namespace ledger {
 namespace core {
 namespace algorand {
+namespace model {
 
     using TransactionType = api::AlgorandTransactionType;
     using OperationType = api::AlgorandOperationType;
@@ -132,7 +133,9 @@ namespace algorand {
         int32_t index;
         // The round for which this account information is relevant
         uint64_t round;
-        // The account public key
+        // The account public key in hexadecimal representation
+        std::string pubKeyHex;
+        // The account address
         std::string address;
         // The total number of MicroAlgos in the account
         MicroAlgoAmount amount;
@@ -213,6 +216,7 @@ namespace algorand {
     // TODO ? https://developer.algorand.org/docs/reference/rest-apis/algod/#supply
     // struct Supply {};
 
+} // namespace model
 } // namespace algorand
 } // namespace core
 } // namespace ledger
