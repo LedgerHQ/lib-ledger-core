@@ -178,7 +178,7 @@ cmake $cmake_params ../lib-ledger-core
 echo "======> Build for $unamestr in $BUILD_CONFIG mode"
 if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
-    xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 3
+    xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
 else
-    make -j3
+    make -j4
 fi

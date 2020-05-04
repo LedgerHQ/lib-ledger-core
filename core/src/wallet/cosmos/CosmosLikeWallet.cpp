@@ -59,11 +59,12 @@ namespace ledger {
                                            const std::shared_ptr<DynamicObject> &configuration,
                                            const DerivationScheme &scheme
         )
-                : AbstractWallet(name, network, pool, configuration, scheme) {
-            _explorer = explorer;
-            _observer = observer;
-            _keychainFactory = keychainFactory;
-            _synchronizerFactory = synchronizer;
+        : AbstractWallet(name, network, pool, configuration, scheme),
+          _explorer(explorer),
+          _observer(observer),
+          _keychainFactory(keychainFactory),
+          _synchronizerFactory(synchronizer)
+        {
         }
 
         bool CosmosLikeWallet::isSynchronizing() {

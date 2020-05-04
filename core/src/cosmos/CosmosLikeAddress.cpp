@@ -51,12 +51,12 @@ namespace ledger {
                                              const std::vector<uint8_t> &version,
                                              api::CosmosBech32Type type,
                                              const Option<std::string> &derivationPath) :
+            AbstractAddress(currency, derivationPath),
             _params(currency.cosmosLikeNetworkParameters.value()),
             _derivationPath(derivationPath),
             _hash160(hash160),
             _version(version),
-            _type(type),
-            AbstractAddress(currency, derivationPath) {
+            _type(type) {
 
         }
 
@@ -98,22 +98,25 @@ namespace ledger {
         std::shared_ptr<CosmosLikeAddress> CosmosLikeAddress::fromBech32(const std::string &address,
                                                                          const api::Currency &currency,
                                                                          const Option<std::string> &derivationPath) {
-            auto& params = currency.cosmosLikeNetworkParameters.value();
-            api::CosmosBech32Type type;
+            auto const& params = currency.cosmosLikeNetworkParameters.value();
+
+            auto const type = [](auto const& address) {
+
             if (address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL).hrp) !=
                 std::string::npos) {
-                type = api::CosmosBech32Type::ADDRESS_VAL;
+                return api::CosmosBech32Type::ADDRESS_VAL;
             }
             else if (
                 address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS).hrp) !=
                 std::string::npos) {
-                type = api::CosmosBech32Type::ADDRESS;
+                return api::CosmosBech32Type::ADDRESS;
             }
             else {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid cosmos address");
             }
-            auto bech32 = std::make_shared<CosmosBech32>(type);
-            auto decoded = bech32->decode(address);
+            }(address);
+            auto const bech32 = CosmosBech32(type);
+            auto const decoded = bech32.decode(address);
             // Second supposed to be hash160 of pubKey
             if (decoded.second.size() != 20) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid decoded public key hash");

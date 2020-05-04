@@ -47,25 +47,25 @@ namespace ledger {
         public:
             Bech32(Bech32Parameters::Bech32Struct bech32Params) : _bech32Params(bech32Params) {}
             // Find the polynomial with value coefficients mod the generator as 64-bit.
-            virtual uint64_t polymod(const std::vector<uint8_t>& values) = 0;
+            virtual uint64_t polymod(const std::vector<uint8_t>& values) const = 0;
 
             // Expand a HRP for use in checksum computation.
-            virtual std::vector<uint8_t> expandHrp(const std::string& hrp) = 0;
+            virtual std::vector<uint8_t> expandHrp(const std::string& hrp) const = 0;
 
-            bool verifyChecksum(const std::vector<uint8_t>& values);
+            bool verifyChecksum(const std::vector<uint8_t>& values) const;
 
-            std::vector<uint8_t> createChecksum(const std::vector<uint8_t>& values);
+            std::vector<uint8_t> createChecksum(const std::vector<uint8_t>& values) const;
 
             virtual std::string encode(const std::vector<uint8_t>& hash,
-                                       const std::vector<uint8_t>& version) = 0;
+                                       const std::vector<uint8_t>& version) const = 0;
 
             // Decode from bech32 address
             // @return pair<hrp, hash>
             std::pair<std::string, std::vector<uint8_t>>
-            decodeBech32(const std::string& str);
+            decodeBech32(const std::string& str) const;
             // @return tuple<witnessVersion, hash>
             virtual std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-            decode(const std::string& str) = 0;
+            decode(const std::string& str) const = 0;
 
             static unsigned char toLowerCase(unsigned char c);
 
@@ -75,12 +75,12 @@ namespace ledger {
                                     bool pad,
                                     std::vector<uint8_t>& out);
 
-            Bech32Parameters::Bech32Struct getBech32Params() {
+            Bech32Parameters::Bech32Struct getBech32Params() const {
                 return _bech32Params;
             }
 
         protected:
-            std::string encodeBech32(const std::vector<uint8_t>& values);
+            std::string encodeBech32(const std::vector<uint8_t>& values) const;
             Bech32Parameters::Bech32Struct _bech32Params;
         };
     }

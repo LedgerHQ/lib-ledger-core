@@ -91,9 +91,7 @@ else()
             ${SRC_FILES}
             ${HEADERS_FILES})
     target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
-    if(MSVC)
-        target_compile_options(ledger-core-obj PRIVATE /bigobj)
-    endif()
+    target_compile_options(ledger-core-obj PRIVATE $<$<CXX_COMPILER_ID:MSVC>: /bigobj>)
 
     # shared and static libraries built from the same object files
     add_library(ledger-core SHARED)

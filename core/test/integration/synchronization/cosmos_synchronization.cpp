@@ -62,7 +62,7 @@ using namespace std;
 using namespace ledger::core;
 using namespace ledger::testing::cosmos;
 
-api::CosmosLikeNetworkParameters COSMOS = networks::getCosmosLikeNetworkParameters("atom");
+api::CosmosLikeNetworkParameters COSMOS_PARAMS = networks::getCosmosLikeNetworkParameters("atom");
 
 class CosmosLikeWalletSynchronization : public BaseFixture {
 public:
@@ -84,7 +84,7 @@ public:
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
             worker,
             client,
-            COSMOS,
+            COSMOS_PARAMS,
             std::make_shared<DynamicObject>());
     }
 

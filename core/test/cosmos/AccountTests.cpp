@@ -37,9 +37,6 @@
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 
-// XXX : won't compile because WalletFixture is a modularized feature.
-// #include <test/integration/WalletFixture.hpp>
-
 struct CosmosAccounts : public BaseFixture {
 
 };
