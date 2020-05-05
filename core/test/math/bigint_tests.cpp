@@ -31,6 +31,7 @@
 
 #include "gtest/gtest.h"
 #include "math/BigInt.h"
+#include <limits>
 
 using namespace ledger::core;
 
@@ -176,4 +177,18 @@ TEST(BigInt, FromFloatString) {
     auto t = witness.toByteArray();
     auto tt = subject.toByteArray();
     EXPECT_TRUE(witness.compare(subject) == 0);
+}
+
+TEST(BigInt, AssignFromUnsigned64bitScalar) {
+    auto value = std::numeric_limits<uint64_t>::max();
+    BigInt bigInt;
+    bigInt.assignScalar(value);
+    EXPECT_EQ(value, bigInt.toUint64());
+}
+
+TEST(BigInt, AssignFromSigned64bitScalar) {
+    uint64_t value = std::numeric_limits<uint64_t>::min();
+    BigInt bigInt;
+    bigInt.assignScalar(value);
+    EXPECT_EQ(value, bigInt.toUint64());
 }
