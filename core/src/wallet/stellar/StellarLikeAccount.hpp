@@ -110,6 +110,8 @@ namespace ledger {
             void getSigners(const std::shared_ptr<api::StellarLikeAccountSignerListCallback> &callback) override;
             Future<std::vector<stellar::AccountSigner>> getSigners();
 
+            std::shared_ptr<api::Keychain> getAccountKeychain() override;
+
         protected:
             std::shared_ptr<StellarLikeAccount> getSelf();
 

@@ -123,6 +123,11 @@ Operation = interface +c {
     # Get recipients of operation.
     # @return List of string, list of all recipients
     getRecipients(): list<string>;
+    # Get account-filtered recipients list associated with the operation.
+    #
+    # This function will filter recipients to retain only the ones that are owned by the current
+    # account.
+    getSelfRecipients(): list<string>;
     # Get amount of operation.
     # @return Amount object
     getAmount(): Amount;
@@ -302,6 +307,15 @@ Address = interface +c {
     static isValid(address: string, currency: Currency): bool;
 }
 
+# Keychain abstraction.
+#
+# A keychain can be seen as an address database that can be queried to get lists of addresses,
+# ask whether an address is contained, or generate new addresses.
+Keychain = interface +c {
+    # Check whether an address is contained.
+    const contains(address: string): bool;
+}
+
 TimePeriod = enum {
     hour;
     day;
@@ -408,6 +422,9 @@ Account = interface +c {
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
     eraseDataSince(date: date, callback: Callback<ErrorCode>);
+
+    # Access to underlying keychain.
+    getAccountKeychain(): Keychain;
 }
 
 # Class representing a wallet.

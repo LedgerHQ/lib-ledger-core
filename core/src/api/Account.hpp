@@ -26,6 +26,7 @@ class BlockCallback;
 class ErrorCodeCallback;
 class EthereumLikeAccount;
 class EventBus;
+class Keychain;
 class Logger;
 class OperationQuery;
 class Preferences;
@@ -211,6 +212,9 @@ public:
      * @param date, start date of data deletion
      */
     virtual void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
+
+    /** Access to underlying keychain. */
+    virtual std::shared_ptr<Keychain> getAccountKeychain() = 0;
 };
 
 } } }  // namespace ledger::core::api
