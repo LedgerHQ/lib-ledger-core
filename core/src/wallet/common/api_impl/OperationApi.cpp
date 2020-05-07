@@ -78,7 +78,6 @@ namespace ledger {
             //
             // In order to do this, we need to access the account’s keychain and perform the test.
             std::vector<std::string> recipients;
-            recipients.reserve(_backend.recipients.size());
 
             auto keychain = _account->getAccountKeychain();
             std::copy_if(
