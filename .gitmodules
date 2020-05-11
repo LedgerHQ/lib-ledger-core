@@ -28,3 +28,6 @@
 [submodule "core/test/lib/libuv"]
 	path = core/test/lib/libuv
 	url = git@github.com:libuv/libuv.git
+[submodule "msgpack-c"]
+	path = ledger-core-algorand/src/thirdparty/msgpack-c
+	url = https://github.com/ledgerHQ/msgpack-c

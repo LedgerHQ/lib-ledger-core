@@ -44,24 +44,24 @@ namespace constants {
     static constexpr uint64_t COIN_ID = 283;
 
     // Explorer endpoints
-    static constexpr const char purestakeAccountEndpoint[] = "/account/{}";
-    static constexpr const char purestakeAccountTransactionsEndpoint[] = "/account/{}/transactions";
-    static constexpr const char purestakeTransactionEndpoint[] = "/transaction/{}";
-    static constexpr const char purestakeTransactionsEndpoint[] = "/transactions";
-    static constexpr const char purestakeTransactionsParamsEndpoint[] = "/transactions/params";
+    static constexpr char purestakeAccountEndpoint[] = "/account/{}";
+    static constexpr char purestakeAccountTransactionsEndpoint[] = "/account/{}/transactions";
+    static constexpr char purestakeTransactionEndpoint[] = "/transaction/{}";
+    static constexpr char purestakeTransactionsEndpoint[] = "/transactions";
+    static constexpr char purestakeTransactionsParamsEndpoint[] = "/transactions/params";
 
     // Transaction keys
     static constexpr char txPaymentType[] = "pay";
-    static constexpr const char txKeyRegistrationType[] = "keyreg";
-    static constexpr const char txAssetConfigType[] = "acfg";
-    static constexpr const char txAssetTransferType[] = "axfer";
-    static constexpr const char txAssetFreezeType[] = "afrz";
+    static constexpr char txKeyRegistrationType[] = "keyreg";
+    static constexpr char txAssetConfigType[] = "acfg";
+    static constexpr char txAssetTransferType[] = "axfer";
+    static constexpr char txAssetFreezeType[] = "afrz";
 
-    static constexpr const char txPayment[] = "payment";
-    static constexpr const char txKeyRegistration[] = "keyreg";
-    static constexpr const char txAssetConfig[] = "curcfg";
-    static constexpr const char txAssetTransfer[] = "curxfer";
-    static constexpr const char txAssetFreeze[] = "curfrz";
+    static constexpr char txPayment[] = "payment";
+    static constexpr char txKeyRegistration[] = "keyreg";
+    static constexpr char txAssetConfig[] = "curcfg";
+    static constexpr char txAssetTransfer[] = "curxfer";
+    static constexpr char txAssetFreeze[] = "curfrz";
 
     static constexpr const char* txTypeToChars(TxType type) {
         switch (type) {
@@ -81,7 +81,7 @@ namespace constants {
         }
     }
 
-    static const TxType charsToMsgType(const char* string) {
+    static constexpr TxType charsToMsgType(const char* string) {
         if (string == constants::txPaymentType) {
             return TxType::PAYMENT;
         }

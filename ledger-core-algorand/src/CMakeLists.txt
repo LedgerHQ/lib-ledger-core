@@ -34,7 +34,7 @@ if (TARGET_JNI)
 endif ()
 
 # Add files to compile to the project
-file(GLOB_RECURSE SRC_FILES *.cpp)
+file(GLOB_RECURSE SRC_FILES algorand/*.cpp)
 
 # Interface library used to hold shared properties
 add_library(ledger-core-algorand-interface INTERFACE)
@@ -54,6 +54,9 @@ if(IS_IOS GREATER_EQUAL 0)
         ${CORE_SRC_FILES}
         ${HEADERS_FILES})
     target_link_libraries(ledger-core-algorand PUBLIC ledger-core-algorand-interface)
+
+    target_include_directories(ledger-core-algorand PRIVATE ${CMAKE_SOURCE_DIR}/src/thirdparty/msgpack-c/include)
+
     set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
     set(FRAMEWORK_BUNDLE_IDENTIFIER "com.ledger.core")
     set(DEPLOYMENT_TARGET 9.0)
@@ -94,6 +97,8 @@ else()
         ${HEADERS_FILES}
         ${CORE_HEADER_FILES})
     target_link_libraries(ledger-core-algorand-obj PUBLIC ledger-core-algorand-interface)
+
+    target_include_directories(ledger-core-algorand-obj PRIVATE ${CMAKE_SOURCE_DIR}/src/thirdparty/msgpack-c/include)
 
     # shared and static libraries built from the same object files
     add_library(ledger-core-algorand SHARED)

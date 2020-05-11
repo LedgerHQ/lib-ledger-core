@@ -11,6 +11,7 @@ endif (APPLE)
 
 add_executable(ledger-core-algorand-tests
     main.cpp
+    MsgpackHelpersTest.cpp
 )
 target_link_libraries(ledger-core-algorand-tests Core::ledger-core-static)
 target_link_libraries(ledger-core-algorand-tests Core::ledger-test)
@@ -18,6 +19,8 @@ target_link_libraries(ledger-core-algorand-tests Core::ledger-core-integration-t
 target_link_libraries(ledger-core-algorand-tests Core::ledger-qt-host)
 target_link_libraries(ledger-core-algorand-tests ledger-core-algorand-static)
 target_link_libraries(ledger-core-algorand-tests gtest gtest_main)
+
+target_include_directories(ledger-core-algorand-tests PRIVATE ${CMAKE_SOURCE_DIR}/src/thirdparty/msgpack-c/include)
 
 set(gtest_force_shared_crt ON CACHE BOOL "Build gtest with shared runtime" FORCE)
 
