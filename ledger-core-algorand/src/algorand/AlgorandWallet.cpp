@@ -42,14 +42,14 @@ namespace core {
 namespace algorand {
 
     Wallet::Wallet(const std::string &name,
-                   const api::Currency &network,
+                   const api::Currency &currency,
                    const std::shared_ptr<Services> &services,
                    const std::shared_ptr<DynamicObject> &configuration,
                    const DerivationScheme &scheme,
                    const std::shared_ptr<BlockchainExplorer> &explorer,
                    const std::shared_ptr<BlockchainObserver> &observer,
                    const AccountSynchronizerFactory &synchronizerFactory)
-        : AbstractWallet(name, network, services, configuration, scheme)
+        : AbstractWallet(name, currency, services, configuration, scheme)
     {
         _explorer = explorer;
         _observer = observer;
@@ -122,6 +122,7 @@ namespace algorand {
         algorand::AccountDatabaseHelper::queryAccount(sql, accountUid, accountData);
         return std::make_shared<Account>(shared_from_this(),
                                          accountData.index,
+                                         getCurrency(),
                                          hex::toByteArray(accountData.pubKeyHex));
     }
 

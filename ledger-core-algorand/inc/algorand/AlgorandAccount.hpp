@@ -52,10 +52,11 @@ namespace algorand {
     public:
 
         Account(const std::shared_ptr<AbstractWallet> &wallet,
-                        int32_t index,
-                        const std::vector<uint8_t> & pubKey) :
+                int32_t index,
+                const api::Currency& currency,
+                const std::vector<uint8_t> & pubKey) :
             AbstractAccount(wallet->getServices(), wallet, index),
-            _address(pubKey)
+            _address(currency, pubKey)
             {}
 
 

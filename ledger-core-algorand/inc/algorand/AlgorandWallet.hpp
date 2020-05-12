@@ -52,7 +52,7 @@ namespace algorand {
 
         Wallet(
             const std::string &name,
-            const api::Currency &network,
+            const api::Currency &currency,
             const std::shared_ptr<Services> &services,
             const std::shared_ptr<DynamicObject> &configuration,
             const DerivationScheme &scheme,

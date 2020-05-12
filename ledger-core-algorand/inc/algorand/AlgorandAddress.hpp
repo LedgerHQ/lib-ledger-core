@@ -45,8 +45,8 @@ namespace algorand {
 
     public:
 
-        Address(const std::vector<uint8_t> & pubKey);
-        Address(const std::string & address);
+        Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey);
+        Address(const api::Currency& currency, const std::string & address);
 
         std::string toString() override;
 
