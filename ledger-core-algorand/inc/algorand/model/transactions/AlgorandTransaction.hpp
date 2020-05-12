@@ -47,48 +47,64 @@
 namespace ledger {
 namespace core {
 namespace algorand {
-
-    class Header
-    {
-    public:
-        Header(uint64_t fee,
-               uint64_t firstValid,
-               Option<std::string> genesisId,
-               B64String genesisHash,
-               Option<std::vector<uint8_t>> group,
-               uint64_t lastValid,
-               Option<std::vector<uint8_t>> lease,
-               Option<std::vector<uint8_t>> note,
-               Address sender,
-               constants::TxType type);
-
-        uint64_t fee;
-        uint64_t firstValid;
-        Option<std::string> genesisId;
-        B64String genesisHash;
-        Option<std::vector<uint8_t>> group;
-        uint64_t lastValid;
-        Option<std::vector<uint8_t>> lease;
-        Option<std::vector<uint8_t>> note;
-        Address sender;
-        constants::TxType type;
-    };
+namespace model {
 
     class Transaction
     {
     public:
+        class Header
+        {
+        public:
+            Header(uint64_t fee,
+                   uint64_t firstValid,
+                   Option<std::string> genesisId,
+                   B64String genesisHash,
+                   Option<std::vector<uint8_t>> group,
+                   uint64_t lastValid,
+                   Option<std::vector<uint8_t>> lease,
+                   Option<std::vector<uint8_t>> note,
+                   Address sender,
+                   constants::TxType type)
+                : fee(fee)
+                , firstValid(firstValid)
+                , genesisId(std::move(genesisId))
+                , genesisHash(std::move(genesisHash))
+                , group(std::move(group))
+                , lastValid(lastValid)
+                , lease(std::move(lease))
+                , note(std::move(note))
+                , sender(std::move(sender))
+                , type(type)
+            {}
+
+            uint64_t fee;
+            uint64_t firstValid;
+            Option<std::string> genesisId;
+            B64String genesisHash;
+            Option<std::vector<uint8_t>> group;
+            uint64_t lastValid;
+            Option<std::vector<uint8_t>> lease;
+            Option<std::vector<uint8_t>> note;
+            Address sender;
+            constants::TxType type;
+        };
+
         using TransactionDetails = boost::variant<KeyRegTxnFields,
                                                   PaymentTxnFields,
                                                   AssetConfigTxnFields,
                                                   AssetTransferTxnFields,
                                                   AssetFreezeTxnFields>;
 
-        Transaction(Header header, TransactionDetails details);
+        Transaction(Header header, TransactionDetails details)
+            : header(std::move(header))
+            , details(std::move(details))
+        {}
 
         Header header;
         TransactionDetails details;
     };
 
+} // namespace model
 } // namespace ledger
 } // namespace core
 } // namespace algorand

@@ -1,7 +1,7 @@
 /*
- * AlgorandPayment
+ * AlgorandTransactionParams
  *
- * Created by Rémi Barjon on 04/05/2020.
+ * Created by Rémi Barjon on 11/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,20 +27,32 @@
  *
  */
 
-#include <algorand/model/transactions/AlgorandPayment.hpp>
+#pragma once
+
+#include <cstdint>
+#include <string>
 
 namespace ledger {
 namespace core {
 namespace algorand {
+namespace model {
 
-    PaymentTxnFields::PaymentTxnFields(uint64_t amount,
-                                       Option<Address> closeRemainderTo,
-                                       Address receiver)
-        : amount(amount)
-        , closeRemainderTo(std::move(closeRemainderTo))
-        , receiver(std::move(receiver))
-    {}
+    struct TransactionParams {
+        // Genesis ID of the node
+        std::string genesisID;
+        // Genesis hash (32 bytes in Base64) of the node
+        std::string genesisHash;
+        // The last round seen by the node
+        uint64_t lastRound;
+        // The consensus protocol version (as of lastRound) applied by the node
+        std::string consensusVersion;
+        // The suggested transaction fee, in micro-Algos per byte
+        uint64_t suggestedFeePerByte;
+        // The minimum transaction fee (not per byte) required in the current network protocol
+        uint64_t minFee;
+    };
 
+} // namespace model
 } // namespace algorand
 } // namespace core
 } // namespace ledger

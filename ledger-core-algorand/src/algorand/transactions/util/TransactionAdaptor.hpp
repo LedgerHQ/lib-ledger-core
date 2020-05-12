@@ -37,6 +37,7 @@
 #include <algorand/AlgorandConstants.hpp>
 #include <algorand/utils/B64String.hpp>
 #include <algorand/model/transactions/AlgorandAsset.hpp>
+#include <algorand/model/transactions/AlgorandAssetParams.hpp>
 #include <algorand/model/transactions/AlgorandKeyreg.hpp>
 #include <algorand/model/transactions/AlgorandPayment.hpp>
 #include <algorand/model/transactions/AlgorandSignedTransaction.hpp>
@@ -124,16 +125,15 @@ namespace msgpack {
 MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS) {
 namespace adaptor {
 
-    using ledger::core::algorand::AssetConfigTxnFields;
-    using ledger::core::algorand::AssetFreezeTxnFields;
-    using ledger::core::algorand::AssetTransferTxnFields;
-    using ledger::core::algorand::Header;
-    using ledger::core::algorand::KeyRegTxnFields;
-    using ledger::core::algorand::PaymentTxnFields;
-    using ledger::core::algorand::SignedTransaction;
-    using ledger::core::algorand::Transaction;
+    using ledger::core::algorand::model::AssetConfigTxnFields;
+    using ledger::core::algorand::model::AssetFreezeTxnFields;
+    using ledger::core::algorand::model::AssetTransferTxnFields;
+    using ledger::core::algorand::model::KeyRegTxnFields;
+    using ledger::core::algorand::model::PaymentTxnFields;
+    using ledger::core::algorand::model::SignedTransaction;
+    using ledger::core::algorand::model::Transaction;
     using ledger::core::algorand::constants::TxType;
-    using AssetParams = ledger::core::algorand::AssetConfigTxnFields::AssetParams;
+    using ledger::core::algorand::model::AssetParams;
 
     namespace {
 
@@ -236,7 +236,7 @@ namespace adaptor {
             return boost::apply_visitor(TransactionDetailsFieldsCounter(), details);
         }
 
-        uint32_t countFieldsInHeader(const Header& header)
+        uint32_t countFieldsInHeader(const Transaction::Header& header)
         {
             return countValidValues(
                     header.fee,
@@ -260,7 +260,7 @@ namespace adaptor {
         class TransactionPacker : public boost::static_visitor<packer<Stream>&>
         {
         public:
-            TransactionPacker(packer<Stream>& out, const Header& header)
+            TransactionPacker(packer<Stream>& out, const Transaction::Header& header)
                 : header(header), out(out)
             {}
 
@@ -312,7 +312,7 @@ namespace adaptor {
                 using namespace ledger::core::algorand;
 
                 return packKeyValues(out,
-                        KeyValue<Option<AssetConfigTxnFields::AssetParams>>(constants::apar, fields.assetParams),
+                        KeyValue<Option<AssetParams>>(constants::apar, fields.assetParams),
                         KeyValue<Option<uint64_t>>(constants::caid, fields.configAsset),
                         KeyValue<uint64_t>(constants::fee, header.fee),
                         KeyValue<uint64_t>(constants::fv, header.firstValid),
@@ -369,7 +369,7 @@ namespace adaptor {
             }
 
         private:
-            const Header& header;
+            const Transaction::Header& header;
             packer<Stream>& out;
         };
 

@@ -39,6 +39,7 @@
 namespace ledger {
 namespace core {
 namespace algorand {
+namespace model {
 
     class SignedTransaction
     {
@@ -61,6 +62,7 @@ namespace algorand {
         Transaction txn;
     };
 
+} // namespace model
 } // namespace ledger
 } // namespace core
 } // namespace algorand

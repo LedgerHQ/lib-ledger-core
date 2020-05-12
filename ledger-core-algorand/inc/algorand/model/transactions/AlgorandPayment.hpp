@@ -38,19 +38,25 @@
 namespace ledger {
 namespace core {
 namespace algorand {
+namespace model {
 
     class PaymentTxnFields
     {
     public:
         PaymentTxnFields(uint64_t amount,
                          Option<Address> closeRemainderTo,
-                         Address receiver);
+                         Address receiver)
+            : amount(amount)
+            , closeRemainderTo(std::move(closeRemainderTo))
+            , receiver(std::move(receiver))
+        {}
 
         uint64_t amount;
         Option<Address> closeRemainderTo;
         Address receiver;
     };
 
+} // namespace model
 } // namespace ledger
 } // namespace core
 } // namespace algorand

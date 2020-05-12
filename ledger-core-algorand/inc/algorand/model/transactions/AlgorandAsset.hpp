@@ -30,6 +30,7 @@
 #pragma once
 
 #include <algorand/AlgorandAddress.hpp>
+#include <algorand/model/transactions/AlgorandAssetParams.hpp>
 
 #include <core/utils/Option.hpp>
 
@@ -39,38 +40,11 @@
 namespace ledger {
 namespace core {
 namespace algorand {
+namespace model {
 
     class AssetConfigTxnFields
     {
     public:
-        class AssetParams
-        {
-        public:
-            AssetParams(Option<std::vector<uint8_t>> metaDataHash,
-                        Option<std::string> assetName,
-                        Option<std::string> url,
-                        Option<Address> clawbackAddr,
-                        Option<uint32_t> decimals,
-                        Option<bool> defaultFrozen,
-                        Option<Address> freezeAddr,
-                        Option<Address> managerAddr,
-                        Option<Address> reserveAddr,
-                        Option<uint64_t> total,
-                        Option<std::string> unitName);
-
-            Option<std::vector<uint8_t>> metaDataHash;
-            Option<std::string> assetName;
-            Option<std::string> url;
-            Option<Address> clawbackAddr;
-            Option<uint32_t> decimals;
-            Option<bool> defaultFrozen;
-            Option<Address> freezeAddr;
-            Option<Address> managerAddr;
-            Option<Address> reserveAddr;
-            Option<uint64_t> total;
-            Option<std::string> unitName;
-        };
-
         static AssetConfigTxnFields create(AssetParams assetParams);
         static AssetConfigTxnFields reconfigure(AssetParams assetParams, uint64_t configAsset);
         static AssetConfigTxnFields destroy(uint64_t configAsset);
@@ -126,6 +100,7 @@ namespace algorand {
         uint64_t freezeAsset;
     };
 
+} // namespace model
 } // namespace ledger
 } // namespace core
 } // namespace algorand

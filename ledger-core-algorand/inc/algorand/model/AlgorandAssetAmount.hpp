@@ -1,7 +1,7 @@
 /*
- * AlgorandKeyreg
+ * AlgorandAssetAmount
  *
- * Created by Rémi Barjon on 04/05/2020.
+ * Created by Rémi Barjon on 12/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,27 +27,32 @@
  *
  */
 
-#include <algorand/model/transactions/AlgorandKeyreg.hpp>
+#pragma once
+
+#include <algorand/AlgorandAddress.hpp>
 
 namespace ledger {
 namespace core {
 namespace algorand {
+namespace model {
 
-    KeyRegTxnFields::KeyRegTxnFields(Option<bool> nonParticipation,
-                                     std::string selectionPk,
-                                     uint64_t voteFirst,
-                                     uint64_t voteKeyDilution,
-                                     std::string votePk,
-                                     uint64_t voteLast)
-        : nonParticipation(std::move(nonParticipation))
-        , selectionPk(std::move(selectionPk))
-        , voteFirst(voteFirst)
-        , voteKeyDilution(voteKeyDilution)
-        , votePk(std::move(votePk))
-        , voteLast(voteLast)
-    {}
+    struct AssetAmount
+    {
+        AssetAmount(Address creatorAddress,
+                    uint64_t amount,
+                    bool frozen)
+            : creatorAddress(std::move(creatorAddress))
+            , amount(amount)
+            , frozen(frozen)
+        {}
 
-} // namespace algorand
-} // namespace core
+        Address creatorAddress;
+        uint64_t amount;
+        bool frozen;
+    };
+
+} // namespace model
 } // namespace ledger
+} // namespace core
+} // namespace algorand
 

@@ -29,7 +29,7 @@
 
 #include <algorand/AlgorandWallet.hpp>
 #include <algorand/AlgorandAccount.hpp>
-#include <algorand/AlgorandModel.hpp>
+#include <algorand/model/AlgorandAccount.hpp>
 #include <algorand/database/AlgorandAccountDatabaseHelper.hpp>
 
 #include <core/Services.hpp>

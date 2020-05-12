@@ -36,6 +36,7 @@
 namespace ledger {
 namespace core {
 namespace algorand {
+namespace model {
 
     SignedTransaction::SignedTransaction(Option<std::vector<uint8_t>> sig,
                                          Transaction txn)
@@ -78,6 +79,7 @@ namespace algorand {
         sig = signature;
     }
 
+} // namespace model
 } // namespace ledger
 } // namespace core
 } // namespace algorand

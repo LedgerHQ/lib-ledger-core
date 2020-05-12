@@ -32,31 +32,7 @@
 namespace ledger {
 namespace core {
 namespace algorand {
-
-    AssetConfigTxnFields::AssetParams::AssetParams(
-            Option<std::vector<uint8_t>> metaDataHash,
-            Option<std::string> assetName,
-            Option<std::string> url,
-            Option<Address> clawbackAddr,
-            Option<uint32_t> decimals,
-            Option<bool> defaultFrozen,
-            Option<Address> freezeAddr,
-            Option<Address> managerAddr,
-            Option<Address> reserveAddr,
-            Option<uint64_t> total,
-            Option<std::string> unitName)
-        : metaDataHash(std::move(metaDataHash))
-        , assetName(std::move(assetName))
-        , url(std::move(url))
-        , clawbackAddr(std::move(clawbackAddr))
-        , decimals(std::move(decimals))
-        , defaultFrozen(std::move(defaultFrozen))
-        , freezeAddr(std::move(freezeAddr))
-        , managerAddr(std::move(managerAddr))
-        , reserveAddr(std::move(reserveAddr))
-        , total(std::move(total))
-        , unitName(std::move(unitName))
-    {}
+namespace model {
 
     AssetConfigTxnFields AssetConfigTxnFields::create(AssetParams assetParams)
     {
@@ -144,6 +120,7 @@ namespace algorand {
         , freezeAsset(freezeAsset)
     {}
 
+} // namespace model
 } // namespace algorand
 } // namespace core
 } // namespace ledger
