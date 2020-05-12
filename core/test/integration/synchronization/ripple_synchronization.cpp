@@ -119,12 +119,13 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_TRUE(std::chrono::duration_cast<std::chrono::hours>(xrpOp->getTransaction()->getDate().time_since_epoch()).count() != 0);
             }
 
-            auto block = wait(account->getLastBlock());
-            auto blockHash = block.blockHash;
-
             EXPECT_EQ(wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7")), true);
             EXPECT_EQ(wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCK")), false);
             EXPECT_EQ(wait(account->isAddressActivated("rf1pjatD8LyyevP1BqQJtHoz5edC5vE77Q")), false);
+
+            auto block = wait(account->getLastBlock());
+            EXPECT_GT(block.height, 0);
+            EXPECT_LT(block.height, std::numeric_limits<int32_t>::max());
         }
     }
 }
