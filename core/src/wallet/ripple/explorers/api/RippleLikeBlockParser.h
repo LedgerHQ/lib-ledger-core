@@ -46,17 +46,18 @@ namespace ledger {
                     std::string number(str, length);
                     BigInt value = BigInt::fromString(number);
                     _block->height = value.toUint64();
+                    // Ledger index is not really a hash but since XRP doesn't have reorg
+                    // it's safe to use ledger index as a unique hash.
+                    _block->hash = number;
                 }
                 return true;
             }
 
             bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
                 std::string value = std::string(str, length);
-                if (getLastKey() == "ledger_hash") {
-                    _block->hash = value;
-                } else if (getLastKey() == "close_time_human") {
-                    _block->time = DateUtils::fromJSON(value);
-                }
+               if (getLastKey() == "close_time_human") {
+                   _block->time = DateUtils::fromJSON(value);
+               }
                 return true;
             }
 
