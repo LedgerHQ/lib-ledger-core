@@ -1,7 +1,8 @@
 /*
- * AlgorandAccountSynchronizer
  *
- * Created by Hakim Aammar on 20/04/2020.
+ * AlgorandNetworks
+ *
+ * Created by Hakim Aammar on 04/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,39 +28,33 @@
  *
  */
 
+#include <algorand/AlgorandNetworks.hpp>
 
-#ifndef LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
-#define LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
-
-#include <algorand/AlgorandBlockchainExplorer.hpp>
-
-#include <core/synchronizers/AbstractAccountSynchronizer.hpp>
-#include <core/Services.hpp>
+#include <core/utils/Exception.hpp>
 
 namespace ledger {
 namespace core {
-namespace algorand {
+namespace networks {
 
-    // TODO implementation; this is currently just a mock up
+    // TODO Switch to mainnet at some point
+    static const std::string ALGORAND_NETWORK_NAME = "testnet-v1.0"; // --> "mainnet-v1.0"
+    static const std::string ALGORAND_NETWORK_ID = "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI="; // --> "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8="
 
-    class Account;
+    const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName) {
+        if (networkName == "algorand") {
+            static const api::AlgorandNetworkParameters ALGORAND(
+                ALGORAND_NETWORK_NAME,
+                ALGORAND_NETWORK_ID
+            );
+            return ALGORAND;
+        }
+        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
+    }
 
-    class AccountSynchronizer : public AbstractAccountSynchronizer<Account> {
+    const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND ({
+        getAlgorandNetworkParameters("algorand")
+    });
 
-    public:
-
-        AccountSynchronizer(const std::shared_ptr<Services> &services,
-                            const std::shared_ptr<BlockchainExplorer> &explorer);
-
-        virtual void reset(const std::shared_ptr<Account>& account, const std::chrono::system_clock::time_point& toDate) override {}
-
-        virtual std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<Account>& account) override { return std::shared_ptr<ProgressNotifier<Unit>>(nullptr); };
-
-        virtual bool isSynchronizing() const override { return false; }
-    };
-
-} // namespace algorand
+} // namespace networks
 } // namespace core
 } // namespace ledger
-
-#endif // LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H

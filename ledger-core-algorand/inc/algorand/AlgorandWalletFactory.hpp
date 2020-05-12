@@ -1,7 +1,8 @@
 /*
- * AlgorandAccountSynchronizer
  *
- * Created by Hakim Aammar on 20/04/2020.
+ * AlgorandWalletFactory
+ *
+ * Created by Hakim Aammar on 11/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,39 +28,42 @@
  *
  */
 
-
-#ifndef LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
-#define LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
+#ifndef LEDGER_CORE_ALGORANDWALLETFACTORY_H
+#define LEDGER_CORE_ALGORANDWALLETFACTORY_H
 
 #include <algorand/AlgorandBlockchainExplorer.hpp>
+#include <algorand/AlgorandBlockchainObserver.hpp>
+#include <algorand/AlgorandAccountSynchronizer.hpp>
 
-#include <core/synchronizers/AbstractAccountSynchronizer.hpp>
+#include <core/wallet/AbstractWalletFactory.hpp>
 #include <core/Services.hpp>
 
 namespace ledger {
 namespace core {
 namespace algorand {
 
-    // TODO implementation; this is currently just a mock up
+    using AlgorandAccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer>()>;
 
-    class Account;
-
-    class AccountSynchronizer : public AbstractAccountSynchronizer<Account> {
-
+    class WalletFactory : public AbstractWalletFactory {
     public:
+        WalletFactory(const api::Currency &currency, const std::shared_ptr<Services> &services);
 
-        AccountSynchronizer(const std::shared_ptr<Services> &services,
-                            const std::shared_ptr<BlockchainExplorer> &explorer);
+        std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
-        virtual void reset(const std::shared_ptr<Account>& account, const std::chrono::system_clock::time_point& toDate) override {}
+    private:
+        std::shared_ptr<BlockchainExplorer>
+        getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
-        virtual std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<Account>& account) override { return std::shared_ptr<ProgressNotifier<Unit>>(nullptr); };
+        std::shared_ptr<BlockchainObserver>
+        getObserver(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
-        virtual bool isSynchronizing() const override { return false; }
+    private:
+        std::list<std::weak_ptr<BlockchainExplorer>> _runningExplorers;
+        std::list<std::weak_ptr<BlockchainObserver>> _runningObservers;
     };
 
 } // namespace algorand
 } // namespace core
-} // namespace ledger
+} // namespace ledeger
 
-#endif // LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
+#endif // LEDGER_CORE_ALGORANDWALLETFACTORY_H

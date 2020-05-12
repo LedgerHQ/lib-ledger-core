@@ -27,22 +27,78 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ALGORANDBLOCKCHAINOBSERVER_H
 #define LEDGER_CORE_ALGORANDBLOCKCHAINOBSERVER_H
+
+#include <algorand/model/transactions/AlgorandTransaction.hpp>
+
+#include <core/async/DedicatedContext.hpp>
+#include <core/utils/ConfigurationMatchable.hpp>
+#include <core/observers/AbstractBlockchainObserver.hpp>
+#include <core/observers/AbstractLedgerApiBlockchainObserver.hpp>
+
+#include <core/api/Block.hpp>
 
 namespace ledger {
 namespace core {
 namespace algorand {
 
-    // TODO implementation; this is currently just a mock up
-    class BlockchainObserver  {
+    class Account;
+
+    using AlgorandAbstractBlockchainObserver = AbstractBlockchainObserver<Account, model::Transaction, api::Block>;
+
+    class BlockchainObserver : public AlgorandAbstractBlockchainObserver,
+                                       public AbstractLedgerApiBlockchainObserver,
+                                       public DedicatedContext,
+                                       public ConfigurationMatchable,
+                                       public std::enable_shared_from_this<BlockchainObserver> {
 
     public:
 
+        BlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
+                                    const std::shared_ptr<api::DynamicObject> &configuration,
+                                    const std::shared_ptr<spdlog::logger> &logger,
+                                    const api::Currency &currency,
+                                    const std::vector<std::string> &matchableKeys);
 
+        BlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
+                                   const std::shared_ptr<WebSocketClient> &client,
+                                   const std::shared_ptr<api::DynamicObject> &configuration,
+                                   const std::shared_ptr<spdlog::logger> &logger,
+                                   const api::Currency &currency);
 
+    protected:
 
+        void putTransaction(const model::Transaction &tx) override;
+
+        void putBlock(const api::Block &block) override;
+
+        void onStart() override;
+
+        void onStop() override;
+
+        const api::Currency &getCurrency() const {
+            return _currency;
+        };
+
+        std::shared_ptr<api::DynamicObject> getConfiguration() const {
+            return _configuration;
+        };
+
+    private:
+
+        void connect() override;
+
+        void reconnect() override;
+
+        void onMessage(const std::string &message) override;
+
+        std::shared_ptr<spdlog::logger> logger() const override;
+
+        api::Currency _currency;
+        std::shared_ptr<api::DynamicObject> _configuration;
+        std::shared_ptr<WebSocketClient> _client;
+        WebSocketEventHandler _handler;
     };
 
 } // namespace algorand

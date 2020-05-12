@@ -1,7 +1,8 @@
 /*
- * AlgorandAccountSynchronizer
  *
- * Created by Hakim Aammar on 20/04/2020.
+ * AlgorandNetworks
+ *
+ * Created by Hakim Aammar on 04/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,39 +28,41 @@
  *
  */
 
+#ifndef LEDGER_CORE_ALGORANDNETWORKS_H
+#define LEDGER_CORE_ALGORANDNETWORKS_H
 
-#ifndef LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
-#define LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
+#ifndef LIBCORE_EXPORT
+    #if defined(_MSC_VER) && _MSC_VER <= 1900
+        #include <libcore_export.h>
+    #else
+        #define LIBCORE_EXPORT
+    #endif
+#endif
 
-#include <algorand/AlgorandBlockchainExplorer.hpp>
+#include <algorand/api/AlgorandNetworkParameters.hpp>
 
-#include <core/synchronizers/AbstractAccountSynchronizer.hpp>
-#include <core/Services.hpp>
+#include <vector>
+#include <string>
 
 namespace ledger {
 namespace core {
-namespace algorand {
+namespace networks {
 
-    // TODO implementation; this is currently just a mock up
+    extern LIBCORE_EXPORT const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName);
+    extern LIBCORE_EXPORT const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND;
 
-    class Account;
+    template<class Archive>
+    void serialize(Archive & archive, api::AlgorandNetworkParameters & p)
+    {
+        archive(
+            // TODO complete other fields?
+            p.genesisID,
+            p.genesisHash
+        );
+    }
 
-    class AccountSynchronizer : public AbstractAccountSynchronizer<Account> {
-
-    public:
-
-        AccountSynchronizer(const std::shared_ptr<Services> &services,
-                            const std::shared_ptr<BlockchainExplorer> &explorer);
-
-        virtual void reset(const std::shared_ptr<Account>& account, const std::chrono::system_clock::time_point& toDate) override {}
-
-        virtual std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<Account>& account) override { return std::shared_ptr<ProgressNotifier<Unit>>(nullptr); };
-
-        virtual bool isSynchronizing() const override { return false; }
-    };
-
-} // namespace algorand
+} // namespace networks
 } // namespace core
 } // namespace ledger
 
-#endif // LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
+#endif // LEDGER_CORE_ALGORANDNETWORKS_H
