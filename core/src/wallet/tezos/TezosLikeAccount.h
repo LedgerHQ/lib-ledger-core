@@ -146,6 +146,8 @@ namespace ledger {
             void getFees(const std::shared_ptr<api::BigIntCallback> & callback) override;
             FuturePtr<BigInt> getFees();
 
+            std::shared_ptr<api::Keychain> getAccountKeychain() override;
+
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
 
