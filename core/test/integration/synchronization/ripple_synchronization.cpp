@@ -96,8 +96,21 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
             dispatcher->waitUntilStopped();
 
             auto ops = wait(
-                    std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                    std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete()
+                    ->addOrder(api::OperationOrderKey::DATE,false))->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
+
+            auto firstOp = ops.front();
+            auto firstXrpOp = firstOp->asRippleLikeOperation();
+
+            EXPECT_EQ(firstOp->getSenders()[0], "rPVMhWBsfF9iMXYj3aAzJVkPDTFNSyWdKy");
+            EXPECT_EQ(firstOp->getRecipients()[0], "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
+            EXPECT_EQ(firstOp->getBlockHeight().value(), 48602088);
+            EXPECT_EQ(firstOp->getAmount()->toLong(), 49000000);
+            EXPECT_EQ(firstOp->getFees()->toLong(), 6235);
+            EXPECT_EQ(firstXrpOp->getTransaction()->getDestinationTag().value(), 0);
+            EXPECT_EQ(firstXrpOp->getTransaction()->getLedgerSequence()->intValue(), 48602088);
+            EXPECT_EQ(firstXrpOp->getTransaction()->getDate(), DateUtils::fromJSON("2019-07-12T11:05:20Z"));
 
             for (auto const& op : ops) {
                 auto xrpOp = op->asRippleLikeOperation();
