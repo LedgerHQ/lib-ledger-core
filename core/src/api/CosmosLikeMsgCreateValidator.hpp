@@ -14,7 +14,7 @@
 namespace ledger { namespace core { namespace api {
 
 struct CosmosLikeMsgCreateValidator final {
-    CosmosLikeValidatorDescription description;
+    CosmosLikeValidatorDescription descr;
     CosmosLikeValidatorCommission commission;
     std::string minSelfDelegation;
     std::string delegatorAddress;
@@ -22,14 +22,14 @@ struct CosmosLikeMsgCreateValidator final {
     std::string pubkey;
     CosmosLikeAmount value;
 
-    CosmosLikeMsgCreateValidator(CosmosLikeValidatorDescription description_,
+    CosmosLikeMsgCreateValidator(CosmosLikeValidatorDescription descr_,
                                  CosmosLikeValidatorCommission commission_,
                                  std::string minSelfDelegation_,
                                  std::string delegatorAddress_,
                                  std::string validatorAddress_,
                                  std::string pubkey_,
                                  CosmosLikeAmount value_)
-    : description(std::move(description_))
+    : descr(std::move(descr_))
     , commission(std::move(commission_))
     , minSelfDelegation(std::move(minSelfDelegation_))
     , delegatorAddress(std::move(delegatorAddress_))
@@ -39,7 +39,7 @@ struct CosmosLikeMsgCreateValidator final {
     {}
 
     CosmosLikeMsgCreateValidator(const CosmosLikeMsgCreateValidator& cpy) {
-       this->description = cpy.description;
+       this->descr = cpy.descr;
        this->commission = cpy.commission;
        this->minSelfDelegation = cpy.minSelfDelegation;
        this->delegatorAddress = cpy.delegatorAddress;
@@ -52,7 +52,7 @@ struct CosmosLikeMsgCreateValidator final {
 
 
     CosmosLikeMsgCreateValidator& operator=(const CosmosLikeMsgCreateValidator& cpy) {
-       this->description = cpy.description;
+       this->descr = cpy.descr;
        this->commission = cpy.commission;
        this->minSelfDelegation = cpy.minSelfDelegation;
        this->delegatorAddress = cpy.delegatorAddress;
@@ -64,12 +64,12 @@ struct CosmosLikeMsgCreateValidator final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(description, commission, minSelfDelegation, delegatorAddress, validatorAddress, pubkey, value);
+        archive(descr, commission, minSelfDelegation, delegatorAddress, validatorAddress, pubkey, value);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(description, commission, minSelfDelegation, delegatorAddress, validatorAddress, pubkey, value);
+        archive(descr, commission, minSelfDelegation, delegatorAddress, validatorAddress, pubkey, value);
     }
 };
 

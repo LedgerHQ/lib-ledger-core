@@ -63,10 +63,10 @@ inline auto addContent(
         content.title.c_str(), static_cast<rapidjson::SizeType>(content.title.length()), allocator);
     jsonContent.AddMember(kTitle, jsonString, allocator);
 
-    // api::CosmosLikeContent::description
+    // api::CosmosLikeContent::descr
     jsonString.SetString(
-        content.description.c_str(),
-        static_cast<rapidjson::SizeType>(content.description.length()),
+        content.descr.c_str(),
+        static_cast<rapidjson::SizeType>(content.descr.length()),
         allocator);
     jsonContent.AddMember(kDescription, jsonString, allocator);
 
@@ -375,10 +375,10 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         const auto& content = boost::get<cosmos::MsgCreateValidator>(_msgData.content);
 
         auto jsonDesc = rapidjson::Value(rapidjson::kObjectType);
-        addString(kMoniker, content.description.moniker, jsonDesc, allocator);
-        addOptionalString(kIdentity, content.description.identity, jsonDesc, allocator);
-        addOptionalString(kWebsite, content.description.website, jsonDesc, allocator);
-        addOptionalString(kDetails, content.description.details, jsonDesc, allocator);
+        addString(kMoniker, content.descr.moniker, jsonDesc, allocator);
+        addOptionalString(kIdentity, content.descr.identity, jsonDesc, allocator);
+        addOptionalString(kWebsite, content.descr.website, jsonDesc, allocator);
+        addOptionalString(kDetails, content.descr.details, jsonDesc, allocator);
         jsonContent.AddMember(kDescription, jsonDesc, allocator);
 
         auto jsonCommission = rapidjson::Value(rapidjson::kObjectType);
@@ -402,8 +402,8 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
     } else if (_msgData.type == kMsgEditValidator) {
         const auto& content = boost::get<cosmos::MsgEditValidator>(_msgData.content);
 
-        if (content.description) {
-            auto description = content.description.value();
+        if (content.descr) {
+            auto description = content.descr.value();
             auto jsonDesc = rapidjson::Value(rapidjson::kObjectType);
             addString(kMoniker, description.moniker, jsonDesc, allocator);
             addOptionalString(kIdentity, description.identity, jsonDesc, allocator);

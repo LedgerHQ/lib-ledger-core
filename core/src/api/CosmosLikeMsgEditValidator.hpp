@@ -13,23 +13,23 @@
 namespace ledger { namespace core { namespace api {
 
 struct CosmosLikeMsgEditValidator final {
-    std::experimental::optional<CosmosLikeValidatorDescription> description;
+    std::experimental::optional<CosmosLikeValidatorDescription> descr;
     std::string validatorAddress;
     std::experimental::optional<std::string> commissionRate;
     std::experimental::optional<std::string> minSelfDelegation;
 
-    CosmosLikeMsgEditValidator(std::experimental::optional<CosmosLikeValidatorDescription> description_,
+    CosmosLikeMsgEditValidator(std::experimental::optional<CosmosLikeValidatorDescription> descr_,
                                std::string validatorAddress_,
                                std::experimental::optional<std::string> commissionRate_,
                                std::experimental::optional<std::string> minSelfDelegation_)
-    : description(std::move(description_))
+    : descr(std::move(descr_))
     , validatorAddress(std::move(validatorAddress_))
     , commissionRate(std::move(commissionRate_))
     , minSelfDelegation(std::move(minSelfDelegation_))
     {}
 
     CosmosLikeMsgEditValidator(const CosmosLikeMsgEditValidator& cpy) {
-       this->description = cpy.description;
+       this->descr = cpy.descr;
        this->validatorAddress = cpy.validatorAddress;
        this->commissionRate = cpy.commissionRate;
        this->minSelfDelegation = cpy.minSelfDelegation;
@@ -39,7 +39,7 @@ struct CosmosLikeMsgEditValidator final {
 
 
     CosmosLikeMsgEditValidator& operator=(const CosmosLikeMsgEditValidator& cpy) {
-       this->description = cpy.description;
+       this->descr = cpy.descr;
        this->validatorAddress = cpy.validatorAddress;
        this->commissionRate = cpy.commissionRate;
        this->minSelfDelegation = cpy.minSelfDelegation;
@@ -48,12 +48,12 @@ struct CosmosLikeMsgEditValidator final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(description, validatorAddress, commissionRate, minSelfDelegation);
+        archive(descr, validatorAddress, commissionRate, minSelfDelegation);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(description, validatorAddress, commissionRate, minSelfDelegation);
+        archive(descr, validatorAddress, commissionRate, minSelfDelegation);
     }
 };
 

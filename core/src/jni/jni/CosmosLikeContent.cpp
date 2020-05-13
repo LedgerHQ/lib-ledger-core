@@ -15,7 +15,7 @@ auto CosmosLikeContent::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::L
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.type)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.title)),
-                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.description)))};
+                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.descr)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
@@ -26,7 +26,7 @@ auto CosmosLikeContent::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     const auto& data = ::djinni::JniClass<CosmosLikeContent>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_type)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_title)),
-            ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_description))};
+            ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_descr))};
 }
 
 }  // namespace djinni_generated

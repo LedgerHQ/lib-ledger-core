@@ -439,7 +439,7 @@ namespace ledger {
         auto &content = boost::get<cosmos::MsgSubmitProposal>(msg.content);
         content.content.type = row.get<std::string>(COL_MSG_PROPTYPE);
         content.content.title = row.get<std::string>(COL_MSG_PROPTITLE);
-        content.content.description = row.get<std::string>(COL_MSG_PROPDESC);
+        content.content.descr = row.get<std::string>(COL_MSG_PROPDESC);
         content.proposer = row.get<std::string>(COL_MSG_PROPOSER);
         soci::stringToCoins(row.get<std::string>(COL_MSG_AMOUNT), content.initialDeposit);
     }
@@ -630,7 +630,7 @@ namespace ledger {
                 soci::use(msg.uid), soci::use(txUid), soci::use(msg.type), soci::use(log.log),
                 soci::use(log.success ? 1 : 0), soci::use(log.messageIndex), soci::use(m.proposer),
                 soci::use(m.content.type), soci::use(m.content.title),
-                soci::use(m.content.description), soci::use(coins);
+                soci::use(m.content.descr), soci::use(coins);
         }
 
         void CosmosLikeTransactionDatabaseHelper::insertMsgVote(

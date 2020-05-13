@@ -16,7 +16,7 @@ CosmosLikeMsgCreateValidator::~CosmosLikeMsgCreateValidator() = default;
 auto CosmosLikeMsgCreateValidator::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni::LocalRef<JniType> {
     const auto& data = ::djinni::JniClass<CosmosLikeMsgCreateValidator>::get();
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
-                                                           ::djinni::get(::djinni_generated::CosmosLikeValidatorDescription::fromCpp(jniEnv, c.description)),
+                                                           ::djinni::get(::djinni_generated::CosmosLikeValidatorDescription::fromCpp(jniEnv, c.descr)),
                                                            ::djinni::get(::djinni_generated::CosmosLikeValidatorCommission::fromCpp(jniEnv, c.commission)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.minSelfDelegation)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.delegatorAddress)),
@@ -31,7 +31,7 @@ auto CosmosLikeMsgCreateValidator::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     ::djinni::JniLocalScope jscope(jniEnv, 8);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<CosmosLikeMsgCreateValidator>::get();
-    return {::djinni_generated::CosmosLikeValidatorDescription::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_description)),
+    return {::djinni_generated::CosmosLikeValidatorDescription::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_descr)),
             ::djinni_generated::CosmosLikeValidatorCommission::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_commission)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_minSelfDelegation)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_delegatorAddress)),

@@ -172,7 +172,7 @@ namespace ledger {
                 assert((node.HasMember(kDescription)));
                 assert((node.HasMember(kTitle)));
                 out.type = node[kType].GetString();
-                out.description = node[kDescription].GetString();
+                out.descr = node[kDescription].GetString();
                 out.title = node[kTitle].GetString();
             }
 
@@ -332,7 +332,7 @@ namespace ledger {
                 assert((n.HasMember(kValidatorAddress)));
                 assert((n.HasMember(kPubKey)));
                 assert((n.HasMember(kValue)));
-                parseDescription(n[kDescription].GetObject(), msg.description);
+                parseDescription(n[kDescription].GetObject(), msg.descr);
                 parseCommission(n[kCommission].GetObject(), msg.commission);
                 msg.delegatorAddress = n[kDelegatorAddress].GetString();
                 msg.validatorAddress = n[kValidatorAddress].GetString();
@@ -357,7 +357,7 @@ namespace ledger {
                 if (n.HasMember(kDescription) && n[kDescription].IsObject()) {
                     cosmos::ValidatorDescription desc;
                     parseDescription(n[kDescription].GetObject(), desc);
-                    msg.description = optional<cosmos::ValidatorDescription>(desc);
+                    msg.descr = optional<cosmos::ValidatorDescription>(desc);
                 }
                 out = msg;
             }

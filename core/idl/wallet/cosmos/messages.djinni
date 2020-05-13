@@ -24,7 +24,7 @@ CosmosLikeCommissionRates = record {
 CosmosLikeContent = record {
         type: string;
         title: string;
-        description: string;
+        descr: string;
 }
 
 CosmosLikeVoteOption = enum {
@@ -88,7 +88,7 @@ CosmosLikeMsgMultiSend = record {
 }
 
 CosmosLikeMsgCreateValidator = record {
-        description: CosmosLikeValidatorDescription;
+        descr: CosmosLikeValidatorDescription;
         commission: CosmosLikeValidatorCommission;
         minSelfDelegation: string;
         delegatorAddress: string;
@@ -98,7 +98,7 @@ CosmosLikeMsgCreateValidator = record {
 }
 
 CosmosLikeMsgEditValidator = record {
-        description: optional<CosmosLikeValidatorDescription>;
+        descr: optional<CosmosLikeValidatorDescription>;
         validatorAddress: string;
         commissionRate: optional<string>;
         minSelfDelegation: optional<string>;
