@@ -794,14 +794,14 @@ namespace ledger {
             // Insert each input and each output to the cosmos_multisend_io table
             std::for_each(m.inputs.cbegin(), m.inputs.cend(), [&sql, &msg](const auto &input) {
                 const auto inputCoins = soci::coinsToString(input.coins);
-                sql << "INSERT INTO cosmos_multisend_io (uid, from_address, amount) "
+                sql << "INSERT INTO cosmos_multisend_io (message_uid, from_address, amount) "
                        "VALUES (:uid, :fa, :amt)",
                     soci::use(msg.uid), soci::use(input.fromAddress), soci::use(inputCoins);
             });
 
             std::for_each(m.outputs.cbegin(), m.outputs.cend(), [&sql, &msg](const auto &output) {
                 const auto outputCoins = soci::coinsToString(output.coins);
-                sql << "INSERT INTO cosmos_multisend_io (uid, to_address, amount) "
+                sql << "INSERT INTO cosmos_multisend_io (message_uid, to_address, amount) "
                        "VALUES (:uid, :ta, :amt)",
                     soci::use(msg.uid), soci::use(output.toAddress), soci::use(outputCoins);
             });
