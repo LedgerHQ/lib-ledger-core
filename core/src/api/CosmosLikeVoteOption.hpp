@@ -18,10 +18,10 @@
 namespace ledger { namespace core { namespace api {
 
 enum class CosmosLikeVoteOption : int {
-    YES,
-    NO,
-    NOWITHVETO,
-    ABSTAIN,
+    COSMOSVOTEYES,
+    COSMOSVOTENO,
+    COSMOSVOTENOWITHVETO,
+    COSMOSVOTEABSTAIN,
 };
 LIBCORE_EXPORT  std::string to_string(const CosmosLikeVoteOption& cosmosLikeVoteOption);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const CosmosLikeVoteOption &o);

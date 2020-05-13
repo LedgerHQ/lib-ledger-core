@@ -8,27 +8,27 @@ namespace ledger { namespace core { namespace api {
 
 std::string to_string(const CosmosLikeVoteOption& cosmosLikeVoteOption) {
     switch (cosmosLikeVoteOption) {
-        case CosmosLikeVoteOption::YES: return "YES";
-        case CosmosLikeVoteOption::NO: return "NO";
-        case CosmosLikeVoteOption::NOWITHVETO: return "NOWITHVETO";
-        case CosmosLikeVoteOption::ABSTAIN: return "ABSTAIN";
+        case CosmosLikeVoteOption::COSMOSVOTEYES: return "COSMOSVOTEYES";
+        case CosmosLikeVoteOption::COSMOSVOTENO: return "COSMOSVOTENO";
+        case CosmosLikeVoteOption::COSMOSVOTENOWITHVETO: return "COSMOSVOTENOWITHVETO";
+        case CosmosLikeVoteOption::COSMOSVOTEABSTAIN: return "COSMOSVOTEABSTAIN";
     };
 };
 template <>
 CosmosLikeVoteOption from_string(const std::string& cosmosLikeVoteOption) {
-    if (cosmosLikeVoteOption == "YES") return CosmosLikeVoteOption::YES;
-    else if (cosmosLikeVoteOption == "NO") return CosmosLikeVoteOption::NO;
-    else if (cosmosLikeVoteOption == "NOWITHVETO") return CosmosLikeVoteOption::NOWITHVETO;
-    else return CosmosLikeVoteOption::ABSTAIN;
+    if (cosmosLikeVoteOption == "COSMOSVOTEYES") return CosmosLikeVoteOption::COSMOSVOTEYES;
+    else if (cosmosLikeVoteOption == "COSMOSVOTENO") return CosmosLikeVoteOption::COSMOSVOTENO;
+    else if (cosmosLikeVoteOption == "COSMOSVOTENOWITHVETO") return CosmosLikeVoteOption::COSMOSVOTENOWITHVETO;
+    else return CosmosLikeVoteOption::COSMOSVOTEABSTAIN;
 };
 
 std::ostream &operator<<(std::ostream &os, const CosmosLikeVoteOption &o)
 {
     switch (o) {
-        case CosmosLikeVoteOption::YES:  return os << "YES";
-        case CosmosLikeVoteOption::NO:  return os << "NO";
-        case CosmosLikeVoteOption::NOWITHVETO:  return os << "NOWITHVETO";
-        case CosmosLikeVoteOption::ABSTAIN:  return os << "ABSTAIN";
+        case CosmosLikeVoteOption::COSMOSVOTEYES:  return os << "COSMOSVOTEYES";
+        case CosmosLikeVoteOption::COSMOSVOTENO:  return os << "COSMOSVOTENO";
+        case CosmosLikeVoteOption::COSMOSVOTENOWITHVETO:  return os << "COSMOSVOTENOWITHVETO";
+        case CosmosLikeVoteOption::COSMOSVOTEABSTAIN:  return os << "COSMOSVOTEABSTAIN";
     }
 }
 

@@ -378,13 +378,13 @@ namespace ledger {
 
                         static constexpr const char* voteOptionToChars(api::CosmosLikeVoteOption option) {
                                 switch (option) {
-                                        case api::CosmosLikeVoteOption::ABSTAIN:
+                                        case api::CosmosLikeVoteOption::COSMOSVOTEABSTAIN:
                                                 return constants::kVoteOptionAbstain;
-                                        case api::CosmosLikeVoteOption::NO:
+                                        case api::CosmosLikeVoteOption::COSMOSVOTENO:
                                                 return constants::kVoteOptionNo;
-                                        case api::CosmosLikeVoteOption::NOWITHVETO:
+                                        case api::CosmosLikeVoteOption::COSMOSVOTENOWITHVETO:
                                                 return constants::kVoteOptionNoWithVeto;
-                                        case api::CosmosLikeVoteOption::YES:
+                                        case api::CosmosLikeVoteOption::COSMOSVOTEYES:
                                                 return constants::kVoteOptionYes;
                                         default:
                                                 return "unknown";
@@ -393,13 +393,13 @@ namespace ledger {
 
                         static constexpr api::CosmosLikeVoteOption stringToVoteOption(const char* string) {
                                 if (strings_equal(string, constants::kVoteOptionAbstain)) {
-                                        return api::CosmosLikeVoteOption::ABSTAIN;
+                                        return api::CosmosLikeVoteOption::COSMOSVOTEABSTAIN;
                                 } else if (strings_equal(string, constants::kVoteOptionNo)) {
-                                        return api::CosmosLikeVoteOption::NO;
+                                        return api::CosmosLikeVoteOption::COSMOSVOTENO;
                                 } else if (strings_equal(string, constants::kVoteOptionNoWithVeto)) {
-                                        return api::CosmosLikeVoteOption::NOWITHVETO;
+                                        return api::CosmosLikeVoteOption::COSMOSVOTENOWITHVETO;
                                 } else {
-                                        return api::CosmosLikeVoteOption::YES;
+                                        return api::CosmosLikeVoteOption::COSMOSVOTEYES;
                                 }
                         }
                 }
