@@ -307,6 +307,8 @@ namespace ledger {
         GaiaCosmosLikeBlockchainExplorer::getTransactionsForAddress(const std::string& address,
                                                                     uint32_t fromBlockHeight) const {
 
+            // Gaia explorer currently caps at 100 on tx per page.
+            const auto explorerTxBatchSize = 100;
             auto blockHeightFilter = filterWithAttribute(kTx, kMinHeight, std::to_string(fromBlockHeight));
 
             // NOTE: MsgUn/Re/Delegate + MsgWithdrawDelegatorReward are all covered by 'message.sender'
@@ -314,12 +316,12 @@ namespace ledger {
                 fuseFilters({
                     blockHeightFilter,
                     filterWithAttribute(kEventTypeMessage, kAttributeKeySender, address)
-                }), 1, 50);
+                }), 1, explorerTxBatchSize);
             auto received_transactions = getTransactions(
                 fuseFilters({
                     blockHeightFilter,
                     filterWithAttribute(kEventTypeTransfer, kAttributeKeyRecipient, address)
-                }), 1, 50);
+                }), 1, explorerTxBatchSize);
             std::vector<FuturePtr<cosmos::TransactionsBulk>> transaction_promises(
                 {sent_transactions,
                  received_transactions});
