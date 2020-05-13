@@ -13,20 +13,20 @@ namespace ledger { namespace core { namespace api {
 struct CosmosLikeContent final {
     std::string type;
     std::string title;
-    std::string description;
+    std::string descr;
 
     CosmosLikeContent(std::string type_,
                       std::string title_,
-                      std::string description_)
+                      std::string descr_)
     : type(std::move(type_))
     , title(std::move(title_))
-    , description(std::move(description_))
+    , descr(std::move(descr_))
     {}
 
     CosmosLikeContent(const CosmosLikeContent& cpy) {
        this->type = cpy.type;
        this->title = cpy.title;
-       this->description = cpy.description;
+       this->descr = cpy.descr;
     }
 
     CosmosLikeContent() = default;
@@ -35,18 +35,18 @@ struct CosmosLikeContent final {
     CosmosLikeContent& operator=(const CosmosLikeContent& cpy) {
        this->type = cpy.type;
        this->title = cpy.title;
-       this->description = cpy.description;
+       this->descr = cpy.descr;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(type, title, description);
+        archive(type, title, descr);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(type, title, description);
+        archive(type, title, descr);
     }
 };
 

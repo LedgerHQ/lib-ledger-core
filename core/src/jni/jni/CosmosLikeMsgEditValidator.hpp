@@ -27,7 +27,7 @@ private:
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMsgEditValidator") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/CosmosLikeValidatorDescription;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
-    const jfieldID field_description { ::djinni::jniGetFieldID(clazz.get(), "description", "Lco/ledger/core/CosmosLikeValidatorDescription;") };
+    const jfieldID field_descr { ::djinni::jniGetFieldID(clazz.get(), "descr", "Lco/ledger/core/CosmosLikeValidatorDescription;") };
     const jfieldID field_validatorAddress { ::djinni::jniGetFieldID(clazz.get(), "validatorAddress", "Ljava/lang/String;") };
     const jfieldID field_commissionRate { ::djinni::jniGetFieldID(clazz.get(), "commissionRate", "Ljava/lang/String;") };
     const jfieldID field_minSelfDelegation { ::djinni::jniGetFieldID(clazz.get(), "minSelfDelegation", "Ljava/lang/String;") };

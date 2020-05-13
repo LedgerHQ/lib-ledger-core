@@ -29,7 +29,7 @@ private:
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_type { ::djinni::jniGetFieldID(clazz.get(), "type", "Ljava/lang/String;") };
     const jfieldID field_title { ::djinni::jniGetFieldID(clazz.get(), "title", "Ljava/lang/String;") };
-    const jfieldID field_description { ::djinni::jniGetFieldID(clazz.get(), "description", "Ljava/lang/String;") };
+    const jfieldID field_descr { ::djinni::jniGetFieldID(clazz.get(), "descr", "Ljava/lang/String;") };
 };
 
 }  // namespace djinni_generated
