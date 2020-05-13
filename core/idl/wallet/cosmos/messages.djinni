@@ -28,10 +28,10 @@ CosmosLikeContent = record {
 }
 
 CosmosLikeVoteOption = enum {
-        Yes;
-        No;
-        NoWithVeto;
-        Abstain;
+        CosmosVoteYes;
+        CosmosVoteNo;
+        CosmosVoteNoWithVeto;
+        CosmosVoteAbstain;
 }
 
 CosmosLikeMsgSend = record {

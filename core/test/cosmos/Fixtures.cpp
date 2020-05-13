@@ -74,7 +74,7 @@ namespace ledger {
                                 //voteMsg.voter = "cosmos155svs6sgxe55rnvs6ghprtqu0mh69kehrn0dqr";
                                 voteMsg.voter = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl"; // Obelix
                                 voteMsg.proposalId = "42";
-                                voteMsg.option = api::CosmosLikeVoteOption::NO;
+                                voteMsg.option = api::CosmosLikeVoteOption::COSMOSVOTENO;
                                 msg.content = voteMsg;
                                 return msg;
                         }

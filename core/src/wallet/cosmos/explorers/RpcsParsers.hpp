@@ -274,13 +274,13 @@ namespace ledger {
                 msg.proposalId = n[kProposalId].GetString();
                 const auto& option = n[kOption].GetString();
                 if (option == "Yes") {
-                    msg.option = cosmos::VoteOption::YES;
+                    msg.option = cosmos::VoteOption::COSMOSVOTEYES;
                 } else if (option == "No") {
-                    msg.option = cosmos::VoteOption::NO;
+                    msg.option = cosmos::VoteOption::COSMOSVOTENO;
                 } else if (option == "NoWithVeto") {
-                    msg.option = cosmos::VoteOption::NOWITHVETO;
+                    msg.option = cosmos::VoteOption::COSMOSVOTENOWITHVETO;
                 } else if (option == "Abstain") {
-                    msg.option = cosmos::VoteOption::ABSTAIN;
+                    msg.option = cosmos::VoteOption::COSMOSVOTEABSTAIN;
                 }
                 out = msg;
             }
