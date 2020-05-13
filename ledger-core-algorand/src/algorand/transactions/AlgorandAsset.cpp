@@ -39,21 +39,21 @@ namespace model {
         return AssetConfigTxnFields(assetParams, 0);
     }
 
-    AssetConfigTxnFields AssetConfigTxnFields::reconfigure(AssetParams assetParams, uint64_t configAsset)
+    AssetConfigTxnFields AssetConfigTxnFields::reconfigure(AssetParams assetParams, uint64_t assetId)
     {
-        return AssetConfigTxnFields(assetParams, configAsset);
+        return AssetConfigTxnFields(assetParams, assetId);
     }
 
-    AssetConfigTxnFields AssetConfigTxnFields::destroy(uint64_t configAsset)
+    AssetConfigTxnFields AssetConfigTxnFields::destroy(uint64_t assetId)
     {
-        return AssetConfigTxnFields(Option<AssetParams>(), configAsset);
+        return AssetConfigTxnFields(Option<AssetParams>(), assetId);
     }
 
     AssetConfigTxnFields::AssetConfigTxnFields(
             Option<AssetParams> assetParams,
-            Option<uint64_t> configAsset)
+            Option<uint64_t> assetId)
         : assetParams(std::move(assetParams))
-        , configAsset(std::move(configAsset))
+        , assetId(std::move(assetId))
     {}
 
 
@@ -61,14 +61,14 @@ namespace model {
             uint64_t assetAmount,
             Option<Address> assetCloseTo,
             Address assetReceiver,
-            uint64_t xferAsset)
+            uint64_t assetId)
     {
         return AssetTransferTxnFields(
                 assetAmount,
                 std::move(assetCloseTo),
                 std::move(assetReceiver),
                 Option<Address>(),
-                xferAsset);
+                assetId);
     }
 
     AssetTransferTxnFields AssetTransferTxnFields::clawback(
@@ -76,26 +76,26 @@ namespace model {
             Option<Address> assetCloseTo,
             Address assetReceiver,
             Address assetSender,
-            uint64_t xferAsset)
+            uint64_t assetId)
     {
         return AssetTransferTxnFields(
                 assetAmount,
                 std::move(assetCloseTo),
                 std::move(assetReceiver),
                 std::move(assetSender),
-                xferAsset);
+                assetId);
     }
 
     AssetTransferTxnFields AssetTransferTxnFields::optIn(
             Address assetReceiver,
-            uint64_t xferAsset)
+            uint64_t assetId)
     {
         return AssetTransferTxnFields(
                 Option<uint64_t>(),
                 Option<Address>(),
                 std::move(assetReceiver),
                 Option<Address>(),
-                xferAsset);
+                assetId);
     }
 
     AssetTransferTxnFields::AssetTransferTxnFields(
@@ -103,21 +103,21 @@ namespace model {
             Option<Address> assetCloseTo,
             Address assetReceiver,
             Option<Address> assetSender,
-            uint64_t xferAsset)
+            uint64_t assetId)
         : assetAmount(std::move(assetAmount))
         , assetCloseTo(std::move(assetCloseTo))
         , assetReceiver(std::move(assetReceiver))
         , assetSender(std::move(assetSender))
-        , xferAsset(xferAsset)
+        , assetId(assetId)
     {}
 
     AssetFreezeTxnFields::AssetFreezeTxnFields(
             bool assetFrozen,
-            Address freezeAccount,
-            uint64_t freezeAsset)
+            Address frozenAddress,
+            uint64_t assetId)
         : assetFrozen(assetFrozen)
-        , freezeAccount(std::move(freezeAccount))
-        , freezeAsset(freezeAsset)
+        , frozenAddress(std::move(frozenAddress))
+        , assetId(assetId)
     {}
 
 } // namespace model

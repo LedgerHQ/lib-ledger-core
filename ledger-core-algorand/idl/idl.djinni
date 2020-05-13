@@ -1,11 +1,22 @@
 @import "ledger-core/amount.djinni"
 
 @import "callback.djinni"
+@import "configuration.djinni"
 
 AlgorandConfigurationDefaults = record {
     # TODO Switch to mainnet at some point
     const ALGORAND_API_ENDPOINT: string = "https://testnet-algorand.api.purestake.io/ps1/v1/";
     const ALGORAND_API_TOKEN: string = "VjmqAOS1jd2GEvc4Hy9RB6CW48YCRuG74bs22kfI";
+
+    # TODO Find an observer endpoint
+    const ALGORAND_OBSERVER_WS_ENDPOINT: string = "";
+}
+
+AlgorandNetworkParameters = record {
+    # Name of the network
+    genesisID: string;
+    # Hash of the network
+    genesisHash: string;
 }
 
 AlgorandOperationType = enum {
@@ -20,15 +31,6 @@ AlgorandOperationType = enum {
     ASSET_OPT_OUT;
     ASSET_TRANSFER;
     ASSET_REVOKE;
-    ASSET_FREEZE;
-    UNSUPPORTED;
-}
-
-AlgorandTransactionType = enum {
-    PAYMENT;
-    KEY_REGISTRATION;
-    ASSET_CONFIGURATION;
-    ASSET_TRANSFER;
     ASSET_FREEZE;
     UNSUPPORTED;
 }
@@ -59,7 +61,7 @@ AlgorandAssetParams = record {
     # The address used to clawback holdings of this asset. If empty, clawback is not permitted.
     clawbackAddress: optional<string>;
     # The address holding reserve (non-minted) units of this asset
-    reserveAddr: optional<string>;
+    reserveAddress: optional<string>;
     # Some unspecified asset metadata (32 bytes in Base64)
     metadataHash: optional<string>;
 }
@@ -137,7 +139,7 @@ AlgorandAssetFreezeInfo = record {
 
 AlgorandTransaction = interface +c {
     const getId(): string;
-    const getType(): AlgorandTransactionType;
+    const getType(): string;
     const getSender(): string;
     const getFee(): Amount;
     const getNote(): string;

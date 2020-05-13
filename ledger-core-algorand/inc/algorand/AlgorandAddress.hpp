@@ -45,6 +45,7 @@ namespace algorand {
 
     public:
 
+        Address();
         Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey);
         Address(const api::Currency& currency, const std::string & address);
 

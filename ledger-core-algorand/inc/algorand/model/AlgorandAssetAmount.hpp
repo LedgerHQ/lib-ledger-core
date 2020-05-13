@@ -38,6 +38,7 @@ namespace model {
 
     struct AssetAmount
     {
+        AssetAmount() {}
         AssetAmount(Address creatorAddress,
                     uint64_t amount,
                     bool frozen)

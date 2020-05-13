@@ -40,6 +40,7 @@ namespace algorand {
     class B64String
     {
     public:
+        B64String() {}
         explicit B64String(std::string b64);
 
         const std::string& getRawString() const;

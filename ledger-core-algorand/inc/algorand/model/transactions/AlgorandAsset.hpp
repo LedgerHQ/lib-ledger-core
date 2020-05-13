@@ -46,15 +46,17 @@ namespace model {
     {
     public:
         static AssetConfigTxnFields create(AssetParams assetParams);
-        static AssetConfigTxnFields reconfigure(AssetParams assetParams, uint64_t configAsset);
-        static AssetConfigTxnFields destroy(uint64_t configAsset);
+        static AssetConfigTxnFields reconfigure(AssetParams assetParams, uint64_t assetId);
+        static AssetConfigTxnFields destroy(uint64_t assetId);
+
+        AssetConfigTxnFields() {}
 
     private:
-        AssetConfigTxnFields(Option<AssetParams> assetParams, Option<uint64_t> configAsset);
+        AssetConfigTxnFields(Option<AssetParams> assetParams, Option<uint64_t> assetId);
 
     public:
+        Option<uint64_t> assetId;
         Option<AssetParams> assetParams;
-        Option<uint64_t> configAsset;
     };
 
     class AssetTransferTxnFields
@@ -63,41 +65,44 @@ namespace model {
         static AssetTransferTxnFields transfer(uint64_t assetAmount,
                                                Option<Address> assetCloseTo,
                                                Address assetReceiver,
-                                               uint64_t xferAsset);
+                                               uint64_t assetId);
 
         static AssetTransferTxnFields clawback(uint64_t assetAmount,
                                                Option<Address> assetCloseTo,
                                                Address assetReceiver,
                                                Address assetSender,
-                                               uint64_t xferAsset);
+                                               uint64_t assetId);
 
         static AssetTransferTxnFields optIn(Address assetReceiver,
-                                            uint64_t xferAsset);
+                                            uint64_t assetId);
+
+        AssetTransferTxnFields() {}
 
     private:
         AssetTransferTxnFields(Option<uint64_t> assetAmount,
                                Option<Address> assetCloseTo,
                                Address assetReceiver,
                                Option<Address> assetSender,
-                               uint64_t xferAsset);
+                               uint64_t assetId);
     public:
         Option<uint64_t> assetAmount;
         Option<Address> assetCloseTo;
+        uint64_t assetId;
         Address assetReceiver;
         Option<Address> assetSender;
-        uint64_t xferAsset;
     };
 
     class AssetFreezeTxnFields
     {
     public:
+        AssetFreezeTxnFields() {}
         AssetFreezeTxnFields(bool assetFrozen,
-                             Address freezeAccount,
-                             uint64_t freezeAsset);
+                             Address frozenAddress,
+                             uint64_t assetId);
 
+        uint64_t assetId;
         bool assetFrozen;
-        Address freezeAccount;
-        uint64_t freezeAsset;
+        Address frozenAddress;
     };
 
 } // namespace model

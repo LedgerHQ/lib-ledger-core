@@ -43,17 +43,24 @@ namespace model {
     class PaymentTxnFields
     {
     public:
+        PaymentTxnFields() {}
         PaymentTxnFields(uint64_t amount,
-                         Option<Address> closeRemainderTo,
-                         Address receiver)
+                         Option<Address> closeAddr,
+                         Address receiverAddr)
             : amount(amount)
-            , closeRemainderTo(std::move(closeRemainderTo))
-            , receiver(std::move(receiver))
+            , closeAddr(std::move(closeAddr))
+            , receiverAddr(std::move(receiverAddr))
         {}
 
         uint64_t amount;
-        Option<Address> closeRemainderTo;
-        Address receiver;
+        Option<Address> closeAddr;
+        Address receiverAddr;
+
+        // Additional fields retrieved from the blockchain
+        Option<uint64_t> closeAmount;
+        Option<uint64_t> closeRewards;
+        Option<uint64_t> receiverRewards;
+
     };
 
 } // namespace model

@@ -62,9 +62,9 @@ namespace model {
         // The total rewards of MicroAlgos the account has received, including pending rewards
         uint64_t rewards;
         // The amounts of assets this account contains, indexed by asset ID
-        std::map<std::string, AssetAmount> assetsAmounts;
+        std::map<uint64_t, AssetAmount> assetsAmounts;
         // The parameters of assets created by this account, indexed by asset ID
-        std::map<std::string, AssetParams> createdAssets;
+        std::map<uint64_t, AssetParams> createdAssets;
         // Indicates the status of the account (offline|online)
         std::string status;
         // Information about the participation of this account to the blockchain consensus
