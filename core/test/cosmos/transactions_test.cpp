@@ -183,7 +183,7 @@ TEST(CosmosTransactionTest, BuildSubmitProposalTxForBroadcast) {
     EXPECT_EQ(tx->getGas()->toLong(), 200000L);
     EXPECT_EQ(submitProposalMessage.proposer, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");
     EXPECT_EQ(submitProposalMessage.content.title, "Test Proposal");
-    EXPECT_EQ(submitProposalMessage.content.description, "My awesome proposal");
+    EXPECT_EQ(submitProposalMessage.content.descr, "My awesome proposal");
     EXPECT_EQ(submitProposalMessage.initialDeposit.size(), 1);
     EXPECT_EQ(submitProposalMessage.initialDeposit.front().amount, "1000000");
     EXPECT_EQ(submitProposalMessage.initialDeposit.front().denom, "uatom");
@@ -209,7 +209,7 @@ TEST(CosmosTransactionTest, BuildVoteTxForBroadcast) {
     auto voteMessage = api::CosmosLikeMessage::unwrapMsgVote(message);
     EXPECT_EQ(tx->getFee()->toLong(), 5000L);
     EXPECT_EQ(tx->getGas()->toLong(), 200000L);
-    EXPECT_EQ(to_string(voteMessage.option), "YES");
+    EXPECT_EQ(to_string(voteMessage.option), "COSMOSVOTEYES");
     EXPECT_EQ(voteMessage.proposalId, "123");
     EXPECT_EQ(voteMessage.voter, "cosmos102hty0jv2s29lyc4u0tv97z9v298e24t3vwtpl");
 
@@ -325,10 +325,10 @@ TEST(CosmosTransactionTest, BuildCreateValidatorTxForBroadcast) {
     auto createValidatorMessage = api::CosmosLikeMessage::unwrapMsgCreateValidator(message);
     EXPECT_EQ(tx->getFee()->toLong(), 5001L);
     EXPECT_EQ(tx->getGas()->toLong(), 200020L);
-    EXPECT_EQ(createValidatorMessage.description.moniker, "Hélédelle");
-    EXPECT_EQ(createValidatorMessage.description.identity.value(), "Pocket Monsters");
-    EXPECT_EQ(createValidatorMessage.description.website.value(), "https://www.pokepedia.fr/H%C3%A9l%C3%A9delle");
-    EXPECT_EQ(createValidatorMessage.description.details.value(), "It flies well\\nnewline");
+    EXPECT_EQ(createValidatorMessage.descr.moniker, "Hélédelle");
+    EXPECT_EQ(createValidatorMessage.descr.identity.value(), "Pocket Monsters");
+    EXPECT_EQ(createValidatorMessage.descr.website.value(), "https://www.pokepedia.fr/H%C3%A9l%C3%A9delle");
+    EXPECT_EQ(createValidatorMessage.descr.details.value(), "It flies well\\nnewline");
     EXPECT_EQ(createValidatorMessage.commission.rates.rate, "0.45");
     EXPECT_EQ(createValidatorMessage.commission.rates.maxRate, "0.60");
     EXPECT_EQ(createValidatorMessage.commission.rates.maxChangeRate, "0.05");
@@ -365,14 +365,14 @@ TEST(CosmosTransactionTest, BuildEditValidatorTxForBroadcast) {
     auto editValidatorMessage = api::CosmosLikeMessage::unwrapMsgEditValidator(message);
     EXPECT_EQ(tx->getFee()->toLong(), 5001L);
     EXPECT_EQ(tx->getGas()->toLong(), 200020L);
-    ASSERT_TRUE(editValidatorMessage.description);
-    EXPECT_EQ(editValidatorMessage.description.value().moniker, "Wailord");
-    ASSERT_TRUE(editValidatorMessage.description.value().identity);
-    EXPECT_EQ(editValidatorMessage.description.value().identity.value(), "évolution de Wailmer");
-    ASSERT_TRUE(editValidatorMessage.description.value().website);
-    EXPECT_EQ(editValidatorMessage.description.value().website.value(), "https://www.pokepedia.fr/Wailord");
-    ASSERT_TRUE(editValidatorMessage.description.value().details);
-    EXPECT_EQ(editValidatorMessage.description.value().details.value(), "Cachabouée");
+    ASSERT_TRUE(editValidatorMessage.descr);
+    EXPECT_EQ(editValidatorMessage.descr.value().moniker, "Wailord");
+    ASSERT_TRUE(editValidatorMessage.descr.value().identity);
+    EXPECT_EQ(editValidatorMessage.descr.value().identity.value(), "évolution de Wailmer");
+    ASSERT_TRUE(editValidatorMessage.descr.value().website);
+    EXPECT_EQ(editValidatorMessage.descr.value().website.value(), "https://www.pokepedia.fr/Wailord");
+    ASSERT_TRUE(editValidatorMessage.descr.value().details);
+    EXPECT_EQ(editValidatorMessage.descr.value().details.value(), "Cachabouée");
     EXPECT_EQ(editValidatorMessage.validatorAddress, "cosmostest");
     ASSERT_TRUE(editValidatorMessage.commissionRate);
     EXPECT_EQ(editValidatorMessage.commissionRate.value(), "0.50");
