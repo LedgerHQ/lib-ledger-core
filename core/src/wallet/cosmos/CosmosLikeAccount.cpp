@@ -380,6 +380,10 @@ std::shared_ptr<CosmosLikeKeychain> CosmosLikeAccount::getKeychain() const
     return _keychain;
 }
 
+std::shared_ptr<api::Keychain> CosmosLikeAccount::getAccountKeychain() {
+    return this->getKeychain();
+}
+
 FuturePtr<Amount> CosmosLikeAccount::getBalance()
 {
     return getTotalBalanceWithoutPendingRewards();

@@ -102,6 +102,7 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     bool putBlock(soci::session &sql, const api::Block &block);
 
     std::shared_ptr<CosmosLikeKeychain> getKeychain() const;
+    std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
     FuturePtr<Amount> getBalance() override;
 
