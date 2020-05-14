@@ -35,13 +35,14 @@
 #include <vector>
 
 #include <api/Currency.hpp>
+#include <api/Keychain.hpp>
 #include <cosmos/CosmosLikeAddress.hpp>
 #include <preferences/Preferences.hpp>
 #include <utils/DerivationPath.hpp>
 
 namespace ledger {
 namespace core {
-class CosmosLikeKeychain {
+class CosmosLikeKeychain : public api::Keychain {
    public:
     using Address = std::shared_ptr<CosmosLikeAddress>;
 
@@ -51,7 +52,7 @@ class CosmosLikeKeychain {
         const api::Currency &currency);
 
     Address getAddress() const;
-    bool contains(const std::string &address) const;
+    bool contains(const std::string &address) const override;
     std::string getRestoreKey() const;
     const std::vector<uint8_t> &getPublicKey() const;
     std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
