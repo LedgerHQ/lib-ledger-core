@@ -47,12 +47,12 @@ namespace core {
 
 using namespace cosmos::constants;
 
-using Object =
+using rjObject =
     GenericValue<rapidjson::UTF8<char>, rapidjson::MemoryPoolAllocator<rapidjson::CrtAllocator>>::
         Object;
 
 namespace {
-auto getString(const Object &object, const char *fieldName)
+auto getString(const rjObject &object, const char *fieldName)
 {
     if (!object.HasMember(fieldName)) {
         throw Exception(
@@ -69,7 +69,7 @@ auto getString(const Object &object, const char *fieldName)
     return object[fieldName].GetString();
 }
 
-// auto getObject(const Object& object, const char *fieldName) {
+// auto getObject(const rjObject& object, const char *fieldName) {
 //     if (!object[fieldName].IsObject()) {
 //         throw Exception(api::ErrorCode::INVALID_ARGUMENT, fmt::format("Error while getting object
 //         {} from rawTransaction", fieldName));
@@ -77,7 +77,7 @@ auto getString(const Object &object, const char *fieldName)
 //     return object[fieldName].GetObject();
 // }
 
-cosmos::MsgSend buildMsgSendFromRawMessage(Object const &object)
+cosmos::MsgSend buildMsgSendFromRawMessage(rjObject const &object)
 {
     std::vector<cosmos::Coin> amounts;
 
@@ -112,7 +112,7 @@ cosmos::MsgSend buildMsgSendFromRawMessage(Object const &object)
     }
 }
 
-cosmos::MsgDelegate buildMsgDelegateFromRawMessage(Object const &object)
+cosmos::MsgDelegate buildMsgDelegateFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     auto amountObject = valueObject[kAmount].GetObject();
@@ -122,7 +122,7 @@ cosmos::MsgDelegate buildMsgDelegateFromRawMessage(Object const &object)
             cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
 }
 
-cosmos::MsgUndelegate buildMsgUndelegateFromRawMessage(Object const &object)
+cosmos::MsgUndelegate buildMsgUndelegateFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     auto amountObject = valueObject[kAmount].GetObject();
@@ -132,7 +132,7 @@ cosmos::MsgUndelegate buildMsgUndelegateFromRawMessage(Object const &object)
             cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
 }
 
-cosmos::MsgBeginRedelegate buildMsgBeginRedelegateFromRawMessage(Object const &object)
+cosmos::MsgBeginRedelegate buildMsgBeginRedelegateFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     auto amountObject = valueObject[kAmount].GetObject();
@@ -143,7 +143,7 @@ cosmos::MsgBeginRedelegate buildMsgBeginRedelegateFromRawMessage(Object const &o
             cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
 }
 
-cosmos::MsgSubmitProposal buildMsgSubmitProposalFromRawMessage(Object const &object)
+cosmos::MsgSubmitProposal buildMsgSubmitProposalFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     auto contentObject = valueObject[kContent].GetObject();
@@ -166,7 +166,7 @@ cosmos::MsgSubmitProposal buildMsgSubmitProposalFromRawMessage(Object const &obj
     return {content, getString(valueObject, kProposer), amounts};
 }
 
-cosmos::MsgVote buildMsgVoteFromRawMessage(Object const &object)
+cosmos::MsgVote buildMsgVoteFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     return {getString(valueObject, kVoter),
@@ -174,7 +174,7 @@ cosmos::MsgVote buildMsgVoteFromRawMessage(Object const &object)
             cosmos::stringToVoteOption(getString(valueObject, kOption))};
 }
 
-cosmos::MsgDeposit buildMsgDepositFromRawMessage(Object const &object)
+cosmos::MsgDeposit buildMsgDepositFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     std::vector<cosmos::Coin> amounts;
@@ -197,13 +197,13 @@ cosmos::MsgDeposit buildMsgDepositFromRawMessage(Object const &object)
 }
 
 cosmos::MsgWithdrawDelegationReward buildMsgWithdrawDelegationRewardFromRawMessage(
-    Object const &object)
+    rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     return {getString(valueObject, kDelegatorAddress), getString(valueObject, kValidatorAddress)};
 }
 
-cosmos::MsgMultiSend buildMsgMultiSendFromRawMessage(Object const &object)
+cosmos::MsgMultiSend buildMsgMultiSendFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     std::vector<cosmos::MultiSendInput> inputs;
@@ -262,7 +262,7 @@ cosmos::MsgMultiSend buildMsgMultiSendFromRawMessage(Object const &object)
     return {inputs, outputs};
 }
 
-cosmos::MsgCreateValidator buildMsgCreateValidatorFromRawMessage(Object const &object)
+cosmos::MsgCreateValidator buildMsgCreateValidatorFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     cosmos::ValidatorDescription description;
@@ -315,7 +315,7 @@ cosmos::MsgCreateValidator buildMsgCreateValidatorFromRawMessage(Object const &o
             value};
 }
 
-cosmos::MsgEditValidator buildMsgEditValidatorFromRawMessage(Object const &object)
+cosmos::MsgEditValidator buildMsgEditValidatorFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     optional<cosmos::ValidatorDescription> description;
@@ -349,7 +349,7 @@ cosmos::MsgEditValidator buildMsgEditValidatorFromRawMessage(Object const &objec
     return {description, validatorAddress, commissionRate, minSelfDelegation};
 }
 
-cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(Object const &object)
+cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     return cosmos::MsgSetWithdrawAddress{getString(valueObject, kDelegatorAddress),
@@ -357,7 +357,7 @@ cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(Object co
 }
 
 cosmos::MsgWithdrawDelegatorReward buildMsgWithdrawDelegatorRewardFromRawMessage(
-    Object const &object)
+    rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     return cosmos::MsgWithdrawDelegatorReward{getString(valueObject, kDelegatorAddress),
@@ -365,13 +365,13 @@ cosmos::MsgWithdrawDelegatorReward buildMsgWithdrawDelegatorRewardFromRawMessage
 }
 
 cosmos::MsgWithdrawValidatorCommission buildMsgWithdrawValidatorCommissionFromRawMessage(
-    Object const &object)
+    rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     return cosmos::MsgWithdrawValidatorCommission{getString(valueObject, kValidatorAddress)};
 }
 
-cosmos::MsgUnjail buildMsgUnjailFromRawMessage(Object const &object)
+cosmos::MsgUnjail buildMsgUnjailFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
     return cosmos::MsgUnjail{getString(valueObject, kValidatorAddress)};
@@ -518,7 +518,7 @@ std::shared_ptr<api::CosmosLikeTransaction> CosmosLikeTransactionBuilder::parseR
         if (feeObject[kAmount].IsArray()) {
             auto fee = BigInt();
 
-            auto getAmount = [=](const Object &object) -> Amount {
+            auto getAmount = [=](const rjObject &object) -> Amount {
                 auto denom = getString(object, kDenom);
                 auto amount = getString(object, kAmount);
 
