@@ -31,142 +31,146 @@
 
 #pragma once
 
-#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <boost/utility/string_view.hpp>
 
 #include <async/DedicatedContext.hpp>
 #include <net/HttpClient.hpp>
 #include <wallet/common/Block.h>
-
-#include <boost/utility/string_view.hpp>
+#include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 
 namespace ledger {
-    namespace core {
+namespace core {
 
-        static const std::unordered_map<std::string, std::string> ACCEPT_HEADER{{"Accept", "application/json"}};
+static const std::unordered_map<std::string, std::string> ACCEPT_HEADER{
+    {"Accept", "application/json"}};
 
-        class GaiaCosmosLikeBlockchainExplorer :
-                public CosmosLikeBlockchainExplorer,
-                public DedicatedContext {
-        public:
-            GaiaCosmosLikeBlockchainExplorer(
-                    const std::shared_ptr<api::ExecutionContext> &context,
-                    const std::shared_ptr<HttpClient> &http,
-                    const api::CosmosLikeNetworkParameters &parameters,
-                    const std::shared_ptr<api::DynamicObject> &configuration);
+class GaiaCosmosLikeBlockchainExplorer :
+    public CosmosLikeBlockchainExplorer,
+    public DedicatedContext {
+   public:
+    GaiaCosmosLikeBlockchainExplorer(
+        const std::shared_ptr<api::ExecutionContext> &context,
+        const std::shared_ptr<HttpClient> &http,
+        const api::CosmosLikeNetworkParameters &parameters,
+        const std::shared_ptr<api::DynamicObject> &configuration);
 
-            // Build a URL encoded filter for gaia REST event-like filters
-            // eventType.attributeKey=value
-            static TransactionFilter filterWithAttribute(
-                const char eventType[], const char attributeKey[], const std::string &value);
+    // Build a URL encoded filter for gaia REST event-like filters
+    // eventType.attributeKey=value
+    static TransactionFilter filterWithAttribute(
+        const char eventType[], const char attributeKey[], const std::string &value);
 
-            // Concatenate multiple URL encoded filters
-            static TransactionFilter fuseFilters(std::initializer_list<boost::string_view> filters);
+    // Concatenate multiple URL encoded filters
+    static TransactionFilter fuseFilters(std::initializer_list<boost::string_view> filters);
 
-            // TransactionFilters getter
-            const std::vector<TransactionFilter> &getTransactionFilters() override;
+    // TransactionFilters getter
+    const std::vector<TransactionFilter> &getTransactionFilters() override;
 
-            // Block querier
-            FuturePtr<cosmos::Block> getBlock(uint64_t &blockHeight) override;
+    // Block querier
+    FuturePtr<cosmos::Block> getBlock(uint64_t &blockHeight) override;
 
-            // Account querier
-            FuturePtr<ledger::core::cosmos::Account> getAccount(const std::string &account) const override;
+    // Account querier
+    FuturePtr<ledger::core::cosmos::Account> getAccount(const std::string &account) const override;
 
-            // CurrentBlock querier
-            FuturePtr<cosmos::Block> getCurrentBlock() override;
+    // CurrentBlock querier
+    FuturePtr<cosmos::Block> getCurrentBlock() override;
 
-            // Helper function to get transactions following a given filter.
-            FuturePtr<cosmos::TransactionsBulk> getTransactions(
-                const TransactionFilter &filter, int page, int limit) const;
+    // Helper function to get transactions following a given filter.
+    FuturePtr<cosmos::TransactionsBulk> getTransactions(
+        const TransactionFilter &filter, int page, int limit) const;
 
-            // Single transaction querier (found by hash)
-            FuturePtr<cosmos::Transaction>
-            getTransactionByHash(const std::string &hash) override;
+    // Single transaction querier (found by hash)
+    FuturePtr<cosmos::Transaction> getTransactionByHash(const std::string &hash) override;
 
+    Future<void *> startSession() override;
+    Future<Unit> killSession(void *session) override;
+    FuturePtr<cosmos::TransactionsBulk> getTransactions(
+        const std::vector<std::string> &addresses,
+        uint32_t fromBlockHeight = 0,
+        Option<void *> session = Option<void *>()) override;
+    FuturePtr<ledger::core::Block> getCurrentBlock() const override;
+    [[noreturn]] Future<Bytes> getRawTransaction(const String &transactionHash) override;
+    FuturePtr<cosmos::Transaction> getTransactionByHash(
+        const String &transactionHash) const override;
+    Future<String> pushTransaction(const std::vector<uint8_t> &transaction) override;
+    Future<int64_t> getTimestamp() const override;
 
-            Future<void *> startSession() override;
-            Future<Unit> killSession(void* session) override;
-            FuturePtr<cosmos::TransactionsBulk> getTransactions(const std::vector<std::string>& addresses,
-                                                                uint32_t fromBlockHeight = 0,
-                                                                Option<void*> session = Option<void *>()) override;
-            FuturePtr<ledger::core::Block> getCurrentBlock() const override;
-            [[ noreturn ]] Future<Bytes> getRawTransaction(const String& transactionHash) override;
-            FuturePtr<cosmos::Transaction> getTransactionByHash(const String& transactionHash) const override;
-            Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
-            Future<int64_t> getTimestamp() const override;
+    // Pending statuses
+    Future<cosmos::UnbondingList> getUnbondingsByDelegator(
+        const std::string &delegatorAddress) const override;
+    Future<cosmos::RedelegationList> getRedelegationsByDelegator(
+        const std::string &delegatorAddress) const override;
 
-            // Pending statuses
-            Future<cosmos::UnbondingList> getUnbondingsByDelegator(const std::string& delegatorAddress) const override;
-            Future<cosmos::RedelegationList> getRedelegationsByDelegator(const std::string& delegatorAddress) const override;
+    // Balances
+    /// Get Total Balance
+    FuturePtr<BigInt> getTotalBalance(const std::string &account) const override;
+    /// Get Total Balance except pending rewards
+    FuturePtr<BigInt> getTotalBalanceWithoutPendingRewards(
+        const std::string &account) const override;
+    /// Get total balance in delegation
+    FuturePtr<BigInt> getDelegatedBalance(const std::string &account) const override;
+    /// Get total pending rewards
+    FuturePtr<BigInt> getPendingRewardsBalance(const std::string &account) const override;
+    /// Get total unbonding balance
+    FuturePtr<BigInt> getUnbondingBalance(const std::string &account) const override;
+    /// Get total available (spendable) balance
+    FuturePtr<BigInt> getSpendableBalance(const std::string &account) const override;
 
-            // Balances
-            /// Get Total Balance
-            FuturePtr<BigInt> getTotalBalance(const std::string &account) const override;
-            /// Get Total Balance except pending rewards
-            FuturePtr<BigInt> getTotalBalanceWithoutPendingRewards(const std::string& account) const override;
-            /// Get total balance in delegation
-            FuturePtr<BigInt> getDelegatedBalance(const std::string &account) const override;
-            /// Get total pending rewards
-            FuturePtr<BigInt> getPendingRewardsBalance(const std::string &account) const override;
-            /// Get total unbonding balance
-            FuturePtr<BigInt> getUnbondingBalance(const std::string &account) const override;
-            /// Get total available (spendable) balance
-            FuturePtr<BigInt> getSpendableBalance(const std::string &account) const override;
+    // Validators
+    Future<cosmos::ValidatorList> getActiveValidatorSet() const override;
+    Future<cosmos::Validator> getValidatorInfo(const std::string &valOperAddress) const override;
 
-            // Validators
-            Future<cosmos::ValidatorList> getActiveValidatorSet() const override;
-            Future<cosmos::Validator> getValidatorInfo(const std::string& valOperAddress) const override;
+    FuturePtr<std::vector<cosmos::Delegation>> getDelegations(
+        const std::string &delegatorAddr) const override;
+    FuturePtr<std::vector<cosmos::Reward>> getPendingRewards(
+        const std::string &delegatorAddr) const override;
+    /// Get the estimated gas needed to broadcast the transaction
+    FuturePtr<BigInt> getEstimatedGasLimit(
+        const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+        double gasAdjustment = 1.0) const override;
 
-            FuturePtr<std::vector<cosmos::Delegation>> getDelegations(const std::string& delegatorAddr) const override;
-            FuturePtr<std::vector<cosmos::Reward>> getPendingRewards(const std::string& delegatorAddr) const override;
-            /// Get the estimated gas needed to broadcast the transaction
-            FuturePtr<BigInt> getEstimatedGasLimit(
-                const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-                double gasAdjustment = 1.0) const override;
+   private:
+    // Get all transactions relevant to an address
+    // Concatenates multiple API calls for all relevant transaction types
+    FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddress(
+        const std::string &address, uint32_t fromBlockHeight = 0) const;
 
-        private:
-            // Get all transactions relevant to an address
-            // Concatenates multiple API calls for all relevant transaction types
-            FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddress(
-                const std::string &address, uint32_t fromBlockHeight = 0) const;
+    // Get all transactions relevant to a list of addresses
+    // Concatenates multiple API calls for all relevant transaction types
+    FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddresses(
+        const std::vector<std::string> &addresses, uint32_t fromBlockHeight = 0) const;
 
-            // Get all transactions relevant to a list of addresses
-            // Concatenates multiple API calls for all relevant transaction types
-            FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddresses(
-                const std::vector<std::string> &addresses, uint32_t fromBlockHeight = 0) const;
+    Future<BigInt> genericPostRequestForSimulation(
+        const std::string &endpoint, const std::string &transaction) const;
 
-            Future<BigInt> genericPostRequestForSimulation(
-                const std::string &endpoint,
-                const std::string &transaction) const;
+    Future<BigInt> getEstimatedGasLimit(
+        const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+        const std::shared_ptr<api::CosmosLikeMessage> &message,
+        double gasAdjustment = 1.0) const;
+    Future<BigInt> getEstimatedGasLimitForTransfer(
+        const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+        const std::shared_ptr<api::CosmosLikeMessage> &message,
+        double gasAdjustment = 1.0) const;
+    Future<BigInt> getEstimatedGasLimitForRewards(
+        const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+        const std::shared_ptr<api::CosmosLikeMessage> &message,
+        double gasAdjustment = 1.0) const;
+    Future<BigInt> getEstimatedGasLimitForDelegations(
+        const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+        const std::shared_ptr<api::CosmosLikeMessage> &message,
+        double gasAdjustment = 1.0) const;
+    Future<BigInt> getEstimatedGasLimitForUnbounding(
+        const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+        const std::shared_ptr<api::CosmosLikeMessage> &message,
+        double gasAdjustment = 1.0) const;
+    Future<BigInt> getEstimatedGasLimitForRedelegations(
+        const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
+        const std::shared_ptr<api::CosmosLikeMessage> &message,
+        double gasAdjustment = 1.0) const;
 
-            Future<BigInt> getEstimatedGasLimit(
-                const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-                const std::shared_ptr<api::CosmosLikeMessage> &message,
-                double gasAdjustment = 1.0) const;
-            Future<BigInt> getEstimatedGasLimitForTransfer(
-                const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-                const std::shared_ptr<api::CosmosLikeMessage> &message,
-                double gasAdjustment = 1.0) const;
-            Future<BigInt> getEstimatedGasLimitForRewards(
-                const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-                const std::shared_ptr<api::CosmosLikeMessage> &message,
-                double gasAdjustment = 1.0) const;
-            Future<BigInt> getEstimatedGasLimitForDelegations(
-                const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-                const std::shared_ptr<api::CosmosLikeMessage> &message,
-                double gasAdjustment = 1.0) const;
-            Future<BigInt> getEstimatedGasLimitForUnbounding(
-                const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-                const std::shared_ptr<api::CosmosLikeMessage> &message,
-                double gasAdjustment = 1.0) const;
-            Future<BigInt> getEstimatedGasLimitForRedelegations(
-                const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-                const std::shared_ptr<api::CosmosLikeMessage> &message,
-                double gasAdjustment = 1.0) const;
+   private:
+    std::shared_ptr<HttpClient> _http;
+    api::CosmosLikeNetworkParameters _parameters;
+};
 
-           private:
-            std::shared_ptr<HttpClient> _http;
-            api::CosmosLikeNetworkParameters _parameters;
-        };
-
-    }
-}
+}  // namespace core
+}  // namespace ledger

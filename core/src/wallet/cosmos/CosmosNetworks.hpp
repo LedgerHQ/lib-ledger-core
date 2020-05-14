@@ -41,26 +41,25 @@
 #include <api/CosmosLikeNetworkParameters.hpp>
 
 namespace ledger {
-    namespace core {
-        namespace networks {
-            extern LIBCORE_EXPORT const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(const std::string& chainID);
-            extern LIBCORE_EXPORT const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS;
+namespace core {
+namespace networks {
+extern LIBCORE_EXPORT const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(
+    const std::string &chainID);
+extern LIBCORE_EXPORT const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS;
 
-            template<class Archive>
-            void serialize(Archive & archive,
-                           api::CosmosLikeNetworkParameters & p)
-            {
-                archive(
-                        p.Identifier,
-                        p.MessagePrefix,
-                        p.XPUBVersion,
-                        p.PubKeyPrefix,
-                        p.AddressPrefix,
-                        p.ChainId,
-                        p.AdditionalCIPs
-                );
-            }
-
-        }
-    }
+template <class Archive>
+void serialize(Archive &archive, api::CosmosLikeNetworkParameters &p)
+{
+    archive(
+        p.Identifier,
+        p.MessagePrefix,
+        p.XPUBVersion,
+        p.PubKeyPrefix,
+        p.AddressPrefix,
+        p.ChainId,
+        p.AdditionalCIPs);
 }
+
+}  // namespace networks
+}  // namespace core
+}  // namespace ledger

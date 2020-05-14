@@ -28,15 +28,16 @@
  *
  */
 
+#include <algorithm>
+#include <functional>
+
 #include <fmt/format.h>
 
-#include <algorithm>
 #include <api/ErrorCode.hpp>
 #include <api/enum_from_string.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <wallet/cosmos/CosmosLikeMessage.hpp>
-#include <functional>
 
 namespace ledger {
 namespace core {
@@ -47,9 +48,10 @@ namespace {
 
 // add a `CosmosLikeContent` to a `rapidjson::Value`
 inline auto addContent(
-    api::CosmosLikeContent const& content,
-    rapidjson::Value& json,
-    rapidjson::Document::AllocatorType& allocator) {
+    api::CosmosLikeContent const &content,
+    rapidjson::Value &json,
+    rapidjson::Document::AllocatorType &allocator)
+{
     rapidjson::Value jsonContent(rapidjson::kObjectType);
     rapidjson::Value jsonString(rapidjson::kStringType);
 
@@ -65,9 +67,7 @@ inline auto addContent(
 
     // api::CosmosLikeContent::descr
     jsonString.SetString(
-        content.descr.c_str(),
-        static_cast<rapidjson::SizeType>(content.descr.length()),
-        allocator);
+        content.descr.c_str(), static_cast<rapidjson::SizeType>(content.descr.length()), allocator);
     jsonContent.AddMember(kDescription, jsonString, allocator);
 
     json.AddMember(kContent, jsonContent, allocator);
@@ -75,10 +75,11 @@ inline auto addContent(
 
 // add a `CosmosLikeAmount` to a `rapidjson::Value`
 inline auto addAmount(
-    const std::string& key,
-    api::CosmosLikeAmount const& amount,
-    rapidjson::Value& json,
-    rapidjson::Document::AllocatorType& allocator) {
+    const std::string &key,
+    api::CosmosLikeAmount const &amount,
+    rapidjson::Value &json,
+    rapidjson::Document::AllocatorType &allocator)
+{
     rapidjson::Value jsonAmount(rapidjson::kObjectType);
     rapidjson::Value jsonString(rapidjson::kStringType);
 
@@ -97,9 +98,10 @@ inline auto addAmount(
 
 // add an array of `CosmosLikeAmount` to a `rapidjson::Value`
 inline auto addAmounts(
-    std::vector<api::CosmosLikeAmount> const& amounts,
-    rapidjson::Value& jsonAmounts,
-    rapidjson::Document::AllocatorType& allocator) {
+    std::vector<api::CosmosLikeAmount> const &amounts,
+    rapidjson::Value &jsonAmounts,
+    rapidjson::Document::AllocatorType &allocator)
+{
     rapidjson::Value jsonString(rapidjson::kStringType);
     for (auto amount : amounts) {
         rapidjson::Value jsonAmount(rapidjson::kObjectType);
@@ -124,10 +126,11 @@ inline auto addAmounts(
 
 // add a string to a rapidjson::Value
 inline auto addString(
-    const std::string& key,
-    std::string const& value,
-    rapidjson::Value& jsonValue,
-    rapidjson::Document::AllocatorType& allocator) {
+    const std::string &key,
+    std::string const &value,
+    rapidjson::Value &jsonValue,
+    rapidjson::Document::AllocatorType &allocator)
+{
     rapidjson::Value jsonString(rapidjson::kStringType);
     jsonString.SetString(
         value.c_str(), static_cast<rapidjson::SizeType>(value.length()), allocator);
@@ -136,10 +139,11 @@ inline auto addString(
 
 // add an optional string to a rapidjson::Value
 inline auto addOptionalString(
-    const std::string& key,
-    optional<std::string> const& value,
-    rapidjson::Value& jsonValue,
-    rapidjson::Document::AllocatorType& allocator) {
+    const std::string &key,
+    optional<std::string> const &value,
+    rapidjson::Value &jsonValue,
+    rapidjson::Document::AllocatorType &allocator)
+{
     if (value) {
         return addString(key, value.value(), jsonValue, allocator);
     }
@@ -147,57 +151,70 @@ inline auto addOptionalString(
 
 }  // namespace
 
-CosmosLikeMessage::CosmosLikeMessage(const cosmos::Message& msg) : _msgData(msg) {}
-
-CosmosLikeMessage::CosmosLikeMessage(const std::shared_ptr<OperationApi>& baseOp) {
-    // Necessary for design/mod backport
-    // Basically we need to separate the code from CosmosLikeOperationQuery in 2 parts.
-    // The part regarding the Transaction information is in OperationQuery::inflateCosmosLikeTransaction.
-    // We still need to construct a message from an OperationApi. This is done here.
-                // ledger::core::cosmos::Message msg;
-
-                // std::string msgUid;
-                // sql << "SELECT msg.uid "
-                //     "FROM cosmos_messages AS msg "
-                //     "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
-                //     "WHERE op.uid = :uid",
-                //     soci::use(operation.getUid()),
-                //     soci::into(msgUid);
-
-                // CosmosLikeTransactionDatabaseHelper::getMessageByUid(sql, msgUid, msg);
-
-                // setRawData(msg);
+CosmosLikeMessage::CosmosLikeMessage(const cosmos::Message &msg) : _msgData(msg)
+{
 }
 
-void CosmosLikeMessage::setRawData(const cosmos::Message& msgData) { _msgData = msgData; }
+CosmosLikeMessage::CosmosLikeMessage(const std::shared_ptr<OperationApi> &baseOp)
+{
+    // Necessary for design/mod backport
+    // Basically we need to separate the code from CosmosLikeOperationQuery in 2 parts.
+    // The part regarding the Transaction information is in
+    // OperationQuery::inflateCosmosLikeTransaction. We still need to construct a message from an
+    // OperationApi. This is done here. ledger::core::cosmos::Message msg;
 
-const cosmos::Message& CosmosLikeMessage::getRawData() const { return _msgData; }
+    // std::string msgUid;
+    // sql << "SELECT msg.uid "
+    //     "FROM cosmos_messages AS msg "
+    //     "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
+    //     "WHERE op.uid = :uid",
+    //     soci::use(operation.getUid()),
+    //     soci::into(msgUid);
 
-const std::string& CosmosLikeMessage::getFromAddress() const
+    // CosmosLikeTransactionDatabaseHelper::getMessageByUid(sql, msgUid, msg);
+
+    // setRawData(msg);
+}
+
+void CosmosLikeMessage::setRawData(const cosmos::Message &msgData)
+{
+    _msgData = msgData;
+}
+
+const cosmos::Message &CosmosLikeMessage::getRawData() const
+{
+    return _msgData;
+}
+
+const std::string &CosmosLikeMessage::getFromAddress() const
 {
     switch (getMessageType()) {
-        case api::CosmosLikeMsgType::MSGSEND:
-            return boost::get<cosmos::MsgSend>(_msgData.content).fromAddress;
-        case api::CosmosLikeMsgType::MSGDELEGATE:
-            return boost::get<cosmos::MsgDelegate>(_msgData.content).delegatorAddress;
-        case api::CosmosLikeMsgType::MSGUNDELEGATE:
-            return boost::get<cosmos::MsgUndelegate>(_msgData.content).delegatorAddress;
-        case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
-            return boost::get<cosmos::MsgBeginRedelegate>(_msgData.content).delegatorAddress;
-        case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
-            return boost::get<cosmos::MsgWithdrawDelegatorReward>(_msgData.content).delegatorAddress;
-        case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD:
-            return boost::get<cosmos::MsgWithdrawDelegationReward>(_msgData.content).delegatorAddress;
-        default:
-            throw Exception(api::ErrorCode::UNSUPPORTED_OPERATION, "message type not handled");
+    case api::CosmosLikeMsgType::MSGSEND:
+        return boost::get<cosmos::MsgSend>(_msgData.content).fromAddress;
+    case api::CosmosLikeMsgType::MSGDELEGATE:
+        return boost::get<cosmos::MsgDelegate>(_msgData.content).delegatorAddress;
+    case api::CosmosLikeMsgType::MSGUNDELEGATE:
+        return boost::get<cosmos::MsgUndelegate>(_msgData.content).delegatorAddress;
+    case api::CosmosLikeMsgType::MSGBEGINREDELEGATE:
+        return boost::get<cosmos::MsgBeginRedelegate>(_msgData.content).delegatorAddress;
+    case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD:
+        return boost::get<cosmos::MsgWithdrawDelegatorReward>(_msgData.content).delegatorAddress;
+    case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD:
+        return boost::get<cosmos::MsgWithdrawDelegationReward>(_msgData.content).delegatorAddress;
+    default:
+        throw Exception(api::ErrorCode::UNSUPPORTED_OPERATION, "message type not handled");
     }
 }
 
-api::CosmosLikeMsgType CosmosLikeMessage::getMessageType() const {
+api::CosmosLikeMsgType CosmosLikeMessage::getMessageType() const
+{
     return cosmos::stringToMsgType(_msgData.type.c_str());
 }
 
-std::string CosmosLikeMessage::getRawMessageType() const { return _msgData.type; }
+std::string CosmosLikeMessage::getRawMessageType() const
+{
+    return _msgData.type;
+}
 
 bool CosmosLikeMessage::getSuccess() const
 {
@@ -221,7 +238,8 @@ std::string CosmosLikeMessage::getIndex() const
 // This doesn't follow the spec
 // https://github.com/cosmos/ledger-cosmos-app/blob/master/docs/TXSPEC.md
 // but we defer the sorting to the TransactionApi::serialize() method
-rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& allocator) const {
+rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType &allocator) const
+{
     rapidjson::Value json(rapidjson::kObjectType);
 
     rapidjson::Value jsonString(rapidjson::kStringType);
@@ -233,7 +251,7 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
 
     rapidjson::Value jsonContent(rapidjson::kObjectType);
     if (_msgData.type == kMsgSend) {
-        const auto& content = boost::get<cosmos::MsgSend>(_msgData.content);
+        const auto &content = boost::get<cosmos::MsgSend>(_msgData.content);
 
         // cosmos::MsgSend::fromAddress
         addString(kFromAddress, content.fromAddress, jsonContent, allocator);
@@ -245,9 +263,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         rapidjson::Value jsonAmounts(rapidjson::kArrayType);
         addAmounts(content.amount, jsonAmounts, allocator);
         jsonContent.AddMember(kAmount, jsonAmounts, allocator);
-
-    } else if (_msgData.type == kMsgDelegate) {
-        const auto& content = boost::get<cosmos::MsgDelegate>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgDelegate) {
+        const auto &content = boost::get<cosmos::MsgDelegate>(_msgData.content);
 
         // cosmos::MsgDelegate::delegatorAddress
         addString(kDelegatorAddress, content.delegatorAddress, jsonContent, allocator);
@@ -257,9 +275,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
 
         // cosmos::MsgDelegate::amount
         addAmount(kAmount, content.amount, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgUndelegate) {
-        const auto& content = boost::get<cosmos::MsgUndelegate>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgUndelegate) {
+        const auto &content = boost::get<cosmos::MsgUndelegate>(_msgData.content);
 
         // cosmos::MsgUndelegate::delegatorAddress
         addString(kDelegatorAddress, content.delegatorAddress, jsonContent, allocator);
@@ -269,9 +287,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
 
         // cosmos::MsgUndelegate::amount
         addAmount(kAmount, content.amount, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgBeginRedelegate) {
-        const auto& content = boost::get<cosmos::MsgBeginRedelegate>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgBeginRedelegate) {
+        const auto &content = boost::get<cosmos::MsgBeginRedelegate>(_msgData.content);
 
         // cosmos::MsgBeginRedelegate::delegatorAddress
         addString(kDelegatorAddress, content.delegatorAddress, jsonContent, allocator);
@@ -285,9 +303,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
 
         // cosmos::MsgBeginRedelegate::amount
         addAmount(kAmount, content.amount, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgSubmitProposal) {
-        const auto& content = boost::get<cosmos::MsgSubmitProposal>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgSubmitProposal) {
+        const auto &content = boost::get<cosmos::MsgSubmitProposal>(_msgData.content);
 
         // cosmos::MsgSubmitProposal::content
         addContent(content.content, jsonContent, allocator);
@@ -299,9 +317,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         rapidjson::Value jsonAmounts(rapidjson::kArrayType);
         addAmounts(content.initialDeposit, jsonAmounts, allocator);
         jsonContent.AddMember(kInitialDeposit, jsonAmounts, allocator);
-
-    } else if (_msgData.type == kMsgVote) {
-        const auto& content = boost::get<cosmos::MsgVote>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgVote) {
+        const auto &content = boost::get<cosmos::MsgVote>(_msgData.content);
 
         // cosmos::MsgVote::voter
         addString(kVoter, content.voter, jsonContent, allocator);
@@ -312,9 +330,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         // cosmos::MsgVote::option
         auto option = cosmos::voteOptionToChars(content.option);
         addString(kOption, option, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgDeposit) {
-        const auto& content = boost::get<cosmos::MsgDeposit>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgDeposit) {
+        const auto &content = boost::get<cosmos::MsgDeposit>(_msgData.content);
 
         // cosmos::MsgDeposit::depositor
         addString(kDepositor, content.depositor, jsonContent, allocator);
@@ -326,24 +344,24 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         rapidjson::Value jsonAmounts(rapidjson::kArrayType);
         addAmounts(content.amount, jsonAmounts, allocator);
         jsonContent.AddMember(kAmount, jsonAmounts, allocator);
-
-    } else if (_msgData.type == kMsgWithdrawDelegationReward) {
-        const auto& content = boost::get<cosmos::MsgWithdrawDelegationReward>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgWithdrawDelegationReward) {
+        const auto &content = boost::get<cosmos::MsgWithdrawDelegationReward>(_msgData.content);
 
         // cosmos::MsgWithdrawDelegationReward::delegatorAddress
         addString(kDelegatorAddress, content.delegatorAddress, jsonContent, allocator);
 
         // cosmos::MsgWithdrawDelegationReward::validatorAddress
         addString(kValidatorAddress, content.validatorAddress, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgMultiSend) {
-        const auto& content = boost::get<cosmos::MsgMultiSend>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgMultiSend) {
+        const auto &content = boost::get<cosmos::MsgMultiSend>(_msgData.content);
 
         rapidjson::Value jsonInputs(rapidjson::kArrayType);
         rapidjson::Value jsonOutputs(rapidjson::kArrayType);
 
         // Serialize MultiSendInput (with fromAddress field)
-        for (auto& input : content.inputs) {
+        for (auto &input : content.inputs) {
             auto newInput = rapidjson::Value(rapidjson::kObjectType);
 
             addString(kAddress, input.fromAddress, newInput, allocator);
@@ -356,7 +374,7 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         }
 
         // Serialize MultiSendOutput (with toAddress field)
-        for (auto& output : content.outputs) {
+        for (auto &output : content.outputs) {
             auto newOutput = rapidjson::Value(rapidjson::kObjectType);
 
             addString(kAddress, output.toAddress, newOutput, allocator);
@@ -370,9 +388,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
 
         jsonContent.AddMember(kInputs, jsonInputs, allocator);
         jsonContent.AddMember(kOutputs, jsonOutputs, allocator);
-
-    } else if (_msgData.type == kMsgCreateValidator) {
-        const auto& content = boost::get<cosmos::MsgCreateValidator>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgCreateValidator) {
+        const auto &content = boost::get<cosmos::MsgCreateValidator>(_msgData.content);
 
         auto jsonDesc = rapidjson::Value(rapidjson::kObjectType);
         addString(kMoniker, content.descr.moniker, jsonDesc, allocator);
@@ -398,9 +416,9 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         addString(kValidatorAddress, content.validatorAddress, jsonContent, allocator);
         addString(kPubKey, content.pubkey, jsonContent, allocator);
         addAmount(kValue, content.value, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgEditValidator) {
-        const auto& content = boost::get<cosmos::MsgEditValidator>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgEditValidator) {
+        const auto &content = boost::get<cosmos::MsgEditValidator>(_msgData.content);
 
         if (content.descr) {
             auto description = content.descr.value();
@@ -415,26 +433,26 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
         addString(kValidatorAddress, content.validatorAddress, jsonContent, allocator);
         addOptionalString(kEditValCommissionRate, content.commissionRate, jsonContent, allocator);
         addOptionalString(kMinSelfDelegation, content.minSelfDelegation, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgSetWithdrawAddress) {
-        const auto& content = boost::get<cosmos::MsgSetWithdrawAddress>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgSetWithdrawAddress) {
+        const auto &content = boost::get<cosmos::MsgSetWithdrawAddress>(_msgData.content);
 
         addString(kWithdrawAddress, content.withdrawAddress, jsonContent, allocator);
         addString(kDelegatorAddress, content.delegatorAddress, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgWithdrawDelegatorReward) {
-        const auto& content = boost::get<cosmos::MsgWithdrawDelegatorReward>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgWithdrawDelegatorReward) {
+        const auto &content = boost::get<cosmos::MsgWithdrawDelegatorReward>(_msgData.content);
 
         addString(kValidatorAddress, content.validatorAddress, jsonContent, allocator);
         addString(kDelegatorAddress, content.delegatorAddress, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgWithdrawValidatorCommission) {
-        const auto& content = boost::get<cosmos::MsgWithdrawValidatorCommission>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgWithdrawValidatorCommission) {
+        const auto &content = boost::get<cosmos::MsgWithdrawValidatorCommission>(_msgData.content);
 
         addString(kValidatorAddress, content.validatorAddress, jsonContent, allocator);
-
-    } else if (_msgData.type == kMsgUnjail) {
-        const auto& content = boost::get<cosmos::MsgUnjail>(_msgData.content);
+    }
+    else if (_msgData.type == kMsgUnjail) {
+        const auto &content = boost::get<cosmos::MsgUnjail>(_msgData.content);
 
         addString(kValidatorAddress, content.validatorAddress, jsonContent, allocator);
 
@@ -450,7 +468,8 @@ rapidjson::Value CosmosLikeMessage::toJson(rapidjson::Document::AllocatorType& a
 // function needs to be defined anyway.
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSend(
-    const api::CosmosLikeMsgSend& msgContent) {
+    const api::CosmosLikeMsgSend &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgSend;
     msg.content = msgContent;
@@ -458,7 +477,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSend(
 }
 
 api::CosmosLikeMsgSend api::CosmosLikeMessage::unwrapMsgSend(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGSEND) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgSend");
@@ -467,7 +487,8 @@ api::CosmosLikeMsgSend api::CosmosLikeMessage::unwrapMsgSend(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgDelegate(
-    const api::CosmosLikeMsgDelegate& msgContent) {
+    const api::CosmosLikeMsgDelegate &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgDelegate;
     msg.content = msgContent;
@@ -475,7 +496,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgDelegate(
 }
 
 api::CosmosLikeMsgDelegate api::CosmosLikeMessage::unwrapMsgDelegate(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGDELEGATE) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgDelegate");
@@ -484,7 +506,8 @@ api::CosmosLikeMsgDelegate api::CosmosLikeMessage::unwrapMsgDelegate(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgUndelegate(
-    const api::CosmosLikeMsgUndelegate& msgContent) {
+    const api::CosmosLikeMsgUndelegate &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgUndelegate;
     msg.content = msgContent;
@@ -492,7 +515,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgUndelegat
 }
 
 api::CosmosLikeMsgUndelegate api::CosmosLikeMessage::unwrapMsgUndelegate(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGUNDELEGATE) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgUndelegate");
@@ -501,7 +525,8 @@ api::CosmosLikeMsgUndelegate api::CosmosLikeMessage::unwrapMsgUndelegate(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgBeginRedelegate(
-    const api::CosmosLikeMsgBeginRedelegate& msgContent) {
+    const api::CosmosLikeMsgBeginRedelegate &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgBeginRedelegate;
     msg.content = msgContent;
@@ -509,7 +534,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgBeginRede
 }
 
 api::CosmosLikeMsgBeginRedelegate api::CosmosLikeMessage::unwrapMsgBeginRedelegate(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGBEGINREDELEGATE) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgBeginRedelegate");
@@ -518,7 +544,8 @@ api::CosmosLikeMsgBeginRedelegate api::CosmosLikeMessage::unwrapMsgBeginRedelega
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSubmitProposal(
-    const api::CosmosLikeMsgSubmitProposal& msgContent) {
+    const api::CosmosLikeMsgSubmitProposal &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgSubmitProposal;
     msg.content = msgContent;
@@ -526,7 +553,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSubmitPro
 }
 
 api::CosmosLikeMsgSubmitProposal api::CosmosLikeMessage::unwrapMsgSubmitProposal(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGSUBMITPROPOSAL) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgSubmitProposal");
@@ -535,7 +563,8 @@ api::CosmosLikeMsgSubmitProposal api::CosmosLikeMessage::unwrapMsgSubmitProposal
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgVote(
-    const api::CosmosLikeMsgVote& msgContent) {
+    const api::CosmosLikeMsgVote &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgVote;
     msg.content = msgContent;
@@ -543,7 +572,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgVote(
 }
 
 api::CosmosLikeMsgVote api::CosmosLikeMessage::unwrapMsgVote(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGVOTE) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgVote");
@@ -552,7 +582,8 @@ api::CosmosLikeMsgVote api::CosmosLikeMessage::unwrapMsgVote(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgDeposit(
-    const api::CosmosLikeMsgDeposit& msgContent) {
+    const api::CosmosLikeMsgDeposit &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgDeposit;
     msg.content = msgContent;
@@ -560,7 +591,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgDeposit(
 }
 
 api::CosmosLikeMsgDeposit api::CosmosLikeMessage::unwrapMsgDeposit(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGDEPOSIT) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgDeposit");
@@ -569,7 +601,8 @@ api::CosmosLikeMsgDeposit api::CosmosLikeMessage::unwrapMsgDeposit(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawDelegationReward(
-    const api::CosmosLikeMsgWithdrawDelegationReward& msgContent) {
+    const api::CosmosLikeMsgWithdrawDelegationReward &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgWithdrawDelegationReward;
     msg.content = msgContent;
@@ -578,7 +611,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawD
 
 api::CosmosLikeMsgWithdrawDelegationReward
 api::CosmosLikeMessage::unwrapMsgWithdrawDelegationReward(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD) {
         throw Exception(
@@ -588,7 +622,8 @@ api::CosmosLikeMessage::unwrapMsgWithdrawDelegationReward(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgMultiSend(
-    const api::CosmosLikeMsgMultiSend& msgContent) {
+    const api::CosmosLikeMsgMultiSend &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgMultiSend;
     msg.content = msgContent;
@@ -596,7 +631,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgMultiSend
 }
 
 api::CosmosLikeMsgMultiSend api::CosmosLikeMessage::unwrapMsgMultiSend(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGMULTISEND) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgMultiSend");
@@ -605,7 +641,8 @@ api::CosmosLikeMsgMultiSend api::CosmosLikeMessage::unwrapMsgMultiSend(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgCreateValidator(
-    const api::CosmosLikeMsgCreateValidator& msgContent) {
+    const api::CosmosLikeMsgCreateValidator &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgCreateValidator;
     msg.content = msgContent;
@@ -613,7 +650,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgCreateVal
 }
 
 api::CosmosLikeMsgCreateValidator api::CosmosLikeMessage::unwrapMsgCreateValidator(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGCREATEVALIDATOR) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgCreateValidator");
@@ -622,7 +660,8 @@ api::CosmosLikeMsgCreateValidator api::CosmosLikeMessage::unwrapMsgCreateValidat
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgEditValidator(
-    const api::CosmosLikeMsgEditValidator& msgContent) {
+    const api::CosmosLikeMsgEditValidator &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgEditValidator;
     msg.content = msgContent;
@@ -630,7 +669,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgEditValid
 }
 
 api::CosmosLikeMsgEditValidator api::CosmosLikeMessage::unwrapMsgEditValidator(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGEDITVALIDATOR) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgEditValidator");
@@ -639,7 +679,8 @@ api::CosmosLikeMsgEditValidator api::CosmosLikeMessage::unwrapMsgEditValidator(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSetWithdrawAddress(
-    const api::CosmosLikeMsgSetWithdrawAddress& msgContent) {
+    const api::CosmosLikeMsgSetWithdrawAddress &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgSetWithdrawAddress;
     msg.content = msgContent;
@@ -647,7 +688,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgSetWithdr
 }
 
 api::CosmosLikeMsgSetWithdrawAddress api::CosmosLikeMessage::unwrapMsgSetWithdrawAddress(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgSetWithdrawAddress");
@@ -656,7 +698,8 @@ api::CosmosLikeMsgSetWithdrawAddress api::CosmosLikeMessage::unwrapMsgSetWithdra
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawDelegatorReward(
-    const api::CosmosLikeMsgWithdrawDelegatorReward& msgContent) {
+    const api::CosmosLikeMsgWithdrawDelegatorReward &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgWithdrawDelegatorReward;
     msg.content = msgContent;
@@ -664,7 +707,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawD
 }
 
 api::CosmosLikeMsgWithdrawDelegatorReward api::CosmosLikeMessage::unwrapMsgWithdrawDelegatorReward(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD) {
         throw Exception(
@@ -674,7 +718,8 @@ api::CosmosLikeMsgWithdrawDelegatorReward api::CosmosLikeMessage::unwrapMsgWithd
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawValidatorCommission(
-    const api::CosmosLikeMsgWithdrawValidatorCommission& msgContent) {
+    const api::CosmosLikeMsgWithdrawValidatorCommission &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgWithdrawValidatorCommission;
     msg.content = msgContent;
@@ -683,7 +728,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgWithdrawV
 
 api::CosmosLikeMsgWithdrawValidatorCommission
 api::CosmosLikeMessage::unwrapMsgWithdrawValidatorCommission(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION) {
         throw Exception(
@@ -693,7 +739,8 @@ api::CosmosLikeMessage::unwrapMsgWithdrawValidatorCommission(
 }
 
 std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgUnjail(
-    const api::CosmosLikeMsgUnjail& msgContent) {
+    const api::CosmosLikeMsgUnjail &msgContent)
+{
     cosmos::Message msg;
     msg.type = kMsgUnjail;
     msg.content = msgContent;
@@ -701,7 +748,8 @@ std::shared_ptr<api::CosmosLikeMessage> api::CosmosLikeMessage::wrapMsgUnjail(
 }
 
 api::CosmosLikeMsgUnjail api::CosmosLikeMessage::unwrapMsgUnjail(
-    const std::shared_ptr<api::CosmosLikeMessage>& msg) {
+    const std::shared_ptr<api::CosmosLikeMessage> &msg)
+{
     auto cosmosMsg = std::dynamic_pointer_cast<ledger::core::CosmosLikeMessage>(msg);
     if (cosmosMsg->getMessageType() != api::CosmosLikeMsgType::MSGUNJAIL) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "unable to unwrap MsgUnjail");

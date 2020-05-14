@@ -28,38 +28,33 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEDELEGATION_H
 #define LEDGER_CORE_COSMOSLIKEDELEGATION_H
 
-#include <api/CosmosLikeDelegation.hpp>
 #include <api/Amount.hpp>
-
+#include <api/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/cosmos.hpp>
 
-
 namespace ledger {
-    namespace core {
-        class CosmosLikeDelegation : public api::CosmosLikeDelegation {
-
-        public:
-            explicit CosmosLikeDelegation() {}
-
-            explicit CosmosLikeDelegation(const cosmos::Delegation& delegationData);
-
-            std::string getDelegatorAddress() const override;
-
-            std::string getValidatorAddress() const override;
-
-            std::shared_ptr<api::Amount> getDelegatedAmount() const override;
-
-        private:
-
-            cosmos::Delegation _delegationData;
-
-        };
+namespace core {
+class CosmosLikeDelegation : public api::CosmosLikeDelegation {
+   public:
+    explicit CosmosLikeDelegation()
+    {
     }
-}
 
+    explicit CosmosLikeDelegation(const cosmos::Delegation &delegationData);
 
-#endif //LEDGER_CORE_COSMOSLIKEDELEGATION_H
+    std::string getDelegatorAddress() const override;
+
+    std::string getValidatorAddress() const override;
+
+    std::shared_ptr<api::Amount> getDelegatedAmount() const override;
+
+   private:
+    cosmos::Delegation _delegationData;
+};
+}  // namespace core
+}  // namespace ledger
+
+#endif  // LEDGER_CORE_COSMOSLIKEDELEGATION_H

@@ -28,41 +28,42 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSBECH32_H
 #define LEDGER_CORE_COSMOSBECH32_H
 
-#include <math/bech32/Bech32.h>
-#include <cosmos/bech32/CosmosLikeBech32ParametersHelpers.hpp>
-
 #include <api/CosmosBech32Type.hpp>
+#include <cosmos/bech32/CosmosLikeBech32ParametersHelpers.hpp>
+#include <math/bech32/Bech32.h>
 
 namespace ledger {
-        namespace core {
-                class CosmosBech32 : public Bech32 {
-                        public:
-                                explicit CosmosBech32(api::CosmosBech32Type type, size_t offsetConversion = 0):
-                                        Bech32(cosmos::getBech32Params(type)), _offsetConversion(offsetConversion){}
+namespace core {
+class CosmosBech32 : public Bech32 {
+   public:
+    explicit CosmosBech32(api::CosmosBech32Type type, size_t offsetConversion = 0) :
+        Bech32(cosmos::getBech32Params(type)),
+        _offsetConversion(offsetConversion)
+    {
+    }
 
-                                virtual ~CosmosBech32(){};
+    virtual ~CosmosBech32(){};
 
-                                uint64_t polymod(const std::vector<uint8_t>& values) const override;
+    uint64_t polymod(const std::vector<uint8_t> &values) const override;
 
-                                std::vector<uint8_t> expandHrp(const std::string& hrp) const override;
+    std::vector<uint8_t> expandHrp(const std::string &hrp) const override;
 
-                                std::string encode(const std::vector<uint8_t>& hash,
-                                                   const std::vector<uint8_t>& version) const override;
+    std::string encode(
+        const std::vector<uint8_t> &hash, const std::vector<uint8_t> &version) const override;
 
-                                std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-                                decode(const std::string& str) const override;
+    std::pair<std::vector<uint8_t>, std::vector<uint8_t>> decode(
+        const std::string &str) const override;
 
-                        protected:
-                                // Offset at the start of the decoded address for the decoding.
-                                // Bech32 decoding gives [HumanReadablePrefix || padding || AddressValue]
-                                // _offsetConversion is the size of that padding
-                                size_t _offsetConversion;
-                };
-        }
-}
+   protected:
+    // Offset at the start of the decoded address for the decoding.
+    // Bech32 decoding gives [HumanReadablePrefix || padding || AddressValue]
+    // _offsetConversion is the size of that padding
+    size_t _offsetConversion;
+};
+}  // namespace core
+}  // namespace ledger
 
-#endif //LEDGER_CORE_COSMOSBECH32_H
+#endif  // LEDGER_CORE_COSMOSBECH32_H

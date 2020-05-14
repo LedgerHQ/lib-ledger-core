@@ -28,33 +28,32 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEHELPER_H
 
 #include <string>
 
-#include <soci.h>
-
 #include <api/Operation.hpp>
-
+#include <soci.h>
 #include <wallet/cosmos/database/CosmosLikeAccountDatabaseEntry.hpp>
 
 namespace ledger {
-    namespace core {
-        class CosmosLikeAccountDatabaseHelper {
-        public:
-            static void createAccount(soci::session& sql,
-                                      const std::string& walletUid,
-                                      int32_t index,
-                                      const std::string& address);
-            static bool queryAccount(soci::session& sql,
-                                     const std::string& accountUid,
-                                     CosmosLikeAccountDatabaseEntry& entry);
-            static void updateAccount(soci::session& sql, const std::string& accountUid,
-                                      const CosmosLikeAccountDatabaseEntry& entry);
-        };
-    }
-}
+namespace core {
+class CosmosLikeAccountDatabaseHelper {
+   public:
+    static void createAccount(
+        soci::session &sql,
+        const std::string &walletUid,
+        int32_t index,
+        const std::string &address);
+    static bool queryAccount(
+        soci::session &sql, const std::string &accountUid, CosmosLikeAccountDatabaseEntry &entry);
+    static void updateAccount(
+        soci::session &sql,
+        const std::string &accountUid,
+        const CosmosLikeAccountDatabaseEntry &entry);
+};
+}  // namespace core
+}  // namespace ledger
 
-#endif //LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEHELPER_H
+#endif  // LEDGER_CORE_COSMOSLIKEACCOUNTDATABASEHELPER_H

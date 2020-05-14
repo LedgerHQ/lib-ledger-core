@@ -28,64 +28,64 @@
  *
  */
 
-
+#include <api/Currency.hpp>
+#include <cosmos/bech32/CosmosBech32.hpp>
+#include <crypto/HASH160.hpp>
 #include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
 
-#include <api/Currency.hpp>
-#include <crypto/HASH160.hpp>
-
-#include <cosmos/bech32/CosmosBech32.hpp>
-
 namespace ledger {
-    namespace core {
-		static HashAlgorithm COSMOS_HASH_ALGO("cosmos");
+namespace core {
+static HashAlgorithm COSMOS_HASH_ALGO("cosmos");
 
-	    CosmosLikeKeychain::CosmosLikeKeychain(const std::vector<uint8_t>& pubKey,
-						   const DerivationPath& path,
-						   const api::Currency& currency) {
-		    _pubKey = pubKey;
-		    std::vector<uint8_t> payload{0xEB, 0x5A, 0xE9, 0x87,
-		    (uint8_t)_pubKey.size()};
-		    payload.insert(payload.end(), _pubKey.begin(),
-				   _pubKey.end());
-		    auto hash160 = HASH160::hash(_pubKey, COSMOS_HASH_ALGO);
-		    _address =
-			    std::make_shared<CosmosLikeAddress>(
-				    currency, hash160, std::vector<uint8_t>(),
-				    api::CosmosBech32Type::ADDRESS,
-				    optional<std::string>(path.toString()));
-	    }
-
-		CosmosLikeKeychain::Address CosmosLikeKeychain::getAddress() const {
-			return _address;
-		}
-
-		bool CosmosLikeKeychain::contains(const std::string &address) const {
-			return _address->toBech32() == address || _address->toString() == address;
-		}
-
-		std::string CosmosLikeKeychain::getRestoreKey() const {
-			std::vector<uint8_t> payload {0xEB, 0x5A, 0xE9, 0x87, (uint8_t)_pubKey.size()};
-			payload.insert(payload.end(), _pubKey.begin(), _pubKey.end());
-			return CosmosBech32(api::CosmosBech32Type::PUBLIC_KEY).encode(payload, {});
-		}
-
-		const std::vector<uint8_t>& CosmosLikeKeychain::getPublicKey() const {
-			return _pubKey;
-		}
-
-	        std::vector<CosmosLikeKeychain::Address> CosmosLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-			return {_address};
-		}
-
-		std::shared_ptr<CosmosLikeKeychain>
-		CosmosLikeKeychain::restore(const DerivationPath &path,
-									const api::Currency &currency,
-									const std::string &restoreKey) {
-			auto p = CosmosBech32(api::CosmosBech32Type::PUBLIC_KEY)
-				.decode(restoreKey);
-			std::vector<uint8_t> pubKey(std::get<1>(p).begin() + 5, std::get<1>(p).end());
-			return std::make_shared<CosmosLikeKeychain>(pubKey, path, currency);
-		}
-	}
+CosmosLikeKeychain::CosmosLikeKeychain(
+    const std::vector<uint8_t> &pubKey, const DerivationPath &path, const api::Currency &currency)
+{
+    _pubKey = pubKey;
+    std::vector<uint8_t> payload{0xEB, 0x5A, 0xE9, 0x87, (uint8_t)_pubKey.size()};
+    payload.insert(payload.end(), _pubKey.begin(), _pubKey.end());
+    auto hash160 = HASH160::hash(_pubKey, COSMOS_HASH_ALGO);
+    _address = std::make_shared<CosmosLikeAddress>(
+        currency,
+        hash160,
+        std::vector<uint8_t>(),
+        api::CosmosBech32Type::ADDRESS,
+        optional<std::string>(path.toString()));
 }
+
+CosmosLikeKeychain::Address CosmosLikeKeychain::getAddress() const
+{
+    return _address;
+}
+
+bool CosmosLikeKeychain::contains(const std::string &address) const
+{
+    return _address->toBech32() == address || _address->toString() == address;
+}
+
+std::string CosmosLikeKeychain::getRestoreKey() const
+{
+    std::vector<uint8_t> payload{0xEB, 0x5A, 0xE9, 0x87, (uint8_t)_pubKey.size()};
+    payload.insert(payload.end(), _pubKey.begin(), _pubKey.end());
+    return CosmosBech32(api::CosmosBech32Type::PUBLIC_KEY).encode(payload, {});
+}
+
+const std::vector<uint8_t> &CosmosLikeKeychain::getPublicKey() const
+{
+    return _pubKey;
+}
+
+std::vector<CosmosLikeKeychain::Address> CosmosLikeKeychain::getAllObservableAddresses(
+    uint32_t from, uint32_t to)
+{
+    return {_address};
+}
+
+std::shared_ptr<CosmosLikeKeychain> CosmosLikeKeychain::restore(
+    const DerivationPath &path, const api::Currency &currency, const std::string &restoreKey)
+{
+    auto p = CosmosBech32(api::CosmosBech32Type::PUBLIC_KEY).decode(restoreKey);
+    std::vector<uint8_t> pubKey(std::get<1>(p).begin() + 5, std::get<1>(p).end());
+    return std::make_shared<CosmosLikeKeychain>(pubKey, path, currency);
+}
+}  // namespace core
+}  // namespace ledger

@@ -28,40 +28,41 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEKEYCHAIN_H
 #define LEDGER_CORE_COSMOSLIKEKEYCHAIN_H
 
 #include <string>
 #include <vector>
 
-#include <utils/DerivationPath.hpp>
-#include <preferences/Preferences.hpp>
 #include <api/Currency.hpp>
-
 #include <cosmos/CosmosLikeAddress.hpp>
+#include <preferences/Preferences.hpp>
+#include <utils/DerivationPath.hpp>
 
 namespace ledger {
-        namespace core {
-                class CosmosLikeKeychain  {
-                        public:
-                                using Address = std::shared_ptr<CosmosLikeAddress>;
+namespace core {
+class CosmosLikeKeychain {
+   public:
+    using Address = std::shared_ptr<CosmosLikeAddress>;
 
-                                CosmosLikeKeychain(const std::vector<uint8_t>& pubKey,
-                                                   const DerivationPath& path,
-                                                   const api::Currency& currency);
+    CosmosLikeKeychain(
+        const std::vector<uint8_t> &pubKey,
+        const DerivationPath &path,
+        const api::Currency &currency);
 
-                                Address getAddress() const;
-                                bool contains(const std::string& address) const;
-                                std::string getRestoreKey() const;
-                                const std::vector<uint8_t>& getPublicKey() const;
-                                std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
+    Address getAddress() const;
+    bool contains(const std::string &address) const;
+    std::string getRestoreKey() const;
+    const std::vector<uint8_t> &getPublicKey() const;
+    std::vector<Address> getAllObservableAddresses(uint32_t from, uint32_t to);
 
-                                static std::shared_ptr<CosmosLikeKeychain> restore(const DerivationPath& path, const api::Currency& currency, const std::string& restoreKey);
-                        private:
-                                std::vector<uint8_t> _pubKey;
-                                Address _address;
-                };
-        }
-}
-#endif //LEDGER_CORE_COSMOSLIKEKEYCHAIN_H
+    static std::shared_ptr<CosmosLikeKeychain> restore(
+        const DerivationPath &path, const api::Currency &currency, const std::string &restoreKey);
+
+   private:
+    std::vector<uint8_t> _pubKey;
+    Address _address;
+};
+}  // namespace core
+}  // namespace ledger
+#endif  // LEDGER_CORE_COSMOSLIKEKEYCHAIN_H

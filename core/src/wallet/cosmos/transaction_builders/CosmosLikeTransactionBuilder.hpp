@@ -28,79 +28,82 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKETRANSACTIONBUILDER_H
 #define LEDGER_CORE_COSMOSLIKETRANSACTIONBUILDER_H
 
 #include <spdlog/logger.h>
 
-#include <api/Currency.hpp>
-#include <api/ExecutionContext.hpp>
 #include <api/Amount.hpp>
-#include <math/BigInt.h>
-#include <async/Future.hpp>
-
 #include <api/CosmosLikeTransactionBuilder.hpp>
 #include <api/CosmosLikeTransactionCallback.hpp>
+#include <api/Currency.hpp>
+#include <api/ExecutionContext.hpp>
+#include <async/Future.hpp>
+#include <math/BigInt.h>
 
 namespace ledger {
-    namespace core {
+namespace core {
 
-        struct CosmosLikeTransactionBuildRequest {
-            std::shared_ptr<BigInt> fee;
-            std::shared_ptr<BigInt> gas;
-            double gasAdjustment{1.0};
-            std::string accountNumber;
-            std::string memo;
-            std::string sequence;
-            std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
-        };
+struct CosmosLikeTransactionBuildRequest {
+    std::shared_ptr<BigInt> fee;
+    std::shared_ptr<BigInt> gas;
+    double gasAdjustment{1.0};
+    std::string accountNumber;
+    std::string memo;
+    std::string sequence;
+    std::vector<std::shared_ptr<api::CosmosLikeMessage>> messages;
+};
 
-        using CosmosLikeTransactionBuildFunction = std::function<
-            Future<std::shared_ptr<api::CosmosLikeTransaction>>(const CosmosLikeTransactionBuildRequest &)
-            >;
+using CosmosLikeTransactionBuildFunction =
+    std::function<Future<std::shared_ptr<api::CosmosLikeTransaction>>(
+        const CosmosLikeTransactionBuildRequest &)>;
 
-        class CosmosLikeTransactionBuilder : public api::CosmosLikeTransactionBuilder,
-                                             public std::enable_shared_from_this<CosmosLikeTransactionBuilder> {
-        public:
+class CosmosLikeTransactionBuilder :
+    public api::CosmosLikeTransactionBuilder,
+    public std::enable_shared_from_this<CosmosLikeTransactionBuilder> {
+   public:
+    explicit CosmosLikeTransactionBuilder(
+        const std::shared_ptr<api::ExecutionContext> &context,
+        const CosmosLikeTransactionBuildFunction &buildFunction);
 
-            explicit CosmosLikeTransactionBuilder(const std::shared_ptr<api::ExecutionContext> &context,
-                                                  const CosmosLikeTransactionBuildFunction &buildFunction);
+    CosmosLikeTransactionBuilder(const CosmosLikeTransactionBuilder &cpy);
 
-            CosmosLikeTransactionBuilder(const CosmosLikeTransactionBuilder &cpy);
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> setMemo(const std::string &memo) override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> setMemo(const std::string & memo) override;
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> setSequence(
+        const std::string &sequence) override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> setSequence(const std::string & sequence) override;
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> setAccountNumber(
+        const std::string &accountNumber) override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> setAccountNumber(const std::string & accountNumber) override;
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> addMessage(
+        const std::shared_ptr<api::CosmosLikeMessage> &msg) override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> addMessage(const std::shared_ptr<api::CosmosLikeMessage> & msg) override;
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> setGas(
+        const std::shared_ptr<api::Amount> &gas) override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> setGas(const std::shared_ptr<api::Amount> & gas) override;
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> setGasAdjustment(
+        double gasAdjustment) override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> setGasAdjustment(double gasAdjustment) override;
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> setFee(
+        const std::shared_ptr<api::Amount> &fee) override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> setFee(const std::shared_ptr<api::Amount> & fee) override;
+    void build(const std::shared_ptr<api::CosmosLikeTransactionCallback> &callback) override;
+    Future<std::shared_ptr<api::CosmosLikeTransaction>> build();
 
-            void build(const std::shared_ptr<api::CosmosLikeTransactionCallback> &callback) override;
-            Future<std::shared_ptr<api::CosmosLikeTransaction>> build();
+    std::shared_ptr<api::CosmosLikeTransactionBuilder> clone() override;
 
-            std::shared_ptr<api::CosmosLikeTransactionBuilder> clone() override;
+    void reset() override;
 
-            void reset() override;
+    static std::shared_ptr<api::CosmosLikeTransaction> parseRawTransaction(
+        const api::Currency &currency, const std::string &rawTransaction, bool isSigned);
 
-            static std::shared_ptr<api::CosmosLikeTransaction> parseRawTransaction(const api::Currency &currency,
-                                                                                   const std::string &rawTransaction,
-                                                                                   bool isSigned);
+   private:
+    CosmosLikeTransactionBuildFunction _buildFunction;
+    CosmosLikeTransactionBuildRequest _request;
+    std::shared_ptr<api::ExecutionContext> _context;
+};
+}  // namespace core
+}  // namespace ledger
 
-        private:
-            CosmosLikeTransactionBuildFunction _buildFunction;
-            CosmosLikeTransactionBuildRequest _request;
-            std::shared_ptr<api::ExecutionContext> _context;
-
-        };
-    }
-}
-
-#endif //LEDGER_CORE_COSMOSLIKETRANSACTIONBUILDER_H
+#endif  // LEDGER_CORE_COSMOSLIKETRANSACTIONBUILDER_H

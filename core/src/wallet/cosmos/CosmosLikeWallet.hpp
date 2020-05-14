@@ -28,67 +28,65 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEWALLET_H
 #define LEDGER_CORE_COSMOSLIKEWALLET_H
-#include <wallet/common/AbstractWallet.hpp>
 #include <api/CosmosLikeWallet.hpp>
-
+#include <wallet/common/AbstractWallet.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
+#include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 #include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 #include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
-#include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
-#include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 
 namespace ledger {
-    namespace core {
-        class CosmosLikeWallet : public virtual api::CosmosLikeWallet, public virtual AbstractWallet {
-        public:
-            static const api::WalletType type;
-            CosmosLikeWallet(
-                    const std::string &name,
-                    const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-                    const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
-                    const std::shared_ptr<CosmosLikeKeychainFactory> &keychainFactory,
-                    const CosmosLikeAccountSynchronizerFactory &synchronizerFactory,
-                    const std::shared_ptr<WalletPool> &pool,
-                    const api::Currency &network,
-                    const std::shared_ptr<DynamicObject> &configuration,
-                    const DerivationScheme &scheme
-            );
+namespace core {
+class CosmosLikeWallet : public virtual api::CosmosLikeWallet, public virtual AbstractWallet {
+   public:
+    static const api::WalletType type;
+    CosmosLikeWallet(
+        const std::string &name,
+        const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
+        const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
+        const std::shared_ptr<CosmosLikeKeychainFactory> &keychainFactory,
+        const CosmosLikeAccountSynchronizerFactory &synchronizerFactory,
+        const std::shared_ptr<WalletPool> &pool,
+        const api::Currency &network,
+        const std::shared_ptr<DynamicObject> &configuration,
+        const DerivationScheme &scheme);
 
-            // API methods
-            bool isSynchronizing() override;
+    // API methods
+    bool isSynchronizing() override;
 
-            std::shared_ptr<api::EventBus> synchronize() override;
+    std::shared_ptr<api::EventBus> synchronize() override;
 
-            FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) override;
+    FuturePtr<ledger::core::api::Account> newAccountWithInfo(
+        const api::AccountCreationInfo &info) override;
 
-            FuturePtr<ledger::core::api::Account>
-            newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) override;
+    FuturePtr<ledger::core::api::Account> newAccountWithExtendedKeyInfo(
+        const api::ExtendedKeyAccountCreationInfo &info) override;
 
-            Future<api::ExtendedKeyAccountCreationInfo>
-            getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
+    Future<api::ExtendedKeyAccountCreationInfo> getExtendedKeyAccountCreationInfo(
+        int32_t accountIndex) override;
 
-            Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
+    Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
-            std::shared_ptr<CosmosLikeBlockchainExplorer> getBlockchainExplorer();
+    std::shared_ptr<CosmosLikeBlockchainExplorer> getBlockchainExplorer();
 
-            bool hasMultipleAddresses() const;
+    bool hasMultipleAddresses() const;
 
-        protected:
-            std::shared_ptr<AbstractAccount>
-            createAccountInstance(soci::session &sql, const std::string &accountUid) override;
+   protected:
+    std::shared_ptr<AbstractAccount> createAccountInstance(
+        soci::session &sql, const std::string &accountUid) override;
 
-        private:
-            std::shared_ptr<CosmosLikeWallet> getSelf();
+   private:
+    std::shared_ptr<CosmosLikeWallet> getSelf();
 
-            std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;
-            std::shared_ptr<CosmosLikeBlockchainObserver> _observer;
-            std::shared_ptr<CosmosLikeKeychainFactory> _keychainFactory;
-            CosmosLikeAccountSynchronizerFactory _synchronizerFactory;
-            api::CosmosLikeNetworkParameters _network;
-        };
-    }
-}
-#endif //LEDGER_CORE_COSMOSLIKEWALLET_H
+    std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;
+    std::shared_ptr<CosmosLikeBlockchainObserver> _observer;
+    std::shared_ptr<CosmosLikeKeychainFactory> _keychainFactory;
+    CosmosLikeAccountSynchronizerFactory _synchronizerFactory;
+    api::CosmosLikeNetworkParameters _network;
+};
+}  // namespace core
+}  // namespace ledger
+#endif  // LEDGER_CORE_COSMOSLIKEWALLET_H

@@ -29,379 +29,363 @@
  */
 
 #pragma once
-#include <wallet/cosmos/cosmos.hpp>
 #include <api/CosmosLikeVoteOption.hpp>
+#include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
-        namespace core {
-                namespace cosmos {
-                        namespace constants {
-                                // Explorer endpoints.
-                                constexpr const char kGaiaDelegationsEndpoint[] = "/staking/delegators/{}/delegations";
-                                constexpr const char kGaiaRewardsEndpoint[] = "/distribution/delegators/{}/rewards";
-                                constexpr const char kGaiaUnbondingsEndpoint[] = "/staking/delegators/{}/unbonding_delegations";
-                                constexpr const char kGaiaRedelegationsEndpoint[] = "/staking/delegators/{}/redelegations";
-                                constexpr const char kGaiaQueryRedelegationsEndpoint[] = "/staking/redelegations";
-                                constexpr const char kGaiaBalancesEndpoint[] = "/bank/balances/{}";
-                                constexpr const char kGaiaTransfersEndpoint[] = "/bank/accounts/{}/transfers";
-                                constexpr const char kGaiaDistInfoEndpoint[] = "/distribution/validators/{}";
-                                constexpr const char kGaiaSignInfoEndpoint[] = "/slashing/validators/{}/signing_info";
-                                constexpr const char kGaiaWithdrawAddressEndpoint[] = "/distribution/delegators/{}/withdraw_address";
+namespace core {
+namespace cosmos {
+namespace constants {
+// Explorer endpoints.
+constexpr char kGaiaDelegationsEndpoint[] = "/staking/delegators/{}/delegations";
+constexpr char kGaiaRewardsEndpoint[] = "/distribution/delegators/{}/rewards";
+constexpr char kGaiaUnbondingsEndpoint[] = "/staking/delegators/{}/unbonding_delegations";
+constexpr char kGaiaRedelegationsEndpoint[] = "/staking/delegators/{}/redelegations";
+constexpr char kGaiaQueryRedelegationsEndpoint[] = "/staking/redelegations";
+constexpr char kGaiaBalancesEndpoint[] = "/bank/balances/{}";
+constexpr char kGaiaTransfersEndpoint[] = "/bank/accounts/{}/transfers";
+constexpr char kGaiaDistInfoEndpoint[] = "/distribution/validators/{}";
+constexpr char kGaiaSignInfoEndpoint[] = "/slashing/validators/{}/signing_info";
+constexpr char kGaiaWithdrawAddressEndpoint[] = "/distribution/delegators/{}/withdraw_address";
 
-                                // use raw char array here to be compliant with rapidjson
-                                constexpr const char kMsgBeginRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";
-                                constexpr const char kMsgDelegate[] = "cosmos-sdk/MsgDelegate";
-                                constexpr const char kMsgDeposit[] = "cosmos-sdk/MsgDeposit";
-                                constexpr const char kMsgSend[] = "cosmos-sdk/MsgSend";
-                                constexpr const char kMsgSubmitProposal[] = "cosmos-sdk/MsgSubmitProposal";
-                                constexpr const char kMsgUndelegate[] = "cosmos-sdk/MsgUndelegate";
-                                constexpr const char kMsgVote[] = "cosmos-sdk/MsgVote";
-                                constexpr const char kMsgWithdrawDelegationReward[] = "cosmos-sdk/MsgWithdrawDelegationReward";
-                                constexpr const char kMsgMultiSend[] = "cosmos-sdk/MsgMultiSend";
-                                constexpr const char kMsgCreateValidator[] = "cosmos-sdk/MsgCreateValidator";
-                                constexpr const char kMsgEditValidator[] = "cosmos-sdk/MsgEditValidator";
-                                constexpr const char kMsgSetWithdrawAddress[] = "cosmos-sdk/MsgSetWithdrawAddress";
-                                constexpr const char kMsgWithdrawDelegatorReward[] = "cosmos-sdk/MsgWithdrawDelegatorReward";
-                                constexpr const char kMsgWithdrawValidatorCommission[] = "cosmos-sdk/MsgWithdrawValidatorCommission";
-                                constexpr const char kMsgUnjail[] = "cosmos-sdk/MsgUnjail";
-                                constexpr const char kMsgFees[] = "internal/MsgFees";
+// use raw char array here to be compliant with rapidjson
+constexpr char kMsgBeginRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";
+constexpr char kMsgDelegate[] = "cosmos-sdk/MsgDelegate";
+constexpr char kMsgDeposit[] = "cosmos-sdk/MsgDeposit";
+constexpr char kMsgSend[] = "cosmos-sdk/MsgSend";
+constexpr char kMsgSubmitProposal[] = "cosmos-sdk/MsgSubmitProposal";
+constexpr char kMsgUndelegate[] = "cosmos-sdk/MsgUndelegate";
+constexpr char kMsgVote[] = "cosmos-sdk/MsgVote";
+constexpr char kMsgWithdrawDelegationReward[] = "cosmos-sdk/MsgWithdrawDelegationReward";
+constexpr char kMsgMultiSend[] = "cosmos-sdk/MsgMultiSend";
+constexpr char kMsgCreateValidator[] = "cosmos-sdk/MsgCreateValidator";
+constexpr char kMsgEditValidator[] = "cosmos-sdk/MsgEditValidator";
+constexpr char kMsgSetWithdrawAddress[] = "cosmos-sdk/MsgSetWithdrawAddress";
+constexpr char kMsgWithdrawDelegatorReward[] = "cosmos-sdk/MsgWithdrawDelegatorReward";
+constexpr char kMsgWithdrawValidatorCommission[] = "cosmos-sdk/MsgWithdrawValidatorCommission";
+constexpr char kMsgUnjail[] = "cosmos-sdk/MsgUnjail";
+constexpr char kMsgFees[] = "internal/MsgFees";
 
-                                constexpr const char kAccountNumber[] = "account_number";
-                                constexpr const char kAddress[] = "address";
-                                constexpr const char kAmount[] = "amount";
-                                constexpr const char kBalance[] = "balance";
-                                constexpr const char kBaseReq[] = "base_req";
-                                constexpr const char kChainId[] = "chain_id";
-                                constexpr const char kCoins[] = "coins";
-                                constexpr const char kCommission[] = "commission";
-                                constexpr const char kCommissionRate[] = "rate";
-                                constexpr const char kCommissionRates[] = "commission_rates";
-                                constexpr const char kCommissionMaxRate[] = "max_rate";
-                                constexpr const char kCommissionMaxChangeRate[] = "max_change_rate";
-                                constexpr const char kCompletionTime[] = "completion_time";
-                                constexpr const char kContent[] = "content";
-                                constexpr const char kCount[] = "count";
-                                constexpr const char kCreationHeight[] = "creation_height";
-                                constexpr const char kDelegatorAddress[] = "delegator_address";
-                                constexpr const char kDenom[] = "denom";
-                                constexpr const char kDepositor[] = "depositor";
-                                constexpr const char kDescription[] = "description";
-                                constexpr const char kDetails[] = "details";
-                                constexpr const char kEditValCommissionRate[] = "commission_rate";
-                                constexpr const char kFee[] = "fee";
-                                constexpr const char kFees[] = "fees";
-                                constexpr const char kFrom[] = "from";
-                                constexpr const char kFromAddress[] = "from_address";
-                                constexpr const char kGas[] = "gas";
-                                constexpr const char kGasAdjustment[] = "gas_adjustment";
-                                constexpr const char kGasEstimate[] = "gas_estimate";
-                                constexpr const char kGasUsed[] = "gas_used";
-                                constexpr const char kHeight[] = "height";
-                                constexpr const char kIdentity[] = "identity";
-                                constexpr const char kIndexOffset[] = "index_offset";
-                                constexpr const char kInitialBalance[] = "initial_balance";
-                                constexpr const char kInitialDeposit[] = "initial_deposit";
-                                constexpr const char kInputs[] = "inputs";
-                                constexpr const char kJailedUntil[] = "jailed_until";
-                                constexpr const char kLog[] = "log";
-                                constexpr const char kLogs[] = "logs";
-                                constexpr const char kMaxHeight[] = "maxheight";
-                                constexpr const char kMemo[] = "memo";
-                                constexpr const char kMessage[] = "msg";
-                                constexpr const char kMessages[] = "msgs";
-                                constexpr const char kMinHeight[] = "minheight";
-                                constexpr const char kMinSelfDelegation[] = "min_self_delegation";
-                                constexpr const char kMissedBlocksCounter[] = "missed_blocks_counter";
-                                constexpr const char kMoniker[] = "moniker";
-                                constexpr const char kMsgIndex[] = "msg_index";
-                                constexpr const char kOption[] = "option";
-                                constexpr const char kOutputs[] = "outputs";
-                                constexpr const char kProposalId[] = "proposal_id";
-                                constexpr const char kProposer[] = "proposer";
-                                constexpr const char kPubKey[] = "pub_key";
-                                constexpr const char kReward[] = "reward";
-                                constexpr const char kRewards[] = "rewards";
-                                constexpr const char kSelfBondRewards[] = "self_bond_rewards";
-                                constexpr const char kSequence[] = "sequence";
-                                constexpr const char kSignature[] = "signature";
-                                constexpr const char kSimulate[] = "simulate";
-                                constexpr const char kSignatures[] = "signatures";
-                                constexpr const char kStartHeight[] = "start_height";
-                                constexpr const char kSuccess[] = "success";
-                                constexpr const char kTimestamp[] = "timestamp";
-                                constexpr const char kTitle[] = "title";
-                                constexpr const char kToAddress[] = "to_address";
-                                constexpr const char kTombstoned[] = "tombstoned";
-                                constexpr const char kTotalCount[] = "total_count";
-                                constexpr const char kTxArray[] = "txs";
-                                constexpr const char kTxHash[] = "txhash";
-                                constexpr const char kTx[] = "tx";
-                                constexpr const char kType[] = "type";
-                                constexpr const char kUpdateTime[] = "update_time";
-                                constexpr const char kValCommission[] = "val_commission";
-                                constexpr const char kValidatorAddress[] = "validator_address";
-                                constexpr const char kValidatorDstAddress[] = "validator_dst_address";
-                                constexpr const char kValidatorSrcAddress[] = "validator_src_address";
-                                constexpr const char kValue[] = "value";
-                                constexpr const char kVoter[] = "voter";
-                                constexpr const char kWebsite[] = "website";
-                                constexpr const char kWithdrawAddress[] = "withdraw_address";
+constexpr char kAccountNumber[] = "account_number";
+constexpr char kAddress[] = "address";
+constexpr char kAmount[] = "amount";
+constexpr char kBalance[] = "balance";
+constexpr char kBaseReq[] = "base_req";
+constexpr char kChainId[] = "chain_id";
+constexpr char kCoins[] = "coins";
+constexpr char kCommission[] = "commission";
+constexpr char kCommissionRate[] = "rate";
+constexpr char kCommissionRates[] = "commission_rates";
+constexpr char kCommissionMaxRate[] = "max_rate";
+constexpr char kCommissionMaxChangeRate[] = "max_change_rate";
+constexpr char kCompletionTime[] = "completion_time";
+constexpr char kContent[] = "content";
+constexpr char kCount[] = "count";
+constexpr char kCreationHeight[] = "creation_height";
+constexpr char kDelegatorAddress[] = "delegator_address";
+constexpr char kDenom[] = "denom";
+constexpr char kDepositor[] = "depositor";
+constexpr char kDescription[] = "description";
+constexpr char kDetails[] = "details";
+constexpr char kEditValCommissionRate[] = "commission_rate";
+constexpr char kFee[] = "fee";
+constexpr char kFees[] = "fees";
+constexpr char kFrom[] = "from";
+constexpr char kFromAddress[] = "from_address";
+constexpr char kGas[] = "gas";
+constexpr char kGasAdjustment[] = "gas_adjustment";
+constexpr char kGasEstimate[] = "gas_estimate";
+constexpr char kGasUsed[] = "gas_used";
+constexpr char kHeight[] = "height";
+constexpr char kIdentity[] = "identity";
+constexpr char kIndexOffset[] = "index_offset";
+constexpr char kInitialBalance[] = "initial_balance";
+constexpr char kInitialDeposit[] = "initial_deposit";
+constexpr char kInputs[] = "inputs";
+constexpr char kJailedUntil[] = "jailed_until";
+constexpr char kLog[] = "log";
+constexpr char kLogs[] = "logs";
+constexpr char kMaxHeight[] = "maxheight";
+constexpr char kMemo[] = "memo";
+constexpr char kMessage[] = "msg";
+constexpr char kMessages[] = "msgs";
+constexpr char kMinHeight[] = "minheight";
+constexpr char kMinSelfDelegation[] = "min_self_delegation";
+constexpr char kMissedBlocksCounter[] = "missed_blocks_counter";
+constexpr char kMoniker[] = "moniker";
+constexpr char kMsgIndex[] = "msg_index";
+constexpr char kOption[] = "option";
+constexpr char kOutputs[] = "outputs";
+constexpr char kProposalId[] = "proposal_id";
+constexpr char kProposer[] = "proposer";
+constexpr char kPubKey[] = "pub_key";
+constexpr char kReward[] = "reward";
+constexpr char kRewards[] = "rewards";
+constexpr char kSelfBondRewards[] = "self_bond_rewards";
+constexpr char kSequence[] = "sequence";
+constexpr char kSignature[] = "signature";
+constexpr char kSimulate[] = "simulate";
+constexpr char kSignatures[] = "signatures";
+constexpr char kStartHeight[] = "start_height";
+constexpr char kSuccess[] = "success";
+constexpr char kTimestamp[] = "timestamp";
+constexpr char kTitle[] = "title";
+constexpr char kToAddress[] = "to_address";
+constexpr char kTombstoned[] = "tombstoned";
+constexpr char kTotalCount[] = "total_count";
+constexpr char kTxArray[] = "txs";
+constexpr char kTxHash[] = "txhash";
+constexpr char kTx[] = "tx";
+constexpr char kType[] = "type";
+constexpr char kUpdateTime[] = "update_time";
+constexpr char kValCommission[] = "val_commission";
+constexpr char kValidatorAddress[] = "validator_address";
+constexpr char kValidatorDstAddress[] = "validator_dst_address";
+constexpr char kValidatorSrcAddress[] = "validator_src_address";
+constexpr char kValue[] = "value";
+constexpr char kVoter[] = "voter";
+constexpr char kWebsite[] = "website";
+constexpr char kWithdrawAddress[] = "withdraw_address";
 
-                                // Explorer specific constants
-                                constexpr const char kBlockMeta[] = "block_meta";
-                                constexpr const char kBlockId[] = "block_id";
-                                constexpr const char kHash[] = "hash";
-                                constexpr const char kHeader[] = "header";
-                                constexpr const char kTime[] = "time";
-                                constexpr const char kMode[] = "mode";
+// Explorer specific constants
+constexpr char kBlockMeta[] = "block_meta";
+constexpr char kBlockId[] = "block_id";
+constexpr char kHash[] = "hash";
+constexpr char kHeader[] = "header";
+constexpr char kTime[] = "time";
+constexpr char kMode[] = "mode";
 
-                                // cosmos/cosmos-sdk Event / Attribute types as of
-                                // https://github.com/cosmos/cosmos-sdk/tree/43137ee893cefbdb2aacd25ef4ec39eacf6ae70c
+// cosmos/cosmos-sdk Event / Attribute types as of
+// https://github.com/cosmos/cosmos-sdk/tree/43137ee893cefbdb2aacd25ef4ec39eacf6ae70c
 
-                                // Common in all messages
-                                constexpr const char kEventTypeMessage[] = "message";
+// Common in all messages
+constexpr char kEventTypeMessage[] = "message";
 
-                                constexpr const char kAttributeKeyAction[] = "action";
-                                constexpr const char kAttributeKeyModule[] = "module";
-                                constexpr const char kAttributeKeySender[] = "sender";
-                                constexpr const char kAttributeKeyAmount[] = "amount";
-                                constexpr const char kAttributeWithdrawDelegationReward[] = "withdraw_delegator_reward";
+constexpr char kAttributeKeyAction[] = "action";
+constexpr char kAttributeKeyModule[] = "module";
+constexpr char kAttributeKeySender[] = "sender";
+constexpr char kAttributeKeyAmount[] = "amount";
+constexpr char kAttributeWithdrawDelegationReward[] = "withdraw_delegator_reward";
 
-                                constexpr const char kPubKeySecp256k1[] = "tendermint/PubKeySecp256k1";
+constexpr char kPubKeySecp256k1[] = "tendermint/PubKeySecp256k1";
 
-                                // Staking
-                                constexpr const char kEventTypeCompleteUnbonding[] =
-                                    "complete_unbonding";
-                                constexpr const char kEventTypeCompleteRedelegation[] =
-                                    "complete_redelegation";
-                                constexpr const char kEventTypeCreateValidator[] =
-                                    "create_validator";
-                                constexpr const char kEventTypeEditValidator[] = "edit_validator";
-                                constexpr const char kEventTypeDelegate[] = "delegate";
-                                constexpr const char kEventTypeUnbond[] = "unbond";
-                                constexpr const char kEventTypeRedelegate[] = "redelegate";
+// Staking
+constexpr char kEventTypeCompleteUnbonding[] = "complete_unbonding";
+constexpr char kEventTypeCompleteRedelegation[] = "complete_redelegation";
+constexpr char kEventTypeCreateValidator[] = "create_validator";
+constexpr char kEventTypeEditValidator[] = "edit_validator";
+constexpr char kEventTypeDelegate[] = "delegate";
+constexpr char kEventTypeUnbond[] = "unbond";
+constexpr char kEventTypeRedelegate[] = "redelegate";
 
-                                constexpr const char kAttributeKeyValidator[] = "validator";
-                                constexpr const char kAttributeKeyCommissionRate[] =
-                                    "commission_rate";
-                                constexpr const char kAttributeKeyMinSelfDelegation[] =
-                                    "min_self_delegation";
-                                constexpr const char kAttributeKeySrcValidator[] =
-                                    "source_validator";
-                                constexpr const char kAttributeKeyDstValidator[] =
-                                    "destination_validator";
-                                constexpr const char kAttributeKeyDelegator[] = "delegator";
-                                constexpr const char kAttributeKeyCompletionTime[] =
-                                    "completion_time";
-                                constexpr const char kAttributeValueStakingCategory[] = "staking";
+constexpr char kAttributeKeyValidator[] = "validator";
+constexpr char kAttributeKeyCommissionRate[] = "commission_rate";
+constexpr char kAttributeKeyMinSelfDelegation[] = "min_self_delegation";
+constexpr char kAttributeKeySrcValidator[] = "source_validator";
+constexpr char kAttributeKeyDstValidator[] = "destination_validator";
+constexpr char kAttributeKeyDelegator[] = "delegator";
+constexpr char kAttributeKeyCompletionTime[] = "completion_time";
+constexpr char kAttributeValueStakingCategory[] = "staking";
 
-                                // Distribution
-                                constexpr const char kEventTypeSetWithdrawAddress[] =
-                                    "set_withdraw_address";
-                                constexpr const char kEventTypeRewards[] = "rewards";
-                                constexpr const char kEventTypeCommission[] = "commission";
-                                constexpr const char kEventTypeWithdrawRewards[] =
-                                    "withdraw_rewards";
-                                constexpr const char kEventTypeWithdrawCommission[] =
-                                    "withdraw_commission";
-                                constexpr const char kEventTypeProposerReward[] = "proposer_reward";
+// Distribution
+constexpr char kEventTypeSetWithdrawAddress[] = "set_withdraw_address";
+constexpr char kEventTypeRewards[] = "rewards";
+constexpr char kEventTypeCommission[] = "commission";
+constexpr char kEventTypeWithdrawRewards[] = "withdraw_rewards";
+constexpr char kEventTypeWithdrawCommission[] = "withdraw_commission";
+constexpr char kEventTypeProposerReward[] = "proposer_reward";
 
-                                constexpr const char kAttributeKeyWithdrawAddress[] =
-                                    "withdraw_address";
+constexpr char kAttributeKeyWithdrawAddress[] = "withdraw_address";
 
-                                constexpr const char kAttributeValueDistributionCategory[] =
-                                    "distribution";
+constexpr char kAttributeValueDistributionCategory[] = "distribution";
 
-                                // gov
-                                constexpr const char kEventTypeSubmitProposal[] = "submit_proposal";
-                                constexpr const char kEventTypeProposalDeposit[] =
-                                    "proposal_deposit";
-                                constexpr const char kEventTypeProposalVote[] = "proposal_vote";
-                                constexpr const char kEventTypeInactiveProposal[] =
-                                    "inactive_proposal";
-                                constexpr const char kEventTypeActiveProposal[] = "active_proposal";
+// gov
+constexpr char kEventTypeSubmitProposal[] = "submit_proposal";
+constexpr char kEventTypeProposalDeposit[] = "proposal_deposit";
+constexpr char kEventTypeProposalVote[] = "proposal_vote";
+constexpr char kEventTypeInactiveProposal[] = "inactive_proposal";
+constexpr char kEventTypeActiveProposal[] = "active_proposal";
 
-                                constexpr const char kAttributeKeyProposalResult[] =
-                                    "proposal_result";
-                                constexpr const char kAttributeKeyOption[] = "option";
-                                constexpr const char kAttributeKeyProposalID[] = "proposal_id";
-                                constexpr const char kAttributeKeyVotingPeriodStart[] =
-                                    "voting_period_start";
-                                constexpr const char kAttributeValueGovernanceCategory[] =
-                                    "governance";
-                                constexpr const char kAttributeValueProposalDropped[] =
-                                    "proposal_dropped";  // didn't meet min deposit
-                                constexpr const char kAttributeValueProposalPassed[] =
-                                    "proposal_passed";  // met vote quorum
-                                constexpr const char kAttributeValueProposalRejected[] =
-                                    "proposal_rejected";  // didn't meet vote quorum
-                                constexpr const char kAttributeValueProposalFailed[] =
-                                    "proposal_failed";  // error on proposal handler
-                                constexpr const char kAttributeKeyProposalType[] = "proposal_type";
+constexpr char kAttributeKeyProposalResult[] = "proposal_result";
+constexpr char kAttributeKeyOption[] = "option";
+constexpr char kAttributeKeyProposalID[] = "proposal_id";
+constexpr char kAttributeKeyVotingPeriodStart[] = "voting_period_start";
+constexpr char kAttributeValueGovernanceCategory[] = "governance";
+constexpr char kAttributeValueProposalDropped[] = "proposal_dropped";  // didn't meet min deposit
+constexpr char kAttributeValueProposalPassed[] = "proposal_passed";  // met vote quorum
+constexpr char kAttributeValueProposalRejected[] = "proposal_rejected";  // didn't meet vote quorum
+constexpr char kAttributeValueProposalFailed[] = "proposal_failed";  // error on proposal handler
+constexpr char kAttributeKeyProposalType[] = "proposal_type";
 
-                                constexpr const char kVoteOptionAbstain[] = "Abstain";
-                                constexpr const char kVoteOptionNo[] = "No";
-                                constexpr const char kVoteOptionNoWithVeto[] = "NoWithVeto";
-                                constexpr const char kVoteOptionYes[] = "Yes";
+constexpr char kVoteOptionAbstain[] = "Abstain";
+constexpr char kVoteOptionNo[] = "No";
+constexpr char kVoteOptionNoWithVeto[] = "NoWithVeto";
+constexpr char kVoteOptionYes[] = "Yes";
 
-                                // bank
-                                constexpr const char kEventTypeTransfer[] = "transfer";
+// bank
+constexpr char kEventTypeTransfer[] = "transfer";
 
-                                constexpr const char kAttributeKeyRecipient[] = "recipient";
+constexpr char kAttributeKeyRecipient[] = "recipient";
 
-                                constexpr const char kAttributeValueBankCategory[] = "bank";
+constexpr char kAttributeValueBankCategory[] = "bank";
 
-                                // crisis
-                                constexpr const char kEventTypeInvariant[] = "invariant";
+// crisis
+constexpr char kEventTypeInvariant[] = "invariant";
 
-                                constexpr const char kAttributeValueCrisis[] = "crisis";
-                                constexpr const char kAttributeKeyRoute[] = "route";
+constexpr char kAttributeValueCrisis[] = "crisis";
+constexpr char kAttributeKeyRoute[] = "route";
 
-                                // slashing
-                                constexpr const char kEventTypeSlash[] = "slash";
-                                constexpr const char kEventTypeLiveness[] = "liveness";
+// slashing
+constexpr char kEventTypeSlash[] = "slash";
+constexpr char kEventTypeLiveness[] = "liveness";
 
-                                constexpr const char kAttributeKeyAddress[] = "address";
-                                constexpr const char kAttributeKeyHeight[] = "height";
-                                constexpr const char kAttributeKeyPower[] = "power";
-                                constexpr const char kAttributeKeyReason[] = "reason";
-                                constexpr const char kAttributeKeyJailed[] = "jailed";
-                                constexpr const char kAttributeKeyMissedBlocks[] = "missed_blocks";
+constexpr char kAttributeKeyAddress[] = "address";
+constexpr char kAttributeKeyHeight[] = "height";
+constexpr char kAttributeKeyPower[] = "power";
+constexpr char kAttributeKeyReason[] = "reason";
+constexpr char kAttributeKeyJailed[] = "jailed";
+constexpr char kAttributeKeyMissedBlocks[] = "missed_blocks";
 
-                                constexpr const char kAttributeValueDoubleSign[] = "double_sign";
-                                constexpr const char kAttributeValueMissingSignature[] =
-                                    "missing_signature";
-                                constexpr const char kAttributeValueSlashingCategory[] = "slashing";
+constexpr char kAttributeValueDoubleSign[] = "double_sign";
+constexpr char kAttributeValueMissingSignature[] = "missing_signature";
+constexpr char kAttributeValueSlashingCategory[] = "slashing";
 
-                                // mint
-                                constexpr const char kEventTypeMint[] = "mint";
+// mint
+constexpr char kEventTypeMint[] = "mint";
 
-                                constexpr const char kAttributeKeyBondedRatio[] = "bonded_ratio";
-                                constexpr const char kAttributeKeyInflation[] = "inflation";
-                                constexpr const char kAttributeKeyAnnualProvisions[] =
-                                    "annual_provisions";
-                        }  // namespace constants
+constexpr char kAttributeKeyBondedRatio[] = "bonded_ratio";
+constexpr char kAttributeKeyInflation[] = "inflation";
+constexpr char kAttributeKeyAnnualProvisions[] = "annual_provisions";
+}  // namespace constants
 
-                        static constexpr const char* msgTypeToChars(MsgType type) {
-                                switch (type) {
-                                        case MsgType::MSGSEND:
-                                                return constants::kMsgSend;
-                                        case MsgType::MSGDELEGATE:
-                                                return constants::kMsgDelegate;
-                                        case MsgType::MSGUNDELEGATE:
-                                                return constants::kMsgUndelegate;
-                                        case MsgType::MSGBEGINREDELEGATE:
-                                                return constants::kMsgBeginRedelegate;
-                                        case MsgType::MSGSUBMITPROPOSAL:
-                                                return constants::kMsgSubmitProposal;
-                                        case MsgType::MSGVOTE:
-                                                return constants::kMsgVote;
-                                        case MsgType::MSGDEPOSIT:
-                                                return constants::kMsgDeposit;
-                                        case MsgType::MSGWITHDRAWDELEGATIONREWARD:
-                                                return constants::kMsgWithdrawDelegationReward;
-                                        case MsgType::MSGMULTISEND:
-                                            return constants::kMsgMultiSend;
-                                        case MsgType::MSGCREATEVALIDATOR:
-                                            return constants::kMsgCreateValidator;
-                                        case MsgType::MSGEDITVALIDATOR:
-                                            return constants::kMsgEditValidator;
-                                        case MsgType::MSGSETWITHDRAWADDRESS:
-                                            return constants::kMsgSetWithdrawAddress;
-                                        case MsgType::MSGWITHDRAWDELEGATORREWARD:
-                                            return constants::kMsgWithdrawDelegatorReward;
-                                        case MsgType::MSGWITHDRAWVALIDATORCOMMISSION:
-                                            return constants::kMsgWithdrawValidatorCommission;
-                                        case MsgType::MSGUNJAIL:
-                                            return constants::kMsgUnjail;
-                                        case MsgType::UNSUPPORTED:
-                                        default:
-                                                return "";
-                                }
-                        }
-
-                        static inline constexpr bool strings_equal(char const * a, char const * b) {
-                                return *a == *b && (*a == '\0' || strings_equal(a + 1, b + 1));
-                        }
-
-                        static constexpr MsgType stringToMsgType(const char* string) {
-                            if (strings_equal(string, constants::kMsgSend)) {
-                                return MsgType::MSGSEND;
-                            }
-                            if (strings_equal(string, constants::kMsgDelegate)) {
-                                return MsgType::MSGDELEGATE;
-                            }
-                            if (strings_equal(string, constants::kMsgUndelegate)) {
-                                return MsgType::MSGUNDELEGATE;
-                            }
-                            if (strings_equal(string, constants::kMsgBeginRedelegate)) {
-                                return MsgType::MSGBEGINREDELEGATE;
-                            }
-                            if (strings_equal(string, constants::kMsgSubmitProposal)) {
-                                return MsgType::MSGSUBMITPROPOSAL;
-                            }
-                            if (strings_equal(string, constants::kMsgVote)) {
-                                return MsgType::MSGVOTE;
-                            }
-                            if (strings_equal(string, constants::kMsgDeposit)) {
-                                return MsgType::MSGDEPOSIT;
-                            }
-                            if (strings_equal(string, constants::kMsgWithdrawDelegationReward)) {
-                                return MsgType::MSGWITHDRAWDELEGATIONREWARD;
-                            }
-                            if (strings_equal(string, constants::kMsgMultiSend)) {
-                                return MsgType::MSGMULTISEND;
-                            }
-                            if (strings_equal(string, constants::kMsgCreateValidator)) {
-                                return MsgType::MSGCREATEVALIDATOR;
-                            }
-                            if (strings_equal(string, constants::kMsgEditValidator)) {
-                                return MsgType::MSGEDITVALIDATOR;
-                            }
-                            if (strings_equal(string, constants::kMsgSetWithdrawAddress)) {
-                                return MsgType::MSGSETWITHDRAWADDRESS;
-                            }
-                            if (strings_equal(string, constants::kMsgWithdrawDelegatorReward)) {
-                                return MsgType::MSGWITHDRAWDELEGATORREWARD;
-                            }
-                            if (strings_equal(string, constants::kMsgWithdrawValidatorCommission)) {
-                                return MsgType::MSGWITHDRAWVALIDATORCOMMISSION;
-                            }
-                            if (strings_equal(string, constants::kMsgUnjail)) {
-                                return MsgType::MSGUNJAIL;
-                            }
-                            if (strings_equal(string, constants::kMsgFees)) {
-                                return MsgType::MSGFEES;
-                            }
-                            return MsgType::UNSUPPORTED;
-                        }
-
-                        static constexpr const char* voteOptionToChars(api::CosmosLikeVoteOption option) {
-                                switch (option) {
-                                        case api::CosmosLikeVoteOption::COSMOSVOTEABSTAIN:
-                                                return constants::kVoteOptionAbstain;
-                                        case api::CosmosLikeVoteOption::COSMOSVOTENO:
-                                                return constants::kVoteOptionNo;
-                                        case api::CosmosLikeVoteOption::COSMOSVOTENOWITHVETO:
-                                                return constants::kVoteOptionNoWithVeto;
-                                        case api::CosmosLikeVoteOption::COSMOSVOTEYES:
-                                                return constants::kVoteOptionYes;
-                                        default:
-                                                return "unknown";
-                                }
-                        }
-
-                        static constexpr api::CosmosLikeVoteOption stringToVoteOption(const char* string) {
-                                if (strings_equal(string, constants::kVoteOptionAbstain)) {
-                                        return api::CosmosLikeVoteOption::COSMOSVOTEABSTAIN;
-                                } else if (strings_equal(string, constants::kVoteOptionNo)) {
-                                        return api::CosmosLikeVoteOption::COSMOSVOTENO;
-                                } else if (strings_equal(string, constants::kVoteOptionNoWithVeto)) {
-                                        return api::CosmosLikeVoteOption::COSMOSVOTENOWITHVETO;
-                                } else {
-                                        return api::CosmosLikeVoteOption::COSMOSVOTEYES;
-                                }
-                        }
-                }
-        }
+static constexpr const char *msgTypeToChars(MsgType type)
+{
+    switch (type) {
+    case MsgType::MSGSEND:
+        return constants::kMsgSend;
+    case MsgType::MSGDELEGATE:
+        return constants::kMsgDelegate;
+    case MsgType::MSGUNDELEGATE:
+        return constants::kMsgUndelegate;
+    case MsgType::MSGBEGINREDELEGATE:
+        return constants::kMsgBeginRedelegate;
+    case MsgType::MSGSUBMITPROPOSAL:
+        return constants::kMsgSubmitProposal;
+    case MsgType::MSGVOTE:
+        return constants::kMsgVote;
+    case MsgType::MSGDEPOSIT:
+        return constants::kMsgDeposit;
+    case MsgType::MSGWITHDRAWDELEGATIONREWARD:
+        return constants::kMsgWithdrawDelegationReward;
+    case MsgType::MSGMULTISEND:
+        return constants::kMsgMultiSend;
+    case MsgType::MSGCREATEVALIDATOR:
+        return constants::kMsgCreateValidator;
+    case MsgType::MSGEDITVALIDATOR:
+        return constants::kMsgEditValidator;
+    case MsgType::MSGSETWITHDRAWADDRESS:
+        return constants::kMsgSetWithdrawAddress;
+    case MsgType::MSGWITHDRAWDELEGATORREWARD:
+        return constants::kMsgWithdrawDelegatorReward;
+    case MsgType::MSGWITHDRAWVALIDATORCOMMISSION:
+        return constants::kMsgWithdrawValidatorCommission;
+    case MsgType::MSGUNJAIL:
+        return constants::kMsgUnjail;
+    case MsgType::UNSUPPORTED:
+    default:
+        return "";
+    }
 }
+
+static inline constexpr bool strings_equal(char const *a, char const *b)
+{
+    return *a == *b && (*a == '\0' || strings_equal(a + 1, b + 1));
+}
+
+static constexpr MsgType stringToMsgType(const char *string)
+{
+    if (strings_equal(string, constants::kMsgSend)) {
+        return MsgType::MSGSEND;
+    }
+    if (strings_equal(string, constants::kMsgDelegate)) {
+        return MsgType::MSGDELEGATE;
+    }
+    if (strings_equal(string, constants::kMsgUndelegate)) {
+        return MsgType::MSGUNDELEGATE;
+    }
+    if (strings_equal(string, constants::kMsgBeginRedelegate)) {
+        return MsgType::MSGBEGINREDELEGATE;
+    }
+    if (strings_equal(string, constants::kMsgSubmitProposal)) {
+        return MsgType::MSGSUBMITPROPOSAL;
+    }
+    if (strings_equal(string, constants::kMsgVote)) {
+        return MsgType::MSGVOTE;
+    }
+    if (strings_equal(string, constants::kMsgDeposit)) {
+        return MsgType::MSGDEPOSIT;
+    }
+    if (strings_equal(string, constants::kMsgWithdrawDelegationReward)) {
+        return MsgType::MSGWITHDRAWDELEGATIONREWARD;
+    }
+    if (strings_equal(string, constants::kMsgMultiSend)) {
+        return MsgType::MSGMULTISEND;
+    }
+    if (strings_equal(string, constants::kMsgCreateValidator)) {
+        return MsgType::MSGCREATEVALIDATOR;
+    }
+    if (strings_equal(string, constants::kMsgEditValidator)) {
+        return MsgType::MSGEDITVALIDATOR;
+    }
+    if (strings_equal(string, constants::kMsgSetWithdrawAddress)) {
+        return MsgType::MSGSETWITHDRAWADDRESS;
+    }
+    if (strings_equal(string, constants::kMsgWithdrawDelegatorReward)) {
+        return MsgType::MSGWITHDRAWDELEGATORREWARD;
+    }
+    if (strings_equal(string, constants::kMsgWithdrawValidatorCommission)) {
+        return MsgType::MSGWITHDRAWVALIDATORCOMMISSION;
+    }
+    if (strings_equal(string, constants::kMsgUnjail)) {
+        return MsgType::MSGUNJAIL;
+    }
+    if (strings_equal(string, constants::kMsgFees)) {
+        return MsgType::MSGFEES;
+    }
+    return MsgType::UNSUPPORTED;
+}
+
+static constexpr const char *voteOptionToChars(api::CosmosLikeVoteOption option)
+{
+    switch (option) {
+    case api::CosmosLikeVoteOption::COSMOSVOTEABSTAIN:
+        return constants::kVoteOptionAbstain;
+    case api::CosmosLikeVoteOption::COSMOSVOTENO:
+        return constants::kVoteOptionNo;
+    case api::CosmosLikeVoteOption::COSMOSVOTENOWITHVETO:
+        return constants::kVoteOptionNoWithVeto;
+    case api::CosmosLikeVoteOption::COSMOSVOTEYES:
+        return constants::kVoteOptionYes;
+    default:
+        return "unknown";
+    }
+}
+
+static constexpr api::CosmosLikeVoteOption stringToVoteOption(const char *string)
+{
+    if (strings_equal(string, constants::kVoteOptionAbstain)) {
+        return api::CosmosLikeVoteOption::COSMOSVOTEABSTAIN;
+    }
+    else if (strings_equal(string, constants::kVoteOptionNo)) {
+        return api::CosmosLikeVoteOption::COSMOSVOTENO;
+    }
+    else if (strings_equal(string, constants::kVoteOptionNoWithVeto)) {
+        return api::CosmosLikeVoteOption::COSMOSVOTENOWITHVETO;
+    }
+    else {
+        return api::CosmosLikeVoteOption::COSMOSVOTEYES;
+    }
+}
+}  // namespace cosmos
+}  // namespace core
+}  // namespace ledger

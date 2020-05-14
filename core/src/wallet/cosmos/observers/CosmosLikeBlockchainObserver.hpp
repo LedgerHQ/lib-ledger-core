@@ -28,90 +28,90 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEBLOCKCHAINOBSERVER_H
 #define LEDGER_CORE_COSMOSLIKEBLOCKCHAINOBSERVER_H
 
-
-#include <string>
 #include <list>
+#include <string>
 
 #include <spdlog/logger.h>
 
-#include <utils/ConfigurationMatchable.h>
-#include <async/DedicatedContext.hpp>
-#include <api/ExecutionContext.hpp>
 #include <api/Currency.hpp>
 #include <api/DynamicObject.hpp>
-#include <wallet/common/observers/AbstractBlockchainObserver.h>
-#include <wallet/common/observers/AbstractLedgerApiBlockchainObserver.h>
+#include <api/ExecutionContext.hpp>
 #include <api/WebSocketClient.hpp>
 #include <api/WebSocketConnection.hpp>
-
+#include <async/DedicatedContext.hpp>
+#include <utils/ConfigurationMatchable.h>
+#include <wallet/common/observers/AbstractBlockchainObserver.h>
+#include <wallet/common/observers/AbstractLedgerApiBlockchainObserver.h>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 
 namespace ledger {
-    namespace core {
-        class CosmosLikeAccount;
+namespace core {
+class CosmosLikeAccount;
 
-        using CosmosBlockchainObserver = AbstractBlockchainObserver<CosmosLikeAccount, cosmos::Transaction, cosmos::Block>;
+using CosmosBlockchainObserver =
+    AbstractBlockchainObserver<CosmosLikeAccount, cosmos::Transaction, cosmos::Block>;
 
-        class CosmosLikeBlockchainObserver : public CosmosBlockchainObserver,
-                                             public AbstractLedgerApiBlockchainObserver,
-                                             public DedicatedContext,
-                                             public ConfigurationMatchable,
-                                             public std::enable_shared_from_this<CosmosLikeBlockchainObserver> {
-        public:
-            CosmosLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
-                                         const std::shared_ptr<api::DynamicObject> &configuration,
-                                         const std::shared_ptr<spdlog::logger> &logger,
-                                         const api::Currency &currency,
-                                         const std::vector<std::string> &matchableKeys);
+class CosmosLikeBlockchainObserver :
+    public CosmosBlockchainObserver,
+    public AbstractLedgerApiBlockchainObserver,
+    public DedicatedContext,
+    public ConfigurationMatchable,
+    public std::enable_shared_from_this<CosmosLikeBlockchainObserver> {
+   public:
+    CosmosLikeBlockchainObserver(
+        const std::shared_ptr<api::ExecutionContext> &context,
+        const std::shared_ptr<api::DynamicObject> &configuration,
+        const std::shared_ptr<spdlog::logger> &logger,
+        const api::Currency &currency,
+        const std::vector<std::string> &matchableKeys);
 
-            CosmosLikeBlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
-                                         const std::shared_ptr<WebSocketClient> &client,
-                                         const std::shared_ptr<api::DynamicObject> &configuration,
-                                         const std::shared_ptr<spdlog::logger> &logger,
-                                         const api::Currency &currency);
+    CosmosLikeBlockchainObserver(
+        const std::shared_ptr<api::ExecutionContext> &context,
+        const std::shared_ptr<WebSocketClient> &client,
+        const std::shared_ptr<api::DynamicObject> &configuration,
+        const std::shared_ptr<spdlog::logger> &logger,
+        const api::Currency &currency);
 
+   protected:
+    void putTransaction(const cosmos::Transaction &tx) override;
 
-        protected:
-            void putTransaction(const cosmos::Transaction &tx) override;
+    void putBlock(const cosmos::Block &block) override;
 
-            void putBlock(const cosmos::Block &block) override;
+    const api::Currency &getCurrency() const
+    {
+        return _currency;
+    };
 
-            const api::Currency &getCurrency() const {
-                return _currency;
-            };
+    std::shared_ptr<api::DynamicObject> getConfiguration() const
+    {
+        return _configuration;
+    };
 
-            std::shared_ptr<api::DynamicObject> getConfiguration() const {
-                return _configuration;
-            };
+   private:
+    api::Currency _currency;
+    std::shared_ptr<api::DynamicObject> _configuration;
 
-        private:
-            api::Currency _currency;
-            std::shared_ptr<api::DynamicObject> _configuration;
+   protected:
+    void onStart() override;
 
+    void onStop() override;
 
-        protected:
-            void onStart() override;
+   private:
+    void connect() override;
 
-            void onStop() override;
+    void reconnect() override;
 
-        private:
-            void connect() override;
+    void onMessage(const std::string &message) override;
 
-            void reconnect() override;
+   private:
+    std::shared_ptr<spdlog::logger> logger() const override;
+    std::shared_ptr<WebSocketClient> _client;
+    WebSocketEventHandler _handler;
+};
+}  // namespace core
+}  // namespace ledger
 
-            void onMessage(const std::string &message) override;
-
-        private:
-            std::shared_ptr<spdlog::logger> logger() const override ;
-            std::shared_ptr<WebSocketClient> _client;
-            WebSocketEventHandler _handler;
-        };
-    }
-}
-
-
-#endif //LEDGER_CORE_COSMOSLIKEBLOCKCHAINOBSERVER_H
+#endif  // LEDGER_CORE_COSMOSLIKEBLOCKCHAINOBSERVER_H

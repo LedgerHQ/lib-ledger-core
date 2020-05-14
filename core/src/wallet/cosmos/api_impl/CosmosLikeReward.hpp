@@ -28,39 +28,35 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEREWARD_H
 #define LEDGER_CORE_COSMOSLIKEREWARD_H
 
-#include <api/CosmosLikeReward.hpp>
 #include <api/Amount.hpp>
-
+#include <api/CosmosLikeReward.hpp>
 #include <wallet/cosmos/cosmos.hpp>
 
-
 namespace ledger {
-    namespace core {
-        class CosmosLikeReward : public api::CosmosLikeReward {
-
-        public:
-            explicit CosmosLikeReward() {}
-
-            explicit CosmosLikeReward(const cosmos::Reward& rewardData, const std::string& delegatorAddress);
-
-            std::string getDelegatorAddress() const override;
-
-            std::string getValidatorAddress() const override;
-
-            std::shared_ptr<api::Amount> getRewardAmount() const override;
-
-        private:
-
-            cosmos::Reward _rewardData;
-            std::string _delegatorAddress;
-
-        };
+namespace core {
+class CosmosLikeReward : public api::CosmosLikeReward {
+   public:
+    explicit CosmosLikeReward()
+    {
     }
-}
 
+    explicit CosmosLikeReward(
+        const cosmos::Reward &rewardData, const std::string &delegatorAddress);
 
-#endif //LEDGER_CORE_COSMOSLIKEREWARD_H
+    std::string getDelegatorAddress() const override;
+
+    std::string getValidatorAddress() const override;
+
+    std::shared_ptr<api::Amount> getRewardAmount() const override;
+
+   private:
+    cosmos::Reward _rewardData;
+    std::string _delegatorAddress;
+};
+}  // namespace core
+}  // namespace ledger
+
+#endif  // LEDGER_CORE_COSMOSLIKEREWARD_H
