@@ -28,23 +28,22 @@
  *
  */
 
-
 #pragma once
 
+#include <api/CosmosBech32Type.hpp>
 #include <api/ErrorCode.hpp>
 #include <collections/strings.hpp>
 #include <math/BigInt.h>
 #include <math/bech32/Bech32Parameters.h>
 #include <utils/Exception.hpp>
 #include <utils/hex.h>
-#include <api/CosmosBech32Type.hpp>
-
 
 namespace ledger {
 namespace core {
 namespace cosmos {
 using namespace Bech32Parameters;
-static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Type type) {
+static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Type type)
+{
     static const Bech32Struct COSMOS_PUB = {
         "cosmospub",
         "cosmospub",
@@ -98,7 +97,8 @@ static const std::vector<Bech32Struct> ALL_BECH32_PARAMS(
      getBech32Params(api::CosmosBech32Type::PUBLIC_KEY),
      getBech32Params(api::CosmosBech32Type::PUBLIC_KEY_VAL)});
 
-static bool insertBech32Parameters(soci::session& sql, const Bech32Struct& params) {
+static bool insertBech32Parameters(soci::session &sql, const Bech32Struct &params)
+{
     auto count = 0;
     sql << "SELECT COUNT(*) FROM bech32_parameters WHERE name = :name", soci::use(params.name),
         soci::into(count);
@@ -106,7 +106,7 @@ static bool insertBech32Parameters(soci::session& sql, const Bech32Struct& param
         std::stringstream generator;
         std::vector<std::string> strGenerator;
         std::string separator(",");
-        for (auto& g : params.generator) {
+        for (auto &g : params.generator) {
             BigInt bigIntG(g);
             strGenerator.push_back(bigIntG.toString());
         }

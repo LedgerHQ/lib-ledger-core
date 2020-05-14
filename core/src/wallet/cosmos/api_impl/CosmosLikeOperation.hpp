@@ -28,46 +28,39 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEOPERATION_H
 #define LEDGER_CORE_COSMOSLIKEOPERATION_H
 
-
-#include <wallet/cosmos/cosmos.hpp>
+#include <api/CosmosLikeMessage.hpp>
 #include <api/CosmosLikeOperation.hpp>
 #include <api/CosmosLikeTransaction.hpp>
-#include <api/CosmosLikeMessage.hpp>
-
 #include <wallet/common/Operation.h>
 #include <wallet/common/api_impl/OperationApi.h>
+#include <wallet/cosmos/cosmos.hpp>
 
 namespace ledger {
-    namespace core {
-        class CosmosLikeOperation : public api::CosmosLikeOperation, public Operation {
+namespace core {
+class CosmosLikeOperation : public api::CosmosLikeOperation, public Operation {
+   public:
+    CosmosLikeOperation() = default;
+    CosmosLikeOperation(const std::shared_ptr<OperationApi> &baseOp);
 
-            public:
+    CosmosLikeOperation(
+        ledger::core::cosmos::Transaction const &tx, ledger::core::cosmos::Message const &msg);
 
-                CosmosLikeOperation() = default;
-                CosmosLikeOperation(const std::shared_ptr<OperationApi>& baseOp);
+    void setTransactionData(ledger::core::cosmos::Transaction const &txData);
 
-                CosmosLikeOperation(ledger::core::cosmos::Transaction const& tx,
-                                    ledger::core::cosmos::Message const& msg);
+    void setMessageData(ledger::core::cosmos::Message const &msgData);
 
-                void setTransactionData(ledger::core::cosmos::Transaction const& txData);
+    virtual std::shared_ptr<api::CosmosLikeTransaction> getTransaction() override;
+    virtual std::shared_ptr<api::CosmosLikeMessage> getMessage() override;
 
-                void setMessageData(ledger::core::cosmos::Message const& msgData);
+   private:
+    std::shared_ptr<api::CosmosLikeTransaction> _txApi{nullptr};
+    std::shared_ptr<api::CosmosLikeMessage> _msgApi{nullptr};
+};
 
-                virtual std::shared_ptr<api::CosmosLikeTransaction> getTransaction() override;
-                virtual std::shared_ptr<api::CosmosLikeMessage> getMessage() override;
+}  // namespace core
+}  // namespace ledger
 
-            private:
-
-                std::shared_ptr<api::CosmosLikeTransaction> _txApi {nullptr};
-                std::shared_ptr<api::CosmosLikeMessage> _msgApi {nullptr};
-
-        };
-
-    }
-}
-
-#endif //LEDGER_CORE_COSMOSLIKEOPERATION_H
+#endif  // LEDGER_CORE_COSMOSLIKEOPERATION_H

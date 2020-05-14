@@ -28,80 +28,84 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEOPERATIONDATABASEHELPER_H
 #define LEDGER_CORE_COSMOSLIKEOPERATIONDATABASEHELPER_H
 
 #include <string>
 
-#include <soci.h>
-
-#include <wallet/common/database/OperationDatabaseHelper.h>
-#include <database/soci-number.h>
-#include <database/soci-date.h>
-#include <database/soci-option.h>
 #include <api/BigInt.hpp>
+#include <database/soci-date.h>
+#include <database/soci-number.h>
+#include <database/soci-option.h>
+#include <soci.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
 namespace ledger {
-    namespace core {
-        class CosmosLikeOperationDatabaseHelper : public OperationDatabaseHelper {
-        public:
+namespace core {
+class CosmosLikeOperationDatabaseHelper : public OperationDatabaseHelper {
+   public:
+    static std::size_t queryOperations(
+        soci::session &sql,
+        const std::string &accountUid,
+        std::vector<Operation> &operations,
+        std::function<bool(const std::string &address)> filter)
+    {
+        using namespace soci;
+        rowset<row> rows =
+            (sql.prepare << "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
+                            " FROM operations AS op "
+                            " WHERE op.account_uid = :uid ORDER BY op.date",
+             use(accountUid));
+        const auto COL_AMT = 0;
+        const auto COL_FEES = 1;
+        const auto COL_TYPE = 2;
+        const auto COL_DATE = 3;
+        const auto COL_SEND = 4;
+        const auto COL_RECV = 5;
 
-            static std::size_t queryOperations(soci::session &sql,
-                                                 const std::string &accountUid,
-                                                 std::vector<Operation> &operations,
-                                                 std::function<bool(const std::string &address)> filter) {
-            using namespace soci;
-            rowset<row> rows = (sql.prepare <<
-                                            "SELECT op.amount, op.fees, op.type, op.date, op.senders, op.recipients"
-                                                    " FROM operations AS op "
-                                                    " WHERE op.account_uid = :uid ORDER BY op.date",
-                                                    use(accountUid));
-            const auto COL_AMT = 0;
-            const auto COL_FEES = 1;
-            const auto COL_TYPE = 2;
-            const auto COL_DATE = 3;
-            const auto COL_SEND = 4;
-            const auto COL_RECV = 5;
-
-            auto filterList = [&] (const std::vector<std::string> &list) -> bool {
-                for (auto& elem : list) {
-                    if (filter(elem)) {
-                        return true;
-                    }
-                }
-                return false;
-            };
-
-            std::size_t c = 0;
-            for (auto& row : rows) {
-                auto type = api::from_string<api::OperationType>(row.get<std::string>(COL_TYPE));
-                auto senders = strings::split(row.get<std::string>(COL_SEND), ",");
-                auto recipients = strings::split(row.get<std::string>(COL_RECV), ",");
-                if ((type == api::OperationType::SEND && row.get_indicator(COL_SEND) != i_null && filterList(senders)) ||
-                    (type == api::OperationType::RECEIVE && row.get_indicator(COL_RECV) != i_null && filterList(recipients)) ||
-                    (type == api::OperationType::NONE && row.get_indicator(COL_SEND) != i_null && filterList(senders))) {
-                    Operation operation;
-
-                    operation.amount = BigInt::fromHex(row.get<std::string>(COL_AMT));
-                    operation.fees = BigInt::fromHex(row.get<std::string>(COL_FEES));
-                    operation.type = type;
-                    operation.date = DateUtils::fromJSON(row.get<std::string>(COL_DATE));
-
-                    operations.push_back(operation);
-
-                    c += 1;
+        auto filterList = [&](const std::vector<std::string> &list) -> bool {
+            for (auto &elem : list) {
+                if (filter(elem)) {
+                    return true;
                 }
             }
-            return c;
-        }
-
-            static void updateOperation(soci::session& sql, const std::string& opUid, const std::string& msgUid) {
-                sql << "INSERT INTO cosmos_operations VALUES(:uid, :message_uid)", soci::use(opUid), soci::use(msgUid);
-            }
-
+            return false;
         };
-    }
-}
 
-#endif //LEDGER_CORE_COSMOSLIKEOPERATIONDATABASEHELPER_H
+        std::size_t c = 0;
+        for (auto &row : rows) {
+            auto type = api::from_string<api::OperationType>(row.get<std::string>(COL_TYPE));
+            auto senders = strings::split(row.get<std::string>(COL_SEND), ",");
+            auto recipients = strings::split(row.get<std::string>(COL_RECV), ",");
+            if ((type == api::OperationType::SEND && row.get_indicator(COL_SEND) != i_null &&
+                 filterList(senders)) ||
+                (type == api::OperationType::RECEIVE && row.get_indicator(COL_RECV) != i_null &&
+                 filterList(recipients)) ||
+                (type == api::OperationType::NONE && row.get_indicator(COL_SEND) != i_null &&
+                 filterList(senders))) {
+                Operation operation;
+
+                operation.amount = BigInt::fromHex(row.get<std::string>(COL_AMT));
+                operation.fees = BigInt::fromHex(row.get<std::string>(COL_FEES));
+                operation.type = type;
+                operation.date = DateUtils::fromJSON(row.get<std::string>(COL_DATE));
+
+                operations.push_back(operation);
+
+                c += 1;
+            }
+        }
+        return c;
+    }
+
+    static void updateOperation(
+        soci::session &sql, const std::string &opUid, const std::string &msgUid)
+    {
+        sql << "INSERT INTO cosmos_operations VALUES(:uid, :message_uid)", soci::use(opUid),
+            soci::use(msgUid);
+    }
+};
+}  // namespace core
+}  // namespace ledger
+
+#endif  // LEDGER_CORE_COSMOSLIKEOPERATIONDATABASEHELPER_H

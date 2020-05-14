@@ -29,65 +29,70 @@
  *
  */
 
-#include <wallet/cosmos/database/SociCosmosAmount.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
-
+#include <wallet/cosmos/database/SociCosmosAmount.hpp>
 
 namespace soci {
-    using namespace rapidjson;
+using namespace rapidjson;
 
-    std::string coinToString(const ledger::core::cosmos::Coin &coin) {
-        Document d;
-        auto& allocator = d.GetAllocator();
-        auto& object = d.SetObject();
+std::string coinToString(const ledger::core::cosmos::Coin &coin)
+{
+    Document d;
+    auto &allocator = d.GetAllocator();
+    auto &object = d.SetObject();
 
-        Value vStringAmount(rapidjson::kStringType);
-        vStringAmount.SetString(coin.amount.c_str(), static_cast<rapidjson::SizeType>(coin.amount.length()), allocator);
-        object.AddMember(ledger::core::cosmos::constants::kAmount, vStringAmount, allocator);
+    Value vStringAmount(rapidjson::kStringType);
+    vStringAmount.SetString(
+        coin.amount.c_str(), static_cast<rapidjson::SizeType>(coin.amount.length()), allocator);
+    object.AddMember(ledger::core::cosmos::constants::kAmount, vStringAmount, allocator);
 
-        Value vStringDenom(rapidjson::kStringType);
-        vStringDenom.SetString(coin.denom.c_str(), static_cast<rapidjson::SizeType>(coin.denom.length()), allocator);
-        object.AddMember(ledger::core::cosmos::constants::kDenom, vStringDenom, allocator);
+    Value vStringDenom(rapidjson::kStringType);
+    vStringDenom.SetString(
+        coin.denom.c_str(), static_cast<rapidjson::SizeType>(coin.denom.length()), allocator);
+    object.AddMember(ledger::core::cosmos::constants::kDenom, vStringDenom, allocator);
 
-        StringBuffer buffer;
-        Writer<StringBuffer> writer(buffer);
-        d.Accept(writer);
-        return std::string(buffer.GetString());
+    StringBuffer buffer;
+    Writer<StringBuffer> writer(buffer);
+    d.Accept(writer);
+    return std::string(buffer.GetString());
+}
+
+void stringToCoin(const std::string &str, ledger::core::cosmos::Coin &out)
+{
+    Document d;
+    d.Parse(str.data());
+    out.amount = d[ledger::core::cosmos::constants::kAmount].GetString();
+    out.denom = d[ledger::core::cosmos::constants::kDenom].GetString();
+}
+
+std::string coinsToString(const std::vector<ledger::core::cosmos::Coin> &coins)
+{
+    Document d;
+    auto &allocator = d.GetAllocator();
+    auto &array = d.SetArray();
+    for (const auto &coin : coins) {
+        Value tuple(kArrayType);
+        cosmos_coin_to_json_tuple(coin, tuple, allocator);
+        array.PushBack(tuple.Move(), allocator);
     }
 
-    void stringToCoin(const std::string &str, ledger::core::cosmos::Coin &out) {
-        Document d;
-        d.Parse(str.data());
-        out.amount = d[ledger::core::cosmos::constants::kAmount].GetString();
-        out.denom = d[ledger::core::cosmos::constants::kDenom].GetString();
-    }
+    StringBuffer buffer;
+    Writer<StringBuffer> writer(buffer);
+    d.Accept(writer);
+    return std::string(buffer.GetString());
+}
 
-    std::string coinsToString(const std::vector<ledger::core::cosmos::Coin> &coins) {
-        Document d;
-        auto& allocator = d.GetAllocator();
-        auto& array = d.SetArray();
-        for (const auto& coin : coins) {
-            Value tuple(kArrayType);
-            cosmos_coin_to_json_tuple(coin, tuple, allocator);
-            array.PushBack(tuple.Move(), allocator);
-        }
-
-        StringBuffer buffer;
-        Writer<StringBuffer> writer(buffer);
-        d.Accept(writer);
-        return std::string(buffer.GetString());
-    }
-
-    void stringToCoins(const std::string &str, std::vector<ledger::core::cosmos::Coin> &out) {
-        Document d;
-        d.Parse(str.data());
-        const auto& list = d.GetArray();
-        auto index = 0;
-        out.assign(list.Size(), ledger::core::cosmos::Coin());
-        for (const auto& n : list) {
-            const auto& tuple = n.GetArray();
-            cosmos_coin_from_json_tuple(tuple, out[index]);
-            index += 1;
-        }
+void stringToCoins(const std::string &str, std::vector<ledger::core::cosmos::Coin> &out)
+{
+    Document d;
+    d.Parse(str.data());
+    const auto &list = d.GetArray();
+    auto index = 0;
+    out.assign(list.Size(), ledger::core::cosmos::Coin());
+    for (const auto &n : list) {
+        const auto &tuple = n.GetArray();
+        cosmos_coin_from_json_tuple(tuple, out[index]);
+        index += 1;
     }
 }
+}  // namespace soci

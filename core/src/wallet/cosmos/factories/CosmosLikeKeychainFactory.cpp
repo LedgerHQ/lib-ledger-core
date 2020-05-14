@@ -28,41 +28,46 @@
  *
  */
 
-
+#include <cosmos/CosmosLikeExtendedPublicKey.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 
-#include <cosmos/CosmosLikeExtendedPublicKey.hpp>
-
 namespace ledger {
-    namespace core {
+namespace core {
 
-		std::shared_ptr<CosmosLikeKeychain>
-		CosmosLikeKeychainFactory::build(const DerivationPath &path,
-										 const std::shared_ptr<DynamicObject> &configuration,
-										 const api::AccountCreationInfo &info,
-										 const std::shared_ptr<Preferences> &accountPreferences,
-										 const api::Currency &currency) {
-			if (!info.publicKeys.empty() && !info.derivations.empty() && info.derivations.front() == path.toString()) {
-				const auto& pubKey = info.publicKeys.front();
-				if (pubKey.size() != 33) {
-                                  throw make_exception(
-                                      api::ErrorCode::RUNTIME_ERROR,
-                                      "Public key should be compressed (33 "
-                                      "bytes) here {} bytes", pubKey.size());
-                                }
-				return std::make_shared<CosmosLikeKeychain>(pubKey, path, currency);
-			}  else {
-				throw make_exception(api::ErrorCode::MISSING_DERIVATION, "Cannot find derivation {}", path.toString());
-			}
-		}
-
-        std::shared_ptr<CosmosLikeKeychain> CosmosLikeKeychainFactory::restore(const DerivationPath &path,
-																			   const std::shared_ptr<DynamicObject> &configuration,
-																			   const std::string &restoreKey,
-																			   const std::shared_ptr<Preferences> &accountPreferences,
-																			   const api::Currency &currency) {
-			return CosmosLikeKeychain::restore(path, currency, restoreKey);
+std::shared_ptr<CosmosLikeKeychain> CosmosLikeKeychainFactory::build(
+    const DerivationPath &path,
+    const std::shared_ptr<DynamicObject> &configuration,
+    const api::AccountCreationInfo &info,
+    const std::shared_ptr<Preferences> &accountPreferences,
+    const api::Currency &currency)
+{
+    if (!info.publicKeys.empty() && !info.derivations.empty() &&
+        info.derivations.front() == path.toString()) {
+        const auto &pubKey = info.publicKeys.front();
+        if (pubKey.size() != 33) {
+            throw make_exception(
+                api::ErrorCode::RUNTIME_ERROR,
+                "Public key should be compressed (33 "
+                "bytes) here {} bytes",
+                pubKey.size());
         }
+        return std::make_shared<CosmosLikeKeychain>(pubKey, path, currency);
+    }
+    else {
+        throw make_exception(
+            api::ErrorCode::MISSING_DERIVATION, "Cannot find derivation {}", path.toString());
+    }
+}
 
-	} // namespace core
-} // namespace ledger
+std::shared_ptr<CosmosLikeKeychain> CosmosLikeKeychainFactory::restore(
+    const DerivationPath &path,
+    const std::shared_ptr<DynamicObject> &configuration,
+    const std::string &restoreKey,
+    const std::shared_ptr<Preferences> &accountPreferences,
+    const api::Currency &currency)
+{
+    return CosmosLikeKeychain::restore(path, currency, restoreKey);
+}
+
+}  // namespace core
+}  // namespace ledger

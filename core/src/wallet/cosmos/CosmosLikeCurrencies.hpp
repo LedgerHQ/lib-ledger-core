@@ -42,11 +42,10 @@
 #include <wallet/cosmos/CosmosLikeCoinID.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
 
-
 namespace ledger {
-    namespace core {
-        namespace currencies {
-            extern LIBCORE_EXPORT const api::Currency ATOM;
-        }
-    }
+namespace core {
+namespace currencies {
+extern LIBCORE_EXPORT const api::Currency ATOM;
 }
+}  // namespace core
+}  // namespace ledger

@@ -28,29 +28,31 @@
  *
  */
 
-
-#include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
-#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/common/Amount.h>
-
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
+#include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 
 namespace ledger {
-    namespace core {
+namespace core {
 
-        CosmosLikeDelegation::CosmosLikeDelegation(const cosmos::Delegation& delegationData) :
-            _delegationData(delegationData)
-        {}
-
-        std::string CosmosLikeDelegation::getDelegatorAddress() const {
-            return _delegationData.delegatorAddress;
-        }
-
-        std::string CosmosLikeDelegation::getValidatorAddress() const {
-            return _delegationData.validatorAddress;
-        }
-
-        std::shared_ptr<api::Amount> CosmosLikeDelegation::getDelegatedAmount() const {
-            return std::make_shared<Amount>(currencies::ATOM, 0, _delegationData.delegatedAmount);
-        }
-    }
+CosmosLikeDelegation::CosmosLikeDelegation(const cosmos::Delegation &delegationData) :
+    _delegationData(delegationData)
+{
 }
+
+std::string CosmosLikeDelegation::getDelegatorAddress() const
+{
+    return _delegationData.delegatorAddress;
+}
+
+std::string CosmosLikeDelegation::getValidatorAddress() const
+{
+    return _delegationData.validatorAddress;
+}
+
+std::shared_ptr<api::Amount> CosmosLikeDelegation::getDelegatedAmount() const
+{
+    return std::make_shared<Amount>(currencies::ATOM, 0, _delegationData.delegatedAmount);
+}
+}  // namespace core
+}  // namespace ledger

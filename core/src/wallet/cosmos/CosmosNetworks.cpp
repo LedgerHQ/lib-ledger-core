@@ -29,23 +29,21 @@
  *
  */
 
-#include <wallet/cosmos/CosmosNetworks.hpp>
-#include <config/Networks.hpp>
 #include <api/ErrorCode.hpp>
+#include <config/Networks.hpp>
 #include <utils/Exception.hpp>
+#include <wallet/cosmos/CosmosNetworks.hpp>
 
 namespace ledger {
-        namespace core {
-                namespace networks {
-                        const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(const std::string& chainID) {
-                                return api::Networks::cosmos(chainID);
-                        }
-
-            const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS
-                    ({
-                             getCosmosLikeNetworkParameters("atom"),
-                             getCosmosLikeNetworkParameters("atom-cosmoshub-2")
-                     });
-                }
-        }
+namespace core {
+namespace networks {
+const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(const std::string &chainID)
+{
+    return api::Networks::cosmos(chainID);
 }
+
+const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS(
+    {getCosmosLikeNetworkParameters("atom"), getCosmosLikeNetworkParameters("atom-cosmoshub-2")});
+}  // namespace networks
+}  // namespace core
+}  // namespace ledger

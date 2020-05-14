@@ -28,7 +28,6 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_COSMOSLIKEBLOCKAPI_H
 #define LEDGER_CORE_COSMOSLIKEBLOCKAPI_H
 
@@ -36,22 +35,21 @@
 #include <wallet/common/Block.h>
 
 namespace ledger {
-    namespace core {
-        class CosmosLikeBlockApi : public api::CosmosLikeBlock {
-        public:
-            CosmosLikeBlockApi(const Block& block);
+namespace core {
+class CosmosLikeBlockApi : public api::CosmosLikeBlock {
+   public:
+    CosmosLikeBlockApi(const Block &block);
 
-            std::string getHash() override ;
+    std::string getHash() override;
 
-            int64_t getHeight() override ;
+    int64_t getHeight() override;
 
-            std::chrono::system_clock::time_point getTime() override ;
+    std::chrono::system_clock::time_point getTime() override;
 
-        private:
-            Block _block;
-        };
-    }
-}
+   private:
+    Block _block;
+};
+}  // namespace core
+}  // namespace ledger
 
-
-#endif //LEDGER_CORE_COSMOSLIKEBLOCKAPI_H
+#endif  // LEDGER_CORE_COSMOSLIKEBLOCKAPI_H

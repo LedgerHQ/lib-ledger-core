@@ -33,7 +33,7 @@
 #include <stdint.h>
 
 namespace ledger {
-    namespace core {
-        static uint64_t constexpr ATOM_COIN_ID = 118;
-    }
+namespace core {
+static uint64_t constexpr ATOM_COIN_ID = 118;
 }
+}  // namespace ledger
