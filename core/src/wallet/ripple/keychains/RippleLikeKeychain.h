@@ -43,13 +43,14 @@
 #include <api/Currency.hpp>
 #include <api/AccountCreationInfo.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <api/Keychain.hpp>
 #include <api/RippleLikeExtendedPublicKey.hpp>
 #include <ripple/RippleLikeAddress.h>
 
 namespace ledger {
     namespace core {
 
-        class RippleLikeKeychain {
+        class RippleLikeKeychain: public api::Keychain {
 
         public:
             using Address = std::shared_ptr<RippleLikeAddress>;

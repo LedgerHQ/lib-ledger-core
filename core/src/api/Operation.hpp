@@ -75,6 +75,14 @@ public:
     virtual std::vector<std::string> getRecipients() = 0;
 
     /**
+     * Get account-filtered recipients list associated with the operation.
+     *
+     * This function will filter recipients to retain only the ones that are owned by the current
+     * account.
+     */
+    virtual std::vector<std::string> getSelfRecipients() = 0;
+
+    /**
      * Get amount of operation.
      * @return Amount object
      */

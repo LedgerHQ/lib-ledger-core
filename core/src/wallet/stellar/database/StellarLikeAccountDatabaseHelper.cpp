@@ -121,9 +121,9 @@ namespace ledger {
         void StellarLikeAccountDatabaseHelper::createAccount(soci::session &sql, const std::string &walletUid,
                                                              int32_t accountIndex, const stellar::Account &in) {
             auto accountUid = AccountDatabaseHelper::createAccountUid(walletUid, accountIndex);
-            sql << "INSERT INTO stellar_accounts VALUES (:uid, :wallet_uid, :idx, :address, :sequence, :count)",
-                    use(accountUid), use(walletUid), use(accountIndex), use(in.accountId), use(in.sequence),
-                    use(in.subentryCount);
+            sql << "INSERT INTO stellar_accounts VALUES (:uid, :wallet_uid, :idx, :address, :count, :sequence)",
+                    use(accountUid), use(walletUid), use(accountIndex), use(in.accountId),
+                    use(in.subentryCount), use(in.sequence);
         }
 
         void StellarLikeAccountDatabaseHelper::getAccountBalances(soci::session &sql, const std::string &accountUid,

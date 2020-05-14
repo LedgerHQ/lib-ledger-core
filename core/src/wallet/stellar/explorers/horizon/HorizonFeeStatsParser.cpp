@@ -35,9 +35,9 @@ using namespace ledger::core;
 
 static const JsonParserPathMatcher LAST_LEDGER_MATCHER("/last_ledger");
 static const JsonParserPathMatcher BASE_FEE_MATCHER("/last_ledger_base_fee");
-static const JsonParserPathMatcher MIN_FEE_MATCHER("/min_accepted_fee");
-static const JsonParserPathMatcher MODE_FEE_MATCHER("/mode_accepted_fee");
-static const JsonParserPathMatcher MAX_FEE_MATCHER("/p99_accepted_fee");
+static const JsonParserPathMatcher MIN_FEE_MATCHER("/fee_charged/min");
+static const JsonParserPathMatcher MODE_FEE_MATCHER("/fee_charged/mode");
+static const JsonParserPathMatcher MAX_FEE_MATCHER("/fee_charged/max");
 
 namespace ledger {
     namespace core {

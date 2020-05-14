@@ -35,6 +35,7 @@
 
 #include <collections/functional.hpp>
 
+#include <memory>
 #include <utils/DateUtils.hpp>
 
 #include <wallet/common/Operation.h>
@@ -355,7 +356,6 @@ namespace ledger {
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
             if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
-                BitcoinLikeBlockDatabaseHelper::putBlock(sql, block);
                 emitNewBlockEvent(abstractBlock);
                 return true;
             }
@@ -711,8 +711,13 @@ namespace ledger {
                 return  fromBitcoinAddressesToAddresses(keychain->getAllObservableAddresses(from, to));
             });
         }
+
         void BitcoinLikeAccount::getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) {
             return getAddresses(from, to).callback(getMainExecutionContext(), callback);
+        }
+
+        std::shared_ptr<api::Keychain> BitcoinLikeAccount::getAccountKeychain() {
+          return _keychain;
         }
     }
 }

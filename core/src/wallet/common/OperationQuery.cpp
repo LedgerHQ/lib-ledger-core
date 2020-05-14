@@ -89,12 +89,12 @@ namespace ledger {
             return _headFilter;
         }
 
-        std::shared_ptr<api::OperationQuery> OperationQuery::offset(int64_t from) {
+        std::shared_ptr<api::OperationQuery> OperationQuery::offset(int32_t from) {
             _builder.offset((int32_t) from);
             return shared_from_this();
         }
 
-        std::shared_ptr<api::OperationQuery> OperationQuery::limit(int64_t count) {
+        std::shared_ptr<api::OperationQuery> OperationQuery::limit(int32_t count) {
             _builder.limit((int32_t) count);
             return shared_from_this();
         }

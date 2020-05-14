@@ -11,6 +11,7 @@
 #include "ErrorCodeCallback.hpp"
 #include "EthereumLikeAccount.hpp"
 #include "EventBus.hpp"
+#include "Keychain.hpp"
 #include "Logger.hpp"
 #include "Marshal.hpp"
 #include "OperationQuery.hpp"
@@ -321,6 +322,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1eraseD
         ref->eraseDataSince(::djinni::Date::toCpp(jniEnv, j_date),
                             ::djinni_generated::ErrorCodeCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getAccountKeychain(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->getAccountKeychain();
+        return ::djinni::release(::djinni_generated::Keychain::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
 }  // namespace djinni_generated

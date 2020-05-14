@@ -464,6 +464,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
         }
     }
 }
+
 TEST_F(BitcoinLikeWalletSynchronization, BTCParsingAndSerialization) {
     auto pool = newDefaultPool();
     auto wallet = wait(pool->createWallet("testnet_wallet", "bitcoin", DynamicObject::newInstance()));
@@ -490,5 +491,63 @@ TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
         auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
         EXPECT_EQ(hex::toString(tx->serialize()), strTx);
         EXPECT_EQ(tx->getHash(), txHash);
+    }
+}
+
+TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
+    const api::ExtendedKeyAccountCreationInfo SELF_RECIPIENT_XPUB_INFO(
+        0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
+);
+    auto pool = newDefaultPool();
+    {
+        auto wallet = wait(pool->createWallet("self-recipients-wallet-test", "bitcoin", api::DynamicObject::newInstance()));
+
+        auto nextIndex = wait(wallet->getNextAccountIndex());
+        auto info = wait(wallet->getNextExtendedKeyAccountCreationInfo());
+        info.extendedKeys.push_back(SELF_RECIPIENT_XPUB_INFO.extendedKeys[0]);
+        auto account = createBitcoinLikeAccount(wallet, nextIndex, info);
+
+        std::set<std::string> emittedOperations;
+        auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            fmt::print("Received event {}\n", api::to_string(event->getCode()));
+
+            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) {
+                return;
+            }
+
+            EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+
+            auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            EXPECT_GT(ops.size(), 0);
+
+            for (auto const& op : ops) {
+                std::cout << "Operation " << op->getUid() << std::endl;
+
+                // ensure the self-recipients list is always less or equal than the recipients list and that all
+                // elements in it exist in recipients
+                auto recipients = op->getRecipients();
+                auto selfRecipients = op->getSelfRecipients();
+
+                EXPECT_LE(selfRecipients.size(), recipients.size());
+
+                std::cout << "\t-> Recipients" << std::endl;
+                for (auto const& recip : recipients) {
+                    std::cout << "\t\t-> " << recip << std::endl;
+                }
+
+                std::cout << "\t-> Self recipients" << std::endl;
+                for (auto const& recip : selfRecipients) {
+                    std::cout << "\t\t-> " << recip << std::endl;
+
+                    EXPECT_TRUE(std::find(recipients.cbegin(), recipients.cend(), recip) != recipients.cend());
+                }
+
+            }
+
+            dispatcher->stop();
+        });
+
+        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        dispatcher->waitUntilStopped();
     }
 }

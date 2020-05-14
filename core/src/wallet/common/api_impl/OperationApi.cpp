@@ -29,6 +29,7 @@
  *
  */
 #include "OperationApi.h"
+#include <iterator>
 #include <wallet/common/Amount.h>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
@@ -68,6 +69,28 @@ namespace ledger {
 
         std::vector<std::string> OperationApi::getRecipients() {
             return _backend.recipients;
+        }
+
+        std::vector<std::string> OperationApi::getSelfRecipients() {
+            // Depending on the coin, we need extra logic; for most coins, getSelfRecipients is
+            // trivial as the keychain contains only one address, but for some coins, like BTC,
+            // it’s a bit more complicated (we need to check whether the keychain contains the
+            // address.
+            //
+            // In order to do this, we need to access the account’s keychain and perform the test.
+            std::vector<std::string> recipients;
+
+            auto keychain = _account->getAccountKeychain();
+            std::copy_if(
+                _backend.recipients.cbegin(),
+                _backend.recipients.cend(),
+                std::back_inserter(recipients),
+                [&](std::string const& addr) -> bool
+            {
+                return keychain->contains(addr);
+            });
+
+            return recipients;
         }
 
         ledger::core::Operation &OperationApi::getBackend() {

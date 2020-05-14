@@ -269,10 +269,16 @@ namespace ledger {
                         //Check if tx is pending
                         auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
                         if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
+                            soci::transaction tr(sql);
                             buddy->logger->info("Drop transaction {}", tx.first);
                             buddy->logger->info("Deleting operation from DB {}", tx.second);
-                            //delete tx.second from DB (from operations)
-                            sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                            try {
+                                sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                                tr.commit();
+                            } catch(std::exception& ex) {
+                                buddy->logger->info("Failed to delete operation from DB {} reason: {}, rollback ...", tx.second, ex.what());
+                                tr.rollback();
+                            }
                         }
                     }
 
@@ -363,26 +369,34 @@ namespace ledger {
                                 buddy->logger->info("Deleting blocks above block height: {}", failedBlockHeight);
 
                                 soci::session sql(buddy->wallet->getDatabase()->getPool());
-                                sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(
-                                        failedBlockHeight);
+                                {
+                                    soci::transaction tr(sql);
+                                    try {
+                                        sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(
+                                                failedBlockHeight);
 
-                                //Get last block not part from reorg
-                                auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
-                                                                                   buddy->wallet->getCurrency().name);
+                                        //Get last block not part from reorg
+                                        auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
+                                                                                           buddy->wallet->getCurrency().name);
 
-                                //Resync from the "beginning" if no last block in DB
-                                int64_t lastBlockHeight = 0;
-                                std::string lastBlockHash;
-                                if (lastBlock.nonEmpty()) {
-                                    lastBlockHeight = lastBlock.getValue().height;
-                                    lastBlockHash = lastBlock.getValue().blockHash;
-                                }
+                                        //Resync from the "beginning" if no last block in DB
+                                        int64_t lastBlockHeight = 0;
+                                        std::string lastBlockHash;
+                                        if (lastBlock.nonEmpty()) {
+                                            lastBlockHeight = lastBlock.getValue().height;
+                                            lastBlockHash = lastBlock.getValue().blockHash;
+                                        }
 
-                                //Update savedState's batches
-                                for (auto &batch : buddy->savedState.getValue().batches) {
-                                    if (batch.blockHeight > lastBlockHeight) {
-                                        batch.blockHeight = (uint32_t) lastBlockHeight;
-                                        batch.blockHash = lastBlockHash;
+                                        //Update savedState's batches
+                                        for (auto &batch : buddy->savedState.getValue().batches) {
+                                            if (batch.blockHeight > lastBlockHeight) {
+                                                batch.blockHeight = (uint32_t) lastBlockHeight;
+                                                batch.blockHash = lastBlockHash;
+                                            }
+                                        }
+                                        tr.commit();
+                                    } catch(...) {
+                                        tr.rollback();
                                     }
                                 }
 
@@ -416,9 +430,10 @@ namespace ledger {
             // synchronization object used to accumulate a state. hadTransactions is used to check
             // whether more data is needed. If a block doesn’t have any transaction, it means that
             // we must stop.
-            Future<bool> synchronizeBatch(uint32_t currentBatchIndex,
-                                          std::shared_ptr<SynchronizationBuddy> buddy,
-                                          bool hadTransactions = false) {
+            Future<bool> synchronizeBatch(
+                    uint32_t currentBatchIndex,
+                    std::shared_ptr<SynchronizationBuddy> buddy,
+                    bool hadTransactions = false) {
                 buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
 
                 Option<std::string> blockHash;
@@ -454,34 +469,38 @@ namespace ledger {
 
                         auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
-                        soci::transaction tr(sql);
-                        buddy->logger->info("Got {} txs", bulk->transactions.size());
+                        buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
+                        auto count = 0;
                         for (const auto& tx : bulk->transactions) {
+                            soci::transaction tr(sql);
                             // A lot of things could happen here, better to wrap it
-                            auto tryPutTx = Try<int>::from([&] () {
-                                return buddy->account->putTransaction(sql, tx);
+                            auto tryPutTx = Try<int>::from([&buddy, &tx, &sql] () {
+                                auto flag = buddy->account->putTransaction(sql, tx);
+                                //Update first pendingTxHash in savedState
+                                auto it = buddy->transactionsToDrop.find(tx.hash);
+                                if (it != buddy->transactionsToDrop.end()) {
+                                    //If block non empty, tx is no longer pending
+                                    if (tx.block.nonEmpty()) {
+                                        buddy->savedState.getValue().pendingTxsHash.erase(it->first);
+                                    } else { //Otherwise tx is in mempool but pending
+                                        buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
+                                    }
+                                }
+                                //Remove from tx to drop
+                                buddy->transactionsToDrop.erase(tx.hash);
+                                return flag;
                             });
 
                             if (tryPutTx.isFailure()) {
-                                buddy->logger->error("Failed to put transaction {} for account {}, reason: {}", tx.hash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
+                                tr.rollback();
+                                auto blockHash = tx.block.hasValue() ? tx.block.getValue().hash : "None";
+                                buddy->logger->error("Failed to put transaction {}, on block {}, for account {}, reason: {}, rollback ...", tx.hash, blockHash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
+                            } else {
+                                count++;
+                                tr.commit();
                             }
-
-                            //Update first pendingTxHash in savedState
-                            auto it = buddy->transactionsToDrop.find(tx.hash);
-                            if (it != buddy->transactionsToDrop.end()) {
-                                //If block non empty, tx is no longer pending
-                                if (tx.block.nonEmpty()) {
-                                    buddy->savedState.getValue().pendingTxsHash.erase(it->first);
-                                } else { //Otherwise tx is in mempool but pending
-                                    buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
-                                }
-                            }
-
-                            //Remove from tx to drop
-                            buddy->transactionsToDrop.erase(tx.hash);
                         }
-
-                        tr.commit();
+                        buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
                         buddy->account->emitEventsNow();
 
                         // Get the last block

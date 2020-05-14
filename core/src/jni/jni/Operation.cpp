@@ -91,6 +91,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1getSelfRecipients(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->getSelfRecipients();
+        return ::djinni::release(::djinni::List<::djinni::String>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1getAmount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

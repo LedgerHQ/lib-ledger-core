@@ -47,6 +47,7 @@ namespace ledger {
             std::chrono::system_clock::time_point getDate() override;
             std::vector<std::string> getSenders() override;
             std::vector<std::string> getRecipients() override;
+            std::vector<std::string> getSelfRecipients() override;
             std::shared_ptr<api::Amount> getAmount() override;
             std::shared_ptr<api::Amount> getFees() override;
             std::shared_ptr<api::Preferences> getPreferences() override;

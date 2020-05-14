@@ -55,8 +55,8 @@ namespace ledger {
             );
             std::shared_ptr<api::OperationQuery> addOrder(api::OperationOrderKey key, bool descending) override;
             std::shared_ptr<api::QueryFilter> filter() override;
-            std::shared_ptr<api::OperationQuery> offset(int64_t from) override;
-            std::shared_ptr<api::OperationQuery> limit(int64_t count) override;
+            std::shared_ptr<api::OperationQuery> offset(int32_t from) override;
+            std::shared_ptr<api::OperationQuery> limit(int32_t count) override;
             std::shared_ptr<api::OperationQuery> complete() override;
             std::shared_ptr<api::OperationQuery> partial() override;
 
