@@ -49,23 +49,23 @@ namespace model {
                     Option<std::string> assetName,
                     Option<std::string> url,
                     Option<Address> clawbackAddr,
-                    uint32_t decimals,
+                    Option<uint32_t> decimals,
                     Option<bool> defaultFrozen,
                     Option<Address> freezeAddr,
                     Option<Address> managerAddr,
                     Option<Address> reserveAddr,
-                    uint64_t total,
+                    Option<uint64_t> total,
                     Option<std::string> unitName)
             : metaDataHash(std::move(metaDataHash))
             , assetName(std::move(assetName))
             , url(std::move(url))
             , clawbackAddr(std::move(clawbackAddr))
-            , decimals(decimals)
+            , decimals(std::move(decimals))
             , defaultFrozen(std::move(defaultFrozen))
             , freezeAddr(std::move(freezeAddr))
             , managerAddr(std::move(managerAddr))
             , reserveAddr(std::move(reserveAddr))
-            , total(total)
+            , total(std::move(total))
             , unitName(std::move(unitName))
         {}
 

@@ -48,12 +48,12 @@ AlgorandAssetParams = record {
     defaultFrozen: optional<bool>;
 
     # The total number of units of this asset
-    total: string;
+    total: optional<string>;
     # The number of digits to use after the decimal point when displaying this asset
-    decimals: i32;
+    decimals: optional<i32>;
 
     # The address that created this asset.
-    creatorAddress: string;
+    creatorAddress: optional<string>;
     # The address used to manage the keys of this asset and to destroy it
     managerAddress: optional<string>;
     # The address used to freeze holdings of this asset. If empty, freezing is not permitted.
@@ -119,7 +119,7 @@ AlgorandAssetTransferInfo = record {
     # The unique asset ID. Required to re-configure or destroy the asset, set to zero on asset creation.
     assetId: string;
     # The amount of asset being transferred
-    amount: string;
+    amount: optional<string>;
     # The recipient's address
     recipientAddress: string;
     # The address to send all remaining funds before closing the account
