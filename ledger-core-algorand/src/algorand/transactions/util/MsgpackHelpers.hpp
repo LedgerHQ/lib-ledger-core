@@ -54,35 +54,53 @@ namespace adaptor {
         T value;
     };
 
-    namespace {
+    /// The enable_if are there because algorand does not serialize a boolean if its
+    /// value is false, making the implementation of this function different for bool...
+    template<typename T,
+             std::enable_if_t<!std::is_same<std::decay_t<T>, bool>::value, int> = 0>
+    uint32_t isValueValid(const T& value)
+    {
+        return 1;
+    }
 
-        template<typename T>
-        uint32_t isValueValid(const T& value)
-        {
-            return 1;
-        }
+    /// Specific implementation for boolean
+    template<typename T,
+             std::enable_if_t<std::is_same<std::decay_t<T>, bool>::value, int> = 0>
+    uint32_t isValueValid(const T& value)
+    {
+        return value ? 1 : 0;
+    }
 
-        template<typename T>
-        uint32_t isValueValid(const Option<T>& value)
-        {
-            return value.hasValue() ? 1 : 0;
-        }
+    template<typename T>
+    uint32_t isValueValid(const Option<T>& value)
+    {
+        if (value.hasValue())
+            return isValueValid<T>(*value);
+        return 0;
+    }
 
-        template<typename Stream, typename T>
-        void packKeyValue(packer<Stream>& o, KeyValue<T>&& keyvalue)
-        {
+    template<typename Stream, typename T>
+    void packKeyValue(packer<Stream>& o, KeyValue<T>&& keyvalue)
+    {
+        o.pack(keyvalue.key);
+        o.pack(keyvalue.value);
+    }
+
+    template<typename Stream>
+    void packKeyValue(packer<Stream>& o, KeyValue<bool>&& keyvalue)
+    {
+        if (keyvalue.value) {
             o.pack(keyvalue.key);
             o.pack(keyvalue.value);
         }
+    }
 
-        template<typename Stream, typename T>
-        void packKeyValue(packer<Stream>& o, KeyValue<Option<T>>&& keyvalue)
-        {
-            if (keyvalue.value.hasValue())
-                packKeyValue(o, KeyValue<T>(keyvalue.key, *keyvalue.value));
-        }
-
-    } // namespace
+    template<typename Stream, typename T>
+    void packKeyValue(packer<Stream>& o, KeyValue<Option<T>>&& keyvalue)
+    {
+        if (keyvalue.value.hasValue())
+            packKeyValue(o, KeyValue<T>(keyvalue.key, *keyvalue.value));
+    }
 
     // FIXME(remibarjon): use fold expression (C++17)
     // template<typename... T>

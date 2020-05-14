@@ -36,7 +36,7 @@ namespace model {
 
     AssetConfigTxnFields AssetConfigTxnFields::create(AssetParams assetParams)
     {
-        return AssetConfigTxnFields(assetParams, 0);
+        return AssetConfigTxnFields(assetParams, Option<uint64_t>());
     }
 
     AssetConfigTxnFields AssetConfigTxnFields::reconfigure(AssetParams assetParams, uint64_t assetId)
