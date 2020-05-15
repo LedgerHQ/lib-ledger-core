@@ -40,6 +40,15 @@
 #include <wallet/cosmos/api_impl/CosmosLikeTransactionApi.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 
+// Windows + Rapidjson incompatibility
+// Windows secretly add a preprocessor macro that
+// replaces GetObject with GetObjectA or GetObjectW
+// This hack is necessary to compile
+// Reference : https://github.com/Tencent/rapidjson/issues/1448
+#if defined(_MSC_VER) || defined(__MINGW32__)
+#undef GetObject
+#endif
+
 using namespace rapidjson;
 
 namespace ledger {
