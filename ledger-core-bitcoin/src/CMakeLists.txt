@@ -19,7 +19,6 @@ file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/bitcoin/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR}/inc/bitcoin/*.hpp)
 
 add_library(ledger-core-bitcoin-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
-add_library(Core::ledger-core-bitcoin-obj ALIAS ledger-core-bitcoin-obj)
 
 # enable static analyzers if requested
 include(StaticAnalyzers)
@@ -30,7 +29,7 @@ include(CompilerWarnings)
 toggle_compiler_warnings(ledger-core-bitcoin-obj)
 
 # link the ledger-core objects
-target_link_libraries(ledger-core-bitcoin-obj PRIVATE Core::ledger-core-obj)
+target_link_libraries(ledger-core-bitcoin-obj PRIVATE ledger-core-obj)
 
 target_include_directories(ledger-core-bitcoin-obj PUBLIC
   ${PROJECT_SOURCE_DIR}/inc

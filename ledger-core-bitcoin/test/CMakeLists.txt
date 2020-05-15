@@ -1,8 +1,8 @@
 project(ledger-core-bitcoin-tests)
 
-add_executable(ledger-core-bitcoin-tests 
+add_executable(ledger-core-bitcoin-tests
     main.cpp
-    fixtures/Fixtures.cpp 
+    fixtures/Fixtures.cpp
     fixtures/MediumXPubFixtures.cpp
     fixtures/BCHXPubFixtures.cpp
     fixtures/ZECXPubFixtures.cpp
@@ -12,7 +12,7 @@ add_executable(ledger-core-bitcoin-tests
     AddressTests.cpp
     ScriptTests.cpp
     KeychainTests.cpp
-    WalletTests.cpp 
+    WalletTests.cpp
     AccountTests.cpp
     ExplorerTests.cpp
     CurrencyTests.cpp
@@ -21,10 +21,10 @@ add_executable(ledger-core-bitcoin-tests
     SynchronizationTests.cpp
 )
 
-target_link_libraries(ledger-core-bitcoin-tests Core::ledger-core-obj)
-target_link_libraries(ledger-core-bitcoin-tests Core::ledger-test)
-target_link_libraries(ledger-core-bitcoin-tests Core::ledger-core-integration-test)
-target_link_libraries(ledger-core-bitcoin-tests Core::ledger-qt-host)
+target_link_libraries(ledger-core-bitcoin-tests ledger-core-bundle)
+target_link_libraries(ledger-core-bitcoin-tests ledger-test)
+target_link_libraries(ledger-core-bitcoin-tests ledger-core-integration-test)
+target_link_libraries(ledger-core-bitcoin-tests ledger-qt-host)
 target_link_libraries(ledger-core-bitcoin-tests ledger-core-bitcoin-obj)
 target_link_libraries(ledger-core-bitcoin-tests gtest gtest_main)
 

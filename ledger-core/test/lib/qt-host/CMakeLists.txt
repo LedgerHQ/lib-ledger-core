@@ -16,8 +16,6 @@ add_library(ledger-qt-host STATIC
     utils/FilesystemUtils.hpp net/QtWebSocketClient.cpp net/QtWebSocketClient.hpp
 )
 
-add_library(Core::ledger-qt-host ALIAS ledger-qt-host)
-
 target_include_directories(
     ledger-qt-host INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}> $<INSTALL_INTERFACE:include/ledger-test-qt>
@@ -28,4 +26,4 @@ target_link_libraries(ledger-qt-host Qt5::Core)
 target_link_libraries(ledger-qt-host Qt5::Concurrent)
 target_link_libraries(ledger-qt-host Qt5::Network)
 target_link_libraries(ledger-qt-host Qt5::WebSockets)
-target_link_libraries(ledger-qt-host ledger-core-obj)
+target_link_libraries(ledger-qt-host ledger-core-bundle)

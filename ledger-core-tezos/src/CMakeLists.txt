@@ -21,7 +21,6 @@ file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/tezos/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR}/inc/tezos/*.hpp)
 
 add_library(ledger-core-tezos-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
-add_library(Core::ledger-core-tezos-obj ALIAS ledger-core-tezos-obj)
 
 # enable static analyzers if requested
 include(StaticAnalyzers)
@@ -33,7 +32,7 @@ toggle_compiler_warnings(ledger-core-tezos-obj)
 disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 
 # link the ledger-core library
-target_link_libraries(ledger-core-tezos-obj PRIVATE Core::ledger-core-obj)
+target_link_libraries(ledger-core-tezos-obj PRIVATE ledger-core-obj)
 
 target_include_directories(ledger-core-tezos-obj PUBLIC
   ${PROJECT_SOURCE_DIR}/inc

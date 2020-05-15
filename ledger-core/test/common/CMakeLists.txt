@@ -8,7 +8,7 @@ endif (APPLE)
 add_executable(ledger-core-common-tests main.cpp BalanceHistory.cpp)
 
 target_link_libraries(ledger-core-common-tests gtest gtest_main)
-target_link_libraries(ledger-core-common-tests ledger-core-obj)
+target_link_libraries(ledger-core-common-tests ledger-core-bundle)
 target_link_libraries(ledger-core-common-tests ledger-test)
 target_link_libraries(ledger-core-common-tests leveldb)
 

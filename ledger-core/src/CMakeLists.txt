@@ -29,7 +29,6 @@ if (NOT PG_SUPPORT)
 endif()
 
 add_library(ledger-core-obj OBJECT ${SRC_FILES} ${HEADERS_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
-add_library(Core::ledger-core-obj ALIAS ledger-core-obj)
 
 target_compile_definitions(ledger-core-obj PUBLIC ledger_core_EXPORTS)
 target_compile_definitions(ledger-core-obj PRIVATE
@@ -56,7 +55,7 @@ endif(MINGW OR MSVC)
 
 # Crypto
 if (SYS_OPENSSL)
-    find_package(OpenSSL)
+    find_package(OpenSSL REQUIRED)
     target_link_libraries(ledger-core-obj PUBLIC OpenSSL::Crypto)
 else()
     target_link_libraries(ledger-core-obj PUBLIC crypto)
@@ -66,6 +65,7 @@ target_link_libraries(ledger-core-obj PUBLIC blake)
 # SSL
 if(SSL_SUPPORT)
     if (SYS_OPENSSL)
+        find_package(OpenSSL REQUIRED)
         target_link_libraries(ledger-core-obj PUBLIC OpenSSL::SSL)
     else()
         target_link_libraries(ledger-core-obj PUBLIC ssl)

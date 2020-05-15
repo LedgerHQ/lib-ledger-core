@@ -8,6 +8,6 @@ endif (APPLE)
 add_executable(ledger-core-bytes-tests main.cpp BytesReaderTests.cpp BytesWriterTests.cpp RLPTests.cpp Zarith.cpp)
 
 target_link_libraries(ledger-core-bytes-tests gtest gtest_main)
-target_link_libraries(ledger-core-bytes-tests ledger-core-obj)
+target_link_libraries(ledger-core-bytes-tests ledger-core-bundle)
 
 add_test (NAME ledger-core-bytes-tests COMMAND ledger-core-bytes-tests)

@@ -20,10 +20,8 @@ add_library(ledger-test STATIC
     FakeHttpClient.cpp FakeUrlConnection.hpp FakeUrlConnection.cpp
 )
 
-add_library(Core::ledger-test ALIAS ledger-test)
-
 target_include_directories(ledger-test INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(ledger-test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/../asio/include)
 
 target_link_libraries(ledger-test PUBLIC mongoose)
-target_link_libraries(ledger-test PUBLIC ledger-core-obj)
+target_link_libraries(ledger-test PUBLIC ledger-core-bundle)

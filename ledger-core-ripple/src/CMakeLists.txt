@@ -21,7 +21,6 @@ file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ripple/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR}/inc/ripple/*.hpp)
 
 add_library(ledger-core-ripple-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
-add_library(Core::ledger-core-ripple-obj ALIAS ledger-core-ripple-obj)
 
 # enable static analyzers if requested
 include(StaticAnalyzers)
@@ -33,7 +32,7 @@ toggle_compiler_warnings(ledger-core-ripple-obj)
 disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 
 # link the ledger-core library
-target_link_libraries(ledger-core-ripple-obj PRIVATE Core::ledger-core-obj)
+target_link_libraries(ledger-core-ripple-obj PRIVATE ledger-core-obj)
 
 target_include_directories(ledger-core-ripple-obj PUBLIC
   ${PROJECT_SOURCE_DIR}/inc

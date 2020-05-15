@@ -12,8 +12,6 @@ add_library(ledger-core-integration-test
     ${TEST_FILES}
 )
 
-add_library(Core::ledger-core-integration-test ALIAS ledger-core-integration-test)
-
 target_include_directories(
     ledger-core-integration-test PUBLIC
     # hack for centralized build
@@ -24,21 +22,12 @@ target_include_directories(
 target_link_libraries(ledger-core-integration-test gtest gtest_main)
 
 if(SYS_OPENSSL)
-    find_package(OpenSSL)
-    target_link_libraries(ledger-core-integration-test OpenSSL::crypto)
+    find_package(OpenSSL REQUIRED COMPONENTS Crypto)
+    target_link_libraries(ledger-core-integration-test OpenSSL::Crypto)
 else()
     target_link_libraries(ledger-core-integration-test crypto)
 endif()
 
-if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
-    # We need this otherwise link fails (for Linux),
-    # this is needed since we build static library for tests,
-    # not needed if we link against dynamic
-    # TODO: needs more investigation
-    target_link_libraries(ledger-core-integration-test ledger-core)
-else()
-    target_link_libraries(ledger-core-integration-test ledger-core-obj)
-endif()
-
+target_link_libraries(ledger-core-integration-test ledger-core-bundle)
 target_link_libraries(ledger-core-integration-test ledger-test)
 target_link_libraries(ledger-core-integration-test ledger-qt-host)

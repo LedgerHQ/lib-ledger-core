@@ -21,7 +21,6 @@ file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ethereum/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR}/inc/ethereum/*.hpp)
 
 add_library(ledger-core-ethereum-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
-add_library(Core::ledger-core-ethereum-obj ALIAS ledger-core-ethereum-obj)
 
 # enable static analyzers if requested
 include(StaticAnalyzers)
@@ -33,7 +32,7 @@ toggle_compiler_warnings(ledger-core-ethereum-obj)
 disable_compiler_warnings_for_source_files("${API_SRC_FILES}")
 
 # link the ledger-core library
-target_link_libraries(ledger-core-ethereum-obj PRIVATE Core::ledger-core-obj)
+target_link_libraries(ledger-core-ethereum-obj PRIVATE ledger-core-obj)
 
 target_include_directories(ledger-core-ethereum-obj PUBLIC
   ${PROJECT_SOURCE_DIR}/inc

@@ -57,7 +57,7 @@ endif()
 add_subdirectory(ledger-core)
 
 add_library(ledger-core-bundle SHARED)
-target_link_libraries(ledger-core-bundle PUBLIC Core::ledger-core-obj)
+target_link_libraries(ledger-core-bundle PUBLIC ledger-core-obj)
 
 # TODO: this line is not mandatory on Ubuntu 19.04 - we have to confirm if this is mandatory in other platforms to work properly
 # if(UNIX AND NOT APPLE AND NOT ANDROID)
@@ -76,11 +76,17 @@ string(REPLACE "," ";" BUILD_COINS "${BUILD_COINS}")
 foreach(COIN ${BUILD_COINS})
   if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/ledger-core-${COIN}/CMakeLists.txt")
     add_subdirectory(ledger-core-${COIN})
-    target_link_libraries(ledger-core-bundle PUBLIC Core::ledger-core-${COIN}-obj)
+    target_link_libraries(ledger-core-bundle PUBLIC ledger-core-${COIN}-obj)
   else()
     message(WARNING "coin '${COIN}' not found")
   endif()
 endforeach()
+
+# Add all the API objects (some needs to be compiled, and because they are shared, we need to
+# compile them only once).
+file(GLOB API_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/bundle/api/*")
+add_library(ledger-core-api ${API_SRC_FILES})
+target_link_libraries(ledger-core-bundle PUBLIC ledger-core-api)
 
 # TODO: move all the following into a cmake module
 if(IS_IOS GREATER_EQUAL 0)
