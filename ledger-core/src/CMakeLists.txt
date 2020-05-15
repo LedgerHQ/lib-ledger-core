@@ -45,6 +45,9 @@ toggle_static_analyzers(ledger-core-obj)
 include(CompilerWarnings)
 toggle_compiler_warnings(ledger-core-obj)
 
+# Link ledger-core to the API.
+target_link_libraries(ledger-core-obj PUBLIC ledger-core-api)
+
 target_link_libraries(ledger-core-obj PUBLIC bigd)
 
 if(MINGW OR MSVC)
@@ -59,6 +62,7 @@ if (SYS_OPENSSL)
     target_link_libraries(ledger-core-obj PUBLIC OpenSSL::Crypto)
 else()
     target_link_libraries(ledger-core-obj PUBLIC crypto)
+    target_include_directories(ledger-core-obj SYSTEM PUBLIC ${PROJECT_SOURCE_DIR}/lib/openssl/include)
 endif()
 target_link_libraries(ledger-core-obj PUBLIC blake)
 
@@ -92,6 +96,7 @@ target_link_libraries(ledger-core-obj PUBLIC ethash)
 
 target_link_libraries(ledger-core-obj PUBLIC ${SQLITE_LIB})
 
+
 target_include_directories(
     ledger-core-obj SYSTEM PUBLIC
     ${PROJECT_SOURCE_DIR}/inc
@@ -99,7 +104,6 @@ target_include_directories(
     ${PROJECT_SOURCE_DIR}/lib/rapidjson/include
     ${PROJECT_SOURCE_DIR}/lib/soci/core
     ${PROJECT_SOURCE_DIR}/lib/soci_sqlite3
-    ${PROJECT_SOURCE_DIR}/lib/openssl/include
     ${PROJECT_SOURCE_DIR}/lib/blake
     ${PROJECT_SOURCE_DIR}/lib/leveldb/include
     ${PROJECT_SOURCE_DIR}/lib/boost

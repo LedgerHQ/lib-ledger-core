@@ -69,6 +69,11 @@ if (TARGET_JNI)
     target_link_libraries(ledger-core-bundle PRIVATE ${JNI_LIBRARIES})
 endif ()
 
+# Add all the API objects (some needs to be compiled, and because they are shared, we need to
+# compile them only once).
+file(GLOB API_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/bundle/api/*")
+add_library(ledger-core-api ${API_SRC_FILES})
+
 # allows to provide coin list separated by commma or whitespace
 string(REPLACE " " ";" BUILD_COINS "${BUILD_COINS}")
 string(REPLACE "," ";" BUILD_COINS "${BUILD_COINS}")
@@ -81,12 +86,6 @@ foreach(COIN ${BUILD_COINS})
     message(WARNING "coin '${COIN}' not found")
   endif()
 endforeach()
-
-# Add all the API objects (some needs to be compiled, and because they are shared, we need to
-# compile them only once).
-file(GLOB API_SRC_FILES "${CMAKE_CURRENT_SOURCE_DIR}/bundle/api/*")
-add_library(ledger-core-api ${API_SRC_FILES})
-target_link_libraries(ledger-core-bundle PUBLIC ledger-core-api)
 
 # TODO: move all the following into a cmake module
 if(IS_IOS GREATER_EQUAL 0)

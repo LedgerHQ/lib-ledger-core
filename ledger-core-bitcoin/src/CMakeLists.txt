@@ -18,7 +18,7 @@ endif ()
 file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/bitcoin/*.cpp)
 file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR}/inc/bitcoin/*.hpp)
 
-add_library(ledger-core-bitcoin-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_SRC_FILES} ${API_HEADER_FILES})
+add_library(ledger-core-bitcoin-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_HEADER_FILES})
 
 # enable static analyzers if requested
 include(StaticAnalyzers)

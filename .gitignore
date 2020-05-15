@@ -25,7 +25,6 @@ install_manifest.txt
 tags
 *.a
 /ledger-core/idl/core.yaml
-/**/inc/**/api
 /**/jni
 /install
 /.clangd/

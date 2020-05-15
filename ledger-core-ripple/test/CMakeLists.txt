@@ -6,11 +6,11 @@ add_executable(
     SynchronizationTest.cpp AccountTests.cpp
 )
 
-target_link_libraries(ledger-core-ripple-tests Core::ledger-core-obj)
-target_link_libraries(ledger-core-ripple-tests Core::ledger-test)
-target_link_libraries(ledger-core-ripple-tests Core::ledger-core-integration-test)
-target_link_libraries(ledger-core-ripple-tests Core::ledger-qt-host)
 target_link_libraries(ledger-core-ripple-tests ledger-core-ripple-obj)
+target_link_libraries(ledger-core-ripple-tests ledger-core-bundle)
+target_link_libraries(ledger-core-ripple-tests ledger-core-integration-test)
+target_link_libraries(ledger-core-ripple-tests ledger-test)
+target_link_libraries(ledger-core-ripple-tests ledger-qt-host)
 target_link_libraries(ledger-core-ripple-tests gtest gtest_main)
 
 add_test (NAME Ripple-address COMMAND ledger-core-ripple-tests --gtest_filter=RippleAddress.*)

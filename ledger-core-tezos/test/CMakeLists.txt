@@ -6,11 +6,11 @@ add_executable(
     AccountTests.cpp
 )
 
-target_link_libraries(ledger-core-tezos-tests Core::ledger-core-obj)
-target_link_libraries(ledger-core-tezos-tests Core::ledger-test)
-target_link_libraries(ledger-core-tezos-tests Core::ledger-core-integration-test)
-target_link_libraries(ledger-core-tezos-tests Core::ledger-qt-host)
 target_link_libraries(ledger-core-tezos-tests ledger-core-tezos-obj)
+target_link_libraries(ledger-core-tezos-tests ledger-core-bundle)
+target_link_libraries(ledger-core-tezos-tests ledger-core-integration-test)
+target_link_libraries(ledger-core-tezos-tests ledger-test)
+target_link_libraries(ledger-core-tezos-tests ledger-qt-host)
 target_link_libraries(ledger-core-tezos-tests gtest gtest_main)
 
 add_test (NAME Tezos-address COMMAND ledger-core-tezos-tests --gtest_filter=TezosAddress.*)

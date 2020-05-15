@@ -11,11 +11,11 @@ add_executable(ledger-core-ethereum-tests
     ExplorerTests.cpp
 )
 
-target_link_libraries(ledger-core-ethereum-tests Core::ledger-core-obj)
-target_link_libraries(ledger-core-ethereum-tests Core::ledger-test)
-target_link_libraries(ledger-core-ethereum-tests Core::ledger-core-integration-test)
-target_link_libraries(ledger-core-ethereum-tests Core::ledger-qt-host)
 target_link_libraries(ledger-core-ethereum-tests ledger-core-ethereum-obj)
+target_link_libraries(ledger-core-ethereum-tests ledger-core-bundle)
+target_link_libraries(ledger-core-ethereum-tests ledger-core-integration-test)
+target_link_libraries(ledger-core-ethereum-tests ledger-test)
+target_link_libraries(ledger-core-ethereum-tests ledger-qt-host)
 target_link_libraries(ledger-core-ethereum-tests gtest gtest_main)
 
 add_test(NAME Ethereum-wallet COMMAND ledger-core-ethereum-tests --gtest_filter=EthereumWallets.*)
