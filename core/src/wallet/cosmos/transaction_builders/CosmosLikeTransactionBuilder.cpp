@@ -88,14 +88,14 @@ cosmos::MsgSend buildMsgSendFromRawMessage(rjObject const &object)
         auto amountObject = object[kValue][kAmount].GetObject();
         amounts.push_back(
             cosmos::Coin{getString(amountObject, kAmount), getString(amountObject, kDenom)});
-        return {getString(object[kValue].GetObject(), kFromAddress),
-                getString(object[kValue].GetObject(), kToAddress),
-                amounts};
+        return cosmos::MsgSend{getString(object[kValue].GetObject(), kFromAddress),
+                               getString(object[kValue].GetObject(), kToAddress),
+                               amounts};
     }
     else {
         // We are sure object[kValue][kAmount] is an array here
 
-        // the size of the array of amount should be frequently equals to one
+        // the size of the array of amount should be frequently equal to one
         amounts.reserve(object[kValue][kAmount].GetArray().Size());
 
         for (auto &amount : object[kValue][kAmount].GetArray()) {
@@ -106,9 +106,9 @@ cosmos::MsgSend buildMsgSendFromRawMessage(rjObject const &object)
             }
         }
 
-        return {getString(object[kValue].GetObject(), kFromAddress),
-                getString(object[kValue].GetObject(), kToAddress),
-                amounts};
+        return cosmos::MsgSend{getString(object[kValue].GetObject(), kFromAddress),
+                               getString(object[kValue].GetObject(), kToAddress),
+                               amounts};
     }
 }
 
@@ -117,9 +117,10 @@ cosmos::MsgDelegate buildMsgDelegateFromRawMessage(rjObject const &object)
     auto valueObject = object[kValue].GetObject();
     auto amountObject = valueObject[kAmount].GetObject();
 
-    return {getString(valueObject, kDelegatorAddress),
-            getString(valueObject, kValidatorAddress),
-            cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
+    return cosmos::MsgDelegate{
+        getString(valueObject, kDelegatorAddress),
+        getString(valueObject, kValidatorAddress),
+        cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
 }
 
 cosmos::MsgUndelegate buildMsgUndelegateFromRawMessage(rjObject const &object)
@@ -127,9 +128,10 @@ cosmos::MsgUndelegate buildMsgUndelegateFromRawMessage(rjObject const &object)
     auto valueObject = object[kValue].GetObject();
     auto amountObject = valueObject[kAmount].GetObject();
 
-    return {getString(valueObject, kDelegatorAddress),
-            getString(valueObject, kValidatorAddress),
-            cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
+    return cosmos::MsgUndelegate{
+        getString(valueObject, kDelegatorAddress),
+        getString(valueObject, kValidatorAddress),
+        cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
 }
 
 cosmos::MsgBeginRedelegate buildMsgBeginRedelegateFromRawMessage(rjObject const &object)
@@ -137,10 +139,11 @@ cosmos::MsgBeginRedelegate buildMsgBeginRedelegateFromRawMessage(rjObject const 
     auto valueObject = object[kValue].GetObject();
     auto amountObject = valueObject[kAmount].GetObject();
 
-    return {getString(valueObject, kDelegatorAddress),
-            getString(valueObject, kValidatorSrcAddress),
-            getString(valueObject, kValidatorDstAddress),
-            cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
+    return cosmos::MsgBeginRedelegate{
+        getString(valueObject, kDelegatorAddress),
+        getString(valueObject, kValidatorSrcAddress),
+        getString(valueObject, kValidatorDstAddress),
+        cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom))};
 }
 
 cosmos::MsgSubmitProposal buildMsgSubmitProposalFromRawMessage(rjObject const &object)
@@ -163,15 +166,15 @@ cosmos::MsgSubmitProposal buildMsgSubmitProposalFromRawMessage(rjObject const &o
             cosmos::Coin(getString(amountObject, kAmount), getString(amountObject, kDenom)));
     }
 
-    return {content, getString(valueObject, kProposer), amounts};
+    return cosmos::MsgSubmitProposal{content, getString(valueObject, kProposer), amounts};
 }
 
 cosmos::MsgVote buildMsgVoteFromRawMessage(rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
-    return {getString(valueObject, kVoter),
-            getString(valueObject, kProposalId),
-            cosmos::stringToVoteOption(getString(valueObject, kOption))};
+    return cosmos::MsgVote{getString(valueObject, kVoter),
+                           getString(valueObject, kProposalId),
+                           cosmos::stringToVoteOption(getString(valueObject, kOption))};
 }
 
 cosmos::MsgDeposit buildMsgDepositFromRawMessage(rjObject const &object)
@@ -193,14 +196,16 @@ cosmos::MsgDeposit buildMsgDepositFromRawMessage(rjObject const &object)
         }
     }
 
-    return {getString(valueObject, kDepositor), getString(valueObject, kProposalId), amounts};
+    return cosmos::MsgDeposit{
+        getString(valueObject, kDepositor), getString(valueObject, kProposalId), amounts};
 }
 
 cosmos::MsgWithdrawDelegationReward buildMsgWithdrawDelegationRewardFromRawMessage(
     rjObject const &object)
 {
     auto valueObject = object[kValue].GetObject();
-    return {getString(valueObject, kDelegatorAddress), getString(valueObject, kValidatorAddress)};
+    return cosmos::MsgWithdrawDelegationReward{getString(valueObject, kDelegatorAddress),
+                                               getString(valueObject, kValidatorAddress)};
 }
 
 cosmos::MsgMultiSend buildMsgMultiSendFromRawMessage(rjObject const &object)
@@ -259,7 +264,7 @@ cosmos::MsgMultiSend buildMsgMultiSendFromRawMessage(rjObject const &object)
         }
     }
 
-    return {inputs, outputs};
+    return cosmos::MsgMultiSend{inputs, outputs};
 }
 
 cosmos::MsgCreateValidator buildMsgCreateValidatorFromRawMessage(rjObject const &object)
@@ -306,13 +311,13 @@ cosmos::MsgCreateValidator buildMsgCreateValidatorFromRawMessage(rjObject const 
     validatorAddress = getString(valueObject, kValidatorAddress);
     pubkey = getString(valueObject, kPubKey);
 
-    return {description,
-            commission,
-            minSelfDelegation,
-            delegatorAddress,
-            validatorAddress,
-            pubkey,
-            value};
+    return cosmos::MsgCreateValidator{description,
+                                      commission,
+                                      minSelfDelegation,
+                                      delegatorAddress,
+                                      validatorAddress,
+                                      pubkey,
+                                      value};
 }
 
 cosmos::MsgEditValidator buildMsgEditValidatorFromRawMessage(rjObject const &object)
@@ -346,7 +351,8 @@ cosmos::MsgEditValidator buildMsgEditValidatorFromRawMessage(rjObject const &obj
         minSelfDelegation = optional<std::string>(getString(valueObject, kMinSelfDelegation));
     }
 
-    return {description, validatorAddress, commissionRate, minSelfDelegation};
+    return cosmos::MsgEditValidator{
+        description, validatorAddress, commissionRate, minSelfDelegation};
 }
 
 cosmos::MsgSetWithdrawAddress buildMsgSetWithdrawAddressFromRawMessage(rjObject const &object)
