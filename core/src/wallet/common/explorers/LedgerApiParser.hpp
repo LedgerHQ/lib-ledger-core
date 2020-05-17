@@ -156,25 +156,26 @@ namespace ledger {
 
             Either<Exception, std::shared_ptr<ResultType>> build() {
                 if (isFailure()) {
-                    auto ex = make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", _statusCode, _statusText, _error);
-                    return Either<Exception, std::shared_ptr<ResultType>>(ex);
+                    return Either<Exception, std::shared_ptr<ResultType>>(_exception.getValue());
                 } else {
                     return Either<Exception, std::shared_ptr<ResultType>>(_result);
                 }
             };
 
             void attach(const std::shared_ptr<api::HttpUrlConnection>& connection) {
-                _statusCode = (uint32_t) connection->getStatusCode();
-                _statusText = connection->getStatusText();
+                attach(connection->getStatusText(), static_cast<uint32_t>(connection->getStatusCode()));
             }
 
             void attach(const std::string& statusText, uint32_t statusCode) {
                 _statusCode = statusCode;
                 _statusText = statusText;
+                if (isFailure()) {
+                    _exception = make_exception(api::ErrorCode::API_ERROR, "{} - {}: {}", _statusCode, _statusText, _error);
+                }
             }
 
             inline bool isFailure() const {
-                return _statusCode < 200 || _statusCode >= 400;
+                return _statusCode < 200 || _statusCode >= 400 || _exception.nonEmpty();
             }
 
             inline bool continueParsing() const {
