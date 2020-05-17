@@ -34,6 +34,7 @@
 
 #include <wallet/common/explorers/api/AbstractBlockParser.h>
 #include "../RippleLikeBlockchainExplorer.h"
+#include <wallet/ripple/utils/RippleLikeUtils.hpp>
 
 namespace ledger {
     namespace core {
@@ -49,14 +50,10 @@ namespace ledger {
                     // Ledger index is not really a hash but since XRP doesn't have reorg
                     // it's safe to use ledger index as a unique hash.
                     _block->hash = number;
-                }
-                return true;
-            }
-
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                std::string value = std::string(str, length);
-                if (getLastKey() == "close_time_human") {
-                    _block->time = DateUtils::fromJSON(value);
+                } else if (getLastKey() == "close_time") {
+                    std::string number(str, length);
+                    BigInt value = BigInt::fromString(number);
+                    RippleLikeUtils::xrpTimestampToTimePoint(value.toUint64(), _block->time);
                 }
                 return true;
             }
