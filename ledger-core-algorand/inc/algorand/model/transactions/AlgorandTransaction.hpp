@@ -95,20 +95,20 @@ namespace model {
 
         };
 
-        using TransactionDetails = boost::variant<KeyRegTxnFields,
-                                                  PaymentTxnFields,
-                                                  AssetConfigTxnFields,
-                                                  AssetTransferTxnFields,
-                                                  AssetFreezeTxnFields>;
+        using Details = boost::variant<KeyRegTxnFields,
+                                       PaymentTxnFields,
+                                       AssetConfigTxnFields,
+                                       AssetTransferTxnFields,
+                                       AssetFreezeTxnFields>;
 
         Transaction() = default;
-        Transaction(Header header, TransactionDetails details)
+        Transaction(Header header, Details details)
             : header(std::move(header))
             , details(std::move(details))
         {}
 
         Header header;
-        TransactionDetails details;
+        Details details;
     };
 
     namespace constants {

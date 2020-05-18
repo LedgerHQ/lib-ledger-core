@@ -33,14 +33,9 @@
 #include <core/crypto/SHA512256.hpp>
 #include <core/math/BaseConverter.hpp>
 
-
 namespace ledger {
 namespace core {
 namespace algorand {
-
-    Address::Address() :
-        ledger::core::Address(currencies::algorand(), optional<std::string>(""))
-    {}
 
     Address::Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey) :
         ledger::core::Address(currency, optional<std::string>("")),
@@ -60,8 +55,7 @@ namespace algorand {
         return _address;
     }
 
-    const std::string& Address::getAddress() const
-    {
+    const std::string& Address::toString() const {
         return _address;
     }
 
@@ -69,7 +63,6 @@ namespace algorand {
         return _publicKey;
     }
 
-    // FIXME Test this
     std::string Address::fromPublicKey(const std::vector<uint8_t> & pubKey) {
         // 1. pubkey --> pubKeyHash
         const std::vector<uint8_t> pubKeyHash = SHA512256::bytesToBytesHash(pubKey);
@@ -81,7 +74,6 @@ namespace algorand {
         return BaseConverter::encode(addressBytes, BaseConverter::BASE32_RFC4648_NO_PADDING);
     }
 
-    // FIXME Test this
     std::vector<uint8_t> Address::toPublicKey(const std::string & address) {
         std::vector<uint8_t> decoded;
         decoded.reserve(PUBKEY_LEN_BYTES + CHECKSUM_LEN_BYTES);

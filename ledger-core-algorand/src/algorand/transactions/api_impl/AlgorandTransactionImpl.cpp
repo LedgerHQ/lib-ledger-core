@@ -53,7 +53,7 @@ namespace algorand {
 
     std::string AlgorandTransactionImpl::getSender() const
     {
-        return stxn.txn.header.sender.getAddress();
+        return stxn.txn.header.sender.toString();
     }
 
     std::string AlgorandTransactionImpl::getFee() const
@@ -114,9 +114,9 @@ namespace algorand {
 
         info.amount = std::to_string(details.amount);
         if (details.closeAddr.hasValue()) {
-            info.closeAddress = details.closeAddr->getAddress();
+            info.closeAddress = details.closeAddr->toString();
         }
-        info.recipientAddress = details.receiverAddr.getAddress();
+        info.recipientAddress = details.receiverAddr.toString();
 
         return info;
     }
@@ -228,7 +228,7 @@ namespace algorand {
                 params.url = *apar.url;
             }
             if (apar.clawbackAddr) {
-                params.clawbackAddress = apar.clawbackAddr->getAddress();
+                params.clawbackAddress = apar.clawbackAddr->toString();
             }
             if (apar.decimals) {
                 params.decimals = *apar.decimals;
@@ -237,13 +237,13 @@ namespace algorand {
                 params.defaultFrozen = *apar.defaultFrozen;
             }
             if (apar.freezeAddr) {
-                params.freezeAddress = apar.freezeAddr->getAddress();
+                params.freezeAddress = apar.freezeAddr->toString();
             }
             if (apar.managerAddr) {
-                params.managerAddress = apar.managerAddr->getAddress();
+                params.managerAddress = apar.managerAddr->toString();
             }
             if (apar.reserveAddr) {
-                params.reserveAddress = apar.reserveAddr->getAddress();
+                params.reserveAddress = apar.reserveAddr->toString();
             }
             if (apar.total) {
                 params.total = std::to_string(*apar.total);
@@ -290,11 +290,11 @@ namespace algorand {
             info.amount = std::to_string(*details.assetAmount);
         }
         if (details.assetCloseTo) {
-            info.closeAddress = details.assetCloseTo->getAddress();
+            info.closeAddress = details.assetCloseTo->toString();
         }
-        info.recipientAddress = details.assetReceiver.getAddress();
+        info.recipientAddress = details.assetReceiver.toString();
         if (details.assetSender) {
-            info.clawedBackAddress = details.assetSender->getAddress();
+            info.clawedBackAddress = details.assetSender->toString();
         }
         info.assetId = std::to_string(details.assetId);
 
@@ -322,7 +322,7 @@ namespace algorand {
         api::AlgorandAssetFreezeInfo info;
 
         info.frozen = details.assetFrozen;
-        info.frozenAddress = details.frozenAddress.getAddress();
+        info.frozenAddress = details.frozenAddress.toString();
         info.assetId = details.assetId;
 
         return info;

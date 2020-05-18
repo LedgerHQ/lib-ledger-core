@@ -220,7 +220,7 @@ namespace adaptor {
             }
         };
 
-        uint32_t countFieldsInDetails(const Transaction::TransactionDetails& details)
+        uint32_t countFieldsInDetails(const Transaction::Details& details)
         {
             return boost::apply_visitor(TransactionDetailsFieldsCounter(), details);
         }

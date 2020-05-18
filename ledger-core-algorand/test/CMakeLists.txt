@@ -11,7 +11,9 @@ endif (APPLE)
 
 add_executable(ledger-core-algorand-tests
     main.cpp
-    MsgpackHelpersTest.cpp
+    MsgpackHelpersTests.cpp
+    AlgorandAddressTests.cpp
+    AlgorandExplorerTests.cpp
 )
 target_link_libraries(ledger-core-algorand-tests Core::ledger-core-static)
 target_link_libraries(ledger-core-algorand-tests Core::ledger-test)

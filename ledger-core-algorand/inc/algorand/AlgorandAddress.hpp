@@ -45,13 +45,16 @@ namespace algorand {
 
     public:
 
-        Address();
+        // Currency-generic constructors
         Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey);
         Address(const api::Currency& currency, const std::string & address);
 
-        std::string toString() override;
+        // Convenience constructors using default ALGO currency
+        Address() : ledger::core::Address(currencies::algorand(), optional<std::string>("")) {}
+        Address(const std::string & address) : Address(currencies::algorand(), address) {}
 
-        const std::string& getAddress() const;
+        std::string toString() override;
+        const std::string& toString() const;
         const std::vector<uint8_t>& getPublicKey() const;
 
         // Utility methods for easy conversion, could be useful for tests
@@ -67,6 +70,10 @@ namespace algorand {
         std::vector<uint8_t> _publicKey;
 
     };
+
+    inline bool operator==(const Address & first, const Address & second) {
+        return first.toString() == second.toString();
+    }
 
 } // namespace algorand
 } // namespace core
