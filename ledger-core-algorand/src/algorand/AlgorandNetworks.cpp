@@ -36,15 +36,18 @@ namespace ledger {
 namespace core {
 namespace networks {
 
-    // TODO Switch to mainnet at some point
-    static const std::string ALGORAND_NETWORK_NAME = "testnet-v1.0"; // --> "mainnet-v1.0"
-    static const std::string ALGORAND_NETWORK_ID = "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI="; // --> "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8="
-
     const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName) {
         if (networkName == "algorand") {
             static const api::AlgorandNetworkParameters ALGORAND(
-                ALGORAND_NETWORK_NAME,
-                ALGORAND_NETWORK_ID
+                "mainnet-v1.0",
+                "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8="
+            );
+            return ALGORAND;
+        }
+        if (networkName == "algorand-testnet") {
+            static const api::AlgorandNetworkParameters ALGORAND(
+                "testnet-v1.0",
+                "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI="
             );
             return ALGORAND;
         }
@@ -52,7 +55,8 @@ namespace networks {
     }
 
     const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND ({
-        getAlgorandNetworkParameters("algorand")
+        getAlgorandNetworkParameters("algorand"),
+        getAlgorandNetworkParameters("algorand-testnet")
     });
 
 } // namespace networks
