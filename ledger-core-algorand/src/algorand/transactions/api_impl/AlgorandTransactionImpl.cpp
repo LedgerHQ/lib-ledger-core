@@ -37,7 +37,11 @@ namespace ledger {
 namespace core {
 namespace algorand {
 
-    AlgorandTransactionImpl::AlgorandTransactionImpl(model::SignedTransaction txn)
+    AlgorandTransactionImpl::AlgorandTransactionImpl(model::SignedTransaction stxn)
+        : stxn(std::move(stxn))
+    {}
+
+    AlgorandTransactionImpl::AlgorandTransactionImpl(model::Transaction txn)
         : stxn(std::move(txn))
     {}
 
@@ -338,10 +342,9 @@ namespace algorand {
         stxn.setSignature(signature);
     }
 
-    std::shared_ptr<api::AlgorandTransaction>
-    AlgorandTransactionImpl::makeTransaction(model::Transaction txn)
+    const model::Transaction& AlgorandTransactionImpl::getTransactionData() const
     {
-        return std::make_shared<AlgorandTransactionImpl>(model::SignedTransaction(std::move(txn)));
+        return stxn.txn;
     }
 
 } // namespace algorand

@@ -171,7 +171,7 @@ AlgorandTransaction = interface +c {
 }
 
 AlgorandOperation = interface +c {
-    const getOperationType(): AlgorandOperationType;
+    const getAlgorandOperationType(): AlgorandOperationType;
     const getTransaction(): AlgorandTransaction;
 }
 

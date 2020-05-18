@@ -50,7 +50,8 @@ namespace algorand {
     class AlgorandTransactionImpl : public api::AlgorandTransaction
     {
     public:
-        explicit AlgorandTransactionImpl(model::SignedTransaction txn);
+        explicit AlgorandTransactionImpl(model::SignedTransaction stxn);
+        explicit AlgorandTransactionImpl(model::Transaction txn);
         std::string getId() const override;
         std::string getType() const override;
         std::string getSender() const override;
@@ -73,12 +74,11 @@ namespace algorand {
         std::vector<uint8_t> serialize() const override;
         void setSignature(const std::vector<uint8_t>& signature) override;
 
-        static std::shared_ptr<api::AlgorandTransaction> makeTransaction(model::Transaction txn);
+        const model::Transaction& getTransactionData() const;
 
     private:
         model::SignedTransaction stxn;
     };
-
 
 } // namespace algorand
 } // namespace core

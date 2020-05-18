@@ -32,6 +32,7 @@
 #define LEDGER_CORE_ALGORANDACCOUNT_H
 
 #include <algorand/AlgorandAddress.hpp>
+#include <algorand/operations/AlgorandOperation.hpp>
 #include <algorand/model/transactions/AlgorandTransaction.hpp>
 
 #include <algorand/api/AlgorandAccount.hpp>
@@ -46,79 +47,70 @@ namespace ledger {
 namespace core {
 namespace algorand {
 
-    // TODO implementation; this is currently just a mock up
-
-    class Operation;
-
     class Account : public api::AlgorandAccount, public AbstractAccount {
 
     public:
 
-        static const int FLAG_TRANSACTION_IGNORED = 0x00;
+        static constexpr int FLAG_TRANSACTION_IGNORED = 0x00;
 
-        Account(const std::shared_ptr<AbstractWallet> &wallet,
+        Account(const std::shared_ptr<AbstractWallet>& wallet,
                 int32_t index,
                 const api::Currency& currency,
-                const std::vector<uint8_t> & pubKey) :
-            AbstractAccount(wallet->getServices(), wallet, index),
-            _address(currency, pubKey)
-            {}
+                const std::vector<uint8_t>& pubKey);
 
 
-        bool putBlock(soci::session &sql, const api::Block &block);
+        bool putBlock(soci::session& sql, const api::Block& block);
 
-        int putTransaction(soci::session &sql, const model::Transaction &transaction);
+        int putTransaction(soci::session& sql, const model::Transaction& transaction);
 
         // From api::AlgorandAccount
-        void getAssets(const std::shared_ptr<api::AlgorandAssetParamsListCallback> & callback) override {}
+        void getAssets(const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) override;
 
-        void getCreatedAssets(const std::shared_ptr<api::AlgorandAssetParamsListCallback> & callback) override {}
+        void getCreatedAssets(const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) override;
 
-        void getAssetBalance(const std::string & assetId, const std::shared_ptr<api::AlgorandAssetAmountCallback> & callback) override {}
+        void getAssetBalance(const std::string& assetId,
+                             const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) override;
 
-        void getPendingReward(const std::shared_ptr<api::AmountCallback> & callback) override {}
+        void getPendingReward(const std::shared_ptr<api::AmountCallback>& callback) override;
 
-        void getFeeEstimate(const std::shared_ptr<api::AlgorandTransaction> & transaction, const std::shared_ptr<api::AmountCallback> & callback) override {}
+        void getFeeEstimate(const std::shared_ptr<api::AlgorandTransaction>& transaction,
+                            const std::shared_ptr<api::AmountCallback>& callback) override;
 
-        void broadcastTransaction(const std::shared_ptr<api::AlgorandTransaction> & transaction) override {}
-
+        void broadcastTransaction(const std::shared_ptr<api::AlgorandTransaction>& transaction) override;
 
         // From api::Account
-        std::shared_ptr<api::OperationQuery> queryOperations() override { return std::shared_ptr<api::OperationQuery>(nullptr); }
+        std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-        bool isSynchronizing() override { return false; }
+        bool isSynchronizing() override;
 
-        std::shared_ptr<api::EventBus> synchronize() override { return std::shared_ptr<api::EventBus>(nullptr); }
+        std::shared_ptr<api::EventBus> synchronize() override;
 
-        void startBlockchainObservation() override {}
+        void startBlockchainObservation() override;
 
-        void stopBlockchainObservation() override {}
+        void stopBlockchainObservation() override;
 
-        bool isObservingBlockchain() override { return false; }
+        bool isObservingBlockchain() override;
 
-        std::string getRestoreKey() override { return ""; }
+        std::string getRestoreKey() override;
 
 
         // From AbstractAccount
-        FuturePtr<Amount> getBalance() override
-            { return FuturePtr<Amount>::failure(Exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "whatever")); }
+        FuturePtr<Amount> getBalance() override;
 
-        Future<std::vector<std::shared_ptr<api::Amount>>> getBalanceHistory(const std::string & start,
-                                                                            const std::string & end,
-                                                                            api::TimePeriod precision) override
-            { return Future<std::vector<std::shared_ptr<api::Amount>>>::failure(Exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "whatever")); }
+        Future<std::vector<std::shared_ptr<api::Amount>>>
+        getBalanceHistory(const std::string& start,
+                          const std::string& end,
+                          api::TimePeriod precision) override;
 
-        Future<AddressList> getFreshPublicAddresses() override
-            { return Future<AddressList>::failure(Exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "whatever")); }
+        Future<AddressList> getFreshPublicAddresses() override;
 
-        Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override
-            { return Future<api::ErrorCode>::failure(Exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "whatever")); }
+        Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point& date) override;
 
     private:
 
-        static void inflateOperation(Operation &operation,
-                                     const std::shared_ptr<const AbstractWallet> &wallet,
-                                     const model::Transaction &tx);
+        void inflateOperation(Operation& op,
+                              const std::shared_ptr<const AbstractWallet>& wallet,
+                              const model::Transaction& tx);
 
         algorand::Address _address;
 
