@@ -82,7 +82,7 @@ namespace algorand {
 
     void AlgorandTransactionImpl::setFee(const std::string& fee)
     {
-        stxn.txn.header.fee = std::stoi(fee);
+        stxn.txn.header.fee = std::stoull(fee);
     }
 
     void AlgorandTransactionImpl::setNote(const std::string& note)
@@ -93,7 +93,7 @@ namespace algorand {
     void AlgorandTransactionImpl::setPaymentInfo(const api::AlgorandPaymentInfo& info)
     {
         model::PaymentTxnFields details;
-        details.amount = std::stoi(info.amount);
+        details.amount = std::stoull(info.amount);
 
         if (info.closeAddress) {
             details.closeAddr = Address(currencies::algorand(), *info.closeAddress);
@@ -126,10 +126,10 @@ namespace algorand {
         model::KeyRegTxnFields details;
 
         details.selectionPk = info.vrfPublicKey;
-        details.voteFirst = std::stoi(info.voteFirstRound);
-        details.voteKeyDilution = std::stoi(info.voteKeyDilution);
+        details.voteFirst = std::stoull(info.voteFirstRound);
+        details.voteKeyDilution = std::stoull(info.voteKeyDilution);
         details.votePk = info.rootPublicKey;
-        details.voteLast = std::stoi(info.voteLastRound);
+        details.voteLast = std::stoull(info.voteLastRound);
 
         stxn.txn.details = details;
     }
@@ -157,7 +157,7 @@ namespace algorand {
         model::AssetConfigTxnFields details;
 
         if (info.assetId) {
-            details.assetId = std::stoi(*info.assetId);
+            details.assetId = std::stoull(*info.assetId);
         }
         if (info.assetParams) {
             const auto params = *info.assetParams;
@@ -190,7 +190,7 @@ namespace algorand {
                 apar.reserveAddr = Address(currencies::algorand(), *params.reserveAddress);
             }
             if (params.total) {
-                apar.total = std::stoi(*params.total);
+                apar.total = std::stoull(*params.total);
             }
             if (params.unitName) {
                 apar.unitName = *params.unitName;
@@ -263,7 +263,7 @@ namespace algorand {
         model::AssetTransferTxnFields details;
 
         if (info.amount) {
-            details.assetAmount = std::stoi(*info.amount);
+            details.assetAmount = std::stoull(*info.amount);
         }
         if (info.closeAddress) {
             details.assetCloseTo = Address(currencies::algorand(), *info.closeAddress);
@@ -272,7 +272,7 @@ namespace algorand {
         if (info.clawedBackAddress) {
             details.assetSender = Address(currencies::algorand(), *info.clawedBackAddress);
         }
-        details.assetId = std::stoi(info.assetId);
+        details.assetId = std::stoull(info.assetId);
 
         stxn.txn.details = details;
     }
@@ -307,7 +307,7 @@ namespace algorand {
 
         details.assetFrozen = info.frozen;
         details.frozenAddress = Address(currencies::algorand(), info.frozenAddress);
-        details.assetId = std::stoi(info.assetId);
+        details.assetId = std::stoull(info.assetId);
 
         stxn.txn.details = details;
     }
