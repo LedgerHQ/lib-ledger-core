@@ -47,17 +47,17 @@ namespace core {
 namespace algorand {
 namespace constants {
 
-    // Explorer endpoints
-    static const std::string apiVersion = "v1";
-    static const std::string purestakeVersion = "ps1";
-    static const std::string purestakeBlockEndpoint = purestakeVersion + "/" + apiVersion + "/block/{}";
-    static const std::string purestakeAccountEndpoint = purestakeVersion + "/" + apiVersion + "/account/{}";
-    static const std::string purestakeAccountTransactionsEndpoint = purestakeVersion + "/" + apiVersion + "/account/{}/transactions";
-    static const std::string purestakeTransactionEndpoint = purestakeVersion + "/" + apiVersion + "/transaction/{}";
-    static const std::string purestakeTransactionsEndpoint = purestakeVersion + "/" + apiVersion + "/transactions";
-    static const std::string purestakeTransactionsParamsEndpoint = purestakeVersion + "/" + apiVersion + "/transactions/params";
+    static const std::string purestakeTokenHeader = "x-api-key";
 
-}
+    // Explorer endpoints
+    static const std::string purestakeBlockEndpoint = "/block/{}";
+    static const std::string purestakeAccountEndpoint = "/account/{}";
+    static const std::string purestakeAccountTransactionsEndpoint = "/account/{}/transactions";
+    static const std::string purestakeTransactionEndpoint = "/transaction/{}";
+    static const std::string purestakeTransactionsEndpoint = "/transactions";
+    static const std::string purestakeTransactionsParamsEndpoint = "/transactions/params";
+
+} // namespace constants
 
     class BlockchainExplorer : public ConfigurationMatchable, public DedicatedContext {
 

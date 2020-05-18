@@ -29,11 +29,10 @@
 
 #include <algorand/AlgorandBlockchainExplorer.hpp>
 #include <algorand/AlgorandJsonParser.hpp>
+#include <algorand/api/AlgorandConfigurationDefaults.hpp>
 
 #include <core/net/HttpClient.hpp>
 #include <core/api/Configuration.hpp>
-
-// TODO Tests
 
 namespace ledger {
 namespace core {
@@ -48,19 +47,21 @@ namespace algorand {
         _http(http),
         _parameters(parameters) {
             setConfiguration(configuration);
+            _http->addHeader(constants::purestakeTokenHeader, api::AlgorandConfigurationDefaults::ALGORAND_API_TOKEN);
         }
 
     FuturePtr<api::Block> BlockchainExplorer::getCurrentBlock() const {
         // TODO ?
     }
 
-    FuturePtr<api::Block> BlockchainExplorer::getBlock(uint64_t &blockHeight) const {
+    // TODO In algorand::Account set block.currencyName after calling BlockchainExplorer::getBlock !
+    FuturePtr<api::Block> BlockchainExplorer::getBlock(uint64_t & blockHeight) const {
         return _http->GET(fmt::format(constants::purestakeBlockEndpoint, blockHeight))
             .json(false)
             .mapPtr<api::Block>(getContext(), [] (const HttpRequest::JsonResult& response) {
                 auto block = std::make_shared<api::Block>();
                 const auto& json = std::get<1>(response)->GetObject();
-                JsonParser::parseBlock(json, currencies::algorand().name, *block);
+                JsonParser::parseBlock(json, *block);
                 return block;
             });
     }
@@ -97,11 +98,12 @@ namespace algorand {
         return _http->GET(fmt::format(constants::purestakeAccountTransactionsEndpoint, address))
             .json(false)
             .mapPtr<model::TransactionsBulk>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                const auto& json = std::get<1>(response)->GetObject()[constants::transactions.c_str()].GetArray();
-                auto tx = std::make_shared<model::TransactionsBulk>();
-                JsonParser::parseTransactions(json, tx->transactions);
+                const auto& json = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
+                auto txs = std::make_shared<model::TransactionsBulk>();
+                JsonParser::parseTransactions(json, txs->transactions);
                 // TODO Manage tx->hasNext ? Pagination ?
-                return tx;
+                txs->hasNext = false;
+                return txs;
             });
     }
 
@@ -111,10 +113,10 @@ namespace algorand {
             .json(false)
             .map<uint64_t>(getContext(), [&txBytes] (const HttpRequest::JsonResult& response) -> uint64_t {
                 const auto& json = std::get<1>(response)->GetObject();
-                const auto minimumFee = json[constants::minFee.c_str()].GetUint64();
+                const auto minimumFee = json[constants::xMinFee.c_str()].GetUint64();
                 // FIXME May need to apply a majoration coefficient here,
                 // because tx is missing fields signature and fee at this point
-                const auto recommendedFee = txBytes.size() * json[constants::fee.c_str()].GetUint64();
+                const auto recommendedFee = txBytes.size() * json[constants::xFee.c_str()].GetUint64();
                 return std::max(minimumFee, recommendedFee);
             });
     }
@@ -134,7 +136,7 @@ namespace algorand {
         return _http->POST(constants::purestakeTransactionsEndpoint, transaction)
             .json(false)
             .template map<std::string>(_executionContext, [] (const HttpRequest::JsonResult& response) -> std::string {
-                return std::get<1>(response)->GetObject()[constants::txId.c_str()].GetString();
+                return std::get<1>(response)->GetObject()[constants::xTxId.c_str()].GetString();
             });
     }
 

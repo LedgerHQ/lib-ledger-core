@@ -50,6 +50,10 @@ namespace algorand {
         std::string b64;
     };
 
+    inline bool operator==(const B64String & first, const B64String & second) {
+        return first.getRawString() == second.getRawString();
+    }
+
 } // namespace ledger
 } // namespace core
 } // namespace algorand
