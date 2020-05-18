@@ -42,7 +42,7 @@ namespace model {
     class KeyRegTxnFields
     {
     public:
-        KeyRegTxnFields() {}
+        KeyRegTxnFields() = default;
         KeyRegTxnFields(Option<bool> nonParticipation,
                         std::string selectionPk,
                         uint64_t voteFirst,

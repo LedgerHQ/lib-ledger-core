@@ -49,14 +49,14 @@ namespace model {
         static AssetConfigTxnFields reconfigure(AssetParams assetParams, uint64_t assetId);
         static AssetConfigTxnFields destroy(uint64_t assetId);
 
-        AssetConfigTxnFields() {}
+        AssetConfigTxnFields() = default;
 
     private:
         AssetConfigTxnFields(Option<AssetParams> assetParams, Option<uint64_t> assetId);
 
     public:
-        Option<uint64_t> assetId;
         Option<AssetParams> assetParams;
+        Option<uint64_t> assetId;
     };
 
     class AssetTransferTxnFields
@@ -76,7 +76,7 @@ namespace model {
         static AssetTransferTxnFields optIn(Address assetReceiver,
                                             uint64_t assetId);
 
-        AssetTransferTxnFields() {}
+        AssetTransferTxnFields() = default;
 
     private:
         AssetTransferTxnFields(Option<uint64_t> assetAmount,
@@ -87,22 +87,22 @@ namespace model {
     public:
         Option<uint64_t> assetAmount;
         Option<Address> assetCloseTo;
-        uint64_t assetId;
         Address assetReceiver;
         Option<Address> assetSender;
+        uint64_t assetId;
     };
 
     class AssetFreezeTxnFields
     {
     public:
-        AssetFreezeTxnFields() {}
+        AssetFreezeTxnFields() = default;
         AssetFreezeTxnFields(bool assetFrozen,
                              Address frozenAddress,
                              uint64_t assetId);
 
-        uint64_t assetId;
         bool assetFrozen;
         Address frozenAddress;
+        uint64_t assetId;
     };
 
 } // namespace model

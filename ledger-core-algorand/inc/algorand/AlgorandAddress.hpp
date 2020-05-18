@@ -51,7 +51,8 @@ namespace algorand {
 
         std::string toString() override;
 
-        std::vector<uint8_t> getPublicKey() const;
+        const std::string& getAddress() const;
+        const std::vector<uint8_t>& getPublicKey() const;
 
         // Utility methods for easy conversion, could be useful for tests
         static std::string fromPublicKey(const std::vector<uint8_t> & pubKey);

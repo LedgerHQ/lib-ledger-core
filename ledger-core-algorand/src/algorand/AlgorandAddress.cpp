@@ -60,7 +60,12 @@ namespace algorand {
         return _address;
     }
 
-    std::vector<uint8_t> Address::getPublicKey() const {
+    const std::string& Address::getAddress() const
+    {
+        return _address;
+    }
+
+    const std::vector<uint8_t>& Address::getPublicKey() const {
         return _publicKey;
     }
 

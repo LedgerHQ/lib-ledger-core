@@ -43,7 +43,7 @@ namespace model {
     class PaymentTxnFields
     {
     public:
-        PaymentTxnFields() {}
+        PaymentTxnFields() = default;
         PaymentTxnFields(uint64_t amount,
                          Option<Address> closeAddr,
                          Address receiverAddr)

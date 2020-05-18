@@ -141,12 +141,12 @@ AlgorandTransaction = interface +c {
     const getId(): string;
     const getType(): string;
     const getSender(): string;
-    const getFee(): Amount;
+    const getFee(): string;
     const getNote(): string;
     const getRound(): string;
 
     setSender(sender: string);
-    setFee(fee: Amount);
+    setFee(fee: string);
     setNote(note: string);
 
     setPaymentInfo(info: AlgorandPaymentInfo);

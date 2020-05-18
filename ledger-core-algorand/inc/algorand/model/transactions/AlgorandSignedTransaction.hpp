@@ -54,10 +54,12 @@ namespace model {
 
         void setSignature(const std::vector<uint8_t>& signature);
 
+        const std::string& getType() const;
+
     private:
         SignedTransaction(Option<std::vector<uint8_t>> sig, Transaction txn);
 
-    private:
+    public:
         Option<std::vector<uint8_t>> sig;
         Transaction txn;
     };

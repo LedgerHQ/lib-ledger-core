@@ -112,12 +112,6 @@ namespace constants {
     static const std::string group = "group";
     static const std::string lease = "lease";
 
-    static const std::string pay = "pay";
-    static const std::string keyreg = "keyreg";
-    static const std::string acfg = "acfg";
-    static const std::string axfer = "axfer";
-    static const std::string afreeze = "afrz";
-
     static const std::string payment = "payment";
     static const std::string keyregs = "keyreg";
     static const std::string curcfg = "curcfg";
@@ -266,27 +260,27 @@ namespace constants {
             getOptionalBinaryField(node, constants::group, *tx.header.group);
             getOptionalBinaryField(node, constants::lease, *tx.header.lease);
 
-            if (tx.header.type == constants::pay) {
+            if (tx.header.type == model::constants::pay) {
                     assert((node.HasMember(constants::payment.c_str())));
                     tx.details = model::PaymentTxnFields();
                     parsePaymentInfo(node[constants::payment.c_str()].GetObject(),
                                         boost::get<model::PaymentTxnFields>(tx.details));
-            } else if (tx.header.type == constants::keyreg) {
+            } else if (tx.header.type == model::constants::keyreg) {
                     assert((node.HasMember(constants::keyregs.c_str())));
                     tx.details = model::KeyRegTxnFields();
                     parseParticipationInfo(node[constants::keyregs.c_str()].GetObject(),
                                         boost::get<model::KeyRegTxnFields>(tx.details));
-            } else if (tx.header.type == constants::acfg) {
+            } else if (tx.header.type == model::constants::acfg) {
                     assert((node.HasMember(constants::curcfg.c_str())));
                     tx.details = model::AssetConfigTxnFields();
                     parseAssetConfigurationInfo(node[constants::curcfg.c_str()].GetObject(),
                                         boost::get<model::AssetConfigTxnFields>(tx.details));
-            } else if (tx.header.type == constants::axfer) {
+            } else if (tx.header.type == model::constants::axfer) {
                     assert((node.HasMember(constants::curxfer.c_str())));
                     tx.details = model::AssetTransferTxnFields();
                     parseAssetTransferInfo(node[constants::curxfer.c_str()].GetObject(),
                                         boost::get<model::AssetTransferTxnFields>(tx.details));
-            } else if (tx.header.type == constants::afreeze) {
+            } else if (tx.header.type == model::constants::afreeze) {
                     assert((node.HasMember(constants::curfrz.c_str())));
                     tx.details = model::AssetFreezeTxnFields();
                     parseAssetFreezeInfo(node[constants::curfrz.c_str()].GetObject(),

@@ -79,6 +79,11 @@ namespace model {
         sig = signature;
     }
 
+    const std::string& SignedTransaction::getType() const
+    {
+        return txn.header.type;
+    }
+
 } // namespace model
 } // namespace ledger
 } // namespace core

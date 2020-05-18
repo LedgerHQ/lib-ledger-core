@@ -44,7 +44,7 @@ namespace model {
     class AssetParams
     {
     public:
-        AssetParams() {}
+        AssetParams() = default;
         AssetParams(Option<std::vector<uint8_t>> metaDataHash,
                     Option<std::string> assetName,
                     Option<std::string> url,

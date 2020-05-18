@@ -45,7 +45,6 @@
 namespace ledger {
 namespace core {
 namespace algorand {
-
 namespace model {
 
     class Transaction
@@ -55,7 +54,7 @@ namespace model {
         class Header
         {
         public:
-            Header() {}
+            Header() = default;
             Header(uint64_t fee,
                    uint64_t firstValid,
                    Option<std::string> genesisId,
@@ -75,11 +74,8 @@ namespace model {
                 , lease(std::move(lease))
                 , note(std::move(note))
                 , sender(std::move(sender))
-                , type(type)
+                , type(std::move(type))
             {}
-
-            Address sender;
-            std::string type;
 
             uint64_t fee;
             uint64_t firstValid;
@@ -89,6 +85,8 @@ namespace model {
             uint64_t lastValid;
             Option<std::vector<uint8_t>> lease;
             Option<std::vector<uint8_t>> note;
+            Address sender;
+            std::string type;
 
             // Additional fields retrieved from the blockchain
             Option<std::string> id;
@@ -103,7 +101,7 @@ namespace model {
                                                   AssetTransferTxnFields,
                                                   AssetFreezeTxnFields>;
 
-        Transaction() {}
+        Transaction() = default;
         Transaction(Header header, TransactionDetails details)
             : header(std::move(header))
             , details(std::move(details))
@@ -112,6 +110,16 @@ namespace model {
         Header header;
         TransactionDetails details;
     };
+
+    namespace constants {
+
+        static constexpr char pay[] = "pay";
+        static constexpr char keyreg[] = "keyreg";
+        static constexpr char acfg[] = "acfg";
+        static constexpr char axfer[] = "axfer";
+        static constexpr char afreeze[] = "afrz";
+
+    } // namespace constants
 
     struct TransactionsBulk {
         std::vector<Transaction> transactions;
