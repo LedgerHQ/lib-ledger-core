@@ -86,7 +86,6 @@ extern api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
 extern api::AccountCreationInfo XRP_KEYS_INFO;
 extern api::AccountCreationInfo VAULT_XRP_KEYS_INFO;
 extern api::AccountCreationInfo XTZ_KEYS_INFO;
-extern api::AccountCreationInfo XTZ_NON_ACTIVATED_KEYS_INFO;
 extern const std::string TX_1;
 extern const std::string TX_2;
 extern const std::string TX_3;

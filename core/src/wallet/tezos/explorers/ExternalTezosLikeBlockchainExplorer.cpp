@@ -255,15 +255,6 @@ namespace ledger {
                                         return std::make_shared<BigInt>(value);
                                     })
                     .recover(getContext(), [fallbackValue] (const Exception &exception) {
-                        auto ecode = exception.getErrorCode();
-                        if (ecode == api::ErrorCode::HTTP_ERROR || ecode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST) {
-                          // if it’s an HTTP error, it might be due to the host not being reachable or such,
-                          // so we re-run the error
-                          throw exception;
-                        }
-
-                        // otherwise, it means that it’s a “logical” error (i.e. some resources not found), which
-                        // in this case we fallback to a given value
                         return std::make_shared<BigInt>(!fallbackValue.empty() ? fallbackValue : "0");
                     });
         }
