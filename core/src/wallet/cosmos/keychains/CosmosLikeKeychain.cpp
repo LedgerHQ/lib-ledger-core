@@ -49,7 +49,7 @@ CosmosLikeKeychain::CosmosLikeKeychain(
         hash160,
         std::vector<uint8_t>(),
         api::CosmosBech32Type::ADDRESS,
-        optional<std::string>(path.toString()));
+        Option<std::string>(""));
 }
 
 CosmosLikeKeychain::Address CosmosLikeKeychain::getAddress() const

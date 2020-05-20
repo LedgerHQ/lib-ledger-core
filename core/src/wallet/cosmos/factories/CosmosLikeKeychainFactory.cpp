@@ -41,6 +41,20 @@ std::shared_ptr<CosmosLikeKeychain> CosmosLikeKeychainFactory::build(
     const std::shared_ptr<Preferences> &accountPreferences,
     const api::Currency &currency)
 {
+    // NOTE : The keychain is supposed to be linked to an account, but this check
+    // makes the very strong assumption that the keychain is supposed have the pubkey / path
+    // associated with one exact address
+    // (as the CosmosLikeKeychain constructor later stores directly the hash160
+    // of the pubkey as an _address attribute)
+    // This is problematic because there is no way to have a proper [ scheme.toLevel(ACCOUNT_INDEX) || node/index ]
+    // separation in the Keychain || Address logic, which makes handling the paths very complicated.
+    //
+    // The decision here is to have the Keychain hold the complete derivation path, and that the addresses
+    // it creates should have no "derivationPath".
+    //
+    // From ledger-live-common point of view, this means (in libcore/buildAccount/index.js ) :
+    //  - accountPath is "44'/118'/<account>'/0/0"
+    //  - "path" component is None
     if (!info.publicKeys.empty() && !info.derivations.empty() &&
         info.derivations.front() == path.toString()) {
         const auto &pubKey = info.publicKeys.front();
