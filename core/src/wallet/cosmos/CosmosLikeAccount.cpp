@@ -33,6 +33,7 @@
 #include <api/CosmosLikeValidatorListCallback.hpp>
 #include <api/StringCallback.hpp>
 #include <async/Future.hpp>
+#include <cmath>
 #include <collections/vector.hpp>
 #include <database/query/ConditionQueryFilter.h>
 #include <database/soci-date.h>
@@ -235,6 +236,7 @@ void CosmosLikeAccount::fillOperationTypeAmountFromFees(
     CosmosLikeOperation &out, const cosmos::MsgFees &innerFeesMsg) const
 {
     const auto address = getAddress();
+    out.amount = BigInt::fromDecimal(innerFeesMsg.fees.amount);
     if (innerFeesMsg.payerAddress == address) {
         out.type = api::OperationType::SEND;
     }
@@ -318,12 +320,19 @@ void CosmosLikeAccount::inflateOperation(
     out.currencyName = getWallet()->getCurrency().name;
     out.date = tx.timestamp;
     out.trust = std::make_shared<TrustIndicator>();
+    // Fees are added only on the MSGFEES Message Type.
     auto fees = 0;
     if (cosmos::stringToMsgType(msg.type.c_str()) == api::CosmosLikeMsgType::MSGFEES) {
-        std::for_each(tx.fee.amount.begin(), tx.fee.amount.end(), [&](cosmos::Coin amount) {
+        std::for_each(tx.fee.amount.begin(), tx.fee.amount.end(), [&](const cosmos::Coin &amount) {
             assert(amount.denom == "uatom");  // FIXME Temporary until all units correctly supported
             fees += BigInt::fromDecimal(amount.amount).toInt();
         });
+    }
+    // The value is updated to the fees actually paid if the transaction has a GasUsed value to use.
+    if (fees != 0 && tx.gasUsed) {
+        auto feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
+                                   static_cast<float>(tx.fee.gas.toInt());
+        fees = std::lround(feeConsumptionRatio * fees);
     }
     out.fees = BigInt(fees);
     out.walletUid = wallet->getWalletUid();
@@ -474,11 +483,15 @@ Future<std::vector<std::shared_ptr<api::Amount>>> CosmosLikeAccount::getBalanceH
                         break;
                     }
                     case api::OperationType::SEND: {
+                        // NOTE : in Cosmos, FEES is a SEND operation with 0 amount and the correct fees
                         sum = sum - operation.amount - operation.fees.getValueOr(BigInt::ZERO);
                         break;
                     }
                     default: {
-                        sum = sum - operation.fees.getValueOr(BigInt::ZERO);
+                        // NOTE : we ignore the fees field here as well, since the fees paid by the Account
+                        // were already included in an OperationType::SEND
+                        // See CosmosLikeAccount::fillOperationTypeAmountFromFees
+                        // Therefore, nothing to do on default: case.
                     } break;
                     }
                 }

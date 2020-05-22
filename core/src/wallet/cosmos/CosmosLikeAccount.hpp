@@ -233,8 +233,9 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     // An operation type is always seen from the account point of view.
 
     /// Set the type and the amount of an Operation from a cosmos Message in the context of the
-    /// account. \param [out] out the Operation to fill \param [in] msg the cosmos Message to use as
-    /// source of information
+    /// account.
+    /// \param [out] out the Operation to fill
+    /// \param [in] msg the cosmos Message to use as source of information
     void setOperationTypeAndAmount(CosmosLikeOperation &out, const cosmos::Message &msg) const;
     /// Set the type and the amount of an Operation from an unwrapped cosmos Send Message.
     /// \param [out] out the Operation to fill
