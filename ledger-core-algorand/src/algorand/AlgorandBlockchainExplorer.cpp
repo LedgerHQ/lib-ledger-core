@@ -31,112 +31,102 @@
 #include <algorand/AlgorandJsonParser.hpp>
 #include <algorand/api/AlgorandConfigurationDefaults.hpp>
 
-#include <core/net/HttpClient.hpp>
 #include <core/api/Configuration.hpp>
 
 namespace ledger {
 namespace core {
 namespace algorand {
 
-    BlockchainExplorer::BlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
-                       const std::shared_ptr<HttpClient> &http,
-                       const api::AlgorandNetworkParameters &parameters,
-                       const std::shared_ptr<api::DynamicObject> &configuration) :
-        ConfigurationMatchable({api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}),
-        DedicatedContext(context),
-        _http(http),
-        _parameters(parameters) {
-            setConfiguration(configuration);
-            _http->addHeader(constants::purestakeTokenHeader, api::AlgorandConfigurationDefaults::ALGORAND_API_TOKEN);
-        }
+    BlockchainExplorer::BlockchainExplorer(
+            const std::shared_ptr<api::ExecutionContext>& context,
+            const std::shared_ptr<HttpClient>& http,
+            const api::AlgorandNetworkParameters& parameters,
+            const std::shared_ptr<api::DynamicObject>& configuration)
+        : ConfigurationMatchable({api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT})
+        , DedicatedContext(context)
+        , _http(http)
+        , _parameters(parameters)
+    {
+        setConfiguration(configuration);
+        _http->addHeader(constants::purestakeTokenHeader, api::AlgorandConfigurationDefaults::ALGORAND_API_TOKEN);
+    }
 
-    FuturePtr<api::Block> BlockchainExplorer::getCurrentBlock() const {
+    Future<api::Block> BlockchainExplorer::getCurrentBlock() const
+    {
         // TODO ?
     }
 
     // TODO In algorand::Account set block.currencyName after calling BlockchainExplorer::getBlock !
-    FuturePtr<api::Block> BlockchainExplorer::getBlock(uint64_t & blockHeight) const {
+    Future<api::Block> BlockchainExplorer::getBlock(uint64_t blockHeight) const
+    {
         return _http->GET(fmt::format(constants::purestakeBlockEndpoint, blockHeight))
             .json(false)
-            .mapPtr<api::Block>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                auto block = std::make_shared<api::Block>();
-                const auto& json = std::get<1>(response)->GetObject();
-                JsonParser::parseBlock(json, *block);
-                return block;
+            .map<api::Block>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& json = std::get<1>(response)->GetObject();
+                    auto block = api::Block();
+                    JsonParser::parseBlock(json, block);
+                    return block;
             });
     }
 
-    FuturePtr<model::Account> BlockchainExplorer::getAccount(const std::string & address) const {
-        const bool parseJsonNumbersAsStrings = false; // FIXME Is this safe?
-
+    Future<model::Account> BlockchainExplorer::getAccount(const std::string& address) const
+    {
         return _http->GET(fmt::format(constants::purestakeAccountEndpoint, address))
             .json(false)
-            .template flatMapPtr<model::Account>(
-                getContext(),
-                [] (const HttpRequest::JsonResult &response) {
+            .map<model::Account>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& json = std::get<1>(response)->GetObject();
                     auto account = model::Account();
-                    const auto &json = std::get<1>(response)->GetObject();
                     JsonParser::parseAccount(json, account);
-                    return FuturePtr<model::Account>::successful(std::make_shared<model::Account>(account));
-                });
+                    return account;
+            });
     }
 
-    FuturePtr<model::Transaction>
-    BlockchainExplorer::getTransactionById(const std::string & txId) const {
+    Future<model::Transaction>
+    BlockchainExplorer::getTransactionById(const std::string& txId) const
+    {
         return _http->GET(fmt::format(constants::purestakeTransactionEndpoint, txId))
             .json(false)
-            .mapPtr<model::Transaction>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                const auto& json = std::get<1>(response)->GetObject();
-                auto tx = std::make_shared<model::Transaction>();
-                JsonParser::parseTransaction(json, *tx);
-                return tx;
+            .map<model::Transaction>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& json = std::get<1>(response)->GetObject();
+                    auto tx = model::Transaction();
+                    JsonParser::parseTransaction(json, tx);
+                    return tx;
             });
     }
 
-    FuturePtr<model::TransactionsBulk>
-    BlockchainExplorer::getTransactionsForAddress(const std::string & address, const uint64_t & fromBlockHeight) const {
+    Future<model::TransactionsBulk>
+    BlockchainExplorer::getTransactionsForAddress(const std::string& address, uint64_t fromBlockHeight) const
+    {
         return _http->GET(fmt::format(constants::purestakeAccountTransactionsEndpoint, address))
             .json(false)
-            .mapPtr<model::TransactionsBulk>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                const auto& json = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
-                auto txs = std::make_shared<model::TransactionsBulk>();
-                JsonParser::parseTransactions(json, txs->transactions);
-                // TODO Manage tx->hasNext ? Pagination ?
-                txs->hasNext = false;
-                return txs;
+            .map<model::TransactionsBulk>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& json = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
+                    auto txs = model::TransactionsBulk();
+                    JsonParser::parseTransactions(json, txs.transactions);
+                    // TODO Manage tx->hasNext ? Pagination ?
+                    txs.hasNext = false;
+                    return txs;
             });
     }
 
-    Future<uint64_t> BlockchainExplorer::getSuggestedFee(const std::shared_ptr<api::AlgorandTransaction> &transaction) const {
-        const auto txBytes = transaction->serialize();
+    Future<model::TransactionParams> BlockchainExplorer::getTransactionParams() const
+    {
         return _http->GET(constants::purestakeTransactionsParamsEndpoint)
             .json(false)
-            .map<uint64_t>(getContext(), [&txBytes] (const HttpRequest::JsonResult& response) -> uint64_t {
-                const auto& json = std::get<1>(response)->GetObject();
-                const auto minimumFee = json[constants::xMinFee.c_str()].GetUint64();
-                // FIXME May need to apply a majoration coefficient here,
-                // because tx is missing fields signature and fee at this point
-                const auto recommendedFee = txBytes.size() * json[constants::xFee.c_str()].GetUint64();
-                return std::max(minimumFee, recommendedFee);
+            .map<model::TransactionParams>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& json = std::get<1>(response)->GetObject();
+                    auto txParams = model::TransactionParams();
+                    JsonParser::parseTransactionParams(json, txParams);
+                    return txParams;
             });
     }
 
-    FuturePtr<model::TransactionParams> BlockchainExplorer::getTransactionParams() const {
-        return _http->GET(constants::purestakeTransactionsParamsEndpoint)
-            .json(false)
-            .mapPtr<model::TransactionParams>(getContext(), [] (const HttpRequest::JsonResult& response) {
-                const auto& json = std::get<1>(response)->GetObject();
-                auto txParams = std::make_shared<model::TransactionParams>();
-                JsonParser::parseTransactionParams(json, *txParams);
-                return txParams;
-            });
-    }
-
-    Future<std::string> BlockchainExplorer::pushTransaction(const std::vector<uint8_t> & transaction) {
+    Future<std::string> BlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction)
+    {
         return _http->POST(constants::purestakeTransactionsEndpoint, transaction)
             .json(false)
-            .template map<std::string>(_executionContext, [] (const HttpRequest::JsonResult& response) -> std::string {
-                return std::get<1>(response)->GetObject()[constants::xTxId.c_str()].GetString();
+            .map<std::string>(_executionContext, [](const HttpRequest::JsonResult& response) {
+                    return std::get<1>(response)->GetObject()[constants::xTxId.c_str()].GetString();
             });
     }
 
