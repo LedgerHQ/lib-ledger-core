@@ -76,12 +76,12 @@ cmd_idl() {
 }
 
 cmd_pkg() {
-  if [[ "$#" -lt "2" ]];
+  if [[ $# != 1 ]];
   then
-    usage "generating bindings requires at least two arguments: the package system to target (npm) and a list of coin project names"
+    usage "generating bindings requires at least one argument: the package system to target (npm)"
   fi
 
-  ./tools/idl_pkg.sh $*
+  ./tools/idl_pkg.sh $1
 }
 
 case "$1" in
