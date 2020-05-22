@@ -1,0 +1,7 @@
+AlgorandBlockchainExplorerEngines = interface +c {
+    const ALGORAND_NODE: string = "ALGORAND_NODE";
+}
+
+AlgorandBlockchainObserverEngines = interface +c {
+    const ALGORAND_NODE: string = "ALGORAND_NODE";
+}
