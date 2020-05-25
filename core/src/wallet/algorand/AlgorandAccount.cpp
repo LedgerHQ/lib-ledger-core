@@ -27,7 +27,7 @@
  *
  */
 
-#include <algorand/AlgorandAccount.hpp>
+#include "AlgorandAccount.hpp"
 
 #include <core/math/BigInt.hpp>
 
