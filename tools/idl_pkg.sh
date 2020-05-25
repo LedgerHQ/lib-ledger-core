@@ -72,6 +72,17 @@ function generate_npm_interface {
   # copy dynamic library
   echo "Copying the dynamic library"
   cp $BUILD_DIR/libledger-core-bundle.* $NODE_DIR/lib
+
+  # generate the NPM package
+  echo "Generating the NPM package"
+  cd $NODE_DIR
+  yarn
+
+  # (optional) if yalc is found, publish and push the package to the local store
+  if yalc --version &> /dev/null; then
+    echo "Publishing and pushing to the local yalc store"
+    yalc publish --push
+  fi
 }
 
 case "$1" in
