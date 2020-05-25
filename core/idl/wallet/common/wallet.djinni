@@ -8,6 +8,7 @@
 @import "../ethereum/ethereum_like_wallet.djinni"
 @import "../../bitcoin/addresses.djinni"
 @import "../../cosmos/addresses.djinni"
+@import "../algorand/idl.djinni"
 @import "currency.djinni"
 @import "../../collections/dynamic.djinni"
 
