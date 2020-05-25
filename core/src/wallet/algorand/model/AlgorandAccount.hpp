@@ -29,11 +29,11 @@
 
 #pragma once
 
-#include <algorand/model/AlgorandAssetAmount.hpp>
-#include <algorand/model/transactions/AlgorandAssetParams.hpp>
-#include <algorand/model/transactions/AlgorandKeyreg.hpp>
+#include "AlgorandAssetAmount.hpp"
+#include "transactions/AlgorandAssetParams.hpp"
+#include "transactions/AlgorandKeyreg.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <cstdint>
 #include <map>

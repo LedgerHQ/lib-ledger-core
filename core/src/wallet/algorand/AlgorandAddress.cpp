@@ -38,14 +38,14 @@ namespace core {
 namespace algorand {
 
     Address::Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey) :
-        ledger::core::Address(currency, optional<std::string>("")),
+        ledger::core::AbstractAddress(currency, optional<std::string>("")),
         _publicKey(pubKey)
     {
         _address = Address::fromPublicKey(pubKey);
     }
 
     Address::Address(const api::Currency& currency, const std::string & address) :
-        ledger::core::Address(currency, optional<std::string>("")),
+        ledger::core::AbstractAddress(currency, optional<std::string>("")),
         _address(address)
     {
         _publicKey = Address::toPublicKey(address);

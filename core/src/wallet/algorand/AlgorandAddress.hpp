@@ -32,7 +32,8 @@
 
 #include "AlgorandLikeCurrencies.hpp"
 
-#include "Address.hpp"
+//#include "Address.hpp"
+#include <wallet/common/AbstractAddress.h>
 
 #include <string>
 #include <vector>
@@ -41,7 +42,7 @@ namespace ledger {
 namespace core {
 namespace algorand {
 
-    class Address : public ledger::core::Address {
+    class Address : public AbstractAddress {
 
     public:
 
@@ -50,7 +51,7 @@ namespace algorand {
         Address(const api::Currency& currency, const std::string & address);
 
         // Convenience constructors using default ALGO currency
-        Address() : ledger::core::Address(currencies::algorand(), optional<std::string>("")) {}
+        Address() : ledger::core::AbstractAddress(currencies::algorand(), optional<std::string>("")) {}
         Address(const std::string & address) : Address(currencies::algorand(), address) {}
 
         std::string toString() override;

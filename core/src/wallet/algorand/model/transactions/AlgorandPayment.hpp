@@ -29,9 +29,9 @@
 
 #pragma once
 
-#include <algorand/AlgorandAddress.hpp>
+#include "../../AlgorandAddress.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <cstdint>
 

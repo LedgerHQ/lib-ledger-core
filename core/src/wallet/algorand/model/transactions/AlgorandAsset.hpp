@@ -32,7 +32,7 @@
 #include "../../AlgorandAddress.hpp"
 #include "AlgorandAssetParams.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <cstdint>
 #include <string>

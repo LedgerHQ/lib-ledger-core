@@ -31,12 +31,12 @@
 
 #include "../model/transactions/AlgorandTransaction.hpp"
 
-#include <algorand/api/AlgorandOperation.hpp>
-#include <algorand/api/AlgorandOperationType.hpp>
-#include <algorand/api/AlgorandTransaction.hpp>
+#include <api/AlgorandOperation.hpp>
+#include <api/AlgorandOperationType.hpp>
+#include <api/AlgorandTransaction.hpp>
 
-#include <core/operation/Operation.hpp>
-#include <core/wallet/AbstractAccount.hpp>
+#include <api/Operation.hpp>
+#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
 namespace core {
