@@ -30,7 +30,7 @@
  */
 
 #include "Address.hpp"
-#include <core/utils/Exception.hpp>
+#include <utils/Exception.hpp>
 
 namespace ledger {
     namespace core {

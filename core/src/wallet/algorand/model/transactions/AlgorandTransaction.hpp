@@ -31,9 +31,9 @@
 
 #include <wallet/algorand/AlgorandAddress.hpp>
 #include "../../utils/B64String.hpp"
-#include <algorand/model/transactions/AlgorandAsset.hpp>
-#include <algorand/model/transactions/AlgorandKeyreg.hpp>
-#include <algorand/model/transactions/AlgorandPayment.hpp>
+#include "AlgorandAsset.hpp"
+#include "AlgorandKeyreg.hpp"
+#include "AlgorandPayment.hpp"
 
 #include <core/utils/Option.hpp>
 

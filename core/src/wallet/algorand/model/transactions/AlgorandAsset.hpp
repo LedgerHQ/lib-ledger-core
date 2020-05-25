@@ -29,8 +29,8 @@
 
 #pragma once
 
-#include <algorand/AlgorandAddress.hpp>
-#include <algorand/model/transactions/AlgorandAssetParams.hpp>
+#include "../../AlgorandAddress.hpp"
+#include "AlgorandAssetParams.hpp"
 
 #include <core/utils/Option.hpp>
 
