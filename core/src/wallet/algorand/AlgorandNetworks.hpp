@@ -39,7 +39,7 @@
     #endif
 #endif
 
-#include <algorand/api/AlgorandNetworkParameters.hpp>
+#include <api/AlgorandNetworkParameters.hpp>
 
 #include <vector>
 #include <string>
