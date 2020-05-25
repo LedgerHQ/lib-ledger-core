@@ -35,7 +35,7 @@
 #include "AlgorandKeyreg.hpp"
 #include "AlgorandPayment.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <boost/variant.hpp>
 
