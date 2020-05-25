@@ -28,8 +28,8 @@
  */
 
 
-#include <core/crypto/SHA512256.hpp>
-#include <core/utils/Hex.hpp>
+#include "SHA512256.hpp"
+#include <utils/hex.h>
 
 #include <openssl/sha.h>
 

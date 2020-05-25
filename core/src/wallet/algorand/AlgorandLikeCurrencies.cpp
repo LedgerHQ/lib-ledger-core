@@ -27,9 +27,9 @@
  *
  */
 
-#include <algorand/AlgorandLikeCurrencies.hpp>
+#include "AlgorandLikeCurrencies.hpp"
 
-#include <core/wallet/CurrencyBuilder.hpp>
+#include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {
     namespace core {

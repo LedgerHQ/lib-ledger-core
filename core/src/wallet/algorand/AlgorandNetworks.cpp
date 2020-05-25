@@ -28,9 +28,9 @@
  *
  */
 
-#include <algorand/AlgorandNetworks.hpp>
+#include "AlgorandNetworks.hpp"
 
-#include <core/utils/Exception.hpp>
+#include <utils/Exception.hpp>
 
 namespace ledger {
 namespace core {
