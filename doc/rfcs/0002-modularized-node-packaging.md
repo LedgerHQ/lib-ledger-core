@@ -72,23 +72,33 @@ The base command is then:
 lc pkg npm
 ```
 
-The rest of the arguments is a list of projects to bundle into the NPM package. Because all coins depend on
-the `ledger-core` project, you will want to add it to the list as well — typically added as first argument with
-the special `core` name. Projects (`ledger-core` included) are added with their _names_, not folder names
-(i.e. use `abc` instead of `ledger-core-abc`), the same way you did when creating them with `lc new`. They are
-laid on the line and separated with commas.
+It doesn’t take any other argument. It will automatically recognize all the coins that got packaged
+when compiled (i.e. by using the special `bundle/bundle.djinni` file). Sometimes, however, you will
+use a special folder to build your library in (typically `build` but you might have several build
+trees if you’re building for several different platforms). In that case, you can set the
+`BUILD_DIR` environment variable.
 
 Example:
 
 ```
-lc pkg npm core bitcoin ethereum ripple tezos
+BUILD_DIR=build_android lc pkg npm
 ```
 
 > As always, the script must be run from the root of the `lib-ledger-core` project.
 
-Once this is done, you will find the NPM package ready to be built in `bindings/node`, where you can simply
-run `yarn` to build it. It’s currently named `@ledgerhq/ledger-core-modularized` to prevent clashing with the
-already existing node package, but the name is subject to change in the future after stabilization.
+Once this is done, you will find the NPM package ready built in `bindings/node`. It’s currently
+named `@ledgerhq/ledger-core-modularized` to prevent clashing with the already existing node
+package, but the name is subject to change in the future after stabilization.
+
+In terms of steps, packaging is about:
+
+1. Generating the API interface.
+2. Building the Core bundle library.
+3. Calling djinni on the IDL entrypoint (i.e. `bundle/bundle.djinni`) to generate all the NPM
+  files.
+4. Calling `yarn` to package the C++ code into a usable `.node` file.
+5. Optional, calling `yalc publish` and/or `yalc push` / `yalc publish --push` to make the package
+  locally available to everybody on the system.
 
 ## How to use the generated package
 
@@ -110,6 +120,9 @@ yalc publish --push
 yalc push
 ```
 
+> As stated above, if you have `yalc` installed, this should be done automatically everytime you
+> package.
+
 ### Adding the package as a dependency
 
 Here, again, it’s pretty simple: you use `yalc`. Inside your project, like `ledger-live-common/cli`, simply
@@ -122,41 +135,26 @@ yalc add @ledgerhq/ledger-core-modularized
 Don’t forget to `yarn` to rebuild your project. Everytime a change is made on the package, you need to
 re-publish it and either re-run the `yalc add` command, or use `yalc push` to automate that process.
 
+
 ## Implementation details
 
 `lc pkg` calls a script called `idl_pkg.sh` which gathers the logic of IDL-based packaging. Because of
 limitation in [djinni], some work must be done to achieve packaging with a modularized library. On the
-`npm` path, this script will first clean the `binding/node` folder. Although the legacy Core has a
-(committed) `binding.gyp` file, we cannot use that file directly. [GYP] has a configuration files that
-doesn’t easily allow to depend on multiple libraries — remember we have one for `ledger-core` and one for
-each coin.
-
-For this reason, a Python script (`tools/gyp_generator.py`) was created. That script takes the list of
-projects (the same passed to `lc pkg npm`) and generates a `bindings/node/binding.gyp` for the selected
-configuration of coins. The script is called at the end of packaging, after an important phase is done:
-the generation of C++ source files.
+`npm` path, this script will first clean the `binding/node` folder.
 
 C++ source files are used to make a bridge between `node` (by using the `Nan` library) and our Core library.
 Normally, we should write that code, but [djinni] takes care of that for us. Calling [djinni] with some
 arguments will generate C++ source files to be part of the [GYP] compilation that will generate a `node`
-package. The problem is that [djinni] has been designed to work with a single C++ library at a time, not
-several — we have several; one for each coin. The result of this is that, having [djinni] generate a C++
-source file for each project (in the form `ledgercore-$coin.cpp`) will duplicate the initialization
-process of the `Nan` library for each coin, resulting in a pretty bad situation. This is due to the fact
-that [djinni] assumes a strong correlation between a .cpp file and a node project.
-
-To fix that problem, after generation of the C++ source files, the `idl_pkg.sh` script will extract all the
-important information from all the `ledgercore{,-$coin}.cpp` files, like `#include` directives and
-specific objects’ initialization, and concatenate them inside a single file, called `final-output.cpp`. All
-the `ledgercore{,-$coin}.cpp` files will then be deleted to prevent [GYP] from compiling them.
+package. The IDL entrypoint is used to know exactly which types and functions need to be bundled. The
+rest is _just_ about linking.
 
 Once this is done, calling `yarn` will:
 
-- Copy all the libraries (1 for `ledger-core` and N for the N coins you asked for) into the `node` package.
+- Copy all the libraries (mostly, `ledger-core-bundle`) into the `node` package.
 - Move the header files.
 - Move the C++ files.
 - Compile each C++ files.
-- Compile the entry point (i.e. `node` _module_) by using the `final-output.cpp` file.
+- Compile the entry point (i.e. `node` _module_).
 - Done.
 
 # Rationale
@@ -165,12 +163,14 @@ Once this is done, calling `yarn` will:
 The current implementation is limited by the features of [djinni]. Especially, we had to drop the YAML
 archive — previously initiated to make projects isolation easier — because the NPM generator of [djinni]
 needs to initialize arguments of each function calls by accessing records’ fields and fields are not stored
-in YAML archives. See the `MDef` vs. `MExtern` types in the Scala sources for further information.
+in YAML archives. See the `MDef` vs. `MExtern` types in the Scala sources for further information. Also,
+we went back to the one-library solution (called a _bundle_ in our solution) to ease integration into
+other systems.
 
 There is the question of whether we should move the bindings in a separate project or not. Since they can
 entirely be generated, having to maintain a repository for them doesn’t seem like a good option — and it’s in
-the scope of the [lib-ledger-core] library, as we officially support such bindings. The only part we still have
-to maintain is the `package.json`.
+the scope of the [lib-ledger-core] library, as we officially support such bindings.
+It is still possible, however, to continue using several repositories as we’ve always done.
 
 [ReactNative] is not in the scope of this design document nor implementation.
 
