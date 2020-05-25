@@ -1,4 +1,4 @@
-@import "ledger-core/callback.djinni"
+@import "../../errors.djinni"
 
 # Callback triggered by main completed task, returning optional result as list of template type T.
 ListCallback = interface[T] +j +o +s +n {

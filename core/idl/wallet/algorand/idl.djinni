@@ -1,4 +1,4 @@
-@import "ledger-core/amount.djinni"
+@import "../amount.djinni"
 
 @import "callback.djinni"
 @import "configuration.djinni"
