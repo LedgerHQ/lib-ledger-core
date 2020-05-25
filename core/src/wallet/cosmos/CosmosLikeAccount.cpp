@@ -322,7 +322,7 @@ uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction 
         }
         auto const feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
                                          static_cast<float>(tx.fee.gas.toInt());
-        fees = std::lround(feeConsumptionRatio * fees);
+        fees = std::lround(feeConsumptionRatio * static_cast<float>(fees));
     }
 
     return fees;
@@ -359,7 +359,7 @@ void CosmosLikeAccount::inflateOperation(
     // Fees are added only on the MSGFEES Message Type.
     auto fees = computeFeesForTransaction(tx);
     if (cosmos::stringToMsgType(msg.type.c_str()) == api::CosmosLikeMsgType::MSGFEES) {
-        out.amount = BigInt(fees);
+        out.amount = BigInt::ZERO;
         out.fees = BigInt(fees);
     }
     else {
