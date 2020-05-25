@@ -32,7 +32,7 @@
 
 #include "AlgorandLikeCurrencies.hpp"
 
-#include <core/address/Address.hpp>
+#include "Address.hpp"
 
 #include <string>
 #include <vector>
