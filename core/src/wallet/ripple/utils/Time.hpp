@@ -29,17 +29,22 @@
  *
  */
 
-#ifndef LEDGER_CORE_RIPPLELIKEUTILS_HPP
-#define LEDGER_CORE_RIPPLELIKEUTILS_HPP
+#ifndef LEDGER_CORE_TIME_HPP
+#define LEDGER_CORE_TIME_HPP
 
 #include <chrono>
+#include <type_traits>
 
 namespace ledger {
     namespace core {
-        class RippleLikeUtils {
-        public:
-            RippleLikeUtils() = delete;
-            ~RippleLikeUtils() = delete;
+        namespace xrp_utils {
+
+            constexpr uint64_t RIPPLE_EPOCH_SECONDS = 946684800;
+
+            template<typename T>
+            using IsClock = std::enable_if_t<std::is_same<T, std::chrono::system_clock>::value ||
+                                             std::is_same<T, std::chrono::high_resolution_clock>::value ||
+                                             std::is_same<T, std::chrono::steady_clock>::value, bool>;
 
             /**
              * Convert a XRP timestamp to a C++ time point. Rippled is using another epoch time than UNIX
@@ -49,10 +54,13 @@ namespace ledger {
              * @param time Reference to the time point to inflate.
              * @return The translated time point
              */
-            static void xrpTimestampToTimePoint(uint64_t timestamp, std::chrono::system_clock::time_point &time);
-        };
+            template <typename T, IsClock<T> = true>
+            auto toTimePoint(uint64_t timestamp) {
+                return std::chrono::time_point<T>(std::chrono::seconds(timestamp + RIPPLE_EPOCH_SECONDS));
+            }
+        }
     }
 }
 
 
-#endif //LEDGER_CORE_RIPPLELIKEUTILS_HPP
+#endif //LEDGER_CORE_TIME_HPP

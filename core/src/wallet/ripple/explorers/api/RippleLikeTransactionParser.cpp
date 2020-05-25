@@ -30,7 +30,7 @@
 
 #include <wallet/currencies.hpp>
 #include "RippleLikeTransactionParser.h"
-#include <wallet/ripple/utils/RippleLikeUtils.hpp>
+#include <wallet/ripple/utils/Time.hpp>
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
@@ -142,7 +142,7 @@ namespace ledger {
                 } else if (_lastKey == "DestinationTag") {
                   _transaction->destinationTag = Option<uint64_t>(value.toUint64());
                 } else if (_lastKey == "date" && currentObject != "transaction") {
-                  RippleLikeUtils::xrpTimestampToTimePoint(value.toUint64(), _transaction->receivedAt);
+                  _transaction->receivedAt = xrp_utils::toTimePoint<std::chrono::system_clock>(value.toUint64());
                   if (_transaction->block.hasValue()) {
                       _transaction->block.getValue().time = _transaction->receivedAt;
                   }

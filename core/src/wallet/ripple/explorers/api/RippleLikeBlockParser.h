@@ -34,7 +34,7 @@
 
 #include <wallet/common/explorers/api/AbstractBlockParser.h>
 #include "../RippleLikeBlockchainExplorer.h"
-#include <wallet/ripple/utils/RippleLikeUtils.hpp>
+#include <wallet/ripple/utils/Time.hpp>
 
 namespace ledger {
     namespace core {
@@ -53,7 +53,7 @@ namespace ledger {
                 } else if (getLastKey() == "close_time") {
                     std::string number(str, length);
                     BigInt value = BigInt::fromString(number);
-                    RippleLikeUtils::xrpTimestampToTimePoint(value.toUint64(), _block->time);
+                    _block->time = xrp_utils::toTimePoint<std::chrono::system_clock>(value.toUint64());
                 }
                 return true;
             }
