@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <algorand/AlgorandAddress.hpp>
+#include <wallet/algorand/AlgorandAddress.hpp>
 #include <algorand/utils/B64String.hpp>
 #include <algorand/model/transactions/AlgorandAsset.hpp>
 #include <algorand/model/transactions/AlgorandKeyreg.hpp>

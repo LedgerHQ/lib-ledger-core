@@ -32,13 +32,13 @@
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
-        #include <core/LibCoreExport.hpp>
+        #include <LibCoreExport.hpp>
     #else
         #define LIBCORE_EXPORT
     #endif
 #endif
 
-#include <core/api/Currency.hpp>
+#include <api/Currency.hpp>
 
 namespace ledger {
     namespace core {

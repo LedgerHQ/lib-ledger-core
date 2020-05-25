@@ -31,7 +31,7 @@
 #ifndef LEDGER_CORE_ALGORANDACCOUNT_H
 #define LEDGER_CORE_ALGORANDACCOUNT_H
 
-#include <algorand/AlgorandAddress.hpp>
+#include "AlgorandAddress.hpp"
 #include <algorand/operations/AlgorandOperation.hpp>
 #include <algorand/model/transactions/AlgorandTransaction.hpp>
 
