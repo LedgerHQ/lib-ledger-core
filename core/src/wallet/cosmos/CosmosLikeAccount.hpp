@@ -258,7 +258,9 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     void fillOperationTypeAmountFromUndelegate(
         CosmosLikeOperation &out, const cosmos::MsgUndelegate &innerUndelegateMsg) const;
     /// Set the type and the amount of an Operation from an unwrapped cosmos BeginRedelegate
-    /// Message. \param [out] out the Operation to fill \param [in] innerBeginRedelegateMsg the
+    /// Message.
+    /// \param [out] out the Operation to fill
+    /// \param [in] innerBeginRedelegateMsg the
     /// cosmos beginRedelegate message to use, unwrapped.
     void fillOperationTypeAmountFromBeginRedelegate(
         CosmosLikeOperation &out, const cosmos::MsgBeginRedelegate &innerBeginRedelegateMsg) const;
@@ -277,6 +279,11 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     /// \param [in] innerFeesMsg the cosmos fees message to use, unwrapped.
     void fillOperationTypeAmountFromFees(
         CosmosLikeOperation &out, const cosmos::MsgFees &innerFeesMsg) const;
+
+    /// Compute the exact fees paid for the Transaction, applying the consumed gas ratio if available.
+    /// \param [in] tx A Cosmos Transaction to compute the fees from
+    /// \return the amount of fees paid for this transaction in uatom
+        static uint32_t computeFeesForTransaction(const cosmos::Transaction& tx);
 
     std::shared_ptr<cosmos::Account> _accountData;
     std::shared_ptr<CosmosLikeKeychain> _keychain;

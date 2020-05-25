@@ -41,6 +41,7 @@
 #include <database/soci-option.h>
 #include <events/Event.hpp>
 #include <math/Base58.hpp>
+#include <numeric>
 #include <soci.h>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
@@ -292,6 +293,41 @@ void CosmosLikeAccount::setOperationTypeAndAmount(
     }
 }
 
+uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction &tx)
+{
+    // Get the maximum fees advertised on transaction (if all of "GasWanted" is used)
+    auto fees = std::accumulate(
+        std::begin(tx.fee.amount),
+        std::end(tx.fee.amount),
+        0,
+        [](uint32_t sum, const cosmos::Coin &subamount) {
+            // FIXME This locks the CosmosLikeAccount code in cosmoshub chains on debug builds.
+            // And it also serves as reminder that most code in this module assumes cosmoshub.
+            assert((subamount.denom == "uatom"));
+            return sum + BigInt::fromDecimal(subamount.amount).toInt();
+        });
+
+    // The value is updated to the fees actually paid if the transaction has a GasUsed value to use.
+    if (fees != 0 && tx.gasUsed) {
+        if (tx.fee.gas.toInt() == 0) {
+            // A 0 gas transaction is either :
+            // - Never broadcast by the node (because of spam protection mechanisms)
+            // - Invalid, as the signature verification (or the `gas per byte` cost)
+            //   will immediately trigger an OutOfGas network error.
+            // An invalid or absent transaction from the blockchain should be not picked up by the
+            // explorer, so Operations cannot be inflated with such transactions.
+            throw Exception(
+                api::ErrorCode::ILLEGAL_STATE,
+                "A cosmos Transaction cannot have a GasUsed field with a null GasWanted field.");
+        }
+        auto const feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
+                                         static_cast<float>(tx.fee.gas.toInt());
+        fees = std::lround(feeConsumptionRatio * fees);
+    }
+
+    return fees;
+}
+
 void CosmosLikeAccount::inflateOperation(
     CosmosLikeOperation &out,
     const std::shared_ptr<const AbstractWallet> &wallet,
@@ -321,20 +357,14 @@ void CosmosLikeAccount::inflateOperation(
     out.date = tx.timestamp;
     out.trust = std::make_shared<TrustIndicator>();
     // Fees are added only on the MSGFEES Message Type.
-    auto fees = 0;
+    auto fees = computeFeesForTransaction(tx);
     if (cosmos::stringToMsgType(msg.type.c_str()) == api::CosmosLikeMsgType::MSGFEES) {
-        std::for_each(tx.fee.amount.begin(), tx.fee.amount.end(), [&](const cosmos::Coin &amount) {
-            assert(amount.denom == "uatom");  // FIXME Temporary until all units correctly supported
-            fees += BigInt::fromDecimal(amount.amount).toInt();
-        });
+        out.amount = BigInt(fees);
+        out.fees = BigInt(fees);
     }
-    // The value is updated to the fees actually paid if the transaction has a GasUsed value to use.
-    if (fees != 0 && tx.gasUsed) {
-        auto const feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
-                                   static_cast<float>(tx.fee.gas.toInt());
-        fees = std::lround(feeConsumptionRatio * fees);
+    else {
+        out.fees = BigInt::ZERO;
     }
-    out.fees = BigInt(fees);
     out.walletUid = wallet->getWalletUid();
 }
 
