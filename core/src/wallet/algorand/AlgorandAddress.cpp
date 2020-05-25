@@ -29,9 +29,9 @@
 
 #include "AlgorandAddress.hpp"
 
-#include <core/collections/Vector.hpp>
+#include <collections/vector.hpp>
 #include <core/crypto/SHA512256.hpp>
-#include <core/math/BaseConverter.hpp>
+#include <math/BaseConverter.hpp>
 
 namespace ledger {
 namespace core {

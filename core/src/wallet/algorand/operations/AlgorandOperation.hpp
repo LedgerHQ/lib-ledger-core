@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
+#include "../model/transactions/AlgorandTransaction.hpp"
 
 #include <algorand/api/AlgorandOperation.hpp>
 #include <algorand/api/AlgorandOperationType.hpp>
