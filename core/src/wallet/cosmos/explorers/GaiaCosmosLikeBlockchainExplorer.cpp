@@ -537,6 +537,10 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getDelegatedBalance(
                         "The API response from explorer is missing the \"result\" key");
                 }
 
+                // Handle null
+                if (!json.GetObject()["result"].IsArray()) {
+                    return std::make_shared<BigInt>(BigInt::ZERO);
+                }
                 const auto &del_val_entries = json.GetObject()["result"].GetArray();
                 BigInt total_amt = BigInt::ZERO;
                 for (const auto &delegation_entry : del_val_entries) {
@@ -573,7 +577,8 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getPendingRewardsBalance(
                         fmt::format("Failed to get total for {}", endpoint));
                 }
 
-                if (json.GetObject()["result"].GetObject()["total"].GetArray().Size() <= 0) {
+                if (!json.GetObject()["result"].GetObject()["total"].IsArray() ||
+                    json.GetObject()["result"].GetObject()["total"].GetArray().Size() <= 0) {
                     return std::make_shared<BigInt>(BigInt::ZERO);
                 }
 
@@ -608,6 +613,10 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getUnbondingBalance(
                         "The API response from explorer is missing the \"result\" key");
                 }
 
+                // Handle null
+                if (!json.GetObject()["result"].IsArray()) {
+                    return std::make_shared<BigInt>(BigInt::ZERO);
+                }
                 const auto &del_entries = json.GetObject()["result"].GetArray();
                 BigInt total_amt = BigInt::ZERO;
                 for (const auto &del_val_entries : del_entries) {
@@ -643,6 +652,10 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getSpendableBalance(
                         "The API response from explorer is missing the \"result\" key");
                 }
 
+                // Handle null
+                if (!json.GetObject()["result"].IsArray()) {
+                    return std::make_shared<BigInt>(BigInt::ZERO);
+                }
                 const auto &balances = json.GetObject()["result"].GetArray();
                 BigInt total_amt = BigInt::ZERO;
                 // NOTE : Assuming only uatom is in the balances array
@@ -671,6 +684,10 @@ Future<cosmos::ValidatorList> GaiaCosmosLikeBlockchainExplorer::getActiveValidat
                     throw make_exception(
                         api::ErrorCode::API_ERROR,
                         "The API response from explorer is missing the \"result\" key");
+                }
+                // Handle null
+                if (!document["result"].IsArray()) {
+                    return result;
                 }
                 const auto &validators = document["result"].GetArray();
                 for (const auto &node : validators) {
@@ -748,8 +765,12 @@ FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::get
         .mapPtr<std::vector<cosmos::Delegation>>(
             getContext(), [](const HttpRequest::JsonResult &response) {
                 const auto &document = std::get<1>(response)->GetObject();
-                const auto &results = document["result"].GetArray();
                 auto delegations = std::make_shared<std::vector<cosmos::Delegation>>();
+                // Handle null
+                if (!document["result"].IsArray()) {
+                    return delegations;
+                }
+                const auto &results = document["result"].GetArray();
                 for (auto &result : results) {
                     cosmos::Delegation delegation;
                     rpcs_parsers::parseDelegation(result, delegation);
@@ -768,8 +789,12 @@ FuturePtr<std::vector<cosmos::Reward>> GaiaCosmosLikeBlockchainExplorer::getPend
         .mapPtr<std::vector<cosmos::Reward>>(
             getContext(), [](const HttpRequest::JsonResult &response) {
                 const auto &document = std::get<1>(response)->GetObject();
-                const auto &results = document["result"].GetObject()[kRewards].GetArray();
                 auto rewards = std::make_shared<std::vector<cosmos::Reward>>();
+                // Handle null
+                if (!document["result"].GetObject()[kRewards].IsArray()) {
+                    return rewards;
+                }
+                const auto &results = document["result"].GetObject()[kRewards].GetArray();
                 for (auto &result : results) {
                     cosmos::Reward reward;
                     rpcs_parsers::parseReward(result, reward);
