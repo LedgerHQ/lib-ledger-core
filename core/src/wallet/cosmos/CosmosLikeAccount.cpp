@@ -330,7 +330,7 @@ void CosmosLikeAccount::inflateOperation(
     }
     // The value is updated to the fees actually paid if the transaction has a GasUsed value to use.
     if (fees != 0 && tx.gasUsed) {
-        auto feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
+        auto const feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
                                    static_cast<float>(tx.fee.gas.toInt());
         fees = std::lround(feeConsumptionRatio * fees);
     }
