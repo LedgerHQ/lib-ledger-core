@@ -30,11 +30,11 @@
 #ifndef LEDGER_CORE_ALGORANDBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_ALGORANDBLOCKCHAINEXPLORER_H
 
-#include <algorand/api/AlgorandTransaction.hpp>
-#include <algorand/api/AlgorandNetworkParameters.hpp>
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
-#include <algorand/model/transactions/AlgorandTransactionParams.hpp>
-#include <algorand/model/AlgorandAccount.hpp>
+#include <api/AlgorandTransaction.hpp>
+#include <api/AlgorandNetworkParameters.hpp>
+#include "model/transactions/AlgorandTransaction.hpp"
+#include "model/transactions/AlgorandTransactionParams.hpp"
+#include "model/AlgorandAccount.hpp"
 
 #include <core/async/DedicatedContext.hpp>
 #include <core/utils/ConfigurationMatchable.hpp>

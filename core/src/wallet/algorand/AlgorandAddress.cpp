@@ -27,7 +27,7 @@
  *
  */
 
-#include <algorand/AlgorandAddress.hpp>
+#include "AlgorandAddress.hpp"
 
 #include <core/collections/Vector.hpp>
 #include <core/crypto/SHA512256.hpp>

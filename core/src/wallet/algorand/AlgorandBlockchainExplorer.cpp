@@ -27,8 +27,8 @@
  *
  */
 
-#include <algorand/AlgorandBlockchainExplorer.hpp>
-#include <algorand/AlgorandJsonParser.hpp>
+#include "AlgorandBlockchainExplorer.hpp"
+#include "AlgorandJsonParser.hpp>"
 #include <algorand/api/AlgorandConfigurationDefaults.hpp>
 
 #include <core/net/HttpClient.hpp>

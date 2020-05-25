@@ -30,7 +30,7 @@
 #ifndef LEDGER_CORE_ALGORANDADDRESS_H
 #define LEDGER_CORE_ALGORANDADDRESS_H
 
-#include <algorand/AlgorandLikeCurrencies.hpp>
+#include "AlgorandLikeCurrencies.hpp"
 
 #include <core/address/Address.hpp>
 

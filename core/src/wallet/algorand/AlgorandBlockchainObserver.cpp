@@ -27,8 +27,8 @@
  *
  */
 
-#include <algorand/AlgorandBlockchainObserver.hpp>
-#include <algorand/AlgorandAccount.hpp>
+#include "AlgorandBlockchainObserver.hpp"
+#include "algorand/AlgorandAccount.hpp"
 #include <algorand/api/AlgorandConfigurationDefaults.hpp>
 
 #include <core/api/Configuration.hpp>

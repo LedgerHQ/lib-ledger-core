@@ -30,7 +30,7 @@
 #ifndef LEDGER_CORE_ALGORANDBLOCKCHAINOBSERVER_H
 #define LEDGER_CORE_ALGORANDBLOCKCHAINOBSERVER_H
 
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
+#include "model/transactions/AlgorandTransaction.hpp"
 
 #include <core/async/DedicatedContext.hpp>
 #include <core/utils/ConfigurationMatchable.hpp>
