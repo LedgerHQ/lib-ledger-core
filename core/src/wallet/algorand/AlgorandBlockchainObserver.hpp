@@ -32,12 +32,12 @@
 
 #include "model/transactions/AlgorandTransaction.hpp"
 
-#include <core/async/DedicatedContext.hpp>
-#include <core/utils/ConfigurationMatchable.hpp>
-#include <core/observers/AbstractBlockchainObserver.hpp>
-#include <core/observers/AbstractLedgerApiBlockchainObserver.hpp>
+#include <async/DedicatedContext.hpp>
+#include <utils/ConfigurationMatchable.h>
+#include <wallet/common/observers/AbstractBlockchainObserver.h>
+#include <wallet/common/observers/AbstractLedgerApiBlockchainObserver.h>
 
-#include <core/api/Block.hpp>
+#include <api/Block.hpp>
 
 namespace ledger {
 namespace core {

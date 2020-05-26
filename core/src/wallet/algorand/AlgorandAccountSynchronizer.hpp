@@ -31,9 +31,9 @@
 #ifndef LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
 #define LEDGER_CORE_ALGORANDACCOUNTSYNCHRONIZER_H
 
-#include <algorand/AlgorandBlockchainExplorer.hpp>
+#include "AlgorandBlockchainExplorer.hpp"
 
-#include <core/synchronizers/AbstractAccountSynchronizer.hpp>
+#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
 #include <core/Services.hpp>
 
 namespace ledger {

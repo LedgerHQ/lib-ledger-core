@@ -35,13 +35,13 @@
 #include "operations/AlgorandOperation.hpp"
 #include "model/transactions/AlgorandTransaction.hpp"
 
-#include <algorand/api/AlgorandAccount.hpp>
-#include <algorand/api/AlgorandTransaction.hpp>
-#include <algorand/api/AlgorandAssetParamsListCallback.hpp>
-#include <algorand/api/AlgorandAssetAmountCallback.hpp>
-#include <algorand/api/AmountCallback.hpp>
+#include <api/AlgorandAccount.hpp>
+#include <api/AlgorandTransaction.hpp>
+#include <api/AlgorandAssetParamsListCallback.hpp>
+#include <api/AlgorandAssetAmountCallback.hpp>
+#include <api/AmountCallback.hpp>
 
-#include <core/wallet/AbstractAccount.hpp>
+#include <wallet/common/AbstractAccount.hpp>
 
 namespace ledger {
 namespace core {

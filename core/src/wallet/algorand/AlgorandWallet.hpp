@@ -31,13 +31,13 @@
 #ifndef LEDGER_CORE_ALGORANDWALLET_H
 #define LEDGER_CORE_ALGORANDWALLET_H
 
-#include <algorand/AlgorandAccountSynchronizer.hpp>
-#include <algorand/AlgorandBlockchainExplorer.hpp>
-#include <algorand/AlgorandBlockchainObserver.hpp>
+#include "AlgorandAccountSynchronizer.hpp"
+#include "AlgorandBlockchainExplorer.hpp"
+#include "AlgorandBlockchainObserver.hpp"
 
-#include <algorand/api/AlgorandWallet.hpp>
+#include <api/AlgorandWallet.hpp>
 
-#include <core/wallet/AbstractWallet.hpp>
+#include <wallet/common/AbstractWallet.hpp>
 
 namespace ledger {
 namespace core {

@@ -29,7 +29,7 @@
 
 #include "AlgorandAccount.hpp"
 
-#include <core/math/BigInt.hpp>
+#include <api/BigInt.hpp>
 
 #include <vector>
 

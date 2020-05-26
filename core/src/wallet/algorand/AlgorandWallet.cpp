@@ -27,13 +27,13 @@
  *
  */
 
-#include <algorand/AlgorandWallet.hpp>
-#include <algorand/AlgorandAccount.hpp>
-#include <algorand/model/AlgorandAccount.hpp>
-#include <algorand/database/AlgorandAccountDatabaseHelper.hpp>
+#include "AlgorandWallet.hpp"
+#include "AlgorandAccount.hpp"
+#include "model/AlgorandAccount.hpp"
+#include "database/AlgorandAccountDatabaseHelper.hpp"
 
 #include <core/Services.hpp>
-#include <core/api/ErrorCode.hpp>
+#include <api/ErrorCode.hpp>
 #include <core/wallet/AccountDatabaseHelper.hpp>
 
 
