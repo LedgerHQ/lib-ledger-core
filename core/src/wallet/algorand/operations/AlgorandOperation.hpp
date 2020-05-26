@@ -37,6 +37,7 @@
 
 #include <api/Operation.hpp>
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/api_impl/OperationApi.h>
 
 namespace ledger {
 namespace core {
@@ -45,7 +46,7 @@ namespace algorand {
     class AlgorandTransactionImpl;
 
     class Operation : public ::ledger::core::api::AlgorandOperation
-                    , public ::ledger::core::Operation
+                    , public ::ledger::core::Operation, public ::ledger::core::OperationApi
     {
     public:
         Operation() = delete;
