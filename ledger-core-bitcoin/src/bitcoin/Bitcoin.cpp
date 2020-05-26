@@ -2,33 +2,11 @@
 #include <core/api/ErrorCodeCallback.hpp>
 #include <core/api/Services.hpp>
 #include <core/api/WalletStore.hpp>
+#include <core/utils/Coin.hpp>
 #include <core/wallet/WalletStore.hpp>
 #include <bitcoin/Bitcoin.hpp>
 #include <bitcoin/BitcoinLikeCurrencies.hpp>
 #include <bitcoin/factories/BitcoinLikeWalletFactory.hpp>
-
-namespace {
-  ledger::core::Future<ledger::core::api::ErrorCode> registerCurrenciesInto(
-        std::shared_ptr<ledger::core::Services> const & services,
-        std::shared_ptr<ledger::core::WalletStore> const & walletStore,
-        std::shared_ptr<std::vector<ledger::core::api::Currency>> const & currencies
-    ) {
-        if (currencies->empty()) {
-            return ledger::core::Future<ledger::core::api::ErrorCode>::successful(ledger::core::api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-        }
-
-        // get a currency and decrease the size of the currencies to to treat
-        auto currency = currencies->back();
-        currencies->pop_back();
-
-        return walletStore->addCurrency(currency)
-            .template flatMap<ledger::core::api::ErrorCode>(services->getDispatcher()->getMainExecutionContext(), [=] (ledger::core::Unit const & unit) {
-                auto walletFactory = std::make_shared<ledger::core::BitcoinLikeWalletFactory>(currency, services);
-                walletStore->registerFactory(currency, walletFactory);
-                return registerCurrenciesInto(services, walletStore, currencies);
-            });
-    }
-}
 
 namespace ledger {
     namespace core {
@@ -69,7 +47,7 @@ namespace ledger {
                 currencies::stakenet()
             });
 
-            registerCurrenciesInto(s, ws, currencies)
+            registerCurrenciesInto<ledger::core::BitcoinLikeWalletFactory>(s, ws, currencies)
               .callback(s->getDispatcher()->getMainExecutionContext(), callback);
         }
 
