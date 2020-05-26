@@ -37,7 +37,8 @@
 #include <api/AlgorandBlockchainExplorerEngines.hpp>
 #include <api/AlgorandBlockchainObserverEngines.hpp>
 
-#include <core/Services.hpp>
+//#include <core/Services.hpp>
+#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
 #include <api/Configuration.hpp>
 #include <api/SynchronizationEngines.hpp>
 
@@ -50,16 +51,17 @@ namespace algorand {
     const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
     const std::string ALGORAND_NODE_OBSERVER = api::AlgorandBlockchainObserverEngines::ALGORAND_NODE;
 
-    WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<Services> &services) :
-        AbstractWalletFactory(currency, services)
+    WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool) :
+        AbstractWalletFactory(currency, pool)
     {
         // create the DB structure if not already created
-        services->getDatabaseSessionPool()->forwardMigration<AlgorandMigration>();
+        // FIXME : see alternative for V2 method "forwardMigration"
+        //pool->getDatabaseSessionPool()->forwardMigration<AlgorandMigration>();
     }
 
     std::shared_ptr<AbstractWallet> WalletFactory::build(const WalletDatabaseEntry &entry) {
-        auto services = getServices();
-        services->logger()->info("Building wallet instance '{}' for {} with parameters: {}",
+        auto pool = getPool();
+        pool->logger()->info("Building wallet instance '{}' for {} with parameters: {}",
             entry.name,
             entry.currencyName,
             entry.configuration->dump());
@@ -82,7 +84,7 @@ namespace algorand {
         // Configure observer
         auto observer = getObserver(entry.currencyName, entry.configuration);
         if (observer == nullptr) {
-            services->logger()->warn(
+            pool->logger()->warn(
                     "Observer engine '{}' is not supported. Wallet {} was created anyway. Real time events won't be handled by this instance.",
                     entry.configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE).value_or("undefined"), entry.name);
         }
@@ -93,13 +95,13 @@ namespace algorand {
         Option<AlgorandAccountSynchronizerFactory> synchronizerFactory;
         {
             if (syncEngine == api::SynchronizationEngines::BLOCKCHAIN_EXPLORER_SYNCHRONIZATION) {
-                std::weak_ptr<Services> weakServices = services;
-                synchronizerFactory = Option<AlgorandAccountSynchronizerFactory>([weakServices, explorer]() {
-                    auto services = weakServices.lock();
-                    if (!services) {
+                std::weak_ptr<WalletPool> weakPool = pool;
+                synchronizerFactory = Option<AlgorandAccountSynchronizerFactory>([weakPool, explorer]() {
+                    auto pool = weakPool.lock();
+                    if (!pool) {
                         throw make_exception(api::ErrorCode::NULL_POINTER, "Pool was released.");
                     }
-                    return std::make_shared<AccountSynchronizer>(services, explorer);
+                    return std::make_shared<AccountSynchronizer>(pool, explorer);
                 });
             }
         }
@@ -118,7 +120,7 @@ namespace algorand {
         return std::make_shared<Wallet>(
             entry.name,
             getCurrency(),
-            services,
+            pool,
             entry.configuration,
             scheme,
             explorer,
@@ -147,11 +149,11 @@ namespace algorand {
         auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or(ALGORAND_NODE_EXPLORER);
         if (engine == ALGORAND_NODE_EXPLORER) {
             auto &networkParams = networks::getAlgorandNetworkParameters(getCurrency().name);
-            auto services = getServices();
-            auto http = services->getHttpClient(
+            auto pool = getPool();
+            auto http = pool->getHttpClient(
                 configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value_or(ALGORAND_API_ENDPOINT)
             );
-            auto context = services->getDispatcher()->getSerialExecutionContext(
+            auto context = pool->getDispatcher()->getSerialExecutionContext(
                     fmt::format("{}-{}-explorer", ALGORAND_NODE_EXPLORER, networkParams.genesisHash)
             );
 
@@ -190,10 +192,10 @@ namespace algorand {
         if (engine == ALGORAND_NODE_OBSERVER) {
             const auto &currency = getCurrency();
             auto &networkParams = networks::getAlgorandNetworkParameters(currency.name);
-            auto services = getServices();
-            auto logger = services->logger();
-            auto webSocketClient = services->getWebSocketClient();
-            auto context = services->getDispatcher()->getSerialExecutionContext(
+            auto pool = getPool();
+            auto logger = pool->logger();
+            auto webSocketClient = pool->getWebSocketClient();
+            auto context = pool->getDispatcher()->getSerialExecutionContext(
                     fmt::format("{}-{}-explorer", ALGORAND_NODE_OBSERVER, networkParams.genesisHash)
             );
 
