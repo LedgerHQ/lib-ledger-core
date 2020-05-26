@@ -27,11 +27,11 @@
  *
  */
 
-#include <algorand/operations/AlgorandOperation.hpp>
+#include "AlgorandOperation.hpp"
 
 #include "../transactions/api_impl/AlgorandTransactionImpl.hpp"
 
-#include <core/operation/OperationDatabaseHelper.hpp>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
 #include <fmt/format.h>
 
@@ -41,7 +41,7 @@ namespace algorand {
 
     Operation::Operation(const std::shared_ptr<AbstractAccount>& account,
                          const model::Transaction& txn)
-        : ::ledger::core::Operation(account)
+        : ::ledger::core::OperationApi(account)
     {
         setTransaction(txn);
     }
