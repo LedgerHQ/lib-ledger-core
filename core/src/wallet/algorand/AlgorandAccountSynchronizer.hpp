@@ -34,7 +34,9 @@
 #include "AlgorandBlockchainExplorer.hpp"
 
 #include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
-#include <core/Services.hpp>
+//#include <core/Services.hpp>
+
+#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
 
 namespace ledger {
 namespace core {
@@ -48,7 +50,7 @@ namespace algorand {
 
     public:
 
-        AccountSynchronizer(const std::shared_ptr<Services> &services,
+        AccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
                             const std::shared_ptr<BlockchainExplorer> &explorer);
 
         virtual void reset(const std::shared_ptr<Account>& account, const std::chrono::system_clock::time_point& toDate) override {}
