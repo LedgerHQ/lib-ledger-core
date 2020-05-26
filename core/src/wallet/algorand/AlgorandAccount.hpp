@@ -40,6 +40,7 @@
 #include <api/AlgorandAssetParamsListCallback.hpp>
 #include <api/AlgorandAssetAmountCallback.hpp>
 #include <api/AmountCallback.hpp>
+#include <api/Keychain.hpp>
 
 #include <wallet/common/AbstractAccount.hpp>
 
@@ -80,6 +81,7 @@ namespace algorand {
 
         // From api::Account
         std::shared_ptr<api::OperationQuery> queryOperations() override;
+        std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
         bool isSynchronizing() override;
 
