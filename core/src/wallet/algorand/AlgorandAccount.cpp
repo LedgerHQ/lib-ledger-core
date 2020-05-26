@@ -106,6 +106,12 @@ namespace algorand {
         return nullptr;
     }
 
+    std::shared_ptr<api::Keychain> getAccountKeychain() 
+    {
+        // FIXME : check nullptr error  
+        return nullptr;
+    }
+
     bool Account::isSynchronizing()
     {
         // TODO

@@ -33,7 +33,7 @@
 
 #include <soci.h>
 
-#include <algorand/model/AlgorandAccount.hpp>
+#include "../model/AlgorandAccount.hpp"
 
 namespace ledger {
 namespace core {

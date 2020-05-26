@@ -51,7 +51,7 @@ namespace algorand {
     public:
 
         AccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
-                            const std::shared_ptr<BlockchainExplorer> &explorer);
+                            const std::shared_ptr<BlockchainExplorer> &explorer) {}
 
         virtual void reset(const std::shared_ptr<Account>& account, const std::chrono::system_clock::time_point& toDate) override {}
 

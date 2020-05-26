@@ -50,7 +50,7 @@ namespace algorand {
                    const std::shared_ptr<BlockchainExplorer> &explorer,
                    const std::shared_ptr<BlockchainObserver> &observer,
                    const AccountSynchronizerFactory &synchronizerFactory)
-        : AbstractWallet(name, currency, services, configuration, scheme)
+        : AbstractWallet(name, currency, pool, configuration, scheme)
     {
         _explorer = explorer;
         _observer = observer;
