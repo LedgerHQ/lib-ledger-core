@@ -96,7 +96,8 @@ void parseMultiSendInputs(const T &array, std::vector<cosmos::MultiSendInput> &o
         auto input = n.GetObject();
         out[index].fromAddress = input[kAddress].GetString();
         if (input[kCoins].IsArray()) {
-            parseCoinVector(input[kCoins].GetArray(), out[index].coins);
+            const auto &inputValues = input[kCoins].GetArray();
+            parseCoinVector(inputValues, out[index].coins);
         }
         index += 1;
     }
@@ -111,7 +112,8 @@ void parseMultiSendOutputs(const T &array, std::vector<cosmos::MultiSendOutput> 
         auto output = n.GetObject();
         out[index].toAddress = output[kAddress].GetString();
         if (output[kCoins].IsArray()) {
-            parseCoinVector(output[kCoins].GetArray(), out[index].coins);
+            const auto &outputValues = output[kCoins].GetArray();
+            parseCoinVector(outputValues, out[index].coins);
         }
         index += 1;
     }
@@ -166,10 +168,12 @@ void parseReward(const T &rewardNode, cosmos::Reward &out)
     assert(rewardNode.HasMember(kValidatorAddress));
     assert(rewardNode.HasMember(kReward));
     out.validatorAddress = rewardNode[kValidatorAddress].GetString();
-    // Do nothing if the array is "null"
-    if (rewardNode[kReward].IsArray()) {
+    // Do nothing if the array is "null" or empty
+    if (rewardNode[kReward].IsArray() && rewardNode[kReward].GetArray().Size() > 0) {
+        // In cosmoshub, the rewards are only in uatom, so there's only 1 entry in the array
+        const auto &firstReward = rewardNode[kReward].GetArray()[0];
         parseCoin(
-            rewardNode[kReward].GetArray()[0],
+            firstReward,
             out.pendingReward);  // Assuming only one reward per validator
     }
 }
@@ -245,7 +249,8 @@ void parseMsgSend(const T &n, cosmos::MessageContent &out)
     msg.fromAddress = n[kFromAddress].GetString();
     msg.toAddress = n[kToAddress].GetString();
     if (n[kAmount].IsArray()) {
-        parseCoinVector(n[kAmount].GetArray(), msg.amount);
+        const auto &amountArray = n[kAmount].GetArray();
+        parseCoinVector(amountArray, msg.amount);
     }
     out = msg;
 }
@@ -294,7 +299,8 @@ void parseMsgSubmitProposal(const T &n, cosmos::MessageContent &out)
     msg.proposer = n[kProposer].GetString();
     parseProposalContent(n[kContent].GetObject(), msg.content);
     if (n[kInitialDeposit].IsArray()){
-        parseCoinVector(n[kInitialDeposit].GetArray(), msg.initialDeposit);
+        const auto &amountArray = n[kInitialDeposit].GetArray();
+        parseCoinVector(amountArray, msg.initialDeposit);
     }
     out = msg;
 }
@@ -330,7 +336,8 @@ void parseMsgDeposit(const T &n, cosmos::MessageContent &out)
     msg.depositor = n[kDepositor].GetString();
     msg.proposalId = n[kProposalId].GetString();
     if (n[kAmount].IsArray()){
-        parseCoinVector(n[kAmount].GetArray(), msg.amount);
+        const auto &amountArray = n[kAmount].GetArray();
+        parseCoinVector(amountArray, msg.amount);
     }
     out = msg;
 }
@@ -355,7 +362,7 @@ void parseMsgMultiSend(const T &n, cosmos::MessageContent &out)
 
     // inputs: list<CosmosLikeMultiSendInput>;
     if(n[kInputs].IsArray()){
-        auto inputsArray = n[kInputs].GetArray();
+        const auto &inputsArray = n[kInputs].GetArray();
         parseMultiSendInputs(inputsArray, msg.inputs);
     }
 
@@ -554,37 +561,37 @@ void parseValidatorSetEntry(const T &n, cosmos::Validator &out)
     assert((n.HasMember(kCommission)));
     parseCommission(n[kCommission].GetObject(), out.commission);
 
-    assert((n.HasMember("unbonding_height")));
-    out.unbondingHeight = BigInt::fromString(n["unbonding_height"].GetString()).toInt();
+    assert((n.HasMember(kUnbondingHeight)));
+    out.unbondingHeight = BigInt::fromString(n[kUnbondingHeight].GetString()).toInt();
 
-    assert((n.HasMember("unbonding_time")));
+    assert((n.HasMember(kUnbondingTime)));
     if (out.unbondingHeight == 0) {
         out.unbondingTime = optional<std::chrono::system_clock::time_point>();
     }
     else {
         out.unbondingTime = optional<std::chrono::system_clock::time_point>(
-            DateUtils::fromJSON(n["unbonding_time"].GetString()));
+            DateUtils::fromJSON(n[kUnbondingTime].GetString()));
     }
 
     assert((n.HasMember(kMinSelfDelegation)));
     out.minSelfDelegation = n[kMinSelfDelegation].GetString();
 
-    assert((n.HasMember("jailed")));
-    out.jailed = n["jailed"].GetBool();
+    assert((n.HasMember(kJailed)));
+    out.jailed = n[kJailed].GetBool();
 
     // Note : we ignore delegator_shares, as it seems the actual
     // voting power is the tokens key, in uatom
-    assert((n.HasMember("tokens")));
-    out.votingPower = n["tokens"].GetString();
+    assert((n.HasMember(kTokens)));
+    out.votingPower = n[kTokens].GetString();
 
-    assert((n.HasMember("operator_address")));
-    out.operatorAddress = n["operator_address"].GetString();
+    assert((n.HasMember(kOperatorAddress)));
+    out.operatorAddress = n[kOperatorAddress].GetString();
 
-    assert((n.HasMember("consensus_pubkey")));
-    out.consensusPubkey = n["consensus_pubkey"].GetString();
+    assert((n.HasMember(kConsensusPubkey)));
+    out.consensusPubkey = n[kConsensusPubkey].GetString();
 
-    assert((n.HasMember("status")));
-    out.activeStatus = BigInt::fromString(n["status"].GetString()).toInt();
+    assert((n.HasMember(kStatus)));
+    out.activeStatus = BigInt::fromString(n[kStatus].GetString()).toInt();
 }
 
 //  Parse an unbonding entry from (/staking/delegators/{address}/unbonding_delegations)
@@ -627,12 +634,12 @@ void parseUnbonding(const T &n, cosmos::Unbonding &out)
 {
     assert((n.HasMember(kDelegatorAddress)));
     assert((n.HasMember(kValidatorAddress)));
-    assert((n.HasMember("entries")));
+    assert((n.HasMember(kEntries)));
     out.entries = std::list<cosmos::UnbondingEntry>();
     out.delegatorAddress = n[kDelegatorAddress].GetString();
     out.validatorAddress = n[kValidatorAddress].GetString();
-    if (n["entries"].IsArray()) {
-        for (const auto &entry : n["entries"].GetArray()) {
+    if (n[kEntries].IsArray()) {
+        for (const auto &entry : n[kEntries].GetArray()) {
             cosmos::UnbondingEntry parsedEntry;
             parseUnbondingEntry(entry.GetObject(), parsedEntry);
             out.entries.emplace_back(std::move(parsedEntry));
@@ -664,11 +671,11 @@ void parseUnbonding(const T &n, cosmos::Unbonding &out)
 template <typename T>
 void parseUnbondingList(const T &n, cosmos::UnbondingList &out)
 {
-    assert((n.HasMember("result")));
+    assert((n.HasMember(kResult)));
     out.clear();
 
-    if(n["result"].IsArray()){
-        for (const auto &unbonding : n["result"].GetArray()) {
+    if(n[kResult].IsArray()){
+        for (const auto &unbonding : n[kResult].GetArray()) {
             cosmos::Unbonding parsedUnbonding;
             parseUnbonding(unbonding.GetObject(), parsedUnbonding);
             out.emplace_back(std::make_shared<cosmos::Unbonding>(std::move(parsedUnbonding)));
@@ -721,13 +728,13 @@ void parseRedelegation(const T &n, cosmos::Redelegation &out)
     assert((n.HasMember(kDelegatorAddress)));
     assert((n.HasMember(kValidatorSrcAddress)));
     assert((n.HasMember(kValidatorDstAddress)));
-    assert((n.HasMember("entries")));
+    assert((n.HasMember(kEntries)));
     out.entries = std::list<cosmos::RedelegationEntry>();
     out.delegatorAddress = n[kDelegatorAddress].GetString();
     out.srcValidatorAddress = n[kValidatorSrcAddress].GetString();
     out.dstValidatorAddress = n[kValidatorDstAddress].GetString();
-    if(n["entries"].IsArray()) {
-        for (const auto &entry : n["entries"].GetArray()) {
+    if(n[kEntries].IsArray()) {
+        for (const auto &entry : n[kEntries].GetArray()) {
             cosmos::RedelegationEntry parsedEntry;
             parseRedelegationEntry(entry.GetObject(), parsedEntry);
             out.entries.emplace_back(std::move(parsedEntry));
@@ -773,11 +780,11 @@ void parseRedelegation(const T &n, cosmos::Redelegation &out)
 template <typename T>
 void parseRedelegationList(const T &n, cosmos::RedelegationList &out)
 {
-    assert((n.HasMember("result")));
+    assert((n.HasMember(kResult)));
     out.clear();
 
-    if (n["result"].IsArray()){
-        for (const auto &redelegation : n["result"].GetArray()) {
+    if (n[kResult].IsArray()){
+        for (const auto &redelegation : n[kResult].GetArray()) {
             cosmos::Redelegation parsedRedelegation;
             parseRedelegation(redelegation.GetObject(), parsedRedelegation);
             out.emplace_back(std::make_shared<cosmos::Redelegation>(std::move(parsedRedelegation)));
@@ -807,8 +814,8 @@ void parseRedelegationList(const T &n, cosmos::RedelegationList &out)
 template <typename T>
 void parseDistInfo(const T &n, cosmos::ValidatorDistributionInformation &out)
 {
-    assert((n.HasMember("result")));
-    auto resultObj = n["result"].GetObject();
+    assert((n.HasMember(kResult)));
+    auto resultObj = n[kResult].GetObject();
     assert((resultObj.HasMember(kSelfBondRewards)));
     assert((resultObj.HasMember(kValCommission)));
     // NOTE : this function will only parse the first member of each array.
@@ -842,8 +849,8 @@ void parseDistInfo(const T &n, cosmos::ValidatorDistributionInformation &out)
 template <typename T>
 void parseSignInfo(const T &n, cosmos::ValidatorSigningInformation &out)
 {
-    assert((n.HasMember("result")));
-    auto resultObj = n["result"].GetObject();
+    assert((n.HasMember(kResult)));
+    auto resultObj = n[kResult].GetObject();
     assert((resultObj.HasMember(kStartHeight)));
     assert((resultObj.HasMember(kIndexOffset)));
     assert((resultObj.HasMember(kJailedUntil)));
