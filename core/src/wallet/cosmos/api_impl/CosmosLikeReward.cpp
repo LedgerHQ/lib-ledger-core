@@ -54,6 +54,9 @@ namespace ledger {
 
         std::shared_ptr<api::Amount> CosmosLikeReward::getRewardAmount() const {
             auto reward = _rewardData.pendingReward.amount;
+            if (reward.empty()) {
+                return std::make_shared<Amount>(currencies::ATOM, 0, BigInt::ZERO);
+            }
             reward.erase(reward.find('.'), std::string::npos);
             return std::make_shared<Amount>(currencies::ATOM, 0, BigInt::fromDecimal(reward));
         }
