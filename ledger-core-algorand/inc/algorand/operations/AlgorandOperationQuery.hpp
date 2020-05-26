@@ -1,7 +1,9 @@
+
 /*
- * AlgorandLikeCurrencies
  *
- * Created by Hakim Aammar on 20/04/2020.
+ * AlgorandOperationQuery
+ *
+ * Created Hakim Aammar on 18/05/2020
  *
  * The MIT License (MIT)
  *
@@ -27,24 +29,34 @@
  *
  */
 
-#include <algorand/AlgorandLikeCurrencies.hpp>
+#pragma once
 
-#include <core/wallet/CurrencyBuilder.hpp>
+#include <algorand/operations/AlgorandOperation.hpp>
+
+#include <core/operation/OperationQuery.hpp>
 
 namespace ledger {
 namespace core {
-namespace currencies {
+namespace algorand {
 
-    api::Currency algorand() {
-        static api::Currency const CURRENCY = CurrencyBuilder("algorand")
-            .bip44(algorand::constants::COIN_ID)
-            .paymentUri("algorand")
-            .unit("uALGO", 0, "uALGO")
-            .unit("ALGO", 3, "uALGO");
+    class OperationQuery : public ledger::core::OperationQuery<Operation> {
 
-        return CURRENCY;
-    }
+    public:
 
+        OperationQuery(const std::shared_ptr<api::QueryFilter> & headFilter,
+                       const std::shared_ptr<DatabaseSessionPool> & pool,
+                       const std::shared_ptr<api::ExecutionContext> & context,
+                       const std::shared_ptr<api::ExecutionContext> & mainContext);
+
+    protected:
+
+        virtual std::shared_ptr<Operation> createOperation(std::shared_ptr<AbstractAccount> &account) override;
+
+        virtual void inflateCompleteTransaction(soci::session & sql,
+                                                const std::string & accountUid,
+                                                Operation & operation) override;
+
+    };
 }
 }
 }

@@ -45,8 +45,6 @@ namespace algorand {
 namespace model {
 
     struct Account {
-        // The account index
-        int32_t index;
         // The round for which this account information is relevant
         uint64_t round;
         // The account public key in hexadecimal representation

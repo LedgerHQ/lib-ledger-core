@@ -26,6 +26,7 @@
  * SOFTWARE.
  *
  */
+
 #ifndef LEDGER_TEST_ALGORANDTESTFIXTURES_H
 #define LEDGER_TEST_ALGORANDTESTFIXTURES_H
 
@@ -59,7 +60,7 @@ namespace algorand {
     static const std::string TESTNET_GENESIS_ID = ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisID;
     static const B64String   TESTNET_GENESIS_HASH(ledger::core::networks::getAlgorandNetworkParameters("algorand-testnet").genesisHash);
 
-    const model::AssetParams testAsset() {
+    static const model::AssetParams testAsset() {
         static model::AssetParams asset;
 
         if (asset.assetName.isEmpty()) {
@@ -68,17 +69,18 @@ namespace algorand {
             asset.total = 1000000;
             asset.decimals = 3;
             asset.defaultFrozen = false;
-            asset.creatorAddr = Address("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
-            asset.managerAddr = Address("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
-            asset.reserveAddr = Address("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
-            asset.freezeAddr = Address("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
-            asset.clawbackAddr = Address("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
+            auto obelixAddress = Address(OBELIX_ADDRESS);
+            asset.creatorAddr = obelixAddress;
+            asset.managerAddr = obelixAddress;
+            asset.reserveAddr = obelixAddress;
+            asset.freezeAddr = obelixAddress;
+            asset.clawbackAddr = obelixAddress;
         }
 
         return asset;
     }
 
-    const model::Transaction paymentTransaction() {
+    static const model::Transaction paymentTransaction() {
         static model::Transaction tx;
 
         if (tx.header.id.isEmpty()) {
@@ -93,20 +95,21 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6529846;
             tx.header.lastValid = 6530846;
-            tx.header.fromRewards = Option<uint64_t>(0);
+            tx.header.fromRewards = 0UL;
+            tx.header.timestamp = 1588586190;
 
             tx.details = model::PaymentTxnFields();
             auto& details = boost::get<model::PaymentTxnFields>(tx.details);
             details.receiverAddr = Address(TEST_ACCOUNT_ADDRESS);
             details.amount = 1000;
-            details.receiverRewards = Option<uint64_t>(0);
-            details.closeRewards = Option<uint64_t>(0);
+            details.receiverRewards = 0UL;
+            details.closeRewards = 0UL;
         }
 
         return tx;
     }
 
-    const model::Transaction assetConfigTransaction() {
+    static const model::Transaction assetConfigTransaction() {
         static model::Transaction tx;
 
         if (tx.header.id.isEmpty()) {
@@ -121,11 +124,12 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6305874;
             tx.header.lastValid = 6306874;
-            tx.header.fromRewards = Option<uint64_t>(0);
+            tx.header.fromRewards = 0UL;
+            tx.header.timestamp = 1587641643;
 
             tx.details = model::AssetConfigTxnFields();
             auto& details = boost::get<model::AssetConfigTxnFields>(tx.details);
-            details.assetId = Option<uint64_t>(0);
+            details.assetId = 0UL;
             details.assetParams = model::AssetParams();
             auto& assetParams = *details.assetParams;
             assetParams.total = 1000000;
@@ -142,7 +146,7 @@ namespace algorand {
         return tx;
     }
 
-    const model::Transaction assetTransferTransaction() {
+    static const model::Transaction assetTransferTransaction() {
         static model::Transaction tx;
 
         if (tx.header.id.isEmpty()) {
@@ -157,7 +161,8 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6734094;
             tx.header.lastValid = 6734193;
-            tx.header.fromRewards = Option<uint64_t>(0);
+            tx.header.fromRewards = 0UL;
+            tx.header.timestamp = 1589448692;
 
             tx.details = model::AssetTransferTxnFields();
             auto& details = boost::get<model::AssetTransferTxnFields>(tx.details);
@@ -169,7 +174,7 @@ namespace algorand {
         return tx;
     }
 
-    void assertSameAssetParams(const model::AssetParams & refAssetParams,
+    static void assertSameAssetParams(const model::AssetParams & refAssetParams,
                                const model::AssetParams & resultAssetParams) {
         if (refAssetParams.metaDataHash.hasValue()) EXPECT_EQ(*refAssetParams.metaDataHash, *resultAssetParams.metaDataHash);
         if (refAssetParams.assetName.hasValue()) EXPECT_EQ(*refAssetParams.assetName, *resultAssetParams.assetName);
@@ -185,20 +190,20 @@ namespace algorand {
         if (refAssetParams.url.hasValue()) EXPECT_EQ(*refAssetParams.url, *resultAssetParams.url);
     }
 
-    void assertSamePaymentDetails(const model::Transaction::Details & txRefDetails,
+    static void assertSamePaymentDetails(const model::Transaction::Details & txRefDetails,
                                   const model::Transaction::Details & txResultDetails) {
         auto& txRefPaymentDetails = boost::get<model::PaymentTxnFields>(txRefDetails);
         auto& txResultPaymentDetails = boost::get<model::PaymentTxnFields>(txResultDetails);
 
         EXPECT_EQ(txRefPaymentDetails.amount, txResultPaymentDetails.amount);
         EXPECT_EQ(txRefPaymentDetails.receiverAddr, txResultPaymentDetails.receiverAddr);
+        if (txRefPaymentDetails.receiverRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.receiverRewards, *txResultPaymentDetails.receiverRewards);
         if (txRefPaymentDetails.closeAddr.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeAddr, *txResultPaymentDetails.closeAddr);
         if (txRefPaymentDetails.closeAmount.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeAmount, *txResultPaymentDetails.closeAmount);
         if (txRefPaymentDetails.closeRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeRewards, *txResultPaymentDetails.closeRewards);
-        if (txRefPaymentDetails.receiverRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.receiverRewards, *txResultPaymentDetails.receiverRewards);
     }
 
-    void assertSameAssetConfigDetails(const model::Transaction::Details & txRefDetails,
+    static void assertSameAssetConfigDetails(const model::Transaction::Details & txRefDetails,
                                       const model::Transaction::Details & txResultDetails) {
         auto& txRefAssetConfigDetails = boost::get<model::AssetConfigTxnFields>(txRefDetails);
         auto& txResultAssetConfigDetails = boost::get<model::AssetConfigTxnFields>(txResultDetails);
@@ -207,7 +212,7 @@ namespace algorand {
         if (txRefAssetConfigDetails.assetParams.hasValue()) assertSameAssetParams(*txRefAssetConfigDetails.assetParams, *txResultAssetConfigDetails.assetParams);
     }
 
-    void assertSameAssetTransferDetails(const model::Transaction::Details & txRefDetails,
+    static void assertSameAssetTransferDetails(const model::Transaction::Details & txRefDetails,
                                         const model::Transaction::Details & txResultDetails) {
         auto& txRefAssetTransferDetails = boost::get<model::AssetTransferTxnFields>(txRefDetails);
         auto& txResultAssetTransferDetails = boost::get<model::AssetTransferTxnFields>(txResultDetails);
@@ -220,12 +225,13 @@ namespace algorand {
     }
 
     // NOTE: Untested transaction types: Key Registration & Asset Freeze
-    void assertSameTransaction(const model::Transaction & txRef, const model::Transaction & txResult) {
+    static void assertSameTransaction(const model::Transaction & txRef, const model::Transaction & txResult) {
         if (txRef.header.id.hasValue()) EXPECT_EQ(*txRef.header.id, *txResult.header.id);
         EXPECT_EQ(txRef.header.fee, txResult.header.fee);
         EXPECT_EQ(txRef.header.sender, txResult.header.sender);
         EXPECT_EQ(txRef.header.type, txResult.header.type);
         if (txRef.header.round.hasValue()) EXPECT_EQ(*txRef.header.round, *txResult.header.round);
+        if (txRef.header.timestamp.hasValue()) EXPECT_EQ(*txRef.header.timestamp, *txResult.header.timestamp);
         if (txRef.header.note.hasValue()) EXPECT_EQ(*txRef.header.note, *txResult.header.note);
         EXPECT_EQ(txRef.header.genesisHash, txResult.header.genesisHash);
         EXPECT_EQ(txRef.header.firstValid, txResult.header.firstValid);

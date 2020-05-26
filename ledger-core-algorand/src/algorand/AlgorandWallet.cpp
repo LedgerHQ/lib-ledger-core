@@ -29,6 +29,7 @@
 
 #include <algorand/AlgorandWallet.hpp>
 #include <algorand/AlgorandAccount.hpp>
+#include <algorand/AlgorandAddress.hpp>
 #include <algorand/model/AlgorandAccount.hpp>
 #include <algorand/database/AlgorandAccountDatabaseHelper.hpp>
 
@@ -67,32 +68,30 @@ namespace algorand {
     FuturePtr<ledger::core::api::Account>
     Wallet::newAccountWithInfo(const api::AccountCreationInfo &info) {
 
-        auto self = getSelf();
         return async<std::shared_ptr<api::Account>>([=] () -> std::shared_ptr<api::Account> {
-            DerivationPath path(info.derivations[0]);
             if (info.publicKeys.size() < 1) {
                 throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Missing pubkey in account creation info.");
             }
+
             soci::session sql(getDatabase()->getPool());
-            {
-                if (ledger::core::AccountDatabaseHelper::accountExists(sql, getWalletUid(), info.index)) {
-                    throw make_exception(api::ErrorCode::ILLEGAL_ARGUMENT, "Account {} already exists", info.index);
-                }
 
-                soci::transaction tr(sql);
-
-                if (ledger::core::AccountDatabaseHelper::accountExists(sql, self->getWalletUid(), info.index)) {
-                    throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {}, for wallet '{}', already exists", info.index, self->getWalletUid());
-                }
-
-                // FIXME Why separate calls? Can't be done in 1 call?
-                ledger::core::AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index);
-                algorand::AccountDatabaseHelper::createAccount(sql, self->getWalletUid(), info.index, hex::toString(info.publicKeys[0]));
-
-                tr.commit();
+            auto walletUid = getWalletUid();
+            if (ledger::core::AccountDatabaseHelper::accountExists(sql, walletUid, info.index)) {
+                throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {} already exists for wallet {}", info.index, walletUid);
             }
-            // FIXME Should find a way to avoid calling createAccountUid() here
-            return self->createAccountInstance(sql, ledger::core::AccountDatabaseHelper::createAccountUid(self->getWalletUid(), info.index));
+
+            AccountDatabaseEntry accountData;
+            accountData.index = info.index;
+            accountData.address = Address::fromPublicKey(info.publicKeys[0]);
+
+            soci::transaction tr(sql);
+            algorand::AccountDatabaseHelper::createAccount(sql, walletUid, accountData);
+            tr.commit();
+
+            return std::make_shared<Account>(shared_from_this(),
+                                            accountData.index,
+                                            getCurrency(),
+                                            accountData.address);
         });
     }
 
@@ -118,12 +117,12 @@ namespace algorand {
 
     std::shared_ptr<AbstractAccount>
     Wallet::createAccountInstance(soci::session &sql, const std::string &accountUid) {
-        model::Account accountData;
+        AccountDatabaseEntry accountData;
         algorand::AccountDatabaseHelper::queryAccount(sql, accountUid, accountData);
         return std::make_shared<Account>(shared_from_this(),
                                          accountData.index,
                                          getCurrency(),
-                                         hex::toByteArray(accountData.pubKeyHex));
+                                         accountData.address);
     }
 
     bool Wallet::hasMultipleAddresses() const {

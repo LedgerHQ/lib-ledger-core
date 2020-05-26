@@ -84,13 +84,10 @@ AlgorandPaymentInfo = record {
     closeAddress: optional<string>;
 
     # The amount sent to CloseRemainderTo, for committed transaction
-    # FIXME what is this for?
     closeAmount: optional<string>;
     # The amount of pending rewards applied to the CloseRemainderTo account as part of this transaction
-    # FIXME what is this for?
     closeRewards: optional<string>;
     # The amount of pending rewards applied to the recipient account as part of this transaction
-    # FIXME what is this for?
     recipientRewards: optional<string>;
 }
 

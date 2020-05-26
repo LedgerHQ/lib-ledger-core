@@ -40,9 +40,9 @@ namespace algorand {
     Account::Account(const std::shared_ptr<AbstractWallet>& wallet,
                      int32_t index,
                      const api::Currency& currency,
-                     const std::vector<uint8_t>& pubKey)
+                     const std::string& address)
         : AbstractAccount(wallet->getServices(), wallet, index)
-        , _address(currency, pubKey)
+        , _address(currency, address)
     {}
 
     bool Account::putBlock(soci::session& sql,

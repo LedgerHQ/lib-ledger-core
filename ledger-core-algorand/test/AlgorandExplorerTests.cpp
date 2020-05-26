@@ -50,6 +50,11 @@ public:
                         std::make_shared<DynamicObject>());
     }
 
+    void TearDown() override {
+        BaseFixture::TearDown();
+        explorer.reset();
+    }
+
     std::shared_ptr<BlockchainExplorer> explorer;
 };
 

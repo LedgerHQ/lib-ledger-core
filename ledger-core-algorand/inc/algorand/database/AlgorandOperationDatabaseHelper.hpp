@@ -1,7 +1,7 @@
 /*
- * AlgorandLikeCurrencies
+ * AlgorandOperationDatabaseHelper
  *
- * Created by Hakim Aammar on 20/04/2020.
+ * Created by Hakim Aammar on 18/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,24 +27,34 @@
  *
  */
 
-#include <algorand/AlgorandLikeCurrencies.hpp>
+#ifndef LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
+#define LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
 
-#include <core/wallet/CurrencyBuilder.hpp>
+#include <algorand/operations/AlgorandOperation.hpp>
+
+#include <core/operation/OperationDatabaseHelper.hpp>
+
+#include <soci.h>
 
 namespace ledger {
 namespace core {
-namespace currencies {
+namespace algorand {
 
-    api::Currency algorand() {
-        static api::Currency const CURRENCY = CurrencyBuilder("algorand")
-            .bip44(algorand::constants::COIN_ID)
-            .paymentUri("algorand")
-            .unit("uALGO", 0, "uALGO")
-            .unit("ALGO", 3, "uALGO");
+    class OperationDatabaseHelper : public ledger::core::OperationDatabaseHelper {
 
-        return CURRENCY;
-    }
+    public:
 
-}
-}
-}
+        static void putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation) {
+            sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
+                soci::use(operation.uid),
+                soci::use(txUid),
+                soci::use(operation.getTransaction()->getId());
+        }
+
+    };
+
+} // namespace algorand
+} // namespace core
+} // namespace ledger
+
+#endif // LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H

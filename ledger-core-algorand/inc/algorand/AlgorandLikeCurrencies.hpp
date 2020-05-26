@@ -42,6 +42,11 @@
 
 namespace ledger {
     namespace core {
+        namespace algorand {
+            namespace constants {
+                static constexpr uint64_t COIN_ID = 283;
+            }
+        }
         namespace currencies {
             api::Currency algorand();
         }

@@ -13,6 +13,7 @@ add_executable(ledger-core-algorand-tests
     main.cpp
     MsgpackHelpersTests.cpp
     AlgorandAddressTests.cpp
+    AlgorandDatabaseTests.cpp
     AlgorandExplorerTests.cpp
 )
 target_link_libraries(ledger-core-algorand-tests Core::ledger-core-static)

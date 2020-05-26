@@ -31,6 +31,7 @@
 #define LEDGER_CORE_ALGORANDJSONPARSER_H
 
 #include <algorand/AlgorandAddress.hpp>
+#include <algorand/AlgorandExplorerConstants.hpp>
 #include <algorand/model/transactions/AlgorandTransaction.hpp>
 #include <algorand/model/transactions/AlgorandAssetParams.hpp>
 #include <algorand/model/transactions/AlgorandTransactionParams.hpp>
@@ -48,92 +49,6 @@
 namespace ledger {
 namespace core {
 namespace algorand {
-namespace constants {
-
-    // Json objects keys
-    static const std::string xHash = "hash";
-    static const std::string xTimestamp = "timestamp";
-    static const std::string xRound = "round";
-
-    static const std::string xCreator = "creator";
-    static const std::string xAmount = "amount";
-    static const std::string xFrozen = "frozen";
-    static const std::string xTotal = "total";
-    static const std::string xDecimal = "decimals";
-    static const std::string xUnitName = "unitname";
-    static const std::string xAssetName = "assetname";
-    static const std::string xManagerKey = "managerkey";
-    static const std::string xFreezeAddr = "freezeaddr";
-    static const std::string xClawbackAddr = "clawbackaddr";
-    static const std::string xReserveAddr = "reserveaddr";
-    static const std::string xMetadataHash = "metadatahash";
-    static const std::string xDefaultFrozen = "defaultfrozen";
-    static const std::string xUrl = "url";
-
-    static const std::string xAddress = "address";
-    static const std::string xPendingRewards = "pendingrewards";
-    static const std::string xAmountWithoutPendingRewards = "amountwithoutpendingrewards";
-    static const std::string xRewards = "rewards";
-    static const std::string xStatus = "status";
-    static const std::string xAssets = "assets";
-    static const std::string xThisAssetTotal = "thisassettotal";
-    static const std::string xParticipation = "participation";
-
-    static const std::string xTo = "to";
-    static const std::string xToRewards = "torewards";
-    static const std::string xClose = "close";
-    static const std::string xCloseAmount = "closeamount";
-    static const std::string xCloseRewards = "closerewards";
-
-    static const std::string xSelkey = "selkey";
-    static const std::string xVotefst = "votefst";
-    static const std::string xVotekd = "votekd";
-    static const std::string xVotekey = "votekey";
-    static const std::string xVotelst = "votelst";
-
-    static const std::string xId = "id";
-    static const std::string xParams = "params";
-
-    static const std::string xAmt = "amt";
-    static const std::string xRcv = "rcv";
-    static const std::string xSnd = "snd";
-    static const std::string xCloseTo = "closeto";
-
-    static const std::string xAcct = "acct";
-    static const std::string xFreeze = "freeze";
-
-    static const std::string xType = "type";
-    static const std::string xTx = "tx";
-    static const std::string xFrom = "from";
-    static const std::string xFee = "fee";
-    static const std::string xFirstRound = "first-round";
-    static const std::string xLastRound = "last-round";
-    static const std::string xNoteB64 = "noteb64";
-    static const std::string xFromRewards = "fromrewards";
-    static const std::string xGenesisId = "genesisID";
-    static const std::string xGenesisHashB64 = "genesishashb64";
-    static const std::string xGroup = "group";
-    static const std::string xLease = "lease";
-
-    static const std::string xPay = "pay";
-    static const std::string xKeyregs = "keyreg";
-    static const std::string xAcfg = "acfg";
-    static const std::string xAxfer = "axfer";
-    static const std::string xAfreeze = "afrz";
-
-    static const std::string xPayment = "payment";
-    static const std::string xKeyreg = "keyreg";
-    static const std::string xCurcfg = "curcfg";
-    static const std::string xCurxfer = "curxfer";
-    static const std::string xCurfrz = "curfrz";
-
-    static const std::string xTransactions = "transactions";
-    static const std::string xTxId = "txId";
-    static const std::string xMinFee = "fee";
-    static const std::string xConsensusVersion = "consensusVersion";
-    static const std::string xLastRoundParam = "lastRound";
-
-} // namespace constants
 
     class JsonParser {
 
@@ -253,6 +168,7 @@ namespace constants {
             getMandatoryStringField(node, constants::xType, tx.header.type);
             getMandatoryStringField(node, constants::xTx, tx.header.id);
             getMandatoryAddressField(node, constants::xFrom, tx.header.sender);
+            getMandatoryUint64Field(node, constants::xTimestamp, tx.header.timestamp);
             getMandatoryUint64Field(node, constants::xFirstRound, tx.header.firstValid);
             getMandatoryUint64Field(node, constants::xLastRound, tx.header.lastValid);
             getMandatoryUint64Field(node, constants::xRound, tx.header.round);
@@ -342,44 +258,51 @@ namespace constants {
     private:
 
         template <class T>
+        static void assertWithMessage(const T & node, const std::string & fieldName) {
+            if (!node.HasMember(fieldName.c_str())) {
+                throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("Missing '{}' field in JSON.", fieldName));
+            }
+        }
+
+        template <class T>
         static void getMandatoryStringField(const T & node, const std::string & fieldName, Option<std::string> & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = node[fieldName.c_str()].GetString();
         }
 
         template <class T>
         static void getMandatoryStringField(const T & node, const std::string & fieldName, std::string & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = node[fieldName.c_str()].GetString();
         }
 
         template <class T>
         static void getMandatoryUint64Field(const T & node, const std::string & fieldName, Option<uint64_t> & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = node[fieldName.c_str()].GetUint64();
         }
 
         template <class T>
         static void getMandatoryUint64Field(const T & node, const std::string & fieldName, uint64_t & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = node[fieldName.c_str()].GetUint64();
         }
 
         template <class T>
         static void getMandatoryBoolField(const T & node, const std::string & fieldName, Option<bool> & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = node[fieldName.c_str()].GetBool();
         }
 
         template <class T>
         static void getMandatoryBoolField(const T & node, const std::string & fieldName, bool & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = node[fieldName.c_str()].GetBool();
         }
 
         template <class T>
         static void getMandatoryAddressField(const T & node, const std::string & fieldName, Option<Address> & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             auto addr = node[fieldName.c_str()].GetString();
             // FIXME Should be set to wallet currency instead of hardcoded here
             field = Address(currencies::algorand(), addr);
@@ -387,7 +310,7 @@ namespace constants {
 
         template <class T>
         static void getMandatoryAddressField(const T & node, const std::string & fieldName, Address & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             auto addr = node[fieldName.c_str()].GetString();
             // FIXME Should be set to wallet currency instead of hardcoded here
             field = Address(currencies::algorand(), addr);
@@ -395,19 +318,19 @@ namespace constants {
 
         template <class T>
         static void getMandatoryB64StringField(const T & node, const std::string & fieldName, Option<B64String> & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = B64String(node[fieldName.c_str()].GetString());
         }
 
         template <class T>
         static void getMandatoryB64StringField(const T & node, const std::string & fieldName, B64String & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             field = B64String(node[fieldName.c_str()].GetString());
         }
 
         template <class T>
         static void getMandatoryBinaryField(const T & node, const std::string & fieldName, Option<std::vector<uint8_t>> & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             std::vector<uint8_t> newBinary;
             BaseConverter::decode(node[fieldName.c_str()].GetString(), BaseConverter::BASE64_RFC4648, newBinary);
             field = newBinary;
@@ -415,7 +338,7 @@ namespace constants {
 
         template <class T>
         static void getMandatoryBinaryField(const T & node, const std::string & fieldName, std::vector<uint8_t> & field) {
-            assert(node.HasMember(fieldName.c_str()));
+            assertWithMessage(node, fieldName);
             BaseConverter::decode(node[fieldName.c_str()].GetString(), BaseConverter::BASE64_RFC4648, field);
         }
 
