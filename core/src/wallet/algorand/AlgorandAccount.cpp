@@ -41,7 +41,7 @@ namespace algorand {
                      int32_t index,
                      const api::Currency& currency,
                      const std::vector<uint8_t>& pubKey)
-        : AbstractAccount(wallet->getServices(), wallet, index)
+        : AbstractAccount(wallet, index)
         , _address(currency, pubKey)
     {}
 
