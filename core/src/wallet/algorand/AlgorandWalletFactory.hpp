@@ -31,11 +31,11 @@
 #ifndef LEDGER_CORE_ALGORANDWALLETFACTORY_H
 #define LEDGER_CORE_ALGORANDWALLETFACTORY_H
 
-#include <algorand/AlgorandBlockchainExplorer.hpp>
-#include <algorand/AlgorandBlockchainObserver.hpp>
-#include <algorand/AlgorandAccountSynchronizer.hpp>
+#include "AlgorandBlockchainExplorer.hpp"
+#include "AlgorandBlockchainObserver.hpp"
+#include "AlgorandAccountSynchronizer.hpp"
 
-#include <core/wallet/AbstractWalletFactory.hpp>
+#include <wallet/common/AbstractWalletFactory.hpp>
 #include <core/Services.hpp>
 
 namespace ledger {

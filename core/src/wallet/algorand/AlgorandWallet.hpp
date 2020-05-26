@@ -75,7 +75,7 @@ namespace algorand {
 
         Future<api::AccountCreationInfo> getAccountCreationInfo(int32_t accountIndex) override;
 
-        bool hasMultipleAddresses() const override;
+        bool hasMultipleAddresses() const;
 
     protected:
         std::shared_ptr<AbstractAccount>
