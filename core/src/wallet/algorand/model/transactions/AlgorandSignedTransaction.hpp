@@ -29,9 +29,9 @@
 
 #pragma once
 
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
+#include "AlgorandTransaction.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <cstdint>
 #include <vector>

@@ -29,15 +29,15 @@
 
 #pragma once
 
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
-#include <algorand/model/transactions/AlgorandSignedTransaction.hpp>
+#include "../../model/transactions/AlgorandTransaction.hpp"
+#include "../../model/transactions/AlgorandSignedTransaction.hpp"
 
-#include <algorand/api/AlgorandTransaction.hpp>
-#include <algorand/api/AlgorandPaymentInfo.hpp>
-#include <algorand/api/AlgorandParticipationInfo.hpp>
-#include <algorand/api/AlgorandAssetConfigurationInfo.hpp>
-#include <algorand/api/AlgorandAssetTransferInfo.hpp>
-#include <algorand/api/AlgorandAssetFreezeInfo.hpp>
+#include <api/AlgorandTransaction.hpp>
+#include <api/AlgorandPaymentInfo.hpp>
+#include <api/AlgorandParticipationInfo.hpp>
+#include <api/AlgorandAssetConfigurationInfo.hpp>
+#include <api/AlgorandAssetTransferInfo.hpp>
+#include <api/AlgorandAssetFreezeInfo.hpp>
 
 #include <memory>
 #include <string>
