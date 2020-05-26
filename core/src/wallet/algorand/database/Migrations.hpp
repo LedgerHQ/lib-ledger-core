@@ -1,6 +1,6 @@
 #pragma once
 
-#include <core/database/Migrations.hpp>
+#include <database/Migrations_v2.hpp>
 
 namespace ledger {
     namespace core {
