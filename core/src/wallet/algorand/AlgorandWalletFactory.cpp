@@ -28,18 +28,18 @@
  *
  */
 
-#include <algorand/AlgorandWalletFactory.hpp>
-#include <algorand/AlgorandWallet.hpp>
-#include <algorand/AlgorandNetworks.hpp>
-#include <algorand/database/Migrations.hpp>
+#include "AlgorandWalletFactory.hpp"
+#include "AlgorandWallet.hpp"
+#include "AlgorandNetworks.hpp"
+#include "database/Migrations.hpp"
 
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
-#include <algorand/api/AlgorandBlockchainExplorerEngines.hpp>
-#include <algorand/api/AlgorandBlockchainObserverEngines.hpp>
+#include <api/AlgorandConfigurationDefaults.hpp>
+#include <api/AlgorandBlockchainExplorerEngines.hpp>
+#include <api/AlgorandBlockchainObserverEngines.hpp>
 
 #include <core/Services.hpp>
-#include <core/api/Configuration.hpp>
-#include <core/api/SynchronizationEngines.hpp>
+#include <api/Configuration.hpp>
+#include <api/SynchronizationEngines.hpp>
 
 namespace ledger {
 namespace core {

@@ -35,7 +35,7 @@
 //#include <core/Services.hpp>
 #include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
 #include <api/ErrorCode.hpp>
-#include <core/wallet/AccountDatabaseHelper.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 
 
 namespace ledger {

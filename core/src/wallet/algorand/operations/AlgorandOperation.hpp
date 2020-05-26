@@ -55,7 +55,7 @@ namespace algorand {
         api::AlgorandOperationType getAlgorandOperationType() const override;
         std::shared_ptr<api::AlgorandTransaction> getTransaction() const override;
 
-        void refreshUid(const std::string& additional = "") override;
+        void refreshUid(const std::string& additional = "");
 
         const model::Transaction& getTransactionData() const;
 
