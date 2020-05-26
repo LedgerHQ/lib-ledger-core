@@ -32,7 +32,8 @@
 #include "model/AlgorandAccount.hpp"
 #include "database/AlgorandAccountDatabaseHelper.hpp"
 
-#include <core/Services.hpp>
+//#include <core/Services.hpp>
+#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
 #include <api/ErrorCode.hpp>
 #include <core/wallet/AccountDatabaseHelper.hpp>
 
@@ -43,7 +44,7 @@ namespace algorand {
 
     Wallet::Wallet(const std::string &name,
                    const api::Currency &currency,
-                   const std::shared_ptr<Services> &services,
+                   const std::shared_ptr<WalletPool>& pool,
                    const std::shared_ptr<DynamicObject> &configuration,
                    const DerivationScheme &scheme,
                    const std::shared_ptr<BlockchainExplorer> &explorer,

@@ -53,7 +53,7 @@ namespace algorand {
         Wallet(
             const std::string &name,
             const api::Currency &currency,
-            const std::shared_ptr<Services> &services,
+            const std::shared_ptr<WalletPool>& pool,
             const std::shared_ptr<DynamicObject> &configuration,
             const DerivationScheme &scheme,
             const std::shared_ptr<BlockchainExplorer> &explorer, // TODO Could be a singleton service?
