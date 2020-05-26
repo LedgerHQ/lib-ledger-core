@@ -28,12 +28,12 @@
  */
 
 #include "AlgorandBlockchainObserver.hpp"
-#include "algorand/AlgorandAccount.hpp"
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
+#include "AlgorandAccount.hpp"
+#include <api/AlgorandConfigurationDefaults.hpp>
 
-#include <core/api/Configuration.hpp>
-#include <core/api/ConfigurationDefaults.hpp>
-#include <core/math/Fibonacci.hpp>
+#include <api/Configuration.hpp>
+#include <api/ConfigurationDefaults.hpp>
+#include <math/Fibonacci.h>
 
 namespace ledger {
 namespace core {

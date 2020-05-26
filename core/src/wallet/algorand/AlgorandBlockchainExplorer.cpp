@@ -28,11 +28,11 @@
  */
 
 #include "AlgorandBlockchainExplorer.hpp"
-#include "AlgorandJsonParser.hpp>"
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
+#include "AlgorandJsonParser.hpp"
+#include <api/AlgorandConfigurationDefaults.hpp>
 
-#include <core/net/HttpClient.hpp>
-#include <core/api/Configuration.hpp>
+#include <net/HttpClient.hpp>
+#include <api/Configuration.hpp>
 
 namespace ledger {
 namespace core {

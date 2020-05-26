@@ -30,18 +30,18 @@
 #ifndef LEDGER_CORE_ALGORANDJSONPARSER_H
 #define LEDGER_CORE_ALGORANDJSONPARSER_H
 
-#include <algorand/AlgorandAddress.hpp>
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
-#include <algorand/model/transactions/AlgorandAssetParams.hpp>
-#include <algorand/model/transactions/AlgorandTransactionParams.hpp>
-#include <algorand/model/AlgorandAssetAmount.hpp>
+#include "AlgorandAddress.hpp"
+#include "model/transactions/AlgorandTransaction.hpp"
+#include "model/transactions/AlgorandAssetParams.hpp"
+#include "model/transactions/AlgorandTransactionParams.hpp"
+#include "model/AlgorandAssetAmount.hpp"
 
-#include <core/math/BigInt.hpp>
-#include <core/math/BaseConverter.hpp>
-#include <core/utils/Exception.hpp>
-#include <core/utils/Hex.hpp>
-#include <core/api/Block.hpp>
-#include <core/api/ErrorCode.hpp>
+#include <math/BigInt.h>
+#include <math/BaseConverter.hpp>
+#include <utils/Exception.hpp>
+#include <utils/hex.h>
+#include <api/Block.hpp>
+#include <api/ErrorCode.hpp>
 
 #include <rapidjson/document.h>
 

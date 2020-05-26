@@ -36,11 +36,11 @@
 #include "model/transactions/AlgorandTransactionParams.hpp"
 #include "model/AlgorandAccount.hpp"
 
-#include <core/async/DedicatedContext.hpp>
-#include <core/utils/ConfigurationMatchable.hpp>
+#include <async/DedicatedContext.hpp>
+#include <utils/ConfigurationMatchable.h>
 
-#include <core/api/Block.hpp>
-#include <core/net/HttpClient.hpp>
+#include <api/Block.hpp>
+#include <net/HttpClient.hpp>
 
 namespace ledger {
 namespace core {
