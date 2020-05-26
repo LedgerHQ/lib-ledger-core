@@ -100,7 +100,7 @@ const std::vector<CosmosLikeBlockchainExplorer::TransactionFilter>
 
 FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight)
 {
-    return _http->GET(fmt::format("/blocks/{}", blockHeight), ACCEPT_HEADER)
+    return _http->GET(fmt::format(kGaiaBlocksEndpoint, blockHeight), ACCEPT_HEADER)
         .json(true)
         .mapPtr<cosmos::Block>(getContext(), [](const HttpRequest::JsonResult &response) {
             auto result = std::make_shared<cosmos::Block>();
@@ -118,7 +118,7 @@ FuturePtr<ledger::core::cosmos::Account> GaiaCosmosLikeBlockchainExplorer::getAc
     // First call gets the /auth/accounts information (general info)
     // Second call gets the "withdrawAddress" (where rewards go)
     const bool parseJsonNumbersAsStrings = true;
-    return _http->GET(fmt::format("/auth/accounts/{}", account), ACCEPT_HEADER)
+    return _http->GET(fmt::format(kGaiaAccountEndpoint, account), ACCEPT_HEADER)
         .json(parseJsonNumbersAsStrings)
         .template flatMap<cosmos::Account>(
             getContext(),
@@ -130,7 +130,7 @@ FuturePtr<ledger::core::cosmos::Account> GaiaCosmosLikeBlockchainExplorer::getAc
                         api::ErrorCode::API_ERROR,
                         "The API response from explorer is missing the \"result\" key");
                 }
-                rpcs_parsers::parseAccount(document["result"], result);
+                rpcs_parsers::parseAccount(document[kResult], result);
                 return Future<cosmos::Account>::successful(result);
             })
         .template flatMapPtr<cosmos::Account>(
@@ -145,7 +145,7 @@ FuturePtr<ledger::core::cosmos::Account> GaiaCosmosLikeBlockchainExplorer::getAc
                         [retval](const HttpRequest::JsonResult &response) mutable
                         -> FuturePtr<cosmos::Account> {
                             const auto &document = std::get<1>(response)->GetObject();
-                            const auto withdrawAddress = document["result"].GetString();
+                            const auto withdrawAddress = document[kResult].GetString();
                             retval.withdrawAddress = withdrawAddress;
                             return FuturePtr<cosmos::Account>::successful(
                                 std::make_shared<cosmos::Account>(retval));
@@ -155,7 +155,7 @@ FuturePtr<ledger::core::cosmos::Account> GaiaCosmosLikeBlockchainExplorer::getAc
 
 FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getCurrentBlock()
 {
-    return _http->GET(fmt::format("/blocks/latest"), ACCEPT_HEADER)
+    return _http->GET(fmt::format(kGaiaLatestBlockEndpoint), ACCEPT_HEADER)
         .json(true)
         .map<std::shared_ptr<cosmos::Block>>(
             getContext(), [](const HttpRequest::JsonResult &response) {
@@ -205,7 +205,7 @@ void addMsgFeesTo(cosmos::Transaction &transaction, const T &node)
 
     msgFeesContent.fees = api::CosmosLikeAmount(fees, "uatom");
     auto msgFees = cosmos::Message();
-    msgFees.type = cosmos::constants::kMsgFees;
+    msgFees.type = kMsgFees;
     msgFees.content = msgFeesContent;
     const auto msgFeesLog = cosmos::MessageLog{static_cast<int32_t>(index), true, ""};
     transaction.logs.push_back(msgFeesLog);
@@ -224,35 +224,36 @@ void parseTransactionWithPosttreatment(const T &node, cosmos::Transaction &trans
 FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransactions(
     const CosmosLikeBlockchainExplorer::TransactionFilter &filter, int page, int limit) const
 {
-    return _http->GET(fmt::format("/txs?{}&page={}&limit={}", filter, page, limit), ACCEPT_HEADER)
+    return _http->GET(fmt::format(kGaiaTransactionsWithPageLimitEnpoint, filter, page, limit), ACCEPT_HEADER)
         .json(true)
         .mapPtr<cosmos::TransactionsBulk>(
             getContext(), [](const HttpRequest::JsonResult &response) {
                 auto result = std::make_shared<cosmos::TransactionsBulk>();
 
                 const auto &document = std::get<1>(response)->GetObject();
-                if (!document.HasMember("txs") || !document["txs"].IsArray()) {
+                if (!document.HasMember("txs") || !document[kTxArray].IsArray()) {
                     throw make_exception(
                         api::ErrorCode::API_ERROR,
-                        "The API response from explorer is missing the \"txs\" key");
+                        "The API response from explorer is missing the {} key",
+                        kTxArray);
                 }
-                const auto &transactions = document["txs"].GetArray();
+                const auto &transactions = document[kTxArray].GetArray();
                 for (const auto &node : transactions) {
                     auto tx = cosmos::Transaction();
                     parseTransactionWithPosttreatment(node, tx);
                     result->transactions.emplace_back(tx);
                 }
 
-                if (!document.HasMember(cosmos::constants::kCount) ||
-                    !document[cosmos::constants::kCount].IsString() ||
-                    !document.HasMember(cosmos::constants::kTotalCount) ||
-                    !document[cosmos::constants::kTotalCount].IsString()) {
+                if (!document.HasMember(kCount) ||
+                    !document[kCount].IsString() ||
+                    !document.HasMember(kTotalCount) ||
+                    !document[kTotalCount].IsString()) {
                     result->hasNext = false;
                 }
                 else {
                     const auto count = std::stoi(document[cosmos::constants::kCount].GetString());
                     const auto total_count =
-                        std::stoi(document[cosmos::constants::kTotalCount].GetString());
+                        std::stoi(document[kTotalCount].GetString());
                     result->hasNext = (count < total_count);
                 }
                 return result;
@@ -262,7 +263,7 @@ FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransac
 FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::getTransactionByHash(
     const std::string &hash)
 {
-    return _http->GET(fmt::format("/txs/{}", hash), ACCEPT_HEADER)
+    return _http->GET(fmt::format(kGaiaTransactionEndpoint, hash), ACCEPT_HEADER)
         .json(true)
         .mapPtr<cosmos::Transaction>(getContext(), [](const HttpRequest::JsonResult &response) {
             const auto &document = std::get<1>(response)->GetObject();
@@ -538,15 +539,15 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getDelegatedBalance(
                 }
 
                 // Handle null
-                if (!json.GetObject()["result"].IsArray()) {
+                if (!json.GetObject()[kResult].IsArray()) {
                     return std::make_shared<BigInt>(BigInt::ZERO);
                 }
-                const auto &del_val_entries = json.GetObject()["result"].GetArray();
+                const auto &del_val_entries = json.GetObject()[kResult].GetArray();
                 BigInt total_amt = BigInt::ZERO;
                 for (const auto &delegation_entry : del_val_entries) {
                     total_amt =
                         total_amt +
-                        BigInt::fromDecimal(delegation_entry.GetObject()["balance"].GetString());
+                        BigInt::fromDecimal(delegation_entry.GetObject()[kBalance].GetString());
                 }
 
                 return std::make_shared<BigInt>(total_amt);
@@ -568,24 +569,24 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getPendingRewardsBalance(
             [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
                 auto &json = *std::get<1>(result);
 
-                if (!json.IsObject() || !json.GetObject().HasMember("result") ||
-                    !json.GetObject()["result"].IsObject() ||
-                    !json.GetObject()["result"].GetObject().HasMember("total") ||
-                    !json.GetObject()["result"].GetObject()["total"].IsArray()) {
+                if (!json.IsObject() || !json.GetObject().HasMember(kResult) ||
+                    !json.GetObject()[kResult].IsObject() ||
+                    !json.GetObject()[kResult].GetObject().HasMember(kTotal) ||
+                    !json.GetObject()[kResult].GetObject()[kTotal].IsArray()) {
                     throw make_exception(
                         api::ErrorCode::HTTP_ERROR,
                         fmt::format("Failed to get total for {}", endpoint));
                 }
 
-                if (!json.GetObject()["result"].GetObject()["total"].IsArray() ||
-                    json.GetObject()["result"].GetObject()["total"].GetArray().Size() <= 0) {
+                if (!json.GetObject()[kResult].GetObject()[kTotal].IsArray() ||
+                    json.GetObject()[kResult].GetObject()[kTotal].GetArray().Size() <= 0) {
                     return std::make_shared<BigInt>(BigInt::ZERO);
                 }
 
-                std::string floating_amount = json.GetObject()["result"]
-                                                  .GetObject()["total"]
+                std::string floating_amount = json.GetObject()[kResult]
+                                                  .GetObject()[kTotal]
                                                   .GetArray()[0]
-                                                  .GetObject()["amount"]
+                                                  .GetObject()[kAmount]
                                                   .GetString();
                 floating_amount.erase(floating_amount.find('.'), std::string::npos);
                 return std::make_shared<BigInt>(floating_amount);
@@ -607,24 +608,25 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getUnbondingBalance(
             getContext(),
             [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
                 auto &json = *std::get<1>(result);
-                if (!json.HasMember("result")) {
+                if (!json.HasMember(kResult)) {
                     throw make_exception(
                         api::ErrorCode::API_ERROR,
-                        "The API response from explorer is missing the \"result\" key");
+                        "The API response from explorer is missing the {} key",
+                        kResult);
                 }
 
                 // Handle null
-                if (!json.GetObject()["result"].IsArray()) {
+                if (!json.GetObject()[kResult].IsArray()) {
                     return std::make_shared<BigInt>(BigInt::ZERO);
                 }
-                const auto &del_entries = json.GetObject()["result"].GetArray();
+                const auto &del_entries = json.GetObject()[kResult].GetArray();
                 BigInt total_amt = BigInt::ZERO;
                 for (const auto &del_val_entries : del_entries) {
-                    const auto &entries = del_val_entries.GetObject()["entries"].GetArray();
+                    const auto &entries = del_val_entries.GetObject()[kEntries].GetArray();
                     for (const auto &unbonding_entry : entries) {
                         total_amt =
                             total_amt +
-                            BigInt::fromDecimal(unbonding_entry.GetObject()["balance"].GetString());
+                            BigInt::fromDecimal(unbonding_entry.GetObject()[kBalance].GetString());
                     }
                 }
 
@@ -646,24 +648,25 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getSpendableBalance(
             getContext(),
             [endpoint](const HttpRequest::JsonResult &result) -> std::shared_ptr<BigInt> {
                 auto &json = *std::get<1>(result);
-                if (!json.HasMember("result")) {
+                if (!json.HasMember(kResult)) {
                     throw make_exception(
                         api::ErrorCode::API_ERROR,
-                        "The API response from explorer is missing the \"result\" key");
+                        "The API response from explorer is missing the {} key",
+                        kResult);
                 }
 
                 // Handle null
-                if (!json.GetObject()["result"].IsArray()) {
+                if (!json.GetObject()[kResult].IsArray()) {
                     return std::make_shared<BigInt>(BigInt::ZERO);
                 }
-                const auto &balances = json.GetObject()["result"].GetArray();
+                const auto &balances = json.GetObject()[kResult].GetArray();
                 BigInt total_amt = BigInt::ZERO;
                 // NOTE : Assuming only uatom is in the balances array
                 for (const auto &balance_entry : balances) {
                     total_amt =
                         total_amt +
                         BigInt::fromDecimal(
-                            balance_entry.GetObject()[cosmos::constants::kAmount].GetString());
+                            balance_entry.GetObject()[kAmount].GetString());
                 }
 
                 return std::make_shared<BigInt>(total_amt);
@@ -680,16 +683,17 @@ Future<cosmos::ValidatorList> GaiaCosmosLikeBlockchainExplorer::getActiveValidat
             .map<cosmos::ValidatorList>(getContext(), [](const HttpRequest::JsonResult &response) {
                 cosmos::ValidatorList result;
                 const auto &document = std::get<1>(response)->GetObject();
-                if (!document.HasMember("result")) {
+                if (!document.HasMember(kResult)) {
                     throw make_exception(
                         api::ErrorCode::API_ERROR,
-                        "The API response from explorer is missing the \"result\" key");
+                        "The API response from explorer is missing the {} key",
+                        kResult);
                 }
                 // Handle null
-                if (!document["result"].IsArray()) {
+                if (!document[kResult].IsArray()) {
                     return result;
                 }
-                const auto &validators = document["result"].GetArray();
+                const auto &validators = document[kResult].GetArray();
                 for (const auto &node : validators) {
                     cosmos::Validator val;
                     rpcs_parsers::parseValidatorSetEntry(node.GetObject(), val);
@@ -706,18 +710,19 @@ Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(
 {
     // Chain 3 explorer calls to get all the relevant information
     const bool parseJsonNumbersAsStrings = true;
-    return _http->GET(fmt::format("/staking/validators/{}", valOperAddress))
+    return _http->GET(fmt::format(kGaiaValidatorInfoEndpoint, valOperAddress))
         .json(parseJsonNumbersAsStrings)
         .template flatMap<cosmos::Validator>(
             getContext(),
             [this](const HttpRequest::JsonResult &response) -> Future<cosmos::Validator> {
                 const auto &document = std::get<1>(response)->GetObject();
-                if (!document.HasMember("result")) {
+                if (!document.HasMember(kResult)) {
                     throw make_exception(
                         api::ErrorCode::API_ERROR,
-                        "The API response from explorer is missing the \"result\" key");
+                        "The API response from explorer is missing the {} key",
+                        kResult);
                 }
-                const auto &validatorNode = document["result"].GetObject();
+                const auto &validatorNode = document[kResult].GetObject();
                 cosmos::Validator val;
                 rpcs_parsers::parseValidatorSetEntry(validatorNode, val);
                 return Future<cosmos::Validator>::successful(val);
@@ -760,17 +765,23 @@ FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::get
     const std::string &delegatorAddr) const
 {
     return _http
-        ->GET(fmt::format("/staking/delegators/{}/delegations", delegatorAddr), ACCEPT_HEADER)
+        ->GET(fmt::format(kGaiaDelegationsEndpoint, delegatorAddr), ACCEPT_HEADER)
         .json(true)
         .mapPtr<std::vector<cosmos::Delegation>>(
             getContext(), [](const HttpRequest::JsonResult &response) {
                 const auto &document = std::get<1>(response)->GetObject();
+                if (!document.HasMember(kResult)) {
+                    throw make_exception(
+                        api::ErrorCode::API_ERROR,
+                        "The API response from explorer is missing the {} key",
+                        kResult);
+                }
                 auto delegations = std::make_shared<std::vector<cosmos::Delegation>>();
                 // Handle null
-                if (!document["result"].IsArray()) {
+                if (!document[kResult].IsArray()) {
                     return delegations;
                 }
-                const auto &results = document["result"].GetArray();
+                const auto &results = document[kResult].GetArray();
                 for (auto &result : results) {
                     cosmos::Delegation delegation;
                     rpcs_parsers::parseDelegation(result, delegation);
@@ -784,17 +795,23 @@ FuturePtr<std::vector<cosmos::Reward>> GaiaCosmosLikeBlockchainExplorer::getPend
     const std::string &delegatorAddr) const
 {
     return _http
-        ->GET(fmt::format("/distribution/delegators/{}/rewards", delegatorAddr), ACCEPT_HEADER)
+        ->GET(fmt::format(kGaiaRewardsEndpoint, delegatorAddr), ACCEPT_HEADER)
         .json(true)
         .mapPtr<std::vector<cosmos::Reward>>(
             getContext(), [](const HttpRequest::JsonResult &response) {
                 const auto &document = std::get<1>(response)->GetObject();
+                if (!document.HasMember(kResult)) {
+                    throw make_exception(
+                        api::ErrorCode::API_ERROR,
+                        "The API response from explorer is missing the {} key",
+                        kResult);
+                }
                 auto rewards = std::make_shared<std::vector<cosmos::Reward>>();
                 // Handle null
-                if (!document["result"].GetObject()[kRewards].IsArray()) {
+                if (!document[kResult].GetObject()[kRewards].IsArray()) {
                     return rewards;
                 }
-                const auto &results = document["result"].GetObject()[kRewards].GetArray();
+                const auto &results = document[kResult].GetObject()[kRewards].GetArray();
                 for (auto &result : results) {
                     cosmos::Reward reward;
                     rpcs_parsers::parseReward(result, reward);
