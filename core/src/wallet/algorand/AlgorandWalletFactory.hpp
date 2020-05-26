@@ -36,7 +36,8 @@
 #include "AlgorandAccountSynchronizer.hpp"
 
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <core/Services.hpp>
+//#include <core/Services.hpp>
+#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
 
 namespace ledger {
 namespace core {
@@ -46,7 +47,7 @@ namespace algorand {
 
     class WalletFactory : public AbstractWalletFactory {
     public:
-        WalletFactory(const api::Currency &currency, const std::shared_ptr<Services> &services);
+        WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool);
 
         std::shared_ptr<AbstractWallet> build(const WalletDatabaseEntry &entry) override;
 
