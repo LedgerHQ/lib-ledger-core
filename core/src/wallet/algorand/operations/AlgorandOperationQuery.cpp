@@ -28,9 +28,9 @@
  *
  */
 
-#include <algorand/operations/AlgorandOperationQuery.hpp>
-#include <algorand/database/AlgorandTransactionDatabaseHelper.hpp>
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
+#include "AlgorandOperationQuery.hpp"
+#include "../database/AlgorandTransactionDatabaseHelper.hpp"
+#include "../model/transactions/AlgorandTransaction.hpp"
 
 namespace ledger {
 namespace core {
@@ -40,7 +40,7 @@ namespace algorand {
                                    const std::shared_ptr<DatabaseSessionPool>& pool,
                                    const std::shared_ptr<api::ExecutionContext>& context,
                                    const std::shared_ptr<api::ExecutionContext>& mainContext) :
-        ledger::core::OperationQuery<Operation>(headFilter, pool, context, mainContext)
+        ledger::core::OperationQuery(headFilter, pool, context, mainContext)
     {}
 
     std::shared_ptr<Operation> OperationQuery::createOperation(std::shared_ptr<AbstractAccount> &account) {
