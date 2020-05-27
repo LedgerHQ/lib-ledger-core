@@ -39,6 +39,8 @@ namespace core {
 namespace algorand {
 namespace model {
 
+    // Unused!
+    // TODO remove?
     struct Block {
         // TimeStamp in seconds since epoch
         uint64_t timestamp;

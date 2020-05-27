@@ -27,10 +27,8 @@
  *
  */
 
-#ifndef LEDGER_CORE_ALGORANDBLOCKCHAINEXPLORER_H
-#define LEDGER_CORE_ALGORANDBLOCKCHAINEXPLORER_H
+#pragma once
 
-#include <api/AlgorandTransaction.hpp>
 #include <api/AlgorandNetworkParameters.hpp>
 #include "model/transactions/AlgorandTransaction.hpp"
 #include "model/transactions/AlgorandTransactionParams.hpp"
@@ -59,47 +57,43 @@ namespace constants {
 
 } // namespace constants
 
-    class BlockchainExplorer : public ConfigurationMatchable, public DedicatedContext {
+    class BlockchainExplorer : public ConfigurationMatchable, public DedicatedContext
+    {
 
     public:
 
-        BlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
-                           const std::shared_ptr<HttpClient> &http,
-                           const api::AlgorandNetworkParameters &parameters,
-                           const std::shared_ptr<api::DynamicObject> &configuration);
+        BlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
+                           const std::shared_ptr<HttpClient>& http,
+                           const api::AlgorandNetworkParameters& parameters,
+                           const std::shared_ptr<api::DynamicObject>& configuration);
 
         // CurrentBlock querier
-        FuturePtr<api::Block> getCurrentBlock() const;
+        Future<api::Block> getCurrentBlock() const;
 
         // Block querier
-        FuturePtr<api::Block> getBlock(uint64_t & blockHeight) const;
+        Future<api::Block> getBlock(uint64_t& blockHeight) const;
 
         // Account querier
-        FuturePtr<model::Account> getAccount(const std::string & address) const;
+        FuturePtr<model::Account> getAccount(const std::string& address) const;
 
         // Single transaction querier (found by hash)
-        FuturePtr<model::Transaction> getTransactionById(const std::string & txId) const;
+        FuturePtr<model::Transaction> getTransactionById(const std::string& txId) const;
 
         // Get all transactions relevant to an address
         // Concatenates multiple API calls for all relevant transaction types
-        FuturePtr<model::TransactionsBulk> getTransactionsForAddress(const std::string &address, const uint64_t & fromBlockHeight = 0) const;
+        Future<model::TransactionsBulk> getTransactionsForAddress(const std::string& address, uint64_t fromBlockHeight = 0) const;
 
-        // Get suggested fee for a transaction
-        Future<uint64_t> getSuggestedFee(const std::shared_ptr<api::AlgorandTransaction> & transaction) const;
+        Future<model::TransactionParams> getTransactionParams() const;
 
-        FuturePtr<model::TransactionParams> getTransactionParams() const;
-
-        Future<std::string> pushTransaction(const std::vector<uint8_t> & transaction);
+        Future<std::string> pushTransaction(const std::vector<uint8_t>& transaction);
 
     private:
 
         std::shared_ptr<HttpClient> _http;
         api::AlgorandNetworkParameters _parameters;
-
     };
 
 } // namespace algorand
 } // namespace core
 } // namespace ledger
 
-#endif // LEDGER_CORE_ALGORANDBLOCKCHAINEXPLORER_H

@@ -50,6 +50,11 @@ public:
                         std::make_shared<DynamicObject>());
     }
 
+    void TearDown() override {
+        BaseFixture::TearDown();
+        explorer.reset();
+    }
+    
     std::shared_ptr<BlockchainExplorer> explorer;
 };
 
@@ -59,59 +64,59 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
     uint64_t blockHeight = 6000000; // Some arbitrary block
     std::chrono::system_clock::time_point blockTime(std::chrono::seconds(1586345796));
 
-    std::shared_ptr<api::Block> block = ::wait(explorer->getBlock(blockHeight));
+    api::Block block = ::wait(explorer->getBlock(blockHeight));
 
-    EXPECT_EQ(block->height, blockHeight);
-    EXPECT_EQ(block->blockHash, "SWM7OIULX7F7KMGZSGU54FCEVVVCV6XWT6CEG7EH7WI4LHWHNB7A");
-    EXPECT_EQ(block->time, blockTime);
+    EXPECT_EQ(block.height, blockHeight);
+    EXPECT_EQ(block.blockHash, "SWM7OIULX7F7KMGZSGU54FCEVVVCV6XWT6CEG7EH7WI4LHWHNB7A");
+    EXPECT_EQ(block.time, blockTime);
 }
 
 TEST_F(AlgorandExplorerTest, GetAccount) {
 
     auto address = ::algorand::Address(OBELIX_ADDRESS);
-    std::shared_ptr<model::Account> account = ::wait(explorer->getAccount(address.toString()));
+    model::Account account = ::wait(explorer->getAccount(address.toString()));
 
-    EXPECT_EQ(account->address, address.toString());
-    EXPECT_FALSE(account->pubKeyHex.empty());
-    EXPECT_GT(account->round, 6000000);
-    EXPECT_GT(account->amount, 0);
-    EXPECT_GT(account->amountWithoutPendingRewards, 0);
+    EXPECT_EQ(account.address, address.toString());
+    EXPECT_FALSE(account.pubKeyHex.empty());
+    EXPECT_GT(account.round, 6000000);
+    EXPECT_GT(account.amount, 0);
+    EXPECT_GT(account.amountWithoutPendingRewards, 0);
     // FIXME Figure out rewards on testnet
     //EXPECT_GT(account->pendingRewards, 0); // May fail if rewards have been claimed very recently, but ultra unlikely
     //EXPECT_GT(account->rewards, 0);
+  
+    EXPECT_FALSE(account.assetsAmounts.empty());
+    EXPECT_NE(account.assetsAmounts.find(342836), account.assetsAmounts.end());
+    EXPECT_EQ(account.assetsAmounts.at(342836).creatorAddress, address);
 
-    EXPECT_FALSE(account->assetsAmounts.empty());
-    EXPECT_NE(account->assetsAmounts.find(342836), account->assetsAmounts.end());
-    EXPECT_EQ(account->assetsAmounts.at(342836).creatorAddress, address);
-
-    EXPECT_NE(account->createdAssets.find(342836), account->createdAssets.end());
-    assertSameAssetParams(testAsset(), account->createdAssets.at(342836));
+    EXPECT_NE(account.createdAssets.find(342836), account.createdAssets.end());
+    assertSameAssetParams(testAsset(), account.createdAssets.at(342836));
 }
 
 TEST_F(AlgorandExplorerTest, GetPaymentTransaction) {
     auto txRef = paymentTransaction();
-    std::shared_ptr<model::Transaction> tx = ::wait(explorer->getTransactionById(*txRef.header.id));
-    assertSameTransaction(txRef, *tx);
+    model::Transaction tx = ::wait(explorer->getTransactionById(*txRef.header.id));
+    assertSameTransaction(txRef, tx);
 }
 
 TEST_F(AlgorandExplorerTest, GetAssetConfigTransaction) {
     auto txRef = assetConfigTransaction();
-    std::shared_ptr<model::Transaction> tx = ::wait(explorer->getTransactionById(*txRef.header.id));
-    assertSameTransaction(txRef, *tx);
+    model::Transaction tx = ::wait(explorer->getTransactionById(*txRef.header.id));
+    assertSameTransaction(txRef, tx);
 }
 
 TEST_F(AlgorandExplorerTest, GetAssetTransferTransaction) {
     auto txRef = assetTransferTransaction();
-    std::shared_ptr<model::Transaction> tx = ::wait(explorer->getTransactionById(*txRef.header.id));
-    assertSameTransaction(txRef, *tx);
+    model::Transaction tx = ::wait(explorer->getTransactionById(*txRef.header.id));
+    assertSameTransaction(txRef, tx);
 }
 
 TEST_F(AlgorandExplorerTest, GetAccountTransactions) {
 
     auto address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM"; // Obelix
-    std::shared_ptr<model::TransactionsBulk> txs = ::wait(explorer->getTransactionsForAddress(address, 0));
+    model::TransactionsBulk txs = ::wait(explorer->getTransactionsForAddress(address, 0));
 
-    for (auto tx : txs->transactions) {
+    for (const auto& tx : txs.transactions) {
         if (*tx.header.id == PAYMENT_TX_ID) {
             assertSameTransaction(paymentTransaction(), tx);
         } else if (*tx.header.id == ASSET_CONFIG_TX_ID) {
@@ -121,5 +126,5 @@ TEST_F(AlgorandExplorerTest, GetAccountTransactions) {
         }
     }
 
-    if (txs->hasNext == true) EXPECT_EQ(txs->transactions.size(), 100);
+    if (txs.hasNext == true) EXPECT_EQ(txs.transactions.size(), 100);
 }
