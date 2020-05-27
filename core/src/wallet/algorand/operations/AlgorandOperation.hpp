@@ -47,6 +47,7 @@ namespace algorand {
 
     class Operation : public ::ledger::core::api::AlgorandOperation
                     , public ::ledger::core::Operation, public ::ledger::core::OperationApi
+                      //FIXME ::ledger::core::Operation necessary ?
     {
     public:
         Operation() = delete;
