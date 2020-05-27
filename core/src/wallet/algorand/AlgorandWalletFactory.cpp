@@ -54,9 +54,7 @@ namespace algorand {
     WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool) :
         AbstractWalletFactory(currency, pool)
     {
-        // create the DB structure if not already created
-        // FIXME : see alternative for V2 method "forwardMigration"
-        //pool->getDatabaseSessionPool()->forwardMigration<AlgorandMigration>();
+        
     }
 
     std::shared_ptr<AbstractWallet> WalletFactory::build(const WalletDatabaseEntry &entry) {
