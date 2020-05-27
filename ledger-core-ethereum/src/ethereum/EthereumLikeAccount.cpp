@@ -719,6 +719,5 @@ namespace ledger {
                                                                         logger(),
                                                                         buildFunction);
         }
-
     }
 }

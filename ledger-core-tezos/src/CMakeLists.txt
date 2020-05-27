@@ -1,129 +1,37 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
-set(ANDROID_CPP_FEATURES exceptions)
-
-set(CMAKE_POSITION_INDEPENDENT_CODE ON)
-
-find_package(ledger-core 0.1.0 REQUIRED)
+# set(CMAKE_INCLUDE_CURRENT_DIR ON)
+# set(ANDROID_CPP_FEATURES exceptions)
 
 # Automatically add API files to the library
-file(
-    GLOB ledger-core-tezos-api-sources
-    "${CMAKE_SOURCE_DIR}/inc/tezos/api/*"
-)
-list(APPEND ledger-core-tezos-sources ${ledger-core-tezos-api-sources})
+file(GLOB API_HEADER_FILES "${PROJECT_SOURCE_DIR}/inc/tezos/api/*.hpp")
 
 # Configure JNI target
 if (TARGET_JNI)
-    message(STATUS "Configure project for JNI")
+    file(GLOB JNI_SRC_FILES "${PROJECT_SOURCE_DIR}/inc/tezos/jni/*.cpp")
+    file(GLOB JNI_HEADER_FILES "${PROJECT_SOURCE_DIR}/inc/tezos/jni/*.hpp")
 
-    file(
-        GLOB ledger-core-tezos-jni-sources
-        "jni/*.cpp"
-        "jni/*.hpp"
-        "jni/jni/*"
-    )
-
-    if(NOT ANDROID)
-        find_package(JNI REQUIRED)
-    endif()
-
-    list(APPEND ledger-core-tezos-sources ${ledger-core-tezos-jni-sources})
-    add_definitions(-DTARGET_JNI=1)
+    list(APPEND API_HEADER_FILES ${JNI_HEADER_FILES})
 endif ()
 
 # Add files to compile to the project
-file(GLOB_RECURSE SRC_FILES *.cpp)
+file(GLOB_RECURSE SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/tezos/*.cpp)
+file(GLOB_RECURSE HEADER_FILES ${PROJECT_SOURCE_DIR}/inc/tezos/*.hpp)
 
-# Interface library used to hold shared properties
-add_library(ledger-core-tezos-interface INTERFACE)
+add_library(ledger-core-tezos-obj OBJECT ${SRC_FILES} ${HEADER_FILES} ${API_HEADER_FILES})
 
-target_compile_definitions(ledger-core-tezos-interface INTERFACE ledger_core_EXPORTS)
-target_compile_definitions(ledger-core-tezos-interface INTERFACE
-    LIB_VERSION_MAJOR=${VERSION_MAJOR}
-    LIB_VERSION_MINOR=${VERSION_MINOR}
-    LIB_VERSION_PATCH=${VERSION_PATCH}
-)
+# enable static analyzers if requested
+include(StaticAnalyzers)
+toggle_static_analyzers(ledger-core-tezos-obj)
 
-string(FIND "${CMAKE_OSX_SYSROOT}" "iphone" IS_IOS)
-if(IS_IOS GREATER_EQUAL 0)
-    add_library(ledger-core-tezos SHARED
-        ${ledger-core-tezos-sources}
-        ${SRC_FILES}
-        ${CORE_SRC_FILES}
-        ${HEADERS_FILES})
-    target_link_libraries(ledger-core-tezos PUBLIC ledger-core-tezos-interface)
-    set(CMAKE_SHARED_LINKER_FLAGS "-Wall")
-    set(FRAMEWORK_BUNDLE_IDENTIFIER "com.ledger.core")
-    set(DEPLOYMENT_TARGET 9.0)
-    set(DEVICE_FAMILY "1")
-    set(PRODUCT_NAME ledger_core)
-    set_target_properties(ledger-core-tezos PROPERTIES
-        FRAMEWORK TRUE
-        FRAMEWORK_VERSION A
-        MACOSX_FRAMEWORK_IDENTIFIER ${FRAMEWORK_BUNDLE_IDENTIFIER}
-        MACOSX_FRAMEWORK_BUNDLE_VERSION ${VERSION_MAJOR}
-        MACOSX_FRAMEWORK_SHORT_VERSION_STRING "${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}"
-        MACOSX_FRAMEWORK_INFO_PLIST ${CMAKE_BINARY_DIR}/framework.plist.in
-        # "current version" in semantic format in Mach-O binary file
-        VERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
-        # "compatibility version" in semantic format in Mach-O binary file
-        SOVERSION ${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_PATCH}
-        PUBLIC_HEADER "${CMAKE_BINARY_DIR}/include/ledger/core"
-        XCODE_ATTRIBUTE_IPHONEOS_DEPLOYMENT_TARGET ${DEPLOYMENT_TARGET}
-        XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY ${DEVICE_FAMILY}
-        XCODE_ATTRIBUTE_SKIP_INSTALL "YES"
-    )
-    add_custom_command(
-        TARGET ledger-core-tezos
-        POST_BUILD
-        COMMAND /bin/bash -c "${CMAKE_BINARY_DIR}/install_name.sh \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME} ${CMAKE_OSX_ARCHITECTURES}"
-    )
-    add_custom_command(
-        TARGET ledger-core-tezos
-        POST_BUILD
-        COMMAND install_name_tool -id \"@rpath/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}\"
-        \${BUILT_PRODUCTS_DIR}/\${PRODUCT_NAME}.framework/\${PRODUCT_NAME}
-    )
-else()
-
-    add_library(ledger-core-tezos-api-obj OBJECT ${ledger-core-tezos-api-sources})
-
-    add_library(ledger-core-tezos-obj OBJECT ${SRC_FILES} ${CORE_SRC_FILES} ${CORE_HEADER_FILES})
-    target_link_libraries(ledger-core-tezos-obj PUBLIC ledger-core-tezos-interface)
-
-    # Enable static analyzers if requested
-    include(StaticAnalyzers)
-    toggle_static_analyzers(ledger-core-tezos-obj)
-
-    # set compiler warnings
-    include(CompilerWarnings)
-    toggle_compiler_warnings(ledger-core-tezos-obj)
-    disable_compiler_warnings(ledger-core-tezos-api-obj)
-
-    # shared and static libraries built from the same object files
-    add_library(ledger-core-tezos SHARED)
-    target_link_libraries(ledger-core-tezos PUBLIC ledger-core-tezos-obj ledger-core-tezos-api-obj)
-
-    add_library(ledger-core-tezos-static STATIC)
-    target_link_libraries(ledger-core-tezos-static PUBLIC ledger-core-tezos-obj ledger-core-tezos-api-obj)
-    install(TARGETS ledger-core-tezos-static DESTINATION "lib")
-endif()
-
-if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core-tezos-interface INTERFACE -static-libstdc++)
-endif()
+# set compiler warnings
+include(CompilerWarnings)
+toggle_compiler_warnings(ledger-core-tezos-obj)
 
 # link the ledger-core library
-target_link_libraries(ledger-core-tezos-interface INTERFACE Core::ledger-core)
+target_link_libraries(ledger-core-tezos-obj PRIVATE ledger-core-obj)
 
-if (TARGET_JNI)
-    target_include_directories(ledger-core-tezos-interface INTERFACE ${JNI_INCLUDE_DIRS})
-    target_link_libraries(ledger-core-tezos-interface INTERFACE ${JNI_LIBRARIES})
-endif ()
-
-target_include_directories(ledger-core-tezos-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc)
-target_include_directories(ledger-core-tezos-interface INTERFACE ${CMAKE_SOURCE_DIR}/inc/ripple/api)
-
-install(TARGETS ledger-core-tezos DESTINATION "lib")
+target_include_directories(ledger-core-tezos-obj PUBLIC
+  ${PROJECT_SOURCE_DIR}/inc
+  ${PROJECT_SOURCE_DIR}/inc/tezos/api
+)

@@ -365,6 +365,5 @@ namespace ledger {
                 return amounts;
             });
         }
-
     }
 }

@@ -1,7 +1,10 @@
+@import "ledger-core/account.djinni"
 @import "ledger-core/amount.djinni"
 @import "ledger-core/callback.djinni"
 @import "ledger-core/currency.djinni"
 @import "ledger-core/math/big_int.djinni"
+@import "ledger-core/services.djinni"
+@import "ledger-core/wallet_store.djinni"
 
 @import "addresses.djinni"
 @import "memo.djinni"
@@ -14,6 +17,19 @@
 # You are supposed to add whatever you see fit in this file and then a code generator (using
 # djinni) must be called to both generate the interface files you need to implement (C++) and the
 # foreign languages bindings.
+
+# The Ripple currency.
+Ripple = interface +c {
+  static newInstance(): Ripple;
+
+  registerInto(services: Services, walletStore: WalletStore, callback: Callback<ErrorCode>);
+
+  # Turn an Account into a RippleLikeAccount.
+  fromCoreAccount(coreAccount: Account): optional<RippleLikeAccount>;
+
+  # Turn an Operation into a RippleLikeOperation.
+	fromCoreOperation(coreOperation: Operation): optional<RippleLikeOperation>;
+}
 
 # Ripple network parameters.
 RippleLikeNetworkParameters = record {
@@ -149,6 +165,7 @@ RippleLikeTransactionBuilder = interface +c {
 
 #Class representing a Ripple account
 RippleLikeAccount = interface +c {
+	static fromCoreAccount(coreAccount: Account): optional<RippleLikeAccount>;
 	broadcastRawTransaction(transaction: binary, callback: Callback<string>);
 	broadcastTransaction(transaction: RippleLikeTransaction, callback: Callback<string>);
 	buildTransaction(): RippleLikeTransactionBuilder;

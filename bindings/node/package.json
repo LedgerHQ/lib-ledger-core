@@ -1,0 +1,43 @@
+{
+  "name": "@ledgerhq/ledger-core-modularized",
+  "version": "0.1.0",
+  "libcoreVersion": "",
+  "description": "Ledger Core Library cross-platform C++ bindings for NodeJs (modularized version)",
+  "main": "js/index.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/LedgerHQ/lib-ledger-core"
+  },
+  "gypfile": true,
+  "scripts": {
+    "gypinstall": "node-gyp rebuild",
+    "gypclean": "node-gyp clean",
+    "gypconfig": "node-gyp configure",
+    "gypbuild": "node-gyp build",
+    "gypbuildd": "node-gyp build --debug",
+    "clean": "rimraf build",
+    "gypconfigx": "node-gyp configure -- -f xcode",
+    "lint": "eslint js",
+    "prettier": "prettier --write \"js/**/*.js\""
+  },
+  "authors": [
+    {
+      "name": "The Ledger Core Team",
+      "url": "https://github.com/LedgerHQ"
+    }
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "bindings": "^1.3.0",
+    "nan": "^2.6.2"
+  },
+  "devDependencies": {
+    "babel-eslint": "^8.2.2",
+    "eslint": "^4.18.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-config-prettier": "^2.9.0",
+    "node-gyp": "^3.6.2",
+    "prettier": "^1.12.1",
+    "rimraf": "^2.5.3"
+  }
+}

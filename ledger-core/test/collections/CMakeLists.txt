@@ -8,6 +8,6 @@ endif (APPLE)
 add_executable(ledger-core-collections-tests main.cpp MapTests.cpp DynamicsTests.cpp)
 
 target_link_libraries(ledger-core-collections-tests gtest gtest_main)
-target_link_libraries(ledger-core-collections-tests ledger-core-static)
+target_link_libraries(ledger-core-collections-tests ledger-core-bundle)
 
 add_test (NAME ledger-core-collections-tests COMMAND ledger-core-collections-tests)

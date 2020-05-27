@@ -8,6 +8,6 @@ endif (APPLE)
 add_executable(ledger-core-math-tests main.cpp BigIntTests.cpp BigIntAPITests.cpp Base58Test.cpp FibonacciTest.cpp)
 
 target_link_libraries(ledger-core-math-tests gtest gtest_main)
-target_link_libraries(ledger-core-math-tests ledger-core-static)
+target_link_libraries(ledger-core-math-tests ledger-core-bundle)
 
 add_test (NAME ledger-core-math-tests COMMAND ledger-core-math-tests)

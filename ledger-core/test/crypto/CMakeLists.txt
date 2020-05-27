@@ -8,7 +8,7 @@ endif (APPLE)
 add_executable(ledger-core-crypto-tests main.cpp DigestTest.cpp EncryptionTest.cpp DeterministicPublicKeyTest.cpp Secp256k1Test.cpp)
 
 target_link_libraries(ledger-core-crypto-tests gtest gtest_main)
-target_link_libraries(ledger-core-crypto-tests ledger-core-static)
+target_link_libraries(ledger-core-crypto-tests ledger-core-bundle)
 target_link_libraries(ledger-core-crypto-tests ledger-test)
 
 add_test (NAME ledger-core-crypto-tests COMMAND ledger-core-crypto-tests)

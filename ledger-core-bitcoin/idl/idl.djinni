@@ -1,12 +1,30 @@
+@import "ledger-core/account.djinni"
 @import "ledger-core/amount.djinni"
 @import "ledger-core/callback.djinni"
 @import "ledger-core/currency.djinni"
 @import "ledger-core/derivation.djinni"
 @import "ledger-core/math/big_int.djinni"
+@import "ledger-core/operation.djinni"
+@import "ledger-core/services.djinni"
 @import "ledger-core/tuples.djinni"
+@import "ledger-core/wallet_store.djinni"
 
 @import "addresses.djinni"
 @import "script.djinni"
+
+# The Bitcoin currency.
+Bitcoin = interface +c {
+  static newInstance(): Bitcoin;
+
+  # Register the currency into a wallet store and associated services.
+  registerInto(services: Services, walletStore: WalletStore, callback: Callback<ErrorCode>);
+
+  # Turn an Account into a BitcoinLikeAccount.
+  fromCoreAccount(coreAccount: Account): optional<BitcoinLikeAccount>;
+
+  # Turn an Operation into a BitcoinLikeOperation.
+  fromCoreOperation(coreOperation: Operation): optional<BitcoinLikeOperation>;
+}
 
 # Class of constants to set Bitcoin like wallet configurations.
 BitcoinLikeWalletConfiguration = interface +c {

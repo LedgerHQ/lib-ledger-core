@@ -1,10 +1,26 @@
+@import "ledger-core/account.djinni"
 @import "ledger-core/amount.djinni"
 @import "ledger-core/callback.djinni"
 @import "ledger-core/math/big_int.djinni"
 @import "ledger-core/operation.djinni"
+@import "ledger-core/services.djinni"
+@import "ledger-core/wallet_store.djinni"
 
 @import "addresses.djinni"
 @import "erc20.djinni"
+
+# The Ethereum currency.
+Ethereum = interface +c {
+  static newInstance(): Ethereum;
+  # Register the currency into a wallet store and associated services.
+  registerInto(services: Services, walletStore: WalletStore, callback: Callback<ErrorCode>);
+
+  # Turn an Account into a EthereumLikeAccount.
+  fromCoreAccount(coreAccount: Account): optional<EthereumLikeAccount>;
+
+  # Turn an Operation into a EthereumLikeOperation.
+	fromCoreOperation(coreOperation: Operation): optional<EthereumLikeOperation>;
+}
 
 # Class representing a Ethereum transaction.
 EthereumLikeTransaction = interface +c {

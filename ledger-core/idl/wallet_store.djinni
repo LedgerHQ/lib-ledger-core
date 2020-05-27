@@ -1,10 +1,14 @@
 @import "configuration.djinni"
 @import "currency.djinni"
 @import "error.djinni"
+@import "services.djinni"
 @import "wallet.djinni"
 
 # Class representing a cache of wallets.
 WalletStore = interface +c {
+    # Create a new instance of a WalletStore
+    static newInstance(services: Services): WalletStore;
+
     # Return number of wallets instantiated under the store.
     # @param callback, Callback object returns a 32 bits integer, count of wallets
     getWalletCount(callback: Callback<i32>);

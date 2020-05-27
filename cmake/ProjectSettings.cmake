@@ -34,6 +34,8 @@ mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
+
 find_program(CCACHE ccache)
 if(CCACHE)
   message(STATUS "Using ccache")

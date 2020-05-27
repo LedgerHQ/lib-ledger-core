@@ -1,10 +1,19 @@
+#include <core/api/WalletStore.hpp>
 #include <core/database/SociDate.hpp>
 #include <core/wallet/CurrenciesDatabaseHelper.hpp>
 #include <core/wallet/WalletDatabaseHelper.hpp>
 #include <core/wallet/WalletStore.hpp>
+#include <memory>
 
 namespace ledger {
     namespace core {
+        std::shared_ptr<api::WalletStore> api::WalletStore::newInstance(
+            const std::shared_ptr<api::Services> &services
+        ) {
+          auto concreteServices = std::dynamic_pointer_cast<ledger::core::Services>(services);
+          return std::make_shared<ledger::core::WalletStore>(concreteServices);
+        }
+
         WalletStore::WalletStore(std::shared_ptr<Services> const& services):
             DedicatedContext(services->getDispatcher()->getSerialExecutionContext("wallet_store_queue")),
             _services(services) {

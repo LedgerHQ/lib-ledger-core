@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
 
 # project new <coin-id> [--force]
+
 usage() {
-  echo $1
+  echo -e $1
   exit $2
 }
 
@@ -52,25 +53,11 @@ cmd_project_new() {
   sed s/\$project_name/$capitalized_coin_name/g ./tools/templates/Migrations.cpp > $project_name/src/$coin_name/database/Migrations.cpp
 }
 
-cmd_project_idl() {
-  if [[ -z "$1" ]];
-  then
-    usage "please provide the name of the currency" 1
-  fi
-
-  ./tools/idl_interfaces.sh $1
-}
-
 cmd_project() {
   case "$1" in
     "new")
       shift
       cmd_project_new $*
-      ;;
-
-    "api")
-      shift
-      cmd_project_idl $*
       ;;
 
     *)
@@ -80,23 +67,32 @@ cmd_project() {
 }
 
 cmd_idl() {
-  if [[ ! -z "$*" ]];
+  if [[ "$#" == 0 ]];
   then
-    usage "too many arguments; generating the API for Ledger Core doesn’t require any argument" 1
+    usage "too few arguments: pass the list of coins you want to generate API for"
   fi
 
-  ./tools/idl_interfaces.sh core
+  ./tools/idl_interfaces.sh $*
+}
+
+cmd_pkg() {
+  if [[ $# != 1 ]];
+  then
+    usage "generating bindings requires at least one argument: the package system to target (npm)"
+  fi
+
+  ./tools/idl_pkg.sh $1
 }
 
 case "$1" in
-  "project")
-    shift
-    cmd_project $*
-    ;;
-
   "api")
     shift
     cmd_idl $*
+    ;;
+
+  "pkg")
+    shift
+    cmd_pkg $*
     ;;
 
   *)
