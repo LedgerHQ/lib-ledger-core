@@ -31,15 +31,15 @@
 
 #pragma once
 
-#include <algorand/operations/AlgorandOperation.hpp>
+#include "AlgorandOperation.hpp"
 
-#include <core/operation/OperationQuery.hpp>
+#include <wallet/common/OperationQuery.h>
 
 namespace ledger {
 namespace core {
 namespace algorand {
 
-    class OperationQuery : public ledger::core::OperationQuery<Operation> {
+    class OperationQuery : public ledger::core::OperationQuery {
 
     public:
 
@@ -50,11 +50,11 @@ namespace algorand {
 
     protected:
 
-        virtual std::shared_ptr<Operation> createOperation(std::shared_ptr<AbstractAccount> &account) override;
+        virtual std::shared_ptr<Operation> createOperation(std::shared_ptr<AbstractAccount> &account);
 
         virtual void inflateCompleteTransaction(soci::session & sql,
                                                 const std::string & accountUid,
-                                                Operation & operation) override;
+                                                Operation & operation);
 
     };
 }

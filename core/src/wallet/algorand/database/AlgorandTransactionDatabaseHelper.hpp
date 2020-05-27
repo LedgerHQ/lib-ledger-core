@@ -30,13 +30,13 @@
 #ifndef LEDGER_CORE_ALGORANDTRANSACTIONDATABASEHELPER_H
 #define LEDGER_CORE_ALGORANDTRANSACTIONDATABASEHELPER_H
 
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
+#include "../model/transactions/AlgorandTransaction.hpp"
 
 #include <boost/optional.hpp>
 
 #define SOCI_USE_BOOST
 #include <soci.h>
-#include <core/database/SociNumber.hpp>
+#include <database/soci-number.h>
 
 namespace ledger {
 namespace core {

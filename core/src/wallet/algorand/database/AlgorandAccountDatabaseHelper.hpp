@@ -30,12 +30,12 @@
 #ifndef LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H
 
-#include <algorand/model/AlgorandAccount.hpp>
+#include "../model/AlgorandAccount.hpp"
 
-#include <algorand/operations/AlgorandOperation.hpp>
+#include "../operations/AlgorandOperation.hpp"
 
-#include <core/wallet/AbstractAccount.hpp>
-#include <core/wallet/AccountDatabaseHelper.hpp>
+#include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 
 #include <soci.h>
 

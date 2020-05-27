@@ -30,9 +30,9 @@
 #ifndef LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
 #define LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
 
-#include <algorand/operations/AlgorandOperation.hpp>
+#include "../operations/AlgorandOperation.hpp"
 
-#include <core/operation/OperationDatabaseHelper.hpp>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
 #include <soci.h>
 
