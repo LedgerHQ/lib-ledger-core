@@ -33,6 +33,9 @@ list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM SRC_FILES dummy.cpp)
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
+# msgpack Algorand
+list(FILTER SRC_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
+
 if (NOT PG_SUPPORT)
     list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.cpp)
     list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.h)
@@ -191,6 +194,10 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
 target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
 target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
+
+# msgpack Algorand
+add_definitions("-DMSGPACK_USE_DEFINE_MAP")
+target_include_directories(ledger-core-interface INTERFACE wallet/algorand/thirdparty/msgpack-c/include)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")
