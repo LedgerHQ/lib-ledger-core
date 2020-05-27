@@ -26,9 +26,9 @@
  * SOFTWARE.
  *
  */
-#include <algorand/AlgorandAddress.hpp>
+#include <wallet/algorand/AlgorandAddress.hpp>
 
-#include <core/utils/Hex.hpp>
+#include <utils/hex.h>
 
 #include <gtest/gtest.h>
 

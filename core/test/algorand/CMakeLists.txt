@@ -12,13 +12,19 @@ add_executable(ledger-core-algorand-tests
     MsgpackHelpersTests.cpp
     AlgorandAddressTests.cpp
     AlgorandExplorerTests.cpp
-    AlgorandDatabaseTests.cpp
+#   AlgorandDatabaseTests.cpp -- No WalletFixture.hpp equivalent available in v1 ?
+  ../integration/BaseFixture.cpp
+  ../integration/IntegrationEnvironment.cpp
 )
 
 target_link_libraries(ledger-core-algorand-tests gtest gtest_main)
 target_link_libraries(ledger-core-algorand-tests ledger-core-static)
 target_link_libraries(ledger-core-algorand-tests ledger-test)
 target_link_libraries(ledger-core-algorand-tests leveldb)
+target_link_libraries(ledger-core-algorand-tests ledger-qt-host)
+target_include_directories(ledger-core-algorand-tests PUBLIC ../../../qt-host)
+target_include_directories(ledger-core-algorand-tests PUBLIC ../../../core/src)
+target_include_directories(ledger-core-algorand-tests PUBLIC ../lib/libledger-test)
 target_include_directories(ledger-core-algorand-tests PUBLIC ../../../core/lib/leveldb/include)
 include_directories(../lib/libledger-test/)
 

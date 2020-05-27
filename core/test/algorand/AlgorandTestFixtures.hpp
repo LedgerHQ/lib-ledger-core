@@ -29,14 +29,14 @@
 #ifndef LEDGER_TEST_ALGORANDTESTFIXTURES_H
 #define LEDGER_TEST_ALGORANDTESTFIXTURES_H
 
-#include <algorand/model/AlgorandAccount.hpp>
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
-#include <algorand/model/transactions/AlgorandAssetParams.hpp>
-#include <algorand/AlgorandNetworks.hpp>
-#include <algorand/AlgorandJsonParser.hpp>
+#include <wallet/algorand/model/AlgorandAccount.hpp>
+#include <wallet/algorand/model/transactions/AlgorandTransaction.hpp>
+#include <wallet/algorand/model/transactions/AlgorandAssetParams.hpp>
+#include <wallet/algorand/AlgorandNetworks.hpp>
+#include <wallet/algorand/AlgorandJsonParser.hpp>
 
-#include <core/math/BaseConverter.hpp>
-#include <core/utils/Option.hpp>
+#include <math/BaseConverter.hpp>
+#include <utils/Option.hpp>
 
 #include <gtest/gtest.h>
 
@@ -94,15 +94,15 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6529846;
             tx.header.lastValid = 6530846;
-            tx.header.fromRewards = 0UL;
+            tx.header.fromRewards = Option<uint64_t>(0);
             tx.header.timestamp = 1588586190;
 
             tx.details = model::PaymentTxnFields();
             auto& details = boost::get<model::PaymentTxnFields>(tx.details);
             details.receiverAddr = Address(TEST_ACCOUNT_ADDRESS);
             details.amount = 1000;
-            details.receiverRewards = 0UL;
-            details.closeRewards = 0UL;
+            details.receiverRewards = Option<uint64_t>(0);
+            details.closeRewards = Option<uint64_t>(0);
         }
 
         return tx;
@@ -123,12 +123,12 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6305874;
             tx.header.lastValid = 6306874;
-            tx.header.fromRewards = 0UL;
+            tx.header.fromRewards = Option<uint64_t>(0);
             tx.header.timestamp = 1587641643;
 
             tx.details = model::AssetConfigTxnFields();
             auto& details = boost::get<model::AssetConfigTxnFields>(tx.details);
-            details.assetId = 0UL;
+            details.assetId = Option<uint64_t>(0);
             details.assetParams = model::AssetParams();
             auto& assetParams = *details.assetParams;
             assetParams.total = 1000000;
@@ -160,7 +160,7 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6734094;
             tx.header.lastValid = 6734193;
-            tx.header.fromRewards = 0UL;
+            tx.header.fromRewards = Option<uint64_t>(0);
             tx.header.timestamp = 1589448692;
 
             tx.details = model::AssetTransferTxnFields();

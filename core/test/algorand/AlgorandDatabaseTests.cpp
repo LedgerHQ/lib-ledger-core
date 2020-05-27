@@ -28,19 +28,19 @@
  */
 
 #include "AlgorandTestFixtures.hpp"
-#include <algorand/database/AlgorandTransactionDatabaseHelper.hpp>
-#include <algorand/database/AlgorandAccountDatabaseHelper.hpp>
-#include <algorand/operations/AlgorandOperation.hpp>
-#include <algorand/AlgorandWalletFactory.hpp>
-#include <algorand/AlgorandLikeCurrencies.hpp>
-#include <algorand/AlgorandWallet.hpp>
-#include <algorand/AlgorandAccount.hpp>
+#include <wallet/algorand/database/AlgorandTransactionDatabaseHelper.hpp>
+#include <wallet/algorand/database/AlgorandAccountDatabaseHelper.hpp>
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
+#include <wallet/algorand/AlgorandWalletFactory.hpp>
+#include <wallet/algorand/AlgorandLikeCurrencies.hpp>
+#include <wallet/algorand/AlgorandWallet.hpp>
+#include <wallet/algorand/AlgorandAccount.hpp>
 
-#include <core/operation/OperationQuery.hpp>
-#include <core/api/AccountCreationInfo.hpp>
-#include <core/api/Address.hpp>
+#include <wallet/common/OperationQuery.h>
+#include <api/AccountCreationInfo.hpp>
+#include <api/Address.hpp>
 
-#include <integration/WalletFixture.hpp>
+#include <integration/WalletFixture.hpp> // No equivalent in v1 ?
 
 #include <utility>
 
