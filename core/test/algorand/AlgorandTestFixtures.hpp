@@ -196,10 +196,10 @@ namespace algorand {
 
         EXPECT_EQ(txRefPaymentDetails.amount, txResultPaymentDetails.amount);
         EXPECT_EQ(txRefPaymentDetails.receiverAddr, txResultPaymentDetails.receiverAddr);
+        if (txRefPaymentDetails.receiverRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.receiverRewards, *txResultPaymentDetails.receiverRewards);
         if (txRefPaymentDetails.closeAddr.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeAddr, *txResultPaymentDetails.closeAddr);
         if (txRefPaymentDetails.closeAmount.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeAmount, *txResultPaymentDetails.closeAmount);
         if (txRefPaymentDetails.closeRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeRewards, *txResultPaymentDetails.closeRewards);
-        if (txRefPaymentDetails.receiverRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.receiverRewards, *txResultPaymentDetails.receiverRewards);
     }
 
     static void assertSameAssetConfigDetails(const model::Transaction::Details & txRefDetails,
