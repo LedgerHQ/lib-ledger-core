@@ -71,13 +71,13 @@ namespace constants {
         Future<api::Block> getCurrentBlock() const;
 
         // Block querier
-        Future<api::Block> getBlock(uint64_t& blockHeight) const;
+        Future<api::Block> getBlock(uint64_t blockHeight) const;
 
         // Account querier
-        FuturePtr<model::Account> getAccount(const std::string& address) const;
+        Future<model::Account> getAccount(const std::string& address) const;
 
         // Single transaction querier (found by hash)
-        FuturePtr<model::Transaction> getTransactionById(const std::string& txId) const;
+        Future<model::Transaction> getTransactionById(const std::string& txId) const;
 
         // Get all transactions relevant to an address
         // Concatenates multiple API calls for all relevant transaction types
