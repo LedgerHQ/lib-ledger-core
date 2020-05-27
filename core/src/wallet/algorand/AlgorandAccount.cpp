@@ -106,7 +106,7 @@ namespace algorand {
         return nullptr;
     }
 
-    std::shared_ptr<api::Keychain> getAccountKeychain() 
+    std::shared_ptr<api::Keychain> Account::getAccountKeychain() 
     {
         // FIXME : check nullptr error  
         return nullptr;

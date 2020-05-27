@@ -33,16 +33,16 @@
 #include "B64StringAdaptor.hpp"
 #include "MsgpackHelpers.hpp"
 
-#include <algorand/AlgorandAddress.hpp>
-#include <algorand/utils/B64String.hpp>
-#include <algorand/model/transactions/AlgorandAsset.hpp>
-#include <algorand/model/transactions/AlgorandAssetParams.hpp>
-#include <algorand/model/transactions/AlgorandKeyreg.hpp>
-#include <algorand/model/transactions/AlgorandPayment.hpp>
-#include <algorand/model/transactions/AlgorandSignedTransaction.hpp>
-#include <algorand/model/transactions/AlgorandTransaction.hpp>
+#include "../../AlgorandAddress.hpp"
+#include "../../utils/B64String.hpp"
+#include "../../model/transactions/AlgorandAsset.hpp"
+#include "../../model/transactions/AlgorandAssetParams.hpp"
+#include "../../model/transactions/AlgorandKeyreg.hpp"
+#include "../../model/transactions/AlgorandPayment.hpp"
+#include "../../model/transactions/AlgorandSignedTransaction.hpp"
+#include "../../model/transactions/AlgorandTransaction.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <boost/variant.hpp>
 

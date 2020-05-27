@@ -29,9 +29,9 @@
 
 #include "AlgorandTransactionImpl.hpp"
 
-#include <algorand/AlgorandAddress.hpp>
+#include "../../AlgorandAddress.hpp"
 
-#include <core/utils/Exception.hpp>
+#include <utils/Exception.hpp>
 
 namespace ledger {
 namespace core {
