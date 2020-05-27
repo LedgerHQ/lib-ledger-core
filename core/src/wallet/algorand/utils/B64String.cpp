@@ -27,9 +27,9 @@
  *
  */
 
-#include <algorand/utils/B64String.hpp>
+#include "B64String.hpp"
 
-#include <core/math/BaseConverter.hpp>
+#include <math/BaseConverter.hpp>
 
 namespace ledger {
 namespace core {

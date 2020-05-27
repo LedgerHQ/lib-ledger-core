@@ -27,7 +27,7 @@
  *
  */
 
-#include <algorand/model/transactions/AlgorandSignedTransaction.hpp>
+#include "../model/transactions/AlgorandSignedTransaction.hpp"
 
 #include "util/TransactionAdaptor.hpp"
 

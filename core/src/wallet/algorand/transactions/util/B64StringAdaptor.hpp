@@ -29,7 +29,7 @@
 
 #pragma once
 
-#include <algorand/utils/B64String.hpp>
+#include "../../utils/B64String.hpp"
 
 #include <msgpack.hpp>
 
