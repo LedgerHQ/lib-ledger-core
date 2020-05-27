@@ -1,7 +1,7 @@
 /*
  * AlgorandAccountDatabaseHelper
  *
- * Created by Hakim Aammar on 20/04/2020.
+ * Created by Hakim Aammar on 18/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,37 +27,42 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H
 #define LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H
 
-#include <soci.h>
+#include <algorand/model/AlgorandAccount.hpp>
 
-#include "../model/AlgorandAccount.hpp"
+#include <algorand/operations/AlgorandOperation.hpp>
+
+#include <core/wallet/AbstractAccount.hpp>
+#include <core/wallet/AccountDatabaseHelper.hpp>
+
+#include <soci.h>
 
 namespace ledger {
 namespace core {
 namespace algorand {
 
-    // TODO implementation; this is currently just a mock up
+    struct AccountDatabaseEntry {
+        int32_t index;
+        std::string address;
+    };
 
-    class AccountDatabaseHelper {
+    class AccountDatabaseHelper : public ledger::core::AccountDatabaseHelper {
 
     public:
 
-        static void createAccount(
-            soci::session& sql,
-            const std::string walletUid,
-            int32_t index,
-            const std::string& pubKeyHex
-        ) {}
+        static std::string createAccount(
+            soci::session & sql,
+            const std::string & walletUid,
+            const AccountDatabaseEntry & account
+        );
 
         static bool queryAccount(
-            soci::session& sql,
-            const std::string &accountUid,
-            model::Account& entry
-        ) {}
-
+            soci::session & sql,
+            const std::string & accountUid,
+            AccountDatabaseEntry & account
+        );
 
     };
 
@@ -65,4 +70,4 @@ namespace algorand {
 } // namespace core
 } // namespace ledger
 
-#endif // LEDGER_CORE_ALGORANDOPERATION_H
+#endif // LEDGER_CORE_ALGORANDACCOUNTDATABASEHELPER_H

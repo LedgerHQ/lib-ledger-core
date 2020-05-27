@@ -43,7 +43,6 @@ namespace ledger {
 namespace core {
 namespace algorand {
 
-    // FIXME Temporary, to be removed or put elsewhere
     using AccountSynchronizerFactory = std::function<std::shared_ptr<AccountSynchronizer>()>;
 
     class Wallet : public api::AlgorandWallet, public AbstractWallet {
@@ -51,24 +50,24 @@ namespace algorand {
     public:
 
         Wallet(
-            const std::string &name,
-            const api::Currency &currency,
+            const std::string & name,
+            const api::Currency & currency,
             const std::shared_ptr<WalletPool>& pool,
-            const std::shared_ptr<DynamicObject> &configuration,
-            const DerivationScheme &scheme,
-            const std::shared_ptr<BlockchainExplorer> &explorer, // TODO Could be a singleton service?
-            const std::shared_ptr<BlockchainObserver> &observer,
-            const AccountSynchronizerFactory &synchronizerFactory
+            const std::shared_ptr<DynamicObject> & configuration,
+            const DerivationScheme & scheme,
+            const std::shared_ptr<BlockchainExplorer> & explorer,
+            const std::shared_ptr<BlockchainObserver> & observer,
+            const AccountSynchronizerFactory & synchronizerFactory
         );
 
         bool isSynchronizing() override;
 
         std::shared_ptr<api::EventBus> synchronize() override;
 
-        FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo &info) override;
+        FuturePtr<ledger::core::api::Account> newAccountWithInfo(const api::AccountCreationInfo & info) override;
 
         FuturePtr<ledger::core::api::Account>
-        newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo &info) override;
+        newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo & info) override;
 
         Future<api::ExtendedKeyAccountCreationInfo>
         getExtendedKeyAccountCreationInfo(int32_t accountIndex) override;
@@ -79,7 +78,7 @@ namespace algorand {
 
     protected:
         std::shared_ptr<AbstractAccount>
-        createAccountInstance(soci::session &sql, const std::string &accountUid) override;
+        createAccountInstance(soci::session & sql, const std::string & accountUid) override;
 
     private:
         std::shared_ptr<Wallet> getSelf();

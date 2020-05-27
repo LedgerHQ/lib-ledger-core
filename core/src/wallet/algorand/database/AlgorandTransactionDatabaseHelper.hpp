@@ -1,7 +1,7 @@
 /*
- * AlgorandTransactionResults
+ * AlgorandTransactionDatabaseHelper
  *
- * Created by Rémi Barjon on 11/05/2020.
+ * Created by Hakim Aammar on 18/05/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,27 +27,43 @@
  *
  */
 
-#pragma once
+#ifndef LEDGER_CORE_ALGORANDTRANSACTIONDATABASEHELPER_H
+#define LEDGER_CORE_ALGORANDTRANSACTIONDATABASEHELPER_H
 
-#include <core/utils/Option.hpp>
+#include <algorand/model/transactions/AlgorandTransaction.hpp>
 
-#include <cstdint>
-#include <string>
+#include <boost/optional.hpp>
+
+#define SOCI_USE_BOOST
+#include <soci.h>
+#include <core/database/SociNumber.hpp>
 
 namespace ledger {
 namespace core {
 namespace algorand {
-namespace model {
 
-    // Unused!
-    // TODO remove?
-    // Contains information about the side effects of a transaction
-    struct TransactionResults {
-        Option<uint64_t> createdAsset; // The ID of an asset created by this transaction.
+    class TransactionDatabaseHelper {
+
+    public:
+
+        static bool transactionExists(soci::session & sql,
+                                      const std::string & txUid);
+
+        static bool getTransactionByHash(soci::session & sql,
+                                         const std::string & hash,
+                                         model::Transaction & tx);
+
+        static std::string createTransactionUid(const std::string & accountUid,
+                                                const std::string & txHash);
+
+        static std::string putTransaction(soci::session & sql,
+                                          const std::string & accountUid,
+                                          const model::Transaction & tx);
+
     };
 
-} // namespace model
 } // namespace algorand
 } // namespace core
 } // namespace ledger
 
+#endif // LEDGER_CORE_ALGORANDTRANSACTIONDATABASEHELPER_H
