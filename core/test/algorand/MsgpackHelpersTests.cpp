@@ -1,8 +1,8 @@
 #include <gtest/gtest.h>
 
-#include "../src/algorand/transactions/util/MsgpackHelpers.hpp"
+#include "../../src/wallet/algorand/transactions/util/MsgpackHelpers.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <msgpack.hpp>
 

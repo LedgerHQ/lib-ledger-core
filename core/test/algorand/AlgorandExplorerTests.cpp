@@ -27,10 +27,10 @@
  *
  */
 #include "AlgorandTestFixtures.hpp"
-#include <algorand/AlgorandBlockchainExplorer.hpp>
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
+#include <wallet/algorand/AlgorandBlockchainExplorer.hpp>
+#include <api/AlgorandConfigurationDefaults.hpp>
 
-#include <integration/BaseFixture.hpp>
+#include "../integration/BaseFixture.h"
 
 using namespace ledger::testing::algorand;
 using namespace ledger::core::algorand;
