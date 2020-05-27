@@ -29,7 +29,7 @@
 
 #include "AlgorandWallet.hpp"
 #include "AlgorandAccount.hpp"
-#include <algorand/AlgorandAddress.hpp>
+#include "AlgorandAddress.hpp"
 #include "model/AlgorandAccount.hpp"
 #include "database/AlgorandAccountDatabaseHelper.hpp"
 

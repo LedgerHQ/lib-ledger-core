@@ -27,9 +27,9 @@
  *
  */
 
-#include <algorand/database/AlgorandAccountDatabaseHelper.hpp>
+#include "AlgorandAccountDatabaseHelper.hpp"
 
-#include <core/database/SociNumber.hpp>
+#include <database/soci-number.h>
 
 namespace ledger {
 namespace core {

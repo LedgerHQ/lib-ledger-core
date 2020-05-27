@@ -31,7 +31,6 @@
 #include "AlgorandWalletFactory.hpp"
 #include "AlgorandWallet.hpp"
 #include "AlgorandNetworks.hpp"
-#include "database/Migrations.hpp"
 
 #include <api/AlgorandConfigurationDefaults.hpp>
 #include <api/AlgorandBlockchainExplorerEngines.hpp>
