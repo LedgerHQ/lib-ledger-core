@@ -70,6 +70,7 @@ namespace ledger {
             std::shared_ptr<api::Preferences> getPreferences() override;
             bool isInstanceOfBitcoinLikeWallet() override;
             bool isInstanceOfCosmosLikeWallet() override;
+            bool isInstanceOfAlgorandLikeWallet() override;
             bool isInstanceOfEthereumLikeWallet() override;
 
             bool isInstanceOfStellarLikeWallet() const override;

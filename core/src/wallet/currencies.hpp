@@ -75,6 +75,7 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::Currency RIPPLE;
             extern LIBCORE_EXPORT const api::Currency TEZOS;
             extern LIBCORE_EXPORT const api::Currency STELLAR;
+            extern LIBCORE_EXPORT const api::Currency ALGORAND;
         };
     }
 }

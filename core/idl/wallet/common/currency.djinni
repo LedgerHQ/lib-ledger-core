@@ -21,6 +21,8 @@ WalletType = enum {
     tezos;
     # A Stellar-like wallet.
     stellar;
+    # An Algorand-like wallet.
+    algorand;
 }
 
 # Structure of cryptocurrency unit.
