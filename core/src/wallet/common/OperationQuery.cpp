@@ -40,6 +40,7 @@
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 #include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
+#include <wallet/algorand/database/AlgorandTransactionDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -263,5 +264,19 @@ namespace ledger {
             StellarLikeTransactionDatabaseHelper::getTransaction(sql, out.operation.transactionHash, out.transaction);
             operation.getBackend().stellarOperation = out;
         }
+
+        void OperationQuery::inflateAlgorandLikeTransaction(soci::session& sql, const std::string &accountUid, algorand::Operation &operation) {
+            std::string transactionHash;
+            api::AlgorandOperationType operationType;
+            sql << "SELECT transaction_hash FROM algorand_operations WHERE uid = :uid",
+                soci::use(operation.getBackend().uid),
+                soci::into(transactionHash);
+
+            algorand::model::Transaction tx;
+            algorand::TransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, tx);
+
+            operation.setTransaction(tx);
+        }
+
     }
 }
