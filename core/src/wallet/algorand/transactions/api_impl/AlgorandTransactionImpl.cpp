@@ -81,7 +81,7 @@ namespace algorand {
 
     void AlgorandTransactionImpl::setSender(const std::string& sender)
     {
-        stxn.txn.header.sender = Address(currencies::algorand(), sender);
+        stxn.txn.header.sender = Address(currencies::ALGORAND, sender);
     }
 
     void AlgorandTransactionImpl::setFee(const std::string& fee)
@@ -100,9 +100,9 @@ namespace algorand {
         details.amount = std::stoull(info.amount);
 
         if (info.closeAddress) {
-            details.closeAddr = Address(currencies::algorand(), *info.closeAddress);
+            details.closeAddr = Address(currencies::ALGORAND, *info.closeAddress);
         }
-        details.receiverAddr = Address(currencies::algorand(), info.recipientAddress);
+        details.receiverAddr = Address(currencies::ALGORAND, info.recipientAddress);
 
         stxn.txn.details = details;
     }
@@ -176,7 +176,7 @@ namespace algorand {
                 apar.url = *params.url;
             }
             if (params.clawbackAddress) {
-                apar.clawbackAddr = Address(currencies::algorand(), *params.clawbackAddress);
+                apar.clawbackAddr = Address(currencies::ALGORAND, *params.clawbackAddress);
             }
             if (params.decimals) {
                 apar.decimals = *params.decimals;
@@ -185,13 +185,13 @@ namespace algorand {
                 apar.defaultFrozen = *params.defaultFrozen;
             }
             if (params.freezeAddress) {
-                apar.freezeAddr = Address(currencies::algorand(), *params.freezeAddress);
+                apar.freezeAddr = Address(currencies::ALGORAND, *params.freezeAddress);
             }
             if (params.managerAddress) {
-                apar.managerAddr = Address(currencies::algorand(), *params.managerAddress);
+                apar.managerAddr = Address(currencies::ALGORAND, *params.managerAddress);
             }
             if (params.reserveAddress) {
-                apar.reserveAddr = Address(currencies::algorand(), *params.reserveAddress);
+                apar.reserveAddr = Address(currencies::ALGORAND, *params.reserveAddress);
             }
             if (params.total) {
                 apar.total = std::stoull(*params.total);
@@ -270,11 +270,11 @@ namespace algorand {
             details.assetAmount = std::stoull(*info.amount);
         }
         if (info.closeAddress) {
-            details.assetCloseTo = Address(currencies::algorand(), *info.closeAddress);
+            details.assetCloseTo = Address(currencies::ALGORAND, *info.closeAddress);
         }
-        details.assetReceiver = Address(currencies::algorand(), info.recipientAddress);
+        details.assetReceiver = Address(currencies::ALGORAND, info.recipientAddress);
         if (info.clawedBackAddress) {
-            details.assetSender = Address(currencies::algorand(), *info.clawedBackAddress);
+            details.assetSender = Address(currencies::ALGORAND, *info.clawedBackAddress);
         }
         details.assetId = std::stoull(info.assetId);
 
@@ -310,7 +310,7 @@ namespace algorand {
         model::AssetFreezeTxnFields details;
 
         details.assetFrozen = info.frozen;
-        details.frozenAddress = Address(currencies::algorand(), info.frozenAddress);
+        details.frozenAddress = Address(currencies::ALGORAND, info.frozenAddress);
         details.assetId = std::stoull(info.assetId);
 
         stxn.txn.details = details;

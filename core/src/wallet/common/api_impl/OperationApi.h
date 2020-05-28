@@ -37,6 +37,7 @@
 
 namespace ledger {
     namespace core {
+
         class AbstractAccount;
         class OperationApi : public api::Operation, public std::enable_shared_from_this<OperationApi> {
         public:
