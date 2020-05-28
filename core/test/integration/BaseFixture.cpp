@@ -259,6 +259,14 @@ BaseFixture::createRippleLikeAccount(const std::shared_ptr<AbstractWallet> &wall
     return std::dynamic_pointer_cast<RippleLikeAccount>(::wait(wallet->newAccountWithInfo(info)));
 }
 
+std::shared_ptr<algorand::Account>
+BaseFixture::createAlgorandAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
+                                       const api::AccountCreationInfo &info) {
+    auto i = info;
+    i.index = index;
+    return std::dynamic_pointer_cast<algorand::Account>(::wait(wallet->newAccountWithInfo(info)));
+}
+
 std::shared_ptr<RippleLikeAccount>
 BaseFixture::createRippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
                                        const api::ExtendedKeyAccountCreationInfo &info) {

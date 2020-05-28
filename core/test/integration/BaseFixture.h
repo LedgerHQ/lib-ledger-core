@@ -52,6 +52,7 @@
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/ripple/RippleLikeAccount.h>
+#include <wallet/algorand/AlgorandAccount.hpp>
 #include <wallet/tezos/TezosLikeAccount.h>
 #include <api/BitcoinLikeOperation.hpp>
 #include <api/BitcoinLikeTransaction.hpp>
@@ -132,6 +133,10 @@ public:
     std::shared_ptr<RippleLikeAccount> createRippleLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                                int32_t index,
                                                                const api::ExtendedKeyAccountCreationInfo& info);
+
+    std::shared_ptr<algorand::Account> createAlgorandAccount(const std::shared_ptr<AbstractWallet>& wallet,
+                                                               int32_t index,
+                                                               const api::AccountCreationInfo &info);
     std::shared_ptr<TezosLikeAccount> createTezosLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                              int32_t index,
                                                              const api::AccountCreationInfo &info);
