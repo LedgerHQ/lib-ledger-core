@@ -48,7 +48,7 @@ namespace ledger {
             }
         }
         namespace currencies {
-            api::Currency algorand();
+            extern LIBCORE_EXPORT const api::Currency ALGORAND;
         }
     }
 }
