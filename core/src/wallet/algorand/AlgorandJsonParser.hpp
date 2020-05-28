@@ -306,7 +306,7 @@ namespace algorand {
             assertWithMessage(node, fieldName);
             auto addr = node[fieldName.c_str()].GetString();
             // FIXME Should be set to wallet currency instead of hardcoded here
-            field = Address(currencies::algorand(), addr);
+            field = Address(currencies::ALGORAND, addr);
         }
 
         template <class T>
@@ -314,7 +314,7 @@ namespace algorand {
             assertWithMessage(node, fieldName);
             auto addr = node[fieldName.c_str()].GetString();
             // FIXME Should be set to wallet currency instead of hardcoded here
-            field = Address(currencies::algorand(), addr);
+            field = Address(currencies::ALGORAND, addr);
         }
 
         template <class T>
@@ -392,7 +392,7 @@ namespace algorand {
             if (node.HasMember(fieldName.c_str())) {
                 auto addr = node[fieldName.c_str()].GetString();
                 // FIXME Should be set to wallet currency instead of hardcoded here
-                field = Address(currencies::algorand(), addr);
+                field = Address(currencies::ALGORAND, addr);
             }
         }
 
@@ -401,7 +401,7 @@ namespace algorand {
             if (node.HasMember(fieldName.c_str())) {
                 auto addr = node[fieldName.c_str()].GetString();
                 // FIXME Should be set to wallet currency instead of hardcoded here
-                field = Address(currencies::algorand(), addr);
+                field = Address(currencies::ALGORAND, addr);
             }
         }
 
