@@ -51,8 +51,8 @@ namespace algorand {
         Address(const api::Currency& currency, const std::string & address);
 
         // Convenience constructors using default ALGO currency
-        Address() : ledger::core::AbstractAddress(currencies::algorand(), optional<std::string>("")) {}
-        Address(const std::string & address) : Address(currencies::algorand(), address) {}
+        Address() : ledger::core::AbstractAddress(currencies::ALGORAND, optional<std::string>("")) {}
+        Address(const std::string & address) : Address(currencies::ALGORAND, address) {}
 
         std::string toString() override;
         const std::string& toString() const;
