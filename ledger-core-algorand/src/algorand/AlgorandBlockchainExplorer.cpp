@@ -81,9 +81,22 @@ namespace algorand {
             });
     }
 
-    Future<model::Transaction>
-    BlockchainExplorer::getTransactionById(const std::string& txId) const
+    Future<model::AssetParams> BlockchainExplorer::getAssetById(uint64_t id) const
     {
+        return _http->GET(fmt::format(constants::purestakeAssetEndpoint, id))
+            .json(false)
+            .map<model::AssetParams>(
+                    getContext(),
+                    [](const HttpRequest::JsonResult& response) {
+                        auto assetParams = model::AssetParams();
+                        const auto& json = std::get<1>(response)->GetObject();
+                        JsonParser::parseAssetParams(json, assetParams);
+                        return assetParams;
+                    });
+    }
+
+    Future<model::Transaction>
+    BlockchainExplorer::getTransactionById(const std::string & txId) const {
         return _http->GET(fmt::format(constants::purestakeTransactionEndpoint, txId))
             .json(false)
             .map<model::Transaction>(getContext(), [](const HttpRequest::JsonResult& response) {

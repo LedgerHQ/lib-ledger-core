@@ -54,6 +54,7 @@ namespace constants {
     static const std::string purestakeTransactionEndpoint = "/transaction/{}";
     static const std::string purestakeTransactionsEndpoint = "/transactions";
     static const std::string purestakeTransactionsParamsEndpoint = "/transactions/params";
+    static const std::string purestakeAssetEndpoint = "/asset/{}";
 
 } // namespace constants
 
@@ -74,6 +75,8 @@ namespace constants {
 
         // Account querier
         Future<model::Account> getAccount(const std::string& address) const;
+
+        Future<model::AssetParams> getAssetById(uint64_t id) const;
 
         // Single transaction querier (found by hash)
         Future<model::Transaction> getTransactionById(const std::string& txId) const;

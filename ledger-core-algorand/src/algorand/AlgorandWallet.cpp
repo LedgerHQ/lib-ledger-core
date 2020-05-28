@@ -91,7 +91,10 @@ namespace algorand {
             return std::make_shared<Account>(shared_from_this(),
                                             accountData.index,
                                             getCurrency(),
-                                            accountData.address);
+                                            accountData.address,
+                                            _explorer,
+                                            _observer,
+                                            nullptr);
         });
     }
 
@@ -122,7 +125,10 @@ namespace algorand {
         return std::make_shared<Account>(shared_from_this(),
                                          accountData.index,
                                          getCurrency(),
-                                         accountData.address);
+                                         accountData.address,
+                                         _explorer,
+                                         _observer,
+                                         nullptr); // TODO: add a synchronizer
     }
 
     bool Wallet::hasMultipleAddresses() const {

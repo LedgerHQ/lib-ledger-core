@@ -28,20 +28,28 @@
  */
 
 
-#ifndef LEDGER_CORE_ALGORANDACCOUNT_H
-#define LEDGER_CORE_ALGORANDACCOUNT_H
+#pragma once
 
 #include <algorand/AlgorandAddress.hpp>
-#include <algorand/operations/AlgorandOperation.hpp>
+#include <algorand/AlgorandAccountSynchronizer.hpp>
+#include <algorand/AlgorandBlockchainExplorer.hpp>
+#include <algorand/AlgorandBlockchainObserver.hpp>
+#include <algorand/model/AlgorandAccount.hpp>
 #include <algorand/model/transactions/AlgorandTransaction.hpp>
+#include <algorand/operations/AlgorandOperation.hpp>
 
 #include <algorand/api/AlgorandAccount.hpp>
-#include <algorand/api/AlgorandTransaction.hpp>
-#include <algorand/api/AlgorandAssetParamsListCallback.hpp>
+#include <algorand/api/AlgorandAssetAmountMapCallback.hpp>
 #include <algorand/api/AlgorandAssetAmountCallback.hpp>
+#include <algorand/api/AlgorandAssetParamsCallback.hpp>
+#include <algorand/api/AlgorandAssetParamsMapCallback.hpp>
+#include <algorand/api/AlgorandTransaction.hpp>
 #include <algorand/api/AmountCallback.hpp>
+#include <algorand/api/StringCallback.hpp>
 
 #include <core/wallet/AbstractAccount.hpp>
+
+#include <mutex>
 
 namespace ledger {
 namespace core {
@@ -56,7 +64,10 @@ namespace algorand {
         Account(const std::shared_ptr<AbstractWallet>& wallet,
                 int32_t index,
                 const api::Currency& currency,
-                const std::string& address);
+                const std::string& address,
+                std::shared_ptr<BlockchainExplorer> explorer,
+                std::shared_ptr<BlockchainObserver> observer,
+                std::shared_ptr<AccountSynchronizer> synchronizer);
 
 
         bool putBlock(soci::session& sql, const api::Block& block);
@@ -64,19 +75,45 @@ namespace algorand {
         int putTransaction(soci::session& sql, const model::Transaction& transaction);
 
         // From api::AlgorandAccount
-        void getAssets(const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) override;
+        void getAsset(
+                const std::string& assetId,
+                const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) override;
 
-        void getCreatedAssets(const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) override;
+        void getAssetBalance(
+                const std::string& assetId,
+                const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) override;
 
-        void getAssetBalance(const std::string& assetId,
-                             const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) override;
+        void getAssetBalanceHistory(
+                const std::string& assetId,
+                const std::string& start,
+                const std::string& end,
+                api::TimePeriod period,
+                const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) override;
 
-        void getPendingReward(const std::shared_ptr<api::AmountCallback>& callback) override;
+        void getAssetsBalances(
+                const std::shared_ptr<api::AlgorandAssetAmountMapCallback>& callback) override;
 
-        void getFeeEstimate(const std::shared_ptr<api::AlgorandTransaction>& transaction,
-                            const std::shared_ptr<api::AmountCallback>& callback) override;
+        void getCreatedAssets(
+                const std::shared_ptr<api::AlgorandAssetParamsMapCallback>& callback) override;
 
-        void broadcastTransaction(const std::shared_ptr<api::AlgorandTransaction>& transaction) override;
+
+        void getPendingRewards(
+                const std::shared_ptr<api::AmountCallback>& callback) override;
+
+        void getTotalRewards(
+                const std::shared_ptr<api::AmountCallback>& callback) override;
+
+        void getFeeEstimate(
+                const std::shared_ptr<api::AlgorandTransaction>& transaction,
+                const std::shared_ptr<api::AmountCallback>& callback) override;
+
+        void broadcastRawTransaction(
+                const std::vector<uint8_t>& transaction,
+                const std::shared_ptr<api::StringCallback>& callback) override;
+
+        void broadcastTransaction(
+                const std::shared_ptr<api::AlgorandTransaction>& transaction,
+                const std::shared_ptr<api::StringCallback>& callback) override;
 
         // From api::Account
         std::shared_ptr<api::OperationQuery> queryOperations() override;
@@ -112,12 +149,20 @@ namespace algorand {
                               const std::shared_ptr<const AbstractWallet>& wallet,
                               const model::Transaction& tx);
 
-        algorand::Address _address;
+        std::shared_ptr<Account> getSelf();
 
+        Future<model::Account> getAccountInformation() const;
+
+    private:
+        Address _address;
+        std::shared_ptr<BlockchainExplorer> _explorer;
+        std::shared_ptr<AccountSynchronizer> _synchronizer;
+        std::shared_ptr<BlockchainObserver> _observer;
+        std::shared_ptr<api::EventBus> _currentSyncEventBus;
+        std::mutex _synchronizationLock;
     };
 
 } // namespace algorand
 } // namespace core
 } // namespace ledger
 
-#endif // LEDGER_CORE_ALGORANDACCOUNT_H

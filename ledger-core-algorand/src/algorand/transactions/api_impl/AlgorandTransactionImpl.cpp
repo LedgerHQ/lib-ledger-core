@@ -30,6 +30,7 @@
 #include "AlgorandTransactionImpl.hpp"
 
 #include <algorand/AlgorandAddress.hpp>
+#include <algorand/model/AlgorandModelMapper.hpp>
 
 #include <core/utils/Exception.hpp>
 
@@ -114,28 +115,12 @@ namespace algorand {
         }
 
         const auto& details = boost::get<model::PaymentTxnFields>(stxn.txn.details);
-        api::AlgorandPaymentInfo info;
-
-        info.amount = std::to_string(details.amount);
-        if (details.closeAddr.hasValue()) {
-            info.closeAddress = details.closeAddr->toString();
-        }
-        info.recipientAddress = details.receiverAddr.toString();
-
-        return info;
+        return model::toAPI(details);
     }
 
     void AlgorandTransactionImpl::setParticipationInfo(const api::AlgorandParticipationInfo& info)
     {
-        model::KeyRegTxnFields details;
-
-        details.selectionPk = info.vrfPublicKey;
-        details.voteFirst = std::stoull(info.voteFirstRound);
-        details.voteKeyDilution = std::stoull(info.voteKeyDilution);
-        details.votePk = info.rootPublicKey;
-        details.voteLast = std::stoull(info.voteLastRound);
-
-        stxn.txn.details = details;
+        stxn.txn.details = model::fromAPI(info);
     }
 
     api::AlgorandParticipationInfo AlgorandTransactionImpl::getParticipationInfo() const
@@ -145,65 +130,12 @@ namespace algorand {
         }
 
         const auto& details = boost::get<model::KeyRegTxnFields>(stxn.txn.details);
-        api::AlgorandParticipationInfo info;
-
-        info.vrfPublicKey = details.selectionPk;
-        info.voteFirstRound = std::to_string(details.voteFirst);
-        info.voteKeyDilution = std::to_string(details.voteKeyDilution);
-        info.rootPublicKey = details.votePk;
-        info.voteLastRound = std::to_string(details.voteLast);
-
-        return info;
+        return model::toAPI(details);
     }
 
     void AlgorandTransactionImpl::setAssetConfigurationInfo(const api::AlgorandAssetConfigurationInfo& info)
     {
-        model::AssetConfigTxnFields details;
-
-        if (info.assetId) {
-            details.assetId = std::stoull(*info.assetId);
-        }
-        if (info.assetParams) {
-            const auto params = *info.assetParams;
-            model::AssetParams apar;
-            if (params.metadataHash) {
-                apar.metaDataHash = { std::begin(*params.metadataHash), std::end(*params.metadataHash) };
-            }
-            if (params.assetName) {
-                apar.assetName = *params.assetName;
-            }
-            if (params.url) {
-                apar.url = *params.url;
-            }
-            if (params.clawbackAddress) {
-                apar.clawbackAddr = Address(currencies::algorand(), *params.clawbackAddress);
-            }
-            if (params.decimals) {
-                apar.decimals = *params.decimals;
-            }
-            if (params.defaultFrozen) {
-                apar.defaultFrozen = *params.defaultFrozen;
-            }
-            if (params.freezeAddress) {
-                apar.freezeAddr = Address(currencies::algorand(), *params.freezeAddress);
-            }
-            if (params.managerAddress) {
-                apar.managerAddr = Address(currencies::algorand(), *params.managerAddress);
-            }
-            if (params.reserveAddress) {
-                apar.reserveAddr = Address(currencies::algorand(), *params.reserveAddress);
-            }
-            if (params.total) {
-                apar.total = std::stoull(*params.total);
-            }
-            if (params.unitName) {
-                apar.unitName = *params.unitName;
-            }
-
-            details.assetParams = apar;
-        }
-
-        stxn.txn.details = details;
+        stxn.txn.details = model::fromAPI(info);
     }
 
     api::AlgorandAssetConfigurationInfo AlgorandTransactionImpl::getAssetConfigurationInfo() const
@@ -213,72 +145,12 @@ namespace algorand {
         }
 
         const auto& details = boost::get<model::AssetConfigTxnFields>(stxn.txn.details);
-        api::AlgorandAssetConfigurationInfo info;
-
-        if (details.assetId) {
-            info.assetId = std::to_string(*details.assetId);
-        }
-        if (details.assetParams) {
-            const auto& apar = *details.assetParams;
-            api::AlgorandAssetParams params;
-
-            if (apar.metaDataHash) {
-                params.metadataHash = std::string(std::begin(*apar.metaDataHash), std::end(*apar.metaDataHash));
-            }
-            if (apar.assetName) {
-                params.assetName = *apar.assetName;
-            }
-            if (apar.url) {
-                params.url = *apar.url;
-            }
-            if (apar.clawbackAddr) {
-                params.clawbackAddress = apar.clawbackAddr->toString();
-            }
-            if (apar.decimals) {
-                params.decimals = *apar.decimals;
-            }
-            if (apar.defaultFrozen) {
-                params.defaultFrozen = *apar.defaultFrozen;
-            }
-            if (apar.freezeAddr) {
-                params.freezeAddress = apar.freezeAddr->toString();
-            }
-            if (apar.managerAddr) {
-                params.managerAddress = apar.managerAddr->toString();
-            }
-            if (apar.reserveAddr) {
-                params.reserveAddress = apar.reserveAddr->toString();
-            }
-            if (apar.total) {
-                params.total = std::to_string(*apar.total);
-            }
-            if (apar.unitName) {
-                params.unitName = *params.unitName;
-            }
-
-            info.assetParams = params;
-        }
-
-        return info;
+        return model::toAPI(details);
     }
 
     void AlgorandTransactionImpl::setAssetTransferInfo(const api::AlgorandAssetTransferInfo& info)
     {
-        model::AssetTransferTxnFields details;
-
-        if (info.amount) {
-            details.assetAmount = std::stoull(*info.amount);
-        }
-        if (info.closeAddress) {
-            details.assetCloseTo = Address(currencies::algorand(), *info.closeAddress);
-        }
-        details.assetReceiver = Address(currencies::algorand(), info.recipientAddress);
-        if (info.clawedBackAddress) {
-            details.assetSender = Address(currencies::algorand(), *info.clawedBackAddress);
-        }
-        details.assetId = std::stoull(info.assetId);
-
-        stxn.txn.details = details;
+        stxn.txn.details = model::fromAPI(info);
     }
 
     api::AlgorandAssetTransferInfo AlgorandTransactionImpl::getAssetTransferInfo() const
@@ -288,32 +160,12 @@ namespace algorand {
         }
 
         const auto& details = boost::get<model::AssetTransferTxnFields>(stxn.txn.details);
-        api::AlgorandAssetTransferInfo info;
-
-        if (details.assetAmount) {
-            info.amount = std::to_string(*details.assetAmount);
-        }
-        if (details.assetCloseTo) {
-            info.closeAddress = details.assetCloseTo->toString();
-        }
-        info.recipientAddress = details.assetReceiver.toString();
-        if (details.assetSender) {
-            info.clawedBackAddress = details.assetSender->toString();
-        }
-        info.assetId = std::to_string(details.assetId);
-
-        return info;
+        return model::toAPI(details);
     }
 
     void AlgorandTransactionImpl::setAssetFreezeInfo(const api::AlgorandAssetFreezeInfo& info)
     {
-        model::AssetFreezeTxnFields details;
-
-        details.assetFrozen = info.frozen;
-        details.frozenAddress = Address(currencies::algorand(), info.frozenAddress);
-        details.assetId = std::stoull(info.assetId);
-
-        stxn.txn.details = details;
+        stxn.txn.details = model::fromAPI(info);
     }
 
     api::AlgorandAssetFreezeInfo AlgorandTransactionImpl::getAssetFreezeInfo() const
@@ -323,13 +175,7 @@ namespace algorand {
         }
 
         const auto& details = boost::get<model::AssetFreezeTxnFields>(stxn.txn.details);
-        api::AlgorandAssetFreezeInfo info;
-
-        info.frozen = details.assetFrozen;
-        info.frozenAddress = details.frozenAddress.toString();
-        info.assetId = details.assetId;
-
-        return info;
+        return model::toAPI(details);
     }
 
     std::vector<uint8_t> AlgorandTransactionImpl::serialize() const

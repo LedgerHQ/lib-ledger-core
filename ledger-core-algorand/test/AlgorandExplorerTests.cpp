@@ -77,7 +77,6 @@ TEST_F(AlgorandExplorerTest, GetAccount) {
     model::Account account = ::wait(explorer->getAccount(address.toString()));
 
     EXPECT_EQ(account.address, address.toString());
-    EXPECT_FALSE(account.pubKeyHex.empty());
     EXPECT_GT(account.round, 6000000);
     EXPECT_GT(account.amount, 0);
     EXPECT_GT(account.amountWithoutPendingRewards, 0);

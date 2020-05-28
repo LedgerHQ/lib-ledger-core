@@ -47,8 +47,6 @@ namespace model {
     struct Account {
         // The round for which this account information is relevant
         uint64_t round;
-        // The account public key in hexadecimal representation
-        std::string pubKeyHex;
         // The account address
         std::string address;
         // The total number of MicroAlgos in the account
