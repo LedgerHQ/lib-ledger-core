@@ -9,21 +9,21 @@
 <!-- vim-markdown-toc GFM -->
 
 * [Motivation](#motivation)
-    * [TL;DR](#tldr)
+  * [TL;DR](#tldr)
 * [Content](#content)
-    * [Main and overall idea](#main-and-overall-idea)
-    * [Adding a new coin project](#adding-a-new-coin-project)
-    * [IDLs](#idls)
-    * [The database](#the-database)
-    * [The operation, transactions, blocks, etc.](#the-operation-transactions-blocks-etc)
-    * [The Services type](#the-services-type)
-    * [The AbstractAccount (revisited) type](#the-abstractaccount-revisited-type)
-    * [Implementing RippleLikeAccount](#implementing-ripplelikeaccount)
-    * [Reversing analysis from bottom-up to top-down](#reversing-analysis-from-bottom-up-to-top-down)
+  * [Main and overall idea](#main-and-overall-idea)
+  * [Adding a new coin project](#adding-a-new-coin-project)
+  * [IDLs](#idls)
+  * [The database](#the-database)
+  * [The operation, transactions, blocks, etc.](#the-operation-transactions-blocks-etc)
+  * [The Services type](#the-services-type)
+  * [The AbstractAccount (revisited) type](#the-abstractaccount-revisited-type)
+  * [Implementing RippleLikeAccount](#implementing-ripplelikeaccount)
+  * [Reversing analysis from bottom-up to top-down](#reversing-analysis-from-bottom-up-to-top-down)
 * [Rationale](#rationale)
 * [Related work](#related-work)
-    * [djinni modification](#djinni-modification)
-    * [Ubinder](#ubinder)
+  * [djinni modification](#djinni-modification)
+  * [Ubinder](#ubinder)
 
 <!-- vim-markdown-toc -->
 
@@ -59,7 +59,7 @@ complementary topic. See the [Related work](#related-work) section for further d
 ## TL;DR
 
 A document exists that describes the formal process behind the PoC. You can find it
-[here](../coin-migration.md).
+[here](../modularization.md).
 
 # Content
 > Content of the PoC with comments and step-by-step procedure.
