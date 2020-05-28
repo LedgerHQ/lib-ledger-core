@@ -12,7 +12,7 @@ add_executable(ledger-core-algorand-tests
     MsgpackHelpersTests.cpp
     AlgorandAddressTests.cpp
     AlgorandExplorerTests.cpp
-#   AlgorandDatabaseTests.cpp -- No WalletFixture.hpp equivalent available in v1 ?
+    AlgorandDatabaseTests.cpp
   ../integration/BaseFixture.cpp
   ../integration/IntegrationEnvironment.cpp
 )

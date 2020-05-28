@@ -40,7 +40,7 @@
 #include <api/AccountCreationInfo.hpp>
 #include <api/Address.hpp>
 
-#include <integration/WalletFixture.hpp> // No equivalent in v1 ?
+#include "../integration/WalletFixture.hpp" // No equivalent in v1 ?
 
 #include <utility>
 
@@ -54,13 +54,13 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
     void SetUp() override {
         WalletFixture::SetUp();
 
-        auto const currency = currencies::algorand();
+        auto const currency = currencies::ALGORAND;
         registerCurrency(currency);
 
         accountInfo = api::AccountCreationInfo(1, {}, {}, { algorand::Address::toPublicKey(OBELIX_ADDRESS) }, {});
 
-        auto wallet = wait(walletStore->createWallet("algorand", currency.name, api::DynamicObject::newInstance()));
-        auto account = createAccount<Account>(wallet, accountInfo.index, accountInfo);
+        auto wallet = wait(pool->createWallet("algorand", currency.name, api::DynamicObject::newInstance()));
+        auto account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
     }
@@ -83,7 +83,7 @@ TEST_F(AlgorandDatabaseTest, AccountDBTest) {
 
     // Test reading from DB
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
 
         algorand::AccountDatabaseEntry accountFromDB;
         auto result = algorand::AccountDatabaseHelper::queryAccount(sql, accountUid, accountFromDB);
@@ -102,7 +102,7 @@ TEST_F(AlgorandDatabaseTest, TransactionsDBTest) {
 
     // Test writing into DB
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         algorand::TransactionDatabaseHelper::putTransaction(sql, "test-account", paymentTxRef);
         algorand::TransactionDatabaseHelper::putTransaction(sql, "test-account", assetConfigTxRef);
         algorand::TransactionDatabaseHelper::putTransaction(sql, "test-account", assetTransferTxRef);
@@ -110,7 +110,7 @@ TEST_F(AlgorandDatabaseTest, TransactionsDBTest) {
 
     // Test reading from DB
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
 
         model::Transaction paymentTxFromDB;
         auto result = algorand::TransactionDatabaseHelper::getTransactionByHash(sql, *paymentTxRef.header.id, paymentTxFromDB);
@@ -135,13 +135,13 @@ TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
 
     // Test writing into DB
     {
-        soci::session sql(services->getDatabaseSessionPool()->getPool());
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         account->putTransaction(sql, txRef);
     }
 
     // Test reading from DB
     {
-        auto ops = wait(std::dynamic_pointer_cast<OperationQuery<algorand::Operation>>(account->queryOperations()->complete())->execute());
+        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
 
         EXPECT_EQ(ops.size(), 1);
         auto op = std::dynamic_pointer_cast<algorand::Operation>(ops[0]);
