@@ -193,7 +193,7 @@ namespace ledger {
                 case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
                 case (api::WalletType::STELLAR): return inflateStellarLikeTransaction(sql, operation);
-                case (api::WalletType::ALGORAND): return inflateAlgorandLikeTransaction(sql, operation);
+                case (api::WalletType::ALGORAND): return inflateAlgorandLikeTransaction(sql, accountUid, dynamic_cast<algorand::Operation&>(operation));
             }
         }
 

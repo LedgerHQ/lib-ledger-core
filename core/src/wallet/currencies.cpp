@@ -35,6 +35,7 @@
 #include "ripple/rippleNetworks.h"
 #include "tezos/tezosNetworks.h"
 #include "stellar/stellarNetworks.h"
+#include "algorand/AlgorandNetworks.hpp"
 #include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {

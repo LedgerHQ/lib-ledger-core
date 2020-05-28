@@ -158,6 +158,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break; // TODO INSERT MONERO NETWORK PARAMS
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::ALGORAND:break; // FIXME !!!
             case api::WalletType::STELLAR: {
                 const auto &params = currency.stellarLikeNetworkParameters.value();
 
@@ -323,6 +324,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 break;
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::ALGORAND:break; // FIXME !!!
             case api::WalletType::STELLAR: {
                 rowset<row> stellar_rows = (sql.prepare << "SELECT identifier, address_version, base_reserve,"
                                                            "base_fee, network_passphrase, additional_SEPs, "
