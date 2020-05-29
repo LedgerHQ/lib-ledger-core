@@ -351,6 +351,14 @@ int CosmosLikeAccount::putTransaction(soci::session &sql, const cosmos::Transact
     for (auto msgIndex = 0; msgIndex < tx.messages.size(); msgIndex++) {
         auto msg = tx.messages[msgIndex];
 
+        // Ignore the operation if this is a Fee operation, that _this_ Account did not pay
+        // inflateOperation adds the AccountUID in the operation otherwise, so when querying
+        // operations for this account, the fees that _this_ didn't pay will appear.
+        if (cosmos::stringToMsgType(msg.type.c_str()) == cosmos::MsgType::MSGFEES &&
+            boost::get<cosmos::MsgFees>(msg.content).payerAddress != this->getAddress()) {
+            continue;
+        }
+
         CosmosLikeOperation operation(tx, msg);
         inflateOperation(operation, getWallet(), tx, msg);
         operation.refreshUid(std::to_string(msgIndex));
@@ -380,7 +388,8 @@ std::shared_ptr<CosmosLikeKeychain> CosmosLikeAccount::getKeychain() const
     return _keychain;
 }
 
-std::shared_ptr<api::Keychain> CosmosLikeAccount::getAccountKeychain() {
+std::shared_ptr<api::Keychain> CosmosLikeAccount::getAccountKeychain()
+{
     return this->getKeychain();
 }
 
