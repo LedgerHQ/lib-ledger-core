@@ -37,6 +37,7 @@
 
 #include <events/ProgressNotifier.h>
 
+#include "AbstractBlockchainExplorerAccountSynchronizer.h"
 
 namespace ledger {
     namespace core {
@@ -45,7 +46,7 @@ namespace ledger {
         class AbstractAccountSynchronizer {
         public:
             virtual void reset(const std::shared_ptr<Account>& account, const std::chrono::system_clock::time_point& toDate) = 0;
-            virtual std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<Account>& account) = 0;
+            virtual std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> synchronize(const std::shared_ptr<Account>& account) = 0;
             virtual bool isSynchronizing() const = 0;
         };
     }

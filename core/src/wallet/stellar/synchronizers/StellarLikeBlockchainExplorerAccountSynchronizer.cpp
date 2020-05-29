@@ -56,12 +56,12 @@ namespace ledger {
             account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer")->editor()->clear();
         }
 
-        std::shared_ptr<ProgressNotifier<Unit>> StellarLikeBlockchainExplorerAccountSynchronizer::synchronize(
+        std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> StellarLikeBlockchainExplorerAccountSynchronizer::synchronize(
                 const std::shared_ptr<StellarLikeAccount> &account) {
             if (_notifier != nullptr) {
                 return _notifier;
             }
-            _notifier = std::make_shared<ProgressNotifier<Unit>>();
+            _notifier = std::make_shared<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>();
             synchronizeAccount(account);
             return _notifier;
         }
@@ -133,7 +133,8 @@ namespace ledger {
         }
 
         void StellarLikeBlockchainExplorerAccountSynchronizer::endSynchronization() {
-            _notifier->success(unit);
+            // NOTE: we probably want to populate that result
+            _notifier->success(BlockchainExplorerAccountSynchronizationResult{});
             _notifier = nullptr;
         }
 

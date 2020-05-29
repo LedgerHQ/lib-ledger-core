@@ -77,7 +77,7 @@ namespace ledger {
             }
         }
 
-        std::shared_ptr<ProgressNotifier<Unit>>
+        std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
         RippleLikeBlockchainExplorerAccountSynchronizer::synchronize(
                 const std::shared_ptr<RippleLikeAccount> &account) {
             return synchronizeAccount(account);

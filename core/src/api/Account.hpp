@@ -45,9 +45,27 @@ public:
 
     /**
      * Key of the synchronization duration time in the synchronize event payload.
-     * The value is stored in a int 64 time expressed in miliseconds.
+     * The value is stored in a i32 64 time expressed in miliseconds.
      */
     static std::string const EV_SYNC_DURATION_MS;
+
+    /**
+     * Indicates the last block height fetch during synchronization
+     * The value is stored as a int32
+     */
+    static std::string const EV_SYNC_LAST_BLOCK_HEIGHT;
+
+    /**
+     * Indicates the number of new operations during the synchronization
+     * The value is stored as a int32
+     */
+    static std::string const EV_SYNC_NEW_OPERATIONS;
+
+    /**
+     * Indicates the first valid block height before the reorganization during the synchronization
+     * The valie is stored as a int32
+     */
+    static std::string const EV_SYNC_REORG_BLOCK_HEIGHT;
 
     /** Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum. */
     static std::string const EV_SYNC_ERROR_CODE;
@@ -70,6 +88,28 @@ public:
     static std::string const EV_NEW_OP_ACCOUNT_INDEX;
 
     static std::string const EV_NEW_OP_UID;
+
+    /**
+     * Returned flag when a transaction is put in DB
+     * Some of those are unrelevant for specific coins
+     * but for the sake of generic mechanism we put all those
+     * flags together
+     */
+    static int32_t const FLAG_TRANSACTION_IGNORED;
+
+    static int32_t const FLAG_NEW_TRANSACTION;
+
+    static int32_t const FLAG_TRANSACTION_UPDATED;
+
+    static int32_t const FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
+
+    static int32_t const FLAG_TRANSACTION_ON_USED_ADDRESS;
+
+    static int32_t const FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
+
+    static int32_t const FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
+
+    static int32_t const FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
 
     /**
      * Get index of account in user's wallet

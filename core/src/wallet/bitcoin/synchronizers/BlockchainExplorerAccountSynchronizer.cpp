@@ -100,28 +100,8 @@ namespace ledger {
 
         }
 
-        std::shared_ptr<ProgressNotifier<Unit>> BlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) {
-            std::lock_guard<std::mutex> lock(_lock);
-            if (!_currentAccount) {
-                _currentAccount = account;
-                _notifier = std::make_shared<ProgressNotifier<Unit>>();
-                auto self = std::dynamic_pointer_cast<BlockchainExplorerAccountSynchronizer>(getSharedFromThis());
-                performSynchronization(account)
-               .onComplete(getSynchronizerContext(), [self] (const auto &result) {
-                    std::lock_guard<std::mutex> l(self->_lock);
-                    if (result.isFailure()) {
-                        self->_notifier->failure(result.getFailure());
-                    } else {
-                        self->_notifier->success(unit);
-                    }
-                    self->_notifier = nullptr;
-                    self->_currentAccount = nullptr;
-                });
-
-            } else if (account != _currentAccount) {
-                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "This synchronizer is already in use");
-            }
-            return _notifier;
+        std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> BlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) {
+            return synchronizeAccount(account);
         }
 
         bool BlockchainExplorerAccountSynchronizer::isSynchronizing() const {

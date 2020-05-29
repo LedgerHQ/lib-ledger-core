@@ -338,8 +338,17 @@ TimePeriod = enum {
 # Class representing an account.
 Account = interface +c {
     # Key of the synchronization duration time in the synchronize event payload.
-    # The value is stored in a int 64 time expressed in miliseconds.
+    # The value is stored in a int64 time expressed in miliseconds.
     const EV_SYNC_DURATION_MS: string = "EV_SYNC_DURATION_MS";
+    # Indicates the last block height fetch during synchronization
+    # The value is stored as a int32
+    const EV_SYNC_LAST_BLOCK_HEIGHT: string = "EV_SYNC_LAST_BLOCK_HEIGHT";
+    # Indicates the number of new operations during the synchronization
+    # The value is stored as a int32
+    const EV_SYNC_NEW_OPERATIONS: string = "EV_SYNC_NEW_OPERATIONS";
+    # Indicates the first valid block height before the reorganization during the synchronization
+    # The valie is stored as a int32
+    const EV_SYNC_REORG_BLOCK_HEIGHT: string = "EV_SYNC_REORG_BLOCK_HEIGHT";
     # Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
     const EV_SYNC_ERROR_CODE: string = "EV_SYNC_ERROR_CODE";
     const EV_SYNC_ERROR_CODE_INT: string = "EV_SYNC_ERROR_CODE_INT";
@@ -353,6 +362,20 @@ Account = interface +c {
     const EV_NEW_OP_WALLET_NAME: string = "EV_NEW_OP_WALLET_NAME";
     const EV_NEW_OP_ACCOUNT_INDEX: string = "EV_NEW_OP_ACCOUNT_INDEX";
     const EV_NEW_OP_UID: string = "EV_NEW_OP_UID";
+
+    # Returned flag when a transaction is put in DB
+    # Some of those are unrelevant for specific coins
+    # but for the sake of generic mechanism we put all those
+    # flags together
+    const FLAG_TRANSACTION_IGNORED: i32 = 0;
+    const FLAG_NEW_TRANSACTION: i32 = 1;
+    const FLAG_TRANSACTION_UPDATED: i32 = 2;
+    const FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS: i32 = 4;
+    const FLAG_TRANSACTION_ON_USED_ADDRESS: i32 = 8;
+    const FLAG_TRANSACTION_CREATED_SENDING_OPERATION: i32 = 16;
+    const FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION: i32 = 32;
+    const FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION: i32 = 64;
+
     # Get index of account in user's wallet
     # 32-bit integer
     getIndex(): i32;

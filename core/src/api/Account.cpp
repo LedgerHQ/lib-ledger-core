@@ -9,6 +9,12 @@ namespace ledger { namespace core { namespace api {
 
 std::string const Account::EV_SYNC_DURATION_MS = {"EV_SYNC_DURATION_MS"};
 
+std::string const Account::EV_SYNC_LAST_BLOCK_HEIGHT = {"EV_SYNC_LAST_BLOCK_HEIGHT"};
+
+std::string const Account::EV_SYNC_NEW_OPERATIONS = {"EV_SYNC_NEW_OPERATIONS"};
+
+std::string const Account::EV_SYNC_REORG_BLOCK_HEIGHT = {"EV_SYNC_REORG_BLOCK_HEIGHT"};
+
 std::string const Account::EV_SYNC_ERROR_CODE = {"EV_SYNC_ERROR_CODE"};
 
 std::string const Account::EV_SYNC_ERROR_CODE_INT = {"EV_SYNC_ERROR_CODE_INT"};
@@ -26,5 +32,21 @@ std::string const Account::EV_NEW_OP_WALLET_NAME = {"EV_NEW_OP_WALLET_NAME"};
 std::string const Account::EV_NEW_OP_ACCOUNT_INDEX = {"EV_NEW_OP_ACCOUNT_INDEX"};
 
 std::string const Account::EV_NEW_OP_UID = {"EV_NEW_OP_UID"};
+
+int32_t const Account::FLAG_TRANSACTION_IGNORED = 0;
+
+int32_t const Account::FLAG_NEW_TRANSACTION = 1;
+
+int32_t const Account::FLAG_TRANSACTION_UPDATED = 2;
+
+int32_t const Account::FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS = 4;
+
+int32_t const Account::FLAG_TRANSACTION_ON_USED_ADDRESS = 8;
+
+int32_t const Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION = 16;
+
+int32_t const Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 32;
+
+int32_t const Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION = 64;
 
 } } }  // namespace ledger::core::api

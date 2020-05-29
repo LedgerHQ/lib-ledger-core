@@ -72,7 +72,7 @@ namespace ledger {
             void reset(const std::shared_ptr<StellarLikeAccount> &account,
                        const std::chrono::system_clock::time_point &toDate) override;
 
-            std::shared_ptr<ProgressNotifier<Unit> >
+            std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
             synchronize(const std::shared_ptr<StellarLikeAccount> &account) override;
 
             bool isSynchronizing() const override;
@@ -88,7 +88,7 @@ namespace ledger {
 
 
         private:
-            std::shared_ptr<ProgressNotifier<Unit>> _notifier;
+            std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> _notifier;
             std::shared_ptr<StellarLikeBlockchainExplorer> _explorer;
             std::shared_ptr<DatabaseSessionPool> _database;
         };
