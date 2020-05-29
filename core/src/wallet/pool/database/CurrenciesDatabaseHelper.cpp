@@ -160,7 +160,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
             case api::WalletType::MONERO:break;
             case api::WalletType::ALGORAND: {
                 const auto &params = currency.algorandNetworkParameters.value();
-                sql << "INSERT INTO algorand_currencies VALUES(:name, :genesis_id, :genesis_hash",
+                sql << "INSERT INTO algorand_currencies VALUES(:name, :genesis_id, :genesis_hash)",
                     use(currency.name),
                     use(params.genesisID),
                     use(params.genesisHash)
