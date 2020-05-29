@@ -958,6 +958,13 @@ namespace ledger {
 
         template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type) {
 
+            // Algorand currencies
+            sql << "CREATE TABLE algorand_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "genesis_id VARCHAR(255) NOT NULL,"
+                    "genesis_hash VARCHAR(255) NOT NULL"
+                   ")";
+
         sql << "CREATE TABLE algorand_accounts("
                 "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                 "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -1071,6 +1078,9 @@ namespace ledger {
         sql << "DROP TABLE algorand_transactions";
 
         sql << "DROP TABLE algorand_accounts";
+
+        // algorand currencies
+        sql << "DROP TABLE algorand_currencies";
     }
 
         template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type) {
