@@ -1,5 +1,4 @@
 @import "../amount.djinni"
-@import "../common/wallet.djinni"
 
 @import "callback.djinni"
 @import "configuration.djinni"
