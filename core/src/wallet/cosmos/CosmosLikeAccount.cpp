@@ -356,15 +356,12 @@ void CosmosLikeAccount::inflateOperation(
     out.currencyName = getWallet()->getCurrency().name;
     out.date = tx.timestamp;
     out.trust = std::make_shared<TrustIndicator>();
-    // Fees are added only on the MSGFEES Message Type.
-    auto fees = computeFeesForTransaction(tx);
+    // Fees are computed as the amount only on the MSGFEES Message Type.
     if (cosmos::stringToMsgType(msg.type.c_str()) == api::CosmosLikeMsgType::MSGFEES) {
-        out.amount = BigInt::ZERO;
-        out.fees = BigInt(fees);
+        auto txFees = computeFeesForTransaction(tx);
+        out.amount = BigInt(txFees);
     }
-    else {
-        out.fees = BigInt::ZERO;
-    }
+    out.fees = BigInt::ZERO;
     out.walletUid = wallet->getWalletUid();
 }
 
@@ -513,7 +510,7 @@ Future<std::vector<std::shared_ptr<api::Amount>>> CosmosLikeAccount::getBalanceH
                         break;
                     }
                     case api::OperationType::SEND: {
-                        // NOTE : in Cosmos, FEES is a SEND operation with 0 amount and the correct fees
+                        // NOTE : in Cosmos, FEES is a SEND operation with fees as amount and 0 fees
                         sum = sum - operation.amount - operation.fees.getValueOr(BigInt::ZERO);
                         break;
                     }
