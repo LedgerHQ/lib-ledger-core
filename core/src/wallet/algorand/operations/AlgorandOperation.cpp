@@ -56,12 +56,17 @@ namespace algorand {
         return transaction;
     }
 
+    bool Operation::isComplete()
+    {
+        return static_cast<bool>(transaction);
+    }
+
     void Operation::refreshUid(const std::string&)
     {
         const auto& txn = getTransactionData();
         const auto id =
             fmt::format("{}+{}", *txn.header.id, api::to_string(algorandType));
-        uid = OperationDatabaseHelper::createUid(accountUid, id, getOperationType());
+        getBackend().uid = OperationDatabaseHelper::createUid(getBackend().accountUid, id, getOperationType());
     }
 
     const model::Transaction& Operation::getTransactionData() const
