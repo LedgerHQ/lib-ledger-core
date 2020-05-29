@@ -27,11 +27,11 @@
  *
  */
 
-#include <algorand/model/AlgorandModelMapper.hpp>
+#include "model/AlgorandModelMapper.hpp"
 
-#include <algorand/AlgorandAddress.hpp>
+#include "AlgorandAddress.hpp"
 
-#include <core/utils/Option.hpp>
+#include <utils/Option.hpp>
 
 #include <cstdint>
 #include <string>
