@@ -35,6 +35,7 @@
 #include "model/transactions/AlgorandTransaction.hpp"
 #include "model/transactions/AlgorandAssetParams.hpp"
 #include "model/transactions/AlgorandTransactionParams.hpp"
+#include <algorand/model/AlgorandAccount.hpp>
 #include "model/AlgorandAssetAmount.hpp"
 
 #include <math/BigInt.h>
@@ -233,7 +234,6 @@ namespace algorand {
         static void parseAccount(const T& node, model::Account & account) {
             getMandatoryUint64Field(node, constants::xRound, account.round);
             getMandatoryStringField(node, constants::xAddress, account.address);
-            account.pubKeyHex = hex::toString(Address::toPublicKey(account.address));
             getMandatoryUint64Field(node, constants::xAmount, account.amount);
             getMandatoryUint64Field(node, constants::xPendingRewards, account.pendingRewards);
             getMandatoryUint64Field(node, constants::xAmountWithoutPendingRewards, account.amountWithoutPendingRewards);

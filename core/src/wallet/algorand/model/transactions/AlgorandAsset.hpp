@@ -50,8 +50,6 @@ namespace model {
         static AssetConfigTxnFields destroy(uint64_t assetId);
 
         AssetConfigTxnFields() = default;
-
-    private:
         AssetConfigTxnFields(Option<AssetParams> assetParams, Option<uint64_t> assetId);
 
     public:
@@ -77,8 +75,6 @@ namespace model {
                                             uint64_t assetId);
 
         AssetTransferTxnFields() = default;
-
-    private:
         AssetTransferTxnFields(Option<uint64_t> assetAmount,
                                Option<Address> assetCloseTo,
                                Address assetReceiver,

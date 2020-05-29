@@ -1,4 +1,5 @@
 @import "../amount.djinni"
+@import "../common/wallet.djinni"
 
 @import "callback.djinni"
 @import "configuration.djinni"
@@ -173,16 +174,73 @@ AlgorandOperation = interface +c {
 }
 
 AlgorandAccount = interface +c {
-    getAssets(callback: ListCallback<AlgorandAssetParams>);
-    getCreatedAssets(callback: ListCallback<AlgorandAssetParams>);
+    # Get information about a specific asset
+    # @param assetId, the unique identifier of the asset to look for
+    # @param callback, Callback returning the information about the queried asset
+    getAsset(
+        assetId: string,
+        callback: Callback<AlgorandAssetParams>
+    );
 
-    getAssetBalance(assetId: string, callback: Callback<AlgorandAssetAmount>);
+    # Get balance of account for a particular asset.
+    # @param assetId, the unique identifier of the asset on the algorand network
+    # @param callback, if getAssetBalance succeeds, Callback returning an Amount object which represents account's balance
+    getAssetBalance(
+        assetId: string,
+        callback: Callback<AlgorandAssetAmount>
+    );
 
-    getPendingReward(callback: Callback<Amount>);
+    # Get balance of account for a particular asset at a precise interval with a certain granularity
+    # @param assetId, the unique identifier of the asset on the algorand network
+    # @param start, lower bound of search range
+    # @param end, upper bound of search range
+    # @param precision, granularity at which we want results
+    # @param callback, ListCallback returning a list of Amount objects which represents account's balance
+    getAssetBalanceHistory(
+        assetId: string,
+        start: string,
+        end: string,
+        period: TimePeriod,
+        callback: ListCallback<AlgorandAssetAmount>
+    );
+
+    # Get balances of all assets to which account is registered
+    # @param callback, MapCallback returning a list of AlgorandAssetAmount objects representing the different balances
+    getAssetsBalances(callback: MapCallback<AlgorandAssetAmount>);
+
+    # Get information about the assets created by account
+    # @param callback, ListCallback returning a list of AlgorandAssetParams objects representing the assets created by account
+    getCreatedAssets(callback: MapCallback<AlgorandAssetParams>);
+
+    # Get the pending rewards for account
+    # @param callback, Callback returning the amount of pending rewards in MicroAlgos
+    getPendingRewards(callback: Callback<Amount>);
+
+    # Get the total rewards of MicroAlgos account has received, including pending rewards.
+    # @param callback, Callback returning the total rewards in MicroAlgos.
+    getTotalRewards(callback: Callback<Amount>);
+
+    # Get an estimation (in MicroAlgos) of the fees needed to broadcast a given transaction to the algorand network
+    # @param transaction, the transaction for which fees are estimated
+    # @param callback, Callback returning the fees in MicroAlgos for the specified transaction
 
     getFeeEstimate(transaction: AlgorandTransaction, callback: Callback<Amount>);
 
-    broadcastTransaction(transaction: AlgorandTransaction);
+    # Broadcast a raw transaction to the algorand network
+    # @param transaction, the msgpack-encoded transaction
+    # @param callback, Callback returning the id of the transaction in case of success, an error message otherwise
+    broadcastRawTransaction(
+        transaction: binary,
+        callback: Callback<string>
+    );
+
+    # Broadcast an AlgorandTransaction object to the algorand network
+    # @param transaction, the transaction to broadcast
+    # @param callback, Callback returning the fees in MicroAlgos for the specified transaction
+    broadcastTransaction(
+        transaction: AlgorandTransaction,
+        callback: Callback<string>
+    );
 }
 
 AlgorandWallet = interface +c {
