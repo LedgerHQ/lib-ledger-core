@@ -108,20 +108,20 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.flatMap<Unit>(getContext(), [self] (const Try<Unit> &result) {
+            future.flatMap<BlockchainExplorerAccountSynchronizationResult>(getContext(), [self] (const Try<BlockchainExplorerAccountSynchronizationResult> &result) {
                         // Synchronize originated accounts ...
                         // Notes: We should rid of this part by implementing support for fetching
                         // txs for multiple addresses
                         // Hint: we could add originated accounts to keychain as
                         // managedAccounts and getAllObservableAddresses will return them as well
                         if (self->_originatedAccounts.empty() || result.isFailure()) {
-                            return Future<Unit>::successful(result.getValue());
+                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result.getValue());
                         }
 
                         using TxsBulk = TezosLikeBlockchainExplorer::TransactionsBulk;
 
-                        static std::function<Future<Unit> (std::shared_ptr<TezosLikeAccount>, size_t, void*)> getTxs =
-                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session) -> Future<Unit> {
+                        static std::function<Future<BlockchainExplorerAccountSynchronizationResult> (std::shared_ptr<TezosLikeAccount>, size_t, void*)> getTxs =
+                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session) {
                                     std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
 
                                     // Get offset to not start sync from beginning
@@ -130,13 +130,13 @@ namespace ledger {
                                             account->_originatedAccounts[id]->queryOperations()->partial()
                                             )->execute();
 
-                                    return offset.flatMap<Unit>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
+                                    return offset.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
                                         // For the moment we start synchro from the beginning
                                         auto getSession = session ? Future<void *>::successful(session) :
                                                           account->_explorer->startSession();
-                                        return getSession.flatMap<Unit>(account->getContext(), [=] (void *s) {
+                                        return getSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (void *s) {
                                             return account->_explorer->getTransactions(addresses, std::to_string(ops.size()), s)
-                                                    .flatMap<Unit>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
+                                                    .flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
                                                         auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
                                                         {
                                                             soci::session sql(account->getWallet()->getDatabase()->getPool());
@@ -152,22 +152,23 @@ namespace ledger {
                                                         }
 
                                                         if (id == account->_originatedAccounts.size() - 1) {
-                                                            return Future<Unit>::successful(Unit());
+                                                            // NOTE: we probably want to populate that result
+                                                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(BlockchainExplorerAccountSynchronizationResult());
                                                         }
 
                                                         auto killSession = s ? Future<Unit>::successful(Unit()) :
                                                                            account->_explorer->killSession(s);
-                                                        return killSession.flatMap<Unit>(account->getContext(), [=](const Unit&){
+                                                        return killSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const auto&){
                                                             return getTxs(account, id + 1, nullptr);
                                                         });
-                                                    }).recover(account->getContext(), [] (const Exception& ex) -> Unit {
+                                                    }).recover(account->getContext(), [] (const Exception& ex) -> BlockchainExplorerAccountSynchronizationResult {
                                                         throw ex;
                                                     });
                                         });
                                     });
                         };
                         return getTxs(self, 0, nullptr);
-            }).onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+            }).onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(

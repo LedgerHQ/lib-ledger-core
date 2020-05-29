@@ -330,7 +330,7 @@ namespace ledger {
             eventPublisher->postSticky(
                     std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
                     0);
-            future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+            future.onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(

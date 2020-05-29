@@ -65,8 +65,6 @@ class CosmosLikeAccountSynchronizer;
 
 class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount {
    public:
-    static const int FLAG_TRANSACTION_IGNORED = 0x00;
-
     CosmosLikeAccount(
         const std::shared_ptr<AbstractWallet> &wallet,
         int32_t index,

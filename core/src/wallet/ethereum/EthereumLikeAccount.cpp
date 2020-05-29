@@ -111,7 +111,7 @@ namespace ledger {
                 putBlock(sql, transaction.block.getValue());
             }
 
-            int result = 0x00;
+            int result = FLAG_TRANSACTION_IGNORED;
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
@@ -141,19 +141,19 @@ namespace ledger {
 
             if (_accountAddress == transaction.sender) {
                 updateOperation(sql, operation, api::OperationType::SEND);
-                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
+                result = FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
             }
 
             if (_accountAddress == transaction.receiver) {
                 updateOperation(sql, operation, api::OperationType::RECEIVE);
-                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
+                result = FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
             }
 
             // Case of parent transaction not belonging to account, but having side effect (transfer events)
             // concerning account address
             if (!result && (!transaction.erc20Transactions.empty() || !transaction.internalTransactions.empty())) {
                 updateOperation(sql, operation, api::OperationType::NONE);
-                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
+                result = FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
             }
 
             return result;
@@ -505,7 +505,7 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.onComplete(getContext(), [eventPublisher, self, startTime] (const Try<Unit>& result) {
+            future.onComplete(getContext(), [eventPublisher, self, startTime] (const auto& result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - startTime).count();
