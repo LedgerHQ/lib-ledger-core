@@ -30,7 +30,7 @@
 #include "AlgorandTransactionImpl.hpp"
 
 #include "../../AlgorandAddress.hpp"
-#include <algorand/model/AlgorandModelMapper.hpp>
+#include "../../model/AlgorandModelMapper.hpp"
 
 #include <utils/Exception.hpp>
 

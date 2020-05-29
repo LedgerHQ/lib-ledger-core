@@ -27,19 +27,19 @@
  *
  */
 
-#include <algorand/model/AlgorandAssetAmount.hpp>
-#include <algorand/model/transactions/AlgorandAsset.hpp>
-#include <algorand/model/transactions/AlgorandAssetParams.hpp>
-#include <algorand/model/transactions/AlgorandKeyreg.hpp>
-#include <algorand/model/transactions/AlgorandPayment.hpp>
+#include "AlgorandAssetAmount.hpp"
+#include "transactions/AlgorandAsset.hpp"
+#include "transactions/AlgorandAssetParams.hpp"
+#include "transactions/AlgorandKeyreg.hpp"
+#include "transactions/AlgorandPayment.hpp"
 
-#include <algorand/api/AlgorandAssetAmount.hpp>
-#include <algorand/api/AlgorandAssetParams.hpp>
-#include <algorand/api/AlgorandAssetConfigurationInfo.hpp>
-#include <algorand/api/AlgorandAssetFreezeInfo.hpp>
-#include <algorand/api/AlgorandAssetTransferInfo.hpp>
-#include <algorand/api/AlgorandParticipationInfo.hpp>
-#include <algorand/api/AlgorandPaymentInfo.hpp>
+#include <api/AlgorandAssetAmount.hpp>
+#include <api/AlgorandAssetParams.hpp>
+#include <api/AlgorandAssetConfigurationInfo.hpp>
+#include <api/AlgorandAssetFreezeInfo.hpp>
+#include <api/AlgorandAssetTransferInfo.hpp>
+#include <api/AlgorandParticipationInfo.hpp>
+#include <api/AlgorandPaymentInfo.hpp>
 
 namespace ledger {
 namespace core {

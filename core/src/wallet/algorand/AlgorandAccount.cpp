@@ -28,13 +28,13 @@
  */
 
 #include "AlgorandAccount.hpp"
-#include <algorand/model/AlgorandModelMapper.hpp>
+#include "model/AlgorandModelMapper.hpp"
 
-#include <algorand/api/AlgorandAssetAmount.hpp>
-#include <algorand/api/AlgorandAssetParams.hpp>
+#include <api/AlgorandAssetAmount.hpp>
+#include <api/AlgorandAssetParams.hpp>
 
 #include <api/BigInt.hpp>
-#include <core/utils/Hex.hpp>
+#include <utils/hex.h>
 
 #include <chrono>
 #include <unordered_map>
@@ -327,20 +327,20 @@ namespace algorand {
         {
             if (tx.header.type == model::constants::pay) {
                 const auto& details = boost::get<model::PaymentTxnFields>(tx.details);
-                op.amount = BigInt(static_cast<unsigned long long>(details.amount));
-                op.recipients = {};
-                op.recipients.push_back(details.receiverAddr.toString());
+                op.getBackend().amount = BigInt(static_cast<unsigned long long>(details.amount));
+                op.getBackend().recipients = {};
+                op.getBackend().recipients.push_back(details.receiverAddr.toString());
                 if (details.closeAddr) {
-                    op.recipients.push_back(details.closeAddr->toString());
+                    op.getBackend().recipients.push_back(details.closeAddr->toString());
                     // TODO : adjust amount in this case?
                 }
             } else if (tx.header.type == model::constants::axfer) {
                 const auto& details = boost::get<model::AssetTransferTxnFields>(tx.details);
-                op.amount = BigInt(static_cast<unsigned long long>(details.assetAmount));
-                op.recipients = {};
-                op.recipients.push_back(details.assetReceiver.toString());
+                op.getBackend().amount = BigInt(static_cast<unsigned long long>(details.assetAmount));
+                op.getBackend().recipients = {};
+                op.getBackend().recipients.push_back(details.assetReceiver.toString());
                 if (details.assetCloseTo) {
-                    op.recipients.push_back(details.assetCloseTo->toString());
+                    op.getBackend().recipients.push_back(details.assetCloseTo->toString());
                     // TODO : adjust amount in this case?
                 }
             }
@@ -363,7 +363,7 @@ namespace algorand {
                 }
                 return block;
             }();
-            op.block = block;
+            op.getBackend().block = block;
         }
 
     } // namespace
@@ -374,20 +374,20 @@ namespace algorand {
             const model::Transaction& tx)
     {
         op.setTransaction(tx);
-        op.accountUid = getAccountUid();
-        op.walletUid = wallet->getWalletUid();
-        op.date =
+        op.getBackend().accountUid = getAccountUid();
+        op.getBackend().walletUid = wallet->getWalletUid();
+        op.getBackend().date =
             std::chrono::system_clock::time_point(
                     std::chrono::seconds(
                         tx.header.timestamp.getValueOr(0)
             ));
-        op.senders = { tx.header.sender.toString() };
+        op.getBackend().senders = { tx.header.sender.toString() };
         setAmountAndRecipients(op, tx);
-        op.fees = BigInt(static_cast<unsigned long long>(tx.header.fee));
+        op.getBackend().fees = BigInt(static_cast<unsigned long long>(tx.header.fee));
         setBlock(op, wallet, tx);
-        op.currencyName = wallet->getCurrency().name;
-        op.type = api::OperationType::NONE;
-        op.trust = std::make_shared<TrustIndicator>();
+        op.getBackend().currencyName = wallet->getCurrency().name;
+        op.getBackend().type = api::OperationType::NONE;
+        op.getBackend().trust = std::make_shared<TrustIndicator>();
     }
 
     std::shared_ptr<Account> Account::getSelf()

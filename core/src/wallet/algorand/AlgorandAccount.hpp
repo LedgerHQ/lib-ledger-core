@@ -32,20 +32,20 @@
 
 #include "AlgorandAddress.hpp"
 #include "operations/AlgorandOperation.hpp"
-#include <algorand/AlgorandAccountSynchronizer.hpp>
-#include <algorand/AlgorandBlockchainExplorer.hpp>
-#include <algorand/AlgorandBlockchainObserver.hpp>
-#include <algorand/model/AlgorandAccount.hpp>
+#include "AlgorandAccountSynchronizer.hpp"
+#include "AlgorandBlockchainExplorer.hpp"
+#include "AlgorandBlockchainObserver.hpp"
+#include "model/AlgorandAccount.hpp"
 #include "model/transactions/AlgorandTransaction.hpp"
 
 #include <api/AlgorandAccount.hpp>
-#include <algorand/api/AlgorandAssetAmountMapCallback.hpp>
+#include <api/AlgorandAssetAmountMapCallback.hpp>
 #include <api/AlgorandAssetAmountCallback.hpp>
-#include <algorand/api/AlgorandAssetParamsCallback.hpp>
-#include <algorand/api/AlgorandAssetParamsMapCallback.hpp>
-#include <algorand/api/AlgorandTransaction.hpp>
+#include <api/AlgorandAssetParamsCallback.hpp>
+#include <api/AlgorandAssetParamsMapCallback.hpp>
+#include <api/AlgorandTransaction.hpp>
 #include <api/AmountCallback.hpp>
-#include <algorand/api/StringCallback.hpp>
+#include <api/StringCallback.hpp>
 #include <api/Keychain.hpp>
 
 #include <wallet/common/AbstractAccount.hpp>

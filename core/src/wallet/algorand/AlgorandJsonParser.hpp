@@ -35,7 +35,7 @@
 #include "model/transactions/AlgorandTransaction.hpp"
 #include "model/transactions/AlgorandAssetParams.hpp"
 #include "model/transactions/AlgorandTransactionParams.hpp"
-#include <algorand/model/AlgorandAccount.hpp>
+#include "model/AlgorandAccount.hpp"
 #include "model/AlgorandAssetAmount.hpp"
 
 #include <math/BigInt.h>
