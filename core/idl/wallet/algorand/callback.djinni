@@ -1,5 +1,13 @@
 @import "../../errors.djinni"
 
+# Callback triggered by main completed task, returning optional result as map<string, T>
+MapCallback = interface[T] +j +o +s +n {
+    # Method triggered when main task complete.
+    # @params result optional of type Map<string, T>, non null if main task failed
+    # @params error optional of type Error, non null if main task succeeded
+    onCallback(result: optional<map<string, T>>, error: optional<Error>);
+}
+
 # Callback triggered by main completed task, returning optional result as list of template type T.
 ListCallback = interface[T] +j +o +s +n {
     # Method triggered when main task complete.

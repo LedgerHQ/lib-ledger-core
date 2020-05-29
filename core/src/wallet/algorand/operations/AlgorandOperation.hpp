@@ -46,8 +46,7 @@ namespace algorand {
     class AlgorandTransactionImpl;
 
     class Operation : public ::ledger::core::api::AlgorandOperation
-                    , public ::ledger::core::Operation, public ::ledger::core::OperationApi
-                      //FIXME ::ledger::core::Operation necessary ?
+                    , public ::ledger::core::OperationApi
     {
     public:
         Operation() = delete;
@@ -57,7 +56,7 @@ namespace algorand {
         api::AlgorandOperationType getAlgorandOperationType() const override;
         std::shared_ptr<api::AlgorandTransaction> getTransaction() const override;
 
-        void refreshUid(const std::string& additional = "");
+        void refreshUid(const std::string& additional = "") override;
 
         const model::Transaction& getTransactionData() const;
 
