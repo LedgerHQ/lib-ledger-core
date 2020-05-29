@@ -62,4 +62,7 @@ Currency = record {
     tezosLikeNetworkParameters: optional<TezosLikeNetworkParameters>;
     # Optional StellarLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc
     stellarLikeNetworkParameters: optional<StellarLikeNetworkParameters>;
+    # Optional AlgorandNetworkParameters, for more details refer to AlgorandNetworkParameters doc
+    algorandNetworkParameters: optional<AlgorandNetworkParameters>;
+
 }

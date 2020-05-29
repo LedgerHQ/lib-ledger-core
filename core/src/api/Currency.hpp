@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_CURRENCY_HPP
 
 #include "../utils/optional.hpp"
+#include "AlgorandNetworkParameters.hpp"
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "CosmosLikeNetworkParameters.hpp"
 #include "CurrencyUnit.hpp"
@@ -12,7 +13,6 @@
 #include "RippleLikeNetworkParameters.hpp"
 #include "StellarLikeNetworkParameters.hpp"
 #include "TezosLikeNetworkParameters.hpp"
-#include "AlgorandNetworkParameters.hpp"
 #include "WalletType.hpp"
 #include <cstdint>
 #include <iostream>
@@ -52,7 +52,7 @@ struct Currency final {
     std::experimental::optional<TezosLikeNetworkParameters> tezosLikeNetworkParameters;
     /** Optional StellarLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
     std::experimental::optional<StellarLikeNetworkParameters> stellarLikeNetworkParameters;
-    /** Optional StellarLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
+    /** Optional AlgorandNetworkParameters, for more details refer to AlgorandNetworkParameters doc */
     std::experimental::optional<AlgorandNetworkParameters> algorandNetworkParameters;
 
     Currency(WalletType walletType_,
@@ -117,12 +117,12 @@ struct Currency final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters, algorandNetworkParameters);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters, algorandNetworkParameters);
     }
 };
 
