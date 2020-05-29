@@ -144,6 +144,31 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
     }
 }
 
+TEST_F(CosmosDBTest, FeesMsgTypeFilteredOutTest) {
+    std::shared_ptr<CosmosLikeAccount> account;
+    std::shared_ptr<CosmosLikeWallet> wallet;
+    setupTest(pool, account, wallet, "f727a3d9-7e98-4bbf-b92c-c3976483ac89");
+
+    std::chrono::system_clock::time_point timeRef = DateUtils::now();
+
+    const auto msgFees = setupFeesMessage("cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl");
+    auto tx = setupTransactionResponse(std::vector<Message>{ msgFees }, timeRef);
+
+    {
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        sql.set_log_stream(&std::cerr);
+        account->putTransaction(sql, tx);
+    }
+
+    {
+        auto ops =
+            wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
+                     ->execute());
+        ASSERT_EQ(ops.size(), 0) << "This account did not pay for the fees of this message so it "
+                                    "should not appear in the results.";
+    }
+}
+
 TEST_F(CosmosDBTest, FeesMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
@@ -151,7 +176,7 @@ TEST_F(CosmosDBTest, FeesMsgTypeTest) {
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
-    const auto msgFees = setupFeesMessage();
+    const auto msgFees = setupFeesMessage(account->getAddress());
     auto tx = setupTransactionResponse(std::vector<Message>{ msgFees }, timeRef);
 
     {
@@ -181,7 +206,6 @@ TEST_F(CosmosDBTest, FeesMsgTypeTest) {
         assertSameFeesMessage(msgFees, msgRetrieved);
     }
 }
-
 TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
