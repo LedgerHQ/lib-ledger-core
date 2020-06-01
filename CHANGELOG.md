@@ -1,7 +1,68 @@
-## 3.3.0 (on-going)
+## 3.4.0
 
+> 2020/06/01
+
+- Add Stellar (XLM) support.
+- Add Cosmos (Atom) support.
+- Fix a bug in Tezos that would make bakers see unknown originated accounts.
+- Fix a bug in Tezos that would make balances of originated accounts negative and/or incorrect.
+- Fix `BigInt::assignScalar` for unsigned types.
+- Fix stack exhaustion with recursive futures in the Bitcoin UTXO picker.
+- Add support for getting recipients relating to one’s account only from an operation.
+- Turn some 64-bit integers to 32-bit integers in the interface.
+- Fix the coin selection algorithm for Bitcoin (UTXO).
+- Add staking-related operation types.
+- Add integration test for non-activated accounts for Tezos.
+- Use `soci::transaction` to solve potential race conditions between observers and synchronizers.
+- ~~Remove external Tezos explorer fallback recover for HTTP errors.~~
+  - This change was reverted as it still causes issues. This issue will be addrressed in the next
+    version.
+- Fix BCH: construct P2PKH and P2SH output scripts even in case of cash addresses.
+- Fix missing internal transactions for Ethereum.
+- Fix XRP: marker to be set to Uint64 instead of string.
+- Add `x86_64` support to fat framework for iOS.
+- Fix Base58 for XRP.
+- Add tests for tzstats.
+- Make it possible to select the tzstats endpoint (and use fees vs. fee accordingly).
+- Fix the Tezos’ fees field (actually fee) when getting fees from the external API.
+- Bitcoin: add method to get addresses from range.
+- Better granularity of HTTP errors.
+- Add configuration to allow sync token deactivation.
+- Unset sync token when falling in reorg situation because explorers are not trustworthy on that feature.
+- Fix OpenSSL’s BLAKE2b heap memory corruption.
+- Fix getTransactions on Tezos when no offset is passed.
+- Fix segfaulting code in TezosLikeAddress.
+- Fix PostgreSQL timeout deconnection / failover behavior with soci connection pools.
+- Build openssl with ssl target if we have BUILD_TESTS on.
+- More resilience against failures of sync (due to explorers) that has been experienced on client side.
+- Avoid storing Input Data for ETH transactions when exceeding 255 bytes.
+- Fix segfault in Linux + node with OpenSSL 1.1. (node > 8).
+- Fix Ethereum ReorgLastBlock test segfault.
+- Fix XTZ: creation of same account (with KT accounts) under two different wallets
+- Use a boolean representation of Ripple status instead of textual.
+- Add a test for Ripple balance histories.
+- Add support for Ripple transaction statuses.
+- Implement Ripple transaction pagination for the node implementation.
+- Paginate properly UTXOs.
+- Introduce DatabaseBackendType enum.
+- Fix Ripple transaction dates.
+- Support BTC v3 BE.
+- Tezos: fix base used for std::stoul on getTransactions method of XTZ explorer.
+- Add script to build libcore for Linux for ARM architecture.
+- Prevent BitcoinLike UTXO picker from using a transaction’s worth less than dust.
+- Add implementation of getDryrunGasLimit.
+- Tezos: avoid creation of originated accounts based on failing origination ops.
+- Tezos: fix recursive sync on originated accounts.
 - Add support for PostgreSQL (tested with PostgreSQL v9.6 and v12.1), for more details about how to
 build, use and configure libcore with PostgreSQL, please refer to our `README.md`
+
+## 3.3.*
+
+Sorry, we have no idea what happened with those versions. It looks like they got released in a
+non-conventional way — the `git` tags are not on the `master` branch anymore. We will not remove
+them, but please switch to **3.4**.
+
+Sorry for the inconvenience.
 
 ## 3.2.1
 
