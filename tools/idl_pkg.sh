@@ -93,7 +93,8 @@ function generate_react_native_interface {
   RN_ANDROID_LIBS=$RN_DIR/android/libs
   RN_ANDROID_JAVA_OUT=$RN_DIR/android/src/main/java/com/ledger/reactnative
   RN_ANDROID_JAVA_IFACE=$RN_DIR/android/src/main/java/co/ledger/core
-  BUILD=ledger-core/build
+  API_DIR=./bundle/api
+  BUILD_DIR=${BUILD_DIR:-build}
 
   # prune export directories
   rm -rf $RN_IOS
