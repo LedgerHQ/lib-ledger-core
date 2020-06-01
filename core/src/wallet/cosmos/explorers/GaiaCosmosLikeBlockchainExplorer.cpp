@@ -48,6 +48,12 @@
 namespace ledger {
 namespace core {
 
+namespace {
+constexpr uint32_t SIG_VERIFY_COST_SECP256K1 = 1000;
+constexpr uint32_t SIG_SIZE = 64;  // A signature is approx 64 bytes long
+constexpr uint32_t TX_COST_PER_BYTE = 10;
+}  // namespace
+
 using MsgType = cosmos::MsgType;
 
 static CosmosLikeBlockchainExplorer::TransactionFilter eventAttribute(
@@ -224,7 +230,9 @@ void parseTransactionWithPosttreatment(const T &node, cosmos::Transaction &trans
 FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransactions(
     const CosmosLikeBlockchainExplorer::TransactionFilter &filter, int page, int limit) const
 {
-    return _http->GET(fmt::format(kGaiaTransactionsWithPageLimitEnpoint, filter, page, limit), ACCEPT_HEADER)
+    return _http
+        ->GET(
+            fmt::format(kGaiaTransactionsWithPageLimitEnpoint, filter, page, limit), ACCEPT_HEADER)
         .json(true)
         .mapPtr<cosmos::TransactionsBulk>(
             getContext(), [](const HttpRequest::JsonResult &response) {
@@ -244,16 +252,13 @@ FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransac
                     result->transactions.emplace_back(tx);
                 }
 
-                if (!document.HasMember(kCount) ||
-                    !document[kCount].IsString() ||
-                    !document.HasMember(kTotalCount) ||
-                    !document[kTotalCount].IsString()) {
+                if (!document.HasMember(kCount) || !document[kCount].IsString() ||
+                    !document.HasMember(kTotalCount) || !document[kTotalCount].IsString()) {
                     result->hasNext = false;
                 }
                 else {
                     const auto count = std::stoi(document[cosmos::constants::kCount].GetString());
-                    const auto total_count =
-                        std::stoi(document[kTotalCount].GetString());
+                    const auto total_count = std::stoi(document[kTotalCount].GetString());
                     result->hasNext = (count < total_count);
                 }
                 return result;
@@ -545,9 +550,8 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getDelegatedBalance(
                 const auto &del_val_entries = json.GetObject()[kResult].GetArray();
                 BigInt total_amt = BigInt::ZERO;
                 for (const auto &delegation_entry : del_val_entries) {
-                    total_amt =
-                        total_amt +
-                        BigInt::fromDecimal(delegation_entry.GetObject()[kBalance].GetString());
+                    total_amt = total_amt + BigInt::fromDecimal(
+                                                delegation_entry.GetObject()[kBalance].GetString());
                 }
 
                 return std::make_shared<BigInt>(total_amt);
@@ -663,10 +667,8 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getSpendableBalance(
                 BigInt total_amt = BigInt::ZERO;
                 // NOTE : Assuming only uatom is in the balances array
                 for (const auto &balance_entry : balances) {
-                    total_amt =
-                        total_amt +
-                        BigInt::fromDecimal(
-                            balance_entry.GetObject()[kAmount].GetString());
+                    total_amt = total_amt +
+                                BigInt::fromDecimal(balance_entry.GetObject()[kAmount].GetString());
                 }
 
                 return std::make_shared<BigInt>(total_amt);
@@ -764,8 +766,7 @@ Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(
 FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::getDelegations(
     const std::string &delegatorAddr) const
 {
-    return _http
-        ->GET(fmt::format(kGaiaDelegationsEndpoint, delegatorAddr), ACCEPT_HEADER)
+    return _http->GET(fmt::format(kGaiaDelegationsEndpoint, delegatorAddr), ACCEPT_HEADER)
         .json(true)
         .mapPtr<std::vector<cosmos::Delegation>>(
             getContext(), [](const HttpRequest::JsonResult &response) {
@@ -794,8 +795,7 @@ FuturePtr<std::vector<cosmos::Delegation>> GaiaCosmosLikeBlockchainExplorer::get
 FuturePtr<std::vector<cosmos::Reward>> GaiaCosmosLikeBlockchainExplorer::getPendingRewards(
     const std::string &delegatorAddr) const
 {
-    return _http
-        ->GET(fmt::format(kGaiaRewardsEndpoint, delegatorAddr), ACCEPT_HEADER)
+    return _http->GET(fmt::format(kGaiaRewardsEndpoint, delegatorAddr), ACCEPT_HEADER)
         .json(true)
         .mapPtr<std::vector<cosmos::Reward>>(
             getContext(), [](const HttpRequest::JsonResult &response) {
@@ -1228,10 +1228,9 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
     ///
     /// The starting value of the accumulate is the cost of verifying a
     /// SECP256k1 signature, and the cost of the size of the transaction.
-    const uint32_t SigVerifyCostSecp256k1 = 1000;
-    const uint32_t SigSize = 64;  // A signature is approx 64 bytes long
-    const uint32_t TxSizeCost = 10 * (transaction->serializeForSignature().size() + SigSize);
-    const BigInt BaseTxGasCost(SigVerifyCostSecp256k1 + TxSizeCost);
+    const uint32_t TxSizeCost =
+        TX_COST_PER_BYTE * (transaction->serializeForSignature().size() + SIG_SIZE);
+    const BigInt BaseTxGasCost(SIG_VERIFY_COST_SECP256K1 + TxSizeCost);
 
     return async::sequence(getContext(), estimations)
         .flatMapPtr<BigInt>(getContext(), [BaseTxGasCost](const auto &estimations) {
