@@ -43,5 +43,5 @@ TEST(AlgorandAddressTest, AddressToPubkey) {
 TEST(AlgorandAddressTest, PubkeyToAddress) {
     auto pubKey = hex::toByteArray("89afdb83e3b65d9ec966e5a126a0aa41b826df9571f5bc0897efbbad8e0402f7");
     auto address = algorand::Address::fromPublicKey(pubKey);
-    EXPECT_EQ("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM", address) << "!!! This test requires OpenSSL >= 1.1.1 !!!";
+    EXPECT_EQ("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM", address) << "!!! This test will fail if SHA512-256 is not available !!!";
 }
