@@ -47,19 +47,27 @@ namespace ledger {
             std::chrono::system_clock::time_point getDate() override;
             std::vector<std::string> getSenders() override;
             std::vector<std::string> getRecipients() override;
+            std::vector<std::string> getSelfRecipients() override;
             std::shared_ptr<api::Amount> getAmount() override;
             std::shared_ptr<api::Amount> getFees() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             std::shared_ptr<api::TrustIndicator> getTrust() override;
             std::shared_ptr<api::BitcoinLikeOperation> asBitcoinLikeOperation() override;
+            std::shared_ptr<api::CosmosLikeOperation> asCosmosLikeOperation() override;
             std::shared_ptr<api::EthereumLikeOperation> asEthereumLikeOperation() override;
             std::shared_ptr<api::RippleLikeOperation> asRippleLikeOperation() override;
             std::shared_ptr<api::TezosLikeOperation> asTezosLikeOperation() override;
             optional<int64_t> getBlockHeight() override;
             bool isInstanceOfBitcoinLikeOperation() override;
+            bool isInstanceOfCosmosLikeOperation() override;
             bool isInstanceOfEthereumLikeOperation() override;
             bool isInstanceOfRippleLikeOperation() override;
             bool isInstanceOfTezosLikeOperation() override;
+
+            std::shared_ptr<api::StellarLikeOperation> asStellarLikeOperation() override;
+
+            bool isInstanceOfStellarLikeOperation() const override;
+
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();

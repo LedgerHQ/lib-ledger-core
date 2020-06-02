@@ -41,12 +41,14 @@
 #include "TrustIndicator.h"
 #include <memory>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 #include <api/OperationType.hpp>
 #include <api/Operation.hpp>
 #include "Block.h"
+#include <wallet/stellar/stellar.hpp>
 
 namespace ledger {
     namespace core {
@@ -65,9 +67,11 @@ namespace ledger {
             api::OperationType type;
             std::shared_ptr<TrustIndicator> trust;
             Option<BitcoinLikeBlockchainExplorerTransaction> bitcoinTransaction;
+            Option<cosmos::OperationQueryResult> cosmosTransaction;
             Option<EthereumLikeBlockchainExplorerTransaction> ethereumTransaction;
             Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Option<TezosLikeBlockchainExplorerTransaction> tezosTransaction;
+            Option<stellar::OperationWithParentTransaction> stellarOperation;
 
             void refreshUid(const std::string &additional = "");
 

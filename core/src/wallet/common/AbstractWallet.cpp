@@ -32,6 +32,7 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <debug/LoggerApi.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <api/I32Callback.hpp>
 #include "AbstractAccount.hpp"
@@ -43,6 +44,8 @@
 #include <database/soci-option.h>
 #include <async/DedicatedContext.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <wallet/stellar/StellarLikeAccount.hpp>
+#include <wallet/stellar/StellarLikeWallet.hpp>
 
 namespace ledger {
     namespace core {
@@ -83,6 +86,10 @@ namespace ledger {
 
         bool AbstractWallet::isInstanceOfBitcoinLikeWallet() {
             return getWalletType() == api::WalletType::BITCOIN;
+        }
+
+        bool AbstractWallet::isInstanceOfCosmosLikeWallet() {
+            return getWalletType() == api::WalletType::COSMOS;
         }
 
         bool AbstractWallet::isInstanceOfEthereumLikeWallet() {
@@ -143,6 +150,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeWallet> AbstractWallet::asBitcoinLikeWallet() {
             return asInstanceOf<BitcoinLikeWallet>();
+        }
+
+        std::shared_ptr<api::CosmosLikeWallet> AbstractWallet::asCosmosLikeWallet() {
+            return asInstanceOf<CosmosLikeWallet>();
         }
 
         std::shared_ptr<api::ExecutionContext> AbstractWallet::getMainExecutionContext() const {
@@ -352,8 +363,12 @@ namespace ledger {
 
         }
 
-        std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
-            return getConfig();
+        bool AbstractWallet::isInstanceOfStellarLikeWallet() const {
+            return _currency.walletType == api::WalletType::STELLAR;
+        }
+
+        std::shared_ptr<api::StellarLikeWallet> AbstractWallet::asStellarLikeWallet() {
+            return asInstanceOf<StellarLikeWallet>();
         }
 
 
@@ -364,5 +379,10 @@ namespace ledger {
         void AbstractWallet::updateBalanceCache(size_t accountIndex, Amount balance) {
             _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
         }
+
+        std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
+            return getConfig();
+        }
+
     }
 }

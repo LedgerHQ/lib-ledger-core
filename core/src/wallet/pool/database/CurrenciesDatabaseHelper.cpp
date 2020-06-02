@@ -36,6 +36,7 @@
 #include <api/Currency.hpp>
 #include <api/BitcoinLikeFeePolicy.hpp>
 #include <collections/strings.hpp>
+#include <database/soci-number.h>
 
 using namespace soci;
 
@@ -58,7 +59,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
         // Insert network parameters
         switch (currency.walletType) {
             case api::WalletType::BITCOIN: {
-                auto &params = currency.bitcoinLikeNetworkParameters.value();
+                const auto &params = currency.bitcoinLikeNetworkParameters.value();
 
                 std::stringstream additionalBIPs;
                 std::string separator(";");
@@ -69,6 +70,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 auto hexXPUBVersion = hex::toString(params.XPUBVersion);
                 auto feePolicy = api::to_string(params.FeePolicy);
                 auto sigHash = hex::toString(params.SigHash);
+                auto useTimestampedTransaction = static_cast<int>(params.UsesTimestampedTransaction);
                 sql
                 << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType, :additionalBIPs)",
                 use(currency.name),
@@ -79,14 +81,32 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 use(params.DustAmount),
                 use(feePolicy),
                 use(params.MessagePrefix),
-                use(params.UsesTimestampedTransaction ? 1 : 0),
+                use(useTimestampedTransaction),
                 use(params.TimestampDelay),
                 use(sigHash),
                 use(BIPs);
                 break;
             }
+            case api::WalletType::COSMOS: {
+                auto &params = currency.cosmosLikeNetworkParameters.value();
+
+                std::stringstream additionalCIPs;
+                std::string separator(",");
+                strings::join(params.AdditionalCIPs, additionalCIPs, separator);
+                auto CIPs = additionalCIPs.str();
+                auto hexXPUBVersion = hex::toString(params.XPUBVersion);
+                auto hexPubKeyPrefix = hex::toString(params.PubKeyPrefix);
+                auto hexAddressPrefix = hex::toString(params.AddressPrefix);
+                sql << "INSERT INTO cosmos_currencies VALUES(:name, :identifier, :xpub, "
+                       ":pubkey_prefix, :address_prefix, :message_prefix, :chain_id, "
+                       ":additionalCIPs)",
+                    use(currency.name), use(params.Identifier), use(hexXPUBVersion),
+                    use(hexPubKeyPrefix), use(hexAddressPrefix), use(params.MessagePrefix),
+                    use(params.ChainId), use(CIPs);
+                break;
+            }
             case api::WalletType::ETHEREUM: {
-                auto &params = currency.ethereumLikeNetworkParameters.value();
+                const auto &params = currency.ethereumLikeNetworkParameters.value();
 
                 std::stringstream additionalEIPs;
                 std::string separator(";");
@@ -103,7 +123,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break;
             }
             case api::WalletType::RIPPLE: {
-                auto &params = currency.rippleLikeNetworkParameters.value();
+                const auto &params = currency.rippleLikeNetworkParameters.value();
 
                 std::stringstream additionalRIPs;
                 std::string separator(";");
@@ -119,7 +139,7 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break;
             }
             case api::WalletType::TEZOS: {
-                auto &params = currency.tezosLikeNetworkParameters.value();
+                const auto &params = currency.tezosLikeNetworkParameters.value();
                 std::stringstream additionalTIPs;
                 std::string separator(";");
                 strings::join(params.AdditionalTIPs, additionalTIPs, separator);
@@ -138,6 +158,26 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break; // TODO INSERT MONERO NETWORK PARAMS
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::STELLAR: {
+                const auto &params = currency.stellarLikeNetworkParameters.value();
+
+                std::stringstream seps;
+                std::string separator(";");
+                auto addrVersion = hex::toString(params.Version);
+                strings::join(params.AdditionalSEPs, seps, separator);
+                auto SEPs = seps.str();
+
+                sql << "INSERT INTO stellar_currencies VALUES(:name, :identifier, :version, :reserve, :fee, :pass, :seps)",
+                    use(currency.name),
+                    use(params.Identifier),
+                    use(addrVersion),
+                    use(params.BaseReserve),
+                    use(params.BaseFee),
+                    use(params.NetworkPassphrase),
+                    use(SEPs)
+                ;
+                break;
+            }
         }
         inserted = true;
     }
@@ -202,6 +242,29 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 }
                 break;
             }
+            case api::WalletType::COSMOS: {
+                rowset<row> cosmos_rows =
+                    (sql.prepare
+                         << "SELECT cosmos_currencies.name, cosmos_currencies.identifier, "
+                            "cosmos_currencies.xpub_version, cosmos_currencies.pubkey_prefix, "
+                            "cosmos_currencies.address_prefix, cosmos_currencies.message_prefix, "
+                            "cosmos_currencies.chain_id, cosmos_currencies.additional_CIPs"
+                            " FROM cosmos_currencies "
+                            " WHERE cosmos_currencies.name = :currency_name",
+                     use(currency.name));
+                for (auto &cosmos_row : cosmos_rows) {
+                    api::CosmosLikeNetworkParameters params;
+                    params.Identifier = cosmos_row.get<std::string>(1);
+                    params.XPUBVersion = hex::toByteArray(cosmos_row.get<std::string>(2));
+                    params.PubKeyPrefix = hex::toByteArray(cosmos_row.get<std::string>(3));
+                    params.AddressPrefix = hex::toByteArray(cosmos_row.get<std::string>(4));
+                    params.MessagePrefix = cosmos_row.get<std::string>(5);
+                    params.ChainId = cosmos_row.get<std::string>(6);
+                    params.AdditionalCIPs = strings::split(cosmos_row.get<std::string>(7), ",");
+                    currency.cosmosLikeNetworkParameters = params;
+                }
+                break;
+            }
             case api::WalletType::ETHEREUM: {
                 rowset<row> eth_rows = (sql.prepare << "SELECT ethereum_currencies.chain_id, ethereum_currencies.xpub_version,"
                         " ethereum_currencies.message_prefix, ethereum_currencies.identifier,"
@@ -257,6 +320,23 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 break;
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::STELLAR: {
+                rowset<row> stellar_rows = (sql.prepare << "SELECT identifier, address_version, base_reserve,"
+                                                           "base_fee, network_passphrase, additional_SEPs FROM stellar_currencies "
+                                                           "WHERE name = :name"
+                        , use(currency.name));
+                for (auto& stellar_row : stellar_rows) {
+                    api::StellarLikeNetworkParameters params;
+                    params.Identifier = stellar_row.get<std::string>(0);
+                    params.Version = hex::toByteArray(stellar_row.get<std::string>(1));
+                    params.BaseFee = soci::get_number<int64_t>(stellar_row, 2);
+                    params.BaseReserve = soci::get_number<int64_t>(stellar_row, 3);
+                    params.NetworkPassphrase = stellar_row.get<std::string>(4);
+                    params.AdditionalSEPs = strings::split(stellar_row.get<std::string>(5), ",");
+                    currency.stellarLikeNetworkParameters = params;
+                }
+                break;
+            }
         }
         getAllUnits(sql, currency);
         currencies.push_back(currency);

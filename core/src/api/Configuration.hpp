@@ -58,6 +58,9 @@ public:
 
     /** Time to Live for block cache */
     static std::string const TTL_CACHE;
+
+    /** Syncronization token deactivation */
+    static std::string const DEACTIVATE_SYNC_TOKEN;
 };
 
 } } }  // namespace ledger::core::api

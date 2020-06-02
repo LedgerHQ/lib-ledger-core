@@ -32,6 +32,7 @@
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
 #include <set>
+#include <functional>
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
@@ -45,18 +46,32 @@
 
 using namespace std;
 
+namespace {
+    const std::string kExplorerUrl = "https://xtz-explorer.api.live.ledger.com/explorer";
+}
+
 class TezosLikeWalletSynchronization : public BaseFixture {
 
 };
 
 TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
     auto pool = newDefaultPool("xtz", "");
-    {
+    static std::function<void (
+            const std::string &,
+            const std::string &,
+            const std::string &)> test = [=] (
+                            const std::string &walletName,
+                            const std::string &nextWalletName,
+                            const std::string &explorerURL) {
+        if (walletName.empty()) {
+            return;
+        }
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "tezos", configuration));
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, explorerURL);
+        auto wallet = wait(pool->createWallet(walletName, "tezos", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
@@ -90,12 +105,16 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_GE(originatedAccounts.size(), 2);
 
                 for (auto &origAccount : originatedAccounts) {
+                    std::cout << "Originated account: " << origAccount->getAddress() << std::endl;
+
                     auto origOps = wait(std::dynamic_pointer_cast<OperationQuery>(origAccount->queryOperations()->complete())->execute());
                     EXPECT_GE(origOps.size(), 3);
-                    std::cout<<">>> Nb of originated ops: "<<origOps.size()<<std::endl;
+                    std::cout << ">>> Nb of originated ops: " << origOps.size() << std::endl;
+
                     auto origBalance = wait(std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(origAccount)->getBalance(dispatcher->getMainExecutionContext()));
                     EXPECT_NE(origBalance->toLong(), 0L);
-                    std::cout<<">>> Originated Balance: "<<origBalance->toString()<<std::endl;
+                    std::cout << ">>> Originated Balance: " << origBalance->toString() << std::endl;
+
                     auto fromDate = DateUtils::fromJSON("2019-02-01T13:38:23Z");
                     auto toDate = DateUtils::now();
                     auto balanceHistory = wait(std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(origAccount)->getBalanceHistory(dispatcher->getMainExecutionContext(), fromDate, toDate, api::TimePeriod::MONTH));
@@ -131,7 +150,32 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto gasLimit = wait(account->getEstimatedGasLimit("tz1ZshTmtorFVkcZ7CpceCAxCn7HBJqTfmpk"));
             EXPECT_GT(gasLimit->toUint64(), 0);
+
+            test(nextWalletName, "", explorerURL);
         }
-    }
+    };
+    test("e847815f-488a-4301-b67c-378a5e9c8a61", "e847815f-488a-4301-b67c-378a5e9c8a60", kExplorerUrl);
 }
 
+TEST_F(TezosLikeWalletSynchronization, SynchronizeAccountWithMoreThan100OpsAndDeactivateSyncToken) {
+    auto pool = newDefaultPool();
+    auto configuration = DynamicObject::newInstance();
+    configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
+    configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
+    configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
+    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
+    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, kExplorerUrl);
+    auto wallet = wait(pool->createWallet("xtz", "tezos", configuration));
+    auto account = createTezosLikeAccount(wallet, 0, XTZ_WITH_100_OPS_KEYS_INFO);
+    account->synchronize()->subscribe(account->getContext(), make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+            return;
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(),
+                  api::EventCode::SYNCHRONIZATION_SUCCEED);
+        dispatcher->stop();
+    }));
+    dispatcher->waitUntilStopped();
+    auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations())->execute());
+    EXPECT_GT(ops.size(), 100);
+}

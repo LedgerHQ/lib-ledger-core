@@ -35,9 +35,11 @@
 #include <database/soci-option.h>
 #include <database/soci-number.h>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
+#include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
+#include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -87,12 +89,12 @@ namespace ledger {
             return _headFilter;
         }
 
-        std::shared_ptr<api::OperationQuery> OperationQuery::offset(int64_t from) {
+        std::shared_ptr<api::OperationQuery> OperationQuery::offset(int32_t from) {
             _builder.offset((int32_t) from);
             return shared_from_this();
         }
 
-        std::shared_ptr<api::OperationQuery> OperationQuery::limit(int64_t count) {
+        std::shared_ptr<api::OperationQuery> OperationQuery::limit(int32_t count) {
             _builder.limit((int32_t) count);
             return shared_from_this();
         }
@@ -184,10 +186,12 @@ namespace ledger {
         void OperationQuery::inflateCompleteTransaction(soci::session &sql, const std::string &accountUid, OperationApi &operation) {
             switch (operation.getAccount()->getWalletType()) {
                 case (api::WalletType::BITCOIN): return inflateBitcoinLikeTransaction(sql, accountUid, operation);
+                case (api::WalletType::COSMOS): return inflateCosmosLikeTransaction(sql, accountUid, operation);
                 case (api::WalletType::ETHEREUM): return inflateEthereumLikeTransaction(sql, operation);
                 case (api::WalletType::RIPPLE): return inflateRippleLikeTransaction(sql, operation);
                 case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
+                case (api::WalletType::STELLAR): return inflateStellarLikeTransaction(sql, operation);
             }
         }
 
@@ -197,6 +201,32 @@ namespace ledger {
             std::string transactionHash;
             sql << "SELECT transaction_hash FROM bitcoin_operations WHERE uid = :uid", soci::use(operation.getBackend().uid), soci::into(transactionHash);
             BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, accountUid, operation.getBackend().bitcoinTransaction.getValue());
+        }
+
+        void OperationQuery::inflateCosmosLikeTransaction(
+            soci::session &sql, const std::string &accountUid, OperationApi &operation)
+        {
+            cosmos::Transaction tx;
+            cosmos::Message msg;
+            operation.getBackend().cosmosTransaction = Option<cosmos::OperationQueryResult>({tx, msg});
+            std::string transactionHash;
+            sql << "SELECT tx.hash "
+                   "FROM cosmos_transactions AS tx "
+                   "LEFT JOIN cosmos_messages AS msg ON msg.transaction_uid = tx.uid "
+                   "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
+                   "WHERE op.uid = :uid",
+                soci::use(operation.getBackend().uid), soci::into(transactionHash);
+            CosmosLikeTransactionDatabaseHelper::getTransactionByHash(
+                sql, transactionHash, operation.getBackend().cosmosTransaction.getValue().tx);
+            std::string msgUid;
+            sql << "SELECT msg.uid "
+                   "FROM cosmos_messages AS msg "
+                   "LEFT JOIN cosmos_operations AS op ON op.message_uid = msg.uid "
+                   "WHERE op.uid = :uid",
+                soci::use(operation.getBackend().uid), soci::into(msgUid);
+
+            CosmosLikeTransactionDatabaseHelper::getMessageByUid(
+                sql, msgUid, operation.getBackend().cosmosTransaction.getValue().msg);
         }
 
         void OperationQuery::inflateRippleLikeTransaction(soci::session &sql, OperationApi &operation) {
@@ -225,6 +255,13 @@ namespace ledger {
 
         void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation) {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Implement void OperationQuery::inflateMoneroLikeTransaction(soci::session &sql, OperationApi &operation)");
+        }
+
+        void OperationQuery::inflateStellarLikeTransaction(soci::session &sql, OperationApi &operation) {
+            stellar::OperationWithParentTransaction out;
+            StellarLikeTransactionDatabaseHelper::getOperation(sql, operation.getBackend().uid, out.operation);
+            StellarLikeTransactionDatabaseHelper::getTransaction(sql, out.operation.transactionHash, out.transaction);
+            operation.getBackend().stellarOperation = out;
         }
     }
 }

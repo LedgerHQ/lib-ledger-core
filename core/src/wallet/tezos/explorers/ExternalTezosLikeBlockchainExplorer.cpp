@@ -28,7 +28,6 @@
  *
  */
 
-
 #include "ExternalTezosLikeBlockchainExplorer.h"
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
@@ -70,16 +69,23 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getFees() {
             const bool parseNumbersAsString = true;
+            auto feesField =
+              getConfiguration()->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT) == api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT ?
+                  "fee" :
+                  "fees";
+
             return _http->GET("block/head")
-                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [](const HttpRequest::JsonResult &result) {
+                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
+
                         //Is there a fees field ?
-                        if (!json.IsObject() || !json.HasMember("fees") ||
-                            !json["fees"].IsString()) {
+                        if (!json.IsObject() || !json.HasMember(feesField) ||
+                            !json[feesField].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get fees from network, no (or malformed) field \"result\" in response");
                         }
-                        std::string fees = json["fees"].GetString();
+                        std::string fees = json[feesField].GetString();
                         // Sometimes network is sending 0 for fees
                         if (fees == "0") {
                             fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
@@ -137,12 +143,17 @@ namespace ledger {
 
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
         ExternalTezosLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
-                                                             Option<std::string> fromBlockHash,
+                                                             Option<std::string> offset,
                                                              Option<void *> session) {
-            uint64_t offset = 0, limit = 100;
+            auto tryOffset = Try<uint64_t>::from([=]() -> uint64_t {
+                return std::stoul(offset.getValueOr(""), nullptr, 10);
+            });
+
+            uint64_t localOffset = tryOffset.isSuccess() ? tryOffset.getValue() : 0;
+            uint64_t limit = 100;
             if (session.hasValue()) {
                 auto s = _sessions[*((std::string *)session.getValue())];
-                offset = limit * s;
+                localOffset += limit * s;
                 _sessions[*reinterpret_cast<std::string *>(session.getValue())]++;
             }
             if (addresses.size() != 1) {
@@ -151,8 +162,8 @@ namespace ledger {
                                      addresses.size());
             }
             std::string params = fmt::format("?limit={}",limit);
-            if (offset > 0) {
-                params += fmt::format("&offset={}",offset);
+            if (localOffset > 0) {
+                params += fmt::format("&offset={}",localOffset);
             }
             using EitherTransactionsBulk = Either<Exception, std::shared_ptr<TransactionsBulk>>;
             return _http->GET(fmt::format("account/{}/op{}", addresses[0], params))

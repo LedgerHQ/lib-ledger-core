@@ -30,9 +30,11 @@
  */
 #include "currencies.hpp"
 #include "bitcoin/networks.hpp"
+#include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include "ethereum/ethereumNetworks.hpp"
 #include "ripple/rippleNetworks.h"
 #include "tezos/tezosNetworks.h"
+#include "stellar/stellarNetworks.h"
 #include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {
@@ -240,6 +242,17 @@ namespace ledger {
                             .unit("satoshi", 0, "satoshi")
                             .unit("stakenet", 8, "XSN");
 
+            // Minimum value is uatom according to
+            // https://github.com/cosmos/gaia/blob/ba8d2b3177e1b891b72d6f40538fc2c6344bdeac/docs/delegators/delegator-guide-cli.md#sending-transactions
+            const api::Currency ATOM =
+                Currency("cosmos")
+                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("atom"))
+                .bip44(ATOM_COIN_ID)
+                .paymentUri("cosmos")
+                .unit("uatom", 0, "uatom")
+                .unit("matom", 3, "matom")
+                .unit("atom", 6, "atom");
+
             //Reference for ETH coinTypes: https://github.com/LedgerHQ/ledger-live-common/blob/b0196ae9031447f41f8e641f0ec5d3e2b72be83c/src/data/cryptocurrencies.js
             const api::Currency ETHEREUM =
                     Currency("ethereum")
@@ -290,6 +303,15 @@ namespace ledger {
                             .unit("mXTZ", 0, "mXTZ")
                             .unit("XTZ", 3, "XTZ");
 
+                const api::Currency STELLAR =
+                    Currency("stellar")
+                            .bip44(148)
+                            .forkOfStellar(networks::getStellarLikeNetworkParameters("stellar"))
+                            .paymentUri("stellar")
+                            .unit("stroop", 0, "stroop")
+                            .unit("XLM", 7, "XLM");
+
+
             const std::vector<api::Currency> ALL({
                 BITCOIN,
                 BITCOIN_TESTNET,
@@ -314,11 +336,13 @@ namespace ledger {
                 CLUBCOIN,
                 DECRED,
                 STAKENET,
+                ATOM,
                 ETHEREUM,
                 ETHEREUM_ROPSTEN,
                 ETHEREUM_CLASSIC,
                 RIPPLE,
-                TEZOS
+                TEZOS,
+                STELLAR
             });
         }
     }

@@ -33,6 +33,11 @@ list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM SRC_FILES dummy.cpp)
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
+if (NOT PG_SUPPORT)
+    list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.cpp)
+    list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.h)
+endif()
+
 add_library(ledger-core-interface INTERFACE)
 
 target_compile_definitions(ledger-core-interface INTERFACE ledger_core_EXPORTS)
@@ -86,6 +91,8 @@ else()
             ${SRC_FILES}
             ${HEADERS_FILES})
     target_link_libraries(ledger-core-obj PUBLIC ledger-core-interface)
+    target_compile_options(ledger-core-obj PRIVATE $<$<CXX_COMPILER_ID:MSVC>: /bigobj>)
+
     # shared and static libraries built from the same object files
     add_library(ledger-core SHARED)
     target_link_libraries(ledger-core PUBLIC ledger-core-obj)
@@ -106,12 +113,21 @@ else()
     target_link_libraries(ledger-core-interface INTERFACE fmt)
 endif(MINGW OR MSVC)
 
+
 if (SYS_OPENSSL)
-    target_link_libraries(ledger-core-interface INTERFACE blake)
+    find_package(OpenSSL)
+    target_link_libraries(ledger-core-interface INTERFACE OpenSSL::Crypto)
 else()
     target_link_libraries(ledger-core-interface INTERFACE crypto)
 endif()
+
+target_link_libraries(ledger-core-interface INTERFACE blake)
 target_link_libraries(ledger-core-interface INTERFACE soci_sqlite3)
+
+if (PG_SUPPORT)
+    target_link_libraries(ledger-core-interface INTERFACE soci_postgresql)
+endif()
+
 target_link_libraries(ledger-core-interface INTERFACE soci_core_static)
 target_link_libraries(ledger-core-interface INTERFACE leveldb)
 
@@ -120,7 +136,8 @@ target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
 
 #Secp256k1
-target_link_libraries(ledger-core-interface INTERFACE "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
+target_link_libraries(ledger-core-interface INTERFACE
+        "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
 link_directories("${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib")
 add_dependencies(ledger-core-interface INTERFACE secp256k1)
 
@@ -155,19 +172,25 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
+target_include_directories(ledger-core-interface INTERFACE ../lib/soci_postgresql)
+target_include_directories(ledger-core-interface INTERFACE ../lib/blake)
 if (SYS_OPENSSL)
     target_include_directories(ledger-core-interface INTERFACE ${OPENSSL_INCLUDE_DIR})
-    target_include_directories(ledger-core-interface INTERFACE ../lib/blake)
 else()
     target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
-    target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/crypto/blake)
 endif()
+
+if(SSL_SUPPORT)
+    target_link_libraries(ledger-core-interface INTERFACE ssl)
+endif()
+
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/boost)
 target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
 target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
+target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

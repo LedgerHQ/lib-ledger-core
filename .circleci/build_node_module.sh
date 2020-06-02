@@ -5,6 +5,12 @@ export NVM_DIR="${XDG_CONFIG_HOME/:-$HOME/.}nvm"
 [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
 source ~/.bashrc
 
+# Issue for MacOS: dyld: Library not loaded: /usr/local/opt/icu4c/lib/libicui18n.62.dylib
+if [ $(uname) == "Darwin" ]; then
+	brew unlink python@2
+	brew upgrade
+fi	
+
 echo "=====>Change node version"
 node --version
 nvm install 8.9.4
@@ -14,6 +20,8 @@ node --version
 echo "=====>Build node module"
 
 cd ledger-core-samples/nodejs
+# Speed up module's build
+export JOBS=8
 yarn
 mkdir tmp
 node tests/basic-test.js

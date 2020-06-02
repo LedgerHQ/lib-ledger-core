@@ -20,6 +20,8 @@ namespace ledger { namespace core { namespace api {
 enum class WalletType : int {
     /** A Bitcoin-like wallet. */
     BITCOIN,
+    /** A Cosmos-like wallet. */
+    COSMOS,
     /** An Ethereum-like wallet. */
     ETHEREUM,
     /** A Ripple-like wallet. */
@@ -28,6 +30,8 @@ enum class WalletType : int {
     MONERO,
     /** A Tezos-like wallet. */
     TEZOS,
+    /** A Stellar-like wallet. */
+    STELLAR,
 };
 LIBCORE_EXPORT  std::string to_string(const WalletType& walletType);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const WalletType &o);

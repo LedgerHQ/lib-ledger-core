@@ -68,6 +68,10 @@ namespace ledger {
             _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
+            // TODO This is a dirty patch because Tezos uses the AbstractBlockchainExplorer and synchronizer
+            // Most of the code of these classes were made for BTC and offer very few advantage for simpler
+            // currencies (mainly it avoid rewriting a reorg case)
+            configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, false);
         }
 
         bool TezosLikeWallet::isSynchronizing() {

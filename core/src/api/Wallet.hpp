@@ -23,6 +23,7 @@ class AccountCreationInfoCallback;
 class AccountListCallback;
 class BitcoinLikeWallet;
 class BlockCallback;
+class CosmosLikeWallet;
 class DynamicObject;
 class ErrorCodeCallback;
 class EventBus;
@@ -30,6 +31,7 @@ class ExtendedKeyAccountCreationInfoCallback;
 class I32Callback;
 class Logger;
 class Preferences;
+class StellarLikeWallet;
 enum class WalletType;
 struct AccountCreationInfo;
 struct Currency;
@@ -117,6 +119,12 @@ public:
     virtual std::shared_ptr<BitcoinLikeWallet> asBitcoinLikeWallet() = 0;
 
     /**
+     * Convert wallet to a Cosmos one.
+     * @return CosmosWallet object
+     */
+    virtual std::shared_ptr<CosmosLikeWallet> asCosmosLikeWallet() = 0;
+
+    /**
      * Get currency of wallet.
      * @return Currency object
      */
@@ -129,6 +137,12 @@ public:
     virtual bool isInstanceOfBitcoinLikeWallet() = 0;
 
     /**
+     * Tell whether wallet is a Cosmos one.
+     * @return bool
+     */
+    virtual bool isInstanceOfCosmosLikeWallet() = 0;
+
+    /**
      * Tell whether wallet is a Ethereum one.
      * @return bool
      */
@@ -139,6 +153,15 @@ public:
      * @return bool
      */
     virtual bool isInstanceOfRippleLikeWallet() = 0;
+
+    /**
+     * Tell whether wallet is a Stellar one.
+     * @return bool
+     */
+    virtual bool isInstanceOfStellarLikeWallet() const = 0;
+
+    /** Cast the instance to StellarLIkeWallet */
+    virtual std::shared_ptr<StellarLikeWallet> asStellarLikeWallet() = 0;
 
     /**
      * Get wallet type.

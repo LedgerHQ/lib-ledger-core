@@ -55,9 +55,10 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, tx] () {
-                    soci::session sql(account->getWallet()->getDatabase()->getPool());
-                    if (account->putTransaction(sql, tx) != EthereumLikeAccount::FLAG_TRANSACTION_IGNORED)
-                        account->emitEventsNow();
+                    EthereumBlockchainObserver::emitEvent(account, [tx](soci::session &sql,
+                                                                       const std::shared_ptr<EthereumLikeAccount> &acc) {
+                        return acc->putTransaction(sql, tx) != EthereumLikeAccount::FLAG_TRANSACTION_IGNORED;
+                    });
                 });
             }
         }
@@ -66,13 +67,10 @@ namespace ledger {
             std::lock_guard<std::mutex> lock(_lock);
             for (const auto& account : _accounts) {
                 account->run([account, block] () {
-                    bool shouldEmitNow = false;
-                    {
-                        soci::session sql(account->getWallet()->getDatabase()->getPool());
-                        shouldEmitNow = account->putBlock(sql, block);
-                    }
-                    if (shouldEmitNow)
-                        account->emitEventsNow();
+                    EthereumBlockchainObserver::emitEvent(account, [block](soci::session &sql,
+                                                                          const std::shared_ptr<EthereumLikeAccount> &acc) {
+                        return acc->putBlock(sql, block);
+                    });
                 });
             }
         }

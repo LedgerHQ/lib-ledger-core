@@ -1,0 +1,138 @@
+@import "../amount.djinni"
+
+StellarLikeOperationType = enum {
+    CREATE_ACCOUNT; PAYMENT; PATH_PAYMENT; MANAGE_OFFER; CREATE_PASSIVE_OFFER; SET_OPTIONS;
+    CHANGE_TRUST; ALLOW_TRUST; ACCOUNT_MERGE; INFLATION; MANAGE_DATA; BUMP_SEQUENCE; MANAGE_BUY_OFFER;
+}
+
+
+StellarLikeBlock = interface +c {
+
+}
+
+StellarLikeMemoType = enum {
+    MEMO_NONE; MEMO_TEXT; MEMO_ID; MEMO_HASH; MEMO_RETURN;
+}
+
+StellarLikeMemo = interface +c {
+    getMemoType(): StellarLikeMemoType;
+    # Get the value of the memo as string. Fail if the memo is not with type MEMO_TEXT
+    getMemoText(): string;
+    # Get the value of the memo as BigInt. Fail if the memo is not with type MEMO_ID
+    getMemoId(): BigInt;
+     # Get the value of the memo as byte array. Fail if the memo is not with type MEMO_HASH
+    getMemoHash(): binary;
+     # Get the value of the memo as byte array. Fail if the memo is not with type MEMO_RETURN
+    getMemoReturn(): binary;
+
+    # Create a string version of the memo, no matter which underlying type it holds.
+    # For MEMO_TEXT returns memo value.
+    # For MEMO_ID, return a uint64 as string (base 10).
+    # For MEMO_HASH, MEMO_RETURN, returns a hex encoded string.
+    # For MEMO_NONE, returns an empty string
+    memoValuetoString(): string;
+}
+
+StellarLikeTransaction = interface +c {
+    toRawTransaction(): binary;
+
+    # Returns the payload which should be signed by the user in order to send the transaction.
+    toSignatureBase(): binary;
+
+    # Add a new signature to the transaction envelope
+    putSignature(signature: binary, address: Address);
+
+    # Returns the author of the transaction
+    getSourceAccount(): Address;
+
+    # Returns the sequence of the source account used for this transaction
+    getSourceAccountSequence(): BigInt;
+
+    # Returns the fee paid for this transaction to be validated
+    getFee(): Amount;
+
+    # Returns the transaction memo
+    getMemo(): StellarLikeMemo;
+}
+
+StellarLikeTransactionBuilder = interface +c {
+    addNativePayment(address: string, amount: Amount): StellarLikeTransactionBuilder;
+    addCreateAccount(address: string, amount: Amount): StellarLikeTransactionBuilder;
+    setBaseFee(baseFee: Amount): StellarLikeTransactionBuilder;
+
+    setTextMemo(text: string): StellarLikeTransactionBuilder;
+    setNumberMemo(number: BigInt): StellarLikeTransactionBuilder;
+    setHashMemo(hash: binary): StellarLikeTransactionBuilder;
+    setReturnMemo(value: binary): StellarLikeTransactionBuilder;
+    setSequence(sequence: BigInt): StellarLikeTransactionBuilder;
+    build(callback: Callback<StellarLikeTransaction>);
+
+    static parseRawTransaction(currency: Currency, rawTransaction: binary): StellarLikeTransaction;
+    static parseSignatureBase(currency: Currency, rawTransaction: binary): StellarLikeTransaction;
+}
+
+StellarLikeAsset = record {
+    type: string;
+    code: optional<string>;
+    issuer: optional<string>;
+}
+
+StellarLikeOperationRecord = record {
+    operationHash: string;
+    successful: bool;
+    operationType: StellarLikeOperationType;
+    transactionHash: string;
+    asset: StellarLikeAsset;
+    sourceAsset: optional<StellarLikeAsset>;
+    sourceAmount: optional<Amount>;
+}
+
+StellarLikeOperation = interface +c {
+    # Get the underlying operation information
+    getRecord(): StellarLikeOperationRecord;
+    # Get the underlying transaction in which this operation can be found.
+    getTransaction(): StellarLikeTransaction;
+}
+
+StellarLikeFeeStats = record {
+    lastBaseFee: i64;
+    modeAcceptedFee: i64;
+    minAccepted: i64;
+    maxFee: i64;
+}
+
+StellarLikeAccountSigner = record {
+    key: string;
+    type: string;
+    weight: i32;
+}
+
+StellarLikeAccount = interface +c {
+    # Checks if the current account exists on the stellar Network. If it doesn't the account needs to be activated by
+    # sending an account creation operation with an amount of at least the base reserve.
+    # @return Callback with a boolean indicating if the account exists on the Stellar network or not.
+    exists(callback: Callback<bool>);
+
+    # Create a new transaction builder to create new transaction
+    # @return The transaction builder
+    buildTransaction(): StellarLikeTransactionBuilder;
+
+    # Broadcast the given raw transaction to the network.
+    broadcastRawTransaction(tx: binary, callback: Callback<string>);
+
+    # Get base reserve of the network
+    getBaseReserve(callback: Callback<Amount>);
+
+    # Get sequence number to be used in the next transaction
+    getSequence(callback: Callback<BigInt>);
+
+    # Get recommended fee
+    getFeeStats(callback: Callback<StellarLikeFeeStats>);
+
+    # Get signers for this account
+    getSigners(callback: ListCallback<StellarLikeAccountSigner>);
+}
+
+StellarLikeWallet = interface +c {
+    exists(address: string, callback: Callback<bool>);
+}

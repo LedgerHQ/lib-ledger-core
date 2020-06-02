@@ -31,6 +31,9 @@
 
 #include "DatabaseSessionPool.hpp"
 #include "migrations.hpp"
+#ifdef PG_SUPPORT
+    #include "PostgreSQLBackend.h"
+#endif
 
 namespace ledger {
     namespace core {
@@ -39,8 +42,8 @@ namespace ledger {
             const std::shared_ptr<api::PathResolver> &resolver,
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
-            const std::string &password
-        ) : _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            const std::string &password) :
+            _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
@@ -54,7 +57,12 @@ namespace ledger {
                 if (_logger != nullptr)
                     session.set_log_stream(_logger);
             }
-
+#ifdef PG_SUPPORT
+            _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
+                    api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
+#else
+            _type = api::DatabaseBackendType::SQLITE3;
+#endif
             // Migrate database
             performDatabaseMigration();
         }
@@ -88,7 +96,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            migrate<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _type);
             tr.commit();
         }
 
@@ -97,7 +105,7 @@ namespace ledger {
             int version = getDatabaseMigrationVersion(sql);
 
             soci::transaction tr(sql);
-            rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version);
+            rollback<CURRENT_DATABASE_SCHEME_VERSION>(sql, version, _type);
             tr.commit();
         }
 

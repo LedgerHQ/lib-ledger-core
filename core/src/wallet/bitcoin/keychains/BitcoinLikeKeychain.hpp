@@ -42,13 +42,14 @@
 #include <api/Currency.hpp>
 #include <api/AccountCreationInfo.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <api/Keychain.hpp>
 
 #include <bitcoin/BitcoinLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
 
-        class BitcoinLikeKeychain {
+        class BitcoinLikeKeychain: public api::Keychain {
         public:
             enum KeyPurpose {
                 RECEIVE, CHANGE

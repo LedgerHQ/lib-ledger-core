@@ -47,14 +47,14 @@ namespace ledger {
             return version;
         }
 
-        template <> bool migrate<-1>(soci::session& sql, int currentVersion) {
+        template <> bool migrate<-1>(soci::session& sql, int currentVersion, api::DatabaseBackendType type) {
             return false;
         }
 
-        template <> void rollback<-1>(soci::session& sql, int currentVersion) {
+        template <> void rollback<-1>(soci::session& sql, int currentVersion, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<0>(soci::session& sql) {
+        template <> void migrate<0>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE __database_meta__("
                 "id INT PRIMARY KEY NOT NULL,"
                 "version INT NOT NULL"
@@ -63,11 +63,11 @@ namespace ledger {
             sql << "INSERT INTO __database_meta__(id, version) VALUES(0, 0)";
         }
 
-        template <> void rollback<0>(soci::session& sql) {
+        template <> void rollback<0>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE __database_meta__";
         }
 
-        template <> void migrate<1>(soci::session& sql) {
+        template <> void migrate<1>(soci::session& sql, api::DatabaseBackendType type) {
             // Pool table
             sql << "CREATE TABLE pools("
                 "name VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -206,7 +206,7 @@ namespace ledger {
                 ")";
         }
 
-        template <> void rollback<1>(soci::session& sql) {
+        template <> void rollback<1>(soci::session& sql, api::DatabaseBackendType type) {
             // Bitcoin operation table
             sql << "DROP TABLE bitcoin_operations";
 
@@ -250,24 +250,24 @@ namespace ledger {
             sql << "DROP TABLE pools";
         }
 
-        template <> void migrate<2>(soci::session& sql) {
+        template <> void migrate<2>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN timestamp_delay BIGINT DEFAULT 0";
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN sighash_type VARCHAR(255) DEFAULT 01";
         }
 
-        template <> void rollback<2>(soci::session& sql) {
+        template <> void rollback<2>(soci::session& sql, api::DatabaseBackendType type) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<3>(soci::session& sql) {
+        template <> void migrate<3>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_currencies ADD COLUMN additional_BIPs TEXT DEFAULT ''";
         }
 
-        template <> void rollback<3>(soci::session& sql) {
+        template <> void rollback<3>(soci::session& sql, api::DatabaseBackendType type) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<4>(soci::session& sql) {
+        template <> void migrate<4>(soci::session& sql, api::DatabaseBackendType type) {
             auto count = 0;
             sql << "SELECT COUNT(*) FROM bitcoin_currencies WHERE identifier = 'dgb'", soci::into(count);
             if (count > 0) {
@@ -275,11 +275,11 @@ namespace ledger {
             }
         }
 
-        template <> void rollback<4>(soci::session& sql) {
+        template <> void rollback<4>(soci::session& sql, api::DatabaseBackendType type) {
             // cannot rollback
         }
 
-        template <> void migrate<5>(soci::session& sql) {
+        template <> void migrate<5>(soci::session& sql, api::DatabaseBackendType type) {
             // ETH currencies
             sql << "CREATE TABLE ethereum_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
@@ -359,7 +359,7 @@ namespace ledger {
 
         }
 
-        template <> void rollback<5>(soci::session& sql) {
+        template <> void rollback<5>(soci::session& sql, api::DatabaseBackendType type) {
             // ERC20 tokens
             sql << "DROP TABLE erc20_tokens";
 
@@ -369,12 +369,19 @@ namespace ledger {
             // ERC20 accounts
             sql << "DROP TABLE erc20_accounts";
 
-            // ETH operations
-            sql << "DROP TABLE ethereum_operations";
-
-            // ETH transactions
-            sql << "DROP TABLE ethereum_transactions";
-
+            // ETH transactions and operations
+            switch (type) {
+                case api::DatabaseBackendType::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_operations CASCADE";
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_operations";
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
+            }
             // ETH accounts
             sql << "DROP TABLE ethereum_accounts";
 
@@ -382,8 +389,7 @@ namespace ledger {
             sql << "DROP TABLE ethereum_currencies";
         }
 
-        template <> void migrate<6>(soci::session& sql) {
-
+        template <> void migrate<6>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE ripple_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
@@ -418,7 +424,7 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<6>(soci::session& sql) {
+        template <> void rollback<6>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE ripple_operations";
 
             sql << "DROP TABLE ripple_transactions";
@@ -428,7 +434,7 @@ namespace ledger {
             sql << "DROP TABLE ripple_currencies";
         }
 
-        template <> void migrate<7>(soci::session& sql) {
+        template <> void migrate<7>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE bech32_parameters("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES bitcoin_currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "hrp VARCHAR(255) NOT NULL,"
@@ -439,11 +445,11 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<7>(soci::session& sql) {
+        template <> void rollback<7>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE bech32_parameters";
         }
 
-        template <> void migrate<8>(soci::session& sql) {
+        template <> void migrate<8>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE ripple_memos("
                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid) ON DELETE CASCADE,"
                    "data VARCHAR(1024),"
@@ -453,11 +459,11 @@ namespace ledger {
                    ")";
         }
 
-        template <> void rollback<8>(soci::session& sql) {
+        template <> void rollback<8>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE ripple_memos";
         }
 
-        template <> void migrate<9>(soci::session& sql) {
+        template <> void migrate<9>(soci::session& sql, api::DatabaseBackendType type) {
             // Since ALTER TABLE for changing data is non standard we have no choice but create a swap table, migrate all data from the legacy table to the swap and
             // then remove the legacy table and rename the swap table to the final table name. We are doing this to change input_data for ET and ERC txs data type from
             // VARCHAR(255) to TEXT since nothings prevents those fields to be bigger than 255 characters long.
@@ -483,7 +489,18 @@ namespace ledger {
              sql << "INSERT INTO eth_swap "
                 "SELECT transaction_uid, hash, nonce, value, block_uid, time, sender, receiver, input_data, gas_price, gas_limit, gas_used, confirmations, status "
                 "FROM ethereum_transactions";
-            sql << "DROP TABLE ethereum_transactions";
+
+            switch (type) {
+                case api::DatabaseBackendType::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
+            }
+
             sql << "ALTER TABLE eth_swap RENAME TO ethereum_transactions";
 
              // ERC20 operations
@@ -512,7 +529,7 @@ namespace ledger {
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
         }
 
-        template <> void rollback<9>(soci::session& sql) {
+        template <> void rollback<9>(soci::session& sql, api::DatabaseBackendType type) {
              // ETH transactions
             sql << "CREATE TABLE eth_swap("
                 "transaction_uid VARCHAR(255) PRIMARY KEY NOT NULL,"
@@ -534,7 +551,18 @@ namespace ledger {
              sql << "INSERT INTO eth_swap "
                 "SELECT transaction_uid, hash, nonce, value, block_uid, time, sender, receiver, input_data, gas_price, gas_limit, gas_used, confirmations, status "
                 "FROM ethereum_transactions";
-            sql << "DROP TABLE ethereum_transactions";
+
+            switch (type) {
+                case api::DatabaseBackendType::POSTGRESQL: {
+                    sql << "DROP TABLE ethereum_transactions CASCADE";
+                    break;
+                }
+                default: {
+                    sql << "DROP TABLE ethereum_transactions";
+                    break;
+                }
+            }
+
             sql << "ALTER TABLE eth_swap RENAME TO ethereum_transactions";
 
              // ERC20 operations
@@ -563,15 +591,15 @@ namespace ledger {
             sql << "ALTER TABLE erc20_swap RENAME TO erc20_operations";
         }
 
-        template <> void migrate<10>(soci::session& sql) {
+        template <> void migrate<10>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE erc20_operations ADD COLUMN block_height BIGINT";
         }
 
-        template <> void rollback<10>(soci::session& sql) {
+        template <> void rollback<10>(soci::session& sql, api::DatabaseBackendType type) {
             // not supported in standard ways by SQLite :(
         }
 
-        template <> void migrate<11>(soci::session& sql) {
+        template <> void migrate<11>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE tezos_currencies("
                     "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "identifier VARCHAR(255) NOT NULL,"
@@ -629,7 +657,7 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<11>(soci::session& sql) {
+        template <> void rollback<11>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE tezos_originated_operations";
 
             sql << "DROP TABLE tezos_originated_accounts";
@@ -643,7 +671,7 @@ namespace ledger {
             sql << "DROP TABLE tezos_currencies";
         }
 
-        template <> void migrate<12>(soci::session& sql) {
+        template <> void migrate<12>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE internal_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL ,"
                     "ethereum_operation_uid VARCHAR(255) NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
@@ -657,44 +685,275 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<12>(soci::session& sql) {
+        template <> void rollback<12>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE internal_operations";
         }
 
-        template <> void migrate<13>(soci::session& sql) {
+        template <> void migrate<13>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_outputs ADD COLUMN block_height BIGINT";
         }
 
-        template <> void rollback<13>(soci::session& sql) {
+        template <> void rollback<13>(soci::session& sql, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<14>(soci::session& sql) {
+        template <> void migrate<14>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE ripple_transactions ADD COLUMN sequence BIGINT";
         }
 
-        template <> void rollback<14>(soci::session& sql) {
+        template <> void rollback<14>(soci::session& sql, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<15>(soci::session& sql) {
+        template <> void migrate<15>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE ripple_transactions ADD COLUMN destination_tag BIGINT";
         }
 
-        template <> void rollback<15>(soci::session& sql) {
+        template <> void rollback<15>(soci::session& sql, api::DatabaseBackendType type) {
         }
 
-        template <> void migrate<16>(soci::session& sql) {
+        template <> void migrate<16>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE tezos_accounts RENAME COLUMN address TO public_key";
         }
 
-        template <> void rollback<16>(soci::session& sql) {
+        template <> void rollback<16>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE tezos_accounts RENAME COLUMN public_key TO address";
         }
 
-        template <> void migrate<17>(soci::session& sql) {
+        template <> void migrate<17>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE tezos_transactions ADD COLUMN status BIGINT";
         }
 
-        template <> void rollback<17>(soci::session& sql) {
+        template <> void rollback<17>(soci::session& sql, api::DatabaseBackendType type) {
+        }
+
+        template <> void migrate<18>(soci::session& sql, api::DatabaseBackendType type) {
+            // 1 if success, 0 otherwise
+            // <https://xrpl.org/transaction-results.html>
+            sql << "ALTER TABLE ripple_transactions ADD COLUMN status INTEGER";
+        }
+
+        template <> void rollback<18>(soci::session& sql, api::DatabaseBackendType type) {
+
+        }
+
+        template <> void migrate<19>(soci::session& sql,  api::DatabaseBackendType type) {
+            // Stellar currencies
+            sql << "CREATE TABLE stellar_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "identifier VARCHAR(255) NOT NULL,"
+                    "address_version VARCHAR(255) NOT NULL,"
+                    "base_reserve BIGINT NOT NULL,"
+                    "base_fee BIGINT NOT NULL,"
+                    "network_passphrase TEXT NOT NULL,"
+                    "additional_SEPs TEXT NOT NULL"
+                   ")";
+
+            // Stellar assets
+            sql << "CREATE TABLE stellar_assets("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                   "asset_type VARCHAR(255) NOT NULL,"
+                   "asset_code VARCHAR(255),"
+                   "asset_issuer VARCHAR(255)"
+                   ")";
+
+            // Stellar accounts
+            sql << "CREATE TABLE stellar_accounts("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "idx INTEGER NOT NULL,"
+                   "address TEXT NOT NULL,"
+                   "subentries_count INTEGER DEFAULT 0,"
+                   "sequence VARCHAR(255) DEFAULT '0'"
+                   ")";
+
+            // Stellar account signers
+            sql << "CREATE TABLE stellar_account_signers("
+                   "account_uid VARCHAR(255) REFERENCES stellar_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "weight INTEGER NOT NULL,"
+                   "signer_key VARCHAR(255) NOT NULL,"
+                   "key_type VARCHAR(255) NOT NULL"
+                   ")";
+
+            // Stellar balances
+            sql << "CREATE TABLE stellar_account_balances("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                   "account_uid VARCHAR(255) NOT NULL REFERENCES stellar_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "asset_uid VARCHAR(255) NOT NULL REFERENCES stellar_assets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                   "amount VARCHAR(255) NOT NULL,"
+                   "buying_liabilities VARCHAR(255),"
+                   "selling_liabilities VARCHAR(255)"
+                   ")";
+
+            // Stellar transactions
+            sql << "CREATE TABLE stellar_transactions("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL, "
+                   "hash VARCHAR(255) NOT NULL,"
+                   "source_account VARCHAR(255) NOT NULL,"
+                   "sequence VARCHAR(255) NOT NULL,"
+                   "fee VARCHAR(255) NOT NULL,"
+                   "successful INTEGER NOT NULL,"
+                   "ledger VARCHAR(255) NOT NULL,"
+                   "memo_type TEXT NOT NULL,"
+                   "memo TEXT NOT NULL"
+                   ")";
+
+            // Stellar native operations
+            sql << "CREATE TABLE stellar_operations("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES stellar_transactions(uid) ON DELETE CASCADE,"
+                   "hash VARCHAR(255) NOT NULL,"
+                   "created_at VARCHAR(255) NOT NULL,"
+                   "asset_uid VARCHAR(255) NOT NULL REFERENCES stellar_assets(uid) ON DELETE CASCADE,"
+                   "source_asset_uid VARCHAR(255) REFERENCES stellar_assets(uid) ON DELETE CASCADE,"
+                   "amount VARCHAR(255) NOT NULL,"
+                   "source_amount VARCHAR(255),"
+                   "from_address VARCHAR(255) NOT NULL,"
+                   "to_address VARCHAR(255) NOT NULL,"
+                   "type INTEGER NOT NULL"
+                   ")";
+
+
+            // Stellar account operations
+            sql << "CREATE TABLE stellar_account_operations("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                   "operation_uid VARCHAR(255) NOT NULL REFERENCES stellar_operations(uid) ON DELETE CASCADE"
+                   ")";
+
+            sql << "CREATE TABLE stellar_ledgers("
+                   "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES blocks(uid) ON DELETE CASCADE,"
+                   "base_fee VARCHAR(255) NOT NULL,"
+                   "base_reserve VARCHAR(255) NOT NULL"
+                   ")";
+
+        }
+        
+        template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
+            // Stellar ledgers
+            sql << "DROP TABLE stellar_ledgers";
+            // Stellar account <> operation link table
+            sql << "DROP TABLE stellar_account_operations";
+            // Stellar "native" operations
+            sql << "DROP TABLE stellar_operations";
+            // Stellar transactions
+            sql << "DROP TABLE stellar_transactions";
+            // Stellar balances
+            sql << "DROP TABLE stellar_account_balances";
+            // Stellar account signers
+            sql << "DROP TABLE stellar_account_signers";
+            // Stellar accounts
+            sql << "DROP TABLE stellar_accounts";
+            // Stellar assets
+            sql << "DROP TABLE stellar_assets";
+            // Stellar currencies
+            sql << "DROP TABLE stellar_currencies";
+        }
+
+        template <> void migrate<20>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "CREATE TABLE cosmos_currencies("
+                "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "identifier VARCHAR(255) NOT NULL,"
+                "xpub_version VARCHAR(255) NOT NULL,"
+                "pubkey_prefix VARCHAR(255) NOT NULL,"
+                "address_prefix VARCHAR(255) NOT NULL,"
+                "message_prefix VARCHAR(255) NOT NULL,"
+                "chain_id VARCHAR(255) NOT NULL,"
+                "additional_CIPs TEXT"
+                ")";
+
+            sql << "CREATE TABLE cosmos_accounts("
+                "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "idx INTEGER NOT NULL,"
+                "pubkey VARCHAR(255) NOT NULL,"
+                "account_type VARCHAR(255),"
+                "account_number VARCHAR(255),"
+                "sequence VARCHAR(255),"
+                "balances VARCHAR(255),"
+                "withdraw_address VARCHAR(255),"
+                "last_update TEXT"
+                ")";
+
+            sql << "CREATE TABLE cosmos_transactions("
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                "hash VARCHAR(255) NOT NULL,"
+                "block_uid VARCHAR(255) REFERENCES blocks(uid) ON DELETE CASCADE,"
+                "time VARCHAR(255) NOT NULL,"
+                "fee_amount VARCHAR(255) NOT NULL,"
+                "gas VARCHAR(255) NOT NULL,"
+                "gas_used VARCHAR(255),"
+                "memo TEXT"
+                ")";
+
+            // * NOTE : Special Msg types
+            // ** MsgMultiSend
+            // MsgMultiSend can have an arbitrary number of inputs and outputs
+            // (only invariant is sum(inputs) == sum(outputs))
+            // Therefore the various inputs and outputs are stored in another
+            // table to avoid varchars longer than 256 bytes
+            //
+            // ** MsgCreateValidator
+            // This message is not handled in database, and behaviour with these
+            // messages is undefined.
+            //
+            // ** MsgEditValidator
+            // This message is not handled in database, and behaviour with these
+            // messages is undefined.
+            sql << "CREATE TABLE cosmos_messages("
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                "transaction_uid VARCHAR(255) NOT NULL "
+                    "REFERENCES cosmos_transactions(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                "message_type VARCHAR(255) NOT NULL,"
+                "log TEXT,"
+                "success INTEGER,"
+                "msg_index INTEGER NOT NULL,"
+                // MsgSend
+                "from_address VARCHAR(255),"
+                "to_address VARCHAR(255),"
+                "amount VARCHAR(255),"
+                // MsgDelegate & MsgUndelegate
+                "delegator_address VARCHAR(255),"
+                "validator_address VARCHAR(255),"
+                // MsgBeginRedelegate
+                "validator_src_address VARCHAR(255),"
+                "validator_dst_address VARCHAR(255),"
+                // MsgSubmitProposal
+                "content_type TEXT,"
+                "content_title TEXT,"
+                "content_description TEXT,"
+                "proposer VARCHAR(255),"
+                // MsgVote
+                "voter VARCHAR(255),"
+                "proposal_id VARCHAR(255),"
+                "vote_option VARCHAR(255),"
+                // MsgDeposit
+                "depositor VARCHAR(255)"
+                ")";
+
+            sql << "CREATE TABLE cosmos_multisend_io("
+                "message_uid VARCHAR(255) NOT NULL "
+                "REFERENCES cosmos_messages(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                // not null when input
+                "from_address VARCHAR(255),"
+                // not null when output
+                "to_address VARCHAR(255),"
+                "amount VARCHAR(255) NOT NULL"
+                ")";
+
+            sql << "CREATE TABLE cosmos_operations("
+                "uid VARCHAR(255) PRIMARY KEY NOT NULL "
+                "REFERENCES operations(uid) ON DELETE CASCADE,"
+                "message_uid VARCHAR(255) NOT NULL "
+                "REFERENCES cosmos_messages(uid) ON DELETE CASCADE ON UPDATE CASCADE"
+                ")";
+        }
+
+        template <> void rollback<20>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "DROP TABLE cosmos_multisend_io";
+            sql << "DROP TABLE cosmos_operations";
+            sql << "DROP TABLE cosmos_messages";
+            sql << "DROP TABLE cosmos_transactions";
+            sql << "DROP TABLE cosmos_accounts";
+            sql << "DROP TABLE cosmos_currencies";
+
         }
     }
 }

@@ -9,7 +9,7 @@ RUN echo "deb-src http://deb.debian.org/debian stretch main" >> /etc/apt/sources
 
 RUN apt update
 
-RUN apt install -y \
+RUN apt-get install -y \
   build-essential \
   qt5-default \
   qtbase5-dev \
@@ -17,7 +17,6 @@ RUN apt install -y \
   git \
   curl \
   zsh \
-  gdb \
   wget
 
 # Dependencies for building cmake

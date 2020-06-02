@@ -29,6 +29,8 @@
  *
  */
 #include "Networks.hpp"
+#include <api/ErrorCode.hpp>
+#include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
         namespace api {
@@ -48,6 +50,41 @@ namespace ledger {
                     {}
                 );
             }
+
+            CosmosLikeNetworkParameters Networks::cosmos(const std::string& chainID) {
+                    static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
+                        // The current version of the chain has the "cosmos" identifer
+                        "cosmos",
+                        "ATOM signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {0xEB, 0x5A, 0xE9, 0x87},
+                        {},
+                        "cosmoshub-3",
+                        {}
+                    );
+
+                    static const api::CosmosLikeNetworkParameters COSMOSHUB_2(
+                        "atom-cosmoshub2",
+                        "ATOM signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {0xEB, 0x5A, 0xE9, 0x87},
+                        {},
+                        "cosmoshub-2",
+                        {}
+                    );
+
+                if (chainID == "atom") {
+                    return COSMOSHUB_3;
+                }
+                if (chainID == "atom-cosmoshub-2") {
+                    return COSMOSHUB_2;
+                }
+                throw make_exception(
+                    api::ErrorCode::INVALID_ARGUMENT,
+                    "No network parameters set for chain {}",
+                    chainID);
+            }
+
 
             EthereumLikeNetworkParameters Networks::ethereum() {
                 return EthereumLikeNetworkParameters(

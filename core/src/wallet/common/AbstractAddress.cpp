@@ -32,9 +32,11 @@
 #include "AbstractAddress.h"
 #include <utils/Exception.hpp>
 #include <bitcoin/BitcoinLikeAddress.hpp>
+#include <cosmos/CosmosLikeAddress.hpp>
 #include <ethereum/EthereumLikeAddress.h>
 #include <ripple/RippleLikeAddress.h>
 #include <tezos/TezosLikeAddress.h>
+#include <wallet/stellar/StellarLikeAddress.hpp>
 
 namespace ledger {
     namespace core {
@@ -60,18 +62,37 @@ namespace ledger {
             return asBitcoinLikeAddress() != nullptr;
         }
 
+        std::shared_ptr<api::StellarLikeAddress> AbstractAddress::asStellarLikeAddress() {
+            return std::dynamic_pointer_cast<api::StellarLikeAddress>(shared_from_this());
+        }
+
+        bool AbstractAddress::isInstanceOfStellarLikeAddress() const {
+            return _currency.walletType == api::WalletType::STELLAR;
+        }
+
+        const api::Currency &AbstractAddress::getCurrency() const {
+            return _currency;
+        }
+
+
         std::shared_ptr<api::Address> api::Address::parse(const std::string &address, const Currency &currency) {
             switch (currency.walletType) {
                 case WalletType::BITCOIN:
                     return ledger::core::BitcoinLikeAddress::parse(address, currency);
+                case WalletType::COSMOS:
+                    return ledger::core::CosmosLikeAddress::parse(address, currency);
                 case WalletType::ETHEREUM:
                     return ledger::core::EthereumLikeAddress::parse(address, currency);
+                case WalletType::STELLAR:
+                    return ledger::core::StellarLikeAddress::parse(address, currency);
                 case WalletType::RIPPLE:
                     return ledger::core::RippleLikeAddress::parse(address, currency);
                 case WalletType::TEZOS:
                     return ledger::core::TezosLikeAddress::parse(address, currency);
                 case WalletType::MONERO:
                     throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "MONERO address parser is not implemented yet");
+                default:
+                    throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Unknown wallet type address parser is needed here.");
             }
         }
 

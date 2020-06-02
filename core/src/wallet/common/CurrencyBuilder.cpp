@@ -50,6 +50,13 @@ namespace ledger {
             return *this;
         }
 
+        CurrencyBuilder &CurrencyBuilder::forkOfCosmos(api::CosmosLikeNetworkParameters params) {
+            _type = api::WalletType::COSMOS;
+            _cosmos = params;
+            return *this;
+        }
+
+
         CurrencyBuilder &CurrencyBuilder::forkOfEthereum(api::EthereumLikeNetworkParameters params) {
             _type = api::WalletType::ETHEREUM;
             _ethereum = params;
@@ -68,8 +75,15 @@ namespace ledger {
             return *this;
         }
 
+        CurrencyBuilder &CurrencyBuilder::forkOfStellar(const api::StellarLikeNetworkParameters &params) {
+            _type = api::WalletType::STELLAR;
+            _stellar = params;
+
+            return *this;
+        }
+
         CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _ethereum.toOptional(), _ripple.toOptional(), _tezos.toOptional());
+            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _cosmos.toOptional(), _ethereum.toOptional(), _ripple.toOptional(), _tezos.toOptional(), _stellar.toOptional());
         }
 
         CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {

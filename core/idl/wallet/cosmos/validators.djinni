@@ -1,0 +1,67 @@
+@import "../../errors.djinni"
+
+# Commission data for a Validator
+CosmosLikeValidatorCommission = record {
+        rates: CosmosLikeCommissionRates;
+        updateTime: date;
+}
+
+# Human readable description of validators
+CosmosLikeValidatorDescription = record {
+        moniker: string;
+        identity: optional<string>;
+        website: optional<string>;
+        details: optional<string>;
+}
+
+# Slashing data for a Validator
+CosmosLikeValidatorSigningInformation = record {
+    # Height at which Validator was first a candidate OR was unjailed
+    startHeight: i64;
+    # Index offset into the signed block bit array
+    indexOffset: i64;
+    # Timestamp Validator cannot be unjailed until. (epoch for pristine validators)
+    jailedUntil: date;
+    # Whether or not Validator has been tombstoned (killed out of validator set)
+    tombstoned: bool;
+    # Missed block counter in the monitored window of last blocks (size chosen at protocol level)
+    missedBlocksCounter: i32;
+}
+
+
+# Distribution data for a Validator
+CosmosLikeValidatorDistributionInformation = record {
+    # Self Bond rewards
+    selfBondRewards: string;
+    # Accumulated validator commission
+    validatorCommission: string;
+}
+
+
+# All of Validator related information
+CosmosLikeValidator = record {
+    # Description of the validator as given at Creation/Edition
+    validatorDetails: CosmosLikeValidatorDescription;
+    # Current commission rates and last commission update
+    commission: CosmosLikeValidatorCommission;
+    # Distribution information
+    distInfo: CosmosLikeValidatorDistributionInformation;
+    # Signing Activity information
+    signInfo: CosmosLikeValidatorSigningInformation;
+    # Last time an unbonding has been called. 0 if no unbonding called
+    unbondingHeight: i32;
+    # Timestamp for the end of the last unbonding that happened
+    unbondingTime: optional<date>;
+    # Minimum self delegation (in uatom for CosmosHub)
+    minSelfDelegation: string;
+    # Jailed status
+    jailed: bool;
+    # Voting Power
+    votingPower: string;
+    # Operator address (cosmosvaloper)
+    operatorAddress: string;
+    # Consensus public key (cosmosvalconspub)
+    consensusPubkey: string;
+    # Status (Unbonded - Unbonding - Bonded) Goes from 0 to 2 or 1 to 3 depending on API (see https://github.com/cosmos/cosmos-sdk/commit/53bf2271d5bac054a8f74723732f21055c1b72d4#diff-f54554903608b8b89649f532c8f1a78cL43)
+    activeStatus: i32;
+}

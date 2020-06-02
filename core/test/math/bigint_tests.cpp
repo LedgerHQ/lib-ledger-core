@@ -31,6 +31,7 @@
 
 #include "gtest/gtest.h"
 #include "math/BigInt.h"
+#include <limits>
 
 using namespace ledger::core;
 
@@ -165,4 +166,29 @@ TEST(BigInt, Power) {
     EXPECT_EQ(BigInt(1000000).pow(0), BigInt(1));
     EXPECT_EQ(BigInt(-1000000).pow(0), BigInt(-1));
     EXPECT_EQ(BigInt(-2).pow(3), BigInt(-8));
+}
+
+TEST(BigInt, FromFloatString) {
+    BigInt witness = BigInt::fromDecimal("5753854965885600108583111560790390019024492832");
+    BigInt subject = BigInt::fromFloatString("5.753854965885600108583111560790390019024492832", 45);
+    std::cout << std::endl << witness.toString() << std::endl;
+    std::cout << subject.toString() << std::endl;
+
+    auto t = witness.toByteArray();
+    auto tt = subject.toByteArray();
+    EXPECT_TRUE(witness.compare(subject) == 0);
+}
+
+TEST(BigInt, AssignFromUnsigned64bitScalar) {
+    auto value = std::numeric_limits<uint64_t>::max();
+    BigInt bigInt;
+    bigInt.assignScalar(value);
+    EXPECT_EQ(value, bigInt.toUint64());
+}
+
+TEST(BigInt, AssignFromSigned64bitScalar) {
+    uint64_t value = std::numeric_limits<uint64_t>::min();
+    BigInt bigInt;
+    bigInt.assignScalar(value);
+    EXPECT_EQ(value, bigInt.toUint64());
 }

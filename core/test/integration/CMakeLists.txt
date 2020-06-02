@@ -14,6 +14,8 @@ include_directories(../lib/libledger-test/)
 file(GLOB ledger-core-fixtures-srcs
         "../fixtures/*.cpp"
         "../fixtures/*.h"
+        "../cosmos/Fixtures.cpp"
+        "../cosmos/Fixtures.hpp"
         )
 
 file(GLOB_RECURSE TEST_FILES *.cpp)
@@ -113,6 +115,7 @@ add_test (NAME ledger-core-integration-LedgerApiBitcoinLikeBlockchainExplorerTes
 add_test (NAME ledger-core-integration-LedgerApiBitcoinLikeBlockchainExplorerTests.EndSession COMMAND ledger-core-integration-tests --gtest_filter=LedgerApiBitcoinLikeBlockchainExplorerTests.EndSession)
 add_test (NAME ledger-core-integration-LedgerApiEthereumLikeBlockchainExplorerTests.GetGasPrice COMMAND ledger-core-integration-tests --gtest_filter=LedgerApiEthereumLikeBlockchainExplorerTests.GetGasPrice)
 add_test (NAME ledger-core-integration-LedgerApiEthereumLikeBlockchainExplorerTests.GetEstimatedGasLimit COMMAND ledger-core-integration-tests --gtest_filter=LedgerApiEthereumLikeBlockchainExplorerTests.GetEstimatedGasLimit)
+add_test (NAME ledger-core-integration-LedgerApiEthereumLikeBlockchainExplorerTests.PostEstimatedGasLimit COMMAND ledger-core-integration-tests --gtest_filter=LedgerApiEthereumLikeBlockchainExplorerTests.PostEstimatedGasLimit)
 add_test (NAME ledger-core-integration-WalletPoolTest.InitializeCurrencies COMMAND ledger-core-integration-tests --gtest_filter=WalletPoolTest.InitializeCurrencies)
 add_test (NAME ledger-core-integration-WalletPoolTest.AddCurrency COMMAND ledger-core-integration-tests --gtest_filter=WalletPoolTest.AddCurrency)
 add_test (NAME ledger-core-integration-WalletPoolTest.RemoveCurrency COMMAND ledger-core-integration-tests --gtest_filter=WalletPoolTest.RemoveCurrency)
@@ -123,6 +126,8 @@ add_test (NAME ledger-core-integration-BitcoinLikeWalletP2SHSynchronization.Sync
 add_test (NAME ledger-core-integration-BitcoinLikeWalletP2SHSynchronization.EraseDataSinceAfterSynchronization COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletP2SHSynchronization.EraseDataSinceAfterSynchronization)
 add_test (NAME ledger-core-integration-BitcoinLikeWalletP2SHSynchronization.TestNetSynchronization COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletP2SHSynchronization.TestNetSynchronization)
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.MediumXpubSynchronization)
+add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.MediumDGBXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.MediumDGBXpubSynchronization)
+add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.MediumLTCXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.MediumLTCXpubSynchronization)
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.SynchronizeOnceAtATime COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.SynchronizeOnceAtATime)
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.SynchronizeAndFreshResetAll COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.SynchronizeAndFreshResetAll)
 add_test (NAME ledger-core-integration-BitcoinLikeWalletSynchronization.SynchronizeFromLastBlock COMMAND ledger-core-integration-tests --gtest_filter=BitcoinLikeWalletSynchronization.SynchronizeFromLastBlock)
@@ -133,6 +138,7 @@ add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandar
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutputAndFakeSignature COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithOneOutputAndFakeSignature)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithMultipleInputs COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.CreateStandardP2PKHWithMultipleInputs)
 add_test (NAME ledger-core-integration-BitcoinMakeP2PKHTransaction.Toto COMMAND ledger-core-integration-tests --gtest_filter=BitcoinMakeP2PKHTransaction.Toto)
+add_test (NAME ledger-core-integration-BitcoinStardustTransaction.FilterDustUtxo COMMAND ledger-core-integration-tests --gtest_filter=BitcoinStardustTransaction.FilterDustUtxo)
 add_test (NAME ledger-core-integration-BCHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter=BCHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput)
 add_test (NAME ledger-core-integration-ZCASHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput COMMAND ledger-core-integration-tests --gtest_filter=ZCASHMakeP2SHTransaction.CreateStandardP2SHWithOneOutput)
 add_test (NAME ledger-core-integration-ZCASHMakeP2SHTransaction.ParseSignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter=ZCASHMakeP2SHTransaction.ParseSignedRawTransaction)
@@ -149,6 +155,7 @@ add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickOneUTXOWithChange 
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickMultipleUTXO COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickMultipleUTXO)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickAllUTXO COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickAllUTXO)
 add_test (NAME ledger-core-integration-CoinSelectionP2PKH.PickUTXOWithMergeOutputs COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.PickUTXOWithMergeOutputs)
+add_test (NAME ledger-core-integration-CoinSelectionP2PKH.CompareUTXOPickingStrategies COMMAND ledger-core-integration-tests --gtest_filter=CoinSelectionP2PKH.CompareUTXOPickingStrategies)
 add_test (NAME ledger-core-integration-BitcoinWalletDatabaseTests.EmptyWallet COMMAND ledger-core-integration-tests --gtest_filter=BitcoinWalletDatabaseTests.EmptyWallet)
 add_test (NAME ledger-core-integration-BitcoinWalletDatabaseTests.CreateWalletWithOneAccount COMMAND ledger-core-integration-tests --gtest_filter=BitcoinWalletDatabaseTests.CreateWalletWithOneAccount)
 add_test (NAME ledger-core-integration-BitcoinWalletDatabaseTests.CreateWalletWithMultipleAccountAndDelete COMMAND ledger-core-integration-tests --gtest_filter=BitcoinWalletDatabaseTests.CreateWalletWithMultipleAccountAndDelete)
@@ -182,7 +189,7 @@ add_test (NAME ledger-core-integration-EthereumKeychains.EthereumExoticDerivatio
 add_test (NAME ledger-core-integration-EthereumKeychains.EthereumAddressValidationFromPubKeyAndChainCode COMMAND ledger-core-integration-tests --gtest_filter=EthereumKeychains.EthereumAddressValidationFromPubKeyAndChainCode)
 add_test (NAME ledger-core-integration-EthereumKeychains.EthereumDerivationSchemes COMMAND ledger-core-integration-tests --gtest_filter=EthereumKeychains.EthereumDerivationSchemes)
 
-add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=RippleLikeWalletSynchronization.MediumXpubSynchronization)
+# add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=RippleLikeWalletSynchronization.MediumXpubSynchronization)
 add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool COMMAND ledger-core-integration-tests --gtest_filter=RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool)
 add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewBlock COMMAND ledger-core-integration-tests --gtest_filter=RippleLikeWalletSynchronization.EmitNewBlock)
 
@@ -196,3 +203,25 @@ add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawTransa
 add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawRevealTransaction COMMAND ledger-core-integration-tests --gtest_filter=TezosMakeTransaction.ParseSignedRawRevealTransaction)
 add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawOriginationTransaction COMMAND ledger-core-integration-tests --gtest_filter=TezosMakeTransaction.ParseSignedRawOriginationTransaction)
 add_test (NAME ledger-core-integration-TezosLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=TezosLikeWalletSynchronization.MediumXpubSynchronization)
+
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.MediumXpubSynchronization)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.SuccessiveSynchronizations COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.SuccessiveSynchronizations)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.Balances COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.Balances)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.ValidatorSet COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.ValidatorSet)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.ValidatorInfo COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.ValidatorInfo)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetAccountWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetAccountWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetWithdrawDelegationRewardWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetWithdrawDelegationRewardWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetErrorTransaction COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetErrorTransaction)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetSendWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetSendWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetDelegateWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetDelegateWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GetCurrentBlockWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GetCurrentBlockWithExplorer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.AllTransactionsSynchronization COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.AllTransactionsSynchronization)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.BalanceHistoryOperationQuery COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.BalanceHistoryOperationQuery)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForTransfer COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForTransfer)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForWithdrawingRewards COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForWithdrawingRewards)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForDelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForDelegation)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForUnDelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForUnDelegation)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.GasLimitEstimationForRedelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.GasLimitEstimationForRedelegation)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.PendingUnbondings COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.PendingUnbondings)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.PendingRedelegations COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.PendingRedelegations)
+add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.InternalFeesMessageInTransaction COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.InternalFeesMessageInTransaction)

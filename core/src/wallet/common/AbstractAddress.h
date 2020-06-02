@@ -43,12 +43,17 @@ namespace ledger {
         public:
             explicit AbstractAddress(const api::Currency& currency, const Option<std::string>& path);
             api::Currency getCurrency() override;
+            const api::Currency& getCurrency() const;
 
             optional<std::string> getDerivationPath() override;
 
             std::shared_ptr<api::BitcoinLikeAddress> asBitcoinLikeAddress() override;
 
             bool isInstanceOfBitcoinLikeAddress() override;
+
+            std::shared_ptr<api::StellarLikeAddress> asStellarLikeAddress() override;
+
+            bool isInstanceOfStellarLikeAddress() const override;
 
         private:
             api::Currency _currency;

@@ -31,6 +31,7 @@
 #include "EthereumLikeTransactionParser.hpp"
 #include "utils/DateUtils.hpp"
 #include <math/Base58.hpp>
+#include <database/migrations.hpp>
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
@@ -216,10 +217,13 @@ namespace ledger {
                     std::istringstream issNonce(value);
                     issNonce >> _transaction->nonce;
                 } else if (_lastKey == "input") {
-                    if (isInternalTx) {
-                        _transaction->internalTransactions.back().inputData = fromStringToBytes(value);
-                    } else {
-                        _transaction->inputData = fromStringToBytes(value);
+                    const auto inputData = fromStringToBytes(value);
+                    if (value.size() <= ledger::core::MAX_LENGTH_VAR_CHAR) {
+                        if (isInternalTx) {
+                            _transaction->internalTransactions.back().inputData = std::move(inputData);
+                        } else {
+                            _transaction->inputData = std::move(inputData);
+                        }
                     }
                 } else if (_lastKey == "contract" && !_transaction->erc20Transactions.empty()) {
                     _transaction->erc20Transactions.back().contractAddress = value;

@@ -78,6 +78,8 @@ namespace ledger {
                 _output->address = Option<std::string>(value);
             } else if (_lastKey == "script_hex") {
                 _output->script = value;
+            } else if (_lastKey == "value") {
+                _output->value = BigInt::fromString(value);
             }
             return true;
         }

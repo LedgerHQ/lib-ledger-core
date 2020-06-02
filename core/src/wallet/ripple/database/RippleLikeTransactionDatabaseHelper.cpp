@@ -48,7 +48,7 @@ namespace ledger {
             rowset<row> rows = (sql.prepare << "SELECT  tx.hash, tx.value, tx.time, "
                     " tx.sender, tx.receiver, tx.fees, tx.confirmations, "
                     "block.height, block.hash, block.time, block.currency_name, "
-                    "memo.data, memo.fmt, memo.ty, tx.sequence, tx.destination_tag "
+                    "memo.data, memo.fmt, memo.ty, tx.sequence, tx.destination_tag, tx.status "
                     "FROM ripple_transactions AS tx "
                     "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
                     "LEFT JOIN ripple_memos AS memo ON memo.transaction_uid = tx.transaction_uid "
@@ -94,7 +94,11 @@ namespace ledger {
 
             tx.sequence = BigInt(static_cast<unsigned long long>(get_number<uint64_t>(row, 14)));
             if (row.get_indicator(15) != i_null) {
-              tx.destinationTag = get_number<uint64_t>(row, 15);
+                tx.destinationTag = get_number<uint64_t>(row, 15);
+            }
+
+            if (row.get_indicator(16) != i_null) {
+                tx.status = get_number<int32_t>(row, 16);
             }
 
             return true;
@@ -138,7 +142,7 @@ namespace ledger {
                 auto hexValue = tx.value.toHexString();
                 auto hexFees = tx.fees.toHexString();
                 sql
-                        << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations, :sequence, :destination_tag)",
+                        << "INSERT INTO ripple_transactions VALUES(:tx_uid, :hash, :value, :block_uid, :time, :sender, :receiver, :fees, :confirmations, :sequence, :destination_tag, :status)",
                         use(rippleTxUid),
                         use(tx.hash),
                         use(hexValue),
@@ -149,7 +153,8 @@ namespace ledger {
                         use(hexFees),
                         use(tx.confirmations),
                         use(tx.sequence),
-                        use(tx.destinationTag);
+                        use(tx.destinationTag),
+                        use(tx.status);
 
                 int fieldIndex = 0;
                 for (auto& memo : tx.memos) {

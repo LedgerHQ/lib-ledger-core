@@ -6,8 +6,7 @@ if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" ==
 	echo "======> Build Fat Library"
 	pwd
 
-	#We don't put x86_64/ledger-core.framework/ledger-core otherwise we have a problem when pushing to AppStore
-	lipo -create armv7/ledger-core.framework/ledger-core arm64/ledger-core.framework/ledger-core -o ledger-core
+	lipo -create armv7/ledger-core.framework/ledger-core arm64/ledger-core.framework/ledger-core x86_64/ledger-core.framework/ledger-core -o ledger-core
 	mkdir ledger-core.framework
 	mv ledger-core ledger-core.framework/
 	cp armv7/ledger-core.framework/Info.plist ledger-core.framework/

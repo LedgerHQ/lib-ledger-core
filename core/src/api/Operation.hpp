@@ -22,9 +22,11 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class BitcoinLikeOperation;
+class CosmosLikeOperation;
 class EthereumLikeOperation;
 class Preferences;
 class RippleLikeOperation;
+class StellarLikeOperation;
 class TezosLikeOperation;
 class TrustIndicator;
 enum class OperationType;
@@ -73,6 +75,14 @@ public:
     virtual std::vector<std::string> getRecipients() = 0;
 
     /**
+     * Get account-filtered recipients list associated with the operation.
+     *
+     * This function will filter recipients to retain only the ones that are owned by the current
+     * account.
+     */
+    virtual std::vector<std::string> getSelfRecipients() = 0;
+
+    /**
      * Get amount of operation.
      * @return Amount object
      */
@@ -109,6 +119,12 @@ public:
     virtual std::shared_ptr<BitcoinLikeOperation> asBitcoinLikeOperation() = 0;
 
     /**
+     * Convert operation as Cosmos operation.
+     * @return CosmosLikeOperation object
+     */
+    virtual std::shared_ptr<CosmosLikeOperation> asCosmosLikeOperation() = 0;
+
+    /**
      * Convert operation as Ethereum operation.
      * @return EthereumLikeOperation object
      */
@@ -126,8 +142,18 @@ public:
      */
     virtual std::shared_ptr<TezosLikeOperation> asTezosLikeOperation() = 0;
 
-    /** Same as isInstanceOfBitcoinLikeOperation for bitcoin. */
+    /**
+     * Same as isInstanceOfBitcoinLikeOperation for bitcoin.
+     * Convert operation as Ethereum operation.
+     * @return EthereumLikeOperation object
+     */
+    virtual std::shared_ptr<StellarLikeOperation> asStellarLikeOperation() = 0;
+
+    /** Is this an instance of a Bitcoin-like operation? */
     virtual bool isInstanceOfBitcoinLikeOperation() = 0;
+
+    /** Same as isInstanceOfCosmosLikeOperation for cosmos. */
+    virtual bool isInstanceOfCosmosLikeOperation() = 0;
 
     /** Same as isInstanceOfEthereumLikeOperation for ethereum. */
     virtual bool isInstanceOfEthereumLikeOperation() = 0;
@@ -137,6 +163,9 @@ public:
 
     /** Same as isInstanceOfTezosLikeOperation for tezos. */
     virtual bool isInstanceOfTezosLikeOperation() = 0;
+
+    /** Same as isInstanceOfBitcoinLikeOperation for ripple. */
+    virtual bool isInstanceOfStellarLikeOperation() const = 0;
 
     /**
      * Tells if the operation is complete.
