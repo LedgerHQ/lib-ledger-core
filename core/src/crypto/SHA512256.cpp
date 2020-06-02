@@ -30,7 +30,7 @@
 
 #include "SHA512256.hpp"
 #include <utils/Exception.hpp>
-#include <utils/hex.hpp>
+#include <utils/hex.h>
 #include <math/BaseConverter.hpp>
 
 #include <openssl/sha.h>
