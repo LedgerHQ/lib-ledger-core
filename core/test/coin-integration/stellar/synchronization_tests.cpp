@@ -63,6 +63,9 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     for (const auto& op : operations) {
         auto record = op->asStellarLikeOperation()->getRecord();
         fmt::print("{} {} {} {}\n",   api::to_string(op->getOperationType()), op->getAmount()->toString(), op->getFees()->toString(), api::to_string(record.operationType));
+        if (op->getOperationType() == api::OperationType::SEND) {
+            EXPECT_TRUE(op->getFees()->toLong() >= 100);
+        }
     }
 
     const auto& first = operations.front();

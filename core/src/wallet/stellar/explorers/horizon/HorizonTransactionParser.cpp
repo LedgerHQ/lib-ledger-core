@@ -84,11 +84,7 @@ namespace ledger {
 
         bool
         HorizonTransactionParser::RawNumber(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-            if (_path.match(FEE_MATCHER)) {
-                _transaction->feePaid = BigInt::fromString(std::string(str, length));
-            } else if (_path.match(ACCOUNT_SEQUENCE_MATCHER)) {
-                _transaction->sourceAccountSequence = BigInt::fromString(std::string(str, length));
-            } else if (_path.match(LEDGER_MATCHER)) {
+           if (_path.match(LEDGER_MATCHER)) {
                 _transaction->ledger = BigInt::fromString(std::string(str, length)).toUint64();
             }
             return true;
@@ -114,6 +110,10 @@ namespace ledger {
                 BaseConverter::decode(std::string(str, length), BaseConverter::BASE64_RFC4648, buffer);
                 stellar::xdr::Decoder decoder(buffer);
                 decoder >> _transaction->envelope;
+            } else if (_path.match(FEE_MATCHER)) {
+                _transaction->feePaid = BigInt::fromString(std::string(str, length));
+            } else if (_path.match(ACCOUNT_SEQUENCE_MATCHER)) {
+                _transaction->sourceAccountSequence = BigInt::fromString(std::string(str, length));
             }
             return true;
         }
