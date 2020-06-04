@@ -154,6 +154,19 @@ namespace algorand {
     static void putPaymentTransaction(soci::session & sql, const std::string & txUid, const model::Transaction & tx) {
         auto& payment = boost::get<model::PaymentTxnFields>(tx.details);
 
+        auto header_id = optionalValue<std::string>(tx.header.id);
+        auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
+        auto header_round = optionalValue<uint64_t>(tx.header.round);
+        auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
+        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
+        auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+        auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+        auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+        auto payment_receiverRewards = optionalValue<uint64_t>(payment.receiverRewards);
+        auto payment_closeAddr = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
+        auto payment_closeAmount = optionalValue<uint64_t>(payment.closeAmount);
+        auto payment_closeRewards = optionalValue<uint64_t>(payment.closeRewards);
+
         sql <<
         "INSERT INTO algorand_transactions ("
                 "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
@@ -163,31 +176,40 @@ namespace algorand {
                 ":sender, :fee, :from_rewards, :note, :group, :lease, "
                 ":amount, :receiver_addr, :receiver_rewards, :close_addr, :close_amount, :close_rewards)",
             soci::use(txUid),
-            soci::use(optionalValue<std::string>(tx.header.id)),
+            soci::use(header_id),
             soci::use(tx.header.type),
-            soci::use(optionalValue<uint64_t>(tx.header.round)),
-            soci::use(optionalValue<uint64_t>(tx.header.timestamp)),
+            soci::use(header_round),
+            soci::use(header_timestamp),
             soci::use(tx.header.firstValid),
             soci::use(tx.header.lastValid),
-            soci::use(optionalValue<std::string>(tx.header.genesisId)),
+            soci::use(header_genesisId),
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(optionalValue<uint64_t>(tx.header.fromRewards)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64)),
+            soci::use(header_fromrewards),
+            soci::use(header_note),
+            soci::use(header_group),
+            soci::use(header_lease),
             soci::use(payment.amount),
             soci::use(payment.receiverAddr.toString()),
-            soci::use(optionalValue<uint64_t>(payment.receiverRewards)),
-            soci::use(optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString)),
-            soci::use(optionalValue<uint64_t>(payment.closeAmount)),
-            soci::use(optionalValue<uint64_t>(payment.closeRewards));
+            soci::use(payment_receiverRewards),
+            soci::use(payment_closeAddr),
+            soci::use(payment_closeAmount),
+            soci::use(payment_closeRewards);
     }
 
     // NOTE This has not beed tested
     static void putKeyRegTransaction(soci::session & sql, const std::string & txUid, const model::Transaction & tx) {
         auto& keyreg = boost::get<model::KeyRegTxnFields>(tx.details);
+        auto header_id = optionalValue<std::string>(tx.header.id);
+        auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
+        auto header_round = optionalValue<uint64_t>(tx.header.round);
+        auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
+        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
+        auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+        auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+        auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+        auto keyreg_nonParticipation = optionalValueWithTransform<bool, int32_t>(keyreg.nonParticipation, boolToNum);
 
         sql <<
         "INSERT INTO algorand_transactions ("
@@ -198,21 +220,21 @@ namespace algorand {
                 ":sender, :fee, :from_rewards, :note, :group, :lease, "
                 ":non_part, :selection_pk, :vote_pk, :vote_key_dilution, :vote_first, :vote_last)",
             soci::use(txUid),
-            soci::use(optionalValue<std::string>(tx.header.id)),
+            soci::use(header_id),
             soci::use(tx.header.type),
-            soci::use(optionalValue<uint64_t>(tx.header.round)),
-            soci::use(optionalValue<uint64_t>(tx.header.timestamp)),
+            soci::use(header_round),
+            soci::use(header_timestamp),
             soci::use(tx.header.firstValid),
             soci::use(tx.header.lastValid),
-            soci::use(optionalValue<std::string>(tx.header.genesisId)),
+            soci::use(header_genesisId),
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(optionalValue<uint64_t>(tx.header.fromRewards)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64)),
-            soci::use(optionalValueWithTransform<bool, int32_t>(keyreg.nonParticipation, boolToNum)),
+            soci::use(header_fromrewards),
+            soci::use(header_note),
+            soci::use(header_group),
+            soci::use(header_lease),
+            soci::use(keyreg_nonParticipation),
             soci::use(keyreg.selectionPk),
             soci::use(keyreg.votePk),
             soci::use(keyreg.voteKeyDilution),
@@ -223,6 +245,28 @@ namespace algorand {
     static void putAssetConfigTransaction(soci::session & sql, const std::string & txUid, const model::Transaction & tx) {
         auto& assetConfig = boost::get<model::AssetConfigTxnFields>(tx.details);
         auto& assetParams = *assetConfig.assetParams;
+        auto header_id = optionalValue<std::string>(tx.header.id);
+        auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
+        auto header_round = optionalValue<uint64_t>(tx.header.round);
+        auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
+        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
+        auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+        auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+        auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+        auto asset_id = optionalValue<uint64_t>(assetConfig.assetId);
+        auto asset_name = optionalValue<std::string>(assetParams.assetName);
+        auto asset_unitname = optionalValue<std::string>(assetParams.unitName);
+        auto asset_total = optionalValue<uint64_t>(assetParams.total);
+        auto asset_decimals = optionalValue<uint32_t>(assetParams.decimals);
+        auto asset_frozen = optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum);
+        auto asset_creator = optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString);
+        auto asset_manager = optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString);
+        auto asset_reserve = optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString);
+        auto asset_freeze = optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString);
+        auto asset_clawback = optionalValueWithTransform<Address, std::string>(assetParams.clawbackAddr, addrToString);
+        auto asset_metadata = optionalValueWithTransform<std::vector<uint8_t>, std::string>(assetParams.metaDataHash, bytesToB64);
+        auto asset_url = optionalValue<std::string>(assetParams.url);
+
 
         sql <<
         "INSERT INTO algorand_transactions ("
@@ -236,37 +280,48 @@ namespace algorand {
                 ":asset_id, :asset_name, :unit_name, :total, :decimals, :default_frozen, :creator_addr, "
                 ":manager_addr, :reserve_addr, :freeze_addr, :clawback_addr, :metadata_hash, :url)",
             soci::use(txUid),
-            soci::use(optionalValue<std::string>(tx.header.id)),
+            soci::use(header_id),
             soci::use(tx.header.type),
-            soci::use(optionalValue<uint64_t>(tx.header.round)),
-            soci::use(optionalValue<uint64_t>(tx.header.timestamp)),
+            soci::use(header_round),
+            soci::use(header_timestamp),
             soci::use(tx.header.firstValid),
             soci::use(tx.header.lastValid),
-            soci::use(optionalValue<std::string>(tx.header.genesisId)),
+            soci::use(header_genesisId),
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(optionalValue<uint64_t>(tx.header.fromRewards)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64)),
-            soci::use(optionalValue<uint64_t>(assetConfig.assetId)),
-            soci::use(optionalValue<std::string>(assetParams.assetName)),
-            soci::use(optionalValue<std::string>(assetParams.unitName)),
-            soci::use(optionalValue<uint64_t>(assetParams.total)),
-            soci::use(optionalValue<uint32_t>(assetParams.decimals)),
-            soci::use(optionalValueWithTransform<bool, int32_t>(assetParams.defaultFrozen, boolToNum)),
-            soci::use(optionalValueWithTransform<Address, std::string>(assetParams.creatorAddr, addrToString)),
-            soci::use(optionalValueWithTransform<Address, std::string>(assetParams.managerAddr, addrToString)),
-            soci::use(optionalValueWithTransform<Address, std::string>(assetParams.reserveAddr, addrToString)),
-            soci::use(optionalValueWithTransform<Address, std::string>(assetParams.freezeAddr, addrToString)),
-            soci::use(optionalValueWithTransform<Address, std::string>(assetParams.clawbackAddr, addrToString)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(assetParams.metaDataHash, bytesToB64)),
-            soci::use(optionalValue<std::string>(assetParams.url));
+            soci::use(header_fromrewards),
+            soci::use(header_note),
+            soci::use(header_group),
+            soci::use(header_lease),
+            soci::use(asset_id),
+            soci::use(asset_name),
+            soci::use(asset_unitname),
+            soci::use(asset_total),
+            soci::use(asset_decimals),
+            soci::use(asset_frozen),
+            soci::use(asset_creator),
+            soci::use(asset_manager),
+            soci::use(asset_reserve),
+            soci::use(asset_freeze),
+            soci::use(asset_clawback),
+            soci::use(asset_metadata),
+            soci::use(asset_url);
     }
 
     static void putAssetTransferTransaction(soci::session & sql, const std::string & txUid, const model::Transaction & tx) {
         auto& assetTransfer = boost::get<model::AssetTransferTxnFields>(tx.details);
+        auto header_id = optionalValue<std::string>(tx.header.id);
+        auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
+        auto header_round = optionalValue<uint64_t>(tx.header.round);
+        auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
+        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
+        auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+        auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+        auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+        auto asset_amount = optionalValue<uint64_t>(assetTransfer.assetAmount);
+        auto asset_closeto = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
+        auto asset_sender = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
 
         sql <<
         "INSERT INTO algorand_transactions ("
@@ -277,30 +332,38 @@ namespace algorand {
                 ":sender, :fee, :from_rewards, :note, :group, :lease, "
                 ":asset_id, :amount, :receiver_addr, :close_addr, :sender_addr)",
             soci::use(txUid),
-            soci::use(optionalValue<std::string>(tx.header.id)),
+            soci::use(header_id),
             soci::use(tx.header.type),
-            soci::use(optionalValue<uint64_t>(tx.header.round)),
-            soci::use(optionalValue<uint64_t>(tx.header.timestamp)),
+            soci::use(header_round),
+            soci::use(header_timestamp),
             soci::use(tx.header.firstValid),
             soci::use(tx.header.lastValid),
-            soci::use(optionalValue<std::string>(tx.header.genesisId)),
+            soci::use(header_genesisId),
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(optionalValue<uint64_t>(tx.header.fromRewards)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64)),
+            soci::use(header_fromrewards),
+            soci::use(header_note),
+            soci::use(header_group),
+            soci::use(header_lease),
             soci::use(assetTransfer.assetId),
-            soci::use(optionalValue<uint64_t>(assetTransfer.assetAmount)),
+            soci::use(asset_amount),
             soci::use(assetTransfer.assetReceiver.toString()),
-            soci::use(optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString)),
-            soci::use(optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString));
+            soci::use(asset_closeto),
+            soci::use(asset_sender);
     }
 
     // NOTE This has not beed tested
     static void putAssetFreezeTransaction(soci::session & sql, const std::string & txUid, const model::Transaction & tx) {
         auto& assetFreeze = boost::get<model::AssetFreezeTxnFields>(tx.details);
+        auto header_id = optionalValue<std::string>(tx.header.id);
+        auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
+        auto header_round = optionalValue<uint64_t>(tx.header.round);
+        auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
+        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
+        auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
+        auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
+        auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
 
         sql <<
         "INSERT INTO algorand_transactions ("
@@ -311,20 +374,20 @@ namespace algorand {
                 ":sender, :fee, :from_rewards, :note, :group, :lease, "
                 ":asset_id, :frozen, :frozen_addr)",
             soci::use(txUid),
-            soci::use(optionalValue<std::string>(tx.header.id)),
+            soci::use(header_id),
             soci::use(tx.header.type),
-            soci::use(optionalValue<uint64_t>(tx.header.round)),
-            soci::use(optionalValue<uint64_t>(tx.header.timestamp)),
+            soci::use(header_round),
+            soci::use(header_timestamp),
             soci::use(tx.header.firstValid),
             soci::use(tx.header.lastValid),
-            soci::use(optionalValue<std::string>(tx.header.genesisId)),
+            soci::use(header_genesisId),
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(optionalValue<uint64_t>(tx.header.fromRewards)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64)),
-            soci::use(optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64)),
+            soci::use(header_fromrewards),
+            soci::use(header_note),
+            soci::use(header_group),
+            soci::use(header_lease),
             soci::use(assetFreeze.assetId),
             soci::use(static_cast<int32_t>(assetFreeze.assetFrozen)),
             soci::use(assetFreeze.frozenAddress.toString());
