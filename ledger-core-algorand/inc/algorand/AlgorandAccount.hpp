@@ -37,10 +37,12 @@
 #include <algorand/model/AlgorandAccount.hpp>
 #include <algorand/model/transactions/AlgorandTransaction.hpp>
 #include <algorand/operations/AlgorandOperation.hpp>
+#include <algorand/operations/AlgorandOperationQuery.hpp>
 
 #include <algorand/api/AlgorandAccount.hpp>
-#include <algorand/api/AlgorandAssetAmountMapCallback.hpp>
 #include <algorand/api/AlgorandAssetAmountCallback.hpp>
+#include <algorand/api/AlgorandAssetAmountListCallback.hpp>
+#include <algorand/api/AlgorandAssetAmountMapCallback.hpp>
 #include <algorand/api/AlgorandAssetParamsCallback.hpp>
 #include <algorand/api/AlgorandAssetParamsMapCallback.hpp>
 #include <algorand/api/AlgorandTransaction.hpp>
@@ -82,6 +84,12 @@ namespace algorand {
         void getAssetBalance(
                 const std::string& assetId,
                 const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) override;
+
+        Future<std::vector<api::AlgorandAssetAmount>> getAssetBalanceHistory(
+                const std::string& assetId,
+                const std::string& start,
+                const std::string& end,
+                api::TimePeriod period);
 
         void getAssetBalanceHistory(
                 const std::string& assetId,
@@ -156,8 +164,8 @@ namespace algorand {
     private:
         Address _address;
         std::shared_ptr<BlockchainExplorer> _explorer;
-        std::shared_ptr<AccountSynchronizer> _synchronizer;
         std::shared_ptr<BlockchainObserver> _observer;
+        std::shared_ptr<AccountSynchronizer> _synchronizer;
         std::shared_ptr<api::EventBus> _currentSyncEventBus;
         std::mutex _synchronizationLock;
     };

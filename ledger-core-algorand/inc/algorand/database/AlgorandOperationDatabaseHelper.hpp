@@ -45,6 +45,8 @@ namespace algorand {
     public:
 
         static void putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation) {
+            ledger::core::OperationDatabaseHelper::putOperation(sql, operation);
+
             sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
                 soci::use(operation.uid),
                 soci::use(txUid),

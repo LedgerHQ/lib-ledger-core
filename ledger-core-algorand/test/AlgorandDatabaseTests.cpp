@@ -59,8 +59,8 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
 
         accountInfo = api::AccountCreationInfo(1, {}, {}, { algorand::Address::toPublicKey(OBELIX_ADDRESS) }, {});
 
-        auto wallet = wait(walletStore->createWallet("algorand", currency.name, api::DynamicObject::newInstance()));
-        auto account = createAccount<Account>(wallet, accountInfo.index, accountInfo);
+        wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(walletStore->createWallet("algorand", currency.name, api::DynamicObject::newInstance())));
+        account = createAccount<algorand::Account>(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
     }
@@ -141,7 +141,7 @@ TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
 
     // Test reading from DB
     {
-        auto ops = wait(std::dynamic_pointer_cast<OperationQuery<algorand::Operation>>(account->queryOperations()->complete())->execute());
+        auto ops = wait(std::dynamic_pointer_cast<algorand::OperationQuery>(account->queryOperations()->complete())->execute());
 
         EXPECT_EQ(ops.size(), 1);
         auto op = std::dynamic_pointer_cast<algorand::Operation>(ops[0]);
@@ -166,3 +166,35 @@ TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
         assertSameTransaction(txRef, txRetrieved);
     }
 }
+
+TEST_F(AlgorandDatabaseTest, queryTransactions)
+{
+    soci::session sql(services->getDatabaseSessionPool()->getPool());
+    auto payment = paymentTransaction();
+    auto assetTransfer = assetTransferTransaction();
+    auto assetConfig = assetConfigTransaction();
+    assetConfig.header.sender = algorand::Address(TEST_ACCOUNT_ADDRESS);
+
+    account->putTransaction(sql, payment);
+    account->putTransaction(sql, assetTransfer);
+    account->putTransaction(sql, assetConfig);
+
+    auto txns = TransactionDatabaseHelper::queryTransactionsInvolving(sql, OBELIX_ADDRESS);
+    ASSERT_EQ(txns.size(), 2);
+    for (const auto& txn : txns) {
+        if (txn.header.type == model::constants::pay) {
+            assertSameTransaction(payment, txn);
+        } else if (txn.header.type == model::constants::axfer) {
+            assertSameTransaction(assetTransfer, txn);
+        }
+    }
+
+    txns = TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(sql, 342836, OBELIX_ADDRESS);
+    ASSERT_EQ(txns.size(), 1);
+    for (const auto& txn : txns) {
+        if (txn.header.type == model::constants::axfer) {
+            assertSameTransaction(assetTransfer, txn);
+        }
+    }
+}
+

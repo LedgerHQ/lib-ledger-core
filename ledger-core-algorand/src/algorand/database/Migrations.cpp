@@ -106,7 +106,7 @@ namespace core {
 
         sql << "CREATE TABLE algorand_operations("
                 "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
-                "transaction_uid VARCHAR(255) NOT NULL REFERENCES algorand_transactions(transaction_uid),"
+                "transaction_uid VARCHAR(255) NOT NULL REFERENCES algorand_transactions(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                 "transaction_hash VARCHAR(255) NOT NULL"
         ")";
     }

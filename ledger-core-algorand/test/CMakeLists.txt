@@ -12,6 +12,7 @@ endif (APPLE)
 add_executable(ledger-core-algorand-tests
     main.cpp
     MsgpackHelpersTests.cpp
+    AlgorandAccountTests.cpp
     AlgorandAddressTests.cpp
     AlgorandDatabaseTests.cpp
     AlgorandExplorerTests.cpp

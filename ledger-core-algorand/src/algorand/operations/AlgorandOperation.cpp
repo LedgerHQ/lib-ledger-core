@@ -42,6 +42,7 @@ namespace algorand {
     Operation::Operation(const std::shared_ptr<AbstractAccount>& account,
                          const model::Transaction& txn)
         : ::ledger::core::Operation(account)
+        , algorandType()
     {
         setTransaction(txn);
     }

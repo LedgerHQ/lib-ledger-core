@@ -48,7 +48,7 @@ namespace algorand {
                     , public ::ledger::core::Operation
     {
     public:
-        Operation() = delete;
+        Operation() = default;
 
         Operation(const std::shared_ptr<AbstractAccount>& account, const model::Transaction& txn);
 
