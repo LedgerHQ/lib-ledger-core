@@ -27,6 +27,7 @@
  *
  */
 
+#include "../model/transactions/AlgorandTransaction.hpp"
 #include "AlgorandTransactionDatabaseHelper.hpp"
 #include "../AlgorandExplorerConstants.hpp"
 #include "../model/transactions/AlgorandPayment.hpp"
@@ -393,7 +394,7 @@ namespace algorand {
             soci::use(assetFreeze.frozenAddress.toString());
     }
 
-    static void inflateTransaction(soci::session & sql, const soci::row & row, model::Transaction & tx) {
+    static void inflateTransaction(const soci::row & row, model::Transaction & tx) {
 
         tx.header.id = getOptionalString(row, COL_TX_HASH);
         tx.header.type = getString(row, COL_TX_TYPE);
@@ -504,7 +505,7 @@ namespace algorand {
                 "WHERE tx.hash = :hash", soci::use(hash));
 
         for (auto &row : rows) {
-            inflateTransaction(sql, row, tx);
+            inflateTransaction(row, tx);
             return true;
         }
 
@@ -535,6 +536,56 @@ namespace algorand {
         return txUid;
     }
 
-}
-}
-}
+    std::vector<model::Transaction> TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(
+            soci::session& sql,
+            uint64_t assetId,
+            const std::string& address)
+    {
+        soci::rowset<soci::row> rows = (sql.prepare <<
+                "SELECT *"
+                "FROM algorand_transactions AS tx "
+                "WHERE tx.type = :type "
+                "AND tx.axfer_asset_id = :axfer_asset_id "
+                "AND (tx.axfer_receiver_address = :axfer_receiver_address "
+                "OR tx.axfer_close_address = :axfer_close_address "
+                "OR tx.axfer_sender_address = :axfer_sender_address "
+                "OR tx.sender = :sender)",
+                soci::use(std::string(model::constants::axfer)), soci::use(assetId),
+                soci::use(address), soci::use(address),
+                soci::use(address), soci::use(address));
+
+        return query(rows);
+    }
+
+    std::vector<model::Transaction> TransactionDatabaseHelper::queryTransactionsInvolving(
+            soci::session& sql,
+            const std::string& address)
+    {
+        soci::rowset<soci::row> rows = (sql.prepare <<
+                "SELECT *"
+                "FROM algorand_transactions AS tx "
+                "WHERE tx.sender = :sender "
+                "OR tx.pay_receiver_address = :pay_receiver_address "
+                "OR tx.pay_close_address = :pay_close_address",
+                soci::use(address), soci::use(address), soci::use(address));
+
+        return query(rows);
+    }
+
+    std::vector<model::Transaction> TransactionDatabaseHelper::query(const soci::rowset<soci::row>& rows)
+    {
+        auto transactions = std::vector<model::Transaction>();
+        for (const auto& row : rows) {
+            const auto tx = [&row]() {
+                auto tx = model::Transaction();
+                inflateTransaction(row, tx);
+                return tx;
+            }();
+            transactions.push_back(tx);
+        }
+        return transactions;
+    }
+
+} // namespace algorand
+} // namespace core
+} // namespace ledger

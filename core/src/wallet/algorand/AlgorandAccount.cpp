@@ -28,15 +28,22 @@
  */
 
 #include "AlgorandAccount.hpp"
+#include "database/AlgorandTransactionDatabaseHelper.hpp"
+#include "database/AlgorandOperationDatabaseHelper.hpp"
 #include "model/AlgorandModelMapper.hpp"
+#include "operations/AlgorandOperation.hpp"
 
 #include <api/AlgorandAssetAmount.hpp>
 #include <api/AlgorandAssetParams.hpp>
 
 #include <api/BigInt.hpp>
+#include <utils/DateUtils.hpp>
 #include <utils/hex.h>
 
+#include <soci.h>
+
 #include <chrono>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -55,6 +62,7 @@ namespace algorand {
         , _address(currency, address)
         , _explorer(std::move(explorer))
         , _observer(std::move(observer))
+        , _synchronizer(std::move(synchronizer))
     {}
 
     bool Account::putBlock(soci::session& sql,
@@ -67,8 +75,23 @@ namespace algorand {
     int Account::putTransaction(soci::session& sql,
                                 const model::Transaction& transaction)
     {
-        // TODO
-        return 0;
+        const auto wallet = getWallet();
+        if (wallet == nullptr) {
+            throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
+        }
+
+        const auto txuid =
+            TransactionDatabaseHelper::putTransaction(sql, getAccountUid(), transaction);
+        const auto operation = [&]() {
+            auto operation = Operation(shared_from_this(), transaction);
+            inflateOperation(operation, getWallet(), transaction);
+            operation.refreshUid();
+            return operation;
+        }();
+
+        OperationDatabaseHelper::putAlgorandOperation(sql, txuid, operation);
+
+        return static_cast<int>(operation.getConstBackend().type);
     }
 
     namespace {
@@ -115,6 +138,82 @@ namespace algorand {
             .callback(getMainExecutionContext(), callback);
     }
 
+    Future<std::vector<api::AlgorandAssetAmount>> Account::getAssetBalanceHistory(
+            const std::string& assetId,
+            const std::string& start,
+            const std::string& end,
+            api::TimePeriod period)
+    {
+        const auto startDate = DateUtils::fromJSON(start);
+        const auto endDate = DateUtils::fromJSON(end);
+        if (startDate >= endDate) {
+            throw make_exception(
+                    api::ErrorCode::INVALID_DATE_FORMAT,
+                    "Start date should be strictly before end date");
+        }
+
+        soci::session sql(getWallet()->getDatabase()->getPool());
+        auto lowerDate = startDate;
+        auto upperDate = DateUtils::incrementDate(startDate, period);
+
+        const auto id = std::stoull(assetId);
+        const auto transactions =
+            TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(
+                    sql, id, _address.toString());
+
+        std::vector<api::AlgorandAssetAmount> amounts;
+        uint64_t balance = 0;
+        for (const auto& transaction : transactions) {
+            const auto date =
+                std::chrono::system_clock::time_point(
+                        std::chrono::seconds(
+                        transaction.header.timestamp.getValueOr(0)
+            ));
+
+            while (date > upperDate && lowerDate < endDate) {
+                lowerDate = DateUtils::incrementDate(lowerDate, period);
+                upperDate = DateUtils::incrementDate(upperDate, period);
+                amounts.emplace_back(std::string(), std::to_string(balance), false);
+            }
+
+            if (date <= upperDate) {
+                const auto& header = transaction.header;
+
+                const auto& details =
+                    boost::get<model::AssetTransferTxnFields>(transaction.details);
+
+                const auto amount = details.assetAmount.getValueOr(0);
+                /// TODO: closeAmount
+                /// The algorand API currently does not provide the close amount,
+                /// this is why this amount is set to 0 for now.
+                if (details.assetSender == _address ||
+                    header.sender == _address) {
+                    balance -= amount;
+                }
+
+                if (details.assetReceiver == _address) {
+                    balance += amount;
+                }
+
+                // TODO
+                if (details.assetCloseTo && details.assetCloseTo == _address) {
+                    balance += /* closeAmount */0;
+                }
+            }
+
+            if (lowerDate > endDate) {
+                break;
+            }
+        }
+
+        while (lowerDate < endDate) {
+            lowerDate = DateUtils::incrementDate(lowerDate, period);
+            amounts.emplace_back(std::string(), std::to_string(balance), false);
+        }
+
+        return Future<std::vector<api::AlgorandAssetAmount>>::successful(amounts);
+    }
+
     void Account::getAssetBalanceHistory(
             const std::string& assetId,
             const std::string& start,
@@ -122,7 +221,8 @@ namespace algorand {
             api::TimePeriod period,
             const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback)
     {
-        // TODO
+        getAssetBalanceHistory(assetId, start, end, period)
+            .callback(getMainExecutionContext(), callback);
     }
 
     void Account::getAssetsBalances(
@@ -232,16 +332,14 @@ namespace algorand {
 
     std::shared_ptr<api::OperationQuery> Account::queryOperations()
     {
-        // TODO
-        // auto query = std::make_shared<OperationQuery>(
-        //     api::QueryFilter::accountEq(getAccountUid());
-        //     getWallet()->getDatabase(),
-        //     getWallet()->getContext(),
-        //     getWallet()->getMainExecutionContext()
-        // );
-        // query->registerAccount(shared_from_this());
-        // return query;
-        return nullptr;
+        auto query = std::make_shared<OperationQuery>(
+            api::QueryFilter::accountEq(getAccountUid()),
+            getWallet()->getDatabase(),
+            getWallet()->getContext(),
+            getWallet()->getMainExecutionContext()
+        );
+        query->registerAccount(shared_from_this());
+        return query;
     }
 
     std::shared_ptr<api::Keychain> Account::getAccountKeychain() 
@@ -301,8 +399,82 @@ namespace algorand {
                                const std::string& end,
                                api::TimePeriod precision)
     {
-        // TODO
-        return Future<std::vector<std::shared_ptr<api::Amount>>>::failure(Exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "whatever"));
+        const auto startDate = DateUtils::fromJSON(start);
+        const auto endDate = DateUtils::fromJSON(end);
+        if (startDate >= endDate) {
+            throw make_exception(
+                    api::ErrorCode::INVALID_DATE_FORMAT,
+                    "Start date should be strictly before end date");
+        }
+
+        auto makeAmount =
+            [this](uint64_t amount) {
+                return u64ToAmount(_address.getCurrency())(amount);
+            };
+
+        soci::session sql(getWallet()->getDatabase()->getPool());
+        auto lowerDate = startDate;
+        auto upperDate = DateUtils::incrementDate(startDate, precision);
+
+        const auto transactions =
+            TransactionDatabaseHelper::queryTransactionsInvolving(
+                    sql, _address.toString());
+
+        std::vector<std::shared_ptr<api::Amount>> amounts;
+        uint64_t balance = 0;
+        for (const auto& transaction : transactions) {
+            const auto date =
+                std::chrono::system_clock::time_point(
+                        std::chrono::seconds(
+                        transaction.header.timestamp.getValueOr(0)
+            ));
+
+            while (date > upperDate && lowerDate < endDate) {
+                lowerDate = DateUtils::incrementDate(lowerDate, precision);
+                upperDate = DateUtils::incrementDate(upperDate, precision);
+                amounts.emplace_back(makeAmount(balance));
+            }
+
+            if (date <= upperDate) {
+                const auto& header = transaction.header;
+
+                if (header.sender == _address) {
+                    balance -= transaction.header.fee;
+                }
+
+                if (header.type != model::constants::pay) {
+                    continue;
+                }
+
+                const auto& details =
+                    boost::get<model::PaymentTxnFields>(transaction.details);
+
+                if (header.sender == _address) {
+                    balance -= details.amount;
+                    balance -= details.closeAmount.getValueOr(0);
+                    balance += header.fromRewards.getValueOr(0);
+                }
+                if (details.receiverAddr == _address) {
+                    balance += details.amount;
+                    balance += details.receiverRewards.getValueOr(0);
+                }
+                if (details.closeAddr && *details.closeAddr == _address) {
+                    balance += details.closeAmount.getValueOr(0);
+                    balance += details.closeRewards.getValueOr(0);
+                }
+            }
+
+            if (lowerDate > endDate) {
+                break;
+            }
+        }
+
+        while (lowerDate < endDate) {
+            lowerDate = DateUtils::incrementDate(lowerDate, precision);
+            amounts.emplace_back(makeAmount(balance));
+        }
+
+        return Future<std::vector<std::shared_ptr<api::Amount>>>::successful(amounts);
     }
 
     Future<Account::AddressList> Account::getFreshPublicAddresses()

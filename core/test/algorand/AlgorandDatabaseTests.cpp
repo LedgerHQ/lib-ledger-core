@@ -59,7 +59,7 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
 
         accountInfo = api::AccountCreationInfo(1, {}, {}, { algorand::Address::toPublicKey(OBELIX_ADDRESS) }, {});
 
-        auto wallet = wait(pool->createWallet("algorand", currency.name, api::DynamicObject::newInstance()));
+        wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, api::DynamicObject::newInstance())));
         auto account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
@@ -166,5 +166,36 @@ TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
 
         auto txRetrieved = op->getTransactionData();
         assertSameTransaction(txRef, txRetrieved);
+    }
+}
+
+TEST_F(AlgorandDatabaseTest, queryTransactions)
+{
+    soci::session sql(pool->getDatabaseSessionPool()->getPool());
+    auto payment = paymentTransaction();
+    auto assetTransfer = assetTransferTransaction();
+    auto assetConfig = assetConfigTransaction();
+    assetConfig.header.sender = algorand::Address(TEST_ACCOUNT_ADDRESS);
+
+    account->putTransaction(sql, payment);
+    account->putTransaction(sql, assetTransfer);
+    account->putTransaction(sql, assetConfig);
+
+    auto txns = TransactionDatabaseHelper::queryTransactionsInvolving(sql, OBELIX_ADDRESS);
+    ASSERT_EQ(txns.size(), 2);
+    for (const auto& txn : txns) {
+        if (txn.header.type == model::constants::pay) {
+            assertSameTransaction(payment, txn);
+        } else if (txn.header.type == model::constants::axfer) {
+            assertSameTransaction(assetTransfer, txn);
+        }
+    }
+
+    txns = TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(sql, 342836, OBELIX_ADDRESS);
+    ASSERT_EQ(txns.size(), 1);
+    for (const auto& txn : txns) {
+        if (txn.header.type == model::constants::axfer) {
+            assertSameTransaction(assetTransfer, txn);
+        }
     }
 }

@@ -97,6 +97,10 @@ namespace ledger {
             return _backend;
         }
 
+        const ledger::core::Operation &OperationApi::getConstBackend() const {
+            return _backend;
+        }
+
         api::WalletType OperationApi::getWalletType() {
             return _backend.walletType;
         }
