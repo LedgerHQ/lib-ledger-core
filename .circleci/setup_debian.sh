@@ -19,9 +19,10 @@ ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 if [ "$BUILD_CONFIG" == "Release" ]; then
     apt-get install -y awscli
     echo "========> Install sbt"
-    curl -L -o sbt-1.2.8.deb https://dl.bintray.com/sbt/debian/sbt-1.2.8.deb
-    dpkg -i sbt-1.2.8.deb
-    rm sbt-1.2.8.deb
+    SBT_DEB="sbt-1.3.10.deb"
+    curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
+    dpkg -i $SBT_DEB
+    rm $SBT_DEB
     sbt sbtVersion
 fi
 
