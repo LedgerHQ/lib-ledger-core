@@ -83,6 +83,7 @@ function generate_npm_interface {
     echo "Publishing and pushing to the local yalc store"
     yalc publish --push
   fi
+}
 
 function generate_react_native_interface {
   RN_DIR=./bindings/react-native
@@ -138,25 +139,25 @@ function generate_react_native_interface {
   done
 
   # copy dynamic libraries
-  CORE_LIB_x86=${BUILD}_x86/src/libledger-core.so
+  CORE_LIB_x86=${BUILD_DIR}_x86/src/libledger-core.so
   if [[ -f $CORE_LIB_x86 ]]; then
     echo "Copying the dynamic library (x86) for Android"
     cp $CORE_LIB_x86 $RN_ANDROID_LIBS/x86
   fi
 
-  CORE_LIB_x86_64=${BUILD}_x86_64/src/libledger-core.so
+  CORE_LIB_x86_64=${BUILD_DIR}_x86_64/src/libledger-core.so
   if [[ -f $CORE_LIB_x86_64 ]]; then
     echo "Copying the dynamic library (x86_64) for Android"
     cp $CORE_LIB_x86_64 $RN_ANDROID_LIBS/x86_64
   fi
 
-  CORE_LIB_armeabi_v7a=${BUILD}_armeabi-v7a/src/libledger-core.so
+  CORE_LIB_armeabi_v7a=${BUILD_DIR}_armeabi-v7a/src/libledger-core.so
   if [[ -f $CORE_LIB_armeabi_v7a ]]; then
     echo "Copying the dynamic library (armeabi-v7a) for Android"
     cp $CORE_LIB_armeabi_v7a $RN_ANDROID_LIBS/armeabi-v7a
   fi
 
-  CORE_LIB_arm64_v8a=${BUILD}_arm64-v8a/src/libledger-core.so
+  CORE_LIB_arm64_v8a=${BUILD_DIR}_arm64-v8a/src/libledger-core.so
   echo $CORE_LIB_arm64_v8a
   if [[ -f $CORE_LIB_arm64_v8a ]]; then
     echo "Copying the dynamic library (arm64-v8a) for Android"
