@@ -143,7 +143,14 @@ namespace ledger {
                 auto account = _accounts.find(accountUid);
                 if (account == _accounts.end())
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Account {} is not registered.", accountUid);
+
                 auto operationApi = std::make_shared<OperationApi>(account->second);
+                if(account->second->getWalletType() == api::WalletType::ALGORAND)
+                {
+                    algorand::model::Transaction tx;
+                    operationApi = std::make_shared<algorand::Operation>(account->second,tx);
+                }
+
                 auto& operation = operationApi->getBackend();
 
                 // Inflate abstract operation
