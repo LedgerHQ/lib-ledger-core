@@ -46,11 +46,12 @@ namespace algorand {
 
         static void putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation) {
             ledger::core::OperationDatabaseHelper::putOperation(sql, operation.getConstBackend());
-
+            auto op_uid = operation.getConstBackend().uid;
+            auto tx_id = operation.getTransaction()->getId();
             sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
-                soci::use(operation.getConstBackend().uid),
+                soci::use(op_uid),
                 soci::use(txUid),
-                soci::use(operation.getTransaction()->getId());
+                soci::use(tx_id);
         }
 
     };
