@@ -31,22 +31,24 @@
 #pragma once
 
 #include "AlgorandAddress.hpp"
-#include "operations/AlgorandOperation.hpp"
 #include "AlgorandAccountSynchronizer.hpp"
 #include "AlgorandBlockchainExplorer.hpp"
 #include "AlgorandBlockchainObserver.hpp"
 #include "model/AlgorandAccount.hpp"
 #include "model/transactions/AlgorandTransaction.hpp"
+#include "operations/AlgorandOperation.hpp"
 
 #include <api/AlgorandAccount.hpp>
-#include <api/AlgorandAssetAmountMapCallback.hpp>
 #include <api/AlgorandAssetAmountCallback.hpp>
+#include <api/AlgorandAssetAmountListCallback.hpp>
+#include <api/AlgorandAssetAmountMapCallback.hpp>
 #include <api/AlgorandAssetParamsCallback.hpp>
 #include <api/AlgorandAssetParamsMapCallback.hpp>
 #include <api/AlgorandTransaction.hpp>
 #include <api/AmountCallback.hpp>
 #include <api/StringCallback.hpp>
 #include <api/Keychain.hpp>
+#include <api/OperationQuery.hpp>
 
 #include <wallet/common/AbstractAccount.hpp>
 
@@ -84,6 +86,12 @@ namespace algorand {
                 const std::string& assetId,
                 const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) override;
 
+        Future<std::vector<api::AlgorandAssetAmount>> getAssetBalanceHistory(
+                const std::string& assetId,
+                const std::string& start,
+                const std::string& end,
+                api::TimePeriod period);
+                
         void getAssetBalanceHistory(
                 const std::string& assetId,
                 const std::string& start,
@@ -157,8 +165,8 @@ namespace algorand {
     private:
         Address _address;
         std::shared_ptr<BlockchainExplorer> _explorer;
-        std::shared_ptr<AccountSynchronizer> _synchronizer;
         std::shared_ptr<BlockchainObserver> _observer;
+        std::shared_ptr<AccountSynchronizer> _synchronizer;
         std::shared_ptr<api::EventBus> _currentSyncEventBus;
         std::mutex _synchronizationLock;
 

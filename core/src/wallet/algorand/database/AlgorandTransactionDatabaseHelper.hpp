@@ -60,6 +60,18 @@ namespace algorand {
                                           const std::string & accountUid,
                                           const model::Transaction & tx);
 
+        static std::vector<model::Transaction> queryAssetTransferTransactionsInvolving(
+                soci::session& sql,
+                uint64_t assetId,
+                const std::string& address);
+
+        static std::vector<model::Transaction> queryTransactionsInvolving(
+                soci::session& sql,
+                const std::string& address);
+
+    private:
+        static std::vector<model::Transaction> query(
+               const soci::rowset<soci::row>& rows);
     };
 
 } // namespace algorand
