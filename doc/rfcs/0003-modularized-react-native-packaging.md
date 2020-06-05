@@ -76,10 +76,10 @@ to generate all possible libraries: just generate the one you’re interested in
 packaging, the syntax is expected to be:
 
 ```
-${BUILD}_${PLATFORM}
+${BUILD_DIR}_${PLATFORM}
 ```
 
-Where `${BUILD}` is `build` by default and can be overridden and `${PLATFORM}` is one of:
+Where `${BUILD_DIR}` is `build` by default and can be overridden and `${PLATFORM}` is one of:
 
 - `x86` for 32-bit CPU architecture.
 - `x86_64` for 64-bit CPU architecture.
