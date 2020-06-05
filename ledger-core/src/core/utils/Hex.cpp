@@ -30,6 +30,7 @@
  */
 
 #include <core/utils/Hex.hpp>
+#include <stdexcept>
 
 namespace ledger {
     namespace core {
