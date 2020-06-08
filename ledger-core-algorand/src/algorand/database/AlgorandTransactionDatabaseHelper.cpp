@@ -353,7 +353,7 @@ namespace algorand {
             model::PaymentTxnFields paymentDetails;
 
             paymentDetails.amount = getNumber(row, COL_TX_PAY_AMOUNT);
-            paymentDetails.receiverAddr = getString(row, COL_TX_PAY_RECEIVER_ADDRESS);
+            paymentDetails.receiverAddr = Address(getString(row, COL_TX_PAY_RECEIVER_ADDRESS));
             paymentDetails.receiverRewards = getOptionalNumber(row, COL_TX_PAY_RECEIVER_REWARDS);
             paymentDetails.closeAddr = getOptionalStringWithTransform<Address>(row, COL_TX_PAY_CLOSE_ADDRESS, stringToAddr);
             paymentDetails.closeAmount = getOptionalNumber(row, COL_TX_PAY_CLOSE_AMOUNT);
@@ -407,7 +407,7 @@ namespace algorand {
 
             assetTransferDetails.assetId = getNumber(row, COL_TX_AXFER_ASSET_ID);
             assetTransferDetails.assetAmount = getOptionalNumber(row, COL_TX_AXFER_ASSET_AMOUNT);
-            assetTransferDetails.assetReceiver = getString(row, COL_TX_AXFER_RECEIVER_ADDRESS);
+            assetTransferDetails.assetReceiver = Address(getString(row, COL_TX_AXFER_RECEIVER_ADDRESS));
             assetTransferDetails.assetCloseTo = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_CLOSE_ADDRESS, stringToAddr);
             assetTransferDetails.assetSender = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_SENDER_ADDRESS, stringToAddr);
 
@@ -420,7 +420,7 @@ namespace algorand {
 
             assetFreezeDetails.assetId = getNumber(row, COL_TX_AFRZ_ASSET_ID);
             assetFreezeDetails.assetFrozen = !! getNumber(row, COL_TX_AFRZ_FROZEN);
-            assetFreezeDetails.frozenAddress = getString(row, COL_TX_AFRZ_FROZEN_ADDRESS);
+            assetFreezeDetails.frozenAddress = Address(getString(row, COL_TX_AFRZ_FROZEN_ADDRESS));
 
             tx.details = assetFreezeDetails;
         }

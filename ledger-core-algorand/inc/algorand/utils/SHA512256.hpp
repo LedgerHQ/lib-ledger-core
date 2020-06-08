@@ -44,7 +44,7 @@ namespace algorand {
         static std::vector<uint8_t> bytesToBytesHash(const std::vector<uint8_t>& bytes);
 
     private:
-        static std::vector<uint8_t> dataToBytesHash(const uint8_t *data, size_t size);
+        static std::vector<uint8_t> dataToBytesHash(const void *data, size_t size);
     };
 
 }

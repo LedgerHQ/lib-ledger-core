@@ -136,10 +136,10 @@ namespace algorand {
             assetParams.decimals = 3;
             assetParams.unitName = "DUM";
             assetParams.assetName = "Dummy Asset";
-            assetParams.freezeAddr = OBELIX_ADDRESS;
-            assetParams.managerAddr = OBELIX_ADDRESS;
-            assetParams.reserveAddr = OBELIX_ADDRESS;
-            assetParams.clawbackAddr = OBELIX_ADDRESS;
+            assetParams.freezeAddr = Address(OBELIX_ADDRESS);
+            assetParams.managerAddr = Address(OBELIX_ADDRESS);
+            assetParams.reserveAddr = Address(OBELIX_ADDRESS);
+            assetParams.clawbackAddr = Address(OBELIX_ADDRESS);
             assetParams.defaultFrozen = false;
         }
 
