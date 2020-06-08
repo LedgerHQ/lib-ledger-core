@@ -57,7 +57,7 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
         auto const currency = currencies::ALGORAND;
         registerCurrency(currency);
 
-        accountInfo = api::AccountCreationInfo(1, {}, {}, { algorand::Address::toPublicKey(OBELIX_ADDRESS) }, {});
+        accountInfo = api::AccountCreationInfo(1, {}, {}, { { std::begin(OBELIX_ADDRESS), std::end(OBELIX_ADDRESS) } }, {});
 
         wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, api::DynamicObject::newInstance())));
         account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);

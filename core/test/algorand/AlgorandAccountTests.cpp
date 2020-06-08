@@ -207,7 +207,7 @@ public:
         const auto currency = currencies::ALGORAND;
         registerCurrency(currency);
 
-        accountInfo = api::AccountCreationInfo(1, {}, {}, { algorand::Address::toPublicKey(OBELIX) }, {}); // TODO: FIXEME
+         accountInfo = api::AccountCreationInfo(1, {}, {}, { { std::begin(OBELIX), std::end(OBELIX) } }, {}); // TODO: FIXEME
 
         wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, api::DynamicObject::newInstance())));
         account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
