@@ -47,6 +47,7 @@
 #include <api/AlgorandTransaction.hpp>
 #include <api/AmountCallback.hpp>
 #include <api/StringCallback.hpp>
+#include <api/BoolCallback.hpp>
 #include <api/Keychain.hpp>
 #include <api/OperationQuery.hpp>
 
@@ -81,6 +82,8 @@ namespace algorand {
         void getAsset(
                 const std::string& assetId,
                 const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) override;
+
+        void hasAsset(const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback) override;
 
         void getAssetBalance(
                 const std::string& assetId,

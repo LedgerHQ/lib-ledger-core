@@ -124,6 +124,18 @@ namespace algorand {
             .callback(getMainExecutionContext(), callback);
     }
 
+    void Account::hasAsset(const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback)
+    {
+       getAccountInformation()
+            .map<bool>(
+                    getContext(),
+                    [&assetId](const model::Account& account) {
+                        const auto id = std::stoull(assetId);
+                        return static_cast<bool>(account.assetsAmounts.find(id)->second.amount);
+                    })
+            .callback(getMainExecutionContext(), callback);
+    }
+
     void Account::getAssetBalance(
             const std::string& assetId,
             const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback)

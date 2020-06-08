@@ -25,6 +25,7 @@ class AlgorandAssetParamsCallback;
 class AlgorandAssetParamsMapCallback;
 class AlgorandTransaction;
 class AmountCallback;
+class BoolCallback;
 class StringCallback;
 enum class TimePeriod;
 
@@ -38,6 +39,13 @@ public:
      * @param callback, Callback returning the information about the queried asset
      */
     virtual void getAsset(const std::string & assetId, const std::shared_ptr<AlgorandAssetParamsCallback> & callback) = 0;
+
+    /**
+     * Check if account hash a specific asset
+     * @param assetId, the unique identifier of the asset to look for
+     * @param callback, Callback returning the true if the account hold the asset
+     */
+    virtual void hasAsset(const std::string & assetId, const std::shared_ptr<BoolCallback> & callback) = 0;
 
     /**
      * Get balance of account for a particular asset.
