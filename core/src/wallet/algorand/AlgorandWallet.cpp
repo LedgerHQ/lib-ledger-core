@@ -82,7 +82,8 @@ namespace algorand {
 
             AccountDatabaseEntry accountData;
             accountData.index = info.index;
-            accountData.address = Address::fromPublicKey(info.publicKeys[0]);
+            accountData.address =
+                std::string(std::begin(info.publicKeys[0]), std::end(info.publicKeys[0]));
 
             soci::transaction tr(sql);
             algorand::AccountDatabaseHelper::createAccount(sql, walletUid, accountData);
@@ -135,6 +136,7 @@ namespace algorand {
         return false;
     }
 
-}
-}
-}
+} // namespace algorand
+} // namespace core
+} // namespace ledger
+

@@ -52,11 +52,11 @@ namespace algorand {
 
         // Convenience constructors using default ALGO currency
         Address() : ledger::core::AbstractAddress(currencies::ALGORAND, optional<std::string>("")) {}
-        Address(const std::string & address) : Address(currencies::ALGORAND, address) {}
+        explicit Address(const std::string & address) : Address(currencies::ALGORAND, address) {}
 
         std::string toString() override;
         const std::string& toString() const;
-        const std::vector<uint8_t>& getPublicKey() const;
+        std::vector<uint8_t> getPublicKey() const;
 
         // Utility methods for easy conversion, could be useful for tests
         static std::string fromPublicKey(const std::vector<uint8_t> & pubKey);
@@ -68,7 +68,6 @@ namespace algorand {
         static const int32_t CHECKSUM_LEN_BYTES = 4;
 
         std::string _address;
-        std::vector<uint8_t> _publicKey;
 
     };
 
