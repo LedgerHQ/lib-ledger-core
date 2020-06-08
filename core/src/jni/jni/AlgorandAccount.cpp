@@ -9,6 +9,7 @@
 #include "AlgorandAssetParamsMapCallback.hpp"
 #include "AlgorandTransaction.hpp"
 #include "AmountCallback.hpp"
+#include "BoolCallback.hpp"
 #include "Marshal.hpp"
 #include "StringCallback.hpp"
 #include "TimePeriod.hpp"
@@ -35,6 +36,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandAccount>(nativeRef);
         ref->getAsset(::djinni::String::toCpp(jniEnv, j_assetId),
                       ::djinni_generated::AlgorandAssetParamsCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native_1hasAsset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_assetId, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandAccount>(nativeRef);
+        ref->hasAsset(::djinni::String::toCpp(jniEnv, j_assetId),
+                      ::djinni_generated::BoolCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

@@ -181,6 +181,14 @@ AlgorandAccount = interface +c {
         callback: Callback<AlgorandAssetParams>
     );
 
+    # Check if account hash a specific asset
+    # @param assetId, the unique identifier of the asset to look for
+    # @param callback, Callback returning the true if the account hold the asset
+    hasAsset(
+        assetId: string,
+        callback: Callback<bool>
+    );
+
     # Get balance of account for a particular asset.
     # @param assetId, the unique identifier of the asset on the algorand network
     # @param callback, if getAssetBalance succeeds, Callback returning an Amount object which represents account's balance
