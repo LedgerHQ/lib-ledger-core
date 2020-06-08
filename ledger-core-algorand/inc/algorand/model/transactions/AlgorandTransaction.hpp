@@ -114,11 +114,11 @@ namespace model {
 
     namespace constants {
 
-        static constexpr char pay[] = "pay";
-        static constexpr char keyreg[] = "keyreg";
-        static constexpr char acfg[] = "acfg";
-        static constexpr char axfer[] = "axfer";
-        static constexpr char afreeze[] = "afrz";
+        static constexpr const char* pay = "pay";
+        static constexpr const char* keyreg = "keyreg";
+        static constexpr const char* acfg = "acfg";
+        static constexpr const char* axfer = "axfer";
+        static constexpr const char* afreeze = "afrz";
 
     } // namespace constants
 

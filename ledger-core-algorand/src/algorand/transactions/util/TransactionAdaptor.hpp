@@ -57,63 +57,63 @@ namespace algorand {
 namespace constants {
 
     // Header
-    static constexpr char fee[] = "fee";
-    static constexpr char fv[] = "fv";
-    static constexpr char gen[] = "gen";
-    static constexpr char gh[] = "gh";
-    static constexpr char grp[] = "grp";
-    static constexpr char lv[] = "lv";
-    static constexpr char lx[] = "lx";
-    static constexpr char note[] = "note";
-    static constexpr char snd[] = "snd";
-    static constexpr char type[] = "type";
+    static constexpr const char* fee = "fee";
+    static constexpr const char* fv = "fv";
+    static constexpr const char* gen = "gen";
+    static constexpr const char* gh = "gh";
+    static constexpr const char* grp = "grp";
+    static constexpr const char* lv = "lv";
+    static constexpr const char* lx = "lx";
+    static constexpr const char* note = "note";
+    static constexpr const char* snd = "snd";
+    static constexpr const char* type = "type";
 
     // Key Registration Transaction
-    static constexpr char nonpart[] = "nonpart";
-    static constexpr char selkey[] = "selkey";
-    static constexpr char votefst[] = "votefst";
-    static constexpr char votekd[] = "votekd";
-    static constexpr char votekey[] = "votekey";
-    static constexpr char votelst[] = "votelst";
+    static constexpr const char* nonpart = "nonpart";
+    static constexpr const char* selkey = "selkey";
+    static constexpr const char* votefst = "votefst";
+    static constexpr const char* votekd = "votekd";
+    static constexpr const char* votekey = "votekey";
+    static constexpr const char* votelst = "votelst";
 
     // Payment Transaction
-    static constexpr char amt[] = "amt";
-    static constexpr char close[] = "close";
-    static constexpr char rcv[] = "rcv";
+    static constexpr const char* amt = "amt";
+    static constexpr const char* close = "close";
+    static constexpr const char* rcv = "rcv";
 
     // Asset configuration Transaction
-    static constexpr char apar[] = "apar";
-    static constexpr char caid[] = "caid";
+    static constexpr const char* apar = "apar";
+    static constexpr const char* caid = "caid";
     // Asset parameters
-    static constexpr char am[] = "am";
-    static constexpr char an[] = "an";
-    static constexpr char au[] = "au";
-    static constexpr char c[] = "c";
-    static constexpr char dc[] = "dc";
-    static constexpr char df[] = "df";
-    static constexpr char f[] = "f";
-    static constexpr char m[] = "m";
-    static constexpr char r[] = "r";
-    static constexpr char t[] = "t";
-    static constexpr char un[] = "un";
+    static constexpr const char* am = "am";
+    static constexpr const char* an = "an";
+    static constexpr const char* au = "au";
+    static constexpr const char* c = "c";
+    static constexpr const char* dc = "dc";
+    static constexpr const char* df = "df";
+    static constexpr const char* f = "f";
+    static constexpr const char* m = "m";
+    static constexpr const char* r = "r";
+    static constexpr const char* t = "t";
+    static constexpr const char* un = "un";
 
     // Asset Transfer Transaction
-    static constexpr char aamt[] = "aamt";
-    static constexpr char aclose[] = "aclose";
-    static constexpr char arcv[] = "arcv";
-    static constexpr char asnd[] = "asnd";
-    static constexpr char xaid[] = "xaid";
+    static constexpr const char* aamt = "aamt";
+    static constexpr const char* aclose = "aclose";
+    static constexpr const char* arcv = "arcv";
+    static constexpr const char* asnd = "asnd";
+    static constexpr const char* xaid = "xaid";
 
     // Asset Freeze Transaction
-    static constexpr char afrz[] = "afrz";
-    static constexpr char fadd[] = "fadd";
-    static constexpr char faid[] = "faid";
+    static constexpr const char* afrz = "afrz";
+    static constexpr const char* fadd = "fadd";
+    static constexpr const char* faid = "faid";
 
     // Signed Transaction
-    static constexpr char lsig[] = "lsig";
-    static constexpr char msig[] = "msig";
-    static constexpr char sig[] = "sig";
-    static constexpr char txn[] = "txn";
+    static constexpr const char* lsig = "lsig";
+    static constexpr const char* msig = "msig";
+    static constexpr const char* sig = "sig";
+    static constexpr const char* txn = "txn";
 
 } // namespace constants
 } // namespace algorand
@@ -133,261 +133,257 @@ namespace adaptor {
     using ledger::core::algorand::model::Transaction;
     using ledger::core::algorand::model::AssetParams;
 
-    namespace {
+    namespace constants = ledger::core::algorand::constants;
 
-        namespace constants = ledger::core::algorand::constants;
+    inline uint32_t countFieldsInAssetParams(const AssetParams& fields)
+    {
+        return countValidValues(
+                fields.metaDataHash,
+                fields.assetName,
+                fields.url,
+                fields.clawbackAddr,
+                fields.decimals,
+                fields.defaultFrozen,
+                fields.freezeAddr,
+                fields.managerAddr,
+                fields.reserveAddr,
+                fields.total,
+                fields.unitName);
+    }
 
-        uint32_t countFieldsInAssetParams(const AssetParams& fields)
+    template<typename Stream>
+    packer<Stream>& packAssetParams(packer<Stream>& o, const AssetParams& params)
+    {
+        using namespace ledger::core::algorand;
+
+        return packKeyValues(o,
+                makeKeyValue(constants::am, params.metaDataHash),
+                makeKeyValue(constants::an, params.assetName),
+                makeKeyValue(constants::au, params.url),
+                makeKeyValue(constants::c, params.clawbackAddr),
+                makeKeyValue(constants::dc, params.decimals),
+                makeKeyValue(constants::df, params.defaultFrozen),
+                makeKeyValue(constants::f, params.freezeAddr),
+                makeKeyValue(constants::m, params.managerAddr),
+                makeKeyValue(constants::r, params.reserveAddr),
+                makeKeyValue(constants::t, params.total),
+                makeKeyValue(constants::un, params.unitName));
+    }
+
+    class TransactionDetailsFieldsCounter : public boost::static_visitor<uint32_t>
+    {
+    public:
+        uint32_t operator()(const KeyRegTxnFields& fields) const
         {
             return countValidValues(
-                    fields.metaDataHash,
-                    fields.assetName,
-                    fields.url,
-                    fields.clawbackAddr,
-                    fields.decimals,
-                    fields.defaultFrozen,
-                    fields.freezeAddr,
-                    fields.managerAddr,
-                    fields.reserveAddr,
-                    fields.total,
-                    fields.unitName);
+                    fields.nonParticipation,
+                    fields.selectionPk,
+                    fields.voteFirst,
+                    fields.voteKeyDilution,
+                    fields.votePk,
+                    fields.voteLast);
         }
 
-        template<typename Stream>
-        packer<Stream>& packAssetParams(packer<Stream>& o, const AssetParams& params)
+        uint32_t operator()(const PaymentTxnFields& fields) const
+        {
+            return countValidValues(
+                    fields.amount,
+                    fields.closeAddr,
+                    fields.receiverAddr);
+        }
+
+        uint32_t operator()(const AssetConfigTxnFields& fields) const
+        {
+            return countValidValues(
+                    fields.assetParams,
+                    fields.assetId);
+        }
+
+        uint32_t operator()(const AssetTransferTxnFields& fields) const
+        {
+            return countValidValues(
+                    fields.assetAmount,
+                    fields.assetCloseTo,
+                    fields.assetReceiver,
+                    fields.assetSender,
+                    fields.assetId);
+        }
+
+        uint32_t operator()(const AssetFreezeTxnFields& fields) const
+        {
+            return countValidValues(
+                    fields.assetFrozen,
+                    fields.frozenAddress,
+                    fields.assetId);
+        }
+    };
+
+    inline uint32_t countFieldsInDetails(const Transaction::Details& details)
+    {
+        return boost::apply_visitor(TransactionDetailsFieldsCounter(), details);
+    }
+
+    inline uint32_t countFieldsInHeader(const Transaction::Header& header)
+    {
+        return countValidValues(
+                header.fee,
+                header.firstValid,
+                header.genesisId,
+                header.genesisHash,
+                header.group,
+                header.lastValid,
+                header.lease,
+                header.note,
+                header.sender,
+                header.type);
+    }
+
+    inline uint32_t countFieldsInTransaction(const Transaction& tx)
+    {
+        return countFieldsInHeader(tx.header) + countFieldsInDetails(tx.details);
+    }
+
+    template<typename Stream>
+    class TransactionPacker : public boost::static_visitor<packer<Stream>&>
+    {
+    public:
+        TransactionPacker(packer<Stream>& out, const Transaction::Header& header)
+            : header(header), out(out)
+        {}
+
+        packer<Stream>& operator()(const KeyRegTxnFields& fields) const
         {
             using namespace ledger::core::algorand;
 
-            return packKeyValues(o,
-                    KeyValue<Option<std::vector<uint8_t>>>(constants::am, params.metaDataHash),
-                    KeyValue<Option<std::string>>(constants::an, params.assetName),
-                    KeyValue<Option<std::string>>(constants::au, params.url),
-                    KeyValue<Option<Address>>(constants::c, params.clawbackAddr),
-                    KeyValue<Option<uint32_t>>(constants::dc, params.decimals),
-                    KeyValue<Option<bool>>(constants::df, params.defaultFrozen),
-                    KeyValue<Option<Address>>(constants::f, params.freezeAddr),
-                    KeyValue<Option<Address>>(constants::m, params.managerAddr),
-                    KeyValue<Option<Address>>(constants::r, params.reserveAddr),
-                    KeyValue<Option<uint64_t>>(constants::t, params.total),
-                    KeyValue<Option<std::string>>(constants::un, params.unitName));
+            return packKeyValues(out,
+                    makeKeyValue(constants::fee, header.fee),
+                    makeKeyValue(constants::fv, header.firstValid),
+                    makeKeyValue(constants::gen, header.genesisId),
+                    makeKeyValue(constants::gh, header.genesisHash),
+                    makeKeyValue(constants::grp, header.group),
+                    makeKeyValue(constants::lv, header.lastValid),
+                    makeKeyValue(constants::lx, header.lease),
+                    makeKeyValue(constants::nonpart, fields.nonParticipation),
+                    makeKeyValue(constants::note, header.note),
+                    makeKeyValue(constants::selkey, fields.selectionPk),
+                    makeKeyValue(constants::snd, header.sender),
+                    makeKeyValue(constants::type, header.type),
+                    makeKeyValue(constants::votefst, fields.voteFirst),
+                    makeKeyValue(constants::votekd, fields.voteKeyDilution),
+                    makeKeyValue(constants::votekey, fields.votePk),
+                    makeKeyValue(constants::votelst, fields.voteLast));
         }
 
-        class TransactionDetailsFieldsCounter : public boost::static_visitor<uint32_t>
-        {
-        public:
-            uint32_t operator()(const KeyRegTxnFields& fields) const
-            {
-                return countValidValues(
-                        fields.nonParticipation,
-                        fields.selectionPk,
-                        fields.voteFirst,
-                        fields.voteKeyDilution,
-                        fields.votePk,
-                        fields.voteLast);
-            }
-
-            uint32_t operator()(const PaymentTxnFields& fields) const
-            {
-                return countValidValues(
-                        fields.amount,
-                        fields.closeAddr,
-                        fields.receiverAddr);
-            }
-
-            uint32_t operator()(const AssetConfigTxnFields& fields) const
-            {
-                return countValidValues(
-                        fields.assetParams,
-                        fields.assetId);
-            }
-
-            uint32_t operator()(const AssetTransferTxnFields& fields) const
-            {
-                return countValidValues(
-                        fields.assetAmount,
-                        fields.assetCloseTo,
-                        fields.assetReceiver,
-                        fields.assetSender,
-                        fields.assetId);
-            }
-
-            uint32_t operator()(const AssetFreezeTxnFields& fields) const
-            {
-                return countValidValues(
-                        fields.assetFrozen,
-                        fields.frozenAddress,
-                        fields.assetId);
-            }
-        };
-
-        uint32_t countFieldsInDetails(const Transaction::Details& details)
-        {
-            return boost::apply_visitor(TransactionDetailsFieldsCounter(), details);
-        }
-
-        uint32_t countFieldsInHeader(const Transaction::Header& header)
-        {
-            return countValidValues(
-                    header.fee,
-                    header.firstValid,
-                    header.genesisId,
-                    header.genesisHash,
-                    header.group,
-                    header.lastValid,
-                    header.lease,
-                    header.note,
-                    header.sender,
-                    header.type);
-        }
-
-        uint32_t countFieldsInTransaction(const Transaction& tx)
-        {
-            return countFieldsInHeader(tx.header) + countFieldsInDetails(tx.details);
-        }
-
-        template<typename Stream>
-        class TransactionPacker : public boost::static_visitor<packer<Stream>&>
-        {
-        public:
-            TransactionPacker(packer<Stream>& out, const Transaction::Header& header)
-                : header(header), out(out)
-            {}
-
-            packer<Stream>& operator()(const KeyRegTxnFields& fields) const
-            {
-                using namespace ledger::core::algorand;
-
-                return packKeyValues(out,
-                        KeyValue<uint64_t>(constants::fee, header.fee),
-                        KeyValue<uint64_t>(constants::fv, header.firstValid),
-                        KeyValue<Option<std::string>>(constants::gen, header.genesisId),
-                        KeyValue<B64String>(constants::gh, header.genesisHash),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::grp, header.group),
-                        KeyValue<uint64_t>(constants::lv, header.lastValid),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::lx, header.lease),
-                        KeyValue<Option<bool>>(constants::nonpart, fields.nonParticipation),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::note, header.note),
-                        KeyValue<std::string>(constants::selkey, fields.selectionPk),
-                        KeyValue<Address>(constants::snd, header.sender),
-                        KeyValue<std::string>(constants::type, header.type),
-                        KeyValue<uint64_t>(constants::votefst, fields.voteFirst),
-                        KeyValue<uint64_t>(constants::votekd, fields.voteKeyDilution),
-                        KeyValue<std::string>(constants::votekey, fields.votePk),
-                        KeyValue<uint64_t>(constants::votelst, fields.voteLast));
-            }
-
-            packer<Stream>& operator()(const PaymentTxnFields& fields) const
-            {
-                using namespace ledger::core::algorand;
-
-                return packKeyValues(out,
-                        KeyValue<uint64_t>(constants::amt, fields.amount),
-                        KeyValue<Option<Address>>(constants::close, fields.closeAddr),
-                        KeyValue<uint64_t>(constants::fee, header.fee),
-                        KeyValue<uint64_t>(constants::fv, header.firstValid),
-                        KeyValue<Option<std::string>>(constants::gen, header.genesisId),
-                        KeyValue<B64String>(constants::gh, header.genesisHash),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::grp, header.group),
-                        KeyValue<uint64_t>(constants::lv, header.lastValid),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::lx, header.lease),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::note, header.note),
-                        KeyValue<Address>(constants::rcv, fields.receiverAddr),
-                        KeyValue<Address>(constants::snd, header.sender),
-                        KeyValue<std::string>(constants::type, header.type));
-            }
-
-            packer<Stream>& operator()(const AssetConfigTxnFields& fields) const
-            {
-                using namespace ledger::core::algorand;
-
-                return packKeyValues(out,
-                        KeyValue<Option<AssetParams>>(constants::apar, fields.assetParams),
-                        KeyValue<Option<uint64_t>>(constants::caid, fields.assetId),
-                        KeyValue<uint64_t>(constants::fee, header.fee),
-                        KeyValue<uint64_t>(constants::fv, header.firstValid),
-                        KeyValue<Option<std::string>>(constants::gen, header.genesisId),
-                        KeyValue<B64String>(constants::gh, header.genesisHash),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::grp, header.group),
-                        KeyValue<uint64_t>(constants::lv, header.lastValid),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::lx, header.lease),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::note, header.note),
-                        KeyValue<Address>(constants::snd, header.sender),
-                        KeyValue<std::string>(constants::type, header.type));
-            }
-
-            packer<Stream>& operator()(const AssetTransferTxnFields& fields) const
-            {
-                using namespace ledger::core::algorand;
-
-                return packKeyValues(out,
-                        KeyValue<Option<uint64_t>>(constants::aamt, fields.assetAmount),
-                        KeyValue<Option<Address>>(constants::aclose, fields.assetCloseTo),
-                        KeyValue<Address>(constants::arcv, fields.assetReceiver),
-                        KeyValue<Option<Address>>(constants::asnd, fields.assetSender),
-                        KeyValue<uint64_t>(constants::fee, header.fee),
-                        KeyValue<uint64_t>(constants::fv, header.firstValid),
-                        KeyValue<Option<std::string>>(constants::gen, header.genesisId),
-                        KeyValue<B64String>(constants::gh, header.genesisHash),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::grp, header.group),
-                        KeyValue<uint64_t>(constants::lv, header.lastValid),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::lx, header.lease),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::note, header.note),
-                        KeyValue<Address>(constants::snd, header.sender),
-                        KeyValue<std::string>(constants::type, header.type),
-                        KeyValue<uint64_t>(constants::xaid, fields.assetId));
-            }
-
-            packer<Stream>& operator()(const AssetFreezeTxnFields& fields) const
-            {
-                using namespace ledger::core::algorand;
-
-                return packKeyValues(out,
-                        KeyValue<bool>(constants::afrz, fields.assetFrozen),
-                        KeyValue<Address>(constants::fadd, fields.frozenAddress),
-                        KeyValue<uint64_t>(constants::faid, fields.assetId),
-                        KeyValue<uint64_t>(constants::fee, header.fee),
-                        KeyValue<uint64_t>(constants::fv, header.firstValid),
-                        KeyValue<Option<std::string>>(constants::gen, header.genesisId),
-                        KeyValue<B64String>(constants::gh, header.genesisHash),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::grp, header.group),
-                        KeyValue<uint64_t>(constants::lv, header.lastValid),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::lx, header.lease),
-                        KeyValue<Option<std::vector<uint8_t>>>(constants::note, header.note),
-                        KeyValue<Address>(constants::snd, header.sender),
-                        KeyValue<std::string>(constants::type, header.type));
-            }
-
-        private:
-            const Transaction::Header& header;
-            packer<Stream>& out;
-        };
-
-        template<typename Stream>
-        packer<Stream>& packTransaction(packer<Stream>& o, const Transaction& txn)
-        {
-            return boost::apply_visitor(
-                    TransactionPacker<Stream>(o, txn.header),
-                    txn.details);
-        }
-
-        uint32_t countFieldsInSignedTransaction(const SignedTransaction& stxn)
-        {
-            return countValidValues(
-                    stxn.getSig(),
-                    stxn.getTxn());
-        }
-
-        template<typename Stream>
-        packer<Stream>& packSignedTransaction(packer<Stream>& o, const SignedTransaction& stxn)
+        packer<Stream>& operator()(const PaymentTxnFields& fields) const
         {
             using namespace ledger::core::algorand;
 
-            return packKeyValues(o,
-                    KeyValue<Option<std::vector<uint8_t>>>(constants::sig, stxn.getSig()),
-                    KeyValue<Transaction>(constants::txn, stxn.getTxn()));
+            return packKeyValues(out,
+                    makeKeyValue(constants::amt, fields.amount),
+                    makeKeyValue(constants::close, fields.closeAddr),
+                    makeKeyValue(constants::fee, header.fee),
+                    makeKeyValue(constants::fv, header.firstValid),
+                    makeKeyValue(constants::gen, header.genesisId),
+                    makeKeyValue(constants::gh, header.genesisHash),
+                    makeKeyValue(constants::grp, header.group),
+                    makeKeyValue(constants::lv, header.lastValid),
+                    makeKeyValue(constants::lx, header.lease),
+                    makeKeyValue(constants::note, header.note),
+                    makeKeyValue(constants::rcv, fields.receiverAddr),
+                    makeKeyValue(constants::snd, header.sender),
+                    makeKeyValue(constants::type, header.type));
         }
 
-    } // namespace
+        packer<Stream>& operator()(const AssetConfigTxnFields& fields) const
+        {
+            using namespace ledger::core::algorand;
+
+            return packKeyValues(out,
+                    makeKeyValue(constants::apar, fields.assetParams),
+                    makeKeyValue(constants::caid, fields.assetId),
+                    makeKeyValue(constants::fee, header.fee),
+                    makeKeyValue(constants::fv, header.firstValid),
+                    makeKeyValue(constants::gen, header.genesisId),
+                    makeKeyValue(constants::gh, header.genesisHash),
+                    makeKeyValue(constants::grp, header.group),
+                    makeKeyValue(constants::lv, header.lastValid),
+                    makeKeyValue(constants::lx, header.lease),
+                    makeKeyValue(constants::note, header.note),
+                    makeKeyValue(constants::snd, header.sender),
+                    makeKeyValue(constants::type, header.type));
+        }
+
+        packer<Stream>& operator()(const AssetTransferTxnFields& fields) const
+        {
+            using namespace ledger::core::algorand;
+
+            return packKeyValues(out,
+                    makeKeyValue(constants::aamt, fields.assetAmount),
+                    makeKeyValue(constants::aclose, fields.assetCloseTo),
+                    makeKeyValue(constants::arcv, fields.assetReceiver),
+                    makeKeyValue(constants::asnd, fields.assetSender),
+                    makeKeyValue(constants::fee, header.fee),
+                    makeKeyValue(constants::fv, header.firstValid),
+                    makeKeyValue(constants::gen, header.genesisId),
+                    makeKeyValue(constants::gh, header.genesisHash),
+                    makeKeyValue(constants::grp, header.group),
+                    makeKeyValue(constants::lv, header.lastValid),
+                    makeKeyValue(constants::lx, header.lease),
+                    makeKeyValue(constants::note, header.note),
+                    makeKeyValue(constants::snd, header.sender),
+                    makeKeyValue(constants::type, header.type),
+                    makeKeyValue(constants::xaid, fields.assetId));
+        }
+
+        packer<Stream>& operator()(const AssetFreezeTxnFields& fields) const
+        {
+            using namespace ledger::core::algorand;
+
+            return packKeyValues(out,
+                    makeKeyValue(constants::afrz, fields.assetFrozen),
+                    makeKeyValue(constants::fadd, fields.frozenAddress),
+                    makeKeyValue(constants::faid, fields.assetId),
+                    makeKeyValue(constants::fee, header.fee),
+                    makeKeyValue(constants::fv, header.firstValid),
+                    makeKeyValue(constants::gen, header.genesisId),
+                    makeKeyValue(constants::gh, header.genesisHash),
+                    makeKeyValue(constants::grp, header.group),
+                    makeKeyValue(constants::lv, header.lastValid),
+                    makeKeyValue(constants::lx, header.lease),
+                    makeKeyValue(constants::note, header.note),
+                    makeKeyValue(constants::snd, header.sender),
+                    makeKeyValue(constants::type, header.type));
+        }
+
+    private:
+        const Transaction::Header& header;
+        packer<Stream>& out;
+    };
+
+    template<typename Stream>
+    packer<Stream>& packTransaction(packer<Stream>& o, const Transaction& txn)
+    {
+        return boost::apply_visitor(
+                TransactionPacker<Stream>(o, txn.header),
+                txn.details);
+    }
+
+    inline uint32_t countFieldsInSignedTransaction(const SignedTransaction& stxn)
+    {
+        return countValidValues(
+                stxn.getSig(),
+                stxn.getTxn());
+    }
+
+    template<typename Stream>
+    packer<Stream>& packSignedTransaction(packer<Stream>& o, const SignedTransaction& stxn)
+    {
+        using namespace ledger::core::algorand;
+
+        return packKeyValues(o,
+                makeKeyValue(constants::sig, stxn.getSig()),
+                makeKeyValue(constants::txn, stxn.getTxn()));
+    }
 
     template<>
     struct pack<AssetParams>

@@ -54,18 +54,34 @@ namespace adaptor {
         T value;
     };
 
+    template<typename T>
+    KeyValue<T> makeKeyValue(std::string key, T value)
+    {
+        return KeyValue<T>(std::move(key), value);
+    }
+
+    namespace impl {
+
+        template<typename T>
+        using IsBool =
+            std::enable_if_t<std::is_same<std::decay_t<T>, bool>::value, bool>;
+
+        template<typename T>
+        using IsNotBool =
+            std::enable_if_t<!std::is_same<std::decay_t<T>, bool>::value, bool>;
+
+    } // namespace details
+
     /// The enable_if are there because algorand does not serialize a boolean if its
     /// value is false, making the implementation of this function different for bool...
-    template<typename T,
-             std::enable_if_t<!std::is_same<std::decay_t<T>, bool>::value, int> = 0>
-    uint32_t isValueValid(const T& value)
+    template<typename T, impl::IsNotBool<T> = true>
+    uint32_t isValueValid(const T&)
     {
         return 1;
     }
 
     /// Specific implementation for boolean
-    template<typename T,
-             std::enable_if_t<std::is_same<std::decay_t<T>, bool>::value, int> = 0>
+    template<typename T, impl::IsBool<T> = true>
     uint32_t isValueValid(const T& value)
     {
         return value ? 1 : 0;
@@ -74,20 +90,21 @@ namespace adaptor {
     template<typename T>
     uint32_t isValueValid(const Option<T>& value)
     {
-        if (value.hasValue())
+        if (value.hasValue()) {
             return isValueValid<T>(*value);
+        }
         return 0;
     }
 
     template<typename Stream, typename T>
-    void packKeyValue(packer<Stream>& o, KeyValue<T>&& keyvalue)
+    void packKeyValue(packer<Stream>& o, KeyValue<T> keyvalue)
     {
         o.pack(keyvalue.key);
         o.pack(keyvalue.value);
     }
 
     template<typename Stream>
-    void packKeyValue(packer<Stream>& o, KeyValue<bool>&& keyvalue)
+    void packKeyValue(packer<Stream>& o, KeyValue<bool> keyvalue)
     {
         if (keyvalue.value) {
             o.pack(keyvalue.key);
@@ -98,8 +115,9 @@ namespace adaptor {
     template<typename Stream, typename T>
     void packKeyValue(packer<Stream>& o, KeyValue<Option<T>>&& keyvalue)
     {
-        if (keyvalue.value.hasValue())
-            packKeyValue(o, KeyValue<T>(keyvalue.key, *keyvalue.value));
+        if (keyvalue.value.hasValue()) {
+            packKeyValue(o, makeKeyValue(keyvalue.key, *keyvalue.value));
+        }
     }
 
     // FIXME(remibarjon): use fold expression (C++17)
@@ -136,8 +154,8 @@ namespace adaptor {
     template<typename Stream, typename... T>
     packer<Stream>& packKeyValues(packer<Stream>& o, T&&... keyvalue)
     {
-        using _t = int[];
-        (void)_t { 0, (packKeyValue(o, std::forward<T>(keyvalue)), 0)... };
+        using _t = std::array<int, sizeof...(T)>;
+        (void)_t { (packKeyValue(o, std::forward<T>(keyvalue)), 0)... };
 
         return o;
     }
