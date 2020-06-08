@@ -25,6 +25,6 @@
 [submodule "core/lib/CRCpp"]
 	path = core/lib/CRCpp
 	url = https://github.com/d-bahr/CRCpp.git
-[submodule "core/test/lib/libuv"]
-	path = core/test/lib/libuv
-	url = git@github.com:libuv/libuv.git
+[submodule "core/src/wallet/algorand/thirdparty/msgpack-c"]
+	path = core/src/wallet/algorand/thirdparty/msgpack-c
+	url = https://github.com/ledgerHQ/msgpack-c.git
