@@ -51,7 +51,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 
     {
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://bitcoin-mainnet.explorers.dev.aws.ledger.fr:443");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
                                               configuration));
