@@ -49,6 +49,10 @@ if(IS_IOS GREATER_EQUAL 0 OR TARGET_JNI OR ANDROID)
     set(BUILD_TESTS OFF CACHE BOOL "Cannot run tests for these options" FORCE)
 endif()
 
+if(IS_IOS LESS 0 AND BUILD_TESTS AND NOT IS_ANDROID)
+  enable_testing()
+endif()
+
 if(BUILD_TESTS AND APPLE)
     add_definitions(-DGTEST_USE_OWN_TR1_TUPLE)
     add_definitions(-D__GLIBCXX__)

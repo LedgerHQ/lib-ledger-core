@@ -6,7 +6,6 @@ add_subdirectory(src)
 
 if(BUILD_TESTS)
     message(STATUS "ledger-core tests are enabled")
-    enable_testing()
     add_subdirectory(test/lib/qt-host)
     add_subdirectory(test)
 else()
