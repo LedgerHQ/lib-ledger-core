@@ -28,9 +28,12 @@
  *
  */
 
+#include <limits>
 #include <memory>
 
 #include <tezos/TezosLikeCurrencies.hpp>
+#include <tezos/api/TezosLikeOperation.hpp>
+#include <tezos/api/TezosLikeTransaction.hpp>
 #include <tezos/delegation/TezosLikeOriginatedAccount.hpp>
 #include <tezos/operations/TezosLikeOperationQuery.hpp>
 
@@ -43,6 +46,68 @@
 
 namespace ledger {
     namespace core {
+        // we need to compare the block height to the Babylon update height activation
+        // because the way balances are computed difffers from pre- and post- Babylon
+        // protocol activation
+        //
+        // <https://tezos.foundation/update-week-of-14-october-2019>
+        const int64_t BABYLON_2_0_ACTIVATION_BLOCK_HEIGHT = 655361;
+
+        // type used to compute balances and gather balance history logic; see
+        // agnostic::getBalanceHistoryFor for further details
+        struct OperationStrategy {
+            static inline std::chrono::system_clock::time_point date(std::shared_ptr<api::Operation>& op) {
+                return op->getDate();
+            }
+
+            static inline std::shared_ptr<api::Amount> value_constructor(const BigInt& v) {
+                return std::make_shared<Amount>(currencies::tezos(), 0, v);
+            }
+
+            static inline void update_balance(std::shared_ptr<api::Operation> const& op, BigInt& sum) {
+                auto value = BigInt(op->getAmount()->toString());
+                auto tzOp = std::dynamic_pointer_cast<TezosLikeOperation>(op);
+                auto tzTx = tzOp->getTransaction();
+
+                switch (op->getOperationType()) {
+                    case api::OperationType::RECEIVE: {
+                        // we discard received transactions that have failed
+                        if (tzTx->getStatus() == 1) {
+                          sum = sum + value;
+                        }
+                        break;
+                    }
+
+                    case api::OperationType::SEND: {
+                        // if sending a transaction has failed:
+                        //
+                        // - Then we only spend the fees pre- Babylon 2.0.
+                        // - We do nothing post- Babylon 2.0 as the fees will be spent by the
+                        //   parent account.
+                        auto const isPreBabylon = op->getBlockHeight().value_or(std::numeric_limits<int64_t>::max()) < BABYLON_2_0_ACTIVATION_BLOCK_HEIGHT;
+
+                        if (tzTx->getStatus() == 0) {
+                          value = BigInt::ZERO;
+                        }
+
+                        if (isPreBabylon) {
+                          auto fees = BigInt(op->getFees()->toString());
+                          sum = sum - (value + fees);
+                        } else {
+                          // we do not spend the fees, as they are spent by the parent
+                          // account
+                          sum = sum - value;
+                        }
+
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+            }
+        };
+
         TezosLikeOriginatedOperationQuery::TezosLikeOriginatedOperationQuery(
             const std::shared_ptr<api::QueryFilter>& headFilter,
             const std::shared_ptr<DatabaseSessionPool>& pool,
@@ -113,28 +178,16 @@ namespace ledger {
 
         FuturePtr<api::Amount> TezosLikeOriginatedAccount::getBalance(const std::shared_ptr<api::ExecutionContext>& context) {
             return std::dynamic_pointer_cast<TezosLikeOriginatedOperationQuery>(queryOperations()->complete())->execute()
-                    .mapPtr<api::Amount>(context, [] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
-                auto result = BigInt::ZERO;
-                for (auto &op : ops) {
-                    auto ty = op->getOperationType();
-                    auto value = BigInt(op->getAmount()->toString());
-                    switch (ty) {
-                        case api::OperationType::RECEIVE:
-                            result = result + value;
-                            break;
-                        case api::OperationType::SEND: {
-                            auto fees = BigInt(op->getFees()->toString());
-                            result = result - (value + fees);
-                            break;
-                        }
-                        default:
-                            break;
+                .mapPtr<api::Amount>(context, [] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
+                    auto result = BigInt::ZERO;
+
+                    for (auto const &op : ops) {
+                        OperationStrategy::update_balance(op, result);
                     }
-                }
-                return std::make_shared<Amount>(currencies::tezos(), 0, result);
+
+                    return std::make_shared<Amount>(currencies::tezos(), 0, result);
             });
         }
-
 
         void TezosLikeOriginatedAccount::getBalanceHistory(
             const std::chrono::system_clock::time_point & start,
@@ -157,35 +210,6 @@ namespace ledger {
             bool descending = false;
             return std::dynamic_pointer_cast<TezosLikeOriginatedOperationQuery>(queryOperations()->addOrder(api::OperationOrderKey::DATE, descending)->complete())->execute()
                     .map<std::vector<std::shared_ptr<api::Amount>>>(context, [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
-                struct OperationStrategy {
-
-                    static inline std::chrono::system_clock::time_point date(std::shared_ptr<api::Operation>& op) {
-                        return op->getDate();
-                    }
-
-                    static inline std::shared_ptr<api::Amount> value_constructor(const BigInt& v) {
-                        return std::make_shared<Amount>(currencies::tezos(), 0, v);
-                    }
-
-                    static inline void update_balance(std::shared_ptr<api::Operation>& op, BigInt& sum) {
-                        auto value = BigInt(op->getAmount()->toString());
-                        switch (op->getOperationType()) {
-                            case api::OperationType::RECEIVE:
-                                sum = sum + value;
-                                break;
-
-                            case api::OperationType::SEND: {
-                                auto fees = BigInt(op->getFees()->toString());
-                                sum = sum - (value + fees);
-                                break;
-                            }
-
-                            default:
-                                break;
-                        }
-                    }
-                };
-
                 return agnostic::getBalanceHistoryFor<OperationStrategy, BigInt, api::Amount>(
                         start,
                         end,
