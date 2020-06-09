@@ -349,7 +349,6 @@
                 abstractBlock.height = block.height;
                 abstractBlock.time = block.time;
                 if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
-                    BitcoinLikeBlockDatabaseHelper::putBlock(sql, block);
                     emitNewBlockEvent(abstractBlock);
                     return true;
                 }

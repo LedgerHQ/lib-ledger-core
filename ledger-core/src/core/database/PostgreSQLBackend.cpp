@@ -63,6 +63,14 @@ namespace ledger {
                                   soci::session &session) {
             _dbName = dbName;
             setPassword(password, session);
+
+            // This is required because of some race conditions we had once
+            // we use many connections to our database (during sync process)
+            // This might be restrictive since it's done on session level,
+            // we could question that setting when we are working on performance
+            // enhancements.
+            // https://www.postgresql.org/docs/9.4/sql-set-transaction.html
+            session << "SET SESSION CHARACTERISTICS AS TRANSACTION ISOLATION LEVEL SERIALIZABLE";
         }
 
         void PostgreSQLBackend::setPassword(const std::string &password,

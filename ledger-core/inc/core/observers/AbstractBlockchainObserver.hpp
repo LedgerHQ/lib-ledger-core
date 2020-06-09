@@ -87,6 +87,20 @@ namespace ledger {
             virtual void putTransaction(const BlockchainExplorerTransaction& tx) = 0;
             virtual void putBlock(const BlockchainExplorerBlock& block) = 0;
 
+            static void emitEvent(const std::shared_ptr<Account> &account, std::function<bool (soci::session &sql, const std::shared_ptr<Account> &account)> eventEmission) {
+                bool shouldEmitNow = false;
+                {
+                    soci::session sql(account->getWallet()->getDatabase()->getPool());
+                    soci::transaction tr(sql);
+                    shouldEmitNow = eventEmission(sql, account);
+                    tr.commit();
+                }
+
+                if (shouldEmitNow) {
+                    account->emitEventsNow();
+                }
+            }
+
 
             void setLogger(const std::shared_ptr<spdlog::logger>& logger) {
                 _logger = logger;
