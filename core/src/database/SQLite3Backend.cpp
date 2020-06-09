@@ -49,6 +49,13 @@ namespace ledger {
             _dbResolvedPath = resolver->resolveDatabasePath(dbName);
             setPassword(password, session);
             session << "PRAGMA foreign_keys = ON";
+            // All settings below can only be active during tests, the goal is to lighten the
+            // I/O load on the machine because it might end up in corrupting tests
+            //
+            // DELETE or WAL here will throw a lot of I/O errors during parallel tests
+            session << "PRAGMA journal_mode = MEMORY";
+            session << "PRAGMA synchronous = NORMAL";
+            session << "PRAGMA temp_store = MEMORY";
         }
 
         void SQLite3Backend::setPassword(const std::string &password,
