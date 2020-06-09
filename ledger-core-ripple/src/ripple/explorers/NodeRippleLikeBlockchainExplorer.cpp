@@ -335,11 +335,11 @@ namespace ledger {
                     .template mapPtr<TransactionsBulk>(getExplorerContext(), [self, fromBlockHash](
                             const Either<Exception, std::shared_ptr<TransactionsBulk>> &result) {
                         if (result.isLeft()) {
-                            if (fromBlockHash.isEmpty()) {
-                                throw result.getLeft();
+                            // Only case where we should emit block not found error
+                            if (!fromBlockHash.isEmpty() && result.getLeft().getErrorCode() == api::ErrorCode::HTTP_ERROR) {
+                                throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
                             } else {
-                                throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND,
-                                                     "Unable to find block with hash {}", fromBlockHash.getValue());
+                                throw result.getLeft();
                             }
                         } else {
                             // handle pagination if a pagination marker is present

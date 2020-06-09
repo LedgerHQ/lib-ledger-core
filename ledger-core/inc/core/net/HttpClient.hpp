@@ -100,6 +100,19 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> _context;
             Option<std::shared_ptr<spdlog::logger>> _logger;
 
+            static api::ErrorCode getErrorCode(int32_t statusCode) {
+                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL :
+                statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST :
+                statusCode >= 400 ? api::ErrorCode::HTTP_ERROR :
+                api::ErrorCode::TOO_MANY_REDIRECT;
+            }
+
+            static bool isHttpError(api::ErrorCode errorCode) {
+                return errorCode == api::ErrorCode::HTTP_ERROR ||
+                errorCode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST ||
+                errorCode == api::ErrorCode::TOO_MANY_REDIRECT;
+            }
+
             class ApiRequest : public api::HttpRequest {
             public:
                 ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self);
@@ -136,8 +149,8 @@ namespace ledger {
             HttpRequest PUT(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest DEL(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest POST(
-                const std::string& path, 
-                const std::vector<uint8_t> &body, 
+                const std::string& path,
+                const std::vector<uint8_t> &body,
                 const std::unordered_map<std::string, std::string>& headers = {},
                 const std::string &baseUrl = "");
             HttpClient& addHeader(const std::string& key, const std::string& value);
