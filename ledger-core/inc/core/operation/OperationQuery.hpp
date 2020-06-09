@@ -113,13 +113,13 @@ namespace ledger {
                 return _headFilter;
             }
 
-            std::shared_ptr<api::OperationQuery> offset(int64_t from) override
+            std::shared_ptr<api::OperationQuery> offset(int32_t from) override
             {
                 _builder.offset(static_cast<int32_t>(from));
                 return this->shared_from_this();
             }
 
-            std::shared_ptr<api::OperationQuery> limit(int64_t count) override
+            std::shared_ptr<api::OperationQuery> limit(int32_t count) override
             {
                 _builder.limit(static_cast<int32_t>(count));
                 return this->shared_from_this();
