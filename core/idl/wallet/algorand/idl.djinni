@@ -181,10 +181,11 @@ AlgorandAccount = interface +c {
         callback: Callback<AlgorandAssetParams>
     );
 
-    # Check if account hash a specific asset
+    # Check if address has a specific asset
     # @param assetId, the unique identifier of the asset to look for
-    # @param callback, Callback returning the true if the account hold the asset
+    # @param callback, Callback returning the true if the address hold the asset
     hasAsset(
+        addr : string,
         assetId: string,
         callback: Callback<bool>
     );

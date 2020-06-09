@@ -41,11 +41,11 @@ public:
     virtual void getAsset(const std::string & assetId, const std::shared_ptr<AlgorandAssetParamsCallback> & callback) = 0;
 
     /**
-     * Check if account hash a specific asset
+     * Check if address has a specific asset
      * @param assetId, the unique identifier of the asset to look for
-     * @param callback, Callback returning the true if the account hold the asset
+     * @param callback, Callback returning the true if the address hold the asset
      */
-    virtual void hasAsset(const std::string & assetId, const std::shared_ptr<BoolCallback> & callback) = 0;
+    virtual void hasAsset(const std::string & addr, const std::string & assetId, const std::shared_ptr<BoolCallback> & callback) = 0;
 
     /**
      * Get balance of account for a particular asset.
