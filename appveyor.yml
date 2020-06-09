@@ -129,7 +129,7 @@ build_script:
 - if %TOOL_CONFIG% == vs2017  if %BUILD_CONFIG% == Release cp "..\lib-ledger-core-build\%CRYPTO_DLL_PATH%" ".\%LIB_VERSION%\win\%TOOL_CONFIG%" || echo "FAIL TO COPY CRYPTO DLL"
 
 #Launch tests
-- if %BUILD_CONFIG% == Debug ctest --output-on-failure -VV
+- if %BUILD_CONFIG% == Debug ctest -j 4 --output-on-failure
 
 #Build is failing because of configuration
 ##Create node module
