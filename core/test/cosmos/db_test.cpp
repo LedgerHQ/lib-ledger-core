@@ -11,6 +11,8 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <api/PoolConfiguration.hpp>
 #include <utils/DateUtils.hpp>
+#include <Uuid.hpp>
+#include <chrono>
 
 #include <gtest/gtest.h>
 
@@ -25,9 +27,9 @@ public:
      const bool usePostgreSQL = true;
      auto poolConfig = DynamicObject::newInstance();
      poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-     pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+     pool = newDefaultPool(uuid::generate_uuid_v4(), "", poolConfig, usePostgreSQL);
 #else
-     pool = newDefaultPool();
+     pool = newDefaultPool(uuid::generate_uuid_v4());
 #endif
      backend->enableQueryLogging(true);
  }
@@ -53,7 +55,7 @@ public:
  }
 
  void TearDown() override {
-     wait(pool->freshResetAll());
+     wait(pool->eraseDataSince(std::chrono::time_point<std::chrono::system_clock>{}));
      BaseFixture::TearDown();
  }
 
@@ -63,7 +65,7 @@ public:
 TEST_F(CosmosDBTest, BasicDBTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet, "90673bef-38d3-4a09-ad7c-f67dc4370210");
+    setupTest(pool, account, wallet, uuid::generate_uuid_v4());
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -100,7 +102,7 @@ TEST_F(CosmosDBTest, BasicDBTest) {
 TEST_F(CosmosDBTest, OperationQueryTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet, "38660eb1-2f89-4096-a8d5-fcaca0c44428");
+    setupTest(pool, account, wallet, uuid::generate_uuid_v4());
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -172,7 +174,7 @@ TEST_F(CosmosDBTest, FeesMsgTypeFilteredOutTest) {
 TEST_F(CosmosDBTest, FeesMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet, "f727a3d9-7e98-4bbf-b92c-c3976483ac89");
+    setupTest(pool, account, wallet, uuid::generate_uuid_v4());
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -209,7 +211,7 @@ TEST_F(CosmosDBTest, FeesMsgTypeTest) {
 TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet, "f727a3d9-7e98-4bbf-b92c-c3976483ac89");
+    setupTest(pool, account, wallet, uuid::generate_uuid_v4());
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -241,7 +243,7 @@ TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
 TEST_F(CosmosDBTest, MultipleMsgTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
-    setupTest(pool, account, wallet, "ee64142f-a695-4755-9eb1-6c5a2a2291c3");
+    setupTest(pool, account, wallet, uuid::generate_uuid_v4());
 
     std::chrono::system_clock::time_point timeRef = DateUtils::now();
 
@@ -259,8 +261,9 @@ TEST_F(CosmosDBTest, MultipleMsgTest) {
         auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
         ASSERT_EQ(ops.size(), 2);
 
+        for (auto op : ops)
         {
-            auto op = ops[0];
+            // auto op = ops[0];
             // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
             auto cosmosOp = op->asCosmosLikeOperation();
             ASSERT_NE(cosmosOp, nullptr);
@@ -269,32 +272,20 @@ TEST_F(CosmosDBTest, MultipleMsgTest) {
             auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
             ASSERT_NE(txPtr, nullptr);
             auto txRetrieved = txPtr->getRawData();
+            assertSameTransaction(tx, txRetrieved);
             auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
             ASSERT_NE(msgPtr, nullptr);
             auto msgRetrieved = msgPtr->getRawData();
-
-            assertSameTransaction(tx, txRetrieved);
-            assertSameSendMessage(msgSend, msgRetrieved);
-        }
-
-        {
-            auto op = ops[1];
-            // auto cosmosOp = std::dynamic_pointer_cast<CosmosLikeOperation>(op);
-            // auto txRetrieved = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction())->getRawData();
-            // auto msgRetrieved = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage())->getRawData();
-            auto cosmosOp = op->asCosmosLikeOperation();
-            ASSERT_NE(cosmosOp, nullptr);
-            ASSERT_NE(cosmosOp->getMessage(), nullptr);
-            ASSERT_NE(cosmosOp->getTransaction(), nullptr);
-            auto txPtr = std::dynamic_pointer_cast<CosmosLikeTransactionApi>(cosmosOp->getTransaction());
-            ASSERT_NE(txPtr, nullptr);
-            auto txRetrieved = txPtr->getRawData();
-            auto msgPtr = std::dynamic_pointer_cast<CosmosLikeMessage>(cosmosOp->getMessage());
-            ASSERT_NE(msgPtr, nullptr);
-            auto msgRetrieved = msgPtr->getRawData();
-
-            assertSameTransaction(tx, txRetrieved);
-            assertSameVoteMessage(msgVote, msgRetrieved);
+            if (msgRetrieved.type == "cosmos-sdk/MsgSend") {
+                assertSameSendMessage(msgSend, msgRetrieved);
+            }
+            else if (msgRetrieved.type == "cosmos-sdk/MsgVote") {
+                assertSameVoteMessage(msgVote, msgRetrieved);
+            }
+            else {
+                FAIL() << fmt::format(
+                    "{} is not an expected message type in the ops", msgRetrieved.type);
+            }
         }
     }
 }

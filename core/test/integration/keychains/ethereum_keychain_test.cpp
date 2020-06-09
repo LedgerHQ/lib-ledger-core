@@ -39,12 +39,13 @@
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
 #include <iostream>
+#include <Uuid.hpp>
 using namespace std;
 class EthereumKeychains : public BaseFixture {
 public:
     void testEthKeychain(const KeychainTestData &data, std::function<void (EthereumLikeKeychain&)> f) {
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
+                fmt::format("/preferences/{}/tests.db", uuid::generate_uuid_v4()),
                 dispatcher->getMainExecutionContext(),
                 resolver
         );
@@ -243,7 +244,7 @@ const std::vector<DerivationSchemeTestData> derivationSchemeTestData = {
 };
 
 TEST_F(EthereumKeychains, EthereumDerivationSchemes) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto configuration = DynamicObject::newInstance();
     {
         for (auto &elem : derivationSchemeTestData) {

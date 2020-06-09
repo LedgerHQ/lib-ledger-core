@@ -97,7 +97,7 @@ class BaseFixture : public ::testing::Test {
 public:
     virtual void SetUp() override;
     virtual void TearDown() override;
-    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "my_ppol",
+    std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "my_pool",
                                                const std::string &password = "test",
                                                const std::shared_ptr<api::DynamicObject> &configuration = api::DynamicObject::newInstance(),
                                                bool usePostgreSQL = false);

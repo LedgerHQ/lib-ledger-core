@@ -36,6 +36,7 @@
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
+#include <Uuid.hpp>
 
 struct CosmosAccounts : public BaseFixture {
 
@@ -43,7 +44,7 @@ struct CosmosAccounts : public BaseFixture {
 
 TEST_F(CosmosAccounts, FirstATOMAccountInfo) {
     auto const currency = currencies::ATOM;
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     backend->enableQueryLogging(true);
 
     auto wallet = wait(pool->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));

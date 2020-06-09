@@ -30,6 +30,7 @@
  */
 
 #include <iostream>
+#include <chrono>
 #include <set>
 
 #include <test/cosmos/Fixtures.hpp>
@@ -55,6 +56,7 @@
 #include <wallet/cosmos/CosmosLikeOperationQuery.hpp>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <cosmos/bech32/CosmosBech32.hpp>
+#include <Uuid.hpp>
 
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 
@@ -76,9 +78,9 @@ public:
     const bool usePostgreSQL = true;
     auto poolConfig = DynamicObject::newInstance();
     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+    pool = newDefaultPool(uuid::generate_uuid_v4(), "", poolConfig, usePostgreSQL);
 #else
-    pool = newDefaultPool();
+    pool = newDefaultPool(uuid::generate_uuid_v4());
 #endif
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
@@ -94,7 +96,7 @@ public:
 
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
-        wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "cosmos", configuration));
+        wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "cosmos", configuration));
 
         auto accountInfo = wait(wallet->getNextAccountCreationInfo());
         EXPECT_EQ(accountInfo.index, 0);
@@ -126,7 +128,7 @@ public:
      }
 
     void TearDown() override {
-        wait(pool->freshResetAll());
+        wait(pool->eraseDataSince(std::chrono::time_point<std::chrono::system_clock>{}));
         BaseFixture::TearDown();
     }
 
@@ -321,14 +323,14 @@ TEST_F(CosmosLikeWalletSynchronization, GetCurrentBlockWithExplorer) {
 }
 
 TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
-    auto walletName = "8d99cc44-9061-43a4-9edd-f938d2007926";
+    auto walletName = uuid::generate_uuid_v4();
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
     auto poolConfig = DynamicObject::newInstance();
     poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    auto pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+    auto pool = newDefaultPool(uuid::generate_uuid_v4(), "", poolConfig, usePostgreSQL);
 #else
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
 #endif
     backend->enableQueryLogging(true);
 

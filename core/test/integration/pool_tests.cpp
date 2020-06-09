@@ -35,13 +35,14 @@
 #include <unordered_set>
 #include <src/wallet/pool/WalletPool.hpp>
 #include <wallet/common/CurrencyBuilder.hpp>
+#include <Uuid.hpp>
 
 class WalletPoolTest : public BaseFixture {
 
 };
 
 TEST_F(WalletPoolTest, InitializeCurrencies) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     api::Currency bitcoin;
 
     for (auto& currency : pool->getCurrencies()) {
@@ -76,8 +77,9 @@ TEST_F(WalletPoolTest, AddCurrency) {
     );
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
                                                                                                    12, "WC");
+    auto poolName = uuid::generate_uuid_v4();
     {
-        auto firstPool = newDefaultPool();
+        auto firstPool = newDefaultPool(poolName);
         bool found = false;
         bool foundInSecond = false;
         firstPool->addCurrency(wonderCoin).onComplete(dispatcher->getMainExecutionContext(),
@@ -96,7 +98,7 @@ TEST_F(WalletPoolTest, AddCurrency) {
         EXPECT_TRUE(found);
     }
     {
-        auto secondPool = newDefaultPool();
+        auto secondPool = newDefaultPool(poolName);
         bool found = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
@@ -118,8 +120,9 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
     );
     api::Currency wonderCoin = CurrencyBuilder("wonder_coin").forkOfBitcoin(params).bip44(42).unit("wonder coin",
                                                                                                    12, "WC");
+    auto poolName = uuid::generate_uuid_v4();
     {
-        auto firstPool = newDefaultPool();
+        auto firstPool = newDefaultPool(poolName);
         bool found = false;
         bool foundInSecond = false;
         firstPool
@@ -144,7 +147,7 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
         EXPECT_TRUE(found);
     }
     {
-        auto secondPool = newDefaultPool();
+        auto secondPool = newDefaultPool(poolName);
         bool found = false;
         for (const auto &currency : secondPool->getCurrencies()) {
             if (currency.name == "wonder_coin") {
@@ -157,17 +160,19 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
 }
 
 TEST_F(WalletPoolTest, CreateAndGetWallet) {
+    auto poolName = uuid::generate_uuid_v4();
+    auto walletName = uuid::generate_uuid_v4();
     {
-        auto pool = newDefaultPool();
-        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
-        auto getWallet = wait(pool->getWallet("my_wallet"));
+        auto pool = newDefaultPool(poolName);
+        auto wallet = wait(pool->createWallet(walletName, "bitcoin", DynamicObject::newInstance()));
+        auto getWallet = wait(pool->getWallet(walletName));
         EXPECT_TRUE(wallet.get() == getWallet.get());
     }
     {
-        auto pool = newDefaultPool();
-        auto getWallet = wait(pool->getWallet("my_wallet"));
-        EXPECT_TRUE(getWallet->getName() == "my_wallet");
+        auto pool = newDefaultPool(poolName);
+        auto getWallet = wait(pool->getWallet(walletName));
+        EXPECT_TRUE(getWallet->getName() == walletName);
         auto wallets = wait(pool->getWallets(0, 1));
-        EXPECT_TRUE(wallets.front()->getName() == "my_wallet");
+        EXPECT_TRUE(wallets.front()->getName() == walletName);
     }
 }

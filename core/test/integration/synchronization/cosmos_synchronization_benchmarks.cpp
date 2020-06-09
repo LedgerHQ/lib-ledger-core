@@ -60,6 +60,7 @@
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
+#include <Uuid.hpp>
 
 using namespace std;
 using namespace ledger::core;
@@ -98,9 +99,9 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
         auto poolConfig = DynamicObject::newInstance();
         poolConfig->putString(
             api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-        pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+        pool = newDefaultPool(uuid::generate_uuid_v4(), "", poolConfig, usePostgreSQL);
 #else
-        pool = newDefaultPool();
+        pool = newDefaultPool(uuid::generate_uuid_v4());
 #endif
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
@@ -117,7 +118,7 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
             api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
             "44'/<coin_type>'/<account>'/<node>/<address>");
         wallet = wait(
-            pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "cosmos", configuration));
+            pool->createWallet(uuid::generate_uuid_v4(), "cosmos", configuration));
 
         auto accountInfo = wait(wallet->getNextAccountCreationInfo());
         EXPECT_EQ(accountInfo.index, 0);

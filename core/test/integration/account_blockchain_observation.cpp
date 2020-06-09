@@ -30,6 +30,7 @@
  */
 
 #include "BaseFixture.h"
+#include <Uuid.hpp>
 
 class AccountBlockchainObservationTests : public BaseFixture {
 
@@ -49,8 +50,8 @@ static const std::string NOTIF_WITH_BLOCK_9 = "\"bcea0c64e5d51baf8615c0373e94833
 
 
 TEST_F(AccountBlockchainObservationTests, EmitNewTransaction) {
-    auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
+    auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_OPERATION) {
@@ -68,8 +69,8 @@ TEST_F(AccountBlockchainObservationTests, EmitNewTransaction) {
 }
 
 TEST_F(AccountBlockchainObservationTests, EmitNewTransactionAndReceiveOnPool) {
-    auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
+    auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_OPERATION) {
@@ -87,8 +88,8 @@ TEST_F(AccountBlockchainObservationTests, EmitNewTransactionAndReceiveOnPool) {
 }
 
 TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
-    auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
+    auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
 
@@ -117,8 +118,8 @@ TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
 }
 
 TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
-    auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
+    auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_BLOCK) {

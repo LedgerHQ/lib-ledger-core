@@ -47,6 +47,8 @@
 #include <wallet/tezos/TezosLikeAccount.h>
 #include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
 #include "../BaseFixture.h"
+#include <Uuid.hpp>
+#include <chrono>
 
 
 using namespace ledger::core;
@@ -76,7 +78,7 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
     }
 
     virtual void recreate() {
-        pool = newDefaultPool();
+        pool = newDefaultPool(uuid::generate_uuid_v4());
         wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_btc(pool, wallet);
         currency = wallet->getCurrency();
@@ -84,6 +86,7 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
+        wait(pool->eraseDataSince(std::chrono::time_point<std::chrono::system_clock>{}));
         pool = nullptr;
         wallet = nullptr;
         account = nullptr;
@@ -111,7 +114,7 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
     }
 
     void recreate() {
-        pool = newDefaultPool();
+        pool = newDefaultPool(uuid::generate_uuid_v4());
         wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_eth(pool, wallet);
         currency = wallet->getCurrency();
@@ -119,6 +122,7 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
+        wait(pool->eraseDataSince(std::chrono::time_point<std::chrono::system_clock>{}));
         pool = nullptr;
         wallet = nullptr;
         account = nullptr;
@@ -146,7 +150,7 @@ struct RippleMakeBaseTransaction : public BaseFixture {
     }
 
     void recreate() {
-        pool = newDefaultPool();
+        pool = newDefaultPool(uuid::generate_uuid_v4());
         wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_xrp(pool, wallet);
         currency = wallet->getCurrency();
@@ -154,6 +158,7 @@ struct RippleMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
+        wait(pool->eraseDataSince(std::chrono::time_point<std::chrono::system_clock>{}));
         pool = nullptr;
         wallet = nullptr;
         account = nullptr;
@@ -181,7 +186,7 @@ struct TezosMakeBaseTransaction : public BaseFixture {
     }
 
     void recreate() {
-        pool = newDefaultPool();
+        pool = newDefaultPool(uuid::generate_uuid_v4());
         wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_xtz(pool, wallet);
         currency = wallet->getCurrency();
@@ -189,6 +194,7 @@ struct TezosMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
+        wait(pool->eraseDataSince(std::chrono::time_point<std::chrono::system_clock>{}));
         pool = nullptr;
         wallet = nullptr;
         account = nullptr;

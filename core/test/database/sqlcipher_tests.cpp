@@ -31,19 +31,17 @@
 #include <gtest/gtest.h>
 #include "BaseFixture.h"
 #include <utils/FilesystemUtils.h>
+#include <Uuid.hpp>
 #include <soci.h>
 #include <soci-sqlite3.h>
 #include <chrono>
 using namespace ledger::core;
 
-
 class SQLCipherTest : public BaseFixture {
 };
 
 TEST(SQLCipherTest, SanityCheck) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db_" + date;
+    auto dbName = "test_db_" + uuid::generate_uuid_v4();
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
@@ -101,9 +99,7 @@ TEST(SQLCipherTest, SanityCheck) {
 // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
 #if __cplusplus >= 201103L
 TEST(SQLCipherTest, ThrowIfWrongPassword) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db2_" + date;
+    auto dbName = "test_db2_" + uuid::generate_uuid_v4();
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
@@ -135,9 +131,7 @@ TEST(SQLCipherTest, ThrowIfWrongPassword) {
 #endif
 
 TEST(SQLCipherTest, DisableEncryption) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db_" + date;
+    auto dbName = "test_db_" + uuid::generate_uuid_v4();
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {

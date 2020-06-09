@@ -30,13 +30,14 @@
  */
 
 #include "BaseFixture.h"
+#include <Uuid.hpp>
 
 class AccountInfoTests : public BaseFixture {
 
 };
 
 TEST_F(AccountInfoTests, FirstAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
@@ -47,7 +48,7 @@ TEST_F(AccountInfoTests, FirstAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, FirstEthAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
@@ -57,7 +58,7 @@ TEST_F(AccountInfoTests, FirstEthAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "ripple", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
@@ -68,7 +69,7 @@ TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, FirstXTZAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "tezos", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
@@ -81,7 +82,7 @@ TEST_F(AccountInfoTests, FirstXTZAccountInfo) {
 TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
     auto config = DynamicObject::newInstance();
     config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "ethereum", DynamicObject::newInstance()));
     auto info = wait(wallet->getNextAccountCreationInfo());
     EXPECT_EQ(info.index, 0);
@@ -90,7 +91,7 @@ TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, AnotherAccountInfo) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto info = wait(wallet->getAccountCreationInfo(20));
     EXPECT_EQ(info.index, 20);
@@ -101,7 +102,7 @@ TEST_F(AccountInfoTests, AnotherAccountInfo) {
 }
 
 TEST_F(AccountInfoTests, GetAddressFromRange) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
 

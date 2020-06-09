@@ -30,6 +30,7 @@
  */
 
 #include "BaseFixture.h"
+#include <Uuid.hpp>
 
 static const std::string XPUB_1 = "xpub6EedcbfDs3pkzgqvoRxTW6P8NcCSaVbMQsb6xwCdEBzqZBronwY3Nte1Vjunza8f6eSMrYvbM5CMihGo6SbzpHxn4R5pvcr2ZbZ6wkDmgpy";
 
@@ -43,7 +44,7 @@ class BitcoinWalletDatabaseTests : public BaseFixture {
 };
 
 TEST_F(BitcoinWalletDatabaseTests, EmptyWallet) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     BitcoinLikeWalletDatabase db(pool, "my_wallet", "bitcoin");
 
     EXPECT_EQ(db.getAccountsCount(), 0);
@@ -51,7 +52,7 @@ TEST_F(BitcoinWalletDatabaseTests, EmptyWallet) {
 }
 
 TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
 
     BitcoinLikeWalletDatabase db(pool, "my_wallet", "bitcoin");
 
@@ -69,7 +70,7 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithOneAccount) {
 }
 
 TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
 
     auto currencyName = "bitcoin";
     auto configuration = DynamicObject::newInstance();
@@ -97,7 +98,7 @@ TEST_F(BitcoinWalletDatabaseTests, CreateWalletWithMultipleAccountAndDelete) {
 }
 
 TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
 
     auto currencyName = "bitcoin";
     auto configuration = DynamicObject::newInstance();
@@ -123,7 +124,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransaction) {
 }
 
 TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
 
     auto currencyName = "bitcoin";
     auto configuration = DynamicObject::newInstance();
@@ -184,7 +185,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
 }
 
 TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto nextIndex = wait(wallet->getNextAccountIndex());
     EXPECT_EQ(nextIndex, 0);

@@ -35,6 +35,7 @@
 #include <src/wallet/currencies.hpp>
 #include <api/EthereumLikeNetworkParameters.hpp>
 #include <api/Currency.hpp>
+#include <Uuid.hpp>
 #include "../BaseFixture.h"
 
 
@@ -122,7 +123,7 @@ class KeychainFixture : public BaseFixture {
 public:
     void testKeychain(const KeychainTestData &data, std::function<void (Keychain&)> f) {
         auto backend = std::make_shared<ledger::core::PreferencesBackend>(
-                "/preferences/tests.db",
+                fmt::format("/preferences/{}/tests.db", uuid::generate_uuid_v4()),
                 dispatcher->getMainExecutionContext(),
                 resolver
         );

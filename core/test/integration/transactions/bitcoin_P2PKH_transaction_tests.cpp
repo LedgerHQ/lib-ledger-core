@@ -84,7 +84,7 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
     }
 
     void recreate() override {
-        pool = newDefaultPool();
+        pool = newDefaultPool(uuid::generate_uuid_v4());
         pool->addCurrency(bitcoinStardust);
         wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_btc(pool, wallet);

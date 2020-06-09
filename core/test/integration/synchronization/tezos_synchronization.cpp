@@ -43,6 +43,7 @@
 #include <wallet/tezos/delegation/TezosLikeOriginatedAccount.h>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <Uuid.hpp>
 
 using namespace std;
 
@@ -55,7 +56,7 @@ class TezosLikeWalletSynchronization : public BaseFixture {
 };
 
 TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
-    auto pool = newDefaultPool("xtz", "");
+    auto pool = newDefaultPool(uuid::generate_uuid_v4(), "");
     static std::function<void (
             const std::string &,
             const std::string &,
@@ -154,18 +155,18 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
             test(nextWalletName, "", explorerURL);
         }
     };
-    test("e847815f-488a-4301-b67c-378a5e9c8a61", "e847815f-488a-4301-b67c-378a5e9c8a60", kExplorerUrl);
+    test(uuid::generate_uuid_v4(), uuid::generate_uuid_v4(), kExplorerUrl);
 }
 
 TEST_F(TezosLikeWalletSynchronization, SynchronizeAccountWithMoreThan100OpsAndDeactivateSyncToken) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto configuration = DynamicObject::newInstance();
     configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
     configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
     configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, kExplorerUrl);
-    auto wallet = wait(pool->createWallet("xtz", "tezos", configuration));
+    auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "tezos", configuration));
     auto account = createTezosLikeAccount(wallet, 0, XTZ_WITH_100_OPS_KEYS_INFO);
     account->synchronize()->subscribe(account->getContext(), make_receiver([=](const std::shared_ptr<api::Event> &event) {
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)

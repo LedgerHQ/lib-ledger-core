@@ -31,9 +31,7 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_UUID_HPP
-#define LEDGER_CORE_UUID_HPP
-
+#pragma once
 #include <random>
 #include <sstream>
 
@@ -43,7 +41,7 @@ namespace uuid {
     static std::uniform_int_distribution<> dis(0, 15);   // **** random byte
     static std::uniform_int_distribution<> dis2(8, 11);  // 10** in MSB-first order
 
-    std::string generate_uuid_v4() {
+    static std::string generate_uuid_v4() {
         std::stringstream ss;
         int i;
         ss << std::hex;
@@ -70,5 +68,3 @@ namespace uuid {
         return ss.str();
     }
 }
-
-#endif  // LEDGER_CORE_UUID_HPP

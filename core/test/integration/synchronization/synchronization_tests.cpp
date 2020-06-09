@@ -35,6 +35,8 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <api/KeychainEngines.hpp>
 #include <api/PoolConfiguration.hpp>
+#include <Uuid.hpp>
+#include <chrono>
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 };
@@ -44,16 +46,16 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
     configuration->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-    auto pool = newDefaultPool("postgres", "", configuration, usePostgreSQL);
+    auto pool = newDefaultPool(uuid::generate_uuid_v4(), "", configuration, usePostgreSQL);
 #else
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
 #endif
 
     {
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin",
                                               configuration));
         std::set<std::string> emittedOperations;
         {
@@ -107,11 +109,11 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumDGBXpubSynchronization) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "digibyte", configuration));
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "digibyte", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
@@ -147,11 +149,11 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumDGBXpubSynchronization) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumLTCXpubSynchronization) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "litecoin", configuration));
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "litecoin", configuration));
         std::set<std::string> emittedOperations;
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
@@ -187,9 +189,9 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumLTCXpubSynchronization) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnceAtATime) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin",
                                               api::DynamicObject::newInstance()));
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
@@ -218,9 +220,10 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnceAtATime) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFreshResetAll) {
+    auto poolName = uuid::generate_uuid_v4();
     {
-        auto pool = newDefaultPool();
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
+        auto pool = newDefaultPool(poolName);
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin",
                                               api::DynamicObject::newInstance()));
         {
             auto nextIndex = wait(wallet->getNextAccountIndex());
@@ -250,15 +253,15 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFreshResetAll) {
         }
     }
     {
-        auto pool = newDefaultPool();
+        auto pool = newDefaultPool(poolName);
         EXPECT_EQ(wait(pool->getWalletCount()), 0);
     }
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeFromLastBlock) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a63", "bitcoin",
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin",
                                               api::DynamicObject::newInstance()));
         createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
         auto synchronize = [wallet, pool, this] (bool expectNewOp) {
@@ -294,9 +297,9 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeFromLastBlock) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin_testnet",
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin_testnet",
                                               api::DynamicObject::newInstance()));
         std::set<std::string> emittedOperations;
         {
@@ -351,9 +354,9 @@ TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, MultipleSynchronization) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin",
                                               api::DynamicObject::newInstance()));
         std::vector<std::string> xpubs = {
                 P2PKH_MEDIUM_XPUB_INFO.extendedKeys[0]
@@ -405,9 +408,9 @@ TEST_F(BitcoinLikeWalletSynchronization, MultipleSynchronization) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin",
                                               api::DynamicObject::newInstance()));
 
         auto nextIndex = wait(wallet->getNextAccountIndex());
@@ -466,8 +469,8 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, BTCParsingAndSerialization) {
-    auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("testnet_wallet", "bitcoin", DynamicObject::newInstance()));
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
+    auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin", DynamicObject::newInstance()));
     {
         auto strTx = "0100000001c76ec87ab18aa0398a2cbfa68625576fdc3bf276b467fc016010ad675678157d010000006b483045022100e0c4a6449841f4a435b23dc2cd4a6c26a8e12e25783dbd02072332c794012ca202202246876625e726ef9a89f854d59d2aee1787c9807d82d953732e56dbc296657001210212b8ae5848c5ce1422643aed011c9b1cbb7da9a5feba0cad0c130a11e8c4091dffffffff02400d03000000000017a914b800848ce7130e91d55422e1f3d72e813dc250e187b9dc2b00000000001976a9140265b33d266d56c25416d493ccb42992faa3f24a88ac00000000";
         auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(wallet->getCurrency(), hex::toByteArray(strTx), 0);
@@ -476,8 +479,8 @@ TEST_F(BitcoinLikeWalletSynchronization, BTCParsingAndSerialization) {
 }
 
 TEST_F(BitcoinLikeWalletSynchronization, XSTParsingAndSerialization) {
-    auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("testnet_wallet", "stealthcoin", DynamicObject::newInstance()));
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
+    auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "stealthcoin", DynamicObject::newInstance()));
     {
         auto strTx = "01000000ae71115b01f9d2e90eef51048962392b2ac2cbe476aacb06d750e0794aeb5da5a2afaf19da000000006b483045022100be2faab00cc32a4f6f0249d70f3b6d1fc66bf50dcd6ae011d0287a4a581e5c7a02203cd71132619de1e8a1a84c481529f32d4e29b495f835d5b0da7655203a0a7dda01210269568d231762330f7aed9cf0acfb2512f2d7889eb18adb778589ab5cca66fb3dffffffff0200127a00000000001976a914b4949cd1e6c07826ceee84929a7c6babcccc5ec388ac6094b500000000001976a91417cb2228c292d617f98f4b89b448650e0a480e0788ac00000000";
         auto txHash = "38fcb406a0110c50465edb482bab8d6100e7f9fa7e3ae01e48145c60fd51d00b";
@@ -498,9 +501,9 @@ TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
     const api::ExtendedKeyAccountCreationInfo SELF_RECIPIENT_XPUB_INFO(
         0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
 );
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     {
-        auto wallet = wait(pool->createWallet("self-recipients-wallet-test", "bitcoin", api::DynamicObject::newInstance()));
+        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin", api::DynamicObject::newInstance()));
 
         auto nextIndex = wait(wallet->getNextAccountIndex());
         auto info = wait(wallet->getNextExtendedKeyAccountCreationInfo());

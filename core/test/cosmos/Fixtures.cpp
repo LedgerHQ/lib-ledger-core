@@ -2,6 +2,7 @@
 
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <api/CosmosLikeVoteOption.hpp>
+#include <Uuid.hpp>
 
 namespace ledger {
         namespace testing {
@@ -110,9 +111,9 @@ namespace ledger {
 
                         Transaction setupTransactionResponse(const std::vector<Message>& msgs, const std::chrono::system_clock::time_point& timeRef) {
                                 Transaction tx;
-                                tx.hash = "A1E44688B429AF17322EC33CE62876FA415EFC8D9244A2F51454BD025F416594";
+                                tx.hash = uuid::generate_uuid_v4();
                                 ledger::core::Block block;
-                                block.hash = "52B39D45B438C6995CD448B09963954883B0F7A57E9EFC7A95E0A6C5BAC09C00";
+                                block.hash = uuid::generate_uuid_v4();
                                 block.currencyName = "atom";
                                 block.height = 744795;
                                 block.time = timeRef;
@@ -122,10 +123,12 @@ namespace ledger {
                                 tx.gasUsed = BigInt(26826);
                                 tx.timestamp = timeRef;
                                 tx.memo = "Sent by Ledger";
+                                auto current_index = 0;
                                 for (const auto& msg : msgs) {
                                         tx.messages.push_back(msg);
                                         MessageLog log;
-                                        log.messageIndex = 0;
+                                        log.messageIndex = current_index;
+                                        current_index++;
                                         log.success = true;
                                         log.log = "Success";
                                         tx.logs.push_back(log);

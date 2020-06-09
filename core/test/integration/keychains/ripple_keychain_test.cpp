@@ -35,6 +35,7 @@
 #include <src/utils/optional.hpp>
 #include "keychain_test_helper.h"
 #include "../BaseFixture.h"
+#include <Uuid.hpp>
 using namespace std;
 class RippleKeychains : public BaseFixture {
 public:
@@ -95,7 +96,7 @@ const std::vector<DerivationSchemeData> derivationSchemeTestData = {
 };
 
 TEST_F(RippleKeychains, RippleDerivationSchemes) {
-    auto pool = newDefaultPool();
+    auto pool = newDefaultPool(uuid::generate_uuid_v4());
     auto configuration = DynamicObject::newInstance();
     {
         for (auto &elem : derivationSchemeTestData) {

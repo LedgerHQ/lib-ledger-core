@@ -36,6 +36,7 @@
 #include <api/KeychainEngines.hpp>
 #include <utils/DateUtils.hpp>
 #include <iostream>
+#include <Uuid.hpp>
 using namespace std;
 class AccountsPublicInterfaceTest : public BaseFixture {
 public:
@@ -45,7 +46,7 @@ public:
     }
 
     void recreate() {
-        pool = newDefaultPool();
+        pool = newDefaultPool(uuid::generate_uuid_v4());
         wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
     }
 
