@@ -4,8 +4,8 @@ and released into public domain.
 */
 
 
-#include "sha512.h"
-//#include "portability.h"
+#include "sha512_256.h"
+#include "portability.h"
 #include <memory.h>
 #include <functional>
 

@@ -30,7 +30,7 @@
 #include "AlgorandAddress.hpp"
 
 #include <collections/vector.hpp>
-#include <crypto/SHA512256.hpp>
+#include <crypto/sha512_256.h>
 #include <math/BaseConverter.hpp>
 
 namespace ledger {
@@ -61,9 +61,13 @@ namespace algorand {
 
     std::string Address::fromPublicKey(const std::vector<uint8_t> & pubKey) {
         // 1. pubkey --> pubKeyHash
-        const std::vector<uint8_t> pubKeyHash = SHA512256::bytesToBytesHash(pubKey);
+        auto hasher = cppcrypto::sha512(256);
+        unsigned char pubKeyHash[256/8];
+        hasher.init();
+        hasher.update(&pubKey.front(), pubKey.size());
+        hasher.final(pubKeyHash); // Now hash contains the hash
         // 2. 4 last bytes of pubKeyHash
-        const std::vector<uint8_t> pubKeyHashChecksum(pubKeyHash.cbegin() + pubKeyHash.size() - CHECKSUM_LEN_BYTES, pubKeyHash.cend());
+        const std::vector<uint8_t> pubKeyHashChecksum(pubKeyHash + strlen((char*)pubKeyHash) - CHECKSUM_LEN_BYTES, pubKeyHash + strlen((char*)pubKeyHash));
         // 3. pubkey + 4 last bytes of pubKeyHash
         const std::vector<uint8_t> addressBytes = vector::concat<uint8_t>(pubKey, pubKeyHashChecksum);
         // 4. Encode to Base32
