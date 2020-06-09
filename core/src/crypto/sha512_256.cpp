@@ -8,7 +8,7 @@ and released into public domain.
 #include "portability.h"
 #include <memory.h>
 #include <functional>
-
+#include <string>
 
 
 
