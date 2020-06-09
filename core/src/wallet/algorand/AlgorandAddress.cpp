@@ -67,7 +67,7 @@ namespace algorand {
         hasher.update(&pubKey.front(), pubKey.size());
         hasher.final(pubKeyHash); // Now hash contains the hash
         // 2. 4 last bytes of pubKeyHash
-        const std::vector<uint8_t> pubKeyHashChecksum(pubKeyHash + strlen((char*)pubKeyHash) - CHECKSUM_LEN_BYTES, pubKeyHash + strlen((char*)pubKeyHash));
+        const std::vector<uint8_t> pubKeyHashChecksum(pubKeyHash + 32 - CHECKSUM_LEN_BYTES, pubKeyHash + 32);
         // 3. pubkey + 4 last bytes of pubKeyHash
         const std::vector<uint8_t> addressBytes = vector::concat<uint8_t>(pubKey, pubKeyHashChecksum);
         // 4. Encode to Base32
