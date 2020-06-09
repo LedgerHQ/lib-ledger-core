@@ -124,9 +124,9 @@ namespace algorand {
             .callback(getMainExecutionContext(), callback);
     }
 
-    void Account::hasAsset(const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback)
+    void Account::hasAsset(const std::string & addr, const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback)
     {
-       getAccountInformation()
+        _explorer->getAccount(addr)
             .map<bool>(
                     getContext(),
                     [&assetId](const model::Account& account) {
