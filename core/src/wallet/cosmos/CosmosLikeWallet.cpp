@@ -110,19 +110,31 @@ FuturePtr<ledger::core::api::Account> CosmosLikeWallet::newAccountWithInfo(
 FuturePtr<ledger::core::api::Account> CosmosLikeWallet::newAccountWithExtendedKeyInfo(
     const api::ExtendedKeyAccountCreationInfo &info)
 {
-    throw make_exception(
-        api::ErrorCode::UNSUPPORTED_OPERATION,
-        "CosmosLike doesn't support account creation "
-        "through extended key info.");
+    if (info.extendedKeys.size() == 0) {
+        throw make_exception(
+            api::ErrorCode::ILLEGAL_ARGUMENT,
+            "Missing extended key in extended key account creation info");
+    }
+    auto pubKey = CosmosLikeExtendedPublicKey::fromBech32(
+        getCurrency(),
+        info.extendedKeys[0],
+        Option<std::string>(fmt::format("44'/118'/{}'", info.index)));
+    const api::AccountCreationInfo accountCreationInfoFromExtended{info.index,
+                                                                   info.owners,
+                                                                   info.derivations,
+                                                                   {pubKey->derivePublicKey("")},
+                                                                   std::vector<std::vector<uint8_t>>()};
+    return newAccountWithInfo(accountCreationInfoFromExtended);
 }
 
 Future<api::ExtendedKeyAccountCreationInfo> CosmosLikeWallet::getExtendedKeyAccountCreationInfo(
     int32_t accountIndex)
 {
-    throw make_exception(
-        api::ErrorCode::UNSUPPORTED_OPERATION,
-        "CosmosLike doesn't support account creation "
-        "through extended key info.");
+    auto scheme = getDerivationScheme();
+    auto path =
+        scheme.setCoinType(getCurrency().bip44CoinType).setAccountIndex(accountIndex).getPath();
+    api::ExtendedKeyAccountCreationInfo info{accountIndex, {"main"}, {path.toString()}, {}};
+    return Future<api::ExtendedKeyAccountCreationInfo>::successful(info);
 }
 
 Future<api::AccountCreationInfo> CosmosLikeWallet::getAccountCreationInfo(int32_t accountIndex)
