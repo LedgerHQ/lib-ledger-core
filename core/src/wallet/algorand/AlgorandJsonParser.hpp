@@ -169,7 +169,7 @@ namespace algorand {
             getMandatoryStringField(node, constants::xType, tx.header.type);
             getMandatoryStringField(node, constants::xTx, tx.header.id);
             getMandatoryAddressField(node, constants::xFrom, tx.header.sender);
-            getMandatoryUint64Field(node, constants::xTimestamp, tx.header.timestamp);
+            //getMandatoryUint64Field(node, constants::xTimestamp, tx.header.timestamp); // FIXME Restore this when PureStake provides it
             getMandatoryUint64Field(node, constants::xFirstRound, tx.header.firstValid);
             getMandatoryUint64Field(node, constants::xLastRound, tx.header.lastValid);
             getMandatoryUint64Field(node, constants::xRound, tx.header.round);

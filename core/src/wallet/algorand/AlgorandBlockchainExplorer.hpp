@@ -63,35 +63,26 @@ namespace constants {
 
     public:
 
-        BlockchainExplorer(const std::shared_ptr<api::ExecutionContext>& context,
-                           const std::shared_ptr<HttpClient>& http,
-                           const api::AlgorandNetworkParameters& parameters,
-                           const std::shared_ptr<api::DynamicObject>& configuration);
+        BlockchainExplorer(const std::shared_ptr<api::ExecutionContext> & context,
+                           const std::shared_ptr<HttpClient> & http,
+                           const api::AlgorandNetworkParameters & parameters,
+                           const std::shared_ptr<api::DynamicObject> & configuration);
 
-        // CurrentBlock querier
-        Future<api::Block> getCurrentBlock() const;
-
-        // Block querier
         Future<api::Block> getBlock(uint64_t blockHeight) const;
-
-        // Account querier
-        Future<model::Account> getAccount(const std::string& address) const;
-
+        
+        Future<model::Account> getAccount(const std::string & address) const;
         
         Future<model::AssetParams> getAssetById(uint64_t id) const;
 
+        Future<model::Transaction> getTransactionById(const std::string & txId) const;
 
-        // Single transaction querier (found by hash)
-        Future<model::Transaction> getTransactionById(const std::string& txId) const;
-
-        // Get all transactions relevant to an address
-        // Concatenates multiple API calls for all relevant transaction types
-        Future<model::TransactionsBulk> getTransactionsForAddress(const std::string& address, uint64_t fromBlockHeight = 0) const;
-
+        Future<model::TransactionsBulk> getTransactionsForAddress(const std::string & address,
+                                                                  const Option<uint64_t> & beforeRound = Option<uint64_t>()) const;
+                         
         Future<model::TransactionParams> getTransactionParams() const;
 
-        Future<std::string> pushTransaction(const std::vector<uint8_t>& transaction);
-
+        Future<std::string> pushTransaction(const std::vector<uint8_t> & transaction);
+    
     private:
 
         std::shared_ptr<HttpClient> _http;

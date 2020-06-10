@@ -36,6 +36,9 @@
 #include <api/AlgorandAssetAmount.hpp>
 #include <api/AlgorandAssetParams.hpp>
 
+#include <wallet/common/database/BlockDatabaseHelper.h>
+#include <database/soci-date.h>
+#include <events/Event.hpp>
 #include <api/BigInt.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/hex.h>
@@ -65,35 +68,6 @@ namespace algorand {
         , _synchronizer(std::move(synchronizer))
     {}
 
-    bool Account::putBlock(soci::session& sql,
-                           const api::Block& block)
-    {
-        // TODO
-        return true;
-    }
-
-    int Account::putTransaction(soci::session& sql,
-                                const model::Transaction& transaction)
-    {
-        const auto wallet = getWallet();
-        if (wallet == nullptr) {
-            throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
-        }
-
-        const auto txuid =
-            TransactionDatabaseHelper::putTransaction(sql, getAccountUid(), transaction);
-        const auto operation = [&]() {
-            auto operation = Operation(shared_from_this(), transaction);
-            inflateOperation(operation, getWallet(), transaction);
-            operation.refreshUid();
-            return operation;
-        }();
-
-        OperationDatabaseHelper::putAlgorandOperation(sql, txuid, operation);
-
-        return static_cast<int>(operation.getConstBackend().type);
-    }
-
     namespace {
 
         auto u64ToAmount(const api::Currency& currency)
@@ -107,7 +81,84 @@ namespace algorand {
             };
         }
 
+        void setAmountAndRecipients(
+                Operation& op,
+                const model::Transaction& tx)
+        {
+            if (tx.header.type == model::constants::pay) {
+                const auto& details = boost::get<model::PaymentTxnFields>(tx.details);
+                op.getBackend().amount = BigInt(static_cast<unsigned long long>(details.amount));
+                op.getBackend().recipients = {};
+                op.getBackend().recipients.push_back(details.receiverAddr.toString());
+                if (details.closeAddr) {
+                    op.getBackend().recipients.push_back(details.closeAddr->toString());
+                    // TODO : adjust amount in this case?
+                }
+            } else if (tx.header.type == model::constants::axfer) {
+                const auto& details = boost::get<model::AssetTransferTxnFields>(tx.details);
+                op.getBackend().amount = BigInt(static_cast<unsigned long long>(details.assetAmount));
+                op.getBackend().recipients = {};
+                op.getBackend().recipients.push_back(details.assetReceiver.toString());
+                if (details.assetCloseTo) {
+                    op.getBackend().recipients.push_back(details.assetCloseTo->toString());
+                    // TODO : adjust amount in this case?
+                }
+            }
+        }
+
+        api::Block createBlock(
+            const model::Transaction& tx,
+            const std::string& currencyName)
+        {
+            return [&]() {
+                api::Block block;
+                block.currencyName = currencyName;
+                if (tx.header.round) {
+                    if (*tx.header.round > std::numeric_limits<int64_t>::max()) {
+                        throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
+                    }
+                    block.height = static_cast<int64_t>(*tx.header.round);
+                    block.blockHash = std::to_string(*tx.header.round);
+                }
+                if (tx.header.timestamp) {
+                    block.time = std::chrono::system_clock::time_point(std::chrono::seconds(*tx.header.timestamp));
+                }
+                block.uid = BlockDatabaseHelper::createBlockUid(block);
+                return block;
+            }();
+        }
     } // namespace
+
+    bool Account::putBlock(soci::session& sql, const api::Block& block)
+    {
+        if (BlockDatabaseHelper::putBlock(sql, block)) {
+            emitNewBlockEvent(block);
+            return true;
+        }
+        return false;
+    }
+
+    int Account::putTransaction(soci::session& sql, const model::Transaction& transaction)
+    {
+        const auto wallet = getWallet();
+        if (wallet == nullptr) {
+            throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
+        }
+
+        const auto txuid = TransactionDatabaseHelper::putTransaction(sql, getAccountUid(), transaction);
+        const auto operation = [&]() {
+            auto operation = Operation(shared_from_this(), transaction);
+            inflateOperation(operation, getWallet(), transaction);
+            operation.refreshUid();
+            return operation;
+        }();
+
+        if (OperationDatabaseHelper::putAlgorandOperation(sql, txuid, operation)) {
+            emitNewOperationEvent(operation.getConstBackend());
+        }
+
+        return static_cast<int>(operation.getConstBackend().type);
+    }
 
     void Account::getAsset(
             const std::string& assetId,
@@ -368,8 +419,43 @@ namespace algorand {
 
     std::shared_ptr<api::EventBus> Account::synchronize()
     {
-        // TODO
-        return nullptr;
+        std::lock_guard<std::mutex> lock(_synchronizationLock);
+        if (_currentSyncEventBus) {
+            return _currentSyncEventBus;
+        }
+
+        auto eventPublisher = std::make_shared<EventPublisher>(getContext());
+        _currentSyncEventBus = eventPublisher->getEventBus();
+
+
+        auto startTime = DateUtils::now();
+        eventPublisher->postSticky(
+            std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0
+        );
+
+        auto self = std::static_pointer_cast<Account>(shared_from_this());
+        _synchronizer->synchronizeAccount(self)->getFuture()
+            .onComplete(getContext(), [self, eventPublisher, startTime](const Try<Unit> &result) {
+                api::EventCode code;
+                auto payload = std::make_shared<DynamicObject>();
+                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - startTime).count();
+                payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
+                if (result.isSuccess()) {
+                    code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                } else {
+                    code = api::EventCode::SYNCHRONIZATION_FAILED;
+                    payload->putString(api::Account::EV_SYNC_ERROR_CODE,
+                                       api::to_string(result.getFailure().getErrorCode()));
+                    payload->putInt(api::Account::EV_SYNC_ERROR_CODE_INT, (int32_t) result.getFailure().getErrorCode());
+                    payload->putString(api::Account::EV_SYNC_ERROR_MESSAGE, result.getFailure().getMessage());
+                }
+                eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
+                std::lock_guard<std::mutex> lock(self->_synchronizationLock);
+                self->_currentSyncEventBus = nullptr;
+                return Future<Unit>::successful(result.getValue());
+            });
+
+        return eventPublisher->getEventBus();
     }
 
     void Account::startBlockchainObservation()
@@ -392,6 +478,10 @@ namespace algorand {
         return hex::toString(_address.getPublicKey());
     }
 
+    const std::string & Account::getAddress() const
+    {
+        return _address.toString();
+    }
 
     FuturePtr<Amount> Account::getBalance()
     {
@@ -499,58 +589,37 @@ namespace algorand {
 
     Future<api::ErrorCode> Account::eraseDataSince(const std::chrono::system_clock::time_point& date)
     {
-        // TODO
-        return Future<api::ErrorCode>::failure(Exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "whatever"));
-    }
+        auto accountUid = getAccountUid();
 
-    namespace {
+        auto log = logger();
+        log->debug(" Start erasing data of account : {}", accountUid);
 
-        void setAmountAndRecipients(
-                Operation& op,
-                const model::Transaction& tx)
-        {
-            if (tx.header.type == model::constants::pay) {
-                const auto& details = boost::get<model::PaymentTxnFields>(tx.details);
-                op.getBackend().amount = BigInt(static_cast<unsigned long long>(details.amount));
-                op.getBackend().recipients = {};
-                op.getBackend().recipients.push_back(details.receiverAddr.toString());
-                if (details.closeAddr) {
-                    op.getBackend().recipients.push_back(details.closeAddr->toString());
-                    // TODO : adjust amount in this case?
-                }
-            } else if (tx.header.type == model::constants::axfer) {
-                const auto& details = boost::get<model::AssetTransferTxnFields>(tx.details);
-                op.getBackend().amount = BigInt(static_cast<unsigned long long>(details.assetAmount));
-                op.getBackend().recipients = {};
-                op.getBackend().recipients.push_back(details.assetReceiver.toString());
-                if (details.assetCloseTo) {
-                    op.getBackend().recipients.push_back(details.assetCloseTo->toString());
-                    // TODO : adjust amount in this case?
-                }
+        std::lock_guard<std::mutex> lock(_synchronizationLock);
+        _currentSyncEventBus = nullptr;
+
+        soci::session sql(getWallet()->getDatabase()->getPool());
+
+        // Update account's internal preferences (for synchronization)
+        auto savedState = getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer")->getObject<SavedState>("state");
+        if (savedState.nonEmpty()) {
+            // Reset saved state to block mined before given date
+            auto previousBlock = BlockDatabaseHelper::getPreviousBlockInDatabase(sql, getWallet()->getCurrency().name, date);
+            if (previousBlock.nonEmpty() && savedState.getValue().round > previousBlock.getValue().height) {
+                savedState.getValue().round = static_cast<uint64_t>(previousBlock.getValue().height);
+            } else if (!previousBlock.nonEmpty()) { // if no previous block, sync should go back from genesis block
+                savedState.getValue().round = 0;
             }
+             getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer")->editor()->putObject<SavedState>("state", savedState.getValue())->commit();
         }
 
-        void setBlock(
-                Operation& op,
-                const std::shared_ptr<const AbstractWallet>& wallet,
-                const model::Transaction& tx)
-        {
-            const auto block = [&tx, &wallet]() {
-                api::Block block;
-                block.currencyName = wallet->getCurrency().name;
-                // TODO: add tx.time (when available)
-                if (tx.header.round) {
-                    if (*tx.header.round > std::numeric_limits<int64_t>::max()) {
-                        throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
-                    }
-                    block.height = static_cast<int64_t>(*tx.header.round);
-                }
-                return block;
-            }();
-            op.getBackend().block = block;
-        }
+        sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ",
+            soci::use(accountUid),
+            soci::use(date);
 
-    } // namespace
+        log->debug(" Finish erasing data of account : {}", accountUid);
+
+        return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+    }
 
     void Account::inflateOperation(
             Operation& op,
@@ -560,15 +629,18 @@ namespace algorand {
         op.setTransaction(tx);
         op.getBackend().accountUid = getAccountUid();
         op.getBackend().walletUid = wallet->getWalletUid();
-        op.getBackend().date =
-            std::chrono::system_clock::time_point(
-                    std::chrono::seconds(
-                        tx.header.timestamp.getValueOr(0)
-            ));
+        /*
+        if (tx.header.block.hasValue()) {
+            op.date = tx.header.block.getValue().time;
+        }
+        /*/
+        op.getBackend().date = std::chrono::system_clock::time_point(
+            std::chrono::seconds(tx.header.timestamp.getValueOr(0)));
+        //*/
         op.getBackend().senders = { tx.header.sender.toString() };
         setAmountAndRecipients(op, tx);
         op.getBackend().fees = BigInt(static_cast<unsigned long long>(tx.header.fee));
-        setBlock(op, wallet, tx);
+        op.getBackend().block = createBlock(tx, wallet->getCurrency().name);
         op.getBackend().currencyName = wallet->getCurrency().name;
         op.getBackend().type = api::OperationType::NONE;
         op.getBackend().trust = std::make_shared<TrustIndicator>();
