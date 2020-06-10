@@ -12,7 +12,9 @@ add_library(ledger-test STATIC
             MongooseHttpClient.cpp MongooseHttpClient.hpp MongooseSimpleRestServer.cpp MongooseSimpleRestServer.hpp
             route.cc route.h OpenSSLRandomNumberGenerator.cpp OpenSSLRandomNumberGenerator.hpp callbacks.cpp callbacks.hpp FakeWebSocketClient.cpp FakeWebSocketClient.h
             FakeHttpClient.hpp FakeHttpClient.cpp
-            FakeUrlConnection.hpp FakeUrlConnection.cpp)
+            FakeUrlConnection.hpp FakeUrlConnection.cpp
+            ExplorerStorage.hpp ExplorerStorage.cpp
+            HttpClientOnFakeExplorer.hpp HttpClientOnFakeExplorer.cpp)
 if (SYS_OPENSSL)
     include_directories(${CMAKE_BINARY_DIR}/include ${OPENSSL_INCLUDE_DIR})
 else()
