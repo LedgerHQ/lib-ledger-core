@@ -35,6 +35,9 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include <api/KeychainEngines.hpp>
 #include <api/PoolConfiguration.hpp>
+#include "ExplorerStorage.hpp"
+#include "HttpClientOnFakeExplorer.hpp"
+
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 };
@@ -549,5 +552,55 @@ TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
 
         account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
         dispatcher->waitUntilStopped();
+    }
+}
+
+TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
+    auto explorer = std::make_shared<test::ExplorerStorage>();
+    auto fake_http = std::make_shared<test::HttpClientOnFakeExplorer>(explorer);
+    explorer->addTransaction(TX_1);
+    explorer->addTransaction(TX_2);
+    explorer->addTransaction(TX_3);
+    explorer->addTransaction(TX_4);
+
+    auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
+    auto pool  = WalletPool::newInstance(
+        "my_ppol",
+        "test",
+        fake_http,
+        ws,
+        resolver,
+        printer,
+        dispatcher,
+        rng,
+        backend,
+        api::DynamicObject::newInstance()
+    );
+    {
+        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
+            api::DynamicObject::newInstance()));
+        {
+            auto nextIndex = wait(wallet->getNextAccountIndex());
+            EXPECT_EQ(nextIndex, 0);
+            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
+            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(),
+                make_receiver([](const std::shared_ptr<api::Event>& event) {
+                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                    }));
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),
+                make_receiver([=](const std::shared_ptr<api::Event>& event) {
+                    fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                    if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                        return;
+                    EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                    EXPECT_EQ(event->getCode(),
+                        api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                    dispatcher->stop();
+                    }));
+            EXPECT_EQ(bus, account->synchronize());
+            dispatcher->waitUntilStopped();
+
+        }
     }
 }
