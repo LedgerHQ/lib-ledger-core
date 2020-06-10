@@ -49,6 +49,7 @@
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <database/query/QueryBuilder.h>
 #include <api/QueryFilter.hpp>
+#include <crypto/SHA256.hpp>
 
 #include "BaseFixture.h"
 #include <Uuid.hpp>
@@ -58,9 +59,11 @@ class QueryBuilderTest : public BaseFixture {
 };
 
 TEST_F(QueryBuilderTest, SimpleOperationQuery) {
-    auto pool = newDefaultPool(uuid::generate_uuid_v4());
+    auto poolName = uuid::generate_uuid_v4();
+    auto walletName = uuid::generate_uuid_v4();
+    auto pool = newDefaultPool(poolName);
     {
-        auto wallet = wait(pool->createWallet(uuid::generate_uuid_v4(), "bitcoin", api::DynamicObject::newInstance()));
+        auto wallet = wait(pool->createWallet(walletName, "bitcoin", api::DynamicObject::newInstance()));
         auto nextIndex = wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
         auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
@@ -76,15 +79,20 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
             account->putTransaction(sql, tx);
         }
         sql.commit();
-        soci::rowset<soci::row> rows = QueryBuilder()
+        auto accountUid =
+            SHA256::stringToHexHash(fmt::format("uid:{}+{}", wallet->getWalletUid(), account->getIndex()));
+        auto operationUid = SHA256::stringToHexHash(
+            fmt::format("uid:{}+{}+{}", accountUid, transactions[1].hash, api::to_string(api::OperationType::SEND)));
+        soci::rowset<soci::row> rows =
+            QueryBuilder()
                 .select("uid")
                 .from("operations")
                 .to("o")
-                .where(api::QueryFilter::operationUidEq("c099e0118230697140916ff925e4cd2dd9acdce97bbb80b31cab401a5b169ed1"))
+                .where(api::QueryFilter::operationUidEq(operationUid))
                 .execute(sql);
         auto count = 0;
         for (auto& row : rows) {
-            EXPECT_EQ(row.get<std::string>(0), "c099e0118230697140916ff925e4cd2dd9acdce97bbb80b31cab401a5b169ed1");
+            EXPECT_EQ(row.get<std::string>(0), operationUid);
             count += 1;
         }
         EXPECT_EQ(count, 1);
