@@ -1,3 +1,10 @@
+## 3.4.1
+> 2020/06/10
+
+- Fix SBT download failures on the CI (for Debian and MacOS)
+- Fix a BTC test using a deprecated URL
+- Fix Stellar fee parsing for Horizon 1.3.0
+
 ## 3.4.0
 
 > 2020/06/01
