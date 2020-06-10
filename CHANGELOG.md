@@ -1,4 +1,4 @@
-## 3.4.1
+## 3.4.2
 > 2020/06/11
 
 - Multiple fixes on Cosmos integration:
@@ -10,6 +10,7 @@
 
 
 ## 3.4.1
+=======
 > 2020/06/10
 
 - Fix SBT download failures on the CI (for Debian and MacOS)
