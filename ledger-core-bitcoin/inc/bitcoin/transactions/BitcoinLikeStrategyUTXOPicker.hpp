@@ -62,14 +62,14 @@ namespace ledger {
                                                                                      const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &UTXOs,
                                                                                      const BigInt &aggregatedAmount);
 
-            //Usefull for filterWithLowFeesFirst
+            //Useful for filterWithLowFeesFirst
             static const int64_t DEFAULT_FALLBACK_FEE = 20;
             static const int64_t DEFAULT_DISCARD_FEE = 10;
             static const int64_t COIN = 100000000;
             static const int64_t MAX_MONEY = 21000000 * COIN;
-            static const uint32_t TOTAL_TRIES = 100000;
+            static const uint32_t TOTAL_TRIES = 10000;
             static const int64_t CENT = 1000000;
-            static const int64_t MIN_CHANGE = 100000;
+
         private:
             BitcoinLikeUTXOPicker::UTXODescriptorList filterWithKnapsackSolver(const std::shared_ptr<BitcoinLikeUTXOPicker::Buddy> &buddy,
                                                                                        const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &UTXOs,
