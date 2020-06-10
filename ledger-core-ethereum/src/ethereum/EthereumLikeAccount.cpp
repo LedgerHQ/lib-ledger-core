@@ -255,10 +255,11 @@ namespace ledger {
                         auto gasLimit = internalTx.gasLimit.toHexString();
                         auto gasUsed = internalTx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
                         auto inputData = hex::toString(internalTx.inputData);
+                        auto operationType = api::to_string(type);
                         sql << "INSERT INTO internal_operations VALUES(:uid, :eth_op_uid, :type, :value, :sender, :receiver, :gas_limit, :gas_used, :input_data)",
                                 soci::use(internalTxUid),
                                 soci::use(operation.uid),
-                                soci::use(api::to_string(type)),
+                                soci::use(operationType),
                                 soci::use(value),
                                 soci::use(internalTx.from),
                                 soci::use(internalTx.to),
