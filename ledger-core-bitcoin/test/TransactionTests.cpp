@@ -56,7 +56,7 @@ struct BitcoinTransactions : public MakeBaseTransaction<
 {
     std::shared_ptr<BitcoinLikeTransactionBuilder> tx_builder() {
         return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction(false));
-    } 
+    }
 };
 struct BitcoinP2PKHTransactions : public BitcoinTransactions
 {
@@ -163,7 +163,7 @@ struct BitcoinCoinSelectionTransactions : public BitcoinTransactions {
     api::Currency getCurrency() const override {
         return currencies::bitcoin_testnet();
     }
-    
+
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
@@ -249,15 +249,23 @@ TEST_F(BitcoinP2PKHTransactions, CreateStandardP2PKHWithMultipleInputs) {
 // }
 
 TEST_F(BitcoinBCHP2PKHTransactions, CreateStandardP2SHWithOneOutput) {
-    auto builder = tx_builder();
-    builder->sendToAddress(api::Amount::fromLong(currency, 5000), "14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
-    builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
-    auto f = builder->build();
-    auto tx = ::wait(f);
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
-    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
-    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+    auto buildBCHTxWithAddress = [=](const std::string & toAddress) -> std::string {
+      auto builder = tx_builder();
+      builder->sendToAddress(api::Amount::fromLong(currency, 5000), toAddress);
+      builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+      builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
+      auto f = builder->build();
+      auto tx = ::wait(f);
+      auto serializedTx = tx->serialize();
+      auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx, 0);
+      EXPECT_EQ(serializedTx, parsedTx->serialize());
+      return hex::toString(tx->serialize());
+    };
+
+    // https://explorer.bitcoin.com/bch/address/14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne
+    auto legacySerializeTx = buildBCHTxWithAddress("14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne");
+    auto cashAddressSerializeTx = buildBCHTxWithAddress("bitcoincash:qqjce3pqczzukajdqc27psjnd26lyz2d5yg2cfjtxe");
+    EXPECT_EQ(legacySerializeTx, cashAddressSerializeTx);
 }
 
 TEST_F(BitcoinZCASHP2PKHTransactions, CreateStandardP2PKHWithOneOutput) {
