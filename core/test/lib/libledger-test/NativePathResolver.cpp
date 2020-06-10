@@ -62,7 +62,8 @@ std::string NativePathResolver::resolvePreferencesPath(const std::string &path) 
 
 void NativePathResolver::clean() {
     for (auto path : _createdPaths) {
-        //ledger::core::fs::remove_all(path);
+        // ledger::core::fs::remove_all(path);
+        // QFile::remove(QString::fromStdString(path));
     }
 }
 
