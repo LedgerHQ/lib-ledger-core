@@ -1,6 +1,6 @@
 @import "../amount.djinni"
 
-@import "callback.djinni"
+@import "mapcallback.djinni"
 @import "configuration.djinni"
 
 AlgorandConfigurationDefaults = record {
@@ -217,7 +217,7 @@ AlgorandAccount = interface +c {
     getAssetsBalances(callback: MapCallback<AlgorandAssetAmount>);
 
     # Get information about the assets created by account
-    # @param callback, ListCallback returning a list of AlgorandAssetParams objects representing the assets created by account
+    # @param callback, MapCallback returning a list of AlgorandAssetParams objects representing the assets created by account
     getCreatedAssets(callback: MapCallback<AlgorandAssetParams>);
 
     # Get the pending rewards for account

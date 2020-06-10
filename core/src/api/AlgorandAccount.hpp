@@ -72,7 +72,7 @@ public:
 
     /**
      * Get information about the assets created by account
-     * @param callback, ListCallback returning a list of AlgorandAssetParams objects representing the assets created by account
+     * @param callback, MapCallback returning a list of AlgorandAssetParams objects representing the assets created by account
      */
     virtual void getCreatedAssets(const std::shared_ptr<AlgorandAssetParamsMapCallback> & callback) = 0;
 
