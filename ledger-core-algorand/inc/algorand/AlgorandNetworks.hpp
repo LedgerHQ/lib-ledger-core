@@ -1,5 +1,4 @@
 /*
- *
  * AlgorandNetworks
  *
  * Created by Hakim Aammar on 04/05/2020.
@@ -48,8 +47,8 @@ namespace ledger {
 namespace core {
 namespace networks {
 
-    extern LIBCORE_EXPORT const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName);
-    extern LIBCORE_EXPORT const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND;
+    extern LIBCORE_EXPORT const api::AlgorandNetworkParameters& getAlgorandNetworkParameters(const std::string &networkName);
+    extern LIBCORE_EXPORT const std::vector<api::AlgorandNetworkParameters>& ALL_ALGORAND();
 
     template<class Archive>
     void serialize(Archive & archive, api::AlgorandNetworkParameters & p)
@@ -66,3 +65,4 @@ namespace networks {
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDNETWORKS_H
+

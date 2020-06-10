@@ -36,7 +36,7 @@ namespace ledger {
 namespace core {
 namespace networks {
 
-    const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName) {
+    const api::AlgorandNetworkParameters& getAlgorandNetworkParameters(const std::string &networkName) {
         if (networkName == "algorand") {
             static const api::AlgorandNetworkParameters ALGORAND(
                 "mainnet-v1.0",
@@ -54,10 +54,15 @@ namespace networks {
         throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
     }
 
-    const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND ({
-        getAlgorandNetworkParameters("algorand"),
-        getAlgorandNetworkParameters("algorand-testnet")
-    });
+    const std::vector<api::AlgorandNetworkParameters>& ALL_ALGORAND()
+    {
+        static const std::vector<api::AlgorandNetworkParameters> ALGORANDS
+        {
+            getAlgorandNetworkParameters("algorand"),
+            getAlgorandNetworkParameters("algorand-testnet")
+        };
+        return ALGORANDS;
+    }
 
 } // namespace networks
 } // namespace core
