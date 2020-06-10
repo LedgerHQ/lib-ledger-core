@@ -51,12 +51,6 @@ namespace algorand {
         _http->addHeader(constants::purestakeTokenHeader, api::AlgorandConfigurationDefaults::ALGORAND_API_TOKEN);
     }
 
-    Future<api::Block> BlockchainExplorer::getCurrentBlock() const
-    {
-        // TODO ?
-    }
-
-    // TODO In algorand::Account set block.currencyName after calling BlockchainExplorer::getBlock !
     Future<api::Block> BlockchainExplorer::getBlock(uint64_t blockHeight) const
     {
         return _http->GET(fmt::format(constants::purestakeBlockEndpoint, blockHeight))
@@ -67,6 +61,17 @@ namespace algorand {
                     JsonParser::parseBlock(json, block);
                     return block;
             });
+            /*// NOTE: In case we actually need to retrieve blocks for each tx... (untested!)
+            // Add block information to the transaction
+            .template flatMap<model::Transaction>(getContext(), [this](const model::Transaction &tx) -> Future<model::Transaction> {
+                auto output = model::Transaction(tx);
+                return getBlock(tx.header.round.getValue())
+                    .map<model::Transaction>(getContext(), [output](const api::Block &block) mutable {
+                        output.header.block = block;
+                        return output;
+                    });
+            });
+            */
     }
 
     Future<model::Account> BlockchainExplorer::getAccount(const std::string& address) const
@@ -108,18 +113,54 @@ namespace algorand {
     }
 
     Future<model::TransactionsBulk>
-    BlockchainExplorer::getTransactionsForAddress(const std::string& address, uint64_t fromBlockHeight) const
+    BlockchainExplorer::getTransactionsForAddress(const std::string & address,
+                                                  const Option<uint64_t> & beforeRound) const
     {
-        return _http->GET(fmt::format(constants::purestakeAccountTransactionsEndpoint, address))
+        auto url = fmt::format(constants::purestakeAccountTransactionsEndpoint, address);
+        // Apply the offset if required
+        auto urlWithQueryFilters = beforeRound.isEmpty() ? url : fmt::format("{}?lastRound={}", url, beforeRound.getValue());
+
+        return _http->GET(urlWithQueryFilters)
             .json(false)
             .map<model::TransactionsBulk>(getContext(), [](const HttpRequest::JsonResult& response) {
                     const auto& json = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
                     auto txs = model::TransactionsBulk();
                     JsonParser::parseTransactions(json, txs.transactions);
-                    // TODO Manage tx->hasNext ? Pagination ?
-                    txs.hasNext = false;
+
+                    // Manage limit
+                    txs.hasNext = txs.transactions.size() >= constants::EXPLORER_QUERY_LIMIT;
                     return txs;
             });
+            /*// NOTE: In case we actually need to retrieve blocks for each tx... (untested!)
+            .template flatMap<model::TransactionsBulk>(getContext(), [this](const model::TransactionsBulk & txs) -> Future<model::TransactionsBulk> {
+                // - build set of (unique) blockHeights to fetch
+                const auto blockHeights = vector::map<uint64_t, model::Transaction>(txs.transactions,
+                    [](const model::Transaction& tx) {
+                        return tx.header.round.getValue();
+                    });
+                const std::unordered_set<uint64_t> uniqueBlockHeights(blockHeights.begin(), blockHeights.end());
+                // - build vector of promises for each block
+                std::vector<Future<api::Block>> blockPromises;
+                for (auto blockHeight : uniqueBlockHeights) {
+                    blockPromises.push_back(getBlock(blockHeight));
+                }
+                // - async::sequence
+                return async::sequence(getContext(), blockPromises)
+                    .flatMap<model::TransactionsBulk>(getContext(), [&txs](const std::vector<api::Block> & blocks) {
+                        // - build map of <blockHeight, api::Block> ?
+                        //auto blockPerHeight = std::unordered_map<uint64_t, api::Block>();
+                        auto txsMutable = const_cast<model::TransactionsBulk &>(txs);
+                        for (auto& tx : txsMutable.transactions) {
+                            for (const auto& block : blocks) {
+                                if (tx.header.round.getValue() == block.height) {
+                                    tx.header.block = block;
+                                }
+                            }
+                        }
+                        return Future<model::TransactionsBulk>::successful(txsMutable);
+                    });
+            });
+            */
     }
 
     Future<model::TransactionParams> BlockchainExplorer::getTransactionParams() const

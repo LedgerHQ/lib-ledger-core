@@ -80,7 +80,9 @@ TEST_F(AlgorandExplorerTest, GetAccount) {
     EXPECT_GT(account.round, 6000000);
     EXPECT_GT(account.amount, 0);
     EXPECT_GT(account.amountWithoutPendingRewards, 0);
-    // FIXME Figure out rewards on testnet
+    // FIXME Rewards are supposed to work on TestNet,
+    // but the rewards pool is left empty by Algorand...
+    // This can be uncommented if they fill it someday.
     //EXPECT_GT(account->pendingRewards, 0); // May fail if rewards have been claimed very recently, but ultra unlikely
     //EXPECT_GT(account->rewards, 0);
   

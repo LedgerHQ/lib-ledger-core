@@ -95,7 +95,7 @@ namespace algorand {
                                             accountData.address,
                                             _explorer,
                                             _observer,
-                                            nullptr);
+                                            _synchronizerFactory());
         });
     }
 
@@ -129,7 +129,7 @@ namespace algorand {
                                          accountData.address,
                                          _explorer,
                                          _observer,
-                                         nullptr); // TODO: add a synchronizer
+                                         _synchronizerFactory());
     }
 
     bool Wallet::hasMultipleAddresses() const {

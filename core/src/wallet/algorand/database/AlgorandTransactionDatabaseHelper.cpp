@@ -37,7 +37,6 @@
 
 #include <crypto/SHA256.hpp>
 #include <math/BaseConverter.hpp>
-#include <wallet/common/database/BlockDatabaseHelper.h>
 
 #include <fmt/format.h>
 
