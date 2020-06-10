@@ -33,6 +33,7 @@
 #include <api/CosmosLikeValidatorListCallback.hpp>
 #include <api/StringCallback.hpp>
 #include <async/Future.hpp>
+#include <cmath>
 #include <collections/vector.hpp>
 #include <database/query/ConditionQueryFilter.h>
 #include <database/soci-date.h>
@@ -40,6 +41,7 @@
 #include <database/soci-option.h>
 #include <events/Event.hpp>
 #include <math/Base58.hpp>
+#include <numeric>
 #include <soci.h>
 #include <utils/DateUtils.hpp>
 #include <utils/Option.hpp>
@@ -235,6 +237,7 @@ void CosmosLikeAccount::fillOperationTypeAmountFromFees(
     CosmosLikeOperation &out, const cosmos::MsgFees &innerFeesMsg) const
 {
     const auto address = getAddress();
+    out.amount = BigInt::fromDecimal(innerFeesMsg.fees.amount);
     if (innerFeesMsg.payerAddress == address) {
         out.type = api::OperationType::SEND;
     }
@@ -290,6 +293,41 @@ void CosmosLikeAccount::setOperationTypeAndAmount(
     }
 }
 
+uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction &tx)
+{
+    // Get the maximum fees advertised on transaction (if all of "GasWanted" is used)
+    auto fees = std::accumulate(
+        std::begin(tx.fee.amount),
+        std::end(tx.fee.amount),
+        0,
+        [](uint32_t sum, const cosmos::Coin &subamount) {
+            // FIXME This locks the CosmosLikeAccount code in cosmoshub chains on debug builds.
+            // And it also serves as reminder that most code in this module assumes cosmoshub.
+            assert((subamount.denom == "uatom"));
+            return sum + BigInt::fromDecimal(subamount.amount).toInt();
+        });
+
+    // The value is updated to the fees actually paid if the transaction has a GasUsed value to use.
+    if (fees != 0 && tx.gasUsed) {
+        if (tx.fee.gas.toInt() == 0) {
+            // A 0 gas transaction is either :
+            // - Never broadcast by the node (because of spam protection mechanisms)
+            // - Invalid, as the signature verification (or the `gas per byte` cost)
+            //   will immediately trigger an OutOfGas network error.
+            // An invalid or absent transaction from the blockchain should be not picked up by the
+            // explorer, so Operations cannot be inflated with such transactions.
+            throw Exception(
+                api::ErrorCode::ILLEGAL_STATE,
+                "A cosmos Transaction cannot have a GasUsed field with a null GasWanted field.");
+        }
+        auto const feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
+                                         static_cast<float>(tx.fee.gas.toInt());
+        fees = std::lround(feeConsumptionRatio * static_cast<float>(fees));
+    }
+
+    return fees;
+}
+
 void CosmosLikeAccount::inflateOperation(
     CosmosLikeOperation &out,
     const std::shared_ptr<const AbstractWallet> &wallet,
@@ -318,14 +356,12 @@ void CosmosLikeAccount::inflateOperation(
     out.currencyName = getWallet()->getCurrency().name;
     out.date = tx.timestamp;
     out.trust = std::make_shared<TrustIndicator>();
-    auto fees = 0;
+    // Fees are computed as the amount only on the MSGFEES Message Type.
     if (cosmos::stringToMsgType(msg.type.c_str()) == api::CosmosLikeMsgType::MSGFEES) {
-        std::for_each(tx.fee.amount.begin(), tx.fee.amount.end(), [&](cosmos::Coin amount) {
-            assert(amount.denom == "uatom");  // FIXME Temporary until all units correctly supported
-            fees += BigInt::fromDecimal(amount.amount).toInt();
-        });
+        auto txFees = computeFeesForTransaction(tx);
+        out.amount = BigInt(txFees);
     }
-    out.fees = BigInt(fees);
+    out.fees = BigInt::ZERO;
     out.walletUid = wallet->getWalletUid();
 }
 
@@ -350,6 +386,14 @@ int CosmosLikeAccount::putTransaction(soci::session &sql, const cosmos::Transact
 
     for (auto msgIndex = 0; msgIndex < tx.messages.size(); msgIndex++) {
         auto msg = tx.messages[msgIndex];
+
+        // Ignore the operation if this is a Fee operation, that _this_ Account did not pay
+        // inflateOperation adds the AccountUID in the operation otherwise, so when querying
+        // operations for this account, the fees that _this_ didn't pay will appear.
+        if (cosmos::stringToMsgType(msg.type.c_str()) == cosmos::MsgType::MSGFEES &&
+            boost::get<cosmos::MsgFees>(msg.content).payerAddress != this->getAddress()) {
+            continue;
+        }
 
         CosmosLikeOperation operation(tx, msg);
         inflateOperation(operation, getWallet(), tx, msg);
@@ -380,7 +424,8 @@ std::shared_ptr<CosmosLikeKeychain> CosmosLikeAccount::getKeychain() const
     return _keychain;
 }
 
-std::shared_ptr<api::Keychain> CosmosLikeAccount::getAccountKeychain() {
+std::shared_ptr<api::Keychain> CosmosLikeAccount::getAccountKeychain()
+{
     return this->getKeychain();
 }
 
@@ -474,11 +519,15 @@ Future<std::vector<std::shared_ptr<api::Amount>>> CosmosLikeAccount::getBalanceH
                         break;
                     }
                     case api::OperationType::SEND: {
+                        // NOTE : in Cosmos, FEES is a SEND operation with fees as amount and 0 fees
                         sum = sum - operation.amount - operation.fees.getValueOr(BigInt::ZERO);
                         break;
                     }
                     default: {
-                        sum = sum - operation.fees.getValueOr(BigInt::ZERO);
+                        // NOTE : we ignore the fees field here as well, since the fees paid by the Account
+                        // were already included in an OperationType::SEND
+                        // See CosmosLikeAccount::fillOperationTypeAmountFromFees
+                        // Therefore, nothing to do on default: case.
                     } break;
                     }
                 }

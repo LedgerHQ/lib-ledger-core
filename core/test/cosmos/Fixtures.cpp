@@ -85,11 +85,11 @@ namespace ledger {
                                 return msg;
                         }
 
-                        Message setupFeesMessage() {
+                        Message setupFeesMessage(const std::string &payerAddress) {
                             Message msg;
                             msg.type = constants::kMsgFees;
                             MsgFees feesMsg;
-                            feesMsg.payerAddress = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl";
+                            feesMsg.payerAddress = payerAddress;
                             feesMsg.fees = api::CosmosLikeAmount("30", "uatom");
                             msg.content = feesMsg;
                             return msg;

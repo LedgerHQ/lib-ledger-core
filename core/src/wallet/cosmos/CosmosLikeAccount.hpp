@@ -51,6 +51,7 @@
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
+
 #include <wallet/cosmos/api_impl/CosmosLikeRedelegation.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeReward.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeUnbonding.hpp>
@@ -103,6 +104,7 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
 
     std::shared_ptr<CosmosLikeKeychain> getKeychain() const;
     std::shared_ptr<api::Keychain> getAccountKeychain() override;
+    std::string getAddress() const;
 
     FuturePtr<Amount> getBalance() override;
 
@@ -226,15 +228,14 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     std::shared_ptr<CosmosLikeAccount> getSelf();
     void updateFromDb();
 
-    std::string getAddress() const;
-
     // These helpers stay on CosmosLikeAccount *only* because they have to use their
     // knowledge of Address information in order to correctly map operation type.
     // An operation type is always seen from the account point of view.
 
     /// Set the type and the amount of an Operation from a cosmos Message in the context of the
-    /// account. \param [out] out the Operation to fill \param [in] msg the cosmos Message to use as
-    /// source of information
+    /// account.
+    /// \param [out] out the Operation to fill
+    /// \param [in] msg the cosmos Message to use as source of information
     void setOperationTypeAndAmount(CosmosLikeOperation &out, const cosmos::Message &msg) const;
     /// Set the type and the amount of an Operation from an unwrapped cosmos Send Message.
     /// \param [out] out the Operation to fill
@@ -257,7 +258,9 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     void fillOperationTypeAmountFromUndelegate(
         CosmosLikeOperation &out, const cosmos::MsgUndelegate &innerUndelegateMsg) const;
     /// Set the type and the amount of an Operation from an unwrapped cosmos BeginRedelegate
-    /// Message. \param [out] out the Operation to fill \param [in] innerBeginRedelegateMsg the
+    /// Message.
+    /// \param [out] out the Operation to fill
+    /// \param [in] innerBeginRedelegateMsg the
     /// cosmos beginRedelegate message to use, unwrapped.
     void fillOperationTypeAmountFromBeginRedelegate(
         CosmosLikeOperation &out, const cosmos::MsgBeginRedelegate &innerBeginRedelegateMsg) const;
@@ -276,6 +279,11 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     /// \param [in] innerFeesMsg the cosmos fees message to use, unwrapped.
     void fillOperationTypeAmountFromFees(
         CosmosLikeOperation &out, const cosmos::MsgFees &innerFeesMsg) const;
+
+    /// Compute the exact fees paid for the Transaction, applying the consumed gas ratio if available.
+    /// \param [in] tx A Cosmos Transaction to compute the fees from
+    /// \return the amount of fees paid for this transaction in uatom
+        static uint32_t computeFeesForTransaction(const cosmos::Transaction& tx);
 
     std::shared_ptr<cosmos::Account> _accountData;
     std::shared_ptr<CosmosLikeKeychain> _keychain;

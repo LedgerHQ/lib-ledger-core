@@ -33,7 +33,7 @@ namespace ledger {
                         Message setupUndelegateMessage();
                         Message setupVoteMessage();
                         Message setupWithdrawDelegationRewardMessage();
-                        Message setupFeesMessage();
+                        Message setupFeesMessage(const std::string& payerAddress);
 
                         // Build a transaction to be broadcasted to the blockhain
                         Transaction setupTransactionRequest(const std::vector<Message>& msgs);

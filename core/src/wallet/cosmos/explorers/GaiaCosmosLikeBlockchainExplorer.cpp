@@ -48,6 +48,12 @@
 namespace ledger {
 namespace core {
 
+namespace {
+constexpr uint32_t SIG_VERIFY_COST_SECP256K1 = 1000;
+constexpr uint32_t SIG_SIZE = 64;  // A signature is approx 64 bytes long
+constexpr uint32_t TX_COST_PER_BYTE = 10;
+}  // namespace
+
 using MsgType = cosmos::MsgType;
 
 static CosmosLikeBlockchainExplorer::TransactionFilter eventAttribute(
@@ -1218,13 +1224,24 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
     /// directly the gas needed for a transaction with several messages.
     /// As a workaround, we split the transaction in several transactions
     /// containing only one message and sum the costs of all transactions.
-    /// This implies that the cost of the signature is paid as many times
-    /// as there are messages, instead of one. We assume that this cost is
-    /// low compared to the total cost.
+    ///
+    /// This creates various approximations in the total gas cost, but we still found
+    /// out that a simple MsgSend transaction can run out of this gas estimation
+    /// even with a gasAdjustment of 2.
+    ///
+    /// Therefore we probably need to adjust the gas assuming that we are
+    /// underestimating the cost.
+    ///
+    /// The starting value of the accumulate is the cost of verifying a
+    /// SECP256k1 signature, and the cost of the size of the transaction.
+    const uint32_t txSizeCost =
+        TX_COST_PER_BYTE * (transaction->serializeForSignature().size() + SIG_SIZE);
+    const BigInt baseTxGasCost(SIG_VERIFY_COST_SECP256K1 + txSizeCost);
+
     return async::sequence(getContext(), estimations)
-        .flatMapPtr<BigInt>(getContext(), [](const auto &estimations) {
+        .flatMapPtr<BigInt>(getContext(), [baseTxGasCost](const auto &estimations) {
             const auto result =
-                std::accumulate(std::begin(estimations), std::end(estimations), BigInt::ZERO);
+                std::accumulate(std::begin(estimations), std::end(estimations), baseTxGasCost);
             return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(result));
         });
 }
