@@ -1,4 +1,15 @@
 ## 3.4.1
+> 2020/06/11
+
+- Multiple fixes on Cosmos integration:
+    * Use staging URL for explorer
+    * Do not include fees user didn't pay in operations
+    * Add baseline gas cost to estimation
+    * Handle fees properly in balance history
+    * Always return a derivation path in address object ("" is returned when the address doesn't belong to the wallet)
+
+
+## 3.4.1
 > 2020/06/10
 
 - Fix SBT download failures on the CI (for Debian and MacOS)
