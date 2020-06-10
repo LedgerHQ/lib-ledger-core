@@ -1,8 +1,9 @@
 @import "ledger-core/amount.djinni"
+@import "ledger-core/callback.djinni"
 @import "ledger-core/time_period.djinni"
 
-@import "callback.djinni"
 @import "configuration.djinni"
+@import "mapcallback.djinni"
 
 AlgorandConfigurationDefaults = record {
     # TODO Switch to mainnet at some point
@@ -210,7 +211,7 @@ AlgorandAccount = interface +c {
     getAssetsBalances(callback: MapCallback<AlgorandAssetAmount>);
 
     # Get information about the assets created by account
-    # @param callback, ListCallback returning a list of AlgorandAssetParams objects representing the assets created by account
+    # @param callback, MapCallback returning a list of AlgorandAssetParams objects representing the assets created by account
     getCreatedAssets(callback: MapCallback<AlgorandAssetParams>);
 
     # Get the pending rewards for account
@@ -246,3 +247,4 @@ AlgorandAccount = interface +c {
 AlgorandWallet = interface +c {
 
 }
+
