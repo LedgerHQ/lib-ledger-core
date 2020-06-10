@@ -44,15 +44,24 @@ namespace algorand {
 
     public:
 
-        static void putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation) {
-            ledger::core::OperationDatabaseHelper::putOperation(sql, operation);
-            auto op_uid = operation.uid;
-            auto tx_id = operation.getTransaction()->getId();
+        static bool putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation) {
+            auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation);
+            auto opUid = operation.uid;
+            auto txHash = operation.getTransaction()->getId();
 
-            sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
-                soci::use(op_uid),
-                soci::use(txUid),
-                soci::use(tx_id);
+            if (newOperation) {
+                sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
+                    soci::use(opUid),
+                    soci::use(txUid),
+                    soci::use(txHash);
+            } else {
+                sql << "UPDATE algorand_operations SET tx_uid = :tx_uid, tx_hash = :tx_hash WHERE uid = :op_uid",
+                    soci::use(txUid),
+                    soci::use(txHash),
+                    soci::use(opUid);
+            }
+
+            return newOperation;
         }
 
     };
@@ -62,3 +71,4 @@ namespace algorand {
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
+

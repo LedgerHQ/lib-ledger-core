@@ -76,6 +76,8 @@ namespace algorand {
 
         int putTransaction(soci::session& sql, const model::Transaction& transaction);
 
+        const std::string & getAddress() const;
+
         // From api::AlgorandAccount
         void getAsset(
                 const std::string& assetId,

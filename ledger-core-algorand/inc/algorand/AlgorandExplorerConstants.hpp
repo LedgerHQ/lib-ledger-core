@@ -37,6 +37,8 @@ namespace core {
 namespace algorand {
 namespace constants {
 
+    static constexpr uint32_t EXPLORER_QUERY_LIMIT = 100; // Max nb of objects returned by queries - defined by Algorand
+
     // Json objects keys
     static const std::string xHash = "hash";
     static const std::string xTimestamp = "timestamp";
@@ -126,3 +128,4 @@ namespace constants {
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDEXPLORERCONSTANTS_H
+
