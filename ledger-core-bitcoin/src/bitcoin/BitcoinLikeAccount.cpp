@@ -261,6 +261,15 @@
                 }
             }
 
+            std::vector<std::shared_ptr<api::Address>> BitcoinLikeAccount::fromBitcoinAddressesToAddresses(const std::vector<std::shared_ptr<BitcoinLikeAddress>> &addresses) {
+              AbstractAccount::AddressList result;
+              result.reserve(addresses.size());
+              for (auto& addr : addresses) {
+                result.push_back(std::dynamic_pointer_cast<api::Address>(addr));
+              }
+              return result;
+            }
+
             std::shared_ptr<BitcoinLikeKeychain> BitcoinLikeAccount::getKeychain() const {
                 return _keychain;
             }
@@ -384,14 +393,12 @@
             Future<AbstractAccount::AddressList> BitcoinLikeAccount::getFreshPublicAddresses() {
                 auto keychain = getKeychain();
                 return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
-                    auto addrs = keychain->getFreshAddresses(BitcoinLikeKeychain::KeyPurpose::RECEIVE, keychain->getObservableRangeSize());
-                    AbstractAccount::AddressList result(addrs.size());
-                    auto i = 0;
-                    for (auto& addr : addrs) {
-                        result[i] = std::dynamic_pointer_cast<api::Address>(addr);
-                        i += 1;
-                    }
-                    return result;
+                    return fromBitcoinAddressesToAddresses(
+                            keychain->getFreshAddresses(
+                                    BitcoinLikeKeychain::KeyPurpose::RECEIVE,
+                                    keychain->getObservableRangeSize()
+                                    )
+                            );
                 });
             }
 
@@ -678,5 +685,15 @@
                 return _explorer->getFees().callback(getContext(), callback);;
             }
 
+            Future<AbstractAccount::AddressList> BitcoinLikeAccount::getAddresses(int64_t from, int64_t to) {
+                auto keychain = getKeychain();
+                return async<AbstractAccount::AddressList>([=] () -> AbstractAccount::AddressList {
+                    return  fromBitcoinAddressesToAddresses(keychain->getAllObservableAddresses(from, to));
+                });
+            }
+
+            void BitcoinLikeAccount::getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) {
+                return getAddresses(from, to).callback(getMainExecutionContext(), callback);
+            }
         }
     }
