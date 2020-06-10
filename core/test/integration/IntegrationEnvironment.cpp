@@ -33,13 +33,17 @@
 
 IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
 
-IntegrationEnvironment::IntegrationEnvironment(int argc, char **argv) {
-    QCoreApplication app(argc, argv);
-    _appDir = app.applicationDirPath().toStdString();
+IntegrationEnvironment::IntegrationEnvironment(int argc, char **argv): _app(std::make_shared<QCoreApplication>(argc, argv)) {
+    // QCoreApplication app(argc, argv);
+    _appDir = _app->applicationDirPath().toStdString();
 }
 
 std::string IntegrationEnvironment::getApplicationDirPath() const {
     return _appDir;
+}
+
+std::shared_ptr<QCoreApplication> IntegrationEnvironment::getApp() const {
+    return _app;
 }
 
 IntegrationEnvironment *IntegrationEnvironment::initInstance(int argc, char **argv) {

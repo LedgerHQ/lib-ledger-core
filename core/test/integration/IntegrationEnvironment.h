@@ -39,11 +39,13 @@ class IntegrationEnvironment {
 public:
     static IntegrationEnvironment* initInstance(int argc, char** argv);
     static IntegrationEnvironment* getInstance();
+    std::shared_ptr<QCoreApplication> getApp() const;
     std::string getApplicationDirPath() const;
 private:
     IntegrationEnvironment(int argc, char** argv);
 
     std::string _appDir;
+    std::shared_ptr<QCoreApplication> _app;
     static IntegrationEnvironment* _instance;
 };
 
