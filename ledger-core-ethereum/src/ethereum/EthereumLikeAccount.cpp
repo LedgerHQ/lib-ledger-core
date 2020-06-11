@@ -112,8 +112,9 @@ namespace ledger {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
 
-            if (transaction.block.nonEmpty())
+            if (transaction.block.nonEmpty()) {
                 putBlock(sql, transaction.block.getValue());
+            }
 
             int result = 0x00;
 
@@ -231,7 +232,12 @@ namespace ledger {
         void EthereumLikeAccount::updateInternalTransactions(soci::session &sql,
                                                              EthereumLikeOperation &operation) {
             auto transaction = operation.getExplorerTransaction();
+            uint64_t index = 0;
             for (auto &internalTx : transaction.internalTransactions) {
+                // pre-increment so that we always increment the index, even when discarding
+                // internal transactions (that means we never use index = 0, but it’s okay)
+                index += 1;
+
                 // Since explorer is considering also wrapping tx as an internal action,
                 // we must filter it by considering that only internal action with same data,
                 // sender and receiver, is the one representing/corresponding to wrapping tx
@@ -241,7 +247,7 @@ namespace ledger {
                                 internalTx.to == _accountAddress ? api::OperationType::RECEIVE :
                                 api::OperationType::NONE;
 
-                    auto internalTxUid = OperationDatabaseHelper::createUid(operation.uid, fmt::format("{}-{}", internalTx.from, hex::toString(internalTx.inputData)), type);
+                    auto internalTxUid = OperationDatabaseHelper::createUid(operation.uid, fmt::format("{}-{}-{}", internalTx.from, hex::toString(internalTx.inputData), index), type);
                     auto actionCount = 0;
                     sql << "SELECT COUNT(*) FROM internal_operations WHERE uid = :uid", soci::use(internalTxUid), soci::into(actionCount);
                     if (actionCount == 0) {
@@ -249,10 +255,11 @@ namespace ledger {
                         auto gasLimit = internalTx.gasLimit.toHexString();
                         auto gasUsed = internalTx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
                         auto inputData = hex::toString(internalTx.inputData);
+                        auto operationType = api::to_string(type);
                         sql << "INSERT INTO internal_operations VALUES(:uid, :eth_op_uid, :type, :value, :sender, :receiver, :gas_limit, :gas_used, :input_data)",
                                 soci::use(internalTxUid),
                                 soci::use(operation.uid),
-                                soci::use(api::to_string(type)),
+                                soci::use(operationType),
                                 soci::use(value),
                                 soci::use(internalTx.from),
                                 soci::use(internalTx.to),

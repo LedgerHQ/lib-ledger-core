@@ -80,7 +80,8 @@ namespace ledger {
         LedgerApiBitcoinLikeBlockchainExplorer::getTransactions(const std::vector<std::string> &addresses,
                                                                 Option<std::string> fromBlockHash,
                                                                 Option<void *> session) {
-            return getLedgerApiTransactions(addresses, fromBlockHash, session);
+            bool const isSnakeCase = _explorerVersion == "v3";
+            return getLedgerApiTransactions(addresses, fromBlockHash, session, isSnakeCase);
         }
 
         FuturePtr<BitcoinLikeBlockchainExplorer::Block> LedgerApiBitcoinLikeBlockchainExplorer::getCurrentBlock() const {

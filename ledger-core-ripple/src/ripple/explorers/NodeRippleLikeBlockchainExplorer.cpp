@@ -95,12 +95,12 @@ namespace ledger {
                 rapidjson::Value ledgerKey(rapidjson::kStringType);
                 ledgerKey.SetString(ledgerKeyStr.c_str(), static_cast<rapidjson::SizeType>(ledgerKeyStr.length()), allocator);
                 rapidjson::Value ledgerParam(rapidjson::kNumberType);
-                ledgerParam.SetString(ledger.c_str(), static_cast<rapidjson::SizeType>(ledger.length()), allocator);
+                ledgerParam.SetUint64(BigInt(ledger).toUint64());
 
                 rapidjson::Value seqKey(rapidjson::kStringType);
                 seqKey.SetString(seqKeyStr.c_str(), static_cast<rapidjson::SizeType>(seqKeyStr.length()), allocator);
                 rapidjson::Value seqParam(rapidjson::kNumberType);
-                seqParam.SetString(seq.c_str(), static_cast<rapidjson::SizeType>(seq.length()), allocator);
+                seqParam.SetUint64(BigInt(seq).toUint64());
 
                 object.AddMember(ledgerKey, ledgerParam, allocator);
                 object.AddMember(seqKey, seqParam, allocator);
@@ -335,11 +335,11 @@ namespace ledger {
                     .template mapPtr<TransactionsBulk>(getExplorerContext(), [self, fromBlockHash](
                             const Either<Exception, std::shared_ptr<TransactionsBulk>> &result) {
                         if (result.isLeft()) {
-                            if (fromBlockHash.isEmpty()) {
-                                throw result.getLeft();
+                            // Only case where we should emit block not found error
+                            if (!fromBlockHash.isEmpty() && result.getLeft().getErrorCode() == api::ErrorCode::HTTP_ERROR) {
+                                throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND, "Unable to find block with hash {}", fromBlockHash.getValue());
                             } else {
-                                throw make_exception(api::ErrorCode::BLOCK_NOT_FOUND,
-                                                     "Unable to find block with hash {}", fromBlockHash.getValue());
+                                throw result.getLeft();
                             }
                         } else {
                             // handle pagination if a pagination marker is present

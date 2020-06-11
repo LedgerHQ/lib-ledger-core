@@ -30,7 +30,6 @@
  */
 
 #include <core/async/Promise.hpp>
-#include <core/utils/ImmediateExecutionContext.hpp>
 
 #include <bitcoin/api/BitcoinLikeScript.hpp>
 #include <bitcoin/api/BitcoinLikeScriptChunk.hpp>
@@ -64,13 +63,13 @@ namespace ledger {
                     auto tx = std::make_shared<BitcoinLikeTransaction>(self->_currency, keychain->getKeychainEngine(), currentBlockHeight);
                     auto filteredGetUTXO = createFilteredUTXOFunction(r, getUTXO);
                     return std::make_shared<Buddy>(r, filteredGetUTXO, getTransaction, explorer, keychain, logger, tx, partial);
-                }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
+                }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(self->getContext(), [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                     buddy->logger->info("Buddy created");
-                    return self->fillInputs(buddy).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> Future<Unit> {
+                    return self->fillInputs(buddy).flatMap<Unit>(self->getContext(), [=] (const Unit&) -> Future<Unit> {
                         return self->fillOutputs(buddy);
-                    }).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> Future<Unit> {
+                    }).flatMap<Unit>(self->getContext(), [=] (const Unit&) -> Future<Unit> {
                         return self->fillTransactionInfo(buddy);
-                    }).mapPtr<api::BitcoinLikeTransaction>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) -> std::shared_ptr<api::BitcoinLikeTransaction> {
+                    }).mapPtr<api::BitcoinLikeTransaction>(self->getContext(), [=] (const Unit&) -> std::shared_ptr<api::BitcoinLikeTransaction> {
                         buddy->logger->info("Empty transaction built");
                         return buddy->transaction;
                     });;
@@ -146,13 +145,13 @@ namespace ledger {
                 return Future<Unit>::successful(unit);
             }
             //Set timestamp
-            buddy->explorer->getTimestamp().onComplete(ImmediateExecutionContext::INSTANCE, [=] (const Try<int64_t> &timestamp){
+            buddy->explorer->getTimestamp().onComplete(getContext(), [=] (const Try<int64_t> &timestamp){
                 if (timestamp.isSuccess()) {
                     buddy->transaction->setTimestamp(timestamp.getValue());
                 }
             });
 
-            return buddy->explorer->getCurrentBlock().map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>& block) -> Unit{
+            return buddy->explorer->getCurrentBlock().map<Unit>(getContext(), [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>& block) -> Unit{
                 buddy->transaction->setLockTime(static_cast<uint32_t>(block->height));
                 return unit;
             });
@@ -173,14 +172,14 @@ namespace ledger {
             = [] (int index, const std::shared_ptr<UTXODescriptorList>& inputs, const std::shared_ptr<Buddy>& buddy, const std::shared_ptr<BitcoinLikeUTXOPicker>& self) mutable -> Future<Unit> {
                 if (index >= inputs->size())
                     return Future<Unit>::successful(unit);
-                return self->fillInput(buddy, (*inputs)[index]).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) {
+                return self->fillInput(buddy, (*inputs)[index]).flatMap<Unit>(self->getContext(), [=] (const Unit&) {
                     return performFill(index + 1, inputs, buddy, self);
                 });
             };
             inputs->insert(inputs->end(), buddy->request.inputs.begin(), buddy->request.inputs.end());
-            return performFill(0, inputs, buddy, self).flatMap<UTXODescriptorList>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) mutable -> Future<UTXODescriptorList> {
+            return performFill(0, inputs, buddy, self).flatMap<UTXODescriptorList>(getContext(), [=] (const Unit&) mutable -> Future<UTXODescriptorList> {
                 return pickUTXO();
-            }).flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const UTXODescriptorList& UTXO) mutable -> Future<Unit> {
+            }).flatMap<Unit>(getContext(), [=] (const UTXODescriptorList& UTXO) mutable -> Future<Unit> {
                 auto offset = static_cast<int>(inputs->size());
                 inputs->insert(inputs->end(), UTXO.begin(), UTXO.end());
                 return performFill(offset, inputs, buddy, self);
@@ -196,7 +195,7 @@ namespace ledger {
                 }
                 return buddy->explorer->getTransactionByHash(hash);
             };
-            return txGetter(hash).map<Unit>(ImmediateExecutionContext::INSTANCE, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) {
+            return txGetter(hash).map<Unit>(getContext(), [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) {
                 buddy->logger->debug("Get output {} on {}", std::get<1>(desc), tx->outputs.size());
                 auto output = tx->outputs[std::get<1>(desc)];
                 std::vector<std::vector<uint8_t>> pub_keys;

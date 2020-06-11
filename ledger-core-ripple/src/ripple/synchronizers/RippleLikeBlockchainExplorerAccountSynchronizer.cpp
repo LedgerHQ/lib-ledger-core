@@ -48,7 +48,13 @@ namespace ledger {
                                                       if (block.isSuccess()) {
                                                           soci::session sql(
                                                                   buddy->account->getWallet()->getDatabase()->getPool());
-                                                          buddy->account->putBlock(sql, *block.getValue());
+                                                          soci::transaction tr(sql);
+                                                          try {
+                                                              buddy->account->putBlock(sql, *block.getValue());
+                                                              tr.commit();
+                                                          } catch(...) {
+                                                              tr.rollback();
+                                                          }
                                                       }
                                                   });
         }

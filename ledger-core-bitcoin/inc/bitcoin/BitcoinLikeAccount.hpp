@@ -144,6 +144,10 @@ namespace ledger {
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
 
             void getFees(const std::shared_ptr<api::BigIntListCallback> & callback) override ;
+
+            Future<AbstractAccount::AddressList> getAddresses(int64_t from, int64_t to);
+            void getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) override;
+
         protected:
             bool checkIfWalletIsEmpty();
 
@@ -153,6 +157,8 @@ namespace ledger {
                                          const BitcoinLikeBlockchainExplorerTransaction& tx);
             inline void computeOperationTrust(BitcoinLikeOperation& operation,
                                               const BitcoinLikeBlockchainExplorerTransaction& tx);
+
+            std::vector<std::shared_ptr<api::Address>> fromBitcoinAddressesToAddresses(const std::vector<std::shared_ptr<BitcoinLikeAddress>> &addresses);
 
         private:
             std::shared_ptr<BitcoinLikeKeychain> _keychain;

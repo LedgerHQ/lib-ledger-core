@@ -59,7 +59,7 @@ TEST_F(BitcoinAccounts, CreateAccountWithInfo) {
     auto account = createAccount<BitcoinLikeAccount>(wallet, 0, P2PKH_MEDIUM_KEYS_INFO);
     auto address = wait(account->getFreshPublicAddresses())[0]->toString();
 
-    EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7"); 
+    EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
 }
 
 TEST_F(BitcoinAccounts, CreateAccountWithInfoOnExistingWallet) {
@@ -69,14 +69,14 @@ TEST_F(BitcoinAccounts, CreateAccountWithInfoOnExistingWallet) {
     registerCurrency(currency);
 
     wait(walletStore->createWallet(walletName, currency.name, api::DynamicObject::newInstance()));
-    
+
     EXPECT_THROW(wait(walletStore->createWallet(walletName, currency.name, api::DynamicObject::newInstance())), Exception);
 
     auto wallet = wait(walletStore->getWallet(walletName));
     auto account = createAccount<BitcoinLikeAccount>(wallet, 0, P2PKH_MEDIUM_KEYS_INFO);
     auto address = wait(account->getFreshPublicAddresses())[0]->toString();
 
-    EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7"); 
+    EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
 }
 
 TEST_F(BitcoinAccounts, ChangePassword) {
@@ -92,7 +92,7 @@ TEST_F(BitcoinAccounts, ChangePassword) {
         auto account = createAccount<BitcoinLikeAccount>(wallet, 0, P2PKH_MEDIUM_KEYS_INFO);
         auto address = wait(account->getFreshPublicAddresses())[0]->toString();
 
-        EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7"); 
+        EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
     }
 
     for (auto &password : {"new_test", "new_test_0", ""}) {
@@ -105,7 +105,7 @@ TEST_F(BitcoinAccounts, ChangePassword) {
             auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->getAccount(0)));
             auto address = wait(account->getFreshPublicAddresses())[0]->toString();
 
-            EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");  
+            EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
         }
     }
 }
@@ -127,7 +127,7 @@ TEST_F(BitcoinAccounts, FirstAccountInfo) {
 
 TEST_F(BitcoinAccounts, AnotherAccountInfo) {
     auto const currency = currencies::bitcoin();
-    
+
     registerCurrency(currency);
 
     auto wallet = wait(walletStore->createWallet("bitcoin", currency.name, DynamicObject::newInstance()));
@@ -161,7 +161,7 @@ TEST_F(BitcoinAccounts, GetBalanceOnEmptyAccount) {
     auto wallet = wait(walletStore->createWallet("bitcoin", currency.name, api::DynamicObject::newInstance()));
     auto account = createAccount<BitcoinLikeAccount>(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto balance = wait(account->getBalance());
-    
+
     EXPECT_EQ(balance->toMagnitude(0)->toLong(), 0);
 }
 
@@ -183,7 +183,7 @@ TEST_F(BitcoinAccounts, GetBalanceOnAccountWithSomeTxs) {
 
     registerCurrency(currency);
 
-    auto wallet = wait(walletStore->createWallet("bitcoin", currency.name, api::DynamicObject::newInstance())); 
+    auto wallet = wait(walletStore->createWallet("bitcoin", currency.name, api::DynamicObject::newInstance()));
     auto account = medium_xpub::inflate(services, wallet);
     auto balance = wait(account->getBalance());
     auto utxos = wait(account->getUTXO());
@@ -244,4 +244,25 @@ TEST_F(BitcoinAccounts, GetTestnetUnits) {
     //auto balance = wait(account->getBalance());
     //auto balance =
     //EXPECT_EQ();
+}
+
+TEST_F(BitcoinAccounts, GetAddressFromRange) {
+    auto wallet = wait(walletStore->createWallet("bitcoin", "bitcoin", api::DynamicObject::newInstance()));
+    auto account = medium_xpub::inflate(services, wallet);
+
+    auto freshAddresses = wait(account->getFreshPublicAddresses());
+
+    auto from = 10, to = 100;
+    auto addresses = wait(account->getAddresses(from, to));
+
+    EXPECT_EQ(addresses.size(), 2 * (to - from + 1));
+
+    // Observable range gives us 20 so it should be fine
+    if (freshAddresses.size() > 12) {
+        EXPECT_EQ(addresses[0]->toString(), freshAddresses[10]->toString());
+        EXPECT_EQ(addresses[2]->toString(), freshAddresses[11]->toString());
+        EXPECT_EQ(addresses[4]->toString(), freshAddresses[12]->toString());
+    }
+
+    EXPECT_EQ(addresses[2 * (to - from + 1) - 1]->toString(), "1167QbGjTWVK3etniJwua6wybBKkS7Lr8w");
 }

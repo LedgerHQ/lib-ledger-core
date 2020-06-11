@@ -17,10 +17,24 @@ OperationOrderKey = enum {
 
 # Type of operation.
 #
-# It’s possible to either send funds or receive ones.
+# It’s possible to either
+# send funds (getAmount() returns the sent amount),
+# receive funds (getAmount() returns the sent amount),
+# delegate funds (getAmount() returns the *delegated* amount) ; only getFees() are part of balanceHistory
+# undelegate funds (getAmount() returns the *undelegated* amount) ; only getFees() are part of balanceHistory
+# claim rewards (getAmount() returns 0 or the known amount of claimed rewards) ; only getFees() are part of balanceHistory
+#
+# *other* : None operation type should be used when the operation is not expected to affect the balanceHistory of the
+#           account. Otherwise, this is a free for all. Clients can use the inflated Operation currency-specific
+#           API to correctly interpret the operation in the context of an account.
+#
+# The last 3 operations should not expect to change balanceHistory with their amount, but only their fees.
 OperationType = enum {
     send;
     receive;
+    delegate;
+    undelegate;
+    rewards;
     none;
 }
 
@@ -82,12 +96,12 @@ OperationQuery = interface +c {
     filter(): QueryFilter;
 
     # Add offset to the operation query.
-    # @param from, 64-bit integer
-    offset(from: i64): OperationQuery;
+    # @param from, 32-bit integer
+    offset(from: i32): OperationQuery;
 
     # Add limit to the operation query results.
-    # @param count, 64-bit integer
-    limit(count: i64): OperationQuery;
+    # @param count, 32-bit integer
+    limit(count: i32): OperationQuery;
 
     #TODO
     # Complete the operation query.

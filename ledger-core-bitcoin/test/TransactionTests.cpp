@@ -56,7 +56,7 @@ struct BitcoinTransactions : public MakeBaseTransaction<
 {
     std::shared_ptr<BitcoinLikeTransactionBuilder> tx_builder() {
         return std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(account->buildTransaction(false));
-    } 
+    }
 };
 struct BitcoinP2PKHTransactions : public BitcoinTransactions
 {
@@ -163,7 +163,7 @@ struct BitcoinCoinSelectionTransactions : public BitcoinTransactions {
     api::Currency getCurrency() const override {
         return currencies::bitcoin_testnet();
     }
-    
+
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
@@ -249,15 +249,23 @@ TEST_F(BitcoinP2PKHTransactions, CreateStandardP2PKHWithMultipleInputs) {
 // }
 
 TEST_F(BitcoinBCHP2PKHTransactions, CreateStandardP2SHWithOneOutput) {
-    auto builder = tx_builder();
-    builder->sendToAddress(api::Amount::fromLong(currency, 5000), "14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
-    builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
-    auto f = builder->build();
-    auto tx = ::wait(f);
-    auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
-    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
-    EXPECT_EQ(tx->serialize(), parsedTx->serialize());
+    auto buildBCHTxWithAddress = [=](const std::string & toAddress) -> std::string {
+      auto builder = tx_builder();
+      builder->sendToAddress(api::Amount::fromLong(currency, 5000), toAddress);
+      builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+      builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
+      auto f = builder->build();
+      auto tx = ::wait(f);
+      auto serializedTx = tx->serialize();
+      auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx, 0);
+      EXPECT_EQ(serializedTx, parsedTx->serialize());
+      return hex::toString(tx->serialize());
+    };
+
+    // https://explorer.bitcoin.com/bch/address/14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne
+    auto legacySerializeTx = buildBCHTxWithAddress("14RYdhaFU9fMH25e6CgkRrBRjZBvEvKxne");
+    auto cashAddressSerializeTx = buildBCHTxWithAddress("bitcoincash:qqjce3pqczzukajdqc27psjnd26lyz2d5yg2cfjtxe");
+    EXPECT_EQ(legacySerializeTx, cashAddressSerializeTx);
 }
 
 TEST_F(BitcoinZCASHP2PKHTransactions, CreateStandardP2PKHWithOneOutput) {
@@ -548,4 +556,31 @@ TEST_F(BitcoinCoinSelectionTransactions, PickUTXOWithMergeOutputs) {
 
         EXPECT_EQ(tx->getOutputs().size(), 2);
         EXPECT_EQ(tx->getOutputs().at(0)->getValue()->toLong(), 80000000);
+}
+
+TEST_F(BitcoinCoinSelectionTransactions, CompareUTXOPickingStrategies) {
+
+    auto buildTx = [=](const api::BitcoinLikePickingStrategy & strategy, int64_t amount) -> std::shared_ptr<api::BitcoinLikeTransaction> {
+        auto builder = tx_builder();
+        builder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), amount), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+        builder->pickInputs(strategy, 0xFFFFFFFF);
+        builder->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 41));
+        auto f = builder->build();
+        auto tx = ::wait(f);
+        return tx;
+    };
+
+    auto balance = ::wait(account->getBalance());
+    auto currentAmount = balance->toLong();
+    auto iterations = 20;
+    for (auto index = 0; index < iterations; index++) {
+        currentAmount -= balance->toLong() / iterations;
+        auto merge = buildTx(api::BitcoinLikePickingStrategy::MERGE_OUTPUTS, currentAmount);
+        auto deep = buildTx(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, currentAmount);
+        EXPECT_LE(deep->getFees()->toLong(), merge->getFees()->toLong());
+        EXPECT_LE(deep->getOutputs().size(), merge->getOutputs().size());
+        auto optimize = buildTx(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, currentAmount);
+        EXPECT_LE(optimize->getFees()->toLong(), deep->getFees()->toLong());
+        EXPECT_LE(optimize->getOutputs().size(), deep->getOutputs().size());
+    }
 }

@@ -72,7 +72,8 @@ namespace ledger {
             template <typename Success, typename Failure, typename Handler>
             Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler) const {
                 return operator()().recover(_context, [] (const Exception& exception) {
-                    if (exception.getErrorCode() == api::ErrorCode::HTTP_ERROR && exception.getUserData().nonEmpty()) {
+                    if (HttpRequest::isHttpError(exception.getErrorCode()) &&
+                      exception.getUserData().nonEmpty()) {
                         return std::static_pointer_cast<api::HttpUrlConnection>(exception.getUserData().getValue());
                     }
                     throw exception;
@@ -99,6 +100,19 @@ namespace ledger {
             std::shared_ptr<api::HttpClient> _client;
             std::shared_ptr<api::ExecutionContext> _context;
             Option<std::shared_ptr<spdlog::logger>> _logger;
+
+            static api::ErrorCode getErrorCode(int32_t statusCode) {
+                return statusCode >= 200 && statusCode < 300 ? api::ErrorCode::FUTURE_WAS_SUCCESSFULL :
+                statusCode >= 500 ? api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST :
+                statusCode >= 400 ? api::ErrorCode::HTTP_ERROR :
+                api::ErrorCode::TOO_MANY_REDIRECT;
+            }
+
+            static bool isHttpError(api::ErrorCode errorCode) {
+                return errorCode == api::ErrorCode::HTTP_ERROR ||
+                errorCode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST ||
+                errorCode == api::ErrorCode::TOO_MANY_REDIRECT;
+            }
 
             class ApiRequest : public api::HttpRequest {
             public:
@@ -136,8 +150,8 @@ namespace ledger {
             HttpRequest PUT(const std::string& path, const std::vector<uint8_t> &body, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest DEL(const std::string& path, const std::unordered_map<std::string, std::string>& headers = {});
             HttpRequest POST(
-                const std::string& path, 
-                const std::vector<uint8_t> &body, 
+                const std::string& path,
+                const std::vector<uint8_t> &body,
                 const std::unordered_map<std::string, std::string>& headers = {},
                 const std::string &baseUrl = "");
             HttpClient& addHeader(const std::string& key, const std::string& value);
