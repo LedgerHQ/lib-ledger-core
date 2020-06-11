@@ -48,12 +48,6 @@
 namespace ledger {
 namespace core {
 
-namespace {
-constexpr uint32_t SIG_VERIFY_COST_SECP256K1 = 1000;
-constexpr uint32_t SIG_SIZE = 64;  // A signature is approx 64 bytes long
-constexpr uint32_t TX_COST_PER_BYTE = 10;
-}  // namespace
-
 using MsgType = cosmos::MsgType;
 
 static CosmosLikeBlockchainExplorer::TransactionFilter eventAttribute(
@@ -1225,23 +1219,12 @@ FuturePtr<BigInt> GaiaCosmosLikeBlockchainExplorer::getEstimatedGasLimit(
     /// As a workaround, we split the transaction in several transactions
     /// containing only one message and sum the costs of all transactions.
     ///
-    /// This creates various approximations in the total gas cost, but we still found
-    /// out that a simple MsgSend transaction can run out of this gas estimation
-    /// even with a gasAdjustment of 2.
-    ///
-    /// Therefore we probably need to adjust the gas assuming that we are
-    /// underestimating the cost.
-    ///
-    /// The starting value of the accumulate is the cost of verifying a
-    /// SECP256k1 signature, and the cost of the size of the transaction.
-    const uint32_t txSizeCost =
-        TX_COST_PER_BYTE * (transaction->serializeForSignature().size() + SIG_SIZE);
-    const BigInt baseTxGasCost(SIG_VERIFY_COST_SECP256K1 + txSizeCost);
-
+    /// Also, the gas estimation endpoints do not include the gas costs of
+    /// reading and persisting the state.
     return async::sequence(getContext(), estimations)
-        .flatMapPtr<BigInt>(getContext(), [baseTxGasCost](const auto &estimations) {
+        .flatMapPtr<BigInt>(getContext(), [](const auto &estimations) {
             const auto result =
-                std::accumulate(std::begin(estimations), std::end(estimations), baseTxGasCost);
+                std::accumulate(std::begin(estimations), std::end(estimations), BigInt::ZERO);
             return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(result));
         });
 }
