@@ -101,6 +101,26 @@ void CosmosLikeAccount::updateFromDb()
     }
 }
 
+void CosmosLikeAccount::updateAccountDataFromNetwork()
+{
+    auto self = std::static_pointer_cast<CosmosLikeAccount>(shared_from_this());
+    _explorer->getAccount(getAddress())
+        .onComplete(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
+            if (accountData.isSuccess()) {
+                self->_accountData = accountData.getValue();
+                const CosmosLikeAccountDatabaseEntry update = {
+                    0,  // unused in
+                        // CosmosLikeAccountDatabaseHelper::updateAccount
+                    "",  // unused in
+                         // CosmosLikeAccountDatabaseHelper::updateAccount
+                    *(self->_accountData),
+                    std::chrono::system_clock::now()};
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                CosmosLikeAccountDatabaseHelper::updateAccount(sql, self->getAccountUid(), update);
+            }
+        });
+}
+
 std::string CosmosLikeAccount::getAddress() const
 {
     return getKeychain()->getAddress()->toBech32();
@@ -509,7 +529,8 @@ Future<std::vector<std::shared_ptr<api::Amount>>> CosmosLikeAccount::getBalanceH
                         // NOTE : we ignore the fees field here as well, since the fees paid by the Account
                         // were already included in an OperationType::SEND
                         // See CosmosLikeAccount::fillOperationTypeAmountFromFees
-                        // Therefore, nothing to do on default: case.
+                        // Therefore, nothing to
+                        // do on default: case.
                     } break;
                     }
                 }
@@ -594,37 +615,7 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
             }
         });
 
-    // Update account level data (sequence, accountnumber...)
-    // Example result from Gaia explorer :
-    // base_url/auth/accounts/{address} with a valid, 0 transaction address :
-    // {
-    //  "height": "1296656",
-    //  "result": {
-    //    "type": "cosmos-sdk/Account",
-    //    "value": {
-    //      "address": "",
-    //      "coins": [],
-    //      "public_key": null,
-    //      "account_number": "0",
-    //      "sequence": "0"
-    //    }
-    //  }
-    //}
-    _explorer->getAccount(getAddress())
-        .onComplete(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
-            if (accountData.isSuccess()) {
-                self->_accountData = accountData.getValue();
-                const CosmosLikeAccountDatabaseEntry update = {
-                    0,  // unused in
-                        // CosmosLikeAccountDatabaseHelper::updateAccount
-                    "",  // unused in
-                         // CosmosLikeAccountDatabaseHelper::updateAccount
-                    *(self->_accountData),
-                    std::chrono::system_clock::now()};
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
-                CosmosLikeAccountDatabaseHelper::updateAccount(sql, self->getAccountUid(), update);
-            }
-        });
+    updateAccountDataFromNetwork();
 
     auto startTime = DateUtils::now();
     eventPublisher->postSticky(
@@ -767,6 +758,7 @@ void CosmosLikeAccount::estimateGas(
 
 void CosmosLikeAccount::getSequence(const std::shared_ptr<api::StringCallback> &callback)
 {
+    updateAccountDataFromNetwork();
     if (!_accountData) {
         throw make_exception(api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
     }
