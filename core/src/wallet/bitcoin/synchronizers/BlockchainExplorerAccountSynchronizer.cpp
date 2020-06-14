@@ -81,7 +81,32 @@ namespace ledger {
         }
 
         std::shared_ptr<ProgressNotifier<Unit>> BlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) {
-            return synchronizeAccount(account);
+            std::lock_guard<std::mutex> lock(_lock);
+            if (!_currentAccount) {
+                _currentAccount = account;
+                _notifier = std::make_shared<ProgressNotifier<Unit>>();
+                auto self = std::dynamic_pointer_cast<BlockchainExplorerAccountSynchronizer>(getSharedFromThis());
+                performSynchronization(account)
+                .flatMap<std::vector<std::string>>(getSynchronizerContext(), [self] (auto unit) {
+                    return self->getReplacedTransactionHashes();
+                }).map<Unit>(getSynchronizerContext(), [self] (const auto& hashes) {
+                    self->_currentAccount->dropTransactions(hashes);
+                    return unit;
+                }).onComplete(getSynchronizerContext(), [self] (const auto &result) {
+                    std::lock_guard<std::mutex> l(self->_lock);
+                    if (result.isFailure()) {
+                        self->_notifier->failure(result.getFailure());
+                    } else {
+                        self->_notifier->success(unit);
+                    }
+                    self->_notifier = nullptr;
+                    self->_currentAccount = nullptr;
+                });
+
+            } else if (account != _currentAccount) {
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "This synchronizer is already in use");
+            }
+            return _notifier;
         }
 
         bool BlockchainExplorerAccountSynchronizer::isSynchronizing() const {
@@ -95,5 +120,25 @@ namespace ledger {
         std::shared_ptr<api::ExecutionContext> BlockchainExplorerAccountSynchronizer::getSynchronizerContext() {
             return getContext();
         }
+
+        Future<std::vector<std::string>> BlockchainExplorerAccountSynchronizer::getReplacedTransactionHashes() {
+            // Get all transaction from the mempool
+
+            // If two (or more) transactions share the same input group them
+            // (and mark them as RBF transactions)
+
+            // Find the highest input sequence of the group and remove all
+            // transaction using a sequence which is less than the max in database
+
+            // For all transaction marked as RBF, iterate through all inputs
+            // of all transaction to get addresses
+
+            // Get all transactions in mempool for the addresses
+
+            // Iterate through all transaction and remove from database
+            // my RBF transactions if the sequence is higher in one of the addresses transactions
+            return Future<std::vector<std::string>>::successful({});
+        }
+
     }
 }

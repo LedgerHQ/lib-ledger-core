@@ -719,5 +719,9 @@ namespace ledger {
         std::shared_ptr<api::Keychain> BitcoinLikeAccount::getAccountKeychain() {
           return _keychain;
         }
+
+        void BitcoinLikeAccount::dropTransactions(const std::vector<std::string> &hashes) {
+            // TODO implement SQL + publish
+        }
     }
 }

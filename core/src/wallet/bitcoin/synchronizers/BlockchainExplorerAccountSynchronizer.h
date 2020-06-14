@@ -66,6 +66,8 @@ namespace ledger {
         private:
             std::shared_ptr<BlockchainAccountSynchronizer> getSharedFromThis() override ;
             std::shared_ptr<api::ExecutionContext> getSynchronizerContext() override ;
+            Future<std::vector<std::string>> getReplacedTransactionHashes();
+
         };
     }
 }

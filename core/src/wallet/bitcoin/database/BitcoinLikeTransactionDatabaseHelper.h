@@ -64,6 +64,10 @@ namespace ledger {
                                                   const soci::row& row,
                                                   const std::string &accountUid,
                                                   BitcoinLikeBlockchainExplorerTransaction& out);
+
+            static void getMempoolTransactions(soci::session& sql,
+                                               const std::string& accountUid,
+                                               std::vector<BitcoinLikeBlockchainExplorerTransaction>& out);
         };
     }
 }
