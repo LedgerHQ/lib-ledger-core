@@ -25,3 +25,6 @@
 [submodule "core/lib/CRCpp"]
 	path = core/lib/CRCpp
 	url = https://github.com/d-bahr/CRCpp.git
+[submodule "core/test/lib/libuv"]
+	path = core/test/lib/libuv
+	url = git@github.com:libuv/libuv.git

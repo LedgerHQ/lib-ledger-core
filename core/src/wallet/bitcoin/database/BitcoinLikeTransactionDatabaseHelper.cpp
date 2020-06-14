@@ -253,5 +253,11 @@ namespace ledger {
             return true;
         }
 
+        void
+        BitcoinLikeTransactionDatabaseHelper::getMempoolTransactions(soci::session &sql, const std::string &accountUid,
+                                                                     std::vector<BitcoinLikeBlockchainExplorerTransaction> &out) {
+            
+        }
+
     }
 }

@@ -88,6 +88,12 @@ namespace ledger {
              */
             bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
 
+            /**
+             * Drop transactions from the list (and all attached operations)
+             * @return
+             */
+            void dropTransactions(const std::vector<std::string>& hashes);
+
             std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
 
             void startBlockchainObservation() override;
