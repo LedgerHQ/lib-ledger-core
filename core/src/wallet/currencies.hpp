@@ -41,6 +41,7 @@
 
 #include <api/Currency.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>  // Declares ATOM
+#include <wallet/algorand/AlgorandLikeCurrencies.hpp>  // Declares ALGO
 
 namespace ledger {
     namespace core {
@@ -75,7 +76,6 @@ namespace ledger {
             extern LIBCORE_EXPORT const api::Currency RIPPLE;
             extern LIBCORE_EXPORT const api::Currency TEZOS;
             extern LIBCORE_EXPORT const api::Currency STELLAR;
-            extern LIBCORE_EXPORT const api::Currency ALGORAND;
         };
     }
 }
