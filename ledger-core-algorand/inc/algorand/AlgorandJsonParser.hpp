@@ -178,35 +178,35 @@ namespace algorand {
 
             getOptionalStringField(node, constants::xGenesisId, tx.header.genesisId);
             getOptionalBinaryField(node, constants::xNoteB64, tx.header.note);
-            getOptionalUint64Field(node, constants::xFromRewards, tx.header.fromRewards);
             getOptionalBinaryField(node, constants::xGroup, tx.header.group);
             getOptionalBinaryField(node, constants::xLease, tx.header.lease);
 
             if (tx.header.type == constants::xPay) {
                     assert((node.HasMember(constants::xPayment.c_str())));
-                    tx.details = model::PaymentTxnFields();
-                    parsePaymentInfo(node[constants::xPayment.c_str()].GetObject(),
-                                        boost::get<model::PaymentTxnFields>(tx.details));
+                    auto details = model::PaymentTxnFields();
+                    getOptionalUint64Field(node, constants::xFromRewards, details.fromRewards);
+                    parsePaymentInfo(node[constants::xPayment.c_str()].GetObject(), details);
+                    tx.details = details;
             } else if (tx.header.type == constants::xKeyreg) {
                     assert((node.HasMember(constants::xKeyregs.c_str())));
-                    tx.details = model::KeyRegTxnFields();
-                    parseParticipationInfo(node[constants::xKeyregs.c_str()].GetObject(),
-                                        boost::get<model::KeyRegTxnFields>(tx.details));
+                    auto details = model::KeyRegTxnFields();
+                    parseParticipationInfo(node[constants::xKeyregs.c_str()].GetObject(), details);
+                    tx.details = details;
             } else if (tx.header.type == constants::xAcfg) {
                     assert((node.HasMember(constants::xCurcfg.c_str())));
-                    tx.details = model::AssetConfigTxnFields();
-                    parseAssetConfigurationInfo(node[constants::xCurcfg.c_str()].GetObject(),
-                                        boost::get<model::AssetConfigTxnFields>(tx.details));
+                    auto details = model::AssetConfigTxnFields();
+                    parseAssetConfigurationInfo(node[constants::xCurcfg.c_str()].GetObject(), details);
+                    tx.details = details;
             } else if (tx.header.type == constants::xAxfer) {
                     assert((node.HasMember(constants::xCurxfer.c_str())));
-                    tx.details = model::AssetTransferTxnFields();
-                    parseAssetTransferInfo(node[constants::xCurxfer.c_str()].GetObject(),
-                                        boost::get<model::AssetTransferTxnFields>(tx.details));
+                    auto details = model::AssetTransferTxnFields();
+                    parseAssetTransferInfo(node[constants::xCurxfer.c_str()].GetObject(), details);
+                    tx.details = details;
             } else if (tx.header.type == constants::xAfreeze) {
                     assert((node.HasMember(constants::xCurfrz.c_str())));
-                    tx.details = model::AssetFreezeTxnFields();
-                    parseAssetFreezeInfo(node[constants::xCurfrz.c_str()].GetObject(),
-                                        boost::get<model::AssetFreezeTxnFields>(tx.details));
+                    auto details = model::AssetFreezeTxnFields();
+                    parseAssetFreezeInfo(node[constants::xCurfrz.c_str()].GetObject(), details);
+                    tx.details = details;
             }
         }
 

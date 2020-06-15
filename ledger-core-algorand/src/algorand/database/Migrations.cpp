@@ -27,13 +27,13 @@ namespace core {
                 "genesis_hash VARCHAR(255) NOT NULL,"
                 "sender VARCHAR(255) NOT NULL,"
                 "fee BIGINT NOT NULL,"
-                "from_rewards BIGINT,"
                 "note VARCHAR(255),"
                 "groupVal VARCHAR(255),"
                 "leaseVal VARCHAR(255),"
 
                 // Fields for payment transactions
                 "pay_amount BIGINT,"
+                "from_rewards BIGINT,"
                 "pay_receiver_address VARCHAR(255),"
                 "pay_receiver_rewards BIGINT,"
                 "pay_close_address VARCHAR(255),"

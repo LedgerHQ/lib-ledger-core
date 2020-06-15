@@ -103,11 +103,7 @@ namespace {
             uint64_t recipientRewards,
             uint64_t closeRewards)
     {
-        const auto header = [&]() {
-            auto header = makeHeader(sender, fee, algorand::model::constants::pay, timestamp, id);
-            header.fromRewards = fromRewards;
-            return header;
-        }();
+        const auto header = makeHeader(sender, fee, algorand::model::constants::pay, timestamp, id);
 
         const auto details = [&]() {
             auto details = algorand::model::PaymentTxnFields(
@@ -117,6 +113,7 @@ namespace {
             );
             details.closeRewards = closeRewards;
             details.receiverRewards = recipientRewards;
+            details.fromRewards = fromRewards;
             details.closeAmount = closeAmount;
             return details;
         }();

@@ -44,8 +44,7 @@ namespace algorand {
     {}
 
     std::shared_ptr<Operation> OperationQuery::createOperation(std::shared_ptr<AbstractAccount> &account) {
-        model::Transaction tx;
-        return std::make_shared<Operation>(account, tx);
+        return std::make_shared<Operation>(account);
     }
 
     void OperationQuery::inflateCompleteTransaction(soci::session &sql,
@@ -63,6 +62,8 @@ namespace algorand {
 
         operation.setTransaction(tx);
     }
-}
-}
-}
+
+} // namespace algorand
+} // namespace core
+} // namespace ledger
+

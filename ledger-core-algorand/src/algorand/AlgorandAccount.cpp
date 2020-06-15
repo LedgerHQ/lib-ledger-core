@@ -81,52 +81,6 @@ namespace algorand {
             };
         }
 
-        void setAmountAndRecipients(
-                Operation& op,
-                const model::Transaction& tx)
-        {
-            if (tx.header.type == model::constants::pay) {
-                const auto& details = boost::get<model::PaymentTxnFields>(tx.details);
-                op.amount = BigInt(static_cast<unsigned long long>(details.amount));
-                op.recipients = {};
-                op.recipients.push_back(details.receiverAddr.toString());
-                if (details.closeAddr) {
-                    op.recipients.push_back(details.closeAddr->toString());
-                    // TODO : adjust amount in this case?
-                }
-            } else if (tx.header.type == model::constants::axfer) {
-                const auto& details = boost::get<model::AssetTransferTxnFields>(tx.details);
-                op.amount = BigInt(static_cast<unsigned long long>(details.assetAmount));
-                op.recipients = {};
-                op.recipients.push_back(details.assetReceiver.toString());
-                if (details.assetCloseTo) {
-                    op.recipients.push_back(details.assetCloseTo->toString());
-                    // TODO : adjust amount in this case?
-                }
-            }
-        }
-
-        api::Block createBlock(
-            const model::Transaction& tx,
-            const std::string& currencyName)
-        {
-            return [&]() {
-                api::Block block;
-                block.currencyName = currencyName;
-                if (tx.header.round) {
-                    if (*tx.header.round > std::numeric_limits<int64_t>::max()) {
-                        throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
-                    }
-                    block.height = static_cast<int64_t>(*tx.header.round);
-                    block.blockHash = std::to_string(*tx.header.round);
-                }
-                if (tx.header.timestamp) {
-                    block.time = std::chrono::system_clock::time_point(std::chrono::seconds(*tx.header.timestamp));
-                }
-                block.uid = BlockDatabaseHelper::createBlockUid(block);
-                return block;
-            }();
-        }
     } // namespace
 
     bool Account::putBlock(soci::session& sql, const api::Block& block)
@@ -146,12 +100,7 @@ namespace algorand {
         }
 
         const auto txuid = TransactionDatabaseHelper::putTransaction(sql, getAccountUid(), transaction);
-        const auto operation = [&]() {
-            auto operation = Operation(shared_from_this(), transaction);
-            inflateOperation(operation, getWallet(), transaction);
-            operation.refreshUid();
-            return operation;
-        }();
+        const auto operation = Operation(shared_from_this(), transaction);
 
         if (OperationDatabaseHelper::putAlgorandOperation(sql, txuid, operation)) {
             emitNewOperationEvent(operation);
@@ -536,7 +485,7 @@ namespace algorand {
                 if (header.sender == _address) {
                     balance -= details.amount;
                     balance -= details.closeAmount.getValueOr(0);
-                    balance += header.fromRewards.getValueOr(0);
+                    balance += details.fromRewards.getValueOr(0);
                 }
                 if (details.receiverAddr == _address) {
                     balance += details.amount;
@@ -593,7 +542,6 @@ namespace algorand {
             getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer")->editor()->putObject<SavedState>("state", savedState.getValue())->commit();
         }
 
-
         sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ",
             soci::use(accountUid),
             soci::use(date);
@@ -601,31 +549,6 @@ namespace algorand {
         log->debug(" Finish erasing data of account : {}", accountUid);
 
         return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-    }
-
-    void Account::inflateOperation(
-            Operation& op,
-            const std::shared_ptr<const AbstractWallet>& wallet,
-            const model::Transaction& tx)
-    {
-        op.setTransaction(tx);
-        op.accountUid = getAccountUid();
-        op.walletUid = wallet->getWalletUid();
-        /*
-        if (tx.header.block.hasValue()) {
-            op.date = tx.header.block.getValue().time;
-        }
-        /*/
-        op.date = std::chrono::system_clock::time_point(
-            std::chrono::seconds(tx.header.timestamp.getValueOr(0)));
-        //*/
-        op.senders = { tx.header.sender.toString() };
-        setAmountAndRecipients(op, tx);
-        op.fees = BigInt(static_cast<unsigned long long>(tx.header.fee));
-        op.block = createBlock(tx, wallet->getCurrency().name);
-        op.currencyName = wallet->getCurrency().name;
-        op.type = api::OperationType::NONE;
-        op.trust = std::make_shared<TrustIndicator>();
     }
 
     std::shared_ptr<Account> Account::getSelf()

@@ -95,8 +95,7 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6529846;
             tx.header.lastValid = 6530846;
-            tx.header.fromRewards = Option<uint64_t>(0);
-            tx.header.timestamp = 1588586190;
+            tx.header.timestamp = Option<uint64_t>(); // 1588586190; TODO: fix when timestamp available
 
             tx.details = model::PaymentTxnFields();
             auto& details = boost::get<model::PaymentTxnFields>(tx.details);
@@ -104,6 +103,7 @@ namespace algorand {
             details.amount = 1000;
             details.receiverRewards = Option<uint64_t>(0);
             details.closeRewards = Option<uint64_t>(0);
+            details.fromRewards = Option<uint64_t>(0);
         }
 
         return tx;
@@ -124,8 +124,7 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6305874;
             tx.header.lastValid = 6306874;
-            tx.header.fromRewards = Option<uint64_t>(0);
-            tx.header.timestamp = 1587641643;
+            tx.header.timestamp = Option<uint64_t>(); // 1587641643; TODO: fix when timestamp available
 
             tx.details = model::AssetConfigTxnFields();
             auto& details = boost::get<model::AssetConfigTxnFields>(tx.details);
@@ -161,8 +160,7 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6734094;
             tx.header.lastValid = 6734193;
-            tx.header.fromRewards = Option<uint64_t>(0);
-            tx.header.timestamp = 1589448692;
+            tx.header.timestamp = Option<uint64_t>(); // 1589448692; TODO: fix when timestamp available
 
             tx.details = model::AssetTransferTxnFields();
             auto& details = boost::get<model::AssetTransferTxnFields>(tx.details);
@@ -201,6 +199,7 @@ namespace algorand {
         if (txRefPaymentDetails.closeAddr.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeAddr, *txResultPaymentDetails.closeAddr);
         if (txRefPaymentDetails.closeAmount.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeAmount, *txResultPaymentDetails.closeAmount);
         if (txRefPaymentDetails.closeRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.closeRewards, *txResultPaymentDetails.closeRewards);
+        if (txRefPaymentDetails.fromRewards.hasValue()) EXPECT_EQ(*txRefPaymentDetails.fromRewards, *txResultPaymentDetails.fromRewards);
     }
 
     static void assertSameAssetConfigDetails(const model::Transaction::Details & txRefDetails,
@@ -236,7 +235,6 @@ namespace algorand {
         EXPECT_EQ(txRef.header.genesisHash, txResult.header.genesisHash);
         EXPECT_EQ(txRef.header.firstValid, txResult.header.firstValid);
         EXPECT_EQ(txRef.header.lastValid, txResult.header.lastValid);
-        if (txRef.header.fromRewards.hasValue()) EXPECT_EQ(*txRef.header.fromRewards, *txResult.header.fromRewards);
 
         if (txResult.header.type == constants::xPay) {
             assertSamePaymentDetails(txRef.details, txResult.details);
