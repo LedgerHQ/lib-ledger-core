@@ -33,7 +33,7 @@
 #include <core/utils/Exception.hpp>
 #include <core/utils/Hex.hpp>
 
-#include <openssl/evp.h>
+#include "cppcrypto/sha512_256.h"
 
 namespace ledger {
 namespace core {
@@ -56,23 +56,12 @@ namespace algorand {
         }
 
         std::vector<uint8_t> SHA512256::dataToBytesHash(const void *data, size_t size) {
-#if OPENSSL_VERSION_NUMBER < 0x10101000L
-            throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION,
-                                 "SHA512-256 requires OpenSSL 1.1.1 or above.");
-#else
-            uint8_t hash[EVP_MAX_MD_SIZE];
-            uint32_t md_len;
-
-            OpenSSL_add_all_digests();
-            EVP_MD_CTX *mdctx = EVP_MD_CTX_create();
-            const EVP_MD *md = EVP_get_digestbyname("sha512-256");
-            EVP_DigestInit_ex(mdctx, md, NULL);
-            EVP_DigestUpdate(mdctx, data, size);
-            EVP_DigestFinal_ex(mdctx, hash, &md_len);
-            EVP_MD_CTX_destroy(mdctx);
-            EVP_cleanup();
-            return std::vector<uint8_t >(hash, hash + md_len);
-#endif
+            auto hasher = cppcrypto::sha512(256);
+            std::vector<unsigned char> pubKeyHash(32);
+            hasher.init();
+            hasher.update(reinterpret_cast<const unsigned char*>(data), size);
+            hasher.final(pubKeyHash.data());
+            return pubKeyHash;
         }
 
 } // namespace algorand

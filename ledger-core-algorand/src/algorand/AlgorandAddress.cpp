@@ -63,9 +63,9 @@ namespace algorand {
         // 1. pubkey --> pubKeyHash
         const std::vector<uint8_t> pubKeyHash = SHA512256::bytesToBytesHash(pubKey);
         // 2. 4 last bytes of pubKeyHash
-        const std::vector<uint8_t> pubKeyHashChecksum(pubKeyHash.cbegin() + pubKeyHash.size() - CHECKSUM_LEN_BYTES, pubKeyHash.cend());
+        const std::vector<uint8_t> pubKeyHashChecksum(std::cbegin(pubKeyHash) + PUBKEY_LEN_BYTES - CHECKSUM_LEN_BYTES, std::cend(pubKeyHash));
         // 3. pubkey + 4 last bytes of pubKeyHash
-        const std::vector<uint8_t> addressBytes = vector::concat<uint8_t>(pubKey, pubKeyHashChecksum);
+        const std::vector<uint8_t> addressBytes = vector::concat(pubKey, pubKeyHashChecksum);
         // 4. Encode to Base32
         return BaseConverter::encode(addressBytes, BaseConverter::BASE32_RFC4648_NO_PADDING);
     }
