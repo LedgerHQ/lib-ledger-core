@@ -37,6 +37,7 @@
 
 #include <api/Error.hpp>
 #include <api/BigInt.hpp>
+#include <api/Currency.hpp>
 #include <async/Future.hpp>
 #include <collections/collections.hpp>
 #include <math/BigInt.h>
@@ -44,9 +45,11 @@
 #include <utils/optional.hpp>
 #include <utils/Option.hpp>
 #include <wallet/common/explorers/AbstractBlockchainExplorer.h>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
+
         struct BitcoinLikeBlockchainExplorerInput {
             uint64_t index;
             Option<BigInt> value;
@@ -55,11 +58,7 @@ namespace ledger {
             Option<std::string> address;
             Option<std::string> signatureScript;
             Option<std::string> coinbase;
-            uint32_t sequence;
-
-            BitcoinLikeBlockchainExplorerInput() {
-                sequence = 0xFFFFFFFF;
-            };
+            uint32_t sequence = 0xFFFFFFFF;
         };
 
         struct BitcoinLikeBlockchainExplorerOutput {
@@ -74,6 +73,7 @@ namespace ledger {
             bool replaceable;
 
             BitcoinLikeBlockchainExplorerOutput() = default;
+            BitcoinLikeBlockchainExplorerOutput(BitcoinLikeBlockchainExplorerOutput const&) = default;
         };
 
         struct BitcoinLikeBlockchainExplorerTransaction {

@@ -33,6 +33,7 @@
 #define LEDGER_CORE_BITCOINLIKESTRATEGYUTXOPICKER_H
 
 #include "BitcoinLikeUtxoPicker.h"
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxo.hpp>
 
 namespace ledger {
     namespace core {
@@ -47,21 +48,21 @@ namespace ledger {
                                           const api::Currency &currency);
         public:
             static UTXODescriptorList filterWithKnapsackSolver(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxos,
+                const std::vector<BitcoinLikeUtxo>& utxos,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
 
             static UTXODescriptorList filterWithOptimizeSize(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxos,
+                const std::vector<BitcoinLikeUtxo>& utxos,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
 
             static UTXODescriptorList filterWithMergeOutputs(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxos,
+                const std::vector<BitcoinLikeUtxo>& utxos,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
             static UTXODescriptorList filterWithDeepFirst(const std::shared_ptr<Buddy>& buddy,
-                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
+                const std::vector<BitcoinLikeUtxo>& utxo,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
             static bool hasEnough(const std::shared_ptr<Buddy>& buddy,
@@ -70,18 +71,9 @@ namespace ledger {
                 const api::Currency& currrency,
                 bool computeOutputAmount);
         protected:
-            Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
-           
-            inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
+            Future<std::vector<BitcoinLikeUtxo>> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
 
-            //Only usefull for filterWithLowestFees
-            struct EffectiveUTXO {
-                std::shared_ptr<api::BitcoinLikeOutput> output;
-                int64_t effectiveValue;
-                int64_t effectiveFees;
-                int64_t longTermFees;
-            };
-            
+            inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
 
             //Usefull for filterWithLowFeesFirst
             static const int64_t DEFAULT_FALLBACK_FEE = 20;
@@ -91,8 +83,14 @@ namespace ledger {
             static const uint32_t TOTAL_TRIES = 10000;
             static const int64_t CENT = 1000000;
         private:
-            
 
+            std::vector<BitcoinLikeUtxo> filterWithSort(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                std::vector<BitcoinLikeUtxo> utxos,
+                BigInt amount,
+                const api::Currency &currency,
+                std::function<bool(BitcoinLikeUtxo&, BitcoinLikeUtxo&)> const& functor
+            );
         };
     }
 }

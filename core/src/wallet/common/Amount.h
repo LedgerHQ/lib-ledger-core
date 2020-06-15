@@ -42,6 +42,7 @@ namespace ledger {
         public:
             Amount(const api::Currency& currency, int32_t unitIndex, const BigInt& value);
             Amount(const api::Currency& currency, int32_t unitIndex, BigInt&& value);
+
             std::shared_ptr<api::BigInt> toBigInt() override;
             api::Currency getCurrency() override;
             api::CurrencyUnit getUnit() override;

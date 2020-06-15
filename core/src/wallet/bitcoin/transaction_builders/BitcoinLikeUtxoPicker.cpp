@@ -39,7 +39,6 @@
 namespace ledger {
     namespace core {
 
-
         BitcoinLikeUtxoPicker::BitcoinLikeUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
                                                      const api::Currency &currency) : DedicatedContext(context),
                                                                                       _currency(currency)
@@ -60,7 +59,7 @@ namespace ledger {
                 return self->async<std::shared_ptr<Buddy>>([=] () {
                     logger->info("Constructing BitcoinLikeTransactionBuildFunction with blockHeight: {}", currentBlockHeight);
                     auto tx = std::make_shared<BitcoinLikeTransactionApi>(self->_currency, keychain->getKeychainEngine(), currentBlockHeight);
-                    auto filteredGetUtxo = createFilteredUtxoFunction(r, getUtxo);
+                    auto filteredGetUtxo = createFilteredUtxoFunction(r, keychain, getUtxo);
                     return std::make_shared<Buddy>(r, filteredGetUtxo, getTransaction, explorer, keychain, logger, tx, partial);
                 }).flatMap<std::shared_ptr<api::BitcoinLikeTransaction>>(self->getContext(), [=] (const std::shared_ptr<Buddy>& buddy) -> Future<std::shared_ptr<api::BitcoinLikeTransaction>> {
                     buddy->logger->info("Buddy created");
@@ -71,9 +70,9 @@ namespace ledger {
                     }).mapPtr<api::BitcoinLikeTransaction>(self->getContext(), [=] (const Unit&) -> std::shared_ptr<api::BitcoinLikeTransaction> {
                         buddy->logger->info("Empty transaction built");
                         return buddy->transaction;
-                    });;
+                    });
                 });
-            };;
+            };
         }
 
         const api::Currency &BitcoinLikeUtxoPicker::getCurrency() const {
@@ -158,94 +157,104 @@ namespace ledger {
 
         Future<Unit> BitcoinLikeUtxoPicker::fillInputs(const std::shared_ptr<Buddy>& buddy) {
             buddy->logger->info("Filling inputs");
-            auto self = shared_from_this();
-            auto pickUtxo = [=] () -> Future<UTXODescriptorList> {
-                if (buddy->request.utxoPicker.nonEmpty()) {
-                   return self->filterInputs(buddy);
-                }
-                return Future<UTXODescriptorList>::successful(std::move(UTXODescriptorList()));
-            };
 
-            auto inputs = std::make_shared<UTXODescriptorList>();
-            static std::function<Future<Unit> (int, const std::shared_ptr<UTXODescriptorList>&, const std::shared_ptr<Buddy>&, const std::shared_ptr<BitcoinLikeUtxoPicker>&)> performFill
-            = [=] (int index, const std::shared_ptr<UTXODescriptorList>& inputs, const std::shared_ptr<Buddy>& buddy, const std::shared_ptr<BitcoinLikeUtxoPicker>& self) mutable -> Future<Unit> {
-                if (index >= inputs->size())
+            auto self = shared_from_this();
+
+            auto performFill = [self, buddy](auto performFill, auto index)
+            {
+                if (index >= buddy->request.inputs.size()) {
                     return Future<Unit>::successful(unit);
-                return self->fillInput(buddy, (*inputs)[index]).flatMap<Unit>(self->getContext(), [=] (const Unit&) {
-                    return performFill(index + 1, inputs, buddy, self);
+                }
+
+                auto const &input = buddy->request.inputs[index];
+
+                return buddy->getTransaction(input.transactionHash).template flatMap<Unit>(self->getContext(), [=](auto const &tx) {
+                    auto const utxo = makeUtxo(tx->outputs[input.outputIndex], self->getCurrency());
+
+                    self->fillInput(buddy, utxo, input.sequence);
+
+                    return performFill(performFill, index + 1);
                 });
             };
-            inputs->insert(inputs->end(), buddy->request.inputs.begin(), buddy->request.inputs.end());
-            return performFill(0, inputs, buddy, self).flatMap<UTXODescriptorList>(getContext(), [=] (const Unit&) mutable -> Future<UTXODescriptorList> {
-                return pickUtxo();
-            }).flatMap<Unit>(getContext(), [=] (const UTXODescriptorList& utxo) mutable -> Future<Unit> {
-                auto offset = static_cast<int>(inputs->size());
-                inputs->insert(inputs->end(), utxo.begin(), utxo.end());
-                return performFill(offset, inputs, buddy, self);
-            });
+
+            // first fill inputs from user-defined input descriptors
+            return performFill(performFill, 0)
+                .filter(getContext(), [buddy](auto const&) {
+                    return buddy->request.utxoPicker.nonEmpty();
+                })
+                .template flatMap<std::vector<BitcoinLikeUtxo>>(getContext(), [self, buddy](auto const&) {
+                    return self->filterInputs(buddy);
+                })
+                .template flatMap<Unit>(getContext(), [self, buddy] (auto const& utxos) mutable {
+                    auto const sequence = std::get<1>(buddy->request.utxoPicker.getValue());
+
+                    std::for_each(utxos.cbegin(), utxos.cend(), [self, buddy, sequence] (auto const &utxo) {
+                        self->fillInput(buddy, utxo, sequence);
+                    });
+
+                    return Future<Unit>::successful(unit);
+                });
         }
 
-        Future<Unit> BitcoinLikeUtxoPicker::fillInput(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                      const BitcoinLikeUtxoPicker::UTXODescriptor &desc) {
-            const std::string& hash = std::get<0>(desc);
-            auto txGetter = [=] (const std::string &hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {
-                if (buddy->isPartial) {
-                    return buddy->getTransaction(hash);
-                }
-                return buddy->explorer->getTransactionByHash(hash);
-            };
-            return txGetter(hash).map<Unit>(getContext(), [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) {
-                buddy->logger->debug("Get output {} on {}", std::get<1>(desc), tx->outputs.size());
-                auto output = tx->outputs[std::get<1>(desc)];
-                std::vector<std::vector<uint8_t>> pub_keys;
-                std::vector<std::shared_ptr<api::DerivationPath>> paths;
+        void BitcoinLikeUtxoPicker::fillInput(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                                              const BitcoinLikeUtxo &utxo,
+                                              const uint32_t sequence) {
+            std::vector<std::vector<uint8_t>> pub_keys;
+            std::vector<std::shared_ptr<api::DerivationPath>> paths;
 
-                // Get derivations and public keys
-                if (output.address.nonEmpty()) {
-                    auto derivationPath = buddy->keychain->getAddressDerivationPath(output.address.getValue());
-                    if (derivationPath.nonEmpty()) {
-                        paths.push_back(std::make_shared<DerivationPathApi>(DerivationPath(derivationPath.getValue())));
-                        pub_keys.push_back(buddy->keychain->getPublicKey(output.address.getValue()).getValue());
-                    }
+            // Get derivations and public keys
+            if (utxo.address.nonEmpty()) {
+                auto const derivationPath = buddy->keychain->getAddressDerivationPath(utxo.address.getValue());
+
+                if (derivationPath.nonEmpty()) {
+                    paths.push_back(std::make_shared<DerivationPathApi>(DerivationPath(derivationPath.getValue())));
+
+                    pub_keys.push_back(buddy->keychain->getPublicKey(utxo.address.getValue()).getValue());
                 }
+
                 auto input = std::shared_ptr<BitcoinLikeWritableInputApi>(
                         new BitcoinLikeWritableInputApi(
-                                buddy->explorer, getContext(), std::get<2>(desc), pub_keys, paths,
-                                output.address.getValueOr(""),
-                                std::make_shared<Amount>(buddy->keychain->getCurrency(), 0, output.value),
-                                hash, std::get<1>(desc), {}, std::make_shared<BitcoinLikeOutputApi>(output, _currency)
+                            buddy->explorer,
+                            getContext(),
+                            sequence,
+                            pub_keys,
+                            paths,
+                            utxo.address.getValueOr(""),
+                            // NOTE: we previously used buddy->keychain->getCurrency() which is weird since
+                            // we can get that information from current object from _currency attribute
+                            std::make_shared<Amount>(utxo.value),
+                            utxo.transactionHash,
+                            utxo.index,
+                            {},
+                            std::make_shared<BitcoinLikeOutputApi>(toExplorerOutput(utxo), _currency)
                         )
                 );
                 buddy->transaction->addInput(input);
-                return unit;
-            });
+            }
         }
 
         BitcoinLikeGetUtxoFunction
         BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
+                                                          const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
-            auto minUtxoAmount = getCurrency().bitcoinLikeNetworkParameters.value().DustAmount;
-            return [=] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
-                return getUtxo().map<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>(getContext(), [=] (const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo) {
-                    std::vector<std::shared_ptr<api::BitcoinLikeOutput>> filtered;
-                    auto isExcluded = [&] (const std::shared_ptr<api::BitcoinLikeOutput>& output) -> bool {
-                        if (output->getValue()->toLong() < minUtxoAmount) {
-                            return true;
-                        }
-                        for (auto& o : request.excludedUtxo) {
-                            auto hash = std::get<0>(o);
-                            auto index = std::get<1>(o);
-                            if (output->getTransactionHash() == hash && output->getOutputIndex() == index)
-                                return true;
-                        }
-                        return false;
+            auto minAmount = getCurrency().bitcoinLikeNetworkParameters.value().DustAmount;
+            return [=] () -> Future<std::vector<BitcoinLikeUtxo>> {
+                return getUtxo().map<std::vector<BitcoinLikeUtxo>>(getContext(), [=] (auto const &utxos) {
+                    auto const isNotExcluded = [&] (auto const &currentUtxo) {
+                        // NOTE: This logic can be move to the SQL request itself but since we iterate through
+                        // the entire vector to compare the UTXO amount, this is fine to apply the filter(s) here.
+                        // The filter are sorted by ascending time order.
+                        return !(currentUtxo.address.isEmpty()
+                                 || currentUtxo.value.toLong() < minAmount
+                                 || !keychain->contains(currentUtxo.address.getValue())
+                                 || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
                     };
-                    for (auto& output : utxo) {
-                        if (!isExcluded(output)) {
-                            filtered.push_back(output);
-                        }
-                    }
-                    return filtered;
+
+                    std::vector<BitcoinLikeUtxo> filteredUtxos;
+
+                    std::copy_if(utxos.begin(), utxos.end(), std::back_inserter(filteredUtxos), isNotExcluded);
+
+                    return filteredUtxos;
                 });
             };
         }
