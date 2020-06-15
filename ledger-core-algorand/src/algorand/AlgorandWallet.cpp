@@ -80,10 +80,10 @@ namespace algorand {
                 throw make_exception(api::ErrorCode::ACCOUNT_ALREADY_EXISTS, "Account {} already exists for wallet {}", info.index, walletUid);
             }
 
-            AccountDatabaseEntry accountData;
-            accountData.index = info.index;
-            accountData.address =
-                std::string(std::begin(info.publicKeys[0]), std::end(info.publicKeys[0]));
+            const AccountDatabaseEntry accountData {
+                info.index,
+                Address::fromPublicKey(info.publicKeys[0])
+            };
 
             soci::transaction tr(sql);
             algorand::AccountDatabaseHelper::createAccount(sql, walletUid, accountData);

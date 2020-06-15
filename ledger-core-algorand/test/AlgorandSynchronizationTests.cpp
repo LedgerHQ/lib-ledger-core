@@ -65,7 +65,7 @@ TEST_F(AlgorandSynchronizationTest, AccountSynchronizationTest) {
         nextIndex,
         {"main"},
         {"44'/283'/0'/0'"},
-        {{ std::begin(OBELIX_ADDRESS), std::end(OBELIX_ADDRESS) }},
+        { algorand::Address::toPublicKey(OBELIX_ADDRESS) },
         {hex::toByteArray("")}
     );
 
