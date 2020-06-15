@@ -261,38 +261,52 @@ FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransac
                     result.hasNext = (count < total_count);
                 }
                 return Future<cosmos::TransactionsBulk>::successful(result);
-            })
-        .flatMapPtr<cosmos::TransactionsBulk>(
-            getContext(),
-            [this](const cosmos::TransactionsBulk &inputBulk) mutable
-            -> FuturePtr<cosmos::TransactionsBulk> {
-                auto const &inputTxs = inputBulk.transactions;
-                std::vector<FuturePtr<cosmos::Transaction>> filledTxsFutures;
-                filledTxsFutures.reserve(inputTxs.size());
-                std::transform(
-                    inputTxs.cbegin(),
-                    inputTxs.cend(),
-                    std::back_inserter(filledTxsFutures),
-                    [this](const cosmos::Transaction &inputTx) {
-                        return this->inflateTransactionWithBlockData(inputTx);
-                    });
-                return async::sequence(getContext(), filledTxsFutures)
-                    .flatMapPtr<cosmos::TransactionsBulk>(
-                        getContext(),
-                        [inputBulk = std::move(inputBulk)](
-                            const std::vector<std::shared_ptr<cosmos::Transaction>>
-                                &filledTxsList) mutable {
-                            std::transform(
-                                filledTxsList.cbegin(),
-                                filledTxsList.cend(),
-                                inputBulk.transactions.begin(),
-                                [](const std::shared_ptr<cosmos::Transaction> filledTx) {
-                                    return *filledTx;
-                                });
-                            return FuturePtr<cosmos::TransactionsBulk>::successful(
-                                std::make_shared<cosmos::TransactionsBulk>(inputBulk));
+                })
+                .flatMapPtr<cosmos::TransactionsBulk>(
+                getContext(),
+                [this](const cosmos::TransactionsBulk& inputBulk) mutable -> FuturePtr<cosmos::TransactionsBulk> {
+                    auto retval = inputBulk;
+                    auto inputTxs = inputBulk.transactions;
+                    std::vector<FuturePtr<cosmos::Transaction>> filledTxsFutures;
+                    std::transform(
+                        inputTxs.cbegin(),
+                        inputTxs.cend(),
+                        std::back_inserter(filledTxsFutures),
+                        [this](const cosmos::Transaction &inputTx) {
+                            return this->inflateTransactionWithBlockData(inputTx);
                         });
-            });
+                    return async::sequence(getContext(), filledTxsFutures)
+                        .flatMapPtr<cosmos::TransactionsBulk>(
+                            getContext(),
+                            [retval](
+                                const std::vector<std::shared_ptr<cosmos::Transaction>> &filledTxsList) mutable {
+                                retval.transactions.clear();
+                                std::transform(
+                                    filledTxsList.cbegin(),
+                                    filledTxsList.cend(),
+                                    std::back_inserter(retval.transactions),
+                                    [](const std::shared_ptr<cosmos::Transaction> filledTx) {
+                                        return *filledTx;
+                                    });
+                                return FuturePtr<cosmos::TransactionsBulk>::successful(
+                                    std::make_shared<cosmos::TransactionsBulk>(retval));
+                            });
+                });
+}
+
+FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::inflateTransactionWithBlockData(const cosmos::Transaction& inputTx) const {
+            auto retval = cosmos::Transaction(inputTx);
+            if (!retval.block) {
+                return FuturePtr<cosmos::Transaction>::successful(
+                    std::make_shared<cosmos::Transaction>(std::move(retval)));
+            }
+            auto height = retval.block.getValue().height;
+            return getBlock(height).flatMapPtr<cosmos::Transaction>(
+                getContext(), [retval](const auto &blockData) mutable -> FuturePtr<cosmos::Transaction> {
+                    retval.block = *blockData;
+                    return FuturePtr<cosmos::Transaction>::successful(
+                        std::make_shared<cosmos::Transaction>(retval));
+                });
 }
 
 FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::inflateTransactionWithBlockData(
