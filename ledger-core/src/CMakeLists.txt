@@ -96,6 +96,9 @@ target_link_libraries(ledger-core-obj PUBLIC ethash)
 
 target_link_libraries(ledger-core-obj PUBLIC ${SQLITE_LIB})
 
+if (TARGET_JNI)
+  target_include_directories(ledger-core-obj PUBLIC ${JNI_INCLUDE_DIRS})
+endif()
 
 target_include_directories(
     ledger-core-obj SYSTEM PUBLIC

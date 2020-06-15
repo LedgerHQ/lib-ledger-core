@@ -69,7 +69,6 @@ target_link_libraries(ledger-core-bundle PUBLIC ledger-core-obj)
 # endif()
 
 if (TARGET_JNI)
-    target_include_directories(ledger-core-bundle PRIVATE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-bundle PRIVATE ${JNI_LIBRARIES})
 endif ()
 
