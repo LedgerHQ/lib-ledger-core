@@ -78,7 +78,7 @@ cmd_idl() {
 cmd_pkg() {
   if [[ $# != 1 ]];
   then
-    usage "generating bindings requires at least one argument: the package system to target (npm)"
+    usage "generating bindings requires at least one argument: the package system to target (npm, rn, scala)"
   fi
 
   ./tools/idl_pkg.sh $1
