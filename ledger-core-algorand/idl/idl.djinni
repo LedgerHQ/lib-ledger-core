@@ -186,6 +186,16 @@ AlgorandAccount = interface +c {
         callback: Callback<AlgorandAssetParams>
     );
 
+    # Check if address has a specific asset
+    # @param address, the address of the account
+    # @param assetId, the unique identifier of the asset to look for
+    # @param callback, Callback returning true if the address holds the asset
+    hasAsset(
+        address: string,
+        assetId: string,
+        callback: Callback<bool>
+    );
+
     # Get balance of account for a particular asset.
     # @param assetId, the unique identifier of the asset on the algorand network
     # @param callback, if getAssetBalance succeeds, Callback returning an Amount object which represents account's balance
