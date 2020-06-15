@@ -27,9 +27,9 @@
  *
  */
 
-#include "../model/transactions/AlgorandSignedTransaction.hpp"
+#include "AlgorandSignedTransaction.hpp"
 
-#include "util/TransactionAdaptor.hpp"
+#include "../../transactions/util/TransactionAdaptor.hpp"
 
 #include <sstream>
 

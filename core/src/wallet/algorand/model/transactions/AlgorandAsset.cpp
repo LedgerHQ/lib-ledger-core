@@ -27,7 +27,7 @@
  *
  */
 
-#include "../model/transactions/AlgorandAsset.hpp"
+#include "AlgorandAsset.hpp"
 
 namespace ledger {
 namespace core {

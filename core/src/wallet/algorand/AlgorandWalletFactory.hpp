@@ -36,8 +36,7 @@
 #include "AlgorandAccountSynchronizer.hpp"
 
 #include <wallet/common/AbstractWalletFactory.hpp>
-//#include <core/Services.hpp>
-#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
+#include <wallet/pool/WalletPool.hpp>
 
 namespace ledger {
 namespace core {

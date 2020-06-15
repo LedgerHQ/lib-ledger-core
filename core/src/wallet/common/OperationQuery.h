@@ -82,7 +82,7 @@ namespace ledger {
             void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateStellarLikeTransaction(soci::session& sql, OperationApi& operation);
-            void inflateAlgorandLikeTransaction(soci::session& sql, const std::string &accountUid, algorand::Operation &operation);
+            void inflateAlgorandLikeTransaction(soci::session& sql, algorand::Operation &operation);
 
         protected:
             virtual soci::rowset<soci::row> performExecute(soci::session &sql);

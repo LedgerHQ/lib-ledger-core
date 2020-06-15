@@ -27,9 +27,9 @@
  *
  */
 
-#include "model/AlgorandModelMapper.hpp"
+#include "AlgorandModelMapper.hpp"
 
-#include "AlgorandAddress.hpp"
+#include "../AlgorandAddress.hpp"
 
 #include <utils/Option.hpp>
 

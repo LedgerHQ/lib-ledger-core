@@ -45,8 +45,8 @@ namespace algorand {
     public:
 
        static bool putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation) {
-            auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation.getConstBackend());
-            auto opUid = operation.getConstBackend().uid;
+            auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation.getBackend());
+            auto opUid = operation.getBackend().uid;
             auto txHash = operation.getTransaction()->getId();
 
             if (newOperation) {

@@ -72,7 +72,7 @@ namespace ledger {
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();
-            const ledger::core::Operation& getConstBackend() const;
+            const ledger::core::Operation& getBackend() const;
             const std::shared_ptr<AbstractAccount>& getAccount() const;
 
             api::Currency getCurrency() override;

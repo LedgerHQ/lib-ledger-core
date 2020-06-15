@@ -34,9 +34,7 @@
 #include "AlgorandAddress.hpp"
 #include "AlgorandBlockchainExplorer.hpp"
 
-//#include <core/Services.hpp>
-
-#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
+#include <wallet/pool/WalletPool.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <events/ProgressNotifier.h>
 

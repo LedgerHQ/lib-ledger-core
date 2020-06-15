@@ -61,13 +61,14 @@ namespace algorand {
 
     std::string Address::fromPublicKey(const std::vector<uint8_t> & pubKey) {
         // 1. pubkey --> pubKeyHash
+        // TODO [libcore v2] : port crypto/portability.h, crypto/sha512_256.cpp/hpp and crypto/alignedarray.h 
         auto hasher = cppcrypto::sha512(256);
-        unsigned char pubKeyHash[256/8];
+        unsigned char pubKeyHash[PUBKEY_LEN_BYTES];
         hasher.init();
-        hasher.update(&pubKey.front(), pubKey.size());
+        hasher.update(pubKey.data(), pubKey.size());
         hasher.final(pubKeyHash); // Now hash contains the hash
         // 2. 4 last bytes of pubKeyHash
-        const std::vector<uint8_t> pubKeyHashChecksum(pubKeyHash + 32 - CHECKSUM_LEN_BYTES, pubKeyHash + 32);
+        const std::vector<uint8_t> pubKeyHashChecksum(pubKeyHash + PUBKEY_LEN_BYTES - CHECKSUM_LEN_BYTES, pubKeyHash + PUBKEY_LEN_BYTES);
         // 3. pubkey + 4 last bytes of pubKeyHash
         const std::vector<uint8_t> addressBytes = vector::concat<uint8_t>(pubKey, pubKeyHashChecksum);
         // 4. Encode to Base32

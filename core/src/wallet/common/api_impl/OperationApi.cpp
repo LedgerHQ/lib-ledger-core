@@ -97,7 +97,7 @@ namespace ledger {
             return _backend;
         }
 
-        const ledger::core::Operation &OperationApi::getConstBackend() const {
+        const ledger::core::Operation &OperationApi::getBackend() const {
             return _backend;
         }
 

@@ -59,6 +59,7 @@ namespace algorand {
 
     bool Operation::isComplete()
     {
+        // TODO [libcore v2]
         return static_cast<bool>(transaction);
     }
 
