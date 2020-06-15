@@ -629,8 +629,13 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(std::experimental::optional<bool> partial) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            auto getUTXO = [self] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
-                return self->getUTXO();
+            auto getUTXO = [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
+                return async<std::vector<BitcoinLikeUtxo>>([=]() {
+                    auto keychain = self->getKeychain();
+                    soci::session session(self->getWallet()->getDatabase()->getPool());
+
+                    return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
+                });
             };
             auto getTransaction = [self] (const std::string& hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {
                 return self->getTransaction(hash);

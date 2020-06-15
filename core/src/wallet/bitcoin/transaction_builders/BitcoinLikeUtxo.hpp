@@ -1,13 +1,13 @@
 /*
  *
- * BitcoinLikeUTXODatabaseHelper.h
+ * BitcoinLikeUtxo
  * ledger-core
  *
- * Created by Pierre Pollastri on 25/09/2017.
+ * Created by Alexis Le Provost on 02/06/2020.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,36 +29,38 @@
  *
  */
 
-#ifndef LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
-#define LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
+#ifndef __BITCOINLIKEUTXO_H_
+#define __BITCOINLIKEUTXO_H_
 
-#include <soci.h>
+#include <string>
 
+#include <utils/Option.hpp>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxo.hpp>
+#include <wallet/common/Amount.h>
 
 namespace ledger {
     namespace core {
-        class BitcoinLikeUTXODatabaseHelper {
-            BitcoinLikeUTXODatabaseHelper() = delete;
+        struct BitcoinLikeUtxo {
+            uint64_t index;
+            std::string transactionHash;
+            // HACK: Amount class lacks of constness so
+            // to avoid to const_cast everywhere I select that
+            // quick-win solution.
+            // We should change our generated interfaces and qualify
+            // at least all getters with const keyword
+            mutable Amount value;
+            Option<std::string> address;
+            Option<std::string> accountUid;
+            std::string script;
+            Option<uint64_t> blockHeight;
 
-            ~BitcoinLikeUTXODatabaseHelper() = delete;
-
-        public:
-            static std::size_t queryUTXO(soci::session &sql, const std::string &accountUid,
-                           int32_t offset,
-                           int32_t count,
-                           std::vector<BitcoinLikeBlockchainExplorerOutput>& out,
-                           std::function<bool (const std::string& address)> filter);
-
-            static std::size_t UTXOcount(soci::session& sql, const std::string& accountUid,
-                                         std::function<bool (const std::string& address)> filter);
-
-            static std::vector<BitcoinLikeUtxo> queryAllUtxos(
-                soci::session &session, std::string const &accountUid, api::Currency const &currency);
-
+            operator BitcoinLikeBlockchainExplorerOutput() const;
+            BitcoinLikeUtxo() = default;
         };
+
+        BitcoinLikeUtxo makeUtxo(BitcoinLikeBlockchainExplorerOutput const& output, api::Currency const& currency);
+        BitcoinLikeBlockchainExplorerOutput toExplorerOutput(BitcoinLikeUtxo const& utxo);
     }
 }
 
-#endif //LEDGER_CORE_BITCOINLIKEUTXODATABASEHELPER_H
+#endif // __BITCOINLIKEUTXO_H_
