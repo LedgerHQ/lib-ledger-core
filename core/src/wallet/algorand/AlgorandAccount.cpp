@@ -154,10 +154,10 @@ namespace algorand {
         }();
 
         if (OperationDatabaseHelper::putAlgorandOperation(sql, txuid, operation)) {
-            emitNewOperationEvent(operation.getConstBackend());
+            emitNewOperationEvent(operation.getBackend());
         }
 
-        return static_cast<int>(operation.getConstBackend().type);
+        return static_cast<int>(operation.getBackend().type);
     }
 
     void Account::getAsset(
@@ -177,6 +177,7 @@ namespace algorand {
 
     void Account::hasAsset(const std::string & addr, const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback)
     {
+        // TODO [libcore v2]
         _explorer->getAccount(addr)
             .map<bool>(
                     getContext(),
@@ -407,8 +408,7 @@ namespace algorand {
 
     std::shared_ptr<api::Keychain> Account::getAccountKeychain() 
     {
-        // FIXME : check nullptr error  
-        return nullptr;
+        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Account Keychain is not supported for Algorand");
     }
 
     bool Account::isSynchronizing()
@@ -581,7 +581,6 @@ namespace algorand {
 
     Future<Account::AddressList> Account::getFreshPublicAddresses()
     {
-        // TODO
         return async<Account::AddressList>([=]() {
             return Account::AddressList{ _address.shared_from_this() };
         });

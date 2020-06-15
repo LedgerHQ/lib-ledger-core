@@ -492,7 +492,7 @@ Wallet = interface +c {
     # Tell whether wallet is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeWallet(): bool;
-    # Tell whether wallet is a Bitcoin one.
+    # Tell whether wallet is an Algorand one.
     # @return bool
     isInstanceOfAlgorandLikeWallet(): bool;
     # Tell whether wallet is a Cosmos one.

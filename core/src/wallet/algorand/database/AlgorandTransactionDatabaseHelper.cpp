@@ -27,7 +27,6 @@
  *
  */
 
-#include "../model/transactions/AlgorandTransaction.hpp"
 #include "AlgorandTransactionDatabaseHelper.hpp"
 #include "../AlgorandExplorerConstants.hpp"
 #include "../model/transactions/AlgorandPayment.hpp"

@@ -33,8 +33,7 @@
 #include "model/AlgorandAccount.hpp"
 #include "database/AlgorandAccountDatabaseHelper.hpp"
 
-//#include <core/Services.hpp>
-#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
+#include <wallet/pool/WalletPool.hpp>
 #include <api/ErrorCode.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 

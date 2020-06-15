@@ -144,13 +144,17 @@ namespace ledger {
                 if (account == _accounts.end())
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Account {} is not registered.", accountUid);
 
-                auto operationApi = std::make_shared<OperationApi>(account->second);
+                std::shared_ptr<OperationApi> operationApi;
                 if(account->second->getWalletType() == api::WalletType::ALGORAND)
                 {
                     algorand::model::Transaction tx;
                     operationApi = std::make_shared<algorand::Operation>(account->second,tx);
                 }
-
+                else
+                {
+                    operationApi = std::make_shared<OperationApi>(account->second);
+                }
+                
                 auto& operation = operationApi->getBackend();
 
                 // Inflate abstract operation
@@ -200,7 +204,7 @@ namespace ledger {
                 case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
                 case (api::WalletType::STELLAR): return inflateStellarLikeTransaction(sql, operation);
-                case (api::WalletType::ALGORAND): return inflateAlgorandLikeTransaction(sql, accountUid, dynamic_cast<algorand::Operation&>(operation));
+                case (api::WalletType::ALGORAND): return inflateAlgorandLikeTransaction(sql, dynamic_cast<algorand::Operation&>(operation));
             }
         }
 
@@ -273,7 +277,7 @@ namespace ledger {
             operation.getBackend().stellarOperation = out;
         }
 
-        void OperationQuery::inflateAlgorandLikeTransaction(soci::session& sql, const std::string &accountUid, algorand::Operation &operation) {
+        void OperationQuery::inflateAlgorandLikeTransaction(soci::session& sql, algorand::Operation &operation) {
             std::string transactionHash;
             api::AlgorandOperationType operationType;
             sql << "SELECT transaction_hash FROM algorand_operations WHERE uid = :uid",

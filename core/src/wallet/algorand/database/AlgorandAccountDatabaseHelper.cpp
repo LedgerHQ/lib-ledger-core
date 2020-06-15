@@ -28,7 +28,10 @@
  */
 
 #include "AlgorandAccountDatabaseHelper.hpp"
+#include "../model/AlgorandAccount.hpp"
+#include "../operations/AlgorandOperation.hpp"
 
+#include <wallet/common/AbstractAccount.hpp>
 #include <database/soci-number.h>
 
 namespace ledger {

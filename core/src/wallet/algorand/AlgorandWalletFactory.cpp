@@ -36,8 +36,6 @@
 #include <api/AlgorandBlockchainExplorerEngines.hpp>
 #include <api/AlgorandBlockchainObserverEngines.hpp>
 
-//#include <core/Services.hpp>
-#include <wallet/pool/WalletPool.hpp> // V1 for core/Services.hpp ?
 #include <api/Configuration.hpp>
 #include <api/SynchronizationEngines.hpp>
 
