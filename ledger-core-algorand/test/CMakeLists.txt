@@ -8,6 +8,7 @@ add_executable(ledger-core-algorand-tests
     AlgorandDatabaseTests.cpp
     AlgorandExplorerTests.cpp
     AlgorandSynchronizationTests.cpp
+    AlgorandSerializationTests.cpp
 )
 
 target_link_libraries(ledger-core-algorand-tests ledger-core-bundle)
