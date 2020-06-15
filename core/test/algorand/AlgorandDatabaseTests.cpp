@@ -112,8 +112,6 @@ TEST_F(AlgorandDatabaseTest, TransactionsDBTest) {
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
 
-        // FIXME : Need to implement v1 method asAlgorandOperation() ?
-
         model::Transaction paymentTxFromDB;
         auto result = algorand::TransactionDatabaseHelper::getTransactionByHash(sql, *paymentTxRef.header.id, paymentTxFromDB);
         EXPECT_TRUE(result);
