@@ -98,7 +98,7 @@ const std::vector<CosmosLikeBlockchainExplorer::TransactionFilter>
     return GAIA_FILTER;
 }
 
-FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight)
+FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight) const
 {
     return _http->GET(fmt::format(kGaiaBlocksEndpoint, blockHeight), ACCEPT_HEADER)
         .json(true)
@@ -212,24 +212,28 @@ void addMsgFeesTo(cosmos::Transaction &transaction, const T &node)
     transaction.messages.push_back(msgFees);
 }
 
+}  // namespace
+
 template <typename T>
-void parseTransactionWithPosttreatment(const T &node, cosmos::Transaction &transaction)
+void GaiaCosmosLikeBlockchainExplorer::parseTransactionWithPosttreatment(
+    const T &node, cosmos::Transaction &transaction) const
 {
     rpcs_parsers::parseTransaction(node, transaction);
     addMsgFeesTo(transaction, node);
 }
 
-}  // namespace
 
 FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransactions(
     const CosmosLikeBlockchainExplorer::TransactionFilter &filter, int page, int limit) const
 {
+    // NOTE : the amount of memory involved here asks for a second pass to make
+    // sure that the least amount of copies is done.
     return _http->GET(fmt::format(kGaiaTransactionsWithPageLimitEnpoint, filter, page, limit), ACCEPT_HEADER)
         .json(true)
-        .mapPtr<cosmos::TransactionsBulk>(
-            getContext(), [](const HttpRequest::JsonResult &response) {
-                auto result = std::make_shared<cosmos::TransactionsBulk>();
-
+        .flatMap<cosmos::TransactionsBulk>(
+            getContext(), [this](const HttpRequest::JsonResult &response)
+            -> Future<cosmos::TransactionsBulk> {
+                cosmos::TransactionsBulk result;
                 const auto &document = std::get<1>(response)->GetObject();
                 if (!document.HasMember("txs") || !document[kTxArray].IsArray()) {
                     throw make_exception(
@@ -241,23 +245,68 @@ FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransac
                 for (const auto &node : transactions) {
                     auto tx = cosmos::Transaction();
                     parseTransactionWithPosttreatment(node, tx);
-                    result->transactions.emplace_back(tx);
+                    result.transactions.emplace_back(tx);
                 }
 
                 if (!document.HasMember(kCount) ||
                     !document[kCount].IsString() ||
                     !document.HasMember(kTotalCount) ||
                     !document[kTotalCount].IsString()) {
-                    result->hasNext = false;
+                    result.hasNext = false;
                 }
                 else {
                     const auto count = std::stoi(document[cosmos::constants::kCount].GetString());
                     const auto total_count =
                         std::stoi(document[kTotalCount].GetString());
-                    result->hasNext = (count < total_count);
+                    result.hasNext = (count < total_count);
                 }
-                return result;
-            });
+                return Future<cosmos::TransactionsBulk>::successful(result);
+                })
+                .flatMapPtr<cosmos::TransactionsBulk>(
+                getContext(),
+                [this](const cosmos::TransactionsBulk& inputBulk) mutable -> FuturePtr<cosmos::TransactionsBulk> {
+                    auto retval = inputBulk;
+                    auto inputTxs = inputBulk.transactions;
+                    std::vector<FuturePtr<cosmos::Transaction>> filledTxsFutures;
+                    std::transform(
+                        inputTxs.cbegin(),
+                        inputTxs.cend(),
+                        std::back_inserter(filledTxsFutures),
+                        [this](const cosmos::Transaction &inputTx) {
+                            return this->inflateTransactionWithBlockData(inputTx);
+                        });
+                    return async::sequence(getContext(), filledTxsFutures)
+                        .flatMapPtr<cosmos::TransactionsBulk>(
+                            getContext(),
+                            [retval](
+                                const std::vector<std::shared_ptr<cosmos::Transaction>> &filledTxsList) mutable {
+                                retval.transactions.clear();
+                                std::transform(
+                                    filledTxsList.cbegin(),
+                                    filledTxsList.cend(),
+                                    std::back_inserter(retval.transactions),
+                                    [](const std::shared_ptr<cosmos::Transaction> filledTx) {
+                                        return *filledTx;
+                                    });
+                                return FuturePtr<cosmos::TransactionsBulk>::successful(
+                                    std::make_shared<cosmos::TransactionsBulk>(retval));
+                            });
+                });
+}
+
+FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::inflateTransactionWithBlockData(const cosmos::Transaction& inputTx) const {
+            auto retval = cosmos::Transaction(inputTx);
+            if (!retval.block) {
+                return FuturePtr<cosmos::Transaction>::successful(
+                    std::make_shared<cosmos::Transaction>(std::move(retval)));
+            }
+            auto height = retval.block.getValue().height;
+            return getBlock(height).flatMapPtr<cosmos::Transaction>(
+                getContext(), [retval](const auto &blockData) mutable -> FuturePtr<cosmos::Transaction> {
+                    retval.block = *blockData;
+                    return FuturePtr<cosmos::Transaction>::successful(
+                        std::make_shared<cosmos::Transaction>(retval));
+                });
 }
 
 FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::getTransactionByHash(
@@ -265,12 +314,17 @@ FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::getTransactionB
 {
     return _http->GET(fmt::format(kGaiaTransactionEndpoint, hash), ACCEPT_HEADER)
         .json(true)
-        .mapPtr<cosmos::Transaction>(getContext(), [](const HttpRequest::JsonResult &response) {
+        .flatMap<cosmos::Transaction>(getContext(), [this](const HttpRequest::JsonResult &response) -> Future<cosmos::Transaction> {
             const auto &document = std::get<1>(response)->GetObject();
-            auto tx = std::make_shared<cosmos::Transaction>();
-            parseTransactionWithPosttreatment(document, *tx);
-            return tx;
-        });
+            cosmos::Transaction tx;
+            parseTransactionWithPosttreatment(document, tx);
+            return Future<cosmos::Transaction>::successful(tx);
+        })
+        .flatMapPtr<cosmos::Transaction>(
+            getContext(),
+            [this](const auto &inputTx) {
+                return this->inflateTransactionWithBlockData(inputTx);
+            });
 }
 
 namespace {

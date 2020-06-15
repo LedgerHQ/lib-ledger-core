@@ -66,7 +66,7 @@ class GaiaCosmosLikeBlockchainExplorer :
     const std::vector<TransactionFilter> &getTransactionFilters() override;
 
     // Block querier
-    FuturePtr<cosmos::Block> getBlock(uint64_t &blockHeight) override;
+    FuturePtr<cosmos::Block> getBlock(uint64_t &blockHeight) const override;
 
     // Account querier
     FuturePtr<ledger::core::cosmos::Account> getAccount(const std::string &account) const override;
@@ -129,6 +129,24 @@ class GaiaCosmosLikeBlockchainExplorer :
         double gasAdjustment = 1.0) const override;
 
    private:
+
+    /// Parse a transaction and add post-treatment / sanitization.
+    /// The sanitization of output includes :
+    /// - Adding the FESS as an extra message
+    /// - Query more information about the block included in the transaction
+    /// \param[in] node The (rapidjson) node with the transaction data to use
+    /// \param[out] transaction The Cosmos transaction to fill
+    template <typename T>
+    void parseTransactionWithPosttreatment(const T &node, cosmos::Transaction &transaction) const;
+
+    /// Inflate a transaction with all its block data (block hash and timestamp)
+    /// The hash information is necessary to compute a block_uid and therefore not having
+    /// it will prevent the OperationQuery from fetching the correct block to compute the
+    /// number of confirmations for a given transaction.
+    /// \param[in] The transaction to fill
+    /// \return a FuturePtr to the filled Transaction
+    FuturePtr<cosmos::Transaction> inflateTransactionWithBlockData(const cosmos::Transaction& inputTx) const;
+
     // Get all transactions relevant to an address
     // Concatenates multiple API calls for all relevant transaction types
     FuturePtr<cosmos::TransactionsBulk> getTransactionsForAddress(
