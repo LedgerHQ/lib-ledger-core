@@ -183,7 +183,7 @@ namespace algorand {
                     getContext(),
                     [&assetId](const model::Account& account) {
                         const auto id = std::stoull(assetId);
-                        return static_cast<bool>(account.assetsAmounts.find(id)->second.amount);
+                        return account.assetsAmounts.find(id) != std::end(account.assetsAmounts);
                     })
             .callback(getMainExecutionContext(), callback);
     }
