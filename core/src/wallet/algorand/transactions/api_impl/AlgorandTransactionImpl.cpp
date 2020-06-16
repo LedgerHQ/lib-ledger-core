@@ -97,15 +97,8 @@ namespace algorand {
 
     void AlgorandTransactionImpl::setPaymentInfo(const api::AlgorandPaymentInfo& info)
     {
-        model::PaymentTxnFields details;
-        details.amount = std::stoull(info.amount);
-
-        if (info.closeAddress) {
-            details.closeAddr = Address(currencies::ALGORAND, *info.closeAddress);
-        }
-        details.receiverAddr = Address(currencies::ALGORAND, info.recipientAddress);
-
-        stxn.txn.details = details;
+        stxn.txn.header.type = model::constants::pay;
+        stxn.txn.details = model::fromAPI(info);
     }
 
     api::AlgorandPaymentInfo AlgorandTransactionImpl::getPaymentInfo() const
@@ -114,12 +107,12 @@ namespace algorand {
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Not a payment transaction");
         }
 
-        const auto& details = boost::get<model::PaymentTxnFields>(stxn.txn.details);
-        return model::toAPI(details);
+        return model::toAPI(boost::get<model::PaymentTxnFields>(stxn.txn.details));
     }
 
     void AlgorandTransactionImpl::setParticipationInfo(const api::AlgorandParticipationInfo& info)
     {
+        stxn.txn.header.type = model::constants::keyreg;
         stxn.txn.details = model::fromAPI(info);
     }
 
@@ -129,12 +122,12 @@ namespace algorand {
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Not a key registration transaction");
         }
 
-        const auto& details = boost::get<model::KeyRegTxnFields>(stxn.txn.details);
-        return model::toAPI(details);
+        return model::toAPI(boost::get<model::KeyRegTxnFields>(stxn.txn.details));
     }
 
     void AlgorandTransactionImpl::setAssetConfigurationInfo(const api::AlgorandAssetConfigurationInfo& info)
     {
+        stxn.txn.header.type = model::constants::acfg;
         stxn.txn.details = model::fromAPI(info);
     }
 
@@ -144,12 +137,12 @@ namespace algorand {
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Not an asset configuration transaction");
         }
 
-        const auto& details = boost::get<model::AssetConfigTxnFields>(stxn.txn.details);
-        return model::toAPI(details);
+        return model::toAPI(boost::get<model::AssetConfigTxnFields>(stxn.txn.details));
     }
 
     void AlgorandTransactionImpl::setAssetTransferInfo(const api::AlgorandAssetTransferInfo& info)
     {
+        stxn.txn.header.type = model::constants::axfer;
         stxn.txn.details = model::fromAPI(info);
     }
 
@@ -159,12 +152,12 @@ namespace algorand {
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Not an asset transfer transaction");
         }
 
-        const auto& details = boost::get<model::AssetTransferTxnFields>(stxn.txn.details);
-        return model::toAPI(details);
+        return model::toAPI(boost::get<model::AssetTransferTxnFields>(stxn.txn.details));
     }
 
     void AlgorandTransactionImpl::setAssetFreezeInfo(const api::AlgorandAssetFreezeInfo& info)
     {
+        stxn.txn.header.type = model::constants::afreeze;
         stxn.txn.details = model::fromAPI(info);
     }
 
@@ -174,8 +167,7 @@ namespace algorand {
             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Not an asset freeze transaction");
         }
 
-        const auto& details = boost::get<model::AssetFreezeTxnFields>(stxn.txn.details);
-        return model::toAPI(details);
+        return model::toAPI(boost::get<model::AssetFreezeTxnFields>(stxn.txn.details));
     }
 
     std::vector<uint8_t> AlgorandTransactionImpl::serialize() const
