@@ -20,6 +20,8 @@ struct AlgorandPaymentInfo final {
     std::experimental::optional<std::string> closeAddress;
     /** The amount sent to CloseRemainderTo, for committed transaction */
     std::experimental::optional<std::string> closeAmount;
+    /** The amount of pending rewards applied to sender as part of this transaction */
+    std::experimental::optional<std::string> fromRewards;
     /** The amount of pending rewards applied to the CloseRemainderTo account as part of this transaction */
     std::experimental::optional<std::string> closeRewards;
     /** The amount of pending rewards applied to the recipient account as part of this transaction */
@@ -29,12 +31,14 @@ struct AlgorandPaymentInfo final {
                         std::string amount_,
                         std::experimental::optional<std::string> closeAddress_,
                         std::experimental::optional<std::string> closeAmount_,
+                        std::experimental::optional<std::string> fromRewards_,
                         std::experimental::optional<std::string> closeRewards_,
                         std::experimental::optional<std::string> recipientRewards_)
     : recipientAddress(std::move(recipientAddress_))
     , amount(std::move(amount_))
     , closeAddress(std::move(closeAddress_))
     , closeAmount(std::move(closeAmount_))
+    , fromRewards(std::move(fromRewards_))
     , closeRewards(std::move(closeRewards_))
     , recipientRewards(std::move(recipientRewards_))
     {}
@@ -44,6 +48,7 @@ struct AlgorandPaymentInfo final {
        this->amount = cpy.amount;
        this->closeAddress = cpy.closeAddress;
        this->closeAmount = cpy.closeAmount;
+       this->fromRewards = cpy.fromRewards;
        this->closeRewards = cpy.closeRewards;
        this->recipientRewards = cpy.recipientRewards;
     }
@@ -56,6 +61,7 @@ struct AlgorandPaymentInfo final {
        this->amount = cpy.amount;
        this->closeAddress = cpy.closeAddress;
        this->closeAmount = cpy.closeAmount;
+       this->fromRewards = cpy.fromRewards;
        this->closeRewards = cpy.closeRewards;
        this->recipientRewards = cpy.recipientRewards;
        return *this;
@@ -63,12 +69,12 @@ struct AlgorandPaymentInfo final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(recipientAddress, amount, closeAddress, closeAmount, closeRewards, recipientRewards);
+        archive(recipientAddress, amount, closeAddress, closeAmount, fromRewards, closeRewards, recipientRewards);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(recipientAddress, amount, closeAddress, closeAmount, closeRewards, recipientRewards);
+        archive(recipientAddress, amount, closeAddress, closeAmount, fromRewards, closeRewards, recipientRewards);
     }
 };
 

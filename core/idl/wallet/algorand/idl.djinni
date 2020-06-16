@@ -85,6 +85,8 @@ AlgorandPaymentInfo = record {
 
     # The amount sent to CloseRemainderTo, for committed transaction
     closeAmount: optional<string>;
+    # The amount of pending rewards applied to sender as part of this transaction
+    fromRewards: optional<string>;
     # The amount of pending rewards applied to the CloseRemainderTo account as part of this transaction
     closeRewards: optional<string>;
     # The amount of pending rewards applied to the recipient account as part of this transaction

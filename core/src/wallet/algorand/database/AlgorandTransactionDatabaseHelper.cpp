@@ -53,12 +53,12 @@ namespace algorand {
     static constexpr auto COL_TX_GENESIS_HASH = 8;
     static constexpr auto COL_TX_SENDER = 9;
     static constexpr auto COL_TX_FEE = 10;
-    static constexpr auto COL_TX_FROM_REWARDS = 11;
-    static constexpr auto COL_TX_NOTE = 12;
-    static constexpr auto COL_TX_GROUP = 13;
-    static constexpr auto COL_TX_LEASE = 14;
+    static constexpr auto COL_TX_NOTE = 11;
+    static constexpr auto COL_TX_GROUP = 12;
+    static constexpr auto COL_TX_LEASE = 13;
 
-    static constexpr auto COL_TX_PAY_AMOUNT = 15;
+    static constexpr auto COL_TX_PAY_AMOUNT = 14;
+    static constexpr auto COL_TX_PAY_FROM_REWARDS = 15;
     static constexpr auto COL_TX_PAY_RECEIVER_ADDRESS = 16;
     static constexpr auto COL_TX_PAY_RECEIVER_REWARDS = 17;
     static constexpr auto COL_TX_PAY_CLOSE_ADDRESS = 18;
@@ -157,10 +157,10 @@ namespace algorand {
         auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
         auto header_round = optionalValue<uint64_t>(tx.header.round);
         auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
-        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
         auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
         auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
         auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
+        auto payment_fromrewards = optionalValue<uint64_t>(payment.fromRewards);
         auto payment_receiverRewards = optionalValue<uint64_t>(payment.receiverRewards);
         auto payment_closeAddr = optionalValueWithTransform<Address, std::string>(payment.closeAddr, addrToString);
         auto payment_closeAmount = optionalValue<uint64_t>(payment.closeAmount);
@@ -185,7 +185,7 @@ namespace algorand {
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(header_fromrewards),
+            soci::use(payment_fromrewards),
             soci::use(header_note),
             soci::use(header_group),
             soci::use(header_lease),
@@ -204,7 +204,6 @@ namespace algorand {
         auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
         auto header_round = optionalValue<uint64_t>(tx.header.round);
         auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
-        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
         auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
         auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
         auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
@@ -213,10 +212,10 @@ namespace algorand {
         sql <<
         "INSERT INTO algorand_transactions ("
                 "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, from_rewards, note, groupVal, leaseVal, "
+                "sender, fee, note, groupVal, leaseVal, "
                 "keyreg_non_participation, keyreg_selection_pk, keyreg_vote_pk, keyreg_vote_key_dilution, keyreg_vote_first, keyreg_vote_last) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :from_rewards, :note, :group, :lease, "
+                ":sender, :fee, :note, :group, :lease, "
                 ":non_part, :selection_pk, :vote_pk, :vote_key_dilution, :vote_first, :vote_last)",
             soci::use(txUid),
             soci::use(header_id),
@@ -229,7 +228,6 @@ namespace algorand {
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(header_fromrewards),
             soci::use(header_note),
             soci::use(header_group),
             soci::use(header_lease),
@@ -248,7 +246,6 @@ namespace algorand {
         auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
         auto header_round = optionalValue<uint64_t>(tx.header.round);
         auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
-        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
         auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
         auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
         auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
@@ -270,12 +267,12 @@ namespace algorand {
         sql <<
         "INSERT INTO algorand_transactions ("
                 "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, from_rewards, note, groupVal, leaseVal, "
+                "sender, fee, note, groupVal, leaseVal, "
                 "acfg_asset_id, acfg_asset_name, acfg_unit_name, acfg_total, acfg_decimals, acfg_default_frozen, "
                 "acfg_creator_address, acfg_manager_address, acfg_reserve_address, acfg_freeze_address, acfg_clawback_address, "
                 "acfg_metadata_hash, acfg_url) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :from_rewards, :note, :group, :lease, "
+                ":sender, :fee, :note, :group, :lease, "
                 ":asset_id, :asset_name, :unit_name, :total, :decimals, :default_frozen, :creator_addr, "
                 ":manager_addr, :reserve_addr, :freeze_addr, :clawback_addr, :metadata_hash, :url)",
             soci::use(txUid),
@@ -289,7 +286,6 @@ namespace algorand {
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(header_fromrewards),
             soci::use(header_note),
             soci::use(header_group),
             soci::use(header_lease),
@@ -314,7 +310,6 @@ namespace algorand {
         auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
         auto header_round = optionalValue<uint64_t>(tx.header.round);
         auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
-        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
         auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
         auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
         auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
@@ -325,10 +320,10 @@ namespace algorand {
         sql <<
         "INSERT INTO algorand_transactions ("
                 "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, from_rewards, note, groupVal, leaseVal, "
+                "sender, fee, note, groupVal, leaseVal, "
                 "axfer_asset_id, axfer_asset_amount, axfer_receiver_address, axfer_close_address, axfer_sender_address) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :from_rewards, :note, :group, :lease, "
+                ":sender, :fee, :note, :group, :lease, "
                 ":asset_id, :amount, :receiver_addr, :close_addr, :sender_addr)",
             soci::use(txUid),
             soci::use(header_id),
@@ -341,7 +336,6 @@ namespace algorand {
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(header_fromrewards),
             soci::use(header_note),
             soci::use(header_group),
             soci::use(header_lease),
@@ -359,7 +353,6 @@ namespace algorand {
         auto header_genesisId = optionalValue<std::string>(tx.header.genesisId);
         auto header_round = optionalValue<uint64_t>(tx.header.round);
         auto header_timestamp = optionalValue<uint64_t>(tx.header.timestamp);
-        auto header_fromrewards = optionalValue<uint64_t>(tx.header.fromRewards);
         auto header_note = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.note, bytesToB64);
         auto header_group = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.group, bytesToB64);
         auto header_lease = optionalValueWithTransform<std::vector<uint8_t>, std::string>(tx.header.lease, bytesToB64);
@@ -367,10 +360,10 @@ namespace algorand {
         sql <<
         "INSERT INTO algorand_transactions ("
                 "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
-                "sender, fee, from_rewards, note, groupVal, leaseVal, "
+                "sender, fee, note, groupVal, leaseVal, "
                 "afrz_asset_id, afrz_frozen, afrz_frozen_address) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
-                ":sender, :fee, :from_rewards, :note, :group, :lease, "
+                ":sender, :fee, :note, :group, :lease, "
                 ":asset_id, :frozen, :frozen_addr)",
             soci::use(txUid),
             soci::use(header_id),
@@ -383,7 +376,6 @@ namespace algorand {
             soci::use(tx.header.genesisHash.getRawString()),
             soci::use(tx.header.sender.toString()),
             soci::use(tx.header.fee),
-            soci::use(header_fromrewards),
             soci::use(header_note),
             soci::use(header_group),
             soci::use(header_lease),
@@ -404,7 +396,6 @@ namespace algorand {
         tx.header.genesisHash = B64String(getString(row, COL_TX_GENESIS_HASH));
         tx.header.sender = Address(getString(row, COL_TX_SENDER)); // FIXME Currency not specified: defaults to ALGO
         tx.header.fee = getNumber(row, COL_TX_FEE);
-        tx.header.fromRewards = getOptionalNumber(row, COL_TX_FROM_REWARDS);
         tx.header.note = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_NOTE, b64toBytes);
         tx.header.group = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_GROUP, b64toBytes);
         tx.header.lease = getOptionalStringWithTransform<std::vector<uint8_t>>(row, COL_TX_LEASE, b64toBytes);
@@ -419,6 +410,7 @@ namespace algorand {
             paymentDetails.closeAddr = getOptionalStringWithTransform<Address>(row, COL_TX_PAY_CLOSE_ADDRESS, stringToAddr);
             paymentDetails.closeAmount = getOptionalNumber(row, COL_TX_PAY_CLOSE_AMOUNT);
             paymentDetails.closeRewards = getOptionalNumber(row, COL_TX_PAY_CLOSE_REWARDS);
+            paymentDetails.fromRewards = getOptionalNumber(row, COL_TX_PAY_FROM_REWARDS);
 
             tx.details = paymentDetails;
 

@@ -43,16 +43,19 @@ namespace ledger {
 namespace core {
 namespace algorand {
 
+    class Account;
     class AlgorandTransactionImpl;
 
     class Operation : public ::ledger::core::api::AlgorandOperation
                     , public ::ledger::core::OperationApi
     {
     public:
-        Operation() = default;
+        explicit Operation() = default;
+        explicit Operation(const std::shared_ptr<AbstractAccount>& account);
+        explicit Operation(const std::shared_ptr<AbstractAccount>& account,
+                           const model::Transaction& txn);
 
-        Operation(const std::shared_ptr<AbstractAccount>& account, const model::Transaction& txn);
-
+        // From ledger::core::api::AlgorandOperation
         api::AlgorandOperationType getAlgorandOperationType() const override;
         std::shared_ptr<api::AlgorandTransaction> getTransaction() const override;
 
@@ -61,10 +64,20 @@ namespace algorand {
         bool isComplete() override;
 
         const model::Transaction& getTransactionData() const;
-
         void setTransaction(const model::Transaction& txn);
 
     private:
+        void inflate();
+        void inflateFromAccount();
+        void inflateFromTransaction();
+        void inflateDate();
+        void inflateBlock();
+        void inflateAmountAndFees();
+        void inflateSenders();
+        void inflateRecipients();
+        void inflateType();
+
+        const Account& getAlgorandAccount() const;
         void setAlgorandOperationType();
 
     private:
