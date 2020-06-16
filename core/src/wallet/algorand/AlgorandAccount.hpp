@@ -52,6 +52,7 @@
 #include <api/OperationQuery.hpp>
 
 #include <wallet/common/AbstractAccount.hpp>
+#include <wallet/common/database/BlockDatabaseHelper.h>
 
 #include <mutex>
 

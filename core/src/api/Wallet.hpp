@@ -137,7 +137,7 @@ public:
     virtual bool isInstanceOfBitcoinLikeWallet() = 0;
 
     /**
-     * Tell whether wallet is a Bitcoin one.
+     * Tell whether wallet is an Algorand one.
      * @return bool
      */
     virtual bool isInstanceOfAlgorandLikeWallet() = 0;

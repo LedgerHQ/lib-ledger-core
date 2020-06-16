@@ -269,6 +269,7 @@ namespace model {
         return api::AlgorandPaymentInfo(
                 addressTo(fields.receiverAddr),
                 u64To(fields.amount),
+                mapOption(fields.fromRewards, u64To).toOptional(),
                 mapOption(fields.closeAddr, addressTo).toOptional(),
                 mapOption(fields.closeAmount, u64To).toOptional(),
                 mapOption(fields.closeRewards, u64To).toOptional(),
@@ -285,6 +286,8 @@ namespace model {
                     addressFrom(info.recipientAddress)
             );
 
+            fields.fromRewards =
+                mapOption(makeOption(info.fromRewards), u64From);
             fields.closeAmount =
                 mapOption(makeOption(info.closeAmount), u64From);
             fields.closeRewards =

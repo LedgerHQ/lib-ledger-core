@@ -147,8 +147,7 @@ namespace ledger {
                 std::shared_ptr<OperationApi> operationApi;
                 if(account->second->getWalletType() == api::WalletType::ALGORAND)
                 {
-                    algorand::model::Transaction tx;
-                    operationApi = std::make_shared<algorand::Operation>(account->second,tx);
+                    operationApi = std::make_shared<algorand::Operation>(account->second);
                 }
                 else
                 {

@@ -26,11 +26,12 @@ private:
     friend ::djinni::JniClass<AlgorandPaymentInfo>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandPaymentInfo") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_recipientAddress { ::djinni::jniGetFieldID(clazz.get(), "recipientAddress", "Ljava/lang/String;") };
     const jfieldID field_amount { ::djinni::jniGetFieldID(clazz.get(), "amount", "Ljava/lang/String;") };
     const jfieldID field_closeAddress { ::djinni::jniGetFieldID(clazz.get(), "closeAddress", "Ljava/lang/String;") };
     const jfieldID field_closeAmount { ::djinni::jniGetFieldID(clazz.get(), "closeAmount", "Ljava/lang/String;") };
+    const jfieldID field_fromRewards { ::djinni::jniGetFieldID(clazz.get(), "fromRewards", "Ljava/lang/String;") };
     const jfieldID field_closeRewards { ::djinni::jniGetFieldID(clazz.get(), "closeRewards", "Ljava/lang/String;") };
     const jfieldID field_recipientRewards { ::djinni::jniGetFieldID(clazz.get(), "recipientRewards", "Ljava/lang/String;") };
 };
