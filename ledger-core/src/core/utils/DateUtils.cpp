@@ -151,7 +151,11 @@ namespace ledger {
         gmtime_r(&tt, &tm);
 #endif
 
-        switch (precision){
+        switch (precision) {
+            case api::TimePeriod::HOUR:
+                tm.tm_hour += 1;
+                break;
+
             case api::TimePeriod::DAY:
                 tm.tm_mday += 1;
                 break;
