@@ -282,11 +282,10 @@ FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransac
                         [inputBulk = std::move(inputBulk)](
                             const std::vector<std::shared_ptr<cosmos::Transaction>>
                                 &filledTxsList) mutable {
-                            inputBulk.transactions.clear();
                             std::transform(
                                 filledTxsList.cbegin(),
                                 filledTxsList.cend(),
-                                std::back_inserter(inputBulk.transactions),
+                                inputBulk.transactions.begin(),
                                 [](const std::shared_ptr<cosmos::Transaction> filledTx) {
                                     return *filledTx;
                                 });
