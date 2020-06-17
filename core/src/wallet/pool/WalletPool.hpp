@@ -182,8 +182,8 @@ namespace ledger {
             std::shared_ptr<WebSocketClient> _wsClient;
 
             // Preferences management
-            std::shared_ptr<PreferencesBackend> _externalPreferencesBackend;
-            std::shared_ptr<PreferencesBackend> _internalPreferencesBackend;
+            std::shared_ptr<api::PreferencesBackend> _externalPreferencesBackend;
+            std::shared_ptr<api::PreferencesBackend> _internalPreferencesBackend;
 
             // Database management
             std::shared_ptr<DatabaseSessionPool> _database;

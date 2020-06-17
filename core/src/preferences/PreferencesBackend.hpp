@@ -63,7 +63,6 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver>& resolver
             );
 
-            // TODO: add to djinni
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
             void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
 

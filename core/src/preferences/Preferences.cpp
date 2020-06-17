@@ -29,14 +29,20 @@
  *
  */
 #include "Preferences.hpp"
+#include "PreferencesBackend.hpp" // TODO remove when iterate fixed
 #include "../bytes/BytesReader.h"
 
 namespace ledger {
     namespace core {
 
-        Preferences::Preferences(PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix) : _backend(backend) {
-            _keyPrefix = keyPrefix;
-        }
+        Preferences::Preferences(api::PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix)
+            : _backend(backend)
+            , _keyPrefix(keyPrefix)
+        {}
+
+        Preferences::Preferences(api::PreferencesBackend &backend, const std::string &keyPrefix)
+            : Preferences(backend, std::vector<uint8_t>(std::begin(keyPrefix), std::end(keyPrefix)))
+        {}
 
         std::string Preferences::getString(const std::string &key, const std::string &fallbackValue) {
             auto value = _backend.get(wrapKey(key));
@@ -123,7 +129,8 @@ namespace ledger {
         Preferences::iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice &&)> f, Option<std::string> begin) {
             auto start = wrapKey(begin.getValueOr(""));
             auto startSize = start.size();
-            _backend.iterate(start, [&] (leveldb::Slice&& k, leveldb::Slice&& value) {
+            // TODO fixme
+            dynamic_cast<PreferencesBackend&>(_backend).iterate(start, [&] (leveldb::Slice&& k, leveldb::Slice&& value) {
                 if (startSize < k.size()) {
                     return f(std::move(leveldb::Slice(k.data() + start.size(), k.size() - start.size())),
                              std::move(value));
