@@ -29,6 +29,7 @@
  *
  */
 #include "PreferencesEditor.hpp"
+#include "Preferences.hpp"
 #include "../bytes/BytesWriter.h"
 
 namespace ledger {

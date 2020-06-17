@@ -31,8 +31,6 @@
 #ifndef LEDGER_CORE_PREFERENCESEDITOR_HPP
 #define LEDGER_CORE_PREFERENCESEDITOR_HPP
 
-#include "PreferencesBackend.hpp"
-#include "Preferences.hpp"
 #include "../api/PreferencesEditor.hpp"
 #include <memory>
 #include <cereal/cereal.hpp>

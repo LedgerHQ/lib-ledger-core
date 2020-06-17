@@ -36,6 +36,7 @@
 #include "PreferencesBackend.hpp"
 #include "PreferencesEditor.hpp"
 #include "../utils/Option.hpp"
+#include <leveldb/db.h>
 #include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/set.hpp>
