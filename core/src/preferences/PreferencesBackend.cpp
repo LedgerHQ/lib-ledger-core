@@ -48,16 +48,13 @@ namespace ledger {
             const std::string ENCRYPTION_SALT_KEY = "preferences.backend.salt";
         }
 
-        PreferencesChange::PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v)
-            : type(t), key(k), value(v) {
-        }
-
         std::unordered_map<std::string, std::shared_ptr<leveldb::DB>> PreferencesBackend::LEVELDB_INSTANCE_POOL;
         std::mutex PreferencesBackend::LEVELDB_INSTANCE_POOL_MUTEX;
 
         PreferencesBackend::PreferencesBackend(const std::string &path,
                                                const std::shared_ptr<api::ExecutionContext>& writingContext,
-                                               const std::shared_ptr<api::PathResolver> &resolver) {
+                                               const std::shared_ptr<api::PathResolver> &resolver)
+            : api::PreferencesBackend() {
             _context = writingContext;
             _dbName = resolver->resolvePreferencesPath(path);
             _db = obtainInstance(_dbName);
@@ -89,7 +86,7 @@ namespace ledger {
             return weakInstance;
         }
 
-        bool PreferencesBackend::commit(const std::vector<PreferencesChange> &changes) {
+        bool PreferencesBackend::commit(const std::vector<api::PreferencesChange> &changes) {
             auto db = _db.lock();
 
             if (db == nullptr) {
@@ -113,11 +110,11 @@ namespace ledger {
         void PreferencesBackend::putPreferencesChange(
             leveldb::WriteBatch& batch,
             Option<AESCipher>& cipher,
-            const PreferencesChange& change
+            const api::PreferencesChange& change
         ) {
             leveldb::Slice k((const char *)change.key.data(), change.key.size());
 
-            if (change.type == PreferencesChangeType::PUT_TYPE) {
+            if (change.type == api::PreferencesChangeType::PUT_TYPE) {
                 if (cipher.hasValue()) {
                     auto encrypted = encrypt_preferences_change(change, *cipher);
 
@@ -320,17 +317,17 @@ namespace ledger {
                 auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
 
                 // remove the key and its associated value to prevent duplication
-                putPreferencesChange(batch, _cipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, key, {}));
+                putPreferencesChange(batch, _cipher, api::PreferencesChange(api::PreferencesChangeType::DELETE_TYPE, key, {}));
 
                 // encrypt with the new cipher (if any); in order to do that, we need a PreferencesChange
                 // to add with the new cipher
-                auto change = PreferencesChange(PreferencesChangeType::PUT_TYPE, key, plaindata);
+                auto change = api::PreferencesChange(api::PreferencesChangeType::PUT_TYPE, key, plaindata);
                 putPreferencesChange(batch, newCipher, change);
             }
 
             // we also need to update the salt if we are encrypting
             auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
-            putPreferencesChange(batch, noCipher, PreferencesChange(PreferencesChangeType::DELETE_TYPE, saltKey, {}));
+            putPreferencesChange(batch, noCipher, api::PreferencesChange(api::PreferencesChangeType::DELETE_TYPE, saltKey, {}));
 
             if (newCipher.hasValue()) {
                 // we put a new salt only if we are encrypting
@@ -338,7 +335,7 @@ namespace ledger {
 
                 // remove the previous salt
                 // add the new salt
-                putPreferencesChange(batch, noCipher, PreferencesChange(PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes));
+                putPreferencesChange(batch, noCipher, api::PreferencesChange(api::PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes));
             }
 
             // atomic update
@@ -381,7 +378,7 @@ namespace ledger {
         }
 
         std::vector<uint8_t> PreferencesBackend::encrypt_preferences_change(
-            const PreferencesChange& change,
+            const api::PreferencesChange& change,
             AESCipher& cipher
         ) {
           auto input = BytesReader(change.value);
