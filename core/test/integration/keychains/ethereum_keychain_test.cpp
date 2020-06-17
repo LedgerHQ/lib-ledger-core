@@ -57,7 +57,7 @@ public:
                     ledger::core::EthereumLikeExtendedPublicKey::fromBase58(data.currency,
                                                                             data.xpub,
                                                                             optional<std::string>(data.derivationPath)),
-                    backend->getPreferences("keychain")
+                    std::make_shared<ledger::core::Preferences>(*backend, "keychain")
             );
             f(keychain);
             dispatcher->stop();

@@ -31,6 +31,7 @@
 #include "WalletPool.hpp"
 #include <api/PoolConfiguration.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <preferences/Preferences.hpp>
 #include <wallet/currencies.hpp>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
@@ -197,11 +198,11 @@ namespace ledger {
         }
 
         std::shared_ptr<Preferences> WalletPool::getExternalPreferences() const {
-            return _externalPreferencesBackend->getPreferences("pool");
+            return std::make_shared<Preferences>(*_externalPreferencesBackend, "pool");
         }
 
         std::shared_ptr<Preferences> WalletPool::getInternalPreferences() const {
-            return _internalPreferencesBackend->getPreferences("pool");
+            return std::make_shared<Preferences>(*_internalPreferencesBackend, "pool");
         }
 
         std::shared_ptr<spdlog::logger> WalletPool::logger() const {

@@ -32,6 +32,7 @@
 #define LEDGER_CORE_PREFERENCES_HPP
 
 #include "../api/Preferences.hpp"
+#include "../api/PreferencesBackend.hpp"
 #include "../api/PreferencesEditor.hpp"
 #include "PreferencesBackend.hpp"
 #include "PreferencesEditor.hpp"
@@ -50,7 +51,9 @@ namespace ledger {
 
         class Preferences : public api::Preferences {
         public:
-            Preferences(PreferencesBackend& backend, const std::vector<uint8_t>& keyPrefix);
+            Preferences(api::PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix);
+
+            Preferences(api::PreferencesBackend &backend, const std::string &keyPrefix);
 
             std::string getString(const std::string &key, const std::string &fallbackValue) override;
 
@@ -109,12 +112,11 @@ namespace ledger {
             std::vector<uint8_t> wrapKey(const std::string& key) const;
 
         private:
-            PreferencesBackend& _backend;
+            api::PreferencesBackend& _backend;
             std::vector<uint8_t> _keyPrefix;
             friend class ledger::core::PreferencesEditor;
         };
     }
 }
-
 
 #endif //LEDGER_CORE_PREFERENCES_HPP
