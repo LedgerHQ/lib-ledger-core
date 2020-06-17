@@ -381,7 +381,13 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             fmt::print("Ops: {}\n", ops.size());
-            EXPECT_GT(ops.size(), 0);
+            ASSERT_GT(ops.size(), 0);
+            ASSERT_TRUE(ops[0]->getBlockHeight())
+                << "The first operation should have a block height.";
+            EXPECT_GT(ops[0]->getBlockHeight().value(), 0)
+                << "The first operation should have a non 0 height.";
+            EXPECT_LT(ops[0]->getBlockHeight().value(), block.height)
+                << "The first operation should not have the same height as the last block.";
 
             const auto sequenceNumber = account->getInfo().sequence;
             const int sequence = std::atoi(sequenceNumber.c_str());
