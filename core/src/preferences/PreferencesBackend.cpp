@@ -30,6 +30,7 @@
  */
 
 #include "PreferencesBackend.hpp"
+#include "Preferences.hpp"
 #include "../utils/Exception.hpp"
 #include "../utils/LambdaRunnable.hpp"
 #include <leveldb/write_batch.h>
