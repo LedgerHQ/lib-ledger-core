@@ -73,7 +73,9 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(std::string poolName) {
             dispatcher,
             nullptr,
             backend,
-            api::DynamicObject::newInstance()
+            api::DynamicObject::newInstance(),
+            nullptr,
+            nullptr
     );
 }
 

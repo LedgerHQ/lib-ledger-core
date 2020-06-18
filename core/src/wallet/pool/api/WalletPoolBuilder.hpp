@@ -70,8 +70,14 @@ namespace ledger {
             virtual std::shared_ptr<api::WalletPoolBuilder>
             setDatabaseBackend(const std::shared_ptr<api::DatabaseBackend> &backend) override;
 
-            virtual std::shared_ptr <api::WalletPoolBuilder>
+            virtual std::shared_ptr<api::WalletPoolBuilder>
             setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration) override;
+
+            virtual std::shared_ptr<api::WalletPoolBuilder>
+            setExternalPreferencesBackend(const std::shared_ptr<api::PreferencesBackend> &backend) override;
+
+            virtual std::shared_ptr<api::WalletPoolBuilder>
+            setInternalPreferencesBackend(const std::shared_ptr<api::PreferencesBackend> &backend) override;
 
             virtual void build(const std::shared_ptr<api::WalletPoolCallback> &listener) override;
 
@@ -86,6 +92,8 @@ namespace ledger {
             std::shared_ptr<api::RandomNumberGenerator> _rng;
             std::shared_ptr<api::DatabaseBackend> _backend;
             std::shared_ptr<api::DynamicObject> _configuration;
+            std::shared_ptr<api::PreferencesBackend> _externalPreferencesBackend;
+            std::shared_ptr<api::PreferencesBackend> _internalPreferencesBackend;
         };
     }
 }

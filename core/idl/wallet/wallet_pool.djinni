@@ -42,7 +42,9 @@ WalletPool = interface +c {
         dispatcher: ThreadDispatcher,
         rng: RandomNumberGenerator,
         backend: DatabaseBackend,
-        configuration: DynamicObject
+        configuration: DynamicObject,
+        externalPreferencesBackend: PreferencesBackend,
+        internalPreferencesBackend: PreferencesBackend
     ): WalletPool;
 
     # Return used logger to dump logs in defined log path by PathResolver.
@@ -188,6 +190,16 @@ WalletPoolBuilder = interface +c {
     # @param configuration, DynamicObject object
     # @return WalletPoolBuilder object, with wallet pool configuration set
     setConfiguration(configuration: DynamicObject): WalletPoolBuilder;
+
+    # Set the external PreferencesBackend
+    # @param backend, PreferencesBackend object
+    # @return WalletPoolBuilder object, with wallet pool externalPreferencesBackend set
+    setExternalPreferencesBackend(backend: PreferencesBackend): WalletPoolBuilder;
+
+    # Set the internal PreferencesBackend
+    # @param backend, PreferencesBackend object
+    # @return WalletPoolBuilder object, with wallet pool internalPreferencesBackend set
+    setInternalPreferencesBackend(backend: PreferencesBackend): WalletPoolBuilder;
 
     # Create wallet pool.
     # @param callback, Callback object returning a WalletPool instance

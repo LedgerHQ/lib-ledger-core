@@ -174,7 +174,9 @@ std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolN
             dispatcher,
             rng,
             backend,
-            configuration
+            configuration,
+            nullptr,
+            nullptr
     );
 }
 

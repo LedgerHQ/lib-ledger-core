@@ -102,6 +102,8 @@ namespace ledger { namespace core {
                 _rng,
                 _backend,
                 _configuration,
+                _externalPreferencesBackend,
+                _internalPreferencesBackend,
                 listener
             );
         }
@@ -109,6 +111,18 @@ namespace ledger { namespace core {
         std::shared_ptr <api::WalletPoolBuilder>
         WalletPoolBuilder::setConfiguration(const std::shared_ptr<api::DynamicObject> &configuration)  {
             _configuration = configuration;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::WalletPoolBuilder>
+        WalletPoolBuilder::setExternalPreferencesBackend(const std::shared_ptr<api::PreferencesBackend> &backend) {
+            _externalPreferencesBackend = backend;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::WalletPoolBuilder>
+        WalletPoolBuilder::setInternalPreferencesBackend(const std::shared_ptr<api::PreferencesBackend> &backend) {
+            _internalPreferencesBackend = backend;
             return shared_from_this();
         }
 

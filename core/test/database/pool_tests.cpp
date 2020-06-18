@@ -91,16 +91,18 @@ TEST(DatabaseSessionPool, InitializeCurrencies) {
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     auto pool = WalletPool::newInstance(
-    "my_pool",
-    "",
-    nullptr,
-    nullptr,
-    resolver,
-    printer,
-    dispatcher,
-    nullptr,
-    backend,
-    api::DynamicObject::newInstance()
+            "my_pool",
+            "",
+            nullptr,
+            nullptr,
+            resolver,
+            printer,
+            dispatcher,
+            nullptr,
+            backend,
+            api::DynamicObject::newInstance(),
+            nullptr,
+            nullptr
     );
 
     api::Currency bitcoin;
