@@ -87,25 +87,6 @@ namespace ledger {
                 return Option<T>(object);
             };
 
-            void iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice&&)> f, Option<std::string> begin = Option<std::string>());
-
-            template <typename T>
-            void iterate(std::function<bool (leveldb::Slice&& key, const T& value)> f, Option<std::string> begin = Option<std::string>()) {
-                iterate([f] (leveldb::Slice&& key, leveldb::Slice&& value) {
-                    T object;
-                    try {
-                        boost::iostreams::array_source my_vec_source(reinterpret_cast<const char *>(&value.data()[0]),
-                                                                     value.size());
-                        boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
-                        ::cereal::PortableBinaryInputArchive archive(is);
-                        archive(object);
-                    } catch (const std::exception& ex) {
-                        return true;
-                    }
-                    return f(std::move(key), object);
-                }, begin);
-            }
-
             std::shared_ptr<Preferences> getSubPreferences(std::string prefix);
 
         protected:
