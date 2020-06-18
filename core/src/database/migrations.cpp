@@ -825,7 +825,7 @@ namespace ledger {
                    ")";
 
         }
-        
+
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
             // Stellar ledgers
             sql << "DROP TABLE stellar_ledgers";
@@ -1036,7 +1036,7 @@ namespace ledger {
             sql << "CREATE TABLE algorand_asset_amounts("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                     "account_uid VARCHAR(255) NOT NULL "
-                    "REFERENCES algorand_account(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "REFERENCES algorand_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "creator_address VARCHAR(255) NOT NULL,"
                     "amount BIGINT NOT NULL,"
                     "frozen INTEGER NOT NULL"
@@ -1045,7 +1045,7 @@ namespace ledger {
             sql << "CREATE TABLE algorand_asset_params("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
                     "account_uid VARCHAR(255) NOT NULL "
-                    "REFERENCES algorand_account(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "REFERENCES algorand_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "asset_id BIGINT,"
                     "asset_name VARCHAR(255),"
                     "unit_name VARCHAR(255),"
