@@ -31,12 +31,15 @@
 
 #pragma once
 
+#include "BaseFixture.h"
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/pool/WalletPool.hpp>
 #include <collections/DynamicObject.hpp>
 #include <api/ErrorCode.hpp>
+#include <api/PoolConfiguration.hpp>
 
-#include "BaseFixture.h"
+#include <fmt/format.h>
+
 
 template <class WalletFactory>
 class WalletFixture : public BaseFixture {
@@ -49,7 +52,10 @@ public:
          const bool usePostgreSQL = true;
          auto poolConfig = DynamicObject::newInstance();
          poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-         pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+         char dbRandom[10];
+         randomString(dbRandom, 10);
+         auto dbName = fmt::format("{}-{}", "postgres", dbRandom);
+         pool = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
 #else
          pool = newDefaultPool();
 #endif
@@ -72,4 +78,18 @@ public:
 
     std::shared_ptr<WalletPool> pool;
   //  std::shared_ptr<WalletStore> walletStore;
+
+private:
+    void randomString(char *s, const int len) {
+        static const char alphanum[] =
+            "0123456789"
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+            "abcdefghijklmnopqrstuvwxyz";
+
+        for (int i = 0; i < len; ++i) {
+            s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+        }
+
+        s[len] = 0;
+    }
 };
