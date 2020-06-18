@@ -21,7 +21,8 @@ git submodule update -- core/lib/ethash || echo "===========ethash submodule alr
 git submodule update -- core/lib/fmt || echo "===========fmt submodule already updated"
 git submodule update -- core/test/lib/googletest || echo "===========googletest submodule already updated"
 git submodule update -- core/lib/CRCpp || echo "===========CRCpp submodule already updated"
-git submodule update -- core/test/lib/libuv || echo "===========libuv submodule already updated"
+git submodule update -- core/src/wallet/algorand/thirdparty/msgpack-c || echo "===========msgpack submodule already updated"
+
 #should checkout leveldb bitcoin-fork branch on leveldb submodule
 cd $HOME/lib-ledger-core/core/lib/leveldb && git checkout bitcoin-fork
 
