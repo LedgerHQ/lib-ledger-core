@@ -21,6 +21,7 @@ class DynamicObject;
 class HttpClient;
 class LogPrinter;
 class PathResolver;
+class PreferencesBackend;
 class RandomNumberGenerator;
 class ThreadDispatcher;
 class WalletPoolCallback;
@@ -100,6 +101,20 @@ public:
      * @return WalletPoolBuilder object, with wallet pool configuration set
      */
     virtual std::shared_ptr<WalletPoolBuilder> setConfiguration(const std::shared_ptr<DynamicObject> & configuration) = 0;
+
+    /**
+     * Set the external PreferencesBackend
+     * @param backend, PreferencesBackend object
+     * @return WalletPoolBuilder object, with wallet pool externalPreferencesBackend set
+     */
+    virtual std::shared_ptr<WalletPoolBuilder> setExternalPreferencesBackend(const std::shared_ptr<PreferencesBackend> & backend) = 0;
+
+    /**
+     * Set the internal PreferencesBackend
+     * @param backend, PreferencesBackend object
+     * @return WalletPoolBuilder object, with wallet pool internalPreferencesBackend set
+     */
+    virtual std::shared_ptr<WalletPoolBuilder> setInternalPreferencesBackend(const std::shared_ptr<PreferencesBackend> & backend) = 0;
 
     /**
      * Create wallet pool.

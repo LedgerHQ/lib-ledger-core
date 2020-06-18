@@ -361,7 +361,9 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
             dispatcher,
             rng,
             backend,
-            api::DynamicObject::newInstance()
+            api::DynamicObject::newInstance(),
+            nullptr,
+            nullptr
         );
         {
             auto configuration = DynamicObject::newInstance();

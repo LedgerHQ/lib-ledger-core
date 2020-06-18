@@ -119,7 +119,9 @@ namespace ledger {
                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration
+                const std::shared_ptr<api::DynamicObject>& configuration,
+                const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
+                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
             );
 
             ~WalletPool() = default;
@@ -153,7 +155,9 @@ namespace ledger {
                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration
+                const std::shared_ptr<api::DynamicObject>& configuration,
+                const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
+                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
             );
 
             void initializeCurrencies();
