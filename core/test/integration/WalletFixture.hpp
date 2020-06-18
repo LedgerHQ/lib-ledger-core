@@ -49,15 +49,13 @@ public:
         BaseFixture::SetUp();
 
 #ifdef PG_SUPPORT
-         const bool usePostgreSQL = true;
-         auto poolConfig = DynamicObject::newInstance();
-         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
-         char dbRandom[10];
-         randomString(dbRandom, 10);
-         auto dbName = fmt::format("{}-{}", "postgres", dbRandom);
-         pool = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
-#else
-         pool = newDefaultPool();
+        const bool usePostgreSQL = true;
+        auto poolConfig = DynamicObject::newInstance();
+        poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+        const auto dbName = randomDBName();
+        pool = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
+        #else
+        pool = newDefaultPool();
 #endif
       //  walletStore = newWalletStore(services);
     }
@@ -81,16 +79,20 @@ public:
   //  std::shared_ptr<WalletStore> walletStore;
 
 private:
-    void randomString(char *s, const int len) {
+    std::string randomDBName() {
         static const char alphanum[] =
             "0123456789"
             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
             "abcdefghijklmnopqrstuvwxyz";
 
-        for (int i = 0; i < len; ++i) {
-            s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
+        static const auto randomSuffixLenght = 10;
+
+        std::stringstream dbName;
+        dbName << "postgres-";
+        for (auto i = 0; i < randomSuffixLenght; ++i) {
+            dbName << alphanum[rand() % (sizeof(alphanum) - 1)];
         }
 
-        s[len] = 0;
+        return dbName.str();
     }
 };
