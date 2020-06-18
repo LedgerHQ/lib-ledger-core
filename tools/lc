@@ -95,6 +95,11 @@ case "$1" in
     cmd_pkg $*
     ;;
 
+  "project")
+    shift
+    cmd_project $*
+    ;;
+
   *)
     usage "usage" 2
     ;;
