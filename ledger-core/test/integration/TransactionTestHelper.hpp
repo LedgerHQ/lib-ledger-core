@@ -49,12 +49,12 @@ struct MakeBaseTransaction : public BaseFixture {
     }
 
     void TearDown() override {
-        account = nullptr;
-        wallet = nullptr;
-        walletStore = nullptr;
+        account.reset();
+        wallet.reset();
+        walletStore.reset();
 
         wait(services->freshResetAll());
-        services = nullptr;
+        services.reset();
         BaseFixture::TearDown();
     }
 

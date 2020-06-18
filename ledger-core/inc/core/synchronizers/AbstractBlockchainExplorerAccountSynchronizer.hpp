@@ -97,8 +97,8 @@ namespace ledger {
                         } else {
                             self->_notifier->success(unit);
                         }
-                        self->_notifier = nullptr;
-                        self->_currentAccount = nullptr;
+                        self->_notifier.reset();
+                        self->_currentAccount.reset();
                     });
 
                 } else if (account != _currentAccount) {
@@ -270,7 +270,7 @@ namespace ledger {
                         }
                     }
 
-                    self->_currentAccount = nullptr;
+                    self->_currentAccount.reset();
                     return unit;
                 }).recover(ImmediateExecutionContext::INSTANCE, [buddy] (const Exception& ex) -> Unit {
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(

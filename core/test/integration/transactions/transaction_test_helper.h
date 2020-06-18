@@ -84,9 +84,9 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
-        account = nullptr;
+        pool.reset();
+        wallet.reset();
+        account.reset();
     }
 
     std::shared_ptr<BitcoinLikeTransactionBuilder> tx_builder() {
@@ -119,9 +119,9 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
-        account = nullptr;
+        pool.reset();
+        wallet.reset();
+        account.reset();
     }
 
     std::shared_ptr<EthereumLikeTransactionBuilder> tx_builder() {
@@ -154,9 +154,9 @@ struct RippleMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
-        account = nullptr;
+        pool.reset();
+        wallet.reset();
+        account.reset();
     }
 
     std::shared_ptr<RippleLikeTransactionBuilder> tx_builder() {
@@ -189,9 +189,9 @@ struct TezosMakeBaseTransaction : public BaseFixture {
 
     void TearDown() override {
         BaseFixture::TearDown();
-        pool = nullptr;
-        wallet = nullptr;
-        account = nullptr;
+        pool.reset();
+        wallet.reset();
+        account.reset();
     }
 
     std::shared_ptr<TezosLikeTransactionBuilder> tx_builder() {
