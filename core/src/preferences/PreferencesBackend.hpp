@@ -64,9 +64,7 @@ namespace ledger {
             );
 
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
-            void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
 
-            // TODO: make method const?
             optional<std::string> get(const std::vector<uint8_t>& key) override;
 
             bool commit(const std::vector<api::PreferencesChange>& changes) override;
@@ -84,7 +82,6 @@ namespace ledger {
                 const std::string& newPassword
             ) override;
 
-            // TODO: make method const?
             std::string getEncryptionSalt() override;
 
             void clear() override;

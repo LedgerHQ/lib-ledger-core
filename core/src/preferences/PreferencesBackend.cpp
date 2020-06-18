@@ -165,45 +165,6 @@ namespace ledger {
             }
         }
 
-        void PreferencesBackend::iterate(const std::vector<uint8_t> &keyPrefix,
-                                         std::function<bool (leveldb::Slice &&, leveldb::Slice &&)> f) {
-            auto db = _db.lock();
-
-            if (db == nullptr) {
-              return;
-            }
-
-            std::unique_ptr<leveldb::Iterator> it(db->NewIterator(leveldb::ReadOptions()));
-            leveldb::Slice start((const char *) keyPrefix.data(), keyPrefix.size());
-            std::vector<uint8_t> limitRaw(keyPrefix.begin(), keyPrefix.end());
-
-            limitRaw[limitRaw.size() - 1] += 1;
-            leveldb::Slice limit((const char *) limitRaw.data(), limitRaw.size());
-
-            for (it->Seek(start); it->Valid(); it->Next()) {
-                if (it->key().compare(limit) > 0) {
-                    break;
-                }
-
-                if (_cipher.hasValue()) {
-                    // decrypt the value on the fly
-                    auto value = it->value().ToString();
-                    auto ciphertext = std::vector<uint8_t>(value.cbegin(), value.cend());
-                    auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
-                    auto plaintext = std::string(plaindata.cbegin(), plaindata.cbegin());
-                    leveldb::Slice slice(plaintext);
-
-                    if (!f(it->key(), std::move(slice))) {
-                        break;
-                    }
-                } else {
-                    if (!f(it->key(), it->value())) {
-                        break;
-                    }
-                }
-            }
-        }
-
         std::shared_ptr<Preferences> PreferencesBackend::getPreferences(const std::string &name) {
             return std::make_shared<Preferences>(*this, std::vector<uint8_t>(name.data(), name.data() + name.size()));
         }

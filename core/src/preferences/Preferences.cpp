@@ -29,7 +29,6 @@
  *
  */
 #include "Preferences.hpp"
-#include "PreferencesBackend.hpp" // TODO remove when iterate fixed
 #include "../bytes/BytesReader.h"
 
 namespace ledger {
@@ -123,20 +122,6 @@ namespace ledger {
                 p.push_back((uint8_t)prefix[i]);
             }
             return std::make_shared<Preferences>(_backend, p);
-        }
-
-        void
-        Preferences::iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice &&)> f, Option<std::string> begin) {
-            auto start = wrapKey(begin.getValueOr(""));
-            auto startSize = start.size();
-            // TODO fixme
-            dynamic_cast<PreferencesBackend&>(_backend).iterate(start, [&] (leveldb::Slice&& k, leveldb::Slice&& value) {
-                if (startSize < k.size()) {
-                    return f(std::move(leveldb::Slice(k.data() + start.size(), k.size() - start.size())),
-                             std::move(value));
-                }
-                return true;
-            });
         }
 
         std::vector<uint8_t> Preferences::getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) {
