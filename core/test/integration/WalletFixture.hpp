@@ -41,19 +41,24 @@
 template <class WalletFactory>
 class WalletFixture : public BaseFixture {
 public:
-    static constexpr auto DEFAULT_PASSWORD = "";
-    static constexpr auto DEFAULT_TENANT = "default_tenant";
 
     void SetUp() override {
         BaseFixture::SetUp();
 
-        pool = newDefaultPool(DEFAULT_TENANT, DEFAULT_PASSWORD);
+#ifdef PG_SUPPORT
+         const bool usePostgreSQL = true;
+         auto poolConfig = DynamicObject::newInstance();
+         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
+         pool = newDefaultPool("postgres", "", poolConfig, usePostgreSQL);
+#else
+         pool = newDefaultPool();
+#endif
       //  walletStore = newWalletStore(services);
     }
 
     void TearDown() override {
         BaseFixture::TearDown();
-        
+
         pool.reset();
      //   walletStore.reset();
     }
@@ -61,7 +66,7 @@ public:
     void registerCurrency(api::Currency const &currency) {
         //auto walletFactory = std::make_shared<WalletFactory>(currency, pool);
 
-       // wait(pool->addCurrency(currency)); 
+       // wait(pool->addCurrency(currency));
        // walletStore->registerFactory(currency, walletFactory);
     }
 
