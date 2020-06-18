@@ -825,7 +825,7 @@ namespace ledger {
                    ")";
 
         }
-        
+
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
             // Stellar ledgers
             sql << "DROP TABLE stellar_ledgers";
