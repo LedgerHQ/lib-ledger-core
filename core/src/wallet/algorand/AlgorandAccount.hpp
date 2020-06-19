@@ -82,6 +82,9 @@ namespace algorand {
         const std::string & getAddress() const;
 
         // From api::AlgorandAccount
+
+        std::shared_ptr<api::AlgorandTransaction> createEmptyTransaction();
+
         void getAsset(
                 const std::string& assetId,
                 const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) override;
@@ -97,7 +100,7 @@ namespace algorand {
                 const std::string& start,
                 const std::string& end,
                 api::TimePeriod period);
-                
+
         void getAssetBalanceHistory(
                 const std::string& assetId,
                 const std::string& start,
@@ -167,7 +170,7 @@ namespace algorand {
         std::shared_ptr<Account> getSelf();
 
         Future<model::Account> getAccountInformation() const;
-        
+
     private:
         Address _address;
         std::shared_ptr<BlockchainExplorer> _explorer;

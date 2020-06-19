@@ -32,6 +32,7 @@
 #include "database/AlgorandOperationDatabaseHelper.hpp"
 #include "model/AlgorandModelMapper.hpp"
 #include "operations/AlgorandOperation.hpp"
+#include "transactions/api_impl/AlgorandTransactionImpl.hpp"
 
 #include <api/AlgorandAssetAmount.hpp>
 #include <api/AlgorandAssetParams.hpp>
@@ -80,6 +81,10 @@ namespace algorand {
             };
         }
     } // namespace
+
+    std::shared_ptr<api::AlgorandTransaction> Account::createEmptyTransaction() {
+        return std::make_shared<AlgorandTransactionImpl>(model::Transaction());
+    }
 
     bool Account::putBlock(soci::session& sql, const api::Block& block)
     {
@@ -353,7 +358,7 @@ namespace algorand {
         return query;
     }
 
-    std::shared_ptr<api::Keychain> Account::getAccountKeychain() 
+    std::shared_ptr<api::Keychain> Account::getAccountKeychain()
     {
         throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Account Keychain is not supported for Algorand");
     }
