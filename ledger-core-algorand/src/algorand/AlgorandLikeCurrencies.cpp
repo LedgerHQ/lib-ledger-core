@@ -36,15 +36,16 @@ namespace core {
 namespace currencies {
 
     api::Currency algorand() {
-        static api::Currency const CURRENCY = CurrencyBuilder("algorand")
+        static const api::Currency CURRENCY = CurrencyBuilder("algorand")
             .bip44(algorand::constants::COIN_ID)
             .paymentUri("algorand")
             .unit("uALGO", 0, "uALGO")
-            .unit("ALGO", 3, "uALGO");
+            .unit("ALGO", 6, "uALGO");
 
         return CURRENCY;
     }
 
-}
-}
-}
+} // namespace currencies
+} // namespace core
+} // namespace ledger
+
