@@ -319,7 +319,7 @@ namespace ledger {
                             .forkOfAlgorand(networks::getAlgorandNetworkParameters("algorand"))
                             .paymentUri("algorand")
                             .unit("uALGO", 0, "uALGO")
-                            .unit("ALGO", 3, "uALGO");
+                            .unit("ALGO", 6, "uALGO");
 
 
             const std::vector<api::Currency> ALL({
