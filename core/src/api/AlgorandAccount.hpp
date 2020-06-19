@@ -108,6 +108,12 @@ public:
      * @param callback, Callback returning the fees in MicroAlgos for the specified transaction
      */
     virtual void broadcastTransaction(const std::shared_ptr<AlgorandTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
+
+    /**
+     * Create a new transaction
+     * @return The new transaction
+     */
+    virtual std::shared_ptr<AlgorandTransaction> createEmptyTransaction() = 0;
 };
 
 } } }  // namespace ledger::core::api

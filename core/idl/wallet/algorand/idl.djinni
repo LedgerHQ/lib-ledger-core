@@ -251,6 +251,10 @@ AlgorandAccount = interface +c {
         transaction: AlgorandTransaction,
         callback: Callback<string>
     );
+
+    # Create a new transaction
+    # @return The new transaction
+    createEmptyTransaction(): AlgorandTransaction;
 }
 
 AlgorandWallet = interface +c {
