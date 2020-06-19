@@ -527,8 +527,8 @@ namespace algorand {
 
     Future<Account::AddressList> Account::getFreshPublicAddresses()
     {
-        return async<Account::AddressList>([=]() {
-            return Account::AddressList{ _address.shared_from_this() };
+        return async<AddressList>([=]() {
+            return AddressList{ _address.shared_from_this() };
         });
     }
 

@@ -160,11 +160,6 @@ namespace algorand {
         Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point& date) override;
 
     private:
-
-        void inflateOperation(Operation& op,
-                              const std::shared_ptr<const AbstractWallet>& wallet,
-                              const model::Transaction& tx);
-
         std::shared_ptr<Account> getSelf();
 
         Future<model::Account> getAccountInformation() const;
