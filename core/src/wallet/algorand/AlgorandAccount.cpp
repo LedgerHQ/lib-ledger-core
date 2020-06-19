@@ -528,8 +528,8 @@ namespace algorand {
 
     Future<Account::AddressList> Account::getFreshPublicAddresses()
     {
-        return async<Account::AddressList>([=]() {
-            return Account::AddressList{ _address.shared_from_this() };
+        return async<AbstractAccount::AddressList>([=]() -> AbstractAccount::AddressList {
+            return AbstractAccount::AddressList{ std::make_shared<Address>(_address) };
         });
     }
 
