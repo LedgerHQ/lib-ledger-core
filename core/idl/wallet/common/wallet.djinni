@@ -162,9 +162,13 @@ Operation = interface +c {
     #@return TezosLikeOperation object
     asTezosLikeOperation(): TezosLikeOperation;
     # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
-    # Convert operation as Ethereum operation.
-    # @return EthereumLikeOperation object
+    # Convert operation as Stellar operation.
+    # @return StellarLikeOperation object
     asStellarLikeOperation(): StellarLikeOperation;
+    # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
+    # Convert operation as Algorand operation.
+    # @return AlgorandOperation object
+    asAlgorandOperation(): AlgorandOperation;
     # Is this an instance of a Bitcoin-like operation?
     isInstanceOfBitcoinLikeOperation(): bool;
     # Same as isInstanceOfCosmosLikeOperation for cosmos.

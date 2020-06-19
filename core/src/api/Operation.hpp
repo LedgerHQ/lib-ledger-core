@@ -20,6 +20,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class AlgorandOperation;
 class Amount;
 class BitcoinLikeOperation;
 class CosmosLikeOperation;
@@ -144,10 +145,17 @@ public:
 
     /**
      * Same as isInstanceOfBitcoinLikeOperation for bitcoin.
-     * Convert operation as Ethereum operation.
-     * @return EthereumLikeOperation object
+     * Convert operation as Stellar operation.
+     * @return StellarLikeOperation object
      */
     virtual std::shared_ptr<StellarLikeOperation> asStellarLikeOperation() = 0;
+
+    /**
+     * Same as isInstanceOfBitcoinLikeOperation for bitcoin.
+     * Convert operation as Algorand operation.
+     * @return AlgorandOperation object
+     */
+    virtual std::shared_ptr<AlgorandOperation> asAlgorandOperation() = 0;
 
     /** Is this an instance of a Bitcoin-like operation? */
     virtual bool isInstanceOfBitcoinLikeOperation() = 0;
