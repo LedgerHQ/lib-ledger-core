@@ -396,6 +396,8 @@ Account = interface +c {
     asRippleLikeAccount(): RippleLikeAccount;
     # Turn the account into a Tezos one, allowing operations to be performed on the Tezos network.
     asTezosLikeAccount(): TezosLikeAccount;
+    # Turn the account into an Algorand one, allowing operations to be performed on the Algorand network.
+    asAlgorandAccount(): AlgorandAccount;
 
     # Turn the account into a Stellar one, allowing operations to be performerd on the Stellar
     # network.
