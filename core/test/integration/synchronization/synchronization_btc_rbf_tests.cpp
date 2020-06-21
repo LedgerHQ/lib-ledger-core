@@ -39,6 +39,8 @@
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
 #include <UvThreadDispatcher.hpp>
+#include <boost/algorithm/string/join.hpp>
+#include <algorithm>
 
 struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
 
@@ -75,7 +77,6 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
         Promise<Unit> promise;
         bus->subscribe(dispatcher->getSerialExecutionContext("worker"),
                        make_receiver([=](const std::shared_ptr<api::Event>& event) mutable {
-                           std::cout << api::to_string(event->getCode()) << std::endl;
                            if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                                return;
                            promise.success(unit);
@@ -83,56 +84,81 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
         uv::wait(promise.getFuture());
     }
 
+    std::vector<std::shared_ptr<api::Operation>> getAllOperartions(const std::shared_ptr<BitcoinLikeAccount>& account) {
+        return uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    }
+
     std::shared_ptr<test::ExplorerStorage> explorer;
 };
 
 struct Output {
-    //   [{"output_index":0,"value":182483500,"address":"18BkSm7P2wQJfQhV7B5st14t13mzHRJ2o1","script_hex":"76a9144ed14e321713e1c97056643a233b968d34b2231188ac"},{"output_index":1,"value":100000,"address":"1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m","script_hex":"76a914ea4351fd2a0a2cd62ab264d9f0b1997696a632f488ac"}]
     uint64_t value;
     std::string address;
 
     Output(uint64_t val, const std::string& addr) : value(val), address(addr) {}
 
-    std::string toJson(int index) {
+    std::string toJson(int index) const {
         return fmt::format(R"({{"output_index": {}, "address": "{}", "value": {}, "script_hex": "0000"}})", index, address, value);
     }
 };
 
 struct Input {
-// {"input_index":0,"output_hash":"666613fd82459f94c74211974e74ffcb4a4b96b62980a6ecaee16af7702bbbe5","output_index":0,"value":182593500,"address":"1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7","script_signature":"473044022018ac8a44412d66f489138c3e8f9196b60dba1c24fb715dd8c3d66921bcc13f4702201f222fd3e25fe8f3807347650ae7b41451c078c9a8fc2e5b7d82d6a928a8c363012103da611b1fcacc0056ceb5489ee951b523e52de7ff1902fd1c6f9c212a542da297"}]
     std::string outputHash;
     int outputIndex;
     Output prevOutput;
     uint64_t sequence;
 
-    Input(const std::string& hash, int index, const Output& output, uint64_t seq)
+    Input(const std::string& hash, int index, const Output& output, uint64_t seq = 0xFFFFFFFF)
         : outputHash(hash), outputIndex(index), prevOutput(output), sequence(seq) {
 
+    }
+
+    std::string toJson(int index) const {
+        return fmt::format(R"({{"input_index": {}, "output_hash": "{}", "output_index": {}, "value": {}, "address": "{}", "sequence": {}, "script_signature": "0000"}})",
+            index, outputHash, outputIndex, prevOutput.value, prevOutput.address,
+            sequence
+        );
     }
 
 };
 
 struct Block {
-    // {"hash":"00000000000000000198e024d936c87807b4198f9de7105015036ce785fa2bdc","height":362055,"time":"2015-06-22T15:58:30Z"}
+    std::string hash;
+    uint32_t height;
+
+    Block(const std::string& hsh, uint32_t ht) : hash(hsh), height(ht) {
+
+    }
+
+    std::string toJson() const {
+        return fmt::format(R"({{"hash": "{}", "height": {}, "time":"2015-06-22T15:58:30Z"}})", hash, height);
+    }
+
 };
 
-static std::string mockTransaction(const std::vector<Input>& input, const std::vector<Output>& output) {
+static std::string mockTransaction(const std::string& hash, const std::vector<Input>& inputs, const std::vector<Output>& outputs, Option<::Block> block = Option<::Block>::NONE) {
     std::ostringstream ss;
+    int index = 0;
 
-    //"{\"hash\":\"\",\"received_at\":\"2015-06-22T15:58:30Z\",\"lock_time\":0,\"block\":,\"inputs\":,\"outputs\":,\"fees\":,\"amount\":0,\"confirmations\":110200}"
-    return "";
-}
-
-Future<int> do_it(std::shared_ptr<api::ExecutionContext> context, int n, int max) {
-    return Future<int>::async(context, [=] () {
-        std::cout << " -> " <<  n << std::endl;
-        return n + 1;
-    }).flatMap<int>(context, [=] (int v) {
-        if (v < max) {
-            return do_it(context, v, max);
-        }
-        return Future<int>::successful(v);
+    ss << fmt::format(R"({{"hash": "{}", "receive_at": "2015-06-22T15:58:30Z", "lock_time": 0, )", hash);
+    if (block) {
+        ss << fmt::format(R"("block": {}, )", block.getValue().toJson());
+    }
+    ss << R"("inputs": [)";
+    std::vector<std::string> jsonInputs;
+    std::transform(inputs.begin(), inputs.end(), std::back_inserter(jsonInputs), [&] (const Input& i) {
+        return i.toJson(index++);
     });
+    ss << boost::algorithm::join(jsonInputs, ",");
+    ss << R"(], "outputs": [)";
+    std::vector<std::string> jsonOutputs;
+    index = 0;
+    std::transform(outputs.begin(), outputs.end(), std::back_inserter(jsonOutputs), [&] (const Output& o) {
+        return o.toJson(index++);
+    });
+    ss << boost::algorithm::join(jsonOutputs, ",");
+    ss << R"(], "fees": 100})";
+    return ss.str();
 }
 
 TEST_F(BitcoinLikeWalletBtcRbfSynchronization, SimpleRbfScenario) {
@@ -140,9 +166,48 @@ TEST_F(BitcoinLikeWalletBtcRbfSynchronization, SimpleRbfScenario) {
     auto wallet = wait(pool->createWallet("e857815f-488a-4301-b67c-378a5e9c8a63", "bitcoin",
                                           api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
-    synchronizeAccount(account);
-    synchronizeAccount(account);
 
-    std::cout <<  Output(9000, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7").toJson(12) << std::endl;
+    ::Block block1 {"0000", 1};
+    ::Block block2 {"0001", 2};
+    ::Block block3 {"0002", 3};
 
+    Output genesis {500000000, "1KMbwcH1sGpHetLwwQVNMt4cEZB5u8Uk4b" };
+    Output send1 {100000000, "1KMbwcH1sGpHetLwwQVNMt4cEZB5u8Uk4b" };
+    Output send2 {100000000, "1MKbwcH1sGpHetLwwQVNMt4cEZB5u8Uk4b" };
+    Output receive1 {3000000, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7" };
+    Output receive2 {2000000, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7" };
+    Output receive3 {3000000, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7" };
+    Output foreign {3000000, "1Bmpme646SNGa1jjjYAfuijdyBNJXLGEh" };
+
+    auto tx1 = mockTransaction("0001", {Input("0000", 0, genesis)}, {receive1}, block1);
+    auto rbfTx1 = mockTransaction("0002", {Input("1000", 0, send1, 0xFFFFFFFB)}, {receive2});
+    auto rbfTx2 = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3});
+
+    auto replaceTx1 = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1});
+    auto replaceTx2 = mockTransaction("0005", {Input("1001", 1, send2, 0xFFFFFFFB)}, {foreign});
+
+    // Receive a single transaction
+    explorer->addTransaction(tx1);
+    synchronizeAccount(account);
+    EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value);
+    EXPECT_EQ(getAllOperartions(account).size(), 1);
+
+    // Receive 2 RBF transaction
+    explorer->addTransaction(rbfTx1);
+    explorer->addTransaction(rbfTx2);
+    synchronizeAccount(account);
+    EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value + receive2.value + receive3.value);
+    EXPECT_EQ(getAllOperartions(account).size(), 3);
+
+    // Replace 1 transaction with another one to the same account
+    explorer->addTransaction(replaceTx1);
+    synchronizeAccount(account);
+    EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value + receive1.value + receive3.value);
+    EXPECT_EQ(getAllOperartions(account).size(), 3);
+
+    // Replace the second transaction with another one on an unrelated account
+    explorer->addTransaction(replaceTx2);
+    synchronizeAccount(account);
+    EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value + receive1.value);
+    EXPECT_EQ(getAllOperartions(account).size(), 2);
 }

@@ -69,6 +69,9 @@ namespace ledger {
                     if (transactionContainAddresses(it->first, addrs))
                         result.push_back(it->second);
                 }
+                for (auto r : result) {
+                    std::cout << r << std::endl;
+                }
                 return result;
             }
 

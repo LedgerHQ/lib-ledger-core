@@ -380,6 +380,10 @@ namespace ledger {
             _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
         }
 
+        void AbstractWallet::invalidateBalanceCache(size_t accountIndex) {
+            _balanceCache.erase(fmt::format("{}-{}", _currency.name, accountIndex));
+        }
+
         std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
             return getConfig();
         }

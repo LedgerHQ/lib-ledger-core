@@ -108,6 +108,8 @@ namespace ledger {
                                               public AbstractBlockchainExplorer<BitcoinLikeBlockchainExplorerTransaction> {
         public:
             typedef ledger::core::Block Block;
+            using Transaction = BitcoinLikeBlockchainExplorerTransaction;
+
             BitcoinLikeBlockchainExplorer(const std::shared_ptr<api::DynamicObject>& configuration,
                                           const std::vector<std::string> &matchableKeys);
 
