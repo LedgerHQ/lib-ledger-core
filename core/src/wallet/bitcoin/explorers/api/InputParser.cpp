@@ -70,6 +70,8 @@ namespace ledger {
                 _input->value = Option<BigInt>(value);
             } else if (_lastKey == "output_index") {
                 _input->previousTxOutputIndex = value.toUint64();
+            } else if (_lastKey == "sequence") {
+                _input->sequence = value.toUint64();
             }
             return true;
         }

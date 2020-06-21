@@ -109,6 +109,7 @@ namespace ledger {
                                             public AbstractBlockchainExplorer<TezosLikeBlockchainExplorerTransaction> {
         public:
             typedef ledger::core::Block Block;
+            using Transaction = TezosLikeBlockchainExplorerTransaction;
 
             TezosLikeBlockchainExplorer(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
                                         const std::vector<std::string> &matchableKeys);

@@ -136,6 +136,7 @@ namespace ledger {
 
             Option<Amount> getBalanceFromCache(size_t accountIndex);
             void updateBalanceCache(size_t accountIndex, Amount balance);
+            void invalidateBalanceCache(size_t accountIndex);
 
             virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;
             virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo& info) = 0;

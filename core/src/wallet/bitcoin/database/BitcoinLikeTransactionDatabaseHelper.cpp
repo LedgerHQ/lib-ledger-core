@@ -256,7 +256,43 @@ namespace ledger {
         void
         BitcoinLikeTransactionDatabaseHelper::getMempoolTransactions(soci::session &sql, const std::string &accountUid,
                                                                      std::vector<BitcoinLikeBlockchainExplorerTransaction> &out) {
-            
+            // Query all transaction
+            rowset<row> txRows = (sql.prepare <<
+                    "SELECT  tx.hash, tx.version, tx.time, tx.locktime, "
+                    "block.hash, block.height, block.time, block.currency_name "
+                    "FROM bitcoin_transactions AS tx "
+                    "LEFT JOIN blocks AS block ON tx.block_uid = block.uid "
+                    "WHERE tx.hash IN ("
+                      "SELECT tx.hash FROM operations AS op "
+                      "JOIN bitcoin_operations AS bop ON bop.uid = op.uid  "
+                      "JOIN bitcoin_transactions AS tx ON tx.hash = bop.transaction_hash "
+                      "WHERE op.account_uid = :uid AND op.block_uid IS NULL"
+                    ")", use(accountUid));
+            // Inflate all transactions
+            for (const auto& txRow : txRows) {
+                BitcoinLikeBlockchainExplorerTransaction tx;
+                inflateTransaction(sql, txRow, accountUid, tx);
+                out.emplace_back(std::move(tx));
+            }
+        }
+
+        void BitcoinLikeTransactionDatabaseHelper::removeAllMempoolOperation(soci::session &sql,
+                                                                             const std::string &accountUid) {
+            rowset<std::string> rows = (sql.prepare <<
+                    "SELECT transaction_hash FROM bitcoin_operations AS bop "
+                    "JOIN operations AS op ON bop.uid = op.uid "
+                    "WHERE op.account_uid = :uid AND op.block_uid IS NULL", use(accountUid)
+            );
+            std::vector<std::string> txToDelete(rows.begin(), rows.end());
+            if (!txToDelete.empty()) {
+                sql << "DELETE FROM bitcoin_inputs WHERE uid IN ("
+                       "SELECT input_uid FROM bitcoin_transaction_inputs "
+                       "WHERE transaction_hash IN(:hashes)"
+                       ")", use(txToDelete);
+                sql << "DELETE FROM operations WHERE account_uid = :uid AND block_uid is NULL", use(accountUid);
+                sql << "DELETE FROM bitcoin_transactions "
+                       "WHERE hash IN (:txs)", use(txToDelete);
+            }
         }
 
     }

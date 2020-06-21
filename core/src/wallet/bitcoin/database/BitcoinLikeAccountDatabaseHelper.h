@@ -33,6 +33,7 @@
 
 #include <soci.h>
 #include "BitcoinLikeAccountDatabaseEntry.h"
+#include <math/BigInt.h>
 
 namespace ledger {
     namespace core {

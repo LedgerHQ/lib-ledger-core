@@ -115,6 +115,8 @@ namespace ledger {
                                                public AbstractBlockchainExplorer<EthereumLikeBlockchainExplorerTransaction> {
         public:
             typedef ledger::core::Block Block;
+            using Transaction = EthereumLikeBlockchainExplorerTransaction;
+
             EthereumLikeBlockchainExplorer(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
                                            const std::vector<std::string> &matchableKeys);
 
