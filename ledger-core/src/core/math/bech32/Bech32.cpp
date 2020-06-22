@@ -51,12 +51,12 @@ namespace ledger {
         };
 
         // Verify a checksum.
-        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values) {
+        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values) const {
             return polymod(vector::concat(expandHrp(_bech32Params.hrp), values)) == 1;
         }
 
         // Create a checksum.
-        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t>& values) {
+        std::vector<uint8_t> Bech32::createChecksum(const std::vector<uint8_t>& values) const {
             std::vector<uint8_t> enc = vector::concat(expandHrp(_bech32Params.hrp), values);
             enc.resize(enc.size() + _bech32Params.checksumSize);
             uint64_t mod = polymod(enc) ^ 1;
@@ -71,7 +71,7 @@ namespace ledger {
             return ret;
         }
 
-        std::string Bech32::encodeBech32(const std::vector<uint8_t>& values) {
+        std::string Bech32::encodeBech32(const std::vector<uint8_t>& values) const {
             // Values here should be concatenation of version + hash
             std::vector<uint8_t> checksum = createChecksum(values);
             std::vector<uint8_t> combined = vector::concat(values, checksum);
@@ -87,7 +87,7 @@ namespace ledger {
         }
 
         std::pair<std::string, std::vector<uint8_t>>
-        Bech32::decodeBech32(const std::string& str) {
+        Bech32::decodeBech32(const std::string& str) const {
             bool lower = false, upper = false;
             bool ok = true;
             for (size_t i = 0; ok && i < str.size(); ++i) {
