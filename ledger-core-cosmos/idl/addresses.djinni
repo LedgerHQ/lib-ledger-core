@@ -1,0 +1,60 @@
+CosmosCurve = enum {
+	ed25519;
+	secp256k1;
+}
+
+CosmosBech32Type = enum {
+	PUBLIC_KEY;
+	PUBLIC_KEY_VAL;
+	ADDRESS;
+	ADDRESS_VAL;
+}
+
+CosmosLikeNetworkParameters = record {
+	# Name of the network.
+	Identifier: string;
+	# Constant prefix to prepend all signature messages.
+	MessagePrefix: string;
+	# Version of the Extended Public Key standard.
+	XPUBVersion: binary;
+	# Prefix useful during implicit address construction from pubKey hash
+	PubKeyPrefix: binary;
+	# Prefix useful during originated address construction from pubKey hash
+	AddressPrefix: binary;
+        # Chain ID of the network
+        ChainId: string;
+	# Addition CIPs enabled for this network.
+	AdditionalCIPs: list<string>;
+}
+
+# Helper class for manipulating Cosmos like addresses.
+CosmosLikeAddress = interface +c {
+	# Gets the version of the address.
+	# @return The version of the address
+	getVersion(): binary;
+	# Gets the raw hash160 of the public key
+	# @return The 20 bytes of the public key hash160
+	getHash160(): binary;
+	# Gets the network parameters used for serializing the address.
+	# @return The network parameters of the address
+	getNetworkParameters(): CosmosLikeNetworkParameters;
+	# Encodes to Bech32.
+	# @return The Bech32 encoding
+	toBech32(): string;
+}
+
+# The xPUB definition for Cosmos.
+CosmosLikeExtendedPublicKey = interface +c {
+	# Derive an address from an xPUB and a path.
+	derive(path: string): CosmosLikeAddress;
+	# Derive a public key from an xPUB and a path.
+	derivePublicKey(path: string): binary;
+	# Derive a shorten version of a public key (SHA256 + RIPEMD160) from an xPUB and a path.
+	deriveHash160(path: string): binary;
+	# Get the publicKey in bech32 representatrion.
+	toBech32(): string;
+	# Get the publicKey in base58 representatrion.
+	toBase58(): string;
+	# Get the root path of the xPUB.
+	getRootPath(): string;
+}

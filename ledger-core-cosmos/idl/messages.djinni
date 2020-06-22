@@ -1,0 +1,300 @@
+CosmosLikeAmount = record {
+        amount: string;
+        denom: string;
+}
+
+CosmosLikeMultiSendInput = record {
+        fromAddress: string;
+        coins: list<CosmosLikeAmount>;
+}
+
+CosmosLikeMultiSendOutput = record {
+        toAddress: string;
+        coins: list<CosmosLikeAmount>;
+}
+
+CosmosLikeCommissionRates = record {
+        rate: string;
+        maxRate: string;
+        maxChangeRate: string;
+}
+
+CosmosLikeContent = record {
+        type: string;
+        title: string;
+        descr: string;
+}
+
+CosmosLikeVoteOption = enum {
+        CosmosVoteYes;
+        CosmosVoteNo;
+        CosmosVoteNoWithVeto;
+        CosmosVoteAbstain;
+}
+
+CosmosLikeMsgSend = record {
+        fromAddress: string;
+        toAddress: string;
+        amount: list<CosmosLikeAmount>;
+}
+
+CosmosLikeMsgDelegate = record {
+        delegatorAddress: string;
+        validatorAddress: string;
+        amount: CosmosLikeAmount;
+}
+
+CosmosLikeMsgUndelegate = record {
+        delegatorAddress: string;
+        validatorAddress: string;
+        amount: CosmosLikeAmount;
+}
+
+CosmosLikeMsgBeginRedelegate = record {
+        delegatorAddress: string;
+        validatorSourceAddress: string;
+        validatorDestinationAddress: string;
+        amount: CosmosLikeAmount;
+}
+
+CosmosLikeMsgSubmitProposal = record {
+        content: CosmosLikeContent;
+        proposer: string;
+        initialDeposit: list<CosmosLikeAmount>;
+}
+
+CosmosLikeMsgVote = record {
+        voter: string;
+        proposalId: string;
+        option: CosmosLikeVoteOption;
+}
+
+CosmosLikeMsgDeposit = record {
+        depositor: string;
+        proposalId: string;
+        amount: list<CosmosLikeAmount>;
+}
+
+CosmosLikeMsgWithdrawDelegationReward = record {
+        delegatorAddress: string;
+        validatorAddress: string;
+}
+
+CosmosLikeMsgMultiSend = record {
+        inputs: list<CosmosLikeMultiSendInput>;
+        outputs: list<CosmosLikeMultiSendOutput>;
+}
+
+CosmosLikeMsgCreateValidator = record {
+        descr: CosmosLikeValidatorDescription;
+        commission: CosmosLikeValidatorCommission;
+        minSelfDelegation: string;
+        delegatorAddress: string;
+        validatorAddress: string;
+        pubkey: string;
+        value: CosmosLikeAmount;
+}
+
+CosmosLikeMsgEditValidator = record {
+        descr: optional<CosmosLikeValidatorDescription>;
+        validatorAddress: string;
+        commissionRate: optional<string>;
+        minSelfDelegation: optional<string>;
+}
+
+CosmosLikeMsgSetWithdrawAddress = record {
+        delegatorAddress: string;
+        withdrawAddress: string;
+}
+
+# Probably deprecated and replaced by MsgWithdrawDelegatIONReward
+CosmosLikeMsgWithdrawDelegatorReward = record {
+        delegatorAddress: string;
+        validatorAddress: string;
+}
+
+CosmosLikeMsgWithdrawValidatorCommission = record {
+        validatorAddress: string;
+}
+
+CosmosLikeMsgUnjail = record {
+        validatorAddress: string;
+}
+
+CosmosLikeMsgType = enum {
+        MsgSend;
+        MsgDelegate;
+        MsgUndelegate;
+        MsgBeginRedelegate;
+        MsgSubmitProposal;
+        MsgVote;
+        MsgDeposit;
+        MsgWithdrawDelegationReward;
+        MsgMultiSend;
+        MsgCreateValidator;
+        MsgEditValidator;
+        MsgSetWithdrawAddress;
+        MsgWithdrawDelegatorReward;
+        MsgWithdrawValidatorCommission;
+        MsgUnjail;
+        MsgFees;
+        Unsupported;
+}
+
+CosmosLikeMessage = interface +c {
+        # Get type
+        # @return CosmosLikeMsgType a message type
+        const getMessageType(): CosmosLikeMsgType;
+
+        # Get type
+        # @return string a message type in string format
+        const getRawMessageType(): string;
+
+        # Get type
+        # @return bool if the message was successfully executed on the chain
+        const getSuccess(): bool;
+
+        # Get type
+        # @return string the log of the message execution (useful when getSuccess() == false)
+        const getLog(): string;
+
+        # Get message index in the tx
+        # @return string the 0-based index in the tx or "fees" for the fees in the tx
+        const getIndex(): string;
+
+        # Wrap the given CosmosLikeMsgSend into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgSend(msg: CosmosLikeMsgSend): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgSend
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgDelegate the unwrapped message
+        static unwrapMsgSend(msg: CosmosLikeMessage): CosmosLikeMsgSend;
+
+
+        # Wrap the given CosmosLikeMsgDelegate into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgDelegate(msg: CosmosLikeMsgDelegate): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgDelegate
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgDelegate the unwrapped message
+        static unwrapMsgDelegate(msg: CosmosLikeMessage): CosmosLikeMsgDelegate;
+
+        # Wrap the given CosmosLikeMsgUndelegate into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgUndelegate(msg: CosmosLikeMsgUndelegate): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgUndelegate
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgUndelegate the unwrapped message
+        static unwrapMsgUndelegate(msg: CosmosLikeMessage): CosmosLikeMsgUndelegate;
+
+        # Wrap the given CosmosLikeMsgBeginRedelegate into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgBeginRedelegate(msg: CosmosLikeMsgBeginRedelegate): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgBeginRedelegate
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgBeginRedelegate the unwrapped message
+        static unwrapMsgBeginRedelegate(msg: CosmosLikeMessage): CosmosLikeMsgBeginRedelegate;
+
+        # Wrap the given CosmosLikeMsgSubmitProposal into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgSubmitProposal(msg: CosmosLikeMsgSubmitProposal): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgSubmitProposal
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgSubmitProposal the unwrapped message
+        static unwrapMsgSubmitProposal(msg: CosmosLikeMessage): CosmosLikeMsgSubmitProposal;
+
+        # Wrap the given CosmosLikeMsgVote into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgVote(msg: CosmosLikeMsgVote): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgVote
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgVote the unwrapped message
+        static unwrapMsgVote(msg: CosmosLikeMessage): CosmosLikeMsgVote;
+
+        # Wrap the given CosmosLikeMsgDeposit into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgDeposit(msg: CosmosLikeMsgDeposit): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgDeposit
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgDeposit the unwrapped message
+        static unwrapMsgDeposit(msg: CosmosLikeMessage): CosmosLikeMsgDeposit;
+
+        # Wrap the given CosmosLikeMsgWithdrawDelegationReward into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgWithdrawDelegationReward(msg: CosmosLikeMsgWithdrawDelegationReward): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgWithdrawDelegationReward
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgWithdrawDelegationReward the unwrapped message
+        static unwrapMsgWithdrawDelegationReward(msg: CosmosLikeMessage): CosmosLikeMsgWithdrawDelegationReward;
+
+        # Wrap the given CosmosLikeMsgMultiSend into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgMultiSend(msg: CosmosLikeMsgMultiSend): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgMultiSend
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgMultiSend the unwrapped message
+        static unwrapMsgMultiSend(msg: CosmosLikeMessage): CosmosLikeMsgMultiSend;
+
+        # Wrap the given CosmosLikeMsgCreateValidator into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgCreateValidator(msg: CosmosLikeMsgCreateValidator): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgCreateValidator
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgCreateValidator the unwrapped message
+        static unwrapMsgCreateValidator(msg: CosmosLikeMessage): CosmosLikeMsgCreateValidator;
+
+        # Wrap the given CosmosLikeMsgEditValidator into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgEditValidator(msg: CosmosLikeMsgEditValidator): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgEditValidator
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgEditValidator the unwrapped message
+        static unwrapMsgEditValidator(msg: CosmosLikeMessage): CosmosLikeMsgEditValidator;
+
+        # Wrap the given CosmosLikeMsgSetWithdrawAddress into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgSetWithdrawAddress(msg: CosmosLikeMsgSetWithdrawAddress): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgSetWithdrawAddress
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgSetWithdrawAddress the unwrapped message
+        static unwrapMsgSetWithdrawAddress(msg: CosmosLikeMessage): CosmosLikeMsgSetWithdrawAddress;
+
+        # Wrap the given CosmosLikeMsgWithdrawDelegatorReward into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgWithdrawDelegatorReward(msg: CosmosLikeMsgWithdrawDelegatorReward): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgWithdrawDelegatorReward
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgWithdrawDelegatorReward the unwrapped message
+        static unwrapMsgWithdrawDelegatorReward(msg: CosmosLikeMessage): CosmosLikeMsgWithdrawDelegatorReward;
+
+        # Wrap the given CosmosLikeMsgWithdrawValidatorCommission into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgWithdrawValidatorCommission(msg: CosmosLikeMsgWithdrawValidatorCommission): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgWithdrawValidatorCommission
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgWithdrawValidatorCommission the unwrapped message
+        static unwrapMsgWithdrawValidatorCommission(msg: CosmosLikeMessage): CosmosLikeMsgWithdrawValidatorCommission;
+
+        # Wrap the given CosmosLikeMsgUnjail into a CosmosLikeMessage
+        # @param msg The message you need to wrap.
+        # @return CosmosLikeMessage A wrapped message.
+        static wrapMsgUnjail(msg: CosmosLikeMsgUnjail): CosmosLikeMessage;
+        # Unwrap a message to a CosmosLikeMsgUnjail
+        # @param msg The message to unwrap
+        # @return CosmosLikeMsgUnjail the unwrapped message
+        static unwrapMsgUnjail(msg: CosmosLikeMessage): CosmosLikeMsgUnjail;
+}

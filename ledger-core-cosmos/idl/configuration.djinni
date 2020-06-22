@@ -1,0 +1,8 @@
+CosmosBlockchainExplorerEngines = interface +c {
+    const COSMOS_NODE: string = "COSMOS_NODE";
+}
+
+# Available API to use with observers.
+CosmosBlockchainObserverEngines = interface +c {
+    const COSMOS_NODE: string = "COSMOS_NODE";
+}

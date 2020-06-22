@@ -1,0 +1,29 @@
+@import "ledger-core/account.djinni"
+@import "ledger-core/amount.djinni"
+@import "ledger-core/callback.djinni"
+@import "ledger-core/currency.djinni"
+@import "ledger-core/derivation.djinni"
+@import "ledger-core/math/big_int.djinni"
+@import "ledger-core/operation.djinni"
+@import "ledger-core/services.djinni"
+@import "ledger-core/tuples.djinni"
+@import "ledger-core/wallet_store.djinni"
+
+@import "configuration.djinni"
+@import "addresses.djinni"
+@import "messages.djinni"
+@import "validators.djinni"
+@import "wallet.djinni"
+
+# The Cosmos currency.
+Cosmos = interface +c {
+  static newInstance(): Cosmos;
+  # Register the currency into a wallet store and associated services.
+  registerInto(services: Services, walletStore: WalletStore, callback: Callback<ErrorCode>);
+
+  # Turn an Account into a CosmosLikeAccount.
+  fromCoreAccount(coreAccount: Account): optional<CosmosLikeAccount>;
+
+  # Turn an Operation into a CosmosLikeOperation.
+  fromCoreOperation(coreOperation: Operation): optional<CosmosLikeOperation>;
+}
