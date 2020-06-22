@@ -114,13 +114,19 @@ namespace algorand {
 
     Future<model::TransactionsBulk>
     BlockchainExplorer::getTransactionsForAddress(const std::string & address,
-                                                  const Option<uint64_t> & beforeRound) const
+                                                  const Option<uint64_t> & firstRound,
+                                                  const Option<uint64_t> & lastRound) const
     {
         auto url = fmt::format(constants::purestakeAccountTransactionsEndpoint, address);
-        // Apply the offset if required
-        auto urlWithQueryFilters = beforeRound.isEmpty() ? url : fmt::format("{}?lastRound={}", url, beforeRound.getValue());
+        if (firstRound && lastRound) {
+            url = fmt::format("{}?firstRound={}&lastRound={}", url, *firstRound, *lastRound);
+        } else if (firstRound) {
+            url = fmt::format("{}?firstRound={}", url, *firstRound);
+        } else if (lastRound) {
+            url = fmt::format("{}?lastRound={}", url, *lastRound);
+        }
 
-        return _http->GET(urlWithQueryFilters)
+        return _http->GET(url)
             .json(false)
             .map<model::TransactionsBulk>(getContext(), [](const HttpRequest::JsonResult& response) {
                     const auto& json = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();

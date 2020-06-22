@@ -69,20 +69,21 @@ namespace constants {
                            const std::shared_ptr<api::DynamicObject> & configuration);
 
         Future<api::Block> getBlock(uint64_t blockHeight) const;
-        
+
         Future<model::Account> getAccount(const std::string & address) const;
-        
+
         Future<model::AssetParams> getAssetById(uint64_t id) const;
 
         Future<model::Transaction> getTransactionById(const std::string & txId) const;
 
         Future<model::TransactionsBulk> getTransactionsForAddress(const std::string & address,
-                                                                  const Option<uint64_t> & beforeRound = Option<uint64_t>()) const;
-                         
+                                                                  const Option<uint64_t> & firstRound = Option<uint64_t>(),
+                                                                  const Option<uint64_t> & lastRound = Option<uint64_t>()) const;
+
         Future<model::TransactionParams> getTransactionParams() const;
 
         Future<std::string> pushTransaction(const std::vector<uint8_t> & transaction);
-    
+
     private:
 
         std::shared_ptr<HttpClient> _http;

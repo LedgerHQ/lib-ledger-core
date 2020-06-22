@@ -75,8 +75,9 @@ namespace algorand {
         Future<Unit> performSynchronization(const std::shared_ptr<Account> & account);
 
         Future<bool> synchronizeBatch(const std::shared_ptr<Account> & account,
-                                        const Option<uint64_t> & minTxRound,
-                                        const bool hadTransactions);
+                                      const bool hadTransactions,
+                                      const Option<uint64_t> & lowestRound = Option<uint64_t>(),
+                                      const Option<uint64_t> & highestRound = Option<uint64_t>());
 
         std::shared_ptr<Account> _account;
         std::shared_ptr<BlockchainExplorer> _explorer;
