@@ -54,7 +54,7 @@ public:
         poolConfig->putString(api::PoolConfiguration::DATABASE_NAME, "postgres://localhost:5432/test_db");
         const auto dbName = randomDBName();
         pool = newDefaultPool(dbName, "", poolConfig, usePostgreSQL);
-        #else
+#else
         pool = newDefaultPool();
 #endif
       //  walletStore = newWalletStore(services);
