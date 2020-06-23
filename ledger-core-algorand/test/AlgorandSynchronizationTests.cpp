@@ -49,6 +49,7 @@ class AlgorandSynchronizationTest : public WalletFixture<WalletFactory> {
 };
 
 TEST_F(AlgorandSynchronizationTest, AccountSynchronizationTest) {
+    backend->enableQueryLogging(true);
     registerCurrency(currencies::algorand());
 
     auto configuration = DynamicObject::newInstance();
@@ -92,7 +93,7 @@ TEST_F(AlgorandSynchronizationTest, AccountSynchronizationTest) {
 
     auto operations = wait(std::dynamic_pointer_cast<algorand::OperationQuery>(account->queryOperations()->complete())->execute());
     std::cout << ">>> Nb of operations: " << operations.size() << std::endl;
-    EXPECT_GT(operations.size(), 20); // 27 on TestNet as of 08 June 2020
+    EXPECT_GT(operations.size(), 200);
 
 }
 

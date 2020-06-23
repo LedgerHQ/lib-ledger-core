@@ -78,16 +78,16 @@ namespace algorand {
 
         _internalPreferences = account->getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer");
         auto savedState = _internalPreferences->template getObject<SavedState>("state");
-        auto startRound = Option<uint64_t>();
+        auto firstRound = Option<uint64_t>();
         if (savedState.hasValue()) {
-            startRound = savedState.getValue().round;
+            firstRound = savedState.getValue().round;
         } else {
             savedState = Option<SavedState>(SavedState());
-            savedState.getValue().round = 0;
+            savedState->round = 0;
             _internalPreferences->editor()->template putObject<SavedState>("state", savedState.getValue())->commit();
         }
 
-        return synchronizeBatch(account, startRound, false)
+        return synchronizeBatch(account, false, firstRound)
             .template flatMap<Unit>(account->getContext(), [] (const bool hadTransactions) -> Future<Unit> {
                 return Future<Unit>::successful(unit);
             }).recoverWith(ImmediateExecutionContext::INSTANCE, [] (const Exception & exception) -> Future<Unit> {
@@ -96,16 +96,22 @@ namespace algorand {
     }
 
     Future<bool> AccountSynchronizer::synchronizeBatch(const std::shared_ptr<Account> & account,
-                                                       const Option<uint64_t> & maxRound,
-                                                       const bool hadTransactions) {
-        return _explorer->getTransactionsForAddress(account->getAddress(), maxRound)
-            .template flatMap<bool>(getContext(), [this, account, hadTransactions](const model::TransactionsBulk& bulk) -> Future<bool> {
+                                                       const bool hadTransactions,
+                                                       const Option<uint64_t> & lowestRound,
+                                                       const Option<uint64_t> & highestRound)
+    {
+        return _explorer->getTransactionsForAddress(account->getAddress(), lowestRound, highestRound)
+            .template flatMap<bool>(getContext(), [=](const model::TransactionsBulk& bulk) -> Future<bool> {
 
                 soci::session sql(account->getWallet()->getDatabase()->getPool());
                 soci::transaction tr(sql);
 
-                auto lowestRound = std::numeric_limits<uint64_t>::max();
-                auto highestRound = static_cast<uint64_t>(0);
+                auto savedState = _internalPreferences->template getObject<SavedState>("state");
+                if (savedState.isEmpty()) {
+                    throw Exception(api::ErrorCode::ILLEGAL_STATE, "Saved state not available during account synchronization");
+                }
+
+                auto lowestBatchRound = std::numeric_limits<uint64_t>::max();
                 for (const auto& tx : bulk.transactions) {
 
                     // A lot of things could happen here, better wrap it
@@ -114,23 +120,20 @@ namespace algorand {
                     });
 
                     // Record the lowest round, to continue fetching txs below it if needed
-                    lowestRound = std::min(lowestRound, tx.header.round.getValueOr(lowestRound));
+                    lowestBatchRound = std::min(lowestBatchRound, tx.header.round.getValueOr(lowestBatchRound));
 
-                    // Record the highest round, to update the cache for incremental sychronization
-                    highestRound = std::max(highestRound, tx.header.round.getValueOr(0));
+                    // Record the highest round ever seen, to update the cache for next incremental sychronization
+                    savedState->round = std::max(savedState->round, tx.header.round.getValueOr(0));
                 }
 
                 tr.commit();
 
-                auto savedState = _internalPreferences->template getObject<SavedState>("state");
-                if (savedState.hasValue()) {
-                    savedState.getValue().round = std::max(savedState.getValue().round, highestRound);
-                    _internalPreferences->editor()->template putObject<SavedState>("state", savedState.getValue())->commit();
-                }
+                // Update the cache for next incremental synchronization
+                _internalPreferences->editor()->template putObject<SavedState>("state", savedState.getValue())->commit();
 
                 auto hadTX = hadTransactions || bulk.transactions.size() > 0;
                 if (bulk.hasNext) {
-                    return synchronizeBatch(account, lowestRound, hadTX);
+                    return synchronizeBatch(account, hadTX, lowestRound, lowestBatchRound);
                 } else {
                     return Future<bool>::successful(hadTX);
                 }
