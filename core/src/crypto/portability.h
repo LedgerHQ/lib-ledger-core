@@ -25,9 +25,9 @@ and released into public domain.
 #define zero_memory(a, b) SecureZeroMemory(a, b)
 
 #ifdef CPPCRYPTODLL_EXPORT
-#define CPPCRYPTOAPI __declspec(dllexport) 
+#define CPPCRYPTOAPI __declspec(dllexport)
 #elif defined(CPPCRYPTODLL)
-#define CPPCRYPTOAPI __declspec(dllimport) 
+#define CPPCRYPTOAPI __declspec(dllimport)
 #else
 #define CPPCRYPTOAPI
 #endif
@@ -89,7 +89,8 @@ static inline uint64_t rotatel64(uint64_t x, unsigned n)
 }
 
 #ifdef __linux__
-#define aligned_allocate(a, b) aligned_alloc(b, a)
+#include <boost/align/aligned_alloc.hpp>
+#define aligned_allocate(a, b) boost::alignment::aligned_alloc(b, a)
 #define aligned_deallocate free
 #else
 #ifdef __MINGW32__
