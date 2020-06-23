@@ -36,6 +36,8 @@
 #include <algorand/api/AlgorandAssetAmount.hpp>
 #include <algorand/api/AlgorandAssetParams.hpp>
 
+#include "transactions/api_impl/AlgorandTransactionImpl.hpp"
+
 #include <core/wallet/BlockDatabaseHelper.hpp>
 #include <core/database/SociDate.hpp>
 #include <core/events/Event.hpp>
@@ -343,6 +345,11 @@ namespace algorand {
             const std::shared_ptr<api::StringCallback>& callback)
     {
         broadcastRawTransaction(transaction->serialize(), callback);
+    }
+
+    std::shared_ptr<api::AlgorandTransaction> Account::createEmptyTransaction()
+    {
+        return std::make_shared<AlgorandTransactionImpl>(model::Transaction());
     }
 
     std::shared_ptr<api::OperationQuery> Account::queryOperations()

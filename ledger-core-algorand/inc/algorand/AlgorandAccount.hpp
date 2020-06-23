@@ -131,6 +131,8 @@ namespace algorand {
                 const std::shared_ptr<api::AlgorandTransaction>& transaction,
                 const std::shared_ptr<api::StringCallback>& callback) override;
 
+        std::shared_ptr<api::AlgorandTransaction> createEmptyTransaction() override;
+
         // From api::Account
         std::shared_ptr<api::OperationQuery> queryOperations() override;
 
