@@ -233,7 +233,7 @@ namespace ledger {
             return async<std::shared_ptr<AbstractWallet>>([=, self = shared_from_this()] () {
                 auto factory = self->getFactory(currencyName);
                 if (factory == nullptr) {
-                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.");
+                    throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND, "Currency '{}' not found.", currencyName);
                 }
 
                 // Create the entry
