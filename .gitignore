@@ -31,7 +31,6 @@ tags
 bindings/node/include
 bindings/node/lib
 bindings/node/src
-bindings/node/binding.gyp
 bindings/node/yarn.lock
 bundle/api
 bundle/coins.djinni
