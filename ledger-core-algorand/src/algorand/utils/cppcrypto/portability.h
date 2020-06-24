@@ -89,7 +89,8 @@ static inline uint64_t rotatel64(uint64_t x, unsigned n)
 }
 
 #ifdef __linux__
-#define aligned_allocate(a, b) aligned_alloc(b, a)
+#include <boost/align/aligned_alloc.hpp>
+#define aligned_allocate(a, b) boost::alignment::aligned_alloc(b, a)
 #define aligned_deallocate free
 #else
 #ifdef __MINGW32__
