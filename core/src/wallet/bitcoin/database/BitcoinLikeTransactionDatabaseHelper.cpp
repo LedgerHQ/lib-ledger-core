@@ -279,7 +279,7 @@ namespace ledger {
         void BitcoinLikeTransactionDatabaseHelper::removeAllMempoolOperation(soci::session &sql,
                                                                              const std::string &accountUid) {
             rowset<std::string> rows = (sql.prepare <<
-                    "SELECT transaction_hash FROM bitcoin_operations AS bop "
+                    "SELECT transaction_uid FROM bitcoin_operations AS bop "
                     "JOIN operations AS op ON bop.uid = op.uid "
                     "WHERE op.account_uid = :uid AND op.block_uid IS NULL", use(accountUid)
             );
@@ -287,11 +287,11 @@ namespace ledger {
             if (!txToDelete.empty()) {
                 sql << "DELETE FROM bitcoin_inputs WHERE uid IN ("
                        "SELECT input_uid FROM bitcoin_transaction_inputs "
-                       "WHERE transaction_hash IN(:hashes)"
+                       "WHERE transaction_uid IN(:uids)"
                        ")", use(txToDelete);
                 sql << "DELETE FROM operations WHERE account_uid = :uid AND block_uid is NULL", use(accountUid);
                 sql << "DELETE FROM bitcoin_transactions "
-                       "WHERE hash IN (:txs)", use(txToDelete);
+                       "WHERE transaction_uid IN (:uids)", use(txToDelete);
             }
         }
 
