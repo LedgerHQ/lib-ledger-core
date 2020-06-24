@@ -95,7 +95,7 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6529846;
             tx.header.lastValid = 6530846;
-            tx.header.timestamp = Option<uint64_t>(); // 1588586190; TODO: fix when timestamp available
+            tx.header.timestamp = 1588586190;
 
             tx.details = model::PaymentTxnFields();
             auto& details = boost::get<model::PaymentTxnFields>(tx.details);
@@ -124,7 +124,7 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6305874;
             tx.header.lastValid = 6306874;
-            tx.header.timestamp = Option<uint64_t>(); // 1587641643; TODO: fix when timestamp available
+            tx.header.timestamp = 1587641643;
 
             tx.details = model::AssetConfigTxnFields();
             auto& details = boost::get<model::AssetConfigTxnFields>(tx.details);
@@ -160,7 +160,7 @@ namespace algorand {
             tx.header.genesisHash = TESTNET_GENESIS_HASH;
             tx.header.firstValid = 6734094;
             tx.header.lastValid = 6734193;
-            tx.header.timestamp = Option<uint64_t>(); // 1589448692; TODO: fix when timestamp available
+            tx.header.timestamp = 1589448692;
 
             tx.details = model::AssetTransferTxnFields();
             auto& details = boost::get<model::AssetTransferTxnFields>(tx.details);

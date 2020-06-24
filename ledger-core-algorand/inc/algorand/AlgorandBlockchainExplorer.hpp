@@ -43,20 +43,6 @@
 namespace ledger {
 namespace core {
 namespace algorand {
-namespace constants {
-
-    static const std::string purestakeTokenHeader = "x-api-key";
-
-    // Explorer endpoints
-    static const std::string purestakeBlockEndpoint = "/block/{}";
-    static const std::string purestakeAccountEndpoint = "/account/{}";
-    static const std::string purestakeAccountTransactionsEndpoint = "/account/{}/transactions";
-    static const std::string purestakeTransactionEndpoint = "/transaction/{}";
-    static const std::string purestakeTransactionsEndpoint = "/transactions";
-    static const std::string purestakeTransactionsParamsEndpoint = "/transactions/params";
-    static const std::string purestakeAssetEndpoint = "/asset/{}";
-
-} // namespace constants
 
     class BlockchainExplorer : public ConfigurationMatchable, public DedicatedContext
     {

@@ -129,7 +129,8 @@ namespace model {
         return api::AlgorandAssetAmount(
                 addressTo(amount.creatorAddress),
                 u64To(amount.amount),
-                amount.frozen
+                amount.frozen,
+                u64To(amount.assetId)
         );
     }
 
@@ -138,7 +139,8 @@ namespace model {
         return AssetAmount(
                 addressFrom(amount.creatorAddress),
                 u64From(amount.amount),
-                amount.frozen
+                amount.frozen,
+                u64From(amount.assetId)
         );
     }
 
@@ -226,19 +228,27 @@ namespace model {
                 mapOption(fields.assetAmount, u64To).toOptional(),
                 addressTo(fields.assetReceiver),
                 mapOption(fields.assetCloseTo, addressTo).toOptional(),
-                mapOption(fields.assetSender, addressTo).toOptional()
+                mapOption(fields.assetSender, addressTo).toOptional(),
+                mapOption(fields.closeAmount, u64To).toOptional()
         );
     }
 
     AssetTransferTxnFields fromAPI(const api::AlgorandAssetTransferInfo& info)
     {
-        return AssetTransferTxnFields(
-                mapOption(makeOption(info.amount), u64From),
-                mapOption(makeOption(info.closeAddress), addressFrom),
-                addressFrom(info.recipientAddress),
-                mapOption(makeOption(info.clawedBackAddress), addressFrom),
-                u64From(info.assetId)
-        );
+        return [&info]() {
+            auto fields = AssetTransferTxnFields(
+                    mapOption(makeOption(info.amount), u64From),
+                    mapOption(makeOption(info.closeAddress), addressFrom),
+                    addressFrom(info.recipientAddress),
+                    mapOption(makeOption(info.clawedBackAddress), addressFrom),
+                    u64From(info.assetId)
+            );
+
+            fields.closeAmount =
+                mapOption(makeOption(info.closeAmount), u64From);
+
+            return fields;
+        }();
     }
 
     api::AlgorandParticipationInfo toAPI(const KeyRegTxnFields& fields)

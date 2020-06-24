@@ -86,6 +86,8 @@ namespace model {
         Address assetReceiver;
         Option<Address> assetSender;
         uint64_t assetId;
+
+        Option<uint64_t> closeAmount;
     };
 
     class AssetFreezeTxnFields

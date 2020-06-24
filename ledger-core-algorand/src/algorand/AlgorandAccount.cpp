@@ -190,7 +190,7 @@ namespace algorand {
             while (date > upperDate && lowerDate < endDate) {
                 lowerDate = DateUtils::incrementDate(lowerDate, period);
                 upperDate = DateUtils::incrementDate(upperDate, period);
-                amounts.emplace_back(std::string(), std::to_string(balance), false);
+                amounts.emplace_back(std::string(), std::to_string(balance), false, assetId);
             }
 
             if (date <= upperDate) {
@@ -200,9 +200,8 @@ namespace algorand {
                     boost::get<model::AssetTransferTxnFields>(transaction.details);
 
                 const auto amount = details.assetAmount.getValueOr(0);
-                /// TODO: closeAmount
-                /// The algorand API currently does not provide the close amount,
-                /// this is why this amount is set to 0 for now.
+                const auto closeAmount = details.closeAmount.getValueOr(0); // TODO: checkme
+
                 if (details.assetSender == _address ||
                     header.sender == _address) {
                     balance -= amount;
@@ -212,9 +211,8 @@ namespace algorand {
                     balance += amount;
                 }
 
-                // TODO
                 if (details.assetCloseTo && details.assetCloseTo == _address) {
-                    balance += /* closeAmount */0;
+                    balance += closeAmount;
                 }
             }
 
@@ -225,7 +223,7 @@ namespace algorand {
 
         while (lowerDate < endDate) {
             lowerDate = DateUtils::incrementDate(lowerDate, period);
-            amounts.emplace_back(std::string(), std::to_string(balance), false);
+            amounts.emplace_back(std::string(), std::to_string(balance), false, assetId);
         }
 
         return Future<std::vector<api::AlgorandAssetAmount>>::successful(amounts);

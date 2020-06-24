@@ -7,7 +7,7 @@
 
 AlgorandConfigurationDefaults = record {
     # TODO Switch to mainnet at some point
-    const ALGORAND_API_ENDPOINT: string = "https://testnet-algorand.api.purestake.io/ps1/v1/";
+    const ALGORAND_API_ENDPOINT: string = "https://testnet-algorand.api.purestake.io";
     const ALGORAND_API_TOKEN: string = "VjmqAOS1jd2GEvc4Hy9RB6CW48YCRuG74bs22kfI";
 
     # TODO Find an observer endpoint
@@ -75,6 +75,8 @@ AlgorandAssetAmount = record {
     amount: string;
     # Whether this amount is frozen
     frozen: bool;
+    # The id of the asset
+    assetId: string;
 }
 
 AlgorandPaymentInfo = record {
@@ -127,6 +129,8 @@ AlgorandAssetTransferInfo = record {
     closeAddress: optional<string>;
     # Sender account on which clawback is used
     clawedBackAddress: optional<string>;
+    # The amount sent to closeAddress
+    closeAmount: optional<string>;
 }
 
 AlgorandAssetFreezeInfo = record {

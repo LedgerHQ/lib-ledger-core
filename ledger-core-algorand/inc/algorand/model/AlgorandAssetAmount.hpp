@@ -38,18 +38,21 @@ namespace model {
 
     struct AssetAmount
     {
-        AssetAmount() {}
+        AssetAmount() = default;
         AssetAmount(Address creatorAddress,
                     uint64_t amount,
-                    bool frozen)
+                    bool frozen,
+                    uint64_t assetId)
             : creatorAddress(std::move(creatorAddress))
             , amount(amount)
             , frozen(frozen)
+            , assetId(assetId)
         {}
 
         Address creatorAddress;
         uint64_t amount;
         bool frozen;
+        uint64_t assetId;
     };
 
 } // namespace model
