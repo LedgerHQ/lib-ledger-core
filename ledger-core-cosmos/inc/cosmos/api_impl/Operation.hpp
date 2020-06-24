@@ -44,6 +44,7 @@ class CosmosLikeOperation : public api::CosmosLikeOperation,
 public:
   CosmosLikeOperation() = default;
   CosmosLikeOperation(const std::shared_ptr<CosmosLikeOperation> &baseOp);
+  explicit CosmosLikeOperation(const std::shared_ptr<AbstractAccount> &account) : Operation(account) {}
 
   CosmosLikeOperation(ledger::core::cosmos::Transaction const &tx,
                       ledger::core::cosmos::Message const &msg);

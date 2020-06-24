@@ -84,7 +84,7 @@ void CosmosLikeOperationQuery::inflateCompleteTransaction(
 
 std::shared_ptr<CosmosLikeOperation> CosmosLikeOperationQuery::createOperation(
     std::shared_ptr<AbstractAccount> &account) {
-  return std::make_shared<CosmosLikeOperation>();
+  return std::make_shared<CosmosLikeOperation>(account);
 }
 } // namespace cosmos
 } // namespace core

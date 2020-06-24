@@ -326,7 +326,7 @@ void CosmosLikeAccount::inflateOperation(
 
   setOperationTypeAndAmount(out, msg);
 
-  // out._account = shared_from_this();
+  out._account = shared_from_this();
   out.accountUid = getAccountUid();
 
   if (tx.block) {
