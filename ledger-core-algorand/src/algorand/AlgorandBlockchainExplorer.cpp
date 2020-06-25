@@ -124,17 +124,17 @@ namespace algorand {
 
     Future<model::TransactionsBulk>
     BlockchainExplorer::getTransactionsForAddress(const std::string & address,
-                                                  const Option<uint64_t> & firstRound,
-                                                  const Option<uint64_t> & lastRound) const
+                                                  const Option<uint64_t> & minRound,
+                                                  const Option<uint64_t> & maxRound) const
     {
         auto url = fmt::format(constants::purestakeAccountTransactionsEndpoint, address);
         url = fmt::format("{}?limit={}", url, constants::EXPLORER_QUERY_LIMIT);
         // Apply the offset if required
-        if (firstRound) {
-            url = fmt::format("{}&firstRound={}", url, *firstRound);
+        if (minRound) {
+            url = fmt::format("{}&min-round={}", url, *minRound);
         }
-        if (lastRound) {
-            url = fmt::format("{}&lastRound={}", url, *lastRound);
+        if (maxRound) {
+            url = fmt::format("{}&max-round={}", url, *maxRound);
         }
 
         return _http->GET(url)
