@@ -168,8 +168,15 @@ jobs:
             name: Run_Tests
             command: |
                 cd ../lib-ledger-core-build
-
-                ~/cmake-3.16.5-Linux-x86_64/bin/ctest -VV -timeout 60
+                ~/cmake-3.16.5-Linux-x86_64/bin/ctest -VV -timeout 60 
+        - run:
+            name: Copy_Artifacts
+            command: |
+                . .circleci/copy_artifacts.sh Debug
+        - deploy:
+            name: Deploy_Artifacts
+            command: |
+                . .circleci/deploy.sh debug
   build_macos_release:
     macos:
       xcode: "10.0.0"
@@ -264,6 +271,10 @@ jobs:
           command: |
               cd ../lib-ledger-core-build
               ctest -VV -timeout 60
+      - run:
+          name: Copy_Artifacts
+          command: |
+            . .circleci/copy_artifacts.sh
   publish_jar:
     macos:
       xcode: "10.0.0"
@@ -338,8 +349,13 @@ workflows:
           filters:
             tags:
               only: /.*/
+            branches:
+              ignore:
       - build_linux_debug
-      - build_macos_debug
+      - build_macos_debug:
+          filters:
+            branches:
+              ignore:
       - publish_jar:
           requires:
             - build_linux_jni_release
@@ -347,6 +363,8 @@ workflows:
           filters:
             tags:
               only: /.*/
+            branches:
+              ignore:
   documentation:
     jobs:
       - generate_doc:

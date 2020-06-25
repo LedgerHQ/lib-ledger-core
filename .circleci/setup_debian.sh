@@ -16,7 +16,7 @@ echo "========> Java Installed"
 echo $JAVA_HOME
 ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 
-if [ "$BUILD_CONFIG" == "Release" ]; then
+if [[ "$BUILD_CONFIG" == "Release" || "$CIRCLE_BRANCH" =~ ^int.* ]]; then
     apt-get install -y awscli
     echo "========> Install sbt"
     SBT_DEB="sbt-1.3.10.deb"

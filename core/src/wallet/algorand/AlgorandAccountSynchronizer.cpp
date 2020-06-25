@@ -39,6 +39,7 @@
 #include <debug/Benchmarker.h>
 #include <api/Configuration.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <iostream>
 
 namespace ledger {
 namespace core {
@@ -114,8 +115,9 @@ namespace algorand {
 
                 auto lowestBatchRound = std::numeric_limits<uint64_t>::max();
                 for (const auto& tx : bulk.transactions) {
+
                     auto tryPutTx = Try<int>::from([&] () {
-                        return account->putTransaction(sql, tx);
+                        return (account->putTransaction(sql, tx));
                     });
 
                     // Record the lowest round in this batch, to continue fetching txs below it if needed
@@ -124,7 +126,6 @@ namespace algorand {
                     // Record the highest round ever seen, to update the cache for next incremental sychronization
                     savedState->round = std::max(savedState->round, tx.header.round.getValueOr(0));
                 }
-
                 tr.commit();
 
                 // Update the cache for next incremental sychronization

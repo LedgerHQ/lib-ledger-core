@@ -55,12 +55,11 @@ namespace algorand {
                     soci::use(txUid),
                     soci::use(txHash);
             } else {
-                sql << "UPDATE algorand_operations SET tx_uid = :tx_uid, tx_hash = :tx_hash WHERE uid = :op_uid",
-                    soci::use(txUid),
+                sql << "UPDATE algorand_operations SET uid = :op_uid, transaction_hash = :tx_hash WHERE transaction_uid = :txUid",
+                    soci::use(opUid),
                     soci::use(txHash),
-                    soci::use(opUid);
+                    soci::use(txUid);
             }
-
             return newOperation;
         }
 
