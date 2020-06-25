@@ -32,6 +32,7 @@
 #ifndef LEDGER_CORE_UVTHREADDISPATCHER_HPP
 #define LEDGER_CORE_UVTHREADDISPATCHER_HPP
 
+#include <uv.h>
 #include <ledger/core/api/ThreadDispatcher.hpp>
 #include <ledger/core/api/ExecutionContext.hpp>
 #include <ledger/core/async/Future.hpp>
