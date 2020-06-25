@@ -69,7 +69,10 @@ namespace {
             uint64_t fee,
             const std::string& type,
             uint64_t timestamp,
-            const std::string& id)
+            const std::string& id,
+            uint64_t senderRewards,
+            uint64_t receiverRewards,
+            uint64_t closeRewards)
     {
         return [&]() {
             auto header = algorand::model::Transaction::Header(
@@ -86,6 +89,9 @@ namespace {
             );
             header.timestamp = timestamp;
             header.id = id;
+            header.senderRewards = senderRewards;
+            header.receiverRewards = receiverRewards;
+            header.closeRewards = closeRewards;
             return header;
         }();
     }
@@ -99,11 +105,13 @@ namespace {
             const Option<std::string>& close,
             const std::string& recipient,
             uint64_t closeAmount,
-            uint64_t fromRewards,
-            uint64_t recipientRewards,
+            uint64_t senderRewards,
+            uint64_t receiverRewards,
             uint64_t closeRewards)
     {
-        const auto header = makeHeader(sender, fee, algorand::model::constants::pay, timestamp, id);
+        const auto header =
+            makeHeader(sender, fee, algorand::model::constants::pay, timestamp,
+                       id, senderRewards, receiverRewards, closeRewards);
 
         const auto details = [&]() {
             auto details = algorand::model::PaymentTxnFields(
@@ -111,9 +119,6 @@ namespace {
                     close.map<algorand::Address>([](const std::string& s) { return algorand::Address(s); }),
                     algorand::Address(recipient)
             );
-            details.closeRewards = closeRewards;
-            details.receiverRewards = recipientRewards;
-            details.fromRewards = fromRewards;
             details.closeAmount = closeAmount;
             return details;
         }();
@@ -129,11 +134,15 @@ namespace {
             uint64_t amount,
             const Option<std::string>& close,
             const std::string& recipient,
-            uint64_t asset)
+            uint64_t asset,
+            uint64_t senderRewards,
+            uint64_t receiverRewards,
+            uint64_t closeRewards)
 
     {
         const auto header =
-            makeHeader(sender, fee, algorand::model::constants::axfer, timestamp, id);
+            makeHeader(sender, fee, algorand::model::constants::axfer, timestamp,
+                       id, senderRewards, receiverRewards, closeRewards);
 
         const auto details = algorand::model::AssetTransferTxnFields::transfer(
                 amount,
@@ -152,10 +161,14 @@ namespace {
             const std::string& id,
             bool frozen,
             const std::string& frozenAddress,
-            uint64_t asset)
+            uint64_t asset,
+            uint64_t senderRewards,
+            uint64_t receiverRewards,
+            uint64_t closeRewards)
     {
         const auto header =
-            makeHeader(sender, fee, algorand::model::constants::afreeze, timestamp, id);
+            makeHeader(sender, fee, algorand::model::constants::afreeze, timestamp,
+                       id, senderRewards, receiverRewards, closeRewards);
 
         const auto details = algorand::model::AssetFreezeTxnFields(
                 frozen,
@@ -172,8 +185,8 @@ namespace {
     /// | 01/01/2020 |       10 000        |         0         |
     /// | 01/02/2020 |        4 004        |         0         |
     /// | 01/03/2020 |       34 024        |         0         |
-    /// | 01/04/2020 |       34 024        |        30         |
-    /// | 01/05/2020 |       28 024        |        10         |
+    /// | 01/04/2020 |       34 424        |        30         |
+    /// | 01/05/2020 |       28 534        |        10         |
     /// | 01/06/2020 |            0        |        10         |
     /// | 01/07/2020 |       26 026        |        10         |
     /// +------------+---------------------+-------------------+
@@ -182,12 +195,12 @@ namespace {
         auto transactions = std::vector<algorand::model::Transaction>();
         transactions.push_back(makePayment(ADDR1, 1000, month2020[0], "id1", 10000, {}, OBELIX, 0, 0, 0, 0)); // +10000 malgos, +0 ASA
         transactions.push_back(makePayment(OBELIX, 2000, month2020[1], "id2", 4000, {}, ADDR2, 0, 4, 0, 0)); // -5996 malgos, +0 ASA
-        transactions.push_back(makeAssetFreeze(ADDR1, 1000, month2020[2], "id3", true, OBELIX, 2)); // +0 malgos, +0 ASA
+        transactions.push_back(makeAssetFreeze(ADDR1, 1000, month2020[2], "id3", true, OBELIX, 2, 0, 0, 0)); // +0 malgos, +0 ASA
         transactions.push_back(makePayment(ADDR2, 1000, month2020[2], "id4", 0, OBELIX, OBELIX, 30000, 0, 0, 20)); // +30020 malgos, +0 ASA
-        transactions.push_back(makeAssetTransfer(ADDR1, 1000, month2020[3], "id5",  30, {}, OBELIX, 2)); // +0 malgos, +30 ASA
-        transactions.push_back(makeAssetTransfer(OBELIX, 1000, month2020[4], "id6", 20, {}, ADDR2, 2)); // -1000 malgos, -20 ASA
-        transactions.push_back(makeAssetFreeze(OBELIX, 5000, month2020[4], "id7", false, OBELIX, 2)); // -5000 malgos, +0 ASA
-        transactions.push_back(makePayment(OBELIX, 1000, month2020[5], "id8", 0, ADDR1, ADDR1, 27024, 0, 0, 0)); // -28024 malgos, +0 ASA
+        transactions.push_back(makeAssetTransfer(ADDR1, 1000, month2020[3], "id5",  30, {}, OBELIX, 2, 2000, 400, 0)); // +400 malgos, +30 ASA
+        transactions.push_back(makeAssetTransfer(OBELIX, 1000, month2020[4], "id6", 20, {}, ADDR2, 2, 100, 0, 0)); // -1000 malgos, -20 ASA
+        transactions.push_back(makeAssetFreeze(OBELIX, 5000, month2020[4], "id7", false, OBELIX, 2, 10, 0, 0)); // -5000 malgos, +0 ASA
+        transactions.push_back(makePayment(OBELIX, 1000, month2020[5], "id8", 0, ADDR1, ADDR1, 27534, 0, 0, 0)); // -28024 malgos, +0 ASA
         transactions.push_back(makePayment(ADDR1, 1000, month2020[6], "id9", 26024, OBELIX, ADDR2, 26024, 0, 0, 2)); // +26026 malgos, +0 ASA
 
         return transactions;
@@ -242,8 +255,8 @@ TEST_F(AlgorandAccountTest, algosBalanceHistory)
         10000,
         4004,
         34024,
-        34024,
-        28024,
+        34424,
+        28534,
         0,
         26026,
         26026

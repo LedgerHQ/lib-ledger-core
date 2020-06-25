@@ -182,11 +182,13 @@ namespace algorand {
             tx.header.note = getOptionalBinaryField(node, constants::xNote);
             tx.header.group = getOptionalBinaryField(node, constants::xGroup);
             tx.header.lease = getOptionalBinaryField(node, constants::xLease);
+            tx.header.senderRewards = getOptionalUint64Field(node, constants::xSenderRewards);
+            tx.header.receiverRewards = getOptionalUint64Field(node, constants::xReceiverRewards);
+            tx.header.closeRewards = getOptionalUint64Field(node, constants::xCloseRewards);
 
             if (tx.header.type == constants::xPay) {
                     assert((node.HasMember(constants::xPayment.c_str())));
                     auto details = model::PaymentTxnFields();
-                    parseRewards(node, details);
                     parsePaymentInfo(node[constants::xPayment.c_str()].GetObject(), details);
                     tx.details = details;
             } else if (tx.header.type == constants::xKeyreg) {
@@ -257,13 +259,6 @@ namespace algorand {
         }
 
     private:
-
-        template <class T>
-        static void parseRewards(const T& node, model::PaymentTxnFields& details) {
-            details.fromRewards = getOptionalUint64Field(node, constants::xFromRewards);
-            details.receiverRewards = getOptionalUint64Field(node, constants::xToRewards);
-            details.closeRewards = getOptionalUint64Field(node, constants::xCloseRewards);
-        }
 
         template <class T>
         static void assertWithMessage(const T & node, const std::string & fieldName) {

@@ -80,6 +80,21 @@ namespace algorand {
         return std::to_string(stxn.txn.header.round.getValueOr(0));
     }
 
+    std::string AlgorandTransactionImpl::getSenderRewards() const
+    {
+        return std::to_string(stxn.txn.header.senderRewards.getValueOr(0));
+    }
+
+    std::string AlgorandTransactionImpl::getReceiverRewards() const
+    {
+        return std::to_string(stxn.txn.header.receiverRewards.getValueOr(0));
+    }
+
+    std::string AlgorandTransactionImpl::getCloseRewards() const
+    {
+        return std::to_string(stxn.txn.header.closeRewards.getValueOr(0));
+    }
+
     void AlgorandTransactionImpl::setSender(const std::string& sender)
     {
         stxn.txn.header.sender = Address(currencies::algorand(), sender);

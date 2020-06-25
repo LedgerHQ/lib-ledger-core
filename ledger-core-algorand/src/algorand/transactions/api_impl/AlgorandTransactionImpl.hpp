@@ -58,6 +58,9 @@ namespace algorand {
         std::string getFee() const override;
         std::string getNote() const override;
         std::string getRound() const override;
+        std::string getSenderRewards() const override;
+        std::string getReceiverRewards() const override;
+        std::string getCloseRewards() const override;
         void setSender(const std::string& sender) override;
         void setFee(const std::string& fee) override;
         void setNote(const std::string& note) override;

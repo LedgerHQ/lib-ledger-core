@@ -30,15 +30,15 @@ namespace core {
                 "note VARCHAR(255),"
                 "groupVal VARCHAR(255),"
                 "leaseVal VARCHAR(255),"
+                "sender_rewards BIGINT,"
+                "receiver_rewards BIGINT,"
+                "close_rewards BIGINT,"
 
                 // Fields for payment transactions
                 "pay_amount BIGINT,"
-                "from_rewards BIGINT,"
                 "pay_receiver_address VARCHAR(255),"
-                "pay_receiver_rewards BIGINT,"
                 "pay_close_address VARCHAR(255),"
                 "pay_close_amount BIGINT,"
-                "pay_close_rewards BIGINT,"
 
                 // Fields for key registration transactions
                 "keyreg_non_participation INTEGER,"

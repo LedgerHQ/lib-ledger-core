@@ -90,10 +90,10 @@ namespace constants {
 
     // Payment txn
     static const std::string xReceiver = "receiver";
-    static const std::string xToRewards = "receiver-rewards";
+    static const std::string xReceiverRewards = "receiver-rewards";
     static const std::string xCloseAmount = "close-amount";
     static const std::string xCloseRewards = "close-rewards";
-    static const std::string xFromRewards = "sender-rewards";
+    static const std::string xSenderRewards = "sender-rewards";
     static const std::string xCloseTo = "close-to";
     static const std::string xCloseRemainderTo = "close-remainder-to";
 
