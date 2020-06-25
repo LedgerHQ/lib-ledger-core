@@ -71,6 +71,7 @@ namespace ledger {
             std::string script;
             std::string time;
             Option<uint64_t> blockHeight;
+            bool replaceable;
 
             BitcoinLikeBlockchainExplorerOutput() = default;
         };

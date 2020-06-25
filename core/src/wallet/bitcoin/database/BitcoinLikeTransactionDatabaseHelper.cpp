@@ -69,7 +69,7 @@ namespace ledger {
                     sql << "UPDATE bitcoin_transactions SET block_uid = :uid WHERE hash = :tx_hash",
                             use(blockUid), use(tx.hash);
                     auto blockHeight = tx.block.getValue().height;
-                    sql << "UPDATE bitcoin_outputs SET block_height = :height WHERE transaction_hash = :tx_hash",
+                    sql << "UPDATE bitcoin_outputs SET block_height = :height, replaceable = 0 WHERE transaction_hash = :tx_hash",
                     use(blockHeight), use(tx.hash);
                 }
                 return btcTxUid;
@@ -87,13 +87,15 @@ namespace ledger {
                         use(blockUid),
                         use(tx.receivedAt),
                         use(tx.lockTime);
-                // Insert outputs
-                for (const auto& output : tx.outputs) {
-                    insertOutput(sql, btcTxUid, accountUid, tx.hash, output);
-                }
                 // Insert inputs
+                bool replaceable = false;
                 for (const auto& input : tx.inputs) {
                     insertInput(sql, btcTxUid, accountUid, tx.hash, input);
+                    replaceable = replaceable || (input.sequence < std::numeric_limits<uint32_t>::max());
+                }
+                // Insert outputs
+                for (const auto& output : tx.outputs) {
+                    insertOutput(sql, btcTxUid, accountUid, tx.hash, output, replaceable && blockUid.isEmpty());
                 }
                 return btcTxUid;
             }
@@ -103,20 +105,25 @@ namespace ledger {
                                                                 const std::string& btcTxUid,
                                                                 const std::string &accountUid,
                                                                 const std::string& transactionHash,
-                                                                const BitcoinLikeBlockchainExplorerOutput &output) {
+                                                                const BitcoinLikeBlockchainExplorerOutput &output,
+                                                                bool replaceable) {
             auto value = output.value.toUint64();
+            int replaceableInt = replaceable ? 1 : 0;
             if (output.accountUid.hasValue() && output.accountUid.getValue() == accountUid) {
-                sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, :account_uid, :block_height)",
+                sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, "
+                       ":account_uid, :block_height, :replaceable)",
                         use(output.index), use(btcTxUid),
                         use(transactionHash), use(value),
                         use(output.script), use(output.address),
-                        use(accountUid), use(output.blockHeight);
+                        use(accountUid), use(output.blockHeight),
+                        use(replaceableInt);
             } else {
-                sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL, :block_height)",
+                sql << "INSERT INTO bitcoin_outputs VALUES(:idx, :tx_uid, :hash, :amount, :script, :address, NULL, "
+                       ":block_height, :replaceable)",
                         use(output.index), use(btcTxUid),
                         use(transactionHash), use(value),
                         use(output.script), use(output.address),
-                        use(output.blockHeight);
+                        use(output.blockHeight), use(replaceableInt);
             }
         }
 
@@ -233,7 +240,8 @@ namespace ledger {
             //bitcoin_outputs going to external accounts have NULL account_uid)
             auto btcTxUid = BitcoinLikeTransactionDatabaseHelper::createBitcoinTransactionUid(accountUid, out.hash);
             rowset<soci::row> outputRows = (sql.prepare <<
-                    "SELECT idx, amount, script, address, block_height FROM bitcoin_outputs WHERE transaction_hash = :hash AND transaction_uid = :tx_uid "
+                    "SELECT idx, amount, script, address, block_height, replaceable "
+                    "FROM bitcoin_outputs WHERE transaction_hash = :hash AND transaction_uid = :tx_uid "
                     "ORDER BY idx", use(out.hash), use(btcTxUid)
             );
 
@@ -244,8 +252,9 @@ namespace ledger {
                 output.script = outputRow.get<std::string>(2);
                 output.address = outputRow.get<Option<std::string>>(3);
                 if (outputRow.get_indicator(4) != i_null) {
-                    output.blockHeight = row.get<BigInt>(5).toUint64();
+                    output.blockHeight = soci::get_number<uint64_t>(outputRow, 4);
                 }
+                output.replaceable = soci::get_number<int>(outputRow, 5) == 1;
                 out.outputs.push_back(std::move(output));
             }
 

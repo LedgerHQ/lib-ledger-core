@@ -63,6 +63,14 @@ public:
     virtual std::shared_ptr<DerivationPath> getDerivationPath() = 0;
 
     virtual std::experimental::optional<int64_t> getBlockHeight() = 0;
+
+    /**
+     * Check if the transaction (which created this output) is replaceable (RBF).
+     * An output can be replaceable if the transaction has at least one RBF input
+     * and if the transaction is not a block.
+     * @return true if the output is replaceable, false otherwise
+     */
+    virtual bool isReplaceable() const = 0;
 };
 
 } } }  // namespace ledger::core::api

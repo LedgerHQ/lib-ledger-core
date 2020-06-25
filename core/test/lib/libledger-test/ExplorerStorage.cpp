@@ -31,9 +31,9 @@ namespace ledger {
                 parser.init(&transaction);
                 rapidjson::Reader reader;
                 rapidjson::StringStream ss(jsonTransaction.c_str());
-                if (reader.Parse(ss, parser).IsError())
+                if (reader.Parse<rapidjson::kParseNumbersAsStringsFlag>(ss, parser).IsError())
                     throw std::runtime_error("Can't parse transaction");
-                if (!transaction.block.nonEmpty()) {
+                if (transaction.block.isEmpty()) {
                     _memPool.push_back(std::make_pair(transaction, jsonTransaction));
                     return;
                 }
@@ -50,7 +50,7 @@ namespace ledger {
                     _transactions.erase(it);
                 it = std::find_if(_memPool.begin(), _memPool.end(), [&](auto& x) {return x.first.hash == hash; });
                 if (it != _memPool.end())
-                    _transactions.erase(it);
+                    _memPool.erase(it);
             }
 
             std::vector<std::string> ExplorerStorage::getTransactions(
@@ -58,19 +58,23 @@ namespace ledger {
                 const std::string& blockHash) {
                 std::unordered_set<std::string> addrs(addresses.begin(), addresses.end());
                 std::vector<std::string> result;
-                auto it = _transactions.begin();
-                if (blockHash != "") 
-                    it = std::find_if(_transactions.begin(), _transactions.end(), [&](auto& x) {return x.first.block.getValue().hash == blockHash; });
-                for (;it != _transactions.end(); ++it) {
-                    if (transactionContainAddresses(it->first, addrs))
-                        result.push_back(it->second);
+                auto block = std::find_if(_transactions.begin(), _transactions.end(), [&](auto& x) {
+                    return x.first.block.getValue().hash == blockHash;
+                });
+                std::vector<std::pair<BitcoinLikeBlockchainExplorerTransaction, std::string>> confirmedTransactions;
+                if (blockHash != "")
+                    std::copy_if(_transactions.begin(), _transactions.end(), std::back_inserter(confirmedTransactions), [&](auto& x) {
+                        return x.first.block.getValue().height > block->first.block->height;
+                    });
+                else
+                   confirmedTransactions = _transactions;
+                for (auto& tx : confirmedTransactions) {
+                    if (transactionContainAddresses(tx.first, addrs))
+                        result.push_back(tx.second);
                 }
-                for (auto it = _memPool.begin(); it != _memPool.end(); ++it) {
-                    if (transactionContainAddresses(it->first, addrs))
-                        result.push_back(it->second);
-                }
-                for (auto r : result) {
-                    std::cout << r << std::endl;
+                for (auto& tx : _memPool) {
+                    if (transactionContainAddresses(tx.first, addrs))
+                        result.push_back(tx.second);
                 }
                 return result;
             }
