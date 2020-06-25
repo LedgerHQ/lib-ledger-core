@@ -95,20 +95,19 @@ namespace algorand {
         return false;
     }
 
-    int Account::putTransaction(soci::session& sql, const model::Transaction& transaction)
+    int Account::putTransaction(soci::session &sql, const model::Transaction &transaction)
     {
         const auto wallet = getWallet();
-        if (wallet == nullptr) {
+        if (wallet == nullptr)
+        {
             throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
         }
-
         const auto txuid = TransactionDatabaseHelper::putTransaction(sql, getAccountUid(), transaction);
         const auto operation = Operation(shared_from_this(), transaction);
 
         if (OperationDatabaseHelper::putAlgorandOperation(sql, txuid, operation)) {
             emitNewOperationEvent(operation.getBackend());
         }
-
         return static_cast<int>(operation.getBackend().type);
     }
 

@@ -36,7 +36,6 @@
 
 #include <crypto/SHA256.hpp>
 #include <math/BaseConverter.hpp>
-
 #include <fmt/format.h>
 
 namespace ledger {
@@ -481,7 +480,7 @@ namespace algorand {
 
     bool TransactionDatabaseHelper::transactionExists(soci::session & sql, const std::string & txUid) {
         int32_t count = 0;
-        sql << "SELECT COUNT(*) FROM algorand_transactions WHERE transaction_uid = :txUid", soci::use(txUid), soci::into(count);
+        sql << "SELECT COUNT(*) FROM algorand_transactions WHERE uid = :txUid", soci::use(txUid), soci::into(count);
         return count == 1;
     }
 
@@ -506,23 +505,29 @@ namespace algorand {
         return SHA256::stringToHexHash(fmt::format("uid:{}+{}", accountUid, txHash));
     }
 
-    std::string TransactionDatabaseHelper::putTransaction(soci::session & sql,
-                                                          const std::string & accountUid,
-                                                          const model::Transaction & tx) {
+    std::string TransactionDatabaseHelper::putTransaction(soci::session &sql,
+                                                          const std::string &accountUid,
+                                                          const model::Transaction &tx)
+    {
         auto txUid = createTransactionUid(accountUid, *tx.header.id);
 
-        if (tx.header.type == constants::xPay) {
-            putPaymentTransaction(sql, txUid, tx);
-        } else if (tx.header.type == constants::xKeyregs) {
-            putKeyRegTransaction(sql, txUid, tx);
-        } else if (tx.header.type == constants::xAcfg) {
-            putAssetConfigTransaction(sql, txUid, tx);
-        } else if (tx.header.type == constants::xAxfer) {
-            putAssetTransferTransaction(sql, txUid, tx);
-        } else if (tx.header.type == constants::xAfreeze) {
-            putAssetFreezeTransaction(sql, txUid, tx);
+        if (!transactionExists(sql, txUid)) {
+            if (tx.header.type == constants::xPay) {
+                putPaymentTransaction(sql, txUid, tx);
+            }
+            else if (tx.header.type == constants::xKeyregs) {
+                putKeyRegTransaction(sql, txUid, tx);
+            }
+            else if (tx.header.type == constants::xAcfg) {
+                putAssetConfigTransaction(sql, txUid, tx);
+            }
+            else if (tx.header.type == constants::xAxfer) {
+                putAssetTransferTransaction(sql, txUid, tx);
+            }
+            else if (tx.header.type == constants::xAfreeze) {
+                putAssetFreezeTransaction(sql, txUid, tx);
+            }
         }
-
         return txUid;
     }
 

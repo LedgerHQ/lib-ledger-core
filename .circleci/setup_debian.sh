@@ -16,14 +16,16 @@ echo "========> Java Installed"
 echo $JAVA_HOME
 ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 
-apt-get install -y awscli
-echo "========> Install sbt"
-SBT_DEB="sbt-1.3.10.deb"
-curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
-dpkg -i $SBT_DEB
-rm $SBT_DEB
-sbt sbtVersion
-apt-get install -y scala
+if [[ "$BUILD_CONFIG" == "Release" || "$CIRCLE_BRANCH" =~ ^int.* ]]; then
+    apt-get install -y awscli
+    echo "========> Install sbt"
+    SBT_DEB="sbt-1.3.10.deb"
+    curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
+    dpkg -i $SBT_DEB
+    rm $SBT_DEB
+    sbt sbtVersion
+    apt-get install -y scala
+fi
 
 echo "========> Install C++ dependencies"
 apt-get install -y g++ make
