@@ -30,7 +30,6 @@
  */
 
 #include "UvThreadDispatcher.hpp"
-#include <uv.h>
 #include <thread>
 #include <ledger/core/utils/Option.hpp>
 #include <ledger/core/utils/Try.hpp>
