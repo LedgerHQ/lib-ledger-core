@@ -62,8 +62,11 @@ namespace ledger {
 
             const BigInt& value();
 
+            bool isReplaceable() const override;
+
         private:
             BitcoinLikeBlockchainExplorerOutput& getOutput();
+            const BitcoinLikeBlockchainExplorerOutput& getOutput() const;
 
         private:
             Either<std::shared_ptr<OperationApi>, BitcoinLikeBlockchainExplorerOutput>  _backend;

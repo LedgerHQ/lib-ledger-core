@@ -46,7 +46,8 @@ namespace ledger {
                                             const std::string& btcTxUid,
                                             const std::string &accountUid,
                                             const std::string& transactionHash,
-                                            const BitcoinLikeBlockchainExplorerOutput& output);
+                                            const BitcoinLikeBlockchainExplorerOutput& output,
+                                            bool replaceable);
             static inline void insertInput(soci::session& sql,
                                            const std::string& btcTxUid,
                                            const std::string& accountUid,

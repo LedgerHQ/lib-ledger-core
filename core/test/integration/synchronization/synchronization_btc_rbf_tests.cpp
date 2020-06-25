@@ -72,6 +72,25 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
         );
     }
 
+    std::shared_ptr<api::BitcoinLikeTransaction> findTransaction(const std::shared_ptr<BitcoinLikeAccount>& account,
+                                             const std::string& txHash) {
+        for (const auto& op : getAllOperartions(account)) {
+            if (op->asBitcoinLikeOperation()->getTransaction()->getHash() == txHash)
+                return op->asBitcoinLikeOperation()->getTransaction();
+        }
+        throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Unable to find tx {} in test", txHash);
+    }
+
+    std::shared_ptr<api::BitcoinLikeOutput> findUtxo(const std::shared_ptr<BitcoinLikeAccount>& account,
+                                                     const std::string& txHash,
+                                                     int outputIndex) {
+        for (auto& utxo : uv::wait(account->getUTXO())) {
+            if (utxo->getTransactionHash() == txHash && utxo->getOutputIndex() == outputIndex)
+                return utxo;
+        }
+        throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Unable to find utxo {} {} in test", txHash, outputIndex);
+    }
+
     void synchronizeAccount(const std::shared_ptr<BitcoinLikeAccount>& account) {
         auto bus = account->synchronize();
         Promise<Unit> promise;
@@ -186,11 +205,18 @@ TEST_F(BitcoinLikeWalletBtcRbfSynchronization, SimpleRbfScenario) {
     auto replaceTx1 = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1});
     auto replaceTx2 = mockTransaction("0005", {Input("1001", 1, send2, 0xFFFFFFFB)}, {foreign});
 
+    auto finalTx1 = mockTransaction("0004", {Input("1000", 0, send1, 0xFFFFFFFC)}, {receive1}, block2);
+    auto finalTx2 = mockTransaction("0003", {Input("1001", 1, send2, 0xFFFFFFFA)}, {receive3}, block2);;
+
     // Receive a single transaction
     explorer->addTransaction(tx1);
     synchronizeAccount(account);
     EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value);
     EXPECT_EQ(getAllOperartions(account).size(), 1);
+    EXPECT_EQ(findTransaction(account, "0001")->getOutputs().size(), 1);
+    for (const auto& output : findTransaction(account, "0001")->getOutputs()) {
+        EXPECT_FALSE(output->isReplaceable());
+    }
 
     // Receive 2 RBF transaction
     explorer->addTransaction(rbfTx1);
@@ -198,6 +224,10 @@ TEST_F(BitcoinLikeWalletBtcRbfSynchronization, SimpleRbfScenario) {
     synchronizeAccount(account);
     EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value + receive2.value + receive3.value);
     EXPECT_EQ(getAllOperartions(account).size(), 3);
+    EXPECT_EQ(uv::wait(account->getUTXO()).size(), 3);
+    EXPECT_FALSE(findUtxo(account, "0001", 0)->isReplaceable());
+    EXPECT_TRUE(findUtxo(account, "0003", 0)->isReplaceable());
+    EXPECT_TRUE(findUtxo(account, "0002", 0)->isReplaceable());
 
     // Replace 1 transaction with another one to the same account
     explorer->addTransaction(replaceTx1);
@@ -205,9 +235,41 @@ TEST_F(BitcoinLikeWalletBtcRbfSynchronization, SimpleRbfScenario) {
     EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value + receive1.value + receive3.value);
     EXPECT_EQ(getAllOperartions(account).size(), 3);
 
+    EXPECT_EQ(uv::wait(account->getUTXO()).size(), 3);
+    EXPECT_FALSE(findUtxo(account, "0001", 0)->isReplaceable());
+    EXPECT_TRUE(findUtxo(account, "0003", 0)->isReplaceable());
+    EXPECT_TRUE(findUtxo(account, "0004", 0)->isReplaceable());
+
     // Replace the second transaction with another one on an unrelated account
     explorer->addTransaction(replaceTx2);
     synchronizeAccount(account);
     EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value + receive1.value);
     EXPECT_EQ(getAllOperartions(account).size(), 2);
+    EXPECT_EQ(findTransaction(account, "0004")->getOutputs().size(), 1);
+    for (const auto& output : findTransaction(account, "0004")->getOutputs()) {
+        EXPECT_TRUE(output->isReplaceable());
+    }
+
+    EXPECT_EQ(uv::wait(account->getUTXO()).size(), 2);
+    EXPECT_FALSE(findUtxo(account, "0001", 0)->isReplaceable());
+    EXPECT_TRUE(findUtxo(account, "0004", 0)->isReplaceable());
+
+    // Confirm every transaction
+    explorer->removeTransaction("0002");
+    explorer->removeTransaction("0003");
+    explorer->removeTransaction("0004");
+    explorer->removeTransaction("0005");
+    explorer->addTransaction(finalTx1);
+    explorer->addTransaction(finalTx2);
+    synchronizeAccount(account);
+    EXPECT_EQ(uv::wait(account->getBalance())->toLong(), receive1.value + receive1.value + receive3.value);
+    EXPECT_EQ(getAllOperartions(account).size(), 3);
+    EXPECT_EQ(findTransaction(account, "0004")->getOutputs().size(), 1);
+    for (const auto& output : findTransaction(account, "0004")->getOutputs()) {
+        EXPECT_FALSE(output->isReplaceable());
+    }
+    EXPECT_EQ(uv::wait(account->getUTXO()).size(), 3);
+    EXPECT_FALSE(findUtxo(account, "0001", 0)->isReplaceable());
+    EXPECT_FALSE(findUtxo(account, "0003", 0)->isReplaceable());
+    EXPECT_FALSE(findUtxo(account, "0004", 0)->isReplaceable());
 }

@@ -55,7 +55,7 @@ namespace ledger {
                     std::vector<std::string> addresses;
                     boost::split(addresses, *addressesIt, [](char c) {return c == ','; });
                     std::string blockHash = "";
-                    auto blockHashIt = parameters.find("block_hash");
+                    auto blockHashIt = parameters.find("blockHash");
                     if (blockHashIt != parameters.end()) {
                         blockHash = blockHashIt->second;
                     }

@@ -33,9 +33,9 @@ jobs:
           command: |
             . .circleci/build_lib.sh Release
       - run:
-          name: Build_Module
+          name: Export_Lib_Version
           command: |
-            . .circleci/build_node_module.sh
+            . .circleci/export_lib_version.sh
       - run:
           name: Copy_Artifacts
           command: |
@@ -130,9 +130,9 @@ jobs:
             command: |
               . .circleci/build_lib.sh Debug
         - run:
-            name: Build_Module
+            name: Export_Lib_Version
             command: |
-              . .circleci/build_node_module.sh
+              . .circleci/export_lib_version.sh
         - run:
             name: Run_Tests
             command: |
@@ -158,9 +158,9 @@ jobs:
           command: |
             . .circleci/build_lib.sh Release
       - run:
-          name: Build_Module
+          name: Export_Lib_Version
           command: |
-            . .circleci/build_node_module.sh
+            . .circleci/export_lib_version.sh
       - run:
           name: Copy_Artifacts
           command: |
@@ -225,9 +225,9 @@ jobs:
           command: |
             . .circleci/build_lib.sh Debug
       - run:
-          name: Build_Module
+          name: Export_Lib_Version
           command: |
-            . .circleci/build_node_module.sh
+            . .circleci/export_lib_version.sh
       - run:
           name: Run_Tests
           command: |

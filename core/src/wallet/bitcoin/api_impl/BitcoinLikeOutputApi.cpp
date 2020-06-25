@@ -79,6 +79,12 @@ namespace ledger {
             return _backend.getRight();
         }
 
+        const BitcoinLikeBlockchainExplorerOutput &BitcoinLikeOutputApi::getOutput() const {
+            if (_backend.isLeft())
+                return _backend.getLeft()->getBackend().bitcoinTransaction.getValue().outputs[_outputIndex];
+            return _backend.getRight();;
+        }
+
         std::shared_ptr<api::BitcoinLikeScript> BitcoinLikeOutputApi::parseScript() {
             auto result = BitcoinLikeScript::parse(getScript());
             if (result.isFailure())
@@ -103,6 +109,10 @@ namespace ledger {
 
         const BigInt &BitcoinLikeOutputApi::value() {
             return getOutput().value;
+        }
+
+        bool BitcoinLikeOutputApi::isReplaceable() const {
+            return getOutput().replaceable;
         }
     }
 }
