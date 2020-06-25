@@ -15,7 +15,7 @@ lipo -info ledger-core.framework/ledger-core
 if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ]; then
 	aws s3 sync ./ s3://ledger-lib-ledger-core/$LIB_VERSION/ios/universal --acl public-read --exclude "x86_64/*" --exclude "armv7/*" --exclude "arm64/*" && \
 	aws s3 ls s3://ledger-lib-ledger-core/$LIB_VERSION/ios/universal;
-elif [ "$CIRCLE_BRANCH" =~ ^int-.* ]; then
+elif [[ "$CIRCLE_BRANCH" =~ ^int-.* ]]; then
     if [ -z "$1" ]
 	then
 		aws s3 sync ./ s3://ledger-lib-ledger-core/$CIRCLE_BRANCH/release/$LIB_VERSION/ios/universal --acl public-read --exclude "x86_64/*" --exclude "armv7/*" --exclude "arm64/*" && \
