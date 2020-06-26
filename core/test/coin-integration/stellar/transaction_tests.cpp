@@ -62,17 +62,20 @@ TEST_F(StellarFixture, PaymentTransaction) {
     builder->setBaseFee( api::Amount::fromLong(wallet->getCurrency(), fees));
     auto tx = ::wait(builder->build());
     tx->putSignature(signature, address);
-    auto envelope = std::dynamic_pointer_cast<StellarLikeTransaction>(tx)->envelope();
+    auto wrappedEnvelope = std::dynamic_pointer_cast<StellarLikeTransaction>(tx)->envelope();
+    const auto& envelope = boost::get<stellar::xdr::TransactionV1Envelope>(wrappedEnvelope.content);
     EXPECT_EQ(envelope.signatures.size() , 1);
-    EXPECT_EQ(envelope.tx.sourceAccount.type, stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519);
+    EXPECT_EQ(envelope.tx.sourceAccount.type, stellar::xdr::CryptoKeyType::KEY_TYPE_ED25519);
     auto accountPubKey = account->getKeychain()->getAddress()->toPublicKey();
-    std::vector<uint8_t> envelopeSourcePubKey(envelope.tx.sourceAccount.content.begin(), envelope.tx.sourceAccount.content.end());
+    auto sourceAccount = boost::get<stellar::xdr::uint256>(envelope.tx.sourceAccount.content);
+    std::vector<uint8_t> envelopeSourcePubKey(sourceAccount.begin(), sourceAccount.end());
     EXPECT_EQ(accountPubKey, envelopeSourcePubKey);
     EXPECT_TRUE(envelope.tx.seqNum >= 98448948301135874L);
     EXPECT_TRUE(envelope.tx.fee == fees);
     EXPECT_TRUE(envelope.tx.operations.size() == 1);
     EXPECT_EQ(envelope.tx.memo.type, stellar::xdr::MemoType::MEMO_NONE);
     EXPECT_EQ(envelope.signatures.front().signature, signature);
+    fmt::print("{}\n", hex::toString(tx->toRawTransaction()));
 }
 
 TEST_F(StellarFixture, ParseRawTransaction) {

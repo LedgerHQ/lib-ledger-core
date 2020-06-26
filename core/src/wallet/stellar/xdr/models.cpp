@@ -52,6 +52,28 @@ BEGIN_ENCODER(PublicKey)
         case PublicKeyType::PUBLIC_KEY_TYPE_ED25519:
             encoder << object.content;
             break;
+        case PublicKeyType::PUBLIC_KEY_TYPE_MUXED_ED25519:
+            // DO NOTHING
+            break;
+    }
+END_ENCODER
+
+BEGIN_ENCODER(med25519)
+    encoder << object.id << object.ed25519;
+END_ENCODER
+
+BEGIN_ENCODER(MuxedAccount)
+    encoder << static_cast<int32_t>(object.type);
+    switch (object.type) {
+        case CryptoKeyType::KEY_TYPE_ED25519:
+            encoder << boost::get<uint256>(object.content);
+            break;
+        case CryptoKeyType::KEY_TYPE_MUXED_ED25519:
+            encoder << boost::get<med25519>(object.content);
+            break;
+        default:
+            // Do nothing
+            break;
     }
 END_ENCODER
 
@@ -110,13 +132,23 @@ BEGIN_ENCODER(PaymentOp)
     encoder << object.destination << object.asset << object.amount;
 END_ENCODER
 
-BEGIN_ENCODER(PathPaymentOp)
+BEGIN_ENCODER(PathPaymentStrictReceiveOp)
     encoder
             << object.sendAsset
             << object.sendMax
             << object.destination
             << object.destAsset
             << object.destAmount
+            << object.path;
+END_ENCODER
+
+BEGIN_ENCODER(PathPaymentStrictSendOp)
+    encoder
+            << object.sendAsset
+            << object.sendAmount
+            << object.destination
+            << object.destAsset
+            << object.destMin
             << object.path;
 END_ENCODER
 
@@ -195,7 +227,7 @@ BEGIN_ENCODER(Operation)
             encoder << boost::get<PaymentOp>(object.content);
             break;
         case OperationType::PATH_PAYMENT:
-            encoder << boost::get<PathPaymentOp>(object.content);
+            encoder << boost::get<PathPaymentStrictReceiveOp>(object.content);
             break;
         case OperationType::MANAGE_OFFER:
             encoder << boost::get<ManageSellOfferOp>(object.content);
@@ -240,8 +272,50 @@ BEGIN_ENCODER(Transaction)
             << (int32_t) 0;// reserved for future use
 END_ENCODER
 
-BEGIN_ENCODER(TransactionEnvelope)
+BEGIN_ENCODER(TransactionV0)
+    encoder
+            << object.sourceAccountEd25519
+            << object.fee
+            << object.seqNum
+            << object.timeBounds
+            << object.memo
+            << object.operations
+            << (int32_t) 0;// reserved for future use
+END_ENCODER
+
+BEGIN_ENCODER(FeeBumpTransaction)
+    encoder
+            << object.feeSource
+            << object.fee
+            << object.operations
+            << (int32_t) 0;// reserved for future use
+END_ENCODER
+
+BEGIN_ENCODER(TransactionV0Envelope)
+  encoder << object.tx << object.signatures;
+END_ENCODER
+
+BEGIN_ENCODER(TransactionV1Envelope)
     encoder << object.tx << object.signatures;
+END_ENCODER
+
+BEGIN_ENCODER(FeeBumpTransactionEnvelope)
+    encoder << object.tx << object.signatures;
+END_ENCODER
+
+BEGIN_ENCODER(TransactionEnvelope)
+    encoder << static_cast<int32_t>(object.type);
+    switch (object.type) {
+        case EnvelopeType::ENVELOPE_TYPE_TX_V0:
+            encoder << boost::get<TransactionV0Envelope>(object.content);
+            break;
+        case EnvelopeType::ENVELOPE_TYPE_TX:
+            encoder << boost::get<TransactionV1Envelope>(object.content);
+            break;
+        case EnvelopeType::ENVELOPE_TYPE_TX_FEE_BUMP:
+            encoder << boost::get<FeeBumpTransactionEnvelope>(object.content);
+            break;
+    }
 END_ENCODER
 
 BEGIN_ENCODER(DecoratedSignature)
@@ -271,6 +345,39 @@ BEGIN_DECODER(PublicKey)
     switch (object.type) {
         case PublicKeyType::PUBLIC_KEY_TYPE_ED25519:
             decoder >> object.content;
+            break;
+        case PublicKeyType::PUBLIC_KEY_TYPE_MUXED_ED25519:
+            // Do nothing
+            break;
+    }
+END_DECODER
+
+BEGIN_DECODER(CryptoKeyType)
+    int32_t type;
+    decoder >> type;
+    object = static_cast<CryptoKeyType>(type);
+END_DECODER
+
+BEGIN_DECODER(med25519)
+    decoder >> object.id >> object.ed25519;
+END_DECODER
+
+BEGIN_DECODER(MuxedAccount)
+    decoder >> object.type;
+    switch (object.type) {
+        case CryptoKeyType::KEY_TYPE_ED25519: {
+            object.content = uint256();
+            decoder >> boost::get<uint256>(object.content);
+            break;
+        }
+        case CryptoKeyType::KEY_TYPE_MUXED_ED25519: {
+            object.content = med25519();
+            decoder >> boost::get<med25519>(object.content);
+            break;
+        }
+        case CryptoKeyType::KEY_TYPE_HASH_X:
+        case CryptoKeyType::KEY_TYPE_PRE_AUTH_TX:
+            // No op
             break;
     }
 END_DECODER
@@ -360,13 +467,23 @@ BEGIN_DECODER(PaymentOp)
     decoder >> object.destination >> object.asset >> object.amount;
 END_DECODER
 
-BEGIN_DECODER(PathPaymentOp)
+BEGIN_DECODER(PathPaymentStrictReceiveOp)
     decoder
             >> object.sendAsset
             >> object.sendMax
             >> object.destination
             >> object.destAsset
             >> object.destAmount
+            >> object.path;
+END_DECODER
+
+BEGIN_DECODER(PathPaymentStrictSendOp)
+    decoder
+            >> object.sendAsset
+            >> object.sendAmount
+            >> object.destination
+            >> object.destAsset
+            >> object.destMin
             >> object.path;
 END_DECODER
 
@@ -443,6 +560,12 @@ BEGIN_DECODER(OperationType)
     object = static_cast<OperationType>(type);
 END_DECODER
 
+BEGIN_DECODER(EnvelopeType)
+    int32_t type;
+    decoder >> type;
+    object = static_cast<EnvelopeType>(type);
+END_DECODER
+
 BEGIN_DECODER(Operation)
     decoder >> object.sourceAccount >> object.type;
     switch (object.type) {
@@ -455,8 +578,8 @@ BEGIN_DECODER(Operation)
             decoder >> boost::get<PaymentOp>(object.content);
             break;
         case OperationType::PATH_PAYMENT:
-            object.content = PathPaymentOp();
-            decoder >> boost::get<PathPaymentOp>(object.content);
+            object.content = PathPaymentStrictReceiveOp();
+            decoder >> boost::get<PathPaymentStrictReceiveOp>(object.content);
             break;
         case OperationType::MANAGE_OFFER:
             object.content = ManageSellOfferOp();
@@ -511,8 +634,54 @@ BEGIN_DECODER(Transaction)
             >> unused; // reserved for future use
 END_DECODER
 
-BEGIN_DECODER(TransactionEnvelope)
+BEGIN_DECODER(TransactionV0)
+    int32_t unused;
+    decoder
+            >> object.sourceAccountEd25519
+            >> object.fee
+            >> object.seqNum
+            >> object.timeBounds
+            >> object.memo
+            >> object.operations
+            >> unused; // reserved for future use
+END_DECODER
+
+BEGIN_DECODER(FeeBumpTransaction)
+    int32_t unused;
+    decoder
+            >> object.feeSource
+            >> object.fee
+            >> unused; // reserved for future use
+END_DECODER
+
+BEGIN_DECODER(FeeBumpTransactionEnvelope)
+    decoder >> object.tx;
+END_DECODER
+
+BEGIN_DECODER(TransactionV1Envelope)
     decoder >> object.tx >> object.signatures;
+END_DECODER
+
+BEGIN_DECODER(TransactionV0Envelope)
+    decoder >> object.tx >> object.signatures;
+END_DECODER
+
+BEGIN_DECODER(TransactionEnvelope)
+    decoder >> object.type;
+    switch (object.type) {
+        case EnvelopeType::ENVELOPE_TYPE_TX_V0:
+            object.content = TransactionV0Envelope();
+            decoder >> boost::get<TransactionV0Envelope>(object.content);
+            break;
+        case EnvelopeType::ENVELOPE_TYPE_TX:
+            object.content = TransactionV1Envelope();
+            decoder >> boost::get<TransactionV1Envelope>(object.content);
+            break;
+        case EnvelopeType::ENVELOPE_TYPE_TX_FEE_BUMP:
+            object.content = FeeBumpTransactionEnvelope();
+            decoder >> boost::get<FeeBumpTransactionEnvelope>(object.content);
+            break;
+    }
 END_DECODER
 
 BEGIN_DECODER(DecoratedSignature)

@@ -34,6 +34,7 @@
 #include <api/StellarLikeTransactionCallback.hpp>
 #include <algorithm>
 #include <api_impl/BigIntImpl.hpp>
+#include <wallet/stellar/xdr/StellarModelUtils.hpp>
 
 namespace ledger {
     namespace core {
@@ -53,12 +54,8 @@ namespace ledger {
             }
             stellar::xdr::Operation operation;
             stellar::xdr::PaymentOp op;
-            op.destination.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
             StellarLikeAddress addr(address, _account->getWallet()->getCurrency(), Option<std::string>::NONE);
-            auto pubKey = addr.toPublicKey();
-            if (pubKey.size() != op.destination.content.max_size())
-                throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Public key must be exactly {}", op.destination.content.max_size());
-            std::copy(pubKey.begin(), pubKey.begin() + op.destination.content.max_size(), op.destination.content.begin());
+            op.destination = addr.toXdrMuxedAccount();
             op.asset.type = stellar::xdr::AssetType::ASSET_TYPE_NATIVE;
             op.amount = std::static_pointer_cast<Amount>(amount)->value()->toInt64();
 
@@ -114,9 +111,8 @@ namespace ledger {
             // Sanitize signatures
             auto account = _account;
             auto envelope = _envelope;
+            auto muxedAccount = _account->params().keychain->getAddress()->toXdrMuxedAccount();
             auto pubKey = _account->params().keychain->getAddress()->toPublicKey();
-            if (pubKey.size() != 32)
-                throw make_exception(api::ErrorCode::ILLEGAL_STATE, "Public key must be exactly 32 byte long");
             auto balanceChange = _balanceChange;
             auto baseFee = _baseFee.getValueOr(100);
             return account->getBalance().flatMap<Unit>(account->getContext(), [=] (const std::shared_ptr<Amount>& balance) {
@@ -127,13 +123,13 @@ namespace ledger {
                     return unit;
                 });
             }).mapPtr<api::StellarLikeTransaction>(account->getContext(), [=] (const Unit&) mutable -> std::shared_ptr<api::StellarLikeTransaction> {
-                envelope.tx.sourceAccount.type = stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
-                std::copy(pubKey.begin(), pubKey.end(), envelope.tx.sourceAccount.content.begin());
+                envelope.tx.sourceAccount = muxedAccount;
                 for (auto& signature : envelope.signatures) {
                     std::copy(pubKey.begin() + 28,  pubKey.end(), signature.hint.begin());
                 }
                 envelope.tx.fee = envelope.tx.operations.size() * baseFee;
-                return std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), envelope);
+                auto wrapped = stellar::xdr::wrap(envelope);
+                return std::make_shared<StellarLikeTransaction>(_account->getWallet()->getCurrency(), wrapped);
             });
         }
 
