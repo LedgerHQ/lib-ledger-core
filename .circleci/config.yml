@@ -381,42 +381,42 @@ workflows:
             tags:
               only: /.*/
             branches:
-              ignore:
+              ignore: /^int-.*/
       - build_linux_jni_release:
           filters:
             tags:
               only: /.*/
             branches:
-              ignore:
+              ignore: /^int-.*/
       - build_android_release:
           filters:
             tags:
               only: /.*/
             branches:
-              ignore:
+              ignore: /^int-.*/
       - build_macos_release:
           filters:
             tags:
               only: /.*/
             branches:
-              ignore:
+              ignore: /^int-.*/
       - build_macos_ios_release:
           filters:
             tags:
               only: /.*/
             branches:
-              ignore:
+              ignore: /^int-.*/
       - build_macos_jni_release:
           filters:
             tags:
               only: /.*/
             branches:
-              ignore:
+              ignore: /^int-.*/
       - build_linux_debug
       - build_macos_debug:
           filters:
             branches:
-              ignore:
+              ignore: /^int-.*/
       - publish_jar:
           requires:
             - build_linux_jni_release
@@ -425,7 +425,7 @@ workflows:
             tags:
               only: /.*/
             branches:
-              ignore:
+              ignore: /^int-.*/
   documentation:
     jobs:
       - generate_doc:
