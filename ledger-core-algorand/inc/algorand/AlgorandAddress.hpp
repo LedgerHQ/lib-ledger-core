@@ -61,6 +61,21 @@ namespace algorand {
         static std::string fromPublicKey(const std::vector<uint8_t> & pubKey);
         static std::vector<uint8_t> toPublicKey(const std::string & address);
 
+        // Attempt to parse a string address.
+        // @param address The string to parse
+        // @param currency The currency used to parse the address
+        // @return If successful, returns the address, otherwise none.
+        static std::shared_ptr<ledger::core::Address> parse(
+            const std::string& address, const api::Currency& currency);
+
+        // Check whether the given string formatted address is valid or not.
+        // @param address The string to parse
+        // @param currency The currency used to parse the address
+        // @return If successful, returns true; false otherwise.
+        static bool isValid(
+            const std::string &address,
+            const api::Currency &currency);
+
     private:
 
         static const int32_t PUBKEY_LEN_BYTES = 32;
