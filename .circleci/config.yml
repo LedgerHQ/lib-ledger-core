@@ -416,7 +416,7 @@ workflows:
       - build_macos_debug:
           filters:
             branches:
-              ignore: /^int-.*/
+              ignore: /int-.*/
       - publish_jar:
           requires:
             - build_linux_jni_release
@@ -425,7 +425,7 @@ workflows:
             tags:
               only: /.*/
             branches:
-              ignore: /^int-.*/
+              ignore: /int-.*/
   documentation:
     jobs:
       - generate_doc:
