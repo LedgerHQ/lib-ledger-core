@@ -33,6 +33,7 @@
 #include <algorand/AlgorandLikeCurrencies.hpp>
 
 #include <core/address/Address.hpp>
+#include <algorand/api/AlgorandAddress.hpp>
 
 #include <string>
 #include <vector>
@@ -41,7 +42,7 @@ namespace ledger {
 namespace core {
 namespace algorand {
 
-    class Address : public ledger::core::Address {
+    class Address : public ledger::core::Address, public api::AlgorandAddress {
 
     public:
 
@@ -64,8 +65,8 @@ namespace algorand {
         // Attempt to parse a string address.
         // @param address The string to parse
         // @param currency The currency used to parse the address
-        // @return If successful, returns the address, otherwise none.
-        static std::shared_ptr<ledger::core::Address> parse(
+        // @return Always returns an Algorand address downcasted to an api::Address.
+        static std::shared_ptr<api::Address> parse(
             const std::string& address, const api::Currency& currency);
 
         // Check whether the given string formatted address is valid or not.
