@@ -29,6 +29,7 @@
  *
  */
 
+#include <UvThreadDispatcher.hpp>
 #include <gtest/gtest.h>
 #include "../BaseFixture.h"
 #include <set>
@@ -38,7 +39,6 @@
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
-#include <UvThreadDispatcher.hpp>
 #include <boost/algorithm/string/join.hpp>
 #include <algorithm>
 
