@@ -976,7 +976,7 @@ namespace ledger {
                        "PRIMARY KEY (idx, transaction_uid)"
                        ")";
                 sql << "INSERT INTO bitcoin_outputs_swap "
-                       "SELECT idx, transaction_uid, transaction_hash, amount, scripts, "
+                       "SELECT idx, transaction_uid, transaction_hash, amount, script, "
                                    "address, account_uid "
                        "FROM bitcoin_outputs";
                 sql << "DROP TABLE bitcoin_outputs";
