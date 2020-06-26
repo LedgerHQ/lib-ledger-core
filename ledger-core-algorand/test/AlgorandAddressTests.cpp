@@ -49,11 +49,11 @@ TEST(AlgorandAddressTest, PubkeyToAddress) {
 TEST(AlgorandAddressTest, AddressValidation) {
     auto currency = currencies::algorand();
     auto address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM";
-    EXPECT_EQ(algorand::Address::isValid(address, currency), true);
+    EXPECT_TRUE(algorand::Address::isValid(address, currency));
     address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL50000";
-    EXPECT_EQ(algorand::Address::isValid(address, currency), false);
+    EXPECT_FALSE(algorand::Address::isValid(address, currency));
     address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZMRGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM";
-    EXPECT_EQ(algorand::Address::isValid(address, currency), false);
+    EXPECT_FALSE(algorand::Address::isValid(address, currency));
     address = "RGX5XA7DWZOZ5SLG4WQSNIFK";
-    EXPECT_EQ(algorand::Address::isValid(address, currency), false);    
+    EXPECT_FALSE(algorand::Address::isValid(address, currency));    
 }
