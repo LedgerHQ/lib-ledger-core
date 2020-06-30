@@ -58,7 +58,6 @@ public:
     std::shared_ptr<BlockchainExplorer> explorer;
 };
 
-
 TEST_F(AlgorandExplorerTest, GetBlock) {
 
     uint64_t blockHeight = 6000000; // Some arbitrary block
@@ -69,6 +68,15 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
     EXPECT_EQ(block.height, blockHeight);
     EXPECT_EQ(block.blockHash, "SWM7OIULX7F7KMGZSGU54FCEVVVCV6XWT6CEG7EH7WI4LHWHNB7A");
     EXPECT_EQ(block.time, blockTime);
+}
+
+TEST_F(AlgorandExplorerTest, GetLatestBlock) {
+
+    api::Block block = ::wait(explorer->getLatestBlock());
+
+    EXPECT_FALSE(block.blockHash.empty());
+    EXPECT_GT(block.height, 7000000);
+    EXPECT_GT(block.time.time_since_epoch().count(), 1593455156000000000);
 }
 
 TEST_F(AlgorandExplorerTest, GetAccount) {

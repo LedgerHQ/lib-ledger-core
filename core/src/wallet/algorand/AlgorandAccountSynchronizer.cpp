@@ -37,9 +37,10 @@
 #include "utils/Exception.hpp"
 #include <collections/vector.hpp>
 #include <debug/Benchmarker.h>
+#include <async/Future.hpp>
 #include <api/Configuration.hpp>
 #include <api/ConfigurationDefaults.hpp>
-#include <iostream>
+
 
 namespace ledger {
 namespace core {
@@ -89,8 +90,10 @@ namespace algorand {
             _internalPreferences->editor()->template putObject<SavedState>("state", savedState.getValue())->commit();
         }
 
-        return synchronizeBatch(account, false, firstRound)
-            .template flatMap<Unit>(account->getContext(), [] (const bool hadTransactions) -> Future<Unit> {
+        return updateLatestBlock(account->getContext())
+            .template flatMap<bool>(account->getContext(), [this, account, firstRound] (const Unit&) -> Future<bool> {
+                return synchronizeBatch(account, false, firstRound);
+            }).template flatMap<Unit>(account->getContext(), [] (const bool hadTransactions) -> Future<Unit> {
                 return Future<Unit>::successful(unit);
             }).recoverWith(ImmediateExecutionContext::INSTANCE, [] (const Exception & exception) -> Future<Unit> {
                 return Future<Unit>::failure(exception);
@@ -136,6 +139,25 @@ namespace algorand {
                     return synchronizeBatch(account, hadTX, lowestRound, lowestBatchRound);
                 } else {
                     return Future<bool>::successful(hadTX);
+                }
+            });
+    }
+
+    Future<Unit> AccountSynchronizer::updateLatestBlock(const std::shared_ptr<api::ExecutionContext> &context) {
+        return _explorer->getLatestBlock()
+            .template flatMap<Unit>(context, [this] (const Try<api::Block>& block) -> Future<Unit> {
+                if (block.isSuccess()) {
+                    soci::session sql(_account->getWallet()->getDatabase()->getPool());
+                    soci::transaction tr(sql);
+                    try {
+                        auto blockRef = const_cast<api::Block&>(block.getValue());
+                        blockRef.currencyName = _account->getWallet()->getCurrency().name;
+                        _account->putBlock(sql, blockRef);
+                        tr.commit();
+                    } catch(...) {
+                        tr.rollback();
+                    }
+                    return Future<Unit>::successful(unit);
                 }
             });
     }
