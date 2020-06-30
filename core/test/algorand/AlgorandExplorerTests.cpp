@@ -88,8 +88,10 @@ TEST_F(AlgorandExplorerTest, GetAccount) {
     EXPECT_GT(account.round, 6000000);
     EXPECT_GT(account.amount, 0);
     EXPECT_GT(account.amountWithoutPendingRewards, 0);
-    EXPECT_GT(account.pendingRewards, 0) << "(May fail if rewards have been claimed very recently, but very unlikely)";
-    EXPECT_GT(account.rewards, 0);
+    // Pending rewards should be tested only on a frozen seed,
+    // Because they will get back to 0 after every transaction
+    //EXPECT_GT(account.pendingRewards, 0);
+    //EXPECT_GT(account.rewards, 0);
 
     EXPECT_FALSE(account.assetsAmounts.empty());
     EXPECT_NE(account.assetsAmounts.find(342836), account.assetsAmounts.end());
