@@ -7,25 +7,25 @@
 Preferences = interface +c {
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getString(key: string, fallbackValue: string): string;
+    const getString(key: string, fallbackValue: string): string;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getInt(key: string, fallbackValue: i32): i32;
+    const getInt(key: string, fallbackValue: i32): i32;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getLong(key: string, fallbackValue: i64): i64;
+    const getLong(key: string, fallbackValue: i64): i64;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getBoolean(key: string, fallbackValue: bool): bool;
+    const getBoolean(key: string, fallbackValue: bool): bool;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getStringArray(key: string, fallbackValue: list<string>): list<string>;
+    const getStringArray(key: string, fallbackValue: list<string>): list<string>;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getData(key: string, fallbackValue: binary): binary;
+    const getData(key: string, fallbackValue: binary): binary;
     # Checks whether the Preferences contains the given key.
     # @return true the preferences contains the key, false otherwise.
-    contains(key: string): bool;
+    const contains(key: string): bool;
 
     # Get a preferences editor in order to add/modify/remove data.
     # @return An interface for editting preferences.
@@ -93,7 +93,7 @@ PreferencesBackend = interface +c {
     # Gets the value associated to the given key.
     # @param key The data key.
     # @return The value associated to the key if it exists, an empty option otherwise.
-    get(key: binary): optional<string>;
+    const get(key: binary): optional<string>;
 
     # Commit a change.
     # @param changes The list of changes to commit.
@@ -125,7 +125,7 @@ PreferencesBackend = interface +c {
 
     # Get encryption salt, if any.
     # @return the encryption salt if it exists, an empty string otherwise.
-    getEncryptionSalt(): string;
+    const getEncryptionSalt(): string;
 
     # Clear all preferences.
     clear();

@@ -129,7 +129,7 @@ namespace ledger {
             }
         }
 
-        optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) {
+        optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) const {
             auto value = getRaw(key);
 
             if (value) {
@@ -333,7 +333,7 @@ namespace ledger {
             _db = obtainInstance(_dbName);
         }
 
-        std::string PreferencesBackend::getEncryptionSalt() {
+        std::string PreferencesBackend::getEncryptionSalt() const {
             auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
             return getRaw(saltKey).value_or("");
         }
@@ -351,8 +351,8 @@ namespace ledger {
 
         std::vector<uint8_t> PreferencesBackend::decrypt_preferences_change(
             const std::vector<uint8_t>& data,
-            AESCipher& cipher
-        ) {
+            const AESCipher& cipher
+        ) const {
           auto input = BytesReader(data);
           auto output = BytesWriter();
           cipher.decrypt(input, output);
