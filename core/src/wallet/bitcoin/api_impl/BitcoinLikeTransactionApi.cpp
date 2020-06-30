@@ -39,6 +39,7 @@
 #include <crypto/SHA512.hpp>
 #include <math/Base58.hpp>
 #include <api/KeychainEngines.hpp>
+#include <api/BitcoinLikeTransactionBuilder.hpp>
 
 namespace ledger {
     namespace core {
