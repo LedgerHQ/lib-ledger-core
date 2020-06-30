@@ -47,7 +47,6 @@
 #include <api/BitcoinLikePreparedTransaction.hpp>
 #include <api/BigIntListCallback.hpp>
 #include <wallet/bitcoin/types.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
 
 #include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
 
@@ -55,6 +54,7 @@ namespace ledger {
     namespace core {
         class Operation;
         class BitcoinLikeUtxoPicker;
+
         class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
         public:
             static const int FLAG_NEW_TRANSACTION = 0x01;
