@@ -46,10 +46,10 @@ namespace ledger {
          AESCipher(const std::shared_ptr<api::RandomNumberGenerator>& rng, const std::string& password, const std::string &salt, uint32_t iter);
 
          void encrypt(std::istream *input, std::ostream *output);
-         void decrypt(std::istream *input, std::ostream *output);
+         void decrypt(std::istream *input, std::ostream *output) const ;
 
          void encrypt(BytesReader& input, BytesWriter& output);
-         void decrypt(BytesReader& input, BytesWriter& output);
+         void decrypt(BytesReader& input, BytesWriter& output) const;
 
      private:
          std::shared_ptr<api::RandomNumberGenerator> _rng;

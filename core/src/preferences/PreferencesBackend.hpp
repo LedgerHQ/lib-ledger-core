@@ -65,7 +65,7 @@ namespace ledger {
 
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
 
-            optional<std::string> get(const std::vector<uint8_t>& key) override;
+            optional<std::string> get(const std::vector<uint8_t>& key) const override;
 
             bool commit(const std::vector<api::PreferencesChange>& changes) override;
 
@@ -82,7 +82,7 @@ namespace ledger {
                 const std::string& newPassword
             ) override;
 
-            std::string getEncryptionSalt() override;
+            std::string getEncryptionSalt() const override;
 
             void clear() override;
 
@@ -117,8 +117,8 @@ namespace ledger {
             // helper method used to decrypt things we want to retrieve from leveldb
             std::vector<uint8_t> decrypt_preferences_change(
                 const std::vector<uint8_t>& data,
-                AESCipher& cipher
-            );
+                const AESCipher& cipher
+            ) const;
 
             // an owning table that holds connection opened
             static std::unordered_map<std::string, std::shared_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;

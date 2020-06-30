@@ -55,26 +55,26 @@ namespace ledger {
 
             Preferences(api::PreferencesBackend &backend, const std::string &keyPrefix);
 
-            std::string getString(const std::string &key, const std::string &fallbackValue) override;
+            std::string getString(const std::string &key, const std::string &fallbackValue) const override;
 
-            int32_t getInt(const std::string &key, int32_t fallbackValue) override;
+            int32_t getInt(const std::string &key, int32_t fallbackValue) const override;
 
-            int64_t getLong(const std::string &key, int64_t fallbackValue) override;
+            int64_t getLong(const std::string &key, int64_t fallbackValue) const override;
 
-            bool getBoolean(const std::string &key, bool fallbackValue) override;
+            bool getBoolean(const std::string &key, bool fallbackValue) const override;
 
             std::vector<std::string>
-            getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) override;
+            getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) const override;
 
-            bool contains(const std::string &key) override;
+            bool contains(const std::string &key) const override;
 
             std::shared_ptr<api::PreferencesEditor> edit() override;
             std::shared_ptr<PreferencesEditor> editor();
 
-            std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) override;
+            std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) const override;
 
             template <typename T>
-            Option<T> getObject(const std::string& key) {
+            Option<T> getObject(const std::string& key) const {
                 auto data = getData(key, {});
                 if (data.size() == 0) {
                     return Option<T>();
@@ -87,7 +87,7 @@ namespace ledger {
                 return Option<T>(object);
             };
 
-            std::shared_ptr<Preferences> getSubPreferences(std::string prefix);
+            std::shared_ptr<Preferences> getSubPreferences(std::string prefix) const;
 
         protected:
             std::vector<uint8_t> wrapKey(const std::string& key) const;
