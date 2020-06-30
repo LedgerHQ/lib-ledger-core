@@ -85,6 +85,13 @@ namespace algorand {
         return decoded;
     }
 
+    std::shared_ptr<api::Address> Address::parse(const std::string& address, 
+        const api::Currency& currency
+        ) {
+            auto decoded = toPublicKey(address);
+            return fromPublicKey(decoded) == address ? std::dynamic_pointer_cast<api::Address>(std::make_shared<algorand::Address>(currency, decoded)) : nullptr;
+    }
+
 } // namespace algorand
 } // namespace core
 } // namespace ledger
