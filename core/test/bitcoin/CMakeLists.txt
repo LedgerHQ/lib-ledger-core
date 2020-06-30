@@ -7,9 +7,10 @@ if (APPLE)
     add_definitions(-D__GLIBCXX__)
 endif (APPLE)
 
-add_executable(ledger-core-bitcoin-tests main.cpp address_test.cpp bitcoin_helper_tests.cpp script_tests.cpp)
+add_executable(ledger-core-bitcoin-tests main.cpp address_test.cpp bitcoin_helper_tests.cpp script_tests.cpp bitcoin_utxo_picket_tests.cpp)
 
 target_link_libraries(ledger-core-bitcoin-tests gtest gtest_main)
+target_link_libraries(ledger-core-bitcoin-tests gmock)
 target_link_libraries(ledger-core-bitcoin-tests ledger-core-static)
 target_link_libraries(ledger-core-bitcoin-tests ledger-test)
 target_link_libraries(ledger-core-bitcoin-tests leveldb)
