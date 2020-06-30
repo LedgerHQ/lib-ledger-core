@@ -278,7 +278,7 @@ namespace ledger {
             //Sort utxos by effectiveValue
             std::sort(listEffectiveUTXOs.begin(), listEffectiveUTXOs.end(), descendingEffectiveValue);
 
-            int64_t currentWaste = 0, currentActualTarget = actualTarget;
+            int64_t currentWaste = 0;
             int64_t bestWaste = MAX_MONEY;
             std::vector<bool> bestSelection;
             buddy->logger->debug("Start filterWithLowestFees, target range is {} to {}, available funds {}", actualTarget, actualTarget + costOfChange, currentAvailableValue);
@@ -287,19 +287,19 @@ namespace ledger {
 
                 //Condition for starting a backtrack
                 bool backtrack = false;
-                if(currentValue + currentAvailableValue < currentActualTarget || //Cannot reach target with the amount remaining in currentAvailableValue
-                   currentValue > currentActualTarget + costOfChange || // Selected value is out of range, go back and try other branch
+                if(currentValue + currentAvailableValue < actualTarget || //Cannot reach target with the amount remaining in currentAvailableValue
+                   currentValue > actualTarget + costOfChange || // Selected value is out of range, go back and try other branch
                    (currentWaste > bestWaste && listEffectiveUTXOs.at(0).effectiveFees - listEffectiveUTXOs.at(0).longTermFees > 0) ) { //avoid selecting utxos producing more waste
                     backtrack = true;
-                } else if (currentValue >= currentActualTarget) { //Selected valued is within range
-                    currentWaste += (currentValue - currentActualTarget);
+                } else if (currentValue >= actualTarget) { //Selected valued is within range
+                    currentWaste += (currentValue - actualTarget);
                     if (currentWaste <= bestWaste) {
                         bestSelection = currentSelection;
                         bestSelection.resize(listEffectiveUTXOs.size());
                         bestWaste = currentWaste;
                     }
                     // remove the excess value as we will be selecting different coins now
-                    currentWaste -= (currentValue - currentActualTarget);
+                    currentWaste -= (currentValue - actualTarget);
                     backtrack = true;
                 }
 
@@ -322,7 +322,6 @@ namespace ledger {
                     auto& effectiveUTXO = listEffectiveUTXOs.at(currentSelection.size() - 1);
                     currentValue -= effectiveUTXO.effectiveValue;
                     currentWaste -= (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
-                    currentActualTarget -= effectiveUTXO.effectiveFees;
                 } else { //Moving forwards, continuing down this branch
                     auto& effectiveUTXO = listEffectiveUTXOs.at(currentSelection.size());
 
@@ -340,7 +339,6 @@ namespace ledger {
                         currentSelection.push_back(true);
                         currentValue += effectiveUTXO.effectiveValue;
                         currentWaste += (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
-                        currentActualTarget += effectiveUTXO.effectiveFees;
                     }
                 }
             }
@@ -358,15 +356,11 @@ namespace ledger {
             for (size_t i = 0; i < bestSelection.size(); i++) {
                 if (bestSelection.at(i)) {
                     buddy->logger->debug("Choose utxo with value: {}", listEffectiveUTXOs.at(i).output->getValue()->toLong());
-                    bestValue = bestValue + BigInt(listEffectiveUTXOs.at(i).output->getValue()->toLong());
+                    bestValue = bestValue + BigInt(listEffectiveUTXOs.at(i).effectiveValue);
                     UTXODescriptor utxoDescriptor{listEffectiveUTXOs.at(i).output->getTransactionHash(), listEffectiveUTXOs.at(i).output->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
                     out.emplace_back(std::move(utxoDescriptor));
                 }
             }
-
-            //Set change amount
-            buddy->changeAmount = bestValue - BigInt(currentActualTarget + costOfChange);
-
             return out;
         }
 
