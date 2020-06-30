@@ -48,6 +48,7 @@ namespace constants {
     static const std::string purestakeTokenHeader = "x-api-key";
 
     // Explorer endpoints
+    static const std::string purestakeStatusEndpoint = "/status";
     static const std::string purestakeBlockEndpoint = "/block/{}";
     static const std::string purestakeAccountEndpoint = "/account/{}";
     static const std::string purestakeAccountTransactionsEndpoint = "/account/{}/transactions";
@@ -69,6 +70,8 @@ namespace constants {
                            const std::shared_ptr<api::DynamicObject> & configuration);
 
         Future<api::Block> getBlock(uint64_t blockHeight) const;
+
+        Future<api::Block> getLatestBlock() const;
 
         Future<model::Account> getAccount(const std::string & address) const;
 
