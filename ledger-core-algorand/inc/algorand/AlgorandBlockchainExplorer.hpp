@@ -54,6 +54,8 @@ namespace algorand {
                            const std::shared_ptr<api::DynamicObject> & configuration);
 
         Future<api::Block> getBlock(uint64_t blockHeight) const;
+
+        Future<api::Block> getLatestBlock() const;
         Future<model::Account> getAccount(const std::string & address) const;
         Future<model::AssetParams> getAssetById(uint64_t id) const;
         Future<model::Transaction> getTransactionById(const std::string & txId) const;

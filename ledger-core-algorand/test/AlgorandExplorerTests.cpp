@@ -71,6 +71,14 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
     EXPECT_EQ(block.time, blockTime);
 }
 
+TEST_F(AlgorandExplorerTest, GetLatestBlock) {
+    auto block = ::wait(explorer->getLatestBlock());
+
+    EXPECT_TRUE(block.blockHash.empty());
+    EXPECT_GT(block.height, 7000000);
+    EXPECT_GT(block.time.time_since_epoch().count(), 1593455156000000000);
+}
+
 TEST_F(AlgorandExplorerTest, GetAccount) {
 
     auto address = ::algorand::Address(OBELIX_ADDRESS);

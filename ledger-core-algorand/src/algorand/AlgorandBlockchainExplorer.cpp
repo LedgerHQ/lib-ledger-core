@@ -43,6 +43,7 @@ namespace algorand {
         static const std::string purestakeTokenHeader = "x-api-key";
 
         // Explorer endpoints
+        static const std::string purestakeStatusEndpoint = "/ps2/v2/status";
         static const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
         static const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
         static const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
@@ -76,6 +77,21 @@ namespace algorand {
                     auto block = api::Block();
                     JsonParser::parseBlock(json, block);
                     return block;
+            });
+    }
+
+    Future<api::Block> BlockchainExplorer::getLatestBlock() const
+    {
+        /// The Algorand API doesn't have a "latest block" endpoint,
+        /// so we need to retrieve the latest round number first,
+        /// then retrieve the associated block.
+        return _http->GET(constants::purestakeStatusEndpoint)
+            .json(false)
+            .map<uint64_t>(getContext(), [](const HttpRequest::JsonResult& response) {
+                    const auto& json = std::get<1>(response)->GetObject();
+                    return json[constants::xLastRoundParam.c_str()].GetUint64();
+            }).flatMap<api::Block>(getContext(), [this](uint64_t latestRound) {
+                    return getBlock(latestRound);
             });
     }
 

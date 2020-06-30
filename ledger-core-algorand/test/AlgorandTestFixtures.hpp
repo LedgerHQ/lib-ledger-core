@@ -50,6 +50,7 @@ namespace algorand {
     using ledger::core::BaseConverter;
     using ledger::core::Option;
 
+    static const std::string EMPTY_ADDRESS = "RB7DUHGKVT3C3NEKP6255KPJDOKLMNXKADZA5UVWVS4YHDDVXYEDHGJKU4"; // This address should be unused and have 0 tx
     static const std::string OBELIX_ADDRESS = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM";
     static const std::string TEST_ACCOUNT_ADDRESS = "6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNE";
 

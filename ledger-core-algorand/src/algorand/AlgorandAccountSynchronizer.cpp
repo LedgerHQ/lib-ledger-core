@@ -87,8 +87,10 @@ namespace algorand {
             _internalPreferences->editor()->template putObject<SavedState>("state", savedState.getValue())->commit();
         }
 
-        return synchronizeBatch(account, false, firstRound)
-            .template flatMap<Unit>(account->getContext(), [] (const bool hadTransactions) -> Future<Unit> {
+        return updateLatestBlock(account->getContext())
+            .template flatMap<bool>(account->getContext(), [this, account, firstRound](const Unit&) {
+                return synchronizeBatch(account, false, firstRound);
+            }).template flatMap<Unit>(account->getContext(), [] (const bool hadTransactions) -> Future<Unit> {
                 return Future<Unit>::successful(unit);
             }).recoverWith(ImmediateExecutionContext::INSTANCE, [] (const Exception & exception) -> Future<Unit> {
                 return Future<Unit>::failure(exception);
@@ -137,6 +139,26 @@ namespace algorand {
                 } else {
                     return Future<bool>::successful(hadTX);
                 }
+            });
+    }
+
+    Future<Unit> AccountSynchronizer::updateLatestBlock(const std::shared_ptr<api::ExecutionContext>& context)
+    {
+        return _explorer->getLatestBlock()
+            .template flatMap<Unit>(context, [this](const Try<api::Block>& block) {
+                    if (block.isSuccess()) {
+                        soci::session sql(_account->getWallet()->getDatabase()->getPool());
+                        soci::transaction tr(sql);
+                        try {
+                            auto blockCpy = block.getValue();
+                            blockCpy.currencyName = _account->getWallet()->getCurrency().name;
+                            _account->putBlock(sql, blockCpy);
+                            tr.commit();
+                        } catch(...) {
+                            tr.rollback();
+                        }
+                    }
+                    return Future<Unit>::successful(unit);
             });
     }
 

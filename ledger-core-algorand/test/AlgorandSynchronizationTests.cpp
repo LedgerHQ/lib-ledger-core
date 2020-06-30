@@ -41,59 +41,81 @@
 #include <integration/WalletFixture.hpp>
 
 #include <functional>
+#include <memory>
 
 using namespace ledger::testing::algorand;
 using namespace ledger::core::algorand;
 
 class AlgorandSynchronizationTest : public WalletFixture<WalletFactory> {
+public:
+    void SetUp() override {
+        WalletFixture::SetUp();
+        backend->enableQueryLogging(true);
+    }
+
+    void synchronizeAccount(const std::string& accountAddress) {
+        registerCurrency(currencies::algorand());
+
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, api::AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT);
+
+        _wallet = std::dynamic_pointer_cast<Wallet>(wait(walletStore->createWallet("test-wallet", "algorand", configuration)));
+
+        auto nextIndex = wait(_wallet->getNextAccountIndex());
+        EXPECT_EQ(nextIndex, 0);
+
+        const api::AccountCreationInfo info(
+                nextIndex,
+                { "main" },
+                { "44'/283'/0'/0'" },
+                { algorand::Address::toPublicKey(accountAddress) },
+                { hex::toByteArray("") }
+        );
+
+        _account = std::dynamic_pointer_cast<Account>(wait(_wallet->newAccountWithInfo(info)));
+
+        auto receiver = make_receiver([=](const std::shared_ptr<api::Event>& event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) {
+                    return;
+                }
+                EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+
+                dispatcher->stop();
+        });
+
+        _account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        dispatcher->waitUntilStopped();
+    }
+
+    std::shared_ptr<Account> _account;
+    std::shared_ptr<Wallet> _wallet;
 };
 
+TEST_F(AlgorandSynchronizationTest, EmptyAccountSynchronizationTest) {
+    synchronizeAccount(EMPTY_ADDRESS);
+
+    // Simulate the getLastBlock Live does after an account sync
+    // Just check nothing goes wrong
+    EXPECT_NO_THROW(wait(_wallet->getLastBlock()));
+
+    auto operations = wait(std::dynamic_pointer_cast<algorand::OperationQuery>(_account->queryOperations()->complete())->execute());
+    EXPECT_EQ(operations.size(), 0);
+}
+
 TEST_F(AlgorandSynchronizationTest, AccountSynchronizationTest) {
-    backend->enableQueryLogging(true);
-    registerCurrency(currencies::algorand());
+    synchronizeAccount(OBELIX_ADDRESS);
 
-    auto configuration = DynamicObject::newInstance();
-    configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
-    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE);
-    configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, api::AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT);
-
-    auto wallet = std::dynamic_pointer_cast<Wallet>(wait(walletStore->createWallet("test-wallet", "algorand", configuration)));
-
-    auto nextIndex = wait(wallet->getNextAccountIndex());
-    EXPECT_EQ(nextIndex, 0);
-
-    const api::AccountCreationInfo info(
-        nextIndex,
-        {"main"},
-        {"44'/283'/0'/0'"},
-        { algorand::Address::toPublicKey(OBELIX_ADDRESS) },
-        {hex::toByteArray("")}
-    );
-
-    auto account = std::dynamic_pointer_cast<Account>(wait(wallet->newAccountWithInfo(info)));
-    auto internalPreferences = account->getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer");
-
-    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
-        fmt::print("Received event {}\n", api::to_string(event->getCode()));
-
-        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) {
-            return;
-        }
-        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
-
-        dispatcher->stop();
-    });
-
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
-    dispatcher->waitUntilStopped();
-
-    auto savedState = internalPreferences->template getObject<SavedState>("state");
+    auto internalPreferences = _account->getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer");
+    auto savedState = internalPreferences->getObject<SavedState>("state");
     std::cout << ">>> Saved block round for next synchronization: " << savedState.getValue().round << std::endl;
     EXPECT_GT(savedState.getValue().round, 6000000);
 
-    auto operations = wait(std::dynamic_pointer_cast<algorand::OperationQuery>(account->queryOperations()->complete())->execute());
+    auto operations = wait(std::dynamic_pointer_cast<algorand::OperationQuery>(_account->queryOperations()->complete())->execute());
     std::cout << ">>> Nb of operations: " << operations.size() << std::endl;
     EXPECT_GT(operations.size(), 200);
-
 }
 

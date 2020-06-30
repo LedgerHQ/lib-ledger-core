@@ -79,6 +79,8 @@ namespace algorand {
                                       const Option<uint64_t> & lowestRound = Option<uint64_t>(),
                                       const Option<uint64_t> & highestRound = Option<uint64_t>());
 
+        Future<Unit> updateLatestBlock(const std::shared_ptr<api::ExecutionContext>& context);
+
         std::shared_ptr<Account> _account;
         std::shared_ptr<BlockchainExplorer> _explorer;
         std::shared_ptr<Preferences> _internalPreferences;
