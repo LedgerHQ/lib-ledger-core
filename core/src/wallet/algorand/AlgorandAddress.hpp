@@ -62,6 +62,8 @@ namespace algorand {
         static std::string fromPublicKey(const std::vector<uint8_t> & pubKey);
         static std::vector<uint8_t> toPublicKey(const std::string & address);
 
+        static std::shared_ptr<api::Address> parse(const std::string& address, const api::Currency& currency);
+
     private:
 
         static const int32_t PUBKEY_LEN_BYTES = 32;

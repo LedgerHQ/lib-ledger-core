@@ -45,3 +45,15 @@ TEST(AlgorandAddressTest, PubkeyToAddress) {
     auto address = algorand::Address::fromPublicKey(pubKey);
     EXPECT_EQ("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM", address) << "!!! This test will fail if SHA512-256 is not available !!!";
 }
+
+TEST(AlgorandAddressTest, AddressValidation) {
+    auto currency = currencies::ALGORAND;
+    auto address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM";
+    EXPECT_TRUE(api::Address::isValid(address, currency));
+    address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL50000";
+    EXPECT_FALSE(api::Address::isValid(address, currency));
+    address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZMRGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM";
+    EXPECT_FALSE(api::Address::isValid(address, currency));
+    address = "RGX5XA7DWZOZ5SLG4WQSNIFK";
+    EXPECT_FALSE(api::Address::isValid(address, currency));    
+} 
