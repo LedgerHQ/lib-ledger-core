@@ -381,7 +381,7 @@ workflows:
             tags:
               only: /.*/
             branches:
-              ignore: /^int-.*/
+              ignore:
       - build_linux_jni_release:
           filters:
             tags:
