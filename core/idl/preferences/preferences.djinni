@@ -78,8 +78,8 @@ PreferencesEditor = interface +c {
 }
 
 PreferencesChangeType = enum {
-    PUT_TYPE;
-    DELETE_TYPE;
+    PUT;
+    DELETE;
 }
 
 PreferencesChange = record {
