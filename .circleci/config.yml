@@ -234,8 +234,10 @@ jobs:
               cd ../lib-ledger-core-build
               ctest -VV -timeout 60
   publish_jar:
-    macos:
-      xcode: "10.0.0"
+    environment:
+      CORE_SSL_1_1: arch_ssl_1_1
+    docker:
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.1
     working_directory: ~/lib-ledger-core
     steps:
     - attach_workspace:
@@ -244,7 +246,7 @@ jobs:
     - run:
         name: Setup
         command: |
-          . .circleci/setup_macos.sh Release
+          . .circleci/setup_debian.sh Release
     - run:
         name: Submodule_Initialization
         command: |
