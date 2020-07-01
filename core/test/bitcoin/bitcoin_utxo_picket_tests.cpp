@@ -145,3 +145,27 @@ TEST(OptimizeSize, ChangeShouldBeBigEnoughToSpend) {
     if (buddy->changeAmount.toInt64() != 0)
         EXPECT_GE(buddy->changeAmount.toInt64(), inputSizeInBytes * feesPerByte);
 }
+
+TEST(OptimizeSize, ApproximationShouldTookEnough) {
+    const api::Currency currency = currencies::BITCOIN;
+    const int64_t feesPerByte = 20;
+    const int64_t inputSizeInBytes = 148;
+    const int64_t outputSizeInBytes = 34;
+    const int64_t emtyTransactionSizeInBytes = 10;
+    int64_t outputAmount = 25000;
+    std::vector<int64_t> inputAmounts{ 15000, 15000, 15000 };
+
+    auto buddy = createBuddy(feesPerByte, outputAmount, currency);
+
+    auto utxos = createUtxos(inputAmounts);
+    auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
+    int64_t totalInputsValue = 0;
+    for (auto utxo : pickedUtxos) {
+        totalInputsValue += BigInt::fromString(std::get<0>(utxo)).toInt64();
+    }
+    int64_t transactionFees = totalInputsValue - buddy->changeAmount.toInt64() - outputAmount;
+    int64_t minimumRequiredFees = (emtyTransactionSizeInBytes + outputSizeInBytes * 2 + inputSizeInBytes * pickedUtxos.size()) * feesPerByte;
+    EXPECT_GE(transactionFees, minimumRequiredFees);
+    if (buddy->changeAmount.toInt64() != 0)
+        EXPECT_GE(buddy->changeAmount.toInt64(), inputSizeInBytes * feesPerByte);
+}
