@@ -61,7 +61,7 @@ namespace algorand {
 
     std::string Address::fromPublicKey(const std::vector<uint8_t> & pubKey) {
         // 1. pubkey --> pubKeyHash
-        // TODO [libcore v2] : port crypto/portability.h, crypto/sha512_256.cpp/hpp and crypto/alignedarray.h 
+        // TODO [libcore v2] : port crypto/portability.h, crypto/sha512_256.cpp/hpp and crypto/alignedarray.h
         auto hasher = cppcrypto::sha512(256);
         unsigned char pubKeyHash[PUBKEY_LEN_BYTES];
         hasher.init();
@@ -85,11 +85,13 @@ namespace algorand {
         return decoded;
     }
 
-    std::shared_ptr<api::Address> Address::parse(const std::string& address, 
-        const api::Currency& currency
-        ) {
-            auto decoded = toPublicKey(address);
-            return fromPublicKey(decoded) == address ? std::dynamic_pointer_cast<api::Address>(std::make_shared<algorand::Address>(currency, decoded)) : nullptr;
+    std::shared_ptr<ledger::core::AbstractAddress>
+    Address::parse(const std::string& address, const api::Currency& currency)
+    {
+        if (fromPublicKey(toPublicKey(address)) == address) {
+            return std::make_shared<Address>(currency, address);
+        }
+        return nullptr;
     }
 
 } // namespace algorand

@@ -32,7 +32,6 @@
 
 #include "AlgorandLikeCurrencies.hpp"
 
-//#include "Address.hpp"
 #include <wallet/common/AbstractAddress.h>
 
 #include <string>
@@ -62,7 +61,8 @@ namespace algorand {
         static std::string fromPublicKey(const std::vector<uint8_t> & pubKey);
         static std::vector<uint8_t> toPublicKey(const std::string & address);
 
-        static std::shared_ptr<api::Address> parse(const std::string& address, const api::Currency& currency);
+        static std::shared_ptr<ledger::core::AbstractAddress>
+        parse(const std::string& address, const api::Currency& currency);
 
     private:
 
@@ -82,3 +82,4 @@ namespace algorand {
 } // namespace ledger
 
 #endif // LEDGER_CORE_ALGORANDADDRESS_H
+
