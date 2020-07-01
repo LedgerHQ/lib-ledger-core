@@ -45,6 +45,7 @@
 #include <api/AlgorandAssetParamsCallback.hpp>
 #include <api/AlgorandAssetParamsMapCallback.hpp>
 #include <api/AlgorandTransaction.hpp>
+#include <api/AlgorandTransactionCallback.hpp>
 #include <api/AmountCallback.hpp>
 #include <api/StringCallback.hpp>
 #include <api/BoolCallback.hpp>
@@ -82,8 +83,6 @@ namespace algorand {
         const std::string & getAddress() const;
 
         // From api::AlgorandAccount
-
-        std::shared_ptr<api::AlgorandTransaction> createEmptyTransaction();
 
         void getAsset(
                 const std::string& assetId,
@@ -131,6 +130,9 @@ namespace algorand {
         void broadcastTransaction(
                 const std::shared_ptr<api::AlgorandTransaction>& transaction,
                 const std::shared_ptr<api::StringCallback>& callback) override;
+
+        void createTransaction(
+                const std::shared_ptr<api::AlgorandTransactionCallback>& callback) override;
 
         // From api::Account
         std::shared_ptr<api::OperationQuery> queryOperations() override;

@@ -8,6 +8,7 @@
 #include "AlgorandAssetParamsCallback.hpp"
 #include "AlgorandAssetParamsMapCallback.hpp"
 #include "AlgorandTransaction.hpp"
+#include "AlgorandTransactionCallback.hpp"
 #include "AmountCallback.hpp"
 #include "BoolCallback.hpp"
 #include "Marshal.hpp"
@@ -139,14 +140,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native_1createEmptyTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native_1createTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandAccount>(nativeRef);
-        auto r = ref->createEmptyTransaction();
-        return ::djinni::release(::djinni_generated::AlgorandTransaction::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+        ref->createTransaction(::djinni_generated::AlgorandTransactionCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

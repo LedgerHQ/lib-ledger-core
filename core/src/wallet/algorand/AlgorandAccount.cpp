@@ -82,10 +82,6 @@ namespace algorand {
         }
     } // namespace
 
-    std::shared_ptr<api::AlgorandTransaction> Account::createEmptyTransaction() {
-        return std::make_shared<AlgorandTransactionImpl>(model::Transaction());
-    }
-
     bool Account::putBlock(soci::session& sql, const api::Block& block)
     {
         if (BlockDatabaseHelper::putBlock(sql, block)) {
@@ -343,6 +339,25 @@ namespace algorand {
             const std::shared_ptr<api::StringCallback>& callback)
     {
         broadcastRawTransaction(transaction->serialize(), callback);
+    }
+
+    void Account::createTransaction(
+            const std::shared_ptr<api::AlgorandTransactionCallback>& callback)
+    {
+        _explorer->getTransactionParams()
+            .mapPtr<api::AlgorandTransaction>(
+                    getMainExecutionContext(),
+                    [this](const model::TransactionParams& params) {
+                        auto txn = model::Transaction();
+                        txn.header.firstValid = params.lastRound;
+                        txn.header.lastValid = params.lastRound + 1000;
+                        txn.header.genesisHash = B64String(params.genesisHash);
+                        txn.header.genesisId = params.genesisID;
+                        txn.header.sender = _address;
+
+                        return std::make_shared<AlgorandTransactionImpl>(std::move(txn));
+                    })
+            .callback(getMainExecutionContext(), callback);
     }
 
     std::shared_ptr<api::OperationQuery> Account::queryOperations()
