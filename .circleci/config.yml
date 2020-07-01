@@ -341,8 +341,15 @@ workflows:
           filters:
             tags:
               only: /.*/
+            branches:
+              ignore: /int-.*/
       - build_linux_debug
-      - build_macos_debug
+      - build_macos_debug:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /int-.*/
       - publish_jar:
           requires:
             - build_linux_jni_release
