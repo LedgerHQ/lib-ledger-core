@@ -24,6 +24,7 @@ class AlgorandAssetAmountMapCallback;
 class AlgorandAssetParamsCallback;
 class AlgorandAssetParamsMapCallback;
 class AlgorandTransaction;
+class AlgorandTransactionCallback;
 class AmountCallback;
 class BoolCallback;
 class StringCallback;
@@ -111,9 +112,9 @@ public:
 
     /**
      * Create a new transaction
-     * @return The new transaction
+     * @param callback, The new transaction
      */
-    virtual std::shared_ptr<AlgorandTransaction> createEmptyTransaction() = 0;
+    virtual void createTransaction(const std::shared_ptr<AlgorandTransactionCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api
