@@ -1,4 +1,8 @@
-## 3.3.0 (on-going)
+## 3.3.3 hot-fix of vault based on libcore commit fb095360b671cdb05f737febcfee93ec454b7364
+
+- Fix 3 errors in fees estimation. Adding unit tests for this.
+
+## 3.3.0
 
 - Add support for PostgreSQL (tested with PostgreSQL v9.6 and v12.1), for more details about how to
 build, use and configure libcore with PostgreSQL, please refer to our `README.md` 
