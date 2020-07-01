@@ -36,16 +36,42 @@
 
 namespace ledger {
     namespace core {
+
+        namespace api {
+            class Currency;
+        };
+
         class BitcoinLikeStrategyUtxoPicker : public BitcoinLikeUtxoPicker {
         public:
             BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
                                           const api::Currency &currency);
+        public:
+            static UTXODescriptorList filterWithKnapsackSolver(const std::shared_ptr<Buddy>& buddy,
+                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxos,
+                const BigInt& aggregatedAmount,
+                const api::Currency& currrency);
+
+            static UTXODescriptorList filterWithOptimizeSize(const std::shared_ptr<Buddy>& buddy,
+                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxos,
+                const BigInt& aggregatedAmount,
+                const api::Currency& currrency);
+
+            static UTXODescriptorList filterWithMergeOutputs(const std::shared_ptr<Buddy>& buddy,
+                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxos,
+                const BigInt& aggregatedAmount,
+                const api::Currency& currrency);
+            static UTXODescriptorList filterWithDeepFirst(const std::shared_ptr<Buddy>& buddy,
+                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
+                const BigInt& aggregatedAmount,
+                const api::Currency& currrency);
+            static bool hasEnough(const std::shared_ptr<Buddy>& buddy,
+                const BigInt& aggregatedAmount,
+                int inputCount,
+                const api::Currency& currrency,
+                bool computeOutputAmount);
         protected:
             Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy> &buddy) override;
-            UTXODescriptorList filterWithDeepFirst(const std::shared_ptr<Buddy> &buddy,
-                                     const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo,
-                                     const BigInt& aggregatedAmount);
-            bool hasEnough(const std::shared_ptr<Buddy>& buddy, const BigInt& aggregatedAmount, int inputCount, bool computeOutputAmount = false);
+           
             inline Future<BigInt> computeAggregatedAmount(const std::shared_ptr<Buddy>& buddy);
 
             //Only usefull for filterWithLowestFees
@@ -55,13 +81,7 @@ namespace ledger {
                 int64_t effectiveFees;
                 int64_t longTermFees;
             };
-            BitcoinLikeUtxoPicker::UTXODescriptorList filterWithOptimizeSize(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                                                     const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
-                                                                                     const BigInt &aggregatedAmount);
-
-            BitcoinLikeUtxoPicker::UTXODescriptorList filterWithMergeOutputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                                                     const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
-                                                                                     const BigInt &aggregatedAmount);
+            
 
             //Usefull for filterWithLowFeesFirst
             static const int64_t DEFAULT_FALLBACK_FEE = 20;
@@ -72,9 +92,7 @@ namespace ledger {
             static const int64_t CENT = 1000000;
             static const int64_t MIN_CHANGE = 100000;
         private:
-            BitcoinLikeUtxoPicker::UTXODescriptorList filterWithKnapsackSolver(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                                                       const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
-                                                                                       const BigInt &aggregatedAmount);
+            
 
         };
     }
