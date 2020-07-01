@@ -46,6 +46,7 @@
 #include <algorand/api/AlgorandAssetParamsCallback.hpp>
 #include <algorand/api/AlgorandAssetParamsMapCallback.hpp>
 #include <algorand/api/AlgorandTransaction.hpp>
+#include <algorand/api/AlgorandTransactionCallback.hpp>
 #include <algorand/api/AmountCallback.hpp>
 #include <algorand/api/BoolCallback.hpp>
 #include <algorand/api/StringCallback.hpp>
@@ -131,7 +132,8 @@ namespace algorand {
                 const std::shared_ptr<api::AlgorandTransaction>& transaction,
                 const std::shared_ptr<api::StringCallback>& callback) override;
 
-        std::shared_ptr<api::AlgorandTransaction> createEmptyTransaction() override;
+        void createTransaction(
+                const std::shared_ptr<api::AlgorandTransactionCallback>& callback) override;
 
         // From api::Account
         std::shared_ptr<api::OperationQuery> queryOperations() override;

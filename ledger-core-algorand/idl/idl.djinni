@@ -257,9 +257,11 @@ AlgorandAccount = interface +c {
         callback: Callback<string>
     );
 
-    # Create a new empty transaction
-    # @return The new transaction
-    createEmptyTransaction(): AlgorandTransaction;
+    # Create a new transaction
+    # @param callback, The new transaction
+    createTransaction(
+        callback: Callback<AlgorandTransaction>
+    );
 }
 
 AlgorandAddress = interface +c {

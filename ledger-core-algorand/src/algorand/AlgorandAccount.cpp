@@ -345,9 +345,23 @@ namespace algorand {
         broadcastRawTransaction(transaction->serialize(), callback);
     }
 
-    std::shared_ptr<api::AlgorandTransaction> Account::createEmptyTransaction()
+    void Account::createTransaction(
+            const std::shared_ptr<api::AlgorandTransactionCallback>& callback)
     {
-        return std::make_shared<AlgorandTransactionImpl>(model::Transaction());
+        _explorer->getTransactionParams()
+            .mapPtr<api::AlgorandTransaction>(
+                    getMainExecutionContext(),
+                    [this](const model::TransactionParams& params) {
+                        auto txn = model::Transaction();
+                        txn.header.firstValid = params.lastRound;
+                        txn.header.lastValid = params.lastRound + 1000;
+                        txn.header.genesisHash = B64String(params.genesisHash);
+                        txn.header.genesisId = params.genesisID;
+                        txn.header.sender = _address;
+
+                        return std::make_shared<AlgorandTransactionImpl>(std::move(txn));
+                    })
+            .callback(getMainExecutionContext(), callback);
     }
 
     std::shared_ptr<api::OperationQuery> Account::queryOperations()
