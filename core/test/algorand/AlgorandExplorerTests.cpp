@@ -41,7 +41,8 @@ public:
         BaseFixture::SetUp();
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
-        auto client = std::make_shared<HttpClient>(api::AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT, http, worker);
+        // NOTE: we run the tests on the TestNet
+        auto client = std::make_shared<HttpClient>("https://testnet-algorand.api.purestake.io/ps1/v1/", http, worker);
 
         explorer = std::make_shared<BlockchainExplorer>(
                         worker,
