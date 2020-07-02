@@ -57,16 +57,16 @@ namespace algorand {
 
         template <class T>
         static void parseBlock(const T& node, api::Block & block) {
-            getMandatoryStringField(node, constants::xHash, block.blockHash);
+            //block.time = std::chrono::system_clock::time_point(std::chrono::seconds(getMandatoryUint64Field(node, constants::xTimestamp)));
 
-            block.time = std::chrono::system_clock::time_point(std::chrono::seconds(node[constants::xTimestamp.c_str()].GetUint64()));
-
-            uint64_t blockHeight = 0;
-            getMandatoryUint64Field(node, constants::xRound, blockHeight);
+            const auto blockHeight = getMandatoryUint64Field(node, constants::xRound);
             if (blockHeight > std::numeric_limits<int64_t>::max()) {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
             }
             block.height = static_cast<int64_t>(blockHeight);
+
+            // In Algorand implementation, we use the block height (a.k.a round) as block hash
+            block.blockHash = std::to_string(block.height);
         }
 
         template <class T>
