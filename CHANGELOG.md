@@ -1,3 +1,7 @@
+## 3.3.4 hot-fix of vault based on libcore commit fb095360b671cdb05f737febcfee93ec454b7364
+
+- Fix singed/unsigned comparison.
+
 ## 3.3.3 hot-fix of vault based on libcore commit fb095360b671cdb05f737febcfee93ec454b7364
 
 - Fix 3 errors in fees estimation. Adding unit tests for this.
@@ -6,12 +10,12 @@
 
 - Add support for PostgreSQL (tested with PostgreSQL v9.6 and v12.1), for more details about how to
 build, use and configure libcore with PostgreSQL, please refer to our `README.md` 
-	  
+      
 ## 3.2.1
 
 - Execution context changes:
-	- Using pool's ThreadPoolExecutionContext in wallets and accounts for long running tasks,
-	- Using MainExecutionContext in pools, wallets and accounts for immediately completed futures,
+    - Using pool's ThreadPoolExecutionContext in wallets and accounts for long running tasks,
+    - Using MainExecutionContext in pools, wallets and accounts for immediately completed futures,
 - Wallet caching: return completed future (resolved promises) based on cached accounts in `WalletPool::getWallet` method,
 - Account caching: same as above for `AbstractWallet::getAccount` method,
 - Lazy loading of internal transactions for ETH operations,
@@ -67,26 +71,26 @@ so normal (public) derivations are not supported, this is why the only derivatio
 - In Tezos, it is possible to have multiple operations in one transaction (e.g. `Reveal` + `Origination` or `Reveal` + `Transaction` ...), 
  since each operation has it's own properties (fees, gas limit, storage limit ...) that user should set, so we probably won't handle multi-operation transactions.
  This will be discussed with Libcore's users (e.g. Live team) to see if it is relevant to support multi-operation transactions.
- 	
+    
 #### Delegation:
-	
+    
 - To delegate simply build a `Delegation` transaction with address to which delegate as receiver.
   
 #### Parameters:
 
 - BIP44 Coin type : `1729`.
 - Used address prefixes: 
-	- Implicit (prefix `tz1`): `{0x06, 0xA1, 0x9F}`.
-	- Originated (prefix `KT1`): `{0x02, 0x5A, 0x79}`.
+    - Implicit (prefix `tz1`): `{0x06, 0xA1, 0x9F}`.
+    - Originated (prefix `KT1`): `{0x02, 0x5A, 0x79}`.
 - Default explorer's endpoint: https://api6.tzscan.io/v3
 
 #### Tests:
 
 - Added tests:
-	- Address derivation: `core/test/tezos`.
-	- Zarith encoder: `core/test/bytes/zarith.cpp`.
-	- Account creation and synchronization: `core/test/integration/synchronization/tezos_synchronization.cpp`.
-	- Transaction construction: `core/test/integration/transactions/tezos_transaction_tests.cpp`.
+    - Address derivation: `core/test/tezos`.
+    - Zarith encoder: `core/test/bytes/zarith.cpp`.
+    - Account creation and synchronization: `core/test/integration/synchronization/tezos_synchronization.cpp`.
+    - Transaction construction: `core/test/integration/transactions/tezos_transaction_tests.cpp`.
 
 ## 2.7.0 
 
