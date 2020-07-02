@@ -55,7 +55,6 @@ namespace networks {
     void serialize(Archive & archive, api::AlgorandNetworkParameters & p)
     {
         archive(
-            // TODO complete other fields?
             p.genesisID,
             p.genesisHash
         );

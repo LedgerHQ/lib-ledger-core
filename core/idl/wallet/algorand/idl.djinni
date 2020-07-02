@@ -4,11 +4,10 @@
 @import "configuration.djinni"
 
 AlgorandConfigurationDefaults = record {
-    # TODO Switch to mainnet at some point
-    const ALGORAND_API_ENDPOINT: string = "https://testnet-algorand.api.purestake.io/ps1/v1/";
+    const ALGORAND_API_ENDPOINT: string = "https://mainnet-algorand.api.purestake.io/ps1/v1/";
     const ALGORAND_API_TOKEN: string = "VjmqAOS1jd2GEvc4Hy9RB6CW48YCRuG74bs22kfI";
 
-    # TODO Find an observer endpoint
+    # TODO Find an observer endpoint??
     const ALGORAND_OBSERVER_WS_ENDPOINT: string = "";
 }
 

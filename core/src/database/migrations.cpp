@@ -1033,55 +1033,22 @@ namespace ledger {
                     "afrz_frozen_address VARCHAR(255)"
                     ")";
 
-            sql << "CREATE TABLE algorand_asset_amounts("
-                    "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
-                    "account_uid VARCHAR(255) NOT NULL "
-                    "REFERENCES algorand_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
-                    "creator_address VARCHAR(255) NOT NULL,"
-                    "amount BIGINT NOT NULL,"
-                    "frozen INTEGER NOT NULL"
-                    ")";
-
-            sql << "CREATE TABLE algorand_asset_params("
-                    "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
-                    "account_uid VARCHAR(255) NOT NULL "
-                    "REFERENCES algorand_accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
-                    "asset_id BIGINT,"
-                    "asset_name VARCHAR(255),"
-                    "unit_name VARCHAR(255),"
-                    "total BIGINT,"
-                    "decimals INTEGER,"
-                    "frozen INTEGER,"
-                    "creator_address VARCHAR(255),"
-                    "manager_address VARCHAR(255),"
-                    "reserve_address VARCHAR(255),"
-                    "freeze_address VARCHAR(255),"
-                    "clawback_address VARCHAR(255),"
-                    "metadata_hash VARCHAR(255),"
-                    "url VARCHAR(255)"
-                    ")";
-
             sql << "CREATE TABLE algorand_operations("
                     "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
                     "transaction_uid VARCHAR(255) NOT NULL REFERENCES algorand_transactions(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
                     "transaction_hash VARCHAR(255) NOT NULL"
                     ")";
-    }
+        }
 
-    template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type) {
+        template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE algorand_operations";
-
-            sql << "DROP TABLE algorand_asset_params";
-
-            sql << "DROP TABLE algorand_asset_amounts";
 
             sql << "DROP TABLE algorand_transactions";
 
             sql << "DROP TABLE algorand_accounts";
 
-            // algorand currencies
             sql << "DROP TABLE algorand_currencies";
-    }
+        }
 
         template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE stellar_currencies ADD muxed_address_version VARCHAR(255)";

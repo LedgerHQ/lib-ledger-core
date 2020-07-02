@@ -90,7 +90,7 @@ TEST_F(AlgorandDatabaseTest, AccountDBTest) {
 
         EXPECT_EQ(result, true);
         EXPECT_EQ(accountInfo.index, accountFromDB.index);
-        EXPECT_EQ(OBELIX_ADDRESS, accountFromDB.address) << "This test fails because SHA512-256 is not implemented yet!";
+        EXPECT_EQ(OBELIX_ADDRESS, accountFromDB.address) << "(This test requires SHA-512/256)";
     }
 }
 

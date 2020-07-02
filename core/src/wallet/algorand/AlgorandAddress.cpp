@@ -61,7 +61,6 @@ namespace algorand {
 
     std::string Address::fromPublicKey(const std::vector<uint8_t> & pubKey) {
         // 1. pubkey --> pubKeyHash
-        // TODO [libcore v2] : port crypto/portability.h, crypto/sha512_256.cpp/hpp and crypto/alignedarray.h
         auto hasher = cppcrypto::sha512(256);
         unsigned char pubKeyHash[PUBKEY_LEN_BYTES];
         hasher.init();

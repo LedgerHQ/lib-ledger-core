@@ -12,12 +12,11 @@ namespace ledger { namespace core { namespace api {
 
 struct AlgorandConfigurationDefaults final {
 
-    /** TODO Switch to mainnet at some point */
     static std::string const ALGORAND_API_ENDPOINT;
 
     static std::string const ALGORAND_API_TOKEN;
 
-    /** TODO Find an observer endpoint */
+    /** TODO Find an observer endpoint?? */
     static std::string const ALGORAND_OBSERVER_WS_ENDPOINT;
 
     template <class Archive>
