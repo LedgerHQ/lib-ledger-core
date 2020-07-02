@@ -9,7 +9,7 @@
 AlgorandConfigurationDefaults = record {
     # TODO Switch to mainnet at some point
     const ALGORAND_API_ENDPOINT: string = "https://testnet-algorand.api.purestake.io";
-    const ALGORAND_API_TOKEN: string = "VjmqAOS1jd2GEvc4Hy9RB6CW48YCRuG74bs22kfI";
+    const ALGORAND_API_TOKEN: string = "51QbkNgumz6aMzgl7qL2FabvZsREiCyw6VLcuNCj";
 
     # TODO Find an observer endpoint
     const ALGORAND_OBSERVER_WS_ENDPOINT: string = "";

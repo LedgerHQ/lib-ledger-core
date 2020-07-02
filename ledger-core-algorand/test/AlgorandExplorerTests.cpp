@@ -67,14 +67,14 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
     api::Block block = ::wait(explorer->getBlock(blockHeight));
 
     EXPECT_EQ(block.height, blockHeight);
-    // EXPECT_EQ(block.blockHash, "SWM7OIULX7F7KMGZSGU54FCEVVVCV6XWT6CEG7EH7WI4LHWHNB7A"); // TODO: is this normal?
+    EXPECT_EQ(block.blockHash, std::to_string(blockHeight));
     EXPECT_EQ(block.time, blockTime);
 }
 
 TEST_F(AlgorandExplorerTest, GetLatestBlock) {
     auto block = ::wait(explorer->getLatestBlock());
 
-    EXPECT_TRUE(block.blockHash.empty());
+    EXPECT_FALSE(block.blockHash.empty());
     EXPECT_GT(block.height, 7000000);
     EXPECT_GT(block.time.time_since_epoch().count(), 1593455156000000000);
 }

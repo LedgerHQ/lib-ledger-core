@@ -47,7 +47,7 @@ namespace algorand {
         static const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
         static const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
         static const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
-        static const std::string purestakeBlockEndpoint = "/idx2/v2/blocks/{}";
+        static const std::string purestakeBlockEndpoint = "/ps2/v2/blocks/{}?format=json";
         static const std::string purestakeAccountTransactionsEndpoint = "/idx2/v2/accounts/{}/transactions";
         static const std::string purestakeTransactionEndpoint = "/idx2/v2/transactions?txid={}";
         static const std::string purestakeAssetEndpoint = "/idx2/v2/assets/{}";

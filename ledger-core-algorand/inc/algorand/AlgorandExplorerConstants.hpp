@@ -42,8 +42,9 @@ namespace constants {
     // Block
     /// The block hash is not returned by algod v2 anymore
     // static const std::string xHash = "hash";
-    static const std::string xTimestamp = "timestamp";
-    static const std::string xRound = "round";
+    static const std::string xBlock = "block";
+    static const std::string xRnd = "rnd";
+    static const std::string xTs = "ts";
 
     // AssetParam
     static const std::string xClawbackAddr = "clawback";
@@ -68,6 +69,7 @@ namespace constants {
     static const std::string xPendingRewards = "pending-rewards";
     static const std::string xAmountWithoutPendingRewards = "amount-without-pending-rewards";
     static const std::string xRewards = "rewards";
+    static const std::string xRound = "round";
     static const std::string xStatus = "status";
     static const std::string xAssets = "assets";
     static const std::string xCreatedAssets = "created-assets";

@@ -59,17 +59,21 @@ namespace algorand {
 
         template <class T>
         static void parseBlock(const T& node, api::Block & block) {
-            /// algod v2 does not provide the block hash. This will stay commented
-            /// until we figure out if that is wanted or not.
-            // block.blockHash = getMandatoryStringField(node, constants::xHash);
+            assertWithMessage(node, constants::xBlock);
+            const auto& jsonBlock = node[constants::xBlock.c_str()].GetObject();
 
-            block.time = std::chrono::system_clock::time_point(std::chrono::seconds(getMandatoryUint64Field(node, constants::xTimestamp)));
+            block.time =
+                std::chrono::system_clock::time_point(
+                        std::chrono::seconds(getMandatoryUint64Field(jsonBlock, constants::xTs)));
 
-            const auto blockHeight = getMandatoryUint64Field(node, constants::xRound);
+            const auto blockHeight = getMandatoryUint64Field(jsonBlock, constants::xRnd);
             if (blockHeight > std::numeric_limits<int64_t>::max()) {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
             }
             block.height = static_cast<int64_t>(blockHeight);
+
+            /// In Algorand implementation, we use the block height (aka round) as block hash
+            block.blockHash = std::to_string(block.height);
         }
 
         template <class T>
