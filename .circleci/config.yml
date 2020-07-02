@@ -356,12 +356,12 @@ workflows:
             tags:
               only: /.*/
             branches:
-              ignore: /^int-.*/
+              only: /int-algorand-libcorev1/
       - build_linux_debug
       - build_macos_debug:
           filters:
             branches:
-              ignore: /^int-.*/
+              only: /int-algorand-libcorev1/
       - publish_jar:
           requires:
             - build_linux_jni_release
