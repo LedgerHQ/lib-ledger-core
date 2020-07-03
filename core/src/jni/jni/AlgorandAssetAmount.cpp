@@ -15,18 +15,20 @@ auto AlgorandAssetAmount::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni:
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.creatorAddress)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.amount)),
-                                                           ::djinni::get(::djinni::Bool::fromCpp(jniEnv, c.frozen)))};
+                                                           ::djinni::get(::djinni::Bool::fromCpp(jniEnv, c.frozen)),
+                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.assetId)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto AlgorandAssetAmount::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 4);
+    ::djinni::JniLocalScope jscope(jniEnv, 5);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<AlgorandAssetAmount>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_creatorAddress)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_amount)),
-            ::djinni::Bool::toCpp(jniEnv, jniEnv->GetBooleanField(j, data.field_frozen))};
+            ::djinni::Bool::toCpp(jniEnv, jniEnv->GetBooleanField(j, data.field_frozen)),
+            ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_assetId))};
 }
 
 }  // namespace djinni_generated

@@ -4,8 +4,8 @@
 @import "configuration.djinni"
 
 AlgorandConfigurationDefaults = record {
-    const ALGORAND_API_ENDPOINT: string = "https://mainnet-algorand.api.purestake.io/ps1/v1/";
-    const ALGORAND_API_TOKEN: string = "VjmqAOS1jd2GEvc4Hy9RB6CW48YCRuG74bs22kfI";
+    const ALGORAND_API_ENDPOINT: string = "https://mainnet-algorand.api.purestake.io";
+    const ALGORAND_API_TOKEN: string = "51QbkNgumz6aMzgl7qL2FabvZsREiCyw6VLcuNCj";
 
     # TODO Find an observer endpoint??
     const ALGORAND_OBSERVER_WS_ENDPOINT: string = "";
@@ -72,6 +72,8 @@ AlgorandAssetAmount = record {
     amount: string;
     # Whether this amount is frozen
     frozen: bool;
+    # The id of the asset
+    assetId: string;
 }
 
 AlgorandPaymentInfo = record {
@@ -84,12 +86,6 @@ AlgorandPaymentInfo = record {
 
     # The amount sent to CloseRemainderTo, for committed transaction
     closeAmount: optional<string>;
-    # The amount of pending rewards applied to sender as part of this transaction
-    fromRewards: optional<string>;
-    # The amount of pending rewards applied to the CloseRemainderTo account as part of this transaction
-    closeRewards: optional<string>;
-    # The amount of pending rewards applied to the recipient account as part of this transaction
-    recipientRewards: optional<string>;
 }
 
 AlgorandParticipationInfo = record {
@@ -124,6 +120,8 @@ AlgorandAssetTransferInfo = record {
     closeAddress: optional<string>;
     # Sender account on which clawback is used
     clawedBackAddress: optional<string>;
+    # The amount sent to closeAddress
+    closeAmount: optional<string>;
 }
 
 AlgorandAssetFreezeInfo = record {
@@ -142,6 +140,9 @@ AlgorandTransaction = interface +c {
     const getFee(): string;
     const getNote(): string;
     const getRound(): string;
+    const getSenderRewards(): string;
+    const getReceiverRewards(): string;
+    const getCloseRewards(): string;
 
     setSender(sender: string);
     setFee(fee: string);
@@ -186,7 +187,7 @@ AlgorandAccount = interface +c {
     # @param assetId, the unique identifier of the asset to look for
     # @param callback, Callback returning the true if the address hold the asset
     hasAsset(
-        addr : string,
+        address : string,
         assetId: string,
         callback: Callback<bool>
     );

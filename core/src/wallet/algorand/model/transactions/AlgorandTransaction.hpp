@@ -91,9 +91,10 @@ namespace model {
             // Additional fields retrieved from the blockchain
             Option<std::string> id;
             Option<uint64_t> round;
-            Option<uint64_t> timestamp; // NOTE This is not standard to the native Algorand API, it is provided by PureStake's API
-
-
+            Option<uint64_t> timestamp;
+            Option<uint64_t> senderRewards;
+            Option<uint64_t> receiverRewards;
+            Option<uint64_t> closeRewards;
         };
 
         using Details = boost::variant<KeyRegTxnFields,

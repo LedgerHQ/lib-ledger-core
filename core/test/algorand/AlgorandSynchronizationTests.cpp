@@ -58,7 +58,7 @@ public:
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE);
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://testnet-algorand.api.purestake.io/ps1/v1/"); // NOTE: We run Algorand tests on the TestNet
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://testnet-algorand.api.purestake.io"); // NOTE: We run Algorand tests on the TestNet
 
         auto wallet = std::dynamic_pointer_cast<Wallet>(wait(pool->createWallet("test-wallet", "algorand", configuration)));
 

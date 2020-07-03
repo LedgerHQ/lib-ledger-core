@@ -5,9 +5,9 @@
 
 namespace ledger { namespace core { namespace api {
 
-std::string const AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT = {"https://mainnet-algorand.api.purestake.io/ps1/v1/"};
+std::string const AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT = {"https://mainnet-algorand.api.purestake.io"};
 
-std::string const AlgorandConfigurationDefaults::ALGORAND_API_TOKEN = {"VjmqAOS1jd2GEvc4Hy9RB6CW48YCRuG74bs22kfI"};
+std::string const AlgorandConfigurationDefaults::ALGORAND_API_TOKEN = {"51QbkNgumz6aMzgl7qL2FabvZsREiCyw6VLcuNCj"};
 
 std::string const AlgorandConfigurationDefaults::ALGORAND_OBSERVER_WS_ENDPOINT = {""};
 

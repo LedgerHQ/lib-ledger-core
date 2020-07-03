@@ -26,12 +26,13 @@ private:
     friend ::djinni::JniClass<AlgorandAssetTransferInfo>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandAssetTransferInfo") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_assetId { ::djinni::jniGetFieldID(clazz.get(), "assetId", "Ljava/lang/String;") };
     const jfieldID field_amount { ::djinni::jniGetFieldID(clazz.get(), "amount", "Ljava/lang/String;") };
     const jfieldID field_recipientAddress { ::djinni::jniGetFieldID(clazz.get(), "recipientAddress", "Ljava/lang/String;") };
     const jfieldID field_closeAddress { ::djinni::jniGetFieldID(clazz.get(), "closeAddress", "Ljava/lang/String;") };
     const jfieldID field_clawedBackAddress { ::djinni::jniGetFieldID(clazz.get(), "clawedBackAddress", "Ljava/lang/String;") };
+    const jfieldID field_closeAmount { ::djinni::jniGetFieldID(clazz.get(), "closeAmount", "Ljava/lang/String;") };
 };
 
 }  // namespace djinni_generated

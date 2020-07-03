@@ -29,6 +29,7 @@
 
 #include "AlgorandBlockchainExplorer.hpp"
 #include "AlgorandJsonParser.hpp"
+#include "AlgorandExplorerConstants.hpp"
 #include <api/AlgorandConfigurationDefaults.hpp>
 
 #include <api/Configuration.hpp>
@@ -36,6 +37,22 @@
 namespace ledger {
 namespace core {
 namespace algorand {
+
+    namespace constants {
+
+        static const std::string purestakeTokenHeader = "x-api-key";
+
+        // Explorer endpoints
+        static const std::string purestakeStatusEndpoint = "/ps2/v2/status";
+        static const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
+        static const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
+        static const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
+        static const std::string purestakeBlockEndpoint = "/ps2/v2/blocks/{}?format=json";
+        static const std::string purestakeAccountTransactionsEndpoint = "/idx2/v2/accounts/{}/transactions";
+        static const std::string purestakeTransactionEndpoint = "/idx2/v2/transactions?txid={}";
+        static const std::string purestakeAssetEndpoint = "/idx2/v2/assets/{}";
+
+    } // namespace constants
 
     BlockchainExplorer::BlockchainExplorer(
             const std::shared_ptr<api::ExecutionContext>& context,
@@ -69,16 +86,14 @@ namespace algorand {
         // so we need to retrieve the latest round number first,
         // then retrieve the associated block
         return _http->GET(constants::purestakeStatusEndpoint)
-            .json(true)
+            .json(false)
             .map<uint64_t>(getContext(), [](const HttpRequest::JsonResult &response) {
                     const auto &json = std::get<1>(response)->GetObject();
-                    return std::stoull(json[constants::xLastRoundParam.c_str()].GetString());
-                })
-            .template flatMap<api::Block>(getContext(), [this](const uint64_t& latestRound) -> Future<api::Block> {
-                return getBlock(latestRound);
+                    return json[constants::xLastRoundParam.c_str()].GetUint64();
+            }).flatMap<api::Block>(getContext(), [this](uint64_t latestRound) {
+                    return getBlock(latestRound);
             });
     }
-
 
     Future<model::Account> BlockchainExplorer::getAccount(const std::string& address) const
     {
@@ -110,8 +125,13 @@ namespace algorand {
     BlockchainExplorer::getTransactionById(const std::string & txId) const {
         return _http->GET(fmt::format(constants::purestakeTransactionEndpoint, txId))
             .json(false)
-            .map<model::Transaction>(getContext(), [](const HttpRequest::JsonResult& response) {
-                    const auto& json = std::get<1>(response)->GetObject();
+            .map<model::Transaction>(getContext(), [&txId](const HttpRequest::JsonResult& response) {
+                    const auto& jsonArray = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
+                    if (jsonArray.Size() != 1) {
+                        throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND,
+                                             fmt::format("Couldn't find transaction {}", txId));
+                    }
+                    const auto& json = *std::begin(jsonArray);
                     auto tx = model::Transaction();
                     JsonParser::parseTransaction(json, tx);
                     return tx;
@@ -124,12 +144,12 @@ namespace algorand {
                                                   const Option<uint64_t> & lastRound) const
     {
         auto url = fmt::format(constants::purestakeAccountTransactionsEndpoint, address);
-        if (firstRound && lastRound) {
-            url = fmt::format("{}?firstRound={}&lastRound={}", url, *firstRound, *lastRound);
-        } else if (firstRound) {
-            url = fmt::format("{}?firstRound={}", url, *firstRound);
-        } else if (lastRound) {
-            url = fmt::format("{}?lastRound={}", url, *lastRound);
+        url = fmt::format("{}?limit={}", url, constants::EXPLORER_QUERY_LIMIT);
+        if (firstRound) {
+            url = fmt::format("{}&min-round={}", url, *firstRound);
+        }
+        if (lastRound) {
+            url = fmt::format("{}&max-round={}", url, *lastRound);
         }
 
         return _http->GET(url)

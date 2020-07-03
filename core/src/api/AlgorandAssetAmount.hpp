@@ -17,19 +17,24 @@ struct AlgorandAssetAmount final {
     std::string amount;
     /** Whether this amount is frozen */
     bool frozen;
+    /** The id of the asset */
+    std::string assetId;
 
     AlgorandAssetAmount(std::string creatorAddress_,
                         std::string amount_,
-                        bool frozen_)
+                        bool frozen_,
+                        std::string assetId_)
     : creatorAddress(std::move(creatorAddress_))
     , amount(std::move(amount_))
     , frozen(std::move(frozen_))
+    , assetId(std::move(assetId_))
     {}
 
     AlgorandAssetAmount(const AlgorandAssetAmount& cpy) {
        this->creatorAddress = cpy.creatorAddress;
        this->amount = cpy.amount;
        this->frozen = cpy.frozen;
+       this->assetId = cpy.assetId;
     }
 
     AlgorandAssetAmount() = default;
@@ -39,17 +44,18 @@ struct AlgorandAssetAmount final {
        this->creatorAddress = cpy.creatorAddress;
        this->amount = cpy.amount;
        this->frozen = cpy.frozen;
+       this->assetId = cpy.assetId;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(creatorAddress, amount, frozen);
+        archive(creatorAddress, amount, frozen, assetId);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(creatorAddress, amount, frozen);
+        archive(creatorAddress, amount, frozen, assetId);
     }
 };
 
