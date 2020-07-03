@@ -114,7 +114,7 @@ namespace ledger {
         ) {
             leveldb::Slice k((const char *)change.key.data(), change.key.size());
 
-            if (change.type == api::PreferencesChangeType::PUT) {
+            if (change.type == api::PreferencesChangeType::PUT_TYPE) {
                 if (cipher.hasValue()) {
                     auto encrypted = encrypt_preferences_change(change, *cipher);
 
@@ -278,17 +278,17 @@ namespace ledger {
                 auto key = std::vector<uint8_t>(keyStr.cbegin(), keyStr.cend());
 
                 // remove the key and its associated value to prevent duplication
-                putPreferencesChange(batch, _cipher, api::PreferencesChange(api::PreferencesChangeType::DELETE, key, {}));
+                putPreferencesChange(batch, _cipher, api::PreferencesChange(api::PreferencesChangeType::DELETE_TYPE, key, {}));
 
                 // encrypt with the new cipher (if any); in order to do that, we need a PreferencesChange
                 // to add with the new cipher
-                auto change = api::PreferencesChange(api::PreferencesChangeType::PUT, key, plaindata);
+                auto change = api::PreferencesChange(api::PreferencesChangeType::PUT_TYPE, key, plaindata);
                 putPreferencesChange(batch, newCipher, change);
             }
 
             // we also need to update the salt if we are encrypting
             auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
-            putPreferencesChange(batch, noCipher, api::PreferencesChange(api::PreferencesChangeType::DELETE, saltKey, {}));
+            putPreferencesChange(batch, noCipher, api::PreferencesChange(api::PreferencesChangeType::DELETE_TYPE, saltKey, {}));
 
             if (newCipher.hasValue()) {
                 // we put a new salt only if we are encrypting
@@ -296,7 +296,7 @@ namespace ledger {
 
                 // remove the previous salt
                 // add the new salt
-                putPreferencesChange(batch, noCipher, api::PreferencesChange(api::PreferencesChangeType::PUT, saltKey, newSaltBytes));
+                putPreferencesChange(batch, noCipher, api::PreferencesChange(api::PreferencesChangeType::PUT_TYPE, saltKey, newSaltBytes));
             }
 
             // atomic update

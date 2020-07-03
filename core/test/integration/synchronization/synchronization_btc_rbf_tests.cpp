@@ -68,7 +68,9 @@ struct BitcoinLikeWalletBtcRbfSynchronization : public BaseFixture {
                 dispatcher,
                 rng,
                 backend,
-                api::DynamicObject::newInstance()
+                api::DynamicObject::newInstance(),
+                nullptr,
+                nullptr
         );
     }
 

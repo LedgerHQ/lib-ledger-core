@@ -575,7 +575,9 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
         dispatcher,
         rng,
         backend,
-        api::DynamicObject::newInstance()
+        api::DynamicObject::newInstance(),
+        nullptr,
+        nullptr
     );
     {
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
