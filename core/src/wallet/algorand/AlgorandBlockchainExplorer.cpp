@@ -179,7 +179,10 @@ namespace algorand {
 
     Future<std::string> BlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction)
     {
-        return _http->POST(constants::purestakeTransactionsEndpoint, transaction)
+        static const std::unordered_map<std::string, std::string>
+            CONTENT_TYPE_HEADER{{"Content-Type", "application/x-binary"}};
+
+        return _http->POST(constants::purestakeTransactionsEndpoint, transaction, CONTENT_TYPE_HEADER)
             .json(false)
             .map<std::string>(_executionContext, [](const HttpRequest::JsonResult& response) {
                     return std::get<1>(response)->GetObject()[constants::xTxId.c_str()].GetString();
