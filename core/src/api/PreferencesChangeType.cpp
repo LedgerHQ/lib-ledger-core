@@ -8,21 +8,21 @@ namespace ledger { namespace core { namespace api {
 
 std::string to_string(const PreferencesChangeType& preferencesChangeType) {
     switch (preferencesChangeType) {
-        case PreferencesChangeType::PUT: return "PUT";
-        case PreferencesChangeType::DELETE: return "DELETE";
+        case PreferencesChangeType::PUT_TYPE: return "PUT_TYPE";
+        case PreferencesChangeType::DELETE_TYPE: return "DELETE_TYPE";
     };
 };
 template <>
 PreferencesChangeType from_string(const std::string& preferencesChangeType) {
-    if (preferencesChangeType == "PUT") return PreferencesChangeType::PUT;
-    else return PreferencesChangeType::DELETE;
+    if (preferencesChangeType == "PUT_TYPE") return PreferencesChangeType::PUT_TYPE;
+    else return PreferencesChangeType::DELETE_TYPE;
 };
 
 std::ostream &operator<<(std::ostream &os, const PreferencesChangeType &o)
 {
     switch (o) {
-        case PreferencesChangeType::PUT:  return os << "PUT";
-        case PreferencesChangeType::DELETE:  return os << "DELETE";
+        case PreferencesChangeType::PUT_TYPE:  return os << "PUT_TYPE";
+        case PreferencesChangeType::DELETE_TYPE:  return os << "DELETE_TYPE";
     }
 }
 

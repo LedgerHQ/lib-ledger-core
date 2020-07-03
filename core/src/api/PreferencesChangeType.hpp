@@ -18,8 +18,8 @@
 namespace ledger { namespace core { namespace api {
 
 enum class PreferencesChangeType : int {
-    PUT,
-    DELETE,
+    PUT_TYPE,
+    DELETE_TYPE,
 };
 LIBCORE_EXPORT  std::string to_string(const PreferencesChangeType& preferencesChangeType);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const PreferencesChangeType &o);
