@@ -268,23 +268,9 @@ AlgorandAddress = interface +c {
 
     # Check whether the given string formatted address is valid or not.
     # @param address The string to parse
-    # @param currency The currency used to parse the address
     # @return If successful, returns true; false otherwise.
-    static isValid(
-        address: string,
-        currency: Currency
-    ) : bool;
-
-    # Attempt to parse a string address
-    # @param address The string to parse
-    # @param currency The currency used to parse the address
-    # @return Always returns an Algorand address downcasted to an api::Address.
-    static parse(
-        address: string,
-        currency: Currency
-    ) : Address;
+    static isValid(address: string): bool;
 }
-
 
 AlgorandWallet = interface +c {
 

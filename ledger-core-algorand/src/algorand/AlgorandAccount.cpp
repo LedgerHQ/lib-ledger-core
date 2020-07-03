@@ -533,7 +533,7 @@ namespace algorand {
                     if (details.assetReceiver == _address) {
                         balance += header.receiverRewards.getValueOr(0);
                     }
-                    if (details.assetCloseTo == _address) {
+                    if (details.assetCloseTo && *details.assetCloseTo == _address) {
                         balance += header.closeRewards.getValueOr(0);
                     }
                 }

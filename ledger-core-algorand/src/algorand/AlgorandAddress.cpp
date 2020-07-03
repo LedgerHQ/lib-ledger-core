@@ -82,20 +82,15 @@ namespace algorand {
 
 } // namespace algorand
 
-    std::shared_ptr<api::Address> api::AlgorandAddress::parse(const std::string& address, 
-        const api::Currency& currency
-        ) {
-            auto decoded = algorand::Address::toPublicKey(address);
-            return std::dynamic_pointer_cast<api::Address>(std::make_shared<algorand::Address>(currency, decoded));
+namespace api {
+
+    bool AlgorandAddress::isValid(const std::string& address)
+    {
+        using ledger::core::algorand::Address;
+        return Address::fromPublicKey(Address::toPublicKey(address)) == address;
     }
 
-    bool api::AlgorandAddress::isValid(
-        const std::string &address,
-        const api::Currency &currency
-        ) {
-            return parse(address,currency)->toString() == address;
-    }
-
+} // namespace api
 } // namespace core
 } // namespace ledger
 
