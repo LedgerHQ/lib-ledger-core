@@ -42,7 +42,7 @@ public:
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
         // NOTE: we run the tests on the TestNet
-        auto client = std::make_shared<HttpClient>("https://testnet-algorand.api.purestake.io/ps1/v1/", http, worker);
+        auto client = std::make_shared<HttpClient>("https://testnet-algorand.api.purestake.io", http, worker);
 
         explorer = std::make_shared<BlockchainExplorer>(
                         worker,
@@ -67,7 +67,7 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
     api::Block block = ::wait(explorer->getBlock(blockHeight));
 
     EXPECT_EQ(block.height, blockHeight);
-    EXPECT_EQ(block.blockHash, "SWM7OIULX7F7KMGZSGU54FCEVVVCV6XWT6CEG7EH7WI4LHWHNB7A");
+    EXPECT_EQ(block.blockHash, std::to_string(blockHeight));
     EXPECT_EQ(block.time, blockTime);
 }
 

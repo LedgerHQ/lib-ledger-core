@@ -112,7 +112,7 @@ namespace algorand {
         inflateAmountAndFees();
         inflateSenders();
         inflateRecipients();
-        inflateType();
+        inflateType(); // inflateAmountAndFees must be called first
         setAlgorandOperationType();
         refreshUid();
     }
@@ -148,33 +148,44 @@ namespace algorand {
 
     void Operation::inflateAmountAndFees()
     {
-        const auto& accountAddr = getAlgorandAccount().getAddress();
+        const auto& account = getAlgorandAccount().getAddress();
         const auto& txn = getTransactionData();
-        uint64_t fullAmount = 0;
-        if (accountAddr == txn.header.sender.toString()) {
-            fullAmount += txn.header.fee;
-            getBackend().fees = BigInt(static_cast<unsigned long long>(fullAmount));
+        auto amount = BigInt::ZERO;
+        auto u64ToBigInt = [](uint64_t n) {
+            return BigInt(static_cast<unsigned long long>(n));
+        };
+        if (account == txn.header.sender.toString()) {
+            amount = amount + u64ToBigInt(txn.header.fee);
+            amount = amount - u64ToBigInt(txn.header.senderRewards.getValueOr(0));
+            getBackend().fees = u64ToBigInt(txn.header.fee);
         }
         if (txn.header.type == model::constants::pay) {
             const auto& details = boost::get<model::PaymentTxnFields>(txn.details);
             if (txn.header.sender == details.receiverAddr) {
-                getBackend().amount = BigInt(static_cast<unsigned long long>(fullAmount));
+                getBackend().amount = amount;
                 return;
             }
-            if (accountAddr == txn.header.sender.toString()) {
-                fullAmount += details.amount;
-                fullAmount -= details.fromRewards.getValueOr(0);
+            if (account == txn.header.sender.toString()) {
+                amount = amount + u64ToBigInt(details.amount);
             }
-            if (accountAddr == details.receiverAddr.toString()) {
-                fullAmount += details.amount;
-                fullAmount += details.receiverRewards.getValueOr(0);
+            if (account == details.receiverAddr.toString()) {
+                amount = amount + u64ToBigInt(details.amount);
+                amount = amount + u64ToBigInt(txn.header.receiverRewards.getValueOr(0));
             }
-            if (details.closeAddr && accountAddr == details.closeAddr->toString()) {
-                fullAmount += details.closeAmount.getValueOr(0);
-                fullAmount += details.closeRewards.getValueOr(0);
+            if (details.closeAddr && account == details.closeAddr->toString()) {
+                amount = amount + u64ToBigInt(details.closeAmount.getValueOr(0));
+                amount = amount + u64ToBigInt(txn.header.closeRewards.getValueOr(0));
             }
-            getBackend().amount = BigInt(static_cast<unsigned long long>(fullAmount));
+        } else if (txn.header.type == model::constants::axfer) {
+            const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
+            if (account == details.assetReceiver.toString()) {
+                amount = amount + u64ToBigInt(txn.header.receiverRewards.getValueOr(0));
+            }
+            if (details.assetCloseTo && account == details.assetCloseTo->toString()) {
+                amount = amount + u64ToBigInt(txn.header.closeRewards.getValueOr(0));
+            }
         }
+        getBackend().amount = amount;
     }
 
     void Operation::inflateSenders()
@@ -204,24 +215,28 @@ namespace algorand {
 
     void Operation::inflateType()
     {
-        const auto& accountAddr = getAlgorandAccount().getAddress();
+        const auto& account = getAlgorandAccount().getAddress();
         const auto& txn = getTransactionData();
         getBackend().type = api::OperationType::NONE;
 
-        if (txn.header.sender.toString() == accountAddr) {
+        if (txn.header.sender.toString() == account) {
             getBackend().type = api::OperationType::SEND;
         } else if (txn.header.type == model::constants::pay) {
             const auto& details = boost::get<model::PaymentTxnFields>(txn.details);
-            if (details.receiverAddr.toString() == accountAddr ||
-                details.closeAddr && details.closeAddr->toString() == accountAddr) {
+            if (details.receiverAddr.toString() == account ||
+                details.closeAddr && details.closeAddr->toString() == account) {
                 getBackend().type = api::OperationType::RECEIVE;
             }
         } else if (txn.header.type == model::constants::axfer) {
             const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
-            if (details.assetReceiver.toString() == accountAddr ||
-                details.assetCloseTo && details.assetCloseTo->toString() == accountAddr) {
+            if (details.assetReceiver.toString() == account ||
+                details.assetCloseTo && details.assetCloseTo->toString() == account) {
                 getBackend().type = api::OperationType::RECEIVE;
             }
+        }
+        if (getBackend().amount.isNegative()) {
+            getBackend().amount = getBackend().amount.positive();
+            getBackend().type = api::OperationType::REWARDS;
         }
     }
 

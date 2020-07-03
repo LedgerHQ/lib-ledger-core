@@ -22,17 +22,21 @@ struct AlgorandAssetTransferInfo final {
     std::experimental::optional<std::string> closeAddress;
     /** Sender account on which clawback is used */
     std::experimental::optional<std::string> clawedBackAddress;
+    /** The amount sent to closeAddress */
+    std::experimental::optional<std::string> closeAmount;
 
     AlgorandAssetTransferInfo(std::string assetId_,
                               std::experimental::optional<std::string> amount_,
                               std::string recipientAddress_,
                               std::experimental::optional<std::string> closeAddress_,
-                              std::experimental::optional<std::string> clawedBackAddress_)
+                              std::experimental::optional<std::string> clawedBackAddress_,
+                              std::experimental::optional<std::string> closeAmount_)
     : assetId(std::move(assetId_))
     , amount(std::move(amount_))
     , recipientAddress(std::move(recipientAddress_))
     , closeAddress(std::move(closeAddress_))
     , clawedBackAddress(std::move(clawedBackAddress_))
+    , closeAmount(std::move(closeAmount_))
     {}
 
     AlgorandAssetTransferInfo(const AlgorandAssetTransferInfo& cpy) {
@@ -41,6 +45,7 @@ struct AlgorandAssetTransferInfo final {
        this->recipientAddress = cpy.recipientAddress;
        this->closeAddress = cpy.closeAddress;
        this->clawedBackAddress = cpy.clawedBackAddress;
+       this->closeAmount = cpy.closeAmount;
     }
 
     AlgorandAssetTransferInfo() = default;
@@ -52,17 +57,18 @@ struct AlgorandAssetTransferInfo final {
        this->recipientAddress = cpy.recipientAddress;
        this->closeAddress = cpy.closeAddress;
        this->clawedBackAddress = cpy.clawedBackAddress;
+       this->closeAmount = cpy.closeAmount;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(assetId, amount, recipientAddress, closeAddress, clawedBackAddress);
+        archive(assetId, amount, recipientAddress, closeAddress, clawedBackAddress, closeAmount);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(assetId, amount, recipientAddress, closeAddress, clawedBackAddress);
+        archive(assetId, amount, recipientAddress, closeAddress, clawedBackAddress, closeAmount);
     }
 };
 

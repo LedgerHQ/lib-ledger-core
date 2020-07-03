@@ -39,6 +39,12 @@ public:
 
     virtual std::string getRound() const = 0;
 
+    virtual std::string getSenderRewards() const = 0;
+
+    virtual std::string getReceiverRewards() const = 0;
+
+    virtual std::string getCloseRewards() const = 0;
+
     virtual void setSender(const std::string & sender) = 0;
 
     virtual void setFee(const std::string & fee) = 0;

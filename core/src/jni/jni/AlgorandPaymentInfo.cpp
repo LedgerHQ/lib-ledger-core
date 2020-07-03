@@ -16,25 +16,19 @@ auto AlgorandPaymentInfo::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni:
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.recipientAddress)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.amount)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.closeAddress)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.closeAmount)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.fromRewards)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.closeRewards)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.recipientRewards)))};
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.closeAmount)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
 
 auto AlgorandPaymentInfo::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
-    ::djinni::JniLocalScope jscope(jniEnv, 8);
+    ::djinni::JniLocalScope jscope(jniEnv, 5);
     assert(j != nullptr);
     const auto& data = ::djinni::JniClass<AlgorandPaymentInfo>::get();
     return {::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_recipientAddress)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_amount)),
             ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_closeAddress)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_closeAmount)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_fromRewards)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_closeRewards)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_recipientRewards))};
+            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_closeAmount))};
 }
 
 }  // namespace djinni_generated
