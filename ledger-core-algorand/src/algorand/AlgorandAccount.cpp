@@ -313,7 +313,7 @@ namespace algorand {
         _explorer->getTransactionParams()
             .map<uint64_t>(
                     getContext(),
-                    [&transaction](const model::TransactionParams& params) {
+                    [transaction](const model::TransactionParams& params) {
                         /// This is only true for a single signature.
                         /// If we ever support different type of signatures
                         /// (e.g multi signatures), we will have to find a way

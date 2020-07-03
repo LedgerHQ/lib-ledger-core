@@ -9,8 +9,6 @@
 #include <cstdint>
 #include <string>
 
-#include <fstream>
-
 namespace ledger {
 namespace core {
 namespace algorand {
@@ -48,13 +46,13 @@ namespace test {
     TEST(TransactionSerialization, Payment)
     {
         const auto refBinary = std::string(
-                "81a374786e8aa3616d74cd2710a3666565cd03e8a26676ce006feac8a"
-                "367656eac746573746e65742d76312e30a26768c4204863b518a4b3c8"
-                "4ec810f22d4f1081cb0f71f059a7ac20dec62f7f70e5093a22a26c76c"
-                "e006feeb0a46e6f7465c40f667261672069766e20797271747265a372"
-                "6376c420769e258d9985738a385af7558118cbb3a2f6f1d417249af52"
-                "92f247ace92ab2ea3736e64c4202ff258acf69bb29b1ce13ea2eadb83"
-                "c7a374a64f2a6a5313c3633c96aa6b3954a474797065a3706179");
+                "8aa3616d74cd2710a3666565cd03e8a26676ce006feac8a367656eac"
+                "746573746e65742d76312e30a26768c4204863b518a4b3c84ec810f2"
+                "2d4f1081cb0f71f059a7ac20dec62f7f70e5093a22a26c76ce006fee"
+                "b0a46e6f7465c40f667261672069766e20797271747265a3726376c4"
+                "20769e258d9985738a385af7558118cbb3a2f6f1d417249af5292f24"
+                "7ace92ab2ea3736e64c4202ff258acf69bb29b1ce13ea2eadb83c7a3"
+                "74a64f2a6a5313c3633c96aa6b3954a474797065a3706179");
 
         const auto header = makeHeader(constants::pay);
         const auto detailsAlgoTransfer = PaymentTxnFields(
@@ -71,19 +69,19 @@ namespace test {
     TEST(TransactionSerialization, AssetCreate)
     {
         const auto refBinary = std::string(
-                "81a374786e89a46170617289a2616eab5952515452454e46465247a26"
-                "175b775676763663a2f2f6a6a6a2e7972717472652e70627a2fa163c4"
-                "202ff258acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c9"
-                "6aa6b3954a2646302a166c4202ff258acf69bb29b1ce13ea2eadb83c7"
-                "a374a64f2a6a5313c3633c96aa6b3954a16dc4202ff258acf69bb29b1"
-                "ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a172c4202f"
-                "f258acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6"
-                "b3954a174ce05f5e100a2756ea3595154a3666565cd03e8a26676ce00"
-                "6feac8a367656eac746573746e65742d76312e30a26768c4204863b51"
-                "8a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec62f7f70e5093a22"
-                "a26c76ce006feeb0a46e6f7465c40f667261672069766e20797271747"
-                "265a3736e64c4202ff258acf69bb29b1ce13ea2eadb83c7a374a64f2a"
-                "6a5313c3633c96aa6b3954a474797065a461636667");
+                "89a46170617289a2616eab5952515452454e46465247a26175b77567"
+                "6763663a2f2f6a6a6a2e7972717472652e70627a2fa163c4202ff258"
+                "acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b39"
+                "54a2646302a166c4202ff258acf69bb29b1ce13ea2eadb83c7a374a6"
+                "4f2a6a5313c3633c96aa6b3954a16dc4202ff258acf69bb29b1ce13e"
+                "a2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a172c4202ff258"
+                "acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b39"
+                "54a174ce05f5e100a2756ea3595154a3666565cd03e8a26676ce006f"
+                "eac8a367656eac746573746e65742d76312e30a26768c4204863b518"
+                "a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec62f7f70e5093a22"
+                "a26c76ce006feeb0a46e6f7465c40f667261672069766e2079727174"
+                "7265a3736e64c4202ff258acf69bb29b1ce13ea2eadb83c7a374a64f"
+                "2a6a5313c3633c96aa6b3954a474797065a461636667");
 
         const auto header = makeHeader(constants::acfg);
         const auto detailsAssetCreate =
@@ -110,16 +108,16 @@ namespace test {
     TEST(TransactionSerialization, AssetConfig)
     {
         const auto refBinary = std::string(
-                "81a374786e8aa46170617284a163c4202ff258acf69bb29b1ce13ea2e"
-                "adb83c7a374a64f2a6a5313c3633c96aa6b3954a166c420769e258d99"
-                "85738a385af7558118cbb3a2f6f1d417249af5292f247ace92ab2ea16"
-                "dc4202ff258acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c363"
-                "3c96aa6b3954a172c4202ff258acf69bb29b1ce13ea2eadb83c7a374a"
-                "64f2a6a5313c3633c96aa6b3954a463616964ce0093b229a3666565cd"
-                "03e8a26676ce006feac8a367656eac746573746e65742d76312e30a26"
-                "768c4204863b518a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec6"
-                "2f7f70e5093a22a26c76ce006feeb0a46e6f7465c40f6672616720697"
-                "66e20797271747265a3736e64c4202ff258acf69bb29b1ce13ea2eadb"
+                "8aa46170617284a163c4202ff258acf69bb29b1ce13ea2eadb83c7a3"
+                "74a64f2a6a5313c3633c96aa6b3954a166c420769e258d9985738a38"
+                "5af7558118cbb3a2f6f1d417249af5292f247ace92ab2ea16dc4202f"
+                "f258acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa"
+                "6b3954a172c4202ff258acf69bb29b1ce13ea2eadb83c7a374a64f2a"
+                "6a5313c3633c96aa6b3954a463616964ce0093b229a3666565cd03e8"
+                "a26676ce006feac8a367656eac746573746e65742d76312e30a26768"
+                "c4204863b518a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec62f"
+                "7f70e5093a22a26c76ce006feeb0a46e6f7465c40f66726167206976"
+                "6e20797271747265a3736e64c4202ff258acf69bb29b1ce13ea2eadb"
                 "83c7a374a64f2a6a5313c3633c96aa6b3954a474797065a461636667");
 
         const auto header = makeHeader(constants::acfg);
@@ -149,12 +147,12 @@ namespace test {
     TEST(TransactionSerialization, AssetDestroy)
     {
         const auto refBinary = std::string(
-                "81a374786e89a463616964ce0093b229a3666565cd03e8a26676ce00"
-                "6feac8a367656eac746573746e65742d76312e30a26768c4204863b5"
-                "18a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec62f7f70e5093a"
-                "22a26c76ce006feeb0a46e6f7465c40f667261672069766e20797271"
-                "747265a3736e64c4202ff258acf69bb29b1ce13ea2eadb83c7a374a6"
-                "4f2a6a5313c3633c96aa6b3954a474797065a461636667");
+                "89a463616964ce0093b229a3666565cd03e8a26676ce006feac8a367"
+                "656eac746573746e65742d76312e30a26768c4204863b518a4b3c84e"
+                "c810f22d4f1081cb0f71f059a7ac20dec62f7f70e5093a22a26c76ce"
+                "006feeb0a46e6f7465c40f667261672069766e20797271747265a373"
+                "6e64c4202ff258acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313"
+                "c3633c96aa6b3954a474797065a461636667");
 
         const auto header = makeHeader(constants::acfg);
         const auto detailsAssetDestroy =
@@ -170,14 +168,14 @@ namespace test {
     TEST(TransactionSerialization, AssetOptIn)
     {
         const auto refBinary = std::string(
-                "81a374786e8aa461726376c420769e258d9985738a385af7558118cb"
-                "b3a2f6f1d417249af5292f247ace92ab2ea3666565cd03e8a26676ce"
-                "006feac8a367656eac746573746e65742d76312e30a26768c4204863"
-                "b518a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec62f7f70e509"
-                "3a22a26c76ce006feeb0a46e6f7465c40f667261672069766e207972"
-                "71747265a3736e64c420769e258d9985738a385af7558118cbb3a2f6"
-                "f1d417249af5292f247ace92ab2ea474797065a56178666572a47861"
-                "6964ce0093b229");
+                "8aa461726376c420769e258d9985738a385af7558118cbb3a2f6f1d4"
+                "17249af5292f247ace92ab2ea3666565cd03e8a26676ce006feac8a3"
+                "67656eac746573746e65742d76312e30a26768c4204863b518a4b3c8"
+                "4ec810f22d4f1081cb0f71f059a7ac20dec62f7f70e5093a22a26c76"
+                "ce006feeb0a46e6f7465c40f667261672069766e20797271747265a3"
+                "736e64c420769e258d9985738a385af7558118cbb3a2f6f1d417249a"
+                "f5292f247ace92ab2ea474797065a56178666572a478616964ce0093"
+                "b229");
 
         const auto header = [&]() {
             auto header = makeHeader(constants::axfer);
@@ -198,14 +196,14 @@ namespace test {
     TEST(TransactionSerialization, AssetTransfer)
     {
         const auto refBinary = std::string(
-                "81a374786e8ba461616d7414a461726376c420769e258d9985738a38"
-                "5af7558118cbb3a2f6f1d417249af5292f247ace92ab2ea3666565cd"
-                "03e8a26676ce006feac8a367656eac746573746e65742d76312e30a2"
-                "6768c4204863b518a4b3c84ec810f22d4f1081cb0f71f059a7ac20de"
-                "c62f7f70e5093a22a26c76ce006feeb0a46e6f7465c40f6672616720"
-                "69766e20797271747265a3736e64c4202ff258acf69bb29b1ce13ea2"
-                "eadb83c7a374a64f2a6a5313c3633c96aa6b3954a474797065a56178"
-                "666572a478616964ce0093b229");
+                "8ba461616d7414a461726376c420769e258d9985738a385af7558118"
+                "cbb3a2f6f1d417249af5292f247ace92ab2ea3666565cd03e8a26676"
+                "ce006feac8a367656eac746573746e65742d76312e30a26768c42048"
+                "63b518a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec62f7f70e5"
+                "093a22a26c76ce006feeb0a46e6f7465c40f667261672069766e2079"
+                "7271747265a3736e64c4202ff258acf69bb29b1ce13ea2eadb83c7a3"
+                "74a64f2a6a5313c3633c96aa6b3954a474797065a56178666572a478"
+                "616964ce0093b229");
 
         const auto header = makeHeader(constants::axfer);
         const auto detailsAssetTransfer =
@@ -224,15 +222,15 @@ namespace test {
     TEST(TransactionSerialization, AssetClawback)
     {
         const auto refBinary = std::string(
-                "81a374786e8ca461616d7414a461726376c4202ff258acf69bb29b1ce"
-                "13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a461736e64c4"
-                "20769e258d9985738a385af7558118cbb3a2f6f1d417249af5292f247"
-                "ace92ab2ea3666565cd03e8a26676ce006feac8a367656eac74657374"
-                "6e65742d76312e30a26768c4204863b518a4b3c84ec810f22d4f1081c"
-                "b0f71f059a7ac20dec62f7f70e5093a22a26c76ce006feeb0a46e6f74"
-                "65c40f667261672069766e20797271747265a3736e64c4202ff258acf"
-                "69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a4"
-                "74797065a56178666572a478616964ce0093b229");
+                "8ca461616d7414a461726376c4202ff258acf69bb29b1ce13ea2eadb"
+                "83c7a374a64f2a6a5313c3633c96aa6b3954a461736e64c420769e25"
+                "8d9985738a385af7558118cbb3a2f6f1d417249af5292f247ace92ab"
+                "2ea3666565cd03e8a26676ce006feac8a367656eac746573746e6574"
+                "2d76312e30a26768c4204863b518a4b3c84ec810f22d4f1081cb0f71"
+                "f059a7ac20dec62f7f70e5093a22a26c76ce006feeb0a46e6f7465c4"
+                "0f667261672069766e20797271747265a3736e64c4202ff258acf69b"
+                "b29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a474"
+                "797065a56178666572a478616964ce0093b229");
 
         const auto header = makeHeader(constants::axfer);
         const auto detailsAssetClawback =
@@ -252,15 +250,15 @@ namespace test {
     TEST(TransactionSerialization, AssetOptOut)
     {
         const auto refBinary = std::string(
-                "81a374786e8ca461616d7414a661636c6f7365c4202ff258acf69bb2"
-                "9b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a46172"
-                "6376c4202ff258acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313"
-                "c3633c96aa6b3954a3666565cd03e8a26676ce006feac8a367656eac"
-                "746573746e65742d76312e30a26768c4204863b518a4b3c84ec810f2"
-                "2d4f1081cb0f71f059a7ac20dec62f7f70e5093a22a26c76ce006fee"
-                "b0a46e6f7465c40f667261672069766e20797271747265a3736e64c4"
-                "20769e258d9985738a385af7558118cbb3a2f6f1d417249af5292f24"
-                "7ace92ab2ea474797065a56178666572a478616964ce0093b229");
+                "8ca461616d7414a661636c6f7365c4202ff258acf69bb29b1ce13ea2"
+                "eadb83c7a374a64f2a6a5313c3633c96aa6b3954a461726376c4202f"
+                "f258acf69bb29b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa"
+                "6b3954a3666565cd03e8a26676ce006feac8a367656eac746573746e"
+                "65742d76312e30a26768c4204863b518a4b3c84ec810f22d4f1081cb"
+                "0f71f059a7ac20dec62f7f70e5093a22a26c76ce006feeb0a46e6f74"
+                "65c40f667261672069766e20797271747265a3736e64c420769e258d"
+                "9985738a385af7558118cbb3a2f6f1d417249af5292f247ace92ab2e"
+                "a474797065a56178666572a478616964ce0093b229");
 
         const auto header = [&]() {
             auto header = makeHeader(constants::axfer);
@@ -283,15 +281,15 @@ namespace test {
     TEST(TransactionSerialization, CloseAccount)
     {
         const auto refBinary = std::string(
-                "81a374786e8ba3616d74cd2710a5636c6f7365c4202ff258acf69bb2"
-                "9b1ce13ea2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a36665"
-                "65cd03e8a26676ce006feac8a367656eac746573746e65742d76312e"
-                "30a26768c4204863b518a4b3c84ec810f22d4f1081cb0f71f059a7ac"
-                "20dec62f7f70e5093a22a26c76ce006feeb0a46e6f7465c40f667261"
-                "672069766e20797271747265a3726376c4202ff258acf69bb29b1ce1"
-                "3ea2eadb83c7a374a64f2a6a5313c3633c96aa6b3954a3736e64c420"
-                "769e258d9985738a385af7558118cbb3a2f6f1d417249af5292f247a"
-                "ce92ab2ea474797065a3706179");
+                "8ba3616d74cd2710a5636c6f7365c4202ff258acf69bb29b1ce13ea2"
+                "eadb83c7a374a64f2a6a5313c3633c96aa6b3954a3666565cd03e8a2"
+                "6676ce006feac8a367656eac746573746e65742d76312e30a26768c4"
+                "204863b518a4b3c84ec810f22d4f1081cb0f71f059a7ac20dec62f7f"
+                "70e5093a22a26c76ce006feeb0a46e6f7465c40f667261672069766e"
+                "20797271747265a3726376c4202ff258acf69bb29b1ce13ea2eadb83"
+                "c7a374a64f2a6a5313c3633c96aa6b3954a3736e64c420769e258d99"
+                "85738a385af7558118cbb3a2f6f1d417249af5292f247ace92ab2ea4"
+                "74797065a3706179");
 
         const auto header = [&]() {
             auto header = makeHeader(constants::pay);
