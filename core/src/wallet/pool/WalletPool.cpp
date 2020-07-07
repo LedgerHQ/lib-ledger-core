@@ -146,7 +146,7 @@ namespace ledger {
                     name, password, httpClient, webSocketClient, pathResolver,
                     logPrinter, dispatcher, rng, backend, configuration,
                     externalPreferencesBackend,
-                    externalPreferencesBackend
+                    internalPreferencesBackend
             ));
 
             // Initialization

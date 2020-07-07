@@ -55,16 +55,6 @@ namespace ledger {
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration
         ) {
-            auto externalPreferencesBackend = std::make_shared<ledger::core::PreferencesBackend>(
-                    fmt::format("/{}/preferences.db", name),
-                    dispatcher->getSerialExecutionContext("preferences"),
-                    pathResolver
-            );
-            auto internalPreferencesBackend = std::make_shared<ledger::core::PreferencesBackend>(
-                    fmt::format("/{}/__preferences__.db", name),
-                    dispatcher->getSerialExecutionContext("preferences"),
-                    pathResolver
-            );
             auto pool = ledger::core::WalletPool::newInstance(
                     name,
                     password,
@@ -76,8 +66,8 @@ namespace ledger {
                     rng,
                     backend,
                     configuration,
-                    externalPreferencesBackend,
-                    internalPreferencesBackend
+                    nullptr,
+                    nullptr
             );
             return std::make_shared<WalletPoolApi>(pool);
         }

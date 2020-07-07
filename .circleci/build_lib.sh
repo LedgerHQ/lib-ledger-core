@@ -6,17 +6,21 @@
 
 BUILD_CONFIG="Debug"
 cmake_params="" # All params passed to cmake to generate build files
+unamestr=`uname`
 export ARCH=$2
 export CMAKE=cmake
 export PATH=$PATH:~/cmake_folder/bin
+export PG_INCLUDE_DIR=`[[ "$unamestr" = "Darwin" ]] && echo "/usr/local/opt/postgresql/include" || echo "/usr/include/postgresql"`
 
+echo "Use $PG_INCLUDE_DIR for PGSQL"
 
 ###
 # Commands of the script. Put them in command line parameters to trigger
 ###
 
 function command_target_jni {
-  add_to_cmake_params -DTARGET_JNI=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DSSL_SUPPORT=ON #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
+  export JAVA_HOME="$(/usr/libexec/java_home)"
+  add_to_cmake_params -DTARGET_JNI=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" -DSSL_SUPPORT=ON #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
 }
 
 function command_Release {
@@ -124,7 +128,6 @@ echo "=====>Create build directory"
 (mkdir lib-ledger-core-build || echo "lib-ledger-core-build directory already exists") && cd lib-ledger-core-build
 
 echo "=====>Start build"
-unamestr=`uname`
 execute_commands $*
 
 echo "======> CMake config for $unamestr in $BUILD_CONFIG mode"
@@ -138,7 +141,7 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
         echo $version
         export PATH="/usr/local/Cellar/qt/$version/bin:$PATH"
         echo $PATH
-        add_to_cmake_params -DCMAKE_INSTALL_PREFIX="/usr/local/Cellar/qt/$version" -DCMAKE_PREFIX_PATH="/usr/local/Cellar/qt/$version"
+        add_to_cmake_params -DCMAKE_INSTALL_PREFIX="/usr/local/Cellar/qt/$version" -DCMAKE_PREFIX_PATH="/usr/local/Cellar/qt/$version" -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR"
     fi
 fi
 

@@ -124,8 +124,6 @@ namespace ledger {
                 const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
             );
 
-
-
             ~WalletPool() = default;
 
             /// Reset wallet pool.
