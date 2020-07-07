@@ -327,24 +327,6 @@ uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction 
             return sum + BigInt::fromDecimal(subamount.amount).toInt();
         });
 
-    // The value is updated to the fees actually paid if the transaction has a GasUsed value to use.
-    if (fees != 0 && tx.gasUsed) {
-        if (tx.fee.gas.toInt() == 0) {
-            // A 0 gas transaction is either :
-            // - Never broadcast by the node (because of spam protection mechanisms)
-            // - Invalid, as the signature verification (or the `gas per byte` cost)
-            //   will immediately trigger an OutOfGas network error.
-            // An invalid or absent transaction from the blockchain should be not picked up by the
-            // explorer, so Operations cannot be inflated with such transactions.
-            throw Exception(
-                api::ErrorCode::ILLEGAL_STATE,
-                "A cosmos Transaction cannot have a GasUsed field with a null GasWanted field.");
-        }
-        auto const feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
-                                         static_cast<float>(tx.fee.gas.toInt());
-        fees = std::lround(feeConsumptionRatio * static_cast<float>(fees));
-    }
-
     return fees;
 }
 
