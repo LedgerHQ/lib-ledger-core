@@ -42,9 +42,7 @@ WalletPool = interface +c {
         dispatcher: ThreadDispatcher,
         rng: RandomNumberGenerator,
         backend: DatabaseBackend,
-        configuration: DynamicObject,
-        externalPreferencesBackend: PreferencesBackend,
-        internalPreferencesBackend: PreferencesBackend
+        configuration: DynamicObject
     ): WalletPool;
 
     # Return used logger to dump logs in defined log path by PathResolver.

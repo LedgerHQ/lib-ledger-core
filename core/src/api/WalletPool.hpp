@@ -31,7 +31,6 @@ class LogPrinter;
 class Logger;
 class PathResolver;
 class Preferences;
-class PreferencesBackend;
 class RandomNumberGenerator;
 class ThreadDispatcher;
 class WalletCallback;
@@ -58,7 +57,7 @@ public:
      * @param configuration, DynamicObject object, desired configuration for this wallet pool
      * @return WalletPool object, instance of WalletPool
      */
-    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::string & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration, const std::shared_ptr<PreferencesBackend> & externalPreferencesBackend, const std::shared_ptr<PreferencesBackend> & internalPreferencesBackend);
+    static std::shared_ptr<WalletPool> newInstance(const std::string & name, const std::string & password, const std::shared_ptr<HttpClient> & httpClient, const std::shared_ptr<WebSocketClient> & webSocketClient, const std::shared_ptr<PathResolver> & pathResolver, const std::shared_ptr<LogPrinter> & logPrinter, const std::shared_ptr<ThreadDispatcher> & dispatcher, const std::shared_ptr<RandomNumberGenerator> & rng, const std::shared_ptr<DatabaseBackend> & backend, const std::shared_ptr<DynamicObject> & configuration);
 
     /**
      * Return used logger to dump logs in defined log path by PathResolver.
