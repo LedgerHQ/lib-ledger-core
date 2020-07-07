@@ -367,8 +367,18 @@ namespace ledger {
                                                 if (!counter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
-                                                // We should increment current counter
-                                                tx->setCounter(std::make_shared<BigInt>(++(*counter)));
+                                                auto explorer_counter = counter->toInt64();
+                                                auto saved_counter = self->getInternalPreferences()->getLong("counter", 0);
+                                                if (saved_counter <= explorer_counter) {
+                                                    self->getInternalPreferences()->editor()->putLong("counter", explorer_counter + 1)->commit();
+                                                    // We should increment current counter
+                                                    tx->setCounter(std::make_shared<BigInt>(++(*counter)));
+                                                }
+                                                else {
+                                                    self->getInternalPreferences()->editor()->putLong("counter", saved_counter + 1)->commit();
+                                                    // We should increment current counter
+                                                    tx->setCounter(std::make_shared<BigInt>(++BigInt(saved_counter)));
+                                                }
                                                 return explorer->getCurrentBlock();
                                             }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                                 tx->setBlockHash(block->hash);
