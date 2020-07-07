@@ -187,6 +187,10 @@ namespace ledger {
         template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type);
 
+        // Algorand support
+        template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type);
+
     }
 }
 
