@@ -36,7 +36,7 @@
 namespace ledger {
     namespace core {
 
-        constexpr auto ADDRESS_BATCH_SIZE = 20;
+        constexpr auto ADDRESS_BATCH_SIZE = 10;
 
         using Transaction = BitcoinLikeBlockchainExplorerTransaction;
         using Input = BitcoinLikeBlockchainExplorerInput;
