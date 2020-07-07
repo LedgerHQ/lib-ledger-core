@@ -113,10 +113,16 @@ namespace algorand {
             .json(false)
             .map<model::AssetParams>(
                     getContext(),
-                    [](const HttpRequest::JsonResult& response) {
+                    [id](const HttpRequest::JsonResult& response) {
                         auto assetParams = model::AssetParams();
                         const auto& json = std::get<1>(response)->GetObject();
-                        JsonParser::parseAssetParams(json, assetParams);
+                        if (!json.HasMember(constants::xAsset.c_str())) {
+                            throw make_exception(api::ErrorCode::CURRENCY_NOT_FOUND,
+                                                 fmt::format("Asset {} does not exist", id));
+                        }
+                        const auto& jsonParams =
+                            json[constants::xAsset.c_str()].GetObject()[constants::xParams.c_str()].GetObject();
+                        JsonParser::parseAssetParams(jsonParams, assetParams);
                         return assetParams;
                     });
     }

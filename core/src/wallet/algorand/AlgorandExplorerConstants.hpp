@@ -59,6 +59,7 @@ namespace constants {
     static const std::string xTotal = "total";
     static const std::string xUnitName = "unit-name";
     static const std::string xUrl = "url";
+    static const std::string xAsset = "asset";
 
     // AssetAmount
     static const std::string xAmount = "amount";

@@ -97,10 +97,10 @@ namespace algorand {
             assetParams.total = getMandatoryUint64Field(node, constants::xTotal);
             assert(node.HasMember(constants::xDecimal.c_str()));
             assetParams.decimals = node[constants::xDecimal.c_str()].GetUint();
-            assetParams.defaultFrozen = getMandatoryBoolField(node, constants::xDefaultFrozen);
-            assetParams.unitName = getMandatoryStringField(node, constants::xUnitName);
-            assetParams.assetName = getMandatoryStringField(node, constants::xAssetName);
 
+            assetParams.defaultFrozen = getOptionalBoolField(node, constants::xDefaultFrozen);
+            assetParams.unitName = getOptionalStringField(node, constants::xUnitName);
+            assetParams.assetName = getOptionalStringField(node, constants::xAssetName);
             assetParams.managerAddr = getOptionalAddressField(node, constants::xManagerKey);
             assetParams.freezeAddr = getOptionalAddressField(node, constants::xFreezeAddr);
             assetParams.clawbackAddr = getOptionalAddressField(node, constants::xClawbackAddr);
@@ -173,13 +173,13 @@ namespace algorand {
             tx.header.type = getMandatoryStringField(node, constants::xTxType);
             tx.header.id = getMandatoryStringField(node, constants::xId);
             tx.header.sender = getMandatoryAddressField(node, constants::xSender);
-            tx.header.timestamp = getMandatoryUint64Field(node, constants::xRoundTime);
             tx.header.firstValid = getMandatoryUint64Field(node, constants::xFirstValid);
             tx.header.lastValid = getMandatoryUint64Field(node, constants::xLastValid);
-            tx.header.round = getMandatoryUint64Field(node, constants::xConfirmedRound);
             tx.header.fee = getMandatoryUint64Field(node, constants::xFee);
             tx.header.genesisHash = getMandatoryB64StringField(node, constants::xGenesisHash);
 
+            tx.header.round = getOptionalUint64Field(node, constants::xConfirmedRound);
+            tx.header.timestamp = getOptionalUint64Field(node, constants::xRoundTime);
             tx.header.genesisId = getOptionalStringField(node, constants::xGenesisId);
             tx.header.note = getOptionalBinaryField(node, constants::xNote);
             tx.header.group = getOptionalBinaryField(node, constants::xGroup);
