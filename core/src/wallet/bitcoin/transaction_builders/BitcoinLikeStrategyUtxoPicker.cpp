@@ -106,7 +106,7 @@ namespace ledger {
 
             buddy->logger->debug("Start filterWithDeepFirst");
 
-            return filterWithSort(buddy, utxos, aggregatedAmount, [] (auto &lhs, auto &rhs) {
+            return filterWithSort(buddy, utxos, aggregatedAmount, currency, [] (auto &lhs, auto &rhs) {
                 constexpr auto maxBlockHeight = std::numeric_limits<uint64_t>::max();
                 return lhs.blockHeight.getValueOr(maxBlockHeight) < rhs.blockHeight.getValueOr(maxBlockHeight);
             });
@@ -542,7 +542,7 @@ namespace ledger {
 
             buddy->logger->debug("Start filterWithMergeOutputs");
 
-            return filterWithSort(buddy, utxos, aggregatedAmount, [](auto &lhs, auto &rhs) {
+            return filterWithSort(buddy, utxos, aggregatedAmount, currency, [](auto &lhs, auto &rhs) {
                 return lhs.value.toLong() < rhs.value.toLong();
             });
         }
@@ -551,7 +551,7 @@ namespace ledger {
                 const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                 std::vector<BitcoinLikeUtxo> utxos,
                 BigInt amount,
-                const api::Currency& curreny,
+                const api::Currency& currency,
                 std::function<bool(BitcoinLikeUtxo&, BitcoinLikeUtxo&)> const& functor)
         {
             auto pickedUtxos = std::vector<BitcoinLikeUtxo>{};

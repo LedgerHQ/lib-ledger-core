@@ -47,21 +47,21 @@ namespace ledger {
             BitcoinLikeStrategyUtxoPicker(const std::shared_ptr<api::ExecutionContext> &context,
                                           const api::Currency &currency);
         public:
-            static UTXODescriptorList filterWithKnapsackSolver(const std::shared_ptr<Buddy>& buddy,
+            static std::vector<BitcoinLikeUtxo> filterWithKnapsackSolver(const std::shared_ptr<Buddy>& buddy,
                 const std::vector<BitcoinLikeUtxo>& utxos,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
 
-            static UTXODescriptorList filterWithOptimizeSize(const std::shared_ptr<Buddy>& buddy,
+            static std::vector<BitcoinLikeUtxo> filterWithOptimizeSize(const std::shared_ptr<Buddy>& buddy,
                 const std::vector<BitcoinLikeUtxo>& utxos,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
 
-            static UTXODescriptorList filterWithMergeOutputs(const std::shared_ptr<Buddy>& buddy,
+            static std::vector<BitcoinLikeUtxo> filterWithMergeOutputs(const std::shared_ptr<Buddy>& buddy,
                 const std::vector<BitcoinLikeUtxo>& utxos,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
-            static UTXODescriptorList filterWithDeepFirst(const std::shared_ptr<Buddy>& buddy,
+            static std::vector<BitcoinLikeUtxo> filterWithDeepFirst(const std::shared_ptr<Buddy>& buddy,
                 const std::vector<BitcoinLikeUtxo>& utxo,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
@@ -84,7 +84,7 @@ namespace ledger {
             static const int64_t CENT = 1000000;
         private:
 
-            std::vector<BitcoinLikeUtxo> filterWithSort(
+            static std::vector<BitcoinLikeUtxo> filterWithSort(
                 const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                 std::vector<BitcoinLikeUtxo> utxos,
                 BigInt amount,
