@@ -63,9 +63,18 @@ namespace ledger {
             std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<BitcoinLikeAccount>& account) override;
             bool isSynchronizing() const override;
 
+            int putTransaction(soci::session &sql, const Transaction &transaction,
+                               const std::shared_ptr<SynchronizationBuddy> &buddy) override;
+
+            std::shared_ptr<SynchronizationBuddy> makeSynchronizationBuddy() override;
+            Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy> &buddy) override;
+
+            Future<Unit> recoverFromFailedSynchronization(const std::shared_ptr<SynchronizationBuddy> &buddy) override;
+
         private:
             std::shared_ptr<BlockchainAccountSynchronizer> getSharedFromThis() override ;
             std::shared_ptr<api::ExecutionContext> getSynchronizerContext() override ;
+
         };
     }
 }

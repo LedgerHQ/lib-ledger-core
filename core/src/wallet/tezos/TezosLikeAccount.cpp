@@ -156,9 +156,6 @@ namespace ledger {
                 if (OperationDatabaseHelper::putOperation(sql, operation)) {
                     emitNewOperationEvent(operation);
                 }
-                if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
-                    updateOriginatedAccounts(sql, operation);
-                }
                 result = static_cast<int>(transaction.type);
             }
 
@@ -168,9 +165,10 @@ namespace ledger {
         void TezosLikeAccount::updateOriginatedAccounts(soci::session &sql, const Operation &operation) {
             auto transaction = operation.tezosTransaction.getValue();
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            auto origAccount = transaction.originatedAccount.getValue();
+
             // If account in DB then it's already in _originatedAccounts
             auto count = 0;
-            auto origAccount = transaction.originatedAccount.getValue();
             sql << "SELECT COUNT(*) FROM tezos_originated_accounts "
                    "WHERE address = :originated_address AND tezos_account_uid =:account_uid",
                    soci::use(origAccount.address), soci::use(getAccountUid()), soci::into(count);
@@ -196,7 +194,7 @@ namespace ledger {
                 );
             }
         }
-        
+
         bool TezosLikeAccount::putBlock(soci::session &sql,
                                         const TezosLikeBlockchainExplorer::Block &block) {
             Block abstractBlock;

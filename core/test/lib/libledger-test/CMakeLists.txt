@@ -12,7 +12,10 @@ add_library(ledger-test STATIC
             MongooseHttpClient.cpp MongooseHttpClient.hpp MongooseSimpleRestServer.cpp MongooseSimpleRestServer.hpp
             route.cc route.h OpenSSLRandomNumberGenerator.cpp OpenSSLRandomNumberGenerator.hpp callbacks.cpp callbacks.hpp FakeWebSocketClient.cpp FakeWebSocketClient.h
             FakeHttpClient.hpp FakeHttpClient.cpp
-            FakeUrlConnection.hpp FakeUrlConnection.cpp)
+            FakeUrlConnection.hpp FakeUrlConnection.cpp
+            ExplorerStorage.hpp ExplorerStorage.cpp
+            HttpClientOnFakeExplorer.hpp HttpClientOnFakeExplorer.cpp
+            UvThreadDispatcher.hpp UvThreadDispatcher.cpp)
 if (SYS_OPENSSL)
     include_directories(${CMAKE_BINARY_DIR}/include ${OPENSSL_INCLUDE_DIR})
 else()
@@ -23,6 +26,7 @@ if (MSVC)
 endif ()
 
 target_link_libraries(mangoose PUBLIC ssl)
+target_link_libraries(ledger-test PUBLIC uv)
 
 target_link_libraries(ledger-test PUBLIC crypto)
 target_link_libraries(ledger-test PUBLIC ledger-core-static)
@@ -32,3 +36,4 @@ target_include_directories(ledger-test PUBLIC ../../../lib/cereal/)
 target_include_directories(ledger-test PUBLIC ../../../../core)
 target_include_directories(ledger-test PUBLIC ../../../../core/src)
 target_include_directories(ledger-test PUBLIC ../../../lib/boost/)
+target_include_directories(ledger-test PUBLIC ../libuv/include)

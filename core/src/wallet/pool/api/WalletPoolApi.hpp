@@ -35,6 +35,7 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <api/WalletPoolCallback.hpp>
 #include <api/ErrorCodeCallback.hpp>
+#include <api/PreferencesBackend.hpp>
 #include <debug/LoggerApi.hpp>
 
 namespace ledger {
@@ -89,17 +90,19 @@ namespace ledger {
             std::shared_ptr<api::ExecutionContext> _mainContext;
 
         public:
-            static void open( const std::string &name,
-                              const std::string &password,
-                              const std::shared_ptr<api::HttpClient> &httpClient,
-                              const std::shared_ptr<api::WebSocketClient> &webSocketClient,
-                              const std::shared_ptr<api::PathResolver> &pathResolver,
-                              const std::shared_ptr<api::LogPrinter> &logPrinter,
-                              const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
-                              const std::shared_ptr<api::RandomNumberGenerator>& rng,
-                              const std::shared_ptr<api::DatabaseBackend> &backend,
-                              const std::shared_ptr<api::DynamicObject>& configuration,
-                              const std::shared_ptr<api::WalletPoolCallback>& listener);
+            static void open(const std::string &name,
+                             const std::string &password,
+                             const std::shared_ptr<api::HttpClient> &httpClient,
+                             const std::shared_ptr<api::WebSocketClient> &webSocketClient,
+                             const std::shared_ptr<api::PathResolver> &pathResolver,
+                             const std::shared_ptr<api::LogPrinter> &logPrinter,
+                             const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
+                             const std::shared_ptr<api::RandomNumberGenerator>& rng,
+                             const std::shared_ptr<api::DatabaseBackend> &backend,
+                             const std::shared_ptr<api::DynamicObject>& configuration,
+                             const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
+                             const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend,
+                             const std::shared_ptr<api::WalletPoolCallback>& listener);
         };
     }
 }

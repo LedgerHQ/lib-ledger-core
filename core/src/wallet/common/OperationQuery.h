@@ -55,8 +55,8 @@ namespace ledger {
             );
             std::shared_ptr<api::OperationQuery> addOrder(api::OperationOrderKey key, bool descending) override;
             std::shared_ptr<api::QueryFilter> filter() override;
-            std::shared_ptr<api::OperationQuery> offset(int64_t from) override;
-            std::shared_ptr<api::OperationQuery> limit(int64_t count) override;
+            std::shared_ptr<api::OperationQuery> offset(int32_t from) override;
+            std::shared_ptr<api::OperationQuery> limit(int32_t count) override;
             std::shared_ptr<api::OperationQuery> complete() override;
             std::shared_ptr<api::OperationQuery> partial() override;
 
@@ -69,6 +69,7 @@ namespace ledger {
             void performExecute(std::vector<std::shared_ptr<api::Operation>>& operations);
             void inflateCompleteTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
             void inflateBitcoinLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
+            void inflateCosmosLikeTransaction(soci::session& sql, const std::string &accountUid, OperationApi& operation);
             void inflateRippleLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateTezosLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);

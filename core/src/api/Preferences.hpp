@@ -34,43 +34,43 @@ public:
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    virtual std::string getString(const std::string & key, const std::string & fallbackValue) = 0;
+    virtual std::string getString(const std::string & key, const std::string & fallbackValue) const = 0;
 
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    virtual int32_t getInt(const std::string & key, int32_t fallbackValue) = 0;
+    virtual int32_t getInt(const std::string & key, int32_t fallbackValue) const = 0;
 
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    virtual int64_t getLong(const std::string & key, int64_t fallbackValue) = 0;
+    virtual int64_t getLong(const std::string & key, int64_t fallbackValue) const = 0;
 
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    virtual bool getBoolean(const std::string & key, bool fallbackValue) = 0;
+    virtual bool getBoolean(const std::string & key, bool fallbackValue) const = 0;
 
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    virtual std::vector<std::string> getStringArray(const std::string & key, const std::vector<std::string> & fallbackValue) = 0;
+    virtual std::vector<std::string> getStringArray(const std::string & key, const std::vector<std::string> & fallbackValue) const = 0;
 
     /**
      * Retrieves the value associated with the given key or fallback to the default value.
      * @return The data associated with the key or fallbackValue.
      */
-    virtual std::vector<uint8_t> getData(const std::string & key, const std::vector<uint8_t> & fallbackValue) = 0;
+    virtual std::vector<uint8_t> getData(const std::string & key, const std::vector<uint8_t> & fallbackValue) const = 0;
 
     /**
      * Checks whether the Preferences contains the given key.
      * @return true the preferences contains the key, false otherwise.
      */
-    virtual bool contains(const std::string & key) = 0;
+    virtual bool contains(const std::string & key) const = 0;
 
     /**
      * Get a preferences editor in order to add/modify/remove data.

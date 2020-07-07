@@ -127,6 +127,9 @@ namespace ledger {
             void isAddressActivated(const std::string &address,
                                     const std::shared_ptr<api::BoolCallback> &isActivated) override;
             Future<bool> isAddressActivated(const std::string &address);
+
+            std::shared_ptr<api::Keychain> getAccountKeychain() override;
+
         private:
             std::shared_ptr<RippleLikeAccount> getSelf();
 

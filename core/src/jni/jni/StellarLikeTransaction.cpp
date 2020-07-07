@@ -6,6 +6,7 @@
 #include "Amount.hpp"
 #include "BigInt.hpp"
 #include "Marshal.hpp"
+#include "StellarLikeMemo.hpp"
 
 namespace djinni_generated {
 
@@ -79,6 +80,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppPr
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransaction>(nativeRef);
         auto r = ref->getFee();
         return ::djinni::release(::djinni_generated::Amount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1getMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::StellarLikeTransaction>(nativeRef);
+        auto r = ref->getMemo();
+        return ::djinni::release(::djinni_generated::StellarLikeMemo::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

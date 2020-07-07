@@ -49,7 +49,13 @@ namespace ledger {
                                                         if (block.isSuccess()) {
                                                             soci::session sql(
                                                                     buddy->account->getWallet()->getDatabase()->getPool());
-                                                            buddy->account->putBlock(sql, *block.getValue());
+                                                            soci::transaction tr(sql);
+                                                            try {
+                                                                buddy->account->putBlock(sql, *block.getValue());
+                                                                tr.commit();
+                                                            } catch(...) {
+                                                                tr.rollback();
+                                                            }
                                                         }
                                                     });
         }
@@ -94,6 +100,12 @@ namespace ledger {
         std::shared_ptr<api::ExecutionContext>
         RippleLikeBlockchainExplorerAccountSynchronizer::getSynchronizerContext() {
             return getContext();
+        }
+
+        int RippleLikeBlockchainExplorerAccountSynchronizer::putTransaction(soci::session &sql,
+                                                                            const RippleLikeBlockchainExplorerTransaction &transaction,
+                                                                            const std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer<RippleLikeAccount, RippleLikeAddress, RippleLikeKeychain, RippleLikeBlockchainExplorer>::SynchronizationBuddy> &buddy) {
+            return buddy->account->putTransaction(sql, transaction);
         }
     }
 }

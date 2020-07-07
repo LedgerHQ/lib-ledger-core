@@ -38,5 +38,9 @@ namespace ledger {
             return BlockDatabaseHelper::createBlockUid(*this);
         }
 
+        api::Block Block::toApiBlock() const
+        {
+            return api::Block(hash, getUid(), time, currencyName, static_cast<int64_t>(height));
+        }
     }
 }

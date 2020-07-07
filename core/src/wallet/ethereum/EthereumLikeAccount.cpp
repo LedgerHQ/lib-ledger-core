@@ -713,5 +713,8 @@ namespace ledger {
                                                                         buildFunction);
         }
 
+        std::shared_ptr<api::Keychain> EthereumLikeAccount::getAccountKeychain() {
+            return _keychain;
+        }
     }
 }

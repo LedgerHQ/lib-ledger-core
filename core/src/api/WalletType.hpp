@@ -20,6 +20,8 @@ namespace ledger { namespace core { namespace api {
 enum class WalletType : int {
     /** A Bitcoin-like wallet. */
     BITCOIN,
+    /** A Cosmos-like wallet. */
+    COSMOS,
     /** An Ethereum-like wallet. */
     ETHEREUM,
     /** A Ripple-like wallet. */

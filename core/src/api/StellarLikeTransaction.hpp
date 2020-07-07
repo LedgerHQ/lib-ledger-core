@@ -20,6 +20,7 @@ namespace ledger { namespace core { namespace api {
 class Address;
 class Amount;
 class BigInt;
+class StellarLikeMemo;
 
 class LIBCORE_EXPORT StellarLikeTransaction {
 public:
@@ -41,6 +42,9 @@ public:
 
     /** Returns the fee paid for this transaction to be validated */
     virtual std::shared_ptr<Amount> getFee() = 0;
+
+    /** Returns the transaction memo */
+    virtual std::shared_ptr<StellarLikeMemo> getMemo() = 0;
 };
 
 } } }  // namespace ledger::core::api

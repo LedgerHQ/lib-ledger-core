@@ -49,7 +49,13 @@ namespace ledger {
                                                         if (block.isSuccess()) {
                                                             soci::session sql(
                                                                     buddy->account->getWallet()->getDatabase()->getPool());
-                                                            buddy->account->putBlock(sql, *block.getValue());
+                                                            soci::transaction tr(sql);
+                                                            try {
+                                                                buddy->account->putBlock(sql, *block.getValue());
+                                                                tr.commit();
+                                                            } catch(...) {
+                                                                tr.rollback();
+                                                            }
                                                         }
                                                     });
         }
@@ -93,6 +99,12 @@ namespace ledger {
         std::shared_ptr<api::ExecutionContext>
         TezosLikeBlockchainExplorerAccountSynchronizer::getSynchronizerContext() {
             return getContext();
+        }
+
+        int TezosLikeBlockchainExplorerAccountSynchronizer::putTransaction(soci::session &sql,
+                                                                           const TezosLikeBlockchainExplorerTransaction &transaction,
+                                                                           const std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer<TezosLikeAccount, TezosLikeAddress, TezosLikeKeychain, TezosLikeBlockchainExplorer>::SynchronizationBuddy> &buddy) {
+            return buddy->account->putTransaction(sql, transaction);
         }
     }
 }

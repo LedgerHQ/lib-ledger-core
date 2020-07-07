@@ -42,12 +42,13 @@
 #include <api/AccountCreationInfo.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
 #include <api/EthereumLikeExtendedPublicKey.hpp>
+#include <api/Keychain.hpp>
 #include <ethereum/EthereumLikeAddress.h>
 
 namespace ledger {
     namespace core {
 
-        class EthereumLikeKeychain {
+        class EthereumLikeKeychain: public api::Keychain {
 
         public:
             using Address = std::shared_ptr<EthereumLikeAddress>;

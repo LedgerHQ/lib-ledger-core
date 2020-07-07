@@ -33,6 +33,7 @@
 #include <EventLooper.hpp>
 #include <EventThread.hpp>
 #include <NativeThreadDispatcher.hpp>
+#include <ledger/core/preferences/Preferences.hpp>
 #include <ledger/core/preferences/PreferencesBackend.hpp>
 #include <ledger/core/utils/Option.hpp>
 #include <NativePathResolver.hpp>
@@ -64,7 +65,7 @@ public:
 };
 
 TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
-    auto preferences = backend->getPreferences("my_test_preferences");
+    auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "my_test_preferences");
 
     dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
         preferences->edit()
@@ -110,127 +111,8 @@ TEST_F(PreferencesTest, StoreAndGetWithPreferencesAPI) {
     resolver->clean();
 }
 
-TEST_F(PreferencesTest, IterateThroughMembers) {
-    auto preferences = backend->getPreferences("my_test_preferences");
-    auto otherPreferences = backend->getPreferences("my_other_test_preferences");
-
-    dispatcher->getSerialExecutionContext("not_my_worker")->execute(make_runnable([=] () {
-        preferences->edit()
-                ->putString("address:0", "Hello World!")
-                ->putString("address:1", "Hello World!")
-                ->putString("address:2", "Hello World!")
-                ->putString("address:3", "Hello World!")
-                ->putString("address:4", "Hello World!")
-                ->putString("address:5", "Hello World!")
-                ->putString("address:6", "Hello World!")
-                ->putString("address:7", "Hello World!")
-                ->putString("address:8", "Hello World!")
-                ->putString("address:9", "Hello World!")
-                ->putString("address:10", "Hello World!")
-                ->putString("address:16", "Hello World!")
-                ->putString("notaddress:0", "Hello World!")
-                ->putString("notaddress:1", "Hello World!")
-                ->commit();
-        otherPreferences->edit()
-                ->putString("address:0", "Hello World!")
-                ->putString("address:1", "Hello World!")
-                ->commit();
-    }));
-
-    dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([=] () {
-        preferences
-                ->edit()
-                ->putString("address:11", "Hello World!")
-                ->putString("address:12", "Hello World!")
-                ->putString("address:13", "Hello World!")
-                ->putString("address:14", "Hello World!")
-                ->putString("address:15", "Hello World!")
-                ->commit();
-    }));
-
-    // Assume that 100ms should be enough to persist data
-    dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
-        std::set<std::string> addresses({"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
-                                         "10", "11", "12", "13", "14", "15", "16"});
-        preferences->iterate([addresses] (leveldb::Slice&& key, leveldb::Slice&& value) {
-            EXPECT_NE(addresses.find(key.ToString()), addresses.end());
-            return true;
-        }, ledger::core::Option<std::string>("address:"));
-        dispatcher->stop();
-    }), 100);
-
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
-        dispatcher->stop();
-        FAIL() << "Timeout";
-    }), 5000);
-
-    dispatcher->waitUntilStopped();
-    resolver->clean();
-}
-
-struct MyClass
-{
-    int x, y, z;
-
-    template<class Archive>
-    void serialize(Archive & archive)
-    {
-        archive( x, y, z );
-    }
-};
-
-TEST_F(PreferencesTest, IterateThroughObjectMembers) {
-    auto preferences = backend->getPreferences("my_test_preferences_array");
-    auto otherPreferences = backend->getPreferences("my_other_test_preferences");
-
-    MyClass obj1;
-    obj1.x = 06;
-    obj1.y = 03;
-    obj1.z = 2017;
-
-    MyClass obj2;
-    obj2.x = 07;
-    obj2.y = 03;
-    obj2.z = 2017;
-
-    dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([&] () {
-        preferences
-            ->editor()
-            ->putObject<MyClass>("0", obj1)
-            ->putObject<MyClass>("1", obj2)
-            ->commit();
-    }));
-
-    // Assume that 100ms should be enough to persist data
-    dispatcher->getMainExecutionContext()->delay(make_runnable([&] () {
-        preferences->iterate<MyClass>([=] (leveldb::Slice&& key, const MyClass& value) {
-            if (key.ToString() == "0") {
-                EXPECT_EQ(obj1.x, value.x);
-                EXPECT_EQ(obj1.y, value.y);
-                EXPECT_EQ(obj1.z, value.z);
-            } else if (key.ToString() == "1") {
-                EXPECT_EQ(obj2.x, value.x);
-                EXPECT_EQ(obj2.y, value.y);
-                EXPECT_EQ(obj2.z, value.z);
-            } else {
-                EXPECT_TRUE(false);
-            }
-            return true;
-        });
-        dispatcher->stop();
-    }), 100);
-
-    dispatcher->getSerialExecutionContext("toto")->delay(make_runnable([=]() {
-        dispatcher->stop();
-        FAIL() << "Timeout";
-    }), 5000);
-
-    dispatcher->waitUntilStopped();
-    resolver->clean();
-}
-
 TEST_F(PreferencesTest, EncryptDecrypt) {
-    auto preferences = backend->getPreferences("encrypt_decrypt");
+    auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "encrypt_decrypt");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
     auto string_array = std::vector<std::string>{ "foo", "bar", "zoo" };
@@ -296,7 +178,7 @@ TEST_F(PreferencesTest, EncryptDecrypt) {
 
 // This test checks that we can completely unset encryption to go back to a plaintext mode.
 TEST_F(PreferencesTest, ResetEncryption) {
-    auto preferences = backend->getPreferences("reset_encryption");
+    auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "reset_encryption");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
 
@@ -317,7 +199,7 @@ TEST_F(PreferencesTest, ResetEncryption) {
 }
 
 TEST_F(PreferencesTest, UnsetEncryption) {
-    auto preferences = backend->getPreferences("my_test_preferences_reencrypted2");
+    auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "my_test_preferences_reencrypted2");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
 
@@ -343,7 +225,7 @@ TEST_F(PreferencesTest, UnsetEncryption) {
 }
 
 TEST_F(PreferencesTest, Clear) {
-    auto preferences = backend->getPreferences("clear");
+    auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "clear");
 
     preferences->editor()->putString("string", "dawg")->commit();
     EXPECT_EQ(preferences->getString("string", ""), "dawg");
@@ -355,7 +237,7 @@ TEST_F(PreferencesTest, Clear) {
 // This test checks that when setting encryption on, already present values are encrypted as well
 // so that we can correctly retrieve them after encryption is set.
 TEST_F(PreferencesTest, RecryptClearValues) {
-    auto preferences = backend->getPreferences("recrypt_clear_values");
+    auto preferences = std::make_shared<ledger::core::Preferences>(*backend, "recrypt_clear_values");
     auto rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     auto password = std::string("v3ry_secr3t_p4sSw0rD");
 

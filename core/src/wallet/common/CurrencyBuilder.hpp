@@ -47,6 +47,7 @@ namespace ledger {
             CurrencyBuilder& bip44(int32_t coinType);
             CurrencyBuilder& paymentUri(const std::string& scheme);
             CurrencyBuilder& forkOfBitcoin(api::BitcoinLikeNetworkParameters params);
+            CurrencyBuilder& forkOfCosmos(api::CosmosLikeNetworkParameters params);
             CurrencyBuilder& forkOfEthereum(api::EthereumLikeNetworkParameters params);
             CurrencyBuilder& forkOfRipple(api::RippleLikeNetworkParameters params);
             CurrencyBuilder& forkOfTezos(api::TezosLikeNetworkParameters params);
@@ -59,6 +60,7 @@ namespace ledger {
             std::vector<api::CurrencyUnit> _units;
             std::string _name;
             Option<api::BitcoinLikeNetworkParameters> _bitcoin;
+            Option<api::CosmosLikeNetworkParameters> _cosmos;
             Option<api::EthereumLikeNetworkParameters> _ethereum;
             Option<api::RippleLikeNetworkParameters> _ripple;
             Option<api::TezosLikeNetworkParameters> _tezos;

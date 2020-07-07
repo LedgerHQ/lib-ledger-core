@@ -130,6 +130,7 @@ namespace ledger {
             void addERC20Accounts(soci::session &sql,
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);
 
+            std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
         private:
             std::shared_ptr<EthereumLikeAccount> getSelf();

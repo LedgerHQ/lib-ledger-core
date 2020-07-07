@@ -22,6 +22,7 @@ namespace ledger { namespace core { namespace api {
 
 class Amount;
 class BitcoinLikeOperation;
+class CosmosLikeOperation;
 class EthereumLikeOperation;
 class Preferences;
 class RippleLikeOperation;
@@ -74,6 +75,14 @@ public:
     virtual std::vector<std::string> getRecipients() = 0;
 
     /**
+     * Get account-filtered recipients list associated with the operation.
+     *
+     * This function will filter recipients to retain only the ones that are owned by the current
+     * account.
+     */
+    virtual std::vector<std::string> getSelfRecipients() = 0;
+
+    /**
      * Get amount of operation.
      * @return Amount object
      */
@@ -110,6 +119,12 @@ public:
     virtual std::shared_ptr<BitcoinLikeOperation> asBitcoinLikeOperation() = 0;
 
     /**
+     * Convert operation as Cosmos operation.
+     * @return CosmosLikeOperation object
+     */
+    virtual std::shared_ptr<CosmosLikeOperation> asCosmosLikeOperation() = 0;
+
+    /**
      * Convert operation as Ethereum operation.
      * @return EthereumLikeOperation object
      */
@@ -136,6 +151,9 @@ public:
 
     /** Is this an instance of a Bitcoin-like operation? */
     virtual bool isInstanceOfBitcoinLikeOperation() = 0;
+
+    /** Same as isInstanceOfCosmosLikeOperation for cosmos. */
+    virtual bool isInstanceOfCosmosLikeOperation() = 0;
 
     /** Same as isInstanceOfEthereumLikeOperation for ethereum. */
     virtual bool isInstanceOfEthereumLikeOperation() = 0;

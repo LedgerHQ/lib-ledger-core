@@ -62,8 +62,6 @@ using namespace soci;
 
 namespace ledger {
     namespace core {
-
-
         Future<api::ErrorCode> TezosLikeAccount::eraseDataSince(const std::chrono::system_clock::time_point &date) {
             auto log = logger();
             log->debug(" Start erasing data of account : {}", getAccountUid());
@@ -426,5 +424,8 @@ namespace ledger {
             return _explorer->getFees();
         }
 
+        std::shared_ptr<api::Keychain> TezosLikeAccount::getAccountKeychain() {
+            return _keychain;
+        }
     }
 }

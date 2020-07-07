@@ -86,6 +86,7 @@ extern api::AccountCreationInfo ETC_KEYS_INFO_LIVE;
 extern api::AccountCreationInfo XRP_KEYS_INFO;
 extern api::AccountCreationInfo VAULT_XRP_KEYS_INFO;
 extern api::AccountCreationInfo XTZ_KEYS_INFO;
+extern api::AccountCreationInfo XTZ_WITH_100_OPS_KEYS_INFO;
 extern const std::string TX_1;
 extern const std::string TX_2;
 extern const std::string TX_3;
@@ -94,8 +95,8 @@ extern const std::string TX_4;
 
 class BaseFixture : public ::testing::Test {
 public:
-    void SetUp() override;
-    void TearDown() override;
+    virtual void SetUp() override;
+    virtual void TearDown() override;
     std::shared_ptr<WalletPool> newDefaultPool(const std::string &poolName = "my_ppol",
                                                const std::string &password = "test",
                                                const std::shared_ptr<api::DynamicObject> &configuration = api::DynamicObject::newInstance(),

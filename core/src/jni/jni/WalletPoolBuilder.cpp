@@ -8,6 +8,7 @@
 #include "LogPrinter.hpp"
 #include "Marshal.hpp"
 #include "PathResolver.hpp"
+#include "PreferencesBackend.hpp"
 #include "RandomNumberGenerator.hpp"
 #include "ThreadDispatcher.hpp"
 #include "WalletPoolCallback.hpp"
@@ -124,6 +125,26 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_n
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPoolBuilder>(nativeRef);
         auto r = ref->setConfiguration(::djinni_generated::DynamicObject::toCpp(jniEnv, j_configuration));
+        return ::djinni::release(::djinni_generated::WalletPoolBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_native_1setExternalPreferencesBackend(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_backend)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPoolBuilder>(nativeRef);
+        auto r = ref->setExternalPreferencesBackend(::djinni_generated::PreferencesBackend::toCpp(jniEnv, j_backend));
+        return ::djinni::release(::djinni_generated::WalletPoolBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_WalletPoolBuilder_00024CppProxy_native_1setInternalPreferencesBackend(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_backend)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::WalletPoolBuilder>(nativeRef);
+        auto r = ref->setInternalPreferencesBackend(::djinni_generated::PreferencesBackend::toCpp(jniEnv, j_backend));
         return ::djinni::release(::djinni_generated::WalletPoolBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

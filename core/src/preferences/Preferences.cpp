@@ -34,18 +34,23 @@
 namespace ledger {
     namespace core {
 
-        Preferences::Preferences(PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix) : _backend(backend) {
-            _keyPrefix = keyPrefix;
-        }
+        Preferences::Preferences(api::PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix)
+            : _backend(backend)
+            , _keyPrefix(keyPrefix)
+        {}
 
-        std::string Preferences::getString(const std::string &key, const std::string &fallbackValue) {
+        Preferences::Preferences(api::PreferencesBackend &backend, const std::string &keyPrefix)
+            : Preferences(backend, std::vector<uint8_t>(std::begin(keyPrefix), std::end(keyPrefix)))
+        {}
+
+        std::string Preferences::getString(const std::string &key, const std::string &fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
             if (!value)
                 return fallbackValue;
             return *value;
         }
 
-        int32_t Preferences::getInt(const std::string &key, int32_t fallbackValue) {
+        int32_t Preferences::getInt(const std::string &key, int32_t fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
             if (!value)
                 return fallbackValue;
@@ -53,7 +58,7 @@ namespace ledger {
             return (int32_t)reader.readNextLeUint();
         }
 
-        int64_t Preferences::getLong(const std::string &key, int64_t fallbackValue) {
+        int64_t Preferences::getLong(const std::string &key, int64_t fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
             if (!value)
                 return fallbackValue;
@@ -61,7 +66,7 @@ namespace ledger {
             return (int64_t)reader.readNextLeUlong();
         }
 
-        bool Preferences::getBoolean(const std::string &key, bool fallbackValue) {
+        bool Preferences::getBoolean(const std::string &key, bool fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
             if (!value)
                 return fallbackValue;
@@ -70,7 +75,7 @@ namespace ledger {
         }
 
         std::vector<std::string>
-        Preferences::getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) {
+        Preferences::getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
 
             if (!value)
@@ -86,7 +91,7 @@ namespace ledger {
             return result;
         }
 
-        bool Preferences::contains(const std::string &key) {
+        bool Preferences::contains(const std::string &key) const {
             return _backend.get(wrapKey(key)) ? true : false;
         }
 
@@ -110,7 +115,7 @@ namespace ledger {
             return wrappedKey;
         }
 
-        std::shared_ptr<Preferences> Preferences::getSubPreferences(std::string prefix) {
+        std::shared_ptr<Preferences> Preferences::getSubPreferences(std::string prefix) const {
             std::vector<uint8_t> p = _keyPrefix;
             auto prefixSize = prefix.size();
             for (auto i = 0; i < prefixSize; i++) {
@@ -119,20 +124,7 @@ namespace ledger {
             return std::make_shared<Preferences>(_backend, p);
         }
 
-        void
-        Preferences::iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice &&)> f, Option<std::string> begin) {
-            auto start = wrapKey(begin.getValueOr(""));
-            auto startSize = start.size();
-            _backend.iterate(start, [&] (leveldb::Slice&& k, leveldb::Slice&& value) {
-                if (startSize < k.size()) {
-                    return f(std::move(leveldb::Slice(k.data() + start.size(), k.size() - start.size())),
-                             std::move(value));
-                }
-                return true;
-            });
-        }
-
-        std::vector<uint8_t> Preferences::getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) {
+        std::vector<uint8_t> Preferences::getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
             if (!value)
                 return fallbackValue;

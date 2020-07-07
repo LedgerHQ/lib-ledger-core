@@ -32,6 +32,7 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <debug/LoggerApi.hpp>
 #include <wallet/bitcoin/BitcoinLikeWallet.hpp>
+#include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <api/I32Callback.hpp>
 #include "AbstractAccount.hpp"
@@ -85,6 +86,10 @@ namespace ledger {
 
         bool AbstractWallet::isInstanceOfBitcoinLikeWallet() {
             return getWalletType() == api::WalletType::BITCOIN;
+        }
+
+        bool AbstractWallet::isInstanceOfCosmosLikeWallet() {
+            return getWalletType() == api::WalletType::COSMOS;
         }
 
         bool AbstractWallet::isInstanceOfEthereumLikeWallet() {
@@ -145,6 +150,10 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeWallet> AbstractWallet::asBitcoinLikeWallet() {
             return asInstanceOf<BitcoinLikeWallet>();
+        }
+
+        std::shared_ptr<api::CosmosLikeWallet> AbstractWallet::asCosmosLikeWallet() {
+            return asInstanceOf<CosmosLikeWallet>();
         }
 
         std::shared_ptr<api::ExecutionContext> AbstractWallet::getMainExecutionContext() const {
@@ -369,6 +378,10 @@ namespace ledger {
 
         void AbstractWallet::updateBalanceCache(size_t accountIndex, Amount balance) {
             _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
+        }
+
+        void AbstractWallet::invalidateBalanceCache(size_t accountIndex) {
+            _balanceCache.erase(fmt::format("{}-{}", _currency.name, accountIndex));
         }
 
         std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {

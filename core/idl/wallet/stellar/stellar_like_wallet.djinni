@@ -10,6 +10,29 @@ StellarLikeBlock = interface +c {
 
 }
 
+StellarLikeMemoType = enum {
+    MEMO_NONE; MEMO_TEXT; MEMO_ID; MEMO_HASH; MEMO_RETURN;
+}
+
+StellarLikeMemo = interface +c {
+    getMemoType(): StellarLikeMemoType;
+    # Get the value of the memo as string. Fail if the memo is not with type MEMO_TEXT
+    getMemoText(): string;
+    # Get the value of the memo as BigInt. Fail if the memo is not with type MEMO_ID
+    getMemoId(): BigInt;
+     # Get the value of the memo as byte array. Fail if the memo is not with type MEMO_HASH
+    getMemoHash(): binary;
+     # Get the value of the memo as byte array. Fail if the memo is not with type MEMO_RETURN
+    getMemoReturn(): binary;
+
+    # Create a string version of the memo, no matter which underlying type it holds.
+    # For MEMO_TEXT returns memo value.
+    # For MEMO_ID, return a uint64 as string (base 10).
+    # For MEMO_HASH, MEMO_RETURN, returns a hex encoded string.
+    # For MEMO_NONE, returns an empty string
+    memoValuetoString(): string;
+}
+
 StellarLikeTransaction = interface +c {
     toRawTransaction(): binary;
 
@@ -27,6 +50,9 @@ StellarLikeTransaction = interface +c {
 
     # Returns the fee paid for this transaction to be validated
     getFee(): Amount;
+
+    # Returns the transaction memo
+    getMemo(): StellarLikeMemo;
 }
 
 StellarLikeTransactionBuilder = interface +c {

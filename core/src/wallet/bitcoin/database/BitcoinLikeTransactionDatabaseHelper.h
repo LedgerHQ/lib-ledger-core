@@ -46,7 +46,8 @@ namespace ledger {
                                             const std::string& btcTxUid,
                                             const std::string &accountUid,
                                             const std::string& transactionHash,
-                                            const BitcoinLikeBlockchainExplorerOutput& output);
+                                            const BitcoinLikeBlockchainExplorerOutput& output,
+                                            bool replaceable);
             static inline void insertInput(soci::session& sql,
                                            const std::string& btcTxUid,
                                            const std::string& accountUid,
@@ -64,6 +65,23 @@ namespace ledger {
                                                   const soci::row& row,
                                                   const std::string &accountUid,
                                                   BitcoinLikeBlockchainExplorerTransaction& out);
+
+            /**
+             * Get all mempool transactions for the given account from database.
+             * @param sql
+             * @param accountUid
+             * @param out This vector is used to store the result of the DB query.
+             */
+            static void getMempoolTransactions(soci::session& sql,
+                                               const std::string& accountUid,
+                                               std::vector<BitcoinLikeBlockchainExplorerTransaction>& out);
+
+            /**
+             * Remove all operations and transactions in mempool for the given account
+             * @param sql
+             * @param accountUid
+             */
+            static void removeAllMempoolOperation(soci::session& sql, const std::string& accountUid);
         };
     }
 }

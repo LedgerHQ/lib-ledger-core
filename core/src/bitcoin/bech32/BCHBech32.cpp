@@ -32,7 +32,7 @@
 #include <utils/Exception.hpp>
 namespace ledger {
     namespace core {
-        uint64_t BCHBech32::polymod(const std::vector<uint8_t>& values) {
+        uint64_t BCHBech32::polymod(const std::vector<uint8_t>& values) const {
             uint64_t chk = 1;
             for (size_t i = 0; i < values.size(); ++i) {
                 uint64_t top = chk >> 35;
@@ -46,7 +46,7 @@ namespace ledger {
             return chk;
         }
 
-        std::vector<uint8_t> BCHBech32::expandHrp(const std::string& hrp) {
+        std::vector<uint8_t> BCHBech32::expandHrp(const std::string& hrp) const {
             std::vector<uint8_t> ret;
             ret.resize(hrp.size() + 1);
             for (size_t i = 0; i < hrp.size(); ++i) {
@@ -58,7 +58,7 @@ namespace ledger {
         }
 
         std::string BCHBech32::encode(const std::vector<uint8_t>& hash,
-                                      const std::vector<uint8_t>& version) {
+                                      const std::vector<uint8_t>& version) const {
             std::vector<uint8_t> data(version);
             data.insert(data.end(), hash.begin(), hash.end());
             int fromBits = 8, toBits = 5;
@@ -69,7 +69,7 @@ namespace ledger {
         }
 
         std::pair<std::vector<uint8_t>, std::vector<uint8_t>>
-        BCHBech32::decode(const std::string& str) {
+        BCHBech32::decode(const std::string& str) const {
             auto decoded = decodeBech32(str);
             if (decoded.first != _bech32Params.hrp || decoded.second.size() < 1) {
                 throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT, "Invalid address : Invalid bech 32 format");

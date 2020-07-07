@@ -494,5 +494,9 @@ namespace ledger {
                 });
             });
         }
+
+        std::shared_ptr<api::Keychain> RippleLikeAccount::getAccountKeychain() {
+            return _keychain;
+        }
     }
 }

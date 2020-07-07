@@ -65,7 +65,7 @@ namespace ledger {
                     bool partial);
             const api::Currency& getCurrency() const;
 
-        protected:
+        public:
             using UTXODescriptor = std::tuple<std::string, int32_t, uint32_t >;
             using UTXODescriptorList = std::vector<UTXODescriptor>;
             struct Buddy {
@@ -98,7 +98,7 @@ namespace ledger {
                 BigInt changeAmount;
                 bool isPartial;
             };
-
+        protected:
             virtual Future<Unit> fillInputs(const std::shared_ptr<Buddy>& buddy);
             virtual Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy>& buddy) = 0;
             virtual Future<Unit> fillOutputs(const std::shared_ptr<Buddy>& buddy);
@@ -108,7 +108,8 @@ namespace ledger {
             Future<Unit> fillInput(const std::shared_ptr<Buddy>& buddy, const UTXODescriptor& desc);
             BitcoinLikeGetUtxoFunction createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest& buddy,
                                                                   const BitcoinLikeGetUtxoFunction& getUtxo);
-        private:
+
+        protected:
             api::Currency _currency;
         };
     }

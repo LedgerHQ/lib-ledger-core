@@ -74,7 +74,7 @@ namespace ledger {
 #endif
         }
 
-        void AESCipher::decrypt(std::istream *input, std::ostream *output) {
+        void AESCipher::decrypt(std::istream *input, std::ostream *output) const {
 #if defined(_WIN32) || defined(_WIN64)
 #else
             input->seekg(0, input->beg);
@@ -123,7 +123,7 @@ namespace ledger {
             } while (input.hasNext());
         }
 
-        void AESCipher::decrypt(BytesReader& input, BytesWriter& output) {
+        void AESCipher::decrypt(BytesReader& input, BytesWriter& output) const {
             uint32_t maxRead = 255 * AES256::BLOCK_SIZE;
             do {
                 //Get number of blocks in encrypted data

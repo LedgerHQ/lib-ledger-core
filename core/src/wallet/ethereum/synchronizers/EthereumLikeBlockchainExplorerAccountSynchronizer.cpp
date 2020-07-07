@@ -46,7 +46,13 @@ namespace ledger {
             _explorer->getCurrentBlock().onComplete(context, [buddy] (const TryPtr<EthereumLikeBlockchainExplorer::Block>& block) {
                 if (block.isSuccess()) {
                     soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
-                    buddy->account->putBlock(sql, *block.getValue());
+                    soci::transaction tr(sql);
+                    try {
+                        buddy->account->putBlock(sql, *block.getValue());
+                        tr.commit();
+                    } catch(...) {
+                        tr.rollback();
+                    }
                 }
             });
         }
@@ -86,6 +92,12 @@ namespace ledger {
 
         std::shared_ptr<api::ExecutionContext> EthereumLikeBlockchainExplorerAccountSynchronizer::getSynchronizerContext() {
             return getContext();
+        }
+
+        int EthereumLikeBlockchainExplorerAccountSynchronizer::putTransaction(soci::session &sql,
+                                                                              const EthereumLikeBlockchainExplorerTransaction &transaction,
+                                                                              const std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer<EthereumLikeAccount, EthereumLikeAddress, EthereumLikeKeychain, EthereumLikeBlockchainExplorer>::SynchronizationBuddy> &buddy) {
+            return buddy->account->putTransaction(sql, transaction);
         }
     }
 }

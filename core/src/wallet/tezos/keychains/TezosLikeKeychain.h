@@ -42,12 +42,13 @@
 #include <api/Currency.hpp>
 #include <api/AccountCreationInfo.hpp>
 #include <api/ExtendedKeyAccountCreationInfo.hpp>
+#include <api/Keychain.hpp>
 #include <api/TezosLikeExtendedPublicKey.hpp>
 #include <tezos/TezosLikeAddress.h>
 
 namespace ledger {
     namespace core {
-        class TezosLikeKeychain {
+        class TezosLikeKeychain: public api::Keychain {
 
         public:
             using Address = std::shared_ptr<TezosLikeAddress>;

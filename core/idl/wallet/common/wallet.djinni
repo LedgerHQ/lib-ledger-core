@@ -4,8 +4,10 @@
 @import "../../preferences/preferences.djinni"
 @import "../../debug/logger.djinni"
 @import "../bitcoin/bitcoin_like_wallet.djinni"
+@import "../cosmos/wallet.djinni"
 @import "../ethereum/ethereum_like_wallet.djinni"
 @import "../../bitcoin/addresses.djinni"
+@import "../../cosmos/addresses.djinni"
 @import "currency.djinni"
 @import "../../collections/dynamic.djinni"
 
@@ -43,10 +45,24 @@ DerivationPath = interface +c {
 
 # Type of operation.
 #
-# It’s possible to either send funds or receive ones.
+# It’s possible to either
+# send funds (getAmount() returns the sent amount),
+# receive funds (getAmount() returns the sent amount),
+# delegate funds (getAmount() returns the *delegated* amount) ; only getFees() are part of balanceHistory
+# undelegate funds (getAmount() returns the *undelegated* amount) ; only getFees() are part of balanceHistory
+# claim rewards (getAmount() returns 0 or the known amount of claimed rewards) ; only getFees() are part of balanceHistory
+#
+# *other* : None operation type should be used when the operation is not expected to affect the balanceHistory of the
+#           account. Otherwise, this is a free for all. Clients can use the inflated Operation currency-specific
+#           API to correctly interpret the operation in the context of an account.
+#
+# The last 3 operations should not expect to change balanceHistory with their amount, but only their fees.
 OperationType = enum {
     send;
     receive;
+    delegate;
+    undelegate;
+    rewards;
     none;
 }
 
@@ -109,6 +125,11 @@ Operation = interface +c {
     # Get recipients of operation.
     # @return List of string, list of all recipients
     getRecipients(): list<string>;
+    # Get account-filtered recipients list associated with the operation.
+    #
+    # This function will filter recipients to retain only the ones that are owned by the current
+    # account.
+    getSelfRecipients(): list<string>;
     # Get amount of operation.
     # @return Amount object
     getAmount(): Amount;
@@ -127,6 +148,9 @@ Operation = interface +c {
     # Convert operation as Bitcoin operation.
     # @return BitcoinLikeOperation object
     asBitcoinLikeOperation(): BitcoinLikeOperation;
+    # Convert operation as Cosmos operation.
+    # @return CosmosLikeOperation object
+    asCosmosLikeOperation(): CosmosLikeOperation;
     # Convert operation as Ethereum operation.
     # @return EthereumLikeOperation object
     asEthereumLikeOperation(): EthereumLikeOperation;
@@ -142,6 +166,8 @@ Operation = interface +c {
     asStellarLikeOperation(): StellarLikeOperation;
     # Is this an instance of a Bitcoin-like operation?
     isInstanceOfBitcoinLikeOperation(): bool;
+    # Same as isInstanceOfCosmosLikeOperation for cosmos.
+    isInstanceOfCosmosLikeOperation(): bool;
     # Same as isInstanceOfEthereumLikeOperation for ethereum.
     isInstanceOfEthereumLikeOperation(): bool;
     # Same as isInstanceOfRippleLikeOperation for ripple.
@@ -221,11 +247,11 @@ OperationQuery = interface +c {
     # @return QueryFilter object
     filter(): QueryFilter;
     # Add offset to the operation query.
-    # @param from, 64-bit integer
-    offset(from: i64): OperationQuery;
+    # @param from, 32-bit integer
+    offset(from: i32): OperationQuery;
     # Add limit to the operation query results.
-    # @param count, 64-bit integer
-    limit(count: i64): OperationQuery;
+    # @param count, 32-bit integer
+    limit(count: i32): OperationQuery;
     #TODO
     # Complete the operation query.
     complete(): OperationQuery;
@@ -288,6 +314,15 @@ Address = interface +c {
     static isValid(address: string, currency: Currency): bool;
 }
 
+# Keychain abstraction.
+#
+# A keychain can be seen as an address database that can be queried to get lists of addresses,
+# ask whether an address is contained, or generate new addresses.
+Keychain = interface +c {
+    # Check whether an address is contained.
+    const contains(address: string): bool;
+}
+
 TimePeriod = enum {
     hour;
     day;
@@ -345,6 +380,9 @@ Account = interface +c {
     # Turn the account into an Bitcoin one, allowing operations to be performed on the Bitcoin
     # network.
     asBitcoinLikeAccount() : BitcoinLikeAccount;
+    # Turn the account into an Cosmos one, allowing operations to be performed on the Cosmos
+    # network.
+    asCosmosLikeAccount() : CosmosLikeAccount;
     # Turn the account into an Ethereum one, allowing operations to be performrd on the Ethereum
     # network.
     asEthereumLikeAccount() : EthereumLikeAccount;
@@ -361,6 +399,9 @@ Account = interface +c {
     # Check if account is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeAccount(): bool;
+    # Check if account is a Cosmos one.
+    # @return bool
+    isInstanceOfCosmosLikeAccount(): bool;
     # Check if account is an Ethereum one.
     # @return bool
     isInstanceOfEthereumLikeAccount(): bool;
@@ -394,6 +435,9 @@ Account = interface +c {
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
     eraseDataSince(date: date, callback: Callback<ErrorCode>);
+
+    # Access to underlying keychain.
+    getAccountKeychain(): Keychain;
 }
 
 # Class representing a wallet.
@@ -438,12 +482,18 @@ Wallet = interface +c {
     # Convert wallet to a Bitcoin one.
     # @return BitcoinWallet object
     asBitcoinLikeWallet(): BitcoinLikeWallet;
+    # Convert wallet to a Cosmos one.
+    # @return CosmosWallet object
+    asCosmosLikeWallet(): CosmosLikeWallet;
     # Get currency of wallet.
     # @return Currency object
     getCurrency(): Currency;
     # Tell whether wallet is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeWallet(): bool;
+    # Tell whether wallet is a Cosmos one.
+    # @return bool
+    isInstanceOfCosmosLikeWallet(): bool;
     # Tell whether wallet is a Ethereum one.
     # @return bool
     isInstanceOfEthereumLikeWallet(): bool;

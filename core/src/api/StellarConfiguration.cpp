@@ -7,7 +7,7 @@ namespace ledger { namespace core { namespace api {
 
 std::string const StellarConfiguration::HORIZON_EXPLORER_ENGINE = {"HORIZON_EXPLORER_ENGINE"};
 
-std::string const StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL = {"https://horizon.stellar.org"};
+std::string const StellarConfiguration::HORIZON_MAINNET_BLOCKCHAIN_EXPLORER_URL = {"https://stellar.coin.ledger.com"};
 
 std::string const StellarConfiguration::HORIZON_TESTNET_BLOCKCHAIN_EXPLORER_URL = {"https://horizon-testnet.stellar.org"};
 

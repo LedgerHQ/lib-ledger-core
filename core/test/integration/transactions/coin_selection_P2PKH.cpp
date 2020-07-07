@@ -146,6 +146,33 @@ TEST_F(CoinSelectionP2PKH, PickUTXOWithMergeOutputs) {
         EXPECT_EQ(tx->getOutputs().at(0)->getValue()->toLong(), 80000000);
 }
 
+TEST_F(CoinSelectionP2PKH, CompareUTXOPickingStrategies) {
+
+    auto buildTx = [=](const api::BitcoinLikePickingStrategy & strategy, int64_t amount) -> std::shared_ptr<api::BitcoinLikeTransaction> {
+        auto builder = tx_builder();
+        builder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), amount), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
+        builder->pickInputs(strategy, 0xFFFFFFFF);
+        builder->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 41));
+        auto f = builder->build();
+        auto tx = ::wait(f);
+        return tx;
+    };
+
+    auto balance = ::wait(account->getBalance());
+    auto currentAmount = balance->toLong();
+    auto iterations = 20;
+    for (auto index = 0; index < iterations; index++) {
+        currentAmount -= balance->toLong() / iterations;
+        auto merge = buildTx(api::BitcoinLikePickingStrategy::MERGE_OUTPUTS, currentAmount);
+        auto deep = buildTx(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, currentAmount);
+        EXPECT_LE(deep->getFees()->toLong(), merge->getFees()->toLong());
+        EXPECT_LE(deep->getOutputs().size(), merge->getOutputs().size());
+        auto optimize = buildTx(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, currentAmount);
+        EXPECT_LE(optimize->getFees()->toLong(), deep->getFees()->toLong());
+        EXPECT_LE(optimize->getOutputs().size(), deep->getOutputs().size());
+    }
+}
+
 
 
 

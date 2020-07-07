@@ -35,6 +35,7 @@
 
 #include <collections/functional.hpp>
 
+#include <memory>
 #include <utils/DateUtils.hpp>
 
 #include <wallet/common/Operation.h>
@@ -307,6 +308,7 @@ namespace ledger {
                 if (result.isSuccess()) {
                     code = !isEmpty && wasEmpty ? api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT
                                                 : api::EventCode::SYNCHRONIZATION_SUCCEED;
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
@@ -355,7 +357,6 @@ namespace ledger {
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
             if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
-                BitcoinLikeBlockDatabaseHelper::putBlock(sql, block);
                 emitNewBlockEvent(abstractBlock);
                 return true;
             }
@@ -711,8 +712,13 @@ namespace ledger {
                 return  fromBitcoinAddressesToAddresses(keychain->getAllObservableAddresses(from, to));
             });
         }
+
         void BitcoinLikeAccount::getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) {
             return getAddresses(from, to).callback(getMainExecutionContext(), callback);
+        }
+
+        std::shared_ptr<api::Keychain> BitcoinLikeAccount::getAccountKeychain() {
+          return _keychain;
         }
     }
 }

@@ -69,6 +69,7 @@ namespace ledger {
             std::shared_ptr<api::EventBus> getEventBus() override;
             std::shared_ptr<api::Preferences> getPreferences() override;
             bool isInstanceOfBitcoinLikeWallet() override;
+            bool isInstanceOfCosmosLikeWallet() override;
             bool isInstanceOfEthereumLikeWallet() override;
 
             bool isInstanceOfStellarLikeWallet() const override;
@@ -82,6 +83,7 @@ namespace ledger {
             std::shared_ptr<api::Preferences> getAccountPreferences(int32_t index) override;
             std::shared_ptr<WalletPool> getPool() const;
             std::shared_ptr<api::BitcoinLikeWallet> asBitcoinLikeWallet() override;
+            std::shared_ptr<api::CosmosLikeWallet> asCosmosLikeWallet() override;
 
             api::Currency getCurrency() override;
             const api::Currency& getCurrency() const;
@@ -134,6 +136,7 @@ namespace ledger {
 
             Option<Amount> getBalanceFromCache(size_t accountIndex);
             void updateBalanceCache(size_t accountIndex, Amount balance);
+            void invalidateBalanceCache(size_t accountIndex);
 
             virtual FuturePtr<api::Account> newAccountWithInfo(const api::AccountCreationInfo& info) = 0;
             virtual FuturePtr<api::Account> newAccountWithExtendedKeyInfo(const api::ExtendedKeyAccountCreationInfo& info) = 0;

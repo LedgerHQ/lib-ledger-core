@@ -4,6 +4,7 @@
 #include "Operation.hpp"  // my header
 #include "Amount.hpp"
 #include "BitcoinLikeOperation.hpp"
+#include "CosmosLikeOperation.hpp"
 #include "Currency.hpp"
 #include "EthereumLikeOperation.hpp"
 #include "Marshal.hpp"
@@ -90,6 +91,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1g
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1getSelfRecipients(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->getSelfRecipients();
+        return ::djinni::release(::djinni::List<::djinni::String>::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1getAmount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -150,6 +161,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1a
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1asCosmosLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->asCosmosLikeOperation();
+        return ::djinni::release(::djinni_generated::CosmosLikeOperation::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1asEthereumLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -196,6 +217,16 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
         auto r = ref->isInstanceOfBitcoinLikeOperation();
+        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Operation_00024CppProxy_native_1isInstanceOfCosmosLikeOperation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Operation>(nativeRef);
+        auto r = ref->isInstanceOfCosmosLikeOperation();
         return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

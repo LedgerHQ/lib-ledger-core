@@ -1,8 +1,76 @@
-## 3.3.0 (on-going)
+## 3.4.1
+> 2020/06/10
 
+- Fix SBT download failures on the CI (for Debian and MacOS)
+- Fix a BTC test using a deprecated URL
+- Fix Stellar fee parsing for Horizon 1.3.0
+
+## 3.4.0
+
+> 2020/06/01
+
+- Add Stellar (XLM) support.
+- Add Cosmos (Atom) support.
+- Fix a bug in Tezos that would make bakers see unknown originated accounts.
+- Fix a bug in Tezos that would make balances of originated accounts negative and/or incorrect.
+- Fix `BigInt::assignScalar` for unsigned types.
+- Fix stack exhaustion with recursive futures in the Bitcoin UTXO picker.
+- Add support for getting recipients relating to one’s account only from an operation.
+- Turn some 64-bit integers to 32-bit integers in the interface.
+- Fix the coin selection algorithm for Bitcoin (UTXO).
+- Add staking-related operation types.
+- Add integration test for non-activated accounts for Tezos.
+- Use `soci::transaction` to solve potential race conditions between observers and synchronizers.
+- ~~Remove external Tezos explorer fallback recover for HTTP errors.~~
+  - This change was reverted as it still causes issues. This issue will be addrressed in the next
+    version.
+- Fix BCH: construct P2PKH and P2SH output scripts even in case of cash addresses.
+- Fix missing internal transactions for Ethereum.
+- Fix XRP: marker to be set to Uint64 instead of string.
+- Add `x86_64` support to fat framework for iOS.
+- Fix Base58 for XRP.
+- Add tests for tzstats.
+- Make it possible to select the tzstats endpoint (and use fees vs. fee accordingly).
+- Fix the Tezos’ fees field (actually fee) when getting fees from the external API.
+- Bitcoin: add method to get addresses from range.
+- Better granularity of HTTP errors.
+- Add configuration to allow sync token deactivation.
+- Unset sync token when falling in reorg situation because explorers are not trustworthy on that feature.
+- Fix OpenSSL’s BLAKE2b heap memory corruption.
+- Fix getTransactions on Tezos when no offset is passed.
+- Fix segfaulting code in TezosLikeAddress.
+- Fix PostgreSQL timeout deconnection / failover behavior with soci connection pools.
+- Build openssl with ssl target if we have BUILD_TESTS on.
+- More resilience against failures of sync (due to explorers) that has been experienced on client side.
+- Avoid storing Input Data for ETH transactions when exceeding 255 bytes.
+- Fix segfault in Linux + node with OpenSSL 1.1. (node > 8).
+- Fix Ethereum ReorgLastBlock test segfault.
+- Fix XTZ: creation of same account (with KT accounts) under two different wallets
+- Use a boolean representation of Ripple status instead of textual.
+- Add a test for Ripple balance histories.
+- Add support for Ripple transaction statuses.
+- Implement Ripple transaction pagination for the node implementation.
+- Paginate properly UTXOs.
+- Introduce DatabaseBackendType enum.
+- Fix Ripple transaction dates.
+- Support BTC v3 BE.
+- Tezos: fix base used for std::stoul on getTransactions method of XTZ explorer.
+- Add script to build libcore for Linux for ARM architecture.
+- Prevent BitcoinLike UTXO picker from using a transaction’s worth less than dust.
+- Add implementation of getDryrunGasLimit.
+- Tezos: avoid creation of originated accounts based on failing origination ops.
+- Tezos: fix recursive sync on originated accounts.
 - Add support for PostgreSQL (tested with PostgreSQL v9.6 and v12.1), for more details about how to
-build, use and configure libcore with PostgreSQL, please refer to our `README.md` 
-	  
+build, use and configure libcore with PostgreSQL, please refer to our `README.md`
+
+## 3.3.*
+
+Sorry, we have no idea what happened with those versions. It looks like they got released in a
+non-conventional way — the `git` tags are not on the `master` branch anymore. We will not remove
+them, but please switch to **3.4**.
+
+Sorry for the inconvenience.
+
 ## 3.2.1
 
 - Execution context changes:
@@ -39,12 +107,12 @@ thanks to : `TTL_CACHE` and is defaulting to `DEFAULT_TTL_CACHE=30` which is inf
 
 - Tezos key derivation is based on [Edward's curve](https://github.com/satoshilabs/slips/blob/master/slip-0010.md),
 so normal (public) derivations are not supported, this is why the only derivation scheme which is supported now is `44'/<coin_type>'/<account_index>'/<node_index>'`,
-- As a consequence of absence of derivation, resulting "derived" address from a keychain is a hash of the public key. 
+- As a consequence of absence of derivation, resulting "derived" address from a keychain is a hash of the public key.
 - Used hashing algorithm is [`Blake2b`](https://github.com/openssl/openssl/blob/master/crypto/blake2/blake2b.c).
 - We support construction of accounts from both `Secp256k1` (`Base58`) extended public keys (prefixed with `xpub`) or from `Ed25519` (`Base58`) extended public keys (prefixed with `edpk`).
 
 #### Wallet logic:
- 
+
 - Originated accounts are considered as sub-accounts of implicit accounts that originated them.
 
 #### Explorer:
@@ -58,20 +126,20 @@ so normal (public) derivations are not supported, this is why the only derivatio
 #### Transactions:
 
 - For the moment we only support `Transaction`, `Reveal`, `Origination` and `Delegation` operations, those are the ones relevant for us.
-- Parsing and serialization of transaction is based on Zarith encoder/decoder (for more details refer to: http://tezos.gitlab.io/master/api/p2p.html#n-t 
+- Parsing and serialization of transaction is based on Zarith encoder/decoder (for more details refer to: http://tezos.gitlab.io/master/api/p2p.html#n-t
  implementation is located here : `core/src/bytes/zarith`).
-- In Tezos, it is possible to have multiple operations in one transaction (e.g. `Reveal` + `Origination` or `Reveal` + `Transaction` ...), 
+- In Tezos, it is possible to have multiple operations in one transaction (e.g. `Reveal` + `Origination` or `Reveal` + `Transaction` ...),
  since each operation has it's own properties (fees, gas limit, storage limit ...) that user should set, so we probably won't handle multi-operation transactions.
  This will be discussed with Libcore's users (e.g. Live team) to see if it is relevant to support multi-operation transactions.
- 	
+
 #### Delegation:
-	
+
 - To delegate simply build a `Delegation` transaction with address to which delegate as receiver.
-  
+
 #### Parameters:
 
 - BIP44 Coin type : `1729`.
-- Used address prefixes: 
+- Used address prefixes:
 	- Implicit (prefix `tz1`): `{0x06, 0xA1, 0x9F}`.
 	- Originated (prefix `KT1`): `{0x02, 0x5A, 0x79}`.
 - Default explorer's endpoint: https://api6.tzscan.io/v3
@@ -84,7 +152,7 @@ so normal (public) derivations are not supported, this is why the only derivatio
 	- Account creation and synchronization: `core/test/integration/synchronization/tezos_synchronization.cpp`.
 	- Transaction construction: `core/test/integration/transactions/tezos_transaction_tests.cpp`.
 
-## 2.7.0 
+## 2.7.0
 
 > 2019/05/19
 

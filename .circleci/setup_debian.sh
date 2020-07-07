@@ -2,8 +2,8 @@
 
 BUILD_CONFIG=$1
 
-echo ">>>>>>> GETTING CIRCLE_TAG : $CIRCLE_TAG"
-echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
+apt-get update
+apt-get -y install git ssh
 
 echo "========> Install basic config"
 apt-get update
@@ -19,9 +19,10 @@ ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 if [ "$BUILD_CONFIG" == "Release" ]; then
     apt-get install -y awscli
     echo "========> Install sbt"
-    curl -L -o sbt-1.2.8.deb https://dl.bintray.com/sbt/debian/sbt-1.2.8.deb
-    dpkg -i sbt-1.2.8.deb
-    rm sbt-1.2.8.deb
+    SBT_DEB="sbt-1.3.10.deb"
+    curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
+    dpkg -i $SBT_DEB
+    rm $SBT_DEB
     sbt sbtVersion
 fi
 
@@ -40,12 +41,4 @@ apt-get install -y postgresql-9.6 libpq-dev postgresql-server-dev-all
 echo "========> Install Sqlite"
 apt-get install -y sqlite3 sqlite libsqlite3-dev
 
-echo "========> Install node"
-curl -sL https://deb.nodesource.com/setup_9.x | bash -
-apt-get install -y nodejs
-
-echo "========> Install yarn"
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-apt-get update && apt-get install -y yarn
 

@@ -104,6 +104,7 @@ ErrorCode = enum {
 
     # Stellar errors
     invalid_stellar_address_format;
+    invalid_stellar_memo_type;
 }
 
 Error = record {

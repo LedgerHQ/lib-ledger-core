@@ -47,7 +47,6 @@
 #include <api/BitcoinLikePreparedTransaction.hpp>
 #include <api/BigIntListCallback.hpp>
 #include <wallet/bitcoin/types.h>
-#include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxoPicker.h>
 
 #include <wallet/bitcoin/synchronizers/BitcoinLikeAccountSynchronizer.hpp>
 
@@ -55,6 +54,7 @@ namespace ledger {
     namespace core {
         class Operation;
         class BitcoinLikeUtxoPicker;
+
         class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
         public:
             static const int FLAG_NEW_TRANSACTION = 0x01;
@@ -142,6 +142,8 @@ namespace ledger {
             Future<AbstractAccount::AddressList> getAddresses(int64_t from, int64_t to);
             void getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) override;
 
+            std::shared_ptr<api::Keychain> getAccountKeychain() override;
+
         protected:
             bool checkIfWalletIsEmpty();
 
@@ -152,7 +154,7 @@ namespace ledger {
             inline void computeOperationTrust(Operation& operation,
                                               const BitcoinLikeBlockchainExplorerTransaction& tx);
             std::vector<std::shared_ptr<api::Address>> fromBitcoinAddressesToAddresses(const std::vector<std::shared_ptr<BitcoinLikeAddress>> &addresses);
-        private:
+
             std::shared_ptr<BitcoinLikeKeychain> _keychain;
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
