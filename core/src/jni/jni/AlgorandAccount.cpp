@@ -4,9 +4,8 @@
 #include "AlgorandAccount.hpp"  // my header
 #include "AlgorandAssetAmountCallback.hpp"
 #include "AlgorandAssetAmountListCallback.hpp"
-#include "AlgorandAssetAmountMapCallback.hpp"
 #include "AlgorandAssetParamsCallback.hpp"
-#include "AlgorandAssetParamsMapCallback.hpp"
+#include "AlgorandAssetParamsListCallback.hpp"
 #include "AlgorandTransaction.hpp"
 #include "AlgorandTransactionCallback.hpp"
 #include "AmountCallback.hpp"
@@ -79,7 +78,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandAccount>(nativeRef);
-        ref->getAssetsBalances(::djinni_generated::AlgorandAssetAmountMapCallback::toCpp(jniEnv, j_callback));
+        ref->getAssetsBalances(::djinni_generated::AlgorandAssetAmountListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
@@ -88,7 +87,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandAccount>(nativeRef);
-        ref->getCreatedAssets(::djinni_generated::AlgorandAssetParamsMapCallback::toCpp(jniEnv, j_callback));
+        ref->getCreatedAssets(::djinni_generated::AlgorandAssetParamsListCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

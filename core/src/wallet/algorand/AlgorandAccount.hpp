@@ -41,9 +41,8 @@
 #include <api/AlgorandAccount.hpp>
 #include <api/AlgorandAssetAmountCallback.hpp>
 #include <api/AlgorandAssetAmountListCallback.hpp>
-#include <api/AlgorandAssetAmountMapCallback.hpp>
 #include <api/AlgorandAssetParamsCallback.hpp>
-#include <api/AlgorandAssetParamsMapCallback.hpp>
+#include <api/AlgorandAssetParamsListCallback.hpp>
 #include <api/AlgorandTransaction.hpp>
 #include <api/AlgorandTransactionCallback.hpp>
 #include <api/AmountCallback.hpp>
@@ -108,10 +107,10 @@ namespace algorand {
                 const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) override;
 
         void getAssetsBalances(
-                const std::shared_ptr<api::AlgorandAssetAmountMapCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) override;
 
         void getCreatedAssets(
-                const std::shared_ptr<api::AlgorandAssetParamsMapCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) override;
 
         void getPendingRewards(
                 const std::shared_ptr<api::AmountCallback>& callback) override;

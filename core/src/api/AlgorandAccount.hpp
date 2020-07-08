@@ -20,9 +20,8 @@ namespace ledger { namespace core { namespace api {
 
 class AlgorandAssetAmountCallback;
 class AlgorandAssetAmountListCallback;
-class AlgorandAssetAmountMapCallback;
 class AlgorandAssetParamsCallback;
-class AlgorandAssetParamsMapCallback;
+class AlgorandAssetParamsListCallback;
 class AlgorandTransaction;
 class AlgorandTransactionCallback;
 class AmountCallback;
@@ -67,15 +66,15 @@ public:
 
     /**
      * Get balances of all assets to which account is registered
-     * @param callback, MapCallback returning a list of AlgorandAssetAmount objects representing the different balances
+     * @param callback, ListCallback returning a list of AlgorandAssetAmount objects representing the different balances
      */
-    virtual void getAssetsBalances(const std::shared_ptr<AlgorandAssetAmountMapCallback> & callback) = 0;
+    virtual void getAssetsBalances(const std::shared_ptr<AlgorandAssetAmountListCallback> & callback) = 0;
 
     /**
      * Get information about the assets created by account
-     * @param callback, MapCallback returning a list of AlgorandAssetParams objects representing the assets created by account
+     * @param callback, ListCallback returning a list of AlgorandAssetParams objects representing the assets created by account
      */
-    virtual void getCreatedAssets(const std::shared_ptr<AlgorandAssetParamsMapCallback> & callback) = 0;
+    virtual void getCreatedAssets(const std::shared_ptr<AlgorandAssetParamsListCallback> & callback) = 0;
 
     /**
      * Get the pending rewards for account

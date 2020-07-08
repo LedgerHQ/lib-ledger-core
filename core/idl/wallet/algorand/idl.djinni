@@ -1,6 +1,5 @@
 @import "../amount.djinni"
 
-@import "mapcallback.djinni"
 @import "configuration.djinni"
 
 AlgorandConfigurationDefaults = record {
@@ -215,12 +214,12 @@ AlgorandAccount = interface +c {
     );
 
     # Get balances of all assets to which account is registered
-    # @param callback, MapCallback returning a list of AlgorandAssetAmount objects representing the different balances
-    getAssetsBalances(callback: MapCallback<AlgorandAssetAmount>);
+    # @param callback, ListCallback returning a list of AlgorandAssetAmount objects representing the different balances
+    getAssetsBalances(callback: ListCallback<AlgorandAssetAmount>);
 
     # Get information about the assets created by account
-    # @param callback, MapCallback returning a list of AlgorandAssetParams objects representing the assets created by account
-    getCreatedAssets(callback: MapCallback<AlgorandAssetParams>);
+    # @param callback, ListCallback returning a list of AlgorandAssetParams objects representing the assets created by account
+    getCreatedAssets(callback: ListCallback<AlgorandAssetParams>);
 
     # Get the pending rewards for account
     # @param callback, Callback returning the amount of pending rewards in MicroAlgos

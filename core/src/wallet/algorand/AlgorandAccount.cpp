@@ -234,17 +234,15 @@ namespace algorand {
     }
 
     void Account::getAssetsBalances(
-            const std::shared_ptr<api::AlgorandAssetAmountMapCallback>& callback)
+            const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback)
     {
         getAccountInformation()
-            .map<std::unordered_map<std::string, api::AlgorandAssetAmount>>(
+            .map<std::vector<api::AlgorandAssetAmount>>(
                     getContext(),
                     [](const model::Account& account) {
-                        auto balances = std::unordered_map<std::string, api::AlgorandAssetAmount>();
+                        auto balances = std::vector<api::AlgorandAssetAmount>();
                         for (const auto& balance : account.assetsAmounts) {
-                            const auto id = std::to_string(balance.first);
-                            const auto amount = balance.second;
-                            balances[id] = model::toAPI(amount);
+                            balances.push_back(model::toAPI(balance.second));
                         }
                         return balances;
                     })
@@ -252,17 +250,15 @@ namespace algorand {
     }
 
     void Account::getCreatedAssets(
-            const std::shared_ptr<api::AlgorandAssetParamsMapCallback>& callback)
+            const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback)
     {
         getAccountInformation()
-            .map<std::unordered_map<std::string, api::AlgorandAssetParams>>(
+            .map<std::vector<api::AlgorandAssetParams>>(
                     getContext(),
                     [](const model::Account& account) {
-                        auto assets = std::unordered_map<std::string, api::AlgorandAssetParams>();
+                        auto assets = std::vector<api::AlgorandAssetParams>();
                         for (const auto& params : account.createdAssets) {
-                            const auto id = std::to_string(params.first);
-                            const auto assetParams = model::toAPI(params.second);
-                            assets[id] = assetParams;
+                            assets.push_back(model::toAPI(params.second));
                         }
                         return assets;
                     })
