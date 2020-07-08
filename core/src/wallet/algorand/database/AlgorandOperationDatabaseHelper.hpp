@@ -56,7 +56,7 @@ namespace algorand {
                     soci::use(txHash),
                     soci::use(api::to_string(operation.getAlgorandOperationType()));
             } else {
-                sql << "UPDATE algorand_operations SET uid = :op_uid, transaction_hash = :tx_hash WHERE transaction_uid = :txUid, type = :type",
+                sql << "UPDATE algorand_operations SET uid = :op_uid, transaction_hash = :tx_hash, type = :type WHERE transaction_uid = :txUid",
                     soci::use(opUid),
                     soci::use(txHash),
                     soci::use(txUid),
