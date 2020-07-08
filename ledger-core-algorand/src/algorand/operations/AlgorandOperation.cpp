@@ -266,7 +266,8 @@ namespace algorand {
                 algorandType = api::AlgorandOperationType::ASSET_REVOKE;
             } else if (details.assetCloseTo) {
                 algorandType = api::AlgorandOperationType::ASSET_OPT_OUT;
-            } else if (!details.assetAmount) {
+            } else if (!details.assetAmount
+                   || (*details.assetAmount == 0 && txn.header.sender == details.assetReceiver)) {
                 algorandType = api::AlgorandOperationType::ASSET_OPT_IN;
             } else {
                 algorandType = api::AlgorandOperationType::ASSET_TRANSFER;
