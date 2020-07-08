@@ -149,7 +149,6 @@ namespace algorand {
             return BigInt(static_cast<unsigned long long>(n));
         };
         if (account == txn.header.sender.toString()) {
-            amount = amount + u64ToBigInt(txn.header.fee);
             amount = amount - u64ToBigInt(txn.header.senderRewards.getValueOr(0));
             fees = u64ToBigInt(txn.header.fee);
         }
@@ -167,14 +166,6 @@ namespace algorand {
             }
             if (details.closeAddr && account == details.closeAddr->toString()) {
                 amount = amount + u64ToBigInt(details.closeAmount.getValueOr(0));
-                amount = amount + u64ToBigInt(txn.header.closeRewards.getValueOr(0));
-            }
-        } else if (txn.header.type == model::constants::axfer) {
-            const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
-            if (account == details.assetReceiver.toString()) {
-                amount = amount + u64ToBigInt(txn.header.receiverRewards.getValueOr(0));
-            }
-            if (details.assetCloseTo && account == details.assetCloseTo->toString()) {
                 amount = amount + u64ToBigInt(txn.header.closeRewards.getValueOr(0));
             }
         }

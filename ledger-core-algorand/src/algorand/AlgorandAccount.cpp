@@ -526,16 +526,6 @@ namespace algorand {
                         balance += details.closeAmount.getValueOr(0);
                         balance += header.closeRewards.getValueOr(0);
                     }
-                } else if (header.type == model::constants::axfer) {
-                    const auto& details =
-                        boost::get<model::AssetTransferTxnFields>(transaction.details);
-
-                    if (details.assetReceiver == _address) {
-                        balance += header.receiverRewards.getValueOr(0);
-                    }
-                    if (details.assetCloseTo && *details.assetCloseTo == _address) {
-                        balance += header.closeRewards.getValueOr(0);
-                    }
                 }
             }
 
