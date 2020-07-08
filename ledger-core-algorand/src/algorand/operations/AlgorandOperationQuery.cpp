@@ -43,24 +43,27 @@ namespace algorand {
         ledger::core::OperationQuery<Operation>(headFilter, pool, context, mainContext)
     {}
 
-    std::shared_ptr<Operation> OperationQuery::createOperation(std::shared_ptr<AbstractAccount> &account) {
+    std::shared_ptr<Operation> OperationQuery::createOperation(std::shared_ptr<AbstractAccount> &account)
+    {
         return std::make_shared<Operation>(account);
     }
 
     void OperationQuery::inflateCompleteTransaction(soci::session &sql,
                                                     const std::string &accountUid,
-                                                    Operation& operation) {
-
+                                                    Operation& operation)
+    {
         std::string transactionHash;
-        api::AlgorandOperationType operationType;
-        sql << "SELECT transaction_hash FROM algorand_operations WHERE uid = :uid",
+        std::string type;
+        sql << "SELECT transaction_hash, type FROM algorand_operations WHERE uid = :uid",
             soci::use(operation.uid),
-            soci::into(transactionHash);
+            soci::into(transactionHash),
+            soci::into(type);
 
         model::Transaction tx;
         TransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, tx);
 
         operation.setTransaction(tx);
+        operation.setAlgorandOperationType(api::from_string<api::AlgorandOperationType>(type));
     }
 
 } // namespace algorand

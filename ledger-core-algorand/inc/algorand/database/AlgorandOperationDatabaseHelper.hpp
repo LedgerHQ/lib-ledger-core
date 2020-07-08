@@ -50,15 +50,17 @@ namespace algorand {
             auto txHash = operation.getTransaction()->getId();
 
             if (newOperation) {
-                sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
+                sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash, :type)",
                     soci::use(opUid),
                     soci::use(txUid),
-                    soci::use(txHash);
+                    soci::use(txHash),
+                    soci::use(api::to_string(operation.getAlgorandOperationType()));
             } else {
-                sql << "UPDATE algorand_operations SET tx_uid = :tx_uid, tx_hash = :tx_hash WHERE uid = :op_uid",
+                sql << "UPDATE algorand_operations SET tx_uid = :tx_uid, tx_hash = :tx_hash, type = :type WHERE uid = :op_uid",
                     soci::use(txUid),
                     soci::use(txHash),
-                    soci::use(opUid);
+                    soci::use(opUid),
+                    soci::use(api::to_string(operation.getAlgorandOperationType()));
             }
 
             return newOperation;
