@@ -65,6 +65,7 @@ namespace algorand {
 
         const model::Transaction& getTransactionData() const;
         void setTransaction(const model::Transaction& txn);
+        void setAlgorandOperationType(api::AlgorandOperationType t);
 
     private:
         void inflate();
@@ -76,9 +77,9 @@ namespace algorand {
         void inflateSenders();
         void inflateRecipients();
         void inflateType();
+        void inflateAlgorandOperationType();
 
         const Account& getAlgorandAccount() const;
-        void setAlgorandOperationType();
 
     private:
         std::shared_ptr<AlgorandTransactionImpl> transaction;

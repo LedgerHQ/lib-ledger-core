@@ -153,7 +153,7 @@ namespace ledger {
                 {
                     operationApi = std::make_shared<OperationApi>(account->second);
                 }
-                
+
                 auto& operation = operationApi->getBackend();
 
                 // Inflate abstract operation
@@ -278,15 +278,17 @@ namespace ledger {
 
         void OperationQuery::inflateAlgorandLikeTransaction(soci::session& sql, algorand::Operation &operation) {
             std::string transactionHash;
-            api::AlgorandOperationType operationType;
-            sql << "SELECT transaction_hash FROM algorand_operations WHERE uid = :uid",
+            std::string stype;
+            sql << "SELECT transaction_hash, type FROM algorand_operations WHERE uid = :uid",
                 soci::use(operation.getBackend().uid),
-                soci::into(transactionHash);
+                soci::into(transactionHash),
+                soci::into(stype);
 
             algorand::model::Transaction tx;
             algorand::TransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, tx);
 
             operation.setTransaction(tx);
+            operation.setAlgorandOperationType(api::from_string<api::AlgorandOperationType>(stype));
         }
 
     }

@@ -581,11 +581,8 @@ namespace algorand {
                 "FROM algorand_transactions AS tx "
                 "WHERE tx.sender = :sender "
                 "OR tx.pay_receiver_address = :pay_receiver_address "
-                "OR tx.pay_close_address = :pay_close_address "
-                "OR tx.axfer_receiver_address = :axfer_receiver_address "
-                "OR tx.axfer_close_address = :axfer_close_address",
-                soci::use(address), soci::use(address), soci::use(address),
-                soci::use(address), soci::use(address));
+                "OR tx.pay_close_address = :pay_close_address",
+                soci::use(address), soci::use(address), soci::use(address));
 
         return query(rows);
     }

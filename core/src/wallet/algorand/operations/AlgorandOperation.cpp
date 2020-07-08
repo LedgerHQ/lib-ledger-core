@@ -89,6 +89,11 @@ namespace algorand {
         transaction = std::make_shared<AlgorandTransactionImpl>(txn);
     }
 
+    void Operation::setAlgorandOperationType(api::AlgorandOperationType t)
+    {
+        algorandType = t;
+    }
+
     void Operation::inflate()
     {
         if (!getAccount() || !transaction) { return; }
@@ -113,7 +118,7 @@ namespace algorand {
         inflateSenders();
         inflateRecipients();
         inflateType(); // inflateAmountAndFees must be called first
-        setAlgorandOperationType();
+        inflateAlgorandOperationType();
         refreshUid();
     }
 
@@ -237,7 +242,7 @@ namespace algorand {
         return static_cast<Account&>(*getAccount());
     }
 
-    void Operation::setAlgorandOperationType()
+    void Operation::inflateAlgorandOperationType()
     {
         const auto& txn = transaction->getTransactionData();
         if (txn.header.type == model::constants::pay) {
