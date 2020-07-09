@@ -50,14 +50,14 @@ namespace algorand {
                     , public ::ledger::core::OperationApi
     {
     public:
-        explicit Operation() = default;
         explicit Operation(const std::shared_ptr<AbstractAccount>& account);
         explicit Operation(const std::shared_ptr<AbstractAccount>& account,
                            const model::Transaction& txn);
 
         // From ledger::core::api::AlgorandOperation
-        api::AlgorandOperationType getAlgorandOperationType() const override;
         std::shared_ptr<api::AlgorandTransaction> getTransaction() const override;
+        api::AlgorandOperationType getAlgorandOperationType() const override;
+        std::string getRewards() const override;
 
         void refreshUid(const std::string& additional = "");
 
@@ -84,6 +84,7 @@ namespace algorand {
     private:
         std::shared_ptr<AlgorandTransactionImpl> transaction;
         api::AlgorandOperationType algorandType;
+        uint64_t rewards;
     };
 
 } // namespace algorand

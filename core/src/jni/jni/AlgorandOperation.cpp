@@ -4,6 +4,7 @@
 #include "AlgorandOperation.hpp"  // my header
 #include "AlgorandOperationType.hpp"
 #include "AlgorandTransaction.hpp"
+#include "Marshal.hpp"
 
 namespace djinni_generated {
 
@@ -20,6 +21,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandOperation_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandOperation>(nativeRef);
+        auto r = ref->getTransaction();
+        return ::djinni::release(::djinni_generated::AlgorandTransaction::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandOperation_00024CppProxy_native_1getAlgorandOperationType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -30,13 +41,13 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandOperation_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandOperation_00024CppProxy_native_1getRewards(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandOperation>(nativeRef);
-        auto r = ref->getTransaction();
-        return ::djinni::release(::djinni_generated::AlgorandTransaction::fromCpp(jniEnv, r));
+        auto r = ref->getRewards();
+        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
