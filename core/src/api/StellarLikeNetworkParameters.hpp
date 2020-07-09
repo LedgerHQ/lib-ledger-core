@@ -17,6 +17,8 @@ struct StellarLikeNetworkParameters final {
     std::string Identifier;
     /** Address version bytes */
     std::vector<uint8_t> Version;
+    /** Muxed address version bytes */
+    std::vector<uint8_t> MuxedVersion;
     /** The minimum account to enable an account */
     int64_t BaseReserve;
     /** The price of one operation in a transaction */
@@ -28,12 +30,14 @@ struct StellarLikeNetworkParameters final {
 
     StellarLikeNetworkParameters(std::string Identifier_,
                                  std::vector<uint8_t> Version_,
+                                 std::vector<uint8_t> MuxedVersion_,
                                  int64_t BaseReserve_,
                                  int64_t BaseFee_,
                                  std::vector<std::string> AdditionalSEPs_,
                                  std::string NetworkPassphrase_)
     : Identifier(std::move(Identifier_))
     , Version(std::move(Version_))
+    , MuxedVersion(std::move(MuxedVersion_))
     , BaseReserve(std::move(BaseReserve_))
     , BaseFee(std::move(BaseFee_))
     , AdditionalSEPs(std::move(AdditionalSEPs_))
@@ -43,6 +47,7 @@ struct StellarLikeNetworkParameters final {
     StellarLikeNetworkParameters(const StellarLikeNetworkParameters& cpy) {
        this->Identifier = cpy.Identifier;
        this->Version = cpy.Version;
+       this->MuxedVersion = cpy.MuxedVersion;
        this->BaseReserve = cpy.BaseReserve;
        this->BaseFee = cpy.BaseFee;
        this->AdditionalSEPs = cpy.AdditionalSEPs;
@@ -55,6 +60,7 @@ struct StellarLikeNetworkParameters final {
     StellarLikeNetworkParameters& operator=(const StellarLikeNetworkParameters& cpy) {
        this->Identifier = cpy.Identifier;
        this->Version = cpy.Version;
+       this->MuxedVersion = cpy.MuxedVersion;
        this->BaseReserve = cpy.BaseReserve;
        this->BaseFee = cpy.BaseFee;
        this->AdditionalSEPs = cpy.AdditionalSEPs;
@@ -64,12 +70,12 @@ struct StellarLikeNetworkParameters final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs, NetworkPassphrase);
+        archive(Identifier, Version, MuxedVersion, BaseReserve, BaseFee, AdditionalSEPs, NetworkPassphrase);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, Version, BaseReserve, BaseFee, AdditionalSEPs, NetworkPassphrase);
+        archive(Identifier, Version, MuxedVersion, BaseReserve, BaseFee, AdditionalSEPs, NetworkPassphrase);
     }
 };
 

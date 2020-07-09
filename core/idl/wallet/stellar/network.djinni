@@ -4,6 +4,9 @@ StellarLikeNetworkParameters = record {
     Identifier: string;
     # Address version bytes
     Version: binary;
+    # Muxed address version bytes, for M-addresses (an address containing a public key
+    # and a memoId)
+    MuxedVersion: binary;
     # The minimum account to enable an account
     BaseReserve: i64;
     # The price of one operation in a transaction

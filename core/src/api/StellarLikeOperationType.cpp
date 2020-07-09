@@ -10,7 +10,7 @@ std::string to_string(const StellarLikeOperationType& stellarLikeOperationType) 
     switch (stellarLikeOperationType) {
         case StellarLikeOperationType::CREATE_ACCOUNT: return "CREATE_ACCOUNT";
         case StellarLikeOperationType::PAYMENT: return "PAYMENT";
-        case StellarLikeOperationType::PATH_PAYMENT: return "PATH_PAYMENT";
+        case StellarLikeOperationType::PATH_PAYMENT_STRICT_RECEIVE: return "PATH_PAYMENT_STRICT_RECEIVE";
         case StellarLikeOperationType::MANAGE_OFFER: return "MANAGE_OFFER";
         case StellarLikeOperationType::CREATE_PASSIVE_OFFER: return "CREATE_PASSIVE_OFFER";
         case StellarLikeOperationType::SET_OPTIONS: return "SET_OPTIONS";
@@ -21,13 +21,14 @@ std::string to_string(const StellarLikeOperationType& stellarLikeOperationType) 
         case StellarLikeOperationType::MANAGE_DATA: return "MANAGE_DATA";
         case StellarLikeOperationType::BUMP_SEQUENCE: return "BUMP_SEQUENCE";
         case StellarLikeOperationType::MANAGE_BUY_OFFER: return "MANAGE_BUY_OFFER";
+        case StellarLikeOperationType::PATH_PAYMENT_STRICT_SEND: return "PATH_PAYMENT_STRICT_SEND";
     };
 };
 template <>
 StellarLikeOperationType from_string(const std::string& stellarLikeOperationType) {
     if (stellarLikeOperationType == "CREATE_ACCOUNT") return StellarLikeOperationType::CREATE_ACCOUNT;
     else if (stellarLikeOperationType == "PAYMENT") return StellarLikeOperationType::PAYMENT;
-    else if (stellarLikeOperationType == "PATH_PAYMENT") return StellarLikeOperationType::PATH_PAYMENT;
+    else if (stellarLikeOperationType == "PATH_PAYMENT_STRICT_RECEIVE") return StellarLikeOperationType::PATH_PAYMENT_STRICT_RECEIVE;
     else if (stellarLikeOperationType == "MANAGE_OFFER") return StellarLikeOperationType::MANAGE_OFFER;
     else if (stellarLikeOperationType == "CREATE_PASSIVE_OFFER") return StellarLikeOperationType::CREATE_PASSIVE_OFFER;
     else if (stellarLikeOperationType == "SET_OPTIONS") return StellarLikeOperationType::SET_OPTIONS;
@@ -37,7 +38,8 @@ StellarLikeOperationType from_string(const std::string& stellarLikeOperationType
     else if (stellarLikeOperationType == "INFLATION") return StellarLikeOperationType::INFLATION;
     else if (stellarLikeOperationType == "MANAGE_DATA") return StellarLikeOperationType::MANAGE_DATA;
     else if (stellarLikeOperationType == "BUMP_SEQUENCE") return StellarLikeOperationType::BUMP_SEQUENCE;
-    else return StellarLikeOperationType::MANAGE_BUY_OFFER;
+    else if (stellarLikeOperationType == "MANAGE_BUY_OFFER") return StellarLikeOperationType::MANAGE_BUY_OFFER;
+    else return StellarLikeOperationType::PATH_PAYMENT_STRICT_SEND;
 };
 
 std::ostream &operator<<(std::ostream &os, const StellarLikeOperationType &o)
@@ -45,7 +47,7 @@ std::ostream &operator<<(std::ostream &os, const StellarLikeOperationType &o)
     switch (o) {
         case StellarLikeOperationType::CREATE_ACCOUNT:  return os << "CREATE_ACCOUNT";
         case StellarLikeOperationType::PAYMENT:  return os << "PAYMENT";
-        case StellarLikeOperationType::PATH_PAYMENT:  return os << "PATH_PAYMENT";
+        case StellarLikeOperationType::PATH_PAYMENT_STRICT_RECEIVE:  return os << "PATH_PAYMENT_STRICT_RECEIVE";
         case StellarLikeOperationType::MANAGE_OFFER:  return os << "MANAGE_OFFER";
         case StellarLikeOperationType::CREATE_PASSIVE_OFFER:  return os << "CREATE_PASSIVE_OFFER";
         case StellarLikeOperationType::SET_OPTIONS:  return os << "SET_OPTIONS";
@@ -56,6 +58,7 @@ std::ostream &operator<<(std::ostream &os, const StellarLikeOperationType &o)
         case StellarLikeOperationType::MANAGE_DATA:  return os << "MANAGE_DATA";
         case StellarLikeOperationType::BUMP_SEQUENCE:  return os << "BUMP_SEQUENCE";
         case StellarLikeOperationType::MANAGE_BUY_OFFER:  return os << "MANAGE_BUY_OFFER";
+        case StellarLikeOperationType::PATH_PAYMENT_STRICT_SEND:  return os << "PATH_PAYMENT_STRICT_SEND";
     }
 }
 

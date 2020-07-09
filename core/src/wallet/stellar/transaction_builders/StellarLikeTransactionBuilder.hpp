@@ -75,7 +75,7 @@ namespace ledger {
 
         private:
             std::shared_ptr<StellarLikeAccount> _account;
-            stellar::xdr::TransactionEnvelope _envelope;
+            stellar::xdr::TransactionV1Envelope _envelope;
             Option<uint64_t> _baseFee;
             BigInt _balanceChange;
 

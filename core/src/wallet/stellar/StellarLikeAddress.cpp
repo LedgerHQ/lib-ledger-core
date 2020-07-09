@@ -48,8 +48,9 @@ namespace ledger {
         }
 
         StellarLikeAddress::StellarLikeAddress(const std::vector<uint8_t> &pubKey, const api::Currency &currency,
+                                               const Option<uint64_t>& memoId,
                                                const Option<std::string> &path) : AbstractAddress(currency, path),
-                                               _address(convertPubkeyToAddress(pubKey, *currency.stellarLikeNetworkParameters)) {
+                                               _address(convertPubkeyToAddress(pubKey, memoId, *currency.stellarLikeNetworkParameters)) {
         }
 
         std::string StellarLikeAddress::toString() {
@@ -57,10 +58,13 @@ namespace ledger {
         }
 
         std::vector<uint8_t> StellarLikeAddress::toPublicKey() const {
+            const auto& params = getCurrency().stellarLikeNetworkParameters.value();
             std::vector<uint8_t> bytes;
             BaseConverter::decode(_address, BaseConverter::BASE32_RFC4648_NO_PADDING, bytes);
             BytesReader reader(bytes);
-            reader.seek(getCurrency().stellarLikeNetworkParameters.value().Version.size(), BytesReader::Seek::CUR);
+            auto version = reader.read(params.Version.size());
+            if (version == params.MuxedVersion)
+                reader.seek(sizeof(uint64_t), BytesReader::Seek::CUR);
             return reader.read(32);
         }
 
@@ -73,10 +77,17 @@ namespace ledger {
         }
 
         std::string StellarLikeAddress::convertPubkeyToAddress(const std::vector<uint8_t> &pubKey,
+                                                               const Option<uint64_t>& memoId,
                                                                const api::StellarLikeNetworkParameters &params) {
             BytesWriter writer;
-            writer.writeByteArray(params.Version);
-            writer.writeByteArray(pubKey);
+            if (memoId) {
+                writer.writeByteArray(params.MuxedVersion);
+                writer.writeBeValue(memoId.getValue());
+                writer.writeByteArray(pubKey);
+            } else {
+                writer.writeByteArray(params.Version);
+                writer.writeByteArray(pubKey);
+            }
             auto payload = writer.toByteArray();
             auto checksum = CRC::calculate(payload, CRC::XMODEM);
             writer.writeLeValue(checksum);
@@ -116,7 +127,49 @@ namespace ledger {
 
         std::string StellarLikeAddress::convertXdrAccountToAddress(const stellar::xdr::AccountID &accountId,
                                                                    const api::StellarLikeNetworkParameters &params) {
-            return convertPubkeyToAddress(std::vector<uint8_t>(accountId.content.begin(), accountId.content.end()), params);
+            return convertPubkeyToAddress(std::vector<uint8_t>(accountId.content.begin(), accountId.content.end()), {}, params);
+        }
+
+        std::string StellarLikeAddress::convertMuxedAccountToAddress(const stellar::xdr::MuxedAccount &account,
+                                                                     const api::StellarLikeNetworkParameters &params) {
+            switch (account.type) {
+                case stellar::xdr::CryptoKeyType::KEY_TYPE_ED25519: {
+                    const auto& pk = boost::get<stellar::xdr::uint256>(account.content);
+                    return convertPubkeyToAddress(std::vector<uint8_t>(pk.begin(), pk.end()), {}, params);
+                }
+                case stellar::xdr::CryptoKeyType::KEY_TYPE_MUXED_ED25519: {
+                   const auto& pk = boost::get<stellar::xdr::med25519>(account.content);
+                   return convertPubkeyToAddress(std::vector<uint8_t>(pk.ed25519.begin(), pk.ed25519.end()), {pk.id}, params);
+                }
+                case stellar::xdr::CryptoKeyType::KEY_TYPE_PRE_AUTH_TX:
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Crypto key of type KEY_TYPE_PRE_AUTH_TX is not an address.");
+                case stellar::xdr::CryptoKeyType::KEY_TYPE_HASH_X:
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Crypto key of type KEY_TYPE_HASH_X is not an address.");
+            }
+        }
+
+        stellar::xdr::MuxedAccount StellarLikeAddress::toXdrMuxedAccount() const {
+            const auto& params = getCurrency().stellarLikeNetworkParameters.value();
+            std::vector<uint8_t> bytes;
+            BaseConverter::decode(_address, BaseConverter::BASE32_RFC4648_NO_PADDING, bytes);
+            BytesReader reader(bytes);
+            auto version = reader.read(params.Version.size());
+            stellar::xdr::MuxedAccount account;
+            if (version == params.MuxedVersion) {
+                account.type = stellar::xdr::CryptoKeyType::KEY_TYPE_MUXED_ED25519;
+                stellar::xdr::med25519 key;
+                key.id = reader.readNextBeUlong();
+                auto pubkey = reader.read(32);
+                std::copy(pubkey.begin(), pubkey.end(), key.ed25519.begin());
+                account.content = key;
+            } else {
+                auto pubkey = reader.read(32);
+                account.type = stellar::xdr::CryptoKeyType::KEY_TYPE_ED25519;
+                stellar::xdr::uint256 key;
+                std::copy(pubkey.begin(), pubkey.end(), key.begin());
+                account.content = key;
+            }
+            return account;
         }
 
     }

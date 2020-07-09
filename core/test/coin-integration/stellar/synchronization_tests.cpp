@@ -230,3 +230,44 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
     EXPECT_EQ(signer_2->type, "ed25519_public_key");
     EXPECT_EQ(signer_2->weight, 10);
 }
+
+// Synchronize an account with protocol 13 upgrade object
+TEST_F(StellarFixture, SynchronizeProtocol13) {
+    // GBV4NH4G5SWYM6OQJKZKG2PA2O2VQ2W6K5S43WLMLJRWU4XTG5EST5QP
+    auto pool = newPool();
+    auto wallet = newWallet(pool, "my_wallet_proto_13", "stellar", api::DynamicObject::newInstance());
+    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto account = newAccount(wallet, 0, accountInfoFromAddress("GBSEXVEU2WBBLIUCWIWFDPV5I4HLBSOWRNJVKLNXZFVNITFPKQIVO3YI"));
+    auto exists = ::wait(account->exists());
+    EXPECT_TRUE(exists);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
+                   make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                       fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                           return;
+                       EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                       EXPECT_EQ(event->getCode(),
+                                 api::EventCode::SYNCHRONIZATION_SUCCEED);
+                       dispatcher->stop();
+                   }));
+    EXPECT_EQ(bus, account->synchronize());
+    dispatcher->waitUntilStopped();
+    auto balance = ::wait(account->getBalance());
+    auto address = ::wait(account->getFreshPublicAddresses()).front();
+    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    EXPECT_GT(balance->toLong(), 0);
+    EXPECT_TRUE(operations.size() >= 11);
+
+    // Fetch the first send operation
+    for (const auto& op: operations) {
+        fmt::print("{} {} {}\n", api::to_string(op->getOperationType()), op->getAmount()->toString(), op->asStellarLikeOperation()->getRecord().transactionHash);
+        if (op->getOperationType() == api::OperationType::SEND) {
+            const auto& sop = op->asStellarLikeOperation();
+            ASSERT_EQ(sop->getTransaction()->getSourceAccount()->toString(), address->toString());
+            ASSERT_TRUE(sop->getTransaction()->getFee()->toLong() > 0);
+            auto sequence = std::dynamic_pointer_cast<api::BigIntImpl>(sop->getTransaction()->getSourceAccountSequence())->backend();
+            ASSERT_TRUE(sequence > BigInt::ZERO);
+        }
+    }
+}

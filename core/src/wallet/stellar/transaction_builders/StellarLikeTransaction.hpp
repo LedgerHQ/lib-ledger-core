@@ -57,7 +57,7 @@ namespace ledger {
 
             std::vector<uint8_t> toSignatureBase() override;
 
-            const stellar::xdr::TransactionEnvelope& envelope() const { return _envelope; }
+            const stellar::xdr::TransactionEnvelope& envelope() const { return _envelope; };
 
             std::shared_ptr<api::StellarLikeMemo> getMemo() override;
 
@@ -70,6 +70,15 @@ namespace ledger {
             std::shared_ptr<api::BigInt> getSourceAccountSequence() override;
 
             std::shared_ptr<api::Amount> getFee() override;
+
+            bool isEnvelopeV1() const;
+            bool isEnvelopeV0() const;
+
+            const stellar::xdr::TransactionV0Envelope& getEnvelopeV0() const;
+            const stellar::xdr::TransactionV1Envelope& getEnvelopeV1() const;
+
+            stellar::xdr::TransactionV0Envelope& getEnvelopeV0();
+            stellar::xdr::TransactionV1Envelope& getEnvelopeV1();
 
         private:
             stellar::xdr::TransactionEnvelope _envelope;
