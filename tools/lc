@@ -3,14 +3,46 @@
 # project new <coin-id> [--force]
 
 usage() {
-  echo -e $1
+  echo $1
   exit $2
+}
+
+main_usage() {
+  echo "usage: lc <command>"
+  echo -e "  available commands"
+  echo -e "    · new     create a new project"
+  echo -e "    · api     generate the API interface"
+  echo -e "    · pkg     generate a target package for a bundle"
+
+  exit 2
+}
+
+new_usage() {
+  echo "usage: lc new <coin_name>"
+
+  exit 2
+}
+
+api_usage() {
+  echo "usage: lc api <list of coin names>"
+
+  exit 2
+}
+
+pkg_usage() {
+  echo "usage: lc pkg <package system>"
+  echo -e "  available package systems"
+  echo -e "    · npm     create a new NPM package"
+  echo -e "    · rn      create a new React Native package"
+  echo -e "    · scala   create a new Scala package"
+
+  exit 2
 }
 
 cmd_project_new() {
   if [[ -z "$1" ]];
   then
-    usage "please provide the name of the currency" 1
+    new_usage
   fi
 
   coin_name="$1"
@@ -53,23 +85,10 @@ cmd_project_new() {
   sed s/\$project_name/$capitalized_coin_name/g ./tools/templates/Migrations.cpp > $project_name/src/$coin_name/database/Migrations.cpp
 }
 
-cmd_project() {
-  case "$1" in
-    "new")
-      shift
-      cmd_project_new $*
-      ;;
-
-    *)
-      usage "project usage" 1
-      ;;
-  esac
-}
-
 cmd_idl() {
   if [[ "$#" == 0 ]];
   then
-    usage "too few arguments: pass the list of coins you want to generate API for"
+    api_usage
   fi
 
   ./tools/idl_interfaces.sh $*
@@ -78,13 +97,18 @@ cmd_idl() {
 cmd_pkg() {
   if [[ $# != 1 ]];
   then
-    usage "generating bindings requires at least one argument: the package system to target (npm, rn, scala)"
+    pkg_usage
   fi
 
   ./tools/idl_pkg.sh $1
 }
 
 case "$1" in
+  "new")
+    shift
+    cmd_project_new $*
+    ;;
+
   "api")
     shift
     cmd_idl $*
@@ -96,6 +120,6 @@ case "$1" in
     ;;
 
   *)
-    usage "usage" 2
+    main_usage
     ;;
 esac
