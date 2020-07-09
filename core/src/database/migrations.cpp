@@ -956,7 +956,36 @@ namespace ledger {
 
         }
 
+
         template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type) {
+           sql << "ALTER TABLE bitcoin_outputs ADD replaceable INTEGER DEFAULT 0";
+        }
+
+        template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type) {
+            // SQLite doesn't handle ALTER TABLE DROP
+            if (type != api::DatabaseBackendType::SQLITE3) {
+                sql << "ALTER TABLE bitcoin_outputs DROP replaceable";
+            } else {
+                sql << "CREATE TABLE bitcoin_outputs_swap("
+                       "idx INTEGER NOT NULL,"
+                       "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
+                       "transaction_hash VARCHAR(255) NOT NULL,"
+                       "amount BIGINT NOT NULL,"
+                       "script TEXT NOT NULL,"
+                       "address VARCHAR(255),"
+                       "account_uid VARCHAR(255),"
+                       "PRIMARY KEY (idx, transaction_uid)"
+                       ")";
+                sql << "INSERT INTO bitcoin_outputs_swap "
+                       "SELECT idx, transaction_uid, transaction_hash, amount, script, "
+                                   "address, account_uid "
+                       "FROM bitcoin_outputs";
+                sql << "DROP TABLE bitcoin_outputs";
+                sql << "ALTER TABLE bitcoin_outputs_swap RENAME TO bitcoin_outputs";
+            }
+        }
+
+        template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type) {
 
             // Algorand currencies
             sql << "CREATE TABLE algorand_currencies("
@@ -1041,7 +1070,7 @@ namespace ledger {
                     ")";
         }
 
-        template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type) {
+        template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type) {
             sql << "DROP TABLE algorand_operations";
 
             sql << "DROP TABLE algorand_transactions";
