@@ -173,8 +173,9 @@ AlgorandTransaction = interface +c {
 }
 
 AlgorandOperation = interface +c {
-    const getAlgorandOperationType(): AlgorandOperationType;
     const getTransaction(): AlgorandTransaction;
+    const getAlgorandOperationType(): AlgorandOperationType;
+    const getRewards(): string;
 }
 
 AlgorandAccount = interface +c {

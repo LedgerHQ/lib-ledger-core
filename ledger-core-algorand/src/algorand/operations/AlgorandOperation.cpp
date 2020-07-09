@@ -45,6 +45,7 @@ namespace algorand {
         : ::ledger::core::Operation(account)
         , transaction(nullptr)
         , algorandType{}
+        , rewards(0)
     {}
 
     Operation::Operation(const std::shared_ptr<AbstractAccount>& account,
@@ -55,14 +56,19 @@ namespace algorand {
         inflate();
     }
 
+    std::shared_ptr<api::AlgorandTransaction> Operation::getTransaction() const
+    {
+        return transaction;
+    }
+
     api::AlgorandOperationType Operation::getAlgorandOperationType() const
     {
         return algorandType;
     }
 
-    std::shared_ptr<api::AlgorandTransaction> Operation::getTransaction() const
+    std::string Operation::getRewards() const
     {
-        return transaction;
+        return std::to_string(rewards);
     }
 
     void Operation::refreshUid(const std::string&)
@@ -150,12 +156,15 @@ namespace algorand {
         const auto& account = getAlgorandAccount().getAddress();
         const auto& txn = getTransactionData();
         amount = BigInt::ZERO;
+        rewards = 0;
         auto u64ToBigInt = [](uint64_t n) {
             return BigInt(static_cast<unsigned long long>(n));
         };
         if (account == txn.header.sender.toString()) {
-            amount = amount - u64ToBigInt(txn.header.senderRewards.getValueOr(0));
+            const auto senderRewards = txn.header.senderRewards.getValueOr(0);
+            amount = amount - u64ToBigInt(senderRewards);
             fees = u64ToBigInt(txn.header.fee);
+            rewards += senderRewards;
         }
         if (txn.header.type == model::constants::pay) {
             const auto& details = boost::get<model::PaymentTxnFields>(txn.details);
@@ -166,12 +175,16 @@ namespace algorand {
                 amount = amount + u64ToBigInt(details.amount);
             }
             if (account == details.receiverAddr.toString()) {
+                const auto receiverRewards = txn.header.receiverRewards.getValueOr(0);
                 amount = amount + u64ToBigInt(details.amount);
-                amount = amount + u64ToBigInt(txn.header.receiverRewards.getValueOr(0));
+                amount = amount + u64ToBigInt(receiverRewards);
+                rewards += receiverRewards;
             }
             if (details.closeAddr && account == details.closeAddr->toString()) {
+                const auto closeRewards = txn.header.closeRewards.getValueOr(0);
                 amount = amount + u64ToBigInt(details.closeAmount.getValueOr(0));
-                amount = amount + u64ToBigInt(txn.header.closeRewards.getValueOr(0));
+                amount = amount + u64ToBigInt(closeRewards);
+                rewards += closeRewards;
             }
         }
     }
@@ -221,10 +234,6 @@ namespace algorand {
                 details.assetCloseTo && details.assetCloseTo->toString() == account) {
                 type = api::OperationType::RECEIVE;
             }
-        }
-        if (amount.isNegative()) {
-            amount = amount.positive();
-            type = api::OperationType::REWARDS;
         }
     }
 
