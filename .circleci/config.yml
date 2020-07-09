@@ -8,7 +8,7 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.1
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -45,7 +45,7 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.1
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -64,7 +64,7 @@ jobs:
       - run:
           name: Copy_Artifacts
           command: |
-            . .circleci/copy_artifacts.sh
+            . .circleci/copy_artifacts.sh target_jni
       - persist_to_workspace:
           root: ~/lib-ledger-core-artifacts
           paths:
@@ -78,7 +78,7 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.1
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -179,7 +179,7 @@ jobs:
       - run:
           name: Setup
           command: |
-            . .circleci/setup_macos.sh Release
+            .circleci/setup_macos.sh Release
       - run:
           name: Submodule_Initialization
           command: |
@@ -196,14 +196,28 @@ jobs:
           name: Copy_Artifacts
           command: |
             . .circleci/copy_artifacts.sh
-      - run:
-          name: Build_Library_jni
+      - deploy:
+          name: Deploy_Artifacts
           command: |
-            . .circleci/build_lib.sh target_jni Release
+            . .circleci/deploy.sh
+  build_macos_ios_release:
+    macos:
+      xcode: "10.0.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
       - run:
-          name: Copy_Artifacts_jni
+          name: Setup
           command: |
-            . .circleci/copy_artifacts.sh target_jni
+            .circleci/setup_macos.sh Release
+      - run:
+          name: Submodule_Initialization
+          command: |
+            . .circleci/init_submodules.sh
+      - run:
+          name: Export_Lib_Version
+          command: |
+            . .circleci/export_lib_version.sh
       - run:
           name: Build_Library_ios_x86
           command: |
@@ -228,6 +242,38 @@ jobs:
           name: Copy_Artifacts_ios_arm64
           command: |
             . .circleci/copy_artifacts.sh ios arm64
+      - deploy:
+          name: Deploy_Artifacts
+          command: |
+            . .circleci/deploy.sh
+            . .circleci/deploy_fat_lib.sh
+  build_macos_jni_release:
+    macos:
+      xcode: "10.0.0"
+    working_directory: ~/lib-ledger-core
+    steps:
+      - checkout
+      - run:
+          name: Setup
+          command: |
+            .circleci/setup_macos.sh Release
+      - run:
+          name: Submodule_Initialization
+          command: |
+            . .circleci/init_submodules.sh
+      - run:
+          name: Export_Lib_Version
+          command: |
+            . .circleci/export_lib_version.sh
+      - run:
+          name: Build_Library_jni
+          command: |
+            . .circleci/build_lib.sh target_jni Release
+      - run:
+          name: Copy_Artifacts_jni
+          command: |
+            . .circleci/copy_artifacts.sh target_jni
+
       - persist_to_workspace:
           root: ~/lib-ledger-core-artifacts
           paths:
@@ -236,7 +282,6 @@ jobs:
           name: Deploy_Artifacts
           command: |
             . .circleci/deploy.sh
-            . .circleci/deploy_fat_lib.sh
   build_macos_debug:
     macos:
       xcode: "10.0.0"
@@ -246,7 +291,7 @@ jobs:
       - run:
           name: Setup
           command: |
-            . .circleci/setup_macos.sh Debug
+            .circleci/setup_macos.sh Debug
       - run:
           name: Submodule_Initialization
           command: |
@@ -266,7 +311,7 @@ jobs:
               ctest -VV -timeout 60
   publish_jar:
     macos:
-      xcode: "10.0.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
     - attach_workspace:
@@ -275,7 +320,7 @@ jobs:
     - run:
         name: Setup
         command: |
-          . .circleci/setup_macos.sh Release
+          .circleci/setup_macos.sh Release
     - run:
         name: Submodule_Initialization
         command: |
@@ -338,12 +383,20 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - build_macos_ios_release:
+          filters:
+            tags:
+              only: /.*/
+      - build_macos_jni_release:
+          filters:
+            tags:
+              only: /.*/
       - build_linux_debug
       - build_macos_debug
       - publish_jar:
           requires:
             - build_linux_jni_release
-            - build_macos_release
+            - build_macos_jni_release
           filters:
             tags:
               only: /.*/

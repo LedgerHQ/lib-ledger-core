@@ -141,12 +141,12 @@ namespace ledger {
             const std::shared_ptr<api::DatabaseBackend> &backend,
             const std::shared_ptr<api::DynamicObject> &configuration,
             const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
-        ) {
+            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend) {
             auto pool = std::shared_ptr<WalletPool>(new WalletPool(
                     name, password, httpClient, webSocketClient, pathResolver,
                     logPrinter, dispatcher, rng, backend, configuration,
-                    externalPreferencesBackend, internalPreferencesBackend
+                    externalPreferencesBackend,
+                    internalPreferencesBackend
             ));
 
             // Initialization

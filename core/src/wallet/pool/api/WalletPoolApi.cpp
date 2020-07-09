@@ -38,6 +38,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <memory>
 
 namespace ledger {
     namespace core {
@@ -52,9 +53,7 @@ namespace ledger {
             const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
-            const std::shared_ptr<api::DynamicObject> &configuration,
-            const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
-            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
+            const std::shared_ptr<api::DynamicObject> &configuration
         ) {
             auto pool = ledger::core::WalletPool::newInstance(
                     name,
@@ -67,8 +66,8 @@ namespace ledger {
                     rng,
                     backend,
                     configuration,
-                    externalPreferencesBackend,
-                    internalPreferencesBackend
+                    nullptr,
+                    nullptr
             );
             return std::make_shared<WalletPoolApi>(pool);
         }
