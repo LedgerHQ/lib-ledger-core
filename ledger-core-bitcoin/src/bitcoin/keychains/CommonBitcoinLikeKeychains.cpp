@@ -227,6 +227,18 @@ namespace ledger {
             return getAddressDerivationPath(address).nonEmpty();
         }
 
+        std::vector<std::shared_ptr<api::Address>> CommonBitcoinLikeKeychains::getAllAddresses() {
+            std::vector<std::shared_ptr<api::Address>> result;
+            result.reserve(_state.maxConsecutiveChangeIndex + 1 + _state.maxConsecutiveReceiveIndex + 1);
+            for (auto i = 0; i <= _state.maxConsecutiveChangeIndex; i++) {
+                result.push_back(derive(KeyPurpose::CHANGE, i));
+            }
+            for (auto i = 0; i <= _state.maxConsecutiveReceiveIndex; i++) {
+                result.push_back(derive(KeyPurpose::RECEIVE, i));
+            }
+            return result;
+        }
+
         Option<std::vector<uint8_t>> CommonBitcoinLikeKeychains::getPublicKey(const std::string &address) const {
             auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
             if (path.empty()) {
