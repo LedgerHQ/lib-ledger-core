@@ -38,6 +38,7 @@
 #include <core/api/Currency.hpp>
 #include <core/api/AccountCreationInfo.hpp>
 #include <core/api/ExtendedKeyAccountCreationInfo.hpp>
+#include <core/api/Keychain.hpp>
 #include <core/api/DynamicObject.hpp>
 #include <core/preferences/Preferences.hpp>
 #include <core/utils/DerivationScheme.hpp>
@@ -49,7 +50,7 @@
 namespace ledger {
     namespace core {
 
-        class BitcoinLikeKeychain {
+        class BitcoinLikeKeychain : public api::Keychain {
         public:
             enum KeyPurpose {
                 RECEIVE, CHANGE
@@ -95,6 +96,7 @@ namespace ledger {
             virtual std::string getRestoreKey() const = 0;
             virtual int32_t getObservableRangeSize() const = 0;
             virtual bool contains(const std::string& address) const = 0;
+            virtual std::vector<std::shared_ptr<api::Address>> getAllAddresses() = 0;
             virtual int32_t getOutputSizeAsSignedTxInput() const = 0;
 
             static bool isSegwit(const std::string &keychainEngine);
