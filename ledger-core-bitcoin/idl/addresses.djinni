@@ -80,12 +80,4 @@ BitcoinLikeExtendedPublicKey = interface +c {
     getRootPath(): string;
 }
 
-# A keychain can be seen as an address database that can be queried to get lists of addresses,
-# ask whether an address is contained, or generate new addresses.
-Keychain = interface +c {
-    # Check whether an address is contained.
-    const contains(address: string): bool;
-	# get all contained adresses.
-    getAllAddresses(): list<Address>;
-}
 

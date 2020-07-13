@@ -148,6 +148,8 @@ namespace ledger {
             Future<AbstractAccount::AddressList> getAddresses(int64_t from, int64_t to);
             void getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) override;
 
+            AbstractAccount::AddressList getAllAddresses() override;
+
         protected:
             bool checkIfWalletIsEmpty();
 
