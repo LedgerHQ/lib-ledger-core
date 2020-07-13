@@ -695,5 +695,10 @@
             void BitcoinLikeAccount::getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) {
                 return getAddresses(from, to).callback(getMainExecutionContext(), callback);
             }
+
+            AbstractAccount::AddressList BitcoinLikeAccount::getAllAddresses() {
+                auto keychain = getKeychain();
+                return fromBitcoinAddressesToAddresses(keychain->getAllAddresses());
+            }
         }
     }

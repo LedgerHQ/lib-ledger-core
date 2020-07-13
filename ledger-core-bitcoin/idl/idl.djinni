@@ -334,6 +334,8 @@ BitcoinLikeAccount = interface +c {
     # Get addresses given a range of indices
     # Note: this will return public and change addresses
     getAddresses(from: i64, to: i64, callback: ListCallback<Address>);
+    # get all contained adresses.
+    getAllAddresses(): list<Address>;
 }
 
 # A bitcoin-like wallet.
