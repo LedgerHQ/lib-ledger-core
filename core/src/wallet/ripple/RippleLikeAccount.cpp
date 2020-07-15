@@ -375,16 +375,50 @@ namespace ledger {
 
         void RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                         const std::shared_ptr<api::StringCallback> &callback) {
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(),
-                                                                     [](const String &seq) -> std::string {
-                                                                         //TODO: optimistic update
-                                                                         return seq.str();
-                                                                     }).callback(getMainExecutionContext(), callback);
+            broadcastRawTransaction(transaction).callback(getMainExecutionContext(), callback);
+        }
+
+        RippleLikeBlockchainExplorerTransaction RippleLikeAccount::getXRPLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<RippleLikeAccount> &account,
+                                                                                                               const std::string &txHash,
+                                                                                                               const std::vector<uint8_t> &rawTx) {
+            auto tx = RippleLikeTransactionBuilder::parseRawTransaction(account->getWallet()->getCurrency(), rawTx, true);
+            RippleLikeBlockchainExplorerTransaction txExplorer;
+            // It is an optimistic so it should be successful (but tx could fail but it will be updated when sync again )
+            auto sender = account->getKeychain()->getAddress()->toString();
+            txExplorer.status = 1;
+            txExplorer.hash = txHash;
+            txExplorer.value = BigInt(tx->getValue()->toString());
+            txExplorer.fees = BigInt(tx->getFees()->toString());
+            txExplorer.sequence = BigInt(tx->getSequence()->toString(10));
+            txExplorer.sender = sender;
+            txExplorer.receiver = tx->getReceiver()->toBase58();
+            txExplorer.receivedAt = std::chrono::system_clock::now();
+            txExplorer.memos = tx->getMemos();
+            txExplorer.destinationTag = Option<int64_t>(tx->getDestinationTag());
+            return txExplorer;
+        }
+
+        Future<std::string> RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction) {
+            auto self = getSelf();
+            return _explorer->pushTransaction(transaction).map<std::string>(getContext(),
+                [self, transaction](const String &seq) -> std::string {
+                    auto txHash = seq.str();
+                    //optimisticUpdate
+                    auto txExplorer = getXRPLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
+                    //Store in DB
+                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    self->putTransaction(sql, txExplorer);
+                    return txHash;
+                });
         }
 
         void RippleLikeAccount::broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction,
                                                      const std::shared_ptr<api::StringCallback> &callback) {
             broadcastRawTransaction(transaction->serialize(), callback);
+        }
+
+        Future<std::string> RippleLikeAccount::broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction) {
+            return broadcastRawTransaction(transaction->serialize());
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder> RippleLikeAccount::buildTransaction() {
