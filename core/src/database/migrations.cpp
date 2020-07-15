@@ -984,5 +984,33 @@ namespace ledger {
             }
         }
 
+        template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE stellar_currencies ADD muxed_address_version STRING";
+            sql << "UPDATE stellar_currencies SET muxed_address_version = '60'";
+        }
+
+        template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type) {
+            // SQLite doesn't handle ALTER TABLE DROP
+            if (type != api::DatabaseBackendType::SQLITE3) {
+                sql << "ALTER TABLE stellar_currencies DROP muxed_address_version";
+            } else {
+                sql << "CREATE TABLE stellar_currencies_swap("
+                       "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                       "identifier VARCHAR(255) NOT NULL,"
+                       "address_version VARCHAR(255) NOT NULL,"
+                       "base_reserve BIGINT NOT NULL,"
+                       "base_fee BIGINT NOT NULL,"
+                       "network_passphrase TEXT NOT NULL,"
+                       "additional_SEPs TEXT NOT NULL"
+                       ")";
+                sql << "INSERT INTO stellar_currencies_swap "
+                       "SELECT name, identifier, address_version, base_reserve, base_fee, "
+                       "network_passphrase, additional_SEPs "
+                       "FROM stellar_currencies";
+                sql << "DROP TABLE stellar_currencies";
+                sql << "ALTER TABLE stellar_currencies_swap RENAME TO stellar_currencies";
+            }
+        }
+
     }
 }
