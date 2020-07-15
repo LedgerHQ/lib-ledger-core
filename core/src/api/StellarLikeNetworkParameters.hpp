@@ -17,7 +17,10 @@ struct StellarLikeNetworkParameters final {
     std::string Identifier;
     /** Address version bytes */
     std::vector<uint8_t> Version;
-    /** Muxed address version bytes */
+    /**
+     * Muxed address version bytes, for M-addresses (an address containing a public key
+     * and a memoId)
+     */
     std::vector<uint8_t> MuxedVersion;
     /** The minimum account to enable an account */
     int64_t BaseReserve;
