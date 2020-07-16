@@ -71,12 +71,26 @@ private:
     std::shared_ptr<Amount> _amount;
 };
 
-BitcoinLikeApiUtxoVector createUtxos(const std::vector<int64_t>& values) {
-    BitcoinLikeApiUtxoVector ans;
-    for (auto val : values) {
-        ans.push_back(std::make_shared<MockBitcoinLikeOutput>(val));
-    }
-    return ans;
+std::vector<BitcoinLikeUtxo> createUtxos(const std::vector<int64_t>& values) {
+    std::vector<BitcoinLikeUtxo> utxos;
+
+    utxos.reserve(values.size());
+
+    std::transform(values.cbegin(), values.cend(), std::back_inserter(utxos), [](auto const &value) {
+        auto amount = Amount(currencies::BITCOIN, 0, BigInt(value));
+
+        return BitcoinLikeUtxo{
+            0,
+            amount.toString(),
+            amount,
+            Option<std::string>{},
+            Option<std::string>{},
+            "",
+            Option<uint64_t>{}
+        };
+    });
+
+    return utxos;
 }
 
 std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, int64_t outputAmount, const api::Currency& currency) {
@@ -113,7 +127,7 @@ TEST(OptimizeSize, BacktrackingCalculateChangeCorrectly) {
     auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
     int64_t totalInputsValue = 0;
     for (auto utxo : pickedUtxos) {
-        totalInputsValue += BigInt::fromString(std::get<0>(utxo)).toInt64();
+        totalInputsValue += utxo.value.toLong();
     }
     int64_t transactionFees = totalInputsValue - buddy->changeAmount.toInt64() - outputAmount;
     int64_t minimumRequiredFees = (emtyTransactionSizeInBytes + outputSizeInBytes * 2 + inputSizeInBytes * pickedUtxos.size()) * feesPerByte;
@@ -137,7 +151,7 @@ TEST(OptimizeSize, ChangeShouldBeBigEnoughToSpend) {
     auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
     int64_t totalInputsValue = 0;
     for (auto utxo : pickedUtxos) {
-        totalInputsValue += BigInt::fromString(std::get<0>(utxo)).toInt64();
+        totalInputsValue += utxo.value.toLong();
     }
     int64_t transactionFees = totalInputsValue - buddy->changeAmount.toInt64() - outputAmount;
     int64_t minimumRequiredFees = (emtyTransactionSizeInBytes + outputSizeInBytes * 2 + inputSizeInBytes * pickedUtxos.size()) * feesPerByte;
@@ -161,7 +175,7 @@ TEST(OptimizeSize, ApproximationShouldTookEnough) {
     auto pickedUtxos = BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(buddy, utxos, BigInt(-1), currency);
     int64_t totalInputsValue = 0;
     for (auto utxo : pickedUtxos) {
-        totalInputsValue += BigInt::fromString(std::get<0>(utxo)).toInt64();
+        totalInputsValue += utxo.value.toLong();
     }
     int64_t transactionFees = totalInputsValue - buddy->changeAmount.toInt64() - outputAmount;
     int64_t minimumRequiredFees = (emtyTransactionSizeInBytes + outputSizeInBytes * 2 + inputSizeInBytes * pickedUtxos.size()) * feesPerByte;
