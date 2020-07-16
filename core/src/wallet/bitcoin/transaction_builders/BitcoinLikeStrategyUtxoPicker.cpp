@@ -37,6 +37,7 @@
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 
 #include <random>
+#include <numeric>
 
 namespace ledger {
     namespace core {
@@ -435,11 +436,10 @@ namespace ledger {
             std::vector<BitcoinLikeUtxo> out;
 
             //Random shuffle utxos
-            std::vector<size_t> indexes;
-            auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
-
-            indexes.reserve(utxos.size());
+            std::vector<size_t> indexes(utxos.size());
             std::iota(indexes.begin(), indexes.end(), 0);
+
+            auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
             std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
 
             //Add fees for a signed input to amount

@@ -65,7 +65,6 @@ namespace ledger {
                     bool partial);
             const api::Currency& getCurrency() const;
 
-        protected:
             struct Buddy {
                 Buddy(
                         const BitcoinLikeTransactionBuildRequest& r,
