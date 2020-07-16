@@ -252,10 +252,11 @@ namespace algorand {
 
     void Operation::inflateAlgorandOperationType()
     {
+        const auto& account = getAlgorandAccount().getAddress();
         const auto& txn = transaction->getTransactionData();
         if (txn.header.type == model::constants::pay) {
             const auto& details = boost::get<model::PaymentTxnFields>(txn.details);
-            if (details.closeAddr) {
+            if (details.closeAddr && txn.header.sender.toString() == account) {
                 algorandType = api::AlgorandOperationType::ACCOUNT_CLOSE;
             } else {
                 algorandType = api::AlgorandOperationType::PAYMENT;
@@ -278,12 +279,11 @@ namespace algorand {
             }
         } else if (txn.header.type == model::constants::axfer) {
             const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
-            if (details.assetSender) {
+            if (details.assetSender && details.assetSender->toString() == account) {
                 algorandType = api::AlgorandOperationType::ASSET_REVOKE;
-            } else if (details.assetCloseTo) {
+            } else if (details.assetCloseTo && txn.header.sender.toString() == account) {
                 algorandType = api::AlgorandOperationType::ASSET_OPT_OUT;
-            } else if (!details.assetAmount
-                   || (*details.assetAmount == 0 && txn.header.sender == details.assetReceiver)) {
+            } else if (details.assetAmount.getValueOr(0) == 0 && txn.header.sender == details.assetReceiver) {
                 algorandType = api::AlgorandOperationType::ASSET_OPT_IN;
             } else {
                 algorandType = api::AlgorandOperationType::ASSET_TRANSFER;
