@@ -129,6 +129,9 @@ api::AccountCreationInfo XTZ_KEYS_INFO(
 api::AccountCreationInfo XTZ_WITH_100_OPS_KEYS_INFO(
         0, {"main"}, {"44'/1729'/0'/0'"},
         {hex::toByteArray("02389ffd73423626894cb151416e51c72ec285376673daf83545eb5edb45b261ce")},
+        {hex::toByteArray("")}
+);
+
 api::AccountCreationInfo XTZ_NON_ACTIVATED_KEYS_INFO(
         0, {"main"}, {"44'/1729'/2'/0'"},
         {hex::toByteArray("020058c0efd324fa13d778c4b0995f6fa8d9c85e561c1465d770d4011993f55750")},
