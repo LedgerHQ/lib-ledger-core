@@ -89,11 +89,12 @@ namespace algorand {
     static constexpr auto COL_TX_AXFER_ASSET_AMOUNT = 41;
     static constexpr auto COL_TX_AXFER_RECEIVER_ADDRESS = 42;
     static constexpr auto COL_TX_AXFER_CLOSE_ADDRESS = 43;
-    static constexpr auto COL_TX_AXFER_SENDER_ADDRESS = 44;
+    static constexpr auto COL_TX_AXFER_CLOSE_AMOUNT = 44;
+    static constexpr auto COL_TX_AXFER_SENDER_ADDRESS = 45;
 
-    static constexpr auto COL_TX_AFRZ_ASSET_ID = 45;
-    static constexpr auto COL_TX_AFRZ_FROZEN = 46;
-    static constexpr auto COL_TX_AFRZ_FROZEN_ADDRESS = 47;
+    static constexpr auto COL_TX_AFRZ_ASSET_ID = 46;
+    static constexpr auto COL_TX_AFRZ_FROZEN = 47;
+    static constexpr auto COL_TX_AFRZ_FROZEN_ADDRESS = 48;
 
 
     // Helpers to deal with Option<> types,
@@ -329,16 +330,17 @@ namespace algorand {
         auto header_closerewards = optionalValue(tx.header.closeRewards);
         auto asset_amount = optionalValue<uint64_t>(assetTransfer.assetAmount);
         auto asset_closeto = optionalValueWithTransform<Address, std::string>(assetTransfer.assetCloseTo, addrToString);
+        auto asset_closeamount = optionalValue(assetTransfer.closeAmount);
         auto asset_sender = optionalValueWithTransform<Address, std::string>(assetTransfer.assetSender, addrToString);
 
         sql <<
         "INSERT INTO algorand_transactions ("
                 "uid, hash, type, round, timestamp, first_valid, last_valid, genesis_id, genesis_hash, "
                 "sender, fee, note, groupVal, leaseVal, sender_rewards, receiver_rewards, close_rewards, "
-                "axfer_asset_id, axfer_asset_amount, axfer_receiver_address, axfer_close_address, axfer_sender_address) "
+                "axfer_asset_id, axfer_asset_amount, axfer_receiver_address, axfer_close_address, axfer_close_amount, axfer_sender_address) "
         "VALUES(:tx_uid, :hash, :tx_type, :round, :timestamp, :first_valid, :last_valid, :genesis_id, :genesis_hash, "
                 ":sender, :fee, :note, :group, :lease, :sender_rewards, :receiver_rewards, :close_rewards, "
-                ":asset_id, :amount, :receiver_addr, :close_addr, :sender_addr)",
+                ":asset_id, :amount, :receiver_addr, :close_addr, :close_amount, :sender_addr)",
             soci::use(txUid),
             soci::use(header_id),
             soci::use(tx.header.type),
@@ -360,6 +362,7 @@ namespace algorand {
             soci::use(asset_amount),
             soci::use(assetTransfer.assetReceiver.toString()),
             soci::use(asset_closeto),
+            soci::use(asset_closeamount),
             soci::use(asset_sender);
     }
 
@@ -485,6 +488,7 @@ namespace algorand {
             assetTransferDetails.assetAmount = getOptionalNumber(row, COL_TX_AXFER_ASSET_AMOUNT);
             assetTransferDetails.assetReceiver = Address(getString(row, COL_TX_AXFER_RECEIVER_ADDRESS));
             assetTransferDetails.assetCloseTo = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_CLOSE_ADDRESS, stringToAddr);
+            assetTransferDetails.closeAmount = getOptionalNumber(row, COL_TX_AXFER_CLOSE_AMOUNT);
             assetTransferDetails.assetSender = getOptionalStringWithTransform<Address>(row, COL_TX_AXFER_SENDER_ADDRESS, stringToAddr);
 
             tx.details = assetTransferDetails;

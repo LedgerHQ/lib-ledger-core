@@ -1054,6 +1054,7 @@ namespace ledger {
                     "axfer_asset_amount BIGINT,"
                     "axfer_receiver_address VARCHAR(255),"
                     "axfer_close_address VARCHAR(255),"
+                    "axfer_close_amount BIGINT,"
                     "axfer_sender_address VARCHAR(255),"
 
                     // Fields for asset freeze transactions
