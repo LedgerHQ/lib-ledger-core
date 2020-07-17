@@ -259,20 +259,11 @@ namespace ledger {
                                if (request.type != api::TezosOperationTag::OPERATION_TAG_TRANSACTION) {
                                    return Future<BigInt>::successful(BigInt::ZERO);
                                }
-                                // FIXME: this is a workaround by the time the nodes are fixed
-                                // So here we are looking for unallocated accounts
-                                return explorer->getTransactions(std::vector<std::string>{request.toAddress}).map<BigInt>(self->getMainExecutionContext(), [request] (const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk> &txBulk) {
+                                // So here we are looking for unallocated / unfunded accounts
+                                return explorer->isFunded(request.toAddress).map<BigInt>(self->getMainExecutionContext(), [request](bool funded) {
                                     // Base unit is uXTZ
-                                    return (txBulk && !txBulk->transactions.empty()) ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
+                                    return funded ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
                                 });
-
-                                /*
-                                 * Once /chains/main/blocks/head/context/contracts/<contract_id> fixed we should use this one
-                                return explorer->isAllocated(request.toAddress).map<BigInt>(self->getMainExecutionContext(), [request] (bool isAllocated) -> BigInt {
-                                    // Base unit is uXTZ
-                                    return isAllocated ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
-                                });
-                                 */
                             };
 
                             return getAllocationFee()

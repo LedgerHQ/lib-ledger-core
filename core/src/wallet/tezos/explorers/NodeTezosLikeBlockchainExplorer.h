@@ -101,6 +101,8 @@ namespace ledger {
 
             Future<bool> isAllocated(const std::string &address) override;
 
+            Future<bool> isFunded(const std::string &address) override;
+
         private:
             /*
              * Helper to a get specific field's value from given url

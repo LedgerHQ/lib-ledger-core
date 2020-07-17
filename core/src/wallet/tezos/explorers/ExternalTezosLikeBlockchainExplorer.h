@@ -39,16 +39,16 @@
 namespace ledger {
     namespace core {
         using ExternalApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<
-                TezosLikeBlockchainExplorerTransaction, 
-                TezosLikeBlockchainExplorer::TransactionsBulk, 
+                TezosLikeBlockchainExplorerTransaction,
+                TezosLikeBlockchainExplorer::TransactionsBulk,
                 TezosLikeTransactionsParser,
                 TezosLikeTransactionsBulkParser,
-                TezosLikeBlockParser, 
+                TezosLikeBlockParser,
                 api::TezosLikeNetworkParameters>;
 
-        class ExternalTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer, 
+        class ExternalTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
                                                     public ExternalApiBlockchainExplorer,
-                                                    public DedicatedContext, 
+                                                    public DedicatedContext,
                                                     public std::enable_shared_from_this<ExternalTezosLikeBlockchainExplorer> {
         public:
             ExternalTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
@@ -103,6 +103,9 @@ namespace ledger {
             Future<std::string> getManagerKey(const std::string &address) override;
 
             Future<bool> isAllocated(const std::string &address) override;
+
+            Future<bool> isFunded(const std::string &address) override;
+
         private:
             /*
              * Helper to a get specific field's value from given url
