@@ -58,6 +58,7 @@ namespace algorand {
         std::shared_ptr<api::AlgorandTransaction> getTransaction() const override;
         api::AlgorandOperationType getAlgorandOperationType() const override;
         std::string getRewards() const override;
+        std::string getAssetAmount() const override;
 
         void refreshUid(const std::string& additional = "");
 
@@ -85,6 +86,7 @@ namespace algorand {
         std::shared_ptr<AlgorandTransactionImpl> transaction;
         api::AlgorandOperationType algorandType;
         uint64_t rewards;
+        uint64_t assetAmount;
     };
 
 } // namespace algorand

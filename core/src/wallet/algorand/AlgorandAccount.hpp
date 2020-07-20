@@ -79,7 +79,7 @@ namespace algorand {
 
         int putTransaction(soci::session& sql, const model::Transaction& transaction);
 
-        const std::string & getAddress() const;
+        const Address& getAddress() const;
 
         // From api::AlgorandAccount
 

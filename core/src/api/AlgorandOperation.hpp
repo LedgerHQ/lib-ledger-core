@@ -28,6 +28,8 @@ public:
     virtual AlgorandOperationType getAlgorandOperationType() const = 0;
 
     virtual std::string getRewards() const = 0;
+
+    virtual std::string getAssetAmount() const = 0;
 };
 
 } } }  // namespace ledger::core::api

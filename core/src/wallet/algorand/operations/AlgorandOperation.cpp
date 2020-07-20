@@ -46,6 +46,7 @@ namespace algorand {
         , transaction(nullptr)
         , algorandType{}
         , rewards(0)
+        , assetAmount(0)
     {}
 
 
@@ -54,7 +55,6 @@ namespace algorand {
         : Operation(account)
     {
         setTransaction(txn);
-        inflate();
     }
 
     std::shared_ptr<api::AlgorandTransaction> Operation::getTransaction() const
@@ -70,6 +70,11 @@ namespace algorand {
     std::string Operation::getRewards() const
     {
         return std::to_string(rewards);
+    }
+
+    std::string Operation::getAssetAmount() const
+    {
+        return std::to_string(assetAmount);
     }
 
     bool Operation::isComplete()
@@ -93,6 +98,7 @@ namespace algorand {
     void Operation::setTransaction(const model::Transaction& txn)
     {
         transaction = std::make_shared<AlgorandTransactionImpl>(txn);
+        inflate();
     }
 
     void Operation::setAlgorandOperationType(api::AlgorandOperationType t)
@@ -159,13 +165,13 @@ namespace algorand {
 
     void Operation::inflateAmountAndFees()
     {
-        const auto& account = getAlgorandAccount().getAddress();
+        const auto& account = Address(getAlgorandAccount().getAddress());
         const auto& txn = getTransactionData();
         auto amount = BigInt::ZERO;
         auto u64ToBigInt = [](uint64_t n) {
             return BigInt(static_cast<unsigned long long>(n));
         };
-        if (account == txn.header.sender.toString()) {
+        if (txn.header.sender == account) {
             const auto senderRewards = txn.header.senderRewards.getValueOr(0);
             amount = amount - u64ToBigInt(senderRewards);
             getBackend().fees = u64ToBigInt(txn.header.fee);
@@ -177,20 +183,33 @@ namespace algorand {
                 getBackend().amount = amount;
                 return;
             }
-            if (account == txn.header.sender.toString()) {
+            if (txn.header.sender == account) {
                 amount = amount + u64ToBigInt(details.amount);
             }
-            if (account == details.receiverAddr.toString()) {
+            if (details.receiverAddr == account) {
                 const auto receiverRewards = txn.header.receiverRewards.getValueOr(0);
                 amount = amount + u64ToBigInt(details.amount);
                 amount = amount + u64ToBigInt(receiverRewards);
                 rewards += receiverRewards;
             }
-            if (details.closeAddr && account == details.closeAddr->toString()) {
+            if (details.closeAddr && account == *details.closeAddr) {
                 const auto closeRewards = txn.header.closeRewards.getValueOr(0);
                 amount = amount + u64ToBigInt(details.closeAmount.getValueOr(0));
                 amount = amount + u64ToBigInt(closeRewards);
                 rewards += closeRewards;
+            }
+        } else if (txn.header.type == model::constants::axfer) {
+            const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
+            const auto assetSender = details.assetSender ?
+                *details.assetSender : txn.header.sender;
+
+            // account is either sender or receiver, (if both the balance is unchanged)
+            if ((assetSender == account) != (details.assetReceiver == account)) {
+                assetAmount += details.assetAmount.getValueOr(0);
+            }
+            // account is either sender or close-to, but not both
+            if ((assetSender == account) != (details.assetCloseTo && *details.assetCloseTo == account)) {
+                assetAmount += details.closeAmount.getValueOr(0);
             }
         }
         getBackend().amount = amount;
@@ -227,18 +246,16 @@ namespace algorand {
         const auto& txn = getTransactionData();
         getBackend().type = api::OperationType::NONE;
 
-        if (txn.header.sender.toString() == account) {
+        if (txn.header.sender == account) {
             getBackend().type = api::OperationType::SEND;
         } else if (txn.header.type == model::constants::pay) {
             const auto& details = boost::get<model::PaymentTxnFields>(txn.details);
-            if (details.receiverAddr.toString() == account ||
-                details.closeAddr && details.closeAddr->toString() == account) {
+            if (details.receiverAddr == account || details.closeAddr && *details.closeAddr == account) {
                 getBackend().type = api::OperationType::RECEIVE;
             }
         } else if (txn.header.type == model::constants::axfer) {
             const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
-            if (details.assetReceiver.toString() == account ||
-                details.assetCloseTo && details.assetCloseTo->toString() == account) {
+            if (details.assetReceiver == account || details.assetCloseTo && *details.assetCloseTo == account) {
                 getBackend().type = api::OperationType::RECEIVE;
             }
         }
@@ -256,7 +273,7 @@ namespace algorand {
         const auto& txn = transaction->getTransactionData();
         if (txn.header.type == model::constants::pay) {
             const auto& details = boost::get<model::PaymentTxnFields>(txn.details);
-            if (details.closeAddr && txn.header.sender.toString() == account) {
+            if (details.closeAddr && txn.header.sender == account) {
                 algorandType = api::AlgorandOperationType::ACCOUNT_CLOSE;
             } else {
                 algorandType = api::AlgorandOperationType::PAYMENT;
@@ -279,9 +296,9 @@ namespace algorand {
             }
         } else if (txn.header.type == model::constants::axfer) {
             const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
-            if (details.assetSender && details.assetSender->toString() == account) {
+            if (details.assetSender && details.assetSender == account) {
                 algorandType = api::AlgorandOperationType::ASSET_REVOKE;
-            } else if (details.assetCloseTo && txn.header.sender.toString() == account) {
+            } else if (details.assetCloseTo && txn.header.sender == account) {
                 algorandType = api::AlgorandOperationType::ASSET_OPT_OUT;
             } else if (details.assetAmount.getValueOr(0) == 0 && txn.header.sender == details.assetReceiver) {
                 algorandType = api::AlgorandOperationType::ASSET_OPT_IN;

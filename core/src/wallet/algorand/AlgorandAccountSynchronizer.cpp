@@ -104,7 +104,7 @@ namespace algorand {
                                                        const bool hadTransactions,
                                                        const Option<uint64_t> & lowestRound,
                                                        const Option<uint64_t> & highestRound) {
-        return _explorer->getTransactionsForAddress(account->getAddress(), lowestRound, highestRound)
+        return _explorer->getTransactionsForAddress(account->getAddress().toString(), lowestRound, highestRound)
             .template flatMap<bool>(getContext(),
                 [this, account, hadTransactions, lowestRound](const model::TransactionsBulk& bulk) -> Future<bool> {
 

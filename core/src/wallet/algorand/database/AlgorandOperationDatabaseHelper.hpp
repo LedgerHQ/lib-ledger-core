@@ -45,22 +45,20 @@ namespace algorand {
     public:
 
        static bool putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation) {
-            auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation.getBackend());
-            auto opUid = operation.getBackend().uid;
-            auto txHash = operation.getTransaction()->getId();
+            const auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation.getBackend());
+            const auto opUid = operation.getBackend().uid;
+            const auto txHash = operation.getTransaction()->getId();
 
             if (newOperation) {
-                sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash, :type)",
+                sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
                     soci::use(opUid),
                     soci::use(txUid),
-                    soci::use(txHash),
-                    soci::use(api::to_string(operation.getAlgorandOperationType()));
+                    soci::use(txHash);
             } else {
-                sql << "UPDATE algorand_operations SET uid = :op_uid, transaction_hash = :tx_hash, type = :type WHERE transaction_uid = :txUid",
+                sql << "UPDATE algorand_operations SET uid = :op_uid, transaction_hash = :tx_hash WHERE transaction_uid = :txUid",
                     soci::use(opUid),
                     soci::use(txHash),
-                    soci::use(txUid),
-                    soci::use(api::to_string(operation.getAlgorandOperationType()));
+                    soci::use(txUid);
             }
             return newOperation;
         }
