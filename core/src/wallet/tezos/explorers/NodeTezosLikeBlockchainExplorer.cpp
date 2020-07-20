@@ -297,8 +297,7 @@ namespace ledger {
                         auto& json = *std::get<1>(result);
 
                         // look for the is_funded field
-                        //Is there a fees field ?
-                        auto field = "is_funded";
+                        const auto field = "is_funded";
                         if (!json.IsObject() || !json.HasMember(field) ||
                             !json[field].IsBool()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
