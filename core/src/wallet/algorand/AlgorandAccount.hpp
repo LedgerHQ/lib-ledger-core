@@ -46,8 +46,8 @@
 #include <api/AlgorandTransaction.hpp>
 #include <api/AlgorandTransactionCallback.hpp>
 #include <api/AmountCallback.hpp>
-#include <api/StringCallback.hpp>
 #include <api/BoolCallback.hpp>
+#include <api/StringCallback.hpp>
 #include <api/Keychain.hpp>
 #include <api/OperationQuery.hpp>
 
@@ -125,6 +125,10 @@ namespace algorand {
         void getFeeEstimate(
                 const std::shared_ptr<api::AlgorandTransaction>& transaction,
                 const std::shared_ptr<api::AmountCallback>& callback) override;
+
+        std::vector<uint8_t> buildRawSignedTransaction(
+                const std::vector<uint8_t>& rawUnsignedTransaction,
+                const std::vector<uint8_t>& signature) const override;
 
         void broadcastRawTransaction(
                 const std::vector<uint8_t>& transaction,

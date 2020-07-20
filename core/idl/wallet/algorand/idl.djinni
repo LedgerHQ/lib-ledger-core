@@ -242,8 +242,16 @@ AlgorandAccount = interface +c {
     # Get an estimation (in MicroAlgos) of the fees needed to broadcast a given transaction to the algorand network
     # @param transaction, the transaction for which fees are estimated
     # @param callback, Callback returning the fees in MicroAlgos for the specified transaction
-
     getFeeEstimate(transaction: AlgorandTransaction, callback: Callback<Amount>);
+
+    # Build a raw signed transaction from a raw unsigned transaction and the signature
+    # @param rawUnsignedTransaction, the msgpack-encoded unsigned transaction
+    # @param signature, the signature of the transaction
+    # @return binary, the msgpack-encoded signed transaction
+    const buildRawSignedTransaction(
+        rawUnsignedTransaction: binary,
+        signature: binary
+    ): binary;
 
     # Broadcast a raw transaction to the algorand network
     # @param transaction, the msgpack-encoded transaction

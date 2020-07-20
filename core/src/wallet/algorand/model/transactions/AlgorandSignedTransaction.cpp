@@ -78,6 +78,17 @@ namespace model {
         return { std::begin(str), std::end(str) };
     }
 
+    std::vector<uint8_t> SignedTransaction::serializeFromTxAndSig(
+            const std::vector<uint8_t>& rawUnsignedTransaction,
+            const std::vector<uint8_t>& signature)
+    {
+        std::stringstream ss;
+        msgpack::concatTxnAndSig(ss, rawUnsignedTransaction, signature);
+
+        const auto str = ss.str();
+        return { std::begin(str), std::end(str) };
+    }
+
     void SignedTransaction::setSignature(const std::vector<uint8_t>& signature)
     {
         sig = signature;

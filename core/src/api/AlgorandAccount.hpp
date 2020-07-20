@@ -104,6 +104,14 @@ public:
     virtual void getFeeEstimate(const std::shared_ptr<AlgorandTransaction> & transaction, const std::shared_ptr<AmountCallback> & callback) = 0;
 
     /**
+     * Build a raw signed transaction from a raw unsigned transaction and the signature
+     * @param rawUnsignedTransaction, the msgpack-encoded unsigned transaction
+     * @param signature, the signature of the transaction
+     * @return binary, the msgpack-encoded signed transaction
+     */
+    virtual std::vector<uint8_t> buildRawSignedTransaction(const std::vector<uint8_t> & rawUnsignedTransaction, const std::vector<uint8_t> & signature) const = 0;
+
+    /**
      * Broadcast a raw transaction to the algorand network
      * @param transaction, the msgpack-encoded transaction
      * @param callback, Callback returning the id of the transaction in case of success, an error message otherwise

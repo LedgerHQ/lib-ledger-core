@@ -130,6 +130,17 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native_1buildRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_rawUnsignedTransaction, jbyteArray j_signature)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandAccount>(nativeRef);
+        auto r = ref->buildRawSignedTransaction(::djinni::Binary::toCpp(jniEnv, j_rawUnsignedTransaction),
+                                                ::djinni::Binary::toCpp(jniEnv, j_signature));
+        return ::djinni::release(::djinni::Binary::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native_1broadcastRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_transaction, jobject j_callback)
 {
     try {
