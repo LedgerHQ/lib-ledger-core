@@ -27,11 +27,19 @@ class AlgorandTransactionCallback;
 class AmountCallback;
 class BoolCallback;
 class StringCallback;
+enum class AlgorandOperationType;
 enum class TimePeriod;
 
 class LIBCORE_EXPORT AlgorandAccount {
 public:
     virtual ~AlgorandAccount() {}
+
+    /**
+     * Get the maximum amount spendable in one transaction
+     * @param callback, Callback returning the maximum amount spendable
+     * @param operationType, the type of the operation
+     */
+    virtual void getSpendableBalance(AlgorandOperationType operationType, const std::shared_ptr<AmountCallback> & callback) = 0;
 
     /**
      * Get information about a specific asset

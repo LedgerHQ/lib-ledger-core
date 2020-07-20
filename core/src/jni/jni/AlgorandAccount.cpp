@@ -6,6 +6,7 @@
 #include "AlgorandAssetAmountListCallback.hpp"
 #include "AlgorandAssetParamsCallback.hpp"
 #include "AlgorandAssetParamsListCallback.hpp"
+#include "AlgorandOperationType.hpp"
 #include "AlgorandTransaction.hpp"
 #include "AlgorandTransactionCallback.hpp"
 #include "AmountCallback.hpp"
@@ -26,6 +27,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         delete reinterpret_cast<::djinni::CppProxyHandle<::ledger::core::api::AlgorandAccount>*>(nativeRef);
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAccount_00024CppProxy_native_1getSpendableBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_operationType, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::AlgorandAccount>(nativeRef);
+        ref->getSpendableBalance(::djinni_generated::AlgorandOperationType::toCpp(jniEnv, j_operationType),
+                                 ::djinni_generated::AmountCallback::toCpp(jniEnv, j_callback));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 

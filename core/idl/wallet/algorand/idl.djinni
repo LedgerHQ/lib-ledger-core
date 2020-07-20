@@ -176,6 +176,14 @@ AlgorandOperation = interface +c {
 }
 
 AlgorandAccount = interface +c {
+    # Get the maximum amount spendable in one transaction
+    # @param callback, Callback returning the maximum amount spendable
+    # @param operationType, the type of the operation
+    getSpendableBalance(
+        operationType: AlgorandOperationType,
+        callback: Callback<Amount>
+    );
+
     # Get information about a specific asset
     # @param assetId, the unique identifier of the asset to look for
     # @param callback, Callback returning the information about the queried asset
