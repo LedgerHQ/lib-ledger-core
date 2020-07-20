@@ -83,6 +83,17 @@ namespace algorand {
             };
         }
 
+        uint64_t computeMinimumBalance(
+                const model::Account& account,
+                api::AlgorandOperationType operationType)
+        {
+            constexpr uint64_t base = 100000; // 0.1 algo = 100000 malgo
+            const auto nbAssets =
+                account.assetsAmounts.size() +
+                (operationType == api::AlgorandOperationType::ASSET_OPT_IN ? 1 : 0);
+            return base * (1 + nbAssets);
+        }
+
     } // namespace
 
     bool Account::putBlock(soci::session& sql, const api::Block& block)
@@ -109,6 +120,27 @@ namespace algorand {
         }
 
         return static_cast<int>(operation.type);
+    }
+
+    void Account::getSpendableBalance(
+            api::AlgorandOperationType operationType,
+            const std::shared_ptr<api::AmountCallback>& callback)
+    {
+        getAccountInformation()
+            .map<uint64_t>(
+                    getContext(),
+                    [operationType](const model::Account& account) {
+                        const auto minBalance = computeMinimumBalance(account, operationType);
+                        const auto balance = account.amount;
+                        if (balance >= minBalance) {
+                            return balance - minBalance;
+                        }
+                        return uint64_t{0};
+                    }
+            ).mapPtr<Amount>(
+                getContext(),
+                u64ToAmount(_address.getCurrency())
+            ).callback(getMainExecutionContext(), callback);
     }
 
     void Account::getAsset(

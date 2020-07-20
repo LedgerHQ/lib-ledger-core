@@ -81,6 +81,10 @@ namespace algorand {
         const Address& getAddress() const;
 
         // From api::AlgorandAccount
+        void getSpendableBalance(
+                api::AlgorandOperationType operationType,
+                const std::shared_ptr<api::AmountCallback>& callback) override;
+
         void getAsset(
                 const std::string& assetId,
                 const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) override;
