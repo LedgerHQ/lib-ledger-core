@@ -1,7 +1,7 @@
 /*
  * AlgorandOperationDatabaseHelper
  *
- * Created by Hakim Aammar on 18/05/2020.
+ * Created by Rémi Barjon on 20/07/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,33 +27,38 @@
  *
  */
 
-#ifndef LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
-#define LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
-
-#include <algorand/operations/AlgorandOperation.hpp>
-
-#include <core/operation/OperationDatabaseHelper.hpp>
+#include <algorand/database/AlgorandOperationDatabaseHelper.hpp>
 
 #include <soci.h>
-
-#include <string>
 
 namespace ledger {
 namespace core {
 namespace algorand {
 
-    class OperationDatabaseHelper : public ledger::core::OperationDatabaseHelper
+    bool OperationDatabaseHelper::putAlgorandOperation(
+            soci::session& sql,
+            const std::string& txUid,
+            const Operation& operation)
     {
-    public:
-        static bool putAlgorandOperation(
-                soci::session& sql,
-                const std::string& txUid,
-                const Operation& operation);
-    };
+        const auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation);
+        const auto opUid = operation.uid;
+        const auto txHash = operation.getTransaction()->getId();
+
+        if (newOperation) {
+            sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
+                soci::use(opUid),
+                soci::use(txUid),
+                soci::use(txHash);
+        } else {
+            sql << "UPDATE algorand_operations SET tx_uid = :tx_uid, tx_hash = :tx_hash WHERE uid = :op_uid",
+                soci::use(txUid),
+                soci::use(txHash),
+                soci::use(opUid);
+        }
+        return newOperation;
+    }
 
 } // namespace algorand
 } // namespace core
 } // namespace ledger
-
-#endif // LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
 

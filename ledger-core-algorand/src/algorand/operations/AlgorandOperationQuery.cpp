@@ -53,17 +53,14 @@ namespace algorand {
                                                     Operation& operation)
     {
         std::string transactionHash;
-        std::string type;
-        sql << "SELECT transaction_hash, type FROM algorand_operations WHERE uid = :uid",
+        sql << "SELECT transaction_hash FROM algorand_operations WHERE uid = :uid",
             soci::use(operation.uid),
-            soci::into(transactionHash),
-            soci::into(type);
+            soci::into(transactionHash);
 
         model::Transaction tx;
         TransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, tx);
 
         operation.setTransaction(tx);
-        operation.setAlgorandOperationType(api::from_string<api::AlgorandOperationType>(type));
     }
 
 } // namespace algorand

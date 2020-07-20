@@ -71,8 +71,14 @@ namespace algorand {
 
     };
 
-    inline bool operator==(const Address & first, const Address & second) {
+    inline bool operator==(const Address& first, const Address& second)
+    {
         return first.toString() == second.toString();
+    }
+
+    inline bool operator!=(const Address& first, const Address& second)
+    {
+        return !(first == second);
     }
 
 } // namespace algorand

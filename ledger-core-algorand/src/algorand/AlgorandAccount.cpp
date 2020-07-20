@@ -439,9 +439,9 @@ namespace algorand {
         return hex::toString(_address.getPublicKey());
     }
 
-    const std::string & Account::getAddress() const
+    const Address& Account::getAddress() const
     {
-        return _address.toString();
+        return _address;
     }
 
     FuturePtr<Amount> Account::getBalance()

@@ -102,7 +102,7 @@ namespace algorand {
                                                        const Option<uint64_t> & lowestRound,
                                                        const Option<uint64_t> & highestRound)
     {
-        return _explorer->getTransactionsForAddress(account->getAddress(), lowestRound, highestRound)
+        return _explorer->getTransactionsForAddress(account->getAddress().toString(), lowestRound, highestRound)
             .template flatMap<bool>(getContext(), [=](const model::TransactionsBulk& bulk) -> Future<bool> {
 
                 soci::session sql(account->getWallet()->getDatabase()->getPool());
