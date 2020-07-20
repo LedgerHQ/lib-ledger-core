@@ -79,5 +79,3 @@ BitcoinLikeExtendedPublicKey = interface +c {
     # Get the root path of the xPUB.
     getRootPath(): string;
 }
-
-
