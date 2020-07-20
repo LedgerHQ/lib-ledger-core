@@ -427,5 +427,23 @@ namespace adaptor {
 
 } // namespace adaptor
 } // MSGPACK_API_VERSION_NAMESPACE(MSGPACK_DEFAULT_API_NS)
+
+    template<typename Stream>
+    inline void concatTxnAndSig(
+            Stream& s,
+            const std::vector<uint8_t>& txn,
+            const std::vector<uint8_t>& sig)
+    {
+        packer<Stream> p(s);
+        p.pack_map(2u);
+        p.pack("sig");
+        p.pack(sig);
+        p.pack("txn");
+        p.pack_bin_body(
+                reinterpret_cast<const char*>(txn.data()),
+                txn.size()
+        );
+    }
+
 } // namespace msgpack
 

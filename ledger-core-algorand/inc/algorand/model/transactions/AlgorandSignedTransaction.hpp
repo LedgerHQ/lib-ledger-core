@@ -51,6 +51,9 @@ namespace model {
         const Transaction& getTxn() const;
 
         std::vector<uint8_t> serialize() const;
+        static std::vector<uint8_t> serializeFromTxAndSig(
+                const std::vector<uint8_t>& rawUnsignedTransaction,
+                const std::vector<uint8_t>& signature);
 
         void setSignature(const std::vector<uint8_t>& signature);
 

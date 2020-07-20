@@ -358,6 +358,16 @@ namespace algorand {
             .callback(getMainExecutionContext(), callback);
     }
 
+    std::vector<uint8_t> Account::buildRawSignedTransaction(
+            const std::vector<uint8_t>& rawUnsignedTransaction,
+            const std::vector<uint8_t>& signature) const
+    {
+        return model::SignedTransaction::serializeFromTxAndSig(
+                rawUnsignedTransaction,
+                signature
+        );
+    }
+
     void Account::broadcastRawTransaction(
             const std::vector<uint8_t>& transaction,
             const std::shared_ptr<api::StringCallback>& callback)

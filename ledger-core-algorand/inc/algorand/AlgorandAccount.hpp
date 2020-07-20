@@ -128,6 +128,10 @@ namespace algorand {
                 const std::shared_ptr<api::AlgorandTransaction>& transaction,
                 const std::shared_ptr<api::AmountCallback>& callback) override;
 
+        std::vector<uint8_t> buildRawSignedTransaction(
+                const std::vector<uint8_t>& rawUnsignedTransaction,
+                const std::vector<uint8_t>& signature) const override;
+
         void broadcastRawTransaction(
                 const std::vector<uint8_t>& transaction,
                 const std::shared_ptr<api::StringCallback>& callback) override;
