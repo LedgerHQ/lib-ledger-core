@@ -10,7 +10,7 @@ unamestr=`uname`
 export ARCH=$2
 export CMAKE=cmake
 export PATH=$PATH:~/cmake_folder/bin
-export PG_INCLUDE_DIR=`[[ "$unamestr" = "Darwin" ]] && echo "/usr/local/opt/postgresql/include" || echo "/usr/include/postgresql"`
+export PG_INCLUDE_DIR=`[[ "$unamestr" = "Darwin" ]] && echo -n "/usr/local/opt/postgresql/include" || echo -n "/usr/include/postgresql"`
 
 echo "Use $PG_INCLUDE_DIR for PGSQL"
 
@@ -19,8 +19,14 @@ echo "Use $PG_INCLUDE_DIR for PGSQL"
 ###
 
 function command_target_jni {
-  export JAVA_HOME="$(/usr/libexec/java_home)"
-  add_to_cmake_params -DTARGET_JNI=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" -DSSL_SUPPORT=ON #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
+  if [[ "$unamestr" = "Darwin" ]]; then
+    export JAVA_HOME="$($(dirname $(readlink $(which javac)))/java_home)"
+    add_to_cmake_params -DOPENSSL_ROOT_DIR="/usr/local/opt/openssl"
+  else
+    export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"
+    add_to_cmake_params -DSYS_OPENSSL=ON
+  fi
+  add_to_cmake_params -DTARGET_JNI=ON  -DSSL_SUPPORT=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
 }
 
 function command_Release {

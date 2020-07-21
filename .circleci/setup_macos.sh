@@ -45,5 +45,7 @@ export CPLUS_INCLUDE_PATH="/usr/local/Cellar/postgresql/12.3_4/include:$CPLUS_IN
 echo "========> Install Sqlite"
 brew install sqlite
 
+echo "========> Install OpenSSL"
+brew install openssl
 
 

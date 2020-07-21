@@ -985,7 +985,7 @@ namespace ledger {
         }
 
         template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "ALTER TABLE stellar_currencies ADD muxed_address_version STRING";
+            sql << "ALTER TABLE stellar_currencies ADD muxed_address_version VARCHAR(255)";
             sql << "UPDATE stellar_currencies SET muxed_address_version = '60'";
         }
 
