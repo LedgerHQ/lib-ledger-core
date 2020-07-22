@@ -32,7 +32,7 @@ public:
      * @param key The data key.
      * @return The value associated to the key if it exists, an empty option otherwise.
      */
-    virtual std::experimental::optional<std::string> get(const std::vector<uint8_t> & key) const = 0;
+    virtual std::experimental::optional<std::vector<uint8_t>> get(const std::vector<uint8_t> & key) const = 0;
 
     /**
      * Commit a change.

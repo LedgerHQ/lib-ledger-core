@@ -47,7 +47,7 @@ namespace ledger {
             auto value = _backend.get(wrapKey(key));
             if (!value)
                 return fallbackValue;
-            return *value;
+            return std::string(value->cbegin(), value->cend());
         }
 
         int32_t Preferences::getInt(const std::string &key, int32_t fallbackValue) const {

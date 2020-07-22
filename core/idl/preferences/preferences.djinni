@@ -93,7 +93,7 @@ PreferencesBackend = interface +c {
     # Gets the value associated to the given key.
     # @param key The data key.
     # @return The value associated to the key if it exists, an empty option otherwise.
-    const get(key: binary): optional<string>;
+    const get(key: binary): optional<binary>;
 
     # Commit a change.
     # @param changes The list of changes to commit.

@@ -129,21 +129,20 @@ namespace ledger {
             }
         }
 
-        optional<std::string> PreferencesBackend::get(const std::vector<uint8_t>& key) const {
+        optional<std::vector<uint8_t>> PreferencesBackend::get(const std::vector<uint8_t>& key) const {
             auto value = getRaw(key);
 
             if (value) {
                 if (_cipher.hasValue()) {
                     auto ciphertext = std::vector<uint8_t>(value->cbegin(), value->cend());
                     auto plaindata = decrypt_preferences_change(ciphertext, *_cipher);
-                    auto plaintext = std::string(plaindata.cbegin(), plaindata.cend());
 
-                    return optional<std::string>(plaintext);
+                    return optional<std::vector<uint8_t>>(plaindata);
                 } else {
-                    return optional<std::string>(value);
+                    return std::vector<uint8_t>(value->cbegin(), value->cend());
                 }
             } else {
-                return optional<std::string>();
+                return optional<std::vector<uint8_t>>();
             }
         }
 
@@ -151,7 +150,7 @@ namespace ledger {
             auto db = _db.lock();
 
             if (db == nullptr) {
-              return optional<std::string>();
+                return optional<std::string>();
             }
 
             leveldb::Slice k((const char *)key.data(), key.size());
