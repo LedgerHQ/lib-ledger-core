@@ -175,6 +175,11 @@ AlgorandOperation = interface +c {
     const getAssetAmount(): string;
 }
 
+AlgorandAddress = interface +c {
+    static fromPublicKey(pubkey: binary) : string;
+    static toPublicKey(address: string) : binary;
+}
+
 AlgorandAccount = interface +c {
     # Get the maximum amount spendable in one transaction
     # @param callback, Callback returning the maximum amount spendable

@@ -28,6 +28,7 @@
  */
 
 #include "AlgorandAddress.hpp"
+#include <api/AlgorandAddress.hpp>
 
 #include <collections/vector.hpp>
 #include <crypto/sha512_256.h>
@@ -35,11 +36,24 @@
 
 namespace ledger {
 namespace core {
+
+namespace api {
+
+    std::string AlgorandAddress::fromPublicKey(const std::vector<uint8_t> & pubKey) {
+        return algorand::Address::fromPublicKey(pubKey);
+    }
+
+    std::vector<uint8_t> AlgorandAddress::toPublicKey(const std::string & address) {
+        return algorand::Address::toPublicKey(address);
+    }
+
+} // namespace api
+
 namespace algorand {
 
     Address::Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey) :
         ledger::core::AbstractAddress(currency, optional<std::string>("")),
-        _address(fromPublicKey(pubKey))
+        _address(api::AlgorandAddress::fromPublicKey(pubKey))
     {}
 
     Address::Address(const api::Currency& currency, const std::string & address) :
@@ -56,7 +70,16 @@ namespace algorand {
     }
 
     std::vector<uint8_t> Address::getPublicKey() const {
-        return toPublicKey(_address);
+        return api::AlgorandAddress::toPublicKey(_address);
+    }
+
+    std::shared_ptr<ledger::core::AbstractAddress>
+    Address::parse(const std::string& address, const api::Currency& currency)
+    {
+        if (fromPublicKey(toPublicKey(address)) == address) {
+            return std::make_shared<Address>(currency, address);
+        }
+        return nullptr;
     }
 
     std::string Address::fromPublicKey(const std::vector<uint8_t> & pubKey) {
@@ -84,16 +107,9 @@ namespace algorand {
         return decoded;
     }
 
-    std::shared_ptr<ledger::core::AbstractAddress>
-    Address::parse(const std::string& address, const api::Currency& currency)
-    {
-        if (fromPublicKey(toPublicKey(address)) == address) {
-            return std::make_shared<Address>(currency, address);
-        }
-        return nullptr;
-    }
-
 } // namespace algorand
+
 } // namespace core
 } // namespace ledger
+
 

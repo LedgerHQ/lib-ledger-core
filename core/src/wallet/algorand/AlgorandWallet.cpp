@@ -81,7 +81,7 @@ namespace algorand {
 
             const AccountDatabaseEntry accountData {
                 info.index,
-                Address::fromPublicKey(info.publicKeys[0])
+                algorand::Address::fromPublicKey(info.publicKeys[0])
             };
 
             soci::transaction tr(sql);
