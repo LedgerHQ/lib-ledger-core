@@ -21,13 +21,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_nat
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1get(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_key)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1get(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_key)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
         auto r = ref->get(::djinni::Binary::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, r));
+        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
