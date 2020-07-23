@@ -131,7 +131,7 @@ namespace algorand {
     BlockchainExplorer::getTransactionById(const std::string & txId) const {
         return _http->GET(fmt::format(constants::purestakeTransactionEndpoint, txId))
             .json(false)
-            .map<model::Transaction>(getContext(), [&txId](const HttpRequest::JsonResult& response) {
+            .map<model::Transaction>(getContext(), [txId](const HttpRequest::JsonResult& response) {
                     const auto& jsonArray = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
                     if (jsonArray.Size() != 1) {
                         throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND,
