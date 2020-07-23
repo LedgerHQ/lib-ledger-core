@@ -282,11 +282,20 @@ AlgorandAccount = interface +c {
 }
 
 AlgorandAddress = interface +c {
-
     # Check whether the given string formatted address is valid or not.
     # @param address The string to parse
     # @return If successful, returns true; false otherwise.
     static isValid(address: string): bool;
+
+    # Convert an algorand public key to the corresponding algorand address
+    # @param pubkey, the public key to convert
+    # @return string, the algorand address
+    static fromPublicKey(pubkey: binary): string;
+
+    # Convert an algorand address to the corresponding algorand public key
+    # @param address, the algorand address to convert
+    # @return binary, the public key
+    static toPublicKey(address: string): binary;
 }
 
 AlgorandWallet = interface +c {

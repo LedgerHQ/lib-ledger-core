@@ -86,8 +86,18 @@ namespace api {
 
     bool AlgorandAddress::isValid(const std::string& address)
     {
-        using ledger::core::algorand::Address;
+        using ::ledger::core::algorand::Address;
         return Address::fromPublicKey(Address::toPublicKey(address)) == address;
+    }
+
+    std::string AlgorandAddress::fromPublicKey(const std::vector<uint8_t>& pubkey)
+    {
+        return ::ledger::core::algorand::Address::fromPublicKey(pubkey);
+    }
+
+    std::vector<uint8_t> AlgorandAddress::toPublicKey(const std::string& address)
+    {
+        return ::ledger::core::algorand::Address::toPublicKey(address);
     }
 
 } // namespace api

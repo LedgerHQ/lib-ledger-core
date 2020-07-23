@@ -27,8 +27,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_ALGORANDADDRESS_H
-#define LEDGER_CORE_ALGORANDADDRESS_H
+#pragma once
 
 #include <algorand/AlgorandLikeCurrencies.hpp>
 #include <algorand/api/AlgorandAddress.hpp>
@@ -85,4 +84,3 @@ namespace algorand {
 } // namespace core
 } // namespace ledger
 
-#endif // LEDGER_CORE_ALGORANDADDRESS_H
