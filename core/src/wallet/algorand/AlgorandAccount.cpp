@@ -147,7 +147,7 @@ namespace algorand {
         _explorer->getAssetById(std::stoull(assetId))
             .map<api::AlgorandAssetParams>(
                     getContext(),
-                    [&assetId](const model::AssetParams& params) {
+                    [assetId](const model::AssetParams& params) {
                         auto apiParams = model::toAPI(params);
                         apiParams.assetId = assetId;
                         return apiParams;
@@ -160,7 +160,7 @@ namespace algorand {
         _explorer->getAccount(addr)
             .map<bool>(
                     getContext(),
-                    [&assetId](const model::Account& account) {
+                    [assetId](const model::Account& account) {
                         const auto id = std::stoull(assetId);
                         return account.assetsAmounts.find(id) != std::end(account.assetsAmounts);
                     })
@@ -174,7 +174,7 @@ namespace algorand {
         getAccountInformation()
             .map<api::AlgorandAssetAmount>(
                     getContext(),
-                    [&assetId](const model::Account& account) {
+                    [assetId](const model::Account& account) {
                         const auto id = std::stoull(assetId);
                         return model::toAPI(account.assetsAmounts.at(id));
                     })
