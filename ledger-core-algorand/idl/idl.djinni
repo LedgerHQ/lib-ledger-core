@@ -188,6 +188,17 @@ AlgorandAccount = interface +c {
         callback: Callback<Amount>
     );
 
+    # Check if address can receive the given amount, as it may not be enough
+    # to reach the minimum balance if the account has not been opened yet.
+    # @param address, the address of the account to check
+    # @param amount, the amount to test
+    # @param callback, Callback returning true if the amount is valid, false otherwise
+    const isAmountValid(
+        address: string,
+        amount: string,
+        callback: Callback<bool>
+    );
+
     # Get information about a specific asset
     # @param assetId, the unique identifier of the asset to look for
     # @param callback, Callback returning the information about the queried asset
@@ -197,7 +208,7 @@ AlgorandAccount = interface +c {
     );
 
     # Check if address has a specific asset
-    # @param address, the address of the account
+    # @param address, the address of the account to check
     # @param assetId, the unique identifier of the asset to look for
     # @param callback, Callback returning true if the address holds the asset
     hasAsset(

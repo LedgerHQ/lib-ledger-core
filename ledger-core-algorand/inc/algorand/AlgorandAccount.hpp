@@ -85,6 +85,15 @@ namespace algorand {
                 api::AlgorandOperationType operationType,
                 const std::shared_ptr<api::AmountCallback>& callback) override;
 
+        Future<bool> isAmountValid(
+                const std::string& address,
+                const std::string& amount) const;
+
+        void isAmountValid(
+                const std::string& address,
+                const std::string& amount,
+                const std::shared_ptr<api::BoolCallback>& callback) const override;
+
         void getAsset(
                 const std::string& assetId,
                 const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) override;

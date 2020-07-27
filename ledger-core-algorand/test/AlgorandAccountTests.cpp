@@ -51,6 +51,7 @@ using namespace ledger::core;
 const auto OBELIX = std::string("RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM");
 const auto ADDR1 = std::string("6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNE");
 const auto ADDR2 = std::string("6ENXFMQRRIF6KD7HXE47HUHCJXEUKGGRGR6LXSX7RRZBTMVI5NUDOQDTNF");
+const auto EMPTY_ADDR = std::string("RB7DUHGKVT3C3NEKP6255KPJDOKLMNXKADZA5UVWVS4YHDDVXYEDHGJKU4");
 
 std::vector<uint64_t> month2020 {
         1577836800, // 01/01/2020
@@ -291,5 +292,14 @@ TEST_F(AlgorandAccountTest, assetBalanceHistory)
     for (auto i = 0; i < balances.size(); ++i) {
         EXPECT_EQ(std::stoull(balances[i].amount), expected[i]);
     }
+}
+
+TEST_F(AlgorandAccountTest, validAmount)
+{
+    EXPECT_TRUE(wait(account->isAmountValid(OBELIX, "1000")));
+
+    // Can't send less than 0.01 ALGO to an empty account
+    EXPECT_FALSE(wait(account->isAmountValid(EMPTY_ADDR, "99999")));
+    EXPECT_TRUE(wait(account->isAmountValid(EMPTY_ADDR, "100000")));
 }
 
