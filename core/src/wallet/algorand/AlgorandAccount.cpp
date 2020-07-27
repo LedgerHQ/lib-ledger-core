@@ -167,6 +167,25 @@ namespace algorand {
             .callback(getMainExecutionContext(), callback);
     }
 
+    void Account::isAmountValid(const std::string & addr, const std::string & amount, const std::shared_ptr<api::BoolCallback> & callback) const
+    {
+        isAmountValid(addr, amount).callback(getMainExecutionContext(), callback);
+    }
+
+    Future<bool> Account::isAmountValid(const std::string & addr, const std::string & amount) const
+    {
+        return _explorer->getAccount(addr)
+            .map<bool>(
+                getContext(),
+                [amount](const model::Account& account) {
+                    if (account.amount == 0) {
+                        constexpr uint64_t minValue = 100000;
+                        return std::stoull(amount) >= minValue;
+                    }
+                    return true;
+                });
+    }
+
     void Account::getAssetBalance(
             const std::string& assetId,
             const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback)

@@ -93,6 +93,9 @@ namespace algorand {
 
         void hasAsset(const std::string & addr, const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback) override;
 
+        void isAmountValid(const std::string & address, const std::string & amount, const std::shared_ptr<api::BoolCallback> & callback) const override;
+        Future<bool> isAmountValid(const std::string & address, const std::string & amount) const;
+
         void getAssetBalance(
                 const std::string& assetId,
                 const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) override;

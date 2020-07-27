@@ -198,11 +198,23 @@ AlgorandAccount = interface +c {
     );
 
     # Check if address has a specific asset
+    # @param address, the address to check
     # @param assetId, the unique identifier of the asset to look for
     # @param callback, Callback returning the true if the address hold the asset
     hasAsset(
         address : string,
         assetId: string,
+        callback: Callback<bool>
+    );
+
+    # Check if address can receive the given amount:
+    # it may not be enough to reach the minimum balance, if the account has 0 ALGO
+    # @param address, the address to check
+    # @param amount, the amount to test
+    # @param callback, Callback returning the true if the address hold the asset
+    const isAmountValid(
+        address : string,
+        amount: string,
         callback: Callback<bool>
     );
 
