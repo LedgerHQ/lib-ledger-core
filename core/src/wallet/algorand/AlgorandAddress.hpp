@@ -50,8 +50,8 @@ namespace algorand {
         Address(const api::Currency& currency, const std::string & address);
 
         // Convenience constructors using default ALGO currency
-        Address() : ledger::core::AbstractAddress(currencies::ALGORAND, optional<std::string>("")) {}
-        explicit Address(const std::string & address) : Address(currencies::ALGORAND, address) {}
+        Address();
+        explicit Address(const std::string & address);
 
         std::string toString() override;
         const std::string& toString() const;
@@ -66,20 +66,16 @@ namespace algorand {
 
     private:
 
-        static const int32_t PUBKEY_LEN_BYTES = 32;
-        static const int32_t CHECKSUM_LEN_BYTES = 4;
-
         std::string _address;
 
     };
 
-    inline bool operator==(const Address& first, const Address& second)
-    {
+
+    inline bool operator==(const Address& first, const Address& second) {
         return first.toString() == second.toString();
     }
 
-    inline bool operator!=(const Address& first, const Address& second)
-    {
+    inline bool operator!=(const Address& first, const Address& second) {
         return !(first == second);
     }
 

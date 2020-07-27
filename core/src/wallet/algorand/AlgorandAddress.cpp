@@ -51,6 +51,11 @@ namespace api {
 
 namespace algorand {
 
+    namespace {
+        constexpr int32_t PUBKEY_LEN_BYTES = 32;
+        constexpr int32_t CHECKSUM_LEN_BYTES = 4;
+    }
+
     Address::Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey) :
         ledger::core::AbstractAddress(currency, optional<std::string>("")),
         _address(api::AlgorandAddress::fromPublicKey(pubKey))
@@ -59,6 +64,14 @@ namespace algorand {
     Address::Address(const api::Currency& currency, const std::string & address) :
         ledger::core::AbstractAddress(currency, optional<std::string>("")),
         _address(address)
+    {}
+
+    Address::Address() :
+        ledger::core::AbstractAddress(currencies::ALGORAND, optional<std::string>(""))
+    {}
+
+    Address::Address(const std::string & address) :
+        Address(currencies::ALGORAND, address)
     {}
 
     std::string Address::toString() {

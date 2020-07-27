@@ -106,8 +106,7 @@ namespace algorand {
     int Account::putTransaction(soci::session &sql, const model::Transaction &transaction)
     {
         const auto wallet = getWallet();
-        if (wallet == nullptr)
-        {
+        if (wallet == nullptr) {
             throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
         }
         const auto txuid = TransactionDatabaseHelper::putTransaction(sql, getAccountUid(), transaction);
@@ -121,7 +120,7 @@ namespace algorand {
 
     void Account::getSpendableBalance(
             api::AlgorandOperationType operationType,
-            const std::shared_ptr<api::AmountCallback>& callback)
+            const std::shared_ptr<api::AmountCallback>& callback) const
     {
         getAccountInformation()
             .map<uint64_t>(
@@ -142,7 +141,7 @@ namespace algorand {
 
     void Account::getAsset(
             const std::string& assetId,
-            const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback)
+            const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) const
     {
         _explorer->getAssetById(std::stoull(assetId))
             .map<api::AlgorandAssetParams>(
@@ -155,7 +154,10 @@ namespace algorand {
             .callback(getMainExecutionContext(), callback);
     }
 
-    void Account::hasAsset(const std::string & addr, const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback)
+    void Account::hasAsset(
+            const std::string & addr,
+            const std::string & assetId,
+            const std::shared_ptr<api::BoolCallback> & callback) const
     {
         _explorer->getAccount(addr)
             .map<bool>(
@@ -188,7 +190,7 @@ namespace algorand {
 
     void Account::getAssetBalance(
             const std::string& assetId,
-            const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback)
+            const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) const
     {
         getAccountInformation()
             .map<api::AlgorandAssetAmount>(
@@ -204,7 +206,7 @@ namespace algorand {
             const std::string& assetId,
             const std::string& start,
             const std::string& end,
-            api::TimePeriod period)
+            api::TimePeriod period) const
     {
         const auto startDate = DateUtils::fromJSON(start);
         const auto endDate = DateUtils::fromJSON(end);
@@ -279,46 +281,60 @@ namespace algorand {
             const std::string& start,
             const std::string& end,
             api::TimePeriod period,
-            const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback)
+            const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) const
     {
         getAssetBalanceHistory(assetId, start, end, period)
             .callback(getMainExecutionContext(), callback);
     }
 
     void Account::getAssetsBalances(
-            const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback)
+            const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) const
     {
         getAccountInformation()
             .map<std::vector<api::AlgorandAssetAmount>>(
                     getContext(),
                     [](const model::Account& account) {
                         auto balances = std::vector<api::AlgorandAssetAmount>();
-                        for (const auto& balance : account.assetsAmounts) {
-                            balances.push_back(model::toAPI(balance.second));
-                        }
+
+                        balances.reserve(account.assetsAmounts.size());
+
+                        std::transform(
+                            account.assetsAmounts.cbegin(),
+                            account.assetsAmounts.cend(),
+                            std::back_inserter(balances),
+                            [](auto const &balance) {
+                                return model::toAPI(balance.second);
+                            });
                         return balances;
                     })
             .callback(getMainExecutionContext(), callback);
     }
 
     void Account::getCreatedAssets(
-            const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback)
+            const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) const
     {
         getAccountInformation()
             .map<std::vector<api::AlgorandAssetParams>>(
                     getContext(),
                     [](const model::Account& account) {
                         auto assets = std::vector<api::AlgorandAssetParams>();
-                        for (const auto& params : account.createdAssets) {
-                            assets.push_back(model::toAPI(params.second));
-                        }
+
+                        assets.reserve(account.createdAssets.size());
+
+                        std::transform(
+                            account.createdAssets.cbegin(),
+                            account.createdAssets.cend(),
+                            std::back_inserter(assets),
+                            [](auto const &asset) {
+                                return model::toAPI(asset.second);
+                            });
                         return assets;
                     })
             .callback(getMainExecutionContext(), callback);
     }
 
     void Account::getPendingRewards(
-            const std::shared_ptr<api::AmountCallback>& callback)
+            const std::shared_ptr<api::AmountCallback>& callback) const
     {
         getAccountInformation()
             .map<uint64_t>(
@@ -333,7 +349,7 @@ namespace algorand {
     }
 
     void Account::getTotalRewards(
-            const std::shared_ptr<api::AmountCallback>& callback)
+            const std::shared_ptr<api::AmountCallback>& callback) const
     {
         getAccountInformation()
             .map<uint64_t>(
@@ -349,7 +365,7 @@ namespace algorand {
 
     void Account::getFeeEstimate(
             const std::shared_ptr<api::AlgorandTransaction>& transaction,
-            const std::shared_ptr<api::AmountCallback>& callback)
+            const std::shared_ptr<api::AmountCallback>& callback) const
     {
         _explorer->getTransactionParams()
             .map<uint64_t>(
@@ -359,7 +375,7 @@ namespace algorand {
                         /// If we ever support different type of signatures
                         /// (e.g multi signatures), we will have to find a way
                         /// to add the correct corresponding number of bytes.
-                        const auto signatureSize = 71;
+                        constexpr auto signatureSize = 71;
                         const auto suggestedFees =
                             params.suggestedFeePerByte * transaction->serialize().size()
                             + signatureSize;
@@ -383,7 +399,7 @@ namespace algorand {
 
     void Account::broadcastRawTransaction(
             const std::vector<uint8_t>& transaction,
-            const std::shared_ptr<api::StringCallback>& callback)
+            const std::shared_ptr<api::StringCallback>& callback) const
     {
         _explorer->pushTransaction(transaction)
             .callback(getMainExecutionContext(), callback);
@@ -391,13 +407,13 @@ namespace algorand {
 
     void Account::broadcastTransaction(
             const std::shared_ptr<api::AlgorandTransaction>& transaction,
-            const std::shared_ptr<api::StringCallback>& callback)
+            const std::shared_ptr<api::StringCallback>& callback) const
     {
         broadcastRawTransaction(transaction->serialize(), callback);
     }
 
     void Account::createTransaction(
-            const std::shared_ptr<api::AlgorandTransactionCallback>& callback)
+            const std::shared_ptr<api::AlgorandTransactionCallback>& callback) const
     {
         _explorer->getTransactionParams()
             .mapPtr<api::AlgorandTransaction>(

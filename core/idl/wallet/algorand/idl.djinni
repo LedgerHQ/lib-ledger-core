@@ -184,7 +184,7 @@ AlgorandAccount = interface +c {
     # Get the maximum amount spendable in one transaction
     # @param callback, Callback returning the maximum amount spendable
     # @param operationType, the type of the operation
-    getSpendableBalance(
+    const getSpendableBalance(
         operationType: AlgorandOperationType,
         callback: Callback<Amount>
     );
@@ -192,7 +192,7 @@ AlgorandAccount = interface +c {
     # Get information about a specific asset
     # @param assetId, the unique identifier of the asset to look for
     # @param callback, Callback returning the information about the queried asset
-    getAsset(
+    const getAsset(
         assetId: string,
         callback: Callback<AlgorandAssetParams>
     );
@@ -201,7 +201,7 @@ AlgorandAccount = interface +c {
     # @param address, the address to check
     # @param assetId, the unique identifier of the asset to look for
     # @param callback, Callback returning the true if the address hold the asset
-    hasAsset(
+    const hasAsset(
         address : string,
         assetId: string,
         callback: Callback<bool>
@@ -221,7 +221,7 @@ AlgorandAccount = interface +c {
     # Get balance of account for a particular asset.
     # @param assetId, the unique identifier of the asset on the algorand network
     # @param callback, if getAssetBalance succeeds, Callback returning an Amount object which represents account's balance
-    getAssetBalance(
+    const getAssetBalance(
         assetId: string,
         callback: Callback<AlgorandAssetAmount>
     );
@@ -232,7 +232,7 @@ AlgorandAccount = interface +c {
     # @param end, upper bound of search range
     # @param precision, granularity at which we want results
     # @param callback, ListCallback returning a list of Amount objects which represents account's balance
-    getAssetBalanceHistory(
+    const getAssetBalanceHistory(
         assetId: string,
         start: string,
         end: string,
@@ -242,24 +242,24 @@ AlgorandAccount = interface +c {
 
     # Get balances of all assets to which account is registered
     # @param callback, ListCallback returning a list of AlgorandAssetAmount objects representing the different balances
-    getAssetsBalances(callback: ListCallback<AlgorandAssetAmount>);
+    const getAssetsBalances(callback: ListCallback<AlgorandAssetAmount>);
 
     # Get information about the assets created by account
     # @param callback, ListCallback returning a list of AlgorandAssetParams objects representing the assets created by account
-    getCreatedAssets(callback: ListCallback<AlgorandAssetParams>);
+    const getCreatedAssets(callback: ListCallback<AlgorandAssetParams>);
 
     # Get the pending rewards for account
     # @param callback, Callback returning the amount of pending rewards in MicroAlgos
-    getPendingRewards(callback: Callback<Amount>);
+    const getPendingRewards(callback: Callback<Amount>);
 
     # Get the total rewards of MicroAlgos account has received, including pending rewards.
     # @param callback, Callback returning the total rewards in MicroAlgos.
-    getTotalRewards(callback: Callback<Amount>);
+    const getTotalRewards(callback: Callback<Amount>);
 
     # Get an estimation (in MicroAlgos) of the fees needed to broadcast a given transaction to the algorand network
     # @param transaction, the transaction for which fees are estimated
     # @param callback, Callback returning the fees in MicroAlgos for the specified transaction
-    getFeeEstimate(transaction: AlgorandTransaction, callback: Callback<Amount>);
+    const getFeeEstimate(transaction: AlgorandTransaction, callback: Callback<Amount>);
 
     # Build a raw signed transaction from a raw unsigned transaction and the signature
     # @param rawUnsignedTransaction, the msgpack-encoded unsigned transaction
@@ -273,7 +273,7 @@ AlgorandAccount = interface +c {
     # Broadcast a raw transaction to the algorand network
     # @param transaction, the msgpack-encoded transaction
     # @param callback, Callback returning the id of the transaction in case of success, an error message otherwise
-    broadcastRawTransaction(
+    const broadcastRawTransaction(
         transaction: binary,
         callback: Callback<string>
     );
@@ -281,14 +281,14 @@ AlgorandAccount = interface +c {
     # Broadcast an AlgorandTransaction object to the algorand network
     # @param transaction, the transaction to broadcast
     # @param callback, Callback returning the fees in MicroAlgos for the specified transaction
-    broadcastTransaction(
+    const broadcastTransaction(
         transaction: AlgorandTransaction,
         callback: Callback<string>
     );
 
     # Create a new transaction
     # @param callback, The new transaction
-    createTransaction(
+    const createTransaction(
         callback: Callback<AlgorandTransaction>
     );
 }

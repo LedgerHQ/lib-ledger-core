@@ -40,17 +40,22 @@ namespace algorand {
 
     namespace constants {
 
-        static const std::string purestakeTokenHeader = "x-api-key";
+        const std::string purestakeTokenHeader = "x-api-key";
 
         // Explorer endpoints
-        static const std::string purestakeStatusEndpoint = "/ps2/v2/status";
-        static const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
-        static const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
-        static const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
-        static const std::string purestakeBlockEndpoint = "/ps2/v2/blocks/{}?format=json";
-        static const std::string purestakeAccountTransactionsEndpoint = "/idx2/v2/accounts/{}/transactions";
-        static const std::string purestakeTransactionEndpoint = "/idx2/v2/transactions?txid={}";
-        static const std::string purestakeAssetEndpoint = "/idx2/v2/assets/{}";
+        const std::string purestakeStatusEndpoint = "/ps2/v2/status";
+        const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
+        const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
+        const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
+        const std::string purestakeBlockEndpoint = "/ps2/v2/blocks/{}?format=json";
+        const std::string purestakeAccountTransactionsEndpoint = "/idx2/v2/accounts/{}/transactions";
+        const std::string purestakeTransactionEndpoint = "/idx2/v2/transactions?txid={}";
+        const std::string purestakeAssetEndpoint = "/idx2/v2/assets/{}";
+
+        // Query parameters
+        const std::string limitQueryParam = "{}?limit={}";
+        const std::string minRoundQueryParam = "{}&min-round={}";
+        const std::string maxRoundQueryParam = "{}&max-round={}";
 
     } // namespace constants
 
@@ -150,12 +155,12 @@ namespace algorand {
                                                   const Option<uint64_t> & lastRound) const
     {
         auto url = fmt::format(constants::purestakeAccountTransactionsEndpoint, address);
-        url = fmt::format("{}?limit={}", url, constants::EXPLORER_QUERY_LIMIT);
+        url = fmt::format(constants::limitQueryParam, url, constants::EXPLORER_QUERY_LIMIT);
         if (firstRound) {
-            url = fmt::format("{}&min-round={}", url, *firstRound);
+            url = fmt::format(constants::minRoundQueryParam, url, *firstRound);
         }
         if (lastRound) {
-            url = fmt::format("{}&max-round={}", url, *lastRound);
+            url = fmt::format(constants::maxRoundQueryParam, url, *lastRound);
         }
 
         return _http->GET(url)

@@ -85,49 +85,49 @@ namespace algorand {
 
         void getSpendableBalance(
                 api::AlgorandOperationType operationType,
-                const std::shared_ptr<api::AmountCallback>& callback) override;
+                const std::shared_ptr<api::AmountCallback>& callback) const override;
 
         void getAsset(
                 const std::string& assetId,
-                const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandAssetParamsCallback>& callback) const override;
 
-        void hasAsset(const std::string & addr, const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback) override;
+        void hasAsset(const std::string & addr, const std::string & assetId, const std::shared_ptr<api::BoolCallback> & callback) const override;
 
         void isAmountValid(const std::string & address, const std::string & amount, const std::shared_ptr<api::BoolCallback> & callback) const override;
         Future<bool> isAmountValid(const std::string & address, const std::string & amount) const;
 
         void getAssetBalance(
                 const std::string& assetId,
-                const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandAssetAmountCallback>& callback) const override;
 
         Future<std::vector<api::AlgorandAssetAmount>> getAssetBalanceHistory(
                 const std::string& assetId,
                 const std::string& start,
                 const std::string& end,
-                api::TimePeriod period);
+                api::TimePeriod period) const;
 
         void getAssetBalanceHistory(
                 const std::string& assetId,
                 const std::string& start,
                 const std::string& end,
                 api::TimePeriod period,
-                const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) const override;
 
         void getAssetsBalances(
-                const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandAssetAmountListCallback>& callback) const override;
 
         void getCreatedAssets(
-                const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandAssetParamsListCallback>& callback) const override;
 
         void getPendingRewards(
-                const std::shared_ptr<api::AmountCallback>& callback) override;
+                const std::shared_ptr<api::AmountCallback>& callback) const override;
 
         void getTotalRewards(
-                const std::shared_ptr<api::AmountCallback>& callback) override;
+                const std::shared_ptr<api::AmountCallback>& callback) const override;
 
         void getFeeEstimate(
                 const std::shared_ptr<api::AlgorandTransaction>& transaction,
-                const std::shared_ptr<api::AmountCallback>& callback) override;
+                const std::shared_ptr<api::AmountCallback>& callback) const override;
 
         std::vector<uint8_t> buildRawSignedTransaction(
                 const std::vector<uint8_t>& rawUnsignedTransaction,
@@ -135,14 +135,14 @@ namespace algorand {
 
         void broadcastRawTransaction(
                 const std::vector<uint8_t>& transaction,
-                const std::shared_ptr<api::StringCallback>& callback) override;
+                const std::shared_ptr<api::StringCallback>& callback) const override;
 
         void broadcastTransaction(
                 const std::shared_ptr<api::AlgorandTransaction>& transaction,
-                const std::shared_ptr<api::StringCallback>& callback) override;
+                const std::shared_ptr<api::StringCallback>& callback) const override;
 
         void createTransaction(
-                const std::shared_ptr<api::AlgorandTransactionCallback>& callback) override;
+                const std::shared_ptr<api::AlgorandTransactionCallback>& callback) const override;
 
         // From api::Account
         std::shared_ptr<api::OperationQuery> queryOperations() override;
