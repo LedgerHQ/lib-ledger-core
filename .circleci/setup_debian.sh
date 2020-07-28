@@ -16,16 +16,14 @@ echo "========> Java Installed"
 echo $JAVA_HOME
 ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 
-if [[ "$BUILD_CONFIG" == "Release" || "$CIRCLE_BRANCH" =~ ^int.* ]]; then
-    apt-get install -y awscli
-    echo "========> Install sbt"
-    SBT_DEB="sbt-1.3.10.deb"
-    curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
-    dpkg -i $SBT_DEB
-    rm $SBT_DEB
-    sbt sbtVersion
-    apt-get install -y scala
-fi
+apt-get install -y awscli
+echo "========> Install sbt"
+SBT_DEB="sbt-1.3.10.deb"
+curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
+dpkg -i $SBT_DEB
+rm $SBT_DEB
+sbt sbtVersion
+apt-get install -y scala
 
 echo "========> Install C++ dependencies"
 apt-get install -y g++ make
@@ -42,5 +40,6 @@ apt-get install -y sqlite3 sqlite libsqlite3-dev
 
 echo "========> Install kerberos"
 apt-get install -y libkrb5-dev
+
 
 
