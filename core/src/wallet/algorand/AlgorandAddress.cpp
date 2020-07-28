@@ -56,6 +56,14 @@ namespace algorand {
         constexpr int32_t CHECKSUM_LEN_BYTES = 4;
     }
 
+    bool operator==(const Address& first, const Address& second) {
+        return first.toString() == second.toString();
+    }
+
+    bool operator!=(const Address& first, const Address& second) {
+        return !(first == second);
+    }
+
     Address::Address(const api::Currency& currency, const std::vector<uint8_t> & pubKey) :
         ledger::core::AbstractAddress(currency, optional<std::string>("")),
         _address(api::AlgorandAddress::fromPublicKey(pubKey))

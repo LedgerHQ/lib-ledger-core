@@ -71,13 +71,8 @@ namespace algorand {
     };
 
 
-    inline bool operator==(const Address& first, const Address& second) {
-        return first.toString() == second.toString();
-    }
-
-    inline bool operator!=(const Address& first, const Address& second) {
-        return !(first == second);
-    }
+    bool operator==(const Address& first, const Address& second);
+    bool operator!=(const Address& first, const Address& second);
 
 } // namespace algorand
 } // namespace core
