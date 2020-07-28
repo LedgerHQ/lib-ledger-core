@@ -32,7 +32,7 @@
 
 #ifndef LIBCORE_EXPORT
     #if defined(_MSC_VER)
-        #include <LibCoreExport.hpp>
+        #include <libcore_export.h>
     #else
         #define LIBCORE_EXPORT
     #endif
