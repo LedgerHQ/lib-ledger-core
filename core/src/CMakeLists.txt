@@ -109,16 +109,16 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
     target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
 endif()
 
-target_link_libraries(ledger-core-interface INTERFACE bigd)
+# Portably get access to memset_s, required by sha512256
+ADD_DEFINITIONS(-D__STDC_WANT_LIB_EXT1__=1)
 target_link_libraries(ledger-core-interface INTERFACE sha512256)
+
+target_link_libraries(ledger-core-interface INTERFACE bigd)
 if(MINGW OR MSVC)
     target_link_libraries(ledger-core-interface INTERFACE fmt-header-only)
 else()
     target_link_libraries(ledger-core-interface INTERFACE fmt)
 endif(MINGW OR MSVC)
-
-# Portably get access to memset_s
-ADD_DEFINITIONS(-D__STDC_WANT_LIB_EXT1__=1)
 
 if (SYS_OPENSSL)
     find_package(OpenSSL)
