@@ -28,7 +28,6 @@
  */
 #include "AlgorandTestFixtures.hpp"
 #include <algorand/AlgorandBlockchainExplorer.hpp>
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
 
 #include <integration/BaseFixture.hpp>
 
@@ -41,7 +40,7 @@ public:
         BaseFixture::SetUp();
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
-        auto client = std::make_shared<HttpClient>(api::AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT, http, worker);
+        auto client = std::make_shared<HttpClient>("https://testnet-algorand.api.purestake.io", http, worker);
 
         explorer = std::make_shared<BlockchainExplorer>(
                         worker,

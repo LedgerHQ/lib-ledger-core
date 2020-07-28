@@ -34,7 +34,6 @@
 #include <algorand/AlgorandLikeCurrencies.hpp>
 #include <algorand/AlgorandNetworks.hpp>
 #include <algorand/operations/AlgorandOperationQuery.hpp>
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
 #include <algorand/api/AlgorandBlockchainExplorerEngines.hpp>
 #include <core/api/Configuration.hpp>
 
@@ -59,7 +58,7 @@ public:
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/<coin_type>'/<account>'/<node>'/<address>");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE);
-        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, api::AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://testnet-algorand.api.purestake.io");
 
         _wallet = std::dynamic_pointer_cast<Wallet>(wait(walletStore->createWallet("test-wallet", "algorand", configuration)));
 

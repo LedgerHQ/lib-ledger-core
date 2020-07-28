@@ -30,7 +30,6 @@
 #include <algorand/AlgorandBlockchainExplorer.hpp>
 #include <algorand/AlgorandExplorerConstants.hpp>
 #include <algorand/AlgorandJsonParser.hpp>
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
 
 #include <core/api/Configuration.hpp>
 
@@ -40,17 +39,19 @@ namespace algorand {
 
     namespace constants {
 
-        static const std::string purestakeTokenHeader = "x-api-key";
+        const std::string purestakeTokenHeader = "x-api-key";
 
         // Explorer endpoints
-        static const std::string purestakeStatusEndpoint = "/ps2/v2/status";
-        static const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
-        static const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
-        static const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
-        static const std::string purestakeBlockEndpoint = "/ps2/v2/blocks/{}?format=json";
-        static const std::string purestakeAccountTransactionsEndpoint = "/idx2/v2/accounts/{}/transactions";
-        static const std::string purestakeTransactionEndpoint = "/idx2/v2/transactions?txid={}";
-        static const std::string purestakeAssetEndpoint = "/idx2/v2/assets/{}";
+        const std::string purestakeStatusEndpoint = "/ps2/v2/status";
+        const std::string purestakeTransactionsEndpoint = "/ps2/v2/transactions";
+        const std::string purestakeTransactionsParamsEndpoint = "/ps2/v2/transactions/params";
+        const std::string purestakeAccountEndpoint = "/ps2/v2/accounts/{}";
+        const std::string purestakeBlockEndpoint = "/ps2/v2/blocks/{}?format=json";
+        const std::string purestakeAccountTransactionsEndpoint = "/idx2/v2/accounts/{}/transactions";
+        const std::string purestakeTransactionEndpoint = "/idx2/v2/transactions?txid={}";
+        const std::string purestakeAssetEndpoint = "/idx2/v2/assets/{}";
+
+        const std::string apiToken = "51QbkNgumz6aMzgl7qL2FabvZsREiCyw6VLcuNCj";
 
     } // namespace constants
 
@@ -65,7 +66,7 @@ namespace algorand {
         , _parameters(parameters)
     {
         setConfiguration(configuration);
-        _http->addHeader(constants::purestakeTokenHeader, api::AlgorandConfigurationDefaults::ALGORAND_API_TOKEN);
+        _http->addHeader(constants::purestakeTokenHeader, constants::apiToken);
     }
 
     Future<api::Block> BlockchainExplorer::getBlock(uint64_t blockHeight) const

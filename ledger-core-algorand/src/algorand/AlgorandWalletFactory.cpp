@@ -33,7 +33,6 @@
 #include <algorand/AlgorandNetworks.hpp>
 #include <algorand/database/Migrations.hpp>
 
-#include <algorand/api/AlgorandConfigurationDefaults.hpp>
 #include <algorand/api/AlgorandBlockchainExplorerEngines.hpp>
 #include <algorand/api/AlgorandBlockchainObserverEngines.hpp>
 
@@ -46,7 +45,7 @@ namespace core {
 namespace algorand {
 
     // Aliases for long constants names
-    const std::string ALGORAND_API_ENDPOINT  = api::AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT;
+    const std::string ALGORAND_API_ENDPOINT = "https://mainnet-algorand.api.purestake.io";
     const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
     const std::string ALGORAND_NODE_OBSERVER = api::AlgorandBlockchainObserverEngines::ALGORAND_NODE;
 
