@@ -65,6 +65,7 @@ namespace algorand {
         for (auto &row : rows) {
             account.index = soci::get_number<int32_t>(row, 0);
             account.address = row.get<std::string>(1);
+            return !account.address.empty();
         }
 
         return !account.address.empty();

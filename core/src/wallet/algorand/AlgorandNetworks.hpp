@@ -50,6 +50,7 @@ namespace networks {
 
     extern LIBCORE_EXPORT const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName);
     extern LIBCORE_EXPORT const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND;
+    extern LIBCORE_EXPORT const void checkAlgorandCurrency(const std::string &networkName);
 
     template<class Archive>
     void serialize(Archive & archive, api::AlgorandNetworkParameters & p)

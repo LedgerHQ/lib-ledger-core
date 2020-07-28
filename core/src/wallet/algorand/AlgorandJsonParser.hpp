@@ -46,6 +46,7 @@
 #include <api/ErrorCode.hpp>
 
 #include <rapidjson/document.h>
+#include <limits>
 
 namespace ledger {
 namespace core {
@@ -65,7 +66,7 @@ namespace algorand {
                         std::chrono::seconds(getMandatoryUint64Field(jsonBlock, constants::xTs)));
 
             const auto blockHeight = getMandatoryUint64Field(jsonBlock, constants::xRnd);
-            if (blockHeight > std::numeric_limits<int64_t>::max()) {
+            if (blockHeight > static_cast<uint64_t>(std::numeric_limits<int64_t>::max())) {
                 throw make_exception(api::ErrorCode::OUT_OF_RANGE, "Block height exceeds maximum value");
             }
             block.height = static_cast<int64_t>(blockHeight);

@@ -59,6 +59,12 @@ namespace networks {
         getAlgorandNetworkParameters("algorand-testnet")
     });
 
+    const void checkAlgorandCurrency(const std::string &networkName) {
+        if (networkName != "algorand" && networkName != "algorand-testnet") {
+            throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, "Unsupported currency '{}'.", networkName);
+        }
+    }
+
 } // namespace networks
 } // namespace core
 } // namespace ledger

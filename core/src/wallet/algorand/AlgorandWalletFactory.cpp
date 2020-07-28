@@ -60,12 +60,8 @@ namespace algorand {
             entry.currencyName,
             entry.configuration->dump());
 
-        // Get currency
-        try {
-            auto currency = networks::getAlgorandNetworkParameters(entry.currencyName);
-        } catch (Exception) {
-            throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, "Unsupported currency '{}'.", entry.currencyName);
-        }
+        // Make sure the currency is Algorand-like
+        networks::checkAlgorandCurrency(entry.currencyName);
 
         // Configure explorer
         auto explorer = getExplorer(entry.currencyName, entry.configuration);

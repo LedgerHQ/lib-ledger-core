@@ -250,12 +250,12 @@ namespace algorand {
             getBackend().type = api::OperationType::SEND;
         } else if (txn.header.type == model::constants::pay) {
             const auto& details = boost::get<model::PaymentTxnFields>(txn.details);
-            if (details.receiverAddr == account || details.closeAddr && *details.closeAddr == account) {
+            if (details.receiverAddr == account || (details.closeAddr && *details.closeAddr == account)) {
                 getBackend().type = api::OperationType::RECEIVE;
             }
         } else if (txn.header.type == model::constants::axfer) {
             const auto& details = boost::get<model::AssetTransferTxnFields>(txn.details);
-            if (details.assetReceiver == account || details.assetCloseTo && *details.assetCloseTo == account) {
+            if (details.assetReceiver == account || (details.assetCloseTo && *details.assetCloseTo == account)) {
                 getBackend().type = api::OperationType::RECEIVE;
             }
         }

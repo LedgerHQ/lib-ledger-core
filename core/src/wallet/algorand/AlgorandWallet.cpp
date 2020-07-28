@@ -49,13 +49,12 @@ namespace algorand {
                    const DerivationScheme &scheme,
                    const std::shared_ptr<BlockchainExplorer> &explorer,
                    const std::shared_ptr<BlockchainObserver> &observer,
-                   const AccountSynchronizerFactory &synchronizerFactory)
-        : AbstractWallet(name, currency, pool, configuration, scheme)
-    {
-        _explorer = explorer;
-        _observer = observer;
-        _synchronizerFactory = synchronizerFactory;
-    }
+                   const AccountSynchronizerFactory &synchronizerFactory) :
+        AbstractWallet(name, currency, pool, configuration, scheme),
+        _explorer(explorer),
+        _observer(observer),
+        _synchronizerFactory(synchronizerFactory)
+    {}
 
     bool Wallet::isSynchronizing() {
         return false;

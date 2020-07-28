@@ -56,12 +56,6 @@ namespace algorand {
     public:
 
         BlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
-                                    const std::shared_ptr<api::DynamicObject> &configuration,
-                                    const std::shared_ptr<spdlog::logger> &logger,
-                                    const api::Currency &currency,
-                                    const std::vector<std::string> &matchableKeys);
-
-        BlockchainObserver(const std::shared_ptr<api::ExecutionContext> &context,
                                    const std::shared_ptr<WebSocketClient> &client,
                                    const std::shared_ptr<api::DynamicObject> &configuration,
                                    const std::shared_ptr<spdlog::logger> &logger,

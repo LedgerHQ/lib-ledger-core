@@ -46,29 +46,21 @@ namespace algorand {
 
     BlockchainObserver::BlockchainObserver(
             const std::shared_ptr<api::ExecutionContext> &context,
-            const std::shared_ptr<api::DynamicObject> &configuration,
-            const std::shared_ptr<spdlog::logger> &logger,
-            const api::Currency &currency,
-            const std::vector<std::string> &matchableKeys) :
-            DedicatedContext(context), ConfigurationMatchable(matchableKeys) {
-
-        _currency = currency;
-        _configuration = configuration;
-        setConfiguration(configuration);
-        setLogger(logger);
-    }
-
-    BlockchainObserver::BlockchainObserver(
-            const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<WebSocketClient> &client,
             const std::shared_ptr<api::DynamicObject> &configuration,
             const std::shared_ptr<spdlog::logger> &logger,
             const api::Currency &currency) :
-            BlockchainObserver(context, configuration, logger, currency,
-                                            {ALGORAND_OBSERVER_WS_ENDPOINT}) {
-        _client = client;
+        ConfigurationMatchable({ALGORAND_OBSERVER_WS_ENDPOINT}),
+        DedicatedContext(context),
+        _client(client),
+        _currency(currency),
+        _configuration(configuration)
+    {
         _url = getConfiguration()->getString(api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT)
                                     .value_or(ALGORAND_OBSERVER_WS_ENDPOINT);
+
+        setConfiguration(_configuration);
+        setLogger(logger);
     }
 
     void BlockchainObserver::putTransaction(const model::Transaction &tx) {

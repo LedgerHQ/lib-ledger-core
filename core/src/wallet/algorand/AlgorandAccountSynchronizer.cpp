@@ -159,6 +159,7 @@ namespace algorand {
                     }
                     return Future<Unit>::successful(unit);
                 }
+                return Future<Unit>::failure(block.getFailure());
             });
     }
 

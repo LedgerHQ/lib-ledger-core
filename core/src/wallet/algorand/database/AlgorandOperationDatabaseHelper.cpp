@@ -1,7 +1,7 @@
 /*
  * AlgorandOperationDatabaseHelper
  *
- * Created by Hakim Aammar on 18/05/2020.
+ * Created by Hakim Aammar on 28/07/2020.
  *
  * The MIT License (MIT)
  *
@@ -27,29 +27,34 @@
  *
  */
 
-#ifndef LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
-#define LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
-
-#include "../operations/AlgorandOperation.hpp"
-
-#include <wallet/common/database/OperationDatabaseHelper.h>
-
-#include <soci.h>
+#include "AlgorandOperationDatabaseHelper.hpp"
 
 namespace ledger {
 namespace core {
 namespace algorand {
 
-    class OperationDatabaseHelper : public ledger::core::OperationDatabaseHelper {
+    bool OperationDatabaseHelper::putAlgorandOperation(soci::session & sql,
+                                                     const std::string & txUid,
+                                                     const Operation & operation)
+    {
+        const auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation.getBackend());
+        const auto opUid = operation.getBackend().uid;
+        const auto txHash = operation.getTransaction()->getId();
 
-    public:
+        if (newOperation) {
+            sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
+                soci::use(opUid),
+                soci::use(txUid),
+                soci::use(txHash);
+        } else {
+            sql << "UPDATE algorand_operations SET uid = :op_uid, transaction_hash = :tx_hash WHERE transaction_uid = :txUid",
+                soci::use(opUid),
+                soci::use(txHash),
+                soci::use(txUid);
+        }
+        return newOperation;
+    }
 
-       static bool putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation);
-
-    };
-
-} // namespace algorand
-} // namespace core
-} // namespace ledger
-
-#endif // LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
+}
+}
+}
