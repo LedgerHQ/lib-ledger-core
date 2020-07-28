@@ -32,7 +32,6 @@
 #include "AlgorandWallet.hpp"
 #include "AlgorandNetworks.hpp"
 
-#include <api/AlgorandConfigurationDefaults.hpp>
 #include <api/AlgorandBlockchainExplorerEngines.hpp>
 #include <api/AlgorandBlockchainObserverEngines.hpp>
 
@@ -44,14 +43,14 @@ namespace core {
 namespace algorand {
 
     // Aliases for long constants names
-    const std::string ALGORAND_API_ENDPOINT  = api::AlgorandConfigurationDefaults::ALGORAND_API_ENDPOINT;
+    const std::string ALGORAND_API_ENDPOINT = "https://mainnet-algorand.api.purestake.io";
     const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
     const std::string ALGORAND_NODE_OBSERVER = api::AlgorandBlockchainObserverEngines::ALGORAND_NODE;
 
     WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool) :
         AbstractWalletFactory(currency, pool)
     {
-        
+
     }
 
     std::shared_ptr<AbstractWallet> WalletFactory::build(const WalletDatabaseEntry &entry) {

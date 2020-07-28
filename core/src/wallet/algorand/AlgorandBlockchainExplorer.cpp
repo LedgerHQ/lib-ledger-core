@@ -30,7 +30,6 @@
 #include "AlgorandBlockchainExplorer.hpp"
 #include "AlgorandJsonParser.hpp"
 #include "AlgorandExplorerConstants.hpp"
-#include <api/AlgorandConfigurationDefaults.hpp>
 
 #include <api/Configuration.hpp>
 
@@ -57,6 +56,8 @@ namespace algorand {
         const std::string minRoundQueryParam = "{}&min-round={}";
         const std::string maxRoundQueryParam = "{}&max-round={}";
 
+        const std::string apiToken = "51QbkNgumz6aMzgl7qL2FabvZsREiCyw6VLcuNCj";
+
     } // namespace constants
 
     BlockchainExplorer::BlockchainExplorer(
@@ -70,7 +71,7 @@ namespace algorand {
         , _parameters(parameters)
     {
         setConfiguration(configuration);
-        _http->addHeader(constants::purestakeTokenHeader, api::AlgorandConfigurationDefaults::ALGORAND_API_TOKEN);
+        _http->addHeader(constants::purestakeTokenHeader, constants::apiToken);
     }
 
     Future<api::Block> BlockchainExplorer::getBlock(uint64_t blockHeight) const

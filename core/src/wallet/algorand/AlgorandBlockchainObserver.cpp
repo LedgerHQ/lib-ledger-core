@@ -29,7 +29,6 @@
 
 #include "AlgorandBlockchainObserver.hpp"
 #include "AlgorandAccount.hpp"
-#include <api/AlgorandConfigurationDefaults.hpp>
 
 #include <api/Configuration.hpp>
 #include <api/ConfigurationDefaults.hpp>
@@ -38,6 +37,12 @@
 namespace ledger {
 namespace core {
 namespace algorand {
+
+    namespace {
+
+        const std::string ALGORAND_OBSERVER_WS_ENDPOINT = "";
+
+    } // namespace
 
     BlockchainObserver::BlockchainObserver(
             const std::shared_ptr<api::ExecutionContext> &context,
@@ -60,10 +65,10 @@ namespace algorand {
             const std::shared_ptr<spdlog::logger> &logger,
             const api::Currency &currency) :
             BlockchainObserver(context, configuration, logger, currency,
-                                            {api::AlgorandConfigurationDefaults::ALGORAND_OBSERVER_WS_ENDPOINT}) {
+                                            {ALGORAND_OBSERVER_WS_ENDPOINT}) {
         _client = client;
         _url = getConfiguration()->getString(api::Configuration::BLOCKCHAIN_OBSERVER_WS_ENDPOINT)
-                                    .value_or(api::AlgorandConfigurationDefaults::ALGORAND_OBSERVER_WS_ENDPOINT);
+                                    .value_or(ALGORAND_OBSERVER_WS_ENDPOINT);
     }
 
     void BlockchainObserver::putTransaction(const model::Transaction &tx) {

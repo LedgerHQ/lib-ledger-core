@@ -2,14 +2,6 @@
 
 @import "configuration.djinni"
 
-AlgorandConfigurationDefaults = record {
-    const ALGORAND_API_ENDPOINT: string = "https://mainnet-algorand.api.purestake.io";
-    const ALGORAND_API_TOKEN: string = "51QbkNgumz6aMzgl7qL2FabvZsREiCyw6VLcuNCj";
-
-    # TODO Find an observer endpoint??
-    const ALGORAND_OBSERVER_WS_ENDPOINT: string = "";
-}
-
 AlgorandNetworkParameters = record {
     # Name of the network
     genesisID: string;
