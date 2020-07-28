@@ -296,10 +296,10 @@ TEST_F(AlgorandAccountTest, assetBalanceHistory)
 
 TEST_F(AlgorandAccountTest, validAmount)
 {
-    const auto valid = wait(account->isAmountValid(OBELIX, "0.01"));
+    const auto valid = wait(account->isAmountValid(EMPTY_ADDR, "100000"));
     EXPECT_TRUE(valid);
 
     // Can't send less than 0.1 ALGO to an empty account
-    const auto invalid = wait(account->isAmountValid(EMPTY_ADDR, "0.01"));
+    const auto invalid = wait(account->isAmountValid(EMPTY_ADDR, "99999"));
     EXPECT_FALSE(invalid);
 }
