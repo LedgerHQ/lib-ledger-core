@@ -54,7 +54,7 @@ namespace ledger {
 
                 return buddy->getUtxo().map<std::vector<BitcoinLikeUtxo>>(
                     getContext(),
-                    [=] (auto const &utxos) {
+                    [=] (std::vector<BitcoinLikeUtxo> const &utxos) {
                         buddy->logger->info("GOT UTXO");
 
                         if (utxos.size() == 0)
