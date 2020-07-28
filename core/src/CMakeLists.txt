@@ -110,7 +110,6 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
 endif()
 
 # Portably get access to memset_s, required by sha512256
-ADD_DEFINITIONS(-D__STDC_WANT_LIB_EXT1__=1)
 target_link_libraries(ledger-core-interface INTERFACE sha512256)
 
 target_link_libraries(ledger-core-interface INTERFACE bigd)
@@ -200,7 +199,7 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
 target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 # msgpack Algorand
-add_definitions("-DMSGPACK_USE_DEFINE_MAP")
+target_compile_definitions(ledger-core-interface INTERFACE "MSGPACK_USE_DEFINE_MAP")
 target_include_directories(ledger-core-interface INTERFACE wallet/algorand/thirdparty/msgpack-c/include)
 
 install(TARGETS ledger-core DESTINATION "lib")
