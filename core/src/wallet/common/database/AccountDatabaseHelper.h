@@ -45,6 +45,7 @@ namespace ledger {
             static int32_t getAccountsCount(soci::session& sql, const std::string& walletUid);
             static void createAccount(soci::session& sql, const std::string& walletUid, int32_t index);
             static void removeAccount(soci::session& sql, const std::string& walletUid, int32_t index);
+            static void removeBlockOperation(soci::session& sql, const std::string& accountUid,  const std::vector<std::string> blocks);
             static std::string createAccountUid(const std::string& walletUid, int32_t accountIndex);
             static std::string createERC20AccountUid(const std::string &ethAccountUid, const std::string &contractAddress);
             static int32_t computeNextAccountIndex(soci::session& sql, const std::string& walletUid);

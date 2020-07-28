@@ -122,6 +122,34 @@ namespace ledger {
             return Option<api::Block>();
         }
 
+        void AccountDatabaseHelper::removeBlockOperation(soci::session& sql, const std::string& accountUid,  const std::vector<std::string> blocks)
+        {
+            if (!blocks.empty())
+            {
+                sql << "DELETE FROM blocks where uid IN (:uids)",
+                    soci::use(blocks);
+
+                soci::rowset<std::string> rows_tx = (sql.prepare << "SELECT transaction_uid FROM bitcoin_operations AS bop "
+                                                                    "JOIN operations AS op ON bop.uid = op.uid "
+                                                                    "WHERE op.account_uid = :uid AND op.block_uid IN (:b_uids)",
+                                                     soci::use(accountUid), soci::use(blocks));
+
+                std::vector<std::string> txToDelete(rows_tx.begin(), rows_tx.end());
+                if (!txToDelete.empty())
+                {
+                    sql << "DELETE FROM bitcoin_inputs WHERE uid IN ("
+                           "SELECT input_uid FROM bitcoin_transaction_inputs "
+                           "WHERE transaction_uid IN(:uids)"
+                           ")",
+                        soci::use(txToDelete);
+                    sql << "DELETE FROM operations WHERE account_uid = :uid AND block_uid is IN (:b_uids)",
+                        soci::use(accountUid), soci::use(blocks);
+                    sql << "DELETE FROM bitcoin_transactions "
+                           "WHERE transaction_uid IN (:uids)",
+                        soci::use(txToDelete);
+                }
+            }
+        }
 
     }
 }
