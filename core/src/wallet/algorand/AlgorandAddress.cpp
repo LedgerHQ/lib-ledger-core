@@ -31,7 +31,7 @@
 #include <api/AlgorandAddress.hpp>
 
 #include <collections/vector.hpp>
-#include <crypto/sha512_256.h>
+#include <sha512_256.h>
 #include <math/BaseConverter.hpp>
 
 namespace ledger {

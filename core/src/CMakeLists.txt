@@ -110,6 +110,7 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
 endif()
 
 target_link_libraries(ledger-core-interface INTERFACE bigd)
+target_link_libraries(ledger-core-interface INTERFACE sha512256)
 if(MINGW OR MSVC)
     target_link_libraries(ledger-core-interface INTERFACE fmt-header-only)
 else()
@@ -174,6 +175,7 @@ file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/c
 
 target_include_directories(ledger-core-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
+target_include_directories(ledger-core-interface INTERFACE ../lib/sha512256)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
