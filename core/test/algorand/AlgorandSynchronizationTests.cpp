@@ -34,7 +34,6 @@
 #include <wallet/algorand/AlgorandLikeCurrencies.hpp>
 #include <wallet/algorand/AlgorandNetworks.hpp>
 #include <wallet/common/OperationQuery.h>
-#include <api/AlgorandConfigurationDefaults.hpp>
 #include <api/AlgorandBlockchainExplorerEngines.hpp>
 #include <api/Configuration.hpp>
 

@@ -28,7 +28,6 @@
  */
 #include "AlgorandTestFixtures.hpp"
 #include <wallet/algorand/AlgorandBlockchainExplorer.hpp>
-#include <api/AlgorandConfigurationDefaults.hpp>
 
 #include "../integration/BaseFixture.h"
 
