@@ -367,29 +367,9 @@ namespace ledger {
                                                                                     soci::use(failedBlockHeight));
 
                                         std::vector<std::string> blockToDelete(rows_block.begin(), rows_block.end());
-                                        if (!blockToDelete.empty())
-                                        {
-                                            sql << "DELETE FROM blocks where uid IN (:uids)", 
-                                                   soci::use(blockToDelete);
 
-                                            auto accountUid = buddy->account->getAccountUid();
-                                            soci::rowset<std::string> rows_tx = (sql.prepare << "SELECT transaction_uid FROM bitcoin_operations AS bop "
-                                                   "JOIN operations AS op ON bop.uid = op.uid "
-                                                   "WHERE op.account_uid = :uid AND op.block_uid IN (:b_uids)", 
-                                                   soci::use(accountUid), soci::use(blockToDelete));
-
-                                            std::vector<std::string> txToDelete(rows_tx.begin(), rows_tx.end());
-                                            if (!txToDelete.empty()) {
-                                                sql << "DELETE FROM bitcoin_inputs WHERE uid IN ("
-                                                "SELECT input_uid FROM bitcoin_transaction_inputs "
-                                                "WHERE transaction_uid IN(:uids)"
-                                                ")", soci::use(txToDelete);
-                                                sql << "DELETE FROM operations WHERE account_uid = :uid AND block_uid is IN (:b_uids)", 
-                                                       soci::use(accountUid), soci::use(blockToDelete);
-                                                sql << "DELETE FROM bitcoin_transactions "
-                                                "WHERE transaction_uid IN (:uids)", soci::use(txToDelete);
-                                            }
-                                        }
+                                        // Remove failed blocks and associated operations/transactions
+                                        AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
                                         //Get last block not part from reorg
                                         auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
