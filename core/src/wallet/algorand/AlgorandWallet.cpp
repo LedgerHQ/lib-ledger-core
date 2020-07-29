@@ -48,11 +48,9 @@ namespace algorand {
                    const std::shared_ptr<DynamicObject> &configuration,
                    const DerivationScheme &scheme,
                    const std::shared_ptr<BlockchainExplorer> &explorer,
-                   const std::shared_ptr<BlockchainObserver> &observer,
                    const AccountSynchronizerFactory &synchronizerFactory) :
         AbstractWallet(name, currency, pool, configuration, scheme),
         _explorer(explorer),
-        _observer(observer),
         _synchronizerFactory(synchronizerFactory)
     {}
 
@@ -92,7 +90,6 @@ namespace algorand {
                                             getCurrency(),
                                             accountData.address,
                                             _explorer,
-                                            _observer,
                                             _synchronizerFactory());
         });
     }
@@ -126,7 +123,6 @@ namespace algorand {
                                          getCurrency(),
                                          accountData.address,
                                          _explorer,
-                                         _observer,
                                          _synchronizerFactory());
     }
 

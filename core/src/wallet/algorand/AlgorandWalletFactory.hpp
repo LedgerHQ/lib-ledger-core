@@ -32,7 +32,6 @@
 #define LEDGER_CORE_ALGORANDWALLETFACTORY_H
 
 #include "AlgorandBlockchainExplorer.hpp"
-#include "AlgorandBlockchainObserver.hpp"
 #include "AlgorandAccountSynchronizer.hpp"
 
 #include <wallet/common/AbstractWalletFactory.hpp>
@@ -54,12 +53,8 @@ namespace algorand {
         std::shared_ptr<BlockchainExplorer>
         getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
-        std::shared_ptr<BlockchainObserver>
-        getObserver(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
-
     private:
         std::list<std::weak_ptr<BlockchainExplorer>> _runningExplorers;
-        std::list<std::weak_ptr<BlockchainObserver>> _runningObservers;
     };
 
 } // namespace algorand

@@ -33,7 +33,6 @@
 #include "AlgorandAddress.hpp"
 #include "AlgorandAccountSynchronizer.hpp"
 #include "AlgorandBlockchainExplorer.hpp"
-#include "AlgorandBlockchainObserver.hpp"
 #include "model/AlgorandAccount.hpp"
 #include "model/transactions/AlgorandTransaction.hpp"
 #include "operations/AlgorandOperation.hpp"
@@ -71,7 +70,6 @@ namespace algorand {
                 const api::Currency& currency,
                 const std::string& address,
                 std::shared_ptr<BlockchainExplorer> explorer,
-                std::shared_ptr<BlockchainObserver> observer,
                 std::shared_ptr<AccountSynchronizer> synchronizer);
 
 
@@ -181,7 +179,6 @@ namespace algorand {
     private:
         Address _address;
         std::shared_ptr<BlockchainExplorer> _explorer;
-        std::shared_ptr<BlockchainObserver> _observer;
         std::shared_ptr<AccountSynchronizer> _synchronizer;
         std::shared_ptr<api::EventBus> _currentSyncEventBus;
         std::mutex _synchronizationLock;

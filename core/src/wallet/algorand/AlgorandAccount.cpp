@@ -59,12 +59,10 @@ namespace algorand {
                      const api::Currency& currency,
                      const std::string& address,
                      std::shared_ptr<BlockchainExplorer> explorer,
-                     std::shared_ptr<BlockchainObserver> observer,
                      std::shared_ptr<AccountSynchronizer> synchronizer)
         : AbstractAccount(wallet, index)
         , _address(currency, address)
         , _explorer(std::move(explorer))
-        , _observer(std::move(observer))
         , _synchronizer(std::move(synchronizer))
     {}
 
@@ -496,17 +494,17 @@ namespace algorand {
 
     void Account::startBlockchainObservation()
     {
-        _observer->registerAccount(getSelf());
+        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Blockchain Observation is not supported for Algorand");
     }
 
     void Account::stopBlockchainObservation()
     {
-        _observer->unregisterAccount(getSelf());
+        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Blockchain Observation is not supported for Algorand");
     }
 
     bool Account::isObservingBlockchain()
     {
-        return _observer->isRegistered(getSelf());
+        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Blockchain Observation is not supported for Algorand");
     }
 
     std::string Account::getRestoreKey()

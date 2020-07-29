@@ -33,7 +33,6 @@
 #include "AlgorandNetworks.hpp"
 
 #include <api/AlgorandBlockchainExplorerEngines.hpp>
-#include <api/AlgorandBlockchainObserverEngines.hpp>
 
 #include <api/Configuration.hpp>
 #include <api/SynchronizationEngines.hpp>
@@ -45,7 +44,6 @@ namespace algorand {
     // Aliases for long constants names
     const std::string ALGORAND_API_ENDPOINT = "https://mainnet-algorand.api.purestake.io";
     const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
-    const std::string ALGORAND_NODE_OBSERVER = api::AlgorandBlockchainObserverEngines::ALGORAND_NODE;
 
     WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool) :
         AbstractWalletFactory(currency, pool)
@@ -69,14 +67,6 @@ namespace algorand {
             throw make_exception(api::ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
                                  "Engine '{}' is not a supported explorer engine.",
                                  entry.configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE).value_or("undefined"));
-        }
-
-        // Configure observer
-        auto observer = getObserver(entry.currencyName, entry.configuration);
-        if (observer == nullptr) {
-            pool->logger()->warn(
-                    "Observer engine '{}' is not supported. Wallet {} was created anyway. Real time events won't be handled by this instance.",
-                    entry.configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE).value_or("undefined"), entry.name);
         }
 
         // Configure synchronizer
@@ -114,7 +104,6 @@ namespace algorand {
             entry.configuration,
             scheme,
             explorer,
-            observer,
             synchronizerFactory.getValue()
         );
     }
@@ -160,48 +149,6 @@ namespace algorand {
         return explorer;
     }
 
-    std::shared_ptr<BlockchainObserver>
-    WalletFactory::getObserver(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration) {
-
-        auto it = _runningObservers.begin();
-        while (it != _runningObservers.end()) {
-            auto observer = it->lock();
-            if (observer != nullptr) {
-                if (observer->match(configuration)) {
-                    return observer;
-                }
-                it++;
-            } else {
-                it = _runningObservers.erase(it);
-            }
-        }
-
-        std::shared_ptr<BlockchainObserver> observer;
-
-        auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE).value_or(ALGORAND_NODE_OBSERVER);
-        if (engine == ALGORAND_NODE_OBSERVER) {
-            const auto &currency = getCurrency();
-            auto &networkParams = networks::getAlgorandNetworkParameters(currency.name);
-            auto pool = getPool();
-            auto logger = pool->logger();
-            auto webSocketClient = pool->getWebSocketClient();
-            auto context = pool->getDispatcher()->getSerialExecutionContext(
-                    fmt::format("{}-{}-explorer", ALGORAND_NODE_OBSERVER, networkParams.genesisHash)
-            );
-
-            observer = std::make_shared<BlockchainObserver>(context,
-                                                            webSocketClient,
-                                                            configuration,
-                                                            logger,
-                                                            currency);
-        }
-
-        if (observer) {
-            _runningObservers.push_back(observer);
-        }
-
-        return observer;
-    }
 }
 }
 }

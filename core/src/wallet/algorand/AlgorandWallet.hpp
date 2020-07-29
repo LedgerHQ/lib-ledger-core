@@ -33,7 +33,6 @@
 
 #include "AlgorandAccountSynchronizer.hpp"
 #include "AlgorandBlockchainExplorer.hpp"
-#include "AlgorandBlockchainObserver.hpp"
 
 #include <api/AlgorandWallet.hpp>
 
@@ -56,7 +55,6 @@ namespace algorand {
             const std::shared_ptr<DynamicObject> & configuration,
             const DerivationScheme & scheme,
             const std::shared_ptr<BlockchainExplorer> & explorer,
-            const std::shared_ptr<BlockchainObserver> & observer,
             const AccountSynchronizerFactory & synchronizerFactory
         );
 
@@ -84,7 +82,6 @@ namespace algorand {
         std::shared_ptr<Wallet> getSelf();
 
         std::shared_ptr<BlockchainExplorer> _explorer;
-        std::shared_ptr<BlockchainObserver> _observer;
         AccountSynchronizerFactory _synchronizerFactory;
     };
 
