@@ -538,14 +538,10 @@ namespace algorand {
         return false;
     }
 
-    std::string TransactionDatabaseHelper::createTransactionUid(const std::string & accountUid, const std::string & txHash) {
-        return SHA256::stringToHexHash(fmt::format("uid:{}+{}", accountUid, txHash));
-    }
-
     std::string TransactionDatabaseHelper::putTransaction(soci::session & sql,
                                                           const std::string & accountUid,
                                                           const model::Transaction & tx) {
-        auto txUid = createTransactionUid(accountUid, *tx.header.id);
+        const auto txUid = *tx.header.id;
 
         if (!transactionExists(sql, txUid)) {
             if (tx.header.type == constants::xPay) {

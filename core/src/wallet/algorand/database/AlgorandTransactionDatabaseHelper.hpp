@@ -53,9 +53,6 @@ namespace algorand {
                                          const std::string & hash,
                                          model::Transaction & tx);
 
-        static std::string createTransactionUid(const std::string & accountUid,
-                                                const std::string & txHash);
-
         static std::string putTransaction(soci::session & sql,
                                           const std::string & accountUid,
                                           const model::Transaction & tx);
