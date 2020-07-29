@@ -62,7 +62,10 @@ namespace algorand {
         }
 
         // Make sure the currency is Algorand-like
-        networks::checkAlgorandCurrency(entry.currencyName);
+        networks::assertAlgorandCurrency(
+            networks::isAlgorandCurrency(entry.currencyName),
+            fmt::format("Currency '{}' is not an Algorand currency.", entry.currencyName)
+        );
 
         // Configure explorer
         auto explorer = getExplorer(entry.currencyName, entry.configuration);

@@ -41,16 +41,17 @@
 
 #include <api/AlgorandNetworkParameters.hpp>
 
-#include <vector>
 #include <string>
+#include <unordered_map>
 
 namespace ledger {
 namespace core {
 namespace networks {
 
     extern LIBCORE_EXPORT const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName);
-    extern LIBCORE_EXPORT const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND;
-    extern LIBCORE_EXPORT const void checkAlgorandCurrency(const std::string &networkName);
+    extern LIBCORE_EXPORT const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALGORAND_NETWORKS();
+    extern LIBCORE_EXPORT const bool isAlgorandCurrency(const std::string &networkName);
+    extern LIBCORE_EXPORT const void assertAlgorandCurrency(const bool isAlgorandCurrency, const std::string &errorMessage);
 
     template<class Archive>
     void serialize(Archive & archive, api::AlgorandNetworkParameters & p)

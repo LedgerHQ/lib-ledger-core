@@ -36,32 +36,29 @@ namespace ledger {
 namespace core {
 namespace networks {
 
-    const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName) {
-        if (networkName == "algorand") {
-            static const api::AlgorandNetworkParameters ALGORAND(
-                "mainnet-v1.0",
-                "wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8="
-            );
-            return ALGORAND;
-        }
-        if (networkName == "algorand-testnet") {
-            static const api::AlgorandNetworkParameters ALGORAND(
-                "testnet-v1.0",
-                "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI="
-            );
-            return ALGORAND;
-        }
-        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
+    const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALGORAND_NETWORKS() {
+        static const std::unordered_map<std::string, api::AlgorandNetworkParameters> ALL_ALGORAND({
+            {"algorand", api::AlgorandNetworkParameters("mainnet-v1.0","wGHE2Pwdvd7S12BL5FaOP20EGYesN73ktiC1qzkkit8=")},
+            {"algorand-testnet", api::AlgorandNetworkParameters("testnet-v1.0", "SGO1GKSzyE7IEPItTxCByw9x8FmnrCDexi9/cOUJOiI=")}
+        });
+        return ALL_ALGORAND;
     }
 
-    const std::vector<api::AlgorandNetworkParameters> ALL_ALGORAND ({
-        getAlgorandNetworkParameters("algorand"),
-        getAlgorandNetworkParameters("algorand-testnet")
-    });
+    const api::AlgorandNetworkParameters getAlgorandNetworkParameters(const std::string &networkName) {
+        if (isAlgorandCurrency(networkName)) {
+            return ALGORAND_NETWORKS().at(networkName);
+        } else {
+            throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
+        }
+    }
 
-    const void checkAlgorandCurrency(const std::string &networkName) {
-        if (networkName != "algorand" && networkName != "algorand-testnet") {
-            throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, "Unsupported currency '{}'.", networkName);
+    const bool isAlgorandCurrency(const std::string &networkName) {
+        return ALGORAND_NETWORKS().find(networkName) != ALGORAND_NETWORKS().end();
+    }
+
+    const void assertAlgorandCurrency(const bool isAlgorandCurrency, const std::string &errorMessage) {
+        if (!isAlgorandCurrency) {
+            throw make_exception(api::ErrorCode::UNSUPPORTED_CURRENCY, errorMessage);
         }
     }
 
