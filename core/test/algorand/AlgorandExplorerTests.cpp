@@ -28,6 +28,7 @@
  */
 #include "AlgorandTestFixtures.hpp"
 #include <wallet/algorand/AlgorandBlockchainExplorer.hpp>
+#include <api/Configuration.hpp>
 
 #include "../integration/BaseFixture.h"
 
@@ -43,11 +44,17 @@ public:
         // NOTE: we run the tests on the TestNet
         auto client = std::make_shared<HttpClient>("https://testnet-algorand.api.purestake.io", http, worker);
 
+        // Read API key from environment
+        auto configuration = std::make_shared<DynamicObject>();
+        if (const auto apiKey = std::getenv(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY.c_str())) {
+            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY, apiKey);
+        }
+
         explorer = std::make_shared<BlockchainExplorer>(
                         worker,
                         client,
                         networks::getAlgorandNetworkParameters("algorand-testnet"),
-                        std::make_shared<DynamicObject>());
+                        configuration);
     }
 
     void TearDown() override {
