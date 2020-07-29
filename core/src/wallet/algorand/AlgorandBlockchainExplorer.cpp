@@ -56,8 +56,6 @@ namespace algorand {
         const std::string minRoundQueryParam = "{}&min-round={}";
         const std::string maxRoundQueryParam = "{}&max-round={}";
 
-        const std::string apiToken = "51QbkNgumz6aMzgl7qL2FabvZsREiCyw6VLcuNCj";
-
     } // namespace constants
 
     BlockchainExplorer::BlockchainExplorer(
@@ -65,13 +63,20 @@ namespace algorand {
             const std::shared_ptr<HttpClient>& http,
             const api::AlgorandNetworkParameters& parameters,
             const std::shared_ptr<api::DynamicObject>& configuration)
-        : ConfigurationMatchable({api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT})
+        : ConfigurationMatchable({
+            api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,
+            api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY
+            })
         , DedicatedContext(context)
         , _http(http)
         , _parameters(parameters)
     {
         setConfiguration(configuration);
-        _http->addHeader(constants::purestakeTokenHeader, constants::apiToken);
+        const auto apiKey = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY);
+        if (!apiKey) {
+            throw make_exception(api::ErrorCode::API_ERROR, "Missing API key to access Algorand node.");
+        }
+        _http->addHeader(constants::purestakeTokenHeader, apiKey.value());
     }
 
     Future<api::Block> BlockchainExplorer::getBlock(uint64_t blockHeight) const

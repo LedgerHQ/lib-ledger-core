@@ -47,9 +47,7 @@ namespace algorand {
 
     WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool) :
         AbstractWalletFactory(currency, pool)
-    {
-
-    }
+    {}
 
     std::shared_ptr<AbstractWallet> WalletFactory::build(const WalletDatabaseEntry &entry) {
         auto pool = getPool();
@@ -57,6 +55,11 @@ namespace algorand {
             entry.name,
             entry.currencyName,
             entry.configuration->dump());
+
+        // Retrieve the API key from env variable, if set
+        if (const auto apiKey = std::getenv(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY.c_str())) {
+            entry.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY, apiKey);
+        }
 
         // Make sure the currency is Algorand-like
         networks::checkAlgorandCurrency(entry.currencyName);
