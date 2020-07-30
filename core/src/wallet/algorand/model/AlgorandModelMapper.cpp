@@ -165,7 +165,7 @@ namespace model {
 
     AssetParams fromAPI(const api::AlgorandAssetParams& params)
     {
-        return [&params]() {
+        return [params]() {
             auto assetParams = AssetParams(
                     mapOption(makeOption(params.metadataHash), toBinary),
                     makeOption(params.assetName),
@@ -235,7 +235,7 @@ namespace model {
 
     AssetTransferTxnFields fromAPI(const api::AlgorandAssetTransferInfo& info)
     {
-        return [&info]() {
+        return [info]() {
             auto fields = AssetTransferTxnFields(
                     mapOption(makeOption(info.amount), u64From),
                     mapOption(makeOption(info.closeAddress), addressFrom),
@@ -286,7 +286,7 @@ namespace model {
 
     PaymentTxnFields fromAPI(const api::AlgorandPaymentInfo& info)
     {
-        return [&info]() {
+        return [info]() {
             auto fields = PaymentTxnFields(
                     u64From(info.amount),
                     mapOption(makeOption(info.closeAddress), addressFrom),

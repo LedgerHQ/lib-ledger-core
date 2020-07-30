@@ -119,7 +119,7 @@ namespace algorand {
                 auto lowestBatchRound = std::numeric_limits<uint64_t>::max();
                 for (const auto& tx : bulk.transactions) {
 
-                    auto tryPutTx = Try<int>::from([&] () {
+                    auto tryPutTx = Try<int>::from([account, &sql, &tx] () {
                         return (account->putTransaction(sql, tx));
                     });
 

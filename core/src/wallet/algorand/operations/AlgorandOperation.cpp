@@ -144,7 +144,7 @@ namespace algorand {
     void Operation::inflateBlock()
     {
         const auto& txn = getTransactionData();
-        getBackend().block = [&]() {
+        getBackend().block = [this, txn]() {
             api::Block block;
             block.currencyName = getBackend().currencyName;
             if (txn.header.round) {
