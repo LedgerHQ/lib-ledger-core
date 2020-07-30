@@ -30,11 +30,23 @@
 #ifndef LEDGER_CORE_ASSERT_H
 #define LEDGER_CORE_ASSERT_H
 
+#include <utils/Exception.hpp>
+#include <collections/vector.hpp>
+#include <api/ErrorCode.hpp>
 #include <string>
 
 namespace ledger {
     namespace core {
+
         const void assertCurrency(const bool isCurrency, const std::string &errorMessage);
+
+        template <typename T>
+        const void assertSingleRow(const std::vector<T> rows, const std::string & msg) {
+            if (rows.size() != 1) {
+                throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, msg);
+            }
+        };
+
     }
 }
 

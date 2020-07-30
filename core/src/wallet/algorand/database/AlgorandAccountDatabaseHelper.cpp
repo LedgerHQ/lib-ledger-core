@@ -33,6 +33,8 @@
 
 #include <wallet/common/AbstractAccount.hpp>
 #include <database/soci-number.h>
+#include <collections/vector.hpp>
+#include <utils/Assert.hpp>
 
 namespace ledger {
 namespace core {
@@ -62,13 +64,27 @@ namespace algorand {
         soci::rowset<soci::row> rows = (sql.prepare << "SELECT idx, address "
                                                        "FROM algorand_accounts "
                                                        "WHERE uid = :uid", soci::use(accountUid));
-        for (auto &row : rows) {
-            account.index = soci::get_number<int32_t>(row, 0);
-            account.address = row.get<std::string>(1);
-            return !account.address.empty();
-        }
+        auto results = vector::fromRowset<AccountDatabaseEntry>(rows,
+            [](soci::row &row) -> AccountDatabaseEntry {
+                AccountDatabaseEntry accountRow;
+                accountRow.index = soci::get_number<int32_t>(row, 0);
+                accountRow.address = row.get<std::string>(1);
+                return accountRow;
+            }
+        );
 
-        return !account.address.empty();
+        // Assert we retreived only one account, and retrieve info from that single account
+        assertSingleRow<AccountDatabaseEntry>(results, fmt::format("More than one account found with uid '{}'.", accountUid));
+        account.index = results.begin()->index;
+        account.address = results.begin()->address;
+
+        if (results.empty()) {
+            return false;
+        } else if (results.size() == 1) {
+           return !account.address.empty();
+        } else {
+            throw make_exception(api::ErrorCode::DATABASE_EXCEPTION, "More than one account found with uid '{}'.", accountUid);
+        }
     }
 
 }

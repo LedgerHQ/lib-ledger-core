@@ -28,8 +28,6 @@
  */
 
 #include "Assert.hpp"
-#include <utils/Exception.hpp>
-#include <api/ErrorCode.hpp>
 
 namespace ledger {
     namespace core {
