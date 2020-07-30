@@ -32,8 +32,9 @@
 #include "AlgorandWallet.hpp"
 #include "AlgorandNetworks.hpp"
 
-#include <api/AlgorandBlockchainExplorerEngines.hpp>
+#include <utils/Assert.hpp>
 
+#include <api/AlgorandBlockchainExplorerEngines.hpp>
 #include <api/Configuration.hpp>
 #include <api/SynchronizationEngines.hpp>
 
@@ -62,7 +63,7 @@ namespace algorand {
         }
 
         // Make sure the currency is Algorand-like
-        networks::assertAlgorandCurrency(
+        assertCurrency(
             networks::isAlgorandCurrency(entry.currencyName),
             fmt::format("Currency '{}' is not an Algorand currency.", entry.currencyName)
         );
