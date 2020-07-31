@@ -369,8 +369,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
       - build_linux_jni_release:
           filters:
             tags:
@@ -387,8 +385,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
       - build_macos_ios_release:
           filters:
             tags:
