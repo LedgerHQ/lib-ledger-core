@@ -35,6 +35,8 @@ list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
 # msgpack Algorand
 list(FILTER SRC_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
+list(FILTER HEADERS_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
+list(FILTER HEADERS_FILES INCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/include/.*")
 
 if (NOT PG_SUPPORT)
     list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.cpp)
@@ -140,6 +142,14 @@ target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAME
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
 
+# FIXME On Windows need to link on boost::date_time for an unknown reason - related to Algorand
+if (MSVC)
+    target_link_libraries(ledger-core-interface INTERFACE
+            "${CMAKE_SOURCE_DIR}/core/lib/boost/lib/libboost_date_time-vc141-mt-gd-x64-1_70.lib")
+    link_directories("${CMAKE_SOURCE_DIR}/core/lib/boost/lib")
+    add_dependencies(ledger-core-interface INTERFACE boost)
+endif()
+
 #Secp256k1
 target_link_libraries(ledger-core-interface INTERFACE
         "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
@@ -199,7 +209,6 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
 target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
 
 # msgpack Algorand
-target_compile_definitions(ledger-core-interface INTERFACE "MSGPACK_USE_DEFINE_MAP")
 target_include_directories(ledger-core-interface INTERFACE wallet/algorand/thirdparty/msgpack-c/include)
 
 install(TARGETS ledger-core DESTINATION "lib")
