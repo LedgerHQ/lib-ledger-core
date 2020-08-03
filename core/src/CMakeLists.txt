@@ -109,6 +109,7 @@ endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
     target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
+    target_link_options(ledger-core-interface INTERFACE -Wl,--exclude-libs,libcrypto.a)
 endif()
 
 # Portably get access to memset_s, required by sha512256
@@ -144,10 +145,7 @@ target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
 # FIXME On Windows need to link on boost::date_time for an unknown reason - related to Algorand
 if (MSVC)
-    target_link_libraries(ledger-core-interface INTERFACE
-            "${CMAKE_SOURCE_DIR}/core/lib/boost/lib/libboost_date_time-vc141-mt-gd-x64-1_70.lib")
-    link_directories("${CMAKE_SOURCE_DIR}/core/lib/boost/lib")
-    add_dependencies(ledger-core-interface INTERFACE boost)
+    target_link_libraries(ledger-core-interface INTERFACE boost_date_time)
 endif()
 
 #Secp256k1

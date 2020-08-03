@@ -28,10 +28,8 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_RIPPLELIKEACCOUNT_H
 #define LEDGER_CORE_RIPPLELIKEACCOUNT_H
-
 
 #include <time.h>
 #include <api/AddressListCallback.hpp>
@@ -50,11 +48,13 @@
 #include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
-namespace ledger {
-    namespace core {
-        class RippleLikeAccount : public api::RippleLikeAccount, public AbstractAccount {
+namespace ledger
+{
+    namespace core
+    {
+        class RippleLikeAccount : public api::RippleLikeAccount, public AbstractAccount
+        {
         public:
-
             static const int FLAG_TRANSACTION_IGNORED = 0x00;
             static const int FLAG_NEW_TRANSACTION = 0x01;
             static const int FLAG_TRANSACTION_UPDATED = 0x01 << 1;
@@ -77,9 +77,8 @@ namespace ledger {
             // Set the operation amount based on the state of the transaction. If it’s failed, the amount is set
             // to zero (yet fees were still paid so they’re not altered).
             void setOperationAmount(
-                Operation& operation,
-                RippleLikeBlockchainExplorerTransaction const& transaction
-            ) const;
+                Operation &operation,
+                RippleLikeBlockchainExplorerTransaction const &transaction) const;
 
             bool putBlock(soci::session &sql, const RippleLikeBlockchainExplorer::Block &block);
 
@@ -108,20 +107,27 @@ namespace ledger {
 
             std::string getRestoreKey() override;
 
+            static RippleLikeBlockchainExplorerTransaction getXRPLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<RippleLikeAccount> &account,
+                                                                                                   const std::string &txHash,
+                                                                                                   const std::vector<uint8_t> &rawTx);
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback) override;
 
+            Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &transaction);
+
             void broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
+
+            Future<std::string> broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction);
 
             std::shared_ptr<api::RippleLikeTransactionBuilder> buildTransaction() override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
-            void getFees(const std::shared_ptr<api::AmountCallback> & callback) override;
+            void getFees(const std::shared_ptr<api::AmountCallback> &callback) override;
             FuturePtr<api::Amount> getFees();
 
-            void getBaseReserve(const std::shared_ptr<api::AmountCallback> & callback) override;
+            void getBaseReserve(const std::shared_ptr<api::AmountCallback> &callback) override;
             FuturePtr<api::Amount> getBaseReserve();
 
             void isAddressActivated(const std::string &address,
@@ -142,7 +148,7 @@ namespace ledger {
             std::mutex _synchronizationLock;
             uint64_t _currentLedgerSequence;
         };
-    }
-}
+    } // namespace core
+} // namespace ledger
 
 #endif //LEDGER_CORE_RIPPLELIKEACCOUNT_H

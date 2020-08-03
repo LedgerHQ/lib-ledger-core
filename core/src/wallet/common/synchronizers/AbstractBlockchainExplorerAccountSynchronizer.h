@@ -362,8 +362,14 @@ namespace ledger {
                                 {
                                     soci::transaction tr(sql);
                                     try {
-                                        sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(
-                                                failedBlockHeight);
+
+                                        soci::rowset<std::string> rows_block =  (sql.prepare << "SELECT uid FROM blocks where height >= :failedBlockHeight",
+                                                                                    soci::use(failedBlockHeight));
+
+                                        std::vector<std::string> blockToDelete(rows_block.begin(), rows_block.end());
+
+                                        // Remove failed blocks and associated operations/transactions
+                                        AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
                                         //Get last block not part from reorg
                                         auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,

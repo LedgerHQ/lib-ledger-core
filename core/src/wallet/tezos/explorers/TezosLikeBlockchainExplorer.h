@@ -151,6 +151,9 @@ namespace ledger {
                                             const std::shared_ptr<HttpClient> &http,
                                             const std::string &rpcNode);
 
+            /// Check that the account is funded.
+            virtual Future<bool> isFunded(const std::string &address) = 0;
+
         protected:
             std::string getRPCNodeEndpoint() const {
                 return _rpcNode;

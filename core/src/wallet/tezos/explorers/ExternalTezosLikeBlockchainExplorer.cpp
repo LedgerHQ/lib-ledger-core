@@ -255,6 +255,15 @@ namespace ledger {
                                         return std::make_shared<BigInt>(value);
                                     })
                     .recover(getContext(), [fallbackValue] (const Exception &exception) {
+                        auto ecode = exception.getErrorCode();
+                        if (ecode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST) {
+                          // if it’s an HTTP error, it might be due to the host not being reachable or such,
+                          // so we re-run the error
+                          throw exception;
+                        }
+
+                        // otherwise, it means that it’s a “logical” error (i.e. some resources not found), which
+                        // in this case we fallback to a given value
                         return std::make_shared<BigInt>(!fallbackValue.empty() ? fallbackValue : "0");
                     });
         }
@@ -304,5 +313,22 @@ namespace ledger {
                                                             getRPCNodeEndpoint());
         }
 
+        Future<bool> ExternalTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
+            return
+                _http->GET(fmt::format("account/{}", address))
+                    .json().map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
+                        auto& json = *std::get<1>(result);
+
+                        // look for the is_funded field
+                        const auto field = "is_funded";
+                        if (!json.IsObject() || !json.HasMember(field) ||
+                            !json[field].IsBool()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                 "Failed to get is_funded from network, no (or malformed) field \"result\" in response");
+                        }
+
+                        return json[field].GetBool();
+                    });
+        }
     }
 }

@@ -157,7 +157,7 @@ class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainE
 public:
     LedgerApiEthereumLikeBlockchainExplorerTests() {
         params = networks::getEthLikeNetworkParameters("ethereum_ropsten");
-        explorerEndpoint = "http://eth-ropsten.explorers.dev.aws.ledger.fr";
+        explorerEndpoint = "https://explorers.api.live.ledger.com";
     }
 };
 
