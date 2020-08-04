@@ -26,6 +26,8 @@ public:
     MOCK_METHOD1(getFreshAddress, Address(KeyPurpose purpose));
     MOCK_METHOD2(getFreshAddresses, std::vector<Address>(KeyPurpose purpose, size_t n));
 
+    MOCK_METHOD0(getAllAddresses, std::vector<Address>());
+
     MOCK_CONST_METHOD1(getAddressPurpose, Option<KeyPurpose>(const std::string& address));
     MOCK_CONST_METHOD1(getAddressDerivationPath, Option<std::string>(const std::string& address));
     MOCK_CONST_METHOD0(isEmpty, bool());
