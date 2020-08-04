@@ -722,6 +722,11 @@ namespace ledger {
             return getAddresses(from, to).callback(getMainExecutionContext(), callback);
         }
 
+        AbstractAccount::AddressList BitcoinLikeAccount::getAllAddresses() {
+                auto keychain = getKeychain();
+                return fromBitcoinAddressesToAddresses(keychain->getAllAddresses());
+            }
+
         std::shared_ptr<api::Keychain> BitcoinLikeAccount::getAccountKeychain() {
           return _keychain;
         }
