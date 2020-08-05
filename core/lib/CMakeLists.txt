@@ -21,7 +21,6 @@ add_subdirectory(leveldb)
 add_subdirectory(sha512256)
 
 add_subdirectory(spdlog)
-add_subdirectory(boost/lib/date_time)
 
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Android")
   # On Android, temporary directories are a bit special and are not located in the same place, such
