@@ -8,6 +8,7 @@
 @import "../ethereum/ethereum_like_wallet.djinni"
 @import "../../bitcoin/addresses.djinni"
 @import "../../cosmos/addresses.djinni"
+@import "../algorand/idl.djinni"
 @import "currency.djinni"
 @import "../../collections/dynamic.djinni"
 
@@ -161,9 +162,13 @@ Operation = interface +c {
     #@return TezosLikeOperation object
     asTezosLikeOperation(): TezosLikeOperation;
     # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
-    # Convert operation as Ethereum operation.
-    # @return EthereumLikeOperation object
+    # Convert operation as Stellar operation.
+    # @return StellarLikeOperation object
     asStellarLikeOperation(): StellarLikeOperation;
+    # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
+    # Convert operation as Algorand operation.
+    # @return AlgorandOperation object
+    asAlgorandOperation(): AlgorandOperation;
     # Is this an instance of a Bitcoin-like operation?
     isInstanceOfBitcoinLikeOperation(): bool;
     # Same as isInstanceOfCosmosLikeOperation for cosmos.
@@ -391,6 +396,8 @@ Account = interface +c {
     asRippleLikeAccount(): RippleLikeAccount;
     # Turn the account into a Tezos one, allowing operations to be performed on the Tezos network.
     asTezosLikeAccount(): TezosLikeAccount;
+    # Turn the account into an Algorand one, allowing operations to be performed on the Algorand network.
+    asAlgorandAccount(): AlgorandAccount;
 
     # Turn the account into a Stellar one, allowing operations to be performerd on the Stellar
     # network.
@@ -491,6 +498,9 @@ Wallet = interface +c {
     # Tell whether wallet is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeWallet(): bool;
+    # Tell whether wallet is an Algorand one.
+    # @return bool
+    isInstanceOfAlgorandLikeWallet(): bool;
     # Tell whether wallet is a Cosmos one.
     # @return bool
     isInstanceOfCosmosLikeWallet(): bool;

@@ -92,6 +92,10 @@ namespace ledger {
             return getWalletType() == api::WalletType::COSMOS;
         }
 
+        bool AbstractWallet::isInstanceOfAlgorandLikeWallet() {
+            return getWalletType() == api::WalletType::ALGORAND;
+        }
+
         bool AbstractWallet::isInstanceOfEthereumLikeWallet() {
             return getWalletType() == api::WalletType::ETHEREUM;
         }

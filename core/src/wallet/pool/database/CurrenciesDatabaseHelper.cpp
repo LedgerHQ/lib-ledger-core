@@ -158,6 +158,15 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 break; // TODO INSERT MONERO NETWORK PARAMS
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::ALGORAND: {
+                const auto &params = currency.algorandNetworkParameters.value();
+                sql << "INSERT INTO algorand_currencies VALUES(:name, :genesis_id, :genesis_hash)",
+                    use(currency.name),
+                    use(params.genesisID),
+                    use(params.genesisHash)
+                ;
+                break;
+            }
             case api::WalletType::STELLAR: {
                 const auto &params = currency.stellarLikeNetworkParameters.value();
 
@@ -323,6 +332,18 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 break;
             }
             case api::WalletType::MONERO:break;
+            case api::WalletType::ALGORAND: {
+                rowset<row> algorand_rows = (sql.prepare << "SELECT genesis_id, genesis_hash FROM algorand_currencies "
+                                                           "WHERE name = :name"
+                        , use(currency.name));
+                for (auto& algorand_row : algorand_rows) {
+                    api::AlgorandNetworkParameters params;
+                    params.genesisID = algorand_row.get<std::string>(0);
+                    params.genesisHash = algorand_row.get<std::string>(1);
+                    currency.algorandNetworkParameters = params;
+                }
+                break;
+            }
             case api::WalletType::STELLAR: {
                 rowset<row> stellar_rows = (sql.prepare << "SELECT identifier, address_version, base_reserve,"
                                                            "base_fee, network_passphrase, additional_SEPs, "

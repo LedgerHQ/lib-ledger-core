@@ -3,6 +3,7 @@
 
 #include "Account.hpp"  // my header
 #include "AddressListCallback.hpp"
+#include "AlgorandAccount.hpp"
 #include "AmountCallback.hpp"
 #include "AmountListCallback.hpp"
 #include "BitcoinLikeAccount.hpp"
@@ -175,6 +176,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asT
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
         auto r = ref->asTezosLikeAccount();
         return ::djinni::release(::djinni_generated::TezosLikeAccount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asAlgorandAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->asAlgorandAccount();
+        return ::djinni::release(::djinni_generated::AlgorandAccount::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

@@ -33,6 +33,11 @@ list(REMOVE_ITEM SRC_FILES ${ledger-core-jni-sources})
 list(REMOVE_ITEM SRC_FILES dummy.cpp)
 list(REMOVE_ITEM HEADERS_FILES ${ledger-core-jni-sources})
 
+# msgpack Algorand
+list(FILTER SRC_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
+list(FILTER HEADERS_FILES EXCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/.*")
+list(FILTER HEADERS_FILES INCLUDE REGEX "wallet/algorand/thirdparty/msgpack-c/include/.*")
+
 if (NOT PG_SUPPORT)
     list(REMOVE_ITEM SRC_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.cpp)
     list(REMOVE_ITEM HEADERS_FILES ${CMAKE_CURRENT_SOURCE_DIR}/database/PostgreSQLBackend.h)
@@ -107,13 +112,15 @@ if(UNIX AND NOT APPLE AND NOT ANDROID)
     target_link_options(ledger-core-interface INTERFACE -Wl,--exclude-libs,libcrypto.a)
 endif()
 
+# Portably get access to memset_s, required by sha512256
+target_link_libraries(ledger-core-interface INTERFACE sha512256)
+
 target_link_libraries(ledger-core-interface INTERFACE bigd)
 if(MINGW OR MSVC)
     target_link_libraries(ledger-core-interface INTERFACE fmt-header-only)
 else()
     target_link_libraries(ledger-core-interface INTERFACE fmt)
 endif(MINGW OR MSVC)
-
 
 if (SYS_OPENSSL)
     find_package(OpenSSL)
@@ -134,7 +141,6 @@ target_link_libraries(ledger-core-interface INTERFACE leveldb)
 
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
-
 
 #Secp256k1
 target_link_libraries(ledger-core-interface INTERFACE
@@ -170,6 +176,7 @@ file(COPY ${ledger-core-header} DESTINATION ${CMAKE_BINARY_DIR}/include/ledger/c
 
 target_include_directories(ledger-core-interface INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
+target_include_directories(ledger-core-interface INTERFACE ../lib/sha512256)
 target_include_directories(ledger-core-interface INTERFACE ../lib/rapidjson/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci/core)
 target_include_directories(ledger-core-interface INTERFACE ../lib/soci_sqlite3)
@@ -192,6 +199,9 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/date/)
 target_include_directories(ledger-core-interface INTERFACE ../lib/secp256k1)
 target_include_directories(ledger-core-interface INTERFACE ../lib/ethash/src)
 target_include_directories(ledger-core-interface INTERFACE ../lib/CRCpp/inc)
+
+# msgpack Algorand
+target_include_directories(ledger-core-interface INTERFACE wallet/algorand/thirdparty/msgpack-c/include)
 
 install(TARGETS ledger-core DESTINATION "lib")
 install(FILES ${LEDGER_CORE_API_HEADERS} DESTINATION "include/ledger-core")

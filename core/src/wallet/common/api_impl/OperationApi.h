@@ -37,6 +37,7 @@
 
 namespace ledger {
     namespace core {
+
         class AbstractAccount;
         class OperationApi : public api::Operation, public std::enable_shared_from_this<OperationApi> {
         public:
@@ -57,6 +58,7 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeOperation> asEthereumLikeOperation() override;
             std::shared_ptr<api::RippleLikeOperation> asRippleLikeOperation() override;
             std::shared_ptr<api::TezosLikeOperation> asTezosLikeOperation() override;
+            std::shared_ptr<api::AlgorandOperation> asAlgorandOperation() override;
             optional<int64_t> getBlockHeight() override;
             bool isInstanceOfBitcoinLikeOperation() override;
             bool isInstanceOfCosmosLikeOperation() override;
@@ -71,6 +73,7 @@ namespace ledger {
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();
+            const ledger::core::Operation& getBackend() const;
             const std::shared_ptr<AbstractAccount>& getAccount() const;
 
             api::Currency getCurrency() override;
