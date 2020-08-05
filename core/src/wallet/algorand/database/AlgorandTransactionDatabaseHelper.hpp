@@ -32,10 +32,7 @@
 
 #include "../model/transactions/AlgorandTransaction.hpp"
 
-#include <boost/optional.hpp>
-
-#define SOCI_USE_BOOST
-#include <soci.h>
+#include <boost-optional.h>
 #include <database/soci-number.h>
 
 namespace ledger {

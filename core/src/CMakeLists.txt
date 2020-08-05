@@ -142,12 +142,6 @@ target_link_libraries(ledger-core-interface INTERFACE leveldb)
 target_compile_definitions(ledger-core-interface INTERFACE SPDLOG_WCHAR_FILENAMES)
 target_link_libraries(ledger-core-interface INTERFACE spdlog)
 
-
-# FIXME On Windows need to link on boost::date_time for an unknown reason - related to Algorand
-if (MSVC)
-    target_link_libraries(ledger-core-interface INTERFACE boost_date_time)
-endif()
-
 #Secp256k1
 target_link_libraries(ledger-core-interface INTERFACE
         "${CMAKE_SOURCE_DIR}/core/lib/secp256k1/lib/${CMAKE_STATIC_LIBRARY_PREFIX}secp256k1${CMAKE_STATIC_LIBRARY_SUFFIX}")
