@@ -81,6 +81,8 @@ Configuration = interface +c {
     const BLOCKCHAIN_EXPLORER_ENGINE: string = "BLOCKCHAIN_EXPLORER_ENGINE";
     # Sets the API endpoint for API based engine (Ledger's API).
     const BLOCKCHAIN_EXPLORER_API_ENDPOINT: string = "BLOCKCHAIN_EXPLORER_API_ENDPOINT";
+    # Sets the API key if one is required
+    const BLOCKCHAIN_EXPLORER_API_KEY: string = "BLOCKCHAIN_EXPLORER_API_KEY";
 
     # Sets the API version.
     const BLOCKCHAIN_EXPLORER_VERSION: string = "BLOCKCHAIN_EXPLORER_VERSION";

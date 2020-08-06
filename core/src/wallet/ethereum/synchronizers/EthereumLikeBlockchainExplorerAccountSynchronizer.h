@@ -68,6 +68,9 @@ namespace ledger {
 
             bool isSynchronizing() const override;
 
+        protected:
+            int putTransaction(soci::session &sql, const Transaction &transaction,
+                               const std::shared_ptr<SynchronizationBuddy> &buddy) override;
 
         private:
             std::shared_ptr<EthereumBlockchainAccountSynchronizer> getSharedFromThis() override ;

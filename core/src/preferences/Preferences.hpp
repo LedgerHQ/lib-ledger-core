@@ -32,10 +32,12 @@
 #define LEDGER_CORE_PREFERENCES_HPP
 
 #include "../api/Preferences.hpp"
+#include "../api/PreferencesBackend.hpp"
 #include "../api/PreferencesEditor.hpp"
 #include "PreferencesBackend.hpp"
 #include "PreferencesEditor.hpp"
 #include "../utils/Option.hpp"
+#include <leveldb/db.h>
 #include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
 #include <cereal/types/set.hpp>
@@ -49,28 +51,30 @@ namespace ledger {
 
         class Preferences : public api::Preferences {
         public:
-            Preferences(PreferencesBackend& backend, const std::vector<uint8_t>& keyPrefix);
+            Preferences(api::PreferencesBackend &backend, const std::vector<uint8_t> &keyPrefix);
 
-            std::string getString(const std::string &key, const std::string &fallbackValue) override;
+            Preferences(api::PreferencesBackend &backend, const std::string &keyPrefix);
 
-            int32_t getInt(const std::string &key, int32_t fallbackValue) override;
+            std::string getString(const std::string &key, const std::string &fallbackValue) const override;
 
-            int64_t getLong(const std::string &key, int64_t fallbackValue) override;
+            int32_t getInt(const std::string &key, int32_t fallbackValue) const override;
 
-            bool getBoolean(const std::string &key, bool fallbackValue) override;
+            int64_t getLong(const std::string &key, int64_t fallbackValue) const override;
+
+            bool getBoolean(const std::string &key, bool fallbackValue) const override;
 
             std::vector<std::string>
-            getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) override;
+            getStringArray(const std::string &key, const std::vector<std::string> &fallbackValue) const override;
 
-            bool contains(const std::string &key) override;
+            bool contains(const std::string &key) const override;
 
             std::shared_ptr<api::PreferencesEditor> edit() override;
             std::shared_ptr<PreferencesEditor> editor();
 
-            std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) override;
+            std::vector<uint8_t> getData(const std::string &key, const std::vector<uint8_t> &fallbackValue) const override;
 
             template <typename T>
-            Option<T> getObject(const std::string& key) {
+            Option<T> getObject(const std::string& key) const {
                 auto data = getData(key, {});
                 if (data.size() == 0) {
                     return Option<T>();
@@ -83,37 +87,17 @@ namespace ledger {
                 return Option<T>(object);
             };
 
-            void iterate(std::function<bool (leveldb::Slice&&, leveldb::Slice&&)> f, Option<std::string> begin = Option<std::string>());
-
-            template <typename T>
-            void iterate(std::function<bool (leveldb::Slice&& key, const T& value)> f, Option<std::string> begin = Option<std::string>()) {
-                iterate([f] (leveldb::Slice&& key, leveldb::Slice&& value) {
-                    T object;
-                    try {
-                        boost::iostreams::array_source my_vec_source(reinterpret_cast<const char *>(&value.data()[0]),
-                                                                     value.size());
-                        boost::iostreams::stream<boost::iostreams::array_source> is(my_vec_source);
-                        ::cereal::PortableBinaryInputArchive archive(is);
-                        archive(object);
-                    } catch (const std::exception& ex) {
-                        return true;
-                    }
-                    return f(std::move(key), object);
-                }, begin);
-            }
-
-            std::shared_ptr<Preferences> getSubPreferences(std::string prefix);
+            std::shared_ptr<Preferences> getSubPreferences(std::string prefix) const;
 
         protected:
             std::vector<uint8_t> wrapKey(const std::string& key) const;
 
         private:
-            PreferencesBackend& _backend;
+            api::PreferencesBackend& _backend;
             std::vector<uint8_t> _keyPrefix;
             friend class ledger::core::PreferencesEditor;
         };
     }
 }
-
 
 #endif //LEDGER_CORE_PREFERENCES_HPP

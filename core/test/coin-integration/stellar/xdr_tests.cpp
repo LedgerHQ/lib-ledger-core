@@ -35,6 +35,7 @@
 #include <wallet/stellar/xdr/XDRDecoder.hpp>
 #include <wallet/stellar/StellarLikeAddress.hpp>
 #include <algorithm>
+#include <wallet/stellar/xdr/StellarModelUtils.hpp>
 
 using namespace ledger::core::stellar::xdr;
 
@@ -49,11 +50,10 @@ TEST_F(StellarFixture, XDRCreateAccountEncode) {
     auto source = std::dynamic_pointer_cast<StellarLikeAddress>(StellarLikeAddress::parse(SOURCE_ADDR, getCurrency()))->toPublicKey();
     auto dest = std::dynamic_pointer_cast<StellarLikeAddress>(StellarLikeAddress::parse(DEST_ADDR, getCurrency()))->toPublicKey();
     Encoder encoder;
-    TransactionEnvelope envelope;
-    envelope.tx.sourceAccount.type = PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
-    std::copy(source.begin(), source.end(), envelope.tx.sourceAccount.content.begin());
-    envelope.tx.seqNum = 98448948301135875UL;
-    envelope.tx.fee = 100;
+    TransactionV0 tx;
+    std::copy(source.begin(), source.end(), tx.sourceAccountEd25519.begin());
+    tx.seqNum = 98448948301135875UL;
+    tx.fee = 100;
 
     CreateAccountOp op;
     op.destination.type = PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
@@ -64,7 +64,10 @@ TEST_F(StellarFixture, XDRCreateAccountEncode) {
     operation.type = stellar::OperationType::CREATE_ACCOUNT;
     operation.content = op;
 
-    envelope.tx.operations.emplace_back(operation);
+    tx.operations.emplace_back(operation);
+    TransactionV0Envelope v0;
+    v0.tx = tx;
+    TransactionEnvelope envelope = wrap(v0);
     encoder << envelope;
     auto out = hex::toString(encoder.toByteArray());
     EXPECT_EQ(out, hexTx);
@@ -80,18 +83,20 @@ TEST_F(StellarFixture, XDRCreateAccountDecode) {
     TransactionEnvelope envelope;
     decoder >> envelope;
 
-    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(envelope.tx.sourceAccount.content.begin(), envelope.tx.sourceAccount.content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    EXPECT_EQ(envelope.type, EnvelopeType::ENVELOPE_TYPE_TX_V0);
+    const auto& v0 = boost::get<TransactionV0Envelope>(envelope.content);
+    const auto& tx = v0.tx;
+    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(sourceAddr, SOURCE_ADDR);
-    EXPECT_EQ(envelope.tx.sourceAccount.type, stellar::xdr::PublicKeyType::PUBLIC_KEY_TYPE_ED25519);
-    EXPECT_EQ(envelope.tx.fee, 100);
-    EXPECT_EQ(envelope.tx.seqNum, 98448948301135875UL);
+    EXPECT_EQ(tx.fee, 100);
+    EXPECT_EQ(tx.seqNum, 98448948301135875UL);
 
-    EXPECT_EQ(envelope.tx.operations.size(), 1);
-    stellar::xdr::Operation operation = envelope.tx.operations.front();
+    EXPECT_EQ(tx.operations.size(), 1);
+    stellar::xdr::Operation operation = tx.operations.front();
     EXPECT_EQ(operation.type, stellar::OperationType::CREATE_ACCOUNT);
 
     CreateAccountOp op = boost::get<CreateAccountOp>(operation.content);
-    auto destAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(op.destination.content.begin(), op.destination.content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    auto destAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(op.destination.content.begin(), op.destination.content.end()),  Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(destAddr, DEST_ADDR);
     EXPECT_EQ(op.destination.type, PublicKeyType::PUBLIC_KEY_TYPE_ED25519);
     EXPECT_EQ(op.startingBalance, 25000000000000000UL);
@@ -105,17 +110,16 @@ TEST_F(StellarFixture, XDRPaymentEncode) {
                  "00000001000000003a83935fabfdc44749ad4d042dbc4df9b59442f325a27960"
                  "519fba516adb8a5000000000000000000ee6b2800000000000000000";
     auto source = std::dynamic_pointer_cast<StellarLikeAddress>(StellarLikeAddress::parse(SOURCE_ADDR, getCurrency()))->toPublicKey();
-    auto dest = std::dynamic_pointer_cast<StellarLikeAddress>(StellarLikeAddress::parse(DEST_ADDR, getCurrency()))->toPublicKey();
+    auto dest = std::dynamic_pointer_cast<StellarLikeAddress>(StellarLikeAddress::parse(DEST_ADDR, getCurrency()));
     Encoder encoder;
-    TransactionEnvelope envelope;
-    envelope.tx.sourceAccount.type = PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
-    std::copy(source.begin(), source.end(), envelope.tx.sourceAccount.content.begin());
-    envelope.tx.seqNum = 98448948301135875UL;
-    envelope.tx.fee = 100;
+    TransactionV0 tx;
+    std::copy(source.begin(), source.end(), tx.sourceAccountEd25519.begin());
+    tx.seqNum = 98448948301135875UL;
+    tx.fee = 100;
 
     PaymentOp op;
-    op.destination.type = PublicKeyType::PUBLIC_KEY_TYPE_ED25519;
-    std::copy(dest.begin(), dest.end(), op.destination.content.begin());
+    op.destination = dest->toXdrMuxedAccount();
+
     op.amount = 250000000UL;
     op.asset.type = AssetType::ASSET_TYPE_NATIVE;
 
@@ -123,7 +127,10 @@ TEST_F(StellarFixture, XDRPaymentEncode) {
     operation.type = stellar::OperationType::PAYMENT;
     operation.content = op;
 
-    envelope.tx.operations.emplace_back(operation);
+    tx.operations.emplace_back(operation);
+    TransactionV0Envelope v0;
+    v0.tx = tx;
+    TransactionEnvelope envelope = wrap(v0);
     encoder << envelope;
     auto out = hex::toString(encoder.toByteArray());
     EXPECT_EQ(out, hexTx);
@@ -139,20 +146,23 @@ TEST_F(StellarFixture, XDRPaymentDecode) {
     TransactionEnvelope envelope;
     decoder >> envelope;
 
-    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(envelope.tx.sourceAccount.content.begin(), envelope.tx.sourceAccount.content.end()), getCurrency().stellarLikeNetworkParameters.value());
-    EXPECT_EQ(sourceAddr, SOURCE_ADDR);
-    EXPECT_EQ(envelope.tx.sourceAccount.type, PublicKeyType::PUBLIC_KEY_TYPE_ED25519);
-    EXPECT_EQ(envelope.tx.fee, 100);
-    EXPECT_EQ(envelope.tx.seqNum, 98448948301135875UL);
+    EXPECT_EQ(envelope.type, EnvelopeType::ENVELOPE_TYPE_TX_V0);
+    const auto& v0 = boost::get<TransactionV0Envelope>(envelope.content);
+    const auto& tx = v0.tx;
 
-    EXPECT_EQ(envelope.tx.operations.size(), 1);
-    stellar::xdr::Operation operation = envelope.tx.operations.front();
+    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
+    EXPECT_EQ(sourceAddr, SOURCE_ADDR);
+    EXPECT_EQ(tx.fee, 100);
+    EXPECT_EQ(tx.seqNum, 98448948301135875UL);
+
+    EXPECT_EQ(tx.operations.size(), 1);
+    stellar::xdr::Operation operation = tx.operations.front();
     EXPECT_EQ(operation.type, stellar::OperationType::PAYMENT);
 
     PaymentOp op = boost::get<PaymentOp>(operation.content);
-    auto destAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(op.destination.content.begin(), op.destination.content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    auto destAddr = StellarLikeAddress::convertMuxedAccountToAddress(op.destination, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(destAddr, DEST_ADDR);
-    EXPECT_EQ(op.destination.type, PublicKeyType::PUBLIC_KEY_TYPE_ED25519);
+    EXPECT_EQ(op.destination.type, CryptoKeyType::KEY_TYPE_ED25519);
     EXPECT_EQ(op.amount, 250000000UL);
     EXPECT_EQ(op.asset.type, AssetType::ASSET_TYPE_NATIVE);
 }
@@ -213,22 +223,26 @@ TEST_F(StellarFixture, XDRDecodeEnvelopeWithCustomAsset4) {
     } catch (...) {
 
     }
-    EXPECT_EQ(envelope.tx.fee, 10000);
-    EXPECT_EQ(envelope.tx.memo.type, MemoType::MEMO_TEXT);
-    EXPECT_EQ(boost::get<string28>(envelope.tx.memo.content), "Euro transfer back");
-    EXPECT_EQ(envelope.tx.operations.size(), 1);
-    EXPECT_EQ(envelope.tx.seqNum, 98448948301135882UL);
-    EXPECT_EQ(envelope.tx.timeBounds.isEmpty(), true);
-    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(envelope.tx.sourceAccount.content.begin(), envelope.tx.sourceAccount.content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    EXPECT_EQ(envelope.type, EnvelopeType::ENVELOPE_TYPE_TX_V0);
+    const auto& v0 = boost::get<TransactionV0Envelope>(envelope.content);
+    const auto& tx = v0.tx;
+
+    EXPECT_EQ(tx.fee, 10000);
+    EXPECT_EQ(tx.memo.type, MemoType::MEMO_TEXT);
+    EXPECT_EQ(boost::get<string28>(tx.memo.content), "Euro transfer back");
+    EXPECT_EQ(tx.operations.size(), 1);
+    EXPECT_EQ(tx.seqNum, 98448948301135882UL);
+    EXPECT_EQ(tx.timeBounds.isEmpty(), true);
+    auto sourceAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(tx.sourceAccountEd25519.begin(), tx.sourceAccountEd25519.end()), Option<uint64_t>::NONE,getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(sourceAddr, "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3");
-    EXPECT_EQ(envelope.tx.operations.begin()->type, OperationType::PAYMENT);
-    auto operation = boost::get<PaymentOp>(envelope.tx.operations.begin()->content);
-    auto destAddr = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(operation.destination.content.begin(), operation.destination.content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    EXPECT_EQ(tx.operations.begin()->type, OperationType::PAYMENT);
+    auto operation = boost::get<PaymentOp>(tx.operations.begin()->content);
+    auto destAddr = StellarLikeAddress::convertMuxedAccountToAddress(operation.destination, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(destAddr, "GB6TMMOCZSFFVXUXPV6FATTGQN6NKV74I2LTBB6LR7GEWLTN2IGZ6L6X");
     EXPECT_EQ(operation.asset.type, AssetType::ASSET_TYPE_CREDIT_ALPHANUM4);
     auto asset = boost::get<AssetCode4>(operation.asset.assetCode);
     EXPECT_EQ(operation.asset.issuer.nonEmpty(), true);
     EXPECT_EQ(std::string(asset.begin(), asset.end()), "EURT");
-    auto issuer = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(operation.asset.issuer.getValue().content.begin(), operation.asset.issuer.getValue().content.end()), getCurrency().stellarLikeNetworkParameters.value());
+    auto issuer = StellarLikeAddress::convertPubkeyToAddress(std::vector<uint8_t>(operation.asset.issuer.getValue().content.begin(), operation.asset.issuer.getValue().content.end()), Option<uint64_t>::NONE, getCurrency().stellarLikeNetworkParameters.value());
     EXPECT_EQ(issuer, "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S");
 }

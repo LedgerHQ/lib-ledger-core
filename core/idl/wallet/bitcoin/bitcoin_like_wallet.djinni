@@ -97,6 +97,11 @@ BitcoinLikeOutput = interface +c {
     getAddress(): optional<string>;
     getDerivationPath(): optional<DerivationPath>;
     getBlockHeight(): optional<i64>;
+    # Check if the transaction (which created this output) is replaceable (RBF).
+    # An output can be replaceable if the transaction has at least one RBF input
+    # and if the transaction is not a block.
+    # @return true if the output is replaceable, false otherwise
+    const isReplaceable(): bool;
 }
 
 # Class representing Bitcoin block
@@ -313,6 +318,8 @@ BitcoinLikeAccount = interface +c {
     # Get addresses given a range of indices
     # Note: this will return public and change addresses
     getAddresses(from: i64, to: i64, callback: ListCallback<Address>);
+    # get all contained adresses.
+    getAllAddresses(): list<Address>;
 }
 
 # A bitcoin-like wallet.

@@ -50,7 +50,7 @@ static std::vector<std::string> invalid_addresses = {
 
 TEST_F(StellarFixture, AddressFromPubKey) {
     for (auto i = 0; i < pub_keys.size(); i++) {
-        StellarLikeAddress address(hex::toByteArray(pub_keys[i]), getCurrency(), Option<std::string>::NONE);
+        StellarLikeAddress address(hex::toByteArray(pub_keys[i]), getCurrency(), Option<uint64_t>::NONE, Option<std::string>::NONE);
         std::cout << "Address: " << address.toString() << std::endl;
         EXPECT_EQ(address.toString(), addresses[i]);
     }

@@ -49,7 +49,7 @@ namespace ledger {
 
         private:
             api::StellarLikeOperationRecord _record;
-            stellar::xdr::TransactionEnvelope _envelope;
+            stellar::xdr::TransactionV1Envelope _envelope;
             api::Currency _currency;
         };
     }

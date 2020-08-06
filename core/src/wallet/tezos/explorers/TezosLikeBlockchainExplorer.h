@@ -109,6 +109,7 @@ namespace ledger {
                                             public AbstractBlockchainExplorer<TezosLikeBlockchainExplorerTransaction> {
         public:
             typedef ledger::core::Block Block;
+            using Transaction = TezosLikeBlockchainExplorerTransaction;
 
             TezosLikeBlockchainExplorer(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
                                         const std::vector<std::string> &matchableKeys);
@@ -149,6 +150,9 @@ namespace ledger {
                                             const std::shared_ptr<api::ExecutionContext> &context,
                                             const std::shared_ptr<HttpClient> &http,
                                             const std::string &rpcNode);
+
+            /// Check that the account is funded.
+            virtual Future<bool> isFunded(const std::string &address) = 0;
 
         protected:
             std::string getRPCNodeEndpoint() const {

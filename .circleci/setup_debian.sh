@@ -2,8 +2,8 @@
 
 BUILD_CONFIG=$1
 
-echo ">>>>>>> GETTING CIRCLE_TAG : $CIRCLE_TAG"
-echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
+apt-get update
+apt-get -y install git ssh
 
 echo "========> Install basic config"
 apt-get update
@@ -16,24 +16,21 @@ echo "========> Java Installed"
 echo $JAVA_HOME
 ls -la /usr/lib/jvm/java-8-openjdk || echo "!!!! java openjdk not found"
 
-if [ "$BUILD_CONFIG" == "Release" ]; then
-    apt-get install -y awscli
-    echo "========> Install sbt"
-    SBT_DEB="sbt-1.3.10.deb"
-    curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
-    dpkg -i $SBT_DEB
-    rm $SBT_DEB
-    sbt sbtVersion
-fi
+apt-get install -y awscli
+echo "========> Install sbt"
+SBT_DEB="sbt-1.3.10.deb"
+curl -L -o $SBT_DEB https://dl.bintray.com/sbt/debian/$SBT_DEB
+dpkg -i $SBT_DEB
+rm $SBT_DEB
+sbt sbtVersion
+apt-get install -y scala
 
 echo "========> Install C++ dependencies"
 apt-get install -y g++ make
 export PATH=$HOME/cmake-3.16.5/bin:$PATH
 
-if [ "$BUILD_CONFIG" == "Debug" ]; then
-    echo "========> Install Qt5"
-    apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev
-fi
+echo "========> Install Qt5"
+apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev
 
 echo "========> Install PostgreSQL"
 apt-get install -y postgresql-9.6 libpq-dev postgresql-server-dev-all
@@ -41,12 +38,8 @@ apt-get install -y postgresql-9.6 libpq-dev postgresql-server-dev-all
 echo "========> Install Sqlite"
 apt-get install -y sqlite3 sqlite libsqlite3-dev
 
-echo "========> Install node"
-curl -sL https://deb.nodesource.com/setup_9.x | bash -
-apt-get install -y nodejs
+echo "========> Install kerberos"
+apt-get install -y libkrb5-dev
 
-echo "========> Install yarn"
-curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
-echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
-apt-get update && apt-get install -y yarn
+
 

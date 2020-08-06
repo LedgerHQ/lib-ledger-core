@@ -42,8 +42,15 @@
 #include <unordered_map>
 #include "api_impl/OperationApi.h"
 
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
+
 namespace ledger {
     namespace core {
+
+        namespace algorand {
+            class Operation;
+        }
+
         class AbstractAccount;
         class OperationQuery : public api::OperationQuery, public std::enable_shared_from_this<OperationQuery>,
                                public DedicatedContext {
@@ -75,6 +82,7 @@ namespace ledger {
             void inflateEthereumLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateMoneroLikeTransaction(soci::session& sql, OperationApi& operation);
             void inflateStellarLikeTransaction(soci::session& sql, OperationApi& operation);
+            void inflateAlgorandLikeTransaction(soci::session& sql, algorand::Operation &operation);
 
         protected:
             virtual soci::rowset<soci::row> performExecute(soci::session &sql);

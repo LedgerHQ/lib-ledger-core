@@ -183,6 +183,18 @@ namespace ledger {
         template <> void migrate<20>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<20>(soci::session& sql, api::DatabaseBackendType type);
 
+        // Add replaceable column on bitcoin_outputs
+        template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type);
+
+        // Add muxed version in stellar network parameters
+        template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type);
+
+        // Algorand support
+        template <> void migrate<23>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<23>(soci::session& sql, api::DatabaseBackendType type);
+
     }
 }
 

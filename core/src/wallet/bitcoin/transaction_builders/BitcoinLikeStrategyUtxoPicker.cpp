@@ -34,7 +34,11 @@
 #include <api/BitcoinLikeScriptChunk.hpp>
 #include <wallet/bitcoin/api_impl/BitcoinLikeScriptApi.h>
 #include <wallet/bitcoin/api_impl/BitcoinLikeTransactionApi.h>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+
 #include <random>
+#include <numeric>
+
 namespace ledger {
     namespace core {
 
@@ -43,107 +47,76 @@ namespace ledger {
 
         }
 
-        Future<BitcoinLikeUtxoPicker::UTXODescriptorList>
+        Future<std::vector<BitcoinLikeUtxo>>
         BitcoinLikeStrategyUtxoPicker::filterInputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
-            return computeAggregatedAmount(buddy).flatMap<UTXODescriptorList>(getContext(), [=] (const BigInt& a) -> Future<UTXODescriptorList> {
+            return computeAggregatedAmount(buddy).flatMap<std::vector<BitcoinLikeUtxo>>(getContext(), [=] (BigInt const &amount) {
                 buddy->logger->info("GET UTXO");
-                return buddy->getUtxo().map<UTXODescriptorList>(getContext(), [=] (const std::vector<std::shared_ptr<api::BitcoinLikeOutput>>& utxo) -> UTXODescriptorList {
-                    buddy->logger->info("GOT UTXO");
-                    if (utxo.size() == 0)
-                        throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "There is no UTXO on this account.");
-                    //If wipe mode no matter which strategy we use, let's use filterWithDeepFirst (for the moment)
-                    if (buddy->request.wipe) {
-                        return filterWithDeepFirst(buddy, utxo, a);
-                    }
-                    auto picker = buddy->request.utxoPicker.getValue();
-                    const api::BitcoinLikePickingStrategy strategy = std::get<0>(picker);
-                    switch (strategy) {
-                        case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
-                            return filterWithDeepFirst(buddy, utxo, a);
-                        case api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE:
-                            return filterWithOptimizeSize(buddy, utxo, a);
-                        case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
-                            return filterWithMergeOutputs(buddy, utxo, a);
-                    }
-                });
+
+                return buddy->getUtxo().map<std::vector<BitcoinLikeUtxo>>(
+                    getContext(),
+                    [=] (std::vector<BitcoinLikeUtxo> const &utxos) {
+                        buddy->logger->info("GOT UTXO");
+
+                        if (utxos.size() == 0)
+                            throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "There is no UTXO on this account.");
+
+                        //If wipe mode no matter which strategy we use, let's use filterWithDeepFirst (for the moment)
+                        if (buddy->request.wipe) {
+                            return filterWithDeepFirst(buddy, utxos, amount, getCurrency());
+                        }
+
+                        auto picker = buddy->request.utxoPicker.getValue();
+                        const api::BitcoinLikePickingStrategy strategy = std::get<0>(picker);
+
+                        switch (strategy) {
+                            case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
+                                return filterWithDeepFirst(buddy, utxos, amount, getCurrency());
+                            case api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE:
+                                return filterWithOptimizeSize(buddy, utxos, amount, getCurrency());
+                            case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
+                                return filterWithMergeOutputs(buddy, utxos, amount, getCurrency());
+                        }
+                    });
             });
         }
 
         Future<BigInt> BitcoinLikeStrategyUtxoPicker::computeAggregatedAmount(
-                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
-            using UDList = std::list<BitcoinLikeUtxoPicker::UTXODescriptor>;
-            static std::function<Future<BigInt> (std::shared_ptr<api::ExecutionContext>, UDList::const_iterator, BigInt, const std::shared_ptr<Buddy>& buddy)> go
-                    = [] (std::shared_ptr<api::ExecutionContext> context, const UDList::const_iterator it, BigInt v, const std::shared_ptr<Buddy>& buddy) mutable -> Future<BigInt> {
-                        if (it == buddy->request.inputs.end())
-                            return Future<BigInt>::successful(v);
-                        const auto& i = *it;
-                        const auto outputIndex = std::get<1>(i);
-                        buddy->logger->info("GET TX 1");
-                        return buddy->getTransaction(String(std::get<0>(i))).flatMap<BigInt>(context, [=] (const std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>& tx) -> Future<BigInt> {
-                            buddy->logger->info("GOT TX 1");
-                            auto newIt = it;
-                            return go(context, newIt++, v + tx->outputs[outputIndex].value, buddy);
-                        });
+            const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy) {
+            // NOTE: We can turn that lambda to a free function and pass the context and the buddy as arguments
+            auto go = [context = getContext(), buddy] (auto go, auto it, auto v) {
+                if (it == buddy->request.inputs.end())
+                    return Future<BigInt>::successful(v);
+                const auto& i = *it;
+                const auto outputIndex = i.outputIndex;
+                // NOTE: why always 1 ?
+                buddy->logger->info("GET TX 1");
+                return buddy->getTransaction(i.transactionHash).template flatMap<BigInt>(context, [=] (auto const& tx) mutable {
+                    buddy->logger->info("GOT TX 1");
+                    return go(go, ++it, v + tx->outputs[outputIndex].value);
+                });
             };
-            return go(getContext(), buddy->request.inputs.begin(), BigInt(), buddy);
+            // NOTE: we can now use buddy->transaction->inputs which is filled during fillInputs by user inputs
+            return go(go, buddy->request.inputs.begin(), BigInt());
         }
 
-        BitcoinLikeUtxoPicker::UTXODescriptorList
+        std::vector<BitcoinLikeUtxo>
         BitcoinLikeStrategyUtxoPicker::filterWithDeepFirst(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                           const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxo,
-                                                           const BigInt &aggregatedAmount) {
-            // First add block height and time information to the list of utxo
-            using RichUTXO = std::tuple<uint64_t, std::shared_ptr<api::BitcoinLikeOutput>>;
-            using RichUTXOList = std::vector<RichUTXO>;
-            std::shared_ptr<RichUTXOList> richutxo = std::make_shared<RichUTXOList>();
+                                                            const std::vector<BitcoinLikeUtxo> &utxos,
+                                                            const BigInt &aggregatedAmount,
+                                                            const api::Currency& currency) {
 
-            for (auto &u : utxo) {
-                uint64_t block_height = u->getBlockHeight().value_or(std::numeric_limits<uint64_t>::max());
-                RichUTXO curr_richutxo{block_height, u};
-                richutxo->emplace_back(std::move(curr_richutxo));
-            }
+            buddy->logger->debug("Start filterWithDeepFirst");
 
-            // Sort the list by deep
-            std::sort(richutxo->begin(), richutxo->end(), [] (const RichUTXO& a, const RichUTXO& b) -> bool {
-                return std::get<0>(a) < std::get<0>(b);
+            return filterWithSort(buddy, utxos, aggregatedAmount, currency, [] (auto &lhs, auto &rhs) {
+                constexpr auto maxBlockHeight = std::numeric_limits<uint64_t>::max();
+                return lhs.blockHeight.getValueOr(maxBlockHeight) < rhs.blockHeight.getValueOr(maxBlockHeight);
             });
-
-            // Aggregate the amount needed by the transaction
-            BigInt amount = aggregatedAmount;
-            auto pickedInputs = 0;
-            for (const RichUTXO & ru : (*richutxo)) {
-                const std::shared_ptr<BitcoinLikeOutputApi>& output = std::dynamic_pointer_cast<BitcoinLikeOutputApi>(std::get<1>(ru));
-                amount = amount + output->value();
-                buddy->logger->debug("Collected: {} Needed: {}", amount.toString(), buddy->outputAmount.toString());
-                pickedInputs += 1;
-                bool computeOutputAmount = pickedInputs == utxo.size();
-                if (hasEnough(buddy, amount, pickedInputs, computeOutputAmount)) {
-                    break;
-                }
-                if (pickedInputs >= richutxo->size() && !buddy->request.wipe) {
-                    throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-                }
-            }
-
-            buddy->logger->debug("Require {} inputs to complete the transaction with {} for {}", pickedInputs, amount.toString(), buddy->outputAmount.toString());
-
-            // Build UTXODescriptorList from our RichUTXOList
-            UTXODescriptorList out;
-
-            for (auto index = 0; index < pickedInputs; index++) {
-                const std::shared_ptr<BitcoinLikeOutputApi>& output =
-                        std::dynamic_pointer_cast<BitcoinLikeOutputApi>(std::get<1>((*richutxo)[index]));
-                //Fix: use uniform initialization
-                UTXODescriptor utxoDescriptor{output->getTransactionHash(), output->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
-                out.emplace_back(std::move(utxoDescriptor));
-            }
-
-            return out;
         }
 
         bool BitcoinLikeStrategyUtxoPicker::hasEnough(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
                                                       const BigInt &aggregatedAmount,
                                                       int inputCount,
+                                                      const api::Currency& currency,
                                                       bool computeOutputAmount) {
             if (buddy->outputAmount > aggregatedAmount) return false;
             // TODO Handle multiple outputs
@@ -152,9 +125,9 @@ namespace ledger {
                 auto outputCount = buddy->request.outputs.size() + addedOutputCount;
                 auto size = BitcoinLikeTransactionApi::estimateSize(inputCount,
                                                                     outputCount,
-                                                                    getCurrency(),
+                                                                    currency,
                                                                     buddy->keychain->getKeychainEngine());
-                buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount,  buddy->request.outputs.size() + addedOutputCount);
+                buddy->logger->debug("Estimate for {} inputs with {} outputs", inputCount, buddy->request.outputs.size() + addedOutputCount);
                 buddy->logger->debug("Estimated size {} <> {}", size.Min, size.Max);
                 return buddy->outputAmount + (*buddy->request.feePerByte * BigInt(size.Max));
             };
@@ -168,8 +141,8 @@ namespace ledger {
             if(!buddy->request.wipe) {
                 BigInt changeAmount = aggregatedAmount - minimumNeededAmount;
                 buddy->changeAmount = changeAmount;
-                buddy->logger->debug("Change amount {}, dust {}", changeAmount.toString(), BigInt(getCurrency().bitcoinLikeNetworkParameters.value().DustAmount).toString());
-                if (changeAmount > BigInt(getCurrency().bitcoinLikeNetworkParameters.value().DustAmount)) {
+                buddy->logger->debug("Change amount {}, dust {}", changeAmount.toString(), BigInt(currency.bitcoinLikeNetworkParameters.value().DustAmount).toString());
+                if (changeAmount > BigInt(currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
                     // The change amount is bigger than the dust so we need to create a change output,
                     // let's see if we have enough fees to handle this output
                     auto minimumNeededAmountWithChange = computeAmountWithFees(1);
@@ -183,15 +156,17 @@ namespace ledger {
             return !buddy->request.wipe;
         }
 
-        BitcoinLikeUtxoPicker::UTXODescriptorList
+        std::vector<BitcoinLikeUtxo>
         BitcoinLikeStrategyUtxoPicker::filterWithOptimizeSize(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                              const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
-                                                              const BigInt &aggregatedAmount) {
+                                                              const std::vector<BitcoinLikeUtxo> &utxos,
+                                                              const BigInt &aggregatedAmount,
+                                                              const api::Currency& currency) {
 
+            // NOTE: why are we using buddy->outputAmount here instead of aggregatedAmount ?
             //Don't use this strategy for wipe mode (we have more performent strategies for this use case)
             if (buddy->request.wipe) {
                 buddy->logger->debug("Strategy filterWithOptimizeSize with wipe to address mode, using filterWithDeepFirst");
-                return filterWithDeepFirst(buddy, utxos, buddy->outputAmount);
+                return filterWithDeepFirst(buddy, utxos, buddy->outputAmount, currency);
             }
             /*
              * This coin selection is inspired from the one used in Bitcoin Core
@@ -207,51 +182,59 @@ namespace ledger {
             int64_t longTermFees = DEFAULT_FALLBACK_FEE;
 
             //Compute cost of change
-            auto fixedSize = BitcoinLikeTransactionApi::estimateSize(0,
+            auto const fixedSize = BitcoinLikeTransactionApi::estimateSize(0,
                                                                      0,
-                                                                     getCurrency(),
+                                                                     currency,
                                                                      buddy->keychain->getKeychainEngine());
             //Size of only 1 output (without fixed size)
-            auto oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
+            const int64_t oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
                                                                          1,
-                                                                         getCurrency(),
+                                                                         currency,
                                                                          buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
             //Size 1 signed UTXO (signed input)
-            auto signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
+            const int64_t signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
                                                                           0,
-                                                                          getCurrency(),
+                                                                          currency,
                                                                           buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
 
             //Size of unsigned change
-            auto changeSize = oneOutputSize;
+            const int64_t changeSize = oneOutputSize;
             //Size of signed change
-            auto signedChangeSize = signedUTXOSize;
+            const int64_t signedChangeSize = signedUTXOSize;
 
-            auto effectiveFees = buddy->request.feePerByte;
+            const int64_t effectiveFees = buddy->request.feePerByte->toInt64();
             // Here signedChangeSize should be multiplied by discard fees
             // but since we don't have access to estimateSmartFees, we assume
             // that discard fees are equal to effectiveFees
-            const int64_t costOfChange = effectiveFees->toInt64() * (signedChangeSize + changeSize);
+            const int64_t costOfChange = effectiveFees * (signedChangeSize + changeSize);
+
             buddy->logger->debug("Cost of change {}, signedChangeSize {}, changeSize {}", costOfChange, signedChangeSize, changeSize);
 
             //Calculate effective value of outputs
             int64_t currentAvailableValue = 0;
-            using EffectiveUTXOList = std::vector<EffectiveUTXO>;
-            EffectiveUTXOList listEffectiveUTXOs;
+
+            struct EffectiveUtxo {
+                const BitcoinLikeUtxo *utxo;
+                int64_t effectiveValue;
+                int64_t effectiveFees;
+                int64_t longTermFees;
+            };
+
+            std::vector<EffectiveUtxo> effectiveUtxos;
             //Get size of utxos as a signed input in a transaction
             for (auto& utxo : utxos) {
-                auto outEffectiveValue = utxo->getValue()->toLong() - effectiveFees->toInt64() * signedUTXOSize;
+                int64_t outEffectiveValue = utxo.value.toLong() - effectiveFees * signedUTXOSize;
                 if (outEffectiveValue > 0) {
-                    auto outEffectiveFees = effectiveFees->toInt64() * signedUTXOSize;
-                    auto outLongTermFees = longTermFees * signedUTXOSize;
-                    listEffectiveUTXOs.emplace_back(EffectiveUTXO{utxo, outEffectiveValue, outEffectiveFees, outLongTermFees});
+                    int64_t outEffectiveFees = effectiveFees * signedUTXOSize;
+                    int64_t outLongTermFees = longTermFees * signedUTXOSize;
+                    effectiveUtxos.push_back(EffectiveUtxo{&utxo, outEffectiveValue, outEffectiveFees, outLongTermFees});
                     currentAvailableValue += outEffectiveValue;
                 }
             }
 
             //Get no inputs fees
             // At beginning, there are no outputs in tx, so noInputFees are fixed fees
-            int64_t notInputFees = effectiveFees->toInt64() * (fixedSize.Max + (int64_t)(oneOutputSize * buddy->request.outputs.size()));//at least fixed size and outputs(version...)
+            int64_t notInputFees = effectiveFees * (fixedSize.Max + (int64_t)(oneOutputSize * buddy->request.outputs.size()));//at least fixed size and outputs(version...)
 
             //Start coin selection algorithm (according to SelectCoinBnb from Bitcoin Core)
             int64_t currentValue = 0;
@@ -266,14 +249,14 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
             }
 
-            auto descendingEffectiveValue = [] (const EffectiveUTXO &lhs, const EffectiveUTXO &rhs) -> bool {
+            auto descendingEffectiveValue = [] (const EffectiveUtxo &lhs, const EffectiveUtxo &rhs) -> bool {
                 return  lhs.effectiveValue > rhs.effectiveValue ;
             };
 
             //Sort utxos by effectiveValue
-            std::sort(listEffectiveUTXOs.begin(), listEffectiveUTXOs.end(), descendingEffectiveValue);
+            std::sort(effectiveUtxos.begin(), effectiveUtxos.end(), descendingEffectiveValue);
 
-            int64_t currentWaste = 0, currentActualTarget = actualTarget;
+            int64_t currentWaste = 0;
             int64_t bestWaste = MAX_MONEY;
             std::vector<bool> bestSelection;
             buddy->logger->debug("Start filterWithLowestFees, target range is {} to {}, available funds {}", actualTarget, actualTarget + costOfChange, currentAvailableValue);
@@ -282,19 +265,19 @@ namespace ledger {
 
                 //Condition for starting a backtrack
                 bool backtrack = false;
-                if(currentValue + currentAvailableValue < currentActualTarget || //Cannot reach target with the amount remaining in currentAvailableValue
-                   currentValue > currentActualTarget + costOfChange || // Selected value is out of range, go back and try other branch
-                   (currentWaste > bestWaste && listEffectiveUTXOs.at(0).effectiveFees - listEffectiveUTXOs.at(0).longTermFees > 0) ) { //avoid selecting utxos producing more waste
+                if(currentValue + currentAvailableValue < actualTarget || //Cannot reach target with the amount remaining in currentAvailableValue
+                   currentValue > actualTarget + costOfChange || // Selected value is out of range, go back and try other branch
+                   (currentWaste > bestWaste && effectiveUtxos.at(0).effectiveFees - effectiveUtxos.at(0).longTermFees > 0) ) { //avoid selecting utxos producing more waste
                     backtrack = true;
-                } else if (currentValue >= currentActualTarget) { //Selected valued is within range
-                    currentWaste += (currentValue - currentActualTarget);
+                } else if (currentValue >= actualTarget) { //Selected valued is within range
+                    currentWaste += (currentValue - actualTarget);
                     if (currentWaste <= bestWaste) {
                         bestSelection = currentSelection;
-                        bestSelection.resize(listEffectiveUTXOs.size());
+                        bestSelection.resize(effectiveUtxos.size());
                         bestWaste = currentWaste;
                     }
                     // remove the excess value as we will be selecting different coins now
-                    currentWaste -= (currentValue - currentActualTarget);
+                    currentWaste -= (currentValue - actualTarget);
                     backtrack = true;
                 }
 
@@ -303,10 +286,10 @@ namespace ledger {
                     // Walk backwards to find the last included UTXO that still needs to have its omission branch traversed.
                     while (!currentSelection.empty() && !currentSelection.back()) {
                         currentSelection.pop_back();
-                        currentAvailableValue += listEffectiveUTXOs.at(currentSelection.size()).effectiveValue;
+                        currentAvailableValue += effectiveUtxos.at(currentSelection.size()).effectiveValue;
                     }
 
-                    //Case we walked back to the first utxo and all solutions searched.
+                    //Case we walked back to the first utxos and all solutions searched.
                     if (currentSelection.empty()) {
                         buddy->logger->debug("Current selection is empty, break !");
                         break;
@@ -314,59 +297,56 @@ namespace ledger {
 
                     //Output was included on previous iterations, try excluding now
                     currentSelection.back() = false;
-                    auto& effectiveUTXO = listEffectiveUTXOs.at(currentSelection.size() - 1);
-                    currentValue -= effectiveUTXO.effectiveValue;
-                    currentWaste -= (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
-                    currentActualTarget -= effectiveUTXO.effectiveFees;
+                    auto& eu = effectiveUtxos.at(currentSelection.size() - 1);
+                    currentValue -= eu.effectiveValue;
+                    currentWaste -= (eu.effectiveFees - eu.longTermFees);
                 } else { //Moving forwards, continuing down this branch
-                    auto& effectiveUTXO = listEffectiveUTXOs.at(currentSelection.size());
+                    auto& eu = effectiveUtxos.at(currentSelection.size());
 
-                    //Remove this utxo from currentAvailableValue
-                    currentAvailableValue -= effectiveUTXO.effectiveValue;
+                    //Remove this utxos from currentAvailableValue
+                    currentAvailableValue -= eu.effectiveValue;
 
                     // Avoid searching a branch if the previous UTXO has the same value and same waste and was excluded. Since the ratio of fee to
                     // long term fee is the same, we only need to check if one of those values match in order to know that the waste is the same.
                     if (!currentSelection.empty() && !currentSelection.back() &&
-                        effectiveUTXO.effectiveValue == listEffectiveUTXOs.at(currentSelection.size() - 1).effectiveValue &&
-                        effectiveUTXO.effectiveFees == listEffectiveUTXOs.at(currentSelection.size() - 1).effectiveFees) {
+                        eu.effectiveValue == effectiveUtxos.at(currentSelection.size() - 1).effectiveValue &&
+                        eu.effectiveFees == effectiveUtxos.at(currentSelection.size() - 1).effectiveFees) {
                         currentSelection.push_back(false);
                     } else {
                         //Inclusion branch first
                         currentSelection.push_back(true);
-                        currentValue += effectiveUTXO.effectiveValue;
-                        currentWaste += (effectiveUTXO.effectiveFees - effectiveUTXO.longTermFees);
-                        currentActualTarget += effectiveUTXO.effectiveFees;
+                        currentValue += eu.effectiveValue;
+                        currentWaste += (eu.effectiveFees - eu.longTermFees);
                     }
                 }
             }
 
+            // NOTE: we're using filterWithKnapsackSolver instead of filterWithDeepFirst
             //If no selection found fallback on filterWithDeepFirst
             if (bestSelection.empty()) {
                 buddy->logger->debug("No best selection found, fallback on filterWithKnapsackSolver coin selection");
-                return filterWithKnapsackSolver(buddy, utxos, aggregatedAmount);
+                return filterWithKnapsackSolver(buddy, utxos, aggregatedAmount, currency);
             }
 
             //Prepare result
             buddy->logger->debug("Found best selection of size: {}", bestSelection.size());
-            UTXODescriptorList out;
+
+            std::vector<BitcoinLikeUtxo> out;
             BigInt bestValue = BigInt::ZERO;
             for (size_t i = 0; i < bestSelection.size(); i++) {
                 if (bestSelection.at(i)) {
-                    buddy->logger->debug("Choose utxo with value: {}", listEffectiveUTXOs.at(i).output->getValue()->toLong());
-                    bestValue = bestValue + BigInt(listEffectiveUTXOs.at(i).output->getValue()->toLong());
-                    UTXODescriptor utxoDescriptor{listEffectiveUTXOs.at(i).output->getTransactionHash(), listEffectiveUTXOs.at(i).output->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
-                    out.emplace_back(std::move(utxoDescriptor));
+                    auto const &eu = effectiveUtxos.at(i);
+
+                    buddy->logger->debug("Choose utxos with value: {}", eu.utxo->value.toLong());
+                    bestValue = bestValue + BigInt(eu.effectiveValue);
+                    out.push_back(std::move(*eu.utxo));
                 }
             }
-
-            //Set change amount
-            buddy->changeAmount = bestValue - BigInt(currentActualTarget + costOfChange);
-
             return out;
         }
 
-        static void approximateBestSubset(const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &vUTXOs, const int64_t totalLower, const BigInt &targetValue,
-                                          std::vector<bool>& bestValues, int64_t &bestValue, int iterations = 1000) {
+        static void approximateBestSubset(const std::vector<BitcoinLikeUtxo> &vUTXOs, const int64_t totalLower, const BigInt &targetValue,
+                                          std::vector<bool>& bestValues, int64_t &bestValue, int64_t inputFees, int iterations = 1000) {
             std::vector<bool> includedUTXOs;
 
             bestValues.assign(vUTXOs.size(), true);
@@ -394,7 +374,9 @@ namespace ledger {
                         //the selection random.
                         if (nPass == 0 ? insecureRand() : !includedUTXOs[i])
                         {
-                            total += vUTXOs[i]->getValue()->toLong();
+                            auto currentAmount = vUTXOs[i].value.toLong() - inputFees;
+
+                            total += currentAmount;
                             includedUTXOs[i] = true;
                             if (total >= targetValue.toInt64())
                             {
@@ -404,7 +386,7 @@ namespace ledger {
                                     bestValue = total;
                                     bestValues = includedUTXOs;
                                 }
-                                total -= vUTXOs[i]->getValue()->toLong();
+                                total -= currentAmount;
                                 includedUTXOs[i] = false;
                             }
                         }
@@ -414,187 +396,197 @@ namespace ledger {
 
         }
 
-        BitcoinLikeUtxoPicker::UTXODescriptorList BitcoinLikeStrategyUtxoPicker::filterWithKnapsackSolver(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                                                                                  const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
-                                                                                                                  const BigInt &aggregatedAmount) {
+        std::vector<BitcoinLikeUtxo> BitcoinLikeStrategyUtxoPicker::filterWithKnapsackSolver(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                const std::vector<BitcoinLikeUtxo> &utxos,
+                const BigInt &aggregatedAmount,
+                const api::Currency& currency) {
+
             //Tx fixed size
-            auto fixedSize = BitcoinLikeTransactionApi::estimateSize(0,
+            auto const fixedSize = BitcoinLikeTransactionApi::estimateSize(0,
                                                                      0,
-                                                                     getCurrency(),
+                                                                     currency,
                                                                      buddy->keychain->getKeychainEngine());
             //Size of one output (without fixed size)
-            auto oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
+            const int64_t oneOutputSize = BitcoinLikeTransactionApi::estimateSize(0,
                                                                          1,
-                                                                         getCurrency(),
+                                                                         currency,
                                                                          buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
             //Size of UTXO as signed input in tx
-            auto signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
+            const int64_t signedUTXOSize = BitcoinLikeTransactionApi::estimateSize(1,
                                                                           0,
-                                                                          getCurrency(),
+                                                                          currency,
                                                                           buddy->keychain->getKeychainEngine()).Max - fixedSize.Max;
 
+            const int64_t signedUTXOCost = signedUTXOSize * buddy->request.feePerByte->toInt64();
+
             //Amount + fixed size fees + outputs fees
-            auto amountWithFixedFees = buddy->request.feePerByte->toInt64() * (fixedSize.Max + (buddy->request.outputs.size() * oneOutputSize)) + buddy->outputAmount.toInt64();
-            auto amountWithFees = amountWithFixedFees;
+            const int64_t amountWithFixedFees = buddy->request.feePerByte->toInt64() * (fixedSize.Max + (buddy->request.outputs.size() * oneOutputSize)) + buddy->outputAmount.toInt64();
+
             // Minimum amount from which we are willing to create a change for it
             // We take the dust as a reference plus the cost of spending this change
-            auto minimumChange = _currency.bitcoinLikeNetworkParameters->DustAmount + buddy->request.feePerByte->toInt64() * signedUTXOSize;
+            const int64_t minimumChange = currency.bitcoinLikeNetworkParameters->DustAmount + signedUTXOCost;
 
-            buddy->logger->debug("Start filterWithKnapsackSolver, target range is {} to {}", amountWithFees, amountWithFees + minimumChange);
+            buddy->logger->debug("Start filterWithKnapsackSolver, target range is {} to {}", amountWithFixedFees, amountWithFixedFees + minimumChange);
+
             //List of values less than target
             int64_t totalLower = 0;
-            Option<std::shared_ptr<api::BitcoinLikeOutput>> coinLowestLarger;
-            std::vector<std::shared_ptr<api::BitcoinLikeOutput>> vUTXOs;
-            UTXODescriptorList out;
+            Option<BitcoinLikeUtxo> coinLowestLarger;
+            std::vector<BitcoinLikeUtxo> vUTXOs;
+            std::vector<BitcoinLikeUtxo> out;
 
             //Random shuffle utxos
-            std::vector<size_t> indexes;
-            for (size_t index = 0; index < utxos.size(); index++) {
-                indexes.push_back(index);
-            }
-            auto seed = std::chrono::system_clock::now().time_since_epoch().count();
-            std::shuffle(indexes.begin(), indexes.end(),std::default_random_engine(seed));
+            std::vector<size_t> indexes(utxos.size());
+            std::iota(indexes.begin(), indexes.end(), 0);
 
+            auto const seed = std::chrono::system_clock::now().time_since_epoch().count();
+            std::shuffle(indexes.begin(), indexes.end(), std::default_random_engine(seed));
+
+            //Add fees for a signed input to amount
             for (auto index : indexes) {
                 auto& utxo = utxos[index];
-                //Add fees for a signed input to amount
-                amountWithFees = amountWithFixedFees + signedUTXOSize * buddy->request.feePerByte->toInt64();
-                //If utxo has exact amount return it
-                if (utxo->getValue()->toLong() == amountWithFees) {
-                    buddy->logger->debug("Found UTXO with right amount: {}",utxo->getValue()->toLong());
-                    UTXODescriptor utxoDescriptor{utxo->getTransactionHash(), utxo->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
-                    out.emplace_back(utxoDescriptor);
+
+                const int64_t currentAmount = utxo.value.toLong();
+                const int64_t currentAmountWithDeductedCost = currentAmount - signedUTXOCost;
+                if (currentAmountWithDeductedCost == amountWithFixedFees) {
+                    buddy->logger->debug("Found UTXO with right amount: {}", currentAmount);
+                    out.push_back(utxo);
                     return out;
-                } else if (utxo->getValue()->toLong() < amountWithFees + minimumChange) { //If utxo in range keep it
+                } else if (currentAmountWithDeductedCost < amountWithFixedFees + minimumChange) { //If utxo in range keep it
                     vUTXOs.push_back(utxo);
-                    totalLower += utxo->getValue()->toLong();
-                } else if (!coinLowestLarger.nonEmpty() || utxo->getValue()->toLong() < coinLowestLarger.getValue()->getValue()->toLong()) { //Keep track of lowest utxo out of range
-                    buddy->logger->debug("Set lowest out of range UTXO : {} ",utxo->getValue()->toLong());
+                    totalLower += currentAmountWithDeductedCost;
+                } else if (!coinLowestLarger.nonEmpty() || currentAmount < coinLowestLarger.getValue().value.toLong()) { //Keep track of lowest utxos out of range
+                    buddy->logger->debug("Set lowest out of range UTXO : {} ", currentAmount);
                     coinLowestLarger = utxo;
                 }
             }
 
-            //Compute amount if all vUTXOs used as signed inputs
-            amountWithFees = amountWithFixedFees + (int64_t) vUTXOs.size() * signedUTXOSize * buddy->request.feePerByte->toInt64();
-
             //If exact amount, return vUTXOs
-            if (totalLower == amountWithFees) {
+            if (totalLower == amountWithFixedFees) {
                 buddy->logger->debug("Total of lower utxos and amount equal");
-                for (auto& selectedUTXO : vUTXOs) {
-                    UTXODescriptor utxoDescriptor{selectedUTXO->getTransactionHash(), selectedUTXO->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
-                    out.emplace_back(utxoDescriptor);
+                for (auto& selectedUtxo : vUTXOs) {
+                    out.push_back(selectedUtxo);
                 }
                 return out;
-            } else if (totalLower < amountWithFees) {
+            } else if (totalLower < amountWithFixedFees) {
                 buddy->logger->debug("Total of lower utxos lower than amount equal");
                 //If total lower then and no coinLowestLarger then use filterWithDeepFirst
                 if (!coinLowestLarger.nonEmpty()) {
                     buddy->logger->debug("No best selection found, fallback on filterWithDeepFirst coin selection");
-                    return filterWithDeepFirst(buddy, utxos, buddy->outputAmount);
+                    // NOTE: same question here why we use buddy->outputAmount instead of aggregatedAmount
+                    return filterWithDeepFirst(buddy, utxos, buddy->outputAmount, currency);
                 }
             }
 
             //Sort vUTXOs descending
-            auto descending = [] (const std::shared_ptr<api::BitcoinLikeOutput> &lhs,
-                                  const std::shared_ptr<api::BitcoinLikeOutput> &rhs) -> bool {
-                return  lhs->getValue()->toLong() > rhs->getValue()->toLong() ;
-            };
-            std::sort(vUTXOs.begin(), vUTXOs.end(), descending);
+            std::sort(vUTXOs.begin(), vUTXOs.end(), [](auto const &lhs, auto const &rhs) {
+                return lhs.value.toLong() > rhs.value.toLong();
+            });
 
             //Approximate best tries
             std::vector<bool> bestValues;
             int64_t bestValue = 0;
             buddy->logger->debug("Approximate Best Subset 1st try");
             // Here we target the value amountWithFixedFees which is the amount of tx + fixed fees (fees of transaction without signed UTXOs)
-            approximateBestSubset(vUTXOs, totalLower, BigInt(static_cast<int64_t>(amountWithFixedFees)), bestValues, bestValue);
+            approximateBestSubset(vUTXOs, totalLower, BigInt(static_cast<int64_t>(amountWithFixedFees)), bestValues, bestValue, signedUTXOCost);
             if (bestValue != amountWithFixedFees && totalLower >= amountWithFixedFees + minimumChange) {
                 buddy->logger->debug("First approximation, bestValue {} with {} bestValues", bestValue, bestValues.size());
                 buddy->logger->debug("Approximate Best Subset 2nd try");
-                approximateBestSubset(vUTXOs, totalLower, BigInt((int64_t)amountWithFixedFees + minimumChange), bestValues, bestValue);
+                approximateBestSubset(vUTXOs, totalLower, BigInt((int64_t)amountWithFixedFees + minimumChange), bestValues, bestValue, signedUTXOCost);
                 buddy->logger->debug("Second approximation, bestValue {} with {} bestValues", bestValue, bestValues.size());
             }
 
             // We compute the totalBest here because we need picked UTXOs in subset
-            // to be able to update amountWithFees (because after signing all UTXOs we might need to pick additional UTXOs to cover
+            // to be able to update amountWithFixedFees (because after signing all UTXOs we might need to pick additional UTXOs to cover
             // fees generated by adding this UTXOs and their signature)
             int64_t totalBest = 0;
-            UTXODescriptorList tmpOut;
+            std::vector<BitcoinLikeUtxo> tmpOut;
             for (unsigned int i = 0; i < vUTXOs.size(); i++) {
                 if (bestValues[i])
                 {
-                    UTXODescriptor utxoDescriptor{vUTXOs[i]->getTransactionHash(), vUTXOs[i]->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
-                    tmpOut.emplace_back(utxoDescriptor);
-                    totalBest += vUTXOs[i]->getValue()->toLong();
+                    auto const& utxo = vUTXOs[i];
+
+                    tmpOut.push_back(utxo);
+                    totalBest += utxo.value.toLong();
                 }
             }
 
             buddy->logger->debug("Total Best = {}", totalBest);
 
-            // Updating new amount with picked UTXOs fees after signature
-            amountWithFees = amountWithFixedFees + tmpOut.size() * signedUTXOSize * buddy->request.feePerByte->toInt64();
-
-            //If bestValue is different from amountWithFees and coinLowestLarger is lower than bestVaule, then choose coinLowestLarger
+            //If bestValue is different from amountWithFixedFees and coinLowestLarger is lower than bestVaule, then choose coinLowestLarger
             if (coinLowestLarger.nonEmpty() &&
-                ((bestValue != amountWithFees && bestValue < amountWithFees + minimumChange) ||
-                 coinLowestLarger.getValue()->getValue()->toLong() <= bestValue))
+                ((bestValue != amountWithFixedFees && bestValue < amountWithFixedFees + minimumChange) ||
+                 coinLowestLarger.getValue().value.toLong() - signedUTXOCost <= bestValue))
             {
                 buddy->logger->debug("Add coinLowestLarger to coin selection");
-                UTXODescriptor utxoDescriptor{coinLowestLarger.getValue()->getTransactionHash(), coinLowestLarger.getValue()->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
-                out.emplace_back(utxoDescriptor);
+                out.push_back(coinLowestLarger.getValue());
 
-                //Compute change if needed
-                amountWithFees = amountWithFixedFees + signedUTXOSize * buddy->request.feePerByte->toInt64();
-                if (amountWithFees < coinLowestLarger.getValue()->getValue()->toLong()) {
-                    //Add cost of change
-                    amountWithFees += oneOutputSize * buddy->request.feePerByte->toInt64();
-                    buddy->changeAmount =  BigInt((int64_t)(coinLowestLarger.getValue()->getValue()->toLong() - amountWithFees));
-                }
+                buddy->changeAmount =  BigInt(coinLowestLarger.getValue().value.toLong() - signedUTXOCost - (int64_t)(amountWithFixedFees + oneOutputSize * buddy->request.feePerByte->toInt64()));
             }
             else { //Pick bestValues
                 buddy->logger->debug("Push all vUTXOs");
                 out = tmpOut;
                 // Set amount of change
-                // Change amount = amountWithFees + fees for 1 additional output (change)
-                buddy->changeAmount =  BigInt(totalBest - (int64_t)(amountWithFees + oneOutputSize * buddy->request.feePerByte->toInt64()));
+                // Change amount = amountWithFixedFees + fees for 1 additional output (change)
+                buddy->changeAmount =  BigInt(bestValue - (int64_t)(amountWithFixedFees + oneOutputSize * buddy->request.feePerByte->toInt64()));
+            }
+
+            if (buddy->changeAmount.toInt64() < minimumChange) {
+                buddy->changeAmount = BigInt(0);
             }
 
             return out;
         }
 
-        BitcoinLikeUtxoPicker::UTXODescriptorList BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
-                                                                                                                const std::vector<std::shared_ptr<api::BitcoinLikeOutput>> &utxos,
-                                                                                                                const BigInt &aggregatedAmount) {
+        std::vector<BitcoinLikeUtxo> BitcoinLikeStrategyUtxoPicker::filterWithMergeOutputs(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                const std::vector<BitcoinLikeUtxo> &utxos,
+                const BigInt &aggregatedAmount,
+                const api::Currency& currency) {
+
             buddy->logger->debug("Start filterWithMergeOutputs");
-            auto sortedUTXOs = utxos;
-            auto ascending = [] (const std::shared_ptr<api::BitcoinLikeOutput> &lhs,
-                                 const std::shared_ptr<api::BitcoinLikeOutput> &rhs) -> bool {
-                return  lhs->getValue()->toLong() < rhs->getValue()->toLong() ;
-            };
 
-            std::sort(sortedUTXOs.begin(), sortedUTXOs.end(), ascending);
+            return filterWithSort(buddy, utxos, aggregatedAmount, currency, [](auto &lhs, auto &rhs) {
+                return lhs.value.toLong() < rhs.value.toLong();
+            });
+        }
 
-            UTXODescriptorList out;
-            BigInt amount = aggregatedAmount;
-            int pickedInputs = 0;
-            for (auto& utxo : sortedUTXOs) {
+        std::vector<BitcoinLikeUtxo> BitcoinLikeStrategyUtxoPicker::filterWithSort(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                std::vector<BitcoinLikeUtxo> utxos,
+                BigInt amount,
+                const api::Currency& currency,
+                std::function<bool(BitcoinLikeUtxo&, BitcoinLikeUtxo&)> const& functor)
+        {
+            auto pickedUtxos = std::vector<BitcoinLikeUtxo>{};
+            auto pickedInputs = 0;
 
+            pickedUtxos.reserve(utxos.size());
+            std::sort(utxos.begin(), utxos.end(), functor);
+
+            for (auto const &u : utxos) {
+                amount = amount + *u.value.value();
                 pickedInputs += 1;
-                amount = amount + BigInt(utxo->getValue()->toLong());
-                UTXODescriptor utxoDescriptor{utxo->getTransactionHash(), utxo->getOutputIndex(), std::get<1>(buddy->request.utxoPicker.getValue())};
-                out.emplace_back(std::move(utxoDescriptor));
-                bool computeOutputAmount = pickedInputs == sortedUTXOs.size();
-                if (hasEnough(buddy, amount, pickedInputs, computeOutputAmount)) {
+                pickedUtxos.push_back(u);
+
+                buddy->logger->debug("Collected: {} Needed: {}", amount.toString(), buddy->outputAmount.toString());
+
+                auto const computeOutputAmount = pickedInputs == utxos.size();
+                if (hasEnough(buddy, amount, pickedInputs, currency, computeOutputAmount)) {
                     break;
                 }
-
-                if (pickedInputs >= sortedUTXOs.size() && !buddy->request.wipe) {
-                    throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-                }
             }
 
-            return out;
-        }
+            if (pickedInputs >= utxos.size() && !buddy->request.wipe) {
+                throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+            }
 
+            buddy->logger->debug("Require {} inputs to complete the transaction with {} for {}", pickedInputs, amount.toString(), buddy->outputAmount.toString());
+
+            pickedUtxos.shrink_to_fit();
+
+            return pickedUtxos;
+        }
     }
 }
 

@@ -38,6 +38,7 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <async/DedicatedContext.hpp>
 #include <events/ProgressNotifier.h>
+
 namespace ledger {
     namespace core {
 
@@ -70,6 +71,8 @@ namespace ledger {
 
             bool isSynchronizing() const override;
 
+            int putTransaction(soci::session &sql, const Transaction &transaction,
+                               const std::shared_ptr<SynchronizationBuddy> &buddy) override;
 
         private:
             std::shared_ptr <TezosBlockchainAccountSynchronizer> getSharedFromThis() override;

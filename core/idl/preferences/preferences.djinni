@@ -1,3 +1,5 @@
+@import "../math/random.djinni"
+
 # Interface for accessing and modifying custom preferences. Preferences are key - value data which will be persisted to
 # the filesystem. They can be local or stored with the Ledger API backend (encrypted by a user secret). This can be used to
 # attach application data to the libledger-core modules (i.e. a wallet pool, a wallet, an account, an operation). This interface
@@ -5,25 +7,25 @@
 Preferences = interface +c {
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getString(key: string, fallbackValue: string): string;
+    const getString(key: string, fallbackValue: string): string;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getInt(key: string, fallbackValue: i32): i32;
+    const getInt(key: string, fallbackValue: i32): i32;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getLong(key: string, fallbackValue: i64): i64;
+    const getLong(key: string, fallbackValue: i64): i64;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getBoolean(key: string, fallbackValue: bool): bool;
+    const getBoolean(key: string, fallbackValue: bool): bool;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getStringArray(key: string, fallbackValue: list<string>): list<string>;
+    const getStringArray(key: string, fallbackValue: list<string>): list<string>;
     # Retrieves the value associated with the given key or fallback to the default value.
     # @return The data associated with the key or fallbackValue.
-    getData(key: string, fallbackValue: binary): binary;
+    const getData(key: string, fallbackValue: binary): binary;
     # Checks whether the Preferences contains the given key.
     # @return true the preferences contains the key, false otherwise.
-    contains(key: string): bool;
+    const contains(key: string): bool;
 
     # Get a preferences editor in order to add/modify/remove data.
     # @return An interface for editting preferences.
@@ -74,3 +76,58 @@ PreferencesEditor = interface +c {
     # Clear all preferences.
     clear();
 }
+
+PreferencesChangeType = enum {
+    PUT_TYPE;
+    DELETE_TYPE;
+}
+
+PreferencesChange = record {
+    type: PreferencesChangeType;
+    key: binary;
+    value: binary;
+}
+
+# Interface describing the behaviour of the backend used by Preferences.
+PreferencesBackend = interface +c {
+    # Gets the value associated to the given key.
+    # @param key The data key.
+    # @return The value associated to the key if it exists, an empty option otherwise.
+    const get(key: binary): optional<binary>;
+
+    # Commit a change.
+    # @param changes The list of changes to commit.
+    # @return false if unsuccessful (might happen if the underlying DB was destroyed).
+    commit(changes: list<PreferencesChange>): bool;
+
+    # Turn encryption on for all future uses.
+    # This method will set encryption on for all future values that will be persisted.
+    # If this function is called on a plaintext storage (i.e. first encryption for
+    # instance), it will also encrypt all data already present.
+    # @param rng Random number generator used to generate the encryption salt.
+    # @param password The new password.
+    setEncryption(rng: RandomNumberGenerator, password: string);
+
+    # Turn off encryption by disabling the use of the internal cipher. Data is left
+    # untouched.
+    # This method is suitable when you want to get back raw, encrypted data. If you want
+    # to disable encryption in order to read clear data back without password, consider
+    # the resetEncryption method instead.
+    unsetEncryption();
+
+    # Reset the encryption with a new password by first decrypting on the
+    # fly with the old password the data present.
+    # If the new password is an empty string, after this method is called, the database
+    # is completely unciphered and no password is required to read from it.
+    # @return true if the reset occurred correctly, false otherwise (e.g. trying to change
+    # password with an old password but without a proper salt already persisted).
+    resetEncryption(rng: RandomNumberGenerator, oldPassword: string, newPassword: string): bool;
+
+    # Get encryption salt, if any.
+    # @return the encryption salt if it exists, an empty string otherwise.
+    const getEncryptionSalt(): string;
+
+    # Clear all preferences.
+    clear();
+}
+

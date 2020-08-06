@@ -30,6 +30,7 @@
 
 #include <wallet/currencies.hpp>
 #include "RippleLikeTransactionParser.h"
+#include <wallet/ripple/utils/Time.hpp>
 
 #define PROXY_PARSE(method, ...)                                    \
  auto& currentObject = _hierarchy.top();                            \
@@ -134,19 +135,16 @@ namespace ledger {
                     RippleLikeBlockchainExplorer::Block block;
                     block.height = value.toUint64();
                     block.currencyName = currencies::RIPPLE.name;
+                    // Ledger index is not really a hash but since XRP doesn't have reorg
+                    // it's safe to use ledger index as a unique hash.
+                    block.hash = number;
                     _transaction->block = block;
                 } else if (_lastKey == "DestinationTag") {
                   _transaction->destinationTag = Option<uint64_t>(value.toUint64());
                 } else if (_lastKey == "date" && currentObject != "transaction") {
-                  // we have to adapt the value of date because XRP is using their own epoch,
-                  // which is 2000/01/01, which is 946684800 after the Unix epoch
-                  //
-                  // <https://xrpl.org/basic-data-types.html#specifying-time>
-                  std::chrono::system_clock::time_point date(std::chrono::seconds(value.toUint64() + XRP_EPOCH_SECONDS_FROM_UNIX_EPOCH));
-
-                  _transaction->receivedAt = date;
+                  _transaction->receivedAt = xrp_utils::toTimePoint<std::chrono::system_clock>(value.toUint64());
                   if (_transaction->block.hasValue()) {
-                      _transaction->block.getValue().time = date;
+                      _transaction->block.getValue().time = _transaction->receivedAt;
                   }
                 }
 

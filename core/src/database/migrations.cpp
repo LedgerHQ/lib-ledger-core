@@ -825,7 +825,7 @@ namespace ledger {
                    ")";
 
         }
-        
+
         template <> void rollback<19>(soci::session& sql, api::DatabaseBackendType type) {
             // Stellar ledgers
             sql << "DROP TABLE stellar_ledgers";
@@ -955,5 +955,156 @@ namespace ledger {
             sql << "DROP TABLE cosmos_currencies";
 
         }
+
+
+        template <> void migrate<21>(soci::session& sql, api::DatabaseBackendType type) {
+           sql << "ALTER TABLE bitcoin_outputs ADD replaceable INTEGER DEFAULT 0";
+        }
+
+        template <> void rollback<21>(soci::session& sql, api::DatabaseBackendType type) {
+            // SQLite doesn't handle ALTER TABLE DROP
+            if (type != api::DatabaseBackendType::SQLITE3) {
+                sql << "ALTER TABLE bitcoin_outputs DROP replaceable";
+            } else {
+                sql << "CREATE TABLE bitcoin_outputs_swap("
+                       "idx INTEGER NOT NULL,"
+                       "transaction_uid VARCHAR(255) NOT NULL REFERENCES bitcoin_transactions(transaction_uid) ON DELETE CASCADE,"
+                       "transaction_hash VARCHAR(255) NOT NULL,"
+                       "amount BIGINT NOT NULL,"
+                       "script TEXT NOT NULL,"
+                       "address VARCHAR(255),"
+                       "account_uid VARCHAR(255),"
+                       "PRIMARY KEY (idx, transaction_uid)"
+                       ")";
+                sql << "INSERT INTO bitcoin_outputs_swap "
+                       "SELECT idx, transaction_uid, transaction_hash, amount, script, "
+                                   "address, account_uid "
+                       "FROM bitcoin_outputs";
+                sql << "DROP TABLE bitcoin_outputs";
+                sql << "ALTER TABLE bitcoin_outputs_swap RENAME TO bitcoin_outputs";
+            }
+        }
+
+        template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE stellar_currencies ADD muxed_address_version VARCHAR(255)";
+            sql << "UPDATE stellar_currencies SET muxed_address_version = '60'";
+        }
+
+        template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type) {
+            // SQLite doesn't handle ALTER TABLE DROP
+            if (type != api::DatabaseBackendType::SQLITE3) {
+                sql << "ALTER TABLE stellar_currencies DROP muxed_address_version";
+            } else {
+                sql << "CREATE TABLE stellar_currencies_swap("
+                       "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                       "identifier VARCHAR(255) NOT NULL,"
+                       "address_version VARCHAR(255) NOT NULL,"
+                       "base_reserve BIGINT NOT NULL,"
+                       "base_fee BIGINT NOT NULL,"
+                       "network_passphrase TEXT NOT NULL,"
+                       "additional_SEPs TEXT NOT NULL"
+                       ")";
+                sql << "INSERT INTO stellar_currencies_swap "
+                       "SELECT name, identifier, address_version, base_reserve, base_fee, "
+                       "network_passphrase, additional_SEPs "
+                       "FROM stellar_currencies";
+                sql << "DROP TABLE stellar_currencies";
+                sql << "ALTER TABLE stellar_currencies_swap RENAME TO stellar_currencies";
+            }
+        }
+
+        template <> void migrate<23>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "CREATE TABLE algorand_currencies("
+                    "name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "genesis_id VARCHAR(255) NOT NULL,"
+                    "genesis_hash VARCHAR(255) NOT NULL"
+                   ")";
+
+            sql << "CREATE TABLE algorand_accounts("
+                    "uid VARCHAR(255) NOT NULL PRIMARY KEY REFERENCES accounts(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "wallet_uid VARCHAR(255) NOT NULL REFERENCES wallets(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "idx INTEGER NOT NULL,"
+                    "address VARCHAR(255) NOT NULL"
+                    ")";
+
+            sql << "CREATE TABLE algorand_transactions("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL,"
+                    "hash VARCHAR(255),"
+                    "type VARCHAR(255) NOT NULL,"
+                    "round BIGINT,"
+                    "timestamp BIGINT,"
+                    "first_valid BIGINT NOT NULL,"
+                    "last_valid BIGINT NOT NULL,"
+                    "genesis_id VARCHAR(255),"
+                    "genesis_hash VARCHAR(255) NOT NULL,"
+                    "sender VARCHAR(255) NOT NULL,"
+                    "fee BIGINT NOT NULL,"
+                    "note VARCHAR(255),"
+                    "groupVal VARCHAR(255),"
+                    "leaseVal VARCHAR(255),"
+                    "sender_rewards BIGINT,"
+                    "receiver_rewards BIGINT,"
+                    "close_rewards BIGINT,"
+
+                    // Fields for payment transactions
+                    "pay_amount BIGINT,"
+                    "pay_receiver_address VARCHAR(255),"
+                    "pay_close_address VARCHAR(255),"
+                    "pay_close_amount BIGINT,"
+
+                    // Fields for key registration transactions
+                    "keyreg_non_participation INTEGER,"
+                    "keyreg_selection_pk VARCHAR(255),"
+                    "keyreg_vote_pk VARCHAR(255),"
+                    "keyreg_vote_key_dilution BIGINT,"
+                    "keyreg_vote_first BIGINT,"
+                    "keyreg_vote_last BIGINT,"
+
+                    // Fields for asset config transactions
+                    "acfg_asset_id BIGINT,"
+                    "acfg_asset_name VARCHAR(255),"
+                    "acfg_unit_name VARCHAR(255),"
+                    "acfg_total BIGINT,"
+                    "acfg_decimals INTEGER,"
+                    "acfg_default_frozen INTEGER,"
+                    "acfg_creator_address VARCHAR(255),"
+                    "acfg_manager_address VARCHAR(255),"
+                    "acfg_reserve_address VARCHAR(255),"
+                    "acfg_freeze_address VARCHAR(255),"
+                    "acfg_clawback_address VARCHAR(255),"
+                    "acfg_metadata_hash VARCHAR(255),"
+                    "acfg_url VARCHAR(255),"
+
+                    // Fields for asset transfer transactions
+                    "axfer_asset_id BIGINT,"
+                    "axfer_asset_amount BIGINT,"
+                    "axfer_receiver_address VARCHAR(255),"
+                    "axfer_close_address VARCHAR(255),"
+                    "axfer_close_amount BIGINT,"
+                    "axfer_sender_address VARCHAR(255),"
+
+                    // Fields for asset freeze transactions
+                    "afrz_asset_id BIGINT,"
+                    "afrz_frozen INTEGER,"
+                    "afrz_frozen_address VARCHAR(255)"
+                    ")";
+
+            sql << "CREATE TABLE algorand_operations("
+                    "uid VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES operations(uid) ON DELETE CASCADE,"
+                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES algorand_transactions(uid) ON DELETE CASCADE ON UPDATE CASCADE,"
+                    "transaction_hash VARCHAR(255) NOT NULL"
+                    ")";
+        }
+
+        template <> void rollback<23>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "DROP TABLE algorand_operations";
+
+            sql << "DROP TABLE algorand_transactions";
+
+            sql << "DROP TABLE algorand_accounts";
+
+            sql << "DROP TABLE algorand_currencies";
+        }
+
     }
 }

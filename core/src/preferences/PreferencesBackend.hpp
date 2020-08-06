@@ -34,6 +34,8 @@
 
 #include "../api/Preferences.hpp"
 #include "../api/PreferencesEditor.hpp"
+#include "../api/PreferencesBackend.hpp"
+#include "../api/PreferencesChange.hpp"
 #include <leveldb/db.h>
 #include <memory>
 #include "../api/ThreadDispatcher.hpp"
@@ -43,7 +45,6 @@
 #include <string>
 #include <functional>
 #include "../utils/optional.hpp"
-#include "Preferences.hpp"
 #include <unordered_map>
 #include <mutex>
 #include <api/RandomNumberGenerator.hpp>
@@ -54,20 +55,7 @@ namespace ledger {
     namespace core {
         class Preferences;
 
-        enum PreferencesChangeType {
-            PUT_TYPE, DELETE_TYPE
-        };
-
-        struct PreferencesChange {
-            PreferencesChangeType type;
-            std::vector<uint8_t> key;
-            std::vector<uint8_t> value;
-
-            PreferencesChange() = default;
-            PreferencesChange(PreferencesChangeType t, std::vector<uint8_t> k, std::vector<uint8_t> v);
-        };
-
-        class PreferencesBackend {
+        class PreferencesBackend : public api::PreferencesBackend {
         public:
             PreferencesBackend(
                 const std::string& path,
@@ -75,53 +63,28 @@ namespace ledger {
                 const std::shared_ptr<api::PathResolver>& resolver
             );
 
-            ~PreferencesBackend() = default;
-
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
-            void iterate(const std::vector<uint8_t>& keyPrefix, std::function<bool (leveldb::Slice&&, leveldb::Slice&&)>);
-            optional<std::string> get(const std::vector<uint8_t>& key);
 
-            /// Commit a change. Return false if unsuccessful (might happen if the underlying DB
-            /// was destroyed).
-            bool commit(const std::vector<PreferencesChange>& changes);
+            optional<std::vector<uint8_t>> get(const std::vector<uint8_t>& key) const override;
 
-            /// Turn encryption on for all future uses.
-            ///
-            /// This method will set encryption on for all future values that will be persisted.
-            /// If this function is called on a plaintext storage (i.e. first encryption for
-            /// instance), it will also encrypt all data already present.
+            bool commit(const std::vector<api::PreferencesChange>& changes) override;
+
             void setEncryption(
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::string& password
-            );
+            ) override;
 
-            /// Turn off encryption by disabling the use of the internal cipher. Data is left
-            /// untouched.
-            ///
-            /// This method is suitable when you want to get back raw, encrypted data. If you want
-            /// to disable encryption in order to read clear data back without password, consider
-            /// the resetEncryption method instead.
-            void unsetEncryption();
+            void unsetEncryption() override;
 
-            /// Reset the encryption with a new password by first decrypting on the
-            /// fly with the old password the data present.
-            ///
-            /// If the new password is an empty string, after this method is called, the database
-            /// is completely unciphered and no password is required to read from it.
-            ///
-            /// Return true if the reset occurred correctly, false otherwise (e.g. trying to change
-            /// password with an old password but without a proper salt already persisted).
             bool resetEncryption(
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::string& oldPassword,
                 const std::string& newPassword
-            );
+            ) override;
 
-            /// Get encryption salt, if any.
-            std::string getEncryptionSalt();
+            std::string getEncryptionSalt() const override;
 
-            /// Clear all preferences.
-            void clear();
+            void clear() override;
 
         private:
             std::shared_ptr<api::ExecutionContext> _context;
@@ -139,7 +102,7 @@ namespace ledger {
             void putPreferencesChange(
                 leveldb::WriteBatch& batch,
                 Option<AESCipher>& cipher,
-                const PreferencesChange& change
+                const api::PreferencesChange& change
             );
 
             // Create a new salt to use with an AESCipher.
@@ -147,15 +110,15 @@ namespace ledger {
 
             // helper method used to encrypt things we want to put in leveldb
             std::vector<uint8_t> encrypt_preferences_change(
-                const PreferencesChange& change,
+                const api::PreferencesChange& change,
                 AESCipher& cipher
             );
 
             // helper method used to decrypt things we want to retrieve from leveldb
             std::vector<uint8_t> decrypt_preferences_change(
                 const std::vector<uint8_t>& data,
-                AESCipher& cipher
-            );
+                const AESCipher& cipher
+            ) const;
 
             // an owning table that holds connection opened
             static std::unordered_map<std::string, std::shared_ptr<leveldb::DB>> LEVELDB_INSTANCE_POOL;

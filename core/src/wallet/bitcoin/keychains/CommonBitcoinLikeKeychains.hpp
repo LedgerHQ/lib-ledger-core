@@ -80,6 +80,7 @@ namespace ledger {
             std::string getRestoreKey() const override;
 
             bool contains(const std::string &address) const override;
+            std::vector<Address> getAllAddresses() override;
 
             int32_t getObservableRangeSize() const override;
 

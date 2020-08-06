@@ -110,8 +110,8 @@ namespace ledger {
           const auto explorerVersion = getExplorerVersion();
 
           const auto endpoint =
-              fmt::format("/blockchain/{}/addresses/{}/estimate-gas-limit",
-                          explorerVersion, address);
+              fmt::format("/blockchain/{}/{}/addresses/{}/estimate-gas-limit",
+                          explorerVersion, getNetworkParameters().Identifier, address);
           std::unordered_map<std::string, std::string> headers{
               {"Content-Type", "application/json"}};
           const bool jsonParseNumbersAsString = true;

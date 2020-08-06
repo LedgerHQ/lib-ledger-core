@@ -92,6 +92,10 @@ namespace ledger {
             return getWalletType() == api::WalletType::COSMOS;
         }
 
+        bool AbstractWallet::isInstanceOfAlgorandLikeWallet() {
+            return getWalletType() == api::WalletType::ALGORAND;
+        }
+
         bool AbstractWallet::isInstanceOfEthereumLikeWallet() {
             return getWalletType() == api::WalletType::ETHEREUM;
         }
@@ -378,6 +382,10 @@ namespace ledger {
 
         void AbstractWallet::updateBalanceCache(size_t accountIndex, Amount balance) {
             _balanceCache.put(fmt::format("{}-{}", _currency.name, accountIndex), balance);
+        }
+
+        void AbstractWallet::invalidateBalanceCache(size_t accountIndex) {
+            _balanceCache.erase(fmt::format("{}-{}", _currency.name, accountIndex));
         }
 
         std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {

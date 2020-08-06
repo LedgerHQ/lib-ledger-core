@@ -31,16 +31,14 @@
 #ifndef LEDGER_CORE_PREFERENCESEDITOR_HPP
 #define LEDGER_CORE_PREFERENCESEDITOR_HPP
 
-#include "PreferencesBackend.hpp"
-#include "Preferences.hpp"
 #include "../api/PreferencesEditor.hpp"
+#include "../api/PreferencesChange.hpp"
 #include <memory>
 #include <cereal/cereal.hpp>
 #include <cereal/archives/portable_binary.hpp>
 
 namespace ledger {
     namespace core {
-        struct PreferencesChange;
         class Preferences;
 
         class PreferencesEditor : public api::PreferencesEditor, public std::enable_shared_from_this<PreferencesEditor> {
@@ -80,7 +78,7 @@ namespace ledger {
             void clear() override;
 
         private:
-            std::vector<PreferencesChange> _changes;
+            std::vector<api::PreferencesChange> _changes;
             Preferences& _preferences;
         };
     }

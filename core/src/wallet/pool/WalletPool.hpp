@@ -119,7 +119,9 @@ namespace ledger {
                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration
+                const std::shared_ptr<api::DynamicObject>& configuration,
+                const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
+                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
             );
 
             ~WalletPool() = default;
@@ -153,7 +155,9 @@ namespace ledger {
                 const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
                 const std::shared_ptr<api::RandomNumberGenerator>& rng,
                 const std::shared_ptr<api::DatabaseBackend> &backend,
-                const std::shared_ptr<api::DynamicObject>& configuration
+                const std::shared_ptr<api::DynamicObject>& configuration,
+                const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
+                const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
             );
 
             void initializeCurrencies();
@@ -182,8 +186,8 @@ namespace ledger {
             std::shared_ptr<WebSocketClient> _wsClient;
 
             // Preferences management
-            std::shared_ptr<PreferencesBackend> _externalPreferencesBackend;
-            std::shared_ptr<PreferencesBackend> _internalPreferencesBackend;
+            std::shared_ptr<api::PreferencesBackend> _externalPreferencesBackend;
+            std::shared_ptr<api::PreferencesBackend> _internalPreferencesBackend;
 
             // Database management
             std::shared_ptr<DatabaseSessionPool> _database;

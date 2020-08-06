@@ -82,8 +82,15 @@ namespace ledger {
             return *this;
         }
 
+        CurrencyBuilder &CurrencyBuilder::forkOfAlgorand(const api::AlgorandNetworkParameters &params) {
+            _type = api::WalletType::ALGORAND;
+            _algorand = params;
+
+            return *this;
+        }
+
         CurrencyBuilder::operator api::Currency() const {
-            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _cosmos.toOptional(), _ethereum.toOptional(), _ripple.toOptional(), _tezos.toOptional(), _stellar.toOptional());
+            return api::Currency(_type, _name, _coinType, _paymentUriScheme, _units, _bitcoin.toOptional(), _cosmos.toOptional(), _ethereum.toOptional(), _ripple.toOptional(), _tezos.toOptional(), _stellar.toOptional(), _algorand.toOptional());
         }
 
         CurrencyBuilder &CurrencyBuilder::bip44(int coinType) {

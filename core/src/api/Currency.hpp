@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_CURRENCY_HPP
 
 #include "../utils/optional.hpp"
+#include "AlgorandNetworkParameters.hpp"
 #include "BitcoinLikeNetworkParameters.hpp"
 #include "CosmosLikeNetworkParameters.hpp"
 #include "CurrencyUnit.hpp"
@@ -51,6 +52,8 @@ struct Currency final {
     std::experimental::optional<TezosLikeNetworkParameters> tezosLikeNetworkParameters;
     /** Optional StellarLikeNetworkParameters, for more details refer to EthereumLikeNetworkParameters doc */
     std::experimental::optional<StellarLikeNetworkParameters> stellarLikeNetworkParameters;
+    /** Optional AlgorandNetworkParameters, for more details refer to AlgorandNetworkParameters doc */
+    std::experimental::optional<AlgorandNetworkParameters> algorandNetworkParameters;
 
     Currency(WalletType walletType_,
              std::string name_,
@@ -62,7 +65,8 @@ struct Currency final {
              std::experimental::optional<EthereumLikeNetworkParameters> ethereumLikeNetworkParameters_,
              std::experimental::optional<RippleLikeNetworkParameters> rippleLikeNetworkParameters_,
              std::experimental::optional<TezosLikeNetworkParameters> tezosLikeNetworkParameters_,
-             std::experimental::optional<StellarLikeNetworkParameters> stellarLikeNetworkParameters_)
+             std::experimental::optional<StellarLikeNetworkParameters> stellarLikeNetworkParameters_,
+             std::experimental::optional<AlgorandNetworkParameters> algorandNetworkParameters_)
     : walletType(std::move(walletType_))
     , name(std::move(name_))
     , bip44CoinType(std::move(bip44CoinType_))
@@ -74,6 +78,7 @@ struct Currency final {
     , rippleLikeNetworkParameters(std::move(rippleLikeNetworkParameters_))
     , tezosLikeNetworkParameters(std::move(tezosLikeNetworkParameters_))
     , stellarLikeNetworkParameters(std::move(stellarLikeNetworkParameters_))
+    , algorandNetworkParameters(std::move(algorandNetworkParameters_))
     {}
 
     Currency(const Currency& cpy) {
@@ -88,6 +93,7 @@ struct Currency final {
        this->rippleLikeNetworkParameters = cpy.rippleLikeNetworkParameters;
        this->tezosLikeNetworkParameters = cpy.tezosLikeNetworkParameters;
        this->stellarLikeNetworkParameters = cpy.stellarLikeNetworkParameters;
+       this->algorandNetworkParameters = cpy.algorandNetworkParameters;
     }
 
     Currency() = default;
@@ -105,17 +111,18 @@ struct Currency final {
        this->rippleLikeNetworkParameters = cpy.rippleLikeNetworkParameters;
        this->tezosLikeNetworkParameters = cpy.tezosLikeNetworkParameters;
        this->stellarLikeNetworkParameters = cpy.stellarLikeNetworkParameters;
+       this->algorandNetworkParameters = cpy.algorandNetworkParameters;
        return *this;
     }
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters, algorandNetworkParameters);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters);
+        archive(walletType, name, bip44CoinType, paymentUriScheme, units, bitcoinLikeNetworkParameters, cosmosLikeNetworkParameters, ethereumLikeNetworkParameters, rippleLikeNetworkParameters, tezosLikeNetworkParameters, stellarLikeNetworkParameters, algorandNetworkParameters);
     }
 };
 

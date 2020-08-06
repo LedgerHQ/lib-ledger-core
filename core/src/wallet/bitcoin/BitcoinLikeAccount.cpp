@@ -308,6 +308,7 @@ namespace ledger {
                 if (result.isSuccess()) {
                     code = !isEmpty && wasEmpty ? api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT
                                                 : api::EventCode::SYNCHRONIZATION_SUCCEED;
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
@@ -628,8 +629,13 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(std::experimental::optional<bool> partial) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            auto getUTXO = [self] () -> Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> {
-                return self->getUTXO();
+            auto getUTXO = [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
+                return Future<std::vector<BitcoinLikeUtxo>>::async(getContext(), [=]() {
+                    auto keychain = self->getKeychain();
+                    soci::session session(self->getWallet()->getDatabase()->getPool());
+
+                    return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
+                });
             };
             auto getTransaction = [self] (const std::string& hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {
                 return self->getTransaction(hash);
@@ -715,6 +721,11 @@ namespace ledger {
         void BitcoinLikeAccount::getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) {
             return getAddresses(from, to).callback(getMainExecutionContext(), callback);
         }
+
+        AbstractAccount::AddressList BitcoinLikeAccount::getAllAddresses() {
+                auto keychain = getKeychain();
+                return fromBitcoinAddressesToAddresses(keychain->getAllAddresses());
+            }
 
         std::shared_ptr<api::Keychain> BitcoinLikeAccount::getAccountKeychain() {
           return _keychain;

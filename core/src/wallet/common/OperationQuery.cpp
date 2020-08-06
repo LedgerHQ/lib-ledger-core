@@ -40,6 +40,7 @@
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 #include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
+#include <wallet/algorand/database/AlgorandTransactionDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -142,7 +143,17 @@ namespace ledger {
                 auto account = _accounts.find(accountUid);
                 if (account == _accounts.end())
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Account {} is not registered.", accountUid);
-                auto operationApi = std::make_shared<OperationApi>(account->second);
+
+                std::shared_ptr<OperationApi> operationApi;
+                if(account->second->getWalletType() == api::WalletType::ALGORAND)
+                {
+                    operationApi = std::make_shared<algorand::Operation>(account->second);
+                }
+                else
+                {
+                    operationApi = std::make_shared<OperationApi>(account->second);
+                }
+
                 auto& operation = operationApi->getBackend();
 
                 // Inflate abstract operation
@@ -192,6 +203,7 @@ namespace ledger {
                 case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
                 case (api::WalletType::STELLAR): return inflateStellarLikeTransaction(sql, operation);
+                case (api::WalletType::ALGORAND): return inflateAlgorandLikeTransaction(sql, dynamic_cast<algorand::Operation&>(operation));
             }
         }
 
@@ -263,5 +275,18 @@ namespace ledger {
             StellarLikeTransactionDatabaseHelper::getTransaction(sql, out.operation.transactionHash, out.transaction);
             operation.getBackend().stellarOperation = out;
         }
+
+        void OperationQuery::inflateAlgorandLikeTransaction(soci::session& sql, algorand::Operation &operation) {
+            std::string transactionHash;
+            sql << "SELECT transaction_hash FROM algorand_operations WHERE uid = :uid",
+                soci::use(operation.getBackend().uid),
+                soci::into(transactionHash);
+
+            algorand::model::Transaction tx;
+            algorand::TransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, tx);
+
+            operation.setTransaction(tx);
+        }
+
     }
 }

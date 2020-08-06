@@ -48,7 +48,7 @@
 #include <database/soci-date.h>
 #include <api/StringCallback.hpp>
 #include <api/StellarLikeOperationType.hpp>
-
+#include <wallet/stellar/xdr/StellarModelUtils.hpp>
 
 using namespace ledger::core;
 
@@ -259,6 +259,11 @@ namespace ledger {
         }
 
         int StellarLikeAccount::putTransaction(soci::session &sql, const stellar::Transaction &tx) {
+            if (tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
+                tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
+                // Ignore transaction with unhandled envelope types.
+                return 0;
+            }
             int createdOperations = 0;
             StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
             Operation operation;
@@ -281,9 +286,12 @@ namespace ledger {
             operation.senders.emplace_back(tx.sourceAccount);
 
             auto accountAddress = getKeychain()->getAddress()->toString();
-             auto networkParams = getWallet()->getCurrency().stellarLikeNetworkParameters.value();
-            auto toAddr = [&] (const stellar::xdr::AccountID& accountId) {
-                return StellarLikeAddress::convertXdrAccountToAddress(accountId, networkParams);
+            auto networkParams = getWallet()->getCurrency().stellarLikeNetworkParameters.value();
+            auto muxedAccountToAddr = [&] (const stellar::xdr::MuxedAccount& acc) {
+                return StellarLikeAddress::convertMuxedAccountToAddress(acc, networkParams);
+            };
+            auto accountIdToAddr = [&] (const stellar::xdr::AccountID& acc) {
+                return StellarLikeAddress::convertXdrAccountToAddress(acc, networkParams);
             };
 
             auto putOp = [&] (api::OperationType type, stellar::Operation stellarOperation) {
@@ -298,7 +306,8 @@ namespace ledger {
             };
 
             auto opIndex = 0;
-            for (const auto& op : tx.envelope.tx.operations) {
+            const auto& operations = stellar::xdr::getOperations(tx.envelope);
+            for (const auto& op : operations) {
                 stellar::Operation stellarOperation;
                 stellarOperation.createdAt = tx.createdAt;
                 stellarOperation.transactionFee = tx.feePaid;
@@ -308,13 +317,13 @@ namespace ledger {
                 stellarOperation.id = (BigInt(tx.pagingToken) + BigInt(opIndex + 1)).toString();
                 stellarOperation.type = op.type;
                 if (op.sourceAccount.nonEmpty()) {
-                    operation.senders[0] = toAddr(op.sourceAccount.getValue());
+                    operation.senders[0] = muxedAccountToAddr(op.sourceAccount.getValue());
                 }
 
                 switch (op.type) {
                     case stellar::OperationType::CREATE_ACCOUNT: {
                         auto& sop = boost::get<stellar::xdr::CreateAccountOp>(op.content);
-                        operation.recipients.emplace_back(toAddr(sop.destination));
+                        operation.recipients.emplace_back(accountIdToAddr(sop.destination));
                         operation.amount.assignI64(sop.startingBalance);
                         stellarOperation.asset.type = "native";
                         if (operation.senders[0] == accountAddress) {
@@ -329,7 +338,7 @@ namespace ledger {
                         auto &sop = boost::get<stellar::xdr::PaymentOp>(op.content);
                         if (sop.asset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
                             operation.amount.assignI64(sop.amount);
-                            operation.recipients.emplace_back(toAddr(sop.destination));
+                            operation.recipients.emplace_back(muxedAccountToAddr(sop.destination));
                             stellar::xdrAssetToAsset(sop.asset, networkParams, stellarOperation.asset);
                             if (operation.senders[0] == accountAddress) {
                                 putOp(api::OperationType::SEND, stellarOperation);
@@ -338,7 +347,7 @@ namespace ledger {
                                 putOp(api::OperationType::RECEIVE, stellarOperation);
                             }
                         }
-                        if (operation.senders[0] == accountAddress && opIndex >= tx.envelope.tx.operations.size() - 1
+                        if (operation.senders[0] == accountAddress && opIndex >= operations.size() - 1
                             && createdOperations == 0) {
                             operation.amount = BigInt::ZERO;
                             putOp(api::OperationType::SEND, stellarOperation);
@@ -348,8 +357,8 @@ namespace ledger {
                     case stellar::OperationType::PATH_PAYMENT: {
                         // Create op if sending or receiving native token, otherwise if source account is self
                         // create fees op
-                        auto& sop = boost::get<stellar::xdr::PathPaymentOp>(op.content);
-                        operation.recipients.emplace_back(toAddr(sop.destination));
+                        auto& sop = boost::get<stellar::xdr::PathPaymentStrictReceiveOp>(op.content);
+                        operation.recipients.emplace_back(muxedAccountToAddr(sop.destination));
                         stellar::xdrAssetToAsset(sop.destAsset, networkParams, stellarOperation.asset);
                         stellar::Asset sourceAsset;
                         stellar::xdrAssetToAsset(sop.sendAsset, networkParams, sourceAsset);
@@ -365,26 +374,17 @@ namespace ledger {
                             sop.destAsset.type == stellar::xdr::AssetType::ASSET_TYPE_NATIVE) {
                             putOp(api::OperationType::RECEIVE, stellarOperation);
                         }
-                        if (operation.senders[0] == accountAddress && opIndex >= tx.envelope.tx.operations.size() - 1
+                        if (operation.senders[0] == accountAddress && opIndex >= operations.size() - 1
                             && createdOperations == 0) {
                             operation.amount = BigInt::ZERO;
                             putOp(api::OperationType::SEND, stellarOperation);
                         }
                         break;
                     }
-                    case stellar::OperationType::ACCOUNT_MERGE:
-                    case stellar::OperationType::MANAGE_OFFER:
-                    case stellar::OperationType::CREATE_PASSIVE_OFFER:
-                    case stellar::OperationType::SET_OPTIONS:
-                    case stellar::OperationType::CHANGE_TRUST:
-                    case stellar::OperationType::ALLOW_TRUST:
-                    case stellar::OperationType::INFLATION:
-                    case stellar::OperationType::MANAGE_DATA:
-                    case stellar::OperationType::BUMP_SEQUENCE:
-                    case stellar::OperationType::MANAGE_BUY_OFFER:
+                    default:
                         // Create fees operation if source Account is accountAdddress
                         if (operation.senders[0] == accountAddress &&
-                            opIndex >= tx.envelope.tx.operations.size() - 1 &&
+                            opIndex >= operations.size() - 1 &&
                             createdOperations == 0) {
                             operation.amount = BigInt::ZERO;
                             putOp(api::OperationType::SEND, stellarOperation);

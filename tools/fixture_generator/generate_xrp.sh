@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-python generate_xrp_fixtures.py "xrp" "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k" "024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed" "b4f8427e7e19f284dfe7b99f107c55d00b3eae56df9569f0c4d56722742a5d71"
+python generate_xrp_fixtures.py "xrp_utils" "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k" "024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed" "b4f8427e7e19f284dfe7b99f107c55d00b3eae56df9569f0c4d56722742a5d71"

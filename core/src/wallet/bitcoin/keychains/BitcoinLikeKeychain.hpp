@@ -95,6 +95,7 @@ namespace ledger {
             virtual std::string getRestoreKey() const = 0;
             virtual int32_t getObservableRangeSize() const = 0;
             virtual bool contains(const std::string& address) const = 0;
+            virtual std::vector<Address> getAllAddresses() = 0;
             virtual int32_t getOutputSizeAsSignedTxInput() const = 0;
 
             static bool isSegwit(const std::string &keychainEngine);

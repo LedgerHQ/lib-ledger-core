@@ -148,6 +148,20 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutputAndFakeSigna
 //    );
 }
 
+TEST_F(BitcoinMakeP2PKHTransaction, OptimizeSize) {
+    auto builder = tx_builder();
+    const int64_t feesPerByte = 20;
+    builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
+    builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF);
+    builder->setFeesPerByte(api::Amount::fromLong(currency, feesPerByte));
+    auto f = builder->build();
+    auto tx = ::wait(f);
+    tx->getInputs()[0]->pushToScriptSig({ 5, 'h', 'e', 'l', 'l', 'o' });
+    auto transactionSize = tx->serialize().size();
+    auto fees = tx->getFees();
+    EXPECT_TRUE(fees->toLong() >= transactionSize * feesPerByte);
+}
+
 TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithMultipleInputs) {
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 100000000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");

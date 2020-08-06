@@ -18,6 +18,7 @@
 
 namespace ledger { namespace core { namespace api {
 
+class Address;
 class AddressListCallback;
 class BigIntListCallback;
 class BitcoinLikeOutputListCallback;
@@ -65,6 +66,9 @@ public:
      * Note: this will return public and change addresses
      */
     virtual void getAddresses(int64_t from, int64_t to, const std::shared_ptr<AddressListCallback> & callback) = 0;
+
+    /** get all contained adresses. */
+    virtual std::vector<std::shared_ptr<Address>> getAllAddresses() = 0;
 };
 
 } } }  // namespace ledger::core::api

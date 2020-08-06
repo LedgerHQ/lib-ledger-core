@@ -31,6 +31,7 @@
 #include "WalletPool.hpp"
 #include <api/PoolConfiguration.hpp>
 #include <api/ConfigurationDefaults.hpp>
+#include <preferences/Preferences.hpp>
 #include <wallet/currencies.hpp>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
@@ -51,10 +52,14 @@ namespace ledger {
             const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
-            const std::shared_ptr<api::DynamicObject> &configuration
+            const std::shared_ptr<api::DynamicObject> &configuration,
+            const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
+            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend
         ): DedicatedContext(dispatcher->getSerialExecutionContext(fmt::format("pool_queue_{}", name))),
            _blockCache(std::chrono::seconds(configuration->getInt(api::Configuration::TTL_CACHE)
                                                     .value_or(api::ConfigurationDefaults::DEFAULT_TTL_CACHE)))
+        , _externalPreferencesBackend(externalPreferencesBackend)
+        , _internalPreferencesBackend(internalPreferencesBackend)
         {
             // General
             _poolName = name;
@@ -71,16 +76,20 @@ namespace ledger {
             _wsClient = std::make_shared<WebSocketClient>(webSocketClient);
 
             // Preferences management
-            _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
-                fmt::format("/{}/preferences.db", _poolName),
-                getContext(),
-                _pathResolver
-            );
-            _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
-                fmt::format("/{}/__preferences__.db", _poolName),
-                getContext(),
-                _pathResolver
-            );
+            if (!_externalPreferencesBackend) {
+                _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
+                    fmt::format("/{}/preferences.db", _poolName),
+                    getContext(),
+                    _pathResolver
+                );
+            }
+            if (!_internalPreferencesBackend) {
+                _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
+                    fmt::format("/{}/__preferences__.db", _poolName),
+                    getContext(),
+                    _pathResolver
+                );
+            }
 
             _rng = rng;
             // Encrypt the preferences, if needed
@@ -130,10 +139,14 @@ namespace ledger {
             const std::shared_ptr<api::ThreadDispatcher> &dispatcher,
             const std::shared_ptr<api::RandomNumberGenerator> &rng,
             const std::shared_ptr<api::DatabaseBackend> &backend,
-            const std::shared_ptr<api::DynamicObject> &configuration
-        ) {
+            const std::shared_ptr<api::DynamicObject> &configuration,
+            const std::shared_ptr<api::PreferencesBackend> &externalPreferencesBackend,
+            const std::shared_ptr<api::PreferencesBackend> &internalPreferencesBackend) {
             auto pool = std::shared_ptr<WalletPool>(new WalletPool(
-                name, password, httpClient, webSocketClient, pathResolver, logPrinter, dispatcher, rng, backend, configuration
+                    name, password, httpClient, webSocketClient, pathResolver,
+                    logPrinter, dispatcher, rng, backend, configuration,
+                    externalPreferencesBackend,
+                    internalPreferencesBackend
             ));
 
             // Initialization
@@ -193,15 +206,18 @@ namespace ledger {
                 case api::WalletType::STELLAR:
                     _factories.push_back(make_factory<api::WalletType::STELLAR>(currency, shared_from_this()));
                     break;
+                case api::WalletType::ALGORAND:
+                    _factories.push_back(make_factory<api::WalletType::ALGORAND>(currency, shared_from_this()));
+                    break;
             }
         }
 
         std::shared_ptr<Preferences> WalletPool::getExternalPreferences() const {
-            return _externalPreferencesBackend->getPreferences("pool");
+            return std::make_shared<Preferences>(*_externalPreferencesBackend, "pool");
         }
 
         std::shared_ptr<Preferences> WalletPool::getInternalPreferences() const {
-            return _internalPreferencesBackend->getPreferences("pool");
+            return std::make_shared<Preferences>(*_internalPreferencesBackend, "pool");
         }
 
         std::shared_ptr<spdlog::logger> WalletPool::logger() const {

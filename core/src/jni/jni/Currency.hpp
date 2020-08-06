@@ -26,7 +26,7 @@ private:
     friend ::djinni::JniClass<Currency>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/Currency") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/WalletType;Ljava/lang/String;ILjava/lang/String;Ljava/util/ArrayList;Lco/ledger/core/BitcoinLikeNetworkParameters;Lco/ledger/core/CosmosLikeNetworkParameters;Lco/ledger/core/EthereumLikeNetworkParameters;Lco/ledger/core/RippleLikeNetworkParameters;Lco/ledger/core/TezosLikeNetworkParameters;Lco/ledger/core/StellarLikeNetworkParameters;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/WalletType;Ljava/lang/String;ILjava/lang/String;Ljava/util/ArrayList;Lco/ledger/core/BitcoinLikeNetworkParameters;Lco/ledger/core/CosmosLikeNetworkParameters;Lco/ledger/core/EthereumLikeNetworkParameters;Lco/ledger/core/RippleLikeNetworkParameters;Lco/ledger/core/TezosLikeNetworkParameters;Lco/ledger/core/StellarLikeNetworkParameters;Lco/ledger/core/AlgorandNetworkParameters;)V") };
     const jfieldID field_walletType { ::djinni::jniGetFieldID(clazz.get(), "walletType", "Lco/ledger/core/WalletType;") };
     const jfieldID field_name { ::djinni::jniGetFieldID(clazz.get(), "name", "Ljava/lang/String;") };
     const jfieldID field_bip44CoinType { ::djinni::jniGetFieldID(clazz.get(), "bip44CoinType", "I") };
@@ -38,6 +38,7 @@ private:
     const jfieldID field_rippleLikeNetworkParameters { ::djinni::jniGetFieldID(clazz.get(), "rippleLikeNetworkParameters", "Lco/ledger/core/RippleLikeNetworkParameters;") };
     const jfieldID field_tezosLikeNetworkParameters { ::djinni::jniGetFieldID(clazz.get(), "tezosLikeNetworkParameters", "Lco/ledger/core/TezosLikeNetworkParameters;") };
     const jfieldID field_stellarLikeNetworkParameters { ::djinni::jniGetFieldID(clazz.get(), "stellarLikeNetworkParameters", "Lco/ledger/core/StellarLikeNetworkParameters;") };
+    const jfieldID field_algorandNetworkParameters { ::djinni::jniGetFieldID(clazz.get(), "algorandNetworkParameters", "Lco/ledger/core/AlgorandNetworkParameters;") };
 };
 
 }  // namespace djinni_generated

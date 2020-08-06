@@ -40,14 +40,14 @@
 #include <api/Currency.hpp>
 #include <async/Future.hpp>
 #include <api/BitcoinLikeOutput.hpp>
-
+#include <wallet/bitcoin/transaction_builders/BitcoinLikeUtxo.hpp>
 
 namespace ledger {
     namespace core {
         class BitcoinLikeTransactionApi;
         class BitcoinLikeWritableInputApi;
-        using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> ()>;
-        using BitcoinLikeGetTxFunction = std::function<FuturePtr<BitcoinLikeBlockchainExplorerTransaction> (const std::string&)>;
+        using BitcoinLikeGetUtxoFunction = std::function<Future<std::vector<BitcoinLikeUtxo>>()>;
+        using BitcoinLikeGetTxFunction = std::function<FuturePtr<BitcoinLikeBlockchainExplorerTransaction>(const std::string&)>;
 
         class BitcoinLikeUtxoPicker : public DedicatedContext, public std::enable_shared_from_this<BitcoinLikeUtxoPicker> {
         public:
@@ -65,9 +65,6 @@ namespace ledger {
                     bool partial);
             const api::Currency& getCurrency() const;
 
-        protected:
-            using UTXODescriptor = std::tuple<std::string, int32_t, uint32_t >;
-            using UTXODescriptorList = std::vector<UTXODescriptor>;
             struct Buddy {
                 Buddy(
                         const BitcoinLikeTransactionBuildRequest& r,
@@ -98,17 +95,17 @@ namespace ledger {
                 BigInt changeAmount;
                 bool isPartial;
             };
-
+        protected:
             virtual Future<Unit> fillInputs(const std::shared_ptr<Buddy>& buddy);
-            virtual Future<UTXODescriptorList> filterInputs(const std::shared_ptr<Buddy>& buddy) = 0;
+            virtual Future<std::vector<BitcoinLikeUtxo>> filterInputs(const std::shared_ptr<Buddy>& buddy) = 0;
             virtual Future<Unit> fillOutputs(const std::shared_ptr<Buddy>& buddy);
             virtual Future<Unit> fillTransactionInfo(const std::shared_ptr<Buddy>& buddy);
 
         private:
-            Future<Unit> fillInput(const std::shared_ptr<Buddy>& buddy, const UTXODescriptor& desc);
-            BitcoinLikeGetUtxoFunction createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest& buddy,
+            void fillInput(const std::shared_ptr<Buddy>& buddy, const BitcoinLikeUtxo& utxo, const uint32_t sequence);
+            BitcoinLikeGetUtxoFunction createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest& request,
+                                                                  const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                                   const BitcoinLikeGetUtxoFunction& getUtxo);
-
         protected:
             api::Currency _currency;
         };

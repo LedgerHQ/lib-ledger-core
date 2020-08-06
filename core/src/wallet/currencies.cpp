@@ -35,6 +35,7 @@
 #include "ripple/rippleNetworks.h"
 #include "tezos/tezosNetworks.h"
 #include "stellar/stellarNetworks.h"
+#include "algorand/AlgorandNetworks.hpp"
 #include <wallet/common/CurrencyBuilder.hpp>
 
 namespace ledger {
@@ -303,13 +304,22 @@ namespace ledger {
                             .unit("mXTZ", 0, "mXTZ")
                             .unit("XTZ", 3, "XTZ");
 
-                const api::Currency STELLAR =
+            const api::Currency STELLAR =
                     Currency("stellar")
                             .bip44(148)
                             .forkOfStellar(networks::getStellarLikeNetworkParameters("stellar"))
                             .paymentUri("stellar")
                             .unit("stroop", 0, "stroop")
                             .unit("XLM", 7, "XLM");
+
+
+            const api::Currency ALGORAND =
+                    Currency("algorand")
+                            .bip44(283)
+                            .forkOfAlgorand(networks::getAlgorandNetworkParameters("algorand"))
+                            .paymentUri("algorand")
+                            .unit("uALGO", 0, "uALGO")
+                            .unit("ALGO", 6, "uALGO");
 
 
             const std::vector<api::Currency> ALL({
@@ -342,7 +352,8 @@ namespace ledger {
                 ETHEREUM_CLASSIC,
                 RIPPLE,
                 TEZOS,
-                STELLAR
+                STELLAR,
+                ALGORAND
             });
         }
     }

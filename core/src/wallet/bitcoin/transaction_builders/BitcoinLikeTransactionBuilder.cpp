@@ -70,10 +70,9 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::addInput(const std::string &transactionHash, int32_t index, int32_t sequence) {
-            //Fix: use uniform initialization
-            using InputType = std::tuple<std::string, int32_t, uint32_t>;
-            InputType new_input{transactionHash, index, sequence};
-            _request.inputs.emplace_back(std::move(new_input));
+            _request.inputs.push_back(BitcoinLikeTransactionInputDescriptor{
+                transactionHash, static_cast<uint64_t>(index), static_cast<uint64_t>(sequence)});
+
             return shared_from_this();
         }
 
@@ -93,10 +92,8 @@ namespace ledger {
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
         BitcoinLikeTransactionBuilder::excludeUtxo(const std::string &transactionHash, int32_t outputIndex) {
-            //Fix: use uniform initialization
-            using UTXOType = std::tuple<std::string, int32_t>;
-            UTXOType excluded_utxo{transactionHash, outputIndex};
-            _request.excludedUtxo.push_back(excluded_utxo);
+            _request.excludedUtxos.insert(BitcoinLikeTransactionUtxoDescriptor{
+                transactionHash, static_cast<uint64_t>(outputIndex)});
             return shared_from_this();
         }
 
@@ -208,5 +205,16 @@ namespace ledger {
             this->minChange = minChange;
             this->maxChange = DEFAULT_MAX_AMOUNT;
         }
+
+        bool BitcoinLikeTransactionUtxoDescriptor::operator==(BitcoinLikeTransactionUtxoDescriptor const &other) const
+        {
+            return transactionHash == other.transactionHash && outputIndex == other.outputIndex;
+        }
+
+        size_t BitcoinLikeTransactionUtxoDescriptorHash::operator()(BitcoinLikeTransactionUtxoDescriptor const& utxo) const
+        {
+            return std::hash<std::string>()(utxo.transactionHash) ^ std::hash<uint32_t>()(utxo.outputIndex);
+        }
+
     }
 }

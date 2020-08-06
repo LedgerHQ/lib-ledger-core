@@ -38,7 +38,7 @@ namespace ledger {
             const api::StellarLikeNetworkParameters getStellarLikeNetworkParameters(const std::string &networkName) {
                 if (networkName == "stellar") {
                     static const api::StellarLikeNetworkParameters STELLAR(
-                        "xlm", {6 << 3}, 5000000, 100, {}, "Public Global Stellar Network ; September 2015"
+                        "xlm", {6 << 3}, {12 << 3}, 5000000, 100, {}, "Public Global Stellar Network ; September 2015"
                     );
                     return STELLAR;
                 }

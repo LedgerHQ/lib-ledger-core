@@ -259,20 +259,11 @@ namespace ledger {
                                if (request.type != api::TezosOperationTag::OPERATION_TAG_TRANSACTION) {
                                    return Future<BigInt>::successful(BigInt::ZERO);
                                }
-                                // FIXME: this is a workaround by the time the nodes are fixed
-                                // So here we are looking for unallocated accounts
-                                return explorer->getTransactions(std::vector<std::string>{request.toAddress}).map<BigInt>(self->getMainExecutionContext(), [request] (const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk> &txBulk) {
+                                // So here we are looking for unallocated / unfunded accounts
+                                return explorer->isFunded(request.toAddress).map<BigInt>(self->getMainExecutionContext(), [request](bool funded) {
                                     // Base unit is uXTZ
-                                    return (txBulk && !txBulk->transactions.empty()) ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
+                                    return funded ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
                                 });
-
-                                /*
-                                 * Once /chains/main/blocks/head/context/contracts/<contract_id> fixed we should use this one
-                                return explorer->isAllocated(request.toAddress).map<BigInt>(self->getMainExecutionContext(), [request] (bool isAllocated) -> BigInt {
-                                    // Base unit is uXTZ
-                                    return isAllocated ? BigInt::ZERO : *request.storageLimit * BigInt("1000");
-                                });
-                                 */
                             };
 
                             return getAllocationFee()
@@ -365,8 +356,18 @@ namespace ledger {
                                                 if (!counter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
-                                                // We should increment current counter
-                                                tx->setCounter(std::make_shared<BigInt>(++(*counter)));
+                                                auto explorer_counter = counter->toInt64();
+                                                auto saved_counter = self->getInternalPreferences()->getLong("counter", 0);
+                                                if (saved_counter <= explorer_counter) {
+                                                    self->getInternalPreferences()->editor()->putLong("counter", explorer_counter + 1)->commit();
+                                                    // We should increment current counter
+                                                    tx->setCounter(std::make_shared<BigInt>(++(*counter)));
+                                                }
+                                                else {
+                                                    self->getInternalPreferences()->editor()->putLong("counter", saved_counter + 1)->commit();
+                                                    // We should increment current counter
+                                                    tx->setCounter(std::make_shared<BigInt>(++BigInt(saved_counter)));
+                                                }
                                                 return explorer->getCurrentBlock();
                                             }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                                 tx->setBlockHash(block->hash);

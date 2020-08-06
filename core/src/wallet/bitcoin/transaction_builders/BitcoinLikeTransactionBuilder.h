@@ -32,6 +32,8 @@
 #ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
 #define LEDGER_CORE_BITCOINLIKETRANSACTIONBUILDER_H
 
+#include <unordered_set>
+
 #include <api/BitcoinLikeTransactionBuilder.hpp>
 #include <api/BitcoinLikePickingStrategy.hpp>
 #include <api/BitcoinLikeNetworkParameters.hpp>
@@ -43,16 +45,36 @@
 #include <math/BigInt.h>
 #include <spdlog/logger.h>
 #include <api/Currency.hpp>
+#include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
+
+
 
 namespace ledger {
     namespace core {
 
+        struct BitcoinLikeTransactionUtxoDescriptor {
+            std::string transactionHash;
+            uint64_t outputIndex;
+
+            bool operator==(BitcoinLikeTransactionUtxoDescriptor const &other) const;
+        };
+
+        struct BitcoinLikeTransactionUtxoDescriptorHash {
+            size_t operator()(BitcoinLikeTransactionUtxoDescriptor const& utxo) const;
+        };
+
+        struct BitcoinLikeTransactionInputDescriptor {
+            std::string transactionHash;
+            uint64_t outputIndex;
+            uint64_t sequence;
+        };
+
         struct BitcoinLikeTransactionBuildRequest {
             BitcoinLikeTransactionBuildRequest(const std::shared_ptr<BigInt>& minChange);
-            std::list<std::tuple<std::string, int32_t, uint32_t>> inputs;
+            std::vector<BitcoinLikeTransactionInputDescriptor> inputs;
             std::list<std::tuple<std::shared_ptr<BigInt>, std::shared_ptr<api::BitcoinLikeScript>>> outputs;
             std::list<std::string> changePaths;
-            std::list<std::tuple<std::string, int32_t>> excludedUtxo;
+            std::unordered_set<BitcoinLikeTransactionUtxoDescriptor, BitcoinLikeTransactionUtxoDescriptorHash> excludedUtxos;
             int32_t changeCount;
             std::shared_ptr<BigInt> feePerByte;
             Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>> utxoPicker;

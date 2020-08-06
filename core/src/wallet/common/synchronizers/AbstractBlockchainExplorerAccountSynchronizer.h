@@ -87,6 +87,7 @@ namespace ledger {
         template<typename Account, typename AddressType, typename Keychain, typename Explorer>
         class AbstractBlockchainExplorerAccountSynchronizer {
         public:
+            using Transaction = typename Explorer::Transaction;
 
             std::shared_ptr<ProgressNotifier<Unit>> synchronizeAccount(const std::shared_ptr<Account>& account) {
                 std::lock_guard<std::mutex> lock(_lock);
@@ -111,8 +112,6 @@ namespace ledger {
                 return _notifier;
             };
 
-        protected:
-
             struct SynchronizationBuddy {
                 std::shared_ptr<Preferences> preferences;
                 std::shared_ptr<spdlog::logger> logger;
@@ -125,8 +124,13 @@ namespace ledger {
                 Option<void *> token;
                 std::shared_ptr<Account> account;
                 std::map<std::string, std::string> transactionsToDrop;
+
+                virtual ~SynchronizationBuddy() {
+
+                };
             };
 
+        protected:
 
             static void initializeSavedState(Option<BlockchainExplorerAccountSynchronizationSavedState> &savedState,
                                              int32_t halfBatchSize) {
@@ -167,9 +171,12 @@ namespace ledger {
                 }
             };
 
-            Future<Unit> performSynchronization(const std::shared_ptr<Account> &account) {
-                auto buddy = std::make_shared<SynchronizationBuddy>();
+            virtual std::shared_ptr<SynchronizationBuddy> makeSynchronizationBuddy() {
+                return std::make_shared<SynchronizationBuddy>();
+            }
 
+            Future<Unit> performSynchronization(const std::shared_ptr<Account> &account) {
+                auto buddy = makeSynchronizationBuddy();
                 buddy->account = account;
                 buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)->getInternalPreferences()
                         ->getSubPreferences(
@@ -257,40 +264,23 @@ namespace ledger {
                         return Future<Unit>::successful(unit);
                     }
                     return tryKillSession.getValue();
+                }).template flatMap<Unit>(account->getContext(), [self, buddy] (auto) {
+                    return self->synchronizeMempool(buddy);
                 }).template map<Unit>(ImmediateExecutionContext::INSTANCE, [self, buddy] (const Unit&) {
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                     buddy->logger->info("End synchronization for account#{} of wallet {} in {}", buddy->account->getIndex(),
                                         buddy->account->getWallet()->getName(), DurationUtils::formatDuration(duration));
 
-                    //Delete dropped txs from DB
-                    soci::session sql(buddy->wallet->getDatabase()->getPool());
-                    for (auto& tx : buddy->transactionsToDrop) {
-                        //Check if tx is pending
-                        auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
-                        if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
-                            soci::transaction tr(sql);
-                            buddy->logger->info("Drop transaction {}", tx.first);
-                            buddy->logger->info("Deleting operation from DB {}", tx.second);
-                            try {
-                                sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
-                                tr.commit();
-                            } catch(std::exception& ex) {
-                                buddy->logger->info("Failed to delete operation from DB {} reason: {}, rollback ...", tx.second, ex.what());
-                                tr.rollback();
-                            }
-                        }
-                    }
-
                     self->_currentAccount = nullptr;
                     return unit;
-                }).recover(ImmediateExecutionContext::INSTANCE, [buddy] (const Exception& ex) -> Unit {
+                }).recoverWith(ImmediateExecutionContext::INSTANCE, [self, buddy] (const Exception& ex) -> Future<Unit> {
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                     buddy->logger->error("Error during during synchronization for account#{} of wallet {} in {} ms", buddy->account->getIndex(),
                                          buddy->account->getWallet()->getName(), duration.count());
                     buddy->logger->error("Due to {}, {}", api::to_string(ex.getErrorCode()), ex.getMessage());
-                    return unit;
+                    return self->recoverFromFailedSynchronization(buddy);
                 });
             };
 
@@ -372,8 +362,14 @@ namespace ledger {
                                 {
                                     soci::transaction tr(sql);
                                     try {
-                                        sql << "DELETE FROM blocks where height >= :failedBlockHeight", soci::use(
-                                                failedBlockHeight);
+
+                                        soci::rowset<std::string> rows_block =  (sql.prepare << "SELECT uid FROM blocks where height >= :failedBlockHeight",
+                                                                                    soci::use(failedBlockHeight));
+
+                                        std::vector<std::string> blockToDelete(rows_block.begin(), rows_block.end());
+
+                                        // Remove failed blocks and associated operations/transactions
+                                        AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
                                         //Get last block not part from reorg
                                         auto lastBlock = BlockDatabaseHelper::getLastBlock(sql,
@@ -474,8 +470,8 @@ namespace ledger {
                         for (const auto& tx : bulk->transactions) {
                             soci::transaction tr(sql);
                             // A lot of things could happen here, better to wrap it
-                            auto tryPutTx = Try<int>::from([&buddy, &tx, &sql] () {
-                                auto flag = buddy->account->putTransaction(sql, tx);
+                            auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self] () {
+                                auto flag = self->putTransaction(sql, tx, buddy);
                                 //Update first pendingTxHash in savedState
                                 auto it = buddy->transactionsToDrop.find(tx.hash);
                                 if (it != buddy->transactionsToDrop.end()) {
@@ -524,11 +520,41 @@ namespace ledger {
                     });
             };
 
+            virtual Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy>& buddy) {
+                //Delete dropped txs from DB
+                soci::session sql(buddy->wallet->getDatabase()->getPool());
+                for (auto& tx : buddy->transactionsToDrop) {
+                    //Check if tx is pending
+                    auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
+                    if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
+                        soci::transaction tr(sql);
+                        buddy->logger->info("Drop transaction {}", tx.first);
+                        buddy->logger->info("Deleting operation from DB {}", tx.second);
+                        try {
+                            sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
+                            tr.commit();
+                        } catch(std::exception& ex) {
+                            buddy->logger->info("Failed to delete operation from DB {} reason: {}, rollback ...", tx.second, ex.what());
+                            tr.rollback();
+                        }
+                    }
+                }
+                return Future<Unit>::successful(unit);
+            }
+
+            virtual Future<Unit> recoverFromFailedSynchronization(const std::shared_ptr<SynchronizationBuddy>& buddy) {
+                return Future<Unit>::successful(unit);
+            }
+
+            virtual int putTransaction(soci::session& sql, const Transaction& transaction, const std::shared_ptr<SynchronizationBuddy>& buddy) = 0;
+
             virtual void updateCurrentBlock(std::shared_ptr<SynchronizationBuddy> &buddy,
                                             const std::shared_ptr<api::ExecutionContext> &context) = 0;
             virtual void updateTransactionsToDrop(soci::session &sql,
                                                   std::shared_ptr<SynchronizationBuddy> &buddy,
                                                   const std::string &accountUid) = 0;
+
+
 
             std::shared_ptr<Explorer> _explorer;
             std::shared_ptr<ProgressNotifier<Unit>> _notifier;

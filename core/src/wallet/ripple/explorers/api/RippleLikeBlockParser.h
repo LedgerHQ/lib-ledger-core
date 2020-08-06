@@ -34,6 +34,7 @@
 
 #include <wallet/common/explorers/api/AbstractBlockParser.h>
 #include "../RippleLikeBlockchainExplorer.h"
+#include <wallet/ripple/utils/Time.hpp>
 
 namespace ledger {
     namespace core {
@@ -46,16 +47,13 @@ namespace ledger {
                     std::string number(str, length);
                     BigInt value = BigInt::fromString(number);
                     _block->height = value.toUint64();
-                }
-                return true;
-            }
-
-            bool String(const rapidjson::Reader::Ch *str, rapidjson::SizeType length, bool copy) {
-                std::string value = std::string(str, length);
-                if (getLastKey() == "ledger_hash") {
-                    _block->hash = value;
-                } else if (getLastKey() == "close_time_human") {
-                    _block->time = DateUtils::fromJSON(value);
+                    // Ledger index is not really a hash but since XRP doesn't have reorg
+                    // it's safe to use ledger index as a unique hash.
+                    _block->hash = number;
+                } else if (getLastKey() == "close_time") {
+                    std::string number(str, length);
+                    BigInt value = BigInt::fromString(number);
+                    _block->time = xrp_utils::toTimePoint<std::chrono::system_clock>(value.toUint64());
                 }
                 return true;
             }

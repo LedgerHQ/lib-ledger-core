@@ -31,6 +31,8 @@
 #ifndef LEDGER_CORE_VECTOR_HPP
 #define LEDGER_CORE_VECTOR_HPP
 
+#include <soci.h>
+#include <algorithm>
 #include <vector>
 #include <functional>
 
@@ -56,7 +58,20 @@ namespace ledger {
                 }
                 return out;
             };
-        };
+
+            template <typename Result, typename Function>
+            std::vector<Result> fromRowset(soci::rowset<soci::row>& rows, Function&& function) {
+                auto result = std::vector<Result>{};
+                std::transform(
+                    rows.begin(),
+                    rows.end(),
+                    std::back_inserter(result),
+                    std::forward<Function>(function)
+                );
+                return result;
+            }
+
+        }
     }
 }
 
