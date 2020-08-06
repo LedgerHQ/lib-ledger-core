@@ -347,7 +347,7 @@ Account = interface +c {
     # The value is stored as a int32
     const EV_SYNC_NEW_OPERATIONS: string = "EV_SYNC_NEW_OPERATIONS";
     # Indicates the first valid block height before the reorganization during the synchronization
-    # The valie is stored as a int32
+    # The value is stored as a int32
     const EV_SYNC_REORG_BLOCK_HEIGHT: string = "EV_SYNC_REORG_BLOCK_HEIGHT";
     # Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
     const EV_SYNC_ERROR_CODE: string = "EV_SYNC_ERROR_CODE";
@@ -362,6 +362,7 @@ Account = interface +c {
     const EV_NEW_OP_WALLET_NAME: string = "EV_NEW_OP_WALLET_NAME";
     const EV_NEW_OP_ACCOUNT_INDEX: string = "EV_NEW_OP_ACCOUNT_INDEX";
     const EV_NEW_OP_UID: string = "EV_NEW_OP_UID";
+    const EV_DELETED_OP_UID: string = "EV_DELETED_OP_UID";
 
     # Returned flag when a transaction is put in DB
     # Some of those are unrelevant for specific coins
@@ -375,6 +376,8 @@ Account = interface +c {
     const FLAG_TRANSACTION_CREATED_SENDING_OPERATION: i32 = 16;
     const FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION: i32 = 32;
     const FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION: i32 = 64;
+    # FLAG_TRANSACTION_CREATED_SENDING_OPERATION | FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION | FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION
+    const FLAG_TRANSACTION_NEW_OPERATION: i32 = 112;
 
     # Get index of account in user's wallet
     # 32-bit integer

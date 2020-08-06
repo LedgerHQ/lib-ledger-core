@@ -45,7 +45,7 @@ public:
 
     /**
      * Key of the synchronization duration time in the synchronize event payload.
-     * The value is stored in a i32 64 time expressed in miliseconds.
+     * The value is stored in a int64 time expressed in miliseconds.
      */
     static std::string const EV_SYNC_DURATION_MS;
 
@@ -63,7 +63,7 @@ public:
 
     /**
      * Indicates the first valid block height before the reorganization during the synchronization
-     * The valie is stored as a int32
+     * The value is stored as a int32
      */
     static std::string const EV_SYNC_REORG_BLOCK_HEIGHT;
 
@@ -89,6 +89,8 @@ public:
 
     static std::string const EV_NEW_OP_UID;
 
+    static std::string const EV_DELETED_OP_UID;
+
     /**
      * Returned flag when a transaction is put in DB
      * Some of those are unrelevant for specific coins
@@ -110,6 +112,9 @@ public:
     static int32_t const FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
 
     static int32_t const FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
+
+    /** FLAG_TRANSACTION_CREATED_SENDING_OPERATION | FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION | FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION */
+    static int32_t const FLAG_TRANSACTION_NEW_OPERATION;
 
     /**
      * Get index of account in user's wallet

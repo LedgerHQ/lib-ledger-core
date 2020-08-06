@@ -494,16 +494,9 @@ namespace ledger {
                             // A lot of things could happen here, better to wrap it
                             auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self] () {
                                 auto flag = self->putTransaction(sql, tx, buddy);
-                                auto const watchedFlags = std::array<int, 3>{
-                                    Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION,
-                                    Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION,
-                                    Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION
-                                };
 
-                                for (auto f : watchedFlags) {
-                                    if (flag & f) {
-                                        ++buddy->context.newOperations;
-                                    }
+                                if (flag & Account::FLAG_TRANSACTION_NEW_OPERATION) {
+                                    ++buddy->context.newOperations;
                                 }
 
                                 //Update first pendingTxHash in savedState
