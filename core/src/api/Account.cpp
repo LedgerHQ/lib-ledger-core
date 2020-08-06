@@ -33,6 +33,8 @@ std::string const Account::EV_NEW_OP_ACCOUNT_INDEX = {"EV_NEW_OP_ACCOUNT_INDEX"}
 
 std::string const Account::EV_NEW_OP_UID = {"EV_NEW_OP_UID"};
 
+std::string const Account::EV_DELETED_OP_UID = {"EV_DELETED_OP_UID"};
+
 int32_t const Account::FLAG_TRANSACTION_IGNORED = 0;
 
 int32_t const Account::FLAG_NEW_TRANSACTION = 1;
@@ -48,5 +50,7 @@ int32_t const Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION = 16;
 int32_t const Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 32;
 
 int32_t const Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION = 64;
+
+int32_t const Account::FLAG_TRANSACTION_NEW_OPERATION = 112;
 
 } } }  // namespace ledger::core::api
