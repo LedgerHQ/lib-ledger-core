@@ -1,4 +1,18 @@
+## 3.5.0
+
+> 2020/08/06
+
+- Add Algorand integration
+- Rework RBF transaction filtering algorithm
+- Improve transaction creation performances
+- Add PreferencesBackend API
+- Add support for Stellar protocol 13 update
+- Fix negative fees on Bitcoin transaction creation
+- Add a call on BitcoinLikeAccount to get all account addresses
+- Fix XRP block parser
+
 ## 3.4.1
+
 > 2020/06/10
 
 - Fix SBT download failures on the CI (for Debian and MacOS)
