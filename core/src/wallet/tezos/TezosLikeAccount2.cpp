@@ -114,14 +114,17 @@ namespace ledger {
                         // txs for multiple addresses
                         // Hint: we could add originated accounts to keychain as
                         // managedAccounts and getAllObservableAddresses will return them as well
-                        if (self->_originatedAccounts.empty() || result.isFailure()) {
+                        if (self->_originatedAccounts.empty()) {
                             return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result.getValue());
+                        }
+                        if (result.isFailure()) {
+                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(BlockchainExplorerAccountSynchronizationResult{});
                         }
 
                         using TxsBulk = TezosLikeBlockchainExplorer::TransactionsBulk;
 
-                        static std::function<Future<BlockchainExplorerAccountSynchronizationResult> (std::shared_ptr<TezosLikeAccount>, size_t, void*)> getTxs =
-                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session) {
+                        static std::function<Future<BlockchainExplorerAccountSynchronizationResult> (std::shared_ptr<TezosLikeAccount>, size_t, void*, BlockchainExplorerAccountSynchronizationResult)> getTxs =
+                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session, BlockchainExplorerAccountSynchronizationResult result) {
                                     std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
 
                                     // Get offset to not start sync from beginning
@@ -130,36 +133,40 @@ namespace ledger {
                                             account->_originatedAccounts[id]->queryOperations()->partial()
                                             )->execute();
 
-                                    return offset.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
+                                    return offset.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) mutable {
                                         // For the moment we start synchro from the beginning
                                         auto getSession = session ? Future<void *>::successful(session) :
                                                           account->_explorer->startSession();
-                                        return getSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (void *s) {
+                                        return getSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (void *s) mutable {
                                             return account->_explorer->getTransactions(addresses, std::to_string(ops.size()), s)
-                                                    .flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) {
+                                                    .flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) mutable {
                                                         auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
                                                         {
                                                             soci::session sql(account->getWallet()->getDatabase()->getPool());
                                                             soci::transaction tr(sql);
                                                             for (auto &tx : bulk->transactions) {
-                                                                account->putTransaction(sql, tx, uid, addresses[0]);
+                                                                auto flag = account->putTransaction(sql, tx, uid, addresses[0]);
+
+                                                                if (flag & Account::FLAG_TRANSACTION_NEW_OPERATION) {
+                                                                    ++result.newOperations;
+                                                                }
+
                                                             }
                                                             tr.commit();
                                                         }
 
                                                         if (bulk->hasNext) {
-                                                            return getTxs(account, id, s);
+                                                            return getTxs(account, id, s, result);
                                                         }
 
                                                         if (id == account->_originatedAccounts.size() - 1) {
-                                                            // NOTE: we probably want to populate that result
-                                                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(BlockchainExplorerAccountSynchronizationResult());
+                                                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result);
                                                         }
 
                                                         auto killSession = s ? Future<Unit>::successful(Unit()) :
                                                                            account->_explorer->killSession(s);
                                                         return killSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const auto&){
-                                                            return getTxs(account, id + 1, nullptr);
+                                                            return getTxs(account, id + 1, nullptr, result);
                                                         });
                                                     }).recover(account->getContext(), [] (const Exception& ex) -> BlockchainExplorerAccountSynchronizationResult {
                                                         throw ex;
@@ -167,7 +174,7 @@ namespace ledger {
                                         });
                                     });
                         };
-                        return getTxs(self, 0, nullptr);
+                        return getTxs(self, 0, nullptr, result.getValue());
             }).onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
@@ -176,6 +183,12 @@ namespace ledger {
                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                 if (result.isSuccess()) {
                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+
+                    auto const context = result.getValue();
+
+                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+                    payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE,
