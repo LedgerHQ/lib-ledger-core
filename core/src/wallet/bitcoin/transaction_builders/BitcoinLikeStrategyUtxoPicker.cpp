@@ -564,6 +564,7 @@ namespace ledger {
             pickedUtxos.reserve(utxos.size());
             std::sort(utxos.begin(), utxos.end(), functor);
 
+            bool enough = false;
             for (auto const &u : utxos) {
                 amount = amount + *u.value.value();
                 pickedInputs += 1;
@@ -573,11 +574,12 @@ namespace ledger {
 
                 auto const computeOutputAmount = pickedInputs == utxos.size();
                 if (hasEnough(buddy, amount, pickedInputs, currency, computeOutputAmount)) {
+                    enough = true;
                     break;
                 }
             }
 
-            if (pickedInputs >= utxos.size() && !buddy->request.wipe) {
+            if (!enough && !buddy->request.wipe) {
                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
             }
 
