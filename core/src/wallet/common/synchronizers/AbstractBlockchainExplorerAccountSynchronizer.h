@@ -52,6 +52,7 @@
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/common/database/AccountDatabaseHelper.h>
+#include <common/AccountHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -493,9 +494,9 @@ namespace ledger {
                             soci::transaction tr(sql);
                             // A lot of things could happen here, better to wrap it
                             auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self] () {
-                                auto flag = self->putTransaction(sql, tx, buddy);
+                                auto const flag = self->putTransaction(sql, tx, buddy);
 
-                                if (flag & Account::FLAG_TRANSACTION_NEW_OPERATION) {
+                                if (::ledger::core::account::isInsertedOperation(flag)) {
                                     ++buddy->context.newOperations;
                                 }
 

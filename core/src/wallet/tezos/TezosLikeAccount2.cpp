@@ -57,6 +57,7 @@
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/TezosLikeTransaction.hpp>
+#include <common/AccountHelper.hpp>
 
 using namespace soci;
 
@@ -145,9 +146,9 @@ namespace ledger {
                                                             soci::session sql(account->getWallet()->getDatabase()->getPool());
                                                             soci::transaction tr(sql);
                                                             for (auto &tx : bulk->transactions) {
-                                                                auto flag = account->putTransaction(sql, tx, uid, addresses[0]);
+                                                                auto const flag = account->putTransaction(sql, tx, uid, addresses[0]);
 
-                                                                if (flag & Account::FLAG_TRANSACTION_NEW_OPERATION) {
+                                                                if (::ledger::core::account::isInsertedOperation(flag)) {
                                                                     ++result.newOperations;
                                                                 }
 

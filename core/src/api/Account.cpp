@@ -51,6 +51,4 @@ int32_t const Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 32;
 
 int32_t const Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION = 64;
 
-int32_t const Account::FLAG_TRANSACTION_NEW_OPERATION = 112;
-
 } } }  // namespace ledger::core::api
