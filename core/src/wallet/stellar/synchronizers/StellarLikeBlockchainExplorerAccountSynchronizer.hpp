@@ -51,17 +51,24 @@ namespace ledger {
              */
             struct SavedState {
                 /**
-                 * Current version of the algorithm, to discriminate all saved state and ensure proper migration.
-                 */
-                int algorithmVersion;
-                /**
                  * Last paging token used by the synchronizer for synchronizing transactions.
                  */
-                std::string transactionPagingToken;
+                Option<std::string> transactionPagingToken;
+
+                /**
+                 * Inserted operation counter during last synchronization.
+                 * The counter is reset at the beginning of each synchronization, not matter what.
+                 */
+                uint32_t insertedOperations;
+
+                /**
+                 * Last block height fetched during last synchronization
+                 */
+                uint64_t lastBlockHeight;
 
                 template<class Archive>
                 void serialize(Archive & archive) {
-                    archive(transactionPagingToken);
+                    archive(transactionPagingToken.getValueOr(""));
                 };
             };
 
@@ -78,13 +85,13 @@ namespace ledger {
             bool isSynchronizing() const override;
 
         protected:
-            void synchronizeAccount(const std::shared_ptr<StellarLikeAccount> &account);
+            void synchronizeAccount(const std::shared_ptr<StellarLikeAccount>& account);
             void synchronizeAccount(const std::shared_ptr<StellarLikeAccount>& account,
-                                    const Option<SavedState>& state);
+                                    SavedState& state);
             void synchronizeTransactions(const std::shared_ptr<StellarLikeAccount>& account,
-                                         const Option<SavedState>& state);
+                                         SavedState& state);
             inline void failSynchronization(const Exception& ex);
-            inline void endSynchronization();
+            inline void endSynchronization(SavedState const& state);
 
 
         private:

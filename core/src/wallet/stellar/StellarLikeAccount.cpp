@@ -108,10 +108,10 @@ namespace ledger {
                     if (result.isSuccess()) {
                         code = api::EventCode::SYNCHRONIZATION_SUCCEED;
 
-                        auto const context = result.getValue();
+                        auto const state = result.getValue();
 
-                        payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
-                        payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
+                        payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(state.lastBlockHeight));
+                        payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(state.newOperations));
                     } else {
                         code = api::EventCode::SYNCHRONIZATION_FAILED;
                         payload->putString(api::Account::EV_SYNC_ERROR_CODE,
