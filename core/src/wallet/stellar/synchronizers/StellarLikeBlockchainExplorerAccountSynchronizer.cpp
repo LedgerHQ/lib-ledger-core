@@ -78,11 +78,7 @@ namespace ledger {
             auto state = preferences
                 ->template getObject<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState>("state")
                 // provide default state if none exists yet
-                .getValueOr(SavedState{
-                    Option<std::string>{},
-                    0,
-                    0
-                });
+                .getValueOr(SavedState{});
 
             synchronizeAccount(account, state);
         }
