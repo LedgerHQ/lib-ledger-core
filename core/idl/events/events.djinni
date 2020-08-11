@@ -7,7 +7,8 @@ EventCode = enum {
     new_operation;
     # A new block event.
     new_block;
-
+    # A deleted operation event.
+    deleted_operation;
     # Event emitted when a wallet synchronization started.
     synchronization_started;
     # Event emitted when a wallet synchronization failed.
