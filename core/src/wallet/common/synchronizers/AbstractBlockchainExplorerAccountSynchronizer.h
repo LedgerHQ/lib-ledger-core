@@ -88,8 +88,8 @@ namespace ledger {
 
         struct BlockchainExplorerAccountSynchronizationResult {
             Option<uint32_t> reorgBlockHeight;
-            uint32_t lastBlockHeight;
-            uint32_t newOperations;
+            uint32_t lastBlockHeight = 0;
+            uint32_t newOperations = 0;
         };
 
         template<typename Account, typename AddressType, typename Keychain, typename Explorer>
@@ -203,7 +203,6 @@ namespace ledger {
                                account->getIndex(),
                                account->getKeychain()->getRestoreKey(),
                                account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
-                buddy->context.newOperations = 0;
 
                 //Check if reorganization happened
                 soci::session sql(buddy->wallet->getDatabase()->getPool());
