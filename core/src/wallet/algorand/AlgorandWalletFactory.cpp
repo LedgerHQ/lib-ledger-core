@@ -43,7 +43,7 @@ namespace core {
 namespace algorand {
 
     // Aliases for long constants names
-    const std::string ALGORAND_API_ENDPOINT = "https://algorand.coin.prod.aws.ledger.com";
+    const std::string ALGORAND_API_ENDPOINT = "https://algorand.coin.ledger.com";
     const std::string ALGORAND_NODE_EXPLORER = api::AlgorandBlockchainExplorerEngines::ALGORAND_NODE;
 
     WalletFactory::WalletFactory(const api::Currency &currency, const std::shared_ptr<WalletPool>& pool) :
