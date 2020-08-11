@@ -59,12 +59,12 @@ namespace ledger {
                  * Inserted operation counter during last synchronization.
                  * The counter is reset at the beginning of each synchronization, not matter what.
                  */
-                uint32_t insertedOperations;
+                uint32_t insertedOperations = 0;
 
                 /**
                  * Last block height fetched during last synchronization
                  */
-                uint64_t lastBlockHeight;
+                uint64_t lastBlockHeight = 0;
 
                 template<class Archive>
                 void serialize(Archive & archive) {
