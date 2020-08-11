@@ -209,6 +209,13 @@ namespace ledger {
             pushEvent(event);
         }
 
+        void AbstractAccount::emitDeletedOperationEvent(std::string const& uid) {
+            auto payload = DynamicObject::newInstance();
+            payload->putString(api::Account::EV_DELETED_OP_UID, uid);
+            auto event = Event::newInstance(api::EventCode::DELETED_OPERATION, payload);
+            pushEvent(event);
+        }
+
         void AbstractAccount::emitEventsNow() {
             auto self = shared_from_this();
             run([self] () {

@@ -53,6 +53,7 @@
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <common/AccountHelper.hpp>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
 namespace ledger {
     namespace core {
@@ -388,6 +389,9 @@ namespace ledger {
 
                                         std::vector<std::string> blockToDelete(rows_block.begin(), rows_block.end());
 
+                                        // Fetch all operations which are deleted during reorganization
+                                        auto deletedOperationUIDs = OperationDatabaseHelper::fetchFromBlocks(sql, blockToDelete);
+
                                         // Remove failed blocks and associated operations/transactions
                                         AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
 
@@ -413,6 +417,14 @@ namespace ledger {
                                             }
                                         }
                                         tr.commit();
+
+                                        // We can emit safely deleted operation UIDs
+                                        std::for_each(
+                                            deletedOperationUIDs.cbegin(),
+                                            deletedOperationUIDs.cend(),
+                                            [buddy](auto const &uid) {
+                                                buddy->account->emitDeletedOperationEvent(uid);
+                                            });
                                     } catch(...) {
                                         tr.rollback();
                                     }
