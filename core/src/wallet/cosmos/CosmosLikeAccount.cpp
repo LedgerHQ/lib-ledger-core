@@ -622,7 +622,7 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
         std::make_shared<Event>(
             api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
         0);
-    future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+    future.onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
         api::EventCode code;
         auto payload = std::make_shared<DynamicObject>();
         auto duration =
@@ -631,6 +631,11 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
         payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
         if (result.isSuccess()) {
             code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+            auto const context = result.getValue();
+
+            payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+            payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
         }
         else {
             code = api::EventCode::SYNCHRONIZATION_FAILED;
