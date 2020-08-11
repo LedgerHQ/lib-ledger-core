@@ -45,10 +45,23 @@
 #include <wallet/common/TrustIndicator.h>
 #include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 
+#include <algorithm>
+
 using namespace soci;
 
 namespace ledger {
     namespace core {
+
+        std::vector<std::string> OperationDatabaseHelper::fetchFromBlocks(soci::session &sql, std::vector<std::string> const &blockUIDs) {
+            rowset<std::string> rows = (
+                sql.prepare << "SELECT uid "
+                               "FROM operations AS op "
+                               "WHERE block_uid IN (:uids)",
+                use(blockUIDs));
+
+            return std::vector<std::string>(rows.begin(), rows.end());
+        }
+
 
         std::string OperationDatabaseHelper::createUid(const std::string &accountUid, const std::string &txId,
                                                        const api::OperationType type) {

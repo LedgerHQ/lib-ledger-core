@@ -35,11 +35,14 @@
 #include <wallet/common/Operation.h>
 #include <soci.h>
 #include <string>
+#include <vector>
 
 namespace ledger {
     namespace core {
         class OperationDatabaseHelper {
         public:
+            static std::vector<std::string> fetchFromBlocks(soci::session &sql,
+                                                            std::vector<std::string> const &blockUIDs);
             static bool putOperation(soci::session& sql,
                                      const Operation& operation);
             static std::string createUid(const std::string& accountUid,
