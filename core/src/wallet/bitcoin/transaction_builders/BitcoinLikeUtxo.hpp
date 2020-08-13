@@ -56,6 +56,7 @@ namespace ledger {
 
             operator BitcoinLikeBlockchainExplorerOutput() const;
             BitcoinLikeUtxo() = default;
+            ~BitcoinLikeUtxo() = default;
         };
 
         BitcoinLikeUtxo makeUtxo(BitcoinLikeBlockchainExplorerOutput const& output, api::Currency const& currency);
