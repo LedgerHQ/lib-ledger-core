@@ -89,7 +89,7 @@ namespace ledger {
                 });
             }
 
-            Future<JsonResult> json(bool parseNumbersAsString = false) const;
+            Future<JsonResult> json(bool parseNumbersAsString = false, bool ignoreStatusCode = false) const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
 
 
