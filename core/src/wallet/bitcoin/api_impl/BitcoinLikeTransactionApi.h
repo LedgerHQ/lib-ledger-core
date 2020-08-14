@@ -109,6 +109,8 @@ namespace ledger {
 
             api::EstimatedSize getEstimatedSize() override;
 
+            int64_t getDustAmount() override;
+
             std::vector<uint8_t> serializeOutputs() override;
 
             int32_t getVersion() override;
@@ -143,6 +145,9 @@ namespace ledger {
                                                    std::size_t outputCount,
                                                    const api::Currency &currency,
                                                    const std::string &keychainEngine);
+
+            static int64_t computeDustAmount(const api::Currency &currency, int32_t size);
+       
 
         private:
             inline bool isWriteable() const;

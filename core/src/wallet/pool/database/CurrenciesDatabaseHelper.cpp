@@ -35,6 +35,7 @@
 #include <api/enum_from_string.hpp>
 #include <api/Currency.hpp>
 #include <api/BitcoinLikeFeePolicy.hpp>
+#include <api/BitcoinLikeDustPolicy.hpp> 
 #include <collections/strings.hpp>
 #include <database/soci-number.h>
 
@@ -69,22 +70,24 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 auto hexP2SHVersion = hex::toString(params.P2SHVersion);
                 auto hexXPUBVersion = hex::toString(params.XPUBVersion);
                 auto feePolicy = api::to_string(params.FeePolicy);
+                auto dustPolicy = api::to_string(params.DustPolicy);
                 auto sigHash = hex::toString(params.SigHash);
                 auto useTimestampedTransaction = static_cast<int>(params.UsesTimestampedTransaction);
                 sql
-                << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType, :additionalBIPs)",
+                << "INSERT INTO bitcoin_currencies VALUES(:name, :identifier, :p2pkh, :p2sh, :xpub, :dust, :fee_policy, :prefix, :use_timestamped_transaction, :delay, :sigHashType, :additionalBIPs, :dust_policy)",
                 use(currency.name),
                 use(params.Identifier),
                 use(hexP2PKHVersion),
                 use(hexP2SHVersion),
                 use(hexXPUBVersion),
-                use(params.DustAmount),
+                use(params.Dust),
                 use(feePolicy),
                 use(params.MessagePrefix),
                 use(useTimestampedTransaction),
                 use(params.TimestampDelay),
                 use(sigHash),
-                use(BIPs);
+                use(BIPs),
+                use(dustPolicy);  
                 break;
             }
             case api::WalletType::COSMOS: {
@@ -221,7 +224,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                 rowset<row> btc_rows = (sql.prepare << "SELECT bitcoin_currencies.p2pkh_version, bitcoin_currencies.p2sh_version, bitcoin_currencies.xpub_version,"
                                                     " bitcoin_currencies.dust_amount, bitcoin_currencies.fee_policy, bitcoin_currencies.has_timestamped_transaction,"
                                                     " bitcoin_currencies.message_prefix, bitcoin_currencies.identifier, bitcoin_currencies.timestamp_delay,"
-                                                    " bitcoin_currencies.sighash_type, bitcoin_currencies.additional_BIPs "
+                                                    " bitcoin_currencies.sighash_type, bitcoin_currencies.additional_BIPs, bitcoin_currencies.dust_policy"
                                                     " FROM bitcoin_currencies "
                                                     " WHERE bitcoin_currencies.name = :currency_name", use(currency.name));
                 for (auto& btc_row : btc_rows) {
@@ -233,7 +236,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                      * On Linux, if we use int64_t, we get std::bad_cast exception thrown,
                      * so we replace by a long long (which is supported by soci (soci::dt_long_long))
                      */
-                    params.DustAmount = btc_row.get<long long>(3);
+                    params.Dust = btc_row.get<long long>(3);
                     params.FeePolicy = api::from_string<api::BitcoinLikeFeePolicy>(btc_row.get<std::string>(4));
                     params.UsesTimestampedTransaction = btc_row.get<int>(5) == 1;
                     params.MessagePrefix = btc_row.get<std::string>(6);
@@ -241,6 +244,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                     params.TimestampDelay = btc_row.get<long long>(8);
                     params.SigHash = hex::toByteArray(btc_row.get<std::string>(9));
                     params.AdditionalBIPs = strings::split(btc_row.get<std::string>(10), ",");
+                    params.DustPolicy = api::from_string<api::BitcoinLikeDustPolicy>(btc_row.get<std::string>(11));
                     currency.bitcoinLikeNetworkParameters = params;
                 }
                 break;

@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKENETWORKPARAMETERS_HPP
 #define DJINNI_GENERATED_BITCOINLIKENETWORKPARAMETERS_HPP
 
+#include "BitcoinLikeDustPolicy.hpp"
 #include "BitcoinLikeFeePolicy.hpp"
 #include <cstdint>
 #include <iostream>
@@ -26,7 +27,9 @@ struct BitcoinLikeNetworkParameters final {
     /** Policy to use when expressing fee amount. */
     BitcoinLikeFeePolicy FeePolicy;
     /** Minimal amount a UTXO should have before being considered BTC dust. */
-    int64_t DustAmount;
+    int64_t Dust;
+    /** Policy to use when expressing dust */
+    BitcoinLikeDustPolicy DustPolicy;
     /** Constant prefix to prepend all signature messages. */
     std::string MessagePrefix;
     /** Are transactions encoded with timestamp? */
@@ -43,7 +46,8 @@ struct BitcoinLikeNetworkParameters final {
                                  std::vector<uint8_t> P2SHVersion_,
                                  std::vector<uint8_t> XPUBVersion_,
                                  BitcoinLikeFeePolicy FeePolicy_,
-                                 int64_t DustAmount_,
+                                 int64_t Dust_,
+                                 BitcoinLikeDustPolicy DustPolicy_,
                                  std::string MessagePrefix_,
                                  bool UsesTimestampedTransaction_,
                                  int64_t TimestampDelay_,
@@ -54,7 +58,8 @@ struct BitcoinLikeNetworkParameters final {
     , P2SHVersion(std::move(P2SHVersion_))
     , XPUBVersion(std::move(XPUBVersion_))
     , FeePolicy(std::move(FeePolicy_))
-    , DustAmount(std::move(DustAmount_))
+    , Dust(std::move(Dust_))
+    , DustPolicy(std::move(DustPolicy_))
     , MessagePrefix(std::move(MessagePrefix_))
     , UsesTimestampedTransaction(std::move(UsesTimestampedTransaction_))
     , TimestampDelay(std::move(TimestampDelay_))
@@ -68,7 +73,8 @@ struct BitcoinLikeNetworkParameters final {
        this->P2SHVersion = cpy.P2SHVersion;
        this->XPUBVersion = cpy.XPUBVersion;
        this->FeePolicy = cpy.FeePolicy;
-       this->DustAmount = cpy.DustAmount;
+       this->Dust = cpy.Dust;
+       this->DustPolicy = cpy.DustPolicy;
        this->MessagePrefix = cpy.MessagePrefix;
        this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
        this->TimestampDelay = cpy.TimestampDelay;
@@ -85,7 +91,8 @@ struct BitcoinLikeNetworkParameters final {
        this->P2SHVersion = cpy.P2SHVersion;
        this->XPUBVersion = cpy.XPUBVersion;
        this->FeePolicy = cpy.FeePolicy;
-       this->DustAmount = cpy.DustAmount;
+       this->Dust = cpy.Dust;
+       this->DustPolicy = cpy.DustPolicy;
        this->MessagePrefix = cpy.MessagePrefix;
        this->UsesTimestampedTransaction = cpy.UsesTimestampedTransaction;
        this->TimestampDelay = cpy.TimestampDelay;
@@ -96,12 +103,12 @@ struct BitcoinLikeNetworkParameters final {
 
     template <class Archive>
     void load(Archive& archive) {
-        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, Dust, DustPolicy, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
     }
 
     template <class Archive>
     void save(Archive& archive) const {
-        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, DustAmount, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
+        archive(Identifier, P2PKHVersion, P2SHVersion, XPUBVersion, FeePolicy, Dust, DustPolicy, MessagePrefix, UsesTimestampedTransaction, TimestampDelay, SigHash, AdditionalBIPs);
     }
 };
 

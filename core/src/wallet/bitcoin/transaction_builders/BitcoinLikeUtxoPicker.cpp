@@ -113,9 +113,13 @@ namespace ledger {
                 buddy->transaction->addOutput(std::make_shared<BitcoinLikeOutputApi>(out, getCurrency(), derivationPath));
             }
 
-            // Fill change outputs
-
-            if (buddy->changeAmount > BigInt(_currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
+            // Fill change outputs  
+            auto sizeWithChange = BitcoinLikeTransactionApi::estimateSize(buddy->transaction->getInputs().size(),
+                                                                    buddy->request.outputs.size() + 1, 
+                                                                    getCurrency(),
+                                                                    buddy->keychain->getKeychainEngine());
+            BigInt dustAmount(BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), sizeWithChange.Max)); 
+            if (buddy->changeAmount > dustAmount) {
                 // TODO implement multi change
                 // TODO implement use specific change address
                 auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
@@ -237,7 +241,10 @@ namespace ledger {
         BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
                                                           const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
-            auto minAmount = getCurrency().bitcoinLikeNetworkParameters.value().DustAmount;
+
+            const auto basicTransactionSize = BitcoinLikeTransactionApi::estimateSize(1, 1, getCurrency(), keychain->getKeychainEngine());
+            int64_t dustAmount = BitcoinLikeTransactionApi::computeDustAmount(getCurrency(), basicTransactionSize.Max);   
+            auto minAmount = dustAmount;
             return [=] () -> Future<std::vector<BitcoinLikeUtxo>> {
                 return getUtxo().map<std::vector<BitcoinLikeUtxo>>(getContext(), [=] (auto const &utxos) {
                     auto const isNotExcluded = [&] (auto const &currentUtxo) {

@@ -43,6 +43,7 @@ namespace ledger {
                     {0x04, 0x88, 0xB2, 0x1E},
                     BitcoinLikeFeePolicy::PER_BYTE,
                     5420,
+                    BitcoinLikeDustPolicy::FIXED,
                     "Bitcoin Signed Message:\n",
                     false,
                     0,
