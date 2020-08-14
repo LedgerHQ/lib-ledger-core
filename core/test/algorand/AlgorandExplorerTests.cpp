@@ -41,8 +41,8 @@ public:
         BaseFixture::SetUp();
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
-        // NOTE: we run the tests on the TestNet
-        auto client = std::make_shared<HttpClient>("https://testnet-algorand.api.purestake.io", http, worker);
+        // NOTE: we run the tests on the staging environment which is on the TestNet
+        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker);
 
         // Read API key from environment
         auto configuration = std::make_shared<DynamicObject>();
