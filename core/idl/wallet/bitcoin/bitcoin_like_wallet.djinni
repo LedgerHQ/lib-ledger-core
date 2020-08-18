@@ -293,7 +293,7 @@ BitcoinLikeTransactionBuilder = interface +c {
 
     # Parsing unsigned transaction.
     # parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
-    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary, currentBlockHeight: optional<i32>): BitcoinLikeTransaction;
+    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary, currentBlockHeight: i32): BitcoinLikeTransaction;
 }
 
 # Class representing a Bitcoin account.
@@ -308,7 +308,7 @@ BitcoinLikeAccount = interface +c {
     getUTXOCount(callback: Callback<i32>);
     broadcastRawTransaction(transaction: binary, callback: Callback<string>);
     broadcastTransaction(transaction: BitcoinLikeTransaction, callback: Callback<string>);
-    buildTransaction(partial: optional<bool>): BitcoinLikeTransactionBuilder;
+    buildTransaction(partial: bool): BitcoinLikeTransactionBuilder;
     # Get fees from network, fees are ordered in descending order (i.e. fastest to slowest confirmation)
     # Note: it would have been better to have this method on BitcoinLikeWallet
     # but since BitcoinLikeWallet is not used anywhere, it's better to keep all
