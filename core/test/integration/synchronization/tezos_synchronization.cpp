@@ -37,6 +37,8 @@
 #include <utils/DateUtils.hpp>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
 #include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
+#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
+#include <wallet/currencies.hpp>
 #include <iostream>
 #include <api/BlockchainExplorerEngines.hpp>
 #include <wallet/tezos/api_impl/TezosLikeOperation.h>

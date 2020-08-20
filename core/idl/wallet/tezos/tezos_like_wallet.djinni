@@ -126,6 +126,8 @@ TezosLikeAccount = interface +c {
 	getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
 	# Get fees from network
 	getFees(callback: Callback<BigInt>);
+	# Get gas price from network
+	getGasPrice(callback: Callback<BigInt>);
 	# Get originated accounts by current account
 	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
 }

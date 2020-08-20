@@ -65,6 +65,12 @@ namespace ledger {
             std::vector<uint8_t> serialize() override;
             std::vector<uint8_t> serializeWithType(api::TezosOperationTag type);
 
+            /// Serialize the transaction as json for Tezos Node run_operation JSON RPC endpoint
+            std::vector<uint8_t> serializeForDryRun(const std::vector<uint8_t>& chainID);
+
+            /// Serialize the transaction as json for Tezos Node run_operation JSON RPC endpoint
+            std::string serializeJsonForDryRun(const std::string& chainID);
+
             std::chrono::system_clock::time_point getDate() override;
 
             std::shared_ptr<api::BigInt> getCounter() override;
