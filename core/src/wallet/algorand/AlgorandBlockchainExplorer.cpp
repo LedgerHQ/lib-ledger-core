@@ -73,10 +73,9 @@ namespace algorand {
     {
         setConfiguration(configuration);
         const auto apiKey = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY);
-        if (!apiKey) {
-            throw make_exception(api::ErrorCode::API_ERROR, "Missing API key to access Algorand node.");
+        if (apiKey && !apiKey.value().empty()) {
+            _http->addHeader(constants::purestakeTokenHeader, apiKey.value());
         }
-        _http->addHeader(constants::purestakeTokenHeader, apiKey.value());
     }
 
     Future<api::Block> BlockchainExplorer::getBlock(uint64_t blockHeight) const
