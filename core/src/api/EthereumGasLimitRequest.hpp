@@ -26,7 +26,7 @@ struct EthereumGasLimitRequest final {
     /** Current gas price */
     std::experimental::optional<std::string> gasPrice;
     /** Amplifier coefficient for safety */
-    std::experimental::optional<double> amplifier;
+    std::experimental::optional<std::string> amplifier;
 
     EthereumGasLimitRequest(std::experimental::optional<std::string> from_,
                             std::experimental::optional<std::string> to_,
@@ -34,7 +34,7 @@ struct EthereumGasLimitRequest final {
                             std::experimental::optional<std::string> data_,
                             std::experimental::optional<std::string> gas_,
                             std::experimental::optional<std::string> gasPrice_,
-                            std::experimental::optional<double> amplifier_)
+                            std::experimental::optional<std::string> amplifier_)
     : from(std::move(from_))
     , to(std::move(to_))
     , value(std::move(value_))

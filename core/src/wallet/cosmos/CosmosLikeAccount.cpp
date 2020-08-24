@@ -755,7 +755,7 @@ std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTrans
             tx->setGas(request.gas);
             return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
         }
-        return self->_explorer->getEstimatedGasLimit(tx, request.gasAdjustment)
+        return self->_explorer->getEstimatedGasLimit(tx, std::to_string(request.gasAdjustment))
             .mapPtr<api::CosmosLikeTransaction>(
                 self->getContext(), [tx](const std::shared_ptr<BigInt> &estimateValue) {
                     tx->setGas(estimateValue);
@@ -779,7 +779,7 @@ void CosmosLikeAccount::estimateGas(
     if (request.memo) {
         tx->setMemo(request.memo.value());
     }
-    return _explorer->getEstimatedGasLimit(tx, request.amplifier.value_or(1.0))
+    return _explorer->getEstimatedGasLimit(tx, request.amplifier.value_or("1.0"))
         .mapPtr<api::BigInt>(
             getContext(),
             [](const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {

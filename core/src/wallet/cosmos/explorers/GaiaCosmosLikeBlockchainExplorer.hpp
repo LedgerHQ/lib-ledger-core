@@ -126,7 +126,7 @@ class GaiaCosmosLikeBlockchainExplorer :
     /// Get the estimated gas needed to broadcast the transaction
     FuturePtr<BigInt> getEstimatedGasLimit(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-        double gasAdjustment = 1.0) const override;
+        const std::string gasAdjustment = "1.0") const override;
 
    private:
     // Get all transactions relevant to an address
@@ -145,27 +145,27 @@ class GaiaCosmosLikeBlockchainExplorer :
     Future<BigInt> getEstimatedGasLimit(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
         const std::shared_ptr<api::CosmosLikeMessage> &message,
-        double gasAdjustment = 1.0) const;
+        const std::string gasAdjustment = "1.0") const;
     Future<BigInt> getEstimatedGasLimitForTransfer(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
         const std::shared_ptr<api::CosmosLikeMessage> &message,
-        double gasAdjustment = 1.0) const;
+        const std::string gasAdjustment = "1.0") const;
     Future<BigInt> getEstimatedGasLimitForRewards(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
         const std::shared_ptr<api::CosmosLikeMessage> &message,
-        double gasAdjustment = 1.0) const;
+        const std::string gasAdjustment = "1.0") const;
     Future<BigInt> getEstimatedGasLimitForDelegations(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
         const std::shared_ptr<api::CosmosLikeMessage> &message,
-        double gasAdjustment = 1.0) const;
+        const std::string gasAdjustment = "1.0") const;
     Future<BigInt> getEstimatedGasLimitForUnbounding(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
         const std::shared_ptr<api::CosmosLikeMessage> &message,
-        double gasAdjustment = 1.0) const;
+        const std::string gasAdjustment = "1.0") const;
     Future<BigInt> getEstimatedGasLimitForRedelegations(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
         const std::shared_ptr<api::CosmosLikeMessage> &message,
-        double gasAdjustment = 1.0) const;
+        const std::string gasAdjustment = "1.0") const;
 
    private:
     std::shared_ptr<HttpClient> _http;
