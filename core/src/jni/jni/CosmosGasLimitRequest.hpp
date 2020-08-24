@@ -26,10 +26,10 @@ private:
     friend ::djinni::JniClass<CosmosGasLimitRequest>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosGasLimitRequest") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/util/ArrayList;Ljava/lang/Double;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/util/ArrayList;Ljava/lang/String;)V") };
     const jfieldID field_memo { ::djinni::jniGetFieldID(clazz.get(), "memo", "Ljava/lang/String;") };
     const jfieldID field_messages { ::djinni::jniGetFieldID(clazz.get(), "messages", "Ljava/util/ArrayList;") };
-    const jfieldID field_amplifier { ::djinni::jniGetFieldID(clazz.get(), "amplifier", "Ljava/lang/Double;") };
+    const jfieldID field_amplifier { ::djinni::jniGetFieldID(clazz.get(), "amplifier", "Ljava/lang/String;") };
 };
 
 }  // namespace djinni_generated

@@ -16,7 +16,7 @@ auto CosmosGasLimitRequest::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinn
     auto r = ::djinni::LocalRef<JniType>{jniEnv->NewObject(data.clazz.get(), data.jconstructor,
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.memo)),
                                                            ::djinni::get(::djinni::List<::djinni_generated::CosmosLikeMessage>::fromCpp(jniEnv, c.messages)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::F64>::fromCpp(jniEnv, c.amplifier)))};
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.amplifier)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
@@ -27,7 +27,7 @@ auto CosmosGasLimitRequest::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
     const auto& data = ::djinni::JniClass<CosmosGasLimitRequest>::get();
     return {::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_memo)),
             ::djinni::List<::djinni_generated::CosmosLikeMessage>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_messages)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::F64>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_amplifier))};
+            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_amplifier))};
 }
 
 }  // namespace djinni_generated

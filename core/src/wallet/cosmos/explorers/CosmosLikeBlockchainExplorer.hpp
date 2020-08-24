@@ -114,7 +114,7 @@ class CosmosLikeBlockchainExplorer : public ConfigurationMatchable {
 
     virtual FuturePtr<BigInt> getEstimatedGasLimit(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-        double gasAdjustment = 1.0) const = 0;
+       const std::string gasAdjustment = "1.0") const = 0;
 };
 }  // namespace core
 }  // namespace ledger

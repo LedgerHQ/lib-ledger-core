@@ -35,12 +35,12 @@ AlgorandAssetParams = record {
     # A URL where more information about the asset can be retrieved
     url: optional<string>;
     # Specifies whether holdings in this asset are frozen by default
-    defaultFrozen: optional<bool>;
+    defaultFrozen: bool;
 
     # The total number of units of this asset
     total: optional<string>;
     # The number of digits to use after the decimal point when displaying this asset
-    decimals: optional<i32>;
+    decimals: optional<string>;
 
     # The address that created this asset.
     creatorAddress: optional<string>;
