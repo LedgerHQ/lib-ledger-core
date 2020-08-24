@@ -120,7 +120,7 @@ CosmosGasLimitRequest = record {
     # The transaction is more expensive usually because we send a smaller
     # payload than usual to the simulation backend (and gas is also consumed
     # per tx byte)
-    amplifier: optional<f64>;
+    amplifier: optional<string>;
 }
 
 

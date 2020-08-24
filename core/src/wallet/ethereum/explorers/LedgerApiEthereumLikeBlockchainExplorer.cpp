@@ -142,7 +142,8 @@ namespace ledger {
           if (request.amplifier) {
             body.AddMember(
                 "amplifier",
-                request.amplifier.value(), allocator);
+                rapidjson::Value(request.amplifier.value().c_str(), allocator).Move(),
+                allocator);
           }
           if (request.gas) {
             body.AddMember(

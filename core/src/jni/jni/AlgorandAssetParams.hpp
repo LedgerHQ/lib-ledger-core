@@ -26,14 +26,14 @@ private:
     friend ::djinni::JniClass<AlgorandAssetParams>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandAssetParams") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Boolean;Ljava/lang/String;Ljava/lang/Integer;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_assetId { ::djinni::jniGetFieldID(clazz.get(), "assetId", "Ljava/lang/String;") };
     const jfieldID field_assetName { ::djinni::jniGetFieldID(clazz.get(), "assetName", "Ljava/lang/String;") };
     const jfieldID field_unitName { ::djinni::jniGetFieldID(clazz.get(), "unitName", "Ljava/lang/String;") };
     const jfieldID field_url { ::djinni::jniGetFieldID(clazz.get(), "url", "Ljava/lang/String;") };
-    const jfieldID field_defaultFrozen { ::djinni::jniGetFieldID(clazz.get(), "defaultFrozen", "Ljava/lang/Boolean;") };
+    const jfieldID field_defaultFrozen { ::djinni::jniGetFieldID(clazz.get(), "defaultFrozen", "Z") };
     const jfieldID field_total { ::djinni::jniGetFieldID(clazz.get(), "total", "Ljava/lang/String;") };
-    const jfieldID field_decimals { ::djinni::jniGetFieldID(clazz.get(), "decimals", "Ljava/lang/Integer;") };
+    const jfieldID field_decimals { ::djinni::jniGetFieldID(clazz.get(), "decimals", "Ljava/lang/String;") };
     const jfieldID field_creatorAddress { ::djinni::jniGetFieldID(clazz.get(), "creatorAddress", "Ljava/lang/String;") };
     const jfieldID field_managerAddress { ::djinni::jniGetFieldID(clazz.get(), "managerAddress", "Ljava/lang/String;") };
     const jfieldID field_freezeAddress { ::djinni::jniGetFieldID(clazz.get(), "freezeAddress", "Ljava/lang/String;") };
