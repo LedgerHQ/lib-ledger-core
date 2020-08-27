@@ -117,8 +117,14 @@ namespace ledger {
 
             if (buddy->changeAmount > BigInt(_currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
                 // TODO implement multi change
-                // TODO implement use specific change address
-                auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
+                std::string changeAddress;
+                if (buddy->request.changePaths.size() != 0)
+                {
+                    auto changePath = buddy->request.changePaths.front();
+                    changeAddress = BitcoinLikeAddress::fromPublicKey(std::static_pointer_cast<CommonBitcoinLikeKeychains>(buddy->keychain)->getExtendedPublicKey(), _currency, changePath, buddy->keychain->getKeychainEngine());
+                }
+                else
+                    changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
 
                 auto amount = buddy->changeAmount;
                 auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);
