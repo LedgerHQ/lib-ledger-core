@@ -228,6 +228,24 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     std::shared_ptr<CosmosLikeAccount> getSelf();
     void updateFromDb();
 
+    /// Updates account level data (sequence, accountNumber, ...)
+    /// Example result from Gaia explorer :
+    /// base_url/auth/accounts/{address} with a valid, 0 transaction address :
+    /// {
+    ///  "height": "1296656",
+    ///  "result": {
+    ///    "type": "cosmos-sdk/Account",
+    ///    "value": {
+    ///      "address": "",
+    ///      "coins": [],
+    ///      "public_key": null,
+    ///      "account_number": "0",
+    ///      "sequence": "0"
+    ///    }
+    ///  }
+    /// }
+    void updateAccountDataFromNetwork();
+
     // These helpers stay on CosmosLikeAccount *only* because they have to use their
     // knowledge of Address information in order to correctly map operation type.
     // An operation type is always seen from the account point of view.
