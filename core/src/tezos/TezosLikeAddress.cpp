@@ -137,17 +137,28 @@ namespace ledger {
                 }
 
                 default : {
-                    if (pubKey.size() != 65) {
-                        throw Exception(api::ErrorCode::INVALID_ARGUMENT, "Invalid SECP256k1 or P256 public key: should be 65 bytes.");
+                    if (pubKey.size() == 65) {
+                        // Uncompressed key
+                        return BLAKE::blake2b(
+                                vector::concat(
+                                        std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
+                                        std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
+                                ),
+                                20
+                        );
                     }
-
-                    return BLAKE::blake2b(
-                            vector::concat(
-                                    std::vector<uint8_t>{static_cast<uint8_t>(0x02 + (pubKey[64] & 0x01))},
-                                    std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
-                            ),
-                            20
-                    );
+                    if (pubKey.size() == 33) {
+                        // Compressed key
+                        return BLAKE::blake2b(
+                                vector::concat(
+                                        std::vector<uint8_t>{static_cast<uint8_t>(pubKey[00])},
+                                        std::vector<uint8_t>{pubKey.begin() + 1, pubKey.begin() + 33}
+                                ),
+                                20
+                        );
+                    } 
+                    throw Exception(api::ErrorCode::INVALID_ARGUMENT,
+                                    "Invalid SECP256k1 or P256 public key: should be 33 or 65 bytes.");
                 }
             }
         }
