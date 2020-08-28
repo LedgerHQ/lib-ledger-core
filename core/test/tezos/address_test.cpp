@@ -87,6 +87,18 @@ TEST(TezosAddress, AddressFromSecp256k1PubKey) {
     EXPECT_EQ(zPub->derive("")->toBase58(), "tz2RSZ2uCTovM59DbSan56mFdg943eWvTDH5");
 }
 
+TEST(TezosAddress, AddressFromSecp256k1CompressedPubKey) {
+    std::vector<uint8_t> pubKey = hex::toByteArray("03AF26487E6202DFA4A0367265A50E65187ADD4EF204E24E077F9C0678096487DA");
+    std::vector<uint8_t> chainCode = hex::toByteArray("");
+    auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromRaw(currencies::TEZOS,
+                                                                  optional<std::vector<uint8_t >>(),
+                                                                  pubKey,
+                                                                  chainCode,
+                                                                  "44'/1729'/0'/0'",
+                                                                  api::TezosCurve::SECP256K1);
+    EXPECT_EQ(zPub->derive("")->toBase58(), "tz2BRGb7hkgwoLVxvbrN2zRJmFpkhHeVk888");
+}
+
 TEST(TezosAddress, AddressFromP256PubKey) {
     std::vector<uint8_t> pubKey = hex::toByteArray("04b76ff06f214e86bc1e1bf15940a9209d442c5c3ab2b6f259574f3405937295984ff1d400418534b47679dd377720eba32f9dfadab2e4d497e84f96558fd621e7");
     std::vector<uint8_t> chainCode = hex::toByteArray("");
