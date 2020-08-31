@@ -9,5 +9,5 @@
 playground/
 .git/
 ledger-core-sample/
-Dockerfile
+Dockerfile*
 CMakeCache.txt
