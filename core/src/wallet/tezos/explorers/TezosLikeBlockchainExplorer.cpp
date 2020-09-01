@@ -159,7 +159,7 @@ namespace ledger {
         }
 
         Future<std::shared_ptr<BigInt>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
-            const std::shared_ptr<HttpClient> &_http,
+            const std::shared_ptr<HttpClient> &http,
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<TezosLikeTransactionApi> &tx)
         {
@@ -173,7 +173,7 @@ namespace ledger {
                 {"Accept", "application/json"}, {"Content-Type", "application/json"}};
 
             const bool parseNumbersAsString = true;
-            return _http
+            return http
                 ->POST(
                     postPath,
                     std::vector<uint8_t>(payload.cbegin(), payload.cend()),

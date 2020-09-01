@@ -131,7 +131,7 @@ namespace ledger {
                 const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
 
             Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
-                const std::shared_ptr<HttpClient> &_http,
+                const std::shared_ptr<HttpClient> &http,
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<TezosLikeTransactionApi> &transaction);
 
