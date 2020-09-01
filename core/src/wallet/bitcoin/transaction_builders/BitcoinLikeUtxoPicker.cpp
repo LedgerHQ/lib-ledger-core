@@ -29,7 +29,6 @@
  *
  */
 
-#include "../keychains/CommonBitcoinLikeKeychains.hpp"
 #include "BitcoinLikeUtxoPicker.h"
 #include <async/Promise.hpp>
 #include <api/BitcoinLikeScript.hpp>
