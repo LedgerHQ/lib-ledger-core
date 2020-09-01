@@ -92,6 +92,44 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
     }
 };
 
+TEST_F(BitcoinMakeP2PKHTransaction, TestSpecificChangeAddress) {
+    auto builder_1 = tx_builder();
+    auto builder_2 = tx_builder();
+
+    auto balance = wait(account->getBalance());
+    builder_1->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
+    builder_1->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder_1->setFeesPerByte(api::Amount::fromLong(currency, 61));
+    builder_2->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
+    builder_2->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder_2->setFeesPerByte(api::Amount::fromLong(currency, 61));
+
+    // The path 44'/0'/0'/1/260 will be used when no changePath is provided
+    // let's verify that the generated change address doesn't change when specifically asking for it
+    builder_2->addChangePath("260");
+
+    auto f_1 = builder_1->build();
+    auto f_2 = builder_2->build();
+
+    auto tx_1 = ::wait(f_1);
+    auto tx_2 = ::wait(f_2);
+
+    auto change_address_1 = tx_1->getOutputs()[1]->getAddress().value();
+    auto change_address_2 = tx_2->getOutputs()[1]->getAddress().value();
+    EXPECT_EQ(change_address_1, change_address_2);
+
+    builder_1->addChangePath("m44'/0'/0'/1/260");
+    f_1 = builder_1->build();
+
+    try {
+        tx_1 = ::wait(f_1);
+        FAIL() << "Should throw a \"Private derivation is not supported\" exception when trying to build the transaction";
+    } catch (const Exception &err) {
+        ASSERT_EQ(err.getErrorCode(), api::ErrorCode::PRIVATE_DERIVATION_NOT_SUPPORTED);
+        ASSERT_STREQ("Private derivation is not supported by DeterministicPublicKey", err.what());
+    }
+}
+
 TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
     auto builder = tx_builder();
 
