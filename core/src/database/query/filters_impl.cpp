@@ -151,31 +151,31 @@ namespace ledger {
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightEq(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "=", blockHeight, "o");
+            return std::make_shared<ConditionQueryFilter<int64_t>>("height", "=", blockHeight, "b");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightNeq(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<>", blockHeight, "o");
+            return std::make_shared<ConditionQueryFilter<int64_t>>("height", "<>", blockHeight, "b");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightLt(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<", blockHeight, "o");
+            return std::make_shared<ConditionQueryFilter<int64_t>>("height", "<", blockHeight, "b");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightLte(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", "<=", blockHeight, "o");
+            return std::make_shared<ConditionQueryFilter<int64_t>>("height", "<=", blockHeight, "b");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightGt(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">", blockHeight, "o");
+            return std::make_shared<ConditionQueryFilter<int64_t>>("height", ">", blockHeight, "b");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightGte(int64_t blockHeight) {
-            return std::make_shared<ConditionQueryFilter<int64_t>>("block_height", ">=", blockHeight, "o");
+            return std::make_shared<ConditionQueryFilter<int64_t>>("height", ">=", blockHeight, "b");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::blockHeightIsNull() {
-            return std::make_shared<PlainTextConditionQueryFilter>("o.block_height IS NULL");
+            return std::make_shared<PlainTextConditionQueryFilter>("o.block_uid IS NULL");
         }
 
         std::shared_ptr<api::QueryFilter> api::QueryFilter::operationTypeEq(api::OperationType type) {
