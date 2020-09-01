@@ -52,14 +52,10 @@ namespace ledger {
             }
 
             if (!_order.empty()) {
-                // Add table name in case of _outerJoins to avoid ambiguity
-                // We assume that added order is always on main table
-                const auto specifier = _outerJoins.empty() ? "" :
-                                       fmt::format("{}.", _output.empty() ? _table : _output);
                 query << " ORDER BY ";
                 for (auto it = _order.begin(); it != _order.end(); it++) {
                     auto& order = *it;
-                    query << specifier << std::get<0>(order) << (std::get<1>(order) ? " DESC" : " ASC");
+                    query << std::get<2>(order) << "." << std::get<0>(order) << (std::get<1>(order) ? " DESC" : " ASC");
 
                     if (std::distance(it, _order.end()) > 1) {
                         query << ",";
@@ -117,8 +113,8 @@ namespace ledger {
             return *this;
         }
 
-        QueryBuilder &QueryBuilder::order(std::string &&keys, bool&& descending) {
-            _order.push_back(std::move(std::make_tuple(keys, descending)));
+        QueryBuilder &QueryBuilder::order(std::string &&keys, bool&& descending, std::string&& table) {
+            _order.push_back(std::move(std::make_tuple(keys, descending, table)));
             return *this;
         }
 
