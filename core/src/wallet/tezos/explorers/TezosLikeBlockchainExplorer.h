@@ -127,8 +127,13 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) = 0;
 
-            virtual Future<std::shared_ptr<BigInt>>
-            getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &transaction) = 0;
+            virtual Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+                const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
+
+            Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+                const std::shared_ptr<HttpClient> &_http,
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<TezosLikeTransactionApi> &transaction);
 
             virtual Future<std::shared_ptr<BigInt>>
             getStorage(const std::string &address) = 0;

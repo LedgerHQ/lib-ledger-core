@@ -372,15 +372,15 @@ namespace ledger {
                                                 }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, request] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
                                                         if (request.gasLimit->toInt() == 0) {
                                                             auto filledTx = tx;
-                                                            auto gasPrice_fut = request.fees->toInt() == 0 ?
+                                                            auto gasPriceFut = request.fees->toInt() == 0 ?
                                                                 self->getGasPrice()
                                                                 :
                                                                 FuturePtr<BigInt>::successful(request.fees);
 
-                                                            return gasPrice_fut.flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<api::TezosLikeTransaction> {
+                                                            return gasPriceFut.flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<api::TezosLikeTransaction> {
                                                                 return self->estimateGasLimit(filledTx).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<BigInt> &gas) -> FuturePtr<api::TezosLikeTransaction> {
-                                                                    // 0.000001 comes from the gasPrice being in picoTez
-                                                                    const auto fees = std::make_shared<BigInt>(static_cast<int64_t>(1 + gas->toInt64() * static_cast<double>(gasPrice->toInt64()) * 0.000001));
+                                                                    // 0.000001 comes from the gasPrice->toInt64 being in picoTez
+                                                                    const auto fees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
                                                                     filledTx->setGasLimit(gas);
                                                                     filledTx->setFees(fees);
                                                                     return FuturePtr<api::TezosLikeTransaction>::successful(filledTx);
@@ -445,13 +445,13 @@ namespace ledger {
             return _explorer->getGasPrice();
         }
 
-        FuturePtr<BigInt> TezosLikeAccount::estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustment_factor) {
+        FuturePtr<BigInt> TezosLikeAccount::estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustmentFactor) {
             return _explorer->getEstimatedGasLimit(tx).flatMapPtr<BigInt>(
                 getMainExecutionContext(),
-                [adjustment_factor](const std::shared_ptr<BigInt>& consumedGas){
-                    auto adjusted_gas = static_cast<int64_t>(1 + consumedGas->toInt64() * adjustment_factor);
+                [adjustmentFactor](const std::shared_ptr<BigInt>& consumedGas){
+                    auto adjustedGas = static_cast<int64_t>(1 + consumedGas->toInt64() * adjustmentFactor);
                     return Future<std::shared_ptr<BigInt>>::successful(
-                        std::make_shared<BigInt>(adjusted_gas));
+                        std::make_shared<BigInt>(adjustedGas));
                 });
         }
 

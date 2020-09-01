@@ -65,7 +65,7 @@ namespace ledger {
             std::vector<uint8_t> serialize() override;
             std::vector<uint8_t> serializeWithType(api::TezosOperationTag type);
 
-            /// Serialize the transaction as json for Tezos Node run_operation JSON RPC endpoint
+            /// Serialize the transaction as binary for Tezos Node run_operation JSON RPC endpoint
             std::vector<uint8_t> serializeForDryRun(const std::vector<uint8_t>& chainID);
 
             /// Serialize the transaction as json for Tezos Node run_operation JSON RPC endpoint
