@@ -153,6 +153,7 @@ after_build:
   - set should_deploy=false
   - if %APPVEYOR_REPO_BRANCH%==develop set should_deploy=true
   - if %APPVEYOR_REPO_BRANCH%==master set should_deploy=true
+  - if "%APPVEYOR_REPO_BRANCH%"=="live-prerelease" set should_deploy=true
   - if %APPVEYOR_REPO_TAG%==true set should_deploy=true  #for tests
   - if %should_deploy%==true aws s3 sync ".\%LIB_VERSION%\win\%TOOL_CONFIG%" "s3://ledger-lib-ledger-core/%DEPLOY_VERSION%/win/%TOOL_CONFIG%" --acl public-read
 
