@@ -211,6 +211,7 @@ namespace ledger {
 
         void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                        const std::shared_ptr<api::StringCallback> &callback) {
+            getInternalPreferences()->editor()->putBoolean("counter", false)->commit();
             _explorer->pushTransaction(transaction)
                     .map<std::string>(getContext(),
                                       [](const String &seq) -> std::string {
@@ -356,8 +357,28 @@ namespace ledger {
                                                 if (!counter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
-                                                // We should increment current counter
-                                                tx->setCounter(std::make_shared<BigInt>(++(*counter)));
+                                                auto explorer_counter = counter->toInt64();
+                                                auto reset_timer = self->getInternalPreferences()->getLong("reset", 0);
+                                                if (!reset_timer)
+                                                    self->getInternalPreferences()->editor()->putLong("reset", static_cast<long>(std::time(0)))->commit();
+                                                auto duration = static_cast<long>(std::time(0)) - reset_timer;
+                                                if (duration > 300)
+                                                {
+                                                    self->getInternalPreferences()->editor()->putBoolean("counter", false)->commit();
+                                                    self->getInternalPreferences()->editor()->putLong("counter_value", explorer_counter)->commit();
+                                                }
+
+                                                auto counter_set = self->getInternalPreferences()->getBoolean("counter", false);
+                                                auto counter_value = self->getInternalPreferences()->getLong("counter_value", explorer_counter);
+                                                if (!counter_set) {
+                                                    counter_value++;
+                                                    tx->setCounter(std::make_shared<BigInt>(counter_value));
+                                                    self->getInternalPreferences()->editor()->putBoolean("counter", true)->commit();
+                                                    self->getInternalPreferences()->editor()->putLong("counter_value", counter_value)->commit();
+                                                    self->getInternalPreferences()->editor()->putLong("reset", static_cast<long>(std::time(0)))->commit();
+                                                } else {
+                                                    tx->setCounter(std::make_shared<BigInt>(counter_value));
+                                                }
                                                 return explorer->getCurrentBlock();
                                             }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                                 tx->setBlockHash(block->hash);
