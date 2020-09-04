@@ -120,7 +120,7 @@ namespace ledger {
                 std::string changeAddress;
                 if (buddy->request.changePaths.size() != 0)
                 {
-                    auto changePath = buddy->request.changePaths.front();
+                    auto changePath = buddy->request.changePaths.back();
                     std::shared_ptr<const CommonBitcoinLikeKeychains> buddy_keychain = std::static_pointer_cast<CommonBitcoinLikeKeychains>(buddy->keychain);
                     auto localPath = buddy_keychain->getDerivationScheme().getSchemeTo(DerivationSchemeLevel::NODE)
                         .setAccountIndex(buddy_keychain->getAccountIndex())
