@@ -87,10 +87,19 @@ namespace ledger {
             return toBase58();
         }
 
+        const std::vector<std::string> TEZOS_PREFIXES = {"tz1", "tz2", "tz3", "KT1"};
+
         std::shared_ptr<AbstractAddress>
         TezosLikeAddress::parse(const std::string &address,
                                 const api::Currency &currency,
                                 const Option<std::string> &derivationPath) {
+
+            auto hasValidPrefix = [address](std::string prefix) {
+                return address.rfind(prefix, 0) == 0;
+            };
+            if (std::none_of(std::begin(TEZOS_PREFIXES), std::end(TEZOS_PREFIXES), hasValidPrefix)) {
+                return nullptr;
+            }
             auto result = Try<std::shared_ptr<ledger::core::AbstractAddress>>::from([&]() {
                 return fromBase58(address, currency, derivationPath);
             });

@@ -123,16 +123,47 @@ TEST(TezosAddress, XpubFromBase58String) {
 }
 
 
-TEST(TezosAddress, ParseAddressFromString) {
+TEST(TezosAddress, ParseTz1AddressFromString) {
     auto address = "tz1fmeh1DSskufrsi4qWxsfGPyhVdNtXNu78";
+    auto tezosAddress = ledger::core::TezosLikeAddress::parse(address, currencies::TEZOS, Option<std::string>("0/0"));
+    EXPECT_EQ(address, tezosAddress->toString());
+}
+
+TEST(TezosAddress, ParseTz2AddressFromString) {
+    auto address = "tz2PdGc7U5tiyqPgTSgqCDct94qd6ovQwP6u";
+    auto tezosAddress = ledger::core::TezosLikeAddress::parse(address, currencies::TEZOS, Option<std::string>("0/0"));
+    EXPECT_EQ(address, tezosAddress->toString());
+}
+
+TEST(TezosAddress, ParseTz3AddressFromString) {
+    auto address = "tz3VEZ4k6a4Wx42iyev6i2aVAptTRLEAivNN";
     auto tezosAddress = ledger::core::TezosLikeAddress::parse(address, currencies::TEZOS, Option<std::string>("0/0"));
     EXPECT_EQ(address, tezosAddress->toString());
 }
 
 TEST(TezosAddress, AddressValidation) {
     auto currency = currencies::TEZOS;
+
+    // Test valid adresses
     auto address = "tz1fmeh1DSskufrsi4qWxsfGPyhVdNtXNu78";
     EXPECT_EQ(api::Address::isValid(address, currency), true);
+    address = "tz2PdGc7U5tiyqPgTSgqCDct94qd6ovQwP6u";
+    EXPECT_EQ(api::Address::isValid(address, currency), true);
+    address = "tz3VEZ4k6a4Wx42iyev6i2aVAptTRLEAivNN";
+    EXPECT_EQ(api::Address::isValid(address, currency), true);
+    address = "KT1VsSxSXUkgw6zkBGgUuDXXuJs9ToPqkrCg";
+    EXPECT_EQ(api::Address::isValid(address, currency), true);
+
+    // Test invalid adresses
+    // Valid prefix, invalid checksum
+    address = "tz1eZwq8b5cvE2bPKokatLkVMzkxz24z3AAAA";
+    EXPECT_EQ(api::Address::isValid(address, currency), false);
+    // Invalid prefix, valid checksum
+    address = "NmH7tmeJUmHcncBDvpr7aJNEBk7rp5zYsB1qt";
+    EXPECT_EQ(api::Address::isValid(address, currency), false);
+    // Invalid prefix, invalid checksum
+    address = "1tzeZwq8b5cvE2bPKokatLkVMzkxz24zAAAAA";
+    EXPECT_EQ(api::Address::isValid(address, currency), false);
     address = "tz1fmeh1DSskufrsi4qWxsfGPyhVdNtXNu";
     EXPECT_EQ(api::Address::isValid(address, currency), false);
     address = "qw";
