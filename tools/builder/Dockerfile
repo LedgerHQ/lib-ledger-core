@@ -126,7 +126,7 @@ RUN find . -name \*.jar -exec mv {} ${LIB_CORE_BUILD_DIR}/ledger-lib-core.jar \;
 # Make libledger-core.so and ledger-lib-core.jar available 
 # to host or to another Docker image
 
-FROM scratch
+FROM alpine
 
 ENTRYPOINT [ "cp" , "-rf" , ".", "/build" ]
 

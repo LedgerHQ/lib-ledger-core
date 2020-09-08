@@ -36,8 +36,6 @@ while true; do
     *)               # Default case: No more options, so break out of the loop.
         break
   esac
-
-  shift
 done
 
 CMAKE_PARAMS="\
