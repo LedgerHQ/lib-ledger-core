@@ -66,34 +66,6 @@ WORKDIR ${LIB_CORE_BUILD_DIR}
 RUN if [ "$DL_LIBCORE" = "ON" ]; then exit 0; fi \
     && ${LIB_CORE_SRC_DIR}/tools/builder/build.sh \
     && mv core/src/libledger-core.so libledger-core.so
-    # cmake_params="\
-    #     # Common flags:
-    #     -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-    #     -DSYS_OPENSSL=ON \
-    #     -DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu \
-    #     -DOPENSSL_INCLUDE_DIR=/usr/include/openssl \
-    #     -DCMAKE_INSTALL_PREFIX=/usr/share/qt5 \
-    #     -DPG_SUPPORT=ON \
-    #     -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql" \
-    #         # Case 1: Release flag
-    #         && if [ "${BUILD_TYPE}" = "Release" ] ; \ 
-    #             then cmake_params="${cmake_params} -DBUILD_TESTS=OFF" \
-    #         # Case 2: Debug flags
-    #         ; elif [ "${BUILD_TYPE}" = "Debug" ] ; \
-    #             then cmake_params="${cmake_params} -DBUILD_TESTS=ON" \              
-    #         # Case 3: Unknown build type
-    #         ; else echo "Error: unknown build type '${BUILD_TYPE}' \
-    #                     (expected: 'Release' or 'Debug' (case sensitive))" \
-    #                && exit 1 \
-    #         ; fi \
-    #         && echo "cmake parameters (${BUILD_TYPE}): ${cmake_params}" \
-    #     && cmake $cmake_params ${LIB_CORE_SRC_DIR} \
-    #     # Avoid "clock skew detected" warning:
-    #     && touch * \
-    #     && make -j$(nproc) \
-    #     && mv core/src/libledger-core.so libledger-core.so \
-    # ; fi
-
 
 # Safeguard to ensure that libledger-core.so exists at this stage
 RUN stat ${LIB_CORE_BUILD_DIR}/libledger-core.so
