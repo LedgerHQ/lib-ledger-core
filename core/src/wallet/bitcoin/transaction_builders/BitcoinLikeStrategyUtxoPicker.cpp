@@ -148,7 +148,7 @@ namespace ledger {
                     auto minimumNeededAmountWithChange = computeAmountWithFees(1);
                     buddy->changeAmount = aggregatedAmount - minimumNeededAmountWithChange;
                     buddy->logger->debug("Minimum required with change {} got {}", minimumNeededAmountWithChange.toString(), aggregatedAmount.toString());
-                    if (buddy->outputAmount > minimumNeededAmountWithChange) return false;
+                    if (minimumNeededAmountWithChange > aggregatedAmount) return false;
                 }
             } else if(computeOutputAmount) {
                 buddy->outputAmount = aggregatedAmount - minimumNeededAmount;
