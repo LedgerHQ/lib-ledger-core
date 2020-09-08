@@ -52,6 +52,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     auto erc20Count = 0;
     {
+        auto newOpCount = 0;
         auto pool = newDefaultPool();
         {
             auto configuration = DynamicObject::newInstance();
@@ -68,6 +69,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                     if (event->getCode() == api::EventCode::NEW_OPERATION) {
                         auto uid = event->getPayload()->getString(
                                 api::Account::EV_NEW_OP_UID).value();
+                        newOpCount += 1;
                         EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
                     }
                 });
@@ -136,7 +138,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
 
                 auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
                 std::cout << "Ops: " << ops.size() << std::endl;
-
+                EXPECT_EQ(newOpCount, ops.size());
                 auto block = wait(account->getLastBlock());
                 auto blockHash = block.blockHash;
             }
