@@ -55,13 +55,14 @@
 #include <api/BitcoinLikeInput.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>
 #include <api/BitcoinLikeAccount.hpp>
 
 using namespace ledger::core; // Only do that for testing
+using namespace ledger::core::test;
 using namespace ledger::qt; // Djeez
 
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
@@ -103,7 +104,7 @@ public:
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;
-    std::shared_ptr<QtHttpClient> http;
+    std::shared_ptr<CppHttpLibClient> http;
 };
 
 #endif //LEDGER_CORE_BASEFIXTURE_H

@@ -54,7 +54,7 @@ void BaseFixture::SetUp() {
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
+    http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
 }
 
 void BaseFixture::TearDown() {

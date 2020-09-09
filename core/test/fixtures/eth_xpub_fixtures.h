@@ -24,7 +24,7 @@
 #include <api/EthereumLikeOperation.hpp>
 #include <api/EthereumLikeTransaction.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>

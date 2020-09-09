@@ -15,7 +15,8 @@ add_library(ledger-test STATIC
             FakeUrlConnection.hpp FakeUrlConnection.cpp
             ExplorerStorage.hpp ExplorerStorage.cpp
             HttpClientOnFakeExplorer.hpp HttpClientOnFakeExplorer.cpp
-            UvThreadDispatcher.hpp UvThreadDispatcher.cpp)
+            UvThreadDispatcher.hpp UvThreadDispatcher.cpp
+            CppHttpLibClient.hpp CppHttpLibClient.cpp)
 if (SYS_OPENSSL)
     include_directories(${CMAKE_BINARY_DIR}/include ${OPENSSL_INCLUDE_DIR})
 else()
@@ -37,3 +38,4 @@ target_include_directories(ledger-test PUBLIC ../../../../core)
 target_include_directories(ledger-test PUBLIC ../../../../core/src)
 target_include_directories(ledger-test PUBLIC ../../../lib/boost/)
 target_include_directories(ledger-test PUBLIC ../libuv/include)
+target_include_directories(ledger-test PUBLIC ../cpp-httplib/)

@@ -150,7 +150,7 @@ void BaseFixture::SetUp() {
     dispatcher = std::make_shared<QtThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
+    http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
     ws = std::make_shared<FakeWebSocketClient>();
     rng = std::make_shared<OpenSSLRandomNumberGenerator>();
 }

@@ -23,7 +23,7 @@
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <utils/hex.h>

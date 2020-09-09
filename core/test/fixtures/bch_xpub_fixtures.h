@@ -26,7 +26,7 @@
 #include <api/BitcoinLikeInput.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>

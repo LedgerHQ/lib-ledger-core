@@ -59,7 +59,7 @@
 #include <api/BitcoinLikeInput.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>
@@ -69,6 +69,7 @@
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::qt; // Djeez
+using namespace ledger::core::test;
 
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO;
@@ -146,7 +147,7 @@ public:
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;
-    std::shared_ptr<QtHttpClient> http;
+    std::shared_ptr<CppHttpLibClient> http;
     std::shared_ptr<FakeWebSocketClient> ws;
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
 };

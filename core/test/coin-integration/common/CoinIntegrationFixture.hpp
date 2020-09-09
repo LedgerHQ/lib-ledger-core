@@ -56,7 +56,7 @@
 #include <api/BitcoinLikeInput.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>
@@ -68,7 +68,8 @@
 #include "../integration/IntegrationEnvironment.h"
 
 using namespace ledger::core; // don't do this at home. Only for testing contexts
-using namespace ledger::qt;
+using namespace ledger::core::test;
+using namespace ledger::qt; 
 
 enum SynchronizationResult {OLD_ACCOUNT, NEW_ACCOUNT};
 
@@ -82,7 +83,7 @@ public:
         resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
         backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
         printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-        http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
+        http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
         ws = std::make_shared<FakeWebSocketClient>();
         rng = std::make_shared<OpenSSLRandomNumberGenerator>();
     }
@@ -167,7 +168,7 @@ public:
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;
-    std::shared_ptr<QtHttpClient> http;
+    std::shared_ptr<CppHttpLibClient> http;
     std::shared_ptr<FakeWebSocketClient> ws;
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
 

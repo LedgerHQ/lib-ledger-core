@@ -41,6 +41,7 @@
 using namespace ledger::core;
 using namespace ledger::qt;
 
+
 static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
     "__database_meta__",
     "pools",
