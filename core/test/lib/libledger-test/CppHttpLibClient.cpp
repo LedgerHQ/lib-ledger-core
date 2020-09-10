@@ -1,7 +1,14 @@
 #include <memory>
 #include <unordered_map>
+#include <fmt/format.h>
 #include "api/Error.hpp"
 #include "api/HttpRequest.hpp"
+
+#include <api/HttpUrlConnection.hpp>
+#include <api/HttpReadBodyResult.hpp>
+#include <api/HttpMethod.hpp>
+
+#include <ledger/core/utils/Exception.hpp>
 #include "NativeThreadDispatcher.hpp"
 #include "CppHttpLibClient.hpp"
 
@@ -36,7 +43,8 @@ namespace ledger {
                 }
 
                 core::api::HttpReadBodyResult readBody() override {
-                    std::vector<uint8_t> body((uint8_t *)_body.c_str(), (uint8_t *)(_body.c_str() + _body.size()));
+                    //std::vector<uint8_t> body((uint8_t *)_body.c_str(), (uint8_t *)(_body.c_str() + _body.size()));
+                    std::vector<uint8_t> body(_body.begin(), _body.end());
                     _body.clear();
                     return core::api::HttpReadBodyResult(
                     std::experimental::optional<core::api::Error>(),
@@ -79,16 +87,37 @@ namespace ledger {
                     }
                     body = bodyStream.str();
                 }
+
+                if (_logger) { 
+                    _logger->debug("CppHttpLibClient: quering {} {}", api::to_string(request->getMethod()), request->getUrl());
+                }
                 
-                httplib::Result res = 
-                    (request->getMethod() == core::api::HttpMethod::POST) ? cli.Post(path.c_str(), body, "text/plain") :
-                    (request->getMethod() == core::api::HttpMethod::GET) ?  cli.Get(path.c_str()) :
-                    (request->getMethod() == core::api::HttpMethod::PUT) ?  cli.Put(path.c_str(), body, "text/plain") :
-                                                                            cli.Delete(path.c_str());
+                httplib::Result res(nullptr, httplib::Error::Unknown);
+                switch(request->getMethod())
+                {
+                    case core::api::HttpMethod::POST:
+                        res = cli.Post(path.c_str(), body, "text/plain");
+                    break;
+                    case core::api::HttpMethod::GET:
+                        res = cli.Get(path.c_str());
+                    break;
+                    case core::api::HttpMethod::PUT:
+                        res = cli.Put(path.c_str(), body, "text/plain");
+                    break;
+                    case core::api::HttpMethod::DEL:
+                        res = cli.Delete(path.c_str());
+                    break;
+                    default:
+                        throw make_exception(api::ErrorCode::RUNTIME_ERROR, "unknown http method");
+                }
                 
+                if (_logger) {
+                    _logger->debug("CppHttpLibClient: done {} {} - {}", api::to_string(request->getMethod()), request->getUrl(), res->status);
+                }
+
                 if (res.error() != httplib::Error::Success || res->status < 200 || res->status >= 300 ) {
                     request->complete(nullptr, std::experimental::optional<core::api::Error>(
-                        core::api::Error(core::api::ErrorCode::HTTP_ERROR, res->reason)));       
+                        core::api::Error(core::api::ErrorCode::HTTP_ERROR, fmt::format("{}: {}", res->status, res->reason))));       
                 }
                 else {
                     std::unordered_map<std::string, std::string> hdrs;
