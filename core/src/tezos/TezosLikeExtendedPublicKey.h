@@ -76,6 +76,9 @@ namespace ledger {
                                                                           const std::string &xpubBase58,
                                                                           const Option<std::string> &path);
 
+
+            static const api::TezosCurve getCurveFromPrefix(std::string prefix);
+
         protected:
             const api::TezosLikeNetworkParameters &params() const override {
                 return _currency.tezosLikeNetworkParameters.value();
