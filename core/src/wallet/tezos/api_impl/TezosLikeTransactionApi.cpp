@@ -264,11 +264,15 @@ namespace ledger {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
                     if (!_signingPubKey.empty()) {
                         writer.writeByte(0x00);
-                        if (_signingPubKey.size() == 33) {
-                            writer.writeByteArray(std::vector<uint8_t>{_signingPubKey.begin() + 1, _signingPubKey.end()});
-                        } else { // TODO: find better, will be an issue when supporting p256
-                            writer.writeByteArray(_signingPubKey);
-                        }
+                        writer.writeByteArray(_signingPubKey);
+                        // if (_senderCurve == api::TezosCurve::ED25519) {
+
+                        // // }
+                        // // if (_signingPubKey.size() == 33) {
+                        //     writer.writeByteArray(std::vector<uint8_t>{_signingPubKey.begin() + 1, _signingPubKey.end()});
+                        // } else { // TODO: find better, will be an issue when supporting p256
+                        //     writer.writeByteArray(_signingPubKey);
+                        // }
                     } else if (!_revealedPubKey.empty()) {
                         auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
                         writer.writeByte(0x00);

@@ -44,8 +44,11 @@
 #include <crypto/HASH160.hpp>
 #include <ledger/core/crypto/BLAKE.h>
 
+#include "Fixtures.hpp"
+
 using namespace ledger::core::api;
 using namespace ledger::core;
+using namespace ledger::testing::tezos;
 
 TEST(TezosAddress, AddressFromBase58Ed25519PubKey) {
     // Decode a pubKey prefixed with edpk
@@ -56,11 +59,20 @@ TEST(TezosAddress, AddressFromBase58Ed25519PubKey) {
     EXPECT_EQ(zPub->derive("")->toBase58(), expectedResult);
 }
 
-TEST(TezosAddress, AddressFromBase58Ed25519PublicKey) {
-    // Decode a pubKey prefixed with edpk
-    auto xpub = "edpkuySiX9Qi89G5aRaynPxLMqtrrjsMGZAGCUn7u2kBgYH5uxCwEy";
+TEST(TezosAddress, AddressFromBase58ESecp256k1PubKey) {
+    auto expectedResult = "tz2T2QHvSTtr39z52LBkHPWimL7NiiNVyxw8";
+    auto xpub = "sppk7afLvN29NmLs3z5uHFQParGWeutTUs8My3vd7ZTAXGGCRHr1E1y";
     auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currencies::TEZOS, xpub, Option<std::string>("44'/1729'/0'/0'"));
-    EXPECT_EQ(zPub->derive("")->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
+    EXPECT_EQ(zPub->derive("")->toBase58(), expectedResult);
+}
+
+TEST(TezosAddress, AddressFromBase58EP256R1PubKey) {
+    // Decode a pubKey prefixed with edpk
+    // 451bde832454ba73e6e0de313fcf5d1565ec51080edc73bb19287b8e0ab2122b
+    auto expectedResult = "tz3UZZMRXWEhnezynpmG2XMU2tZwCEaKGJ5W";
+    auto xpub = "p2pk67MjZS6DPnQBENEYkvaHhiDr4tuJZMLRUo5EAgvjDh1u2EsWzhL";
+    auto zPub = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currencies::TEZOS, xpub, Option<std::string>("44'/1729'/0'/0'"));
+    EXPECT_EQ(zPub->derive("")->toBase58(), expectedResult);
 }
 
 TEST(TezosAddress, AddressFromEd25519PubKey) {
