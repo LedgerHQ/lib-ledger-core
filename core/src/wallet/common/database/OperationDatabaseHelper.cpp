@@ -198,5 +198,17 @@ namespace ledger {
             return c;
         }
 
+        Option<bool> OperationDatabaseHelper::isOperationInBlock(soci::session &sql, const std::string &opUid) {
+            rowset<row> rows = (sql.prepare <<
+                                            "SELECT block_uid "
+                                            "FROM operations "
+                                            "WHERE uid = :uid",
+                    use(opUid));
+            for (auto& row : rows) {
+                return Option<bool>(!row.get<Option<std::string>>(0).getValueOr("").empty());
+            }
+            return Option<bool>::NONE;
+        }
+
     }
 }

@@ -41,6 +41,7 @@ namespace ledger {
     namespace core {
         class OperationDatabaseHelper {
         public:
+
             static std::vector<std::string> fetchFromBlocks(soci::session &sql,
                                                             std::vector<std::string> const &blockUIDs);
             static bool putOperation(soci::session& sql,
@@ -55,6 +56,16 @@ namespace ledger {
                                                const std::string &accountUid,
                                                std::vector<Operation>& out,
                                                std::function<bool (const std::string& address)> filter);
+
+            /**
+             * Checks if an operation is in a block or not
+             *
+             * @param sql  Current sql connection session
+             * @param opUid Operation UID to check
+             * @return Option(true) if the operation is in a block, Option(false) if the operation
+             * exists but not in a block,  Option() if the operation is unknown
+             */
+            static Option<bool> isOperationInBlock(soci::session& sql, const std::string& opUid);
         private:
             static void updateCurrencyOperation(soci::session& sql,
                                                 const Operation& operation,

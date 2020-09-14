@@ -134,7 +134,11 @@ namespace ledger {
 
                 operation.type = ty;
                 operation.refreshUid();
-                if(OperationDatabaseHelper::putOperation(sql, operation)) {
+                auto isInBlock = OperationDatabaseHelper::isOperationInBlock(sql, operation.uid);
+                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                    emitNewOperationEvent(operation);
+                }
+                if (isInBlock.nonEmpty() && !isInBlock.getValue() && operation.block.nonEmpty()) {
                     emitNewOperationEvent(operation);
                 }
                 updateERC20Accounts(sql, operation);

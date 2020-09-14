@@ -240,6 +240,8 @@ namespace ledger {
 
         void EthereumLikeTransactionParser::init(EthereumLikeBlockchainExplorerTransaction *transaction) {
             _transaction = transaction;
+            // Default receivedAt to `now`, in case the explorer doesn't return it.
+            _transaction->receivedAt = std::chrono::system_clock::now();
         }
 
     }
