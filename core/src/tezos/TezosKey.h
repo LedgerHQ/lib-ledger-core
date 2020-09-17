@@ -78,6 +78,12 @@ namespace ledger {
             const Encoding KT1{"KT1", {2, 90, 121}, api::TezosCurve::ED25519, 20, 36,
                                "Originated address"};
 
+            const std::vector<Encoding> ALL = {EDPK, SPPK, P2PK};
+
+            const std::vector<Encoding> PUBKEYS = {EDPK, SPPK, P2PK};
+
+            const std::vector<Encoding> ADDRESSES = {TZ1, TZ2, TZ3, KT1};
+
             /**
              * Get the key encoding definition for a given version
              */
@@ -87,6 +93,11 @@ namespace ledger {
              * Get the key encoding definition for a given base58 key
              */
             std::experimental::optional<Encoding> fromBase58(std::string key);
+
+            /**
+             * Get the key encoding definition for a given curve given a key type class
+             */
+            std::experimental::optional<Encoding> fromCurve(api::TezosCurve curve, std::vector<Encoding> types=ALL);
         }
     }
 }
