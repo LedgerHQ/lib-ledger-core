@@ -40,7 +40,7 @@ namespace ledger {
                 return os << e.prefix;
             }
 
-            std::vector<Encoding> ALL = {EDPK, SPPK, P2PK};
+            // std::vector<Encoding> ALL = {EDPK, SPPK, P2PK};
         }
 
         std::experimental::optional<TezosKeyType::Encoding>
@@ -66,6 +66,21 @@ namespace ledger {
             auto encoding = std::find_if(TezosKeyType::ALL.begin(), TezosKeyType::ALL.end(), hasPrefix);
 
             if (encoding == TezosKeyType::ALL.end()) {
+                // throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Base 58 invalid prefix");
+                return {};
+            }
+
+            return {*encoding};
+        }
+
+        std::experimental::optional<TezosKeyType::Encoding>
+        TezosKeyType::fromCurve(api::TezosCurve curve, std::vector<Encoding> encodings) {
+            auto isCurve = [curve](TezosKeyType::Encoding encoding) {
+                return curve == encoding.curve;
+            };
+            auto encoding = std::find_if(encodings.begin(), encodings.end(), isCurve);
+
+            if (encoding == encodings.end()) {
                 // throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Base 58 invalid prefix");
                 return {};
             }

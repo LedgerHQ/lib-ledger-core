@@ -60,10 +60,16 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeAddress>
         TezosLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
-             std::cout << "derive: " << path << " "  << std::endl;
+            std::cout << "derive: " << path << " " << _curve  << std::endl;
+            // _currency.tezosLikeNetworkParameters.value().XPUBVersion
+
+            // std::cout << "derive: " << path << " " << _curve  << std::endl;
+            // auto encoding = TezosKeyType::fromCurve(_curve, TezosKeyType::PUBKEYS);
             return std::make_shared<TezosLikeAddress>(_currency,
                                                       _key.getPublicKey(),
+                                                    //   (*encoding).version,
                                                       _currency.tezosLikeNetworkParameters.value().ImplicitPrefix,
+
                                                       _curve,
                                                       optional<std::string>((_path + p).toString()));
         }
@@ -84,7 +90,20 @@ namespace ledger {
         }
 
         std::string TezosLikeExtendedPublicKey::toBase58() {
-            return TezosExtendedPublicKey::toBase58();
+            auto encoding = TezosKeyType::fromCurve(_curve, TezosKeyType::PUBKEYS).value();
+            std::cout << "toBase58: encoding=" << encoding << ", curve=" << _curve << std::endl;
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", params().Identifier);
+            return Base58::encodeWithChecksum(vector::concat(
+                encoding.version,
+                getKey().getPublicKey()
+            ), config);
+            // return Base58::encodeWithChecksum(getKey().toByteArray(encoding.version), config);    
+            // return Base58::encodeWithChecksum(getKey().toByteArray(encoding.version), config);
+
+            // auto config = std::make_shared<DynamicObject>();
+            // config->putString("networkIdentifier", _params.Identifier);
+            // return Base58::encodeWithChecksum(vector::concat(encoding.version, deriveHash160("")), config);
         }
 
         std::string TezosLikeExtendedPublicKey::getRootPath() {
@@ -128,6 +147,7 @@ namespace ledger {
             std::cout << "Unsupported key type == XPub ?" << std::endl;
             // Decode standard xpubs
             DeterministicPublicKey k = TezosExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
+            std::cout << "size: " << std::to_string( k.getPublicKey().size() ) << std::endl;
             return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, k.getPublicKey().size() == 32 ? api::TezosCurve::ED25519 : api::TezosCurve::SECP256K1, DerivationPath(path.getValueOr("m")));
         }
 
