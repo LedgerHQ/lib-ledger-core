@@ -101,9 +101,10 @@ namespace ledger {
 
             //Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(),
-                                                    [](const TryPtr<TezosLikeBlockchainExplorer::Block> &block) mutable {
+                                                    [self] (const TryPtr<TezosLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
                                                             //TODO
+                                                            self->_currentBlockHeight = block.getValue()->height;
                                                         }
                                                     });
 
@@ -188,7 +189,7 @@ namespace ledger {
 
                     auto const context = result.getValue();
 
-                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(self->_currentBlockHeight));
                     payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;

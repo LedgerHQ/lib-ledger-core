@@ -158,6 +158,7 @@ namespace ledger {
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
+            uint64_t _currentBlockHeight;
         };
     }
 }
