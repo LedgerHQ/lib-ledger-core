@@ -24,5 +24,6 @@ compile_commands.json
 install_manifest.txt
 tags
 *.a
+Testing/
 .ccls-cache/
 .dir-locals.el

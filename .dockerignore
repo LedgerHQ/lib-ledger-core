@@ -11,3 +11,4 @@ playground/
 ledger-core-sample/
 Dockerfile*
 CMakeCache.txt
+Testing/
