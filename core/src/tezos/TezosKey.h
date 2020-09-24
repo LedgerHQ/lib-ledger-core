@@ -65,6 +65,9 @@ namespace ledger {
             const Encoding P2PK{"p2pk", {3, 178, 139, 127}, api::TezosCurve::P256, 33, 55,
                                 "P256 public key"};
 
+            const Encoding XPUB{"xpub", {4, 136, 178, 30}, api::TezosCurve::ED25519, 33, 55,
+                                "Legacy XPUB public key"};
+
             
             const Encoding TZ1{"tz1", {6, 161, 159}, api::TezosCurve::ED25519, 20, 36,
                                "ED25519 public key hash"};
@@ -78,9 +81,9 @@ namespace ledger {
             const Encoding KT1{"KT1", {2, 90, 121}, api::TezosCurve::ED25519, 20, 36,
                                "Originated address"};
 
-            const std::vector<Encoding> ALL = {EDPK, SPPK, P2PK};
+            const std::vector<Encoding> ALL = {EDPK, SPPK, P2PK, XPUB, TZ1, TZ2, TZ3, KT1};
 
-            const std::vector<Encoding> PUBKEYS = {EDPK, SPPK, P2PK};
+            const std::vector<Encoding> PUBKEYS = {EDPK, SPPK, P2PK, XPUB};
 
             const std::vector<Encoding> ADDRESSES = {TZ1, TZ2, TZ3, KT1};
 

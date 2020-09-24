@@ -157,9 +157,11 @@ namespace ledger {
 
         // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
+            std::cout << "API.Serialize" << std::endl;
             BytesWriter writer;
             // Watermark: Generic-Operation
             if (_signature.empty()) {
+                std::cout << "Signature is empty" << std::endl;
                 writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
             }
 
@@ -171,8 +173,10 @@ namespace ledger {
             // Remove 2 first bytes (of version)
             auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
             
+            
             // If tx was forged then nothing to do
             if (!_rawTx.empty()) {
+                std::cout << "RawTX is not empty" << std::endl;
                 // If we need reveal, then we must prepend it
                 if (_needReveal) {
                     writer.writeByteArray(blockHash);
@@ -262,10 +266,13 @@ namespace ledger {
 
             switch(type) {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
+                    std::cout << "case api::TezosOperationTag::OPERATION_TAG_REVEAL" << std::endl;
                     if (!_signingPubKey.empty()) {
+                        std::cout << "Has signing key" << std::endl;
                         writer.writeByte(0x00);
                         writer.writeByteArray(_signingPubKey);
                     } else if (!_revealedPubKey.empty()) {
+                        std::cout << "Has reveal pub key" << std::endl;
                         auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
                         writer.writeByte(0x00);
                         writer.writeByteArray(pKey->derivePublicKey(""));
@@ -357,6 +364,7 @@ namespace ledger {
         }
 
         TezosLikeTransactionApi &TezosLikeTransactionApi::setSigningPubKey(const std::vector<uint8_t> &pubKey) {
+            std::cout << "Set signing pubkey: " << hex::toString(pubKey) << std::endl;
             _signingPubKey = pubKey;
             return *this;
         }

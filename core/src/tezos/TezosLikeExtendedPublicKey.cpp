@@ -148,7 +148,7 @@ namespace ledger {
             // Decode standard xpubs
             DeterministicPublicKey k = TezosExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
             std::cout << "size: " << std::to_string( k.getPublicKey().size() ) << std::endl;
-            return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, k.getPublicKey().size() == 32 ? api::TezosCurve::ED25519 : api::TezosCurve::SECP256K1, DerivationPath(path.getValueOr("m")));
+            return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, k.getPublicKey().size() == 33 ? api::TezosCurve::ED25519 : api::TezosCurve::SECP256K1, DerivationPath(path.getValueOr("m")));
         }
 
     }
