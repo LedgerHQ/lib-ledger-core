@@ -40,6 +40,7 @@
 #include <utils/DerivationPath.hpp>
 #include <api/Currency.hpp>
 #include <api/TezosCurve.hpp>
+#include <tezos/TezosKey.h>
 
 namespace ledger {
     namespace core {
@@ -100,7 +101,7 @@ namespace ledger {
             const DerivationPath _path;
             const DeterministicPublicKey _key;
             api::TezosCurve _curve;
-
+            TezosKeyType::Encoding  _encoding;
         };
     }
 }

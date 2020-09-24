@@ -61,6 +61,7 @@ INSTANTIATE_TEST_CASE_P(
 
 struct TezosMakeTransaction : public TezosMakeBaseTransaction {
     void SetUpConfig() override {
+        std::cout << "SetUpConfig" << std::endl;
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519);
@@ -74,16 +75,16 @@ struct TezosMakeTransaction : public TezosMakeBaseTransaction {
 TEST_F(TezosMakeTransaction, CreateTx) {
     auto builder = tx_builder();
 
-    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
-        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+    // auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    //     fmt::print("Received event {}\n", api::to_string(event->getCode()));
 
-        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
+    //     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
         
-        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+    //     EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+    //     EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-        dispatcher->stop();
-    });
+    //     dispatcher->stop();
+    // });
 
     // account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 

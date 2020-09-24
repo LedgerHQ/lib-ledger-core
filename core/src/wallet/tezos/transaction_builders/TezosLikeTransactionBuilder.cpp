@@ -127,6 +127,7 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransaction>
         api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency &currency,
                                                                       const std::vector<uint8_t> &rawTransaction) {
+            std::cout << "TXBuilder.parseRawUnsignedTransaction" << std::endl;
             // Since this patch is temporary, we can live with this
             // This method is not used yet anywhere internally or externally (except for tests)
             return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency,
@@ -139,6 +140,7 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeTransaction>
         api::TezosLikeTransactionBuilder::parseRawSignedTransaction(const api::Currency &currency,
                                                                     const std::vector<uint8_t> &rawTransaction) {
+            std::cout << "TXBuilder.parseRawSignedTransaction" << std::endl;
             // Since this patch is temporary, we can live with this
             // This method is not used yet anywhere internally or externally (except for tests)
             return ::ledger::core::TezosLikeTransactionBuilder::parseRawTransaction(currency,
@@ -154,6 +156,7 @@ namespace ledger {
                                                          const std::vector<uint8_t> &rawTransaction,
                                                          bool isSigned,
                                                          const std::string &protocolUpdate) {
+            std::cout << "TXBuilder.parseRawTransaction" << std::endl;
             auto isBabylonActivated = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
             auto params = currency.tezosLikeNetworkParameters.value();
             auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
@@ -224,7 +227,9 @@ namespace ledger {
             auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
             switch (OpTag - offset) {
                 case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL): {
+                    std::cout << "TXBuilder.parseRawTransaction is reveal" << std::endl;
                     auto curveCode = reader.readNextByte();
+                    std::cout << "TXBuilder.parseRawTransaction curve code" << std::to_string(curveCode) << std::endl;
                     std::vector<uint8_t> pubKey;
                     switch (curveCode) {
                         case static_cast<uint8_t>(api::TezosCurve::ED25519):
@@ -234,6 +239,7 @@ namespace ledger {
                             pubKey = reader.read(33);
                             break;
                     }
+                    std::cout << "TXBuilder.parseRawTransaction setSigningPubKey: " << hex::toString(pubKey) << std::endl;
                     tx->setSigningPubKey(pubKey);
                     tx->setValue(std::make_shared<BigInt>(BigInt::ZERO));
                     tx->setReceiver(std::make_shared<TezosLikeAddress>(currency,

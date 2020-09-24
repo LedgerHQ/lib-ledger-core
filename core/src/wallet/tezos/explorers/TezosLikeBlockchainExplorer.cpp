@@ -49,6 +49,7 @@ namespace ledger {
                                                                                    const std::shared_ptr<api::ExecutionContext> &context,
                                                                                    const std::shared_ptr<HttpClient> &http,
                                                                                    const std::string &rpcNode) {
+            std::cout << "Forge OP" << std::endl;
             std::string params;
             switch (tx->getType()) {
                 case api::TezosOperationTag::OPERATION_TAG_TRANSACTION:
@@ -96,6 +97,7 @@ namespace ledger {
                                           tx->getManagerAddress(),
                                           counter
             );
+            std::cout << "Forge POST Body: " << bodyString << std::endl;
             const bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return http->POST("/chains/main/blocks/head/helpers/forge/operations",
@@ -109,6 +111,7 @@ namespace ledger {
                             throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to forge operation.");
                         }
                         auto info = json.GetString();
+                        std::cout << "forge response: " << info << std::endl;
                         return hex::toByteArray(info);
                     });
         }
