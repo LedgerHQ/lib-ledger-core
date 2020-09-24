@@ -72,83 +72,83 @@ struct TezosMakeTransaction : public TezosMakeBaseTransaction {
     }
 };
 
-TEST_F(TezosMakeTransaction, CreateTx) {
-    auto builder = tx_builder();
+// TEST_F(TezosMakeTransaction, CreateTx) {
+//     auto builder = tx_builder();
 
-    // auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
-    //     fmt::print("Received event {}\n", api::to_string(event->getCode()));
+//     // auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+//     //     fmt::print("Received event {}\n", api::to_string(event->getCode()));
 
-    //     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
+//     //     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
         
-    //     EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-    //     EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+//     //     EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+//     //     EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-    //     dispatcher->stop();
-    // });
+//     //     dispatcher->stop();
+//     // });
 
-    // account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+//     // account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
-    // dispatcher->waitUntilStopped();
+//     // dispatcher->waitUntilStopped();
 
-    // builder->setFees(api::Amount::fromLong(currency, 250));
-    // builder->setGasLimit(api::Amount::fromLong(currency, 10000));
-    // builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
-    // // Self-transaction not allowed
-    // EXPECT_THROW(builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE"), Exception);
-    // builder->wipeToAddress("tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
-    // // TODO: activate when we got URL of our custom explorer
-    // auto f = builder->build();
-    // auto tx = ::wait(f);
-    // auto serializedTx = tx->serialize();
-    // auto balance = wait(account->getBalance());
-    // EXPECT_EQ(balance->toLong(), tx->getValue()->toLong() + tx->getFees()->toLong());
-    // auto parsedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
-    // auto serializedParsedTx = parsedTx->serialize();
-    // EXPECT_EQ(serializedTx, serializedParsedTx);
+//     // builder->setFees(api::Amount::fromLong(currency, 250));
+//     // builder->setGasLimit(api::Amount::fromLong(currency, 10000));
+//     // builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
+//     // // Self-transaction not allowed
+//     // EXPECT_THROW(builder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE"), Exception);
+//     // builder->wipeToAddress("tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
+//     // // TODO: activate when we got URL of our custom explorer
+//     // auto f = builder->build();
+//     // auto tx = ::wait(f);
+//     // auto serializedTx = tx->serialize();
+//     // auto balance = wait(account->getBalance());
+//     // EXPECT_EQ(balance->toLong(), tx->getValue()->toLong() + tx->getFees()->toLong());
+//     // auto parsedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
+//     // auto serializedParsedTx = parsedTx->serialize();
+//     // EXPECT_EQ(serializedTx, serializedParsedTx);
 
-    // auto date = "2000-03-27T09:10:22Z";
-    // auto formatedDate = DateUtils::fromJSON(date);
+//     // auto date = "2000-03-27T09:10:22Z";
+//     // auto formatedDate = DateUtils::fromJSON(date);
 
-    // //Delete account
-    // auto code = wait(wallet->eraseDataSince(formatedDate));
-    // EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+//     // //Delete account
+//     // auto code = wait(wallet->eraseDataSince(formatedDate));
+//     // EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
-    // //Check if account was successfully deleted
-    // auto newAccountCount = wait(wallet->getAccountCount());
-    // EXPECT_EQ(newAccountCount, 0);
-    // {
-    //     soci::session sql(pool->getDatabaseSessionPool()->getPool());
-    //     TezosLikeAccountDatabaseEntry entry;
-    //     auto result = TezosLikeAccountDatabaseHelper::queryAccount(sql, account->getAccountUid(), entry);
-    //     EXPECT_EQ(result, false);
-    // }
+//     // //Check if account was successfully deleted
+//     // auto newAccountCount = wait(wallet->getAccountCount());
+//     // EXPECT_EQ(newAccountCount, 0);
+//     // {
+//     //     soci::session sql(pool->getDatabaseSessionPool()->getPool());
+//     //     TezosLikeAccountDatabaseEntry entry;
+//     //     auto result = TezosLikeAccountDatabaseHelper::queryAccount(sql, account->getAccountUid(), entry);
+//     //     EXPECT_EQ(result, false);
+//     // }
 
-    // auto originatedAccounts = account->getOriginatedAccounts();
-    // EXPECT_GT(originatedAccounts.size(), 0);
+//     // auto originatedAccounts = account->getOriginatedAccounts();
+//     // EXPECT_GT(originatedAccounts.size(), 0);
 
-    // std::cout << originatedAccounts.size() << " originated accounts." << std::endl;
+//     // std::cout << originatedAccounts.size() << " originated accounts." << std::endl;
 
-    // auto txBuilder = std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(originatedAccounts[0]->buildTransaction());
-    // txBuilder->setFees(api::Amount::fromLong(currency, 250));
-    // txBuilder->setGasLimit(api::Amount::fromLong(currency, 10000));
-    // txBuilder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
-    // txBuilder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
-    // auto originatedTx = ::wait(txBuilder->build());
-    // EXPECT_EQ(originatedTx->getSender()->toBase58(), "KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd");
-    // EXPECT_EQ(originatedTx->getReceiver()->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
+//     // auto txBuilder = std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(originatedAccounts[0]->buildTransaction());
+//     // txBuilder->setFees(api::Amount::fromLong(currency, 250));
+//     // txBuilder->setGasLimit(api::Amount::fromLong(currency, 10000));
+//     // txBuilder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
+//     // txBuilder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
+//     // auto originatedTx = ::wait(txBuilder->build());
+//     // EXPECT_EQ(originatedTx->getSender()->toBase58(), "KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd");
+//     // EXPECT_EQ(originatedTx->getReceiver()->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
 
-    // auto serializedOriginatedTx = originatedTx->serialize();
-    // // Remains deactivated because we don't parse KT Txs after Babylon Update
-    // //auto parsedOriginatedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedOriginatedTx);
-    // //EXPECT_EQ(serializedOriginatedTx, parsedOriginatedTx->serialize());
-    // //Delete wallet
-    // auto walletCode = wait(pool->eraseDataSince(formatedDate));
-    // EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+//     // auto serializedOriginatedTx = originatedTx->serialize();
+//     // // Remains deactivated because we don't parse KT Txs after Babylon Update
+//     // //auto parsedOriginatedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedOriginatedTx);
+//     // //EXPECT_EQ(serializedOriginatedTx, parsedOriginatedTx->serialize());
+//     // //Delete wallet
+//     // auto walletCode = wait(pool->eraseDataSince(formatedDate));
+//     // EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
-    // //Check if wallet was successfully deleted
-    // auto walletCount = wait(pool->getWalletCount());
-    // EXPECT_EQ(walletCount, 0);
-}
+//     // //Check if wallet was successfully deleted
+//     // auto walletCount = wait(pool->getWalletCount());
+//     // EXPECT_EQ(walletCount, 0);
+// }
 
 TEST_P(TransactionTest, ParseUnsignedRawTransaction) {
     // round-trip

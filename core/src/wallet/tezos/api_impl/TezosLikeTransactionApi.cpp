@@ -269,7 +269,7 @@ namespace ledger {
                     std::cout << "case api::TezosOperationTag::OPERATION_TAG_REVEAL" << std::endl;
                     if (!_signingPubKey.empty()) {
                         std::cout << "Has signing key" << std::endl;
-                        writer.writeByte(0x00);
+                        writer.writeByte(static_cast<uint8_t>(_senderCurve));
                         writer.writeByteArray(_signingPubKey);
                     } else if (!_revealedPubKey.empty()) {
                         std::cout << "Has reveal pub key" << std::endl;

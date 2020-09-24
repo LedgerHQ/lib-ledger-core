@@ -48,6 +48,18 @@ namespace ledger {
                     );
                     return TEZOS;
                 }
+                if (networkName == "tezos-secp256k1") {
+                    static const api::TezosLikeNetworkParameters TEZOS(
+                            "xtz",
+                            "XTZ signed message:\n",
+                            {0x04, 0x88, 0xB2, 0x1E},
+                            {0x06, 0xA1, 0x9F},
+                            {0x02, 0x5A, 0x79},
+                            {},
+                            0
+                    );
+                    return TEZOS;
+                }
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No network parameters set for {}", networkName);
             }
 
