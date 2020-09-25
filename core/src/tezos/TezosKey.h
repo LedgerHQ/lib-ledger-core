@@ -83,7 +83,9 @@ namespace ledger {
 
             const std::vector<Encoding> ALL = {EDPK, SPPK, P2PK, XPUB, TZ1, TZ2, TZ3, KT1};
 
-            const std::vector<Encoding> PUBKEYS = {EDPK, SPPK, P2PK, XPUB};
+            const std::vector<Encoding> PUBKEYS = {EDPK, SPPK, P2PK};
+
+            const std::vector<Encoding> LEGACY_PUBKEYS = {EDPK, SPPK, P2PK, XPUB};
 
             const std::vector<Encoding> ADDRESSES = {TZ1, TZ2, TZ3, KT1};
 
