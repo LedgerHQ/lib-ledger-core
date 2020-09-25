@@ -274,7 +274,7 @@ namespace ledger {
                     } else if (!_revealedPubKey.empty()) {
                         std::cout << "Has reveal pub key" << std::endl;
                         auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
-                        writer.writeByte(0x00);
+                        writer.writeByte(static_cast<uint8_t>(_senderCurve));
                         writer.writeByteArray(pKey->derivePublicKey(""));
                     }
                     break;
