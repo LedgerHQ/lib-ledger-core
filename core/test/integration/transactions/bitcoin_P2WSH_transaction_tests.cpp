@@ -48,11 +48,11 @@ struct BitcoinMakeP2WSHTransaction : public BitcoinMakeBaseTransaction {
 
 TEST_F(BitcoinMakeP2WSHTransaction, CreateStandardP2WSHWithOneOutput) {
     auto builder = tx_builder();
-    auto freshAddress = wait(account->getFreshPublicAddresses())[0];
+    auto freshAddress = uv::wait(account->getFreshPublicAddresses())[0];
     auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
     auto freshAddressStr = freshAddress->asBitcoinLikeAddress()->toBech32();
     EXPECT_EQ(freshAddressStr.substr(0, hrp.size()), hrp);
-    auto balance = wait(account->getBalance());
+    auto balance = uv::wait(account->getBalance());
     // TODO: send BTC on address bc1q7kggee5ry2xpr0nul42grqul6ygyll5afj34xxehaftcc0pty4sqvud0h2 to implement the rest of tests ?
     EXPECT_EQ(balance->toLong(), 0);
 

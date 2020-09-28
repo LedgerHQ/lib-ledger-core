@@ -147,7 +147,7 @@ const std::string TX_4 = "{\"hash\":\"4450e70656888bd7f5240a9b532eac54db7d72f3b4
 void BaseFixture::SetUp() {
     ::testing::Test::SetUp();
     ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-    dispatcher = std::make_shared<QtThreadDispatcher>();
+    dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
     http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
@@ -230,7 +230,7 @@ BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wal
                                       const api::AccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(::wait(wallet->newAccountWithInfo(info)));
+    return std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(info)));
 }
 
 std::shared_ptr<BitcoinLikeAccount>
@@ -238,7 +238,7 @@ BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wal
                                       const api::ExtendedKeyAccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
+    return std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
 }
 
 std::shared_ptr<EthereumLikeAccount>
@@ -246,7 +246,7 @@ BaseFixture::createEthereumLikeAccount(const std::shared_ptr<AbstractWallet> &wa
                                       const api::AccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<EthereumLikeAccount>(::wait(wallet->newAccountWithInfo(info)));
+    return std::dynamic_pointer_cast<EthereumLikeAccount>(uv::wait(wallet->newAccountWithInfo(info)));
 }
 
 std::shared_ptr<EthereumLikeAccount>
@@ -254,7 +254,7 @@ BaseFixture::createEthereumLikeAccount(const std::shared_ptr<AbstractWallet> &wa
                                       const api::ExtendedKeyAccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<EthereumLikeAccount>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
+    return std::dynamic_pointer_cast<EthereumLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
 }
 
 std::shared_ptr<RippleLikeAccount>
@@ -262,7 +262,7 @@ BaseFixture::createRippleLikeAccount(const std::shared_ptr<AbstractWallet> &wall
                                        const api::AccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<RippleLikeAccount>(::wait(wallet->newAccountWithInfo(info)));
+    return std::dynamic_pointer_cast<RippleLikeAccount>(uv::wait(wallet->newAccountWithInfo(info)));
 }
 
 std::shared_ptr<algorand::Account>
@@ -270,7 +270,7 @@ BaseFixture::createAlgorandAccount(const std::shared_ptr<AbstractWallet> &wallet
                                        const api::AccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<algorand::Account>(::wait(wallet->newAccountWithInfo(info)));
+    return std::dynamic_pointer_cast<algorand::Account>(uv::wait(wallet->newAccountWithInfo(info)));
 }
 
 std::shared_ptr<RippleLikeAccount>
@@ -278,7 +278,7 @@ BaseFixture::createRippleLikeAccount(const std::shared_ptr<AbstractWallet> &wall
                                        const api::ExtendedKeyAccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<RippleLikeAccount>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
+    return std::dynamic_pointer_cast<RippleLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
 }
 
 std::shared_ptr<TezosLikeAccount>
@@ -287,5 +287,17 @@ BaseFixture::createTezosLikeAccount(const std::shared_ptr<AbstractWallet>& walle
                                     const api::AccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<TezosLikeAccount>(::wait(wallet->newAccountWithInfo(i)));
+    return std::dynamic_pointer_cast<TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(i)));
+}
+
+std::shared_ptr<uv::SequentialExecutionContext> BaseFixture::getTestExecutionContext()
+{
+    return std::dynamic_pointer_cast<uv::SequentialExecutionContext>(dispatcher->getSerialExecutionContext("__test__"));
+}
+
+void BaseFixture::resetDispatcher()
+{
+    dispatcher = std::make_shared<uv::UvThreadDispatcher>();
+    printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
+    http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
 }

@@ -116,10 +116,10 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
         configuration->putString(
             api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
             "44'/<coin_type>'/<account>'/<node>/<address>");
-        wallet = wait(
+        wallet = uv::wait(
             pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "cosmos", configuration));
 
-        auto accountInfo = wait(wallet->getNextAccountCreationInfo());
+        auto accountInfo = uv::wait(wallet->getNextAccountCreationInfo());
         EXPECT_EQ(accountInfo.index, 0);
         accountInfo.publicKeys.push_back(hex::toByteArray(pubKey));
 
@@ -136,23 +136,24 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
             }
             EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-            auto balance = wait(account->getBalance());
+            auto balance = uv::wait(account->getBalance());
             fmt::print("Balance: {} uatom\n", balance->toString());
 
-            auto block = wait(account->getLastBlock());
+            auto block = uv::wait(account->getLastBlock());
             fmt::print("Block height: {}\n", block.height);
             EXPECT_GT(block.height, 0);
 
-            dispatcher->stop();
+            getTestExecutionContext()->stop();
         });
 
-        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
-        dispatcher->waitUntilStopped();
+        auto bus = account->synchronize();
+        bus->subscribe(getTestExecutionContext(), receiver);
+        getTestExecutionContext()->waitUntilStopped();
     }
 
     void TearDown() override
     {
-        wait(pool->freshResetAll());
+        uv::wait(pool->freshResetAll());
         BaseFixture::TearDown();
     }
 
@@ -175,7 +176,7 @@ TEST_F(CosmosWalletSyncBenchmark, Small)
 
     start = std::chrono::system_clock::now();
     auto ops =
-        wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
+        uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                  ->execute());
     end = std::chrono::system_clock::now();
     diff = end - start;
@@ -197,7 +198,7 @@ TEST_F(CosmosWalletSyncBenchmark, Medium)
 
     start = std::chrono::system_clock::now();
     auto ops =
-        wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
+        uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                  ->execute());
     end = std::chrono::system_clock::now();
     diff = end - start;
@@ -219,7 +220,7 @@ TEST_F(CosmosWalletSyncBenchmark, Large)
 
     start = std::chrono::system_clock::now();
     auto ops =
-        wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
+        uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                  ->execute());
     end = std::chrono::system_clock::now();
     diff = end - start;
@@ -241,7 +242,7 @@ TEST_F(CosmosWalletSyncBenchmark, ExtraLarge)
 
     start = std::chrono::system_clock::now();
     auto ops =
-        wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
+        uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                  ->execute());
     end = std::chrono::system_clock::now();
     diff = end - start;
@@ -263,7 +264,7 @@ TEST_F(CosmosWalletSyncBenchmark, Huge)
 
     start = std::chrono::system_clock::now();
     auto ops =
-        wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
+        uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())
                  ->execute());
     end = std::chrono::system_clock::now();
     diff = end - start;

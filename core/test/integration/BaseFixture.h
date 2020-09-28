@@ -33,7 +33,7 @@
 #define LEDGER_CORE_BASEFIXTURE_H
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -143,7 +143,11 @@ public:
                                                              int32_t index,
                                                              const api::AccountCreationInfo &info);
 
-    std::shared_ptr<QtThreadDispatcher> dispatcher;
+    std::shared_ptr<uv::SequentialExecutionContext> getTestExecutionContext();
+
+    void resetDispatcher();
+
+    std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;

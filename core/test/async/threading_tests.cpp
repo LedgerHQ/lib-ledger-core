@@ -30,21 +30,21 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <QThread>
 #include <QDateTime>
 #include <QDebug>
 
 using namespace ledger::core;
-using namespace ledger::qt;
+//using namespace ledger::qt;
 
 TEST(Threading, DoSomethingOnSerialQueue) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     int var = 0;
 
     auto mainThread = QThread::currentThreadId();
 
-    dispatcher->getSerialExecutionContext("worker")->execute(make_runnable([&] () {
+    dispatcher->getThreadPoolExecutionContext("worker")->execute(make_runnable([&] () {
         EXPECT_NE(mainThread, QThread::currentThreadId());
         var = 1;
         dispatcher->stop();
@@ -52,11 +52,11 @@ TEST(Threading, DoSomethingOnSerialQueue) {
 
     dispatcher->waitUntilStopped();
     EXPECT_EQ(var, 1);
-    EXPECT_EQ(dispatcher->getSerialExecutionContext("worker"), dispatcher->getSerialExecutionContext("worker"));
+    EXPECT_EQ(dispatcher->getThreadPoolExecutionContext("worker"), dispatcher->getThreadPoolExecutionContext("worker"));   
 }
 
 TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
 
     auto before = QDateTime::currentMSecsSinceEpoch();
     auto after = before;
@@ -70,7 +70,41 @@ TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
     }), 1000);
 
     dispatcher->waitUntilStopped();
+
     EXPECT_TRUE(after >= (before + 1000));
     EXPECT_EQ(dispatcher->getSerialExecutionContext("worker"), dispatcher->getSerialExecutionContext("worker"));
 }
 
+TEST(Threading, DoSomethingOnThreadPoolSerialQueue) {
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>(2);
+    auto cpt = 0;
+    std::mutex mutex;
+    std::condition_variable condition;
+
+    auto mainThread = QThread::currentThreadId();
+    Qt::HANDLE threadId1, threadId2, threadId3; 
+
+    auto getThreadId = [&] (auto context, Qt::HANDLE& threadId) {
+        context->execute(make_runnable([&] () {
+        std::unique_lock<std::mutex> lock(mutex);
+        threadId = QThread::currentThreadId();
+        ++ cpt;
+        condition.notify_all();
+    }));
+    };
+
+    getThreadId(dispatcher->getThreadPoolExecutionContext("worker-1"), threadId1);
+    getThreadId(dispatcher->getThreadPoolExecutionContext("worker-2"), threadId2);
+    getThreadId(dispatcher->getThreadPoolExecutionContext("worker-3"), threadId3);
+
+    std::unique_lock<std::mutex> lock(mutex);
+    condition.wait(lock, [&] () {
+        return (cpt == 3);
+    });
+    
+    EXPECT_NE(mainThread, threadId1);
+    EXPECT_NE(mainThread, threadId2);
+    EXPECT_NE(mainThread, threadId3);
+    EXPECT_NE(threadId1, threadId2);
+    EXPECT_EQ(threadId1, threadId3);
+}

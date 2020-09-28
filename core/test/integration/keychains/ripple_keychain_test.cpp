@@ -45,7 +45,7 @@ public:
                 resolver
         );
         auto configuration = std::make_shared<DynamicObject>();
-        dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
+        dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             RippleLikeKeychain keychain(
                     configuration,
                     data.currency,
@@ -102,14 +102,14 @@ TEST_F(RippleKeychains, RippleDerivationSchemes) {
             auto derivationSchemes = elem.equivalentDerivationSchemes;
             for (auto &scheme : derivationSchemes) {
                 configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, scheme);
-                auto wallet = wait(pool->createWallet(scheme, "ripple", configuration));
+                auto wallet = uv::wait(pool->createWallet(scheme, "ripple", configuration));
                 //Create account as Live does
-                api::AccountCreationInfo info = wait(wallet->getNextAccountCreationInfo());
+                api::AccountCreationInfo info = uv::wait(wallet->getNextAccountCreationInfo());
                 EXPECT_EQ(info.derivations[0], elem.expectedDerivationPath);
                 info.publicKeys.push_back(hex::toByteArray(elem.pubKey));
                 info.chainCodes.push_back(hex::toByteArray(elem.chainCode));
                 auto account = createRippleLikeAccount(wallet, info.index, info);
-                auto addresses = wait(account->getFreshPublicAddresses());
+                auto addresses = uv::wait(account->getFreshPublicAddresses());
                 EXPECT_GT(addresses.size(), 0);
                 EXPECT_EQ(addresses[0]->toString(), elem.expectedAddress);
             }

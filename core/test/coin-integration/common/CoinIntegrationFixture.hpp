@@ -33,7 +33,7 @@
 #define LEDGER_CORE_COININTEGRATIONFIXTURE_HPP
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -69,7 +69,6 @@
 
 using namespace ledger::core; // don't do this at home. Only for testing contexts
 using namespace ledger::core::test;
-using namespace ledger::qt; 
 
 enum SynchronizationResult {OLD_ACCOUNT, NEW_ACCOUNT};
 
@@ -79,7 +78,7 @@ public:
     void SetUp() override {
         ::testing::Test::SetUp();
         ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-        dispatcher = std::make_shared<QtThreadDispatcher>();
+        dispatcher = std::make_shared<uv::UvThreadDispatcher>();
         resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
         backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
         printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
@@ -110,8 +109,13 @@ public:
         );
     }
 
+    std::shared_ptr<uv::SequentialExecutionContext> getTestExecutionContext()
+    {
+        return std::dynamic_pointer_cast<uv::SequentialExecutionContext>(dispatcher->getSerialExecutionContext("__test__"));
+    }
+
     void injectCurrency(const std::shared_ptr<WalletPool>& pool, const api::Currency& currency) {
-        ::wait(pool->addCurrency(currency));
+        uv::wait(pool->addCurrency(currency));
     }
 
     std::shared_ptr<Wallet> newWallet(  const std::shared_ptr<WalletPool>& pool,
@@ -119,7 +123,7 @@ public:
                                         const std::string& currencyName,
                                         const std::shared_ptr<api::DynamicObject> &configuration
                                      ) {
-        return std::dynamic_pointer_cast<Wallet>(::wait(pool->createWallet(walletName, currencyName, configuration)));
+        return std::dynamic_pointer_cast<Wallet>(uv::wait(pool->createWallet(walletName, currencyName, configuration)));
     }
 
     std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet>& wallet,
@@ -127,7 +131,7 @@ public:
                                                                  const api::AccountCreationInfo &info) {
         auto i = info;
         i.index = index;
-        return std::dynamic_pointer_cast<Account>(::wait(wallet->newAccountWithInfo(i)));
+        return std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithInfo(i)));
     }
 
     std::shared_ptr<Account> newAccount(const std::shared_ptr<AbstractWallet>& wallet,
@@ -161,10 +165,10 @@ public:
                                p.failure(make_exception(code, reason));
                            }
                        }));
-        return ::wait(p.getFuture());
+        return uv::wait(p.getFuture());
     }
 
-    std::shared_ptr<QtThreadDispatcher> dispatcher;
+    std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;

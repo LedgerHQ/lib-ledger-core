@@ -77,7 +77,7 @@ struct BitcoinMakeBaseTransaction : public BaseFixture {
 
     virtual void recreate() {
         pool = newDefaultPool();
-        wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_btc(pool, wallet);
         currency = wallet->getCurrency();
     }
@@ -112,7 +112,7 @@ struct EthereumMakeBaseTransaction : public BaseFixture {
 
     void recreate() {
         pool = newDefaultPool();
-        wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_eth(pool, wallet);
         currency = wallet->getCurrency();
     }
@@ -147,7 +147,7 @@ struct RippleMakeBaseTransaction : public BaseFixture {
 
     void recreate() {
         pool = newDefaultPool();
-        wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_xrp(pool, wallet);
         currency = wallet->getCurrency();
     }
@@ -182,7 +182,7 @@ struct TezosMakeBaseTransaction : public BaseFixture {
 
     void recreate() {
         pool = newDefaultPool();
-        wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+        wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
         account = testData.inflate_xtz(pool, wallet);
         currency = wallet->getCurrency();
     }

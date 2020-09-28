@@ -33,7 +33,7 @@
 #define LEDGER_CORE_BASEFIXTURE_H
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -63,7 +63,6 @@
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::core::test;
-using namespace ledger::qt; // Djeez
 
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
 extern api::AccountCreationInfo P2PKH_MEDIUM_KEYS_INFO;
@@ -100,7 +99,7 @@ public:
                                                                  const api::ExtendedKeyAccountCreationInfo& info
     );
 
-    std::shared_ptr<QtThreadDispatcher> dispatcher;
+    std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;

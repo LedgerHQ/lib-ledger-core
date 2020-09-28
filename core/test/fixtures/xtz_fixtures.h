@@ -4,7 +4,7 @@
 #ifndef LEDGER_FIXTURES_XTZ
 #define LEDGER_FIXTURES_XTZ
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>

@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -59,8 +59,8 @@ class QueryBuilderTest : public BaseFixture {
 TEST_F(QueryBuilderTest, SimpleOperationQuery) {
     auto pool = newDefaultPool();
     {
-        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
-        auto nextIndex = wait(wallet->getNextAccountIndex());
+        auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+        auto nextIndex = uv::wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
         auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
         std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
