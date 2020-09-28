@@ -115,9 +115,15 @@ namespace ledger {
                     _logger->debug("CppHttpLibClient: done {} {} - {}", api::to_string(request->getMethod()), request->getUrl(), res->status);
                 }
 
-                if (res.error() != httplib::Error::Success || res->status < 200 || res->status >= 300 ) {
+                if (res.error() != httplib::Error::Success) {
                     request->complete(nullptr, std::experimental::optional<core::api::Error>(
-                        core::api::Error(core::api::ErrorCode::HTTP_ERROR, fmt::format("{}: {}", res->status, res->reason))));       
+                        core::api::Error(core::api::ErrorCode::HTTP_ERROR, 
+                        "HTTP ERROR")));       
+                }
+                else if (res->status < 200 || res->status >= 300 ) {
+                    request->complete(nullptr, std::experimental::optional<core::api::Error>(
+                        core::api::Error(core::api::ErrorCode::HTTP_ERROR, 
+                        fmt::format("{}: {}", res->status, res->reason)))); 
                 }
                 else {
                     std::unordered_map<std::string, std::string> hdrs;
