@@ -1,13 +1,13 @@
 /*
  *
- * FilesystemUtils.cpp
+ * FilesystemUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/09/2017.
+ * Created by Huiqi ZHENG on 16/12/2016.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,20 +28,22 @@
  * SOFTWARE.
  *
  */
+#ifndef LEDGER_CORE_FILESYSTEMUTILS_HPP
+#define LEDGER_CORE_FILESYSTEMUTILS_HPP
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
 
-#include "FilesystemUtils.h"
-#include <QDir>
-#include <QDebug>
-#include <QCoreApplication>
 #include <iostream>
 
-void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
-    QDir root(QString::fromStdString(path));
-    for (const auto& file : root.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot)) {
-        if (file.isDir() && file.absoluteFilePath().compare(root.absolutePath()) != 0) {
-            clearFs(file.absoluteFilePath().toStdString());
-        } else if (!file.isExecutable()) {
-            QFile::remove(file.absoluteFilePath());
-        }
+namespace ledger {
+    namespace core {
+        class FilesystemUtils {
+        public:
+        	static bool isExecutable(const std::string& path);
+            static void clearFs(const std::string& rootDirPath);
+        };
     }
 }
+
+
+#endif //LEDGER_CORE_FILESYSTEMUTILS_HPP

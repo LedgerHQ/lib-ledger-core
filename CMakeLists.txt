@@ -29,7 +29,7 @@ set(BOOST_INCLUDEDIR "${CMAKE_CURRENT_SOURCE_DIR}/core/lib/boost/")
 # Notes:
 # > This is a "blind" fix, no available 10.10.x macOS machine,
 # > Issue is specific to 10.10.x, 10.9.5 and > 10.10.x are fine
-set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X version to target for deployment: 10.9" FORCE)
+set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X version to target for deployment: 10.15" FORCE)
 
 set(CMAKE_MACOSX_RPATH 1)
 

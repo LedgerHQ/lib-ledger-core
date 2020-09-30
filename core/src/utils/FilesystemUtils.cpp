@@ -1,9 +1,9 @@
 /*
  *
- * FilesystemUtils.h
+ * FilesystemUtils.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/09/2017.
+ * Created by Huiqi ZHENG on 25/09/2020.
  *
  * The MIT License (MIT)
  *
@@ -29,19 +29,31 @@
  *
  */
 
-#ifndef LEDGER_CORE_FILESYSTEMUTILS_H
-#define LEDGER_CORE_FILESYSTEMUTILS_H
+#include "FilesystemUtils.hpp"
+#include <iostream>
+#include <experimental/filesystem>
 
-#include <string>
+using namespace std;
+namespace fs = std::experimental::filesystem::v1;
 
-namespace ledger {
-    namespace qt {
-        class FilesystemUtils {
-        public:
-            static void clearFs(const std::string& rootDirPath);
-        };
-    }
+bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
+    fs::path filePath{path};
+#ifdef _WIN32
+	auto extension=filePath.extension().string();
+    return (extension==".exe") || (extension==".bat") || (extension==".com")
+#else
+    return (status(filePath).permissions() & fs::perms::owner_exec)!=fs::perms::none;
+#endif
 }
 
-
-#endif //LEDGER_CORE_FILESYSTEMUTILS_H
+void ledger::core::FilesystemUtils::clearFs(const std::string& path) {
+    fs::path filePath{path};
+    for (const auto & file : fs::recursive_directory_iterator(path))
+    {
+        if (!fs::is_directory(file.path())) {
+            if (!FilesystemUtils::isExecutable(file.path().string())){
+        	    fs::remove(file.path());
+            }
+        }
+    }
+}

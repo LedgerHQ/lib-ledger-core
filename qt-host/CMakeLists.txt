@@ -11,7 +11,7 @@ find_package(Qt5 COMPONENTS Core Widgets Network Gui Concurrent WebSockets)
 # Tell CMake to create the helloworld executable
 add_library(ledger-qt-host STATIC
             async/QtThreadDispatcher.cpp async/QtThreadDispatcher.hpp
-            async/QtThreadPoolExecutionContext.cpp async/QtThreadPoolExecutionContext.hpp async/QtMainExecutionContext.cpp async/QtMainExecutionContext.hpp net/QtHttpClient.cpp net/QtHttpClient.hpp async/async_wait.h utils/FilesystemUtils.cpp utils/FilesystemUtils.h net/QtWebSocketClient.cpp net/QtWebSocketClient.h)
+            async/QtThreadPoolExecutionContext.cpp async/QtThreadPoolExecutionContext.hpp async/QtMainExecutionContext.cpp async/QtMainExecutionContext.hpp net/QtHttpClient.cpp net/QtHttpClient.hpp async/async_wait.h net/QtWebSocketClient.cpp net/QtWebSocketClient.h)
 
 # Use the Widgets module from Qt 5.
 target_link_libraries(ledger-qt-host Qt5::Core)
