@@ -42,9 +42,7 @@ bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
     return (extension==".exe") || (extension==".bat") || (extension==".com");
 #else
     auto permissions=status(filePath).permissions();
-    return ((permissions & fs::perms::owner_exec)!=fs::perms::none)
-    ||((permissions & fs::perms::group_exec)!=fs::perms::none)
-    ||((permissions & fs::perms::others_exec)!=fs::perms::none);
+    return (permissions & (fs::perms::owner_exec | fs::perms::group_exec | fs::perms::others_exec))!=fs::perms::none;
 #endif
 }
 
