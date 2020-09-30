@@ -39,7 +39,7 @@ bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
     fs::path filePath{path};
 #ifdef _WIN32
     auto extension=filePath.extension().string();
-    return (extension==".exe") || (extension==".bat") || (extension==".com")
+    return (extension==".exe") || (extension==".bat") || (extension==".com");
 #else
     auto permissions=status(filePath).permissions();
     return ((permissions & fs::perms::owner_exec)!=fs::perms::none)
