@@ -39,7 +39,7 @@ namespace fs = std::experimental::filesystem::v1;
 bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
     fs::path filePath{path};
 #ifdef _WIN32
-	auto extension=filePath.extension().string();
+    auto extension=filePath.extension().string();
     return (extension==".exe") || (extension==".bat") || (extension==".com")
 #else
     return (status(filePath).permissions() & fs::perms::owner_exec)!=fs::perms::none;
@@ -52,7 +52,7 @@ void ledger::core::FilesystemUtils::clearFs(const std::string& path) {
     {
         if (!fs::is_directory(file.path())) {
             if (!FilesystemUtils::isExecutable(file.path().string())){
-        	    fs::remove(file.path());
+                fs::remove(file.path());
             }
         }
     }
