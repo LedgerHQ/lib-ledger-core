@@ -33,7 +33,6 @@
 #include <iostream>
 #include <experimental/filesystem>
 
-using namespace std;
 namespace fs = std::experimental::filesystem::v1;
 
 bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
@@ -42,7 +41,10 @@ bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
     auto extension=filePath.extension().string();
     return (extension==".exe") || (extension==".bat") || (extension==".com")
 #else
-    return (status(filePath).permissions() & fs::perms::owner_exec)!=fs::perms::none;
+    auto permissions=status(filePath).permissions();
+    return ((permissions & fs::perms::owner_exec)!=fs::perms::none)
+    ||((permissions & fs::perms::group_exec)!=fs::perms::none)
+    ||((permissions & fs::perms::others_exec)!=fs::perms::none);
 #endif
 }
 
