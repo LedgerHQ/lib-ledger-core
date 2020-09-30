@@ -38,7 +38,7 @@ namespace ledger {
     namespace core {
         class FilesystemUtils {
         public:
-        	static bool isExecutable(const std::string& path);
+            static bool isExecutable(const std::string& path);
             static void clearFs(const std::string& rootDirPath);
         };
     }
