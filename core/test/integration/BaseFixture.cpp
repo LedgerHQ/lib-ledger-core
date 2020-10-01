@@ -146,7 +146,7 @@ const std::string TX_4 = "{\"hash\":\"4450e70656888bd7f5240a9b532eac54db7d72f3b4
 
 void BaseFixture::SetUp() {
     ::testing::Test::SetUp();
-    ledger::core::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
+    ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     dispatcher = std::make_shared<QtThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());

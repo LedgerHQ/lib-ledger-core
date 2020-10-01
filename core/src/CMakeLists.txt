@@ -108,7 +108,6 @@ else()
 endif()
 
 if(UNIX AND NOT APPLE AND NOT ANDROID)
-    target_link_libraries(ledger-core-obj PUBLIC stdc++fs)
     target_link_libraries(ledger-core-interface INTERFACE -static-libstdc++)
     target_link_options(ledger-core-interface INTERFACE -Wl,--exclude-libs,libcrypto.a)
 endif()

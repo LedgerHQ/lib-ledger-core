@@ -35,7 +35,7 @@
 
 namespace fs = std::experimental::filesystem::v1;
 
-bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
+bool ledger::qt::FilesystemUtils::isExecutable(const std::string& path){
     fs::path filePath{path};
 #ifdef _WIN32
     auto extension=filePath.extension().string();
@@ -46,7 +46,7 @@ bool ledger::core::FilesystemUtils::isExecutable(const std::string& path){
 #endif
 }
 
-void ledger::core::FilesystemUtils::clearFs(const std::string& path) {
+void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
     fs::path filePath{path};
     for (const auto & file : fs::recursive_directory_iterator(path))
     {

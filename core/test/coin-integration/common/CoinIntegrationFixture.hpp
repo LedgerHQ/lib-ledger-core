@@ -77,7 +77,7 @@ class CoinIntegrationFixture : public ::testing::Test {
 public:
     void SetUp() override {
         ::testing::Test::SetUp();
-        ledger::core::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
+        ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
         dispatcher = std::make_shared<QtThreadDispatcher>();
         resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
         backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());

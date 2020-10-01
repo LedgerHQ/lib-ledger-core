@@ -35,7 +35,7 @@
 #include <iostream>
 
 namespace ledger {
-    namespace core {
+    namespace qt {
         class FilesystemUtils {
         public:
             static bool isExecutable(const std::string& path);
