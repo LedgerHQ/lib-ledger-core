@@ -40,7 +40,7 @@ using namespace ledger::core;
 class SQLCipherTest : public BaseFixture {
 };
 
-TEST(SQLCipherTest, SanityCheck) {
+TEST_F(SQLCipherTest, SanityCheck) {
     auto date = DateUtils::toJSON(std::chrono::system_clock::now());
     std::remove(date.begin(), date.end(), ':');
     auto dbName = "test_db_" + date;
@@ -100,7 +100,7 @@ TEST(SQLCipherTest, SanityCheck) {
 // TODO: remove this check after we migrate to VS2017 and provide /Zc:__cplusplus option
 // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
 #if __cplusplus >= 201103L
-TEST(SQLCipherTest, ThrowIfWrongPassword) {
+TEST_F(SQLCipherTest, ThrowIfWrongPassword) {
     auto date = DateUtils::toJSON(std::chrono::system_clock::now());
     std::remove(date.begin(), date.end(), ':');
     auto dbName = "test_db2_" + date;
@@ -134,7 +134,7 @@ TEST(SQLCipherTest, ThrowIfWrongPassword) {
 }
 #endif
 
-TEST(SQLCipherTest, DisableEncryption) {
+TEST_F(SQLCipherTest, DisableEncryption) {
     auto date = DateUtils::toJSON(std::chrono::system_clock::now());
     std::remove(date.begin(), date.end(), ':');
     auto dbName = "test_db_" + date;
