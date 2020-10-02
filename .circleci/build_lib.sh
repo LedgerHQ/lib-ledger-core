@@ -36,7 +36,7 @@ function command_Release {
 
 function command_Debug {
   BUILD_CONFIG="Debug"
-  add_to_cmake_params -DBUILD_TESTS=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
+  add_to_cmake_params -DBUILD_TESTS=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE 
 }
 
 function command_arch_ssl_1_1 {
@@ -140,7 +140,7 @@ echo "======> CMake config for $unamestr in $BUILD_CONFIG mode"
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
     if [ "$unamestr" == "Linux" ]; then
-        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" "-DSYS_OPENSSL=ON" "-DOPENSSL_USE_STATIC_LIBS=TRUE"
+        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" 
     elif [ "$unamestr" == "Darwin" ]; then
         version=`ls /usr/local/Cellar/qt | grep 5.`
         echo "====> Get qt5 version"
