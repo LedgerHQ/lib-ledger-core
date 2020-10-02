@@ -41,15 +41,14 @@ class SQLCipherTest : public BaseFixture {
 };
 
 TEST_F(SQLCipherTest, SanityCheck) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db_" + date;
+    auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
         //Initiate the DB and interact with it
         auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
         soci::session session;
+        std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
                 "    id INTEGER,"
@@ -101,15 +100,14 @@ TEST_F(SQLCipherTest, SanityCheck) {
 // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
 #if __cplusplus >= 201103L
 TEST_F(SQLCipherTest, ThrowIfWrongPassword) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db2_" + date;
+    auto dbName = fmt::format( "test_db2_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
         //Initiate the DB and interact with it
         auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
         soci::session session;
+        std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
             "    id INTEGER,"
@@ -135,15 +133,14 @@ TEST_F(SQLCipherTest, ThrowIfWrongPassword) {
 #endif
 
 TEST_F(SQLCipherTest, DisableEncryption) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db_" + date;
+    auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
         //Initiate the DB and interact with it
         auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
         soci::session session;
+        std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
                 "    id INTEGER,"
