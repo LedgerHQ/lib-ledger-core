@@ -1,13 +1,13 @@
 /*
  *
- * FilesystemUtils.h
+ * FilesystemUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/09/2017.
+ * Created by Huiqi ZHENG on 25/09/2020.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2017 Ledger
+ * Copyright (c) 2016 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,20 +28,18 @@
  * SOFTWARE.
  *
  */
+#pragma once
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
 
-#ifndef LEDGER_CORE_FILESYSTEMUTILS_H
-#define LEDGER_CORE_FILESYSTEMUTILS_H
-
-#include <string>
+#include <iostream>
 
 namespace ledger {
     namespace qt {
         class FilesystemUtils {
         public:
+            static bool isExecutable(const std::string& path);
             static void clearFs(const std::string& rootDirPath);
         };
     }
 }
-
-
-#endif //LEDGER_CORE_FILESYSTEMUTILS_H

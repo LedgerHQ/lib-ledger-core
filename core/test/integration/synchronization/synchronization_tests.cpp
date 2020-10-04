@@ -626,3 +626,97 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
         }
     }
 }
+
+TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHeight) {
+    auto pool = newDefaultPool();
+    auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
+                                          api::DynamicObject::newInstance()));
+    auto nextIndex = wait(wallet->getNextAccountIndex());
+    EXPECT_EQ(nextIndex, 0);
+    auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
+                   make_receiver([=](const std::shared_ptr<api::Event> &event) {
+                       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                           return;
+                       EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+                       EXPECT_EQ(event->getCode(),
+                                 api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                       dispatcher->stop();
+                   }));
+    EXPECT_EQ(bus, account->synchronize());
+    dispatcher->waitUntilStopped();
+
+    enum QueryType {
+        EQ, NEQ, LT, GT, GTE, LTE, NIL
+    };
+
+    const auto queryOperations = [=] (int blockHeight, QueryType queryType) -> std::vector<std::shared_ptr<api::Operation>> {
+
+        auto query = account->queryOperations()->complete()->addOrder(api::OperationOrderKey::BLOCK_HEIGHT, true);
+        auto filter = query->filter();
+        switch (queryType) {
+            case EQ:
+                filter->op_and(filter->blockHeightEq(blockHeight));
+                break;
+            case NEQ:
+                filter->op_and(filter->blockHeightNeq(blockHeight));
+                break;
+            case LT:
+                filter->op_and(filter->blockHeightLt(blockHeight));
+                break;
+            case GT:
+                filter->op_and(filter->blockHeightGt(blockHeight));
+                break;
+            case GTE:
+                filter->op_and(filter->blockHeightGte(blockHeight));
+                break;
+            case LTE:
+                filter->op_and(filter->blockHeightLte(blockHeight));
+                break;
+            case NIL:
+                filter->op_and(filter->blockHeightIsNull());
+                break;
+        }
+        return ::wait(std::dynamic_pointer_cast<OperationQuery>(query)->execute());
+    };
+
+    const auto testOperations = [=] (int blockHeight, QueryType queryType) {
+        auto ops = queryOperations(blockHeight, queryType);
+
+        for (const auto& op : ops) {
+            switch (queryType) {
+                case EQ:
+                    EXPECT_TRUE(op->getBlockHeight().value_or(0) == blockHeight);
+                    break;
+                case NEQ:
+                    EXPECT_TRUE(op->getBlockHeight().value_or(0) != blockHeight);
+                    break;
+                case LT:
+                    EXPECT_TRUE(op->getBlockHeight().value_or(0) < blockHeight);
+                    break;
+                case GT:
+                    EXPECT_TRUE(op->getBlockHeight().value_or(0) > blockHeight);
+                    break;
+                case GTE:
+                    EXPECT_TRUE(op->getBlockHeight().value_or(0) >= blockHeight);
+                    break;
+                case LTE:
+                    EXPECT_TRUE(op->getBlockHeight().value_or(0) <= blockHeight);
+                    break;
+                case NIL:
+                    EXPECT_TRUE(!op->getBlockHeight());
+                    break;
+            }
+        }
+    };
+
+    const auto blockHeight = 500347;
+    testOperations(blockHeight, QueryType::EQ);
+    testOperations(blockHeight, QueryType::NEQ);
+    testOperations(blockHeight, QueryType::LT);
+    testOperations(blockHeight, QueryType::GT);
+    testOperations(blockHeight, QueryType::LTE);
+    testOperations(blockHeight, QueryType::GTE);
+    testOperations(blockHeight, QueryType::NIL);
+}
