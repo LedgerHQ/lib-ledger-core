@@ -44,9 +44,7 @@ endif()
 
 
 target_link_libraries(ledger-core-integration-tests ledger-test)
-target_link_libraries(ledger-core-integration-tests ledger-qt-host)
 target_include_directories(ledger-core-integration-tests PUBLIC ../../../core/src)
-target_include_directories(ledger-core-integration-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
 copy_install_imported_targets(ledger-core-integration-tests crypto)

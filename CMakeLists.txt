@@ -54,8 +54,4 @@ endif()
 add_subdirectory(doc)
 add_subdirectory(core)
 
-if (BUILD_TESTS)
-    add_subdirectory(qt-host)
-endif()
-
 enable_testing()

@@ -18,7 +18,6 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
-#include <async/async_wait.h>
 #include <wallet/ripple/RippleLikeAccount.h>
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>

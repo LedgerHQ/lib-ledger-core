@@ -32,7 +32,6 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 #include <ledger/core/net/WebSocketClient.h>
-#include <QCoreApplication>
 #include <ledger/core/utils/Option.hpp>
 #include <ledger/core/async/Future.hpp>
 #include <net/WebSocketConnection.h>
