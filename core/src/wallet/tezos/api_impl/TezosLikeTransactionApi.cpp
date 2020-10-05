@@ -388,12 +388,23 @@ namespace ledger {
                         revealOp.AddMember("source", vString, allocator);
 
                         if (_revealedPubKey.empty()) {
-                            throw make_exception(
-                                api::ErrorCode::UNSUPPORTED_OPERATION,
-                                "Json serialization of reveal operation is available only if "
-                                "revealed_pubkey is set.");
+                            if (_signingPubKey.empty()) {
+                                throw make_exception(
+                                    api::ErrorCode::UNSUPPORTED_OPERATION,
+                                    "Json serialization of reveal operation is available only if "
+                                    "revealed_pubkey or signing_pubkey is set.");
+                            }
                         }
-                        const auto pub_key = _revealedPubKey ;
+                        const auto pub_key = _revealedPubKey.empty()
+                                                 ? TezosLikeExtendedPublicKey::fromRaw(
+                                                       _currency,
+                                                       optional<std::vector<uint8_t>>(),
+                                                       _signingPubKey,
+                                                       std::vector<uint8_t>(0, 32),
+                                                       "",
+                                                       _senderCurve)
+                                                       ->toBase58()
+                                                 : _revealedPubKey;
                         vString.SetString(
                             pub_key.c_str(), static_cast<SizeType>(pub_key.length()), allocator);
                         revealOp.AddMember("public_key", vString, allocator);
