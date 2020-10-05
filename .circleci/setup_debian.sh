@@ -34,7 +34,7 @@ echo "========> Install Qt5"
 apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev
 
 echo "========> Install PostgreSQL"
-apt-get install -y postgresql-9.6 libpq-dev postgresql-server-dev-all || apt --fix-broken install -y
+apt-get install -y postgresql-11 libpq-dev postgresql-server-dev-all || apt --fix-broken install -y
 
 echo "========> Install Sqlite"
 apt-get install -y sqlite3 sqlite libsqlite3-dev

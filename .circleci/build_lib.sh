@@ -166,10 +166,10 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
 	if [ "$unamestr" == "Linux" ]; then
 		# This modification is done to avoid authentication
 		echo "======> Modify PostgreSQL configuration file ..."
-		sed 's/md5/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
-		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
-		sed 's/peer/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
-		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
+		sed 's/md5/trust/g' /etc/postgresql/11/main/pg_hba.conf > pg_hba.conf.mod
+		mv pg_hba.conf.mod /etc/postgresql/11/main/pg_hba.conf
+		sed 's/peer/trust/g' /etc/postgresql/11/main/pg_hba.conf > pg_hba.conf.mod
+		mv pg_hba.conf.mod /etc/postgresql/11/main/pg_hba.conf
 		echo "======> Create database ..."
 		service postgresql start
 		createuser root -s -U postgres
