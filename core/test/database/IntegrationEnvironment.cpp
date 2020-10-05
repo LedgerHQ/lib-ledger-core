@@ -30,11 +30,12 @@
  */
 
 #include "IntegrationEnvironment.h"
+#include <utils/FilesystemUtils.hpp>
 
 IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
 
 IntegrationEnvironment::IntegrationEnvironment(int argc, char **argv) {
-    _appDir = "";//app.applicationDirPath().toStdString();
+    _appDir =ledger::qt::FilesystemUtils::getExecutableDir();
 }
 
 std::string IntegrationEnvironment::getApplicationDirPath() const {

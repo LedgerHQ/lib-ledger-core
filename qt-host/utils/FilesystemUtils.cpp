@@ -32,8 +32,56 @@
 #include "FilesystemUtils.hpp"
 #include <iostream>
 #include <experimental/filesystem>
+#include <string>
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+#ifdef __linux__
+    #include <unistd.h>
+#endif
+#ifdef __APPLE__
+    #include <mach-o/dyld.h>
+#endif
 
+using namespace std;
 namespace fs = std::experimental::filesystem::v1;
+
+//refer to https://stackoverflow.com/questions/1528298/get-path-of-executable to get the executable path with C++
+string ledger::qt::FilesystemUtils::getExecutablePath(){
+#ifdef _WIN32
+    WCHAR buf[1024];
+    GetModuleFileNameW(NULL, buf, 1024);
+    wstring ws(buf);
+    string res(ws.begin(),ws.end());
+#else
+    unsigned int path_max=1024;
+    char buf[path_max];
+    #ifdef __linux__
+        int rslt = readlink("/proc/self/exe", buf, path_max - 1);
+        buf[rslt] = '\0';
+    #endif
+    #ifdef __APPLE__
+        _NSGetExecutablePath(buf, &path_max);
+    #endif
+    string res(buf);
+#endif
+  return res;
+}
+
+string ledger::qt::FilesystemUtils::getExecutableDir(){
+    auto path = getExecutablePath();
+#ifdef _WIN32
+    auto last_slash_idx = path.rfind('\\');
+#else
+    auto last_slash_idx = path.rfind('/');
+#endif
+    if (string::npos != last_slash_idx) {
+        return path.substr(0, last_slash_idx);
+    }
+    else{
+        return path;
+    }
+}
 
 bool ledger::qt::FilesystemUtils::isExecutable(const std::string& path){
     fs::path filePath{path};

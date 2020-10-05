@@ -30,7 +30,6 @@
  */
 
 #include <api/ConfigurationDefaults.hpp>
-#include <utils/FilesystemUtils.hpp>
 #include "BaseFixture.h"
 #include "IntegrationEnvironment.h"
 #include <utils/hex.h>
@@ -146,7 +145,7 @@ const std::string TX_4 = "{\"hash\":\"4450e70656888bd7f5240a9b532eac54db7d72f3b4
 
 void BaseFixture::SetUp() {
     ::testing::Test::SetUp();
-    //ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
+    ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
@@ -157,7 +156,6 @@ void BaseFixture::SetUp() {
 
 void BaseFixture::TearDown() {
     ::testing::Test::TearDown();
-    //qDebug() << "TEAR DOWN";
     std::cout << "TEAR DOWN" << std::endl;
     resolver->clean();
 }

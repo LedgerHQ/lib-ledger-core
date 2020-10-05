@@ -33,6 +33,7 @@
 #define LEDGER_CORE_INTEGRATIONENVIRONMENT_H
 
 #include <gtest/gtest.h>
+#include <utils/FilesystemUtils.hpp>
 
 class IntegrationEnvironment {
 public:

@@ -33,13 +33,16 @@
 #define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
 
 #include <iostream>
+using namespace std;
 
 namespace ledger {
     namespace qt {
         class FilesystemUtils {
         public:
-            static bool isExecutable(const std::string& path);
-            static void clearFs(const std::string& rootDirPath);
+        	static string getExecutablePath();
+        	static string getExecutableDir();
+            static bool isExecutable(const string& path);
+            static void clearFs(const string& rootDirPath);
         };
     }
 }
