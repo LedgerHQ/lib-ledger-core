@@ -62,7 +62,7 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <FakeWebSocketClient.h>
 #include <OpenSSLRandomNumberGenerator.hpp>
-#include <utils/FilesystemUtils.h>
+#include <utils/FilesystemUtils.hpp>
 #include <utils/hex.h>
 #include "../integration/IntegrationEnvironment.h"
 

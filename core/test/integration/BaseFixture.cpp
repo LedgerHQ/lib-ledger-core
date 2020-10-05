@@ -30,7 +30,7 @@
  */
 
 #include <api/ConfigurationDefaults.hpp>
-#include <utils/FilesystemUtils.h>
+#include <utils/FilesystemUtils.hpp>
 #include "BaseFixture.h"
 #include "IntegrationEnvironment.h"
 #include <utils/hex.h>
