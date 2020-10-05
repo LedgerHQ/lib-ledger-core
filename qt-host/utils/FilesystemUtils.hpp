@@ -39,8 +39,8 @@ namespace ledger {
     namespace qt {
         class FilesystemUtils {
         public:
-        	static string getExecutablePath();
-        	static string getExecutableDir();
+            static string getExecutablePath();
+            static string getExecutableDir();
             static bool isExecutable(const string& path);
             static void clearFs(const string& rootDirPath);
         };
