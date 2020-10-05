@@ -163,6 +163,7 @@ namespace ledger {
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<TezosLikeTransactionApi> &tx)
         {
+            // FIXME: await the correct chain id instead of hardcoded value
             // ChainID is obtained by doing GET RPCNode /chains/main/chain_id
             const auto strChainID = "NetXdQprcVkpaWU";
             const auto postPath =
