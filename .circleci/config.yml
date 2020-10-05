@@ -147,7 +147,7 @@ jobs:
         - run:
             name: Setup
             command: |
-              . .circleci/setup_debian.sh Debug
+              . .circleci/setup_debian.sh
         - run:
             name: Submodule_Initialization
             command: |
