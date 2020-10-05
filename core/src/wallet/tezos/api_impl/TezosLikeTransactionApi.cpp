@@ -456,7 +456,8 @@ namespace ledger {
                         vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
                         innerOp.AddMember("fee", vString, allocator);
 
-                        const auto counter = _counter->toString();
+                        // Increment the counter if the reveal was prepended
+                        const auto counter = (_needReveal ? ++(*_counter) : *_counter).toString();
                         vString.SetString(
                             counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
                         innerOp.AddMember("counter", vString, allocator);
