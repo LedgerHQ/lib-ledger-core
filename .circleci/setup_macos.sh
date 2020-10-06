@@ -40,6 +40,6 @@ echo "========> Install Sqlite"
 brew install sqlite
 
 echo "========> Install OpenSSL"
-brew install openssl
+brew install openssl@1.1
 
 
