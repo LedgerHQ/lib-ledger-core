@@ -143,7 +143,6 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
         add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" 
     elif [ "$unamestr" == "Darwin" ]; then
         add_to_cmake_params -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" 
-        add_to_cmake_params "-DSYS_OPENSSL=ON" "-DOPENSSL_ROOT_DIR=/usr/local/Cellar/openssl@1.1/1.1.1g/" "-DOPENSSL_INCLUDE_DIR=/usr/local/Cellar/openssl@1.1/1.1.1g/include" "-DOPENSSL_SSL_LIBRARIES=/usr/local/Cellar/openssl@1.1/1.1.1g/lib/libssl.dylib" "-DOPENSSL_CRYPTO_LIBRARY=/usr/local/Cellar/openssl@1.1/1.1.1g/lib/libcrypto.dylib"
     fi
 fi
 
