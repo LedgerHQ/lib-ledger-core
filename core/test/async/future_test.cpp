@@ -33,15 +33,15 @@
 #include <src/async/Future.hpp>
 #include <src/async/FutureUtils.hpp>
 #include <iostream>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 
 #undef foreach
 
 using namespace ledger::core;
-using namespace ledger::qt;
+//using namespace ledger::qt;
 
 TEST(Future, OnCompleteSuccess) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -56,7 +56,7 @@ TEST(Future, OnCompleteSuccess) {
 }
 
 TEST(Future, OnCompleteFailure) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
        throw std::out_of_range("Not good");
@@ -71,7 +71,7 @@ TEST(Future, OnCompleteFailure) {
 }
 
 TEST(Future, Map) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -85,7 +85,7 @@ TEST(Future, Map) {
 }
 
 TEST(Future, MapToInt) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "42";
@@ -100,7 +100,7 @@ TEST(Future, MapToInt) {
 }
 
 TEST(Future, FlatMap) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -116,7 +116,7 @@ TEST(Future, FlatMap) {
 }
 
 TEST(Future, MapChain) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -134,7 +134,7 @@ TEST(Future, MapChain) {
 }
 
 TEST(Future, MapChainRecover) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -154,7 +154,7 @@ TEST(Future, MapChainRecover) {
 }
 
 TEST(Future, MapChainRecoverWith) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -176,7 +176,7 @@ TEST(Future, MapChainRecoverWith) {
 }
 
 TEST(Future, MapChainRecoverWithFail) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -198,7 +198,7 @@ TEST(Future, MapChainRecoverWithFail) {
 }
 
 TEST(Future, FailureProjection) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         throw Exception(api::ErrorCode::ILLEGAL_STATE, "We shouldn't do that");
@@ -210,7 +210,7 @@ TEST(Future, FailureProjection) {
 }
 
 TEST(Future, MapChainFallback) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -228,7 +228,7 @@ TEST(Future, MapChainFallback) {
 }
 
 TEST(Future, MapChainFallbackWith) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<std::string>::async(queue, [] () -> std::string {
         return "Hello world";
@@ -249,7 +249,7 @@ TEST(Future, MapChainFallbackWith) {
 }
 
 TEST(Future, Filter) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -265,7 +265,7 @@ TEST(Future, Filter) {
 }
 
 TEST(Future, FilterFail) {
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -284,7 +284,7 @@ TEST(Future, ToSuccessOnlyCallback) {
 
     struct SuccessOnlyCallback {
 
-        SuccessOnlyCallback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+        SuccessOnlyCallback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -293,10 +293,10 @@ TEST(Future, ToSuccessOnlyCallback) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<QtThreadDispatcher> dispatcher;
+        std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
 
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -308,7 +308,7 @@ TEST(Future, ToCallbackSuccess) {
 
     struct Callback {
 
-        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -319,10 +319,10 @@ TEST(Future, ToCallbackSuccess) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<QtThreadDispatcher> dispatcher;
+        std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
 
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () {
         return 42;
@@ -334,7 +334,7 @@ TEST(Future, ToCallbackFailure) {
 
     struct Callback {
 
-        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -345,10 +345,10 @@ TEST(Future, ToCallbackFailure) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<QtThreadDispatcher> dispatcher;
+        std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
 
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     Future<int>::async(queue, [] () -> int {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "Toto");
@@ -359,7 +359,7 @@ TEST(Future, ToCallbackFailure) {
 TEST(Future, ExecuteAllThreadPoolOK) {
     struct Callback {
 
-        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -372,9 +372,9 @@ TEST(Future, ExecuteAllThreadPoolOK) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<QtThreadDispatcher> dispatcher;
+        std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getThreadPoolExecutionContext("queue");
     std::vector<Future<int>> futures;
     for (int i = 0; i < 10; ++i)
@@ -393,7 +393,7 @@ TEST(Future, ExecuteAllThreadPoolOK) {
 TEST(Future, ExecuteAllSingleThreadOK) {
     struct Callback {
 
-        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -406,9 +406,9 @@ TEST(Future, ExecuteAllSingleThreadOK) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<QtThreadDispatcher> dispatcher;
+        std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     std::vector<Future<int>> futures;
     for (int i = 0; i < 10; ++i)
@@ -427,7 +427,7 @@ TEST(Future, ExecuteAllSingleThreadOK) {
 TEST(Future, ExecuteAllSingleThreadFail) {
     struct Callback {
 
-        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -438,9 +438,9 @@ TEST(Future, ExecuteAllSingleThreadFail) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<QtThreadDispatcher> dispatcher;
+        std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getSerialExecutionContext("queue");
     std::vector<Future<int>> futures;
     for (int i = 0; i < 10; ++i)
@@ -463,7 +463,7 @@ TEST(Future, ExecuteAllSingleThreadFail) {
 TEST(Future, ExecuteAllThreadPoolFail) {
     struct Callback {
 
-        Callback(std::shared_ptr<QtThreadDispatcher> dispatcher) {
+        Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher) {
             this->dispatcher = dispatcher;
         }
 
@@ -474,9 +474,9 @@ TEST(Future, ExecuteAllThreadPoolFail) {
             dispatcher->stop();
         }
 
-        std::shared_ptr<QtThreadDispatcher> dispatcher;
+        std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     };
-    auto dispatcher = std::make_shared<ledger::qt::QtThreadDispatcher>(nullptr);
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto queue = dispatcher->getThreadPoolExecutionContext("queue");
     std::vector<Future<int>> futures;
     for (int i = 0; i < 10; ++i)

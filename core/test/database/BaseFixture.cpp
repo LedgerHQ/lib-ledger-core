@@ -29,7 +29,7 @@
  *
  */
 
-#include <utils/FilesystemUtils.h>
+#include <utils/FilesystemUtils.hpp>
 #include "IntegrationEnvironment.h"
 #include "BaseFixture.h"
 
@@ -50,11 +50,11 @@ const std::string TX_4 = "{\"hash\":\"4450e70656888bd7f5240a9b532eac54db7d72f3b4
 void BaseFixture::SetUp() {
     ::testing::Test::SetUp();
     ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-    dispatcher = std::make_shared<QtThreadDispatcher>();
+    dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
+    http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
 }
 
 void BaseFixture::TearDown() {
@@ -123,7 +123,7 @@ BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wal
                                       const api::AccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithInfo(info)));
+    return std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(info)));
 }
 
 std::shared_ptr<BitcoinLikeAccount>
@@ -131,6 +131,6 @@ BaseFixture::createBitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wal
                                       const api::ExtendedKeyAccountCreationInfo &info) {
     auto i = info;
     i.index = index;
-    return std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(info)));
+    return std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(info)));
 }
 

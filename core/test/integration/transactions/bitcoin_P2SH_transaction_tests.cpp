@@ -59,9 +59,9 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
     auto f = builder->build();
-    auto tx = ::wait(f);
+    auto tx = uv::wait(f);
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
-    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
+    //auto rawPrevious = uv::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }
 
@@ -71,10 +71,10 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithWipeToAddress) {
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
     auto f = builder->build();
-    auto tx = ::wait(f);
+    auto tx = uv::wait(f);
     auto outputs = tx->getOutputs();
     auto fees = tx->getFees();
-    auto balance = wait(account->getBalance());
+    auto balance = uv::wait(account->getBalance());
     EXPECT_EQ(outputs.size(), 1);
     auto maxAmount = outputs[0]->getValue();
     EXPECT_EQ(balance->toLong(), maxAmount->toLong() + fees->toLong());
@@ -118,8 +118,8 @@ TEST_F(BTGMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
     auto f = builder->build();
-    auto tx = ::wait(f);
+    auto tx = uv::wait(f);
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
-    //auto rawPrevious = ::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
+    //auto rawPrevious = uv::wait(std::dynamic_pointer_cast<BitcoinLikeWritableInputApi>(tx->getInputs()[0])->getPreviousTransaction());
     EXPECT_EQ(tx->serialize(), parsedTx->serialize());
 }

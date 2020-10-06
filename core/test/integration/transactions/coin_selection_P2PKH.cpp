@@ -54,7 +54,7 @@ TEST_F(CoinSelectionP2PKH, PickOneUTXOWithoutChange) {
         builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF);
         builder->setFeesPerByte(api::Amount::fromLong(currency, 0));
         auto f = builder->build();
-        auto tx = ::wait(f);
+        auto tx = uv::wait(f);
 
         EXPECT_EQ(tx->getInputs().size(), 1);
         EXPECT_EQ(tx->getInputs().at(0)->getValue()->toLong(), 20000000);
@@ -71,7 +71,7 @@ TEST_F(CoinSelectionP2PKH, DISABLED_PickOneUTXOWithChange) {
         int64_t fees = 10;
         builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
         auto f = builder->build();
-        auto tx = ::wait(f);
+        auto tx = uv::wait(f);
 
         auto firstInput = tx->getInputs().at(0)->getValue()->toLong();
         EXPECT_EQ(tx->getInputs().size(), 1);
@@ -92,7 +92,7 @@ TEST_F(CoinSelectionP2PKH, PickMultipleUTXO) {
         builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF);
         builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
         auto f = builder->build();
-        auto tx = ::wait(f);
+        auto tx = uv::wait(f);
 
         EXPECT_LE(tx->getInputs().size(), 3);
         int64_t total = 0;
@@ -113,7 +113,7 @@ TEST_F(CoinSelectionP2PKH, PickAllUTXO) {
         builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF);
         builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
         auto f = builder->build();
-        auto tx = ::wait(f);
+        auto tx = uv::wait(f);
 
         EXPECT_EQ(tx->getInputs().size(), 5);
         int64_t total = 0;
@@ -133,7 +133,7 @@ TEST_F(CoinSelectionP2PKH, PickUTXOWithMergeOutputs) {
         builder->pickInputs(api::BitcoinLikePickingStrategy::MERGE_OUTPUTS, 0xFFFFFFFF);
         builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
         auto f = builder->build();
-        auto tx = ::wait(f);
+        auto tx = uv::wait(f);
 
         EXPECT_EQ(tx->getInputs().size(), 4);
         int64_t total = 0;
@@ -154,11 +154,11 @@ TEST_F(CoinSelectionP2PKH, CompareUTXOPickingStrategies) {
         builder->pickInputs(strategy, 0xFFFFFFFF);
         builder->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 41));
         auto f = builder->build();
-        auto tx = ::wait(f);
+        auto tx = uv::wait(f);
         return tx;
     };
 
-    auto balance = ::wait(account->getBalance());
+    auto balance = uv::wait(account->getBalance());
     auto currentAmount = balance->toLong();
     auto iterations = 20;
     for (auto index = 0; index < iterations; index++) {

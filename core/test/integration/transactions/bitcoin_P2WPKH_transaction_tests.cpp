@@ -51,7 +51,7 @@ struct BitcoinMakeP2WPKHTransaction : public BitcoinMakeBaseTransaction {
 TEST_F(BitcoinMakeP2WPKHTransaction, CreateStandardP2WPKHWithOneOutput) {
     auto address = "bc1qshh6mmfq8fucahzxe4zc7pc5zdhk6zkt4uv8md";
     auto builder = tx_builder();
-    auto freshAddress = wait(account->getFreshPublicAddresses())[0];
+    auto freshAddress = uv::wait(account->getFreshPublicAddresses())[0];
     auto hrp = Bech32Factory::newBech32Instance("btc").getValue()->getBech32Params().hrp;
     auto freshAddressStr = freshAddress->asBitcoinLikeAddress()->toBech32();
     auto derivationPath = freshAddress->getDerivationPath().value_or("");
@@ -60,7 +60,7 @@ TEST_F(BitcoinMakeP2WPKHTransaction, CreateStandardP2WPKHWithOneOutput) {
     EXPECT_EQ(bechAddress, address);
     EXPECT_EQ(freshAddressStr.substr(0, hrp.size()), hrp);
     EXPECT_EQ(freshAddressStr, address);
-    auto balance = wait(account->getBalance());
+    auto balance = uv::wait(account->getBalance());
     // TODO: send BTC on address bc1qshh6mmfq8fucahzxe4zc7pc5zdhk6zkt4uv8md to implement the rest of tests ?
     EXPECT_EQ(balance->toLong(), 0);
 

@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -39,7 +39,7 @@
 #include <src/api/DynamicObject.hpp>
 
 using namespace ledger::core;
-using namespace ledger::qt;
+
 
 static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
     "__database_meta__",
@@ -61,7 +61,7 @@ static const std::unordered_set<std::string> ALL_TABLE_NAMES = {
 };
 
 TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     DatabaseSessionPool::getSessionPool(dispatcher->getSerialExecutionContext("worker"), backend, resolver, nullptr, "test")
@@ -86,7 +86,7 @@ TEST(DatabaseSessionPool, OpenAndMigrateForTheFirstTime) {
 }
 
 TEST(DatabaseSessionPool, InitializeCurrencies) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto resolver = std::make_shared<NativePathResolver>();
     auto backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());
     auto printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());

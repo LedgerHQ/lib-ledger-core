@@ -63,7 +63,7 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
-        wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, configuration)));
+        wallet = std::dynamic_pointer_cast<algorand::Wallet>(uv::wait(pool->createWallet("algorand", currency.name, configuration)));
         account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
@@ -145,7 +145,7 @@ TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
 
     // Test reading from DB
     {
-        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+        auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
 
         EXPECT_EQ(ops.size(), 1);
         auto op = std::dynamic_pointer_cast<algorand::Operation>(ops[0]);

@@ -50,45 +50,45 @@ static const std::string NOTIF_WITH_BLOCK_9 = "\"bcea0c64e5d51baf8615c0373e94833
 
 TEST_F(AccountBlockchainObservationTests, EmitNewTransaction) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_OPERATION) {
-            EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
-            dispatcher->stop();
+            EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
+            getTestExecutionContext()->stop();
         }
     });
     ws->setOnConnectCallback([&] () {
        ws->push(NOTIF_WITH_TX);
     });
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-    account->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    account->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
-    dispatcher->waitUntilStopped();
+    getTestExecutionContext()->waitUntilStopped();
 }
 
 TEST_F(AccountBlockchainObservationTests, EmitNewTransactionAndReceiveOnPool) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_OPERATION) {
-            EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
-            dispatcher->stop();
+            EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "1NMfmPC9yHBe5US2CUwWARPRM6cDP6N86m");
+            getTestExecutionContext()->stop();
         }
     });
     ws->setOnConnectCallback([&] () {
         ws->push(NOTIF_WITH_TX);
     });
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-    pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    pool->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
-    dispatcher->waitUntilStopped();
+    getTestExecutionContext()->waitUntilStopped();
 }
 
 TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
 
@@ -107,32 +107,32 @@ TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
     ws->setOnCloseCallback([&] () {
         worker->execute(ledger::core::make_runnable([&] () {
             if (attempts >= 4) {
-                dispatcher->stop();
+                getTestExecutionContext()->stop();
             }
         }));
     });
-    account->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    account->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
-    dispatcher->waitUntilStopped();
+    getTestExecutionContext()->waitUntilStopped();
 }
 
 TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
         if (event->getCode() == api::EventCode::NEW_BLOCK) {
             try {
                 auto height = event->getPayload()->getLong(api::Account::EV_NEW_BLOCK_HEIGHT).value_or(0);
                 auto hash = event->getPayload()->getString(api::Account::EV_NEW_BLOCK_HASH).value_or("");
-                auto block = wait(pool->getLastBlock("bitcoin"));
+                auto block = uv::wait(pool->getLastBlock("bitcoin"));
                 EXPECT_EQ(height, block.height);
                 EXPECT_EQ(hash, block.blockHash);
             } catch (const std::exception& ex) {
                 fmt::print("{}", ex.what());
                 FAIL();
             }
-            dispatcher->stop();
+            getTestExecutionContext()->stop();
         }
     });
 
@@ -150,8 +150,8 @@ TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
     ws->setOnConnectCallback([&] () {
         ws->push(NOTIF_WITH_BLOCK);
     });
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
-    account->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    account->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
-    dispatcher->waitUntilStopped();
+    getTestExecutionContext()->waitUntilStopped();
 }

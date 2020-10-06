@@ -33,7 +33,7 @@
 #define LEDGER_CORE_BASEFIXTURE_H
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -48,7 +48,6 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <async/async_wait.h>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/ripple/RippleLikeAccount.h>
@@ -59,16 +58,17 @@
 #include <api/BitcoinLikeInput.hpp>
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>
 #include <api/BitcoinLikeAccount.hpp>
 #include <FakeWebSocketClient.h>
 #include <OpenSSLRandomNumberGenerator.hpp>
+#include <utils/FilesystemUtils.hpp>
 
 using namespace ledger::core; // Only do that for testing
-using namespace ledger::qt; // Djeez
+using namespace ledger::core::test;
 
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;
 extern api::ExtendedKeyAccountCreationInfo P2WPKH_MEDIUM_XPUB_INFO;
@@ -142,11 +142,15 @@ public:
                                                              int32_t index,
                                                              const api::AccountCreationInfo &info);
 
-    std::shared_ptr<QtThreadDispatcher> dispatcher;
+    std::shared_ptr<uv::SequentialExecutionContext> getTestExecutionContext();
+
+    void resetDispatcher();
+
+    std::shared_ptr<uv::UvThreadDispatcher> dispatcher;
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;
-    std::shared_ptr<QtHttpClient> http;
+    std::shared_ptr<CppHttpLibClient> http;
     std::shared_ptr<FakeWebSocketClient> ws;
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
 };

@@ -31,16 +31,15 @@
 
 #include <gtest/gtest.h>
 #include <src/events/EventBus.hpp>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/events/LambdaEventReceiver.hpp>
 #include <src/events/Event.hpp>
 #include <src/collections/DynamicObject.hpp>
 
 using namespace ledger::core;
-using namespace ledger::qt;
 
 TEST(Events, SimpleCase) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
     auto receiver = make_receiver(
@@ -56,7 +55,7 @@ TEST(Events, SimpleCase) {
 }
 
 TEST(Events, SimpleCaseWithPayload) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
     auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
@@ -77,7 +76,7 @@ TEST(Events, SimpleCaseWithPayload) {
 }
 
 TEST(Events, StickyEvent) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
     eventPublisher->postSticky(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr), 0);
@@ -91,7 +90,7 @@ TEST(Events, StickyEvent) {
 }
 
 TEST(Events, Relay) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
     auto relay = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
 
@@ -102,14 +101,14 @@ TEST(Events, Relay) {
     });
     relay->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
-    dispatcher->getMainExecutionContext()->delay(ledger::qt::make_runnable([=] () {
+    dispatcher->getMainExecutionContext()->delay(make_runnable([=] () {
         eventPublisher->post(make_event(api::EventCode::SYNCHRONIZATION_STARTED, nullptr));
     }), 20);
     dispatcher->waitUntilStopped();
 }
 
 TEST(Events, EventFilter) {
-    auto dispatcher = std::make_shared<QtThreadDispatcher>();
+    auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto eventPublisher = std::make_shared<EventPublisher>(dispatcher->getSerialExecutionContext("worker"));
     eventPublisher->setFilter([] (const std::shared_ptr<api::Event>& event) -> bool {
         return event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED;

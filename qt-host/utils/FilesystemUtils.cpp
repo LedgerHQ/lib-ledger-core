@@ -3,7 +3,7 @@
  * FilesystemUtils.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 20/09/2017.
+ * Created by Huiqi ZHENG on 25/09/2020.
  *
  * The MIT License (MIT)
  *
@@ -29,19 +29,79 @@
  *
  */
 
-#include "FilesystemUtils.h"
-#include <QDir>
-#include <QDebug>
-#include <QCoreApplication>
+#include "FilesystemUtils.hpp"
 #include <iostream>
+#include <experimental/filesystem>
+#include <string>
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+#ifdef __linux__
+    #include <unistd.h>
+#endif
+#ifdef __APPLE__
+    #include <mach-o/dyld.h>
+#endif
+
+using namespace std;
+namespace fs = std::experimental::filesystem::v1;
+
+//refer to https://stackoverflow.com/questions/1528298/get-path-of-executable to get the executable path with C++
+string ledger::qt::FilesystemUtils::getExecutablePath(){
+#ifdef _WIN32
+    WCHAR buf[1024];
+    GetModuleFileNameW(NULL, buf, 1024);
+    wstring ws(buf);
+    string res(ws.begin(),ws.end());
+#else
+    unsigned int path_max=1024;
+    char buf[path_max];
+    #ifdef __linux__
+        int rslt = readlink("/proc/self/exe", buf, path_max - 1);
+        buf[rslt] = '\0';
+    #endif
+    #ifdef __APPLE__
+        _NSGetExecutablePath(buf, &path_max);
+    #endif
+    string res(buf);
+#endif
+  return res;
+}
+
+string ledger::qt::FilesystemUtils::getExecutableDir(){
+    auto path = getExecutablePath();
+#ifdef _WIN32
+    auto last_slash_idx = path.rfind('\\');
+#else
+    auto last_slash_idx = path.rfind('/');
+#endif
+    if (string::npos != last_slash_idx) {
+        return path.substr(0, last_slash_idx);
+    }
+    else{
+        return path;
+    }
+}
+
+bool ledger::qt::FilesystemUtils::isExecutable(const std::string& path){
+    fs::path filePath{path};
+#ifdef _WIN32
+    auto extension=filePath.extension().string();
+    return (extension==".exe") || (extension==".bat") || (extension==".com");
+#else
+    auto permissions=status(filePath).permissions();
+    return (permissions & (fs::perms::owner_exec | fs::perms::group_exec | fs::perms::others_exec))!=fs::perms::none;
+#endif
+}
 
 void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
-    QDir root(QString::fromStdString(path));
-    for (const auto& file : root.entryInfoList(QDir::AllEntries | QDir::NoDotAndDotDot)) {
-        if (file.isDir() && file.absoluteFilePath().compare(root.absolutePath()) != 0) {
-            clearFs(file.absoluteFilePath().toStdString());
-        } else if (!file.isExecutable()) {
-            QFile::remove(file.absoluteFilePath());
+    fs::path filePath{path};
+    for (const auto & file : fs::recursive_directory_iterator(path))
+    {
+        if (!fs::is_directory(file.path())) {
+            if (!FilesystemUtils::isExecutable(file.path().string())){
+                fs::remove(file.path());
+            }
         }
     }
 }

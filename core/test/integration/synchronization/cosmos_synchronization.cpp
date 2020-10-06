@@ -94,9 +94,9 @@ public:
 
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>");
-        wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "cosmos", configuration));
+        wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "cosmos", configuration));
 
-        auto accountInfo = wait(wallet->getNextAccountCreationInfo());
+        auto accountInfo = uv::wait(wallet->getNextAccountCreationInfo());
         EXPECT_EQ(accountInfo.index, 0);
         accountInfo.publicKeys.push_back(hex::toByteArray(pubKey));
 
@@ -111,22 +111,23 @@ public:
             }
             EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-            auto balance = wait(account->getBalance());
+            auto balance = uv::wait(account->getBalance());
             fmt::print("Balance: {} uatom\n", balance->toString());
 
-            auto block = wait(account->getLastBlock());
+            auto block = uv::wait(account->getLastBlock());
             fmt::print("Block height: {}\n", block.height);
             EXPECT_GT(block.height, 0);
 
-            dispatcher->stop();
+            getTestExecutionContext()->stop();
         });
 
-        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
-        dispatcher->waitUntilStopped();
+        auto bus = account->synchronize();
+        bus->subscribe(getTestExecutionContext(), receiver);
+        getTestExecutionContext()->waitUntilStopped();
      }
 
     void TearDown() override {
-        wait(pool->freshResetAll());
+        uv::wait(pool->freshResetAll());
         BaseFixture::TearDown();
     }
 
@@ -136,7 +137,7 @@ public:
 
 TEST_F(CosmosLikeWalletSynchronization, GetAccountWithExplorer) {
 
-    auto account = ::wait(explorer->getAccount(DEFAULT_ADDRESS));
+    auto account = uv::wait(explorer->getAccount(DEFAULT_ADDRESS));
     EXPECT_EQ(account->address, DEFAULT_ADDRESS);
     EXPECT_EQ(account->accountNumber, "12850");
     EXPECT_EQ(account->withdrawAddress, DEFAULT_ADDRESS)
@@ -149,7 +150,7 @@ TEST_F(CosmosLikeWalletSynchronization, InternalFeesMessageInTransaction) {
     /// is added after the transaction is retrieved from the network, hence the
     /// transaction should contain 3 messages, the last one being the one added
     /// specifically for the fees.
-    const auto transaction = ::wait(explorer->getTransactionByHash("0DBFC4E8E9E5A64C2C9B5EAAAA0422D99A61CFC5354E15002A061E91200DC2D6"));
+    const auto transaction = uv::wait(explorer->getTransactionByHash("0DBFC4E8E9E5A64C2C9B5EAAAA0422D99A61CFC5354E15002A061E91200DC2D6"));
 
     ASSERT_NE(transaction, nullptr);
     EXPECT_EQ(transaction->messages.size(), 3);
@@ -186,7 +187,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetWithdrawDelegationRewardWithExplorer)
             cosmos::constants::kAttributeKeyRecipient,
             DEFAULT_ADDRESS)
     });
-    auto bulk = ::wait(explorer->getTransactions(filter, 1, 10));
+    auto bulk = uv::wait(explorer->getTransactions(filter, 1, 10));
     auto transactions = bulk->transactions;
     ASSERT_TRUE(transactions.size() >= 1) << "At least 1 transaction must be fetched looking at the REST response manually.";
     bool foundTx = false;
@@ -225,7 +226,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetErrorTransaction) {
     auto validator = "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn";
     auto delegator = "cosmos1k3kg9w60dd5x56vve2s28v3xjp7fp2vn2hjjsa";
 
-    auto tx = ::wait(explorer->getTransactionByHash(tx_hash));
+    auto tx = uv::wait(explorer->getTransactionByHash(tx_hash));
     ASSERT_EQ(tx->hash, tx_hash);
     EXPECT_EQ(tx->block->height, 768780);
     EXPECT_EQ(tx->logs.size(), 2);
@@ -254,7 +255,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetSendWithExplorer) {
     // Note : the sender of the message is also the sender of the funds in this transaction.
     auto sender = "cosmos15v50ymp6n5dn73erkqtmq0u8adpl8d3ujv2e74";
 
-    auto tx = ::wait(explorer->getTransactionByHash(tx_hash));
+    auto tx = uv::wait(explorer->getTransactionByHash(tx_hash));
     ASSERT_EQ(tx->hash, tx_hash);
     EXPECT_EQ(tx->block->height, 453223);
     EXPECT_EQ(tx->logs.size(), 2);
@@ -285,7 +286,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetDelegateWithExplorer) {
              cosmos::constants::kEventTypeMessage,
              cosmos::constants::kAttributeKeySender,
              delegator)});
-    auto bulk = ::wait(explorer->getTransactions(filter, 1, 10));
+    auto bulk = uv::wait(explorer->getTransactions(filter, 1, 10));
     auto transactions = bulk->transactions;
     ASSERT_TRUE(transactions.size() >= 1);
     bool foundTx = false;
@@ -315,7 +316,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetDelegateWithExplorer) {
 TEST_F(CosmosLikeWalletSynchronization, GetCurrentBlockWithExplorer) {
     std::string address = "cosmos16xkkyj97z7r83sx45xwk9uwq0mj0zszlf6c6mq";
 
-    auto block = ::wait(explorer->getCurrentBlock());
+    auto block = uv::wait(explorer->getCurrentBlock());
     EXPECT_TRUE(block->hash.size() > 0);
     EXPECT_TRUE(block->height > 0);
 }
@@ -336,10 +337,10 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
-        auto wallet = wait(pool->createWallet(walletName, currencies::ATOM.name, configuration));
+        auto wallet = uv::wait(pool->createWallet(walletName, currencies::ATOM.name, configuration));
         std::set<std::string> emittedOperations;
         {
-            auto accountInfo = wait(wallet->getNextAccountCreationInfo());
+            auto accountInfo = uv::wait(wallet->getNextAccountCreationInfo());
             EXPECT_EQ(accountInfo.index, 0);
 
             accountInfo.publicKeys.push_back(hex::toByteArray(DEFAULT_HEX_PUB_KEY));
@@ -352,9 +353,10 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
                     EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
                 }
             });
-            auto address = wait(account->getFreshPublicAddresses())[0]->toString();
+            auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
             EXPECT_EQ(address, DEFAULT_ADDRESS);
-            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto eventBus = pool->getEventBus();
+            eventBus->subscribe(getTestExecutionContext(), receiver);
 
             receiver.reset();
             receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
@@ -363,23 +365,23 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
                     return;
                 EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-                auto balance = wait(account->getBalance());
+                auto balance = uv::wait(account->getBalance());
                 fmt::print("Balance: {} uatom\n", balance->toString());
                 auto txBuilder = std::dynamic_pointer_cast<CosmosLikeTransactionBuilder>(account->buildTransaction());
-                dispatcher->stop();
+                getTestExecutionContext()->stop();
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(
-                dispatcher->getMainExecutionContext(), receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(getTestExecutionContext(), receiver);
 
-            dispatcher->waitUntilStopped();
+            getTestExecutionContext()->waitUntilStopped();
 
-            auto block = wait(account->getLastBlock());
+            auto block = uv::wait(account->getLastBlock());
             fmt::print("Block height: {}\n", block.height);
             EXPECT_GT(block.height, 0);
 
-            auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
             fmt::print("Ops: {}\n", ops.size());
             ASSERT_GT(ops.size(), 0);
             ASSERT_TRUE(ops[0]->getBlockHeight())
@@ -412,11 +414,11 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
     const std::string address = account->getKeychain()->getAddress()->toBech32();
     const std::string mintscanExplorer = fmt::format("https://www.mintscan.io/account/{}", address);
 
-    const auto totalBalance = wait(account->getTotalBalance())->toLong();
-    const auto delegatedBalance = wait(account->getDelegatedBalance())->toLong();
-    const auto pendingRewards = wait(account->getPendingRewardsBalance())->toLong();
-    const auto unbondingBalance = wait(account->getUnbondingBalance())->toLong();
-    const auto spendableBalance = wait(account->getSpendableBalance())->toLong();
+    const auto totalBalance = uv::wait(account->getTotalBalance())->toLong();
+    const auto delegatedBalance = uv::wait(account->getDelegatedBalance())->toLong();
+    const auto pendingRewards = uv::wait(account->getPendingRewardsBalance())->toLong();
+    const auto unbondingBalance = uv::wait(account->getUnbondingBalance())->toLong();
+    const auto spendableBalance = uv::wait(account->getSpendableBalance())->toLong();
 
     EXPECT_LE(delegatedBalance, totalBalance)
         << "Delegated Coins fall under Total Balance, so delegatedBalance <= totalBalance";
@@ -454,7 +456,7 @@ TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
 
     performSynchro(account);
 
-    auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     fmt::print("Ops: {}\n", ops.size());
     EXPECT_GT(ops.size(), 0);
 
@@ -534,7 +536,7 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
     const auto binance_staking_pub_address = "cosmosvalconspub1zcjduepqtw8862dhw8uty58d6t2szfd6kqram2t234zjteaaeem6l45wclaq8l60gn";
     bool foundBinance = false;
 
-    auto set = ::wait(explorer->getActiveValidatorSet());
+    auto set = uv::wait(explorer->getActiveValidatorSet());
 
     EXPECT_EQ(set.size(), 125) << "currently cosmoshub-3 has 125 active validators";
 
@@ -559,7 +561,7 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     const auto mintscanAddress = fmt::format("https://www.mintscan.io/validators/{}", bisonTrailsAddress);
 
 
-    auto valInfo = ::wait(explorer->getValidatorInfo(bisonTrailsAddress));
+    auto valInfo = uv::wait(explorer->getValidatorInfo(bisonTrailsAddress));
     ASSERT_EQ(valInfo.operatorAddress, bisonTrailsAddress) << "We should fetch the expected validator";
     ASSERT_EQ(valInfo.consensusPubkey, bisonTrailsValConsPubAddress) << "We should fetch the expected validator";
 
@@ -640,7 +642,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountDelegations) {
 
     setupTest(account, wallet, hexPubKey);
 
-    auto delegations = wait(account->getDelegations());
+    auto delegations = uv::wait(account->getDelegations());
     EXPECT_GE(delegations.size(), 2);
 
     BigInt delegatedAmount;
@@ -660,7 +662,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountPendingRewards) {
 
     setupTest(account, wallet, hexPubKey);
 
-    auto rewards = wait(account->getPendingRewards());
+    auto rewards = uv::wait(account->getPendingRewards());
     EXPECT_GE(rewards.size(), 2);
 
     BigInt pendingReward;
@@ -676,7 +678,7 @@ namespace {
 void GenericGasLimitEstimationTest(const std::string& strTx, CosmosLikeWalletSynchronization& t)
 {
     const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::ATOM, strTx);
-    const auto estimatedGasLimit = ::wait(t.explorer->getEstimatedGasLimit(tx));
+    const auto estimatedGasLimit = uv::wait(t.explorer->getEstimatedGasLimit(tx));
     EXPECT_GE(estimatedGasLimit->toUint64(), 0);
 }
 
@@ -775,7 +777,7 @@ TEST_F(CosmosLikeWalletSynchronization, PendingUnbondings) {
     // First synchro
     performSynchro(account);
 
-    auto unbondings = wait(account->getUnbondings());
+    auto unbondings = uv::wait(account->getUnbondings());
     EXPECT_GE(unbondings.size(), 1) << fmt::format(
         "Expecting at least 1 unbonding here for Obelix (explorer link : {}).", mintscanExplorer);
 }
@@ -794,7 +796,7 @@ TEST_F(CosmosLikeWalletSynchronization, PendingRedelegations) {
     // First synchro
     performSynchro(account);
 
-    auto redelegations = wait(account->getRedelegations());
+    auto redelegations = uv::wait(account->getRedelegations());
     EXPECT_GE(redelegations.size(), 1) << fmt::format(
         "Expecting at least 1 redelegation here for Obelix (explorer link : {}).",
         mintscanExplorer);

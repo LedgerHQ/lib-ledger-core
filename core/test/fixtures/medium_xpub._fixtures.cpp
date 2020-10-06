@@ -10,7 +10,7 @@ namespace ledger {
 			        0, {"main"}, {"44'/0'/0'"}, {"xpub6D4waFVPfPCpRvPkQd9A6n65z3hTp6TvkjnBHG5j2MCKytMuadKgfTUHqwRH77GQqCKTTsUXSZzGYxMGpWpJBdYAYVH75x7yMnwJvra1BUJ"}
 			);
 			std::shared_ptr<core::BitcoinLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
-				auto account = std::dynamic_pointer_cast<core::BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));
+				auto account = std::dynamic_pointer_cast<core::BitcoinLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));
 				soci::session sql(pool->getDatabaseSessionPool()->getPool());
 				sql.begin();				account->putTransaction(sql, *core::JSONUtils::parse<core::TransactionParser>(TX_1));
 				account->putTransaction(sql, *core::JSONUtils::parse<core::TransactionParser>(TX_2));
