@@ -150,7 +150,9 @@ void BaseFixture::SetUp() {
     dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
+    auto client = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
+    //client->setGenerateCacheFile(true);
+    http = std::make_shared<ProxyHttpClient>(client);
     ws = std::make_shared<FakeWebSocketClient>();
     rng = std::make_shared<OpenSSLRandomNumberGenerator>();
 }
@@ -299,5 +301,7 @@ void BaseFixture::resetDispatcher()
 {
     dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    http = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
+    auto client = std::make_shared<CppHttpLibClient>(dispatcher->getMainExecutionContext());
+    //client->setGenerateCacheFile(true);
+    http = std::make_shared<ProxyHttpClient>(client);
 }

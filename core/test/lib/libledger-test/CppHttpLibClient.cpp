@@ -1,4 +1,5 @@
 #include <memory>
+#include <chrono>
 #include <unordered_map>
 #include <fmt/format.h>
 #include "api/Error.hpp"
@@ -11,7 +12,6 @@
 #include <ledger/core/utils/Exception.hpp>
 #include "NativeThreadDispatcher.hpp"
 #include "CppHttpLibClient.hpp"
-
 
 namespace ledger {
     namespace core {
@@ -58,6 +58,19 @@ namespace ledger {
                 std::unordered_map<std::string, std::string> _headers;
                 std::string _body;
             };
+
+            void generateCacheFile(const std::string& url, const std::string& response)
+            {
+                auto filename = fmt::format("http_cache_{}.hpp" ,std::chrono::system_clock::now().time_since_epoch().count());
+                std::ofstream output(filename);
+                if (output.is_open())
+                {
+                    output << "namespace HTTP_CACHE_XXXX {"<< std::endl;
+                    output << "const std::string URL = R\"(" << url << ")\";" << std::endl;
+                    output << "const std::string BODY= R\"(" << response << ")\";" << std::endl;
+                    output << "}" << std::endl;
+                }
+            }
 
             void CppHttpLibClient::execute(const std::shared_ptr<core::api::HttpRequest> &request) {
             _context->execute(make_runnable([=] () {
@@ -136,6 +149,9 @@ namespace ledger {
                         hdrs,
                         res->body
                         );
+                    if (_generateCacheFile) {
+                        generateCacheFile(url, res->body);
+                    }
                     request->complete(connection, std::experimental::optional<core::api::Error>());
                 }
             })); 
