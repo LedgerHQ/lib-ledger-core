@@ -59,6 +59,7 @@
 #include <api/BitcoinLikeOutput.hpp>
 #include <api/BigInt.hpp>
 #include <CppHttpLibClient.hpp>
+#include <ProxyHttpClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <api/Account.hpp>
@@ -150,7 +151,7 @@ public:
     std::shared_ptr<NativePathResolver> resolver;
     std::shared_ptr<DatabaseBackend> backend;
     std::shared_ptr<CoutLogPrinter> printer;
-    std::shared_ptr<CppHttpLibClient> http;
+    std::shared_ptr<ProxyHttpClient> http;
     std::shared_ptr<FakeWebSocketClient> ws;
     std::shared_ptr<OpenSSLRandomNumberGenerator> rng;
 };

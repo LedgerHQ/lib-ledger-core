@@ -38,12 +38,20 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
+#include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1.h"
+#include "../../fixtures/http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2.h"
+
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
 };
 
 TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
+    http->addCache(HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1::URL,
+        HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_1::BODY);
+    http->addCache(HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2::URL,
+        HTTP_CACHE_http_cache_BitcoinLikeWalletSynchronization_MediumXpubSynchronization_2::BODY);
+
     auto configuration = DynamicObject::newInstance();
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
@@ -77,14 +85,21 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
             auto eventBus = pool->getEventBus();
             eventBus->subscribe(getTestExecutionContext(),receiver);
 
+            bool synchronizationDone = false;
             receiver.reset();
-            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            receiver = make_receiver([=, &synchronizationDone](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
-                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                switch (event->getCode())
+                {
+                case api::EventCode::SYNCHRONIZATION_STARTED:
                     return;
-                EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-                EXPECT_EQ(event->getCode(),
-                          api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT);
+                case api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:
+                    synchronizationDone = true;
+                    break;
+                default:
+                    dispatcher->stop();
+                    return;
+                }
                 auto balance = uv::wait(account->getBalance())->toString();
                 auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
                 auto txBuilder = account->buildTransaction(false);
@@ -108,6 +123,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
             bus->subscribe(getTestExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
+            EXPECT_EQ(synchronizationDone, true);
         }
     }
 }

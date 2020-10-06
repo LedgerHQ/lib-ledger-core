@@ -18,7 +18,7 @@ namespace ledger {
             class CppHttpLibClient : public core::api::HttpClient {
             public:
                 CppHttpLibClient(const std::shared_ptr<core::api::ExecutionContext>& context) : 
-                _context(context), _logger(nullptr)
+                _context(context), _logger(nullptr), _generateCacheFile(false)
                 {};
                 
                 void execute(const std::shared_ptr<core::api::HttpRequest> &request) override;
@@ -27,9 +27,14 @@ namespace ledger {
                     _logger = logger;
                 }
 
+                void setGenerateCacheFile(bool generateCacheFile) {
+                    _generateCacheFile = generateCacheFile;
+                }
+
             private:
                 std::shared_ptr<core::api::ExecutionContext> _context;
                 std::shared_ptr<spdlog::logger> _logger;
+                bool _generateCacheFile;
             };
 
         }

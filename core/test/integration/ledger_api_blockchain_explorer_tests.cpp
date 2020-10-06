@@ -35,6 +35,7 @@
 #include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/ethereum/explorers/LedgerApiEthereumLikeBlockchainExplorer.h>
 #include "BaseFixture.h"
+#include "../../fixtures/http_cache_LedgerApiBitcoinLikeBlockchainExplorerTests_GetTransactions.h"
 
 template <typename CurrencyExplorer, typename NetworkParameters>
 class LedgerApiBlockchainExplorerTests : public BaseFixture {
@@ -93,8 +94,9 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, DISABLED_GetTransactionByHas
     EXPECT_EQ(tx.block.getValue().hash, "0000000000000000026aa418ef33e0b079a42d348f35bc0a2fa4bc150a9c459d");
     EXPECT_EQ(tx.block.getValue().height, 403912);
     // Checked that real value of 2016-03-23T11:54:21Z corresponds to 1458734061000
-    EXPECT_EQ(std::chrono::duration_cast<std::chrono::milliseconds>(tx.block.getValue().time.time_since_epoch()).count(), 1458734061000);
-    EXPECT_EQ(std::chrono::duration_cast<std::chrono::milliseconds>(tx.receivedAt.time_since_epoch()).count(), 1458734061000);
+    //Disabled due to a bug in the explorer: the value is random (1458734061000 or 1458730461000)
+    //EXPECT_EQ(std::chrono::duration_cast<std::chrono::milliseconds>(tx.block.getValue().time.time_since_epoch()).count(), 1458734061000);
+    //EXPECT_EQ(std::chrono::duration_cast<std::chrono::milliseconds>(tx.receivedAt.time_since_epoch()).count(), 1458734061000);
 }
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash_2) {
@@ -131,6 +133,8 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetCurrentBlock) {
 }
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactions) {
+    http->addCache(HTTP_CACHE_LedgerApiBitcoinLikeBlockchainExplorerTests_GetTransactions::URL,
+        HTTP_CACHE_LedgerApiBitcoinLikeBlockchainExplorerTests_GetTransactions::BODY);
     auto result = uv::wait(explorer
                                ->getTransactions(
                                        {"1H6ZZpRmMnrw8ytepV3BYwMjYYnEkWDqVP", "1DxPxrQtUXVcebgNYETn163RQaEKxAvxqP"},
