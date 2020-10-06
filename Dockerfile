@@ -1,4 +1,4 @@
-FROM debian:stretch
+FROM debian:buster
 
 COPY .circleci/ circleci
 WORKDIR circleci

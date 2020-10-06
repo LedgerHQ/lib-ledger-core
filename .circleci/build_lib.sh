@@ -36,7 +36,7 @@ function command_Release {
 
 function command_Debug {
   BUILD_CONFIG="Debug"
-  add_to_cmake_params -DBUILD_TESTS=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql
+  add_to_cmake_params -DBUILD_TESTS=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR=/usr/include/postgresql -DSYS_OPENSSL=ON -DOPENSSL_USE_STATIC_LIBS=TRUE 
 }
 
 function command_arch_ssl_1_1 {
@@ -140,7 +140,7 @@ echo "======> CMake config for $unamestr in $BUILD_CONFIG mode"
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
     if [ "$unamestr" == "Linux" ]; then
-        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" "-DSYS_OPENSSL=ON" "-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu" "-DOPENSSL_INCLUDE_DIR=/usr/include/openssl"
+        add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" 
     elif [ "$unamestr" == "Darwin" ]; then
         version=`ls /usr/local/Cellar/qt | grep 5.`
         echo "====> Get qt5 version"
@@ -166,10 +166,10 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
 	if [ "$unamestr" == "Linux" ]; then
 		# This modification is done to avoid authentication
 		echo "======> Modify PostgreSQL configuration file ..."
-		sed 's/md5/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
-		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
-		sed 's/peer/trust/g' /etc/postgresql/9.6/main/pg_hba.conf > pg_hba.conf.mod
-		mv pg_hba.conf.mod /etc/postgresql/9.6/main/pg_hba.conf
+		sed 's/md5/trust/g' /etc/postgresql/11/main/pg_hba.conf > pg_hba.conf.mod
+		mv pg_hba.conf.mod /etc/postgresql/11/main/pg_hba.conf
+		sed 's/peer/trust/g' /etc/postgresql/11/main/pg_hba.conf > pg_hba.conf.mod
+		mv pg_hba.conf.mod /etc/postgresql/11/main/pg_hba.conf
 		echo "======> Create database ..."
 		service postgresql start
 		createuser root -s -U postgres
