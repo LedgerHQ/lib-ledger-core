@@ -160,6 +160,10 @@ namespace ledger {
             auto isBabylonActivated = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON;
             auto params = currency.tezosLikeNetworkParameters.value();
             auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
+            // Store the raw TX because the parser can't parse OperationsGroups
+            // and in the signing operation, it will produce a wrong serialization
+            // if the rawTx is not present
+            tx->setRawTx(rawTransaction);
             BytesReader reader(rawTransaction);
             if (!isSigned) {
                 // Watermark: Generic-Operation
@@ -174,6 +178,7 @@ namespace ledger {
             std::vector<uint8_t> blockPrefix {0x01, 0x34};
             auto blockHash = Base58::encodeWithChecksum(vector::concat(blockPrefix, blockHashBytes), config);
             tx->setBlockHash(blockHash);
+            std::cout << "TXBuilder.parseRawTransaction block hash: " << blockHash << std::endl;
 
             // Operation Tag
             auto OpTag = reader.readNextByte();
@@ -246,9 +251,11 @@ namespace ledger {
                                                                        std::vector<uint8_t>(),
                                                                        std::vector<uint8_t>(),
                                                                        Option<std::string>()));
+                    tx->reveal(false); // There is already a REVEAL operation: prevent bad re-serialization
                     break;
                 }
                 case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_TRANSACTION): {
+                    std::cout << "TXBuilder.parseRawTransaction is TX" << std::endl;
                     // Amount
                     tx->setValue(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
@@ -329,6 +336,7 @@ namespace ledger {
 
             // Parse signature
             if (isSigned) {
+                std::cout << "TXBuilder.parseRawTransaction is signed: true" << std::endl;
                 tx->setSignature(reader.read(64));
             }
 
