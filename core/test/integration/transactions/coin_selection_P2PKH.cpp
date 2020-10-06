@@ -63,7 +63,7 @@ TEST_F(CoinSelectionP2PKH, PickOneUTXOWithoutChange) {
         EXPECT_EQ(tx->getOutputs().at(0)->getValue()->toLong(), 20000000);
 }
 
-TEST_F(CoinSelectionP2PKH, PickOneUTXOWithChange) {
+TEST_F(CoinSelectionP2PKH, DISABLED_PickOneUTXOWithChange) {
 
         auto builder = tx_builder();
         builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");

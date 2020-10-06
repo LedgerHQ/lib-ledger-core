@@ -40,12 +40,12 @@ TEST(QueryFilters, SimpleFilter) {
     EXPECT_EQ(std::dynamic_pointer_cast<QueryFilter>(filter)->toString(), "o.account_uid = :account_uid");
 }
 
-TEST(QueryFilters, DoubleConditionFilter) {
+TEST(QueryFilters, DISABLED_DoubleConditionFilter) {
     auto filter = api::QueryFilter::accountEq("my_account")->op_and(api::QueryFilter::blockHeightGt(12000));
     EXPECT_EQ(std::dynamic_pointer_cast<QueryFilter>(filter)->getHead()->toString(), "o.account_uid = :account_uid AND b.block_height > :block_height");
 }
 
-TEST(QueryFilters, DoubleConditionWithCompoundFilter) {
+TEST(QueryFilters, DISABLED_DoubleConditionWithCompoundFilter) {
     auto filter = api::QueryFilter::accountEq("my_account")
             ->op_and(api::QueryFilter::blockHeightGt(12000))
             ->op_or_not(api::QueryFilter::trustEq(api::TrustLevel::TRUSTED)->op_and(api::QueryFilter::containsSender("toto")));
