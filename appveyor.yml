@@ -95,7 +95,7 @@ build_script:
 - if %BUILD_CONFIG% == Release (
     cmake -G "%CMAKE_GENERATOR%" -DBUILD_TESTS=OFF ../lib-ledger-core
   ) else (
-    cmake -G "%CMAKE_GENERATOR%" -DCMAKE_PREFIX_PATH="%QT5%" -DCMAKE_INSTALL_PREFIX="%QT5%" ../lib-ledger-core
+    cmake -G "%CMAKE_GENERATOR%" ../lib-ledger-core
   )
 
 #Build

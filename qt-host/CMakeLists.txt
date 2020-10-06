@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 2.8.11)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-# Instruct CMake to run moc automatically when needed.
-set(CMAKE_AUTOMOC ON)
 
 # Tell CMake to create the helloworld executable
 add_library(ledger-qt-host STATIC utils/FilesystemUtils.cpp utils/FilesystemUtils.hpp)
