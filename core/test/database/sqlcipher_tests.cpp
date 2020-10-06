@@ -40,16 +40,15 @@ using namespace ledger::core;
 class SQLCipherTest : public BaseFixture {
 };
 
-TEST(SQLCipherTest, SanityCheck) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db_" + date;
+TEST_F(SQLCipherTest, SanityCheck) {
+    auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
         //Initiate the DB and interact with it
         auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
         soci::session session;
+        std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
                 "    id INTEGER,"
@@ -100,16 +99,15 @@ TEST(SQLCipherTest, SanityCheck) {
 // TODO: remove this check after we migrate to VS2017 and provide /Zc:__cplusplus option
 // https://devblogs.microsoft.com/cppblog/msvc-now-correctly-reports-__cplusplus/
 #if __cplusplus >= 201103L
-TEST(SQLCipherTest, ThrowIfWrongPassword) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db2_" + date;
+TEST_F(SQLCipherTest, ThrowIfWrongPassword) {
+    auto dbName = fmt::format( "test_db2_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
         //Initiate the DB and interact with it
         auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
         soci::session session;
+        std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
             "    id INTEGER,"
@@ -134,16 +132,15 @@ TEST(SQLCipherTest, ThrowIfWrongPassword) {
 }
 #endif
 
-TEST(SQLCipherTest, DisableEncryption) {
-    auto date = DateUtils::toJSON(std::chrono::system_clock::now());
-    std::remove(date.begin(), date.end(), ':');
-    auto dbName = "test_db_" + date;
+TEST_F(SQLCipherTest, DisableEncryption) {
+    auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";
     {
         //Initiate the DB and interact with it
         auto parameters = fmt::format("dbname=\"{}\" ", dbName) + fmt::format("key=\"{}\" ", password);
         soci::session session;
+        std::cout << "opening database " << dbName << std::endl;
         session.open(*soci::factory_sqlite3(), parameters);
         session << "CREATE TABLE test_table ("
                 "    id INTEGER,"
