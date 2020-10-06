@@ -87,5 +87,22 @@ namespace ledger {
 
             return {*encoding};
         }
+
+        std::experimental::optional<TezosKeyType::Encoding>
+        TezosKeyType::fromKey(std::vector<uint8_t> key) {
+            auto hasEncoding = [key](TezosKeyType::Encoding encoding) {
+                auto size = encoding.version.size();
+                return std::equal(key.begin(), key.begin() + size,
+                                  encoding.version.begin(), encoding.version.end());
+            };
+            auto encoding = std::find_if(TezosKeyType::ALL.begin(), TezosKeyType::ALL.end(), hasEncoding);
+
+            if (encoding == TezosKeyType::ALL.end()) {
+                // throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Base 58 invalid prefix");
+                return {};
+            }
+
+            return {*encoding};
+        }
     }
 }

@@ -81,6 +81,18 @@ namespace ledger {
             const Encoding KT1{"KT1", {2, 90, 121}, api::TezosCurve::ED25519, 20, 36,
                                "Originated address"};
 
+            const Encoding SIG{"sig", {4, 130, 43}, api::TezosCurve::ED25519, 64, 96,
+                               "generic signature"};
+            
+            const Encoding EDSIG{"edsig", {9, 245, 205, 134, 18}, api::TezosCurve::ED25519, 64, 99,
+                                 "ed25519 signature"};
+
+            const Encoding SPSIG{"spsig", {13, 115, 101, 19, 63}, api::TezosCurve::SECP256K1, 64, 99,
+                                 "secp256k1 signature"};
+            
+            const Encoding P2SIG{"p2sig", {54, 240, 44, 52}, api::TezosCurve::P256, 64, 99, 
+                                 "p256 signature"};
+
             const std::vector<Encoding> ALL = {EDPK, SPPK, P2PK, XPUB, TZ1, TZ2, TZ3, KT1};
 
             const std::vector<Encoding> PUBKEYS = {EDPK, SPPK, P2PK};
@@ -88,6 +100,8 @@ namespace ledger {
             const std::vector<Encoding> LEGACY_PUBKEYS = {EDPK, SPPK, P2PK, XPUB};
 
             const std::vector<Encoding> ADDRESSES = {TZ1, TZ2, TZ3, KT1};
+
+            const std::vector<Encoding> SIGNATURES = {EDSIG, SPSIG, P2SIG, SIG};
 
             /**
              * Get the key encoding definition for a given version
@@ -103,6 +117,11 @@ namespace ledger {
              * Get the key encoding definition for a given curve given a key type class
              */
             std::experimental::optional<Encoding> fromCurve(api::TezosCurve curve, std::vector<Encoding> types=ALL);
+
+            /**
+             * Get the key encoding definition for a given key
+             */
+            std::experimental::optional<Encoding> fromKey(std::vector<uint8_t> key);
         }
     }
 }
