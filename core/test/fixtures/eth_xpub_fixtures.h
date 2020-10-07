@@ -19,7 +19,6 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
-#include <async/async_wait.h>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <api/EthereumLikeOperation.hpp>
 #include <api/EthereumLikeTransaction.hpp>

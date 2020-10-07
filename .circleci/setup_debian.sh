@@ -30,9 +30,6 @@ echo "========> Install C++ dependencies"
 apt-get install -y g++ make
 export PATH=$HOME/cmake-3.16.5/bin:$PATH
 
-echo "========> Install Qt5"
-apt-get install -y qt5-default libqt5websockets5 libqt5websockets5-dev
-
 echo "========> Install PostgreSQL"
 apt-get install -y postgresql-11 libpq-dev postgresql-server-dev-all || apt --fix-broken install -y
 

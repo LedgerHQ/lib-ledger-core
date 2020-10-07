@@ -48,7 +48,6 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <async/async_wait.h>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <api/BitcoinLikeOperation.hpp>
@@ -63,7 +62,7 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <FakeWebSocketClient.h>
 #include <OpenSSLRandomNumberGenerator.hpp>
-#include <utils/FilesystemUtils.h>
+#include <utils/FilesystemUtils.hpp>
 #include <utils/hex.h>
 #include "../integration/IntegrationEnvironment.h"
 
@@ -139,7 +138,7 @@ public:
                                                                  const api::ExtendedKeyAccountCreationInfo& info) {
         auto i = info;
         i.index = index;
-        return std::dynamic_pointer_cast<Account>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
+        return std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
     }
 
 

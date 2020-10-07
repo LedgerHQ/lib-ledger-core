@@ -29,7 +29,7 @@
  *
  */
 
-#include <utils/FilesystemUtils.h>
+#include <utils/FilesystemUtils.hpp>
 #include "IntegrationEnvironment.h"
 #include "BaseFixture.h"
 

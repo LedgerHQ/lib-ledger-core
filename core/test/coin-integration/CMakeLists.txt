@@ -16,9 +16,13 @@ file(GLOB_RECURSE ledger-core-coin-integration-srcs
         )
 
 add_executable(ledger-core-coin-integration-tests ${ledger-core-coin-integration-srcs} ../integration/IntegrationEnvironment.cpp)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    target_link_libraries(ledger-core-coin-integration-tests OpenSSL::Crypto)
+else()
+    target_link_libraries(ledger-core-coin-integration-tests crypto)
+endif()
 target_link_libraries(ledger-core-coin-integration-tests gtest gtest_main)
-target_link_libraries(ledger-core-coin-integration-tests crypto)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # We need this otherwise link fails (for Linux),
     # this is needed since we build static library for tests,

@@ -142,12 +142,8 @@ if [ "$BUILD_CONFIG" == "Debug" ]; then
     if [ "$unamestr" == "Linux" ]; then
         add_to_cmake_params "-DCMAKE_PREFIX=$HOME" "-DCMAKE_BUILD_TYPE=Debug" 
     elif [ "$unamestr" == "Darwin" ]; then
-        version=`ls /usr/local/Cellar/qt | grep 5.`
-        echo "====> Get qt5 version"
-        echo $version
-        export PATH="/usr/local/Cellar/qt/$version/bin:$PATH"
-        echo $PATH
-        add_to_cmake_params -DCMAKE_INSTALL_PREFIX="/usr/local/Cellar/qt/$version" -DCMAKE_PREFIX_PATH="/usr/local/Cellar/qt/$version" -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR"
+        add_to_cmake_params -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" 
+        add_to_cmake_params "-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl/"
     fi
 fi
 

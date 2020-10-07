@@ -48,7 +48,6 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <async/async_wait.h>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <wallet/ripple/RippleLikeAccount.h>
@@ -67,9 +66,9 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <FakeWebSocketClient.h>
 #include <OpenSSLRandomNumberGenerator.hpp>
+#include <utils/FilesystemUtils.hpp>
 
 using namespace ledger::core; // Only do that for testing
-using namespace ledger::qt; // Djeez
 using namespace ledger::core::test;
 
 extern api::ExtendedKeyAccountCreationInfo P2PKH_MEDIUM_XPUB_INFO;

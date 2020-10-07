@@ -645,9 +645,9 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnFakeExplorer) {
 
 TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHeight) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
+    auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a62", "bitcoin",
                                           api::DynamicObject::newInstance()));
-    auto nextIndex = wait(wallet->getNextAccountIndex());
+    auto nextIndex = uv::wait(wallet->getNextAccountIndex());
     EXPECT_EQ(nextIndex, 0);
     auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
     auto bus = account->synchronize();
@@ -694,7 +694,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHe
                 filter->op_and(filter->blockHeightIsNull());
                 break;
         }
-        return ::wait(std::dynamic_pointer_cast<OperationQuery>(query)->execute());
+        return uv::wait(std::dynamic_pointer_cast<OperationQuery>(query)->execute());
     };
 
     const auto testOperations = [=] (int blockHeight, QueryType queryType) {
