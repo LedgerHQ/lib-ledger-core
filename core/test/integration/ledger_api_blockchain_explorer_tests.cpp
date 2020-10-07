@@ -78,7 +78,7 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetRawTransaction) {
 
 }
 
-TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, DISABLED_GetTransactionByHash) {
+TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetTransactionByHash) {
     auto transaction = uv::wait(explorer->getTransactionByHash("9fdbe15a16fe282291426df15894ab1473e252bc31f244e4d923a17e11743eda"));
     auto &tx = *transaction.get();
     EXPECT_EQ(tx.inputs.size(), 1);
