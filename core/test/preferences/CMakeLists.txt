@@ -17,6 +17,10 @@ target_link_libraries(ledger-core-preferences-tests ledger-core-static)
 target_link_libraries(ledger-core-preferences-tests ledger-test)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-preferences-tests crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-preferences-tests OpenSSL::Crypto)
+else()
+    copy_install_imported_targets(ledger-core-preferences-tests crypto)
+endif()
 add_test (NAME ledger-core-preferences-tests COMMAND ledger-core-preferences-tests)

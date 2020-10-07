@@ -24,6 +24,10 @@ target_include_directories(ledger-core-parser-tests PUBLIC ../../../core/src)
 target_include_directories(ledger-core-parser-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-parser-tests crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-parser-tests OpenSSL::Crypto)
+else()
+    copy_install_imported_targets(ledger-core-parser-tests crypto)
+endif()
 add_test (NAME ledger-core-parser-tests COMMAND ledger-core-parser-tests)

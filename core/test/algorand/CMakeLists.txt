@@ -34,7 +34,11 @@ include_directories(../lib/libledger-test/)
 target_include_directories(ledger-core-algorand-tests PRIVATE ${CMAKE_SOURCE_DIR}/src/thirdparty/msgpack-c/include)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-algorand-tests crypto ledger-core)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-algorand-tests OpenSSL::Crypto ledger-core)
+else()
+    copy_install_imported_targets(ledger-core-algorand-tests crypto ledger-core)
+endif()
 add_test (NAME ledger-core-algorand-tests COMMAND ledger-core-algorand-tests)
 

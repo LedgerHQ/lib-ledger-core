@@ -23,6 +23,10 @@ target_include_directories(ledger-core-database-tests PUBLIC ../../../qt-host)
 target_include_directories(ledger-core-database-tests PUBLIC ../../../core/src/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-database-tests crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-database-tests OpenSSL::Crypto)
+else()
+    copy_install_imported_targets(ledger-core-database-tests crypto)
+endif()
 add_test(NAME ledger-core-database-tests COMMAND ledger-core-database-tests)

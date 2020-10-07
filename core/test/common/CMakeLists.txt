@@ -17,7 +17,11 @@ target_include_directories(ledger-core-common-tests PUBLIC ../../../core/lib/lev
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-common-tests crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-common-tests OpenSSL::Crypto)
+else()
+    copy_install_imported_targets(ledger-core-common-tests crypto)
+endif()
 add_test (NAME ledger-core-common-tests COMMAND ledger-core-common-tests)
 

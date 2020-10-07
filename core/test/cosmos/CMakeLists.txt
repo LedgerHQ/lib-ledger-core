@@ -36,7 +36,11 @@ target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../lib/libledger-test)
 target_include_directories(${COSMOS_TESTS_NAME} PUBLIC ../../../core/lib/leveldb/include)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(${COSMOS_TESTS_NAME} crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(${COSMOS_TESTS_NAME} OpenSSL::Crypto)
+else()
+    copy_install_imported_targets(${COSMOS_TESTS_NAME} crypto)
+endif()
 include(GoogleTest)
 gtest_discover_tests(${COSMOS_TESTS_NAME})

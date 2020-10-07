@@ -17,6 +17,10 @@ target_include_directories(ledger-core-tezos-tests PUBLIC ../../../core/lib/leve
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-tezos-tests crypto ledger-core)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-tezos-tests OpenSSL::Crypto ledger-core)
+else()
+    copy_install_imported_targets(ledger-core-tezos-tests crypto ledger-core)
+endif()
 add_test (NAME ledger-core-tezos-tests COMMAND ledger-core-tezos-tests)

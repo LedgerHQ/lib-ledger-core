@@ -17,6 +17,10 @@ target_include_directories(ledger-core-crypto-tests PUBLIC ../../../qt-host)
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-crypto-tests crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-crypto-tests OpenSSL::Crypto)
+else()
+    copy_install_imported_targets(ledger-core-crypto-tests crypto)
+endif()
 add_test (NAME ledger-core-crypto-tests COMMAND ledger-core-crypto-tests)
