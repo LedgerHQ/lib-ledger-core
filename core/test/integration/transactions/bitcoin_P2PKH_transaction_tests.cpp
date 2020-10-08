@@ -115,7 +115,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 TEST_F(BitcoinStardustTransaction, FilterDustUtxo) {
     ASSERT_EQ(
         currency.bitcoinLikeNetworkParameters->DustAmount,
-        std::numeric_limits<int64_t>::max()
+        (std::numeric_limits<int64_t>::max)()
     ) << "The currency in this test should have a very high dust amount";
 
     auto builder = tx_builder();
