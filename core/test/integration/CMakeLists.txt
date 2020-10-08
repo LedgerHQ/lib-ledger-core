@@ -27,7 +27,7 @@ add_executable(ledger-core-integration-tests
 if (SYS_OPENSSL)
     find_package(OpenSSL)
     if(WIN32)
-        target_link_libraries( ledger-core-integration-tests crypt32 )
+        target_link_libraries( ledger-core-integration-tests ws2_32 crypt32 )
     endif()
     target_link_libraries(ledger-core-integration-tests OpenSSL::Crypto)
 else()

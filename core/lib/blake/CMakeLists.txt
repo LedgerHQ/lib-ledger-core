@@ -6,7 +6,7 @@ target_link_libraries(blake PUBLIC ${CMAKE_DL_LIBS})
 
 if (SYS_OPENSSL)
     if(WIN32)
-        target_link_libraries( blake PUBLIC crypt32 )
+        target_link_libraries( blake PUBLIC ws2_32 crypt32 )
     endif()
     target_link_libraries(blake PUBLIC OpenSSL::Crypto)
 else()
