@@ -31,17 +31,16 @@
 
 
 #ifdef _WIN32
-    #define WIN32_LEAN_AND_MEAN
     #include <windows.h>
 #else
     #include <pthread.h>
 #endif
 #include <gtest/gtest.h>
 #include <UvThreadDispatcher.hpp>
-#include <time.h>
+#include <chrono>
 
 using namespace ledger::core;
-//using namespace ledger::qt;
+using namespace std::chrono;
 
 unsigned long getCurrentThreadId(){
 #ifdef _WIN32
@@ -70,14 +69,14 @@ TEST(Threading, DoSomethingOnSerialQueue) {
 TEST(Threading, DoSomethingOnSerialQueueWithDelay) {
     auto dispatcher = std::make_shared<uv::UvThreadDispatcher>();
 
-    auto before = time(0);
-    auto after = before;
+    uint64_t before = duration_cast< milliseconds >(system_clock::now().time_since_epoch()).count();
+    uint64_t after = before;
 
     auto mainThread = getCurrentThreadId();
 
     dispatcher->getSerialExecutionContext("worker")->delay(make_runnable([&] () {
         EXPECT_NE(mainThread, getCurrentThreadId());
-        after = time(0);
+        after = duration_cast< milliseconds >(system_clock::now().time_since_epoch()).count();
         dispatcher->stop();
     }), 1000);
 
