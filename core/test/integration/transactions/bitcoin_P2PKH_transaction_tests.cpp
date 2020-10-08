@@ -64,7 +64,7 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
             {0x05},
             {0x04, 0x88, 0xB2, 0x1E},
             api::BitcoinLikeFeePolicy::PER_BYTE,
-            std::numeric_limits<int64_t>::max(),
+            (std::numeric_limits<int64_t>::max)(),
             "Bitcoin Stardust Signed Message:\n",
             false,
             0,

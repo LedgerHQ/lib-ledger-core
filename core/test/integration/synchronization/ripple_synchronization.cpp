@@ -127,7 +127,7 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto block = uv::wait(account->getLastBlock());
             EXPECT_GT(block.height, 0);
-            EXPECT_LT(block.height, std::numeric_limits<int32_t>::max());
+            EXPECT_LT(block.height, (std::numeric_limits<int32_t>::max)());
         }
     }
 }
