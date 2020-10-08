@@ -56,6 +56,10 @@ install:
 - ps: Set-Content c:\users\appveyor\.ssh\id_rsa $fileContent
 - ssh-keygen -y -f c:\users\appveyor\.ssh\id_rsa > c:\users\appveyor\.ssh\id_rsa.pub
 
+#Install openssl
+- ps: Start-FileDownload 'http://slproweb.com/download/Win64OpenSSL-1_1_1h.exe'
+- ps: Start-Process "Win64OpenSSL-1_1_1h.exe" -ArgumentList "/silent /verysilent /sp- /suppressmsgboxes" -Wait
+
 #Install Node
 - ps: Install-Product node $env:nodejs_version
 
@@ -77,7 +81,7 @@ build_script:
 - if %BUILD_CONFIG% == Release (
     cmake -G "%CMAKE_GENERATOR%" -DBUILD_TESTS=OFF ../lib-ledger-core
   ) else (
-    cmake -G "%CMAKE_GENERATOR%" ../lib-ledger-core
+    cmake -G "%CMAKE_GENERATOR%" -DSYS_OPENSSL=ON -DOPENSSL_ROOT_DIR=C:\OpenSSL-Win64 -DOPENSSL_USE_STATIC_LIBS=TRUE ../lib-ledger-core
   )
 
 #Build
