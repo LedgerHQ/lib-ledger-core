@@ -31,6 +31,3 @@
 [submodule "core/src/wallet/algorand/thirdparty/msgpack-c"]
 	path = core/src/wallet/algorand/thirdparty/msgpack-c
 	url = https://github.com/ledgerHQ/msgpack-c.git
-[submodule "core/test/lib/cpp-httplib"]
-	path = core/test/lib/cpp-httplib
-	url = https://github.com/yhirose/cpp-httplib.git
