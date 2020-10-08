@@ -19,7 +19,7 @@ add_executable(ledger-core-coin-integration-tests ${ledger-core-coin-integration
 if (SYS_OPENSSL)
     find_package(OpenSSL)
     if(WIN32)
-        target_link_libraries( ledger-core-coin-integration-tests crypt32 )
+        target_link_libraries( ledger-core-coin-integration-tests crypt32 ws2_32)
     endif()
     target_link_libraries(ledger-core-coin-integration-tests OpenSSL::Crypto)
 else()
