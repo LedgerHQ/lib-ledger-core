@@ -84,11 +84,11 @@ string ledger::qt::FilesystemUtils::getExecutableDir(){
     }
 }
 
-bool ledger::qt::FilesystemUtils::isExecutable(const std::string& path){
+bool ledger::qt::FilesystemUtils::isExecutableOrLib(const std::string& path){
     fs::path filePath{path};
 #ifdef _WIN32
     auto extension=filePath.extension().string();
-    return (extension==".exe") || (extension==".bat") || (extension==".com");
+    return (extension==".exe") || (extension==".bat") || (extension==".com") || (extension == ".lib") || (extension == ".dll") || (extension == ".pdb") || (extension == ".ilk");
 #else
     auto permissions=status(filePath).permissions();
     return (permissions & (fs::perms::owner_exec | fs::perms::group_exec | fs::perms::others_exec))!=fs::perms::none;
@@ -100,7 +100,7 @@ void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
     for (const auto & file : fs::recursive_directory_iterator(path))
     {
         if (!fs::is_directory(file.path())) {
-            if (!FilesystemUtils::isExecutable(file.path().string())){
+            if (!FilesystemUtils::isExecutableOrLib(file.path().string())){
                 fs::remove(file.path());
             }
         }

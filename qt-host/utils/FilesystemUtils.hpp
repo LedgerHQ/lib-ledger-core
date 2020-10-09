@@ -41,8 +41,9 @@ namespace ledger {
         public:
             static string getExecutablePath();
             static string getExecutableDir();
-            static bool isExecutable(const string& path);
             static void clearFs(const string& rootDirPath);
+        private:
+            static bool isExecutableOrLib(const string& path);
         };
     }
 }
