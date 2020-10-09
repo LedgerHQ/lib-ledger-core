@@ -3279,7 +3279,7 @@ inline std::string message_digest(const std::string &s, Init init,
 
   stringstream ss;
   for (auto c : md) {
-    ss << setfill('0') << setw(2) << hex << (unsigned int)c;
+    ss << setfill('0') << setw(2) << std::hex << (unsigned int)c;
   }
   return ss.str();
 }
@@ -3351,7 +3351,7 @@ inline std::pair<std::string, std::string> make_digest_authentication_header(
   string nc;
   {
     stringstream ss;
-    ss << setfill('0') << setw(8) << hex << cnonce_count;
+    ss << setfill('0') << setw(8) << std::hex << cnonce_count;
     nc = ss.str();
   }
 
