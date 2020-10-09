@@ -202,7 +202,12 @@ namespace ledger {
         void HttpRequest::ApiRequest::complete(const std::shared_ptr<api::HttpUrlConnection> &response,
                                                const optional<api::Error> &error) {
             if (error) {
-                _promise.failure(Exception(error->code, error->message));
+                if (response) {
+                    _promise.failure(Exception(error->code, error->message, Option<std::shared_ptr<void>>(std::move(response))));
+                }
+                else {
+                    _promise.failure(Exception(error->code, error->message));
+                }
             } else {
                 _promise.success(response);
             }

@@ -134,7 +134,17 @@ namespace ledger {
                         "HTTP ERROR")));       
                 }
                 else if (res->status < 200 || res->status >= 300 ) {
-                    request->complete(nullptr, std::experimental::optional<core::api::Error>(
+                    std::unordered_map<std::string, std::string> hdrs;
+                    for (const auto& header : res->headers) {
+                        hdrs.insert(std::make_pair(header.first, header.second));
+                    }
+                    auto connection = std::make_shared<UrlConnection>(
+                        res->status,
+                        res->reason,
+                        hdrs,
+                        res->body
+                        );
+                    request->complete(connection, std::experimental::optional<core::api::Error>(
                         core::api::Error(core::api::ErrorCode::HTTP_ERROR, 
                         fmt::format("{}: {}", res->status, res->reason)))); 
                 }
