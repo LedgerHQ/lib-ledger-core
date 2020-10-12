@@ -110,8 +110,10 @@ build_script:
 - set CRYPTO_DLL_PATH=core\lib\openssl\crypto\build\%BUILD_CONFIG%\crypto.dll
 - if %BUILD_CONFIG% == Release cp "..\lib-ledger-core-build\%CRYPTO_DLL_PATH%" ".\%LIB_VERSION%\win\%TOOL_CONFIG%" || echo "FAIL TO COPY CRYPTO DLL"
 
+- cd ..\lib-ledger-core-build
 #Launch tests(To do: fix the tests and enable them in debug)
 - if %BUILD_CONFIG% == Debug ctest -C Debug
+- cd ..\lib-ledger-core
 
 #Build is failing because of configuration
 ##Create node module
