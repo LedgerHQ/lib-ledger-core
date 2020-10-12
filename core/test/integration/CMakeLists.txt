@@ -54,9 +54,9 @@ target_include_directories(ledger-core-integration-tests PUBLIC ../../../qt-host
 include(CopyAndInstallImportedTargets)
 if (SYS_OPENSSL)
     find_package(OpenSSL)
-    copy_install_imported_targets(ledger-core-integration-tests OpenSSL::Crypto)
+    copy_install_imported_targets(ledger-core-integration-tests OpenSSL::Crypto uv)
 else()
-    copy_install_imported_targets(ledger-core-integration-tests crypto)
+    copy_install_imported_targets(ledger-core-integration-tests crypto uv)
 endif()
 #add_test (NAME ledger-core-integration-tests COMMAND ledger-core-integration-tests)
 

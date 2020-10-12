@@ -14,5 +14,5 @@ target_link_libraries(ledger-core-async-tests ledger-test)
 target_link_libraries(ledger-core-async-tests ledger-qt-host)
 target_include_directories(ledger-core-async-tests PUBLIC ../../../qt-host)
 target_include_directories(ledger-core-async-tests PUBLIC ../lib/libledger-test)
-
+copy_install_imported_targets(ledger-core-async-tests uv)
 add_test (NAME ledger-core-async-tests COMMAND ledger-core-async-tests)
