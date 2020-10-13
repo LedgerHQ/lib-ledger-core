@@ -217,7 +217,7 @@ TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
     }
 }
 
-TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
+TEST_F(EthereumLikeWalletSynchronization, DISABLED_XpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
