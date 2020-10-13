@@ -54,6 +54,8 @@ namespace algorand {
                                           const std::string & accountUid,
                                           const model::Transaction & tx);
 
+        static void deleteAllTransactions(soci::session& sql);
+
         static std::vector<model::Transaction> queryAssetTransferTransactionsInvolving(
                 soci::session& sql,
                 uint64_t assetId,

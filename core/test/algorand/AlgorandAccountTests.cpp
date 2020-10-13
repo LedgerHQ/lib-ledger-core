@@ -236,6 +236,7 @@ public:
     }
 
     void TearDown() override {
+        uv::wait(pool->deleteWallet("algorand"));
         WalletFixture::TearDown();
 
         wallet.reset();

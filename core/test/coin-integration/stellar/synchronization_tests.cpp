@@ -37,7 +37,7 @@
 
 TEST_F(StellarFixture, SynchronizeStellarAccount) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto wallet = newWallet(pool, "my_wallet_stellar", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
     auto exists = uv::wait(account->exists());
@@ -106,7 +106,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
 
 TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto wallet = newWallet(pool, "my_wallet_stellar_empty", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, emptyAccount());
 
@@ -144,7 +144,7 @@ TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
 
 TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto wallet = newWallet(pool, "my_wallet_stellar_subentry", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
     StellarLikeAddress addr("GAT4LBXYJGJJJRSNK74NPFLO55CDDXSYVMQODSEAAH3M6EY4S7LPH5GV", getCurrency(), Option<std::string>::NONE);
     auto account = newAccount(wallet, 0, accountInfo(hex::toString(addr.toPublicKey())));

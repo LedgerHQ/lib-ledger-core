@@ -555,7 +555,7 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
     EXPECT_TRUE(foundBinance) << "Binance Staking is expected to always be in the validator set";
 }
 
-TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_ValidatorInfo) {
     // This test assumes that HuobiPool and BinanceStaking are always in the validator set
     const auto bisonTrailsAddress = "cosmosvaloper1uxh465053nq3at4dn0jywgwq3s9sme3la3drx6";
     const auto bisonTrailsValConsPubAddress = "cosmosvalconspub1zcjduepqc5y2du793cjut0cn6v7thp3xlvphggk6rt2dhw9ekjla5wtkm7nstmv5vy";

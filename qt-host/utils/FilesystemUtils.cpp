@@ -101,7 +101,8 @@ void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
     {
         if (!fs::is_directory(file.path())) {
             if (!FilesystemUtils::isExecutableOrLib(file.path().string())){
-                fs::remove(file.path());
+                error_code ec;
+                fs::remove(file.path(), ec);
             }
         }
     }

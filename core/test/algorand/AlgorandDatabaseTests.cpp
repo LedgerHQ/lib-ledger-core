@@ -70,6 +70,9 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
     }
 
     void TearDown() override {
+        uv::wait(pool->deleteWallet("algorand"));
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
+        algorand::TransactionDatabaseHelper::deleteAllTransactions(sql);
         WalletFixture::TearDown();
 
         wallet.reset();

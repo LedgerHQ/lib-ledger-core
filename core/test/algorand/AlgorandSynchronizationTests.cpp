@@ -49,7 +49,10 @@ public:
         WalletFixture::SetUp();
         backend->enableQueryLogging(true);
     }
-
+    void TearDown() override {
+        uv::wait(pool->deleteWallet("test-wallet"));
+        WalletFixture::TearDown();
+    }
     void synchronizeAccount(const std::string & accountAddress) {
         registerCurrency(currencies::ALGORAND);
 

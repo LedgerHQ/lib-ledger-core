@@ -36,7 +36,7 @@
 
 TEST_F(StellarFixture, PaymentTransaction) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
+    auto wallet = newWallet(pool, "my_wallet_stellar_transaction", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
     auto bus = account->synchronize();
