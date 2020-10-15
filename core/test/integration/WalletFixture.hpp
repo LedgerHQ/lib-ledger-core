@@ -62,8 +62,6 @@ public:
 
     void TearDown() override {
         BaseFixture::TearDown();
-
-        pool->freshResetAll();
         pool.reset();
      //   walletStore.reset();
     }
