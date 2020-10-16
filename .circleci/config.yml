@@ -308,7 +308,7 @@ jobs:
           name: Run_Tests
           command: |
               cd ../lib-ledger-core-build
-              ctest -VV -timeout 60
+              ctest -VV
   publish_jar:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
