@@ -161,7 +161,7 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
     std::shared_ptr<GaiaCosmosLikeBlockchainExplorer> explorer;
 };
 
-TEST_F(CosmosWalletSyncBenchmark, Small)
+TEST_F(CosmosWalletSyncBenchmark, DISABLED_Small)
 {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<AbstractWallet> wallet;
@@ -183,7 +183,7 @@ TEST_F(CosmosWalletSyncBenchmark, Small)
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
 
-TEST_F(CosmosWalletSyncBenchmark, Medium)
+TEST_F(CosmosWalletSyncBenchmark, DISABLED_Medium)
 {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<AbstractWallet> wallet;
@@ -205,7 +205,7 @@ TEST_F(CosmosWalletSyncBenchmark, Medium)
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
 
-TEST_F(CosmosWalletSyncBenchmark, Large)
+TEST_F(CosmosWalletSyncBenchmark, DISABLED_Large)
 {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<AbstractWallet> wallet;
@@ -227,7 +227,7 @@ TEST_F(CosmosWalletSyncBenchmark, Large)
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
 
-TEST_F(CosmosWalletSyncBenchmark, ExtraLarge)
+TEST_F(CosmosWalletSyncBenchmark, DISABLED_ExtraLarge)
 {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<AbstractWallet> wallet;
@@ -249,7 +249,7 @@ TEST_F(CosmosWalletSyncBenchmark, ExtraLarge)
     std::cout << "Time to query its " << ops.size() << " operations : " << diff.count() << " s\n";
 }
 
-TEST_F(CosmosWalletSyncBenchmark, Huge)
+TEST_F(CosmosWalletSyncBenchmark, DISABLED_Huge)
 {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<AbstractWallet> wallet;

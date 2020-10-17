@@ -55,7 +55,6 @@ TEST_F(StellarFixture, GetAsset) {
         EXPECT_EQ(asset->code, "USD");
         EXPECT_EQ(asset->issuer, "GDZJPY2OAJROO5LTIBRHOGU33QSPBMIM6VO46G5IEYYRKZXGE4YEJG45");
      */
-    uv::wait(pool->freshResetAll());
 }
 
 TEST_F(StellarFixture, GetAccount) {
@@ -80,7 +79,6 @@ TEST_F(StellarFixture, GetAccount) {
         }
     }
     EXPECT_TRUE(foundBalance);
-    uv::wait(pool->freshResetAll());
 }
 
 
@@ -96,11 +94,10 @@ TEST_F(StellarFixture, GetLastLedger) {
     EXPECT_TRUE(!ledger->hash.empty());
     EXPECT_TRUE(ledger->height > 69859L);
     EXPECT_TRUE(ledger->time > DateUtils::fromJSON("2015-07-16T23:49:00Z"));
-    uv::wait(pool->freshResetAll());
 }
 
 
-TEST_F(StellarFixture, GetTransactions) {
+TEST_F(StellarFixture, DISABLED_GetTransactions) {
     auto pool = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
             pool->getDispatcher()->getSerialExecutionContext("explorer"),
@@ -122,10 +119,9 @@ TEST_F(StellarFixture, GetTransactions) {
     EXPECT_EQ(tx->memoType, "none");
     EXPECT_EQ(tx->memo, "");
     EXPECT_EQ(tx->pagingToken, "98448948301160448");
-    uv::wait(pool->freshResetAll());
 }
 
-TEST_F(StellarFixture, GetOperations) {
+TEST_F(StellarFixture, DISABLED_GetOperations) {
     auto pool = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
             pool->getDispatcher()->getSerialExecutionContext("explorer"),
@@ -162,10 +158,9 @@ TEST_F(StellarFixture, GetOperations) {
         EXPECT_EQ(op->type, stellar::OperationType::PAYMENT);
         EXPECT_EQ(op->asset.type, "native");
     }
-    uv::wait(pool->freshResetAll());
 }
 
-TEST_F(StellarFixture, GetRecommendedFees) {
+TEST_F(StellarFixture, DISABLED_GetRecommendedFees) {
     auto pool = newPool();
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
             pool->getDispatcher()->getSerialExecutionContext("explorer"),
@@ -179,5 +174,4 @@ TEST_F(StellarFixture, GetRecommendedFees) {
     EXPECT_TRUE(fees->modeAcceptedFee >= BigInt(100));
     EXPECT_TRUE(fees->minAccepted >= BigInt(100));
     EXPECT_TRUE(fees->maxFee >= BigInt(100));
-    uv::wait(pool->freshResetAll());
 }

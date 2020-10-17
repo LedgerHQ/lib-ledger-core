@@ -52,7 +52,7 @@ class EthereumLikeWalletSynchronization : public BaseFixture {
 
 };
 
-TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
+TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     http->addCache(HTTP_CACHE_EthereumLikeWalletSynchronization_MediumXpubSynchronization_1::URL,
         HTTP_CACHE_EthereumLikeWalletSynchronization_MediumXpubSynchronization_1::BODY);
     http->addCache(HTTP_CACHE_EthereumLikeWalletSynchronization_MediumXpubSynchronization_2::URL,
@@ -168,7 +168,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
     }
 }
 
-TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
+TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     auto erc20Count = 0;
     {
@@ -288,7 +288,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_XpubSynchronization) {
     }
 }
 
-TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
+TEST_F(EthereumLikeWalletSynchronization, DISABLED_XpubETCSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
