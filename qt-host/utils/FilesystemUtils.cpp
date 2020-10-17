@@ -97,18 +97,9 @@ bool ledger::qt::FilesystemUtils::isExecutableOrLib(const std::string& path){
 
 void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
     error_code ec;
-    for (const auto & file : fs::directory_iterator(path))
+    for (const auto & file : fs::recursive_directory_iterator(path))
     {
-        if (fs::is_directory(file.path())) {
-            // remove files recursively
-            clearFs(file.path().string());
-            // remove empty folder
-            if (fs::is_empty(file.path()))
-            {
-                fs::remove(file.path(), ec);
-            }
-        }
-        else {
+        if (!fs::is_directory(file.path())) {
             if (!FilesystemUtils::isExecutableOrLib(file.path().string())){
                 fs::remove(file.path(), ec);
             }

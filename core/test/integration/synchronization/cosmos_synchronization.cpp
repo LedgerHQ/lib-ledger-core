@@ -322,7 +322,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetCurrentBlockWithExplorer) {
     EXPECT_TRUE(block->height > 0);
 }
 
-TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     auto walletName = "8d99cc44-9061-43a4-9edd-f938d2007926";
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
@@ -604,7 +604,7 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_ValidatorInfo) {
     EXPECT_GE(valInfo.signInfo.jailedUntil, DateUtils::fromJSON("1970-01-01T00:00:00Z")) << "This value cannot be before epoch";
 }
 
-TEST_F(CosmosLikeWalletSynchronization, BalanceHistoryOperationQuery) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_BalanceHistoryOperationQuery) {
 
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
 
