@@ -446,7 +446,7 @@ TEST_F(CosmosLikeWalletSynchronization, Balances)
     // Unbondings are moving too much to assert the amount.
 }
 
-TEST_F(CosmosLikeWalletSynchronization, AllTransactionsSynchronization) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_AllTransactionsSynchronization) {
     // FIXME Use an account that has all expected types of transactions
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
 

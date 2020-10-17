@@ -98,7 +98,7 @@ TEST_F(StellarFixture, GetLastLedger) {
 
 
 TEST_F(StellarFixture, GetTransactions) {
-    auto pool = newPool();
+    auto pool = newPool("transactions_test");
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
             pool->getDispatcher()->getSerialExecutionContext("explorer"),
             pool->getHttpClient(MAINNET_URL),
@@ -122,7 +122,7 @@ TEST_F(StellarFixture, GetTransactions) {
 }
 
 TEST_F(StellarFixture, GetOperations) {
-    auto pool = newPool();
+    auto pool = newPool("operations_test");
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
             pool->getDispatcher()->getSerialExecutionContext("explorer"),
             pool->getHttpClient(MAINNET_URL),
@@ -161,7 +161,7 @@ TEST_F(StellarFixture, GetOperations) {
 }
 
 TEST_F(StellarFixture, GetRecommendedFees) {
-    auto pool = newPool();
+    auto pool = newPool("recommendedfees_test");
     auto explorer = std::make_shared<HorizonBlockchainExplorer>(
             pool->getDispatcher()->getSerialExecutionContext("explorer"),
             pool->getHttpClient(MAINNET_URL),
