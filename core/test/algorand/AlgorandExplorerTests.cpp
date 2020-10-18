@@ -118,13 +118,13 @@ TEST_F(AlgorandExplorerTest, GetAssetConfigTransaction) {
     assertSameTransaction(txRef, tx);
 }
 
-TEST_F(AlgorandExplorerTest, GetAssetTransferTransaction) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetAssetTransferTransaction) {
     auto txRef = assetTransferTransaction();
     model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
 }
 
-TEST_F(AlgorandExplorerTest, GetAccountTransactions) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetAccountTransactions) {
 
     auto address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM"; // Obelix
     model::TransactionsBulk txs = uv::wait(explorer->getTransactionsForAddress(address, 0));

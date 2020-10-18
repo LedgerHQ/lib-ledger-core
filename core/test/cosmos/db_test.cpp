@@ -206,7 +206,7 @@ TEST_F(CosmosDBTest, FeesMsgTypeTest) {
         assertSameFeesMessage(msgFees, msgRetrieved);
     }
 }
-TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
+TEST_F(CosmosDBTest, DISABLED_UnsuportedMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet, "f727a3d9-7e98-4bbf-b92c-c3976483ac89");
@@ -238,7 +238,7 @@ TEST_F(CosmosDBTest, UnsuportedMsgTypeTest) {
     }
 }
 
-TEST_F(CosmosDBTest, MultipleMsgTest) {
+TEST_F(CosmosDBTest, DISABLED_MultipleMsgTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet, "ee64142f-a695-4755-9eb1-6c5a2a2291c3");

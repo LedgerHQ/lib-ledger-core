@@ -128,7 +128,6 @@ public:
      }
 
     void TearDown() override {
-        uv::wait(pool->deleteWallet("e847815f-488a-4301-b67c-378a5e9c8a61"));
         uv::wait(pool->freshResetAll());
         BaseFixture::TearDown();
     }
@@ -403,7 +402,7 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     }
 }
 
-TEST_F(CosmosLikeWalletSynchronization, Balances)
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_Balances)
 {
     std::string hexPubKey =
         "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";  // Obelix
@@ -635,7 +634,7 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_BalanceHistoryOperationQuery) {
     ASSERT_GE(operations.size(), 17) << "As of 2020-03-19, there are 17 operations picked up by the query";
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GetAccountDelegations) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetAccountDelegations) {
 
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
 
@@ -655,7 +654,7 @@ TEST_F(CosmosLikeWalletSynchronization, GetAccountDelegations) {
 
 }
 
-TEST_F(CosmosLikeWalletSynchronization, GetAccountPendingRewards) {
+TEST_F(CosmosLikeWalletSynchronization, DISABLED_GetAccountPendingRewards) {
 
     std::string hexPubKey = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a"; // Obelix
 

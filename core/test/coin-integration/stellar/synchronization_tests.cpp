@@ -35,7 +35,7 @@
 #include <api/StellarLikeMemo.hpp>
 #include <api/StellarLikeMemoType.hpp>
 
-TEST_F(StellarFixture, SynchronizeStellarAccount) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_stellar", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
@@ -104,7 +104,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     EXPECT_TRUE(txFound);
 }
 
-TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
+TEST_F(StellarFixture, DISABLED_SynchronizeEmptyStellarAccount) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_stellar_empty", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
@@ -142,7 +142,7 @@ TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
     }
 }
 
-TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithSubEntry) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_stellar_subentry", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
@@ -167,7 +167,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
     EXPECT_TRUE(reserve->toLong() > 2 * 5000000);
 }
 
-TEST_F(StellarFixture, SynchronizeStellarAccountWithManageBuyOffer) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithManageBuyOffer) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_1", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
@@ -193,7 +193,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithManageBuyOffer) {
     EXPECT_TRUE(operations.size() >= 5);
 }
 
-TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithMultisig) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_2", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
@@ -232,7 +232,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
 }
 
 // Synchronize an account with protocol 13 upgrade object
-TEST_F(StellarFixture, SynchronizeProtocol13) {
+TEST_F(StellarFixture, DISABLED_SynchronizeProtocol13) {
     // GBV4NH4G5SWYM6OQJKZKG2PA2O2VQ2W6K5S43WLMLJRWU4XTG5EST5QP
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_proto_13", "stellar", api::DynamicObject::newInstance());
