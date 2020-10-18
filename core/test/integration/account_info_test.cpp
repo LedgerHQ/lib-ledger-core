@@ -44,6 +44,7 @@ TEST_F(AccountInfoTests, FirstAccountInfo) {
     EXPECT_EQ(info.derivations[0], "44'/0'");
     EXPECT_EQ(info.owners[1], "main");
     EXPECT_EQ(info.derivations[1], "44'/0'/0'");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountInfoTests, FirstEthAccountInfo) {
@@ -54,6 +55,7 @@ TEST_F(AccountInfoTests, FirstEthAccountInfo) {
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/60'/0'");
     //api::Configuration::KEYCHAIN_DERIVATION_SCHEME, "44'/<coin_type>'/<account>'/<node>/<address>"
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
@@ -65,6 +67,7 @@ TEST_F(AccountInfoTests, FirstXRPAccountInfo) {
     EXPECT_EQ(info.derivations.size(), 1);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/144'/0'");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountInfoTests, FirstXTZAccountInfo) {
@@ -76,6 +79,7 @@ TEST_F(AccountInfoTests, FirstXTZAccountInfo) {
     EXPECT_EQ(info.derivations.size(), 1);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/1729'/0'");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
@@ -87,6 +91,7 @@ TEST_F(AccountInfoTests, FirstEthCustomDerivationAccountInfo) {
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners[0], "main");
     EXPECT_EQ(info.derivations[0], "44'/60'/0'");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountInfoTests, AnotherAccountInfo) {
@@ -98,6 +103,7 @@ TEST_F(AccountInfoTests, AnotherAccountInfo) {
     EXPECT_EQ(info.derivations[0], "44'/0'");
     EXPECT_EQ(info.owners[1], "main");
     EXPECT_EQ(info.derivations[1], "44'/0'/20'");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountInfoTests, GetAddressFromRange) {
@@ -120,4 +126,5 @@ TEST_F(AccountInfoTests, GetAddressFromRange) {
     }
 
     EXPECT_EQ(addresses[2 * (to - from + 1) - 1]->toString(), "1167QbGjTWVK3etniJwua6wybBKkS7Lr8w");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }

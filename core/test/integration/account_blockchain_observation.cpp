@@ -65,6 +65,7 @@ TEST_F(AccountBlockchainObservationTests, EmitNewTransaction) {
     account->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
     getTestExecutionContext()->waitUntilStopped();
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountBlockchainObservationTests, EmitNewTransactionAndReceiveOnPool) {
@@ -84,6 +85,7 @@ TEST_F(AccountBlockchainObservationTests, EmitNewTransactionAndReceiveOnPool) {
     pool->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
     getTestExecutionContext()->waitUntilStopped();
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
@@ -114,6 +116,7 @@ TEST_F(AccountBlockchainObservationTests, AutoReconnect) {
     account->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
     getTestExecutionContext()->waitUntilStopped();
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
@@ -154,4 +157,5 @@ TEST_F(AccountBlockchainObservationTests, EmitNewBlock) {
     account->getEventBus()->subscribe(getTestExecutionContext(), receiver);
     account->startBlockchainObservation();
     getTestExecutionContext()->waitUntilStopped();
+    uv::wait(pool->deleteWallet("my_wallet"));
 }

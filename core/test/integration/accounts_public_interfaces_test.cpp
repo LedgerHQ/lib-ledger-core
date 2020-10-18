@@ -51,6 +51,7 @@ public:
 
     void TearDown() override {
         BaseFixture::TearDown();
+        uv::wait(pool->deleteWallet("my_wallet"));
         pool = nullptr;
         wallet = nullptr;
     }

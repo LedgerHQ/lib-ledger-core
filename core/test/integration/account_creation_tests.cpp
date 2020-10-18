@@ -39,6 +39,7 @@ TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfo) {
     auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
     auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
     EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
 
 TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfoOnExistingWallet) {
@@ -53,6 +54,7 @@ TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfoOnExistingWallet) {
         auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithInfo(P2PKH_MEDIUM_KEYS_INFO)));
         auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
         EXPECT_EQ(address, "1DDBzjLyAmDr4qLRC2T2WJ831cxBM5v7G7");
+        uv::wait(pool->deleteWallet("my_wallet"));
     }
 }
 
@@ -82,4 +84,5 @@ TEST_F(AccountCreationTest, ChangePassword) {
     changePasswordAndGetInfos(pool, "", "new_test");
     changePasswordAndGetInfos(pool, "new_test", "new_test_0");
     changePasswordAndGetInfos(pool, "new_test_0", "");
+    uv::wait(pool->deleteWallet("my_wallet"));
 }
