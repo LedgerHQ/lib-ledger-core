@@ -111,8 +111,9 @@ build_script:
 - if %BUILD_CONFIG% == Release cp "..\lib-ledger-core-build\%CRYPTO_DLL_PATH%" ".\%LIB_VERSION%\win\%TOOL_CONFIG%" || echo "FAIL TO COPY CRYPTO DLL"
 
 #Launch tests(To do: fix the tests and enable them in debug)
+- cd ..\lib-ledger-core-build
 - if %BUILD_CONFIG% == Debug ctest -C Debug -VV
-
+- cd ..\lib-ledger-core
 #Build is failing because of configuration
 ##Create node module
 #- cd C:/projects/lib-ledger-core/ledger-core-samples/nodejs
