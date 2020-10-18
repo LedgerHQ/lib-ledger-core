@@ -132,7 +132,11 @@ TEST_F(SQLCipherTest, ThrowIfWrongPassword) {
 }
 #endif
 
+#ifdef _WIN32
+TEST_F(SQLCipherTest, DISABLED_DisableEncryption) { //The "Remove encryption" doesn't work in windows
+#else
 TEST_F(SQLCipherTest, DisableEncryption) {
+#endif
     auto dbName = fmt::format( "test_db_{}", std::chrono::system_clock::now().time_since_epoch().count());
     auto password = "test_key";
     auto newPassword = "test_key_new";

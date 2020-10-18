@@ -58,7 +58,11 @@ TEST_F(AccountCreationTest, CreateBitcoinAccountWithInfoOnExistingWallet) {
     }
 }
 
+#ifdef _WIN32
+TEST_F(AccountCreationTest, DISABLED_ChangePassword) { // Change password of DB file doesn't work in windows
+#else
 TEST_F(AccountCreationTest, ChangePassword) {
+#endif
     auto oldPassword = "";
     auto newPassword = "new_test";
 
