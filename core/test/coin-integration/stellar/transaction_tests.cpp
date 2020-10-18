@@ -34,7 +34,7 @@
 #include <wallet/currencies.hpp>
 #include <api_impl/BigIntImpl.hpp>
 
-TEST_F(StellarFixture, PaymentTransaction) {
+TEST_F(StellarFixture, DISABLED_PaymentTransaction) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_stellar_transaction", "stellar", api::DynamicObject::newInstance());
     auto info = uv::wait(wallet->getNextAccountCreationInfo());
@@ -78,7 +78,7 @@ TEST_F(StellarFixture, PaymentTransaction) {
     fmt::print("{}\n", hex::toString(tx->toRawTransaction()));
 }
 
-TEST_F(StellarFixture, ParseRawTransaction) {
+TEST_F(StellarFixture, DISABLED_ParseRawTransaction) {
     auto strTx = "00000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f0"
                  "0000064015dc2cc000000030000000000000000000000010000000000000001000000003a"
                  "83935fabfdc44749ad4d042dbc4df9b59442f325a27960519fba516adb8a5000000000000"
@@ -93,7 +93,7 @@ TEST_F(StellarFixture, ParseRawTransaction) {
     EXPECT_EQ(hex::toString(tx->toRawTransaction()), strTx);
 }
 
-TEST_F(StellarFixture, ParseSignatureBase) {
+TEST_F(StellarFixture, DISABLED_ParseSignatureBase) {
     auto strTx = "7ac33997544e3175d266bd022439b22cdb16508c01163f26e5cb2a3e1045a9790000000200"
                  "000000a1083d11720853a2c476a07e29b64e0f9eb2ff894f1e485628faa7b63de77a4f0000"
                  "0064015dc2cc000000030000000000000000000000010000000000000001000000003a8393"

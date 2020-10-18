@@ -82,7 +82,7 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
     std::string accountUid;
 };
 
-TEST_F(AlgorandDatabaseTest, AccountDBTest) {
+TEST_F(AlgorandDatabaseTest, DISABLED_AccountDBTest) {
 
     // Test reading from DB
     {
@@ -97,7 +97,7 @@ TEST_F(AlgorandDatabaseTest, AccountDBTest) {
     }
 }
 
-TEST_F(AlgorandDatabaseTest, TransactionsDBTest) {
+TEST_F(AlgorandDatabaseTest, DISABLED_TransactionsDBTest) {
 
     auto paymentTxRef = paymentTransaction();
     auto assetConfigTxRef = assetConfigTransaction();
@@ -132,7 +132,7 @@ TEST_F(AlgorandDatabaseTest, TransactionsDBTest) {
     }
 }
 
-TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
+TEST_F(AlgorandDatabaseTest, DISABLED_OperationsDBTest) {
 
     auto txRef = paymentTransaction();
 
@@ -170,7 +170,7 @@ TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
     }
 }
 
-TEST_F(AlgorandDatabaseTest, queryTransactions)
+TEST_F(AlgorandDatabaseTest, DISABLED_queryTransactions)
 {
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     auto payment = paymentTransaction();
