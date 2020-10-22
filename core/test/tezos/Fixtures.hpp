@@ -47,6 +47,13 @@ namespace ledger {
                 "p2pk66ffLoWNNC1useG68cKfRqmfoujyYha9KuCAWb3RM6oth5KnR1Q",
             };
 
+            const TestKey KEY_SECP256K1_SECOND{
+                "tz29J6gQdA4Y9Qi5AhNZGMhQUpr9TwLPNByC",
+                "spsk2zADDbxbuEtcLK9G3tqvs5kX3j4Vr6TqRzQz5VvEjNhrA4vWfJ",
+                "0247EA904A9456E06232533A80A2C5BC9F50417755504025D8F556D259DA66E457",
+                "sppk7ZrJrq1qbRRzpXP2JfWuF9DhvgLpePj4c52oYmXLweCDWaydAGy",
+            };
+
             struct TezosTestData {
                 api::TezosCurve curve;
                 std::string cfgCurve;
@@ -101,6 +108,7 @@ namespace ledger {
                 }
 
                 void recreate() {
+                    SetUpConfig();
                     std::cout << "New Pool" << std::endl;
                     pool = newDefaultPool();
                     std::cout << "Wait for Wallet" << std::endl;

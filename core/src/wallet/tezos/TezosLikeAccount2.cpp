@@ -265,7 +265,7 @@ namespace ledger {
                         self->getMainExecutionContext(),
                         [self, request, explorer, accountAddress, currency, senderAddress](const std::shared_ptr<BigInt> &balance) {
                             // Check if all needed values are set
-                            if (!request.gasLimit || !request.storageLimit || !request.fees
+                            if (!request.transactionGasLimit || !request.storageLimit || !request.transactionFees
                                 || (!request.value && !request.wipe)) {
                                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                                      "Missing mandatory informations (e.g. gasLimit, gasPrice or value).");
@@ -302,10 +302,14 @@ namespace ledger {
                                         // Note: we can't rely on DB + sent transactions, because
                                         // it is possible to have deleted accounts that hit 0 balance
                                         // during Babylon update (arf ...)
-                                        auto setRevealStatus = [self, explorer, tx, senderAddress, managerAddress]() {
+                                        auto setRevealStatus = [self, explorer, tx, senderAddress, managerAddress, request]() {
                                             // So here we are looking for unallocated accounts
-                                            return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getMainExecutionContext(), [tx] (const std::string &managerKey) -> Unit {
+                                            return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getMainExecutionContext(), [tx, request] (const std::string &managerKey) -> Unit {
                                                 tx->reveal(managerKey.empty());
+                                                if (tx->toReveal() && (!request.revealGasLimit || !request.revealFees)) {
+                                                    throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
+                                                    "Missing mandatory informations (reveal gasPrice or reveal Fees).");
+                            }
                                                 return unit;
                                             });
                                         };
@@ -316,14 +320,17 @@ namespace ledger {
                                             // Multiply by 2 fees, since in case of reveal op, we input same fees as the ones used
                                             // for transaction op
                                             auto fees = burned +
-                                                        (tx->toReveal() ? *request.fees * BigInt(static_cast<unsigned long long>(2)) : *request.fees);
+                                                        (tx->toReveal() ? *request.transactionFees + *request.revealFees : *request.transactionFees);
                                             // If sender is KT account then the managing account is paying the fees ...
                                             if (senderAddress.find("KT1") == 0) {
-                                                fees = fees - *request.fees;
+                                                fees = fees - *request.transactionFees;
                                             }
                                             auto maxPossibleAmountToSend = *balance - fees;
+
                                             auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
+                                            //std::cout << "request.value=" << (*request.value).to_string() <<  std::endl;
                                             if (maxPossibleAmountToSend < amountToSend) {
+                                                std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
                                                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                                             }
 
@@ -331,8 +338,10 @@ namespace ledger {
                                             // Burned XTZs are not part of the fees
                                             // And if we have a reveal operation, it will be doubled automatically
                                             // since we serialize 2 ops with same fees
-                                            tx->setFees(request.fees);
-                                            tx->setGasLimit(request.gasLimit);
+                                            tx->setTransactionFees(request.transactionFees);
+                                            tx->setTransactionGasLimit(request.transactionGasLimit);
+                                            tx->setRevealFees(request.revealFees);
+                                            tx->setRevealGasLimit(request.revealGasLimit);
                                             tx->setStorage(request.storageLimit);
 
                                             auto getCurveHelper = [] (const std::string &xpubConfig) -> api::TezosCurve {
