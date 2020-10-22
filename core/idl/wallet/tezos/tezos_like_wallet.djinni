@@ -105,8 +105,8 @@ TezosLikeTransactionBuilder = interface +c {
 	# Reset the current instance to its initial state
 	reset();
 
-	static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): TezosLikeTransaction;
-	static parseRawSignedTransaction(currency: Currency, rawTransaction: binary): TezosLikeTransaction;
+	static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary, protocolUpdate: string): TezosLikeTransaction;
+	static parseRawSignedTransaction(currency: Currency, rawTransaction: binary, protocolUpdate: string): TezosLikeTransaction;
 }
 
 #Class representing a Tezos account

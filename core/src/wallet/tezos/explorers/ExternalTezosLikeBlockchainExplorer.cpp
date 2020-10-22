@@ -105,11 +105,12 @@ namespace ledger {
             auto bodyString = body.str();
             return _http->POST("/injection/operation?chain=main",
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
-                               std::unordered_map<std::string, std::string>{},
+                               std::unordered_map<std::string, std::string>{{"Content-Type", "application/json"}},
                                getRPCNodeEndpoint())
                     .json().template map<String>(getExplorerContext(),
                                                  [](const HttpRequest::JsonResult &result) -> String {
                                                      auto &json = *std::get<1>(result);
+                                                     
                                                      if (!json.IsString()) {
                                                          throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                                               "Failed to parse broadcast transaction response, missing transaction hash");

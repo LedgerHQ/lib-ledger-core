@@ -32,6 +32,8 @@
 #include <bytes/BytesReader.h>
 #include <collections/vector.hpp>
 #include <utils/Exception.hpp>
+#include <collections/vector.hpp>
+
 // #include <utils/VectorUtils.hpp>
 
 #include "DER.hpp"
@@ -39,7 +41,7 @@
 namespace ledger {
     namespace core {
 
-        static std::vector<uint8> _pad(const std::vector<uint8_t> &input, int size) {
+        static std::vector<uint8_t> _pad(const std::vector<uint8_t> &input, int size) {
             auto output = input;
             while(output.size() < size) {
                 output.emplace(output.begin(), 0x00);
@@ -57,7 +59,7 @@ namespace ledger {
             //     }
             //     return output;
             // };
-            return vector::concat(_pad(r), _pad(s));
+            return vector::concat(_pad(r, 32), _pad(s, 32));
         }
 
 
