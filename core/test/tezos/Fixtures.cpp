@@ -14,7 +14,8 @@ namespace ledger {
             static const TezosTestData ED25519Data{
                 TezosCurve::ED25519,
                 TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519,
-                KEY_ED25519,
+                //KEY_ED25519,
+                KEY_ED25519_THIRD,
             };
 
             static const TezosTestData SECP256K1Data{
@@ -42,6 +43,36 @@ namespace ledger {
 			        0, {"xtz"}, {"44'/1729'/0'"}, 
 			{ledger::core::hex::toByteArray("02af5696511e23b9e3dc5a527abc6929fae708defb5299f96cfa7dd9f936fe747d")} , {ledger::core::hex::toByteArray("abcc4933bec06eeca6628b9e44f8e71d5e3cf510c0450dd1e29d9aa0f1717da9")}
 			);
+
+            std::shared_ptr<core::TezosLikeAccount> inflate_ED25519(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
+				core::api::AccountCreationInfo accountInfo ( 
+			        0, {"xtz"}, {"44'/1729'/0'"}, 
+                    {ledger::core::hex::toByteArray(ED25519Data.key.hexkey)} , {ledger::core::hex::toByteArray("")}
+                                                     
+                );
+                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(wait(wallet->newAccountWithInfo(accountInfo)));
+				return account;
+			}
+            std::shared_ptr<core::TezosLikeAccount> inflate_SECP256K1(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
+				core::api::AccountCreationInfo accountInfo ( 
+			        0, {"xtz"}, {"44'/1729'/0'"}, 
+                    {ledger::core::hex::toByteArray(SECP256K1Data.key.hexkey)} , {ledger::core::hex::toByteArray("")}
+                                                     
+                );
+                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(wait(wallet->newAccountWithInfo(accountInfo)));
+				return account;
+			}
+            std::shared_ptr<core::TezosLikeAccount> inflate_P256(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
+				core::api::AccountCreationInfo accountInfo ( 
+			        0, {"xtz"}, {"44'/1729'/0'"}, 
+                    {ledger::core::hex::toByteArray(P256Data.key.hexkey)} , {ledger::core::hex::toByteArray("")}
+                                                     
+                );
+                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(wait(wallet->newAccountWithInfo(accountInfo)));
+				return account;
+			}
+
+            
 
             std::shared_ptr<core::TezosLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
 				core::api::AccountCreationInfo accountInfo ( 
