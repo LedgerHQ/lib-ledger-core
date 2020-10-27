@@ -306,6 +306,7 @@ namespace ledger {
                                             // So here we are looking for unallocated accounts
                                             return explorer->getManagerKey(senderAddress.find("KT1") == 0 ? managerAddress : senderAddress).map<Unit>(self->getMainExecutionContext(), [tx, request] (const std::string &managerKey) -> Unit {
                                                 tx->reveal(managerKey.empty());
+                                                std::cout << "Set Reveal:"<< tx->toReveal() << std::endl;
                                                 if (tx->toReveal() && (!request.revealGasLimit || !request.revealFees)) {
                                                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                                     "Missing mandatory informations (reveal gasPrice or reveal Fees).");

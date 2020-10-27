@@ -14,6 +14,9 @@ add_executable(${TEZOS_TESTS_NAME}
     Fixtures.cpp
     address_test.cpp
     transaction_test.cpp
+    ED25519_transaction_test.cpp
+    SECP256K1_transaction_test.cpp
+    P256_transaction_test.cpp
     ../integration/BaseFixture.cpp
     ../integration/IntegrationEnvironment.cpp
 )

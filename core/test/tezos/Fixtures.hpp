@@ -9,6 +9,7 @@
 #include <wallet/tezos/TezosLikeWallet.h>
 #include <wallet/tezos/TezosLikeAccount.h>
 #include <wallet/tezos/transaction_builders/TezosLikeTransactionBuilder.h>
+#include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <test/integration/IntegrationEnvironment.h>
 
 #include "../integration/BaseFixture.h"
@@ -45,6 +46,20 @@ namespace ledger {
                 "p2sk2NEsV4VibjetudyeERg7iDy64sY2MxKFvC3xbB1oqj2Q4uQeaX",
                 "0313E0FE2062532D390A726EB7F78BE03609796A930F6FABA4349FDF1C96365973",
                 "p2pk66ffLoWNNC1useG68cKfRqmfoujyYha9KuCAWb3RM6oth5KnR1Q",
+            };
+
+            const TestKey KEY_ED25519_SECOND{
+                "tz1i3a9PkjGVt8aWNDxnDF9VHdf3KemtZe33",
+                "edsk31hm6WVH9pQqfW6f3cY3JyYeFGKNxpprGEsHJVNo7h5qBDhRfT",
+                "9B7472C65583E7DAA80DD51583F7D3C4FC27596DFFE1A3C26CF6800337FE7726",
+                "edpkupgph2pZR7oRA36aJEsxE54D5WDixv3KCJThH7hssvj87d4Xeu",
+            };
+
+            const TestKey KEY_ED25519_THIRD{
+                "tz1YnM9JMYof5yKXzs3XptoJ1RMf1Ri7RuGF",
+                "edsk4HyqqyU1Re7SakU5CYkt4NeWPtcx3Q4Chq5iQFyL9sQo9QoBKL",
+                "FC4E4F37DED512650CA89DFFE6C622A96A20F375D56331174C17C7B25F3775C7",
+                "edpkvZLkbFgjXLTqa193cDmrsWAo5Q7upHZMxacrobhQZUyTVU4ELs",
             };
 
             const TestKey KEY_SECP256K1_SECOND{
@@ -90,54 +105,27 @@ namespace ledger {
                 const std::shared_ptr<core::AbstractWallet>& wallet
             );
 
+            std::shared_ptr<core::TezosLikeAccount> inflate_ED25519(
+                const std::shared_ptr<core::WalletPool>& pool,
+                const std::shared_ptr<core::AbstractWallet>& wallet
+            );
+
+            std::shared_ptr<core::TezosLikeAccount> inflate_SECP256K1(
+                const std::shared_ptr<core::WalletPool>& pool,
+                const std::shared_ptr<core::AbstractWallet>& wallet
+            );
+
+            std::shared_ptr<core::TezosLikeAccount> inflate_P256(
+                const std::shared_ptr<core::WalletPool>& pool,
+                const std::shared_ptr<core::AbstractWallet>& wallet
+            );
+
             struct TransactionTestData {
                 std::shared_ptr<api::DynamicObject> configuration;
                 std::string walletName;
                 std::string currencyName;
                 std::function<std::shared_ptr<TezosLikeAccount> (const std::shared_ptr<WalletPool>&,
                                                                 const std::shared_ptr<AbstractWallet>& )> inflate_xtz;
-            };
-
-            struct TezosMakeBaseTransaction : public BaseFixture {
-
-                void SetUp() override {
-                    std::cout << "SetUp" << std::endl;
-                    BaseFixture::SetUp();
-                    std::cout << "Recreate" << std::endl;
-                    recreate();
-                }
-
-                void recreate() {
-                    SetUpConfig();
-                    std::cout << "New Pool" << std::endl;
-                    pool = newDefaultPool();
-                    std::cout << "Wait for Wallet" << std::endl;
-                    wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-                    std::cout << "Inflate XTZ" << std::endl;
-                    account = testData.inflate_xtz(pool, wallet);
-                    std::cout << "wallet get currency" << std::endl;
-                    currency = wallet->getCurrency();
-                }
-
-                void TearDown() override {
-                    BaseFixture::TearDown();
-                    pool = nullptr;
-                    wallet = nullptr;
-                    account = nullptr;
-                }
-
-                std::shared_ptr<TezosLikeTransactionBuilder> tx_builder() {
-                    std::cout << "tx_builder" << std::endl;
-                    return std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(account->buildTransaction());
-                }
-                std::shared_ptr<WalletPool> pool;
-                std::shared_ptr<AbstractWallet> wallet;
-                std::shared_ptr<TezosLikeAccount> account;
-                api::Currency currency;
-                TransactionTestData testData;
-
-            protected:
-                virtual void SetUpConfig() = 0;
             };
 
         }

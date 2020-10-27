@@ -129,11 +129,14 @@ namespace ledger {
                     .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         if (!json.IsString()) {
+                        std::cout << "getManagerKey: not a string" << std::endl;
                             // Possible if address was not revealed yet
                             return "";
                         }
+                        std::cout << "getManagerKey: " << json.GetString() << std::endl;
                         return json.GetString();
                     }).recover(context, [] (const Exception &exception) {
+                        std::cout << "getManagerKey exception" << std::endl;
                         // for KT we got an 404 instead of just a null value as we would expect
                         return "";
                     });
