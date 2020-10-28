@@ -119,6 +119,7 @@ namespace ledger {
                         soci::transaction tr(sql);
 
                         for (const auto &tx : txs.getValue()) {
+                            account->logger()->debug("XLM transaction hash: {}, paging_token: {}", tx->hash, tx->pagingToken);
                             auto const flag = account->putTransaction(sql, *tx);
 
                             if (::ledger::core::account::isInsertedOperation(flag)) {
