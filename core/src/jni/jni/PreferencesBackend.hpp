@@ -28,6 +28,32 @@ private:
     friend ::djinni::JniClass<PreferencesBackend>;
     friend ::djinni::JniInterface<::ledger::core::api::PreferencesBackend, PreferencesBackend>;
 
+    class JavaProxy final : ::djinni::JavaProxyHandle<JavaProxy>, public ::ledger::core::api::PreferencesBackend
+    {
+    public:
+        JavaProxy(JniType j);
+        ~JavaProxy();
+
+        std::experimental::optional<std::vector<uint8_t>> get(const std::vector<uint8_t> & key) override;
+        bool commit(const std::vector<::ledger::core::api::PreferencesChange> & changes) override;
+        void setEncryption(const std::shared_ptr<::ledger::core::api::RandomNumberGenerator> & rng, const std::string & password) override;
+        void unsetEncryption() override;
+        bool resetEncryption(const std::shared_ptr<::ledger::core::api::RandomNumberGenerator> & rng, const std::string & oldPassword, const std::string & newPassword) override;
+        std::string getEncryptionSalt() override;
+        void clear() override;
+
+    private:
+        friend ::djinni::JniInterface<::ledger::core::api::PreferencesBackend, ::djinni_generated::PreferencesBackend>;
+    };
+
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/PreferencesBackend") };
+    const jmethodID method_get { ::djinni::jniGetMethodID(clazz.get(), "get", "([B)[B") };
+    const jmethodID method_commit { ::djinni::jniGetMethodID(clazz.get(), "commit", "(Ljava/util/ArrayList;)Z") };
+    const jmethodID method_setEncryption { ::djinni::jniGetMethodID(clazz.get(), "setEncryption", "(Lco/ledger/core/RandomNumberGenerator;Ljava/lang/String;)V") };
+    const jmethodID method_unsetEncryption { ::djinni::jniGetMethodID(clazz.get(), "unsetEncryption", "()V") };
+    const jmethodID method_resetEncryption { ::djinni::jniGetMethodID(clazz.get(), "resetEncryption", "(Lco/ledger/core/RandomNumberGenerator;Ljava/lang/String;Ljava/lang/String;)Z") };
+    const jmethodID method_getEncryptionSalt { ::djinni::jniGetMethodID(clazz.get(), "getEncryptionSalt", "()Ljava/lang/String;") };
+    const jmethodID method_clear { ::djinni::jniGetMethodID(clazz.get(), "clear", "()V") };
 };
 
 }  // namespace djinni_generated
