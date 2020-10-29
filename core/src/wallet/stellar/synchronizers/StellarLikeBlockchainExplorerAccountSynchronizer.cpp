@@ -90,7 +90,7 @@ namespace ledger {
             auto self = shared_from_this();
 
             _explorer->getAccount(address)
-                .onComplete(account->getContext(), [self, account, state = std::move(state)] (const Try<std::shared_ptr<stellar::Account>>& accountInfo) mutable {
+                .onComplete(account->getContext(), [self, account, state] (const Try<std::shared_ptr<stellar::Account>>& accountInfo) mutable {
                    if (accountInfo.isFailure() && accountInfo.getFailure().getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND) {
                         self->endSynchronization(state);
                     } else if (accountInfo.isFailure()) {
@@ -108,9 +108,9 @@ namespace ledger {
                 StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             auto address = account->getKeychain()->getAddress()->toString();
             auto self = shared_from_this();
-           
+           fmt::print("Current paging token: {}\n", state.transactionPagingToken.getValueOr("no paging token"));
             _explorer->getTransactions(address, state.transactionPagingToken)
-                .onComplete(account->getContext(), [self, account, state = std::move(state)] (const Try<stellar::TransactionVector>& txs) mutable {
+                .onComplete(account->getContext(), [self, account, state] (const Try<stellar::TransactionVector>& txs) mutable {
                 if (txs.isFailure()) {
                     self->failSynchronization(txs.getFailure());
                 } else {
@@ -132,7 +132,7 @@ namespace ledger {
                     }
                     if (!txs.getValue().empty()) {
                         state.transactionPagingToken = txs.getValue().back()->pagingToken;
-
+                        fmt::print("Paging token for next round: {}\n", state.transactionPagingToken.getValueOr("no paging token"));
                         {
                             auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
                             preferences->editor()->putObject("state", state)->commit();
