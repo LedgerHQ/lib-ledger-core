@@ -74,6 +74,7 @@ namespace ledger {
             _currency = operation->getAccount()->getWallet()->getCurrency();
 
             _transactionFees = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _transactionGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
             _value = std::make_shared<Amount>(_currency, 0, tx.value);
 
             _receiver = TezosLikeAddress::fromBase58(tx.receiver, _currency);
@@ -83,6 +84,7 @@ namespace ledger {
 
             _revealedPubKey = tx.publicKey;
             _revealFees = std::make_shared<Amount>(_currency, 0, tx.fees);
+            _revealGasLimit = std::make_shared<Amount>(_currency, 0, tx.gas_limit);
 
             _status = tx.status;
         }
@@ -96,8 +98,11 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> TezosLikeTransactionApi::getFees() {
-            auto fees = _transactionFees->toLong();
-            if (_needReveal) {
+            int64_t fees = 0;
+            if (_needReveal && _transactionFees) {
+                fees += _transactionFees->toLong();
+            }
+            if (_needReveal && _revealFees) {
                 fees += _revealFees->toLong();
             }
             return std::make_shared<Amount>(_currency, 0, BigInt(fees));
@@ -127,8 +132,11 @@ namespace ledger {
         }
 
         std::shared_ptr<api::Amount> TezosLikeTransactionApi::getGasLimit() {
-            auto gasLimit = _transactionGasLimit->toLong();
-            if (_needReveal) {
+            int64_t gasLimit = 0;
+            if (_transactionGasLimit) {
+                gasLimit += _transactionGasLimit->toLong();
+            }
+            if (_needReveal && _revealGasLimit) {
                 gasLimit += _revealGasLimit->toLong();
             }
             return std::make_shared<Amount>(_currency, 0, BigInt(gasLimit));
