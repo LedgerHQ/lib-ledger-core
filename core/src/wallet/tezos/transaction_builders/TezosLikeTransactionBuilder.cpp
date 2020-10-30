@@ -186,7 +186,7 @@ namespace ledger {
 
             uint8_t OpTag;
             auto offset = static_cast<uint8_t>(isBabylonActivated ? 100 : 0);
-            //do {
+            do {
                 // Operation Tag
                 OpTag = reader.readNextByte();
                 tx->setType(static_cast<api::TezosOperationTag>(OpTag - offset));
@@ -223,14 +223,22 @@ namespace ledger {
                                 static_cast<api::TezosCurve>(senderCurveCode));
 
                 // Fee
-                tx->setTransactionFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
-
+                if(OpTag - offset == static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
+                    tx->setRevealFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+                }
+                else {
+                    tx->setTransactionFees(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+                }
                 // Counter
                 tx->setCounter(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
                 // Gas Limit
-                tx->setTransactionGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
-
+                if(OpTag - offset == static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL)) {
+                    tx->setRevealGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
+                }
+                else {
+                    tx->setTransactionGasLimit(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));    
+                }
                 // Storage Limit
                 tx->setStorage(std::make_shared<BigInt>(BigInt::fromHex(hex::toString(zarith::zParse(reader)))));
 
@@ -258,7 +266,7 @@ namespace ledger {
                                                                         std::vector<uint8_t>(),
                                                                         Option<std::string>()),
                                         static_cast<api::TezosCurve>(curveCode));
-                        tx->reveal(false); // There is already a REVEAL operation: prevent bad re-serialization
+                        tx->reveal(true); 
                         break;
                     }
                     case static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_TRANSACTION): {
@@ -344,7 +352,8 @@ namespace ledger {
                     default:
                         break;
                 }
-            //} while ((OpTag - offset) == static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_REVEAL));
+            } while(isSigned ? reader.available()-64 > 0 : reader.available() > 0 );
+            
 
             // Parse signature
             if (isSigned) {

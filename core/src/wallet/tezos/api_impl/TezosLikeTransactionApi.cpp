@@ -196,12 +196,6 @@ namespace ledger {
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
             std::cout << "API.Serialize" << std::endl;
             BytesWriter writer;
-           
-            // Watermark: Generic-Operation
-            if (_signature.empty()) {
-                std::cout << "Signature is empty" << std::endl;
-                writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
-            }
 
             // Block Hash
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
@@ -239,6 +233,12 @@ namespace ledger {
             }
 
             std::cout << "RawTX is empty" << std::endl;
+
+            // Watermark: Generic-Operation
+            if (_signature.empty()) {
+                std::cout << "Signature is empty" << std::endl;
+                writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
+            }
 
             writer.writeByteArray(blockHash);
 

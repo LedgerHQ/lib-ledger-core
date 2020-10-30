@@ -80,17 +80,6 @@ TEST_P(AddressTest, ParseFromString) {
     EXPECT_EQ(address, tezosAddress->toString());
 }
 
-TEST_P(AddressTest, XpubFromBase58String) {
-    auto xpub = "xpub6DECL9NX5hvkRrq98MRvXCjTP8s84NZUFReEVLizQMVH8epXyoMvncB9DG4d8kY94XPVYqFWtUVaaagZkXvje4AUF3qdd71fJc8KyhRRC8V";
-    auto zpub = ledger::core::TezosLikeExtendedPublicKey::fromBase58(currencies::TEZOS,
-                                                                     xpub,
-                                                                     optional<std::string>("44'/1729'/0'"));
-    EXPECT_EQ(zpub->toBase58(), xpub);
-    EXPECT_EQ(zpub->derive("0/0")->toBase58(), "tz1hQ2ZpmNfiUuRf28yUJqNteVwX7fXWbmvk");
-    EXPECT_EQ(zpub->derive("0/1")->toBase58(), "tz1hQ2ZpmNfiUuRf28yUJqNteVwX7fXWbmvk");
-    EXPECT_EQ(zpub->derive("0/2")->toBase58(), "tz1hQ2ZpmNfiUuRf28yUJqNteVwX7fXWbmvk");
-}
-
 TEST_P(AddressTest, AddressValidation) {
     // This test is parametrized to ensure validation is not configuration related
     auto currency = currencies::TEZOS;
