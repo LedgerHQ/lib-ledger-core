@@ -290,8 +290,12 @@ namespace ledger {
                         std::cend(batches),
                         [](auto const &lhs, auto const &rhs) {
                             return lhs.blockHeight < rhs.blockHeight;
-                        }); 
-                    buddy->context.lastBlockHeight = batchIt->blockHeight;
+                        });
+                    soci::session sql(buddy->wallet->getDatabase()->getPool());
+                    buddy->context.lastBlockHeight = BlockDatabaseHelper::getLastBlock(sql,
+                            buddy->wallet->getCurrency().name).template map<uint64_t>([] (const Block& block) {
+                                return block.height;
+                            }).getValueOr(0);;
 
                     self->_currentAccount = nullptr;
                     return buddy->context;
