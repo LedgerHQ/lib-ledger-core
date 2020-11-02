@@ -92,7 +92,7 @@ namespace ledger {
             _explorer->getAccount(address)
                 .onComplete(account->getContext(), [self, account, state] (const Try<std::shared_ptr<stellar::Account>>& accountInfo) mutable {
                    if (accountInfo.isFailure() && accountInfo.getFailure().getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND) {
-                        self->endSynchronization(state);
+                        self->endSynchronization(account, state);
                     } else if (accountInfo.isFailure()) {
                         self->failSynchronization(accountInfo.getFailure());
                     } else {
@@ -140,19 +140,28 @@ namespace ledger {
                        
                         self->synchronizeTransactions(account, state);
                     } else {
-                        self->endSynchronization(state);
+                        self->endSynchronization(account, state);
                     }
                 }
             });
         }
 
-        void StellarLikeBlockchainExplorerAccountSynchronizer::endSynchronization(const StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
+        void StellarLikeBlockchainExplorerAccountSynchronizer::endSynchronization(
+                const std::shared_ptr<StellarLikeAccount>& account,
+                const StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             BlockchainExplorerAccountSynchronizationResult result;
 
-            result.lastBlockHeight = state.lastBlockHeight;
+            soci::session sql(account->getWallet()->getDatabase()->getPool());
+            result.lastBlockHeight = BlockDatabaseHelper::getLastBlock(sql,
+                                                                               account->getWallet()->getCurrency().name)
+                                                                                       .template map<uint64_t>([] (const Block& block) {
+                return block.height;
+            }).getValueOr(0);
+
             result.newOperations = state.insertedOperations;
 
-            _notifier->success(std::move(result));
+
+            _notifier->success(result);
             _notifier = nullptr;
         }
 

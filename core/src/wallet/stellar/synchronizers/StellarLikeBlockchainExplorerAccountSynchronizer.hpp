@@ -91,7 +91,7 @@ namespace ledger {
             void synchronizeTransactions(const std::shared_ptr<StellarLikeAccount>& account,
                                          SavedState& state);
             inline void failSynchronization(const Exception& ex);
-            inline void endSynchronization(SavedState const& state);
+            inline void endSynchronization(const std::shared_ptr<StellarLikeAccount>& account, SavedState const& state);
 
 
         private:

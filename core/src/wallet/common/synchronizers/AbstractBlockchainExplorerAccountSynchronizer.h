@@ -295,7 +295,7 @@ namespace ledger {
                     buddy->context.lastBlockHeight = BlockDatabaseHelper::getLastBlock(sql,
                             buddy->wallet->getCurrency().name).template map<uint64_t>([] (const Block& block) {
                                 return block.height;
-                            }).getValueOr(0);;
+                            }).getValueOr(0);
 
                     self->_currentAccount = nullptr;
                     return buddy->context;
