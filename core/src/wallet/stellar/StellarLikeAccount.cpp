@@ -308,6 +308,7 @@ namespace ledger {
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
                 createdOperations += 1;
+                emitNewOperationEvent(operation);
             };
 
             auto opIndex = 0;
