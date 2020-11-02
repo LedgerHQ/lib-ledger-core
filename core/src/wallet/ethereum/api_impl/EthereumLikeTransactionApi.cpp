@@ -113,7 +113,7 @@ namespace ledger {
         }
 
         int32_t EthereumLikeTransactionApi::getStatus() {
-           return _status;
+           return _block ? _status : 1;
         }
 
         std::chrono::system_clock::time_point EthereumLikeTransactionApi::getDate() {

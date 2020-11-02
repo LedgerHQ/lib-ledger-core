@@ -249,6 +249,9 @@ TEST_F(StellarFixture, SynchronizeProtocol13) {
                        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                        EXPECT_EQ(event->getCode(),
                                  api::EventCode::SYNCHRONIZATION_SUCCEED);
+                       auto lastBlockHeight = event->getPayload()->getInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT).value_or(-1);
+                       fmt::print("Last ledger known: {}\n", lastBlockHeight);
+                       EXPECT_GT(lastBlockHeight, 0);
                        dispatcher->stop();
                    }));
     EXPECT_EQ(bus, account->synchronize());
