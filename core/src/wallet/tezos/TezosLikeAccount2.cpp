@@ -253,11 +253,9 @@ namespace ledger {
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction(const std::string &senderAddress) {
-            std::cout << "buildTx" << std::endl;
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
                                                        const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) {
-                std::cout << "Inside buildTx" << std::endl;
                 // Check if balance is sufficient
                 auto currency = self->getWallet()->getCurrency();
                 auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, currency);
@@ -316,7 +314,6 @@ namespace ledger {
                                         };
 
                                         return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=] (const Unit &result) {
-                                            std::cout << "Set Reveal Status" << std::endl;
                                             // Check for balance
                                             // Multiply by 2 fees, since in case of reveal op, we input same fees as the ones used
                                             // for transaction op
@@ -329,7 +326,6 @@ namespace ledger {
                                             auto maxPossibleAmountToSend = *balance - fees;
 
                                             auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
-                                            //std::cout << "request.value=" << (*request.value).to_string() <<  std::endl;
                                             if (maxPossibleAmountToSend < amountToSend) {
                                                 std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
                                                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
@@ -372,7 +368,6 @@ namespace ledger {
                                                 receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256;
                                             }
                                             tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency), getCurveHelper(receiverCurve));
-                                            std::cout << "Set Signing Pub Key: " << hex::toString(self->getKeychain()->getPublicKey().getValue()) << std::endl;
                                             tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
                                             tx->setManagerAddress(managerAddress,
                                                                   getCurveHelper(

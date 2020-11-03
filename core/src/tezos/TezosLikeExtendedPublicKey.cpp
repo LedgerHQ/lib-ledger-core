@@ -60,7 +60,6 @@ namespace ledger {
         std::shared_ptr<api::TezosLikeAddress>
         TezosLikeExtendedPublicKey::derive(const std::string &path) {
             DerivationPath p(path);
-            std::cout << "derive: " << path << " " << _curve  << std::endl;
             // _currency.tezosLikeNetworkParameters.value().XPUBVersion
 
             // std::cout << "derive: " << path << " " << _curve  << std::endl;
@@ -91,7 +90,6 @@ namespace ledger {
 
         std::string TezosLikeExtendedPublicKey::toBase58() {
             auto encoding = TezosKeyType::fromCurve(_curve, TezosKeyType::PUBKEYS).value();
-            std::cout << "toBase58: encoding=" << encoding << ", curve=" << _curve << std::endl;
             auto config = std::make_shared<DynamicObject>();
             config->putString("networkIdentifier", params().Identifier);
             return Base58::encodeWithChecksum(vector::concat(
@@ -128,11 +126,7 @@ namespace ledger {
                                                const std::string &xpubBase58,
                                                const Option<std::string> &path) {
             auto &params = currency.tezosLikeNetworkParameters.value();
-            std::cout << "xpubBase58: " << xpubBase58 << std::endl;
             auto keyType = TezosKeyType::fromBase58(xpubBase58);
-            if (keyType) {
-                std::cout << "Key Type: " << *keyType << std::endl;
-            }
             if (keyType) {
                 auto config = api::DynamicObject::newInstance();
                 auto decodeResult = Base58::checkAndDecode(xpubBase58, config);
@@ -144,10 +138,8 @@ namespace ledger {
                 DeterministicPublicKey k(publicKey, {}, 0, 0, 0, params.Identifier);
                 return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, curve, DerivationPath(path.getValueOr("m")));
             }
-            std::cout << "Unsupported key type == XPub ?" << std::endl;
             // Decode standard xpubs
             DeterministicPublicKey k = TezosExtendedPublicKey::fromBase58(currency, params, xpubBase58, path);
-            std::cout << "size: " << std::to_string( k.getPublicKey().size() ) << std::endl;
             return std::make_shared<ledger::core::TezosLikeExtendedPublicKey>(currency, k, k.getPublicKey().size() == 33 ? api::TezosCurve::ED25519 : api::TezosCurve::SECP256K1, DerivationPath(path.getValueOr("m")));
         }
 

@@ -137,11 +137,9 @@ namespace ledger {
             const std::vector<uint8_t> &pubKey,
             api::TezosCurve curve
         ) {
-            std::cout << "getPublicKeyHash160: " << api::to_string(curve) << " " << std::to_string(pubKey.size()) << std::endl;
             // std::string out;
             // out.assign(pubKey.begin(), pubKey.end());
             // auto out = std::string str(pubKey.begin(), pubKey.end());
-            std::cout << hex::toString(pubKey) << std::endl;
             switch (curve) {
                 case api::TezosCurve::ED25519 : {
                     if (pubKey.size() != TezosKeyType::EDPK.length) {

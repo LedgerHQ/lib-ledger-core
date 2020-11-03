@@ -49,21 +49,15 @@ using namespace std;
 using namespace ledger::testing::tezos;
 
 void TezosMakeBaseTransaction::SetUp() {
-    std::cout << "SetUp" << std::endl;
     BaseFixture::SetUp();
-    std::cout << "Recreate" << std::endl;
     recreate();
 }
 
 void TezosMakeBaseTransaction::recreate() {
     SetUpConfig();
-    std::cout << "New Pool" << std::endl;
     pool = newDefaultPool();
-    std::cout << "Wait for Wallet" << std::endl;
     wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
-    std::cout << "Inflate XTZ" << std::endl;
     account = testData.inflate_xtz(pool, wallet);
-    std::cout << "wallet get currency" << std::endl;
     currency = wallet->getCurrency();
 }
 
@@ -89,7 +83,6 @@ void TezosMakeBaseTransaction::broadcast(const std::vector<uint8_t> &raw) {
 }
 
 std::shared_ptr<TezosLikeTransactionBuilder> TezosMakeBaseTransaction::tx_builder() {
-    std::cout << "tx_builder" << std::endl;
     return std::dynamic_pointer_cast<TezosLikeTransactionBuilder>(account->buildTransaction());
 }
 

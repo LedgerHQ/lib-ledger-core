@@ -161,26 +161,12 @@ namespace ledger {
             return _status;
         }
         void TezosLikeTransactionApi::setSignature(const std::vector<uint8_t> &signature) {
-            std::cout << "setSignature: " << hex::toString(signature) << std::endl;
-            std::cout << "setSignature size: " << std::to_string(signature.size()) << std::endl;
-            auto keyType = TezosKeyType::fromKey(signature);
-            if (keyType) {
-                std::cout << "Key Type: " << *keyType << std::endl;
-            } else {
-                std::cout << "Unknown Key Type" << std::endl;
-            }
-
             auto decoded = signature;
 
             // Hackish way to seemlessly decode DER signature
             // TODO: extract this into a setDERSignature method
             if (signature.size() != 64) {
                 auto der = DER::fromRaw(signature);
-                std::cout << "DER parsed: " << hex::toString(der.r) << " / " << hex::toString(der.s) << std::endl;
-                std::cout << "DER Sizes : R:" << std::to_string(der.r.size())
-                          << " / S:" << std::to_string(der.s.size()) << std::endl;
-                std::cout << "DER as bytes: " << hex::toString(der.toBytes())
-                          << " (" << std::to_string(der.toBytes().size()) << ")" << std::endl;
                 decoded = der.toBytes();
             }
 
@@ -202,7 +188,6 @@ namespace ledger {
 
         // Reference: https://www.ocamlpro.com/2018/11/21/an-introduction-to-tezos-rpcs-signing-operations/
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
-            std::cout << "API.Serialize" << std::endl;
             BytesWriter writer;
 
             // Block Hash
@@ -212,39 +197,28 @@ namespace ledger {
             auto decoded = Base58::checkAndDecode(_block->getHash(), config);
             // Remove 2 first bytes (of version)
             auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
-            std::cout << "API.serialize blockHash: " << _block->getHash()  << " - " << hex::toString(decoded.getValue()) << std::endl;
             
             
             // If tx was forged then nothing to do
             if (!_rawTx.empty()) {
-                std::cout << "RawTX is not empty" << std::endl;
                 // If we need reveal, then we must prepend it
                 if (_needReveal) {
-                    std::cout << "need reveal" << std::endl;
                     writer.writeByteArray(blockHash);
                     writer.writeByteArray(serializeWithType(api::TezosOperationTag::OPERATION_TAG_REVEAL));
                     // Remove branch since it's already added
                     writer.writeByteArray(std::vector<uint8_t>{_rawTx.begin() + blockHash.size(), _rawTx.end()});
                 } else {
-                    std::cout << "no reveal" << std::endl;
                     writer.writeByteArray(_rawTx);
                 }
 
-                std::cout << "API.serialize rawTx: " << hex::toString(writer.toByteArray()) << std::endl;
-            
-
                 if (!_signature.empty()) {
-                    std::cout << "has signature" << std::endl;
                     writer.writeByteArray(_signature);
                 }
                 return writer.toByteArray();
             }
 
-            std::cout << "RawTX is empty" << std::endl;
-
             // Watermark: Generic-Operation
             if (_signature.empty()) {
-                std::cout << "Signature is empty" << std::endl;
                 writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
             }
 
@@ -340,13 +314,10 @@ namespace ledger {
 
             switch(type) {
                 case api::TezosOperationTag::OPERATION_TAG_REVEAL: {
-                    std::cout << "case api::TezosOperationTag::OPERATION_TAG_REVEAL" << std::endl;
                     if (!_signingPubKey.empty()) {
-                        std::cout << "Has signing key" << std::endl;
                         writer.writeByte(static_cast<uint8_t>(_senderCurve));
                         writer.writeByteArray(_signingPubKey);
                     } else if (!_revealedPubKey.empty()) {
-                        std::cout << "Has reveal pub key" << std::endl;
                         auto pKey = TezosLikeExtendedPublicKey::fromBase58(_currency, _revealedPubKey, Option<std::string>(""));
                         writer.writeByte(static_cast<uint8_t>(_senderCurve));
                         writer.writeByteArray(pKey->derivePublicKey(""));
@@ -354,7 +325,6 @@ namespace ledger {
                     break;
                 }
                 case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
-                    std::cout << "case api::TezosOperationTag::OPERATION_TAG_TRANSACTION" << std::endl;
                     // Amount
                     auto bigIntValue = BigInt::fromString(_value->toBigInt()->toString(10));
                     writer.writeByteArray(zarith::zSerializeNumber(bigIntValue.toByteArray()));
@@ -447,7 +417,6 @@ namespace ledger {
         }
 
         TezosLikeTransactionApi &TezosLikeTransactionApi::setSigningPubKey(const std::vector<uint8_t> &pubKey) {
-            std::cout << "Set signing pubkey: " << hex::toString(pubKey) << std::endl;
             _signingPubKey = pubKey;
             return *this;
         }
