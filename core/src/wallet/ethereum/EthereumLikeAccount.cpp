@@ -126,7 +126,7 @@ namespace ledger {
             auto updateOperation = [&] (soci::session &sql, Operation &operation, api::OperationType ty) {
                 // if the status of the transaction is not correct, we set the operation’s amount to
                 // zero as it’s failed (yet fees were still paid)
-                if (transaction.status == 0) {
+                if (transaction.status == 0  && transaction.block.nonEmpty()) {
                     operation.amount = BigInt::ZERO;
                 } else {
                     operation.amount = transaction.value;
