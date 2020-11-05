@@ -20,6 +20,7 @@
 #include <functional>
 #include <mutex>
 #include <unordered_map>
+#include "../metrics/ManagedObject.hpp"
 
 // """
 //    This place is not a place of honor.
@@ -89,11 +90,13 @@ public:
             } else {
                 // The weak reference is expired, so prune it from the map eagerly.
                 m_mapping.erase(existing_proxy_iter);
+                ledger::core::AllocationMap::getInstance()->decrement(tag);
             }
         }
 
         auto alloc_result = alloc(impl);
         m_mapping.emplace(Key{tag, alloc_result.second}, alloc_result.first);
+        ledger::core::AllocationMap::getInstance()->increment(tag);
         return alloc_result.first;
     }
 
@@ -115,6 +118,7 @@ public:
             // remove the map entry if its pointer is already expired.
             if (is_expired(it->second)) {
                 m_mapping.erase(it);
+                ledger::core::AllocationMap::getInstance()->decrement(tag);
             }
         }
     }
