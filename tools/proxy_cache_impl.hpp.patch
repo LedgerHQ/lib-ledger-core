@@ -1,0 +1,32 @@
+--- djinni/support-lib/proxy_cache_impl.hpp	2020-09-21 09:10:25.000000000 +0200
++++ core/src/jni/proxy_cache_impl.hpp	2020-11-05 20:48:16.000000000 +0100
+@@ -20,6 +20,7 @@
+ #include <functional>
+ #include <mutex>
+ #include <unordered_map>
++#include "../metrics/ManagedObject.hpp"
+ 
+ // """
+ //    This place is not a place of honor.
+@@ -89,11 +90,13 @@
+             } else {
+                 // The weak reference is expired, so prune it from the map eagerly.
+                 m_mapping.erase(existing_proxy_iter);
++                ledger::core::AllocationMap::getInstance()->decrement(tag);
+             }
+         }
+ 
+         auto alloc_result = alloc(impl);
+         m_mapping.emplace(Key{tag, alloc_result.second}, alloc_result.first);
++        ledger::core::AllocationMap::getInstance()->increment(tag);
+         return alloc_result.first;
+     }
+ 
+@@ -115,6 +118,7 @@
+             // remove the map entry if its pointer is already expired.
+             if (is_expired(it->second)) {
+                 m_mapping.erase(it);
++                ledger::core::AllocationMap::getInstance()->decrement(tag);
+             }
+         }
+     }
