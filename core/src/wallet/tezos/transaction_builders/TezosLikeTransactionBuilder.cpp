@@ -160,10 +160,22 @@ namespace ledger {
             
             auto params = currency.tezosLikeNetworkParameters.value();
             auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
-            // Store the raw TX because the parser can't parse OperationsGroups
-            // and in the signing operation, it will produce a wrong serialization
-            // if the rawTx is not present
-            tx->setRawTx(rawTransaction);
+          
+            if (isSigned) {
+                //if signed remove the signature
+                if (rawTransaction.size() > 64) {
+                    auto raw = std::vector<uint8_t>{rawTransaction.begin(), rawTransaction.end()-64};
+                    tx->setRawTx(raw);
+                }
+            }
+            else { 
+                //if not signed remove the watermark:
+                if (rawTransaction.size() > 1) {
+                    auto raw = std::vector<uint8_t>{rawTransaction.begin() + 1, rawTransaction.end()};
+                    tx->setRawTx(raw);  
+                }
+            }
+         
             BytesReader reader(rawTransaction);
             if (!isSigned) {
                 // Watermark: Generic-Operation

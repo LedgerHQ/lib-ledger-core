@@ -190,6 +190,11 @@ namespace ledger {
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
             BytesWriter writer;
 
+            // Watermark: Generic-Operation
+            if (_signature.empty()) {
+                writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
+            }
+
             // If tx was forged then nothing to do
             if (!_rawTx.empty()) {
                 writer.writeByteArray(_rawTx);
@@ -197,12 +202,7 @@ namespace ledger {
                     writer.writeByteArray(_signature);
                 }
                 return writer.toByteArray();
-            }
-
-            // Watermark: Generic-Operation
-            if (_signature.empty()) {
-                writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
-            }
+            }         
 
             // Block Hash
             auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
