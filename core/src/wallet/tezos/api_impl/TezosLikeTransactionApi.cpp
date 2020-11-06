@@ -190,27 +190,9 @@ namespace ledger {
         std::vector<uint8_t> TezosLikeTransactionApi::serialize() {
             BytesWriter writer;
 
-            // Block Hash
-            auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
-            auto config = std::make_shared<DynamicObject>();
-            config->putString("networkIdentifier", params.Identifier);
-            auto decoded = Base58::checkAndDecode(_block->getHash(), config);
-            // Remove 2 first bytes (of version)
-            auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
-            
-            
             // If tx was forged then nothing to do
             if (!_rawTx.empty()) {
-                // If we need reveal, then we must prepend it
-                if (_needReveal) {
-                    writer.writeByteArray(blockHash);
-                    writer.writeByteArray(serializeWithType(api::TezosOperationTag::OPERATION_TAG_REVEAL));
-                    // Remove branch since it's already added
-                    writer.writeByteArray(std::vector<uint8_t>{_rawTx.begin() + blockHash.size(), _rawTx.end()});
-                } else {
-                    writer.writeByteArray(_rawTx);
-                }
-
+                writer.writeByteArray(_rawTx);
                 if (!_signature.empty()) {
                     writer.writeByteArray(_signature);
                 }
@@ -222,6 +204,13 @@ namespace ledger {
                 writer.writeByte(static_cast<uint8_t>(api::TezosOperationTag::OPERATION_TAG_GENERIC));
             }
 
+            // Block Hash
+            auto params = _currency.tezosLikeNetworkParameters.value_or(networks::getTezosLikeNetworkParameters("tezos"));
+            auto config = std::make_shared<DynamicObject>();
+            config->putString("networkIdentifier", params.Identifier);
+            auto decoded = Base58::checkAndDecode(_block->getHash(), config);
+            // Remove 2 first bytes (of version)
+            auto blockHash = std::vector<uint8_t>{decoded.getValue().begin() + 2, decoded.getValue().end()};
             writer.writeByteArray(blockHash);
 
             // If we need reveal, then we must prepend it
