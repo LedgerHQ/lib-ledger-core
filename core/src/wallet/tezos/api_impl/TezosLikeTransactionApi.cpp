@@ -99,7 +99,7 @@ namespace ledger {
 
         std::shared_ptr<api::Amount> TezosLikeTransactionApi::getFees() {
             int64_t fees = 0;
-            if (_needReveal && _transactionFees) {
+            if (_transactionFees) {
                 fees += _transactionFees->toLong();
             }
             if (_needReveal && _revealFees) {
