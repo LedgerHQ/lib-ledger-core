@@ -114,22 +114,24 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024Cpp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction, jstring j_protocolUpdate)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
-                                                                                               ::djinni::Binary::toCpp(jniEnv, j_rawTransaction));
+                                                                                               ::djinni::Binary::toCpp(jniEnv, j_rawTransaction),
+                                                                                               ::djinni::String::toCpp(jniEnv, j_protocolUpdate));
         return ::djinni::release(::djinni_generated::TezosLikeTransaction::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction, jstring j_protocolUpdate)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
         auto r = ::ledger::core::api::TezosLikeTransactionBuilder::parseRawSignedTransaction(::djinni_generated::Currency::toCpp(jniEnv, j_currency),
-                                                                                             ::djinni::Binary::toCpp(jniEnv, j_rawTransaction));
+                                                                                             ::djinni::Binary::toCpp(jniEnv, j_rawTransaction),
+                                                                                             ::djinni::String::toCpp(jniEnv, j_protocolUpdate));
         return ::djinni::release(::djinni_generated::TezosLikeTransaction::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

@@ -81,9 +81,9 @@ public:
     /** Reset the current instance to its initial state */
     virtual void reset() = 0;
 
-    static std::shared_ptr<TezosLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, const std::string& protocolUpdate);
+    static std::shared_ptr<TezosLikeTransaction> parseRawUnsignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, const std::string & protocolUpdate);
 
-    static std::shared_ptr<TezosLikeTransaction> parseRawSignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, const std::string& protocolUpdate);
+    static std::shared_ptr<TezosLikeTransaction> parseRawSignedTransaction(const Currency & currency, const std::vector<uint8_t> & rawTransaction, const std::string & protocolUpdate);
 };
 
 } } }  // namespace ledger::core::api
