@@ -189,6 +189,28 @@ TEST(CosmosAddress, CosmosValAddressFromBech32) {
     EXPECT_EQ(address->toBech32(), expectedResult);
 }
 
+TEST(CosmosAddress, CosmosValConsAddressFromBase64ValConsPub) {
+  // Test values come from manual testing on stargate-5
+  // - A first call to /cosmos/staking/v1beta1/validators to get base64 keys
+  // - Then a call to /cosmos/slashing/v1beta1/signing_infos/{address} to check that
+  // the obtained address actually exists and does not 404
+  auto b64Xpub = "pu8GYpo9Fa8lCs5pxkXwHKRhZWE+4JhG5TxYLyq1Lr4=";
+  auto expectedResult = "cosmosvalcons14es7cmaqg5xxxfeg3w2xuge63p5rc3u2vt8ym4";
+  auto pubkey = ledger::core::CosmosLikeExtendedPublicKey::fromBase64(
+      currencies::ATOM, b64Xpub, {},
+      api::CosmosCurve::ED25519, api::CosmosBech32Type::PUBLIC_KEY_VAL_CONS);
+  EXPECT_EQ(pubkey->derive("")->toBech32(), expectedResult);
+
+  auto otherB64Xpub = "B33RB8LHddbd+KXO1jPJHDpelfOgOGJP5yDEQYEWdyY=";
+  auto otherExpectedResult = "cosmosvalcons14wfqgf2gx9hrn4e56jxte06dx67jwqmm2k789l";
+  // The "path" when building these address should be irrelevant, adding a path in
+  // this test case to make sure it doesn't break the test
+  auto otherPubkey = ledger::core::CosmosLikeExtendedPublicKey::fromBase64(
+      currencies::ATOM, otherB64Xpub, Option<std::string>("44'/118'/0'"),
+      api::CosmosCurve::ED25519, api::CosmosBech32Type::PUBLIC_KEY_VAL_CONS);
+  EXPECT_EQ(otherPubkey->derive("")->toBech32(), otherExpectedResult);
+}
+
 TEST(CosmosAddress, SecpPubbKey) {
     std::vector<uint8_t> pubKey = hex::toByteArray("02c4becf6843868d9556ea43d46518b51a13cb1a48cd6c05a21c029ea4231fcde4");
     std::vector<uint8_t> chainCode = hex::toByteArray("");

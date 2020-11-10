@@ -108,7 +108,11 @@ std::shared_ptr<CosmosLikeAddress> CosmosLikeAddress::fromBech32(
     auto const &params = currency.cosmosLikeNetworkParameters.value();
 
     auto const type = [](auto const &address) {
-        if (address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL).hrp) !=
+        if (address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL_CONS).hrp) !=
+            std::string::npos) {
+            return api::CosmosBech32Type::ADDRESS_VAL_CONS;
+        }
+        else if (address.find(cosmos::getBech32Params(api::CosmosBech32Type::ADDRESS_VAL).hrp) !=
             std::string::npos) {
             return api::CosmosBech32Type::ADDRESS_VAL;
         }

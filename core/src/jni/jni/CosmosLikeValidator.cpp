@@ -28,7 +28,7 @@ auto CosmosLikeValidator::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::djinni:
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.votingPower)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.operatorAddress)),
                                                            ::djinni::get(::djinni::String::fromCpp(jniEnv, c.consensusPubkey)),
-                                                           ::djinni::get(::djinni::I32::fromCpp(jniEnv, c.activeStatus)))};
+                                                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c.activeStatus)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
@@ -48,7 +48,7 @@ auto CosmosLikeValidator::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_votingPower)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_operatorAddress)),
             ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_consensusPubkey)),
-            ::djinni::I32::toCpp(jniEnv, jniEnv->GetIntField(j, data.field_activeStatus))};
+            ::djinni::String::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_activeStatus))};
 }
 
 }  // namespace djinni_generated

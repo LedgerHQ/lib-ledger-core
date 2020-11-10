@@ -100,11 +100,21 @@ std::string CosmosBech32::encode(
     std::vector<uint8_t> data(hash);
     int const fromBits = 8;
     int const toBits = 5;
-    bool const pad = true;
-    std::vector<uint8_t> converted;
-    converted.insert(converted.end(), version.begin(), version.end());
-    // After this converted is [ version(base256) || hash(base32) ]
-    Bech32::convertBits(data, fromBits, toBits, pad, converted);
+    std::vector<uint8_t> converted{};
+    // After this converted is [ version(base32) ]
+    const auto version_success = Bech32::convertBits(version, fromBits, toBits, false, converted);
+    if (!version_success) {
+      throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT,
+                      "Impossible bech32 encoding: error during "
+                      "version base-256->base-32 conversion.");
+    }
+    // After this converted is [ version(base32) || hash(base32) || pad ]
+    const auto success = Bech32::convertBits(data, fromBits, toBits, true, converted);
+    if (!success) {
+      throw Exception(api::ErrorCode::INVALID_BECH32_FORMAT,
+                      "Impossible bech32 encoding: error during "
+                      "hash base-256->base-32 conversion.");
+    }
     return encodeBech32(converted);
 }
 }  // namespace core

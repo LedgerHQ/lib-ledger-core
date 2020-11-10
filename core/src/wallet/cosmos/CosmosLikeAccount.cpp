@@ -28,6 +28,8 @@
  *
  */
 
+#include "api/Logger.hpp"
+#include "wallet/cosmos/CosmosLikeCurrencies.hpp"
 #include <api/BigIntCallback.hpp>
 #include <api/CosmosLikeAddress.hpp>
 #include <api/CosmosLikeValidatorListCallback.hpp>
@@ -313,17 +315,21 @@ void CosmosLikeAccount::setOperationTypeAndAmount(
     }
 }
 
-uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction &tx)
+uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction &tx) const
 {
-    // Get the maximum fees advertised on transaction (if all of "GasWanted" is used)
+    // If there are more than 1 element in the array, the code below
+    // is very likely to be wrong. Warn the users
+    if (tx.fee.amount.size() > 1) {
+        // const_cast necessary because getLogger() is not const
+        const_cast<CosmosLikeAccount*>(this)->getLogger()->w("cosmosFees", "There is more than 1 entry in tx.fee.amount, fee computation might be wrong");
+    }
+
+    // Get the maximum fees advertised on transaction
     auto fees = std::accumulate(
         std::begin(tx.fee.amount),
         std::end(tx.fee.amount),
         0,
         [](uint32_t sum, const cosmos::Coin &subamount) {
-            // FIXME This locks the CosmosLikeAccount code in cosmoshub chains on debug builds.
-            // And it also serves as reminder that most code in this module assumes cosmoshub.
-            assert((subamount.denom == "uatom"));
             return sum + BigInt::fromDecimal(subamount.amount).toInt();
         });
 
@@ -711,12 +717,12 @@ std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTrans
         auto currency = self->getWallet()->getCurrency();
         auto tx = std::make_shared<CosmosLikeTransactionApi>();
         tx->setAccountNumber(self->_accountData->accountNumber);
-        tx->setCurrency(self->getWallet()->getCurrency());
+        tx->setCurrency(currency);
         tx->setFee(request.fee);
         tx->setMemo(request.memo);
         tx->setMessages(request.messages);
         tx->setSequence(
-            request.sequence.empty() ? std::to_string(std::stoi(self->_accountData->sequence) + 1)
+            request.sequence.empty() ? self->_accountData->sequence
                                      : request.sequence);
         tx->setSigningPubKey(self->getKeychain()->getPublicKey());
         if (request.gas && !(request.gas->isZero())) {
@@ -741,9 +747,11 @@ void CosmosLikeAccount::estimateGas(
     tx->setAccountNumber(_accountData->accountNumber);
     tx->setCurrency(getWallet()->getCurrency());
     tx->setMessages(request.messages);
-    // Sequence needs to be set or explorer might return an error.
-    // The value here doesn't matter at all.
-    tx->setSequence("0");
+
+    // We need to update the sequence number to have the correct sequence number at time of simulation
+    updateAccountDataFromNetwork();
+    tx->setSequence(_accountData->sequence);
+
     if (request.memo) {
         tx->setMemo(request.memo.value());
     }

@@ -8,8 +8,10 @@ CosmosCurve = enum {
 CosmosBech32Type = enum {
 	PUBLIC_KEY;
 	PUBLIC_KEY_VAL;
+	PUBLIC_KEY_VAL_CONS;
 	ADDRESS;
 	ADDRESS_VAL;
+	ADDRESS_VAL_CONS;
 }
 
 CosmosLikeNetworkParameters = record {
@@ -19,8 +21,10 @@ CosmosLikeNetworkParameters = record {
 	MessagePrefix: string;
 	# Version of the Extended Public Key standard.
 	XPUBVersion: binary;
-	# Prefix useful during implicit address construction from pubKey hash
+	# Prefix useful for bech32 encoding of secp256k1 raw pubKey
 	PubKeyPrefix: binary;
+	# Prefix useful for bech32 encoding of ed25519 raw pubKey
+	Ed25519PubKeyPrefix: binary;
 	# Prefix useful during originated address construction from pubKey hash
 	AddressPrefix: binary;
         # Chain ID of the network

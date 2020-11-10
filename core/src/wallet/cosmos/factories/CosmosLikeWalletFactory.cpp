@@ -28,6 +28,7 @@
  *
  */
 
+#include "wallet/cosmos/CosmosLikeCurrencies.hpp"
 #include <api/BlockchainExplorerEngines.hpp>
 #include <api/BlockchainObserverEngines.hpp>
 #include <api/ConfigurationDefaults.hpp>
@@ -38,6 +39,7 @@
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
 #include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/StargateGaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
 #include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
@@ -126,6 +128,7 @@ std::shared_ptr<AbstractWallet> CosmosLikeWalletFactory::build(const WalletDatab
         "44'/<coin_type>'/<account>'/<node>/<address>"));
     // Build wallet
 
+    // FIXME: Hardcoded MUON. getCurrency() returns ATOM when called from live
     return std::make_shared<CosmosLikeWallet>(
         entry.name,
         explorer,
@@ -133,7 +136,7 @@ std::shared_ptr<AbstractWallet> CosmosLikeWalletFactory::build(const WalletDatab
         keychainFactory->second,
         synchronizerFactory.getValue(),
         pool,
-        getCurrency(),
+        currencies::MUON,
         entry.configuration,
         scheme);
 }
@@ -165,10 +168,21 @@ std::shared_ptr<CosmosLikeBlockchainExplorer> CosmosLikeWalletFactory::getExplor
                 .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT)));
         auto context = pool->getDispatcher()->getSerialExecutionContext(
             api::BlockchainObserverEngines::COSMOS_NODE);
-        auto &networkParams = getCurrency().cosmosLikeNetworkParameters.value();
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
-            context, http, networkParams, std::dynamic_pointer_cast<DynamicObject>(configuration));
+            context, http, getCurrency(), std::dynamic_pointer_cast<DynamicObject>(configuration));
+    }
+    else if (engine == api::BlockchainExplorerEngines::STARGATE_NODE) {
+        auto http = pool->getHttpClient(fmt::format(
+            "{}",
+            configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_STARGATE_API_ENDPOINT)));
+        auto context = pool->getDispatcher()->getSerialExecutionContext(
+            api::BlockchainObserverEngines::STARGATE_NODE);
+
+        // FIXME: Hardcoded MUON. getCurrency() returns ATOM now.
+        explorer = std::make_shared<StargateGaiaCosmosLikeBlockchainExplorer>(
+            context, http, currencies::MUON, std::dynamic_pointer_cast<DynamicObject>(configuration));
     }
     else {
         throw Exception(
@@ -205,14 +219,14 @@ std::shared_ptr<CosmosLikeBlockchainObserver> CosmosLikeWalletFactory::getObserv
     auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE)
                       .value_or(api::BlockchainObserverEngines::COSMOS_NODE);
     std::shared_ptr<CosmosLikeBlockchainObserver> observer;
-    if (engine == api::BlockchainObserverEngines::COSMOS_NODE) {
+    if (engine == api::BlockchainObserverEngines::COSMOS_NODE || engine == api::BlockchainObserverEngines::STARGATE_NODE) {
         auto ws = pool->getWebSocketClient();
-        auto context = pool->getDispatcher()->getSerialExecutionContext(
-            api::BlockchainObserverEngines::COSMOS_NODE);
+        auto context = pool->getDispatcher()->getSerialExecutionContext(engine);
         auto logger = pool->logger();
         const auto &currency = getCurrency();
+        // FIXME: Hardcoded MUON. getCurrency() returns ATOM now.
         observer = std::make_shared<CosmosLikeBlockchainObserver>(
-            context, ws, configuration, logger, currency);
+            context, ws, configuration, logger, currencies::MUON);
     }
     if (observer)
         _runningObservers.push_back(observer);

@@ -26,11 +26,12 @@ private:
     friend ::djinni::JniClass<CosmosLikeNetworkParameters>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeNetworkParameters") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;[B[B[BLjava/lang/String;Ljava/util/ArrayList;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;[B[B[B[BLjava/lang/String;Ljava/util/ArrayList;)V") };
     const jfieldID field_Identifier { ::djinni::jniGetFieldID(clazz.get(), "Identifier", "Ljava/lang/String;") };
     const jfieldID field_MessagePrefix { ::djinni::jniGetFieldID(clazz.get(), "MessagePrefix", "Ljava/lang/String;") };
     const jfieldID field_XPUBVersion { ::djinni::jniGetFieldID(clazz.get(), "XPUBVersion", "[B") };
     const jfieldID field_PubKeyPrefix { ::djinni::jniGetFieldID(clazz.get(), "PubKeyPrefix", "[B") };
+    const jfieldID field_Ed25519PubKeyPrefix { ::djinni::jniGetFieldID(clazz.get(), "Ed25519PubKeyPrefix", "[B") };
     const jfieldID field_AddressPrefix { ::djinni::jniGetFieldID(clazz.get(), "AddressPrefix", "[B") };
     const jfieldID field_ChainId { ::djinni::jniGetFieldID(clazz.get(), "ChainId", "Ljava/lang/String;") };
     const jfieldID field_AdditionalCIPs { ::djinni::jniGetFieldID(clazz.get(), "AdditionalCIPs", "Ljava/util/ArrayList;") };

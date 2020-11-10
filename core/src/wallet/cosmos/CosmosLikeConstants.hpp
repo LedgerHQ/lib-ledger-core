@@ -54,6 +54,30 @@ constexpr char kGaiaUnbondingsEndpoint[] = "/staking/delegators/{}/unbonding_del
 constexpr char kGaiaValidatorInfoEndpoint[] = "/staking/validators/{}";
 constexpr char kGaiaWithdrawAddressEndpoint[] = "/distribution/delegators/{}/withdraw_address";
 
+// gRPC gateway explorer constants
+// They take at least
+// - one {} to hold the currency ("cosmos" almost all the time)
+// - one {} to hold the version name
+// - one or more {} for the query parameters
+constexpr char kGrpcAccountEndpoint[] = "/{}/auth/{}/accounts/{}";
+constexpr char kGrpcAllBalancesEndpoint[] = "/{}/bank/{}/balances/{}";
+constexpr char kGrpcBalancesEndpoint[] = "/{}/bank/{}/balances/{}/{}";
+constexpr char kGrpcBlocksEndpoint[] = "/blocks/{}";
+constexpr char kGrpcDelegationsEndpoint[] = "/{}/staking/{}/delegations/{}";
+// constexpr char kGrpcDistInfoEndpoint[] = "/distribution/validators/{}";
+constexpr char kGrpcLatestBlockEndpoint[] = "/blocks/latest";
+// constexpr char kGrpcQueryRedelegationsEndpoint[] = "/staking/redelegations";
+constexpr char kGrpcRedelegationsEndpoint[] = "/{}/staking/{}/delegators/{}/redelegations";
+constexpr char kGrpcRewardsEndpoint[] = "/{}/distribution/{}/delegators/{}/rewards";
+constexpr char kGrpcSignInfoEndpoint[] = "/{}/slashing/{}/signing_infos/{}";
+constexpr char kGrpcSimulationEndpoint[] = "/{}/tx/{}/simulate";
+constexpr char kGrpcTransactionEndpoint[] = "/txs/{}";
+constexpr char kGrpcTransactionsWithPageLimitEnpoint[] = "/txs?{}&page={}&limit={}";
+// constexpr char kGrpcTransfersEndpoint[] = "/bank/accounts/{}/transfers";
+constexpr char kGrpcUnbondingsEndpoint[] = "/{}/staking/{}/delegators/{}/unbonding_delegations";
+constexpr char kGrpcValidatorInfoEndpoint[] = "/{}/staking/{}/validators/{}";
+constexpr char kGrpcWithdrawAddressEndpoint[] = "/{}/distribution/{}/delegators/{}/withdraw_address";
+
 // use raw char array here to be compliant with rapidjson
 constexpr char kMsgBeginRedelegate[] = "cosmos-sdk/MsgBeginRedelegate";
 constexpr char kMsgDelegate[] = "cosmos-sdk/MsgDelegate";
@@ -72,11 +96,13 @@ constexpr char kMsgWithdrawValidatorCommission[] = "cosmos-sdk/MsgWithdrawValida
 constexpr char kMsgUnjail[] = "cosmos-sdk/MsgUnjail";
 constexpr char kMsgFees[] = "internal/MsgFees";
 
+constexpr char kAccount[] = "account";
 constexpr char kAccountNumber[] = "account_number";
 constexpr char kAddress[] = "address";
 constexpr char kAmount[] = "amount";
 constexpr char kBalance[] = "balance";
 constexpr char kBaseReq[] = "base_req";
+constexpr char kBlock[] = "block";
 constexpr char kChainId[] = "chain_id";
 constexpr char kCoins[] = "coins";
 constexpr char kCommission[] = "commission";
@@ -89,7 +115,9 @@ constexpr char kConsensusPubkey[] = "consensus_pubkey";
 constexpr char kContent[] = "content";
 constexpr char kCount[] = "count";
 constexpr char kCreationHeight[] = "creation_height";
+constexpr char kDelegation[] = "delegation";
 constexpr char kDelegatorAddress[] = "delegator_address";
+constexpr char kDelegationResponses[] = "delegation_responses";
 constexpr char kDenom[] = "denom";
 constexpr char kDepositor[] = "depositor";
 constexpr char kDescription[] = "description";
@@ -104,6 +132,7 @@ constexpr char kGas[] = "gas";
 constexpr char kGasAdjustment[] = "gas_adjustment";
 constexpr char kGasEstimate[] = "gas_estimate";
 constexpr char kGasUsed[] = "gas_used";
+constexpr char kGrpcType[] = "@type";
 constexpr char kHeight[] = "height";
 constexpr char kIdentity[] = "identity";
 constexpr char kIndexOffset[] = "index_offset";
@@ -112,6 +141,7 @@ constexpr char kInitialDeposit[] = "initial_deposit";
 constexpr char kInputs[] = "inputs";
 constexpr char kJailed[] = "jailed";
 constexpr char kJailedUntil[] = "jailed_until";
+constexpr char kKey[] = "key";
 constexpr char kLog[] = "log";
 constexpr char kLogs[] = "logs";
 constexpr char kMaxHeight[] = "maxheight";
@@ -129,10 +159,15 @@ constexpr char kOutputs[] = "outputs";
 constexpr char kProposalId[] = "proposal_id";
 constexpr char kProposer[] = "proposer";
 constexpr char kPubKey[] = "pub_key";
+constexpr char kRawLog[] = "raw_log";
+constexpr char kRedelegation[] = "redelegation";
+constexpr char kRedelegationEntry[] = "redelegation_entry";
+constexpr char kRedelegationResponses[] = "redelegation_responses";
 constexpr char kResult[] = "result";
 constexpr char kReward[] = "reward";
 constexpr char kRewards[] = "rewards";
 constexpr char kSelfBondRewards[] = "self_bond_rewards";
+constexpr char kSecurityContact[] = "security_contact";
 constexpr char kSequence[] = "sequence";
 constexpr char kSignature[] = "signature";
 constexpr char kSimulate[] = "simulate";
@@ -152,12 +187,17 @@ constexpr char kTxHash[] = "txhash";
 constexpr char kTx[] = "tx";
 constexpr char kType[] = "type";
 constexpr char kUnbondingHeight[] = "unbonding_height";
+constexpr char kUnbondingEntry[] = "unbonding_entry";
+constexpr char kUnbondingResponses[] = "unbonding_responses";
 constexpr char kUnbondingTime[] = "unbonding_time";
 constexpr char kUpdateTime[] = "update_time";
 constexpr char kValCommission[] = "val_commission";
+constexpr char kValSignInfos[] = "val_signing_info";
+constexpr char kValidator[] = "validator";
 constexpr char kValidatorAddress[] = "validator_address";
 constexpr char kValidatorDstAddress[] = "validator_dst_address";
 constexpr char kValidatorSrcAddress[] = "validator_src_address";
+constexpr char kValidators[] = "validators";
 constexpr char kValue[] = "value";
 constexpr char kVoter[] = "voter";
 constexpr char kWebsite[] = "website";
