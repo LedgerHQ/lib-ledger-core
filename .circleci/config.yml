@@ -53,12 +53,12 @@ jobs:
               apt-get update
               apt-get -y install git ssh
       - checkout
-      - run:
+        - run:
             name: Setup
             command: |
-            . .circleci/setup_debian.sh Release
-      - run:
-          name: Submodule_Initialization
+              . .circleci/setup_debian.sh Release
+        - run:
+            name: Submodule_Initialization
           command: |
             . .circleci/init_submodules.sh
         - run:
