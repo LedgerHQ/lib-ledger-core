@@ -43,7 +43,10 @@ const api::CosmosLikeNetworkParameters getCosmosLikeNetworkParameters(const std:
 }
 
 const std::vector<api::CosmosLikeNetworkParameters> ALL_COSMOS(
-    {getCosmosLikeNetworkParameters("atom"), getCosmosLikeNetworkParameters("atom-cosmoshub-2")});
+    {getCosmosLikeNetworkParameters("atom-cosmoshub-4"),
+     getCosmosLikeNetworkParameters("stargate"),
+     getCosmosLikeNetworkParameters("atom"),
+     getCosmosLikeNetworkParameters("atom-cosmoshub-2")});
 }  // namespace networks
 }  // namespace core
 }  // namespace ledger
