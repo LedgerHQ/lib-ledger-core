@@ -299,9 +299,10 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
         CosmosLikeOperation &out, const cosmos::MsgFees &innerFeesMsg) const;
 
     /// Compute the exact fees paid for the Transaction, applying the consumed gas ratio if available.
+    /// The ONLY reason this function is not static is to call getLogger().
     /// \param [in] tx A Cosmos Transaction to compute the fees from
     /// \return the amount of fees paid for this transaction in uatom
-        static uint32_t computeFeesForTransaction(const cosmos::Transaction& tx);
+    uint32_t computeFeesForTransaction(const cosmos::Transaction& tx) const;
 
     std::shared_ptr<cosmos::Account> _accountData;
     std::shared_ptr<CosmosLikeKeychain> _keychain;

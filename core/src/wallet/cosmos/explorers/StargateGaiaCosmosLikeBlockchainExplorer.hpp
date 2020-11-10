@@ -1,13 +1,13 @@
 /*
  *
- * GaiaCosmosLikeBlockchainExplorer.hpp
+ * StargateGaiaCosmosLikeBlockchainExplorer.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/11/2019.
+ * Created by Gerry Agbobada on 12/11/2020.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -41,14 +41,11 @@
 namespace ledger {
 namespace core {
 
-static const std::unordered_map<std::string, std::string> ACCEPT_HEADER{
-    {"Accept", "application/json"}};
-
-class GaiaCosmosLikeBlockchainExplorer :
+class StargateGaiaCosmosLikeBlockchainExplorer :
     public CosmosLikeBlockchainExplorer,
     public DedicatedContext {
    public:
-    GaiaCosmosLikeBlockchainExplorer(
+    StargateGaiaCosmosLikeBlockchainExplorer(
         const std::shared_ptr<api::ExecutionContext> &context,
         const std::shared_ptr<HttpClient> &http,
         const api::Currency currency,
@@ -188,6 +185,10 @@ class GaiaCosmosLikeBlockchainExplorer :
    private:
     std::shared_ptr<HttpClient> _http;
     api::Currency _currency;
+    /// GRPC namespace of the endpoints to use
+    std::string _ns{"cosmos"};
+    /// GRPC version of the endpoints to use
+    std::string _version{"v1beta1"};
     /// Add a fees message to a transaction for internal purpose
     template <typename T>
     void addMsgFeesTo(cosmos::Transaction &transaction, const T &node) const;

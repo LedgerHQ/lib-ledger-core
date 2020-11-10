@@ -26,10 +26,11 @@ private:
     friend ::djinni::JniClass<CosmosLikeValidatorDescription>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeValidatorDescription") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_moniker { ::djinni::jniGetFieldID(clazz.get(), "moniker", "Ljava/lang/String;") };
     const jfieldID field_identity { ::djinni::jniGetFieldID(clazz.get(), "identity", "Ljava/lang/String;") };
     const jfieldID field_website { ::djinni::jniGetFieldID(clazz.get(), "website", "Ljava/lang/String;") };
+    const jfieldID field_securityContact { ::djinni::jniGetFieldID(clazz.get(), "securityContact", "Ljava/lang/String;") };
     const jfieldID field_details { ::djinni::jniGetFieldID(clazz.get(), "details", "Ljava/lang/String;") };
 };
 

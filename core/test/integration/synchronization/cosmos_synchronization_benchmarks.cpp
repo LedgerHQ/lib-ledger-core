@@ -66,7 +66,6 @@ using namespace ledger::core;
 using namespace ledger::testing::cosmos;
 
 namespace {
-api::CosmosLikeNetworkParameters PARAMS = networks::getCosmosLikeNetworkParameters("atom");
 const std::string HUGE_PUBKEY =
     "03D13FD82D9389BBBEA20BAE392D80C0EF6C1B0CB57A37ACFAEF2105D189DA0BA2";
 const std::string HUGE_ADDRESS = "cosmos1y6yvdel7zys8x60gz9067fjpcpygsn62ae9x46";
@@ -104,7 +103,7 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
 #endif
 
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
-            worker, client, PARAMS, std::make_shared<DynamicObject>());
+            worker, client, currencies::ATOM, std::make_shared<DynamicObject>());
     }
 
     void setupTest(

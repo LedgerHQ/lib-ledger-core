@@ -62,7 +62,6 @@ using namespace std;
 using namespace ledger::core;
 using namespace ledger::testing::cosmos;
 
-api::CosmosLikeNetworkParameters COSMOS_PARAMS = networks::getCosmosLikeNetworkParameters("atom");
 
 class CosmosLikeWalletSynchronization : public BaseFixture {
 public:
@@ -84,7 +83,7 @@ public:
         explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
             worker,
             client,
-            COSMOS_PARAMS,
+            currencies::ATOM,
             std::make_shared<DynamicObject>());
     }
 
@@ -554,25 +553,25 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorSet) {
 
 TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     // This test assumes that HuobiPool and BinanceStaking are always in the validator set
-    const auto bisonTrailsAddress = "cosmosvaloper1uxh465053nq3at4dn0jywgwq3s9sme3la3drx6";
-    const auto bisonTrailsValConsPubAddress = "cosmosvalconspub1zcjduepqc5y2du793cjut0cn6v7thp3xlvphggk6rt2dhw9ekjla5wtkm7nstmv5vy";
-    const auto mintscanAddress = fmt::format("https://www.mintscan.io/validators/{}", bisonTrailsAddress);
+    const auto figmentAddress = "cosmosvaloper1hjct6q7npsspsg3dgvzk3sdf89spmlpfdn6m9d";
+    const auto figmentValConsPubAddress = "cosmosvalconspub1zcjduepqnltddase4lqjcfhup8ymg0qex3srakg54ppv06pstvwdjxkm6tmq08znvs";
+    const auto mintscanAddress = fmt::format("https://www.mintscan.io/validators/{}", figmentAddress);
 
 
-    auto valInfo = ::wait(explorer->getValidatorInfo(bisonTrailsAddress));
-    ASSERT_EQ(valInfo.operatorAddress, bisonTrailsAddress) << "We should fetch the expected validator";
-    ASSERT_EQ(valInfo.consensusPubkey, bisonTrailsValConsPubAddress) << "We should fetch the expected validator";
+    auto valInfo = ::wait(explorer->getValidatorInfo(figmentAddress));
+    ASSERT_EQ(valInfo.operatorAddress, figmentAddress) << "We should fetch the expected validator";
+    ASSERT_EQ(valInfo.consensusPubkey, figmentValConsPubAddress) << "We should fetch the expected validator";
 
 
-    EXPECT_EQ(valInfo.validatorDetails.moniker, "Bison Trails");
+    EXPECT_EQ(valInfo.validatorDetails.moniker, "Figment");
     ASSERT_TRUE(valInfo.validatorDetails.identity);
-    EXPECT_EQ(valInfo.validatorDetails.identity.value(), "A296556FF603197C");
+    EXPECT_EQ(valInfo.validatorDetails.identity.value(), "E5F274B870BDA01D");
     ASSERT_TRUE(valInfo.validatorDetails.website);
-    EXPECT_EQ(valInfo.validatorDetails.website.value(), "https://bisontrails.co");
+    EXPECT_EQ(valInfo.validatorDetails.website.value(), "https://figment.io");
     ASSERT_TRUE(valInfo.validatorDetails.details);
-    EXPECT_EQ(valInfo.validatorDetails.details.value(), "Bison Trails is the easiest way to run infrastructure on multiple blockchains.");
+    EXPECT_EQ(valInfo.validatorDetails.details.value(), "Makers of Hubble and Canada’s largest Cosmos validator, Figment is the easiest and most secure way to stake your Atoms.");
 
-    EXPECT_EQ(valInfo.commission.rates.maxRate, "0.500000000000000000");
+    EXPECT_EQ(valInfo.commission.rates.maxRate, "0.300000000000000000");
     EXPECT_EQ(valInfo.commission.rates.maxChangeRate, "0.010000000000000000");
     EXPECT_GE(valInfo.commission.updateTime, DateUtils::fromJSON("2019-03-13T23:00:00Z")) <<
         "As of this test writing, last update was on 2019-03-13T23:00:00Z. So updateTime should be at least as recent as this timestamp.";
@@ -583,20 +582,20 @@ TEST_F(CosmosLikeWalletSynchronization, ValidatorInfo) {
     EXPECT_EQ(valInfo.unbondingHeight, 0) <<
         fmt::format("Expecting BisonTrails to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
     EXPECT_FALSE(valInfo.unbondingTime) <<
-        fmt::format("Expecting BisonTrails to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
+        fmt::format("Expecting Figment to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
     EXPECT_EQ(valInfo.minSelfDelegation, "1") <<
-        fmt::format("Expecting BisonTrails to have '1' minimum self delegation. Check {} to see if the assertion holds", mintscanAddress);
+        fmt::format("Expecting Figment to have '1' minimum self delegation. Check {} to see if the assertion holds", mintscanAddress);
     EXPECT_FALSE(valInfo.jailed) <<
-        fmt::format("Expecting BisonTrails to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
+        fmt::format("Expecting Figment to never have been jailed. Check {} to see if the assertion holds", mintscanAddress);
     EXPECT_GE(BigInt::fromString(valInfo.votingPower).toUint64(), BigInt::fromString("400000000000").toUint64()) <<
-        fmt::format("Expecting BisonTrails voting power to be > 400_000 ATOM. Check {} to see if the assertion holds", mintscanAddress);
-    EXPECT_EQ(valInfo.activeStatus, 2) <<
-        fmt::format("Expecting BisonTrails to be active (and that currently the explorer returns 2 for this status). Check {} to see if the assertion holds", mintscanAddress);
+        fmt::format("Expecting Figment voting power to be > 400_000 ATOM. Check {} to see if the assertion holds", mintscanAddress);
+    EXPECT_EQ(valInfo.activeStatus, "2") <<
+        fmt::format("Expecting Figment to be active (and that currently the explorer returns 2 for this status). Check {} to see if the assertion holds", mintscanAddress);
 
-    EXPECT_FALSE(valInfo.distInfo.validatorCommission.empty()) << "Bison Trails should have accumulated at least *some* validator commission";
-    EXPECT_FALSE(valInfo.distInfo.selfBondRewards.empty()) << "Bison Trails should have accumulated at least *some* self delegation rewards";
+    EXPECT_FALSE(valInfo.distInfo.validatorCommission.empty()) << "Figment should have accumulated at least *some* validator commission";
+    EXPECT_FALSE(valInfo.distInfo.selfBondRewards.empty()) << "Figment should have accumulated at least *some* self delegation rewards";
 
-    EXPECT_FALSE(valInfo.signInfo.tombstoned) << "Bison Trails is not expected to be tombstoned";
+    EXPECT_FALSE(valInfo.signInfo.tombstoned) << "Figment is not expected to be tombstoned";
     EXPECT_GE(valInfo.signInfo.missedBlocksCounter, 0) << "This value cannot be negative";
     EXPECT_GE(valInfo.signInfo.jailedUntil, DateUtils::fromJSON("1970-01-01T00:00:00Z")) << "This value cannot be before epoch";
 }
@@ -677,7 +676,7 @@ void GenericGasLimitEstimationTest(const std::string& strTx, CosmosLikeWalletSyn
 {
     const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(ledger::core::currencies::ATOM, strTx);
     const auto estimatedGasLimit = ::wait(t.explorer->getEstimatedGasLimit(tx));
-    EXPECT_GE(estimatedGasLimit->toUint64(), 0);
+    EXPECT_GT(estimatedGasLimit->toUint64(), 0);
 }
 
 } // namespace

@@ -1,5 +1,4 @@
-#ifndef __FIXTURES_H_
-#define __FIXTURES_H_
+#pragma once
 
 #include <test/integration/BaseFixture.h>
 
@@ -15,6 +14,12 @@ namespace ledger {
 
                         const std::string DEFAULT_ADDRESS = "cosmos1sd4tl9aljmmezzudugs7zlaya7pg2895tyn79r";
                         const std::string DEFAULT_HEX_PUB_KEY = "03d672c1b90c84d9d97522e9a73252a432b77d90a78bf81cdbe35270d9d3dc1c34";
+
+                        const std::string STARGATE_DEFAULT_ADDRESS = "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl";
+                        // FIXME: bad pub key (will fail the MediumXpub test),
+                        // but we need to access raw transactions to see the
+                        // associated public key and the endpoint is not ready yet
+                        const std::string STARGATE_DEFAULT_HEX_PUB_KEY = "0388459b2653519948b12492f1a0b464720110c147a8155d23d423a5cc3c21d89a";
 
                         std::shared_ptr<core::CosmosLikeAccount> createCosmosLikeAccount(
                                 const std::shared_ptr<core::AbstractWallet>& wallet,
@@ -54,5 +59,3 @@ namespace ledger {
                 }
         }
 }
-
-#endif // __FIXTURES_H_

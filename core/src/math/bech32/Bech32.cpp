@@ -35,23 +35,25 @@ namespace ledger {
     namespace core {
 
         // The Bech32 character set for encoding.
-        const char* charset = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+    const std::vector<char> charset{'q', 'p', 'z', 'r', 'y', '9', 'x', '8',
+                                    'g', 'f', '2', 't', 'v', 'd', 'w', '0',
+                                    's', '3', 'j', 'n', '5', '4', 'k', 'h',
+                                    'c', 'e', '6', 'm', 'u', 'a', '7', 'l'};
 
-        // The Bech32 character set for decoding.
-        const int8_t charsetRev[128] = {
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                15, -1, 10, 17, 21, 20, 26, 30,  7,  5, -1, -1, -1, -1, -1, -1,
-                -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-                1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1,
-                -1, 29, -1, 24, 13, 25,  9,  8, 23, -1, 18, 22, 31, 27, 19, -1,
-                1,  0,  3, 16, 11, 28, 12, 14,  6,  4,  2, -1, -1, -1, -1, -1
-        };
+    // The Bech32 character set for decoding.
+    const int8_t charsetRev[128] = {
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+        15, -1, 10, 17, 21, 20, 26, 30, 7,  5,  -1, -1, -1, -1, -1, -1,
+        -1, 29, -1, 24, 13, 25, 9,  8,  23, -1, 18, 22, 31, 27, 19, -1,
+        1,  0,  3,  16, 11, 28, 12, 14, 6,  4,  2,  -1, -1, -1, -1, -1,
+        -1, 29, -1, 24, 13, 25, 9,  8,  23, -1, 18, 22, 31, 27, 19, -1,
+        1,  0,  3,  16, 11, 28, 12, 14, 6,  4,  2,  -1, -1, -1, -1, -1};
 
-        // Verify a checksum.
-        bool Bech32::verifyChecksum(const std::vector<uint8_t>& values) const {
-            return polymod(vector::concat(expandHrp(_bech32Params.hrp), values)) == 1;
+    // Verify a checksum.
+    bool Bech32::verifyChecksum(const std::vector<uint8_t> &values) const {
+      return polymod(vector::concat(expandHrp(_bech32Params.hrp), values)) == 1;
         }
 
         // Create a checksum.

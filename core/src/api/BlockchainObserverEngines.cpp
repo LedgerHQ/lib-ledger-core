@@ -5,6 +5,8 @@
 
 namespace ledger { namespace core { namespace api {
 
+std::string const BlockchainObserverEngines::STARGATE_NODE = {"STARGATE_NODE"};
+
 std::string const BlockchainObserverEngines::COSMOS_NODE = {"COSMOS_NODE"};
 
 std::string const BlockchainObserverEngines::LEDGER_API = {"LEDGER_API"};
