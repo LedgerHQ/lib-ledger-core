@@ -8,7 +8,7 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.3
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -45,7 +45,7 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.3
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -78,7 +78,7 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.3
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -313,7 +313,7 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.3
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
     - attach_workspace:
