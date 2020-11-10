@@ -385,8 +385,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
       - build_android_release:
           filters:
             tags:
