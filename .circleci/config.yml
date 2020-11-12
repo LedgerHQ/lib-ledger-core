@@ -405,8 +405,6 @@ workflows:
           filters:
             tags:
               only: /.*/
-            branches:
-              only: /^(?!pull\/).*$/
       - build_linux_debug
       - build_macos_debug
       - publish_jar:
