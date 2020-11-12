@@ -13,11 +13,11 @@ brew install wget
 
 echo "========> Install Java"
 
-brew cask install adoptopenjdk/openjdk/adoptopenjdk8
+brew cask install adoptopenjdk/openjdk/adoptopenjdk11
 
 echo "========> Java Installed"
-echo "$(/usr/libexec/java_home -v 1.8)"
-export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
+echo "$(/usr/libexec/java_home -v 11.0)"
+export JAVA_HOME="$(/usr/libexec/java_home -v 11.0)"
 
 
 
