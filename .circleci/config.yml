@@ -45,26 +45,14 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: debian:buster
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
-      - run:
-          command: |
-              apt-get update
-              apt-get -y install git ssh
       - checkout
-      - run:
-          name: Setup
-          command: |
-            . .circleci/setup_debian.sh Release
       - run:
           name: Submodule_Initialization
           command: |
             . .circleci/init_submodules.sh
-      - run:
-          name: CMake_Install
-          command: |
-            . .circleci/cmake-install.sh
       - run:
           name: Build_Library_jni
           command: |
@@ -325,20 +313,12 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: debian:buster
+      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
     - attach_workspace:
         at: ~/lib-ledger-core-artifacts
-    - run:
-        command: |
-            apt-get update
-            apt-get -y install git ssh
     - checkout
-    - run:
-        name: Setup
-        command: |
-          . .circleci/setup_debian.sh Release
     - run:
         name: Submodule_Initialization
         command: |
