@@ -264,7 +264,7 @@ namespace ledger {
                         [self, request, explorer, accountAddress, currency, senderAddress](const std::shared_ptr<BigInt> &balance) {
                             // Check if all needed values are set
                             if (!request.transactionGasLimit || !request.storageLimit || !request.transactionFees
-                                || (!request.value && !request.wipe)) {
+                                || (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION && !request.value && !request.wipe)) {
                                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                                      "Missing mandatory informations (e.g. gasLimit, gasPrice or value).");
                             }
