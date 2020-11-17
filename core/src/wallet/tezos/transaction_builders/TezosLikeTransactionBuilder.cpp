@@ -76,7 +76,7 @@ namespace ledger {
             // So that's why we prevent user from creating a self-transaction
             // TODO: Get reference to confirm this
             if (address == _senderAddress) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Can not send funds to sending address !");
+                throw make_exception(api::ErrorCode::INVALID_SELF_TX, "Can not send funds to sending address !");
             }
             _request.value = std::make_shared<BigInt>(amount->toString());
             _request.toAddress = address;

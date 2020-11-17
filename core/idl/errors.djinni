@@ -105,6 +105,9 @@ ErrorCode = enum {
     # Stellar errors
     invalid_stellar_address_format;
     invalid_stellar_memo_type;
+
+    # Tezos errors
+    invalid_self_tx;
 }
 
 Error = record {
