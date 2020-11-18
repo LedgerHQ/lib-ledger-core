@@ -69,23 +69,34 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getFees() {
             const bool parseNumbersAsString = true;
-            auto feesField =
-              getConfiguration()->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
-                .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT) == api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT ?
-                  "fee" :
-                  "fees";
-
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
 
                         //Is there a fees field ?
-                        if (!json.IsObject() || !json.HasMember(feesField) ||
-                            !json[feesField].IsString()) {
+                        if (!json.IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get fees from network, no (or malformed) field \"result\" in response");
                         }
-                        std::string fees = json[feesField].GetString();
+
+                        auto getFieldValue = [&json](const char* fieldName) -> std::string {
+                            std::string value; 
+                            if (json.HasMember(fieldName) && json[fieldName].IsString()) {
+                                value = json[fieldName].GetString();
+                            }
+                            return value;
+                        };
+
+                        //try first with "fee" else with "fees"
+                        std::string fees = getFieldValue("fee");
+                        if (fees.empty()) {
+                            fees = getFieldValue("fees");
+                        }
+                        if (fees.empty()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                 "Failed to get fees from network, no (or malformed) field \"result\" in response");
+                        }
+
                         // Sometimes network is sending 0 for fees
                         if (fees == "0") {
                             fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
