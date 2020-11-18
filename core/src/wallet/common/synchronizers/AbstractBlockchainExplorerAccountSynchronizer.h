@@ -549,6 +549,7 @@ namespace ledger {
                             if (lastBlock.nonEmpty()) {
                                 batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
                                 batchState.blockHash = lastBlock.getValue().hash;
+                                buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                             }
                         }
 

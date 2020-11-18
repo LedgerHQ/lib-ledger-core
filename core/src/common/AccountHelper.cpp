@@ -45,7 +45,7 @@ namespace ledger {
                     | Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION
                     | Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
 
-                return static_cast<bool>(flag & insertedFlag != 0);
+                return static_cast<bool>((flag & insertedFlag) != 0);
             }
         }
     }
