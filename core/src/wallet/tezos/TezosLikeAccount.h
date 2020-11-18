@@ -147,6 +147,8 @@ namespace ledger {
 
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
+            void incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt>& explorerCounter);     
+
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
 

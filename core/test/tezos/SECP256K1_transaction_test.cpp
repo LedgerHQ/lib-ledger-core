@@ -53,6 +53,7 @@ struct SECP256K1TezosMakeTransaction : public TezosMakeBaseTransaction {
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1);
         configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
+        configuration->putString(api::TezosConfiguration::TEZOS_COUNTER_STRATEGY, "OPTIMISTIC");
         testData.configuration = configuration;
         testData.walletName = "my_wallet";
         testData.currencyName = "tezos";
@@ -205,4 +206,49 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
 }
 
+  TEST_F(SECP256K1TezosMakeTransaction, DISABLED_optimisticCounter) {
+    
+     const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD"; 
+     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
 
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+        dispatcher->stop();
+    });
+    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    dispatcher->waitUntilStopped();
+
+     auto createTx = [&] () {
+        auto builder = tx_builder();
+
+        builder->setFees(api::Amount::fromLong(currency, 1294));
+        builder->setGasLimit(api::Amount::fromLong(currency, 10407));
+        builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
+        builder->sendToAddress(api::Amount::fromLong(currency, 5000), DESTINATION);
+        auto f = builder->build();
+        auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
+        return tx;
+      };
+  
+      std::cout << "starting transaction 1" << std::endl;
+      auto tx1 = createTx();
+      auto counter1 = tx1->getCounter();
+      std::cout << "counter1=" << counter1->intValue() << std::endl;
+      
+      std::cout << "starting transaction 2" << std::endl;
+      auto tx2 = createTx();
+      auto counter2 = tx2->getCounter();
+      std::cout << "counter2=" << counter2->intValue() << std::endl;
+      EXPECT_EQ(counter2->intValue(), counter1->intValue());
+      //broadcast(tx2);
+
+      std::cout << "starting transaction 3" << std::endl;
+      auto tx3 = createTx();
+      auto counter3 = tx3->getCounter();
+      std::cout << "counter3=" <<counter3->intValue() << std::endl;
+      EXPECT_EQ(counter3->intValue(), counter2->intValue() + 1);
+      //broadcast(tx3);
+      
+ }

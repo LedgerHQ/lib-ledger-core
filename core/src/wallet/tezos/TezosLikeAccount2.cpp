@@ -245,6 +245,19 @@ namespace ledger {
 
         void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                                     const std::shared_ptr<api::StringCallback> &callback) {
+
+            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
+                api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
+            if (optimisticStrategy == "OPTIMISTIC") {
+                auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(transaction);
+                self->getInternalPreferences()->editor()->putString("waiting_counter", tx->getCounter()->toString(10))->commit();
+                self->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()) )->commit();            
+                auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+                waitingTxs.push_back(tx->getCounter()->toString(10));
+                std::cout << "broadcastTransaction: "<< tx->getCounter() << std::endl;
+                self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();                     
+            }
             broadcastRawTransaction(transaction->serialize(), callback);
         }
 
@@ -377,12 +390,19 @@ namespace ledger {
                                             tx->setType(request.type);
                                             const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
                                                                         managerAddress : senderAddress;
-                                            return explorer->getCounter(counterAddress).flatMapPtr<Block>(self->getMainExecutionContext(), [self, tx, explorer] (const std::shared_ptr<BigInt> &counter) {
-                                                if (!counter) {
+                                            return explorer->getCounter(counterAddress).flatMapPtr<Block>(self->getMainExecutionContext(), [&self, tx, explorer, request] (const std::shared_ptr<BigInt> &explorerCounter) {
+                                                if (!explorerCounter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
-                                                // We should increment current counter
-                                                tx->setCounter(std::make_shared<BigInt>(++(*counter)));
+
+                                                const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
+                                                    api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
+                                                if (optimisticStrategy == "OPTIMISTIC") {
+                                                    self->incrementOptimisticCounter(tx, explorerCounter);
+                                                }
+                                                else {
+                                                    tx->setCounter(std::make_shared<BigInt>(++(*explorerCounter)));
+                                                }
                                                 return explorer->getCurrentBlock();
                                             }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                                 tx->setBlockHash(block->hash);
@@ -409,6 +429,51 @@ namespace ledger {
                                                                          ->getConfiguration()
                                                                          ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE).value_or("")
             );
+        }
+
+        void TezosLikeAccount::incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt>& explorerCounter) {
+            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            std::cout << "get explorer counter =" << explorerCounter->toInt64() << std::endl;
+            auto savedValue = self->getInternalPreferences()->getString("waiting_counter", "0");
+            int64_t waitingCounter = BigInt::fromString(savedValue).toInt64();
+            std::cout << "get waiting_counter =" << savedValue << std::endl;
+            if (waitingCounter != 0) {
+                //check counter validity
+                savedValue = self->getInternalPreferences()->getString("waiting_counter_last_update", "");
+                std::cout << "get waiting_counter_last_update =" << savedValue << std::endl;
+                if (!savedValue.empty()) {
+                    auto lastUpdate = DateUtils::fromJSON(savedValue);
+                    int64_t timeout = 300000;   
+                    int64_t duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - lastUpdate).count();
+                    std::cout << "duration since last update =" << duration << std::endl;
+                    if ( duration > timeout ) {
+                        waitingCounter = 0;
+                        self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", {})->commit();
+                        self->getInternalPreferences()->editor()->putString("waiting_counter", "0")->commit();
+                        std::cout << "reset waiting_counter_txs" << std::endl;
+                        std::cout << "reset waiting_counter" << std::endl;
+                    }
+                    else {
+                        //keep only not validated counters:
+                        auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+                        std::cout << "get waiting_counter_txs ="; 
+                        for (auto& s: waitingTxs) std::cout << s << "-";
+                        std::cout << std::endl;
+                        auto waitingTxsSize = waitingCounter - explorerCounter->toInt64();
+                        if(waitingTxsSize < waitingTxs.size()) {
+                            waitingTxs = std::vector<std::string>(waitingTxs.end() - waitingTxsSize, waitingTxs.end());
+                        }
+                        self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
+                        std::cout << "set waiting_counter_txs ="; 
+                        for (auto& s: waitingTxs) std::cout << s << "-";
+                        std::cout << std::endl;
+                    }
+                }
+            }
+            
+
+            int64_t optimisticCounter = std::max(explorerCounter->toInt64(), waitingCounter) ;
+            tx->setCounter(std::make_shared<BigInt>(optimisticCounter+1));
         }
 
         void TezosLikeAccount::addOriginatedAccounts(soci::session &sql, const std::vector<TezosLikeOriginatedAccountDatabaseEntry> &originatedEntries) {
