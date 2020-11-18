@@ -269,10 +269,11 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto buildFunction = [self, senderAddress](const TezosLikeTransactionBuildRequest &request,
                                                        const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer) {
+
                 // Check if balance is sufficient
                 auto currency = self->getWallet()->getCurrency();
                 auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, currency);
-                return explorer->getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{accountAddress}).flatMapPtr<api::TezosLikeTransaction>(
+                return explorer->getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{accountAddress}).flatMapPtr<api::TezosLikeTransaction>(  
                         self->getMainExecutionContext(),
                         [self, request, explorer, accountAddress, currency, senderAddress](const std::shared_ptr<BigInt> &balance) {
                             // Check if all needed values are set
@@ -281,7 +282,6 @@ namespace ledger {
                                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                                      "Missing mandatory informations (e.g. gasLimit, gasPrice or value).");
                             }
-
                             // Check if recepient is allocated or not
                             // because if not we have to add additional fees equal to storage_limit (in mXTZ)
                             auto getAllocationFee = [self, explorer, request]() -> Future<BigInt> {
@@ -303,7 +303,6 @@ namespace ledger {
                                                 ->getConfiguration()
                                                 ->getString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE)
                                                 .value_or("");
-
                                         auto tx = std::make_shared<TezosLikeTransactionApi>(currency, protocolUpdate);
                                         // Balance is used only for origination which is always performed from implicit accounts
                                         // In that case senderAddress == self->_keychain->getAddress() so safe to do so
@@ -321,7 +320,7 @@ namespace ledger {
                                                 if (tx->toReveal() && (!request.revealGasLimit || !request.revealFees)) {
                                                     throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
                                                     "Missing mandatory informations (reveal gasPrice or reveal Fees).");
-                            }
+                                                }   
                                                 return unit;
                                             });
                                         };
@@ -343,7 +342,6 @@ namespace ledger {
                                                 std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
                                                 throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                                             }
-
                                             tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
                                             // Burned XTZs are not part of the fees
                                             // And if we have a reveal operation, it will be doubled automatically
@@ -353,7 +351,7 @@ namespace ledger {
                                             tx->setRevealFees(request.revealFees);
                                             tx->setRevealGasLimit(request.revealGasLimit);
                                             tx->setStorage(request.storageLimit);
-
+                                            
                                             auto getCurveHelper = [] (const std::string &xpubConfig) -> api::TezosCurve {
                                                 if (xpubConfig == api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519) {
                                                     return api::TezosCurve::ED25519;
@@ -372,6 +370,7 @@ namespace ledger {
                                             }
                                             tx->setSender(accountAddress, getCurveHelper(senderCurve));
 
+                                            
                                             // Get receiver's curve
                                             auto receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519;
                                             auto receiverPrefix = request.toAddress.substr(0, 3);
@@ -394,7 +393,7 @@ namespace ledger {
                                                 if (!explorerCounter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
-
+                                                
                                                 const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
                                                     api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
                                                 if (optimisticStrategy == "OPTIMISTIC") {
@@ -417,6 +416,7 @@ namespace ledger {
                                             });
                                         });
                                     });
+                                    
                         });
             };
             return std::make_shared<TezosLikeTransactionBuilder>(senderAddress,
@@ -443,10 +443,12 @@ namespace ledger {
                 std::cout << "get waiting_counter_last_update =" << savedValue << std::endl;
                 if (!savedValue.empty()) {
                     auto lastUpdate = DateUtils::fromJSON(savedValue);
-                    int64_t timeout = 300000;   
+                    auto timeout = BigInt::fromString(
+                        self->getWallet()->getConfiguration()->getString(api::TezosConfiguration::TEZOS_OPTIMISTIC_COUNTER_TIMEOUT).value_or("300000"));                            
+                      
                     int64_t duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - lastUpdate).count();
                     std::cout << "duration since last update =" << duration << std::endl;
-                    if ( duration > timeout ) {
+                    if ( duration > timeout.toInt64()) {
                         waitingCounter = 0;
                         self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", {})->commit();
                         self->getInternalPreferences()->editor()->putString("waiting_counter", "0")->commit();

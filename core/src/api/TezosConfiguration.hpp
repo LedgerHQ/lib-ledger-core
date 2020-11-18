@@ -26,6 +26,8 @@ public:
     static std::string const TEZOS_NODE;
 
     static std::string const TEZOS_COUNTER_STRATEGY;
+
+    static std::string const TEZOS_OPTIMISTIC_COUNTER_TIMEOUT;
 };
 
 } } }  // namespace ledger::core::api

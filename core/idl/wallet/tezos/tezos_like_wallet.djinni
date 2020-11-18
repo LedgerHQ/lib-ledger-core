@@ -158,6 +158,7 @@ TezosConfiguration = interface +c {
 	const TEZOS_PROTOCOL_UPDATE: string = "TEZOS_PROTOCOL_UPDATE";
 	const TEZOS_NODE: string = "TEZOS_NODE";
 	const TEZOS_COUNTER_STRATEGY: string = "TEZOS_COUNTER_STRATEGY";
+	const TEZOS_OPTIMISTIC_COUNTER_TIMEOUT: string = "TEZOS_OPTIMISTIC_COUNTER_TIMEOUT";
 }
 
 TezosConfigurationDefaults = interface +c {

@@ -13,4 +13,6 @@ std::string const TezosConfiguration::TEZOS_NODE = {"TEZOS_NODE"};
 
 std::string const TezosConfiguration::TEZOS_COUNTER_STRATEGY = {"TEZOS_COUNTER_STRATEGY"};
 
+std::string const TezosConfiguration::TEZOS_OPTIMISTIC_COUNTER_TIMEOUT = {"TEZOS_OPTIMISTIC_COUNTER_TIMEOUT"};
+
 } } }  // namespace ledger::core::api
