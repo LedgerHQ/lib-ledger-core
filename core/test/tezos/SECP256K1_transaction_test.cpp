@@ -253,6 +253,90 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
       
  }
 
+ TEST_F(SECP256K1TezosMakeTransaction,incrementOptimisticCounter) {
+      const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD"; 
+     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
+
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+        dispatcher->stop();
+    });
+    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    dispatcher->waitUntilStopped();
+
+    auto builder = tx_builder();
+    builder->setFees(api::Amount::fromLong(currency, 1294));
+    builder->setGasLimit(api::Amount::fromLong(currency, 10407));
+    builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
+    builder->sendToAddress(api::Amount::fromLong(currency, 5000), DESTINATION);
+    auto f = builder->build();
+    
+    auto broadcastSimulation = [&] (std::shared_ptr<TezosLikeTransactionApi> tx) {
+        account->getInternalPreferences()->editor()->putString("waiting_counter", tx->getCounter()->toString(10))->commit();
+        account->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()) )->commit();            
+        auto waitingTxs = account->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+        waitingTxs.push_back(tx->getCounter()->toString(10));
+        std::cout << "broadcastTransaction: "<< tx->getCounter()->toString(10) << std::endl;
+        account->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit(); 
+    };
+  
+    auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
+    auto explorerCounter = std::make_shared<BigInt>(tx->getCounter()->toString(10));
+    //test 1
+    account->incrementOptimisticCounter(tx, explorerCounter);
+    auto counter1 = tx->getCounter();
+    std::cout << "counter1=" <<counter1->intValue() << std::endl;
+    EXPECT_EQ(counter1->intValue(), explorerCounter->toInt64()+1);
+    broadcastSimulation(tx);
+    std::cout << "================================"<< std::endl;
+
+    //test 2  
+    account->incrementOptimisticCounter(tx, explorerCounter);
+    auto counter2 = tx->getCounter();
+    std::cout << "counter2=" <<counter2->intValue() << std::endl;
+    EXPECT_EQ(counter2->intValue(), explorerCounter->toInt64()+2);
+    broadcastSimulation(tx);
+    std::cout << "================================"<< std::endl;
+
+    //test 3
+    account->incrementOptimisticCounter(tx, explorerCounter);
+    auto counter3 = tx->getCounter();
+    std::cout << "counter3=" <<counter3->intValue() << std::endl;
+    EXPECT_EQ(counter3->intValue(), explorerCounter->toInt64()+3);
+    broadcastSimulation(tx);
+    std::cout << "================================"<< std::endl;
+
+    //test 4
+    account->incrementOptimisticCounter(tx, std::make_shared<BigInt>(explorerCounter->toInt64()+1));
+    auto counter4 = tx->getCounter();
+    std::cout << "counter4=" <<counter4->intValue() << std::endl;
+    EXPECT_EQ(counter4->intValue(), explorerCounter->toInt64()+4);
+    broadcastSimulation(tx);
+    std::cout << "================================"<< std::endl;
+
+    //test 5
+    account->incrementOptimisticCounter(tx, std::make_shared<BigInt>(explorerCounter->toInt64()+4));
+    auto counter5 = tx->getCounter();
+    std::cout << "counter5=" <<counter5->intValue() << std::endl;
+    EXPECT_EQ(counter5->intValue(), explorerCounter->toInt64()+5);
+    broadcastSimulation(tx);
+    std::cout << "================================"<< std::endl;
+
+    //test 6
+    account->incrementOptimisticCounter(tx, std::make_shared<BigInt>(explorerCounter->toInt64()+4));
+    auto counter6 = tx->getCounter();
+    std::cout << "counter6=" <<counter6->intValue() << std::endl;
+    EXPECT_EQ(counter6->intValue(), explorerCounter->toInt64()+6);
+    broadcastSimulation(tx);
+    std::cout << "================================"<< std::endl;
+
+
+
+
+ }
+
 
   TEST_F(SECP256K1TezosMakeTransaction, CreateDelegation) {
         /*

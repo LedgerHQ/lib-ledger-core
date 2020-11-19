@@ -255,7 +255,7 @@ namespace ledger {
                 self->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()) )->commit();            
                 auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
                 waitingTxs.push_back(tx->getCounter()->toString(10));
-                std::cout << "broadcastTransaction: "<< tx->getCounter() << std::endl;
+                std::cout << "broadcastTransaction: "<< tx->getCounter()->toString(10) << std::endl;
                 self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();                     
             }
             broadcastRawTransaction(transaction->serialize(), callback);
