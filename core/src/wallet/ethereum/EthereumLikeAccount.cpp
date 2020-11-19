@@ -731,5 +731,15 @@ namespace ledger {
         std::shared_ptr<api::Keychain> EthereumLikeAccount::getAccountKeychain() {
             return _keychain;
         }
+
+        void EthereumLikeAccount::emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid) {
+            auto payload = DynamicObject::newInstance();
+            payload->putString(api::Account::EV_NEW_OP_UID, op.getOperationUid());
+            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
+            payload->putString(api::ERC20LikeAccount::EV_NEW_OP_ERC20_ACCOUNT_UID, accountUid);
+            auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
+            pushEvent(event);
+        }
     }
 }
