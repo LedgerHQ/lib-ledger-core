@@ -229,10 +229,10 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             self->getInternalPreferences()->editor()->putString("waiting_counter", counter->toString())->commit();
             self->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()) )->commit();            
-            auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
-            waitingTxs.push_back(txHash);
             std::cout << "broadcastTransaction: "<< counter->toString() << " / " << txHash << std::endl;
-            self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit(); 
+            //auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+            //waitingTxs.push_back(txHash);
+            //self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit(); 
         }
 
         void TezosLikeAccount::_broadcastRawTransaction(const std::vector<uint8_t> &transaction,
@@ -411,7 +411,7 @@ namespace ledger {
                                             const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
                                                                         managerAddress : senderAddress;
                                             return explorer->getCounter(counterAddress
-                                            ).flatMapPtr<Block>(self->getMainExecutionContext(), [&self, tx, explorer, request] (const std::shared_ptr<BigInt> &explorerCounter) {
+                                            ).flatMapPtr<Block>(self->getMainExecutionContext(), [self, tx, explorer, request] (const std::shared_ptr<BigInt> &explorerCounter) {
                                                 if (!explorerCounter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
@@ -472,30 +472,29 @@ namespace ledger {
                     std::cout << "duration since last update =" << duration << std::endl;
                     if ( duration > timeout.toInt64()) {
                         waitingCounter = 0;
-                        self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", {})->commit();
+                        //self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", {})->commit();
+                        //std::cout << "reset waiting_counter_txs" << std::endl;
                         self->getInternalPreferences()->editor()->putString("waiting_counter", "0")->commit();
-                        std::cout << "reset waiting_counter_txs" << std::endl;
                         std::cout << "reset waiting_counter" << std::endl;
                     }
-                    else {
-                        //keep only not validated counters:
-                        auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
-                        std::cout << "get waiting_counter_txs ="; 
-                        for (auto& s: waitingTxs) std::cout << s << "-";
-                        std::cout << std::endl;
-                        auto waitingTxsSize = waitingCounter - explorerCounter->toInt64();
-                        if(waitingTxsSize < waitingTxs.size()) {
-                            waitingTxs = std::vector<std::string>(waitingTxs.end() - waitingTxsSize, waitingTxs.end());
-                            self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
-                            std::cout << "set waiting_counter_txs ="; 
-                            for (auto& s: waitingTxs) std::cout << s << "-";
-                            std::cout << std::endl;
-                        }
-                    }
+                    //else {
+                    //    //keep only not validated counters:
+                    //    auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+                    //    std::cout << "get waiting_counter_txs ="; 
+                    //    for (auto& s: waitingTxs) std::cout << s << "-";
+                    //    std::cout << std::endl;
+                    //    auto waitingTxsSize = waitingCounter - explorerCounter->toInt64();
+                    //    if(waitingTxsSize < waitingTxs.size()) {
+                    //        waitingTxs = std::vector<std::string>(waitingTxs.end() - waitingTxsSize, waitingTxs.end());
+                    //        self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
+                    //        std::cout << "set waiting_counter_txs ="; 
+                    //        for (auto& s: waitingTxs) std::cout << s << "-";
+                    //        std::cout << std::endl;
+                    //      }
+                    //}
                 }
             }
             
-
             int64_t optimisticCounter = std::max(explorerCounter->toInt64(), waitingCounter) ;
             tx->setCounter(std::make_shared<BigInt>(optimisticCounter+1));
         }
