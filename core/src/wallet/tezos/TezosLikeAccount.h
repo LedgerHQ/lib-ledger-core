@@ -124,6 +124,10 @@ namespace ledger {
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback) override;
 
+            void _broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                         const std::shared_ptr<api::StringCallback> &callback,
+                                         const std::shared_ptr<BigInt>& counter) ;
+
             void broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
 
@@ -149,6 +153,7 @@ namespace ledger {
 
             void incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt>& explorerCounter);     
 
+            void saveOptimisticCounter(const std::shared_ptr<BigInt>& counter, const std::string& txHash);
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
 

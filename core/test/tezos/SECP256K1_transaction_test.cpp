@@ -253,7 +253,7 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
       
  }
 
- TEST_F(SECP256K1TezosMakeTransaction,incrementOptimisticCounter) {
+ TEST_F(SECP256K1TezosMakeTransaction, incrementOptimisticCounter) {
       const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD"; 
      auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -272,15 +272,6 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
     builder->sendToAddress(api::Amount::fromLong(currency, 5000), DESTINATION);
     auto f = builder->build();
-    
-    auto broadcastSimulation = [&] (std::shared_ptr<TezosLikeTransactionApi> tx) {
-        account->getInternalPreferences()->editor()->putString("waiting_counter", tx->getCounter()->toString(10))->commit();
-        account->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()) )->commit();            
-        auto waitingTxs = account->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
-        waitingTxs.push_back(tx->getCounter()->toString(10));
-        std::cout << "broadcastTransaction: "<< tx->getCounter()->toString(10) << std::endl;
-        account->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit(); 
-    };
   
     auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
     auto explorerCounter = std::make_shared<BigInt>(tx->getCounter()->toString(10));
@@ -289,7 +280,7 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     auto counter1 = tx->getCounter();
     std::cout << "counter1=" <<counter1->intValue() << std::endl;
     EXPECT_EQ(counter1->intValue(), explorerCounter->toInt64()+1);
-    broadcastSimulation(tx);
+    account->saveOptimisticCounter(std::make_shared<BigInt>(tx->getCounter()->toString(10)), "hash1"); //to simulate broadcast
     std::cout << "================================"<< std::endl;
 
     //test 2  
@@ -297,7 +288,7 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     auto counter2 = tx->getCounter();
     std::cout << "counter2=" <<counter2->intValue() << std::endl;
     EXPECT_EQ(counter2->intValue(), explorerCounter->toInt64()+2);
-    broadcastSimulation(tx);
+    account->saveOptimisticCounter(std::make_shared<BigInt>(tx->getCounter()->toString(10)), "hash2"); //to simulate broadcast
     std::cout << "================================"<< std::endl;
 
     //test 3
@@ -305,7 +296,7 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     auto counter3 = tx->getCounter();
     std::cout << "counter3=" <<counter3->intValue() << std::endl;
     EXPECT_EQ(counter3->intValue(), explorerCounter->toInt64()+3);
-    broadcastSimulation(tx);
+    account->saveOptimisticCounter(std::make_shared<BigInt>(tx->getCounter()->toString(10)), "hash3"); //to simulate broadcast
     std::cout << "================================"<< std::endl;
 
     //test 4
@@ -313,7 +304,7 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     auto counter4 = tx->getCounter();
     std::cout << "counter4=" <<counter4->intValue() << std::endl;
     EXPECT_EQ(counter4->intValue(), explorerCounter->toInt64()+4);
-    broadcastSimulation(tx);
+    account->saveOptimisticCounter(std::make_shared<BigInt>(tx->getCounter()->toString(10)), "hash4"); //to simulate broadcast
     std::cout << "================================"<< std::endl;
 
     //test 5
@@ -321,7 +312,7 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     auto counter5 = tx->getCounter();
     std::cout << "counter5=" <<counter5->intValue() << std::endl;
     EXPECT_EQ(counter5->intValue(), explorerCounter->toInt64()+5);
-    broadcastSimulation(tx);
+    account->saveOptimisticCounter(std::make_shared<BigInt>(tx->getCounter()->toString(10)), "hash5"); //to simulate broadcast
     std::cout << "================================"<< std::endl;
 
     //test 6
@@ -329,11 +320,8 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     auto counter6 = tx->getCounter();
     std::cout << "counter6=" <<counter6->intValue() << std::endl;
     EXPECT_EQ(counter6->intValue(), explorerCounter->toInt64()+6);
-    broadcastSimulation(tx);
+    account->saveOptimisticCounter(std::make_shared<BigInt>(tx->getCounter()->toString(10)), "hash6"); //to simulate broadcast
     std::cout << "================================"<< std::endl;
-
-
-
 
  }
 

@@ -225,13 +225,31 @@ namespace ledger {
             return _keychain->getRestoreKey();
         }
 
-        void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
-                                                       const std::shared_ptr<api::StringCallback> &callback) {
+        void TezosLikeAccount::saveOptimisticCounter(const std::shared_ptr<BigInt>& counter, const std::string& txHash) {
+            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+            self->getInternalPreferences()->editor()->putString("waiting_counter", counter->toString())->commit();
+            self->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()) )->commit();            
+            auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
+            waitingTxs.push_back(txHash);
+            std::cout << "broadcastTransaction: "<< counter->toString() << " / " << txHash << std::endl;
+            self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit(); 
+        }
+
+        void TezosLikeAccount::_broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                                       const std::shared_ptr<api::StringCallback> &callback, 
+                                                       const std::shared_ptr<BigInt>& counter) {
             _explorer->pushTransaction(transaction)
                     .map<std::string>(getContext(),
-                                      [](const String &seq) -> std::string {
-                                          //TODO: optimistic update
-                                          return seq.str();
+                                      [&](const String &seq) -> std::string {
+                                            auto txHash = seq.str();
+                                            std::cout << "txHash=" << txHash << std::endl;
+                                            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
+                                            const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
+                                                api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
+                                            if (optimisticStrategy == "OPTIMISTIC") {
+                                                saveOptimisticCounter(counter, txHash);                 
+                                            }
+                                            return txHash;
                                       })
                     .recoverWith(getMainExecutionContext(), [] (const Exception &e) {
                         // Avoid fmt error because of JSON string
@@ -243,22 +261,25 @@ namespace ledger {
                     .callback(getMainExecutionContext(), callback);
         }
 
-        void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
-                                                    const std::shared_ptr<api::StringCallback> &callback) {
-
+        void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                                       const std::shared_ptr<api::StringCallback> &callback) {
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
                 api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
             if (optimisticStrategy == "OPTIMISTIC") {
-                auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(transaction);
-                self->getInternalPreferences()->editor()->putString("waiting_counter", tx->getCounter()->toString(10))->commit();
-                self->getInternalPreferences()->editor()->putString("waiting_counter_last_update", DateUtils::toJSON(DateUtils::now()) )->commit();            
-                auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
-                waitingTxs.push_back(tx->getCounter()->toString(10));
-                std::cout << "broadcastTransaction: "<< tx->getCounter()->toString(10) << std::endl;
-                self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();                     
+                throw Exception(api::ErrorCode::API_ERROR, "broadcastRawTransaction not authorized with OPTIMISTIC COUNTER" );          
             }
-            broadcastRawTransaction(transaction->serialize(), callback);
+            _broadcastRawTransaction(transaction, callback, nullptr);
+        }
+
+        void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
+                                                    const std::shared_ptr<api::StringCallback> &callback) {
+            auto counter = std::make_shared<BigInt>(transaction->getCounter()->toString(10));
+            auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(transaction);
+            if (tx->toReveal()) {
+                ++(*counter);
+            }
+            _broadcastRawTransaction(transaction->serialize(), callback, counter);
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction() {
@@ -389,7 +410,8 @@ namespace ledger {
                                             tx->setType(request.type);
                                             const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
                                                                         managerAddress : senderAddress;
-                                            return explorer->getCounter(counterAddress).flatMapPtr<Block>(self->getMainExecutionContext(), [&self, tx, explorer, request] (const std::shared_ptr<BigInt> &explorerCounter) {
+                                            return explorer->getCounter(counterAddress
+                                            ).flatMapPtr<Block>(self->getMainExecutionContext(), [&self, tx, explorer, request] (const std::shared_ptr<BigInt> &explorerCounter) {
                                                 if (!explorerCounter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
@@ -464,11 +486,11 @@ namespace ledger {
                         auto waitingTxsSize = waitingCounter - explorerCounter->toInt64();
                         if(waitingTxsSize < waitingTxs.size()) {
                             waitingTxs = std::vector<std::string>(waitingTxs.end() - waitingTxsSize, waitingTxs.end());
+                            self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
+                            std::cout << "set waiting_counter_txs ="; 
+                            for (auto& s: waitingTxs) std::cout << s << "-";
+                            std::cout << std::endl;
                         }
-                        self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
-                        std::cout << "set waiting_counter_txs ="; 
-                        for (auto& s: waitingTxs) std::cout << s << "-";
-                        std::cout << std::endl;
                     }
                 }
             }
