@@ -73,4 +73,8 @@ ERC20LikeOperation = interface +c {
     # Get block height on which operation was included.
     # @return Optional 64-bit integer, height of block in which operation was validated
     getBlockHeight(): optional<i64>;
+    # Get parent ETH operation uid
+    getETHOperationUid(): string;
+    # Get ERC20 operation uid
+    getOperationUid(): string;
 }
