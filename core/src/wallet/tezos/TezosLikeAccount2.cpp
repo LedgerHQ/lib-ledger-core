@@ -238,16 +238,16 @@ namespace ledger {
         void TezosLikeAccount::_broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                        const std::shared_ptr<api::StringCallback> &callback, 
                                                        const std::shared_ptr<BigInt>& counter) {
+            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             _explorer->pushTransaction(transaction)
                     .map<std::string>(getContext(),
-                                      [&](const String &seq) -> std::string {
+                                      [self, counter](const String &seq) -> std::string {
                                             auto txHash = seq.str();
                                             std::cout << "txHash=" << txHash << std::endl;
-                                            auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
                                             const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
                                                 api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
                                             if (optimisticStrategy == "OPTIMISTIC") {
-                                                saveOptimisticCounter(counter, txHash);                 
+                                                self->saveOptimisticCounter(counter, txHash);                 
                                             }
                                             return txHash;
                                       })
