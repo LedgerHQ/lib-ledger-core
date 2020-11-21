@@ -738,7 +738,7 @@ namespace ledger {
             payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
             payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
             payload->putString(api::ERC20LikeAccount::EV_NEW_OP_ERC20_ACCOUNT_UID, accountUid);
-            auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
+            auto event = Event::newInstance(api::EventCode::NEW_ERC20_OPERATION, payload);
             pushEvent(event);
         }
     }
