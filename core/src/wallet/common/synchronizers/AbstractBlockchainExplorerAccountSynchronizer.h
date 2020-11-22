@@ -505,8 +505,8 @@ namespace ledger {
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
                         buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
                         auto count = 0;
+                        soci::transaction tr(sql);
                         for (const auto& tx : bulk->transactions) {
-                            soci::transaction tr(sql);
                             // A lot of things could happen here, better to wrap it
                             auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self] () {
                                 auto const flag = self->putTransaction(sql, tx, buddy);
@@ -534,11 +534,12 @@ namespace ledger {
                                 tr.rollback();
                                 auto blockHash = tx.block.hasValue() ? tx.block.getValue().hash : "None";
                                 buddy->logger->error("Failed to put transaction {}, on block {}, for account {}, reason: {}, rollback ...", tx.hash, blockHash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
+                                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} on block {} because of tx {} ({})", currentBatchIndex, blockHash, tx.hash, tryPutTx.exception().getValue().getMessage());
                             } else {
                                 count++;
-                                tr.commit();
                             }
                         }
+                        tr.commit();
                         buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
                         buddy->account->emitEventsNow();
 
