@@ -356,14 +356,18 @@ namespace ledger {
                                             if (senderAddress.find("KT1") == 0) {
                                                 fees = fees - *request.transactionFees;
                                             }
-                                            auto maxPossibleAmountToSend = *balance - fees;
 
-                                            auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
-                                            if (maxPossibleAmountToSend < amountToSend) {
-                                                std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
-                                                throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+                                            if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                                                auto maxPossibleAmountToSend = *balance - fees;
+                                            
+                                                auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
+                                                if (maxPossibleAmountToSend < amountToSend) {
+                                                    std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
+                                                    throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+                                                }
+                                                tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
                                             }
-                                            tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
+
                                             // Burned XTZs are not part of the fees
                                             // And if we have a reveal operation, it will be doubled automatically
                                             // since we serialize 2 ops with same fees
@@ -391,16 +395,19 @@ namespace ledger {
                                             }
                                             tx->setSender(accountAddress, getCurveHelper(senderCurve));
 
-                                            
-                                            // Get receiver's curve
-                                            auto receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519;
-                                            auto receiverPrefix = request.toAddress.substr(0, 3);
-                                            if (receiverPrefix == "tz2") {
-                                                receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1;
-                                            } else if (receiverPrefix == "tz3") {
-                                                receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256;
+                                            if (!request.toAddress.empty()) {
+                                                // Get receiver's curve
+                                                auto receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519;
+                                                auto receiverPrefix = request.toAddress.substr(0, 3);
+                                                std::cout << "receiverPrefix=" << receiverPrefix << std::endl;
+                                                if (receiverPrefix == "tz2") {
+                                                    receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1;
+                                                } else if (receiverPrefix == "tz3") {
+                                                    receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256;
+                                                }
+                                                tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency), getCurveHelper(receiverCurve));
                                             }
-                                            tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency), getCurveHelper(receiverCurve));
+
                                             tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
                                             tx->setManagerAddress(managerAddress,
                                                                   getCurveHelper(
