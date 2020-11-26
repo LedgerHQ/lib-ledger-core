@@ -201,3 +201,87 @@ TEST_F(P256TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
     EXPECT_EQ(tx->getGasLimit()->toLong(), 10407+10200);
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
 }
+
+TEST_F(P256TezosMakeTransaction, CreateDelegation) {
+        /*
+{'protocol': 'PsDELPH1Kxsxt8f9eWbxQeRxkjfbxoqM52jvs5Y5fBxWWh4ifpo',
+ 'branch': 'BKt9ZkvgTfhEbE8xyv7L6nsdDrfVGdj3aJsdLjZCtK5MzM4iVmb',
+ 'contents': [{'kind': 'delegation',
+   'source': 'tz3bnhbn7uYfL43zfXtBvCYoq6DW743mRWvc',
+   'fee': '370',
+   'counter': '7523033',
+   'gas_limit': '1200',
+   'storage_limit': '0',
+   'delegate': 'tz1aRoaRhSpRYvFdyvgWLL6TGyRoGF51wDjM'}],
+ 'signature': 'sigZ9fTYVCBM7qoboy2zrboGPYyf8Thy5hZsmFwJbzvvxNktKK7eDgVmEgUzJVLfwvugq6yCZEYkMqFTvNzMcVd4oDXr8BWS'}
+
+ 1666ebf3dce68bb6758fd851355746c734cb5995a08370bd7472a58f4053c0536e02a99468ec07aec188ee8d640bb7bf0a6f4bdf33c7f202d995cb03b00900ff00a239f27133bef5fb66577f05f2f62c59423ab1df5550735b6dac2f73349525bd94cf2bff7405dcc4fa8fa821db0f41e1b22fa94de3c1a7a4d6019fc973565ecd9dacbc8b95d4cb6213a1074c7a9bf7d53fb5e457
+    */
+    
+     const std::string DESTINATION = "tz1aRoaRhSpRYvFdyvgWLL6TGyRoGF51wDjM"; 
+     
+     auto builder = tx_builder();
+     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+          fmt::print("Received event {}\n", api::to_string(event->getCode()));
+          if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
+     
+          EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+          EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+          dispatcher->stop();
+      });
+      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      dispatcher->waitUntilStopped();
+
+      builder->setFees(api::Amount::fromLong(currency, 370));
+      builder->setGasLimit(api::Amount::fromLong(currency, 1200));
+      builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
+      builder->wipeToAddress(DESTINATION);
+
+      builder->setType(api::TezosOperationTag::OPERATION_TAG_DELEGATION);
+      auto f = builder->build();
+      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
+      tx->setBlockHash("BKt9ZkvgTfhEbE8xyv7L6nsdDrfVGdj3aJsdLjZCtK5MzM4iVmb");
+      tx->setCounter(std::make_shared<BigInt>(BigInt::fromString("7523033")));
+      tx->setSignature(hex::toByteArray("5550735b6dac2f73349525bd94cf2bff7405dcc4fa8fa821db0f41e1b22fa94de3c1a7a4d6019fc973565ecd9dacbc8b95d4cb6213a1074c7a9bf7d53fb5e457"));
+      tx->reveal(false);
+
+      auto binaryPayload= tx->serialize();
+      std::cout << "TezosMakeTransaction.CreateDelegation - serialized tx: " << hex::toString(binaryPayload) << std::endl;
+
+      EXPECT_EQ(hex::toString(binaryPayload), "1666ebf3dce68bb6758fd851355746c734cb5995a08370bd7472a58f4053c0536e02a99468ec07aec188ee8d640bb7bf0a6f4bdf33c7f202d995cb03b00900ff00a239f27133bef5fb66577f05f2f62c59423ab1df5550735b6dac2f73349525bd94cf2bff7405dcc4fa8fa821db0f41e1b22fa94de3c1a7a4d6019fc973565ecd9dacbc8b95d4cb6213a1074c7a9bf7d53fb5e457");
+      //broadcast(tx);    
+ }
+
+TEST_F(P256TezosMakeTransaction, ParseUnsignedRawDelegation) {
+    auto strTx = "031666ebf3dce68bb6758fd851355746c734cb5995a08370bd7472a58f4053c0536e02a99468ec07aec188ee8d640bb7bf0a6f4bdf33c7f202d995cb03b00900ff00a239f27133bef5fb66577f05f2f62c59423ab1df";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
+    tx->setRawTx(std::vector<unsigned char>{});
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getType(), api::TezosOperationTag::OPERATION_TAG_DELEGATION);
+    EXPECT_EQ(tx->getSender()->toBase58(), "tz3bnhbn7uYfL43zfXtBvCYoq6DW743mRWvc");
+    EXPECT_EQ(tx->getReceiver()->toBase58(), "tz1aRoaRhSpRYvFdyvgWLL6TGyRoGF51wDjM");
+    EXPECT_EQ(tx->getFees()->toLong(), 370);
+    EXPECT_EQ(tx->getGasLimit()->toLong(), 1200);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
+}
+
+TEST_F(P256TezosMakeTransaction, ParseUnsignedRawUndelegation) {
+    auto strTx = "031666ebf3dce68bb6758fd851355746c734cb5995a08370bd7472a58f4053c0536e02a99468ec07aec188ee8d640bb7bf0a6f4bdf33c7f202d995cb03b0090000";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
+    tx->setRawTx(std::vector<unsigned char>{});
+    EXPECT_EQ(hex::toString(tx->serialize()), strTx);
+
+    // ensure the values are correct
+    EXPECT_EQ(tx->getType(), api::TezosOperationTag::OPERATION_TAG_DELEGATION);
+    EXPECT_EQ(tx->getSender()->toBase58(), "tz3bnhbn7uYfL43zfXtBvCYoq6DW743mRWvc");
+    EXPECT_EQ(tx->getReceiver(), nullptr);
+    EXPECT_EQ(tx->getFees()->toLong(), 370);
+    EXPECT_EQ(tx->getGasLimit()->toLong(), 1200);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
+}
