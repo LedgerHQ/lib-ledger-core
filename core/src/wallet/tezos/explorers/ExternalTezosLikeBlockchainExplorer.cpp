@@ -31,8 +31,6 @@
 #include "ExternalTezosLikeBlockchainExplorer.h"
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
-#include <rapidjson/document.h>
-#include <api/BigInt.hpp>
 
 namespace ledger {
     namespace core {
@@ -69,43 +67,70 @@ namespace ledger {
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getFees() {
             const bool parseNumbersAsString = true;
+            const auto feesField =
+              getConfiguration()->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT) == api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT ?
+                  "fee" :
+                  "fees";
+            // The best value is probably
+            // divider_tx = (n_ops - n_ops_failed - n_ops_contract -
+            //     n_seed_nonce_revelation - n_double_baking_evidence -
+            //     n_double_endorsement_evidence - n_endorsement - n_reveal)
+            // so we are counting all
+            // n_delegation + n_origination + n_activation + n_tx
+            // But the deviation of fees in all those transactions is too high so the mean fees value would not be
+            // accurate anyway.
+            //
+            // Therefore, we only return totalFees/n_tx and leave the caller make some adjustments on the value
+            // afterwards
+            const auto txCountField = "n_tx";
+
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
 
                         //Is there a fees field ?
-                        if (!json.IsObject()) {
+                        if (!json.IsObject() || !json.HasMember(feesField) ||
+                            !json[feesField].IsString()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get fees from network, no (or malformed) field \"result\" in response");
+                                                 fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", feesField));
                         }
 
-                        auto getFieldValue = [&json](const char* fieldName) -> std::string {
-                            std::string value; 
-                            if (json.HasMember(fieldName) && json[fieldName].IsString()) {
-                                value = json[fieldName].GetString();
-                            }
-                            return value;
-                        };
-
-                        //try first with "fee" else with "fees"
-                        std::string fees = getFieldValue("fee");
-                        if (fees.empty()) {
-                            fees = getFieldValue("fees");
-                        }
-                        if (fees.empty()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get fees from network, no (or malformed) field \"result\" in response");
+                        // Return 0 if the block had no transaction at all
+                        if (!json.HasMember(txCountField) || !json[txCountField].IsString()) {
+                            return std::make_shared<BigInt>(0);
                         }
 
-                        // Sometimes network is sending 0 for fees
-                        if (fees == "0") {
-                            fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
-                        } else if (fees.find('.') != std::string::npos) {
-                            fees = api::BigInt::fromDecimalString(fees, 6, ".")->toString(10);
+                        const auto totalTx = api::BigInt::fromIntegerString(json[txCountField].GetString(), 10);
+                        const auto totalFees = api::BigInt::fromDecimalString(json[feesField].GetString(), 6, ".");
+                        std::string fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
+                        if (fees != "0" && totalTx->intValue() != 0) {
+                            fees = totalFees->divide(totalTx)->toString(10);
                         }
-                        // Since nodes are giving some awkward values, we set a threshold to avoid having really fees
+                        // Since nodes are giving some awkward values, we set a threshold to avoid
+                        // having really fees
                         // Factor for threshold is inspired from other XTZ wallets
                         return std::make_shared<BigInt>(std::min(std::stoi(fees), std::stoi(api::TezosConfigurationDefaults::TEZOS_DEFAULT_MAX_FEES)));
+                    });
+        }
+
+        Future<std::shared_ptr<BigInt>>
+        ExternalTezosLikeBlockchainExplorer::getGasPrice() {
+            const bool parseNumbersAsString = true;
+            const auto gasPriceField = "gas_price";
+
+            return _http->GET("block/head")
+                    .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+
+                        if (!json.IsObject() || !json.HasMember(gasPriceField) ||
+                            !json[gasPriceField].IsString()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                 fmt::format("Failed to get gas_price from network, no (or malformed) field \"{}\" in response", gasPriceField));
+                        }
+                        const std::string apiGasPrice = json[gasPriceField].GetString();
+                        const std::string picoTezGasPrice = api::BigInt::fromDecimalString(apiGasPrice, 6, ".")->toString(10);
+                        return std::make_shared<BigInt>(std::stoi(picoTezGasPrice));
                     });
         }
 
@@ -285,6 +310,11 @@ namespace ledger {
             return FuturePtr<BigInt>::successful(
                     std::make_shared<BigInt>(api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT)
             );
+        }
+
+        Future<std::shared_ptr<BigInt>>
+        ExternalTezosLikeBlockchainExplorer::getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &tx) {
+            return TezosLikeBlockchainExplorer::getEstimatedGasLimit(_http, getContext(), tx);
         }
 
         Future<std::shared_ptr<BigInt>>

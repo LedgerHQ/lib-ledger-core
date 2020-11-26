@@ -45,6 +45,9 @@
 #include <api/TezosCurve.hpp>
 #include <tezos/TezosLikeExtendedPublicKey.h>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 namespace ledger {
     namespace core {
 
@@ -364,6 +367,197 @@ namespace ledger {
             }
             return writer.toByteArray();
         }
+
+        std::vector<uint8_t> TezosLikeTransactionApi::serializeForDryRun(const std::vector<uint8_t>& chainId) {
+            BytesWriter writer;
+            writer.writeByteArray(serialize());
+            writer.writeByteArray(chainId);
+            return writer.toByteArray();
+        }
+
+        std::string TezosLikeTransactionApi::serializeJsonForDryRun(const std::string &chainID)
+        {
+            using namespace rapidjson;
+
+            Value vString(kStringType);
+            Document tx;
+            tx.SetObject();
+            Document::AllocatorType &allocator = tx.GetAllocator();
+
+            // Chain Id
+            vString.SetString(chainID.c_str(), static_cast<SizeType>(chainID.length()), allocator);
+            tx.AddMember("chain_id", vString, allocator);
+
+            // Operation
+            Value opObject(kObjectType);
+            {
+                // Branch
+                const auto hash = _block->getHash();
+                vString.SetString(hash.c_str(), static_cast<SizeType>(hash.length()), allocator);
+                opObject.AddMember("branch", vString, allocator);
+
+                // Fake sign
+                static const auto bogusSignature =
+                    "edsigtkpiSSschcaCt9pUVrpNPf7TTcgvgDEDD6NCEHMy8NNQJCGnMfLZzYoQj74yLjo9wx6MPVV29"
+                    "CvVzgi7qEcEUok3k7AuMg";
+                vString.SetString(
+                    bogusSignature,
+                    static_cast<SizeType>(std::strlen(bogusSignature)),
+                    allocator);
+                opObject.AddMember("signature", vString, allocator);
+
+                Value opContents(kArrayType);
+                {
+                    if (_needReveal) {
+                        Value revealOp(kObjectType);
+                        {
+                        static const auto transaction_type = "reveal";
+                        vString.SetString(
+                            transaction_type,
+                            static_cast<SizeType>(std::strlen(transaction_type)),
+                            allocator);
+                        revealOp.AddMember("kind", vString, allocator);
+
+                        const auto source = _sender->toBase58();
+                        vString.SetString(
+                            source.c_str(), static_cast<SizeType>(source.length()), allocator);
+                        revealOp.AddMember("source", vString, allocator);
+
+                        if (_revealedPubKey.empty()) {
+                            if (_signingPubKey.empty()) {
+                                throw make_exception(
+                                    api::ErrorCode::UNSUPPORTED_OPERATION,
+                                    "Json serialization of reveal operation is available only if "
+                                    "revealed_pubkey or signing_pubkey is set.");
+                            }
+                        }
+                        const auto pub_key = _revealedPubKey.empty()
+                                                 ? TezosLikeExtendedPublicKey::fromRaw(
+                                                       _currency,
+                                                       optional<std::vector<uint8_t>>(),
+                                                       _signingPubKey,
+                                                       std::vector<uint8_t>(0, 32),
+                                                       "",
+                                                       _senderCurve)
+                                                       ->toBase58()
+                                                 : _revealedPubKey;
+                        vString.SetString(
+                            pub_key.c_str(), static_cast<SizeType>(pub_key.length()), allocator);
+                        revealOp.AddMember("public_key", vString, allocator);
+
+                        static const auto fee = "257000";
+                        vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
+                        revealOp.AddMember("fee", vString, allocator);
+
+                        const auto counter = _counter->toString();
+                        vString.SetString(
+                            counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
+                        revealOp.AddMember("counter", vString, allocator);
+
+                        static const auto storage = "1000";
+                        vString.SetString(
+                            storage, static_cast<SizeType>(std::strlen(storage)), allocator);
+                        revealOp.AddMember("storage_limit", vString, allocator);
+
+                        static const auto gas = "100000";
+                        vString.SetString(gas, static_cast<SizeType>(std::strlen(gas)), allocator);
+                        revealOp.AddMember("gas_limit", vString, allocator);
+
+                        }
+                        opContents.PushBack(revealOp, allocator);
+                    }
+
+                    Value innerOp(kObjectType);
+                    {
+                    switch (_type) {
+                    case api::TezosOperationTag::OPERATION_TAG_TRANSACTION: {
+                        static const auto transaction_type = "transaction";
+                        vString.SetString(
+                            transaction_type,
+                            static_cast<SizeType>(std::strlen(transaction_type)),
+                            allocator);
+                        innerOp.AddMember("kind", vString, allocator);
+
+                        const auto source = _sender->toBase58();
+                        vString.SetString(
+                            source.c_str(), static_cast<SizeType>(source.length()), allocator);
+                        innerOp.AddMember("source", vString, allocator);
+
+                        const auto destination = _receiver->toBase58();
+                        vString.SetString(
+                            destination.c_str(), static_cast<SizeType>(destination.length()), allocator);
+                        innerOp.AddMember("destination", vString, allocator);
+
+                        static const auto fee = "1";
+                        vString.SetString(fee, static_cast<SizeType>(std::strlen(fee)), allocator);
+                        innerOp.AddMember("fee", vString, allocator);
+
+                        // Increment the counter if the reveal was prepended
+                        const auto counter = (_needReveal ? ++(*_counter) : *_counter).toString();
+                        vString.SetString(
+                            counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
+                        innerOp.AddMember("counter", vString, allocator);
+
+                        const auto amount = _value->toBigInt()->toString(10);
+                        vString.SetString(
+                            amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
+                        innerOp.AddMember("amount", vString, allocator);
+
+                        static const auto storage = "1000";
+                        vString.SetString(
+                            storage, static_cast<SizeType>(std::strlen(storage)), allocator);
+                        innerOp.AddMember("storage_limit", vString, allocator);
+
+                        static const auto gas = "100000";
+                        vString.SetString(gas, static_cast<SizeType>(std::strlen(gas)), allocator);
+                        innerOp.AddMember("gas_limit", vString, allocator);
+                        break;
+                    }
+                    case api::TezosOperationTag::OPERATION_TAG_ORIGINATION: {
+                            throw make_exception(
+                                api::ErrorCode::UNSUPPORTED_OPERATION,
+                                "Json serialization of origination operation is unavailable.");
+                        break;
+                    }
+                    case api::TezosOperationTag::OPERATION_TAG_DELEGATION: {
+                            throw make_exception(
+                                api::ErrorCode::UNSUPPORTED_OPERATION,
+                                "Json serialization of delegation operation is unavailable.");
+                        break;
+                    }
+                    default:
+                            throw make_exception(
+                                api::ErrorCode::UNSUPPORTED_OPERATION,
+                                "Json serialization of unknown operation type is unavailable.");
+                        break;
+                    }
+                    }
+                    opContents.PushBack(innerOp, allocator);
+                }
+
+                opObject.AddMember("contents", opContents, allocator);
+            }
+
+            tx.AddMember("operation", opObject, allocator);
+
+// Example of valid payload in raw string
+            /*
+            R"json({"chain_id": "NetXdQprcVkpaWU", "operation": {
+"branch": "BLq1UohguxXEdrvgxc4a4utkD1J8K4GTz2cypJqdN2nq8m1jbqW",
+"contents": [{"kind": "transaction",
+"source": "tz1fizckUHrisN2JXZRWEBvtq4xRQwPhoirQ",
+"destination": "tz1fizckUHrisN2JXZRWEBvtq4xRQwPhoirQ", "amount":
+"1432", "counter": "2531425", "fee": "1289", "gas_limit": "100000",
+"storage_limit": "1000"}],
+"signature":
+"edsigtkpiSSschcaCt9pUVrpNPf7TTcgvgDEDD6NCEHMy8NNQJCGnMfLZzYoQj74yLjo9wx6MPVV29CvVzgi7qEcEUok3k7AuMg"}})json"
+            */
+            StringBuffer buffer;
+            Writer<StringBuffer> writer(buffer);
+            tx.Accept(writer);
+            return buffer.GetString();
+        }
+
         TezosLikeTransactionApi &TezosLikeTransactionApi::setTransactionFees(const std::shared_ptr<BigInt> &fees) {
             if (!fees) {
                 throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
