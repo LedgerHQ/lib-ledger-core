@@ -147,6 +147,8 @@ namespace ledger {
                     _transaction->storage_limit = toValue(number, false);
                 } else if (_lastKey == "burned") {
                     _transaction->fees = _transaction->fees + toValue(number, true);
+                } else if (_lastKey == "confirmations") {
+                    _transaction->confirmations = toValue(number, false).toInt64();
                 }
                 return true;
             }
