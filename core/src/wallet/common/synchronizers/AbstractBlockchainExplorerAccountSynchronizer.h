@@ -197,7 +197,7 @@ namespace ledger {
                                account->getKeychain()->getRestoreKey(),
                                account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
 
-				// extend the keychain to cover all the addresses
+		// extend the keychain to cover all the addresses
                 if (buddy->wallet->getWalletType() == api::WalletType::BITCOIN)
                 {
                     int currentBatchIndex = 0;
