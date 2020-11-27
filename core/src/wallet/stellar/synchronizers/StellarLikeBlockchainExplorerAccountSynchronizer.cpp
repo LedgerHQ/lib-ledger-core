@@ -115,21 +115,20 @@ namespace ledger {
                     self->failSynchronization(txs.getFailure());
                 } else {
                     {
-                        soci::session sql(self->_database->getPool());
-                        soci::transaction tr(sql);
-
                         for (const auto &tx : txs.getValue()) {
+                            soci::session sql(self->_database->getPool());
+                            soci::transaction tr(sql);
                             account->logger()->debug("XLM transaction hash: {}, paging_token: {}", tx->hash, tx->pagingToken);
                             auto const flag = account->putTransaction(sql, *tx);
 
                             if (::ledger::core::account::isInsertedOperation(flag)) {
                                 ++state.insertedOperations;
                             }
-
+                            tr.commit();
                             state.lastBlockHeight = std::max(state.lastBlockHeight, tx->ledger);
                         }
-                        tr.commit();
                     }
+                    account->emitEventsNow();
                     if (!txs.getValue().empty()) {
                         state.transactionPagingToken = txs.getValue().back()->pagingToken;
                         fmt::print("Paging token for next round: {}\n", state.transactionPagingToken.getValueOr("no paging token"));
