@@ -197,6 +197,25 @@ namespace ledger {
                                account->getKeychain()->getRestoreKey(),
                                account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
 
+				// extend the keychain to cover all the addresses
+                if (buddy->wallet->getWalletType() == api::WalletType::BITCOIN)
+                {
+                    int currentBatchIndex = 0;
+                    int txSize;
+                    do {
+                        auto batch = vector::map<std::string, std::shared_ptr<AddressType>>(
+                            buddy->keychain->getAllObservableAddresses(currentBatchIndex * buddy->halfBatchSize, (currentBatchIndex + 1) * buddy->halfBatchSize - 1),
+                            [](const std::shared_ptr<AddressType>& addr) -> std::string {
+                                return addr->toString();
+                            }
+                        );
+                        auto txs = ledger::core::async::wait(_explorer->getTransactions(batch, optional<std::string>(), optional<void*>()));
+                        txSize = txs->transactions.size();
+                        currentBatchIndex++;
+                    }
+                    while (txSize > 0);
+                }
+
                 //Check if reorganization happened
                 soci::session sql(buddy->wallet->getDatabase()->getPool());
                 if (buddy->savedState.nonEmpty()) {
