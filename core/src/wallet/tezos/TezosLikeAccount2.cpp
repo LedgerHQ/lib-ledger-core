@@ -543,7 +543,7 @@ namespace ledger {
         }
 
         FuturePtr<std::string> TezosLikeAccount::getCurrentDelegate() {
-            return _explorer->getCurrentDelegate();
+            return _explorer->getCurrentDelegate(self->getKeychain()->getAddress()->toString());
         }
 
         std::shared_ptr<api::Keychain> TezosLikeAccount::getAccountKeychain() {
