@@ -67,7 +67,7 @@ namespace ledger {
 
             void setResult(const Try<T>& result) {
                 {
-                    std::lock_guard<std::mutex> lock(_lock);
+                    std::lock_guard<std::recursive_mutex> lock(_lock);
                     ensureNotCompleted();
                     _value = result;
                 }
@@ -75,14 +75,14 @@ namespace ledger {
             }
 
             void setValue(const T& value) {
-                std::lock_guard<std::mutex> lock(_lock);
+                std::lock_guard<std::recursive_mutex> lock(_lock);
                 ensureNotCompleted();
                 _value = Try<T>(value);
                 _trigger();
             };
 
             void setError(const Exception& exception) {
-                std::lock_guard<std::mutex> lock(_lock);
+                std::lock_guard<std::recursive_mutex> lock(_lock);
                 ensureNotCompleted();
                 Try<T> ex;
                 ex.fail(exception);
@@ -92,7 +92,7 @@ namespace ledger {
 
             void addCallback(Callback callback, std::shared_ptr<api::ExecutionContext> context) {
                 // Add to the queue
-                std::lock_guard<std::mutex> lock(_lock);
+                std::lock_guard<std::recursive_mutex> lock(_lock);
                 _callbacks.push(std::make_tuple(callback, context));
                 _trigger();
             }
@@ -103,12 +103,12 @@ namespace ledger {
             }
 
             bool hasValue() const {
-                std::lock_guard<std::mutex> lock(_lock);
+                std::lock_guard<std::recursive_mutex> lock(_lock);
                 return _value.hasValue();
             }
 
             void trigger() {
-                std::lock_guard<std::mutex> lock(_lock);
+                std::lock_guard<std::recursive_mutex> lock(_lock);
                 _trigger();
             }
 
@@ -134,7 +134,7 @@ namespace ledger {
             }
 
         private:
-            mutable std::mutex _lock;
+            mutable std::recursive_mutex _lock;
             Option<Try<T>> _value;
             std::queue<std::tuple<Callback, std::shared_ptr<api::ExecutionContext>>> _callbacks;
         };
