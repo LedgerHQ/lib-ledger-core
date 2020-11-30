@@ -151,6 +151,12 @@ namespace ledger {
                                             const std::shared_ptr<HttpClient> &http,
                                             const std::string &rpcNode);
 
+            virtual Future<std::string> getCurrentDelegate(const std::string &address) = 0;
+            static Future<std::string> getCurrentDelegate(const std::string &address,
+                                                          const std::shared_ptr<api::ExecutionContext> &context,
+                                                          const std::shared_ptr<HttpClient> &http,
+                                                          const std::string &rpcNode);
+
             /// Check that the account is funded.
             virtual Future<bool> isFunded(const std::string &address) = 0;
 

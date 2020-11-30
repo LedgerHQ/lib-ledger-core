@@ -532,6 +532,20 @@ namespace ledger {
             return _explorer->getFees();
         }
 
+        void TezosLikeAccount::getCurrentDelegate(const std::shared_ptr<api::StringCallback> & callback) {
+            getCurrentDelegate().mapPtr<std::string>(getMainExecutionContext(), [] (const std::shared_ptr<std::string> &delegate) -> std::shared_ptr<std::string>
+            {
+                if (!delegate) {
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve current delegate from network");
+                }
+                return std::make_shared<std::string>(*delegate);
+            }).callback(getMainExecutionContext(), callback);
+        }
+
+        FuturePtr<std::string> TezosLikeAccount::getCurrentDelegate() {
+            return _explorer->getCurrentDelegate();
+        }
+
         std::shared_ptr<api::Keychain> TezosLikeAccount::getAccountKeychain() {
             return _keychain;
         }
