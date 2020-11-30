@@ -223,7 +223,8 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnceAtATime) {
                                               }));
             EXPECT_EQ(bus, account->synchronize());
             dispatcher->waitUntilStopped();
-
+            auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            fmt::print("Operations: {}\n", ops.size());
         }
     }
 }
