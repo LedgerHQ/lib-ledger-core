@@ -532,6 +532,14 @@ namespace ledger {
             return _explorer->getFees();
         }
 
+        void TezosLikeAccount::getCurrentDelegate(const std::shared_ptr<api::StringCallback> & callback) {
+            getCurrentDelegate().callback(getMainExecutionContext(), callback);
+        }
+
+        Future<std::string> TezosLikeAccount::getCurrentDelegate() {
+            return  _explorer->getCurrentDelegate(getKeychain()->getAddress()->toString());
+        }
+
         std::shared_ptr<api::Keychain> TezosLikeAccount::getAccountKeychain() {
             return _keychain;
         }

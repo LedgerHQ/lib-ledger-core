@@ -154,6 +154,9 @@ namespace ledger {
             void incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt>& explorerCounter);     
 
             void saveOptimisticCounter(const std::shared_ptr<BigInt>& counter, const std::string& txHash);
+
+            void getCurrentDelegate(const std::shared_ptr<api::StringCallback> & callback) override;
+            Future<std::string> getCurrentDelegate();
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
 

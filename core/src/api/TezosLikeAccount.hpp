@@ -56,6 +56,9 @@ public:
 
     /** Get originated accounts by current account */
     virtual std::vector<std::shared_ptr<TezosLikeOriginatedAccount>> getOriginatedAccounts() = 0;
+
+    /** Get current delegate */
+    virtual void getCurrentDelegate(const std::shared_ptr<StringCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

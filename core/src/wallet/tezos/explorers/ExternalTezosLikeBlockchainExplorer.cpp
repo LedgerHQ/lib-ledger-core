@@ -325,6 +325,13 @@ namespace ledger {
                                                             getRPCNodeEndpoint());
         }
 
+        Future<std::string> ExternalTezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address) {
+            return TezosLikeBlockchainExplorer::getCurrentDelegate(address,
+                                                                   getExplorerContext(),
+                                                                   _http,
+                                                                   getRPCNodeEndpoint());
+        }
+
         Future<bool> ExternalTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
             return
                 _http->GET(fmt::format("account/{}", address))

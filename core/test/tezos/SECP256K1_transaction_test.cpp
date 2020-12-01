@@ -460,6 +460,23 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawUndelegation) {
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
 } 
 
+TEST_F(SECP256K1TezosMakeTransaction, GetCurrentDelegation) {
+   auto builder = tx_builder();
+   auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
+
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+        dispatcher->stop();
+    });
+    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    dispatcher->waitUntilStopped();
+
+    auto delegate = ::wait(account->getCurrentDelegate());
+    EXPECT_EQ(delegate, "tz29J6gQdA4Y9Qi5AhNZGMhQUpr9TwLPNByC");
+}
+
 TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawDelegationWithReveal) {
     auto strTx = "031275CE3B5655A5F3823EA05E1249B0014EC9C12DC3AB3E7A558432C1C5D7BE916B01202508B1C8C3127642F3685465730A93E811108A64F1E5FB03640001037A8EA0E40DCDD4CA436A00465273EC189F2920B497014DAFA5FA52011E14381F6E01202508B1C8C3127642F3685465730A93E811108A64F2E5FB036464FF0183CF5677B85B378422F3A8F5D6F6CB238394B741";
     auto txBytes = hex::toByteArray(strTx);
