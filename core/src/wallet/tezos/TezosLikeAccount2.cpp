@@ -538,7 +538,7 @@ namespace ledger {
                 if (!delegate) {
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve current delegate from network");
                 }
-                return std::make_shared<std::string>(*delegate);
+                return delegate;
             }).callback(getMainExecutionContext(), callback);
         }
 

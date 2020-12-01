@@ -177,6 +177,7 @@ namespace ledger {
                         }
                         return json.GetString();
                     }).recover(context, [] (const Exception &exception) {
+                        // FIXME: throw exception to signal errors (i.e: network error)
                         return "";
                     });
         }
