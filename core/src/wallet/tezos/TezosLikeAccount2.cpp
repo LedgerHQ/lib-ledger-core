@@ -297,6 +297,10 @@ namespace ledger {
                 return explorer->getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{accountAddress}).flatMapPtr<api::TezosLikeTransaction>(
                         self->getMainExecutionContext(),
                         [self, request, explorer, accountAddress, currency, senderAddress](const std::shared_ptr<BigInt> &balance) {
+                            // Check if all needed values are set
+                            if (request.type == api::TezosOperationTag::OPERATION_TAG_TRANSACTION && (!request.value || !request.wipe)) {
+                                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Missing mandatory informations value.");
+                            }
                             // Check if recepient is allocated or not
                             // because if not we have to add additional fees equal to storage_limit (in mXTZ)
                             auto getAllocationFee = [self, explorer, request]() -> Future<BigInt> {
