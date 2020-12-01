@@ -285,3 +285,20 @@ TEST_F(P256TezosMakeTransaction, ParseUnsignedRawUndelegation) {
     EXPECT_EQ(tx->getGasLimit()->toLong(), 1200);
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
 }
+
+  TEST_F(P256TezosMakeTransaction, GetCurrentDelegation) {
+     auto builder = tx_builder();
+     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+          fmt::print("Received event {}\n", api::to_string(event->getCode()));
+          if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
+     
+          EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+          EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+          dispatcher->stop();
+      });
+      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      dispatcher->waitUntilStopped();
+
+      auto delegate = ::wait(account->getCurrentDelegate());
+      EXPECT_EQ(delegate, "tz1PWCDnz783NNGGQjEFFsHtrcK5yBW4E2rm");
+ }

@@ -159,7 +159,7 @@ namespace ledger {
                     });
         }
 
-        Future<std:string> TezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address,
+        Future<std::string> TezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address,
                                                                            const std::shared_ptr<api::ExecutionContext> &context,
                                                                            const std::shared_ptr<HttpClient> &http,
                                                                            const std::string &rpcNode) {
