@@ -296,19 +296,35 @@ TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawUndelegation) {
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
 }
 
-  TEST_F(ED25519TezosMakeTransaction, GetCurrentDelegationOnNotDelegatedAccount) {
-     auto builder = tx_builder();
-     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
-          fmt::print("Received event {}\n", api::to_string(event->getCode()));
-          if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
-     
-          EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-          EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
-          dispatcher->stop();
-      });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
-      dispatcher->waitUntilStopped();
+TEST_F(ED25519TezosMakeTransaction, GetCurrentDelegationOnNotDelegatedAccount) {
+   auto builder = tx_builder();
+   auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+        fmt::print("Received event {}\n", api::to_string(event->getCode()));
+        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
 
-      auto delegate = ::wait(account->getCurrentDelegate());
-      EXPECT_EQ(delegate, "");
- }
+        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+        EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+        dispatcher->stop();
+    });
+    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    dispatcher->waitUntilStopped();
+
+    auto delegate = ::wait(account->getCurrentDelegate());
+    EXPECT_EQ(delegate, "");
+}
+
+TEST_F(ED25519TezosMakeTransaction, ParseUnsignedRawDelegationWithReveal) {
+    auto strTx = "031c0f4f48604e2559c38cd496c636b0e70d66ec05fef347740f6f53e58dab4abb6b0001389e444918998aea268d84bff822ec3bcf9c2acd02fb8d8504b00900000fa8aaea9a132dca88385949b28cf9dd406a788aee0e6267d8d237b30cc18fdd6e0001389e444918998aea268d84bff822ec3bcf9c2ac202fc8d8504b00900ff002a652136b35b53f8859dad9d0f16c88f8045a6bd";
+    auto txBytes = hex::toByteArray(strTx);
+    auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(api::TezosLikeTransactionBuilder::parseRawUnsignedTransaction(
+        ledger::core::currencies::TEZOS, txBytes, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON));
+    
+    // ensure the values are correct
+    EXPECT_EQ(tx->getType(), api::TezosOperationTag::OPERATION_TAG_DELEGATION);
+    EXPECT_EQ(tx->getSender()->toBase58(), "tz1KkVCDQ5CKLj4pfTwaGRzuMFwoPBut498t");
+    EXPECT_EQ(tx->getReceiver()->toBase58(), "tz1PWCDnz783NNGGQjEFFsHtrcK5yBW4E2rm");
+    EXPECT_EQ(tx->getFees()->toLong(), 655);
+    EXPECT_EQ(tx->getGasLimit()->toLong(), 2400);
+    EXPECT_EQ(tx->getStorageLimit()->toString(10), "0");
+    EXPECT_EQ(tx->toReveal(), true);
+}
