@@ -36,20 +36,25 @@
 #include <ctime>
 #include <unordered_map>
 
-const std::unordered_map<std::string, std::string> MONTHS = {
-    {"Jan", "01"},
-    {"Feb", "02"},
-    {"Mar", "03"},
-    {"Apr", "04"},
-    {"May", "05"},
-    {"Jun", "06"},
-    {"Jul", "07"},
-    {"Aug", "08"},
-    {"Sep", "09"},
-    {"Oct", "10"},
-    {"Nov", "11"},
-    {"Dec", "12"},
-};
+namespace {
+    const std::unordered_map<std::string, std::string> MONTHS = {
+            {"Jan", "01"},
+            {"Feb", "02"},
+            {"Mar", "03"},
+            {"Apr", "04"},
+            {"May", "05"},
+            {"Jun", "06"},
+            {"Jul", "07"},
+            {"Aug", "08"},
+            {"Sep", "09"},
+            {"Oct", "10"},
+            {"Nov", "11"},
+            {"Dec", "12"},
+    };
+
+    const std::regex PARSE_JSON_DATE_REGEX("([0-9]+)-([0-9]+)-([0-9]+)T([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
+    const std::regex FORMAT_JSON_DATE_REGEX("([0-9]+)-([a-zA-Z]+)-([0-9]+) ([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
+}
 
 #if defined(_WIN32) || defined(_WIN64)
     #if defined(_MSC_VER)
@@ -62,10 +67,9 @@ const std::unordered_map<std::string, std::string> MONTHS = {
 namespace ledger {
     namespace core {
         std::chrono::system_clock::time_point ledger::core::DateUtils::fromJSON(const std::string &str) {
-            std::regex ex("([0-9]+)-([0-9]+)-([0-9]+)T([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
             std::cmatch what;
 
-            if (regex_match(str.c_str(), what, ex)) {
+            if (regex_match(str.c_str(), what, PARSE_JSON_DATE_REGEX)) {
                 auto year = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
                 auto month = boost::lexical_cast<unsigned int>(std::string(what[2].first, what[2].second));
                 auto day = boost::lexical_cast<unsigned int>(std::string(what[3].first, what[3].second));
@@ -100,10 +104,10 @@ namespace ledger {
     }
 
     std::string ledger::core::DateUtils::formatDateFromJSON(const std::string &str) {
-        std::regex ex("([0-9]+)-([a-zA-Z]+)-([0-9]+) ([0-9]+):([0-9]+):([0-9]+)[\\.0-9]*([Z]?)");
+
         std::cmatch what;
 
-        if (regex_match(str.c_str(), what, ex)) {
+        if (regex_match(str.c_str(), what, FORMAT_JSON_DATE_REGEX)) {
             auto year = boost::lexical_cast<unsigned int>(std::string(what[1].first, what[1].second));
             auto month = boost::lexical_cast<std::string>(std::string(what[2].first, what[2].second));
             auto day = boost::lexical_cast<unsigned int>(std::string(what[3].first, what[3].second));
