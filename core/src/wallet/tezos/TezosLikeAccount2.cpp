@@ -18,7 +18,7 @@
  * The above copyright notice and this permission notice shall be included in all
  * copies or substantial portions of the Software.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS ORnin
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
  * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -189,7 +189,7 @@ namespace ledger {
 
                     auto const context = result.getValue();
 
-                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(self->_currentBlockHeight));
+                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
                     payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
@@ -422,7 +422,7 @@ namespace ledger {
                                                 if (!explorerCounter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
-                                                
+
                                                 const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
                                                     api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
                                                 if (optimisticStrategy == "OPTIMISTIC") {

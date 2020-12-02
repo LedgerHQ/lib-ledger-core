@@ -158,6 +158,31 @@ namespace ledger {
             }
         }
 
+        static inline void inflateERC20Operation(soci::row& row, std::shared_ptr<ERC20LikeOperation>& op) {
+            op->setOperationUid(row.get<std::string>(0));
+            op->setETHOperationUid(row.get<std::string>(1));
+            op->setOperationType(api::from_string<api::OperationType>(row.get<std::string>(3)));
+            op->setHash(row.get<std::string>(4));
+            op->setNonce(BigInt::fromHex(row.get<std::string>(5)));
+            op->setValue(BigInt::fromHex(row.get<std::string>(6)));
+            op->setTime(DateUtils::fromJSON(row.get<std::string>(7)));
+            op->setSender(row.get<std::string>(8));
+            op->setReceiver(row.get<std::string>(9));
+            if (row.get_indicator(10) != soci::i_null) {
+                auto data = row.get<std::string>(10);
+                auto dataArray = hex::toByteArray(data);
+                op->setData(dataArray);
+            }
+
+            op->setGasPrice(BigInt::fromHex(row.get<std::string>(11)));
+            op->setGasLimit(BigInt::fromHex(row.get<std::string>(12)));
+            op->setUsedGas(BigInt::fromHex(row.get<std::string>(13)));
+            auto status = row.get<int32_t>(14);
+            op->setStatus(status);
+            auto blockHeight = row.get<long long>(15);
+            op->setBlockHeight(blockHeight);
+        }
+
         std::vector<std::shared_ptr<api::ERC20LikeOperation>>
         ERC20LikeAccount::getOperations() {
             auto localAccount = _account.lock();
@@ -174,28 +199,7 @@ namespace ledger {
             std::vector<std::shared_ptr<api::ERC20LikeOperation>> result;
             for (auto& row : rows) {
                 auto op = std::make_shared<ERC20LikeOperation>();
-                op->setOperationUid(row.get<std::string>(0));
-                op->setETHOperationUid(row.get<std::string>(1));
-                op->setOperationType(api::from_string<api::OperationType>(row.get<std::string>(3)));
-                op->setHash(row.get<std::string>(4));
-                op->setNonce(BigInt::fromHex(row.get<std::string>(5)));
-                op->setValue(BigInt::fromHex(row.get<std::string>(6)));
-                op->setTime(DateUtils::fromJSON(row.get<std::string>(7)));
-                op->setSender(row.get<std::string>(8));
-                op->setReceiver(row.get<std::string>(9));
-                if (row.get_indicator(10) != soci::i_null) {
-                    auto data = row.get<std::string>(10);
-                    auto dataArray = hex::toByteArray(data);
-                    op->setData(dataArray);
-                }
-
-                op->setGasPrice(BigInt::fromHex(row.get<std::string>(11)));
-                op->setGasLimit(BigInt::fromHex(row.get<std::string>(12)));
-                op->setUsedGas(BigInt::fromHex(row.get<std::string>(13)));
-                auto status = row.get<int32_t>(14);
-                op->setStatus(status);
-                auto blockHeight = row.get<long long>(15);
-                op->setBlockHeight(blockHeight);
+                inflateERC20Operation(row, op);
                 result.emplace_back(op);
             }
             return result;
@@ -246,6 +250,8 @@ namespace ledger {
             auto status = operation->getStatus();
             auto erc20OpUid = operation->getOperationUid();
             auto gasUsed = operation->getUsedGas()->toString(16);
+            ERC20LikeOperation op;
+
             if (newOperation) {
                 auto ethOpUid = operation->getETHOperationUid();
                 auto hash = operation->getHash();
@@ -276,6 +282,7 @@ namespace ledger {
                         , use(gasUsed)
                         , use(erc20OpUid);
             }
+            acquireParent()->emitNewERC20Operation(*operation, _accountUid);
         }
 
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
@@ -301,6 +308,123 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::NULL_POINTER, "Could not lock parent account.");
             }
             return parentAccount->getWallet()->getMainExecutionContext();
+        }
+
+        void ERC20LikeAccount::getOperation(const std::string &uid,
+                                            const std::shared_ptr<api::ERC20LikeOperationCallback> &callback) {
+            getOperation(uid).callback(acquireParent()->getMainExecutionContext(), callback);
+        }
+
+        void ERC20LikeAccount::getAllOperations(int32_t from, int32_t to, bool ascending,
+                                                const std::shared_ptr<api::ERC20LikeOperationListCallback> &callback) {
+            getAllOperations(from, to, ascending)
+            .callback(acquireParent()->getMainExecutionContext(), callback);
+        }
+
+        std::shared_ptr<EthereumLikeAccount> ERC20LikeAccount::acquireParent() const {
+            auto localAccount = _account.lock();
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
+            return localAccount;
+        }
+
+        Future<ERC20LikeOperationList> ERC20LikeAccount::getAllOperations(int32_t from, int32_t to, bool ascending) {
+            auto parent = acquireParent();
+            std::string accountUid = _accountUid;
+            return Future<ERC20LikeOperationList>::async(parent->getContext(), [=] () -> ERC20LikeOperationList {
+                soci::session sql (parent->getWallet()->getDatabase()->getPool());
+                auto size = to - from;
+                std::string order = ascending ? "ASC" : "DESC";
+                auto query = fmt::format(
+                        "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
+                        " op.type, op.hash, op.nonce, op.value,"
+                        " op.date, op.sender, op.receiver, op.input_data,"
+                        " op.gas_price, op.gas_limit, op.gas_used, op.status, op.block_height"
+                        " FROM erc20_operations AS op"
+                        " WHERE op.account_uid = :account_uid"
+                        " ORDER BY op.date {}"
+                        " LIMIT :to OFFSET :from", order
+                        );
+                soci::rowset<soci::row> rows = (sql.prepare << query, soci::use(accountUid),
+                                                                soci::use(size), soci::use(from)
+                                                               );
+
+                ERC20LikeOperationList result;
+                for (auto& row : rows) {
+                    auto op = std::make_shared<ERC20LikeOperation>();
+                    inflateERC20Operation(row, op);
+                    result.emplace_back(op);
+                }
+                return result;
+            });
+        }
+
+        FuturePtr<ERC20LikeOperation> ERC20LikeAccount::getOperation(const std::string &uid) {
+            auto parent = acquireParent();
+            std::string accountUid = _accountUid;
+            return FuturePtr<ERC20LikeOperation>::async(parent->getContext(), [=] () {
+                soci::session sql (parent->getWallet()->getDatabase()->getPool());
+                soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
+                                                               " op.type, op.hash, op.nonce, op.value,"
+                                                               " op.date, op.sender, op.receiver, op.input_data,"
+                                                               " op.gas_price, op.gas_limit, op.gas_used, op.status, op.block_height"
+                                                               " FROM erc20_operations AS op"
+                                                               " WHERE op.account_uid = :account_uid"
+                                                               " AND op.uid = :uid", soci::use(accountUid), soci::use(uid));
+
+                std::shared_ptr<ERC20LikeOperation> op;
+                for (auto& row : rows) {
+                    op = std::make_shared<ERC20LikeOperation>();
+                    inflateERC20Operation(row, op);
+                }
+                if (!op) {
+                    throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND,
+                            "ERC20 operation '{}' for account '{}'", uid, accountUid);
+                }
+                return op;
+            });
+        }
+
+        void ERC20LikeAccount::getOperationsFromBlockHeight(int32_t from, int32_t to, int64_t fromBlockHeight,
+                                                            const std::shared_ptr<api::ERC20LikeOperationListCallback> &callback) {
+            getOperationsFromBlockHeight(from, to, fromBlockHeight)
+                    .callback(acquireParent()->getMainExecutionContext(), callback);
+        }
+
+        Future<ERC20LikeOperationList>
+        ERC20LikeAccount::getOperationsFromBlockHeight(int32_t from, int32_t to, int64_t fromBlockHeight) {
+            auto parent = acquireParent();
+            std::string accountUid = _accountUid;
+            return Future<ERC20LikeOperationList>::async(parent->getContext(), [=] () -> ERC20LikeOperationList {
+                soci::session sql (parent->getWallet()->getDatabase()->getPool());
+                auto size = to - from;
+                soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, op.ethereum_operation_uid, op.account_uid,"
+                                                               " op.type, op.hash, op.nonce, op.value,"
+                                                               " op.date, op.sender, op.receiver, op.input_data,"
+                                                               " op.gas_price, op.gas_limit, op.gas_used, op.status, op.block_height"
+                                                               " FROM erc20_operations AS op"
+                                                               " JOIN operations AS parent ON parent.uid = op.ethereum_operation_uid"
+                                                               " LEFT JOIN blocks AS block ON block.uid = parent.block_uid"
+                                                               " WHERE op.account_uid = :account_uid"
+                                                               " AND (block.height > :block OR block.height IS NULL)"
+                                                               " ORDER BY op.date ASC"
+                                                               " LIMIT :to OFFSET :from", soci::use(accountUid),
+                        soci::use(fromBlockHeight), soci::use(size), soci::use(from)
+                );
+
+                ERC20LikeOperationList result;
+                for (auto& row : rows) {
+                    auto op = std::make_shared<ERC20LikeOperation>();
+                    inflateERC20Operation(row, op);
+                    result.emplace_back(op);
+                }
+                return result;
+            });
+        }
+
+        std::string ERC20LikeAccount::getUid() {
+            return _accountUid;
         }
 
     }

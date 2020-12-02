@@ -1,9 +1,9 @@
 /*
  *
- * AccountHelper
+ * ManagedObject.hpp
  * ledger-core
  *
- * Created by Alexis Le Provost on 06/08/2020.
+ * Created by Pierre Pollastri on 05/11/2020.
  *
  * The MIT License (MIT)
  *
@@ -29,24 +29,49 @@
  *
  */
 
-#include "AccountHelper.hpp"
+#ifndef LEDGER_CORE_MANAGEDOBJECT_HPP
+#define LEDGER_CORE_MANAGEDOBJECT_HPP
 
+#include <unordered_map>
+#include <mutex>
+#include <typeindex>
+#include <memory>
 
-#include <api/Account.hpp>
 
 namespace ledger {
     namespace core {
-        namespace account {
 
-            bool isInsertedOperation(int flag) {
-                using namespace ::ledger::core::api;
+        class AllocationMap {
+        public:
+            void increment(std::type_index idx);
+            void decrement(std::type_index idx);
+            std::unordered_map<std::type_index, int> getAllocations();
 
-                auto const insertedFlag = Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
+            static std::shared_ptr<AllocationMap> getInstance();
 
-                return static_cast<bool>((flag & insertedFlag) != 0);
+        private:
+            std::mutex _mutex;
+            std::unordered_map<std::type_index, int> _allocations;
+        };
+
+        template <typename Type>
+        class ManagedObject {
+        public:
+            ManagedObject() {
+                AllocationMap::getInstance()->increment(typeid(Type));
             }
-        }
+
+            ManagedObject(const ManagedObject& cpy) {
+                AllocationMap::getInstance()->increment(typeid(Type));
+            }
+
+            virtual ~ManagedObject() {
+                AllocationMap::getInstance()->decrement(typeid(Type));
+            }
+        };
+
+
     }
 }
+
+#endif //LEDGER_CORE_MANAGEDOBJECT_HPP

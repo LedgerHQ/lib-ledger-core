@@ -126,7 +126,7 @@ namespace ledger {
             auto updateOperation = [&] (soci::session &sql, Operation &operation, api::OperationType ty) {
                 // if the status of the transaction is not correct, we set the operation’s amount to
                 // zero as it’s failed (yet fees were still paid)
-                if (transaction.status == 0) {
+                if (transaction.status == 0  && transaction.block.nonEmpty()) {
                     operation.amount = BigInt::ZERO;
                 } else {
                     operation.amount = transaction.value;
@@ -521,7 +521,7 @@ namespace ledger {
 
                     auto const context = result.getValue();
 
-                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(self->_currentBlockHeight));
+                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
                     payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
 
                     if (context.reorgBlockHeight) {
@@ -730,6 +730,16 @@ namespace ledger {
 
         std::shared_ptr<api::Keychain> EthereumLikeAccount::getAccountKeychain() {
             return _keychain;
+        }
+
+        void EthereumLikeAccount::emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid) {
+            auto payload = DynamicObject::newInstance();
+            payload->putString(api::Account::EV_NEW_OP_UID, op.getOperationUid());
+            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
+            payload->putString(api::ERC20LikeAccount::EV_NEW_OP_ERC20_ACCOUNT_UID, accountUid);
+            auto event = Event::newInstance(api::EventCode::NEW_ERC20_OPERATION, payload);
+            pushEvent(event);
         }
     }
 }

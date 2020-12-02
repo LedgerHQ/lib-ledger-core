@@ -129,7 +129,7 @@ namespace ledger {
             }
         }
 
-        optional<std::vector<uint8_t>> PreferencesBackend::get(const std::vector<uint8_t>& key) const {
+        optional<std::vector<uint8_t>> PreferencesBackend::get(const std::vector<uint8_t>& key) {
             auto value = getRaw(key);
 
             if (value) {
@@ -332,7 +332,7 @@ namespace ledger {
             _db = obtainInstance(_dbName);
         }
 
-        std::string PreferencesBackend::getEncryptionSalt() const {
+        std::string PreferencesBackend::getEncryptionSalt()  {
             auto saltKey = std::vector<uint8_t>(ENCRYPTION_SALT_KEY.cbegin(), ENCRYPTION_SALT_KEY.cend());
             return getRaw(saltKey).value_or("");
         }

@@ -189,7 +189,9 @@ namespace ledger {
                 buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)->getInternalPreferences()
                         ->getSubPreferences(
                                 "AbstractBlockchainExplorerAccountSynchronizer");
-                buddy->logger = account->logger();
+                auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
+                auto tracePrefix = fmt::format("{}/{}/{}", account->getWallet()->getPool()->getName(), account->getWallet()->getName(), account->getIndex());
+                buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
                 buddy->startDate = DateUtils::now();
                 buddy->wallet = account->getWallet();
                 buddy->configuration = std::static_pointer_cast<AbstractAccount>(account)->getWallet()->getConfig();
@@ -290,8 +292,12 @@ namespace ledger {
                         std::cend(batches),
                         [](auto const &lhs, auto const &rhs) {
                             return lhs.blockHeight < rhs.blockHeight;
-                        }); 
-                    buddy->context.lastBlockHeight = batchIt->blockHeight;
+                        });
+                    soci::session sql(buddy->wallet->getDatabase()->getPool());
+                    buddy->context.lastBlockHeight = BlockDatabaseHelper::getLastBlock(sql,
+                            buddy->wallet->getCurrency().name).template map<uint64_t>([] (const Block& block) {
+                                return block.height;
+                            }).getValueOr(0);
 
                     self->_currentAccount = nullptr;
                     return buddy->context;
@@ -498,16 +504,16 @@ namespace ledger {
                         insertionBenchmark->start();
 
                         auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-                        soci::session sql(buddy->wallet->getDatabase()->getPool());
                         buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
                         auto count = 0;
                         for (const auto& tx : bulk->transactions) {
+                            soci::session sql(buddy->wallet->getDatabase()->getPool());
                             soci::transaction tr(sql);
                             // A lot of things could happen here, better to wrap it
                             auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self] () {
-                                auto const flag = self->putTransaction(sql, tx, buddy);
+                               auto const flag = self->putTransaction(sql, tx, buddy);
 
-                                if (::ledger::core::account::isInsertedOperation(flag)) {
+                               if (::ledger::core::account::isInsertedOperation(flag)) {
                                     ++buddy->context.newOperations;
                                 }
 
@@ -530,6 +536,7 @@ namespace ledger {
                                 tr.rollback();
                                 auto blockHash = tx.block.hasValue() ? tx.block.getValue().hash : "None";
                                 buddy->logger->error("Failed to put transaction {}, on block {}, for account {}, reason: {}, rollback ...", tx.hash, blockHash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
+                                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} on block {} because of tx {} ({})", currentBatchIndex, blockHash, tx.hash, tryPutTx.exception().getValue().getMessage());
                             } else {
                                 count++;
                                 tr.commit();
@@ -545,6 +552,7 @@ namespace ledger {
                             if (lastBlock.nonEmpty()) {
                                 batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
                                 batchState.blockHash = lastBlock.getValue().hash;
+                                buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                             }
                         }
 
@@ -566,15 +574,15 @@ namespace ledger {
                     //Check if tx is pending
                     auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
                     if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
-                        soci::transaction tr(sql);
+                        //soci::transaction tr(sql);
                         buddy->logger->info("Drop transaction {}", tx.first);
                         buddy->logger->info("Deleting operation from DB {}", tx.second);
                         try {
                             sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
-                            tr.commit();
+                            //tr.commit();
                         } catch(std::exception& ex) {
                             buddy->logger->info("Failed to delete operation from DB {} reason: {}, rollback ...", tx.second, ex.what());
-                            tr.rollback();
+                            //tr.rollback();
                         }
                     }
                 }

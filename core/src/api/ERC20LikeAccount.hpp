@@ -5,6 +5,7 @@
 #define DJINNI_GENERATED_ERC20LIKEACCOUNT_HPP
 
 #include <chrono>
+#include <cstdint>
 #include <memory>
 #include <string>
 #include <vector>
@@ -22,6 +23,8 @@ class BigInt;
 class BigIntCallback;
 class BinaryCallback;
 class ERC20LikeOperation;
+class ERC20LikeOperationCallback;
+class ERC20LikeOperationListCallback;
 class OperationQuery;
 enum class TimePeriod;
 struct ERC20Token;
@@ -30,6 +33,15 @@ struct ERC20Token;
 class LIBCORE_EXPORT ERC20LikeAccount {
 public:
     virtual ~ERC20LikeAccount() {}
+
+    /**
+     * Key of the ERC20LikeAccount UID in the new erc20 operation event payload.
+     * The value is stored in a string.
+     */
+    static std::string const EV_NEW_OP_ERC20_ACCOUNT_UID;
+
+    /** Get uid */
+    virtual std::string getUid() = 0;
 
     /** Get an ERC20 token. */
     virtual ERC20Token getToken() = 0;
@@ -48,6 +60,15 @@ public:
 
     /** Get the list of operations performed on this ERC20 account. */
     virtual std::vector<std::shared_ptr<ERC20LikeOperation>> getOperations() = 0;
+
+    /** Get ERC20 operation by uid */
+    virtual void getOperation(const std::string & uid, const std::shared_ptr<ERC20LikeOperationCallback> & callback) = 0;
+
+    /** Get all ERC20 operations */
+    virtual void getAllOperations(int32_t from, int32_t to, bool ascending, const std::shared_ptr<ERC20LikeOperationListCallback> & callback) = 0;
+
+    /** Get ERC20 operations from a given block height (included), it also returns mempool operations */
+    virtual void getOperationsFromBlockHeight(int32_t from, int32_t to, int64_t fromBlockHeight, const std::shared_ptr<ERC20LikeOperationListCallback> & callback) = 0;
 
     /** Retrieve raw data concerning a transaction of a given amount to a given address. */
     virtual void getTransferToAddressData(const std::shared_ptr<BigInt> & amount, const std::string & address, const std::shared_ptr<BinaryCallback> & data) = 0;

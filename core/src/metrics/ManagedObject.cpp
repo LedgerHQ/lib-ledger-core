@@ -1,9 +1,9 @@
 /*
  *
- * AccountHelper
+ * ManagedObject.cpp
  * ledger-core
  *
- * Created by Alexis Le Provost on 06/08/2020.
+ * Created by Pierre Pollastri on 05/11/2020.
  *
  * The MIT License (MIT)
  *
@@ -29,24 +29,35 @@
  *
  */
 
-#include "AccountHelper.hpp"
-
-
-#include <api/Account.hpp>
+#include "ManagedObject.hpp"
 
 namespace ledger {
     namespace core {
-        namespace account {
 
-            bool isInsertedOperation(int flag) {
-                using namespace ::ledger::core::api;
-
-                auto const insertedFlag = Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
-
-                return static_cast<bool>((flag & insertedFlag) != 0);
+        void AllocationMap::increment(std::type_index idx) {
+            std::unique_lock<std::mutex> lock(_mutex);
+            if (_allocations.find(idx) == _allocations.end()) {
+                _allocations[idx] = 1;
+            } else {
+                _allocations[idx] += 1;
             }
+        }
+
+        void AllocationMap::decrement(std::type_index idx) {
+            std::unique_lock<std::mutex> lock(_mutex);
+            if (_allocations.find(idx) != _allocations.end()) {
+                _allocations[idx] -= 1;
+            }
+        }
+
+        std::unordered_map<std::type_index, int> AllocationMap::getAllocations() {
+            std::unique_lock<std::mutex> lock(_mutex);
+            return _allocations;
+        }
+
+        std::shared_ptr<AllocationMap> AllocationMap::getInstance() {
+            static std::shared_ptr<AllocationMap> instance = std::make_shared<AllocationMap>();
+            return instance;
         }
     }
 }

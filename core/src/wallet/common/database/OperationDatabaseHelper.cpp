@@ -81,10 +81,12 @@ namespace ledger {
             });
             sql << "SELECT COUNT(*) FROM operations WHERE uid = :uid", use(operation.uid), into(count);
             auto newOperation = count == 0;
+            auto hexAmount = operation.amount.toHexString();
             if (!newOperation) {
-                sql << "UPDATE operations SET block_uid = :block_uid, trust = :trust WHERE uid = :uid"
+                sql << "UPDATE operations SET block_uid = :block_uid, trust = :trust, amount = :amount WHERE uid = :uid"
                         , use(blockUid)
                         , use(serializedTrust)
+                        , use(hexAmount)
                         , use(operation.uid);
                 updateCurrencyOperation(sql, operation, newOperation);
                 return false;
@@ -97,7 +99,6 @@ namespace ledger {
                 strings::join(operation.recipients, recipients, separator);
                 auto sndrs = senders.str();
                 auto rcvrs = recipients.str();
-                auto hexAmount = operation.amount.toHexString();
                 auto hexFees = operation.fees.getValueOr(BigInt::ZERO).toHexString();
                 sql << "INSERT INTO operations VALUES("
                             ":uid, :accout_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"

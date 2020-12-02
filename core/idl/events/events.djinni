@@ -17,4 +17,6 @@ EventCode = enum {
     synchronization_succeed;
     # Event emitted when a wallet synchronization succeeded on the previously empty account.
     synchronization_succeed_on_previously_empty_account;
+
+    new_erc20_operation;
 }

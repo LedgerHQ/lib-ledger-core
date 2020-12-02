@@ -1,9 +1,9 @@
 /*
  *
- * AccountHelper
+ * allocation_metrics.cpp
  * ledger-core
  *
- * Created by Alexis Le Provost on 06/08/2020.
+ * Created by Pierre Pollastri on 05/11/2020.
  *
  * The MIT License (MIT)
  *
@@ -29,24 +29,25 @@
  *
  */
 
-#include "AccountHelper.hpp"
+#include <api/AllocationMetrics.hpp>
+#ifdef TARGET_JNI
+#include <jni/jni/djinni_support.hpp>
+#endif
 
-
-#include <api/Account.hpp>
+#include <metrics/ManagedObject.hpp>
 
 namespace ledger {
     namespace core {
-        namespace account {
+        namespace api {
 
-            bool isInsertedOperation(int flag) {
-                using namespace ::ledger::core::api;
-
-                auto const insertedFlag = Account::FLAG_TRANSACTION_CREATED_SENDING_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION
-                    | Account::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
-
-                return static_cast<bool>((flag & insertedFlag) != 0);
+            std::unordered_map<std::string, int32_t> AllocationMetrics::getObjectAllocations() {
+                std::unordered_map<std::string, int32_t> allocations;
+                for (const auto& alloc : AllocationMap::getInstance()->getAllocations()) {
+                    allocations[alloc.first.name()] = alloc.second;
+                }
+                return allocations;
             }
+
         }
     }
 }

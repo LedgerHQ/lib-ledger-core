@@ -164,6 +164,7 @@ file(GLOB LEDGER_CORE_API_HEADERS
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 
 if (TARGET_JNI)
+    add_compile_definitions(TARGET_JNI)
     target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
 endif ()

@@ -16,6 +16,7 @@ std::string to_string(const EventCode& eventCode) {
         case EventCode::SYNCHRONIZATION_FAILED: return "SYNCHRONIZATION_FAILED";
         case EventCode::SYNCHRONIZATION_SUCCEED: return "SYNCHRONIZATION_SUCCEED";
         case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: return "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
+        case EventCode::NEW_ERC20_OPERATION: return "NEW_ERC20_OPERATION";
     };
 };
 template <>
@@ -27,7 +28,8 @@ EventCode from_string(const std::string& eventCode) {
     else if (eventCode == "SYNCHRONIZATION_STARTED") return EventCode::SYNCHRONIZATION_STARTED;
     else if (eventCode == "SYNCHRONIZATION_FAILED") return EventCode::SYNCHRONIZATION_FAILED;
     else if (eventCode == "SYNCHRONIZATION_SUCCEED") return EventCode::SYNCHRONIZATION_SUCCEED;
-    else return EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT;
+    else if (eventCode == "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT") return EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT;
+    else return EventCode::NEW_ERC20_OPERATION;
 };
 
 std::ostream &operator<<(std::ostream &os, const EventCode &o)
@@ -41,6 +43,7 @@ std::ostream &operator<<(std::ostream &os, const EventCode &o)
         case EventCode::SYNCHRONIZATION_FAILED:  return os << "SYNCHRONIZATION_FAILED";
         case EventCode::SYNCHRONIZATION_SUCCEED:  return os << "SYNCHRONIZATION_SUCCEED";
         case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:  return os << "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
+        case EventCode::NEW_ERC20_OPERATION:  return os << "NEW_ERC20_OPERATION";
     }
 }
 

@@ -38,6 +38,7 @@
 #include <wallet/bitcoin/transaction_builders/BitcoinLikeTransactionBuilder.h>
 #include "ExplorerStorage.hpp"
 #include "HttpClientOnFakeExplorer.hpp"
+#include <api/AllocationMetrics.hpp>
 
 class BitcoinLikeWalletSynchronization : public BaseFixture {
 
@@ -57,6 +58,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
+        configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
         auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
                                               configuration));
         std::set<std::string> emittedOperations;
@@ -99,6 +101,11 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                     std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
                     std::cout << " amount: " << op->getAmount()->toLong() << std::endl;
                     std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
+                }
+                ops.clear();
+                auto metrics = api::AllocationMetrics::getObjectAllocations();
+                for (const auto& metric : metrics) {
+                    std::cout << metric.first << ": " << metric.second << std::endl;
                 }
                 dispatcher->stop();
             });
@@ -216,7 +223,8 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeOnceAtATime) {
                                               }));
             EXPECT_EQ(bus, account->synchronize());
             dispatcher->waitUntilStopped();
-
+            auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+            fmt::print("Operations: {}\n", ops.size());
         }
     }
 }

@@ -44,7 +44,7 @@ namespace ledger {
     namespace core {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
-                : DedicatedContext(wallet->getMainExecutionContext())
+                : DedicatedContext(wallet->getPool()->getDispatcher()->getSerialExecutionContext(fmt::format("account_{}_{}", wallet->getName(), index)))
         {
             _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
