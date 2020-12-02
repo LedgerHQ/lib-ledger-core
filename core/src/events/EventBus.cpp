@@ -104,7 +104,6 @@ void ledger::core::EventBus::post(const std::shared_ptr<ledger::core::Event>& ev
             auto& r = std::get<1>(subscriber);
 
             std::weak_ptr<ledger::core::api::EventReceiver> weak_receiver(r);
-
             Future<Unit>::async(c, [=] () {
                 auto local_receiver = weak_receiver.lock();
                 if (!local_receiver) {

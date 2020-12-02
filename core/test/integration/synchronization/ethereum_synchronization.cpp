@@ -57,6 +57,7 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
         {
             auto configuration = DynamicObject::newInstance();
             configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"44'/60'/0'/0/<account>'");
+            configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
             configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
             auto wallet = wait(pool->createWallet(walletName, "ethereum", configuration));
             std::set<std::string> emittedOperations;
@@ -138,9 +139,18 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
 
                 auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
                 std::cout << "Ops: " << ops.size() << std::endl;
-                EXPECT_EQ(newOpCount, ops.size());
+                //EXPECT_EQ(newOpCount, ops.size());
                 auto block = wait(account->getLastBlock());
                 auto blockHash = block.blockHash;
+
+
+                // ERC 20 tests
+                auto ercAccount = std::dynamic_pointer_cast<ledger::core::ERC20LikeAccount>(account->getERC20Accounts()[0]);
+                auto allOps = ercAccount->getOperations();
+                auto ercOps = wait(ercAccount->getAllOperations(10, 0xffffff, true));
+                EXPECT_EQ(ercOps.size() + 10, allOps.size());
+                auto ercOpsFromBlock = wait(ercAccount->getOperationsFromBlockHeight(10, 0xffffff, 0));
+                EXPECT_EQ(ercOps.size(), ercOpsFromBlock.size());
             }
         }
     }

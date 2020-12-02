@@ -25,3 +25,7 @@ LedgerCore = interface +c {
     # @return The integer version of the library
     static getIntVersion(): i32;
 }
+
+AllocationMetrics = interface +c {
+    static getObjectAllocations(): map<string, i32>;
+}

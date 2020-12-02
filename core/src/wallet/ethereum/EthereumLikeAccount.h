@@ -97,6 +97,8 @@ namespace ledger {
             bool isObservingBlockchain() override ;
             std::string getRestoreKey() override ;
 
+            void emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid);
+
             static EthereumLikeBlockchainExplorerTransaction getETHLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<EthereumLikeAccount> &account,
                                                                                                      const std::string &txHash,
                                                                                                      const std::vector<uint8_t> &rawTx);
