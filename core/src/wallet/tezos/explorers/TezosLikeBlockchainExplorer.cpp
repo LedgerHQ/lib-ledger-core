@@ -33,6 +33,11 @@
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
+#include <api/BigInt.hpp>
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
@@ -181,5 +186,206 @@ namespace ledger {
                         return "";
                     });
         }
+
+        Future<std::string> TezosLikeBlockchainExplorer::getChainId(const std::shared_ptr<api::ExecutionContext> &context,
+                                                              const std::shared_ptr<HttpClient> &http) {
+            const bool parseNumbersAsString = true;
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return http->GET(fmt::format("/chains/main/chain_id"),
+                             std::unordered_map<std::string, std::string>{},
+                             getRPCNodeEndpoint())
+                    .json(parseNumbersAsString)
+                    .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsString()) {
+                        std::cout << "getChainId: not a string" << std::endl;
+                            // Possible if address was not revealed yet
+                            return "";
+                        }
+                        std::cout << "getChainId: " << json.GetString() << std::endl;
+                        return json.GetString();
+                    }).recover(context, [] (const Exception &exception) {
+                        std::cout << "getChainId exception" << std::endl;
+                        return "";
+                    });
+        }
+
+        Future<std::shared_ptr<BigInt>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<HttpClient> &http,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const std::shared_ptr<TezosLikeTransactionApi> &tx)
+        {
+            return getChainId(context, http).flatMapPtr<BigInt>(context, [=](const std::string& result)-> FuturePtr<BigInt> {
+                return getEstimatedGasLimit(http, context, tx, result);
+            });
+        }
+
+        Future<std::shared_ptr<BigInt>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<HttpClient> &http,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const std::shared_ptr<TezosLikeTransactionApi> &tx, 
+            const std::string& strChainID)
+        {
+            const auto postPath =
+                fmt::format("/chains/{}/blocks/head/helpers/scripts/run_operation", strChainID);
+            const auto payload = tx->serializeJsonForDryRun(strChainID);
+
+            const std::unordered_map<std::string, std::string> postHeaders{
+                {"Accept", "application/json"}, {"Content-Type", "application/json"}};
+
+            const bool parseNumbersAsString = true;
+            return http
+                ->POST(
+                    postPath,
+                    std::vector<uint8_t>(payload.cbegin(), payload.cend()),
+                    postHeaders,
+                    getRPCNodeEndpoint())
+                .json(parseNumbersAsString)
+                .flatMapPtr<BigInt>(
+                    context,
+                    [](const HttpRequest::JsonResult &result) -> FuturePtr<BigInt> {
+                        const auto &json = std::get<1>(result)->GetObject();
+                        if (json.HasMember("kind")) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
+                                "failed to simulate operation: {}",
+                                json["kind"].GetString());
+                        }
+                        if (!json["contents"].IsArray() || !(json["contents"].Size() > 0) ||
+                            !json["contents"].GetArray()[0].IsObject() ||
+                            !json["contents"].GetArray()[0].GetObject().HasMember("metadata") ||
+                            !json["contents"].GetArray()[0].GetObject()["metadata"].HasMember(
+                                "operation_result")) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
+                                "failed to get operation_result in simulation");
+                        }
+                        auto &operationResult = json["contents"]
+                                                    .GetArray()[0]
+                                                    .GetObject()["metadata"]
+                                                    .GetObject()["operation_result"];
+
+                        // Fail if operation_result is not .status == "applied"
+                        if (!operationResult.HasMember("status") ||
+                            operationResult["status"].GetString() != std::string("applied")) {
+                            throw make_exception(
+                                api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
+                                "failed to simulate the operation on the Node");
+                        }
+
+                        return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(
+                            BigInt::fromString(operationResult["consumed_gas"].GetString())));
+                    })
+                .recover(context, [](const Exception &exception) {
+                    auto ecode = exception.getErrorCode();
+                    // Tezos RPC returns a 500 when the transaction is not valid (bad counter, no
+                    // balance, etc.) so we rethrow the tezos node error for easier debugging
+                    auto body = std::static_pointer_cast<HttpRequest::JsonResult>(
+                        exception.getUserData().getValue());
+                    const auto &json = *std::get<1>(*body);
+                    rapidjson::StringBuffer buffer;
+                    rapidjson::Writer<rapidjson::StringBuffer> writer(buffer);
+                    json.Accept(writer);
+                    throw make_exception(
+                        api::ErrorCode::HTTP_ERROR,
+                        "failed to simulate operation: {}",
+                        buffer.GetString());
+
+                    // lambda is [noreturn], this is just left so type deduction succeeds and
+                    // compiles
+                    return std::make_shared<BigInt>("0");
+                });
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     }
 }

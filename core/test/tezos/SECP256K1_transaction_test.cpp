@@ -50,6 +50,7 @@ struct SECP256K1TezosMakeTransaction : public TezosMakeBaseTransaction {
     void SetUpConfig() override {
         std::cout << "SetUpConfig" << std::endl;
         auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::TezosConfiguration::TEZOS_NODE, "https://xtz-node.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1);
         configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
@@ -165,7 +166,6 @@ binary payload
       tx->reveal(true);
       auto binaryPayload= tx->serialize();
       std::cout << "TezosMakeTransaction.CreateTx - serialized tx: " << hex::toString(binaryPayload) << std::endl;
-
       EXPECT_EQ(hex::toString(binaryPayload),
        "8c17a3d65cb024febe2a869f7bb44469b85da14aa5a95892cd7001334b237a546b010ac10c14347edb22b0fd9ae0b2e397ac7adfcba9d209ce87ca03d84f00010247ea904a9456e06232533a80a2c5bc9f50417755504025d8f556d259da66e4576c010ac10c14347edb22b0fd9ae0b2e397ac7adfcba9df09cf87ca03a75100a09c0100011ebab3538f6ca4223ee98b565846e47d273d112900222bac041fdcd983f5c100413b3be83ef0bf2b60c857a9dc7e6780c8644244af28038322d49f081e6286d93e4941589e595bfc7555f539f66b939f15993b77e9");
       //broadcast(tx);    
@@ -492,3 +492,35 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawDelegationWithReveal) {
     EXPECT_EQ(tx->getStorageLimit()->toString(10), "100");
     EXPECT_EQ(tx->toReveal(), true);
 }
+
+TEST_F(SECP256K1TezosMakeTransaction, CreateTxAutoFill) {
+     const std::string DESTINATION = "tz2B7ibGZBtVFLvRYBfe4Q9uw7SRE62MKZCD"; 
+
+     auto builder = tx_builder();
+     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+          fmt::print("Received event {}\n", api::to_string(event->getCode()));
+          if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED) return;
+     
+          EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
+          EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
+          dispatcher->stop();
+      });
+      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      dispatcher->waitUntilStopped();
+      builder->setFees(api::Amount::fromLong(currency, 0));
+      builder->setGasLimit(api::Amount::fromLong(currency, 0));
+      builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
+      builder->wipeToAddress(DESTINATION);
+      auto f = builder->build();
+      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
+      //tx->reveal(true);
+      auto binaryPayload= tx->serialize();
+      std::cout << "TezosMakeTransaction.CreateTx - serialized tx: " << hex::toString(binaryPayload) << std::endl;
+      std::cout << "gasLimit= " << tx->getGasLimit()->toLong() << std::endl;
+      std::cout << "fees= " << tx->getFees()->toLong() << std::endl;
+      std::cout << "value= " << tx->getValue()->toLong() << std::endl;
+
+      EXPECT_NE(tx->getGasLimit()->toLong(), 0);
+      EXPECT_NE(tx->getFees()->toLong(), 0);
+ }
+

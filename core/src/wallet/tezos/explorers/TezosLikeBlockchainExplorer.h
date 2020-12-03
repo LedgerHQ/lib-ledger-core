@@ -120,8 +120,32 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>>
             getFees() = 0;
 
+            /// Return the gas Price of the last block in picotez (e-12) per gas
+            virtual Future<std::shared_ptr<BigInt>>
+            getGasPrice() = 0;
+
             virtual Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) = 0;
+
+            virtual Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+                const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
+
+            Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+                const std::shared_ptr<HttpClient> &http,
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<TezosLikeTransactionApi> &transaction);
+
+            Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+                const std::shared_ptr<HttpClient> &http,
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<TezosLikeTransactionApi> &transaction,
+                const std::string &chainId);    
+            
+
+            Future<std::string> getChainId(
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<HttpClient> &http);
+    
 
             virtual Future<std::shared_ptr<BigInt>>
             getStorage(const std::string &address) = 0;

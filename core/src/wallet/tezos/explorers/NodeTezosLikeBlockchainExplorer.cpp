@@ -94,6 +94,12 @@ namespace ledger {
                     });
         }
 
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getGasPrice() {
+            throw make_exception(
+                api::ErrorCode::RUNTIME_ERROR,
+                "getGasPrice is unimplemented for NodeTezosLikeExplorer");
+        }
+
         Future<String>
         NodeTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
             // TODO: TBC with backend team
@@ -250,7 +256,16 @@ namespace ledger {
             );
         }
 
-        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(const std::string &address) {
+        Future<std::shared_ptr<BigInt>>
+        NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<TezosLikeTransactionApi> &tx)
+        {
+            return TezosLikeBlockchainExplorer::getEstimatedGasLimit(_http, getContext(), tx);
+        }
+
+        Future<std::shared_ptr<BigInt>> NodeTezosLikeBlockchainExplorer::getStorage(
+            const std::string &address)
+        {
             return getHelper(fmt::format("blockchain/{}/{}/estimate_storage",
                                          getExplorerVersion(),
                                          getNetworkParameters().Identifier),
