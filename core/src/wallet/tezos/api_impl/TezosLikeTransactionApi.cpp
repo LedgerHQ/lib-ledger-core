@@ -498,7 +498,7 @@ namespace ledger {
                             counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
                         innerOp.AddMember("counter", vString, allocator);
 
-                        const auto amount = _value->toBigInt()->toString(10);
+                        const auto amount = (_value->toLong() != 0) ?  _value->toBigInt()->toString(10) : "1";
                         vString.SetString(
                             amount.c_str(), static_cast<SizeType>(amount.length()), allocator);
                         innerOp.AddMember("amount", vString, allocator);

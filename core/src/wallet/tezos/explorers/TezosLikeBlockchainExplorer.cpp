@@ -164,14 +164,45 @@ namespace ledger {
                     });
         }
 
+        Future<std::string> TezosLikeBlockchainExplorer::getChainId(const std::shared_ptr<api::ExecutionContext> &context,
+                                                              const std::shared_ptr<HttpClient> &http) {
+            const bool parseNumbersAsString = true;
+            std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
+            return http->GET(fmt::format("/chains/main/chain_id"),
+                             std::unordered_map<std::string, std::string>{},
+                             getRPCNodeEndpoint())
+                    .json(parseNumbersAsString)
+                    .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
+                        auto &json = *std::get<1>(result);
+                        if (!json.IsString()) {
+                        std::cout << "getChainId: not a string" << std::endl;
+                            // Possible if address was not revealed yet
+                            return "";
+                        }
+                        std::cout << "getChainId: " << json.GetString() << std::endl;
+                        return json.GetString();
+                    }).recover(context, [] (const Exception &exception) {
+                        std::cout << "getChainId exception" << std::endl;
+                        return "";
+                    });
+        }
+
         Future<std::shared_ptr<BigInt>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
             const std::shared_ptr<HttpClient> &http,
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<TezosLikeTransactionApi> &tx)
         {
-            // FIXME: await the correct chain id instead of hardcoded value
-            // ChainID is obtained by doing GET RPCNode /chains/main/chain_id
-            const auto strChainID = "NetXdQprcVkpaWU";
+            return getChainId(context, http).flatMapPtr<BigInt>(context, [=](const std::string& result)-> FuturePtr<BigInt> {
+                return getEstimatedGasLimit(http, context, tx, result);
+            });
+        }
+
+        Future<std::shared_ptr<BigInt>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
+            const std::shared_ptr<HttpClient> &http,
+            const std::shared_ptr<api::ExecutionContext> &context,
+            const std::shared_ptr<TezosLikeTransactionApi> &tx, 
+            const std::string& strChainID)
+        {
             const auto postPath =
                 fmt::format("/chains/{}/blocks/head/helpers/scripts/run_operation", strChainID);
             const auto payload = tx->serializeJsonForDryRun(strChainID);
@@ -194,6 +225,7 @@ namespace ledger {
                         if (json.HasMember("kind")) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
                                 "failed to simulate operation: {}",
                                 json["kind"].GetString());
                         }
@@ -204,6 +236,7 @@ namespace ledger {
                                 "operation_result")) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
                                 "failed to get operation_result in simulation");
                         }
                         auto &operationResult = json["contents"]
@@ -216,6 +249,7 @@ namespace ledger {
                             operationResult["status"].GetString() != std::string("applied")) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR,
+                                std::make_shared<HttpRequest::JsonResult>(result),
                                 "failed to simulate the operation on the Node");
                         }
 

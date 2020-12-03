@@ -66,12 +66,6 @@ namespace ledger {
 
         Future<std::shared_ptr<BigInt>>
         ExternalTezosLikeBlockchainExplorer::getFees() {
-            const bool parseNumbersAsString = true;
-            const auto feesField =
-              getConfiguration()->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
-                .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT) == api::TezosConfigurationDefaults::TZSTATS_API_ENDPOINT ?
-                  "fee" :
-                  "fees";
             // The best value is probably
             // divider_tx = (n_ops - n_ops_failed - n_ops_contract -
             //     n_seed_nonce_revelation - n_double_baking_evidence -
@@ -83,26 +77,42 @@ namespace ledger {
             //
             // Therefore, we only return totalFees/n_tx and leave the caller make some adjustments on the value
             // afterwards
-            const auto txCountField = "n_tx";
-
+            const bool parseNumbersAsString = true;
             return _http->GET("block/head")
                     .json(parseNumbersAsString).mapPtr<BigInt>(getContext(), [=](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
 
                         //Is there a fees field ?
-                        if (!json.IsObject() || !json.HasMember(feesField) ||
-                            !json[feesField].IsString()) {
+                        if (!json.IsObject()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 fmt::format("Failed to get fees from network, no (or malformed) field \"{}\" in response", feesField));
+                                                 fmt::format("Failed to get fees from network, no (or malformed) response"));
                         }
 
                         // Return 0 if the block had no transaction at all
+                        const auto txCountField = "n_tx";
                         if (!json.HasMember(txCountField) || !json[txCountField].IsString()) {
                             return std::make_shared<BigInt>(0);
                         }
-
                         const auto totalTx = api::BigInt::fromIntegerString(json[txCountField].GetString(), 10);
-                        const auto totalFees = api::BigInt::fromDecimalString(json[feesField].GetString(), 6, ".");
+
+                        auto getFieldValue = [&json](const char* fieldName) -> std::string {
+                            std::string value; 
+                            if (json.HasMember(fieldName) && json[fieldName].IsString()) {
+                                value = json[fieldName].GetString();
+                            }
+                            return value;
+                        };
+                        //try first with "fee" else with "fees"
+                        std::string feesValueStr = getFieldValue("fee");
+                        if (feesValueStr.empty()) {
+                            feesValueStr = getFieldValue("fees");
+                        }
+                        if (feesValueStr.empty()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                 "Failed to get fees from network, no (or malformed) response");
+                        }                         
+
+                        const auto totalFees = api::BigInt::fromDecimalString(feesValueStr, 6, ".");
                         std::string fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
                         if (fees != "0" && totalTx->intValue() != 0) {
                             fees = totalFees->divide(totalTx)->toString(10);
