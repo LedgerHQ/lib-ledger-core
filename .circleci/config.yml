@@ -178,7 +178,6 @@ jobs:
       - checkout
       - run:
           name: Setup
-          no_output_timeout: 30m
           command: |
             .circleci/setup_macos.sh Release
       - run:
@@ -256,6 +255,7 @@ jobs:
       - checkout
       - run:
           name: Setup
+          no_output_timeout: 120m
           command: |
             .circleci/setup_macos.sh Release
       - run:
