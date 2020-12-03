@@ -126,14 +126,16 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
 
             auto restoreKey = account->getRestoreKey();
             EXPECT_EQ(restoreKey, hex::toString(XTZ_KEYS_INFO.publicKeys[0]));
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
 
             // re-launch a synchronization if it’s the first time
             std::cout << "Running a second synchronization." << std::endl;
             dispatcher = std::make_shared<QtThreadDispatcher>();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto bus2 = account->synchronize();
+            bus2->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
 
@@ -167,7 +169,8 @@ TEST_F(TezosLikeWalletSynchronization, SynchronizeAccountWithMoreThan100OpsAndDe
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, kExplorerUrl);
     auto wallet = wait(pool->createWallet("xtz", "tezos", configuration));
     auto account = createTezosLikeAccount(wallet, 0, XTZ_WITH_100_OPS_KEYS_INFO);
-    account->synchronize()->subscribe(account->getContext(), make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto bus = account->synchronize();
+    bus->subscribe(account->getContext(), make_receiver([=](const std::shared_ptr<api::Event> &event) {
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
             return;
         EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
@@ -228,7 +231,8 @@ TEST_F(TezosLikeWalletSynchronization, NonActivated) {
 
     auto restoreKey = account->getRestoreKey();
     EXPECT_EQ(restoreKey, hex::toString(XTZ_NON_ACTIVATED_KEYS_INFO.publicKeys[0]));
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(),
                                       receiver);
 
     dispatcher->waitUntilStopped();

@@ -91,7 +91,8 @@ binary payload
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1294));
@@ -149,7 +150,8 @@ binary payload
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1247));
@@ -217,7 +219,8 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         dispatcher->stop();
     });
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
      auto createTx = [&] () {
@@ -263,7 +266,8 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         dispatcher->stop();
     });
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
     auto builder = tx_builder();
@@ -353,7 +357,8 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 370));
@@ -403,7 +408,8 @@ TEST_F(SECP256K1TezosMakeTransaction, ParseUnsignedRawTransactionWithReveal) {
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 370));
@@ -470,7 +476,8 @@ TEST_F(SECP256K1TezosMakeTransaction, GetCurrentDelegation) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         dispatcher->stop();
     });
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
     auto delegate = ::wait(account->getCurrentDelegate());
@@ -505,7 +512,8 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateTxAutoFill) {
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
       builder->setFees(api::Amount::fromLong(currency, 0));
       builder->setGasLimit(api::Amount::fromLong(currency, 0));

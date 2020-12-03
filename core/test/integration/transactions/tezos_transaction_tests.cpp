@@ -70,7 +70,8 @@ TEST_F(TezosMakeTransaction, CreateTx) {
         dispatcher->stop();
     });
 
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
     dispatcher->waitUntilStopped();
 

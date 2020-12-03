@@ -133,7 +133,8 @@ TEST_F(EthereumLikeWalletSynchronization, MediumXpubSynchronization) {
                 });
 
                 auto restoreKey = account->getRestoreKey();
-                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+                auto bus = account->synchronize();
+                bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
                 dispatcher->waitUntilStopped();
 
@@ -205,7 +206,8 @@ TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
                     dispatcher->stop();
                 });
 
-                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+                auto bus = account->synchronize();
+                bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
                 dispatcher->waitUntilStopped();
             }
         }
@@ -266,7 +268,8 @@ TEST_F(EthereumLikeWalletSynchronization, XpubSynchronization) {
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
 
@@ -328,7 +331,8 @@ TEST_F(EthereumLikeWalletSynchronization, XpubETCSynchronization) {
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
 
@@ -445,11 +449,13 @@ TEST_F(EthereumLikeWalletSynchronization, ReorgLastBlock) {
                         std::make_shared<test::FakeUrlConnection>(blockNotFound)
                     }
                     });
-                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
+                auto bus = account->synchronize();
+                bus->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
                 EXPECT_TRUE(wait(waiter.second));
                 // next time
                 waiter = createSyncReceiver();
-                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
+                auto bus2 = account->synchronize();
+                bus2->subscribe(dispatcher->getMainExecutionContext(), waiter.first);
                 EXPECT_TRUE(wait(waiter.second));
                 dispatcher->stop();
             }

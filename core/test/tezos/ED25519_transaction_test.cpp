@@ -93,7 +93,8 @@ Out[53]: '6e766ee0733ef0fb6385f2034cfbd437247afad4b301ebce1b929a67ce4a0b8d6c0090
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1294));
@@ -155,7 +156,8 @@ Out[26]: 'ade89a7e5460a33ebabcab7cb7b6589cd7e48b512ebdc57e0acfc439934b04096b0090
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1246));
@@ -239,7 +241,8 @@ TEST_F(ED25519TezosMakeTransaction, CreateDelegation) {
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 370));
@@ -306,7 +309,8 @@ TEST_F(ED25519TezosMakeTransaction, GetCurrentDelegationOnNotDelegatedAccount) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         dispatcher->stop();
     });
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
     auto delegate = ::wait(account->getCurrentDelegate());

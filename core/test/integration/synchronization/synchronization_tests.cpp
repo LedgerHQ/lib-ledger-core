@@ -110,7 +110,8 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                 dispatcher->stop();
             });
 
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
         }
@@ -150,7 +151,8 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumDGBXpubSynchronization) {
                 dispatcher->stop();
             });
 
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
         }
@@ -190,7 +192,8 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumLTCXpubSynchronization) {
                 dispatcher->stop();
             });
 
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
         }
@@ -355,7 +358,8 @@ TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
                 dispatcher->stop();
             });
 
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
         }
@@ -404,7 +408,8 @@ TEST_F(BitcoinLikeWalletSynchronization, MultipleSynchronization) {
                     }
                 });
 
-                accounts[index]->synchronize()->subscribe(dispatcher->getMainExecutionContext(), localReceiver);
+                auto bus = accounts[index]->synchronize();
+                bus->subscribe(dispatcher->getMainExecutionContext(), localReceiver);
                 if (index == accounts.size() - 1) {
                     dispatcher->waitUntilStopped();
                 } else {
@@ -468,7 +473,8 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
                     }
                 });
 
-                account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), localReceiver);
+                auto bus = account->synchronize();
+                bus->subscribe(dispatcher->getMainExecutionContext(), localReceiver);
                 dispatcher->waitUntilStopped();
                 return Future<Unit>::successful(unit);
             };
@@ -559,7 +565,8 @@ TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
             dispatcher->stop();
         });
 
-        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        auto bus = account->synchronize();
+        bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
         dispatcher->waitUntilStopped();
     }
 }

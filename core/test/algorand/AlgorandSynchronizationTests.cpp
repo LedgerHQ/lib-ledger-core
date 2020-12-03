@@ -83,7 +83,8 @@ public:
             dispatcher->stop();
         });
 
-        _account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        auto bus = _account->synchronize();
+        bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
         dispatcher->waitUntilStopped();
     }
 

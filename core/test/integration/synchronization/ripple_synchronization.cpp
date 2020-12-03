@@ -91,7 +91,8 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
 
@@ -172,7 +173,8 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();
 
@@ -270,7 +272,8 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
         dispatcher->stop();
     });
 
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
     auto ops = wait(

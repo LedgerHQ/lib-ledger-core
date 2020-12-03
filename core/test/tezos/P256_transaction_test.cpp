@@ -90,7 +90,8 @@ Out[49]: 'fc90925a9641634831c1e7a5552270c4f7f954a974ec2596ac1fe3bfc14fc7cd6c02a9
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1294));
@@ -144,7 +145,8 @@ Out[43]: '087bab85bf59327fe9c882c1346e47b7be4ed73c5afe229713ad8341131ed3eb6b02a9
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1246));
@@ -229,7 +231,8 @@ TEST_F(P256TezosMakeTransaction, CreateDelegation) {
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
           dispatcher->stop();
       });
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
       dispatcher->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 370));
@@ -296,7 +299,8 @@ TEST_F(P256TezosMakeTransaction, GetCurrentDelegation) {
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
         dispatcher->stop();
     });
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
     auto delegate = ::wait(account->getCurrentDelegate());

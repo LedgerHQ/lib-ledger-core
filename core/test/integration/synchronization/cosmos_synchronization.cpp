@@ -121,7 +121,8 @@ public:
             dispatcher->stop();
         });
 
-        account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        auto bus = account->synchronize();
+        bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
         dispatcher->waitUntilStopped();
      }
 
@@ -370,7 +371,8 @@ TEST_F(CosmosLikeWalletSynchronization, MediumXpubSynchronization) {
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(
+            auto bus = account->synchronize();
+            bus->subscribe(
                 dispatcher->getMainExecutionContext(), receiver);
 
             dispatcher->waitUntilStopped();

@@ -77,7 +77,8 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
                 dispatcher->stop();
             });
 
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
 
             dispatcher->waitUntilStopped();
 
@@ -251,7 +252,8 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, TestNetSynchronization) {
                 dispatcher->stop();
             });
 
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(dispatcher->getMainExecutionContext(),receiver);
             dispatcher->waitUntilStopped();
         }
     }
