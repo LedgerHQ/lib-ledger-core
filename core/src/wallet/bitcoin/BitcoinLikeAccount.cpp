@@ -426,7 +426,7 @@ namespace ledger {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return async<std::shared_ptr<Amount>>([=] () -> std::shared_ptr<Amount> {
+            return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=] () -> std::shared_ptr<Amount> {
                 const auto& uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
