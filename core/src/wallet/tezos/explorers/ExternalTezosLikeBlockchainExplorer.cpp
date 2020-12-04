@@ -271,6 +271,7 @@ namespace ledger {
                                                        const std::string &forceUrl,
                                                        bool isDecimal) {
             const bool parseNumbersAsString = true;
+            const bool ignoreStatusCode = true;
             auto networkId = getNetworkParameters().Identifier;
 
             std::string p, separator = "?";
@@ -282,9 +283,19 @@ namespace ledger {
             return _http->GET(url + p,
                               std::unordered_map<std::string, std::string>(),
                               forceUrl)
-                    .json(parseNumbersAsString)
+                    .json(parseNumbersAsString, ignoreStatusCode)
                     .mapPtr<BigInt>(getContext(),
                                     [field, networkId, fallbackValue, isDecimal](const HttpRequest::JsonResult &result) {
+                                        auto& connection = *std::get<0>(result);
+                                        if (connection.getStatusCode() == 404) {
+                                            // it means that it’s a “logical” error (i.e. some resources not found), which
+                                            // in this case we fallback to a given value
+                                            return std::make_shared<BigInt>(!fallbackValue.empty() ? fallbackValue : "0");
+                                        }
+                                        else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
+                                            throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
+                                        }
+
                                         auto &json = *std::get<1>(result);
                                         if ((!json.IsObject() ||
                                             !json.HasMember(field.c_str()) ||
@@ -300,19 +311,7 @@ namespace ledger {
                                             value = api::BigInt::fromDecimalString(value, 6, ".")->toString(10);
                                         }
                                         return std::make_shared<BigInt>(value);
-                                    })
-                    .recover(getContext(), [fallbackValue] (const Exception &exception) {
-                        auto ecode = exception.getErrorCode();
-                        if (ecode == api::ErrorCode::UNABLE_TO_CONNECT_TO_HOST) {
-                          // if it’s an HTTP error, it might be due to the host not being reachable or such,
-                          // so we re-run the error
-                          throw exception;
-                        }
-
-                        // otherwise, it means that it’s a “logical” error (i.e. some resources not found), which
-                        // in this case we fallback to a given value
-                        return std::make_shared<BigInt>(!fallbackValue.empty() ? fallbackValue : "0");
-                    });
+                                    });
         }
 
         Future<std::shared_ptr<BigInt>>
