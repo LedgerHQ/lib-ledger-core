@@ -48,7 +48,6 @@ using namespace ledger::testing::tezos;
 
 struct SECP256K1TezosMakeTransaction : public TezosMakeBaseTransaction {
     void SetUpConfig() override {
-        std::cout << "SetUpConfig" << std::endl;
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::TezosConfiguration::TEZOS_NODE, "https://xtz-node.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);

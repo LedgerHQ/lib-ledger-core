@@ -145,22 +145,14 @@ const std::string TX_4 = "{\"hash\":\"4450e70656888bd7f5240a9b532eac54db7d72f3b4
 
 
 void BaseFixture::SetUp() {
-    std::cout << "BaseFixture::SetUp" << std::endl;
-    std::cout << "::testing::Test::SetUp();" << std::endl;
     ::testing::Test::SetUp();
     std::cout << "ClearFS: " << IntegrationEnvironment::getInstance()->getApplicationDirPath() << std::endl;
     ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-    std::cout << "Dispatcher" << std::endl;
     dispatcher = std::make_shared<QtThreadDispatcher>();
-    std::cout << "resolver" << std::endl;
     resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
-    std::cout << "printer" << std::endl;
     printer = std::make_shared<CoutLogPrinter>(dispatcher->getMainExecutionContext());
-    std::cout << "http" << std::endl;
     http = std::make_shared<QtHttpClient>(dispatcher->getMainExecutionContext());
-    std::cout << "ws" << std::endl;
     ws = std::make_shared<FakeWebSocketClient>();
-    std::cout << "rng" << std::endl;
     rng = std::make_shared<OpenSSLRandomNumberGenerator>();
 }
 
