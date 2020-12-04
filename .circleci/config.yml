@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Build_Library_jni
           command: |
-            . .circleci/build_lib.sh target_jni Debug
+            . .circleci/build_lib.sh target_jni Release
       - run:
           name: Export_Lib_Version
           command: |
@@ -255,7 +255,6 @@ jobs:
       - checkout
       - run:
           name: Setup
-          no_output_timeout: 120m
           command: |
             .circleci/setup_macos.sh Release
       - run:
@@ -269,7 +268,7 @@ jobs:
       - run:
           name: Build_Library_jni
           command: |
-            . .circleci/build_lib.sh target_jni Debug
+            . .circleci/build_lib.sh target_jni Release
       - run:
           name: Copy_Artifacts_jni
           command: |

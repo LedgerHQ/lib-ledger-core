@@ -31,9 +31,11 @@ brew install sbt
 echo "========> Install C++ dependencies"
 brew install cmake
 
-echo "========> Install Qt5"
-brew install qt5
-export PATH="/usr/local/Cellar/qt/5.*/bin:$PATH"
+if [ "$BUILD_CONFIG" == "Debug" ]; then
+	echo "========> Install Qt5"
+	brew install --verbose qt5
+	export PATH="/usr/local/Cellar/qt/5.*/bin:$PATH"
+fi
 
 echo "========> Install PostgreSQL"
 # Install with verbose otherwise the setup may timeout the CI because it doesn't log.
