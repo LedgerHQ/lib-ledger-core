@@ -197,25 +197,6 @@ namespace ledger {
                                account->getKeychain()->getRestoreKey(),
                                account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
 
-				// extend the keychain to cover all the addresses
-                if (buddy->wallet->getWalletType() == api::WalletType::BITCOIN)
-                {
-                    int currentBatchIndex = 0;
-                    int txSize;
-                    do {
-                        auto batch = vector::map<std::string, std::shared_ptr<AddressType>>(
-                            buddy->keychain->getAllObservableAddresses(currentBatchIndex * buddy->halfBatchSize, (currentBatchIndex + 1) * buddy->halfBatchSize - 1),
-                            [](const std::shared_ptr<AddressType>& addr) -> std::string {
-                                return addr->toString();
-                            }
-                        );
-                        auto txs = ledger::core::async::wait(_explorer->getTransactions(batch, optional<std::string>(), optional<void*>()));
-                        txSize = txs->transactions.size();
-                        currentBatchIndex++;
-                    }
-                    while (txSize > 0);
-                }
-
                 //Check if reorganization happened
                 soci::session sql(buddy->wallet->getDatabase()->getPool());
                 if (buddy->savedState.nonEmpty()) {
@@ -265,6 +246,8 @@ namespace ledger {
                         buddy->token = Option<void *>(t);
                     }
                     return unit;
+                }).template flatMap<Unit>(account->getContext(), [buddy, self](const Unit&) {
+                    return self->extendKeychain(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
                     return self->synchronizeBatches(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy, deactivateToken] (const Unit&) {
@@ -300,6 +283,31 @@ namespace ledger {
                                          buddy->account->getWallet()->getName(), duration.count());
                     buddy->logger->error("Due to {}, {}", api::to_string(ex.getErrorCode()), ex.getMessage());
                     return self->recoverFromFailedSynchronization(buddy);
+                });
+            };
+
+            // extend the keychain to cover all the addresses(only for bitcoin)
+            Future<Unit> extendKeychain(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy) {
+                if (buddy->wallet->getWalletType() != api::WalletType::BITCOIN)
+                    return Future<Unit>::successful(unit);
+                buddy->logger->info("Detecting addresses for batch {}", currentBatchIndex);
+                auto self = getSharedFromThis();
+                auto batch = vector::map<std::string, std::shared_ptr<AddressType>>(
+                    buddy->keychain->getAllObservableAddresses(currentBatchIndex * buddy->halfBatchSize, (currentBatchIndex + 1) * buddy->halfBatchSize - 1),
+                    [](const std::shared_ptr<AddressType>& addr) -> std::string {
+                        return addr->toString();
+                    }
+                );
+                return _explorer->getTransactions(batch, optional<std::string>(), optional<void*>())
+                    .template flatMap<Unit>(buddy->account->getContext(), [self, currentBatchIndex, buddy](const std::shared_ptr<typename Explorer::TransactionsBulk>& bulk) -> Future<Unit> {
+                    if (bulk->transactions.size() > 0)
+                    {
+                        return self->extendKeychain(currentBatchIndex + 1, buddy);
+                    }
+                    else
+                    {
+                        return Future<Unit>::successful(unit);
+                    }
                 });
             };
 
