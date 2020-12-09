@@ -29,7 +29,6 @@
  *
  */
 #include "Base58.hpp"
-#include "BigInt.h"
 #include <sstream>
 #include "../collections/vector.hpp"
 #include <crypto/HashAlgorithm.h>
@@ -39,19 +38,6 @@
 
 using namespace ledger::core;
 static const std::string DIGITS = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz";
-static const ledger::core::BigInt V_58(58);
-
-static void _encode(const ledger::core::BigInt &v,
-                    std::stringstream &ss,
-                    const std::string &networkIdentifier,
-                    const std::string &networkBase58Dictionary) {
-    if (v == ledger::core::BigInt::ZERO) {
-        return ;
-    }
-    auto r = (v % V_58).toUnsignedInt();
-    _encode(v / V_58, ss, networkIdentifier, networkBase58Dictionary);
-    ss << networkBase58Dictionary[r];
-}
 
 static std::string getNetworkIdentifier(const std::shared_ptr<api::DynamicObject> &config) {
     return config->getString("networkIdentifier").value_or("");
