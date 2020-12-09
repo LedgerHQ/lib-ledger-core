@@ -65,16 +65,39 @@ static bool shouldUseNetworkBase58Dictionary(const std::shared_ptr<api::DynamicO
     return config->getBoolean("useNetworkDictionary").value_or(false);
 }
 
+// refer to https://bitcoin.stackexchange.com/questions/76480/encode-decode-base-58-c
 std::string ledger::core::Base58::encode(const std::vector<uint8_t> &bytes,
                                          const std::shared_ptr<api::DynamicObject> &config) {
-    BigInt intData(bytes.data(), bytes.size(), false);
-    std::stringstream ss;
     auto base58Dictionary = getNetworkBase58Dictionary(config);
-    for (auto i = 0; i < bytes.size() && bytes[i] == 0; i++) {
-        ss << base58Dictionary[0];
+    std::string result;
+    const double iFactor = 1.36565823730976103695740418120764243208481439700722980119458355862779176747360903943915516885072037696111192757109;
+    int len = bytes.size();
+    int zeros = 0, length = 0, pbegin = 0, pend;
+    pend = len;
+    while (pbegin != pend && !bytes[pbegin]) pbegin = ++zeros;
+    const int size = 1 + iFactor * (double)(pend - pbegin);
+    unsigned char* b58 = new unsigned char[size];
+    for (int i = 0; i < size; i++) b58[i] = 0;
+    while (pbegin != pend) {
+        unsigned int carry = bytes[pbegin];
+        int i = 0;
+        for (int it1 = size - 1; (carry || i < length) && (it1 != -1); it1--, i++) {
+            carry += 256 * b58[it1];
+            b58[it1] = carry % 58;
+            carry /= 58;
+        }
+        if (carry) return result;
+        length = i;
+        pbegin++;
     }
-    _encode(intData, ss, getNetworkIdentifier(config), base58Dictionary);
-    return ss.str();
+    int it2 = size - length;
+    while ((it2 - size) && !b58[it2]) it2++;
+
+    int ri = 0;
+    while (ri < zeros) { result += base58Dictionary[0]; ri++; }
+    for (; it2 < size; ++it2) result += base58Dictionary[b58[it2]];
+    delete[] b58;
+    return result;
 }
 
 std::string ledger::core::Base58::encodeWithChecksum(const std::vector<uint8_t> &bytes,
@@ -116,26 +139,40 @@ std::string ledger::core::Base58::encodeWithEIP55(const std::string &address) {
     throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid base 58 format");
 }
 
+// refer to https://bitcoin.stackexchange.com/questions/76480/encode-decode-base-58-c
 std::vector<uint8_t> ledger::core::Base58::decode(const std::string &str,
                                                   const std::shared_ptr<api::DynamicObject> &config) {
-    BigInt intData(0);
-    std::vector<uint8_t> prefix;
     auto useBase58Dict = shouldUseNetworkBase58Dictionary(config);
     auto base58Dictionary = useBase58Dict ? getNetworkBase58Dictionary(config) : DIGITS;
-    for (auto& c : str) {
-        if (c == base58Dictionary[0] && intData == BigInt::ZERO) {
-            prefix.push_back(0);
-        } else {
-            auto digitIndex = base58Dictionary.find(c);
-            if (digitIndex != std::string::npos) {
-                intData = (intData * V_58) + BigInt((unsigned int)digitIndex);
-            } else {
-                throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid base 58 format");
-            }
+    int len = str.size();
+    std::vector<uint8_t> result( len * 2 );
+    result[0] = 0;
+    int resultlen = 1;
+    for (int i = 0; i < len; i++) {
+        auto carry = base58Dictionary.find(str[i]);
+        if (carry == std::string::npos) { throw Exception(api::ErrorCode::INVALID_BASE58_FORMAT, "Invalid base 58 format"); }
+        for (int j = 0; j < resultlen; j++) {
+            carry += (result[j]) * 58;
+            result[j] = (unsigned char)(carry & 0xff);
+            carry >>= 8;
+        }
+        while (carry > 0) {
+            result[resultlen++] = carry & 0xff;
+            carry >>= 8;
         }
     }
 
-    return vector::concat(prefix, intData.toByteArray());
+    for (int i = 0; i < len && str[i] == base58Dictionary[0]; i++)
+        result[resultlen++] = 0;
+
+    for (int i = resultlen - 1, z = (resultlen >> 1) + (resultlen & 1);
+        i >= z; i--) {
+        int k = result[i];
+        result[i] = result[resultlen - i - 1];
+        result[resultlen - i - 1] = k;
+    }
+    result.resize(resultlen);
+    return result;
 }
 
 std::vector<uint8_t> ledger::core::Base58::computeChecksum(const std::vector<uint8_t> &bytes,

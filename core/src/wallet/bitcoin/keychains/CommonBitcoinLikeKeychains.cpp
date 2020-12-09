@@ -131,14 +131,7 @@ namespace ledger {
         }
 
         std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            auto length = to - from;
-            std::vector<BitcoinLikeKeychain::Address> result;
-            result.reserve((length + 1) * 2);
-            for (auto i = 0; i <= length; i++) {
-                result.push_back(derive(KeyPurpose::RECEIVE, from + i));
-                result.push_back(derive(KeyPurpose::CHANGE, from + i));
-            }
-            return result;
+            return deriveInBulk(from, to);
         }
 
         std::vector<BitcoinLikeKeychain::Address>
@@ -268,13 +261,53 @@ namespace ledger {
                 address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
                 // Feed path -> address cache
                 // Feed address -> path cache
-                getPreferences()
+                    getPreferences()
                         ->edit()
                         ->putString(cacheKey, address)
                         ->putString(fmt::format("address:{}", address), localPath)
                         ->commit();
             }
             return std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath)));
+        }
+
+
+        std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::deriveInBulk(uint32_t from, uint32_t to) {
+            auto currency = getCurrency();
+            std::vector<BitcoinLikeKeychain::Address> res;
+            res.reserve((to - from + 1) * 2);
+            auto preferencesEdit = getPreferences()->edit();
+            bool hasDBChange = false;
+            for (int iPurpose : {KeyPurpose::RECEIVE, KeyPurpose::CHANGE})
+            {
+                auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
+                for (int index = from; index <= to; index++)
+                {
+                    auto localPath = getDerivationScheme()
+                        .setAccountIndex(getAccountIndex())
+                        .setCoinType(currency.bip44CoinType)
+                        .setNode(iPurpose)
+                        .setAddressIndex(index).getPath().toString();
+
+                    auto cacheKey = fmt::format("path:{}", localPath);
+                    auto address = getPreferences()->getString(cacheKey, "");
+
+                    if (address.empty()) {
+                        auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
+                            .setAccountIndex(getAccountIndex())
+                            .setCoinType(currency.bip44CoinType)
+                            .setNode(iPurpose)
+                            .setAddressIndex(index).getPath().toString();
+                        address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
+                        preferencesEdit = preferencesEdit->putString(cacheKey, address)->putString(fmt::format("address:{}", address), localPath);
+                        hasDBChange = true;
+                    }
+                    res.emplace_back(std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath))));
+                }
+            }
+            if (hasDBChange) {
+                preferencesEdit->commit();
+            }
+            return res;
         }
     }
 }
