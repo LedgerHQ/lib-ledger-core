@@ -184,3 +184,6 @@ TezosConfigurationDefaults = interface +c {
 	const TEZOS_DEFAULT_STORAGE_LIMIT: string = "300";
 	const TEZOS_PROTOCOL_UPDATE_BABYLON: string = "TEZOS_PROTOCOL_UPDATE_BABYLON";
 }
+TezosLikeWallet = interface +c {
+    isDelegate(address: string, callback: Callback<bool>);
+}

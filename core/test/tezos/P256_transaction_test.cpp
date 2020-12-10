@@ -49,7 +49,6 @@ using namespace ledger::testing::tezos;
 
 struct P256TezosMakeTransaction : public TezosMakeBaseTransaction {
     void SetUpConfig() override {
-        std::cout << "SetUpConfig" << std::endl;
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256);

@@ -184,6 +184,8 @@ namespace ledger {
             /// Check that the account is funded.
             virtual Future<bool> isFunded(const std::string &address) = 0;
 
+            virtual Future<bool> isDelegate(const std::string &address) = 0;
+
         protected:
             std::string getRPCNodeEndpoint() const {
                 return _rpcNode;

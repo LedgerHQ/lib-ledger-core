@@ -339,5 +339,23 @@ namespace ledger {
                         }
                     });
         }
+
+        Future<bool> NodeTezosLikeBlockchainExplorer::isDelegate(const std::string &address) {
+                return _http->GET(fmt::format("blockchain/{}/{}/account/{}", 
+                                         getExplorerVersion(),
+                                         getNetworkParameters().Identifier,
+                                         address))
+                    .json(false).map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
+                        auto& json = *std::get<1>(result);
+                        // look for the is_active_delegate field
+                        const auto field = "is_active_delegate";
+                        if (!json.IsObject() || !json.HasMember(field) ||
+                            !json[field].IsBool()) {
+                            throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                "Failed to get is_active_delegate from network, no (or malformed) field in response");
+                        }
+                        return json[field].GetBool();
+                    });
+        }
     }
 }
