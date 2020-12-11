@@ -224,7 +224,7 @@ TEST_F(TezosLikeWalletSynchronization, NonActivated) {
       EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
       auto balance = wait(account->getBalance());
-      EXPECT_GT(balance->toLong(), 0L);
+      EXPECT_EQ(balance->toLong(), 0L);
 
       dispatcher->stop();
     });
