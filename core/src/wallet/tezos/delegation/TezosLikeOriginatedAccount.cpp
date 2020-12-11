@@ -62,9 +62,12 @@ namespace ledger {
             }
 
             static inline void update_balance(std::shared_ptr<api::Operation> const& op, BigInt& sum) {
-                auto value = BigInt(op->getAmount()->toString());
+                
                 auto tzOp = op->asTezosLikeOperation();
                 auto tzTx = tzOp->getTransaction();
+                auto value = (tzTx->getType() == api::TezosOperationTag::OPERATION_TAG_TRANSACTION)
+                    ? BigInt(op->getAmount()->toString())
+                    : BigInt::ZERO;  
 
                 switch (op->getOperationType()) {
                     case api::OperationType::RECEIVE: {
