@@ -112,6 +112,9 @@ namespace ledger {
 
             Future<bool> isFunded(const std::string &address) override;
 
+            Future<std::shared_ptr<BigInt>>
+            getTokenBalance(const std::string& accountAddress, const std::string& tokenAddress) const override;
+
             Future<bool> isDelegate(const std::string &address) override;
 
         private:

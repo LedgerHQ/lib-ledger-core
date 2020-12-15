@@ -132,6 +132,9 @@ TezosLikeAccount = interface +c {
 	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
 	# Get current delegate
 	getCurrentDelegate(callback: Callback<string>);
+  # Get the balance of the account for a given token
+  # @param tokenAddress Address of the contract
+  getTokenBalance(tokenAddress: string, callback: Callback<BigInt>);
 }
 
 # Class representing originated accounts

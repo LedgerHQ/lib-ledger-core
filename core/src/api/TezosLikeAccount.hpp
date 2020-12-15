@@ -62,6 +62,12 @@ public:
 
     /** Get current delegate */
     virtual void getCurrentDelegate(const std::shared_ptr<StringCallback> & callback) = 0;
+
+    /**
+     * Get the balance of the account for a given token
+     * @param tokenAddress Address of the contract
+     */
+    virtual void getTokenBalance(const std::string & tokenAddress, const std::shared_ptr<BigIntCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

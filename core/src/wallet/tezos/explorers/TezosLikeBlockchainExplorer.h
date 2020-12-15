@@ -139,13 +139,13 @@ namespace ledger {
                 const std::shared_ptr<HttpClient> &http,
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<TezosLikeTransactionApi> &transaction,
-                const std::string &chainId);    
-            
+                const std::string &chainId);
+
 
             Future<std::string> getChainId(
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<HttpClient> &http);
-    
+
 
             virtual Future<std::shared_ptr<BigInt>>
             getStorage(const std::string &address) = 0;
@@ -185,6 +185,11 @@ namespace ledger {
             virtual Future<bool> isFunded(const std::string &address) = 0;
 
             virtual Future<bool> isDelegate(const std::string &address) = 0;
+
+            /// Get a token balance for an account
+            virtual Future<std::shared_ptr<BigInt>>
+            getTokenBalance(const std::string& accountAddress,
+                            const std::string& tokenAddress) const = 0;
 
         protected:
             std::string getRPCNodeEndpoint() const {
