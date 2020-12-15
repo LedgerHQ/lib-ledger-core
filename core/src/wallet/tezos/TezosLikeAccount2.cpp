@@ -583,7 +583,11 @@ namespace ledger {
                     auto adjustedGas = static_cast<int64_t>(1 + consumedGas->toInt64() * adjustmentFactor);
                     return Future<std::shared_ptr<BigInt>>::successful(
                         std::make_shared<BigInt>(adjustedGas));
-                });
+                })
+                .recover(getMainExecutionContext(), [=](const Exception &exception) {
+                    logger()->info("unable to estimate gas limit dynamically: {}", exception.getMessage());
+                    return std::make_shared<BigInt>(api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT);
+            });
         }
 
         std::shared_ptr<api::Keychain> TezosLikeAccount::getAccountKeychain() {
