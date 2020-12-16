@@ -29,8 +29,9 @@
  */
 
 #include "ExternalTezosLikeBlockchainExplorer.h"
-#include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
+#include <api/ErrorCode.hpp>
+#include <api/TezosConfigurationDefaults.hpp>
 
 namespace ledger {
     namespace core {
@@ -384,16 +385,22 @@ namespace ledger {
                 .mapPtr<BigInt>(getContext(),
                     [=](const HttpRequest::JsonResult &result) {
                        const auto &json = *std::get<1>(result);
-                       if ((!json.IsObject() ||
-                           !json.HasMember("tokens") ||
-                           !json["tokens"].IsArray()) && !json.IsString()) {
+                       if (!json.HasMember("tokens") || !json["tokens"].IsArray()) {
                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                fmt::format("Failed to get tokens for {}", accountAddress));
+                               fmt::format("Failed to get tokens for {}, no (or malformed) field `tokens` in response", accountAddress));
                        }
 
                        const auto tokens = json["tokens"].GetArray();
                        for (const auto& token : tokens) {
+                           if (!token.HasMember("contract") || !token["contract"].IsString()) {
+                               throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                   "Failed to get contract from network, no (or malformed) field `contract` in response");
+                           }
                            if (token["contract"].GetString() == tokenAddress) {
+                               if (!token.HasMember("balance") || !token["balance"].IsString()) {
+                                   throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                       "Failed to get contract balance from network, no (or malformed) field `balance` in response");
+                               }
                                return std::make_shared<BigInt>(BigInt::fromString(token["balance"].GetString()));
                            }
                        }
