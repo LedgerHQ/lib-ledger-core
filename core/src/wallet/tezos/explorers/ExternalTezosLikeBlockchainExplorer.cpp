@@ -31,14 +31,11 @@
 #include "ExternalTezosLikeBlockchainExplorer.h"
 #include <api/Configuration.hpp>
 #include <api/ErrorCode.hpp>
+#include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 
 namespace ledger {
     namespace core {
-        namespace {
-            const std::string BCD_API_ENDPOINT = "https://api.better-call.dev/v1";
-        }
-
         ExternalTezosLikeBlockchainExplorer::ExternalTezosLikeBlockchainExplorer(
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<HttpClient> &http,
@@ -48,6 +45,8 @@ namespace ledger {
                 TezosLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
+            _bcd = configuration->getString(api::TezosConfiguration::BCD_API)
+                .value_or(api::TezosConfigurationDefaults::BCD_API_ENDPOINT);
         }
 
 
@@ -380,7 +379,7 @@ namespace ledger {
         ExternalTezosLikeBlockchainExplorer::getTokenBalance(const std::string& accountAddress,
                                                              const std::string& tokenAddress) const {
             const auto parseNumbersAsString = true;
-            return _http->GET(fmt::format("/account/mainnet/{}", accountAddress), {}, BCD_API_ENDPOINT)
+            return _http->GET(fmt::format("/account/mainnet/{}", accountAddress), {}, _bcd)
                 .json(parseNumbersAsString)
                 .mapPtr<BigInt>(getContext(),
                     [=](const HttpRequest::JsonResult &result) {

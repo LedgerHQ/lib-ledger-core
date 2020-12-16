@@ -139,6 +139,7 @@ namespace ledger {
 
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;
+            std::string _bcd;
         };
     }
 }

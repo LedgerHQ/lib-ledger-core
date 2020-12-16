@@ -19,6 +19,8 @@ class LIBCORE_EXPORT TezosConfigurationDefaults {
 public:
     virtual ~TezosConfigurationDefaults() {}
 
+    static std::string const BCD_API_ENDPOINT;
+
     static std::string const TEZOS_DEFAULT_API_ENDPOINT;
 
     static std::string const TEZOS_DEFAULT_API_VERSION;

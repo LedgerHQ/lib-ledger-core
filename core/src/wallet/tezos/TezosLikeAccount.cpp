@@ -355,6 +355,5 @@ namespace ledger {
                 })
                 .callback(getMainExecutionContext(), callback);
         }
-
     }
 }

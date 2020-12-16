@@ -19,6 +19,8 @@ class LIBCORE_EXPORT TezosConfiguration {
 public:
     virtual ~TezosConfiguration() {}
 
+    static std::string const BCD_API;
+
     static std::string const TEZOS_XPUB_CURVE;
 
     static std::string const TEZOS_PROTOCOL_UPDATE;
