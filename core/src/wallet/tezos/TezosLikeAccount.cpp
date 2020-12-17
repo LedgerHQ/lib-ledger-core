@@ -218,10 +218,9 @@ namespace ledger {
             if (cachedBalance.hasValue()) {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
-            std::vector<TezosLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
             auto self = getSelf();
-            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](
+            return _explorer->getBalance(_keychain->getAddress()->toBase58()).mapPtr<Amount>(getMainExecutionContext(), [self, currency](
                     const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
                 Amount b(currency, 0, BigInt(balance->toString()));
                 self->getWallet()->updateBalanceCache(self->getIndex(), b);

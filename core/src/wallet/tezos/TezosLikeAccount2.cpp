@@ -243,7 +243,7 @@ namespace ledger {
                 // Check if balance is sufficient
                 auto currency = self->getWallet()->getCurrency();
                 auto accountAddress = TezosLikeAddress::fromBase58(senderAddress, currency);
-                return explorer->getBalance(std::vector<std::shared_ptr<TezosLikeAddress>>{accountAddress}).flatMapPtr<api::TezosLikeTransaction>(
+                return explorer->getBalance(senderAddress).flatMapPtr<api::TezosLikeTransaction>(
                         self->getMainExecutionContext(),
                         [self, request, explorer, accountAddress, currency, senderAddress](const std::shared_ptr<BigInt> &balance) {
                             // Check if all needed values are set

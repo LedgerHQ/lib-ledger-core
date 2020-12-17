@@ -49,15 +49,8 @@ namespace ledger {
 
 
         Future<std::shared_ptr<BigInt>>
-        ExternalTezosLikeBlockchainExplorer::getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) {
-            auto size = addresses.size();
-            if (size != 1) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                     "Can only get balance of 1 address from Tezos Node, but got {} addresses",
-                                     addresses.size());
-            }
-            std::string addressesStr = addresses[0]->toString();
-            return getHelper(fmt::format("account/{}", addressesStr),
+        ExternalTezosLikeBlockchainExplorer::getBalance(const std::string &address) {
+            return getHelper(fmt::format("account/{}", address),
                              "total_balance",
                              std::unordered_map<std::string, std::string>{},
                              "0",

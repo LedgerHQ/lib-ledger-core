@@ -159,5 +159,17 @@ namespace ledger {
             return _explorer;
         }
 
+        Option<Amount> TezosLikeWallet::getBalanceFromCache(size_t accountIndex, const std::string& originatedAccount) {
+            return getBalanceCache().get(fmt::format("{}-{}-{}", getCurrency().name, accountIndex, originatedAccount));
+        }
+
+        void TezosLikeWallet::updateBalanceCache(size_t accountIndex, const std::string& originatedAccount, Amount balance) {
+            getBalanceCache().put(fmt::format("{}-{}-{}", getCurrency().name, accountIndex, originatedAccount), balance);
+        }
+
+        void TezosLikeWallet::invalidateBalanceCache(size_t accountIndex, const std::string& originatedAccount) {
+            getBalanceCache().erase(fmt::format("{}-{}-{}", getCurrency().name, accountIndex, originatedAccount));
+        }
+
     }
 }

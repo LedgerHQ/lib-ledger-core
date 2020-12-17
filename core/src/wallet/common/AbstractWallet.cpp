@@ -375,7 +375,6 @@ namespace ledger {
             return asInstanceOf<StellarLikeWallet>();
         }
 
-
         Option<Amount> AbstractWallet::getBalanceFromCache(size_t accountIndex) {
             return _balanceCache.get(fmt::format("{}-{}", _currency.name, accountIndex));
         }
@@ -390,6 +389,10 @@ namespace ledger {
 
         std::shared_ptr<api::DynamicObject> AbstractWallet::getConfiguration() {
             return getConfig();
+        }
+
+        TTLCache<std::string, Amount>& AbstractWallet::getBalanceCache() {
+            return _balanceCache;
         }
 
     }

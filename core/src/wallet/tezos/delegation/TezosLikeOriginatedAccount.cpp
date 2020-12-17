@@ -40,6 +40,7 @@
 #include <api/TezosLikeOperation.hpp>
 #include <api/TezosLikeTransaction.hpp>
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/tezos/TezosLikeWallet.h>
 
 namespace ledger {
     namespace core {
@@ -62,9 +63,11 @@ namespace ledger {
             }
 
             static inline void update_balance(std::shared_ptr<api::Operation> const& op, BigInt& sum) {
-                auto value = BigInt(op->getAmount()->toString());
                 auto tzOp = op->asTezosLikeOperation();
                 auto tzTx = tzOp->getTransaction();
+                auto value = (tzTx->getType() == api::TezosOperationTag::OPERATION_TAG_TRANSACTION)
+                    ? BigInt(op->getAmount()->toString())
+                    : BigInt::ZERO; 
 
                 switch (op->getOperationType()) {
                     case api::OperationType::RECEIVE: {
@@ -142,18 +145,23 @@ namespace ledger {
         }
 
         FuturePtr<api::Amount> TezosLikeOriginatedAccount::getBalance(const std::shared_ptr<api::ExecutionContext>& context) {
-            return std::dynamic_pointer_cast<OperationQuery>(queryOperations()->complete())->execute()
-                .mapPtr<api::Amount>(context, [] (const std::vector<std::shared_ptr<api::Operation>> &ops) {
-                    auto result = BigInt::ZERO;
-
-                    for (auto const &op : ops) {
-                        OperationStrategy::update_balance(op, result);
-                    }
-
-                    return std::make_shared<Amount>(currencies::TEZOS, 0, result);
+            auto localAccount = _originatorAccount.lock();
+            if (!localAccount) {
+                throw make_exception(api::ErrorCode::NULL_POINTER, "Account was released.");
+            }
+            auto wallet = std::dynamic_pointer_cast<TezosLikeWallet>(localAccount->getWallet());
+            auto cachedBalance = wallet->getBalanceFromCache(localAccount->getIndex(), _address);
+            if (cachedBalance.hasValue()) {
+                return FuturePtr<api::Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
+            }
+            const auto address = _address;
+            return wallet->getBlockchainExplorer()->getBalance(_address).mapPtr<api::Amount>(context, [wallet, localAccount, address](
+                    const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
+                Amount b(wallet->getCurrency(), 0, BigInt(balance->toString()));
+                wallet->updateBalanceCache(localAccount->getIndex(), address, b);
+                return std::make_shared<Amount>(b);
             });
         }
-
 
         void TezosLikeOriginatedAccount::getBalanceHistory(const std::chrono::system_clock::time_point & start,
                                                            const std::chrono::system_clock::time_point & end,

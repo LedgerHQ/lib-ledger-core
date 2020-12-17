@@ -54,7 +54,7 @@ namespace ledger {
                                             const std::shared_ptr<api::DynamicObject> &configuration);
 
             Future<std::shared_ptr<BigInt>>
-            getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) override;
+            getBalance(const std::string &address) override;
 
             Future<std::shared_ptr<BigInt>>
             getFees() override;
