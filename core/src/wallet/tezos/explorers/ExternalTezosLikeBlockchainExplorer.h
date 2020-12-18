@@ -115,6 +115,9 @@ namespace ledger {
 
             Future<bool> isFunded(const std::string &address) override;
 
+            Future<std::shared_ptr<BigInt>>
+            getTokenBalance(const std::string& accountAddress, const std::string& tokenAddress) const override;
+
             Future<bool> isDelegate(const std::string &address) override;
 
         private:
@@ -136,6 +139,7 @@ namespace ledger {
 
             api::TezosLikeNetworkParameters _parameters;
             std::unordered_map<std::string, uint64_t> _sessions;
+            std::string _bcd;
         };
     }
 }

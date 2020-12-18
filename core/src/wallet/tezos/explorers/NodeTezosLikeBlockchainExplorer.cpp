@@ -30,9 +30,12 @@
 
 
 #include "NodeTezosLikeBlockchainExplorer.h"
+#include <api/ErrorCode.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
+#include <utils/Exception.hpp>
 #include <rapidjson/document.h>
+
 namespace ledger {
     namespace core {
         NodeTezosLikeBlockchainExplorer::NodeTezosLikeBlockchainExplorer(
@@ -318,13 +321,13 @@ namespace ledger {
                     .json(false, true).map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
                         auto& connection = *std::get<0>(result);
                         if (connection.getStatusCode() == 404) {
-                            //an empty account 
+                            //an empty account
                             return false;
                         }
                         else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
                             throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
                         }
-                        else {   
+                        else {
                             auto& json = *std::get<1>(result);
 
                             // look for the is_funded field
@@ -341,7 +344,7 @@ namespace ledger {
         }
 
         Future<bool> NodeTezosLikeBlockchainExplorer::isDelegate(const std::string &address) {
-                return _http->GET(fmt::format("blockchain/{}/{}/account/{}", 
+                return _http->GET(fmt::format("blockchain/{}/{}/account/{}",
                                          getExplorerVersion(),
                                          getNetworkParameters().Identifier,
                                          address))
@@ -356,6 +359,15 @@ namespace ledger {
                         }
                         return json[field].GetBool();
                     });
+        }
+
+        Future<std::shared_ptr<BigInt>>
+        NodeTezosLikeBlockchainExplorer::getTokenBalance(const std::string& accountAddress,
+                                                         const std::string& tokenAddress) const {
+            return Future<std::shared_ptr<BigInt>>::failure(
+                Exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING,
+                          "Endpoint to get token balance is not implemented."
+                ));
         }
     }
 }

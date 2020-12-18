@@ -111,4 +111,14 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getTokenBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tokenAddress, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeAccount>(nativeRef);
+        ref->getTokenBalance(::djinni::String::toCpp(jniEnv, j_tokenAddress),
+                             ::djinni_generated::BigIntCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
 }  // namespace djinni_generated

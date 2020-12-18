@@ -5,6 +5,8 @@
 
 namespace ledger { namespace core { namespace api {
 
+std::string const TezosConfigurationDefaults::BCD_API_ENDPOINT = {"https://api.better-call.dev/v1"};
+
 std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_ENDPOINT = {"https://explorers.api.live.ledger.com"};
 
 std::string const TezosConfigurationDefaults::TEZOS_DEFAULT_API_VERSION = {"v3"};

@@ -29,8 +29,10 @@
  */
 
 #include "ExternalTezosLikeBlockchainExplorer.h"
-#include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
+#include <api/ErrorCode.hpp>
+#include <api/TezosConfiguration.hpp>
+#include <api/TezosConfigurationDefaults.hpp>
 
 namespace ledger {
     namespace core {
@@ -43,6 +45,8 @@ namespace ledger {
                 TezosLikeBlockchainExplorer(configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}) {
             _http = http;
             _parameters = parameters;
+            _bcd = configuration->getString(api::TezosConfiguration::BCD_API)
+                .value_or(api::TezosConfigurationDefaults::BCD_API_ENDPOINT);
         }
 
 
@@ -96,7 +100,7 @@ namespace ledger {
                         const auto totalTx = api::BigInt::fromIntegerString(json[txCountField].GetString(), 10);
 
                         auto getFieldValue = [&json](const char* fieldName) -> std::string {
-                            std::string value; 
+                            std::string value;
                             if (json.HasMember(fieldName) && json[fieldName].IsString()) {
                                 value = json[fieldName].GetString();
                             }
@@ -110,7 +114,7 @@ namespace ledger {
                         if (feesValueStr.empty()) {
                             throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                  "Failed to get fees from network, no (or malformed) response");
-                        }                         
+                        }
 
                         const auto totalFees = api::BigInt::fromDecimalString(feesValueStr, 6, ".");
                         std::string fees = api::TezosConfigurationDefaults::TEZOS_DEFAULT_FEES;
@@ -156,7 +160,7 @@ namespace ledger {
                     .json().template map<String>(getExplorerContext(),
                                                  [](const HttpRequest::JsonResult &result) -> String {
                                                      auto &json = *std::get<1>(result);
-                                                     
+
                                                      if (!json.IsString()) {
                                                          throw make_exception(api::ErrorCode::HTTP_ERROR,
                                                                               "Failed to parse broadcast transaction response, missing transaction hash");
@@ -371,19 +375,51 @@ namespace ledger {
                                                                    getRPCNodeEndpoint());
         }
 
+        Future<std::shared_ptr<BigInt>>
+        ExternalTezosLikeBlockchainExplorer::getTokenBalance(const std::string& accountAddress,
+                                                             const std::string& tokenAddress) const {
+            const auto parseNumbersAsString = true;
+            return _http->GET(fmt::format("/account/mainnet/{}", accountAddress), {}, _bcd)
+                .json(parseNumbersAsString)
+                .mapPtr<BigInt>(getContext(),
+                    [=](const HttpRequest::JsonResult &result) {
+                       const auto &json = *std::get<1>(result);
+                       if (!json.HasMember("tokens") || !json["tokens"].IsArray()) {
+                           throw make_exception(api::ErrorCode::HTTP_ERROR,
+                               fmt::format("Failed to get tokens for {}, no (or malformed) field `tokens` in response", accountAddress));
+                       }
+
+                       const auto tokens = json["tokens"].GetArray();
+                       for (const auto& token : tokens) {
+                           if (!token.HasMember("contract") || !token["contract"].IsString()) {
+                               throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                   "Failed to get contract from network, no (or malformed) field `contract` in response");
+                           }
+                           if (token["contract"].GetString() == tokenAddress) {
+                               if (!token.HasMember("balance") || !token["balance"].IsString()) {
+                                   throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                       "Failed to get contract balance from network, no (or malformed) field `balance` in response");
+                               }
+                               return std::make_shared<BigInt>(BigInt::fromString(token["balance"].GetString()));
+                           }
+                       }
+                       return std::make_shared<BigInt>(BigInt::ZERO);
+                    });
+        }
+
         Future<bool> ExternalTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
             return
                 _http->GET(fmt::format("account/{}", address))
                     .json(false, true).map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
                         auto& connection = *std::get<0>(result);
                         if (connection.getStatusCode() == 404) {
-                            //an empty account 
+                            //an empty account
                             return false;
                         }
                         else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
                             throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
                         }
-                        else { 
+                        else {
                             auto& json = *std::get<1>(result);
 
                             // look for the is_funded field
