@@ -1,13 +1,13 @@
 /*
  *
- * Benchmarker
+ * DurationsMap.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 01/08/2017.
+ * Created by Pierre Pollastri on 23/12/2020.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,27 +28,31 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_BENCHMARKER_H
-#define LEDGER_CORE_BENCHMARKER_H
 
-#include "logger.hpp"
+#ifndef LEDGER_CORE_DURATIONSMAP_HPP
+#define LEDGER_CORE_DURATIONSMAP_HPP
+
+#include <api/DurationMetric.hpp>
+#include <chrono>
+#include <mutex>
+#include <unordered_map>
 
 namespace ledger {
     namespace core {
-        class Benchmarker {
+        class DurationsMap {
         public:
-            Benchmarker(const std::string& name, const std::shared_ptr<spdlog::logger>& logger);
-            Benchmarker& start();
-            Benchmarker& stop();
-            std::chrono::high_resolution_clock::duration getDuration() const;
+            void record(const std::string& name,
+                    const std::chrono::high_resolution_clock::duration& duration);
+            const std::unordered_map<std::string, api::DurationMetric>& getMetrics();
+
+            static DurationsMap& getInstance();
+
         private:
-            std::shared_ptr<spdlog::logger> _logger;
-            std::string _name;
-            std::chrono::high_resolution_clock::time_point _startDate;
-            std::chrono::high_resolution_clock::time_point _stopDate;
+            std::unordered_map<std::string, api::DurationMetric> _metrics;
+            std::mutex _mutex;
         };
     }
 }
 
 
-#endif //LEDGER_CORE_BENCHMARKER_H
+#endif //LEDGER_CORE_DURATIONSMAP_HPP
