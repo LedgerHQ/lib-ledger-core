@@ -56,6 +56,8 @@
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <utils/Concurrency.hpp>
 
+#define NEW_BENCHMARK(x) std::make_shared<Benchmarker>(fmt::format(x"/{}", buddy->synchronizationTag), buddy->logger)
+
 namespace ledger {
     namespace core {
 
@@ -134,6 +136,7 @@ namespace ledger {
                 std::shared_ptr<Account> account;
                 std::map<std::string, std::string> transactionsToDrop;
                 BlockchainExplorerAccountSynchronizationResult context;
+                std::string synchronizationTag;
 
                 virtual ~SynchronizationBuddy() = default;
             };
@@ -191,6 +194,7 @@ namespace ledger {
                                 "AbstractBlockchainExplorerAccountSynchronizer");
                 auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
                 auto tracePrefix = fmt::format("{}/{}/{}", account->getWallet()->getPool()->getName(), account->getWallet()->getName(), account->getIndex());
+                buddy->synchronizationTag = tracePrefix;
                 buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
                 buddy->startDate = DateUtils::now();
                 buddy->wallet = account->getWallet();
@@ -302,7 +306,7 @@ namespace ledger {
                 auto self = getSharedFromThis();
                 auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
-                auto benchmark = std::make_shared<Benchmarker>(fmt::format("Synchronize batch {}", currentBatchIndex), buddy->logger);
+                auto benchmark = NEW_BENCHMARK("full_batch");
                 benchmark->start();
                 return synchronizeBatch(currentBatchIndex, buddy).template flatMap<Unit>(buddy->account->getContext(), [=] (const bool& hadTransactions) -> Future<Unit> {
                     benchmark->stop();
@@ -434,7 +438,8 @@ namespace ledger {
                     blockHash = Option<std::string>(batchState.blockHash);
                 }
 
-                auto derivationBenchmark = std::make_shared<Benchmarker>("Batch derivation", buddy->logger);
+
+                auto derivationBenchmark = NEW_BENCHMARK("derivations");
                 derivationBenchmark->start();
 
                 auto batch = vector::map<std::string, std::shared_ptr<AddressType>>(
@@ -447,13 +452,13 @@ namespace ledger {
 
                 derivationBenchmark->stop();
 
-                auto benchmark = std::make_shared<Benchmarker>("Get batch", buddy->logger);
+                auto benchmark = NEW_BENCHMARK("explorer_calls");
                 benchmark->start();
                 return _explorer->getTransactions(batch, blockHash, optional<void*>())
                     .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark] (const std::shared_ptr<typename Explorer::TransactionsBulk>& bulk) -> Future<bool> {
                         benchmark->stop();
 
-                        auto insertionBenchmark = std::make_shared<Benchmarker>("Transaction computation", buddy->logger);
+                        auto insertionBenchmark = NEW_BENCHMARK("insert_operations");
                         insertionBenchmark->start();
 
                         auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
