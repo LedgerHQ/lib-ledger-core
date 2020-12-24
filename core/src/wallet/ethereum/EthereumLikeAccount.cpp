@@ -62,11 +62,9 @@ namespace ledger {
         EthereumLikeAccount::EthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                                  int32_t index,
                                                  const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
-                                                 const std::shared_ptr<EthereumLikeBlockchainObserver>& observer,
                                                  const std::shared_ptr<EthereumLikeAccountSynchronizer>& synchronizer,
                                                  const std::shared_ptr<EthereumLikeKeychain>& keychain): AbstractAccount(wallet, index) {
             _explorer = explorer;
-            _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
             _accountAddress = keychain->getAddress()->toString();
@@ -100,13 +98,14 @@ namespace ledger {
                 out.ethereumTransaction.getValue().block = out.block;
         }
 
-        int EthereumLikeAccount::putTransaction(soci::session &sql,
-                                                const EthereumLikeBlockchainExplorerTransaction &transaction) {
+        void EthereumLikeAccount::interpretTransaction(
+                const ledger::core::EthereumLikeBlockchainExplorerTransaction &transaction,
+                std::vector<Operation> &out) {
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
-
+            soci::session sql;
             if (transaction.block.nonEmpty()) {
                 putBlock(sql, transaction.block.getValue());
             }
@@ -161,8 +160,10 @@ namespace ledger {
                 updateOperation(sql, operation, api::OperationType::NONE);
                 result = FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
             }
+        }
 
-            return result;
+        Try<int> EthereumLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
+
         }
 
         void EthereumLikeAccount::updateERC20Accounts(soci::session &sql,
@@ -544,18 +545,6 @@ namespace ledger {
                 return std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
         }
 
-        void EthereumLikeAccount::startBlockchainObservation() {
-                _observer->registerAccount(getSelf());
-        }
-
-        void EthereumLikeAccount::stopBlockchainObservation() {
-                _observer->unregisterAccount(getSelf());
-        }
-
-        bool EthereumLikeAccount::isObservingBlockchain() {
-                return _observer->isRegistered(getSelf());
-        }
-
         std::string EthereumLikeAccount::getRestoreKey() {
                 return _keychain->getRestoreKey();
         }
@@ -612,7 +601,10 @@ namespace ledger {
                     auto txExplorer = getETHLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
                     //Store in DB
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
-                    return self->putTransaction(sql, txExplorer);
+                    std::vector<Operation> operations;
+                    self->interpretTransaction(txExplorer, operations);
+                    self->bulkInsert(operations);
+                    self->emitEventsNow();
                 });
 
                 return txHash;

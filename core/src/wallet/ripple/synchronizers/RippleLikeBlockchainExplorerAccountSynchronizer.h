@@ -74,8 +74,9 @@ namespace ledger {
 
             bool isSynchronizing() const override;
 
-            int putTransaction(soci::session &sql, const Transaction &transaction,
-                               const std::shared_ptr<SynchronizationBuddy> &buddy) override;
+            void interpretTransaction(const Transaction& transaction,
+                                      const std::shared_ptr<SynchronizationBuddy>& buddy,
+                                      std::vector<Operation>& out) override;
 
         private:
             std::shared_ptr<RippleBlockchainAccountSynchronizer> getSharedFromThis() override;

@@ -58,12 +58,10 @@ namespace ledger {
         RippleLikeAccount::RippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                              int32_t index,
                                              const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
-                                             const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<RippleLikeAccountSynchronizer> &synchronizer,
                                              const std::shared_ptr<RippleLikeKeychain> &keychain) : AbstractAccount(
                 wallet, index) {
             _explorer = explorer;
-            _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
             _accountAddress = keychain->getAddress()->toString();
@@ -100,8 +98,14 @@ namespace ledger {
             out.rippleTransaction.getValue().block = out.block;
         }
 
-        int RippleLikeAccount::putTransaction(soci::session &sql,
-                                              const RippleLikeBlockchainExplorerTransaction &transaction) {
+        Try<int> RippleLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
+
+        }
+
+        void RippleLikeAccount::interpretTransaction(
+                const ledger::core::RippleLikeBlockchainExplorerTransaction &transaction,
+                std::vector<Operation> &out) {
+            soci::session sql;
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -142,8 +146,6 @@ namespace ledger {
                 }
                 result = FLAG_NEW_TRANSACTION;
             }
-
-            return result;
         }
 
         void RippleLikeAccount::setOperationAmount(
@@ -362,18 +364,6 @@ namespace ledger {
             return std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
         }
 
-        void RippleLikeAccount::startBlockchainObservation() {
-            _observer->registerAccount(getSelf());
-        }
-
-        void RippleLikeAccount::stopBlockchainObservation() {
-            _observer->unregisterAccount(getSelf());
-        }
-
-        bool RippleLikeAccount::isObservingBlockchain() {
-            return _observer->isRegistered(getSelf());
-        }
-
         std::string RippleLikeAccount::getRestoreKey() {
             return _keychain->getRestoreKey();
         }
@@ -412,7 +402,9 @@ namespace ledger {
                     auto txExplorer = getXRPLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
                     //Store in DB
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
-                    self->putTransaction(sql, txExplorer);
+                    std::vector<Operation> operations;
+                    self->interpretTransaction(txExplorer, operations);
+                    self->bulkInsert(operations);
                     return txHash;
                 });
         }

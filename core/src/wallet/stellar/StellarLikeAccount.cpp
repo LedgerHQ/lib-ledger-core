@@ -129,18 +129,6 @@ namespace ledger {
             return eventPublisher->getEventBus();
         }
 
-        void StellarLikeAccount::startBlockchainObservation() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
-        }
-
-        void StellarLikeAccount::stopBlockchainObservation() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
-        }
-
-        bool StellarLikeAccount::isObservingBlockchain() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
-        }
-
         std::string StellarLikeAccount::getRestoreKey() {
             return _params.keychain->getRestoreKey();
         }

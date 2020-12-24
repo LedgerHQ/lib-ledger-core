@@ -108,14 +108,8 @@ TEST_F(WalletTests, CreateNonContiguousAccountBis) {
     auto pool = newDefaultPool();
     auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account1 = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
-    account1->startBlockchainObservation();
     auto account2 = createBitcoinLikeAccount(wallet, 6, P2PKH_MEDIUM_XPUB_INFO);
-    account2->startBlockchainObservation();
     auto account3 = createBitcoinLikeAccount(wallet, 4, P2PKH_MEDIUM_XPUB_INFO);
-    account3->startBlockchainObservation();
-    account1->stopBlockchainObservation();
-    account2->stopBlockchainObservation();
-    account3->stopBlockchainObservation();
 }
 
 TEST_F(WalletTests, CreateAccountBug) {

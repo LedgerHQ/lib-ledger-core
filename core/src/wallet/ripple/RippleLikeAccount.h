@@ -45,7 +45,6 @@
 #include <wallet/common/Amount.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
-#include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
 namespace ledger
@@ -59,7 +58,6 @@ namespace ledger
             RippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                               int32_t index,
                               const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
-                              const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
                               const std::shared_ptr<RippleLikeAccountSynchronizer> &synchronizer,
                               const std::shared_ptr<RippleLikeKeychain> &keychain);
 
@@ -69,7 +67,9 @@ namespace ledger
                                   const std::shared_ptr<const AbstractWallet> &wallet,
                                   const RippleLikeBlockchainExplorerTransaction &tx);
 
-            int putTransaction(soci::session &sql, const RippleLikeBlockchainExplorerTransaction &transaction);
+            void interpretTransaction(const RippleLikeBlockchainExplorerTransaction &transaction,
+                                      std::vector<Operation>& out);
+            Try<int> bulkInsert(const std::vector<Operation>& operations);
 
             // Set the operation amount based on the state of the transaction. If it’s failed, the amount is set
             // to zero (yet fees were still paid so they’re not altered).
@@ -95,12 +95,6 @@ namespace ledger
             bool isSynchronizing() override;
 
             std::shared_ptr<api::EventBus> synchronize() override;
-
-            void startBlockchainObservation() override;
-
-            void stopBlockchainObservation() override;
-
-            bool isObservingBlockchain() override;
 
             std::string getRestoreKey() override;
 
@@ -140,7 +134,6 @@ namespace ledger
             std::string _accountAddress;
             std::shared_ptr<RippleLikeBlockchainExplorer> _explorer;
             std::shared_ptr<RippleLikeAccountSynchronizer> _synchronizer;
-            std::shared_ptr<RippleLikeBlockchainObserver> _observer;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             uint64_t _currentLedgerSequence;
