@@ -64,12 +64,10 @@ namespace ledger {
         TezosLikeAccount::TezosLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                            int32_t index,
                                            const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
-                                           const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                                            const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
                                            const std::shared_ptr<TezosLikeKeychain> &keychain) : AbstractAccount(wallet, index),
                                            _currentBlockHeight(0) {
             _explorer = explorer;
-            _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
             _accountAddress = keychain->getAddress()->toString();
@@ -90,10 +88,10 @@ namespace ledger {
             out.tezosTransaction.getValue().block = out.block;
         }
 
-        int TezosLikeAccount::putTransaction(soci::session &sql,
-                                             const TezosLikeBlockchainExplorerTransaction &transaction,
-                                             const std::string &originatedAccountUid,
-                                             const std::string &originatedAccountAddress) {
+        void TezosLikeAccount::interpretTransaction(
+                const ledger::core::TezosLikeBlockchainExplorerTransaction &transaction, std::vector<Operation> &out,
+                const std::string &originatedAccountUid, const std::string &originatedAccountAddress) {
+            soci::session sql;
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -134,7 +132,7 @@ namespace ledger {
                     emitNewOperationEvent(operation);
                 }
                 result = static_cast<int>(transaction.type);
-                return result;
+                return ;
             }
 
             if (_accountAddress == transaction.sender) {
@@ -159,8 +157,10 @@ namespace ledger {
                 }
                 result = static_cast<int>(transaction.type);
             }
+        }
 
-            return result;
+        Try<int> TezosLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
+
         }
 
         void TezosLikeAccount::updateOriginatedAccounts(soci::session &sql, const Operation &operation) {

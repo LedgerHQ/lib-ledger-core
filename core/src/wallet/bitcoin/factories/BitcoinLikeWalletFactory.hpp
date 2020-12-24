@@ -34,7 +34,6 @@
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
 #include <wallet/bitcoin/keychains/P2PKHBitcoinLikeKeychain.hpp>
-#include <wallet/bitcoin/observers/BitcoinLikeBlockchainObserver.hpp>
 #include "BitcoinLikeKeychainFactory.h"
 
 
@@ -50,13 +49,9 @@ namespace ledger {
 
         private:
             std::shared_ptr<BitcoinLikeBlockchainExplorer> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-            std::shared_ptr<BitcoinLikeBlockchainObserver> getObserver(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
         private:
             // Explorers
             std::list<std::weak_ptr<BitcoinLikeBlockchainExplorer>> _runningExplorers;
-
-            // Observers
-            std::list<std::weak_ptr<BitcoinLikeBlockchainObserver>> _runningObservers;
 
             // Keychain factories
             std::unordered_map<std::string, std::shared_ptr<BitcoinLikeKeychainFactory>> _keychainFactories;

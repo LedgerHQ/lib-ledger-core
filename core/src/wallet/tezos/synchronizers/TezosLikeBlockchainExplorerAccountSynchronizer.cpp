@@ -101,10 +101,10 @@ namespace ledger {
             return getContext();
         }
 
-        int TezosLikeBlockchainExplorerAccountSynchronizer::putTransaction(soci::session &sql,
-                                                                           const TezosLikeBlockchainExplorerTransaction &transaction,
-                                                                           const std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer<TezosLikeAccount, TezosLikeAddress, TezosLikeKeychain, TezosLikeBlockchainExplorer>::SynchronizationBuddy> &buddy) {
-            return buddy->account->putTransaction(sql, transaction);
+        void TezosLikeBlockchainExplorerAccountSynchronizer::interpretTransaction(
+                const ledger::core::TezosLikeBlockchainExplorerTransaction &transaction,
+                const std::shared_ptr<SynchronizationBuddy> &buddy, std::vector<Operation> &out) {
+            buddy->account->interpretTransaction(transaction, out);
         }
     }
 }

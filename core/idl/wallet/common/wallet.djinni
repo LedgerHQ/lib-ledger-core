@@ -450,13 +450,6 @@ Account = interface +c {
     # Get event bus through which account is notified on synchronization status.
     # @return EventBus object
     getEventBus(): EventBus;
-    # Start observing blockchain on which account synchronizes and send/receive transactions.
-    startBlockchainObservation();
-    # Stop observing blockchain.
-    stopBlockchainObservation();
-    # Get account's observation status.
-    # @return boolean
-    isObservingBlockchain(): bool;
     # Get Last block of blockchain on which account operates.
     # @param callback, Callback returning, if getLastBlock succeeds, a Block object
     getLastBlock(callback: Callback<Block>);

@@ -172,6 +172,55 @@ namespace ledger {
                         if (result.isFailure()) {
                             return Future<BlockchainExplorerAccountSynchronizationResult>::successful(BlockchainExplorerAccountSynchronizationResult{});
                         }
+                        using TxsBulk = TezosLikeBlockchainExplorer::TransactionsBulk;
+
+                        static std::function<Future<BlockchainExplorerAccountSynchronizationResult> (std::shared_ptr<TezosLikeAccount>, size_t, void*, BlockchainExplorerAccountSynchronizationResult)> getTxs =
+                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session, BlockchainExplorerAccountSynchronizationResult result) {
+                                    std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
+
+                                    // Get offset to not start sync from beginning
+                                    auto offset = session ? Future<std::vector<std::shared_ptr<api::Operation>>>::successful(std::vector<std::shared_ptr<api::Operation>>()) :
+                                            std::dynamic_pointer_cast<OperationQuery>(
+                                            account->_originatedAccounts[id]->queryOperations()->partial()
+                                            )->execute();
+
+                                    return offset.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) mutable {
+                                        // For the moment we start synchro from the beginning
+                                        auto getSession = session ? Future<void *>::successful(session) :
+                                                          account->_explorer->startSession();
+                                        return getSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (void *s) mutable {
+                                            return account->_explorer->getTransactions(addresses, std::to_string(ops.size()), s)
+                                                    .flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) mutable {
+                                                        auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
+                                                        {
+                                                            std::vector<Operation> operations;
+                                                            for (auto &tx : bulk->transactions) {
+                                                                account->interpretTransaction(tx, operations, uid, addresses[0]);
+                                                            }
+                                                            if (account->bulkInsert(operations).isSuccess()) {
+                                                                result.newOperations += operations.size();
+                                                            }
+                                                        }
+
+                                                        if (bulk->hasNext) {
+                                                            return getTxs(account, id, s, result);
+                                                        }
+
+                                                        if (id == account->_originatedAccounts.size() - 1) {
+                                                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result);
+                                                        }
+
+                                                        auto killSession = s ? Future<Unit>::successful(Unit()) :
+                                                                           account->_explorer->killSession(s);
+                                                        return killSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const auto&){
+                                                            return getTxs(account, id + 1, nullptr, result);
+                                                        });
+                                                    }).recover(account->getContext(), [] (const Exception& ex) -> BlockchainExplorerAccountSynchronizationResult {
+                                                        throw ex;
+                                                    });
+                                        });
+                                    });
+                        };
                         return getTxs(self, 0, nullptr, result.getValue());
             }).onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
@@ -203,18 +252,6 @@ namespace ledger {
 
         std::shared_ptr<TezosLikeAccount> TezosLikeAccount::getSelf() {
             return std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
-        }
-
-        void TezosLikeAccount::startBlockchainObservation() {
-            _observer->registerAccount(getSelf());
-        }
-
-        void TezosLikeAccount::stopBlockchainObservation() {
-            _observer->unregisterAccount(getSelf());
-        }
-
-        bool TezosLikeAccount::isObservingBlockchain() {
-            return _observer->isRegistered(getSelf());
         }
 
         std::string TezosLikeAccount::getRestoreKey() {

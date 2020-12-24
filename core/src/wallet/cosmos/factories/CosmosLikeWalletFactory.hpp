@@ -37,7 +37,6 @@
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
-#include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 #include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
 #include <wallet/pool/WalletPool.hpp>
 
@@ -55,16 +54,11 @@ class CosmosLikeWalletFactory : public AbstractWalletFactory {
    private:
     std::shared_ptr<CosmosLikeBlockchainExplorer> getExplorer(
         const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
-    std::shared_ptr<CosmosLikeBlockchainObserver> getObserver(
-        const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
    private:
     // Explorers
     std::list<std::weak_ptr<CosmosLikeBlockchainExplorer>> _runningExplorers;
-
-    // Observers
-    std::list<std::weak_ptr<CosmosLikeBlockchainObserver>> _runningObservers;
-
+    
     // Keychain factories
     std::unordered_map<std::string, std::shared_ptr<CosmosLikeKeychainFactory>> _keychainFactories;
 };

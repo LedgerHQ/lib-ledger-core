@@ -278,34 +278,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1startBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->startBlockchainObservation();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1stopBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->stopBlockchainObservation();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isObservingBlockchain(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        auto r = ref->isObservingBlockchain();
-        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
 CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getLastBlock(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {

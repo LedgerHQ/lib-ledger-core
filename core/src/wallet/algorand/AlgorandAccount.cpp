@@ -491,21 +491,6 @@ namespace algorand {
         return eventPublisher->getEventBus();
     }
 
-    void Account::startBlockchainObservation()
-    {
-        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Blockchain Observation is not supported for Algorand");
-    }
-
-    void Account::stopBlockchainObservation()
-    {
-        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Blockchain Observation is not supported for Algorand");
-    }
-
-    bool Account::isObservingBlockchain()
-    {
-        throw make_exception(api::ErrorCode::UNSUPPORTED_OPERATION, "Blockchain Observation is not supported for Algorand");
-    }
-
     std::string Account::getRestoreKey()
     {
         return hex::toString(_address.getPublicKey());

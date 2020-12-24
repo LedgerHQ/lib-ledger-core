@@ -68,9 +68,6 @@ namespace ledger {
             StellarLikeAccount(const std::shared_ptr<StellarLikeWallet>& wallet, const StellarLikeAccountParams& params);
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override;
-            void startBlockchainObservation() override;
-            void stopBlockchainObservation() override;
-            bool isObservingBlockchain() override;
             std::string getRestoreKey() override;
             FuturePtr<Amount> getBalance() override;
             Future<AddressList> getFreshPublicAddresses() override;

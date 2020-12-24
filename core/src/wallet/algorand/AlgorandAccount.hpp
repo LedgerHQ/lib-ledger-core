@@ -150,12 +150,6 @@ namespace algorand {
 
         std::shared_ptr<api::EventBus> synchronize() override;
 
-        void startBlockchainObservation() override;
-
-        void stopBlockchainObservation() override;
-
-        bool isObservingBlockchain() override;
-
         std::string getRestoreKey() override;
 
 

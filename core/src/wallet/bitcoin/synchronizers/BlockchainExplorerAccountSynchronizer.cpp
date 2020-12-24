@@ -117,9 +117,9 @@ namespace ledger {
             return getContext();
         }
 
-        int BlockchainExplorerAccountSynchronizer::putTransaction(soci::session &sql,
-                                                                  const BitcoinLikeBlockchainExplorerTransaction &transaction,
-                                                                  const std::shared_ptr<CommonBuddy> &buddy) {
+        void BlockchainExplorerAccountSynchronizer::interpretTransaction(const Transaction& transaction,
+                                                                        const std::shared_ptr<SynchronizationBuddy>& buddy,
+                                                                        std::vector<Operation>& out) {
             // In case the transaction is in mempool, keep in memory before inserting it in database.
             if (transaction.block.isEmpty()) {
                 std::static_pointer_cast<BitcoinSynchronizationBuddy>(buddy)->mempoolTransaction.emplace_back(
@@ -136,9 +136,11 @@ namespace ledger {
                     }
                     return flag;
                 };
-                return markAddress(transaction.inputs) | markAddress(transaction.outputs);
+                markAddress(transaction.inputs);
+                markAddress(transaction.outputs);
+            } else {
+                buddy->account->interpretTransaction(transaction, out);
             }
-            return buddy->account->putTransaction(sql, transaction, false);
         }
 
         std::shared_ptr<CommonBuddy>
@@ -255,17 +257,16 @@ namespace ledger {
                 txs.insert(txs.end(), foreignTxs.begin(), foreignTxs.end());
                 filterReplacedTransaction(txs, filteredTxs);
                 // Insert everything in database
-                soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
-                soci::transaction tr(sql);
+                std::vector<Operation> operations;
                 // Insert not replaceable transactions
                 for (const auto& tx : notReplaceableTxs) {
-                    buddy->account->putTransaction(sql, tx);
+                    buddy->account->interpretTransaction(tx, operations);
                 }
                 // Insert replaceable transaction
                 for (const auto& entry : filteredTxs) {
-                    buddy->account->putTransaction(sql, entry.second.first);
+                    buddy->account->interpretTransaction(entry.second.first, operations);
                 }
-                tr.commit();
+                buddy->account->bulkInsert(operations);
                 return unit;
             });
         }
@@ -280,19 +281,11 @@ namespace ledger {
                 const std::shared_ptr<CommonBuddy> &commonBuddy) {
             auto buddy = std::static_pointer_cast<BitcoinSynchronizationBuddy>(commonBuddy);
             return Future<Unit>::async(buddy->account->getContext(), [buddy] () {
-                soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
+                std::vector<Operation> operations;
                 for (const auto& tx : buddy->previousMempool) {
-                    soci::transaction tr(sql);
-                    auto result = make_try<int>([&] () {
-                        return buddy->account->putTransaction(sql, tx);
-                    });
-                    if (result.isSuccess()) {
-                        tr.commit();
-                    } else {
-                        tr.rollback();
-                        buddy->logger->error("Unable to restore transaction {} ({})", tx.hash, result.getFailure().getMessage());
-                    }
+                    buddy->account->interpretTransaction(tx, operations);
                 }
+                buddy->account->bulkInsert(operations);
                 return unit;
             });
         }
@@ -622,7 +615,7 @@ namespace ledger {
         //
         // The currentBatchIndex is the currently synchronized batch. buddy is the
         // synchronization object used to accumulate a state. hadTransactions is used to check
-        // whether more data is needed. If a block doesn’t have any transaction, it means that
+        // whether more data is needed. If a block doesnï¿½t have any transaction, it means that
         // we must stop.
         Future<bool> BlockchainExplorerAccountSynchronizer::synchronizeBatch(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy, bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);

@@ -31,6 +31,7 @@
 
 #include "DatabaseSessionPool.hpp"
 #include "migrations.hpp"
+#include "SQLite3Backend.hpp"
 #ifdef PG_SUPPORT
     #include "PostgreSQLBackend.h"
 #endif
@@ -116,6 +117,18 @@ namespace ledger {
                 auto& session = getPool().at(i);
                 _backend->changePassword(oldPassword, newPassword, session);
             }
+        }
+
+        bool DatabaseSessionPool::isSqlite() const {
+            return std::dynamic_pointer_cast<SQLite3Backend>(_backend) != nullptr;
+        }
+
+        bool DatabaseSessionPool::isPostgres() const {
+#ifndef PG_SUPPORT
+            return false;
+#else
+            return std::dynamic_pointer_cast<PostgreSQLBackend>(_backend) != nullptr;
+#endif
         }
     }
 }

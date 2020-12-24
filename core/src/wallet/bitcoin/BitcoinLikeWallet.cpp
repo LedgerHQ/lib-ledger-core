@@ -46,7 +46,6 @@ namespace ledger {
 
         BitcoinLikeWallet::BitcoinLikeWallet(const std::string &name,
                                              const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                                             const std::shared_ptr<BitcoinLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<BitcoinLikeKeychainFactory> &keychainFactory,
                                              const BitcoinLikeAccountSynchronizerFactory &synchronizer,
                                              const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
@@ -55,7 +54,6 @@ namespace ledger {
         )
         : AbstractWallet(name, network, pool, configuration, scheme) {
             _explorer = explorer;
-            _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
         }
@@ -157,7 +155,6 @@ namespace ledger {
                         self->shared_from_this(),
                         index,
                         self->_explorer,
-                        self->_observer,
                         self->_synchronizerFactory(),
                         keychain
                 ));
@@ -224,7 +221,6 @@ namespace ledger {
             return std::make_shared<BitcoinLikeAccount>(shared_from_this(),
                                                         entry.index,
                                                         _explorer,
-                                                        _observer,
                                                         _synchronizerFactory(),
                                                         keychain);
         }

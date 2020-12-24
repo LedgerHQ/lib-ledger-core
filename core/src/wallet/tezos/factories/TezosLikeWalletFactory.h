@@ -37,7 +37,6 @@
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/tezos/observers/TezosLikeBlockchainObserver.h>
 #include <wallet/tezos/factories/TezosLikeKeychainFactory.h>
 
 #include <api/Currency.hpp>
@@ -58,12 +57,8 @@ namespace ledger {
             std::shared_ptr<TezosLikeBlockchainExplorer>
             getExplorer(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
 
-            std::shared_ptr<TezosLikeBlockchainObserver>
-            getObserver(const std::string &currencyName, const std::shared_ptr<api::DynamicObject> &configuration);
-
         private:
             std::list<std::weak_ptr<TezosLikeBlockchainExplorer>> _runningExplorers;
-            std::list<std::weak_ptr<TezosLikeBlockchainObserver>> _runningObservers;
             std::unordered_map<std::string, std::shared_ptr<TezosLikeKeychainFactory>> _keychainFactories;
         };
     }
