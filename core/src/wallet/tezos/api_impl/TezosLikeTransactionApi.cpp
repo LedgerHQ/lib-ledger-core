@@ -493,7 +493,7 @@ namespace ledger {
                         innerOp.AddMember("fee", vString, allocator);
 
                         // Increment the counter if the reveal was prepended
-                        const auto counter = (_needReveal ? ++(*_counter) : *_counter).toString();
+                        const auto counter = (_needReveal ? (*_counter)+BigInt::ONE : *_counter).toString();
                         vString.SetString(
                             counter.c_str(), static_cast<SizeType>(counter.length()), allocator);
                         innerOp.AddMember("counter", vString, allocator);
