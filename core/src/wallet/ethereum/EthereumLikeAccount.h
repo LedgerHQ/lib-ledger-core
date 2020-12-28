@@ -57,11 +57,6 @@ namespace ledger {
         class EthereumLikeAccount : public api::EthereumLikeAccount, public AbstractAccount {
         public:
 
-            static const int FLAG_TRANSACTION_IGNORED = 0x00;
-            static const int FLAG_TRANSACTION_CREATED_SENDING_OPERATION = 0x01;
-            static const int FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 0x01 << 1;
-            static const int FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION = 0x01 << 2; // When a tx from other account creates side effects on current account
-
             EthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                 int32_t index,
                                 const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
@@ -101,6 +96,8 @@ namespace ledger {
             void stopBlockchainObservation() override ;
             bool isObservingBlockchain() override ;
             std::string getRestoreKey() override ;
+
+            void emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid);
 
             static EthereumLikeBlockchainExplorerTransaction getETHLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<EthereumLikeAccount> &account,
                                                                                                      const std::string &txHash,

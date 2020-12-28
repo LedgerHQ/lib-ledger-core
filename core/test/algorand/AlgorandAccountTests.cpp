@@ -220,7 +220,11 @@ public:
 
         accountInfo = api::AccountCreationInfo(1, {}, {}, { algorand::Address::toPublicKey(OBELIX) }, {});
 
-        wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, api::DynamicObject::newInstance())));
+        // NOTE: we run the tests on the staging environment which is on the TestNet
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
+
+        wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, configuration)));
         account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);

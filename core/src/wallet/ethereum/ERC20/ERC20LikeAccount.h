@@ -43,6 +43,8 @@
 #include <wallet/ethereum/EthereumLikeAccount.h>
 #include <database/soci-number.h>
 #include <api/BinaryCallback.hpp>
+#include <api/ERC20LikeOperationCallback.hpp>
+#include <api/ERC20LikeOperationListCallback.hpp>
 
 namespace ledger {
     namespace core {
@@ -66,6 +68,7 @@ namespace ledger {
 
             };
         };
+        using ERC20LikeOperationList = std::vector<std::shared_ptr<api::ERC20LikeOperation>>;
         class ERC20LikeAccount : public api::ERC20LikeAccount {
         public:
             ERC20LikeAccount(const std::string &accountUid,
@@ -73,6 +76,8 @@ namespace ledger {
                              const std::string &accountAddress,
                              const api::Currency &parentCurrency,
                              const std::shared_ptr<EthereumLikeAccount> &parentAccount);
+
+            std::string getUid() override;
             api::ERC20Token getToken() override ;
             std::string getAddress() override ;
             FuturePtr<api::BigInt> getBalance();
@@ -83,6 +88,22 @@ namespace ledger {
                 const std::chrono::system_clock::time_point& endDate,
                 api::TimePeriod period
             ) override;
+
+            inline std::shared_ptr<EthereumLikeAccount> acquireParent() const;
+
+            Future<ERC20LikeOperationList> getAllOperations(int32_t from, int32_t to, bool ascending);
+            Future<ERC20LikeOperationList> getOperationsFromBlockHeight(int32_t from, int32_t to,  int64_t fromBlockHeight);
+            FuturePtr<ERC20LikeOperation> getOperation(const std::string& uid);
+
+            void
+            getOperation(const std::string &uid, const std::shared_ptr<api::ERC20LikeOperationCallback> &callback) override;
+
+            void getAllOperations(int32_t from, int32_t to, bool ascending,
+                                  const std::shared_ptr<api::ERC20LikeOperationListCallback> &callback) override;
+
+
+            void getOperationsFromBlockHeight(int32_t from, int32_t to, int64_t fromBlockHeight,
+                                              const std::shared_ptr<api::ERC20LikeOperationListCallback> &callback) override;
 
             // A helper function to take an operation into an account while computing balances.
             static BigInt accumulateBalanceWithOperation(

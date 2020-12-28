@@ -19,7 +19,7 @@ auto EthereumGasLimitRequest::fromCpp(JNIEnv* jniEnv, const CppType& c) -> ::dji
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.data)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.gas)),
                                                            ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.gasPrice)),
-                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::F64>::fromCpp(jniEnv, c.amplifier)))};
+                                                           ::djinni::get(::djinni::Optional<std::experimental::optional, ::djinni::String>::fromCpp(jniEnv, c.amplifier)))};
     ::djinni::jniExceptionCheck(jniEnv);
     return r;
 }
@@ -34,7 +34,7 @@ auto EthereumGasLimitRequest::toCpp(JNIEnv* jniEnv, JniType j) -> CppType {
             ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_data)),
             ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_gas)),
             ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_gasPrice)),
-            ::djinni::Optional<std::experimental::optional, ::djinni::F64>::toCpp(jniEnv, jniEnv->GetObjectField(j, data.field_amplifier))};
+            ::djinni::Optional<std::experimental::optional, ::djinni::String>::toCpp(jniEnv, (jstring)jniEnv->GetObjectField(j, data.field_amplifier))};
 }
 
 }  // namespace djinni_generated

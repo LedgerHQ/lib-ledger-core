@@ -65,8 +65,6 @@ class CosmosLikeAccountSynchronizer;
 
 class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount {
    public:
-    static const int FLAG_TRANSACTION_IGNORED = 0x00;
-
     CosmosLikeAccount(
         const std::shared_ptr<AbstractWallet> &wallet,
         int32_t index,
@@ -227,6 +225,24 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
    private:
     std::shared_ptr<CosmosLikeAccount> getSelf();
     void updateFromDb();
+
+    /// Updates account level data (sequence, accountNumber, ...)
+    /// Example result from Gaia explorer :
+    /// base_url/auth/accounts/{address} with a valid, 0 transaction address :
+    /// {
+    ///  "height": "1296656",
+    ///  "result": {
+    ///    "type": "cosmos-sdk/Account",
+    ///    "value": {
+    ///      "address": "",
+    ///      "coins": [],
+    ///      "public_key": null,
+    ///      "account_number": "0",
+    ///      "sequence": "0"
+    ///    }
+    ///  }
+    /// }
+    void updateAccountDataFromNetwork();
 
     // These helpers stay on CosmosLikeAccount *only* because they have to use their
     // knowledge of Address information in order to correctly map operation type.

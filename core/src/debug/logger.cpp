@@ -58,16 +58,36 @@ namespace ledger {
                 logger->set_level(spdlog::level::trace);
                 logger->flush_on(spdlog::level::trace);
                 logger->set_pattern("%Y-%m-%dT%XZ%z %L: %v");
-
                 return logger;
             } else {
                 auto logger = spdlog::create<spdlog::sinks::null_sink_st>(name);
                 spdlog::drop(name);
 
                 logger->set_level(spdlog::level::off);
-
                 return logger;
             }
+        }
+
+        std::shared_ptr<spdlog::logger>
+        logger::trace(const std::string& purpose, const std::string &tracePrefix, const std::shared_ptr<spdlog::logger> &logger) {
+            auto name = fmt::format("{}_{}", logger->name(), purpose);
+            std::vector<spdlog::sink_ptr> sinks;
+            for (const auto& sink : logger->sinks()) {
+                auto printer = std::dynamic_pointer_cast<LogPrinterSink>(sink);
+                if (printer) {
+                    auto apiPrinter = printer->getPrinter().lock();
+                    if (apiPrinter) {
+                        sinks.push_back(std::make_shared<LogPrinterSink>(apiPrinter));
+                    }
+                }
+
+            }
+            auto traceLogger = std::make_shared<spdlog::logger>(name, begin(sinks), end(sinks));
+            spdlog::drop(name);
+            traceLogger->set_level(spdlog::level::trace);
+            traceLogger->flush_on(spdlog::level::trace);
+            traceLogger->set_pattern(fmt::format("%Y-%m-%dT%XZ%z %L: [{}] %v", tracePrefix));
+            return traceLogger;
         }
     }
 }

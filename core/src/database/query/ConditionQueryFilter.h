@@ -34,14 +34,15 @@
 #include "QueryFilter.h"
 #include <fmt/format.h>
 #include <api/Amount.hpp>
+#include <metrics/ManagedObject.hpp>
 
 namespace ledger {
     namespace core {
         template <typename T>
-        class ConditionQueryFilter : public QueryFilter {
+        class ConditionQueryFilter : public QueryFilter, public ManagedObject<ConditionQueryFilter<T>> {
         public:
             ConditionQueryFilter(const std::string& fieldName, const std::string& symbol, const T& value,
-                                 const std::string& prefix) {
+                                 const std::string& prefix) : ManagedObject<ConditionQueryFilter<T>>() {
                 _fieldName = std::move(fieldName);
                 _symbol = std::move(symbol);
                 _value = value;
@@ -85,6 +86,8 @@ namespace ledger {
                     getNext()->bindValue(statement);
                 }
             }
+
+            ~ConditionQueryFilter() {};
 
         private:
             std::string _fieldName;

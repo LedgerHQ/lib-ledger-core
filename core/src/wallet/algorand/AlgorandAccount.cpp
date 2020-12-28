@@ -486,7 +486,6 @@ namespace algorand {
                 eventPublisher->postSticky(std::make_shared<Event>(code, payload), 0);
                 std::lock_guard<std::mutex> lock(_synchronizationLock);
                 _currentSyncEventBus = nullptr;
-                return Future<Unit>::successful(result.getValue());
             });
 
         return eventPublisher->getEventBus();

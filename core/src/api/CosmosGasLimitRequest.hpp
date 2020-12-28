@@ -27,11 +27,11 @@ struct CosmosGasLimitRequest final {
      * payload than usual to the simulation backend (and gas is also consumed
      * per tx byte)
      */
-    std::experimental::optional<double> amplifier;
+    std::experimental::optional<std::string> amplifier;
 
     CosmosGasLimitRequest(std::experimental::optional<std::string> memo_,
                           std::vector<std::shared_ptr<CosmosLikeMessage>> messages_,
-                          std::experimental::optional<double> amplifier_)
+                          std::experimental::optional<std::string> amplifier_)
     : memo(std::move(memo_))
     , messages(std::move(messages_))
     , amplifier(std::move(amplifier_))

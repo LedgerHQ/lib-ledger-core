@@ -44,7 +44,7 @@
 namespace ledger {
     namespace core {
 
-        OperationApi::OperationApi(const std::shared_ptr<AbstractAccount> &account) {
+        OperationApi::OperationApi(const std::shared_ptr<AbstractAccount> &account)  : ManagedObject<OperationApi>() {
             _account = account;
         }
 

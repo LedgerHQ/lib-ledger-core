@@ -34,12 +34,13 @@
 #include <api/Operation.hpp>
 #include <wallet/common/Operation.h>
 #include <api/Currency.hpp>
+#include <metrics/ManagedObject.hpp>
 
 namespace ledger {
     namespace core {
 
         class AbstractAccount;
-        class OperationApi : public api::Operation, public std::enable_shared_from_this<OperationApi> {
+        class OperationApi : public api::Operation, public ManagedObject<OperationApi>, public std::enable_shared_from_this<OperationApi> {
         public:
             OperationApi(const std::shared_ptr<AbstractAccount>& account);
             std::string getUid() override;
@@ -77,6 +78,8 @@ namespace ledger {
             const std::shared_ptr<AbstractAccount>& getAccount() const;
 
             api::Currency getCurrency() override;
+
+            ~OperationApi() {};
 
         private:
             ledger::core::Operation _backend;

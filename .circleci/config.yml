@@ -56,7 +56,7 @@ jobs:
       - run:
           name: Build_Library_jni
           command: |
-            . .circleci/build_lib.sh target_jni Release
+            . .circleci/build_lib.sh target_jni Debug
       - run:
           name: Export_Lib_Version
           command: |
@@ -268,7 +268,7 @@ jobs:
       - run:
           name: Build_Library_jni
           command: |
-            . .circleci/build_lib.sh target_jni Release
+            . .circleci/build_lib.sh target_jni Debug
       - run:
           name: Copy_Artifacts_jni
           command: |

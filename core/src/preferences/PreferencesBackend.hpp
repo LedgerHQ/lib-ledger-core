@@ -65,7 +65,7 @@ namespace ledger {
 
             std::shared_ptr<Preferences> getPreferences(const std::string& name);
 
-            optional<std::vector<uint8_t>> get(const std::vector<uint8_t>& key) const override;
+            optional<std::vector<uint8_t>> get(const std::vector<uint8_t>& key) override;
 
             bool commit(const std::vector<api::PreferencesChange>& changes) override;
 
@@ -82,7 +82,7 @@ namespace ledger {
                 const std::string& newPassword
             ) override;
 
-            std::string getEncryptionSalt() const override;
+            std::string getEncryptionSalt() override;
 
             void clear() override;
 
