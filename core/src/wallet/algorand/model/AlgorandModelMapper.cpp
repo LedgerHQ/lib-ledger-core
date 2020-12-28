@@ -62,14 +62,14 @@ namespace model {
             return address.toString();
         }
 
-        uint32_t u32From(int32_t i)
+        uint32_t u32From(const std::string& i)
         {
-            return static_cast<uint32_t>(i);
+            return std::stoul(i);
         }
 
-        int32_t u32To(uint32_t i)
+        std::string u32To(uint32_t i)
         {
-            return static_cast<int32_t>(i);
+            return std::to_string(i);
         }
 
         uint64_t u64From(const std::string& i)
@@ -151,7 +151,7 @@ namespace model {
                 params.assetName.toOptional(),
                 params.unitName.toOptional(),
                 params.url.toOptional(),
-                params.defaultFrozen.toOptional(),
+                params.defaultFrozen.getValueOr(false),
                 mapOption(params.total, u64To).toOptional(),
                 mapOption(params.decimals, u32To).toOptional(),
                 mapOption(params.creatorAddr, addressTo).toOptional(),
@@ -172,7 +172,7 @@ namespace model {
                     makeOption(params.url),
                     mapOption(makeOption(params.clawbackAddress), addressFrom),
                     mapOption(makeOption(params.decimals), u32From),
-                    makeOption(params.defaultFrozen),
+                    params.defaultFrozen,
                     mapOption(makeOption(params.freezeAddress), addressFrom),
                     mapOption(makeOption(params.managerAddress), addressFrom),
                     mapOption(makeOption(params.reserveAddress), addressFrom),

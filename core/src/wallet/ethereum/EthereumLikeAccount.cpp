@@ -111,7 +111,7 @@ namespace ledger {
                 putBlock(sql, transaction.block.getValue());
             }
 
-            int result = 0x00;
+            int result = FLAG_TRANSACTION_IGNORED;
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
@@ -126,7 +126,7 @@ namespace ledger {
             auto updateOperation = [&] (soci::session &sql, Operation &operation, api::OperationType ty) {
                 // if the status of the transaction is not correct, we set the operation’s amount to
                 // zero as it’s failed (yet fees were still paid)
-                if (transaction.status == 0) {
+                if (transaction.status == 0  && transaction.block.nonEmpty()) {
                     operation.amount = BigInt::ZERO;
                 } else {
                     operation.amount = transaction.value;
@@ -134,26 +134,32 @@ namespace ledger {
 
                 operation.type = ty;
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
+                auto isInBlock = OperationDatabaseHelper::isOperationInBlock(sql, operation.uid);
+                if (OperationDatabaseHelper::putOperation(sql, operation)) {
+                    emitNewOperationEvent(operation);
+                }
+                if (isInBlock.nonEmpty() && !isInBlock.getValue() && operation.block.nonEmpty()) {
+                    emitNewOperationEvent(operation);
+                }
                 updateERC20Accounts(sql, operation);
                 updateInternalTransactions(sql, operation);
             };
 
             if (_accountAddress == transaction.sender) {
                 updateOperation(sql, operation, api::OperationType::SEND);
-                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
+                result = FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
             }
 
             if (_accountAddress == transaction.receiver) {
                 updateOperation(sql, operation, api::OperationType::RECEIVE);
-                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
+                result = FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
             }
 
             // Case of parent transaction not belonging to account, but having side effect (transfer events)
             // concerning account address
             if (!result && (!transaction.erc20Transactions.empty() || !transaction.internalTransactions.empty())) {
                 updateOperation(sql, operation, api::OperationType::NONE);
-                result = EthereumLikeAccount::FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
+                result = FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
             }
 
             return result;
@@ -505,13 +511,22 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.onComplete(getContext(), [eventPublisher, self, startTime] (const Try<Unit>& result) {
+            future.onComplete(getContext(), [eventPublisher, self, startTime] (const auto& result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - startTime).count();
                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                 if (result.isSuccess()) {
                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+                    auto const context = result.getValue();
+
+                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+                    payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
+
+                    if (context.reorgBlockHeight) {
+                        payload->putInt(api::Account::EV_SYNC_REORG_BLOCK_HEIGHT, static_cast<int32_t>(context.reorgBlockHeight.getValue()));
+                    }
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
@@ -715,6 +730,16 @@ namespace ledger {
 
         std::shared_ptr<api::Keychain> EthereumLikeAccount::getAccountKeychain() {
             return _keychain;
+        }
+
+        void EthereumLikeAccount::emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid) {
+            auto payload = DynamicObject::newInstance();
+            payload->putString(api::Account::EV_NEW_OP_UID, op.getOperationUid());
+            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
+            payload->putString(api::ERC20LikeAccount::EV_NEW_OP_ERC20_ACCOUNT_UID, accountUid);
+            auto event = Event::newInstance(api::EventCode::NEW_ERC20_OPERATION, payload);
+            pushEvent(event);
         }
     }
 }

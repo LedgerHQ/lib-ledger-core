@@ -35,11 +35,13 @@
 #include <api/Currency.hpp>
 #include <math/BigInt.h>
 #include <api_impl/BigIntImpl.hpp>
+#include <metrics/ManagedObject.hpp>
 
 namespace ledger {
     namespace core {
-        class Amount : public api::Amount {
+        class Amount : public api::Amount, public ManagedObject<Amount> {
         public:
+            Amount() : ManagedObject<Amount>() {};
             Amount(const api::Currency& currency, int32_t unitIndex, const BigInt& value);
             Amount(const api::Currency& currency, int32_t unitIndex, BigInt&& value);
 
@@ -53,6 +55,7 @@ namespace ledger {
             std::string format(const api::Locale &locale, const optional<api::FormatRules> &rules) override;
             std::shared_ptr<api::Amount> toMagnitude(int32_t magnitude) override;
             std::shared_ptr<ledger::core::BigInt> value() const;
+            ~Amount() {};
 
         private:
             int32_t getMagnitude() const;

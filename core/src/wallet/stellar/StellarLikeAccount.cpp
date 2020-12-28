@@ -99,7 +99,7 @@ namespace ledger {
                 eventPublisher->postSticky(
                         std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
                         0);
-                future.onComplete(self->getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+                future.onComplete(self->getContext(), [eventPublisher, self, startTime](const auto &result) {
                     api::EventCode code;
                     auto payload = std::make_shared<DynamicObject>();
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -107,6 +107,11 @@ namespace ledger {
                     payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                     if (result.isSuccess()) {
                         code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+                        auto const state = result.getValue();
+
+                        payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(state.lastBlockHeight));
+                        payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(state.newOperations));
                     } else {
                         code = api::EventCode::SYNCHRONIZATION_FAILED;
                         payload->putString(api::Account::EV_SYNC_ERROR_CODE,
@@ -303,6 +308,7 @@ namespace ledger {
                 operation.refreshUid();
                 OperationDatabaseHelper::putOperation(sql, operation);
                 createdOperations += 1;
+                emitNewOperationEvent(operation);
             };
 
             auto opIndex = 0;

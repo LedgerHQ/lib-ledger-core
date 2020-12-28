@@ -74,7 +74,6 @@ namespace ledger {
                 });
             }
             return Future<std::vector<T>>(deffered);
-
         }
     }
 }

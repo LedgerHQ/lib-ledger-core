@@ -23,7 +23,7 @@ class RandomNumberGenerator;
 struct PreferencesChange;
 
 /** Interface describing the behaviour of the backend used by Preferences. */
-class LIBCORE_EXPORT PreferencesBackend {
+class PreferencesBackend {
 public:
     virtual ~PreferencesBackend() {}
 
@@ -32,7 +32,7 @@ public:
      * @param key The data key.
      * @return The value associated to the key if it exists, an empty option otherwise.
      */
-    virtual std::experimental::optional<std::vector<uint8_t>> get(const std::vector<uint8_t> & key) const = 0;
+    virtual std::experimental::optional<std::vector<uint8_t>> get(const std::vector<uint8_t> & key) = 0;
 
     /**
      * Commit a change.
@@ -74,7 +74,7 @@ public:
      * Get encryption salt, if any.
      * @return the encryption salt if it exists, an empty string otherwise.
      */
-    virtual std::string getEncryptionSalt() const = 0;
+    virtual std::string getEncryptionSalt() = 0;
 
     /** Clear all preferences. */
     virtual void clear() = 0;

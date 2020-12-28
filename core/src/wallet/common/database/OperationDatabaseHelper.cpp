@@ -45,10 +45,23 @@
 #include <wallet/common/TrustIndicator.h>
 #include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
 
+#include <algorithm>
+
 using namespace soci;
 
 namespace ledger {
     namespace core {
+
+        std::vector<std::string> OperationDatabaseHelper::fetchFromBlocks(soci::session &sql, std::vector<std::string> const &blockUIDs) {
+            rowset<std::string> rows = (
+                sql.prepare << "SELECT uid "
+                               "FROM operations AS op "
+                               "WHERE block_uid IN (:uids)",
+                use(blockUIDs));
+
+            return std::vector<std::string>(rows.begin(), rows.end());
+        }
+
 
         std::string OperationDatabaseHelper::createUid(const std::string &accountUid, const std::string &txId,
                                                        const api::OperationType type) {
@@ -68,10 +81,12 @@ namespace ledger {
             });
             sql << "SELECT COUNT(*) FROM operations WHERE uid = :uid", use(operation.uid), into(count);
             auto newOperation = count == 0;
+            auto hexAmount = operation.amount.toHexString();
             if (!newOperation) {
-                sql << "UPDATE operations SET block_uid = :block_uid, trust = :trust WHERE uid = :uid"
+                sql << "UPDATE operations SET block_uid = :block_uid, trust = :trust, amount = :amount WHERE uid = :uid"
                         , use(blockUid)
                         , use(serializedTrust)
+                        , use(hexAmount)
                         , use(operation.uid);
                 updateCurrencyOperation(sql, operation, newOperation);
                 return false;
@@ -84,7 +99,6 @@ namespace ledger {
                 strings::join(operation.recipients, recipients, separator);
                 auto sndrs = senders.str();
                 auto rcvrs = recipients.str();
-                auto hexAmount = operation.amount.toHexString();
                 auto hexFees = operation.fees.getValueOr(BigInt::ZERO).toHexString();
                 sql << "INSERT INTO operations VALUES("
                             ":uid, :accout_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
@@ -183,6 +197,18 @@ namespace ledger {
                 }
             }
             return c;
+        }
+
+        Option<bool> OperationDatabaseHelper::isOperationInBlock(soci::session &sql, const std::string &opUid) {
+            rowset<row> rows = (sql.prepare <<
+                                            "SELECT block_uid "
+                                            "FROM operations "
+                                            "WHERE uid = :uid",
+                    use(opUid));
+            for (auto& row : rows) {
+                return Option<bool>(!row.get<Option<std::string>>(0).getValueOr("").empty());
+            }
+            return Option<bool>::NONE;
         }
 
     }

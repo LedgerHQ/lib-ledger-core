@@ -78,8 +78,8 @@ namespace ledger {
             auto num = n;
             VectorUtils::padOnLeft<uint8_t>(num, 0, 32);
 
-            secp256k1_pubkey* pubKey = new secp256k1_pubkey();
-            memcpy(pubKey, _pubKey, sizeof(*pubKey));
+            std::unique_ptr<secp256k1_pubkey> pubKey(new secp256k1_pubkey());
+            memcpy(pubKey.get(), _pubKey, sizeof(*pubKey));
             std::vector<uint8_t> serializedKey(33);
             auto len = serializedKey.size();
             auto flag = secp256k1_ec_pubkey_tweak_add(_context.ptr, pubKey, num.data());

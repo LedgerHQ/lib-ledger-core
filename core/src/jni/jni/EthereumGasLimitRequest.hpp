@@ -26,14 +26,14 @@ private:
     friend ::djinni::JniClass<EthereumGasLimitRequest>;
 
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EthereumGasLimitRequest") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/Double;)V") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_from { ::djinni::jniGetFieldID(clazz.get(), "from", "Ljava/lang/String;") };
     const jfieldID field_to { ::djinni::jniGetFieldID(clazz.get(), "to", "Ljava/lang/String;") };
     const jfieldID field_value { ::djinni::jniGetFieldID(clazz.get(), "value", "Ljava/lang/String;") };
     const jfieldID field_data { ::djinni::jniGetFieldID(clazz.get(), "data", "Ljava/lang/String;") };
     const jfieldID field_gas { ::djinni::jniGetFieldID(clazz.get(), "gas", "Ljava/lang/String;") };
     const jfieldID field_gasPrice { ::djinni::jniGetFieldID(clazz.get(), "gasPrice", "Ljava/lang/String;") };
-    const jfieldID field_amplifier { ::djinni::jniGetFieldID(clazz.get(), "amplifier", "Ljava/lang/Double;") };
+    const jfieldID field_amplifier { ::djinni::jniGetFieldID(clazz.get(), "amplifier", "Ljava/lang/String;") };
 };
 
 }  // namespace djinni_generated
