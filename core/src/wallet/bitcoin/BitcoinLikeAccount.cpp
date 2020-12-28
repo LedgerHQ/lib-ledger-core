@@ -122,7 +122,7 @@ namespace ledger {
             senders.reserve(transaction.inputs.size());
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
-            int result = 0x00;
+            int result = FLAG_TRANSACTION_IGNORED;
 
             // Find inputs
             for (auto& input : transaction.inputs) {
@@ -299,7 +299,7 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime] (const Try<Unit>& result) {
+            future.onComplete(getContext(), [eventPublisher, self, wasEmpty, startTime] (auto const &result) {
                 auto isEmpty = self->checkIfWalletIsEmpty();
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
@@ -309,6 +309,15 @@ namespace ledger {
                     code = !isEmpty && wasEmpty ? api::EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT
                                                 : api::EventCode::SYNCHRONIZATION_SUCCEED;
                     self->getWallet()->invalidateBalanceCache(self->getIndex());
+
+                    auto const context = result.getValue();
+
+                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+                    payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
+
+                    if (context.reorgBlockHeight) {
+                        payload->putInt(api::Account::EV_SYNC_REORG_BLOCK_HEIGHT, static_cast<int32_t>(context.reorgBlockHeight.getValue()));
+                    }
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
@@ -417,7 +426,7 @@ namespace ledger {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return async<std::shared_ptr<Amount>>([=] () -> std::shared_ptr<Amount> {
+            return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=] () -> std::shared_ptr<Amount> {
                 const auto& uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
@@ -627,7 +636,7 @@ namespace ledger {
             broadcastRawTransaction(transaction->serialize(), callback);
         }
 
-        std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(std::experimental::optional<bool> partial) {
+        std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(bool partial) {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             auto getUTXO = [=]() -> Future<std::vector<BitcoinLikeUtxo>> {
                 return Future<std::vector<BitcoinLikeUtxo>>::async(getContext(), [=]() {
@@ -660,7 +669,7 @@ namespace ledger {
                                               _keychain,
                                               lastBlockHeight,
                                               logger(),
-                                              partial.value_or(false))
+                                              partial)
             );
         }
 

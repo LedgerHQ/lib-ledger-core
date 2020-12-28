@@ -94,6 +94,11 @@ struct AccountSynchronizationSavedState {
     }
 };
 
+struct AccountSynchronizationContext {
+    uint32_t lastBlockHeight = 0;
+    uint32_t newOperations = 0;
+};
+
 struct SynchronizationBuddy {
     std::shared_ptr<Preferences> preferences;
     std::shared_ptr<spdlog::logger> logger;
@@ -106,6 +111,7 @@ struct SynchronizationBuddy {
     Option<void *> token;
     std::shared_ptr<CosmosLikeAccount> account;
     std::map<std::string, std::string> transactionsToDrop;
+    AccountSynchronizationContext context;
 };
 }  // namespace cosmos
 
@@ -117,10 +123,10 @@ class CosmosLikeAccountSynchronizer :
         const std::shared_ptr<WalletPool> &pool,
         const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer);
 
-    std::shared_ptr<ProgressNotifier<Unit>> synchronizeAccount(
+    std::shared_ptr<ProgressNotifier<cosmos::AccountSynchronizationContext>> synchronizeAccount(
         const std::shared_ptr<CosmosLikeAccount> &account);
 
-    Future<Unit> performSynchronization(const std::shared_ptr<CosmosLikeAccount> &account);
+    Future<cosmos::AccountSynchronizationContext> performSynchronization(const std::shared_ptr<CosmosLikeAccount> &account);
 
     Future<Unit> synchronizeBatches(
         uint32_t currentBatchIndex, std::shared_ptr<cosmos::SynchronizationBuddy> buddy);
@@ -143,7 +149,7 @@ class CosmosLikeAccountSynchronizer :
     std::shared_ptr<Preferences> _internalPreferences;
     std::shared_ptr<DatabaseSessionPool> _database;
     std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;
-    std::shared_ptr<ProgressNotifier<Unit>> _notifier;
+    std::shared_ptr<ProgressNotifier<cosmos::AccountSynchronizationContext>> _notifier;
     std::mutex _lock;
     std::shared_ptr<CosmosLikeAccount> _currentAccount;
 };

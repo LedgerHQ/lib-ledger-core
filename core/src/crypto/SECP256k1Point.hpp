@@ -37,6 +37,18 @@
 
 namespace ledger {
     namespace core {
+
+        class SECP256k1Context {
+        public:
+            secp256k1_context* ptr;
+            SECP256k1Context() {
+                ptr = secp256k1_context_create(SECP256K1_CONTEXT_SIGN | SECP256K1_CONTEXT_VERIFY);
+            }
+            ~SECP256k1Context() {
+                secp256k1_context_destroy(ptr);
+            }
+        };
+
         class SECP256k1Point {
         public:
             SECP256k1Point(const std::vector<uint8_t>& p);
@@ -52,11 +64,10 @@ namespace ledger {
             void ensurePubkeyIsNotNull() const;
 
         private:
-            secp256k1_context* _context;
             secp256k1_pubkey* _pubKey;
+            static SECP256k1Context _context;
         };
     }
 }
-
 
 #endif //LEDGER_CORE_SECP256K1POINT_HPP

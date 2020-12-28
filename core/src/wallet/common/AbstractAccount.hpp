@@ -107,6 +107,7 @@ namespace ledger {
 
             std::shared_ptr<api::EventBus> getEventBus() override;
 
+            void emitDeletedOperationEvent(std::string const& uid);
             void emitEventsNow();
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;

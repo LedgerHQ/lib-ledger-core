@@ -5,7 +5,6 @@
 #define DJINNI_GENERATED_ALGORANDASSETPARAMS_HPP
 
 #include "../utils/optional.hpp"
-#include <cstdint>
 #include <iostream>
 #include <string>
 #include <utility>
@@ -22,11 +21,11 @@ struct AlgorandAssetParams final {
     /** A URL where more information about the asset can be retrieved */
     std::experimental::optional<std::string> url;
     /** Specifies whether holdings in this asset are frozen by default */
-    std::experimental::optional<bool> defaultFrozen;
+    bool defaultFrozen;
     /** The total number of units of this asset */
     std::experimental::optional<std::string> total;
     /** The number of digits to use after the decimal point when displaying this asset */
-    std::experimental::optional<int32_t> decimals;
+    std::experimental::optional<std::string> decimals;
     /** The address that created this asset. */
     std::experimental::optional<std::string> creatorAddress;
     /** The address used to manage the keys of this asset and to destroy it */
@@ -44,9 +43,9 @@ struct AlgorandAssetParams final {
                         std::experimental::optional<std::string> assetName_,
                         std::experimental::optional<std::string> unitName_,
                         std::experimental::optional<std::string> url_,
-                        std::experimental::optional<bool> defaultFrozen_,
+                        bool defaultFrozen_,
                         std::experimental::optional<std::string> total_,
-                        std::experimental::optional<int32_t> decimals_,
+                        std::experimental::optional<std::string> decimals_,
                         std::experimental::optional<std::string> creatorAddress_,
                         std::experimental::optional<std::string> managerAddress_,
                         std::experimental::optional<std::string> freezeAddress_,

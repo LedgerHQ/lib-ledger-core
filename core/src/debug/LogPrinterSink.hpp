@@ -52,6 +52,8 @@ namespace ledger {
 
             virtual void flush_() override;
 
+            const std::weak_ptr<api::LogPrinter>& getPrinter() const;
+
         private:
             std::weak_ptr<api::LogPrinter> _printer;
         };

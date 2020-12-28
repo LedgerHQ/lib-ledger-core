@@ -15,6 +15,12 @@ ERC20Token = record {
 
 # ERC20-like accounts class.
 ERC20LikeAccount = interface +c {
+    # Key of the ERC20LikeAccount UID in the new erc20 operation event payload.
+    # The value is stored in a string.
+    const EV_NEW_OP_ERC20_ACCOUNT_UID: string = "EV_NEW_OP_ERC20_ACCOUNT_UID";
+
+    # Get uid
+    getUid(): string;
     # Get an ERC20 token.
     getToken(): ERC20Token;
     # Get the address of this ERC20 account.
@@ -26,6 +32,12 @@ ERC20LikeAccount = interface +c {
     getBalanceHistoryFor(start: date, end: date, period: TimePeriod): list<BigInt>;
     # Get the list of operations performed on this ERC20 account.
     getOperations(): list<ERC20LikeOperation>;
+    # Get ERC20 operation by uid
+    getOperation(uid: string, callback: Callback<ERC20LikeOperation>);
+    # Get all ERC20 operations
+    getAllOperations(from: i32, to: i32, ascending: bool, callback: ListCallback<ERC20LikeOperation>);
+    # Get ERC20 operations from a given block height (included), it also returns mempool operations
+    getOperationsFromBlockHeight(from: i32, to: i32, fromBlockHeight: i64, callback: ListCallback<ERC20LikeOperation>);
     # Retrieve raw data concerning a transaction of a given amount to a given address.
     getTransferToAddressData(amount: BigInt, address: string, data: Callback<binary>);
     queryOperations(): OperationQuery;
@@ -61,4 +73,8 @@ ERC20LikeOperation = interface +c {
     # Get block height on which operation was included.
     # @return Optional 64-bit integer, height of block in which operation was validated
     getBlockHeight(): optional<i64>;
+    # Get parent ETH operation uid
+    getETHOperationUid(): string;
+    # Get ERC20 operation uid
+    getOperationUid(): string;
 }

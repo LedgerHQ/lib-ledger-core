@@ -41,15 +41,13 @@ public:
         BaseFixture::SetUp();
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
-        // NOTE: we run the tests on the TestNet
-        auto client = std::make_shared<HttpClient>("https://testnet-algorand.api.purestake.io", http, worker);
+        // NOTE: we run the tests on the staging environment which is on the TestNet
+        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker);
 
-        // Read API key from environment
-        auto configuration = std::make_shared<DynamicObject>();
-        if (const auto apiKey = std::getenv(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY.c_str())) {
-            configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY, apiKey);
-        }
-
+        // NOTE: we run the tests on the staging environment which is on the TestNet
+        auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
+        
         explorer = std::make_shared<BlockchainExplorer>(
                         worker,
                         client,

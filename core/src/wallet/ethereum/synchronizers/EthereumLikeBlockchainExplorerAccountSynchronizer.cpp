@@ -72,7 +72,7 @@ namespace ledger {
             }
         }
 
-        std::shared_ptr<ProgressNotifier<Unit>>
+        std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
         EthereumLikeBlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<EthereumLikeAccount>& account) {
             return synchronizeAccount(account);
         }

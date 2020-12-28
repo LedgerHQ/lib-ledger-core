@@ -59,28 +59,28 @@ namespace ledger {
         std::shared_ptr<api::OperationQuery> OperationQuery::addOrder(api::OperationOrderKey key, bool descending) {
             switch (key) {
                 case api::OperationOrderKey::AMOUNT:
-                    _builder.order("amount", std::move(descending));
+                    _builder.order("amount", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::DATE:
-                    _builder.order("date", std::move(descending));
+                    _builder.order("date", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::SENDERS:
-                    _builder.order("senders", std::move(descending));
+                    _builder.order("senders", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::RECIPIENTS:
-                    _builder.order("recipients", std::move(descending));
+                    _builder.order("recipients", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::TYPE:
-                    _builder.order("type", std::move(descending));
+                    _builder.order("type", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::CURRENCY_NAME:
-                    _builder.order("currency_name", std::move(descending));
+                    _builder.order("currency_name", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::FEES:
-                    _builder.order("fees", std::move(descending));
+                    _builder.order("fees", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::BLOCK_HEIGHT:
-                    _builder.order("block_height", std::move(descending));
+                    _builder.order("height", std::move(descending), "b");
                     break;
             }
             return shared_from_this();

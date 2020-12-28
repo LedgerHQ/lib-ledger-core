@@ -56,6 +56,7 @@ namespace ledger {
             static const Option<T> NONE;
 
             Option() {};
+            ~Option() {};
             Option(const T& value) : _optional(value) {};
             Option(T&& value) : _optional(std::move(value)) {};
 

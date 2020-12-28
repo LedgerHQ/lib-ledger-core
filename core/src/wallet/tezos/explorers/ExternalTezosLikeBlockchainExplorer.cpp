@@ -316,18 +316,28 @@ namespace ledger {
         Future<bool> ExternalTezosLikeBlockchainExplorer::isFunded(const std::string &address) {
             return
                 _http->GET(fmt::format("account/{}", address))
-                    .json().map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
-                        auto& json = *std::get<1>(result);
-
-                        // look for the is_funded field
-                        const auto field = "is_funded";
-                        if (!json.IsObject() || !json.HasMember(field) ||
-                            !json[field].IsBool()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR,
-                                                 "Failed to get is_funded from network, no (or malformed) field \"result\" in response");
+                    .json(false, true).map<bool>(getExplorerContext(), [=](const HttpRequest::JsonResult &result) {
+                        auto& connection = *std::get<0>(result);
+                        if (connection.getStatusCode() == 404) {
+                            //an empty account 
+                            return false;
                         }
+                        else if (connection.getStatusCode() < 200 || connection.getStatusCode() >= 300) {
+                            throw Exception(api::ErrorCode::HTTP_ERROR, connection.getStatusText());
+                        }
+                        else { 
+                            auto& json = *std::get<1>(result);
 
-                        return json[field].GetBool();
+                            // look for the is_funded field
+                            const auto field = "is_funded";
+                            if (!json.IsObject() || !json.HasMember(field) ||
+                                !json[field].IsBool()) {
+                                throw make_exception(api::ErrorCode::HTTP_ERROR,
+                                                    "Failed to get is_funded from network, no (or malformed) field \"result\" in response");
+                            }
+
+                            return json[field].GetBool();
+                        }
                     });
         }
     }

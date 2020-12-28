@@ -55,9 +55,6 @@ namespace ledger
         class RippleLikeAccount : public api::RippleLikeAccount, public AbstractAccount
         {
         public:
-            static const int FLAG_TRANSACTION_IGNORED = 0x00;
-            static const int FLAG_NEW_TRANSACTION = 0x01;
-            static const int FLAG_TRANSACTION_UPDATED = 0x01 << 1;
 
             RippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                               int32_t index,

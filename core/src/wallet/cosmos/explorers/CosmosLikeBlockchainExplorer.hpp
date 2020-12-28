@@ -74,7 +74,7 @@ class CosmosLikeBlockchainExplorer : public ConfigurationMatchable {
     virtual Future<int64_t> getTimestamp() const = 0;
     virtual FuturePtr<cosmos::Block> getCurrentBlock() const = 0;
     virtual FuturePtr<cosmos::Block> getCurrentBlock() = 0;
-    virtual FuturePtr<cosmos::Block> getBlock(uint64_t &blockHeight) = 0;
+    virtual FuturePtr<cosmos::Block> getBlock(uint64_t &blockHeight) const = 0;
     virtual FuturePtr<cosmos::Account> getAccount(const std::string &account) const = 0;
     virtual const std::vector<TransactionFilter> &getTransactionFilters() = 0;
 
@@ -114,7 +114,7 @@ class CosmosLikeBlockchainExplorer : public ConfigurationMatchable {
 
     virtual FuturePtr<BigInt> getEstimatedGasLimit(
         const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
-        double gasAdjustment = 1.0) const = 0;
+       const std::string gasAdjustment = "1.0") const = 0;
 };
 }  // namespace core
 }  // namespace ledger

@@ -73,10 +73,9 @@ namespace algorand {
     {
         setConfiguration(configuration);
         const auto apiKey = configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_KEY);
-        if (!apiKey) {
-            throw make_exception(api::ErrorCode::API_ERROR, "Missing API key to access Algorand node.");
+        if (apiKey && !apiKey.value().empty()) {
+            _http->addHeader(constants::purestakeTokenHeader, apiKey.value());
         }
-        _http->addHeader(constants::purestakeTokenHeader, apiKey.value());
     }
 
     Future<api::Block> BlockchainExplorer::getBlock(uint64_t blockHeight) const
@@ -100,6 +99,9 @@ namespace algorand {
             .json(false)
             .map<uint64_t>(getContext(), [](const HttpRequest::JsonResult &response) {
                     const auto &json = std::get<1>(response)->GetObject();
+                    if (!json.HasMember(constants::xLastRoundParam.c_str())) {
+                        throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("Missing '{}' field in JSON.", constants::xLastRoundParam));
+                    }
                     return json[constants::xLastRoundParam.c_str()].GetUint64();
             }).flatMap<api::Block>(getContext(), [this](uint64_t latestRound) {
                     return getBlock(latestRound);
@@ -143,14 +145,18 @@ namespace algorand {
         return _http->GET(fmt::format(constants::purestakeTransactionEndpoint, txId))
             .json(false)
             .map<model::Transaction>(getContext(), [txId](const HttpRequest::JsonResult& response) {
-                    const auto& jsonArray = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
+                    const auto& json = std::get<1>(response)->GetObject();
+                    if (!json.HasMember(constants::xTransactions.c_str())) {
+                        throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("Missing '{}' field in JSON.", constants::xTransactions));
+                    }
+                    const auto& jsonArray = json[constants::xTransactions.c_str()].GetArray();
                     if (jsonArray.Size() != 1) {
                         throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND,
                                              fmt::format("Couldn't find transaction {}", txId));
                     }
-                    const auto& json = *std::begin(jsonArray);
+                    const auto& jsonTx = *std::begin(jsonArray);
                     auto tx = model::Transaction();
-                    JsonParser::parseTransaction(json, tx);
+                    JsonParser::parseTransaction(jsonTx, tx);
                     return tx;
             });
     }
@@ -172,9 +178,13 @@ namespace algorand {
         return _http->GET(url)
             .json(false)
             .map<model::TransactionsBulk>(getContext(), [](const HttpRequest::JsonResult& response) {
-                    const auto& json = std::get<1>(response)->GetObject()[constants::xTransactions.c_str()].GetArray();
+                    const auto& json = std::get<1>(response)->GetObject();
+                    if (!json.HasMember(constants::xTransactions.c_str())) {
+                        throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("Missing '{}' field in JSON.", constants::xTransactions));
+                    }
+                    const auto& jsonArray = json[constants::xTransactions.c_str()].GetArray();
                     auto txs = model::TransactionsBulk();
-                    JsonParser::parseTransactions(json, txs.transactions);
+                    JsonParser::parseTransactions(jsonArray, txs.transactions);
 
                     // Manage limit
                     txs.hasNext = txs.transactions.size() >= constants::EXPLORER_QUERY_LIMIT;
@@ -202,7 +212,11 @@ namespace algorand {
         return _http->POST(constants::purestakeTransactionsEndpoint, transaction, CONTENT_TYPE_HEADER)
             .json(false)
             .map<std::string>(_executionContext, [](const HttpRequest::JsonResult& response) {
-                    return std::get<1>(response)->GetObject()[constants::xTxId.c_str()].GetString();
+                    const auto& json = std::get<1>(response)->GetObject();
+                    if (!json.HasMember(constants::xTxId.c_str())) {
+                        throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("Missing '{}' field in JSON.", constants::xTxId));
+                    }
+                    return json[constants::xTxId.c_str()].GetString();
             });
     }
 
