@@ -252,8 +252,6 @@ namespace ledger {
                 self->transactions.clear();
                 return self->extendKeychain(0, buddy).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
                     return self->synchronizeBatches(0, buddy);
-                }).template flatMap<Unit>(account->getContext(), [self, buddy](auto) {
-                    return self->insertTransactionsToDB(buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy] (auto) {
                     return self->synchronizeMempool(buddy);
                 }).template map<BlockchainExplorerAccountSynchronizationResult>(ImmediateExecutionContext::INSTANCE, [self, buddy] (const Unit&) {
@@ -290,60 +288,6 @@ namespace ledger {
                     return buddy->context;
                 });
             };
-
-
-            Future<Unit> insertTransactionsToDB(std::shared_ptr<SynchronizationBuddy> buddy)
-            {
-                auto self = getSharedFromThis();
-                int nb_thread = std::thread::hardware_concurrency();
-                int nbTx = this->transactions.size();
-                std::vector<int> thread_nums;
-                for (int i = 0; i < nb_thread; i++)
-                    thread_nums.emplace_back(i);
-                Concurrency::parallel_for_each(thread_nums.begin(), thread_nums.end(),
-                    [self, buddy, nb_thread, nbTx](int thread_num) {
-                        soci::session sql(buddy->wallet->getDatabase()->getPool());
-                        int from = nbTx / nb_thread * thread_num;
-                        int to = (thread_num == nb_thread - 1) ? nbTx : nbTx / nb_thread * (thread_num + 1);
-                        buddy->logger->info("Processing thread {}", thread_num);
-                        for (int i = from; i < to; i++)
-                        {
-                            soci::transaction tr(sql);
-                            auto& tx = self->transactions[i];
-                            auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self]() {
-                                auto flag = self->putTransaction(sql, tx, buddy);
-                                //Update first pendingTxHash in savedState
-                                auto it = buddy->transactionsToDrop.find(tx.hash);
-                                if (it != buddy->transactionsToDrop.end()) {
-                                    //If block non empty, tx is no longer pending
-                                    if (tx.block.nonEmpty()) {
-                                        buddy->savedState.getValue().pendingTxsHash.erase(it->first);
-                                    }
-                                    else { //Otherwise tx is in mempool but pending
-                                        buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
-                                    }
-                                }
-                                //Remove from tx to drop
-                                buddy->transactionsToDrop.erase(tx.hash);
-                                return flag;
-                                });
-
-                            if (tryPutTx.isFailure()) {
-                                tr.rollback();
-                                auto blockHash = tx.block.hasValue() ? tx.block.getValue().hash : "None";
-                                buddy->logger->error("Failed to put transaction {}, on block {}, for account {}, reason: {}, rollback ...", tx.hash, blockHash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
-                            }
-                            else {
-                                tr.commit();
-                            }
-                        }
-                    }
-                );
-                buddy->account->emitEventsNow();
-                return Future<Unit>::successful(unit);
-            }
-
-
 
 
             // extend the keychain to cover all the addresses(only for bitcoin)
@@ -584,7 +528,50 @@ namespace ledger {
                         insertionBenchmark->start();
 
                         auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-                        self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
+                        //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
+                        buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
+                        auto count = 0;
+                        for (const auto& tx : bulk->transactions) {
+                            soci::session sql(buddy->wallet->getDatabase()->getPool());
+                            soci::transaction tr(sql);
+                            // A lot of things could happen here, better to wrap it	
+                            auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self]() {
+                                auto const flag = self->putTransaction(sql, tx, buddy);
+
+                                if (::ledger::core::account::isInsertedOperation(flag)) {
+                                    ++buddy->context.newOperations;
+                                }
+
+                                //Update first pendingTxHash in savedState	
+                                auto it = buddy->transactionsToDrop.find(tx.hash);
+                                if (it != buddy->transactionsToDrop.end()) {
+                                    //If block non empty, tx is no longer pending	
+                                    if (tx.block.nonEmpty()) {
+                                        buddy->savedState.getValue().pendingTxsHash.erase(it->first);
+                                    }
+                                    else { //Otherwise tx is in mempool but pending	
+                                        buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
+                                    }
+                                }
+                                //Remove from tx to drop	
+                                buddy->transactionsToDrop.erase(tx.hash);
+                                return flag;
+                                });
+
+                            if (tryPutTx.isFailure()) {
+                                tr.rollback();
+                                auto blockHash = tx.block.hasValue() ? tx.block.getValue().hash : "None";
+                                buddy->logger->error("Failed to put transaction {}, on block {}, for account {}, reason: {}, rollback ...", tx.hash, blockHash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
+                                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} on block {} because of tx {} ({})", currentBatchIndex, blockHash, tx.hash, tryPutTx.exception().getValue().getMessage());
+                            }
+                            else {
+                                count++;
+                                tr.commit();
+                            }
+                        }
+                        buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
+                        buddy->account->emitEventsNow();
+
                         // Get the last block
                         if (bulk->transactions.size() > 0) {
                             auto &lastBlock = bulk->transactions.back().block;
