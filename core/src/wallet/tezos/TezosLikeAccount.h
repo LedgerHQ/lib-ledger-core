@@ -159,6 +159,7 @@ namespace ledger {
             std::mutex _synchronizationLock;
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
             uint64_t _currentBlockHeight;
+            Future<BlockchainExplorerAccountSynchronizationResult> getTxs(const std::shared_ptr<TezosLikeAccount>& account, size_t id, void* session, BlockchainExplorerAccountSynchronizationResult result);
         };
     }
 }
