@@ -77,7 +77,7 @@ namespace ledger {
             }
         }
 
-        std::shared_ptr<ProgressNotifier<Unit>>
+        std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
         TezosLikeBlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<TezosLikeAccount> &account) {
             return synchronizeAccount(account);
         }

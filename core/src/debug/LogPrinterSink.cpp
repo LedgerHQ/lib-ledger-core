@@ -79,5 +79,9 @@ namespace ledger {
         void LogPrinterSink::flush_() {
 
         }
+
+        const std::weak_ptr<api::LogPrinter> &LogPrinterSink::getPrinter() const {
+            return _printer;
+        }
     }
 }

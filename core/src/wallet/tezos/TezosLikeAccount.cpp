@@ -66,7 +66,8 @@ namespace ledger {
                                            const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
                                            const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                                            const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
-                                           const std::shared_ptr<TezosLikeKeychain> &keychain) : AbstractAccount(wallet, index) {
+                                           const std::shared_ptr<TezosLikeKeychain> &keychain) : AbstractAccount(wallet, index),
+                                           _currentBlockHeight(0) {
             _explorer = explorer;
             _observer = observer;
             _synchronizer = synchronizer;

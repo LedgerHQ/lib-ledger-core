@@ -32,7 +32,8 @@ echo "========> Install C++ dependencies"
 brew install cmake
 
 echo "========> Install PostgreSQL"
-brew install postgresql
+# Install with verbose otherwise the setup may timeout the CI because it doesn't log.
+brew install --verbose postgresql
 export CPLUS_INCLUDE_PATH="/usr/local/Cellar/postgresql/12.3_4/include:$CPLUS_INCLUDE_PATH"
 
 

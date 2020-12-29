@@ -140,9 +140,9 @@ namespace ledger {
 
         std::string BigInt::toString() const {
             size_t nchars = bdConvToDecimal(_bigd, NULL, 0);
-            auto s = std::shared_ptr<char>(new char[nchars + 1]);
-            bdConvToDecimal(_bigd, s.get(), nchars + 1);
-            auto out = std::string(s.get());
+            std::vector<char> s(nchars + 1);
+            bdConvToDecimal(_bigd, s.data(), nchars + 1);
+            auto out = std::string(s.data());
             if (this->isNegative()) {
                 out = "-" + out;
             }
@@ -151,9 +151,9 @@ namespace ledger {
 
         std::string BigInt::toHexString() const {
             size_t nchars = bdConvToHex(_bigd, NULL, 0);
-            auto s = std::shared_ptr<char>(new char[nchars + 1]);
-            bdConvToHex(_bigd, s.get(), nchars + 1);
-            auto out = std::string(s.get());
+            std::vector<char> s(nchars + 1);
+            bdConvToHex(_bigd, s.data(), nchars + 1);
+            auto out = std::string(s.data());
             if (out.length() % 2 != 0) {
                 out = "0" + out;
             }

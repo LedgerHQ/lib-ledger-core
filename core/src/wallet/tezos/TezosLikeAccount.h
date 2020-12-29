@@ -75,7 +75,6 @@ namespace ledger {
         class TezosLikeOriginatedAccount;
         class TezosLikeAccount : public api::TezosLikeAccount, public AbstractAccount {
         public:
-            static const int FLAG_TRANSACTION_IGNORED = 0x00;
 
             TezosLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                              int32_t index,
@@ -159,6 +158,7 @@ namespace ledger {
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
+            uint64_t _currentBlockHeight;
         };
     }
 }

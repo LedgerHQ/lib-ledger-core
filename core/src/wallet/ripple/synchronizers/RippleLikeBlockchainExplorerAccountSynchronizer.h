@@ -66,7 +66,7 @@ namespace ledger {
                                           std::shared_ptr<SynchronizationBuddy> &buddy,
                                           const std::string &accountUid) override;
 
-            std::shared_ptr<ProgressNotifier<Unit>>
+            std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
             synchronize(const std::shared_ptr<RippleLikeAccount> &account) override;
 
             void reset(const std::shared_ptr<RippleLikeAccount> &account,

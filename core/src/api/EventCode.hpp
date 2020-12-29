@@ -24,6 +24,8 @@ enum class EventCode : int {
     NEW_OPERATION,
     /** A new block event. */
     NEW_BLOCK,
+    /** A deleted operation event. */
+    DELETED_OPERATION,
     /** Event emitted when a wallet synchronization started. */
     SYNCHRONIZATION_STARTED,
     /** Event emitted when a wallet synchronization failed. */
@@ -32,6 +34,7 @@ enum class EventCode : int {
     SYNCHRONIZATION_SUCCEED,
     /** Event emitted when a wallet synchronization succeeded on the previously empty account. */
     SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT,
+    NEW_ERC20_OPERATION,
 };
 LIBCORE_EXPORT  std::string to_string(const EventCode& eventCode);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const EventCode &o);

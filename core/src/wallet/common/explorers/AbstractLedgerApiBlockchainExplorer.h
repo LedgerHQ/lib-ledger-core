@@ -130,7 +130,8 @@ namespace ledger {
             Future<Unit> killLedgerApiSession(void *session) const {
                 return _http->addHeader("X-LedgerWallet-SyncToken", *((std::string *)session))
                         .DEL(fmt::format("/blockchain/{}/{}/syncToken", getExplorerVersion(), getNetworkParameters().Identifier))
-                        .json().template map<Unit>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) {
+                        .json().template map<Unit>(getExplorerContext(), [session] (const HttpRequest::JsonResult& result) {
+                            delete reinterpret_cast<std::string*>(session);
                             return unit;
                         });
             };

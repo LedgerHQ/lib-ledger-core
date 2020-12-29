@@ -57,14 +57,6 @@ namespace ledger {
 
         class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
         public:
-            static const int FLAG_NEW_TRANSACTION = 0x01;
-            static const int FLAG_TRANSACTION_UPDATED = 0x01 << 1;
-            static const int FLAG_TRANSACTION_IGNORED = 0x00;
-            static const int FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS = 0x01 << 2;
-            static const int FLAG_TRANSACTION_ON_USED_ADDRESS = 0x01 << 3;
-            static const int FLAG_TRANSACTION_CREATED_SENDING_OPERATION = 0x01 << 4;
-            static const int FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 0x01 << 5;
-
             BitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                int32_t index,
                                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,

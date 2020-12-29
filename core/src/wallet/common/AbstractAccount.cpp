@@ -44,7 +44,7 @@ namespace ledger {
     namespace core {
 
         AbstractAccount::AbstractAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index)
-                : DedicatedContext(wallet->getMainExecutionContext())
+                : DedicatedContext(wallet->getPool()->getDispatcher()->getSerialExecutionContext(fmt::format("account_{}_{}", wallet->getName(), index)))
         {
             _uid = AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), index);
             _logger = wallet->logger();
@@ -206,6 +206,13 @@ namespace ledger {
             payload->putString(api::Account::EV_NEW_BLOCK_HASH, block.hash);
             payload->putString(api::Account::EV_NEW_BLOCK_CURRENCY_NAME, block.currencyName);
             auto event = Event::newInstance(api::EventCode::NEW_BLOCK, payload);
+            pushEvent(event);
+        }
+
+        void AbstractAccount::emitDeletedOperationEvent(std::string const& uid) {
+            auto payload = DynamicObject::newInstance();
+            payload->putString(api::Account::EV_DELETED_OP_UID, uid);
+            auto event = Event::newInstance(api::EventCode::DELETED_OPERATION, payload);
             pushEvent(event);
         }
 
