@@ -29,4 +29,4 @@ cd $HOME/lib-ledger-core/core/lib/leveldb && git checkout bitcoin-fork
 
 echo "========> Generate ITFs"
 cd $HOME/lib-ledger-core
-./tools/generate_interfaces.sh
+./tools/generate_interfaces.sh || ./tools/generate_interfaces.sh

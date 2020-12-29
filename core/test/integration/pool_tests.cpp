@@ -159,15 +159,15 @@ TEST_F(WalletPoolTest, RemoveCurrency) {
 TEST_F(WalletPoolTest, CreateAndGetWallet) {
     {
         auto pool = newDefaultPool();
-        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
-        auto getWallet = wait(pool->getWallet("my_wallet"));
+        auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", DynamicObject::newInstance()));
+        auto getWallet = uv::wait(pool->getWallet("my_wallet"));
         EXPECT_TRUE(wallet.get() == getWallet.get());
     }
     {
         auto pool = newDefaultPool();
-        auto getWallet = wait(pool->getWallet("my_wallet"));
+        auto getWallet = uv::wait(pool->getWallet("my_wallet"));
         EXPECT_TRUE(getWallet->getName() == "my_wallet");
-        auto wallets = wait(pool->getWallets(0, 1));
+        auto wallets = uv::wait(pool->getWallets(0, 1));
         EXPECT_TRUE(wallets.front()->getName() == "my_wallet");
     }
 }

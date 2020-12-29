@@ -224,7 +224,7 @@ public:
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
-        wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, configuration)));
+        wallet = std::dynamic_pointer_cast<algorand::Wallet>(uv::wait(pool->createWallet("algorand", currency.name, configuration)));
         account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
@@ -237,7 +237,6 @@ public:
 
     void TearDown() override {
         WalletFixture::TearDown();
-
         wallet.reset();
         account.reset();
     }
@@ -267,7 +266,7 @@ TEST_F(AlgorandAccountTest, algosBalanceHistory)
         26026
     };
 
-    const auto balances = ::wait(account->getBalanceHistory(start, end, period));
+    const auto balances = uv::wait(account->getBalanceHistory(start, end, period));
     for (auto i = 0; i < balances.size(); ++i) {
         EXPECT_EQ(std::stoull(balances[i]->toString()), expected[i]);
     }
@@ -292,7 +291,7 @@ TEST_F(AlgorandAccountTest, assetBalanceHistory)
         10
     };
 
-    const auto balances = ::wait(account->getAssetBalanceHistory(id, start, end, period));
+    const auto balances = uv::wait(account->getAssetBalanceHistory(id, start, end, period));
     for (auto i = 0; i < balances.size(); ++i) {
         EXPECT_EQ(std::stoull(balances[i].amount), expected[i]);
     }
@@ -300,10 +299,10 @@ TEST_F(AlgorandAccountTest, assetBalanceHistory)
 
 TEST_F(AlgorandAccountTest, validAmount)
 {
-    const auto valid = wait(account->isAmountValid(EMPTY_ADDR, "100000"));
+    const auto valid = uv::wait(account->isAmountValid(EMPTY_ADDR, "100000"));
     EXPECT_TRUE(valid);
 
     // Can't send less than 0.1 ALGO to an empty account
-    const auto invalid = wait(account->isAmountValid(EMPTY_ADDR, "99999"));
+    const auto invalid = uv::wait(account->isAmountValid(EMPTY_ADDR, "99999"));
     EXPECT_FALSE(invalid);
 }

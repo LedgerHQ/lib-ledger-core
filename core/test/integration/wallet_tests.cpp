@@ -37,7 +37,7 @@ class WalletTests : public BaseFixture {
 
 TEST_F(WalletTests, CreateNewWallet) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     EXPECT_EQ(wallet->getCurrency().name, "bitcoin");
     EXPECT_EQ(wallet->getWalletType(), api::WalletType::BITCOIN);
     auto bitcoinWallet = std::dynamic_pointer_cast<BitcoinLikeWallet>(wallet);
@@ -46,67 +46,67 @@ TEST_F(WalletTests, CreateNewWallet) {
 
 TEST_F(WalletTests, GetAccountWithSameInstance) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
-    auto fetchedAccount = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->getAccount(0)));
+    auto fetchedAccount = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->getAccount(0)));
     EXPECT_EQ(account.get(), fetchedAccount.get());
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
+    EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), uv::wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
 }
 
 TEST_F(WalletTests, GetAccountOnEmptyWallet) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
-    EXPECT_THROW(wait(wallet->getAccount(0)), Exception);
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    EXPECT_THROW(uv::wait(wallet->getAccount(0)), Exception);
 }
 
 TEST_F(WalletTests, GetMultipleAccounts) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     for (auto i = 0; i < 5; i++)
         createBitcoinLikeAccount(wallet, i, P2PKH_MEDIUM_XPUB_INFO);
-    auto accounts = wait(wallet->getAccounts(0, 5));
+    auto accounts = uv::wait(wallet->getAccounts(0, 5));
     EXPECT_EQ(accounts.size(), 5);
 }
 
 TEST_F(WalletTests, GetTooManyMultipleAccounts) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     for (auto i = 0; i < 5; i++)
         createBitcoinLikeAccount(wallet, i, P2PKH_MEDIUM_XPUB_INFO);
-    EXPECT_EQ(wait(wallet->getAccounts(0, 10)).size(), 5);
+    EXPECT_EQ(uv::wait(wallet->getAccounts(0, 10)).size(), 5);
 }
 
 TEST_F(WalletTests, GetAccountAfterPoolReopen) {
     std::string addr;
     {
         auto pool = newDefaultPool();
-        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+        auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
         auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
-        addr = wait(account->getFreshPublicAddresses())[0]->toString();
+        addr = uv::wait(account->getFreshPublicAddresses())[0]->toString();
     }
     {
         auto pool = newDefaultPool();
-        auto wallet = wait(pool->getWallet("my_wallet"));
-        auto account = std::dynamic_pointer_cast<AbstractAccount>(wait(wallet->getAccount(0)));
-        EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), addr);
+        auto wallet = uv::wait(pool->getWallet("my_wallet"));
+        auto account = std::dynamic_pointer_cast<AbstractAccount>(uv::wait(wallet->getAccount(0)));
+        EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), addr);
     }
 }
 
 TEST_F(WalletTests, CreateNonContiguousAccount) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account = createBitcoinLikeAccount(wallet, 6, P2PKH_MEDIUM_XPUB_INFO);
-    auto fetchedAccount = std::dynamic_pointer_cast<AbstractAccount>(wait(wallet->getAccount(6)));
-    EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
-    auto accountCount = wait(wallet->getAccountCount());
-    auto accounts = wait(wallet->getAccounts(0, accountCount));
-    EXPECT_EQ(wait(std::dynamic_pointer_cast<ledger::core::AbstractAccount>(accounts.front())->getFreshPublicAddresses())[0]->toString(), wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
+    auto fetchedAccount = std::dynamic_pointer_cast<AbstractAccount>(uv::wait(wallet->getAccount(6)));
+    EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), uv::wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
+    auto accountCount = uv::wait(wallet->getAccountCount());
+    auto accounts = uv::wait(wallet->getAccounts(0, accountCount));
+    EXPECT_EQ(uv::wait(std::dynamic_pointer_cast<ledger::core::AbstractAccount>(accounts.front())->getFreshPublicAddresses())[0]->toString(), uv::wait(fetchedAccount->getFreshPublicAddresses())[0]->toString());
 }
 
 
 TEST_F(WalletTests, CreateNonContiguousAccountBis) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto account1 = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
     account1->startBlockchainObservation();
     auto account2 = createBitcoinLikeAccount(wallet, 6, P2PKH_MEDIUM_XPUB_INFO);
@@ -120,7 +120,7 @@ TEST_F(WalletTests, CreateNonContiguousAccountBis) {
 
 TEST_F(WalletTests, CreateAccountBug) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
     auto list = [pool, this] () -> Future<Unit> {
         return pool->getWalletCount().flatMap<std::vector<std::shared_ptr<AbstractWallet>>>(dispatcher->getMainExecutionContext(), [pool] (const int64_t& count) -> Future<std::vector<std::shared_ptr<AbstractWallet>>> {
             return pool->getWallets(0, count);
@@ -164,7 +164,7 @@ TEST_F(WalletTests, ChangeWalletConfig) {
         auto config = api::DynamicObject::newInstance();
         config->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, oldEndpoint);
         config->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME, derivationScheme);
-        auto wallet = wait(pool->createWallet(walletName, "ethereum", config));
+        auto wallet = uv::wait(pool->createWallet(walletName, "ethereum", config));
         auto walletConfig = wallet->getConfiguration();
         EXPECT_EQ(walletConfig->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), oldEndpoint);
         EXPECT_EQ(walletConfig->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);
@@ -173,9 +173,9 @@ TEST_F(WalletTests, ChangeWalletConfig) {
         auto newEndpoint = "http://eth-ropsten.explorers.prod.aws.ledger.fr";
         auto config = api::DynamicObject::newInstance();
         config->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, newEndpoint);
-        auto returnCode = wait(pool->updateWalletConfig(walletName, config));
+        auto returnCode = uv::wait(pool->updateWalletConfig(walletName, config));
         EXPECT_EQ(returnCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
-        auto wallet = wait(pool->getWallet(walletName));
+        auto wallet = uv::wait(pool->getWallet(walletName));
         auto walletConfig = wallet->getConfiguration();
         EXPECT_EQ(walletConfig->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT).value(), newEndpoint);
         EXPECT_EQ(walletConfig->getString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME).value(), derivationScheme);

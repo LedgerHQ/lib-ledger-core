@@ -34,8 +34,7 @@
 IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
 
 IntegrationEnvironment::IntegrationEnvironment(int argc, char **argv) {
-    QCoreApplication app(argc, argv);
-    _appDir = app.applicationDirPath().toStdString();
+    _appDir =ledger::qt::FilesystemUtils::getExecutableDir();
 }
 
 std::string IntegrationEnvironment::getApplicationDirPath() const {

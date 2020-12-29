@@ -35,15 +35,15 @@
 #include <api/StellarLikeMemo.hpp>
 #include <api/StellarLikeMemoType.hpp>
 
-TEST_F(StellarFixture, SynchronizeStellarAccount) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccount) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
-    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto wallet = newWallet(pool, "my_wallet_stellar", "stellar", api::DynamicObject::newInstance());
+    auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, defaultAccount());
-    auto exists = ::wait(account->exists());
+    auto exists = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
-    bus->subscribe(dispatcher->getMainExecutionContext(),
+    bus->subscribe(getTestExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
                        fmt::print("Received event {}\n", api::to_string(event->getCode()));
                        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -51,12 +51,12 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
                        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                        EXPECT_EQ(event->getCode(),
                                  api::EventCode::SYNCHRONIZATION_SUCCEED);
-                       dispatcher->stop();
+                       getTestExecutionContext()->stop();
                    }));
     EXPECT_EQ(bus, account->synchronize());
-    dispatcher->waitUntilStopped();
-    auto balance = ::wait(account->getBalance());
-    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->addOrder(api::OperationOrderKey::DATE, false)->complete())->execute());
+    getTestExecutionContext()->waitUntilStopped();
+    auto balance = uv::wait(account->getBalance());
+    auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->addOrder(api::OperationOrderKey::DATE, false)->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
     EXPECT_TRUE(operations.size() >= 5);
 
@@ -89,7 +89,7 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     EXPECT_EQ(second->isComplete(), true);
     EXPECT_EQ(second->getOperationType(), api::OperationType::SEND);
 
-    auto reserve = wait(account->getBaseReserve());
+    auto reserve = uv::wait(account->getBaseReserve());
     EXPECT_TRUE(reserve->toLong() >= (2 * 5000000));
 
     auto txFound = false;
@@ -104,16 +104,16 @@ TEST_F(StellarFixture, SynchronizeStellarAccount) {
     EXPECT_TRUE(txFound);
 }
 
-TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
+TEST_F(StellarFixture, DISABLED_SynchronizeEmptyStellarAccount) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
-    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto wallet = newWallet(pool, "my_wallet_stellar_empty", "stellar", api::DynamicObject::newInstance());
+    auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, emptyAccount());
 
-    auto exists = ::wait(account->exists());
+    auto exists = uv::wait(account->exists());
     EXPECT_FALSE(exists);
     auto bus = account->synchronize();
-    bus->subscribe(dispatcher->getMainExecutionContext(),
+    bus->subscribe(getTestExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
                        fmt::print("Received event {}\n", api::to_string(event->getCode()));
                        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -121,12 +121,12 @@ TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
                        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                        EXPECT_EQ(event->getCode(),
                                  api::EventCode::SYNCHRONIZATION_SUCCEED);
-                       dispatcher->stop();
+                       getTestExecutionContext()->stop();
                    }));
-    dispatcher->waitUntilStopped();
-    auto address = wait(account->getFreshPublicAddresses())[0];
-    auto balance = ::wait(account->getBalance());
-    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    getTestExecutionContext()->waitUntilStopped();
+    auto address = uv::wait(account->getFreshPublicAddresses())[0];
+    auto balance = uv::wait(account->getBalance());
+    auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) == 0);
     EXPECT_TRUE(operations.size() == 0);
 
@@ -142,16 +142,16 @@ TEST_F(StellarFixture, SynchronizeEmptyStellarAccount) {
     }
 }
 
-TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithSubEntry) {
     auto pool = newPool();
-    auto wallet = newWallet(pool, "my_wallet", "stellar", api::DynamicObject::newInstance());
-    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto wallet = newWallet(pool, "my_wallet_stellar_subentry", "stellar", api::DynamicObject::newInstance());
+    auto info = uv::wait(wallet->getNextAccountCreationInfo());
     StellarLikeAddress addr("GAT4LBXYJGJJJRSNK74NPFLO55CDDXSYVMQODSEAAH3M6EY4S7LPH5GV", getCurrency(), Option<std::string>::NONE);
     auto account = newAccount(wallet, 0, accountInfo(hex::toString(addr.toPublicKey())));
-    auto exists = ::wait(account->exists());
+    auto exists = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
-    bus->subscribe(dispatcher->getMainExecutionContext(),
+    bus->subscribe(getTestExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
                        fmt::print("Received event {}\n", api::to_string(event->getCode()));
                        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -159,23 +159,23 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithSubEntry) {
                        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                        EXPECT_EQ(event->getCode(),
                                  api::EventCode::SYNCHRONIZATION_SUCCEED);
-                       dispatcher->stop();
+                       getTestExecutionContext()->stop();
                    }));
     EXPECT_EQ(bus, account->synchronize());
-    dispatcher->waitUntilStopped();
-    auto reserve = wait(account->getBaseReserve());
+    getTestExecutionContext()->waitUntilStopped();
+    auto reserve = uv::wait(account->getBaseReserve());
     EXPECT_TRUE(reserve->toLong() > 2 * 5000000);
 }
 
-TEST_F(StellarFixture, SynchronizeStellarAccountWithManageBuyOffer) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithManageBuyOffer) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_1", "stellar", api::DynamicObject::newInstance());
-    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GDDU4HHNCSZ2BI6ELSSFKPSOBL2TEB4A3ZJWOCT2DILQKVJTZBNSOZA2"));
-    auto exists = ::wait(account->exists());
+    auto exists = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
-    bus->subscribe(dispatcher->getMainExecutionContext(),
+    bus->subscribe(getTestExecutionContext(),
             make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
         if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -183,25 +183,25 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithManageBuyOffer) {
         EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
         EXPECT_EQ(event->getCode(),
                   api::EventCode::SYNCHRONIZATION_SUCCEED);
-        dispatcher->stop();
+        getTestExecutionContext()->stop();
     }));
     EXPECT_EQ(bus, account->synchronize());
-    dispatcher->waitUntilStopped();
-    auto balance = ::wait(account->getBalance());
-    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->addOrder(api::OperationOrderKey::DATE, false)->complete())->execute());
+    getTestExecutionContext()->waitUntilStopped();
+    auto balance = uv::wait(account->getBalance());
+    auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->addOrder(api::OperationOrderKey::DATE, false)->complete())->execute());
     EXPECT_TRUE(balance->toBigInt()->compare(api::BigInt::fromLong(0)) > 0);
     EXPECT_TRUE(operations.size() >= 5);
 }
 
-TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
+TEST_F(StellarFixture, DISABLED_SynchronizeStellarAccountWithMultisig) {
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_2", "stellar", api::DynamicObject::newInstance());
-    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GAJTWW4OGH5BWFTH24C7SGIDALKI2HUVC2LXHFD533A5FIMSXE5AB3TJ"));
-    auto exists = ::wait(account->exists());
+    auto exists = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
-    bus->subscribe(dispatcher->getMainExecutionContext(),
+    bus->subscribe(getTestExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
                        fmt::print("Received event {}\n", api::to_string(event->getCode()));
                        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -209,11 +209,11 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
                        EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
                        EXPECT_EQ(event->getCode(),
                                  api::EventCode::SYNCHRONIZATION_SUCCEED);
-                       dispatcher->stop();
+                       getTestExecutionContext()->stop();
                    }));
     EXPECT_EQ(bus, account->synchronize());
-    dispatcher->waitUntilStopped();
-    auto signers = ::wait(account->getSigners());
+    getTestExecutionContext()->waitUntilStopped();
+    auto signers = uv::wait(account->getSigners());
     EXPECT_EQ(signers.size(), 2);
     const auto& signer_1 = std::find_if(signers.begin(), signers.end(), [] (const stellar::AccountSigner& s) {
         return s.key == "GAJTWW4OGH5BWFTH24C7SGIDALKI2HUVC2LXHFD533A5FIMSXE5AB3TJ";
@@ -232,16 +232,16 @@ TEST_F(StellarFixture, SynchronizeStellarAccountWithMultisig) {
 }
 
 // Synchronize an account with protocol 13 upgrade object
-TEST_F(StellarFixture, SynchronizeProtocol13) {
+TEST_F(StellarFixture, DISABLED_SynchronizeProtocol13) {
     // GBV4NH4G5SWYM6OQJKZKG2PA2O2VQ2W6K5S43WLMLJRWU4XTG5EST5QP
     auto pool = newPool();
     auto wallet = newWallet(pool, "my_wallet_proto_13", "stellar", api::DynamicObject::newInstance());
-    auto info = ::wait(wallet->getNextAccountCreationInfo());
+    auto info = uv::wait(wallet->getNextAccountCreationInfo());
     auto account = newAccount(wallet, 0, accountInfoFromAddress("GBSEXVEU2WBBLIUCWIWFDPV5I4HLBSOWRNJVKLNXZFVNITFPKQIVO3YI"));
-    auto exists = ::wait(account->exists());
+    auto exists = uv::wait(account->exists());
     EXPECT_TRUE(exists);
     auto bus = account->synchronize();
-    bus->subscribe(dispatcher->getMainExecutionContext(),
+    bus->subscribe(getTestExecutionContext(),
                    make_receiver([=](const std::shared_ptr<api::Event> &event) {
                        fmt::print("Received event {}\n", api::to_string(event->getCode()));
                        if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -252,13 +252,13 @@ TEST_F(StellarFixture, SynchronizeProtocol13) {
                        auto lastBlockHeight = event->getPayload()->getInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT).value_or(-1);
                        fmt::print("Last ledger known: {}\n", lastBlockHeight);
                        EXPECT_GT(lastBlockHeight, 0);
-                       dispatcher->stop();
+                       getTestExecutionContext()->stop();
                    }));
     EXPECT_EQ(bus, account->synchronize());
-    dispatcher->waitUntilStopped();
-    auto balance = ::wait(account->getBalance());
-    auto address = ::wait(account->getFreshPublicAddresses()).front();
-    auto operations = ::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+    getTestExecutionContext()->waitUntilStopped();
+    auto balance = uv::wait(account->getBalance());
+    auto address = uv::wait(account->getFreshPublicAddresses()).front();
+    auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     EXPECT_GT(balance->toLong(), 0);
     EXPECT_TRUE(operations.size() >= 11);
 

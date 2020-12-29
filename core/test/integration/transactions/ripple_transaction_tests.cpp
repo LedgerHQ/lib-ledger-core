@@ -61,27 +61,28 @@ TEST_F(RippleMakeTransaction, CreateTx) {
         EXPECT_EQ(event->getCode(),
                   api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-        auto balance = wait(account->getBalance());
+        auto balance = uv::wait(account->getBalance());
         std::cout << "Balance: " << balance->toString() << std::endl;
         auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
-        dispatcher->stop();
+        getTestExecutionContext()->stop();
     });
 
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(getTestExecutionContext(), receiver);
 
-    dispatcher->waitUntilStopped();
+    getTestExecutionContext()->waitUntilStopped();
 
-    auto balance = wait(account->getBalance());
+    auto balance = uv::wait(account->getBalance());
     auto fromDate = "2018-01-01T13:38:23Z";
     auto toDate = DateUtils::toJSON(DateUtils::now());
-    auto balanceHistory = wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
+    auto balanceHistory = uv::wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
 
     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 
     builder->setFees(api::Amount::fromLong(currency, 10));
     builder->sendToAddress(api::Amount::fromLong(currency, 220000), "rMspb4Kxa3EwdF4uN5TMqhHfsAkBit6w7k");
     auto f = builder->build();
-    auto tx = ::wait(f);
+    auto tx = uv::wait(f);
 
     auto destTag = tx->getDestinationTag();
     EXPECT_EQ(destTag.value_or(0), 0);
@@ -97,11 +98,11 @@ TEST_F(RippleMakeTransaction, CreateTx) {
     auto formatedDate = DateUtils::fromJSON(date);
 
     //Delete account
-    auto code = wait(wallet->eraseDataSince(formatedDate));
+    auto code = uv::wait(wallet->eraseDataSince(formatedDate));
     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     //Check if account was successfully deleted
-    auto newAccountCount = wait(wallet->getAccountCount());
+    auto newAccountCount = uv::wait(wallet->getAccountCount());
     EXPECT_EQ(newAccountCount, 0);
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
@@ -111,11 +112,11 @@ TEST_F(RippleMakeTransaction, CreateTx) {
     }
 
     //Delete wallet
-    auto walletCode = wait(pool->eraseDataSince(formatedDate));
+    auto walletCode = uv::wait(pool->eraseDataSince(formatedDate));
     EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     //Check if wallet was successfully deleted
-    auto walletCount = wait(pool->getWalletCount());
+    auto walletCount = uv::wait(pool->getWalletCount());
     EXPECT_EQ(walletCount, 0);
 
 }

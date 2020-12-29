@@ -1,9 +1,9 @@
 /*
  *
- * wait
+ * FilesystemUtils
  * ledger-core
  *
- * Created by Pierre Pollastri on 13/06/2017.
+ * Created by Huiqi ZHENG on 25/09/2020.
  *
  * The MIT License (MIT)
  *
@@ -28,27 +28,22 @@
  * SOFTWARE.
  *
  */
-#ifndef LEDGER_CORE_ASYNC_WAIT_H
-#define LEDGER_CORE_ASYNC_WAIT_H
+#pragma once
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
 
-#include <async/Future.hpp>
-#include <QEventLoop>
-#include "QtThreadPoolExecutionContext.hpp"
+#include <iostream>
+using namespace std;
 
-template <typename T>
-T wait(ledger::core::Future<T> future) {
-    auto signaler = std::make_shared<ledger::qt::QtThreadPoolExecutionContext>(1, nullptr);
-    QEventLoop looper;
-
-    future.onComplete(signaler, [&] (const ledger::core::Try<T>& result) {
-        looper.quit();
-    });
-    looper.exec();
-    ledger::core::Try<T> result = future.getValue().getValue();
-    if (result.isFailure()) {
-        throw result.getFailure();
+namespace ledger {
+    namespace qt {
+        class FilesystemUtils {
+        public:
+            static string getExecutablePath();
+            static string getExecutableDir();
+            static void clearFs(const string& rootDirPath);
+        private:
+            static bool isExecutableOrLib(const string& path);
+        };
     }
-    return result.getValue();
-};
-
-#endif //LEDGER_CORE_ASYNC_WAIT_H
+}

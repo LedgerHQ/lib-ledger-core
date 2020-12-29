@@ -11,7 +11,7 @@ namespace ledger {
 			{ledger::core::hex::toByteArray("024819f9d4bd29318226e3c807cdd2da84161abaf5619c5d2bbfe5be63c74cc9ed")} , {ledger::core::hex::toByteArray("b4f8427e7e19f284dfe7b99f107c55d00b3eae56df9569f0c4d56722742a5d71")}
 			);
 			std::shared_ptr<core::RippleLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
-				auto account = std::dynamic_pointer_cast<core::RippleLikeAccount>(wait(wallet->newAccountWithInfo(XPUB_INFO)));
+				auto account = std::dynamic_pointer_cast<core::RippleLikeAccount>(uv::wait(wallet->newAccountWithInfo(XPUB_INFO)));
 				soci::session sql(pool->getDatabaseSessionPool()->getPool());
 				sql.begin();				account->putTransaction(sql, *core::JSONUtils::parse<core::RippleLikeTransactionParser>(TX_1));
 				sql.commit();

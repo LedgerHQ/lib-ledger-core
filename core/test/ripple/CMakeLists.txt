@@ -17,6 +17,13 @@ target_include_directories(ledger-core-ripple-tests PUBLIC ../../../core/lib/lev
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-ripple-tests crypto ledger-core)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    if(WIN32)
+        target_link_libraries( ledger-core-ripple-tests crypt32 ws2_32)
+    endif()
+    copy_install_imported_targets(ledger-core-ripple-tests OpenSSL::Crypto ledger-core uv)
+else()
+    copy_install_imported_targets(ledger-core-ripple-tests crypto ledger-core uv)
+endif()
 add_test (NAME ledger-core-ripple-tests COMMAND ledger-core-ripple-tests)
