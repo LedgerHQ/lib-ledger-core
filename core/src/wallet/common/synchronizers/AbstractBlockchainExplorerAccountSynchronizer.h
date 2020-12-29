@@ -451,8 +451,6 @@ namespace ledger {
                     if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
                         buddy->savedState.nonEmpty()) {
                         buddy->logger->info("Recovering from reorganization");
-                        const auto deactivateToken =
-                            buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
                         auto startSession = Future<void*>::async(ImmediateExecutionContext::INSTANCE, [=]() {
                             return Future<void*>::successful(nullptr);
                         });
