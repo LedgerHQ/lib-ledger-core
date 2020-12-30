@@ -25,18 +25,18 @@ export JAVA_HOME="$(/usr/libexec/java_home -v 1.8)"
 
 
 if [ "$BUILD_CONFIG" == "Release" ]; then
-	brew install awscli
+	brew install --build-from-source awscli
 fi
 
 echo "========> Install sbt"
 brew install sbt
 
 echo "========> Install C++ dependencies"
-brew install cmake
+brew install --build-from-source cmake
 
 echo "========> Install PostgreSQL"
 # Install with verbose otherwise the setup may timeout the CI because it doesn't log.
-brew install --verbose postgresql
+brew install --verbose --build-from-source postgresql
 export CPLUS_INCLUDE_PATH="/usr/local/Cellar/postgresql/12.3_4/include:$CPLUS_INCLUDE_PATH"
 
 
