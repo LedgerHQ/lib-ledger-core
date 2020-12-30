@@ -560,6 +560,11 @@ namespace algorand {
         return txUid;
     }
 
+    void TransactionDatabaseHelper::deleteAllTransactions(soci::session& sql)
+    {
+        sql<<"DELETE FROM algorand_transactions";
+    }
+
     std::vector<model::Transaction> TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(
             soci::session& sql,
             uint64_t assetId,

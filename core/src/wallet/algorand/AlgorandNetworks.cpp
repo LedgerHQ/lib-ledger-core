@@ -53,7 +53,8 @@ namespace networks {
     }
 
     const bool isAlgorandCurrency(const std::string &networkName) {
-        return ALGORAND_NETWORKS().find(networkName) != ALGORAND_NETWORKS().end();
+        auto algorand_networks = ALGORAND_NETWORKS();
+        return algorand_networks.find(networkName) != algorand_networks.end();
     }
 
 } // namespace networks

@@ -77,7 +77,7 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "http://test.test");
-        auto wallet = wait(pool->createWallet("my_wallet", "ripple", configuration));
+        auto wallet = uv::wait(pool->createWallet("my_wallet", "ripple", configuration));
         {
             auto account = createRippleLikeAccount(wallet, 0, XRP_KEYS_INFO);
             auto waiter = createSyncReceiver();
@@ -97,8 +97,8 @@ TEST_F(RippleLikeOptimisticTransactionUpdate, BroadcastTransaction)
             dummy_transaction->setSigningPubKey(dummy_key);
             dummy_transaction->setDERSignature(dummy_key);
 
-            auto tx_hash = wait(account->broadcastTransaction(dynamic_pointer_cast<api::RippleLikeTransaction>(dummy_transaction)));
-            auto explorer_tx = wait(account->getTransaction(tx_hash));
+            auto tx_hash = uv::wait(account->broadcastTransaction(dynamic_pointer_cast<api::RippleLikeTransaction>(dummy_transaction)));
+            auto explorer_tx = uv::wait(account->getTransaction(tx_hash));
 
             EXPECT_EQ(explorer_tx->hash, "AC0D84CB81E8ECA92E7EF9ABC3526FAED54DE07763A308296B28468D68D34991");
             EXPECT_EQ(explorer_tx->value, BigInt(1));

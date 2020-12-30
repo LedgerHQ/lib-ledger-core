@@ -475,6 +475,17 @@ namespace ledger {
             });
         }
 
+        Future<Unit> WalletPool::deleteWallet(const std::string& name) {
+            auto self = shared_from_this();
+            return async<Unit>([=]() {
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                soci::transaction tr(sql);
+                PoolDatabaseHelper::removeWalletByName(sql, name);
+                tr.commit();
+                return unit;
+                });
+        }
+
         Option<api::Currency> WalletPool::getCurrency(const std::string &name) const {
             for (auto& currency : _currencies) {
                 if (currency.name == name)

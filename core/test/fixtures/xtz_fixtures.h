@@ -4,7 +4,7 @@
 #ifndef LEDGER_FIXTURES_XTZ
 #define LEDGER_FIXTURES_XTZ
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -18,12 +18,11 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
-#include <async/async_wait.h>
 #include <wallet/tezos/TezosLikeAccount.h>
 #include <api/TezosLikeOperation.hpp>
 #include <api/TezosLikeTransaction.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <utils/hex.h>

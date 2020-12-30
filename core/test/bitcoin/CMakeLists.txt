@@ -18,6 +18,13 @@ target_include_directories(ledger-core-bitcoin-tests PUBLIC ../../../core/lib/le
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-bitcoin-tests crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    if(WIN32)
+        target_link_libraries( ledger-core-bitcoin-tests ws2_32 crypt32 )
+    endif()	
+    copy_install_imported_targets(ledger-core-bitcoin-tests OpenSSL::Crypto)
+else()
+    copy_install_imported_targets(ledger-core-bitcoin-tests crypto)
+endif()
 add_test (NAME ledger-core-bitcoin-tests COMMAND ledger-core-bitcoin-tests)

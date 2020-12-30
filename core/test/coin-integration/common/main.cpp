@@ -30,9 +30,6 @@
  */
 
 #include <gtest/gtest.h>
-#include <QCoreApplication>
-#include <QDir>
-#include <QDebug>
 #include "../integration/IntegrationEnvironment.h"
 
 int main(int argc, char **argv) {

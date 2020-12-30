@@ -52,17 +52,17 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
+        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
         std::set<std::string> emittedOperations;
         {
-            auto nextIndex = wait(wallet->getNextAccountIndex());
+            auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
             auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
 
-            auto fees = wait(account->getFees());
+            auto fees = uv::wait(account->getFees());
             EXPECT_GT(fees->toLong(), 0L);
-            auto baseReserve = wait(account->getBaseReserve());
+            auto baseReserve = uv::wait(account->getBaseReserve());
             EXPECT_GT(baseReserve->toLong(), 0L);
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
@@ -73,7 +73,8 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
                 }
             });
 
-            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto eventBus = pool->getEventBus();
+            eventBus->subscribe(getTestExecutionContext(), receiver);
 
             receiver.reset();
             receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
@@ -84,18 +85,19 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_EQ(event->getCode(),
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-                auto balance = wait(account->getBalance());
+                auto balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
                 auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
-                dispatcher->stop();
+                getTestExecutionContext()->stop();
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(getTestExecutionContext(), receiver);
 
-            dispatcher->waitUntilStopped();
+            getTestExecutionContext()->waitUntilStopped();
 
-            auto ops = wait(
+            auto ops = uv::wait(
                     std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete()
                     ->addOrder(api::OperationOrderKey::DATE,false))->execute());
             std::cout << "Ops: " << ops.size() << std::endl;
@@ -119,13 +121,13 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_TRUE(std::chrono::duration_cast<std::chrono::hours>(xrpOp->getTransaction()->getDate().time_since_epoch()).count() != 0);
             }
 
-            EXPECT_EQ(wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7")), true);
-            EXPECT_EQ(wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCK")), false);
-            EXPECT_EQ(wait(account->isAddressActivated("rf1pjatD8LyyevP1BqQJtHoz5edC5vE77Q")), false);
+            EXPECT_EQ(uv::wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7")), true);
+            EXPECT_EQ(uv::wait(account->isAddressActivated("rageXHB6Q4VbvvWdTzKANwjeCT4HXFCK")), false);
+            EXPECT_EQ(uv::wait(account->isAddressActivated("rf1pjatD8LyyevP1BqQJtHoz5edC5vE77Q")), false);
 
-            auto block = wait(account->getLastBlock());
+            auto block = uv::wait(account->getLastBlock());
             EXPECT_GT(block.height, 0);
-            EXPECT_LT(block.height, std::numeric_limits<int32_t>::max());
+            EXPECT_LT(block.height, (std::numeric_limits<int32_t>::max)());
         }
     }
 }
@@ -136,10 +138,10 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
+        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
         std::set<std::string> emittedOperations;
         {
-            auto nextIndex = wait(wallet->getNextAccountIndex());
+            auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
             auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
@@ -152,12 +154,13 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
                 }
             });
 
-            pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto eventBus = pool->getEventBus();
+            eventBus->subscribe(getTestExecutionContext(), receiver);
 
             std::shared_ptr<Amount> balance;
 
             receiver.reset();
-            receiver = make_receiver([=, &balance](const std::shared_ptr<api::Event> &event) {
+            receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
@@ -165,22 +168,23 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
                 EXPECT_EQ(event->getCode(),
                           api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-                balance = wait(account->getBalance());
+                balance = uv::wait(account->getBalance());
                 std::cout << "Balance: " << balance->toString() << std::endl;
                 auto txBuilder = std::dynamic_pointer_cast<RippleLikeTransactionBuilder>(account->buildTransaction());
-                dispatcher->stop();
+                getTestExecutionContext()->stop();
             });
 
             auto restoreKey = account->getRestoreKey();
-            account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+            auto bus = account->synchronize();
+            bus->subscribe(getTestExecutionContext(), receiver);
 
-            dispatcher->waitUntilStopped();
-
+            getTestExecutionContext()->waitUntilStopped();
+            
             auto now = std::time(nullptr);
             char now_str[256];
             std::strftime(now_str, sizeof(now_str), "%Y-%m-%dT%H:%M:%SZ", std::localtime(&now));
 
-            auto history = wait(account->getBalanceHistory(
+            auto history = uv::wait(account->getBalanceHistory(
                 "2019-09-20T00:00:00Z",
                 now_str,
                 api::TimePeriod::DAY
@@ -201,20 +205,21 @@ TEST_F(RippleLikeWalletSynchronization, EmitNewTransactionAndReceiveOnPool) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301", "ripple", configuration));
+        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301", "ripple", configuration));
         auto account = createRippleLikeAccount(wallet, 0, XRP_KEYS_INFO);
 
         auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
             if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
+                EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
                 dispatcher->stop();
             }
         });
         ws->setOnConnectCallback([&] () {
             ws->push(NOTIF_WITH_TX);
         });
-        EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
-        pool->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
+        auto eventBus = pool->getEventBus();
+        eventBus->subscribe(getTestExecutionContext(), receiver);
         account->startBlockchainObservation();
         dispatcher->waitUntilStopped();
     }
@@ -224,14 +229,14 @@ const std::string NOTIF_WITH_BLOCK = "{\"fee_base\":10,\"fee_ref\":10,\"ledger_h
 TEST_F(RippleLikeWalletSynchronization, EmitNewBlock) {
     auto pool = newDefaultPool();
     {
-        auto wallet = wait(pool->createWallet("e847815f-488a-4301", "ripple", api::DynamicObject::newInstance()));
+        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301", "ripple", api::DynamicObject::newInstance()));
         auto account = createRippleLikeAccount(wallet, 0, XRP_KEYS_INFO);
         auto receiver = make_receiver([&] (const std::shared_ptr<api::Event>& event) {
             if (event->getCode() == api::EventCode::NEW_BLOCK) {
                 try {
                     auto height = event->getPayload()->getLong(api::Account::EV_NEW_BLOCK_HEIGHT).value_or(0);
                     auto hash = event->getPayload()->getString(api::Account::EV_NEW_BLOCK_HASH).value_or("");
-                    auto block = wait(pool->getLastBlock("ripple"));
+                    auto block = uv::wait(pool->getLastBlock("ripple"));
                     EXPECT_EQ(height, block.height);
                     EXPECT_EQ(hash, block.blockHash);
                 } catch (const std::exception& ex) {
@@ -244,8 +249,9 @@ TEST_F(RippleLikeWalletSynchronization, EmitNewBlock) {
         ws->setOnConnectCallback([&] () {
             ws->push(NOTIF_WITH_BLOCK);
         });
-        EXPECT_EQ(wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
-        account->getEventBus()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+        EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
+        auto eventBus = account->getEventBus();
+        eventBus->subscribe(getTestExecutionContext(), receiver);
         account->startBlockchainObservation();
         dispatcher->waitUntilStopped();
     }
@@ -256,8 +262,8 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
     auto configuration = DynamicObject::newInstance();
     configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                              "44'/<coin_type>'/<account>'/<node>/<address>");
-    auto wallet = wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
-    auto nextIndex = wait(wallet->getNextAccountIndex());
+    auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
+    auto nextIndex = uv::wait(wallet->getNextAccountIndex());
     auto account = createRippleLikeAccount(wallet, nextIndex, VAULT_XRP_KEYS_INFO);
     auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
         fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -270,10 +276,11 @@ TEST_F(RippleLikeWalletSynchronization, VaultAccountSynchronization) {
         dispatcher->stop();
     });
 
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(getTestExecutionContext(), receiver);
     dispatcher->waitUntilStopped();
 
-    auto ops = wait(
+    auto ops = uv::wait(
             std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
     std::cout << "Ops: " << ops.size() << std::endl;
 
