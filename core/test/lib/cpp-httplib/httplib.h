@@ -4815,7 +4815,7 @@ inline bool ClientImpl::write_request(Stream &strm, const Request &req,
   detail::BufferStream bstrm;
 
   // Request line
-  const auto &path = detail::encode_url(req.path);
+  const auto &path = req.path;
 
   bstrm.write_format("%s %s HTTP/1.1\r\n", req.method.c_str(), path.c_str());
 
