@@ -172,7 +172,7 @@ namespace ledger {
                         if (result.isFailure()) {
                             return Future<BlockchainExplorerAccountSynchronizationResult>::successful(BlockchainExplorerAccountSynchronizationResult{});
                         }
-                        return self->getTxs(self, 0, nullptr, result.getValue());
+                        return getTxs(self, 0, nullptr, result.getValue());
             }).onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
