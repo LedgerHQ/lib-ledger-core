@@ -169,7 +169,7 @@ TEST_F(CosmosDBTest, FeesMsgTypeFilteredOutTest) {
     }
 }
 
-TEST_F(CosmosDBTest, FeesMsgTypeTest) {
+TEST_F(CosmosDBTest, DISABLED_FeesMsgTypeTest) {
     std::shared_ptr<CosmosLikeAccount> account;
     std::shared_ptr<CosmosLikeWallet> wallet;
     setupTest(pool, account, wallet, "f727a3d9-7e98-4bbf-b92c-c3976483ac89");
