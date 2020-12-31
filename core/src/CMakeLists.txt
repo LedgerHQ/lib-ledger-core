@@ -189,10 +189,6 @@ else()
     target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
 endif()
 
-if(SSL_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE ssl)
-endif()
-
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)
 target_include_directories(ledger-core-interface INTERFACE ../lib/boost)
 target_include_directories(ledger-core-interface INTERFACE ../lib/cereal/)
