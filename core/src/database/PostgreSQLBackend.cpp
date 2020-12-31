@@ -32,12 +32,10 @@
 #include <utils/Exception.hpp>
 #include <api/ConfigurationDefaults.hpp>
 #include <soci-postgresql.h>
-
 #ifdef SSL_SUPPORT
     #include <thread>
     #include <openssl/ssl.h>
 #endif
-
 using namespace soci;
 
 namespace ledger {
