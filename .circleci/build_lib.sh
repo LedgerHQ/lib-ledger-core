@@ -24,9 +24,8 @@ function command_target_jni {
     add_to_cmake_params -DOPENSSL_ROOT_DIR="/usr/local/opt/openssl"
   else
     export JAVA_HOME="$(dirname $(dirname $(readlink -f $(which javac))))"
-    add_to_cmake_params -DSYS_OPENSSL=ON
   fi
-  add_to_cmake_params -DTARGET_JNI=ON  -DSSL_SUPPORT=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
+  add_to_cmake_params -DSYS_OPENSSL=ON -DTARGET_JNI=ON  -DSSL_SUPPORT=ON -DPG_SUPPORT=ON -DPostgreSQL_INCLUDE_DIR="$PG_INCLUDE_DIR" #ACTIVATIN SSL ONLY WHEN USING PG FOR WD
 }
 
 function command_Release {

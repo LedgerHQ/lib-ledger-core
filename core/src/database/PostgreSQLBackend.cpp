@@ -32,9 +32,10 @@
 #include <utils/Exception.hpp>
 #include <api/ConfigurationDefaults.hpp>
 #include <soci-postgresql.h>
-#include <thread>
-#include <openssl/ssl.h>
-
+#ifdef SSL_SUPPORT
+    #include <thread>
+    #include <openssl/ssl.h>
+#endif
 using namespace soci;
 
 namespace ledger {
@@ -87,6 +88,7 @@ namespace ledger {
 
         std::once_flag PostgreSQLBackend::sslFlag;
         void PostgreSQLBackend::initSSLLibraries() {
+#ifdef SSL_SUPPORT
             std::call_once(PostgreSQLBackend::sslFlag, [] () {
             #if OPENSSL_VERSION_NUMBER < 0x10100000L
                 SSL_library_init();
@@ -94,6 +96,7 @@ namespace ledger {
                 OPENSSL_init_ssl(0, NULL);
             #endif
             });
+#endif
         }
     }
 }
