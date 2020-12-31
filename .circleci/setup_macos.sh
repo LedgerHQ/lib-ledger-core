@@ -5,9 +5,6 @@ BUILD_CONFIG=$1
 echo ">>>>>>> GETTING CIRCLE_TAG : $CIRCLE_TAG"
 echo ">>>>>>> GETTING CIRCLE_BRANCH : $CIRCLE_BRANCH"
 
-git -C /usr/local/Homebrew/Library/Taps/homebrew/homebrew-core fetch --unshallow
-git -C /usr/local/Homebrew/Library/Taps/homebrew/homebrew-cask fetch --unshallow
-
 echo "========> Install basic config"
 brew update || echo "Brew failed, try continue build"
 
