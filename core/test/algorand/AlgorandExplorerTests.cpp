@@ -112,7 +112,7 @@ TEST_F(AlgorandExplorerTest, GetPaymentTransaction) {
     assertSameTransaction(txRef, tx);
 }
 
-TEST_F(AlgorandExplorerTest, GetAssetConfigTransaction) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetAssetConfigTransaction) {
     auto txRef = assetConfigTransaction();
     model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
