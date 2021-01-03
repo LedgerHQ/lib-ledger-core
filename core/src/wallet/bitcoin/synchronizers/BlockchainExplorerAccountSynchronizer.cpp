@@ -428,7 +428,7 @@ namespace ledger {
 
             auto self = getSharedFromThis();
             self->_addresses.clear();
-            //self->transactions.clear();
+            self->_cachedTransactionBulks.clear();
             return self->extendKeychain(0, buddy).template flatMap<Unit>(account->getContext(), [buddy, self](const Unit&) {
                 return self->synchronizeBatches(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy](auto) {
@@ -484,13 +484,14 @@ namespace ledger {
                 .template flatMap<Unit>(buddy->account->getContext(), [self, currentBatchIndex, buddy, to](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<Unit> {
                 if (bulk->transactions.size() > 0)
                 {
+                    self->_cachedTransactionBulks[std::to_string(currentBatchIndex) + "," ] = bulk;
                     return self->extendKeychain((currentBatchIndex + 1) * 2, buddy);
                 }
                 else
                 {
                     return Future<Unit>::successful(unit);
                 }
-                    });
+            });
         };
 
 
@@ -618,6 +619,30 @@ namespace ledger {
                     });
         };
 
+        Future <std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>> BlockchainExplorerAccountSynchronizer::getTransactionBulk(int currentBatchIndex, std::shared_ptr<SynchronizationBuddy>& buddy) {
+            int from = currentBatchIndex * buddy->halfBatchSize * 2;
+            int to = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;            
+            Option<std::string> blockHash;            
+            auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
+            if (batchState.blockHeight > 0) {
+                blockHash = Option<std::string>(batchState.blockHash);
+            }
+            auto key = std::to_string(currentBatchIndex) + ",";
+            if (!blockHash.isEmpty()) {
+                key += blockHash.getValue();
+            }
+            auto it = this->_cachedTransactionBulks.find(key);
+            if (it == this->_cachedTransactionBulks.end()) {
+                auto batch = std::vector<std::string>(this->_addresses.begin() + from, this->_addresses.begin() + to);
+                return _explorer->getTransactions(batch, blockHash, optional<void*>());
+            }
+            return Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>::async(buddy->account->getContext(), 
+                [=]()-> std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk> {
+                    return it->second;
+                }
+                );
+        }
+
         // Synchronize a transactions batch.
         //
         // The currentBatchIndex is the currently synchronized batch. buddy is the
@@ -626,21 +651,8 @@ namespace ledger {
         // we must stop.
         Future<bool> BlockchainExplorerAccountSynchronizer::synchronizeBatch(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy, bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
-
-            Option<std::string> blockHash;
             auto self = getSharedFromThis();
-            auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-
-            if (batchState.blockHeight > 0) {
-                blockHash = Option<std::string>(batchState.blockHash);
-            }
-
-
-            int from = currentBatchIndex * buddy->halfBatchSize * 2;
-            int to = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;
-            auto batch = std::vector<std::string>(self->_addresses.begin() + from, min(self->_addresses.begin() + to, self->_addresses.end()));
-
-            return _explorer->getTransactions(batch, blockHash, optional<void*>())
+            return getTransactionBulk(currentBatchIndex, buddy)
                 .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
 
                 auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
