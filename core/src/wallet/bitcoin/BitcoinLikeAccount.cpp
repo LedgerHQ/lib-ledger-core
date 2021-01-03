@@ -115,7 +115,7 @@ namespace ledger {
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
-            uint64_t fees = transaction.fees;
+            uint64_t fees = transaction.fees.getValue().toUint64();
             uint64_t sentAmount = 0L;
             uint64_t receivedAmount = 0L;
             std::vector<std::string> senders;
