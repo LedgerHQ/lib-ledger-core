@@ -145,9 +145,6 @@ namespace ledger {
                         }
                     }
                 }
-                if (input.value.nonEmpty()) {
-                    fees += input.value.getValue().toUint64();
-                }
             }
 
             // Find outputs
@@ -180,7 +177,6 @@ namespace ledger {
                         recipients.push_back(output.address.getValue());
                     }
                 }
-                fees = fees - output.value.toUint64();
             }
             std::stringstream snds;
             strings::join(senders, snds, ",");
