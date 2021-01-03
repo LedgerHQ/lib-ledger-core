@@ -700,13 +700,8 @@ namespace ledger {
                 }
 
                 auto hadTX = hadTransactions || bulk->transactions.size() > 0;
-                if (bulk->hasNext) {
-                    return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
-                }
-                else {
-                    return Future<bool>::successful(hadTX);
-                }
-                    });
+                return Future<bool>::successful(hadTX);                    
+                });
         };
     }
 }

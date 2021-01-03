@@ -125,9 +125,7 @@ namespace ledger {
 
         std::vector<EthereumLikeKeychain::Address>
         EthereumLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            std::vector<EthereumLikeKeychain::Address> result;
-            result.push_back(derive());
-            return result;
+            return { derive() };
         }
 
 
