@@ -89,7 +89,6 @@ namespace ledger {
             std::shared_ptr<SynchronizationBuddy> makeSynchronizationBuddy();
             Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy>& buddy);
             Future<Unit> recoverFromFailedSynchronization(const std::shared_ptr<SynchronizationBuddy>& buddy);
-            Future<Unit> extendKeychain(std::shared_ptr<SynchronizationBuddy> buddy, const long& oldKeychainSize);
             Future<Unit> extendKeychain(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy);
             Future<Unit> synchronizeBatches(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy);
             Future<bool> synchronizeBatch(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy, bool hadTransactions = false);
@@ -99,6 +98,7 @@ namespace ledger {
             std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> _notifier;
             std::mutex _lock;
             std::shared_ptr<BitcoinLikeAccount> _currentAccount;
+            std::vector<std::string> _addresses;
         };
     }
 }

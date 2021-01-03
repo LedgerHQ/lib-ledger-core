@@ -72,7 +72,7 @@ namespace ledger {
              * @param transaction
              * @return A flag indicating if the transaction was ignored, inserted
              */
-            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorerTransaction& transaction);
+            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorerTransaction& transaction, bool needExtendKeychain = true);
             /**
              *
              * @param block

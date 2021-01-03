@@ -67,7 +67,7 @@ namespace ledger {
                                      const std::shared_ptr<api::BitcoinLikeExtendedPublicKey> &xpub,
                                      const std::shared_ptr<Preferences> &preferences);
 
-            bool markPathAsUsed(const DerivationPath &path) override;
+            bool markPathAsUsed(const DerivationPath &path, bool needExtendKeychain = true) override;
 
             BitcoinLikeKeychain::Address getFreshAddress(KeyPurpose purpose) override;
             std::vector<BitcoinLikeKeychain::Address> getAllObservableAddresses(uint32_t from, uint32_t to) override;
@@ -75,6 +75,7 @@ namespace ledger {
             Option<KeyPurpose> getAddressPurpose(const std::string &address) const override;
             Option<std::string> getAddressDerivationPath(const std::string &address) const override;
             std::vector<BitcoinLikeKeychain::Address> getAllObservableAddresses(KeyPurpose purpose, uint32_t from, uint32_t to) override;
+            std::vector<std::string> getAllObservableAddressString(uint32_t from, uint32_t to) override;
             bool isEmpty() const override;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> getExtendedPublicKey() const;
             std::string getRestoreKey() const override;
@@ -94,7 +95,6 @@ namespace ledger {
 
         private:
             BitcoinLikeKeychain::Address derive(KeyPurpose purpose, off_t index);
-            std::vector<BitcoinLikeKeychain::Address> deriveInBulk(uint32_t from, uint32_t to);
             void saveState();
             KeychainPersistentState _state;
             std::shared_ptr<api::BitcoinLikeExtendedPublicKey> _xpub;

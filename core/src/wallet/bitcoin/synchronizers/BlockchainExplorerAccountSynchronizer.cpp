@@ -130,7 +130,7 @@ namespace ledger {
 
                     for (auto &io : txIo) {
                         if (io.address.hasValue()) {
-                            keychain->markAsUsed(io.address.getValue());
+                            keychain->markAsUsed(io.address.getValue(), false);
                             flag |= BitcoinLikeAccount::FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
                         }
                     }
@@ -138,7 +138,7 @@ namespace ledger {
                 };
                 return markAddress(transaction.inputs) | markAddress(transaction.outputs);
             }
-            return buddy->account->putTransaction(sql, transaction);
+            return buddy->account->putTransaction(sql, transaction, false);
         }
 
         std::shared_ptr<CommonBuddy>
@@ -427,8 +427,7 @@ namespace ledger {
             updateCurrentBlock(buddy, account->getContext());
 
             auto self = getSharedFromThis();
-            auto keychainSizeKey = fmt::format("accountKeychainSize:{}", buddy->account->getIndex());
-            auto oldKeychainSize = buddy->keychain->getPreferences()->getLong(keychainSizeKey, 0);
+            self->_addresses.clear();
             //self->transactions.clear();
             return self->extendKeychain(0, buddy).template flatMap<Unit>(account->getContext(), [buddy, self](const Unit&) {
                 return self->synchronizeBatches(0, buddy);
@@ -470,36 +469,6 @@ namespace ledger {
         };
 
         // extend the keychain to cover all the addresses(only for bitcoin)
-        Future<Unit> BlockchainExplorerAccountSynchronizer::extendKeychain(std::shared_ptr<SynchronizationBuddy> buddy, const long& oldKeychainSize) {
-            auto self = getSharedFromThis();
-            if (oldKeychainSize > 0)
-            {
-                // check whether the last batch in old keychain contains any transaction
-                auto from = (std::max)((int)(oldKeychainSize - buddy->halfBatchSize), 0);
-                auto to = oldKeychainSize - 1;
-                auto batch = vector::map<std::string, std::shared_ptr<BitcoinLikeAddress>>(
-                    buddy->keychain->getAllObservableAddresses(from, to),
-                    [](const std::shared_ptr<BitcoinLikeAddress>& addr) -> std::string {
-                        return addr->toString();
-                    }
-                );
-                return _explorer->getTransactions(batch, optional<std::string>(), optional<void*>())
-                    .template flatMap<Unit>(buddy->account->getContext(), [self, oldKeychainSize, buddy](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<Unit> {
-                    if (bulk->transactions.size() > 0)
-                    {
-                        // extend the keychain from last position
-                        return self->extendKeychain(oldKeychainSize / buddy->halfBatchSize, buddy);
-                    }
-                    else
-                    {
-                        // last batch has no transaction, no need to extend the old keychain
-                        return Future<Unit>::successful(unit);
-                    }
-                        });
-            }
-            return self->extendKeychain(0, buddy); // extend keychain from 0 if oldKeychainSize = 0
-        }
-
         Future<Unit> BlockchainExplorerAccountSynchronizer::extendKeychain(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy) {
             buddy->logger->info("Detecting addresses for batch {}", currentBatchIndex);
             auto self = getSharedFromThis();
@@ -507,15 +476,11 @@ namespace ledger {
             auto to = (currentBatchIndex + 1) * buddy->halfBatchSize - 1;
             buddy->logger->info("From address index {}", from);
             buddy->logger->info("To address index {}", to);
-            buddy->keychain->getAllObservableAddresses(from, to);
-            auto batch = vector::map<std::string, std::shared_ptr<BitcoinLikeAddress>>(
-                buddy->keychain->getAllObservableAddresses((std::max)(from, to - buddy->halfBatchSize + 1), to),
-                [](const std::shared_ptr<BitcoinLikeAddress>& addr) -> std::string {
-                    return addr->toString();
-                }
-            );
+            auto batch = buddy->keychain->getAllObservableAddressString(from, to);
+            auto lastAddressesinBatch = std::vector<std::string>(batch.end() - 2 * buddy->halfBatchSize, batch.end());
+            self->_addresses.insert(self->_addresses.end(), batch.begin(), batch.end());
 
-            return _explorer->getTransactions(batch, optional<std::string>(), optional<void*>())
+            return _explorer->getTransactions(lastAddressesinBatch, optional<std::string>(), optional<void*>())
                 .template flatMap<Unit>(buddy->account->getContext(), [self, currentBatchIndex, buddy, to](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<Unit> {
                 if (bulk->transactions.size() > 0)
                 {
@@ -523,8 +488,6 @@ namespace ledger {
                 }
                 else
                 {
-                    auto keychainSizeKey = fmt::format("accountKeychainSize:{}", buddy->account->getIndex());
-                    buddy->keychain->getPreferences()->edit()->putLong(keychainSizeKey, to + 1)->commit();
                     return Future<Unit>::successful(unit);
                 }
                     });
@@ -537,9 +500,6 @@ namespace ledger {
         // bulks. The input buddy can be used to customize the behavior of the synchronization.
         Future<Unit> BlockchainExplorerAccountSynchronizer::synchronizeBatches(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy) {
             buddy->logger->info("SYNC BATCHES");
-            //For ETH and XRP like wallets, one account corresponds to one ETH address,
-            //so ne need to discover other batches
-            auto hasMultipleAddresses = true;
             auto done = currentBatchIndex >= buddy->savedState.getValue().batches.size() - 1;
             if (currentBatchIndex >= buddy->savedState.getValue().batches.size()) {
                 buddy->savedState.getValue().batches.push_back(BlockchainExplorerAccountSynchronizationBatchSavedState());
@@ -548,10 +508,7 @@ namespace ledger {
             auto self = getSharedFromThis();
             auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
 
-            auto benchmark = std::make_shared<Benchmarker>(fmt::format("Synchronize batch {}", currentBatchIndex), buddy->logger);
-            benchmark->start();
             return synchronizeBatch(currentBatchIndex, buddy).template flatMap<Unit>(buddy->account->getContext(), [=](const bool& hadTransactions) -> Future<Unit> {
-                benchmark->stop();
 
                 buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
 
@@ -559,7 +516,7 @@ namespace ledger {
                 //But we may want to force sync of accounts within KEYCHAIN_OBSERVABLE_RANGE
                 auto discoveredAddresses = currentBatchIndex * buddy->halfBatchSize;
                 auto lastDiscoverableAddress = buddy->configuration->getInt(api::Configuration::KEYCHAIN_OBSERVABLE_RANGE).value_or(buddy->halfBatchSize);
-                if (hasMultipleAddresses && (!done || (done && hadTransactions) || lastDiscoverableAddress > discoveredAddresses)) {
+                if (!done || (done && hadTransactions) || lastDiscoverableAddress > discoveredAddresses) {
                     return self->synchronizeBatches(currentBatchIndex + 1, buddy);
                 }
 
@@ -678,27 +635,13 @@ namespace ledger {
                 blockHash = Option<std::string>(batchState.blockHash);
             }
 
-            auto derivationBenchmark = std::make_shared<Benchmarker>("Batch derivation", buddy->logger);
-            derivationBenchmark->start();
 
-            auto batch = vector::map<std::string, std::shared_ptr<BitcoinLikeAddress>>(
-                buddy->keychain->getAllObservableAddresses((uint32_t)(currentBatchIndex * buddy->halfBatchSize),
-                    (uint32_t)((currentBatchIndex + 1) * buddy->halfBatchSize - 1)),
-                [](const std::shared_ptr<BitcoinLikeAddress>& addr) -> std::string {
-                    return addr->toString();
-                }
-            );
+            int from = currentBatchIndex * buddy->halfBatchSize * 2;
+            int to = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;
+            auto batch = std::vector<std::string>(self->_addresses.begin() + from, min(self->_addresses.begin() + to, self->_addresses.end()));
 
-            derivationBenchmark->stop();
-
-            auto benchmark = std::make_shared<Benchmarker>("Get batch", buddy->logger);
-            benchmark->start();
             return _explorer->getTransactions(batch, blockHash, optional<void*>())
-                .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
-                benchmark->stop();
-
-                auto insertionBenchmark = std::make_shared<Benchmarker>("Transaction computation", buddy->logger);
-                insertionBenchmark->start();
+                .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
 
                 auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                 //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
@@ -756,16 +699,9 @@ namespace ledger {
                     }
                 }
 
-                insertionBenchmark->stop();
-
                 auto hadTX = hadTransactions || bulk->transactions.size() > 0;
-                if (bulk->hasNext) {
-                    return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
-                }
-                else {
-                    return Future<bool>::successful(hadTX);
-                }
-                    });
+                return Future<bool>::successful(hadTX);                    
+                });
         };
     }
 }

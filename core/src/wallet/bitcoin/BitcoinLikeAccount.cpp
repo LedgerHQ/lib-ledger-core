@@ -109,13 +109,13 @@ namespace ledger {
         }
 
         int BitcoinLikeAccount::putTransaction(soci::session &sql,
-                                               const BitcoinLikeBlockchainExplorerTransaction &transaction) {
+                                               const BitcoinLikeBlockchainExplorerTransaction &transaction, bool needExtendKeychain) {
             if (transaction.block.nonEmpty())
                 putBlock(sql, transaction.block.getValue());
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
-            uint64_t fees = 0L;
+            uint64_t fees = transaction.fees.getValue().toUint64();
             uint64_t sentAmount = 0L;
             uint64_t receivedAmount = 0L;
             std::vector<std::string> senders;
@@ -138,15 +138,12 @@ namespace ledger {
                         // This address is part of the account.
                         sentAmount += input.value.getValue().toUint64();
                         accountInputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorerInput *>(&input), DerivationPath(path.getValue())));
-                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()))) {
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), needExtendKeychain)) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
                         }
                     }
-                }
-                if (input.value.nonEmpty()) {
-                    fees += input.value.getValue().toUint64();
                 }
             }
 
@@ -171,7 +168,7 @@ namespace ledger {
                             receivedAmount += output.value.toUint64();
                             recipients.push_back(output.address.getValue());
                         }
-                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()))) {
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), needExtendKeychain)) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
@@ -180,7 +177,6 @@ namespace ledger {
                         recipients.push_back(output.address.getValue());
                     }
                 }
-                fees = fees - output.value.toUint64();
             }
             std::stringstream snds;
             strings::join(senders, snds, ",");
