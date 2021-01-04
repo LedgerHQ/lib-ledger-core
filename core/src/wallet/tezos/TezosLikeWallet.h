@@ -73,6 +73,8 @@ namespace ledger {
 
             std::shared_ptr<TezosLikeBlockchainExplorer> getBlockchainExplorer();
 
+            const std::string getCacheKey(size_t accountIndex, const std::string& originatedAccount);
+
             Option<Amount> getBalanceFromCache(size_t accountIndex, const std::string& originatedAccount);
 
             void updateBalanceCache(size_t accountIndex, const std::string& originatedAccount, Amount balance);
