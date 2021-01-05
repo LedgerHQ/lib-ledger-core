@@ -259,7 +259,7 @@ namespace ledger {
             );
         }
 
-        Future<std::shared_ptr<BigInt>>
+        Future<std::shared_ptr<GasLimit>>
         NodeTezosLikeBlockchainExplorer::getEstimatedGasLimit(
             const std::shared_ptr<TezosLikeTransactionApi> &tx)
         {

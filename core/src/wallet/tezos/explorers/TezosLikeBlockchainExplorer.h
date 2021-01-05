@@ -104,6 +104,18 @@ namespace ledger {
             }
 
         };
+
+        struct GasLimit {
+            BigInt reveal;
+            BigInt transaction;
+
+            GasLimit() :
+                reveal(0), transaction(0) {}
+
+            GasLimit(const BigInt& r, const BigInt& t) :
+                reveal(r), transaction(t) {}
+        };
+
         class TezosLikeTransactionApi;
         class TezosLikeBlockchainExplorer : public ConfigurationMatchable,
                                             public AbstractBlockchainExplorer<TezosLikeBlockchainExplorerTransaction> {
@@ -127,15 +139,15 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) = 0;
 
-            virtual Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+            virtual Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
                 const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
 
-            Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+            Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
                 const std::shared_ptr<HttpClient> &http,
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<TezosLikeTransactionApi> &transaction);
 
-            Future<std::shared_ptr<BigInt>> getEstimatedGasLimit(
+            Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
                 const std::shared_ptr<HttpClient> &http,
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<TezosLikeTransactionApi> &transaction,

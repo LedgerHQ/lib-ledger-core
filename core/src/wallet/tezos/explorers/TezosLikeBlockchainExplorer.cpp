@@ -203,17 +203,17 @@ namespace ledger {
                     });
         }
 
-        Future<std::shared_ptr<BigInt>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
+        Future<std::shared_ptr<GasLimit>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
             const std::shared_ptr<HttpClient> &http,
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<TezosLikeTransactionApi> &tx)
         {
-            return getChainId(context, http).flatMapPtr<BigInt>(context, [=](const std::string& result)-> FuturePtr<BigInt> {
+            return getChainId(context, http).flatMapPtr<GasLimit>(context, [=](const std::string& result)-> FuturePtr<GasLimit> {
                 return getEstimatedGasLimit(http, context, tx, result);
             });
         }
 
-        Future<std::shared_ptr<BigInt>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
+        Future<std::shared_ptr<GasLimit>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
             const std::shared_ptr<HttpClient> &http,
             const std::shared_ptr<api::ExecutionContext> &context,
             const std::shared_ptr<TezosLikeTransactionApi> &tx, 
@@ -234,9 +234,9 @@ namespace ledger {
                     postHeaders,
                     getRPCNodeEndpoint())
                 .json(parseNumbersAsString)
-                .flatMapPtr<BigInt>(
+                .flatMapPtr<GasLimit>(
                     context,
-                    [](const HttpRequest::JsonResult &result) -> FuturePtr<BigInt> {
+                    [](const HttpRequest::JsonResult &result) -> FuturePtr<GasLimit> {
                         const auto &json = std::get<1>(result)->GetObject();
                         if (json.HasMember("kind")) {
                             throw make_exception(
@@ -245,32 +245,57 @@ namespace ledger {
                                 "failed to simulate operation: {}",
                                 json["kind"].GetString());
                         }
-                        if (!json["contents"].IsArray() || !(json["contents"].Size() > 0) ||
-                            !json["contents"].GetArray()[0].IsObject() ||
-                            !json["contents"].GetArray()[0].GetObject().HasMember("metadata") ||
-                            !json["contents"].GetArray()[0].GetObject()["metadata"].HasMember(
-                                "operation_result")) {
+
+                        if (!json["contents"].IsArray() || !(json["contents"].Size() > 0)) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR,
                                 std::make_shared<HttpRequest::JsonResult>(result),
                                 "failed to get operation_result in simulation");
                         }
-                        auto &operationResult = json["contents"]
-                                                    .GetArray()[0]
-                                                    .GetObject()["metadata"]
-                                                    .GetObject()["operation_result"];
 
-                        // Fail if operation_result is not .status == "applied"
-                        if (!operationResult.HasMember("status") ||
-                            operationResult["status"].GetString() != std::string("applied")) {
+                        auto gas = std::make_shared<GasLimit>();
+
+                        for (auto& content : json["contents"].GetArray()) {
+                            if (!content.IsObject() ||
+                                !content.GetObject().HasMember("kind") ||
+                                !content.GetObject().HasMember("metadata") ||
+                                !content.GetObject()["metadata"].HasMember("operation_result")) {
                             throw make_exception(
                                 api::ErrorCode::HTTP_ERROR,
                                 std::make_shared<HttpRequest::JsonResult>(result),
-                                "failed to simulate the operation on the Node");
+                                "failed to get operation_result in simulation");
+                            }                           
+
+                            auto &operationResult = content.GetObject()["metadata"]
+                                                    .GetObject()["operation_result"];
+
+                            // Fail if operation_result is not .status == "applied"
+                            if (!operationResult.HasMember("status") ||
+                                operationResult["status"].GetString() != std::string("applied")) {
+                                throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR,
+                                    std::make_shared<HttpRequest::JsonResult>(result),
+                                    "failed to simulate the operation on the Node");
+                            }
+
+                            const auto operationKind = content.GetObject()["kind"].GetString();
+                            if (operationKind == std::string("transaction")) {
+                                gas->transaction = BigInt::fromString(operationResult["consumed_gas"].GetString());
+                            }
+                            else if (operationKind == std::string("reveal")) {
+                                gas->reveal = BigInt::fromString(operationResult["consumed_gas"].GetString());
+                            }
                         }
 
-                        return FuturePtr<BigInt>::successful(std::make_shared<BigInt>(
-                            BigInt::fromString(operationResult["consumed_gas"].GetString())));
+                        if (!gas->transaction.isZero()) {
+                            return FuturePtr<GasLimit>::successful(gas);
+                        }
+                        else {
+                            throw make_exception(
+                                    api::ErrorCode::HTTP_ERROR,
+                                    std::make_shared<HttpRequest::JsonResult>(result),
+                                    "failed to get transaction kind in simulation");
+                        }
                     })
                 .recover(context, [](const Exception &exception) {
                     auto ecode = exception.getErrorCode();
@@ -289,7 +314,7 @@ namespace ledger {
 
                     // lambda is [noreturn], this is just left so type deduction succeeds and
                     // compiles
-                    return std::make_shared<BigInt>("0");
+                    return std::make_shared<GasLimit>();
                 });
         }
 

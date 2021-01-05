@@ -94,7 +94,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) override;
 
-            virtual Future<std::shared_ptr<BigInt>>
+            virtual Future<std::shared_ptr<GasLimit>>
             getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &transaction) override;
 
             Future<std::shared_ptr<BigInt>>

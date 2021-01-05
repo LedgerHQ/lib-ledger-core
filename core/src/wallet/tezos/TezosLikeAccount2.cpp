@@ -435,13 +435,17 @@ namespace ledger {
                                                                 : FuturePtr<BigInt>::successful(request.transactionFees);
 
                                                         return gasPriceFut.flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<TezosLikeTransactionApi> {
-                                                            return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<BigInt> &gas) -> FuturePtr<TezosLikeTransactionApi> {
+                                                            return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
                                                                 // 0.000001 comes from the gasPrice->toInt64 being in picoTez
-                                                                const auto fees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));                                                       
-                                                                filledTx->setTransactionGasLimit(gas);
-                                                                filledTx->setRevealGasLimit(gas);
-                                                                filledTx->setTransactionFees(fees);
-                                                                filledTx->setRevealFees(fees);
+                                                                
+                                                                filledTx->setRevealGasLimit(std::make_shared<BigInt>(gas->reveal));
+                                                                const auto revealFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->reveal.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
+                                                                filledTx->setRevealFees(revealFees);
+
+                                                                filledTx->setTransactionGasLimit(std::make_shared<BigInt>(gas->transaction));
+                                                                const auto transactionFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->transaction.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));                                                       
+                                                                filledTx->setTransactionFees(transactionFees);
+                                                                
                                                                 return FuturePtr<TezosLikeTransactionApi>::successful(filledTx);
                                                             });
                                                         });
@@ -576,17 +580,19 @@ namespace ledger {
             return _explorer->getGasPrice();
         }
 
-        FuturePtr<BigInt> TezosLikeAccount::estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustmentFactor) {
-            return _explorer->getEstimatedGasLimit(tx).flatMapPtr<BigInt>(
+        FuturePtr<GasLimit> TezosLikeAccount::estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustmentFactor) {
+            return _explorer->getEstimatedGasLimit(tx).flatMapPtr<GasLimit>(
                 getMainExecutionContext(),
-                [adjustmentFactor](const std::shared_ptr<BigInt>& consumedGas){
-                    auto adjustedGas = static_cast<int64_t>(1 + consumedGas->toInt64() * adjustmentFactor);
-                    return Future<std::shared_ptr<BigInt>>::successful(
-                        std::make_shared<BigInt>(adjustedGas));
+                [adjustmentFactor](const std::shared_ptr<GasLimit>& consumedGas){
+                    BigInt adjustedGasReveal(static_cast<int64_t>(consumedGas->reveal.toInt64() * adjustmentFactor));
+                    BigInt adjustedGasTransaction(static_cast<int64_t>(consumedGas->transaction.toInt64() * adjustmentFactor));
+                    return Future<std::shared_ptr<GasLimit>>::successful(
+                        std::make_shared<GasLimit>(adjustedGasReveal, adjustedGasTransaction));
                 })
                 .recover(getMainExecutionContext(), [=](const Exception &exception) {
-                    logger()->info("unable to estimate gas limit dynamically: {}", exception.getMessage());
-                    return std::make_shared<BigInt>(api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT);
+                    logger()->info("unable to estimate gas limit dynamically: {} ==> using default gas limit", exception.getMessage());
+                    return std::make_shared<GasLimit>(
+                        api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT, api::TezosConfigurationDefaults::TEZOS_DEFAULT_GAS_LIMIT);
             });
         }
 
