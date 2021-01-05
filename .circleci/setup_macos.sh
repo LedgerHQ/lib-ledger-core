@@ -29,7 +29,7 @@ echo "========> Install sbt"
 brew install sbt
 
 echo "========> Install C++ dependencies"
-brew install cmake
+brew install --build-from-source cmake
 
 if [ "$BUILD_CONFIG" == "Debug" ]; then
 	echo "========> Install Qt5"
