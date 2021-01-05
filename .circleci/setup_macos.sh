@@ -39,7 +39,7 @@ fi
 
 echo "========> Install PostgreSQL"
 # Install with verbose otherwise the setup may timeout the CI because it doesn't log.
-brew install --verbose postgresql
+brew install --verbose --build-from-source postgresql
 export CPLUS_INCLUDE_PATH="/usr/local/Cellar/postgresql/12.3_4/include:$CPLUS_INCLUDE_PATH"
 
 
