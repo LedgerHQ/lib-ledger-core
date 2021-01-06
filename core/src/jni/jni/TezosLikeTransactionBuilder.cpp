@@ -66,6 +66,26 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setTransactionFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transactionFees)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setTransactionFees(::djinni_generated::Amount::toCpp(jniEnv, j_transactionFees));
+        return ::djinni::release(::djinni_generated::TezosLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setRevealFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_revealFees)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::TezosLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setRevealFees(::djinni_generated::Amount::toCpp(jniEnv, j_revealFees));
+        return ::djinni::release(::djinni_generated::TezosLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasLimit)
 {
     try {

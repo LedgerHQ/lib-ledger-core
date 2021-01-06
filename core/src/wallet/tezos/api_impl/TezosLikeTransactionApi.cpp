@@ -111,6 +111,22 @@ namespace ledger {
             return std::make_shared<Amount>(_currency, 0, BigInt(fees));
         }
 
+        std::shared_ptr<api::Amount> TezosLikeTransactionApi::getRevealFees() {
+            int64_t fees = 0;
+            if (_needReveal && _revealFees) {
+                fees = _revealFees->toLong();
+            }
+            return std::make_shared<Amount>(_currency, 0, BigInt(fees));
+        }
+
+        std::shared_ptr<api::Amount> TezosLikeTransactionApi::getTransactionFees() {
+            int64_t fees = 0;
+            if (_transactionFees) {
+                fees = _transactionFees->toLong();
+            }
+            return std::make_shared<Amount>(_currency, 0, BigInt(fees));
+        }
+
         std::shared_ptr<api::TezosLikeAddress> TezosLikeTransactionApi::getReceiver() {
             return _receiver;
         }

@@ -93,6 +93,12 @@ namespace ledger {
             setFees(const std::shared_ptr<api::Amount> &fees) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>
+            setTransactionFees(const std::shared_ptr<api::Amount> &transactionFees) override;
+
+            std::shared_ptr<api::TezosLikeTransactionBuilder>
+            setRevealFees(const std::shared_ptr<api::Amount> &revealFees) override;
+
+            std::shared_ptr<api::TezosLikeTransactionBuilder>
             setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) override ;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>

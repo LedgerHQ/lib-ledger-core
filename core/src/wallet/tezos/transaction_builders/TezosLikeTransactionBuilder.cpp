@@ -98,6 +98,18 @@ namespace ledger {
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder>
+        TezosLikeTransactionBuilder::setTransactionFees(const std::shared_ptr<api::Amount> &transactionFees) {
+            _request.transactionFees = std::make_shared<BigInt>(transactionFees->toString());
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::TezosLikeTransactionBuilder>
+        TezosLikeTransactionBuilder::setRevealFees(const std::shared_ptr<api::Amount> &revealFees) {
+            _request.revealFees = std::make_shared<BigInt>(revealFees->toString());
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::TezosLikeTransactionBuilder>
         TezosLikeTransactionBuilder::setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) {
             _request.transactionGasLimit = std::make_shared<BigInt>(gasLimit->toString());
             _request.revealGasLimit = std::make_shared<BigInt>(gasLimit->toString());

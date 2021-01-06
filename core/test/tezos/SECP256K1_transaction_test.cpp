@@ -529,5 +529,7 @@ TEST_F(SECP256K1TezosMakeTransaction, CreateTxAutoFill) {
 
       EXPECT_NE(tx->getGasLimit()->toLong(), 0);
       EXPECT_NE(tx->getFees()->toLong(), 0);
+      EXPECT_EQ(tx->getFees()->toLong(), tx->getTransactionFees()->toLong());
+      EXPECT_EQ(tx->getRevealFees()->toLong(), 0);
  }
 

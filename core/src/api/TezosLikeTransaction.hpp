@@ -36,8 +36,17 @@ public:
     /** Get the hash of the transaction. */
     virtual std::string getHash() = 0;
 
-    /** Get Fees (in drop) */
+    /**
+     * Get Fees (in drop) 
+     * It returns the sum of transaction fees and reveal fees (if it exists)
+     */
     virtual std::shared_ptr<Amount> getFees() = 0;
+
+    /** get transaction fees (without reveal cost) */
+    virtual std::shared_ptr<Amount> getTransactionFees() = 0;
+
+    /** get reveal fees if the sender envolved is not revealed, else 0 */
+    virtual std::shared_ptr<Amount> getRevealFees() = 0;
 
     /** Get destination XTZ. address */
     virtual std::shared_ptr<TezosLikeAddress> getReceiver() = 0;

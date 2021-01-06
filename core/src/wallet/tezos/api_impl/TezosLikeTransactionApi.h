@@ -56,6 +56,10 @@ namespace ledger {
 
             std::shared_ptr<api::Amount> getFees() override;
 
+            std::shared_ptr<api::Amount> getRevealFees() override;
+
+            std::shared_ptr<api::Amount> getTransactionFees() override;
+
             std::shared_ptr<api::TezosLikeAddress> getReceiver() override;
 
             std::shared_ptr<api::TezosLikeAddress> getSender() override;
