@@ -72,4 +72,4 @@ namespace ledger {
 }
 
 
-#endif LEDGER_CORE_CONCURRENCY_H
+#endif //  LEDGER_CORE_CONCURRENCY_H

@@ -220,7 +220,6 @@ TEST_F(RippleLikeWalletSynchronization, EmitNewTransactionAndReceiveOnPool) {
         EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
         auto eventBus = pool->getEventBus();
         eventBus->subscribe(getTestExecutionContext(), receiver);
-        account->startBlockchainObservation();
         dispatcher->waitUntilStopped();
     }
 }
@@ -252,7 +251,6 @@ TEST_F(RippleLikeWalletSynchronization, EmitNewBlock) {
         EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "rageXHB6Q4VbvvWdTzKANwjeCT4HXFCKX7");
         auto eventBus = account->getEventBus();
         eventBus->subscribe(getTestExecutionContext(), receiver);
-        account->startBlockchainObservation();
         dispatcher->waitUntilStopped();
     }
 }

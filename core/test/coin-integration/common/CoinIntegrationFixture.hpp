@@ -62,7 +62,7 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <FakeWebSocketClient.h>
 #include <OpenSSLRandomNumberGenerator.hpp>
-#include <utils/FilesystemUtils.hpp>
+#include <FilesystemUtils.hpp>
 #include <utils/hex.h>
 #include "../integration/IntegrationEnvironment.h"
 
@@ -76,7 +76,7 @@ class CoinIntegrationFixture : public ::testing::Test {
 public:
     void SetUp() override {
         ::testing::Test::SetUp();
-        ledger::qt::FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
+        FilesystemUtils::clearFs(IntegrationEnvironment::getInstance()->getApplicationDirPath());
         dispatcher = std::make_shared<uv::UvThreadDispatcher>();
         resolver = std::make_shared<NativePathResolver>(IntegrationEnvironment::getInstance()->getApplicationDirPath());
         backend = std::static_pointer_cast<DatabaseBackend>(DatabaseBackend::getSqlite3Backend());

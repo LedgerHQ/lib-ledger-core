@@ -48,7 +48,7 @@ using namespace std;
 namespace fs = std::experimental::filesystem::v1;
 
 //refer to https://stackoverflow.com/questions/1528298/get-path-of-executable to get the executable path with C++
-string ledger::qt::FilesystemUtils::getExecutablePath(){
+string FilesystemUtils::getExecutablePath(){
 #ifdef _WIN32
     WCHAR buf[1024];
     GetModuleFileNameW(NULL, buf, 1024);
@@ -69,7 +69,7 @@ string ledger::qt::FilesystemUtils::getExecutablePath(){
   return res;
 }
 
-string ledger::qt::FilesystemUtils::getExecutableDir(){
+string FilesystemUtils::getExecutableDir(){
     auto path = getExecutablePath();
 #ifdef _WIN32
     auto last_slash_idx = path.rfind('\\');
@@ -79,13 +79,13 @@ string ledger::qt::FilesystemUtils::getExecutableDir(){
     if (string::npos != last_slash_idx) {
         return path.substr(0, last_slash_idx);
     }
-    else{
+    else {
         return path;
     }
 }
 
-bool ledger::qt::FilesystemUtils::isExecutableOrLib(const std::string& path){
-    fs::path filePath{path};
+bool FilesystemUtils::isExecutableOrLib(const std::string& path){
+    fs::path filePath { path };
 #ifdef _WIN32
     auto extension=filePath.extension().string();
     return (extension==".exe") || (extension==".bat") || (extension==".com") || (extension == ".lib") || (extension == ".dll") || (extension == ".pdb") || (extension == ".ilk");
@@ -95,7 +95,7 @@ bool ledger::qt::FilesystemUtils::isExecutableOrLib(const std::string& path){
 #endif
 }
 
-void ledger::qt::FilesystemUtils::clearFs(const std::string& path) {
+void FilesystemUtils::clearFs(const std::string& path) {
     error_code ec;
     for (const auto & file : fs::recursive_directory_iterator(path))
     {

@@ -47,9 +47,7 @@ endif()
 
 
 target_link_libraries(ledger-core-integration-tests ledger-test)
-target_link_libraries(ledger-core-integration-tests ledger-qt-host)
 target_include_directories(ledger-core-integration-tests PUBLIC ../../../core/src)
-target_include_directories(ledger-core-integration-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
 if (SYS_OPENSSL)

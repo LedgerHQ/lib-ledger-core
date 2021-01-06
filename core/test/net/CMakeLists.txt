@@ -15,9 +15,7 @@ target_link_libraries(ledger-core-net-tests gtest gtest_main)
 target_link_libraries(ledger-core-net-tests gmock)
 target_link_libraries(ledger-core-net-tests ledger-core-static)
 target_link_libraries(ledger-core-net-tests ledger-test)
-target_link_libraries(ledger-core-net-tests ledger-qt-host)
 
-target_include_directories(ledger-core-net-tests PUBLIC ../../../qt-host)
 target_include_directories(ledger-core-net-tests PUBLIC ../../../core/src)
 
 include(CopyAndInstallImportedTargets)
