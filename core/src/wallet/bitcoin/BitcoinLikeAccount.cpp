@@ -112,7 +112,6 @@ namespace ledger {
 
         void BitcoinLikeAccount::interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction,
                 std::vector<Operation>& out) {
-            soci::session sql;
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
@@ -139,7 +138,7 @@ namespace ledger {
                         // This address is part of the account.
                         sentAmount += input.value.getValue().toUint64();
                         accountInputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorerInput *>(&input), DerivationPath(path.getValue())));
-                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), needExtendKeychain)) {
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), false)) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
@@ -169,7 +168,7 @@ namespace ledger {
                             receivedAmount += output.value.toUint64();
                             recipients.push_back(output.address.getValue());
                         }
-                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), needExtendKeychain)) {
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), false)) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;

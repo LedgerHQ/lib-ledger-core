@@ -61,6 +61,7 @@ namespace ledger {
                 std::shared_ptr<BitcoinLikeAccount> account;
                 std::map<std::string, std::string> transactionsToDrop;
                 BlockchainExplorerAccountSynchronizationResult context;
+                std::string synchronizationTag;
                 virtual ~SynchronizationBuddy() = default;
             };
             
@@ -79,12 +80,12 @@ namespace ledger {
 
             void interpretTransaction(const Transaction& transaction,
                     const std::shared_ptr<SynchronizationBuddy>& buddy,
-                    std::vector<Operation>& out) override;
+                    std::vector<Operation>& out);
 
-            std::shared_ptr<SynchronizationBuddy> makeSynchronizationBuddy() override;
-            Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy> &buddy) override;
+            std::shared_ptr<SynchronizationBuddy> makeSynchronizationBuddy();
+            Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy> &buddy);
 
-            Future<Unit> recoverFromFailedSynchronization(const std::shared_ptr<SynchronizationBuddy> &buddy) override;
+            Future<Unit> recoverFromFailedSynchronization(const std::shared_ptr<SynchronizationBuddy> &buddy);
 
         private:
             std::shared_ptr<BlockchainExplorerAccountSynchronizer> getSharedFromThis();
@@ -92,9 +93,6 @@ namespace ledger {
             Future<BlockchainExplorerAccountSynchronizationResult> performSynchronization(const std::shared_ptr<BitcoinLikeAccount>& account);
             static void initializeSavedState(Option<BlockchainExplorerAccountSynchronizationSavedState>& savedState, int32_t halfBatchSize);
             std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> synchronizeAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
-            std::shared_ptr<SynchronizationBuddy> makeSynchronizationBuddy();
-            Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy>& buddy);
-            Future<Unit> recoverFromFailedSynchronization(const std::shared_ptr<SynchronizationBuddy>& buddy);
             Future<Unit> extendKeychain(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy);
             Future<Unit> synchronizeBatches(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy);
             Future<bool> synchronizeBatch(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy, bool hadTransactions = false);

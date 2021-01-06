@@ -32,6 +32,9 @@
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <wallet/bitcoin/database/BitcoinLikeTransactionDatabaseHelper.h>
 #include <async/algorithm.h>
+#include <debug/Benchmarker.h>
+
+#define NEW_BENCHMARK(x) std::make_shared<Benchmarker>(fmt::format(x"/{}", buddy->synchronizationTag), buddy->logger)
 
 namespace ledger {
     namespace core {
@@ -364,6 +367,7 @@ namespace ledger {
                 ->getSubPreferences("AbstractBlockchainExplorerAccountSynchronizer");
             auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
             auto tracePrefix = fmt::format("{}/{}/{}", account->getWallet()->getPool()->getName(), account->getWallet()->getName(), account->getIndex());
+            buddy->synchronizationTag = tracePrefix;
             buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
             buddy->startDate = DateUtils::now();
             buddy->wallet = account->getWallet();
@@ -617,7 +621,9 @@ namespace ledger {
         // synchronization object used to accumulate a state. hadTransactions is used to check
         // whether more data is needed. If a block doesn�t have any transaction, it means that
         // we must stop.
-        Future<bool> BlockchainExplorerAccountSynchronizer::synchronizeBatch(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy, bool hadTransactions) {
+        Future<bool> BlockchainExplorerAccountSynchronizer::synchronizeBatch(uint32_t currentBatchIndex,
+                std::shared_ptr<SynchronizationBuddy> buddy,
+                bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
 
             Option<std::string> blockHash;
@@ -629,72 +635,94 @@ namespace ledger {
             }
 
 
-            int from = currentBatchIndex * buddy->halfBatchSize * 2;
-            int to = (currentBatchIndex + 1) * buddy->halfBatchSize * 2;
-            auto batch = std::vector<std::string>(self->_addresses.begin() + from, min(self->_addresses.begin() + to, self->_addresses.end()));
+            auto derivationBenchmark = NEW_BENCHMARK("derivations");
+            derivationBenchmark->start();
 
+            auto batch = vector::map<std::string, std::shared_ptr<BitcoinLikeAddress>>(
+                    buddy->keychain->getAllObservableAddresses((uint32_t) (currentBatchIndex * buddy->halfBatchSize),
+                                                               (uint32_t) ((currentBatchIndex + 1) * buddy->halfBatchSize - 1)),
+                    [] (const std::shared_ptr<BitcoinLikeAddress>& addr) -> std::string {
+                        return addr->toString();
+                    }
+            );
+
+            derivationBenchmark->stop();
+
+            auto benchmark = NEW_BENCHMARK("explorer_calls");
+            benchmark->start();
             return _explorer->getTransactions(batch, blockHash, optional<void*>())
-                .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
+                    .flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark] (const auto& bulk) -> Future<bool> {
+                        benchmark->stop();
 
-                auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-                //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
-                buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
-                auto count = 0;
-                for (const auto& tx : bulk->transactions) {
-                    soci::session sql(buddy->wallet->getDatabase()->getPool());
-                    soci::transaction tr(sql);
-                    // A lot of things could happen here, better to wrap it	
-                    auto tryPutTx = Try<int>::from([&buddy, &tx, &sql, &self]() {
-                        auto const flag = self->putTransaction(sql, tx, buddy);
+                        auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
-                        if (::ledger::core::account::isInsertedOperation(flag)) {
-                            ++buddy->context.newOperations;
+                        auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
+                        //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
+                        buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
+                        auto count = 0;
+
+                        // NEW CODE
+                        Option<Block> lastBlock = Option<Block>::NONE;
+                        std::vector<Operation> operations;
+                        interpretBenchmark->start();
+                        // Interpret transactions to operations and update last block
+                        for (const auto& tx : bulk->transactions) {
+                            // Update last block to chain query
+                            if (lastBlock.isEmpty() ||
+                                lastBlock.getValue().height > tx.block.getValue().height) {
+                                lastBlock = tx.block;
+                            }
+
+                            self->interpretTransaction(tx, buddy, operations);
+
+                            //Update first pendingTxHash in savedState
+                            auto it = buddy->transactionsToDrop.find(tx.hash);
+                            if (it != buddy->transactionsToDrop.end()) {
+                                //If block non empty, tx is no longer pending
+                                if (tx.block.nonEmpty()) {
+                                    buddy->savedState.getValue().pendingTxsHash.erase(it->first);
+                                } else { //Otherwise tx is in mempool but pending
+                                    buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
+                                }
+                            }
+                            //Remove from tx to drop
+                            buddy->transactionsToDrop.erase(tx.hash);
+                        }
+                        interpretBenchmark->stop();
+                        auto insertionBenchmark = NEW_BENCHMARK("insert_operations");
+                        insertionBenchmark->start();
+                        Try<int> tryPutTx = buddy->account->bulkInsert(operations);
+                        insertionBenchmark->stop();
+                        if (tryPutTx.isFailure()) {
+                            buddy->logger->error("Failed to bulk insert for batch {} because: {}", currentBatchIndex, tryPutTx.getFailure().getMessage());
+                            throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} ({})", currentBatchIndex, tryPutTx.exception().getValue().getMessage());
+                        } else {
+                            count += tryPutTx.getValue();
                         }
 
-                        //Update first pendingTxHash in savedState	
-                        auto it = buddy->transactionsToDrop.find(tx.hash);
-                        if (it != buddy->transactionsToDrop.end()) {
-                            //If block non empty, tx is no longer pending	
-                            if (tx.block.nonEmpty()) {
-                                buddy->savedState.getValue().pendingTxsHash.erase(it->first);
-                            }
-                            else { //Otherwise tx is in mempool but pending	
-                                buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
+                        buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
+                        buddy->account->emitEventsNow();
+
+                        // END NEW CODE
+
+                        // Get the last block
+                        if (bulk->transactions.size() > 0) {
+                            auto &lastBlock = bulk->transactions.back().block;
+
+                            if (lastBlock.nonEmpty()) {
+                                batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
+                                batchState.blockHash = lastBlock.getValue().hash;
+                                buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                             }
                         }
-                        //Remove from tx to drop	
-                        buddy->transactionsToDrop.erase(tx.hash);
-                        return flag;
-                        });
 
-                    if (tryPutTx.isFailure()) {
-                        tr.rollback();
-                        auto blockHash = tx.block.hasValue() ? tx.block.getValue().hash : "None";
-                        buddy->logger->error("Failed to put transaction {}, on block {}, for account {}, reason: {}, rollback ...", tx.hash, blockHash, buddy->account->getAccountUid(), tryPutTx.getFailure().getMessage());
-                        throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} on block {} because of tx {} ({})", currentBatchIndex, blockHash, tx.hash, tryPutTx.exception().getValue().getMessage());
-                    }
-                    else {
-                        count++;
-                        tr.commit();
-                    }
-                }
-                buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
-                buddy->account->emitEventsNow();
-
-                // Get the last block
-                if (bulk->transactions.size() > 0) {
-                    auto& lastBlock = bulk->transactions.back().block;
-
-                    if (lastBlock.nonEmpty()) {
-                        batchState.blockHeight = (uint32_t)lastBlock.getValue().height;
-                        batchState.blockHash = lastBlock.getValue().hash;
-                        buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-                    }
-                }
-
-                auto hadTX = hadTransactions || bulk->transactions.size() > 0;
-                return Future<bool>::successful(hadTX);                    
-                });
-        };
+                        auto hadTX = hadTransactions || bulk->transactions.size() > 0;
+                        if (bulk->hasNext) {
+                            return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
+                        } else {
+                            return Future<bool>::successful(hadTX);
+                        }
+                    });
+        }
     }
 }

@@ -111,6 +111,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
 
                 auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Balance: " << uv::wait(account->getBalance())->toString() << std::endl;
                 std::cout << "Ops: " << ops.size() << std::endl;
                 for (auto& op : ops) {
                     std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;
