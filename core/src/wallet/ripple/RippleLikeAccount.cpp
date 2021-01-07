@@ -51,6 +51,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/ripple/database/RippleLikeOperationDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -99,23 +100,26 @@ namespace ledger {
         }
 
         Try<int> RippleLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
-
+            return Try<int>::from([&] () {
+                soci::session sql(getWallet()->getDatabase()->getPool());
+                soci::transaction tr(sql);
+                RippleLikeOperationDatabaseHelper::bulkInsert(sql, operations);
+                tr.commit();
+                // Emit
+                for (const auto& op : operations) {
+                    emitNewOperationEvent(op);
+                }
+                return operations.size();
+            });
         }
 
         void RippleLikeAccount::interpretTransaction(
                 const ledger::core::RippleLikeBlockchainExplorerTransaction &transaction,
                 std::vector<Operation> &out) {
-            soci::session sql;
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
-
-            if (transaction.block.nonEmpty()) {
-                putBlock(sql, transaction.block.getValue());
-            }
-
-            int result = FLAG_TRANSACTION_UPDATED;
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
@@ -131,20 +135,14 @@ namespace ledger {
                 setOperationAmount(operation, transaction);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                    emitNewOperationEvent(operation);
-                }
-                result = FLAG_NEW_TRANSACTION;
+                out.push_back(operation);
             }
 
             if (_accountAddress == transaction.receiver) {
                 setOperationAmount(operation, transaction);
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                    emitNewOperationEvent(operation);
-                }
-                result = FLAG_NEW_TRANSACTION;
+                out.push_back(operation);
             }
         }
 

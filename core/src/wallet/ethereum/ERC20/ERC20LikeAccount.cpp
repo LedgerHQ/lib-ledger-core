@@ -212,9 +212,6 @@ namespace ledger {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
             return getBalance().map<std::vector<uint8_t>>(getContext(), [amount, address] (const std::shared_ptr<api::BigInt> &balance) {
-                if ( amount->compare(balance) > 0) {
-                    throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-                }
 
                 BytesWriter writer;
                 writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
@@ -227,7 +224,6 @@ namespace ledger {
                     while (hexOutput.size() != 64) {
                         hexOutput = "00" + hexOutput;
                     }
-
                     return hexOutput;
                 };
 

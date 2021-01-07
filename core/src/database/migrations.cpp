@@ -1106,5 +1106,14 @@ namespace ledger {
             sql << "DROP TABLE algorand_currencies";
         }
 
+        template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE ripple_memos ADD PRIMARY KEY(transaction_uid, array_index);";
+            sql << "CREATE UNIQUE INDEX ripple_memo_by_txuid ON ripple_memos (transaction_uid);";
+        }
+
+        template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type) {
+            // Do nothing
+        }
+
     }
 }
