@@ -1,9 +1,9 @@
 /*
  *
- * soci-backend-utils.h
+ * soci-backend-utils.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 04/01/2021.
+ * Created by Pierre Pollastri on 06/01/2021.
  *
  * The MIT License (MIT)
  *
@@ -29,16 +29,14 @@
  *
  */
 
-#ifndef LEDGER_CORE_SOCI_BACKEND_UTILS_H
-#define LEDGER_CORE_SOCI_BACKEND_UTILS_H
-
-#include <soci.h>
+#include "soci-backend-utils.h"
 
 namespace soci {
+    bool is_sqlite_backend(soci::session& sql) {
+        return sql.get_backend_name() == "sqlite3";
+    }
 
-    bool is_sqlite_backend(soci::session& sql);
-    bool is_postgres_backend(soci::session& sql);
-
+    bool is_postgres_backend(soci::session& sql) {
+        return sql.get_backend_name() == "postgresql";
+    }
 }
-
-#endif //LEDGER_CORE_SOCI_BACKEND_UTILS_H

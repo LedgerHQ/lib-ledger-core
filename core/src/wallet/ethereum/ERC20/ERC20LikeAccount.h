@@ -121,7 +121,7 @@ namespace ledger {
                                           const std::shared_ptr<api::BinaryCallback> &data) override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override ;
-            void putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation = false);
+            void putOperation(Operation& op, const std::shared_ptr<ERC20LikeOperation> &operation);
         private:
             std::shared_ptr<api::ExecutionContext> getContext();
 
