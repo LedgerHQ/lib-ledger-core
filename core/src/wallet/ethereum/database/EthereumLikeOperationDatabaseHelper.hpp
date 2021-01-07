@@ -1,9 +1,9 @@
 /*
  *
- * soci-backend-utils.h
+ * EthereumLikeOperationDatabaseHelper.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 04/01/2021.
+ * Created by Pierre Pollastri on 06/01/2021.
  *
  * The MIT License (MIT)
  *
@@ -29,16 +29,33 @@
  *
  */
 
-#ifndef LEDGER_CORE_SOCI_BACKEND_UTILS_H
-#define LEDGER_CORE_SOCI_BACKEND_UTILS_H
+#ifndef LEDGER_CORE_ETHEREUMLIKEOPERATIONDATABASEHELPER_HPP
+#define LEDGER_CORE_ETHEREUMLIKEOPERATIONDATABASEHELPER_HPP
 
 #include <soci.h>
+#include <database/PreparedStatement.hpp>
+#include <wallet/common/Operation.h>
+#include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
+#include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
 
-namespace soci {
+namespace ledger {
+    namespace core {
 
-    bool is_sqlite_backend(soci::session& sql);
-    bool is_postgres_backend(soci::session& sql);
+        struct EthereumOperationAttachedData : public OperationAttachedData {
+            std::vector<std::shared_ptr<ERC20LikeAccount>> accounts;
+            std::vector<std::tuple<std::string, ERC20LikeOperation>> erc20Operations;
 
+            ~EthereumOperationAttachedData() override = default;
+        };
+
+        class EthereumLikeOperationDatabaseHelper {
+        public:
+            static void bulkInsert(soci::session& sql, const std::vector<Operation>& ops,
+                    const std::string& accountAddress);
+        };
+    }
 }
 
-#endif //LEDGER_CORE_SOCI_BACKEND_UTILS_H
+
+
+#endif //LEDGER_CORE_ETHEREUMLIKEOPERATIONDATABASEHELPER_HPP

@@ -51,10 +51,12 @@
 #include <math/Base58.hpp>
 #include <utils/Option.hpp>
 #include <utils/DateUtils.hpp>
+#include <wallet/ethereum/database/EthereumLikeOperationDatabaseHelper.hpp>
 
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+
 
 namespace ledger {
     namespace core {
@@ -105,24 +107,20 @@ namespace ledger {
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
-            soci::session sql;
-            if (transaction.block.nonEmpty()) {
-                putBlock(sql, transaction.block.getValue());
-            }
 
             int result = FLAG_TRANSACTION_IGNORED;
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
-            std::vector<std::string> senders{transaction.sender};
+            std::vector<std::string> senders { transaction.sender };
             operation.senders = std::move(senders);
-            std::vector<std::string> receivers{transaction.receiver};
+            std::vector<std::string> receivers { transaction.receiver };
             operation.recipients = std::move(receivers);
             operation.fees = transaction.gasPrice * transaction.gasUsed.getValueOr(BigInt::ZERO);
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
 
-            auto updateOperation = [&] (soci::session &sql, Operation &operation, api::OperationType ty) {
+            auto updateOperation = [&] (Operation &operation, api::OperationType ty) mutable {
                 // if the status of the transaction is not correct, we set the operation’s amount to
                 // zero as it’s failed (yet fees were still paid)
                 if (transaction.status == 0  && transaction.block.nonEmpty()) {
@@ -133,41 +131,53 @@ namespace ledger {
 
                 operation.type = ty;
                 operation.refreshUid();
-                auto isInBlock = OperationDatabaseHelper::isOperationInBlock(sql, operation.uid);
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                    emitNewOperationEvent(operation);
+                if (!result) {
+                    operation.attachedData = std::make_shared<EthereumOperationAttachedData>();
+                    updateERC20Accounts(operation);
                 }
-                if (isInBlock.nonEmpty() && !isInBlock.getValue() && operation.block.nonEmpty()) {
-                    emitNewOperationEvent(operation);
-                }
-                updateERC20Accounts(sql, operation);
-                updateInternalTransactions(sql, operation);
+                out.push_back(operation);
+                operation.attachedData = nullptr;
             };
 
             if (_accountAddress == transaction.sender) {
-                updateOperation(sql, operation, api::OperationType::SEND);
+                updateOperation(operation, api::OperationType::SEND);
                 result = FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
             }
 
             if (_accountAddress == transaction.receiver) {
-                updateOperation(sql, operation, api::OperationType::RECEIVE);
+                updateOperation(operation, api::OperationType::RECEIVE);
                 result = FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION;
             }
 
             // Case of parent transaction not belonging to account, but having side effect (transfer events)
             // concerning account address
             if (!result && (!transaction.erc20Transactions.empty() || !transaction.internalTransactions.empty())) {
-                updateOperation(sql, operation, api::OperationType::NONE);
-                result = FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION;
+                updateOperation(operation, api::OperationType::NONE);
             }
         }
 
         Try<int> EthereumLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
-
+            auto accountAddress = _keychain->getAddress()->toString();
+            return Try<int>::from([&] () {
+                soci::session sql(getWallet()->getDatabase()->getPool());
+                soci::transaction tr(sql);
+                EthereumLikeOperationDatabaseHelper::bulkInsert(sql, operations, accountAddress);
+                tr.commit();
+                // Emit
+                for (const auto& op : operations) {
+                    emitNewOperationEvent(op);
+                    if (op.attachedData) {
+                        const auto data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
+                        for (auto &it : data->erc20Operations) {
+                            emitNewERC20Operation(std::get<1>(it), std::get<0>(it));
+                        }
+                    }
+                }
+                return operations.size();
+            });
         }
 
-        void EthereumLikeAccount::updateERC20Accounts(soci::session &sql,
-                                                      const Operation &operation) {
+        void EthereumLikeAccount::updateERC20Accounts(Operation &operation) {
             auto transaction = operation.ethereumTransaction.getValue();
             // No need filter because erc20 transfer events sent by explorer
             // are only the ones concerning current account
@@ -177,27 +187,27 @@ namespace ledger {
                                    api::OperationType::SEND : (erc20Tx.to == _accountAddress) ?
                                                               api::OperationType::RECEIVE : api::OperationType::NONE;
 
-                    updateERC20Operation(sql, operation, erc20Tx);
+                    updateERC20Operation(operation, erc20Tx);
                     // Handle ERC20 self-transactions
                     if (erc20Tx.to == _accountAddress) {
                         erc20Tx.type = api::OperationType::RECEIVE;
-                        updateERC20Operation(sql, operation, erc20Tx);
+                        updateERC20Operation(operation, erc20Tx);
                     }
                 }
             }
         }
 
-        void EthereumLikeAccount::updateERC20Operation(soci::session &sql,
-                                                       const Operation &operation,
+        void EthereumLikeAccount::updateERC20Operation(Operation &operation,
                                                        const ERC20Transaction &erc20Tx) {
+            auto data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(operation.attachedData);
+            if (!data) {
+                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Trying to interpret ERC20 without an attached data in operation");
+            }
             auto erc20ContractAddress = erc20Tx.contractAddress;
             auto erc20OperationUid = OperationDatabaseHelper::createUid(operation.uid, erc20ContractAddress, erc20Tx.type);
             auto erc20Operation = std::make_shared<ERC20LikeOperation>(_accountAddress, erc20OperationUid, operation, erc20Tx, getWallet()->getCurrency());
             auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(getAccountUid(), erc20ContractAddress);
 
-            auto erc20OpCount = 0;
-            sql << "SELECT COUNT(*) FROM erc20_operations WHERE uid = :uid", soci::use(erc20OperationUid), soci::into(erc20OpCount);
-            auto newOperation = erc20OpCount == 0;
             //Check if account already exists
             auto needNewAccount = true;
             for (auto& account : _erc20LikeAccounts) {
@@ -205,69 +215,27 @@ namespace ledger {
                 if (erc20Account->getToken().contractAddress == erc20ContractAddress &&
                     erc20Account->getAddress() == _accountAddress) {
                     //Update account
-                    erc20Account->putOperation(sql, erc20Operation, newOperation);
+                    erc20Account->putOperation(operation, erc20Operation);
                     needNewAccount = false;
                 }
+
             }
 
             //Create a new account
             if (needNewAccount) {
-                auto erc20Token = EthereumLikeAccountDatabaseHelper::getOrCreateERC20Token(sql, erc20ContractAddress);
+                // TODO replace this
+                auto erc20Token = api::ERC20Token("UNKNOWN_TOKEN", "UNKNOWN", erc20ContractAddress, 0);
+
                 auto newAccount = std::make_shared<ERC20LikeAccount>(erc20AccountUid,
                                                                      erc20Token,
                                                                      _accountAddress,
                                                                      getWallet()->getCurrency(),
                                                                      std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this()));
+                data->accounts.push_back(newAccount);
                 _erc20LikeAccounts.push_back(newAccount);
                 //Persist erc20 account
                 int erc20AccountCount = 0;
-                sql << "SELECT COUNT(*) FROM erc20_accounts WHERE uid = :uid", soci::use(erc20AccountUid), soci::into(erc20AccountCount);
-                if (erc20AccountCount == 0) {
-                    EthereumLikeAccountDatabaseHelper::createERC20Account(sql, getAccountUid(), erc20AccountUid, erc20Token.contractAddress);
-                }
-                newAccount->putOperation(sql, erc20Operation, newOperation);
-            }
-        }
-
-        void EthereumLikeAccount::updateInternalTransactions(soci::session &sql,
-                                                             const Operation &operation) {
-            auto transaction = operation.ethereumTransaction.getValue();
-            uint64_t index = 0;
-            for (auto &internalTx : transaction.internalTransactions) {
-                // pre-increment so that we always increment the index, even when discarding
-                // internal transactions (that means we never use index = 0, but it’s okay)
-                index += 1;
-
-                // Since explorer is considering also wrapping tx as an internal action,
-                // we must filter it by considering that only internal action with same data,
-                // sender and receiver, is the one representing/corresponding to wrapping tx
-                if (internalTx.from != transaction.sender || internalTx.to != transaction.receiver ||
-                    hex::toString(internalTx.inputData )!= hex::toString(transaction.inputData)) {
-                    auto type = internalTx.from == _accountAddress ? api::OperationType::SEND :
-                                internalTx.to == _accountAddress ? api::OperationType::RECEIVE :
-                                api::OperationType::NONE;
-
-                    auto internalTxUid = OperationDatabaseHelper::createUid(operation.uid, fmt::format("{}-{}-{}", internalTx.from, hex::toString(internalTx.inputData), index), type);
-                    auto actionCount = 0;
-                    sql << "SELECT COUNT(*) FROM internal_operations WHERE uid = :uid", soci::use(internalTxUid), soci::into(actionCount);
-                    if (actionCount == 0) {
-                        auto value = internalTx.value.toHexString();
-                        auto gasLimit = internalTx.gasLimit.toHexString();
-                        auto gasUsed = internalTx.gasUsed.getValueOr(BigInt::ZERO).toHexString();
-                        auto inputData = hex::toString(internalTx.inputData);
-                        auto operationType = api::to_string(type);
-                        sql << "INSERT INTO internal_operations VALUES(:uid, :eth_op_uid, :type, :value, :sender, :receiver, :gas_limit, :gas_used, :input_data)",
-                                soci::use(internalTxUid),
-                                soci::use(operation.uid),
-                                soci::use(operationType),
-                                soci::use(value),
-                                soci::use(internalTx.from),
-                                soci::use(internalTx.to),
-                                soci::use(gasLimit),
-                                soci::use(gasUsed),
-                                soci::use(inputData);
-                    }
-                }
+                newAccount->putOperation(operation, erc20Operation);
             }
         }
 
@@ -605,6 +573,7 @@ namespace ledger {
                     self->interpretTransaction(txExplorer, operations);
                     self->bulkInsert(operations);
                     self->emitEventsNow();
+                    return operations.size();
                 });
 
                 return txHash;

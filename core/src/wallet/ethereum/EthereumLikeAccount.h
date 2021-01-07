@@ -32,7 +32,6 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
 
-#include <time.h>
 #include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
 #include <api/EthereumLikeAccount.hpp>
@@ -72,11 +71,9 @@ namespace ledger {
             /// Get internal transactions related to the parent operation.
             std::vector<Operation> getInternalOperations(soci::session &sql);
 
-            void updateERC20Accounts(soci::session &sql, const Operation &operation);
-            void updateERC20Operation(soci::session &sql,
-                                      const Operation &operation,
+            void updateERC20Accounts(Operation &operation);
+            void updateERC20Operation(Operation &operation,
                                       const ERC20Transaction &erc20Tx);
-            void updateInternalTransactions(soci::session &sql, const Operation &operation);
             bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<EthereumLikeKeychain> getKeychain() const;

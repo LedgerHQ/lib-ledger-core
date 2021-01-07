@@ -49,9 +49,15 @@
 #include <api/Operation.hpp>
 #include "Block.h"
 #include <wallet/stellar/stellar.hpp>
+#include <memory>
 
 namespace ledger {
     namespace core {
+
+        struct OperationAttachedData {
+            virtual ~OperationAttachedData() = default;
+        };
+
         struct Operation {
             std::string uid;
             std::string accountUid;
@@ -72,6 +78,7 @@ namespace ledger {
             Option<RippleLikeBlockchainExplorerTransaction> rippleTransaction;
             Option<TezosLikeBlockchainExplorerTransaction> tezosTransaction;
             Option<stellar::OperationWithParentTransaction> stellarOperation;
+            std::shared_ptr<OperationAttachedData> attachedData;
 
             void refreshUid(const std::string &additional = "");
 
