@@ -70,8 +70,9 @@ public:
     void SetUp() override {
         BaseFixture::SetUp();
         auto worker = dispatcher->getSerialExecutionContext("worker");
+        auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
         auto client = std::make_shared<HttpClient>(
-            api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT, http, worker);
+            api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT, http, worker, threadpoolWorker);
 
 #ifdef PG_SUPPORT
     const bool usePostgreSQL = true;
