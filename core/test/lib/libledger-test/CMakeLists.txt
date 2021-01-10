@@ -44,6 +44,10 @@ else()
     target_link_libraries(ledger-test PUBLIC crypto)
 endif()
 
+if(UNIX AND NOT APPLE AND NOT ANDROID)
+    target_link_libraries(ledger-test PUBLIC stdc++fs)
+endif()
+
 target_link_libraries(ledger-test PUBLIC ledger-core-static)
 target_link_libraries(ledger-test PUBLIC mangoose)
 target_include_directories(ledger-test PUBLIC ../../../lib/fmt-3.0.0)
