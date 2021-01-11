@@ -743,3 +743,28 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHe
     testOperations(blockHeight, QueryType::GTE);
     testOperations(blockHeight, QueryType::NIL);
 }
+
+TEST_F(BitcoinLikeWalletSynchronization, SynchronizeWithMultiThreading) {
+    // change to auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), false, false); if we want to test single thread http client
+    auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), false, true);
+    {
+        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-178a5e9c8a64", "bitcoin",
+            api::DynamicObject::newInstance()));
+        auto synchronize = [wallet, pool, this]() {
+            auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+            auto bus = account->synchronize();
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event>& event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                dispatcher->stop();
+                });
+
+            bus->subscribe(getTestExecutionContext(), receiver);
+            dispatcher->waitUntilStopped();
+            EXPECT_EQ(uv::wait(account->getBalance())->toString(), "166505122");
+            return bus;
+        };
+        auto b = synchronize();
+    }
+}

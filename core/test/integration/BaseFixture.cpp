@@ -165,12 +165,14 @@ void BaseFixture::TearDown() {
 std::shared_ptr<WalletPool> BaseFixture::newDefaultPool(const std::string &poolName,
                                                         const std::string &password,
                                                         const std::shared_ptr<api::DynamicObject> &configuration,
-                                                        bool usePostgreSQL) {
+                                                        bool usePostgreSQL, bool httpclientMultiThread) {
 
     backend = std::static_pointer_cast<DatabaseBackend>(usePostgreSQL ?
             DatabaseBackend::getPostgreSQLBackend(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE) : DatabaseBackend::getSqlite3Backend()
     );
-
+    if (httpclientMultiThread) {
+        http = std::make_shared<ProxyHttpClient>(std::make_shared<CppHttpLibClient>(dispatcher->getThreadPoolExecutionContext("test_threadpool_http")));
+    }
     return WalletPool::newInstance(
             poolName,
             password,
