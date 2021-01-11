@@ -160,7 +160,7 @@ namespace ledger {
         }
 
         Try<int> TezosLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
-
+            return Try<int>(0);
         }
 
         void TezosLikeAccount::updateOriginatedAccounts(soci::session &sql, const Operation &operation) {
