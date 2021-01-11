@@ -86,9 +86,8 @@ namespace ledger {
                                   const TezosLikeBlockchainExplorerTransaction &tx);
 
             void interpretTransaction(const TezosLikeBlockchainExplorerTransaction& transaction,
-                                      std::vector<Operation>& out,
-                                      const std::string &originatedAccountUid = "",
-                                      const std::string &originatedAccountAddress = "");
+                                      std::vector<Operation>& out);
+                                      
             Try<int> bulkInsert(const std::vector<Operation>& operations);
 
             void updateOriginatedAccounts(soci::session &sql, const Operation &operation);
@@ -151,7 +150,7 @@ namespace ledger {
             std::mutex _synchronizationLock;
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
             uint64_t _currentBlockHeight;
-            static Future<BlockchainExplorerAccountSynchronizationResult> getTxs(const std::shared_ptr<TezosLikeAccount>& account, size_t id, void* session, BlockchainExplorerAccountSynchronizationResult result);
+            static Future<BlockchainExplorerAccountSynchronizationResult> getTxs_old(const std::shared_ptr<TezosLikeAccount>& account, size_t id, void* session, BlockchainExplorerAccountSynchronizationResult result);
         };
     }
 }
