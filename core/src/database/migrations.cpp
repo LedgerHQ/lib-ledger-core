@@ -1119,7 +1119,7 @@ namespace ledger {
                    "SELECT transaction_uid, data, fmt, ty, array_index FROM ripple_memos";
             sql << "DROP TABLE ripple_memos";
             sql << "ALTER TABLE ripple_memos_swap RENAME TO ripple_memos";
-            sql << "CREATE UNIQUE INDEX ripple_memo_by_txuid ON ripple_memos (transaction_uid);";
+            sql << "CREATE INDEX ripple_memo_by_txuid ON ripple_memos (transaction_uid);";
         }
 
         template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type) {
