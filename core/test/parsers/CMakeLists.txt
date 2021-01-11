@@ -19,9 +19,7 @@ add_executable(ledger-core-parser-tests
 target_link_libraries(ledger-core-parser-tests gtest gtest_main)
 target_link_libraries(ledger-core-parser-tests ledger-core-static)
 target_link_libraries(ledger-core-parser-tests ledger-test)
-target_link_libraries(ledger-core-parser-tests ledger-qt-host)
 target_include_directories(ledger-core-parser-tests PUBLIC ../../../core/src)
-target_include_directories(ledger-core-parser-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
 if (SYS_OPENSSL)

@@ -17,6 +17,7 @@ add_library(ledger-test STATIC
             HttpClientOnFakeExplorer.hpp HttpClientOnFakeExplorer.cpp
             UvThreadDispatcher.hpp UvThreadDispatcher.cpp
             CppHttpLibClient.hpp CppHttpLibClient.cpp
+            FilesystemUtils.cpp FilesystemUtils.hpp
             ProxyHttpClient.hpp ProxyHttpClient.cpp)
 if (SYS_OPENSSL)
     include_directories(${CMAKE_BINARY_DIR}/include ${OPENSSL_INCLUDE_DIR})
@@ -41,6 +42,10 @@ if (SYS_OPENSSL)
 else()
     target_link_libraries(mangoose PUBLIC ssl)
     target_link_libraries(ledger-test PUBLIC crypto)
+endif()
+
+if(UNIX AND NOT APPLE AND NOT ANDROID)
+    target_link_libraries(ledger-test PUBLIC stdc++fs)
 endif()
 
 target_link_libraries(ledger-test PUBLIC ledger-core-static)

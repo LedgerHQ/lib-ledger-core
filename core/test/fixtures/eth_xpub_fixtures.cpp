@@ -12,12 +12,15 @@ namespace ledger {
 			std::shared_ptr<core::EthereumLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
 				auto account = std::dynamic_pointer_cast<core::EthereumLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));
 				soci::session sql(pool->getDatabaseSessionPool()->getPool());
-				sql.begin();				account->putTransaction(sql, *core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_1));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_2));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_3));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_4));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_5));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_6));
+				sql.begin();
+                std::vector<core::Operation> operations;
+                account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_1), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_2), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_3), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_4), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_5), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_6), operations);
+                account->bulkInsert(operations);
 				sql.commit();
 				return account;
 			}

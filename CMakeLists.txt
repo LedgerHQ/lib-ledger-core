@@ -53,7 +53,6 @@ add_subdirectory(core)
 # > This is a "blind" fix, no available 10.10.x macOS machine,
 # > Issue is specific to 10.10.x, 10.9.5 and > 10.10.x are fine
 if (BUILD_TESTS)
-    add_subdirectory(qt-host)
     set(CMAKE_OSX_DEPLOYMENT_TARGET "10.15" CACHE STRING "Minimum OS X version to target for deployment: 10.15" FORCE)
 else()
     set(CMAKE_OSX_DEPLOYMENT_TARGET "10.9" CACHE STRING "Minimum OS X version to target for deployment: 10.9" FORCE)

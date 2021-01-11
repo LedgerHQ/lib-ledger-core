@@ -68,12 +68,12 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
                 *JSONUtils::parse<TransactionParser>(TX_3),
                 *JSONUtils::parse<TransactionParser>(TX_4)
         };
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.begin();
+        std::vector<ledger::core::Operation> ops;
         for (auto& tx : transactions) {
-            account->putTransaction(sql, tx);
+            account->interpretTransaction(tx, ops);
         }
-        sql.commit();
+        account->bulkInsert(ops);
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         soci::rowset<soci::row> rows = QueryBuilder()
                 .select("uid")
                 .from("operations")

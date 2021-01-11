@@ -62,7 +62,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
 #endif
 
     {
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        //configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT,"https://explorers.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
@@ -73,7 +73,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
-            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2WPKH_MEDIUM_XPUB_INFO);
+            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
 
             auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 if (event->getCode() == api::EventCode::NEW_OPERATION) {
@@ -111,6 +111,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                 EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
 
                 auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                std::cout << "Balance: " << uv::wait(account->getBalance())->toString() << std::endl;
                 std::cout << "Ops: " << ops.size() << std::endl;
                 for (auto& op : ops) {
                     std::cout << "op: " << op->asBitcoinLikeOperation()->getTransaction()->getHash() << std::endl;

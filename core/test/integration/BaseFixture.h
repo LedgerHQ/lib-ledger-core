@@ -66,7 +66,7 @@
 #include <api/BitcoinLikeAccount.hpp>
 #include <FakeWebSocketClient.h>
 #include <OpenSSLRandomNumberGenerator.hpp>
-#include <utils/FilesystemUtils.hpp>
+#include <FilesystemUtils.hpp>
 
 using namespace ledger::core; // Only do that for testing
 using namespace ledger::core::test;

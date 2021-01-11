@@ -37,9 +37,7 @@ else()
 endif()
 
 target_link_libraries(ledger-core-coin-integration-tests ledger-test)
-target_link_libraries(ledger-core-coin-integration-tests ledger-qt-host)
 target_include_directories(ledger-core-coin-integration-tests PUBLIC ../../../core/src)
-target_include_directories(ledger-core-coin-integration-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
 if (SYS_OPENSSL)

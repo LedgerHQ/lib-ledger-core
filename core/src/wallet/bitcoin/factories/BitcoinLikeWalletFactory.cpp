@@ -34,7 +34,6 @@
 #include <leveldb/db.h>
 #include <wallet/currencies.hpp>
 #include <api/KeychainEngines.hpp>
-#include <api/BlockchainObserverEngines.hpp>
 #include <wallet/pool/WalletPool.hpp>
 #include <api/ConfigurationDefaults.hpp>
 #include <wallet/bitcoin/explorers/LedgerApiBitcoinLikeBlockchainExplorer.hpp>
@@ -46,7 +45,6 @@
 #include <wallet/bitcoin/keychains/P2WSHBitcoinLikeKeychain.hpp>
 #include <wallet/bitcoin/factories/keystores/BitcoinLikeCommonKeychainFactory.h>
 #include <api/BlockchainExplorerEngines.hpp>
-#include <wallet/bitcoin/observers/LedgerApiBitcoinLikeBlockchainObserver.h>
 #include <wallet/bitcoin/synchronizers/BlockchainExplorerAccountSynchronizer.h>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
@@ -87,12 +85,6 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE, "Engine '{}' is not a supported explorer engine.", STRING(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, "undefined"));
             }
 
-            // Configure observer
-            auto observer = getObserver(entry.currencyName, entry.configuration);
-            if (observer == nullptr) {
-                pool->logger()->warn("Observer engine '{}' is not supported. Wallet {} was created anyway. Real time events won't be handled by this instance.",  STRING(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE, "undefined"), entry.name);
-            }
-
             // Configure synchronizer
             using BitcoinLikeAccountSynchronizerFactory = std::function<std::shared_ptr<BitcoinLikeAccountSynchronizer> ()>;
             Option<BitcoinLikeAccountSynchronizerFactory> synchronizerFactory;
@@ -122,7 +114,6 @@ namespace ledger {
             return std::make_shared<BitcoinLikeWallet>(
                     entry.name,
                     explorer,
-                    observer,
                     keychainFactory->second,
                     synchronizerFactory.getValue(),
                     pool,
@@ -176,51 +167,5 @@ namespace ledger {
             return explorer;
         }
 
-        std::shared_ptr<BitcoinLikeBlockchainObserver>
-        BitcoinLikeWalletFactory::getObserver(const std::string &currencyName,
-                                              const std::shared_ptr<api::DynamicObject> &configuration) {
-            auto it = _runningObservers.begin();
-            while (it != _runningObservers.end()) {
-                auto observer = it->lock();
-                if (observer != nullptr) {
-                    if (observer->match(configuration)) {
-                        return observer;
-                    }
-
-                    it++;
-                } else {
-                    it = _runningObservers.erase(it);
-                }
-            }
-
-            auto pool = getPool();
-            auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE)
-                                        .value_or(api::BlockchainObserverEngines::LEDGER_API);
-            std::shared_ptr<BitcoinLikeBlockchainObserver> observer;
-
-            if (engine == api::BlockchainObserverEngines::LEDGER_API) {
-                auto ws = pool->getWebSocketClient();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(
-                        fmt::format("{}-{}-observer",
-                                    api::BlockchainObserverEngines::LEDGER_API,
-                                    getCurrency().bitcoinLikeNetworkParameters.value().Identifier)
-                );
-                auto logger = pool->logger();
-                const auto& currency = getCurrency();
-                observer = std::make_shared<LedgerApiBitcoinLikeBlockchainObserver>(
-                        context,
-                        ws,
-                        configuration,
-                        logger,
-                        currency
-                );
-            }
-
-            if (observer) {
-                _runningObservers.push_back(observer);
-            }
-
-            return observer;
-        }
     }
 }

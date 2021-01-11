@@ -1,13 +1,13 @@
 /*
  *
- * FilesystemUtils
+ * soci-backend-utils.h
  * ledger-core
  *
- * Created by Huiqi ZHENG on 25/09/2020.
+ * Created by Pierre Pollastri on 04/01/2021.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2016 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,22 +28,17 @@
  * SOFTWARE.
  *
  */
-#pragma once
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#define _LIBCPP_NO_EXPERIMENTAL_DEPRECATION_WARNING_FILESYSTEM
 
-#include <iostream>
-using namespace std;
+#ifndef LEDGER_CORE_SOCI_BACKEND_UTILS_H
+#define LEDGER_CORE_SOCI_BACKEND_UTILS_H
 
-namespace ledger {
-    namespace qt {
-        class FilesystemUtils {
-        public:
-            static string getExecutablePath();
-            static string getExecutableDir();
-            static void clearFs(const string& rootDirPath);
-        private:
-            static bool isExecutableOrLib(const string& path);
-        };
-    }
+#include <soci.h>
+
+namespace soci {
+
+    bool is_sqlite_backend(soci::session& sql);
+    bool is_postgres_backend(soci::session& sql);
+
 }
+
+#endif //LEDGER_CORE_SOCI_BACKEND_UTILS_H

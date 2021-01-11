@@ -199,12 +199,11 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
 
 
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.begin();
+        std::vector<ledger::core::Operation> ops;
         for (auto& tx : transactions) {
-            account->putTransaction(sql, tx);
+            account->interpretTransaction(tx, ops);
         }
-        sql.commit();
+        account->bulkInsert(ops);
     }
 
     auto query = account->queryOperations()->complete();

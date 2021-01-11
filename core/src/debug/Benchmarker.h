@@ -40,13 +40,12 @@ namespace ledger {
             Benchmarker(const std::string& name, const std::shared_ptr<spdlog::logger>& logger);
             Benchmarker& start();
             Benchmarker& stop();
-            std::chrono::steady_clock::duration getDuration() const;
+            std::chrono::high_resolution_clock::duration getDuration() const;
         private:
             std::shared_ptr<spdlog::logger> _logger;
             std::string _name;
-            std::chrono::steady_clock::time_point _startDate;
-            std::chrono::steady_clock::time_point _stopDate;
-
+            std::chrono::high_resolution_clock::time_point _startDate;
+            std::chrono::high_resolution_clock::time_point _stopDate;
         };
     }
 }

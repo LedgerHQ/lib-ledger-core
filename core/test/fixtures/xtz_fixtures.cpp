@@ -13,14 +13,17 @@ namespace ledger {
 			std::shared_ptr<core::TezosLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
 				auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(XPUB_INFO)));
 				soci::session sql(pool->getDatabaseSessionPool()->getPool());
-				sql.begin();				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_1));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_2));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_3));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_4));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_5));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_6));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_7));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_8));
+				sql.begin();
+                std::vector<core::Operation> operations;
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_1), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_2), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_3), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_4), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_5), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_6), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_7), operations);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_8), operations);
+                account->bulkInsert(operations);
 				sql.commit();
 				return account;
 			}

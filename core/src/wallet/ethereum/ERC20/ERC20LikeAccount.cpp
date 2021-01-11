@@ -47,6 +47,7 @@
 #include <database/soci-date.h>
 #include <database/query/ConditionQueryFilter.h>
 #include <wallet/pool/WalletPool.hpp>
+#include <wallet/ethereum/database/EthereumLikeOperationDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -211,9 +212,6 @@ namespace ledger {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
             return getBalance().map<std::vector<uint8_t>>(getContext(), [amount, address] (const std::shared_ptr<api::BigInt> &balance) {
-                if ( amount->compare(balance) > 0) {
-                    throw Exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-                }
 
                 BytesWriter writer;
                 writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
@@ -226,7 +224,6 @@ namespace ledger {
                     while (hexOutput.size() != 64) {
                         hexOutput = "00" + hexOutput;
                     }
-
                     return hexOutput;
                 };
 
@@ -246,43 +243,11 @@ namespace ledger {
             getTransferToAddressData(amount, address).callback(context, data);
         }
 
-        void ERC20LikeAccount::putOperation(soci::session &sql, const std::shared_ptr<ERC20LikeOperation> &operation, bool newOperation) {
-            auto status = operation->getStatus();
-            auto erc20OpUid = operation->getOperationUid();
-            auto gasUsed = operation->getUsedGas()->toString(16);
-            ERC20LikeOperation op;
-
-            if (newOperation) {
-                auto ethOpUid = operation->getETHOperationUid();
-                auto hash = operation->getHash();
-                auto receiver = operation->getReceiver();
-                auto sender = operation->getSender();
-                auto data = hex::toString(operation->getData());
-                auto operationType = api::to_string(operation->getOperationType());
-                auto nonce = operation->getNonce()->toString(16);
-                auto value = operation->getValue()->toString(16);
-                auto time = operation->getTime();
-                auto gasPrice = operation->getGasPrice()->toString(16);
-                auto gasLimit = operation->getGasLimit()->toString(16);
-                auto blockHeight = operation->getBlockHeight().value_or(0);
-                sql << "INSERT INTO erc20_operations VALUES("
-                        ":uid, :eth_op_uid, :accout_uid, :op_type, :hash, :nonce, :value, :date, :sender,"
-                        ":receiver, :data, :gas_price, :gas_limit, :gas_used, :status, :block_height"
-                        ")"
-                        , use(erc20OpUid), use(ethOpUid)
-                        , use(_accountUid), use(operationType), use(hash)
-                        , use(nonce), use(value), use(time)
-                        , use(sender), use(receiver), use(data)
-                        , use(gasPrice), use(gasLimit), use(gasUsed)
-                        , use(status), use(blockHeight);
-            } else {
-                // Update
-                sql << "UPDATE erc20_operations SET status = :code , gas_used = :gas WHERE uid = :uid"
-                        , use(status)
-                        , use(gasUsed)
-                        , use(erc20OpUid);
-            }
-            acquireParent()->emitNewERC20Operation(*operation, _accountUid);
+        void ERC20LikeAccount::putOperation(Operation &op, const std::shared_ptr<ERC20LikeOperation> &operation) {
+            auto data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
+            if (!data)
+                return ;
+            data->erc20Operations.push_back(std::make_tuple(_accountUid, *operation));
         }
 
         std::shared_ptr<api::OperationQuery> ERC20LikeAccount::queryOperations() {
