@@ -162,12 +162,7 @@ namespace ledger {
                                                         if (id == account->_originatedAccounts.size() - 1) {
                                                             return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result);
                                                         }
-
-                                                        auto killSession = s ? Future<Unit>::successful(Unit()) :
-                                                                           account->_explorer->killSession(s);
-                                                        return killSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const auto&){
-                                                            return getTxs(account, id + 1, nullptr, result);
-                                                        });
+                                                        return getTxs(account, id + 1, nullptr, result);
                                                     }).recover(account->getContext(), [] (const Exception& ex) -> BlockchainExplorerAccountSynchronizationResult {
                                                         throw ex;
                                                     });
