@@ -64,7 +64,7 @@ namespace ledger {
             HttpRequest(api::HttpMethod method,
                         const std::string& url,
                         const std::unordered_map<std::string, std::string>& headers,
-                        const std::experimental::optional<std::vector<uint8_t >> body,
+                        const std::experimental::optional<std::vector<uint8_t>>& body,
                         const std::shared_ptr<api::HttpClient> &client,
                         const std::shared_ptr<api::ExecutionContext> &context,
                         const Option<std::shared_ptr<spdlog::logger>>& logger);
@@ -115,6 +115,7 @@ namespace ledger {
                 errorCode == api::ErrorCode::TOO_MANY_REDIRECT;
             };
 
+        public:
             class ApiRequest : public api::HttpRequest {
             public:
                 ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self);
