@@ -513,14 +513,10 @@ namespace ledger {
                         // END NEW CODE
 
                         // Get the last block
-                        if (bulk->transactions.size() > 0) {
-                            auto &lastBlock = bulk->transactions.back().block;
-
-                            if (lastBlock.nonEmpty()) {
-                                batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
-                                batchState.blockHash = lastBlock.getValue().hash;
-                                buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-                            }
+                        if (bulk->transactions.size() > 0 && lastBlock.nonEmpty() ) {
+                            batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
+                            batchState.blockHash = lastBlock.getValue().hash;
+                            buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                         }
 
                         auto hadTX = hadTransactions || bulk->transactions.size() > 0;

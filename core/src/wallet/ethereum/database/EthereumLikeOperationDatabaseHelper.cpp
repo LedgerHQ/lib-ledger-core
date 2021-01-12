@@ -345,11 +345,14 @@ namespace ledger {
                 operationStmt.bindings.update(op);
             }
             // Block
-            blockStmt.execute();
+            if (!blockStmt.bindings.uid.empty())
+                blockStmt.execute();
             // ERC Token
-            tokenStmt.execute();
+            if (!tokenStmt.bindings.name.empty())
+                tokenStmt.execute();
             // ERC20 accounts
-            erc20AccountStmt.execute();
+            if (!erc20AccountStmt.bindings.uid.empty())
+                erc20AccountStmt.execute();
             // Transaction
             ethTxStmt.execute();
             // Operations
@@ -357,9 +360,11 @@ namespace ledger {
             // ETH operation
             ethOpStmt.execute();
             // Internal op
-            internalOpStmt.execute();
+            if (!internalOpStmt.bindings.opUid.empty())
+                internalOpStmt.execute();
             // ERC20 operation
-            erc20OpStmt.execute();
+            if (!erc20OpStmt.bindings.hash.empty())
+                erc20OpStmt.execute();
 
         }
 
