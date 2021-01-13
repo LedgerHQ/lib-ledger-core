@@ -475,8 +475,8 @@ namespace ledger {
                         // Interpret transactions to operations and update last block
                         for (const auto& tx : bulk->transactions) {
                             // Update last block to chain query
-                            if (lastBlock.isEmpty() ||
-                                lastBlock.getValue().height > tx.block.getValue().height) {
+                            if (tx.block.nonEmpty() && (lastBlock.isEmpty() ||
+                                lastBlock.getValue().height < tx.block.getValue().height)) {
                                 lastBlock = tx.block;
                             }
 

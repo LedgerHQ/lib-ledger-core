@@ -108,7 +108,6 @@ namespace ledger {
                 StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             auto address = account->getKeychain()->getAddress()->toString();
             auto self = shared_from_this();
-           fmt::print("Current paging token: {}\n", state.transactionPagingToken.getValueOr("no paging token"));
             _explorer->getTransactions(address, state.transactionPagingToken)
                 .onComplete(account->getContext(), [self, account, state] (const Try<stellar::TransactionVector>& txs) mutable {
                 if (txs.isFailure()) {
@@ -131,7 +130,6 @@ namespace ledger {
                     account->emitEventsNow();
                     if (!txs.getValue().empty()) {
                         state.transactionPagingToken = txs.getValue().back()->pagingToken;
-                        fmt::print("Paging token for next round: {}\n", state.transactionPagingToken.getValueOr("no paging token"));
                         {
                             auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
                             preferences->editor()->putObject("state", state)->commit();
