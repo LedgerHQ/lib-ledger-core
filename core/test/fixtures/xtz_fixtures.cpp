@@ -12,8 +12,6 @@ namespace ledger {
 			);
 			std::shared_ptr<core::TezosLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
 				auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(XPUB_INFO)));
-				soci::session sql(pool->getDatabaseSessionPool()->getPool());
-				sql.begin();
                 std::vector<core::Operation> operations;
                 account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_1), operations);
                 account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_2), operations);
@@ -24,7 +22,6 @@ namespace ledger {
                 account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_7), operations);
                 account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_8), operations);
                 account->bulkInsert(operations);
-				sql.commit();
 				return account;
 			}
 			const std::string TX_1 = "{\"block_hash\": \"BM5xyTrCQ1CzBBVQeV1TMrHHtpbSwccWtFkN8VFtB82suSYBikP\", \"type\": {\"operations\": [{\"src\": {\"tz\": \"KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd\"}, \"kind\": \"transaction\", \"burn\": 0, \"fee\": 1420, \"destination\": {\"tz\": \"tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE\"}, \"op_level\": 441021, \"failed\": false, \"amount\": 150000, \"internal\": false, \"storage_limit\": \"300\", \"timestamp\": \"2019-05-17T07:49:15Z\", \"gas_limit\": \"10300\", \"counter\": 2}], \"source\": {\"tz\": \"KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd\"}, \"kind\": \"manager\"}, \"hash\": \"opVFeKkgFDdoeNnBBsfkHA1tz9ZfHPm5zAZKJXbAP6WTWtBUGCY\", \"network_hash\": \"NetXdQprcVkpaWU\"}";

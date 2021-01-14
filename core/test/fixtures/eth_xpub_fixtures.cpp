@@ -11,8 +11,6 @@ namespace ledger {
 			);
 			std::shared_ptr<core::EthereumLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
 				auto account = std::dynamic_pointer_cast<core::EthereumLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));
-				soci::session sql(pool->getDatabaseSessionPool()->getPool());
-				sql.begin();
                 std::vector<core::Operation> operations;
                 account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_1), operations);
                 account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_2), operations);
@@ -21,7 +19,6 @@ namespace ledger {
                 account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_5), operations);
                 account->interpretTransaction(*core::JSONUtils::parse<core::EthereumLikeTransactionParser>(TX_6), operations);
                 account->bulkInsert(operations);
-				sql.commit();
 				return account;
 			}
 			const std::string TX_1 = "{\"nonce\": \"0x0\", \"index\": 0, \"gas_price\": 10000000, \"from\": \"0xfed6476b45bf49ec711c0366f647a003ed6eee56\", \"gas\": 21000, \"gas_used\": 21000, \"value\": 2464550012766714, \"to\": \"0x8f7a0afaaee372eefd020056fc552bd87dd75d73\", \"confirmations\": 698876, \"input\": \"0x\", \"received_at\": \"2018-08-08T04:50:09Z\", \"hash\": \"0xdca99dccc9e25b93249cbe2b793d93f2c9457020238bab27996e7a314c60b65a\", \"cumulative_gas_used\": 7885982, \"block\": {\"time\": \"2018-08-08T04:50:09Z\", \"hash\": \"0xe17428e5182575ad27b55556e33c121cebc42477e362d2bb9c619a257f2b2396\", \"height\": 6108540}}";

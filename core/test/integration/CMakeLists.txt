@@ -60,9 +60,7 @@ endif()
 
 # partial fix for LLC-77; dirty, but works and unlocks the CI
 add_test (NAME ledger-core-integration-AccountBlockchainObservationTests.EmitNewTransaction COMMAND ledger-core-integration-tests --gtest_filter=AccountBlockchainObservationTests.EmitNewTransaction)
-add_test (NAME ledger-core-integration-AccountBlockchainObservationTests.EmitNewTransactionAndReceiveOnPool COMMAND ledger-core-integration-tests --gtest_filter=AccountBlockchainObservationTests.EmitNewTransactionAndReceiveOnPool)
 add_test (NAME ledger-core-integration-AccountBlockchainObservationTests.AutoReconnect COMMAND ledger-core-integration-tests --gtest_filter=AccountBlockchainObservationTests.AutoReconnect)
-add_test (NAME ledger-core-integration-AccountBlockchainObservationTests.EmitNewBlock COMMAND ledger-core-integration-tests --gtest_filter=AccountBlockchainObservationTests.EmitNewBlock)
 add_test (NAME ledger-core-integration-AccountCreationTest.CreateBitcoinAccountWithInfo COMMAND ledger-core-integration-tests --gtest_filter=AccountCreationTest.CreateBitcoinAccountWithInfo)
 add_test (NAME ledger-core-integration-AccountCreationTest.CreateBitcoinAccountWithInfoOnExistingWallet COMMAND ledger-core-integration-tests --gtest_filter=AccountCreationTest.CreateBitcoinAccountWithInfoOnExistingWallet)
 add_test (NAME ledger-core-integration-AccountCreationTest.ChangePassword COMMAND ledger-core-integration-tests --gtest_filter=AccountCreationTest.ChangePassword)
@@ -200,8 +198,6 @@ add_test (NAME ledger-core-integration-EthereumKeychains.EthereumAddressValidati
 add_test (NAME ledger-core-integration-EthereumKeychains.EthereumDerivationSchemes COMMAND ledger-core-integration-tests --gtest_filter=EthereumKeychains.EthereumDerivationSchemes)
 
 # add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=RippleLikeWalletSynchronization.MediumXpubSynchronization)
-add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool COMMAND ledger-core-integration-tests --gtest_filter=RippleLikeWalletSynchronization.EmitNewTransactionAndReceiveOnPool)
-add_test (NAME ledger-core-integration-RippleLikeWalletSynchronization.EmitNewBlock COMMAND ledger-core-integration-tests --gtest_filter=RippleLikeWalletSynchronization.EmitNewBlock)
 
 add_test (NAME ledger-core-integration-RippleMakeTransaction.CreateTx COMMAND ledger-core-integration-tests --gtest_filter=RippleMakeTransaction.CreateTx)
 add_test (NAME ledger-core-integration-RippleMakeTransaction.ParseSignedRawTransaction COMMAND ledger-core-integration-tests --gtest_filter=RippleMakeTransaction.ParseSignedRawTransaction)
