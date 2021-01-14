@@ -184,5 +184,5 @@ if [ "$1" == "ios" ]; then
     echo " >>> Starting iOS build for architecture ${ARCH} with toolchain ${TOOLCHAIN_NAME} for ${OSX_SYSROOT}"
     xcodebuild -project ledger-core.xcodeproj -configuration Release -jobs 4
 else
-    make -j16 -l2
+    make -j4 -l2
 fi
