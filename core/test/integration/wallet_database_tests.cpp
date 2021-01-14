@@ -201,7 +201,7 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
     {
         std::vector<ledger::core::Operation> ops;
         for (auto& tx : transactions) {
-            account->interpretTransaction(tx, ops);
+            account->interpretTransaction(tx, ops, true);
         }
         account->bulkInsert(ops);
     }

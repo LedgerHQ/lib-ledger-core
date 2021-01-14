@@ -70,8 +70,9 @@ namespace ledger {
              * Interpret operations from transactions and fill a output vector
              * @param transaction The transaction to interpret
              * @param out A vector which is filled by this function
+             * @param needExtendKeychain Whether we need to extend the keychain during the transaction interpretation
              */
-            void interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction, std::vector<Operation>& out);
+            void interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction, std::vector<Operation>& out, bool needExtendKeychain=false);
 
             Try<int> bulkInsert(const std::vector<Operation>& out);
 
