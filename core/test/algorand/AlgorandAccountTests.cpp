@@ -33,6 +33,7 @@
 #include <wallet/algorand/AlgorandWalletFactory.hpp>
 #include <wallet/algorand/database/AlgorandAccountDatabaseHelper.hpp>
 #include <wallet/algorand/model/transactions/AlgorandTransaction.hpp>
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
 #include <wallet/algorand/utils/B64String.hpp>
 
 #include <api/AlgorandAssetAmount.hpp>
@@ -229,10 +230,11 @@ public:
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
 
-        soci::session sql(account->getWallet()->getDatabase()->getPool());
+        std::vector<algorand::Operation> operations;
         for (const auto& txn : makeTransactions()) {
-            account->putTransaction(sql, txn);
+            account->interpretTransaction(txn, operations);
         }
+        account->bulkInsert(operations);
     }
 
     void TearDown() override {
