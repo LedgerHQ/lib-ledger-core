@@ -108,9 +108,9 @@ TEST_F(CosmosDBTest, OperationQueryTest) {
     const auto tx = setupTransactionResponse(std::vector<Message>{ msg }, timeRef);
 
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.set_log_stream(&std::cerr);
-        account->putTransaction(sql, tx);
+        std::vector<CosmosLikeOperation> operations;
+        account->interpretTransaction(tx, operations);
+        account->bulkInsert(operations);
     }
 
     {
@@ -155,9 +155,9 @@ TEST_F(CosmosDBTest, FeesMsgTypeFilteredOutTest) {
     auto tx = setupTransactionResponse(std::vector<Message>{ msgFees }, timeRef);
 
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.set_log_stream(&std::cerr);
-        account->putTransaction(sql, tx);
+        std::vector<CosmosLikeOperation> operations;
+        account->interpretTransaction(tx, operations);
+        account->bulkInsert(operations);
     }
 
     {
@@ -180,9 +180,9 @@ TEST_F(CosmosDBTest, DISABLED_FeesMsgTypeTest) {
     auto tx = setupTransactionResponse(std::vector<Message>{ msgFees }, timeRef);
 
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.set_log_stream(&std::cerr);
-        account->putTransaction(sql, tx);
+        std::vector<CosmosLikeOperation> operations;
+        account->interpretTransaction(tx, operations);
+        account->bulkInsert(operations);
     }
 
     {
@@ -220,9 +220,9 @@ TEST_F(CosmosDBTest, DISABLED_UnsuportedMsgTypeTest) {
     tx.messages[0].type = "unknown-message-type";
 
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.set_log_stream(&std::cerr);
-        account->putTransaction(sql, tx);
+        std::vector<CosmosLikeOperation> operations;
+        account->interpretTransaction(tx, operations);
+        account->bulkInsert(operations);
     }
 
     {
@@ -250,9 +250,9 @@ TEST_F(CosmosDBTest, DISABLED_MultipleMsgTest) {
     const auto tx = setupTransactionResponse(std::vector<Message>{ msgSend, msgVote }, timeRef);
 
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.set_log_stream(&std::cerr);
-        account->putTransaction(sql, tx);
+        std::vector<CosmosLikeOperation> operations;
+        account->interpretTransaction(tx, operations);
+        account->bulkInsert(operations);
     }
 
     {

@@ -409,16 +409,16 @@ Future<bool> CosmosLikeAccountSynchronizer::synchronizeBatch(
                 insertionBenchmark->start();
 
                 auto &batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-                soci::session sql(buddy->wallet->getDatabase()->getPool());
-                soci::transaction tr(sql);
 
                 buddy->logger->info("Got {} txs", bulk->transactions.size());
-                for (const auto &tx : bulk->transactions) {
-                    auto const flag = buddy->account->putTransaction(sql, tx);
 
-                    if (::ledger::core::account::isInsertedOperation(flag)) {
-                        ++buddy->context.newOperations;
-                    }
+                std::vector<CosmosLikeOperation> operations;
+                for (const auto &tx : bulk->transactions) {
+                    buddy->account->interpretTransaction(tx, operations);
+
+                    //if (::ledger::core::account::isInsertedOperation(flag)) {
+                    //    ++buddy->context.newOperations;
+                    //}
 
                     // Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
@@ -437,7 +437,16 @@ Future<bool> CosmosLikeAccountSynchronizer::synchronizeBatch(
                     buddy->transactionsToDrop.erase(tx.hash);
                 }
 
-                tr.commit();
+                Try<int> tryPutTx = buddy->account->bulkInsert(operations);
+                insertionBenchmark->stop();
+                if (tryPutTx.isFailure()) {
+                    buddy->logger->error("Failed to bulk insert for batch {} because: {}", currentBatchIndex, tryPutTx.getFailure().getMessage());
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} ({})", currentBatchIndex, tryPutTx.exception().getValue().getMessage());
+                } 
+                else {
+                    buddy->context.newOperations += tryPutTx.getValue();
+                }               
+
                 buddy->account->emitEventsNow();
 
                 // Get the last block
@@ -449,8 +458,6 @@ Future<bool> CosmosLikeAccountSynchronizer::synchronizeBatch(
                         batchState.blockHash = lastBlock.getValue().hash;
                     }
                 }
-
-                insertionBenchmark->stop();
 
                 auto hadTX = hadTransactions || bulk->transactions.size() > 0;
                 if (bulk->hasNext) {

@@ -75,6 +75,14 @@ class CosmosLikeTransactionDatabaseHelper {
         const cosmos::Message &msg,
         const cosmos::MessageLog &log);
 
+    static std::string createCosmosMessageUid(
+        std::string const &txUid, 
+        uint64_t msgIndex);
+
+    static std::string createCosmosTransactionUid(
+        std::string const &accountUid, 
+        std::string const &txHash);
+
    private:
     /// \brief Fill a cosmos::Message from a database entry in cosmos_messages table with MsgSend
     /// specific data. \param [in] row The row from cosmos_messages table to use \param [out] msg

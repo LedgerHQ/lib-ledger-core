@@ -55,6 +55,9 @@ class CosmosLikeOperation : public api::CosmosLikeOperation, public Operation {
     virtual std::shared_ptr<api::CosmosLikeTransaction> getTransaction() override;
     virtual std::shared_ptr<api::CosmosLikeMessage> getMessage() override;
 
+    const std::shared_ptr<api::CosmosLikeTransaction> getTransaction() const;
+    const std::shared_ptr<api::CosmosLikeMessage> getMessage() const;
+
    private:
     std::shared_ptr<api::CosmosLikeTransaction> _txApi{nullptr};
     std::shared_ptr<api::CosmosLikeMessage> _msgApi{nullptr};

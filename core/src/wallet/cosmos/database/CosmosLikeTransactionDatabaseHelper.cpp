@@ -288,13 +288,13 @@ static void insertTransaction(soci::session &sql, cosmos::Transaction const &tx)
         soci::use(gas), soci::use(gasUsed), soci::use(tx.memo);
 }
 
-static std::string createCosmosMessageUid(std::string const &txUid, uint64_t msgIndex)
+std::string CosmosLikeTransactionDatabaseHelper::createCosmosMessageUid(std::string const &txUid, uint64_t msgIndex)
 {
     auto result = SHA256::stringToHexHash(fmt::format("uid:{}+{}", txUid, msgIndex));
     return result;
 }
 
-static std::string createCosmosTransactionUid(
+std::string CosmosLikeTransactionDatabaseHelper::createCosmosTransactionUid(
     std::string const &accountUid, std::string const &txHash)
 {
     auto result = SHA256::stringToHexHash(fmt::format("uid:{}+{}", accountUid, txHash));

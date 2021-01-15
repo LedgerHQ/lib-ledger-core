@@ -74,5 +74,13 @@ namespace ledger {
 			return _msgApi;
 		}
 
+        const std::shared_ptr<api::CosmosLikeTransaction> CosmosLikeOperation::getTransaction() const {
+            return _txApi;
+        }
+
+		const std::shared_ptr<api::CosmosLikeMessage> CosmosLikeOperation::getMessage() const {
+			return _msgApi;
+		}
+
     }
 }

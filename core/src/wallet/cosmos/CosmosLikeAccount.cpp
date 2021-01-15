@@ -60,6 +60,7 @@
 #include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
+#include <wallet/cosmos/database/CosmosLikeOperationsDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -365,27 +366,23 @@ void CosmosLikeAccount::inflateOperation(
     out.walletUid = wallet->getWalletUid();
 }
 
-int CosmosLikeAccount::putTransaction(soci::session &sql, const cosmos::Transaction &transaction)
+void CosmosLikeAccount::interpretTransaction(const cosmos::Transaction &transaction, std::vector<CosmosLikeOperation> &out)
 {
     // FIXME Design issue: 'transaction' being const (from
     // AbstractBlockchainObserver::putTransaction) it makes it impossible to manage uids of nested
     // objects (eg. cosmos::Message). Writable copy of tx to allow to add uids.
+    
     auto tx = transaction;
+    tx.uid = CosmosLikeTransactionDatabaseHelper::createCosmosTransactionUid( getAccountUid(), tx.hash);
 
     auto wallet = getWallet();
     if (wallet == nullptr) {
         throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
     }
-
-    if (tx.block.nonEmpty()) {
-        putBlock(sql, tx.block.getValue().toApiBlock());
-    }
-
-    int result = FLAG_TRANSACTION_IGNORED;
-    CosmosLikeTransactionDatabaseHelper::putTransaction(sql, getAccountUid(), tx);
-
+       
     for (auto msgIndex = 0; msgIndex < tx.messages.size(); msgIndex++) {
         auto msg = tx.messages[msgIndex];
+        msg.uid = CosmosLikeTransactionDatabaseHelper::createCosmosMessageUid(tx.uid, msgIndex);
 
         // Ignore the operation if this is a Fee operation, that _this_ Account did not pay
         // inflateOperation adds the AccountUID in the operation otherwise, so when querying
@@ -398,25 +395,28 @@ int CosmosLikeAccount::putTransaction(soci::session &sql, const cosmos::Transact
         CosmosLikeOperation operation(tx, msg);
         inflateOperation(operation, getWallet(), tx, msg);
         operation.refreshUid(std::to_string(msgIndex));
-
-        auto inserted = CosmosLikeOperationDatabaseHelper::putOperation(sql, operation);
-        if (inserted) {
-            CosmosLikeOperationDatabaseHelper::updateOperation(sql, operation.uid, msg.uid);
-            emitNewOperationEvent(operation);
-        }
-        result = static_cast<int>(operation.type);
+        out.push_back(operation);
     }
+}
 
-    return result;
+Try<int> CosmosLikeAccount::bulkInsert(const std::vector<CosmosLikeOperation> &operations) {
+    return Try<int>::from([&] () {
+        soci::session sql(getWallet()->getDatabase()->getPool());
+        soci::transaction tr(sql);
+        CosmosLikeOperationsDatabaseHelper::bulkInsert(sql, operations);
+        tr.commit();
+        // Emit
+        for (const auto& op : operations) {
+            emitNewOperationEvent(op);
+        }
+        return operations.size();
+    });
 }
 
 bool CosmosLikeAccount::putBlock(soci::session &sql, const api::Block &block)
 {
-    if (BlockDatabaseHelper::putBlock(sql, block)) {
-        emitNewBlockEvent(block);
-        return true;
-    }
-    return false;
+    emitNewBlockEvent(block);
+    return true;
 }
 
 std::shared_ptr<CosmosLikeKeychain> CosmosLikeAccount::getKeychain() const
