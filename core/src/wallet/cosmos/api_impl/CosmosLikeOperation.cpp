@@ -47,9 +47,11 @@ namespace ledger {
         }
 
         CosmosLikeOperation::CosmosLikeOperation(ledger::core::cosmos::Transaction const& tx,
-                                                 ledger::core::cosmos::Message const& msg) :
+                                                 ledger::core::cosmos::Message const& msg,
+                                                 ledger::core::cosmos::MessageLog const& messageLog) :
             _txApi(std::make_shared<CosmosLikeTransactionApi>(tx)),
-            _msgApi(std::make_shared<CosmosLikeMessage>(msg))
+            _msgApi(std::make_shared<CosmosLikeMessage>(msg)),
+            _messageLog(messageLog)
         {}
 
         void CosmosLikeOperation::setTransactionData(ledger::core::cosmos::Transaction const& tx) {
@@ -80,6 +82,10 @@ namespace ledger {
 
 		const std::shared_ptr<api::CosmosLikeMessage> CosmosLikeOperation::getMessage() const {
 			return _msgApi;
+		}
+
+        const ledger::core::cosmos::MessageLog& CosmosLikeOperation::getMessageLog() const {
+			return _messageLog;
 		}
 
     }

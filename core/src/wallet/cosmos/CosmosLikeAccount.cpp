@@ -381,7 +381,8 @@ void CosmosLikeAccount::interpretTransaction(const cosmos::Transaction &transact
     }
        
     for (auto msgIndex = 0; msgIndex < tx.messages.size(); msgIndex++) {
-        auto msg = tx.messages[msgIndex];
+        auto &msg = tx.messages[msgIndex];
+        auto &log = tx.logs[msgIndex];
         msg.uid = CosmosLikeTransactionDatabaseHelper::createCosmosMessageUid(tx.uid, msgIndex);
 
         // Ignore the operation if this is a Fee operation, that _this_ Account did not pay
@@ -392,7 +393,7 @@ void CosmosLikeAccount::interpretTransaction(const cosmos::Transaction &transact
             continue;
         }
 
-        CosmosLikeOperation operation(tx, msg);
+        CosmosLikeOperation operation(tx, msg, log);
         inflateOperation(operation, getWallet(), tx, msg);
         operation.refreshUid(std::to_string(msgIndex));
         out.push_back(operation);
