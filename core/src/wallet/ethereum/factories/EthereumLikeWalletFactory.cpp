@@ -40,7 +40,7 @@
 #include <wallet/ethereum/factories/EthereumLikeKeychainFactory.h>
 #include <wallet/ethereum/EthereumLikeWallet.h>
 #include <wallet/pool/WalletPool.hpp>
-#include <wallet/ethereum/synchronizers/EthereumLikeBlockchainExplorerAccountSynchronizer.h>
+#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
 
@@ -81,7 +81,7 @@ namespace ledger {
                         if (!pool) {
                             throw make_exception(api::ErrorCode::NULL_POINTER, "Pool was released.");
                         }
-                        return std::make_shared<EthereumLikeBlockchainExplorerAccountSynchronizer>(pool, explorer);
+                        return std::make_shared<EthereumLikeAccountSynchronizer>(pool, explorer);
                     });
                 }
             }

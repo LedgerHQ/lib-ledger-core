@@ -45,7 +45,7 @@
 #include <wallet/common/Amount.h>
 #include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
+#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.hpp>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
@@ -137,7 +137,7 @@ namespace ledger {
             std::mutex _synchronizationLock;
             uint64_t _currentBlockHeight;
             std::vector<ERC20LikeAccountDatabaseEntry> erc20Entries;
-            std::vector<std::shared_ptr<api::ERC20LikeAccount> >_erc20LikeAccounts;
+            std::vector<std::shared_ptr<api::ERC20LikeAccount>> _erc20LikeAccounts;
             std::mutex _erc20EventLock;
             std::shared_ptr<api::Event> _batchedErc20Event;
         };

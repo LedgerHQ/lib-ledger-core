@@ -35,7 +35,7 @@
 #include <functional>
 
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
+#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/factories/EthereumLikeKeychainFactory.h>
 

@@ -34,7 +34,6 @@
 #include <api/ERC20Token.hpp>
 #include <api_impl/BigIntImpl.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
@@ -44,6 +43,7 @@
 #include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/ERC20/erc20Tokens.h>
 #include <wallet/ethereum/ERC20/ERC20LikeOperation.h>
+#include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/WalletPool.hpp>
@@ -468,7 +468,7 @@ namespace ledger {
             auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future = _synchronizer->synchronize(std::static_pointer_cast<EthereumLikeAccount>(shared_from_this()))->getFuture();
+            auto future = _synchronizer->synchronizeAccount(std::static_pointer_cast<EthereumLikeAccount>(shared_from_this()))->getFuture();
             auto self = std::static_pointer_cast<EthereumLikeAccount>(shared_from_this());
 
             //Update current block height (needed to compute trust level)

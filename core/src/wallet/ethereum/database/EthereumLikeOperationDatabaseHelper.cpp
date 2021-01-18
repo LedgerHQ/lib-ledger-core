@@ -38,6 +38,7 @@
 #include <database/soci-backend-utils.h>
 #include <debug/Benchmarker.h>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/ethereum/database/EthereumLikeTransactionDatabaseHelper.h>
 #include <api/ERC20Token.hpp>
 

@@ -34,7 +34,7 @@
 
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
+#include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.hpp>
 #include <wallet/ethereum/factories/EthereumLikeWalletFactory.h>
 #include <wallet/ethereum/factories/EthereumLikeKeychainFactory.h>
 namespace ledger {
@@ -82,7 +82,7 @@ namespace ledger {
             EthereumLikeAccountSynchronizerFactory _synchronizerFactory;
             api::EthereumLikeNetworkParameters _network;
             int _coinType;
-        };        
+        };
     }
 }
 
