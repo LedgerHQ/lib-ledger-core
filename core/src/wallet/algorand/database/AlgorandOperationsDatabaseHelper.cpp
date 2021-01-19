@@ -146,6 +146,9 @@ namespace {
             closeRewards.clear();
         }
 
+        bool empty() const {
+            return uid.empty();
+        }
     };
 
     // Algorand transactions: payment
@@ -555,15 +558,12 @@ namespace ledger {
                 BulkInsertDatabaseHelper::UPSERT_OPERATION(sql, operationStmt);
                 BulkInsertDatabaseHelper::UPSERT_BLOCK(sql, blockStmt);
                 UPSERT_ALGORAND_OPERATION(sql, algorandOpStmt);     
-                UPSERT_ALGORAND_TRANSACTION_PAYMENT(sql, paymentTransactionStmt);
-                UPSERT_ALGORAND_TRANSACTION_KEYREG(sql, keyregTransactionStmt);
-                UPSERT_ALGORAND_TRANSACTION_ASSETCONFIG(sql, assetConfigTransactionStmt);
-                UPSERT_ALGORAND_TRANSACTION_ASSETTRANSFER(sql, assetTransferTransactionStmt);
-                UPSERT_ALGORAND_TRANSACTION_ASSETFREEZE(sql, assetFreezeTransactionStmt);
-
+                
                 for (const auto& op : operations) {
                     if (op.getBackend().block.hasValue()) {
-                        blockStmt.bindings.update(op.getBackend().block.getValue());
+                        auto block = op.getBackend().block.getValue(); 
+                        block.currencyName = op.getAccount()->getWallet()->getCurrency().name;
+                        blockStmt.bindings.update(block);
                     }
                     // Upsert operation
                     operationStmt.bindings.update(op.getBackend());
@@ -572,14 +572,28 @@ namespace ledger {
                     auto& tx = op.getTransactionData(); 
                     const auto txUid = *tx.header.id;
                     if (tx.header.type == constants::xPay) {
+                        if (paymentTransactionStmt.bindings.empty())
+                            UPSERT_ALGORAND_TRANSACTION_PAYMENT(sql, paymentTransactionStmt);
                         paymentTransactionStmt.bindings.update(txUid, tx);
-                    } else if (tx.header.type == constants::xKeyregs) {
+                    } 
+                    else if (tx.header.type == constants::xKeyregs) {
+                        if (keyregTransactionStmt.bindings.empty())
+                            UPSERT_ALGORAND_TRANSACTION_KEYREG(sql, keyregTransactionStmt);
                         keyregTransactionStmt.bindings.update(txUid, tx);
-                    } else if (tx.header.type == constants::xAcfg) {
+                    } 
+                    else if (tx.header.type == constants::xAcfg) {
+                        if (assetConfigTransactionStmt.bindings.empty())
+                            UPSERT_ALGORAND_TRANSACTION_ASSETCONFIG(sql, assetConfigTransactionStmt);
                         assetConfigTransactionStmt.bindings.update(txUid, tx);
-                    } else if (tx.header.type == constants::xAxfer) {
+                    } 
+                    else if (tx.header.type == constants::xAxfer) {
+                        if (assetTransferTransactionStmt.bindings.empty())
+                            UPSERT_ALGORAND_TRANSACTION_ASSETTRANSFER(sql, assetTransferTransactionStmt);
                         assetTransferTransactionStmt.bindings.update(txUid, tx);
-                    } else if (tx.header.type == constants::xAfreeze) {
+                    } 
+                    else if (tx.header.type == constants::xAfreeze) {
+                        if (assetFreezeTransactionStmt.bindings.empty())
+                            UPSERT_ALGORAND_TRANSACTION_ASSETFREEZE(sql, assetFreezeTransactionStmt);
                         assetFreezeTransactionStmt.bindings.update(txUid, tx);
                     }
 
@@ -595,15 +609,15 @@ namespace ledger {
                 operationStmt.execute();
 
                 //3- algorand transactions 
-                if (!paymentTransactionStmt.bindings.uid.empty())
+                if (!paymentTransactionStmt.bindings.empty())
                     paymentTransactionStmt.execute();
-                if (!keyregTransactionStmt.bindings.uid.empty())
+                if (!keyregTransactionStmt.bindings.empty())
                     keyregTransactionStmt.execute();
-                if (!assetConfigTransactionStmt.bindings.uid.empty())
+                if (!assetConfigTransactionStmt.bindings.empty())
                     assetConfigTransactionStmt.execute();
-                if (!assetTransferTransactionStmt.bindings.uid.empty())
+                if (!assetTransferTransactionStmt.bindings.empty())
                     assetTransferTransactionStmt.execute();
-                if (!assetFreezeTransactionStmt.bindings.uid.empty())
+                if (!assetFreezeTransactionStmt.bindings.empty())
                     assetFreezeTransactionStmt.execute();
 
                 //4- algorand operations

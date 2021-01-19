@@ -146,7 +146,7 @@ namespace algorand {
     Future<Unit> AccountSynchronizer::updateLatestBlock(const std::shared_ptr<api::ExecutionContext> &context) {
         return _explorer->getLatestBlock()
             .template flatMap<Unit>(context, [this] (const Try<api::Block>& block) -> Future<Unit> {
-                if (block.isSuccess()) {
+                if (block.isSuccess()) {                
                     soci::session sql(_account->getWallet()->getDatabase()->getPool());
                     soci::transaction tr(sql);
                     try {

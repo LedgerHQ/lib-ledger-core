@@ -1,6 +1,6 @@
 /*
  *
- * BitcoinLikeOperationDatabaseHelper.hpp
+ * AlgorandOperationsDatabaseHelper.hpp
  * ledger-core
  *
  * Created by Habib LAFET on 12/01/2021.
