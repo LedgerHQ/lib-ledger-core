@@ -1,9 +1,9 @@
 /*
  *
- * TezosLikeOperationDatabaseHelper.hpp
+ * TezosLikeOperationsDatabaseHelper.hpp
  * ledger-core
  *
- * Created by Habib LAFET on 07/01/2021.
+ * Created by Habib LAFET on 19/01/2021.
  *
  * The MIT License (MIT)
  *
@@ -29,8 +29,9 @@
  *
  */
 
-#ifndef LEDGER_CORE_COSMOSLIKEOPERATIONDATABASEHELPER_HPP
-#define LEDGER_CORE_COSMOSLIKEOPERATIONDATABASEHELPER_HPP
+#ifndef LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP
+#define LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP
+
 
 #include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
 #include <soci.h>
@@ -45,4 +46,4 @@ namespace ledger {
 }
 
 
-#endif //LEDGER_CORE_COSMOSLIKEOPERATIONDATABASEHELPER_HPP
+#endif //LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP

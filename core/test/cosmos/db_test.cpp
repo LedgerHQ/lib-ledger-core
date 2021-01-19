@@ -72,8 +72,9 @@ TEST_F(CosmosDBTest, BasicDBTest) {
 
     // Test writing into DB
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        CosmosLikeTransactionDatabaseHelper::putTransaction(sql, account->getAccountUid(), tx);
+        std::vector<CosmosLikeOperation> operations;
+        account->interpretTransaction(tx, operations);
+        account->bulkInsert(operations);
     }
 
     // Test reading from DB

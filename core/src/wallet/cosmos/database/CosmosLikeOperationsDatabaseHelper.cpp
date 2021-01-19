@@ -1,9 +1,9 @@
 /*
  *
- * TezosLikeOperationDatabaseHelper.cpp
+ * TezosLikeOperationsDatabaseHelper.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 07/01/2021.
+ * Created by Habib LAFET on 19/01/2021.
  *
  * The MIT License (MIT)
  *
@@ -34,11 +34,7 @@
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 #include <api/BigInt.hpp>
-#include <crypto/SHA256.hpp>
-#include <unordered_set>
 #include <debug/Benchmarker.h>
-#include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
-#include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 #include <wallet/cosmos/database/SociCosmosAmount.hpp>
