@@ -32,7 +32,6 @@
 #include "RippleLikeWallet.h"
 #include <async/Future.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/ripple/database/RippleLikeAccountDatabaseHelper.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
 #include <wallet/ripple/transaction_builders/RippleLikeTransactionBuilder.h>
@@ -313,7 +312,7 @@ namespace ledger {
             auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future = _synchronizer->synchronize(
+            auto future = _synchronizer->synchronizeAccount(
                     std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))->getFuture();
             auto self = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
 
