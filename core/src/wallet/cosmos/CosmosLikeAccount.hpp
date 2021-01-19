@@ -93,9 +93,13 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     /// \param [in] operations The operations to be insterted in the database
     Try<int> bulkInsert(const std::vector<CosmosLikeOperation>& operations);
 
-    /// raise a new block event
+    /// Insert a block metadata in the database
+    /// \param [in] sql The sql session accessing the database
     /// \param [in] block The block to maybe insert in the database
-    void putBlock(const api::Block &block);
+    /// \return true if the block was actually inserted/updated. false otherwise (see
+    /// BlockDatabaseHelper::putBlock)
+    bool putBlock(soci::session &sql, const api::Block &block);
+
 
     std::shared_ptr<CosmosLikeKeychain> getKeychain() const;
     std::shared_ptr<api::Keychain> getAccountKeychain() override;

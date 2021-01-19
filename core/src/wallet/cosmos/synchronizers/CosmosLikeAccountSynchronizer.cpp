@@ -471,7 +471,8 @@ void CosmosLikeAccountSynchronizer::updateCurrentBlock(
 {
     _explorer->getCurrentBlock().onComplete(context, [buddy](const TryPtr<Block> &block) {
         if (block.isSuccess()) {
-            buddy->account->putBlock(block.getValue()->toApiBlock());
+            soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
+            buddy->account->putBlock(sql, block.getValue()->toApiBlock());
         }
     });
 }

@@ -791,23 +791,6 @@ namespace ledger {
             BulkInsertDatabaseHelper::UPSERT_BLOCK(sql, blockStmt);
             UPSERT_COSMOS_OPERATION(sql, cosmosOpStmt);
             UPSERT_TRANSACTION(sql, transactionStmt);
-            UPSERT_MESSAGE_GENERIC(sql, genericMessageStmt);
-            UPSERT_MESSAGE_SEND(sql, sendMessageStmt);
-            UPSERT_MESSAGE_DELEGATE(sql, delegateMessageStmt);
-            UPSERT_MESSAGE_UNDELEGATE(sql, undelegateMessageStmt);
-            UPSERT_MESSAGE_BEGIN_REDELEGATE(sql, beginRedelegateMessageStmt);
-            UPSERT_MESSAGE_SUBMIT_PROPOSAL(sql, submitProposalMessageStmt);
-            UPSERT_MESSAGE_VOTE(sql, voteMessageStmt);
-            UPSERT_MESSAGE_DEPOSIT(sql, depositMessageStmt);
-            UPSERT_MESSAGE_WITHDRAW_DELEGATION_REWARD(sql, withdrawDelegationRewardMessageStmt);
-            UPSERT_MESSAGE_WITHDRAW_DELEGATOR_REWARD(sql, withdrawDelegatorRewardMessageStmt);
-            UPSERT_MESSAGE_WITHDRAW_VALIDATOR_COMMISSION(sql, withdrawValidatorCommissionMessageStmt);
-            UPSERT_MESSAGE_SET_WITHDRAW_ADDRESS(sql, setWithdrawAddressMessageStmt);
-            UPSERT_MESSAGE_UNJAIL(sql, unjailMessageStmt);
-            UPSERT_MESSAGE_MULTISEND(sql, multiSendMessageStmt);
-            UPSERT_MESSAGE_FEES(sql, feesMessageStmt);
-            UPSERT_MULTISEND_INPUT(sql, multisendInStmt);
-            UPSERT_MULTISEND_OUTPUT(sql, multisendOutStmt);
 
             for (auto& op : operations) {
                 const auto& tx = std::static_pointer_cast<CosmosLikeTransactionApi>(op.getTransaction())->getRawData();
@@ -827,53 +810,86 @@ namespace ledger {
 
                 switch (cosmos::stringToMsgType(msg.type.c_str())) {
                     case api::CosmosLikeMsgType::MSGSEND: {
+                        if (sendMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_SEND(sql, sendMessageStmt);
                         sendMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGDELEGATE: {
+                        if (delegateMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_DELEGATE(sql, delegateMessageStmt);
                         delegateMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGUNDELEGATE: {
+                        if (undelegateMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_UNDELEGATE(sql, undelegateMessageStmt);
                         undelegateMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGBEGINREDELEGATE: {
+                        if (beginRedelegateMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_BEGIN_REDELEGATE(sql, beginRedelegateMessageStmt);
                         beginRedelegateMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGSUBMITPROPOSAL: {
+                        if (submitProposalMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_SUBMIT_PROPOSAL(sql, submitProposalMessageStmt);
                         submitProposalMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGVOTE: {
+                        if (voteMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_VOTE(sql, voteMessageStmt);
                         voteMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGDEPOSIT: {
+                        if (depositMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_DEPOSIT(sql, depositMessageStmt);
                         depositMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATIONREWARD: {
+                        if (withdrawDelegationRewardMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_WITHDRAW_DELEGATION_REWARD(sql, withdrawDelegationRewardMessageStmt);
                         withdrawDelegationRewardMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGWITHDRAWDELEGATORREWARD: {
+                        if (withdrawDelegatorRewardMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_WITHDRAW_DELEGATOR_REWARD(sql, withdrawDelegatorRewardMessageStmt);
                         withdrawDelegatorRewardMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGWITHDRAWVALIDATORCOMMISSION: {
+                        if (withdrawValidatorCommissionMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_WITHDRAW_VALIDATOR_COMMISSION(sql, withdrawValidatorCommissionMessageStmt);
                         withdrawValidatorCommissionMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGSETWITHDRAWADDRESS: {
+                        if (setWithdrawAddressMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_SET_WITHDRAW_ADDRESS(sql, setWithdrawAddressMessageStmt);
                         setWithdrawAddressMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGUNJAIL: {
+                        if (unjailMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_UNJAIL(sql, unjailMessageStmt);
                         unjailMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGMULTISEND: {
+                        if (multiSendMessageStmt.bindings.empty()) {
+                            UPSERT_MESSAGE_MULTISEND(sql, multiSendMessageStmt);
+                            UPSERT_MULTISEND_INPUT(sql, multisendInStmt);
+                            UPSERT_MULTISEND_OUTPUT(sql, multisendOutStmt);
+                        }
                         multiSendMessageStmt.bindings.update(tx.uid, msg, log);
                         multisendInStmt.bindings.update(msg);
                         multisendOutStmt.bindings.update(msg);
                     } break;
                     case api::CosmosLikeMsgType::MSGFEES: {
+                        if (feesMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_FEES(sql, feesMessageStmt);
                         feesMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                     case api::CosmosLikeMsgType::MSGCREATEVALIDATOR:
                     case api::CosmosLikeMsgType::MSGEDITVALIDATOR:
                     case api::CosmosLikeMsgType::UNSUPPORTED:
                     default: {
+                        if (genericMessageStmt.bindings.empty())
+                            UPSERT_MESSAGE_GENERIC(sql, genericMessageStmt);
                         genericMessageStmt.bindings.update(tx.uid, msg, log);
                     } break;
                 }

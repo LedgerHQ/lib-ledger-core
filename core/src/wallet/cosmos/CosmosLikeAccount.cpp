@@ -414,9 +414,10 @@ Try<int> CosmosLikeAccount::bulkInsert(const std::vector<CosmosLikeOperation> &o
     });
 }
 
-void CosmosLikeAccount::putBlock(const api::Block &block)
+bool CosmosLikeAccount::putBlock(soci::session &sql, const api::Block &block)
 {
     emitNewBlockEvent(block);
+    return true;
 }
 
 std::shared_ptr<CosmosLikeKeychain> CosmosLikeAccount::getKeychain() const
