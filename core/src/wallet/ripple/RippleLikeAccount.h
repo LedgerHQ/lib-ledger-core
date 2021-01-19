@@ -44,7 +44,7 @@
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
+#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
 #include <wallet/ripple/keychains/RippleLikeKeychain.h>
 
 namespace ledger
