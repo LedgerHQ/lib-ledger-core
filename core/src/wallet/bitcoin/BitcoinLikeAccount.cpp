@@ -242,9 +242,7 @@ namespace ledger {
                 BitcoinLikeOperationDatabaseHelper::bulkInsert(sql, ops);
                 tr.commit();
                 // Emit
-                for (const auto& op : ops) {
-                    emitNewOperationEvent(op);
-                }
+                emitNewOperationsEvent(ops);
                 return ops.size();
             });
         }

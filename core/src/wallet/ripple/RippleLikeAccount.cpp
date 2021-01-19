@@ -106,9 +106,7 @@ namespace ledger {
                 RippleLikeOperationDatabaseHelper::bulkInsert(sql, operations);
                 tr.commit();
                 // Emit
-                for (const auto& op : operations) {
-                    emitNewOperationEvent(op);
-                }
+                emitNewOperationsEvent(operations);
                 return operations.size();
             });
         }

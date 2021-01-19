@@ -3,9 +3,11 @@ EventCode = enum {
     # An unknown event code.
     undefined;
 
-    # A new operation event.
+    # [DEPRECATED] A new operation event. (this event is deprecated since 4.0)
     new_operation;
-    # A new block event.
+    # Emitted once a batch of operation has been inserted/updated in database
+    update_operations;
+    # A new block event. (this event is deprecated since 4.0)
     new_block;
     # A deleted operation event.
     deleted_operation;
@@ -17,6 +19,9 @@ EventCode = enum {
     synchronization_succeed;
     # Event emitted when a wallet synchronization succeeded on the previously empty account.
     synchronization_succeed_on_previously_empty_account;
-
+    # [DEPRECATED] A new er20 operation is available. (this event is deprecated since 4.0)
     new_erc20_operation;
+    # Emitted each time a batch of ERC20 is inserted in database
+    update_erc20_operations;
+
 }

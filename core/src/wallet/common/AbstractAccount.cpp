@@ -192,12 +192,23 @@ namespace ledger {
         }
 
         void AbstractAccount::emitNewOperationEvent(const Operation &operation) {
-            auto payload = DynamicObject::newInstance();
-            payload->putString(api::Account::EV_NEW_OP_UID, operation.uid);
-            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
-            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
-            auto event = Event::newInstance(api::EventCode::NEW_OPERATION, payload);
-            pushEvent(event);
+           emitNewOperationsEvent({ operation });
+        }
+
+        void AbstractAccount::emitNewOperationsEvent(const std::vector<Operation> &operations) {
+            std::unique_lock<std::mutex> lock(_eventsLock);
+            if (!_batchedOperationsEvent) {
+                _batchedOperationsEvent = Event::newInstance(api::EventCode::UPDATE_OPERATIONS, DynamicObject::newInstance());
+                _batchedOperationsEvent->getPayload()->putArray(api::Account::EV_NEW_OP_UID, DynamicArray::newInstance());
+                _batchedOperationsEvent->getPayload()->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+                _batchedOperationsEvent->getPayload()->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
+            }
+            for (const auto& operation : operations) {
+//                _batchedOperationsEvent
+//                ->getPayload()
+//                ->getArray(api::Account::EV_NEW_OP_UID)
+//                ->pushString(operation.uid);
+            }
         }
 
         void AbstractAccount::emitNewBlockEvent(const Block &block) {
@@ -220,10 +231,16 @@ namespace ledger {
             auto self = shared_from_this();
             run([self] () {
                 std::list<std::shared_ptr<api::Event>> events;
+                std::shared_ptr<api::Event> batchedOperationsEvent;
+                std::shared_ptr<api::Event> batchedBlocksEvent;
                 {
                     std::lock_guard<std::mutex> lock(self->_eventsLock);
                     std::swap(events, self->_events);
+                    batchedOperationsEvent = self->_batchedOperationsEvent;
+                    self->_batchedOperationsEvent = nullptr;
                 }
+                if (batchedOperationsEvent)
+                    self->_publisher->post(batchedOperationsEvent);
                 for (auto& event : events) {
                     self->_publisher->post(event);
                 }
