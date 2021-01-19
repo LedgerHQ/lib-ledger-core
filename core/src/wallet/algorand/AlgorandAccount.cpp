@@ -29,7 +29,6 @@
 
 #include "AlgorandAccount.hpp"
 #include "database/AlgorandTransactionDatabaseHelper.hpp"
-#include "database/AlgorandOperationDatabaseHelper.hpp"
 #include "database/AlgorandOperationsDatabaseHelper.hpp"
 #include "model/AlgorandModelMapper.hpp"
 #include "operations/AlgorandOperation.hpp"
@@ -96,13 +95,15 @@ namespace algorand {
 
     bool Account::putBlock(soci::session& sql, const api::Block& block)
     {
-        emitNewBlockEvent(block);
-        return true;
+        if (BlockDatabaseHelper::putBlock(sql, block)) {
+            emitNewBlockEvent(block);
+            return true;
+        }
+        return false;
     }
 
     void Account::interpretTransaction(const model::Transaction &transaction, std::vector<Operation> &out)
     {
-        soci::session sql;
         const auto wallet = getWallet();
         if (wallet == nullptr) {
             throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -110,8 +111,6 @@ namespace algorand {
 
         const auto operation = Operation(shared_from_this(), transaction);
         out.push_back(operation);
-
-        return;
     }
 
     Try<int> Account::bulkInsert(const std::vector<Operation> &operations) {
