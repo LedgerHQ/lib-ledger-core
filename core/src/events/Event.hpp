@@ -43,6 +43,7 @@ namespace ledger {
             std::shared_ptr<api::DynamicObject> getPayload() override;
             bool isSticky() override;
             int32_t getStickyTag() override;
+            void setReadOnly(bool readOnly);
 
         private:
             friend class EventPublisher;

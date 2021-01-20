@@ -199,15 +199,16 @@ namespace ledger {
             std::unique_lock<std::mutex> lock(_eventsLock);
             if (!_batchedOperationsEvent) {
                 _batchedOperationsEvent = Event::newInstance(api::EventCode::UPDATE_OPERATIONS, DynamicObject::newInstance());
+                std::dynamic_pointer_cast<core::Event>(_batchedOperationsEvent)->setReadOnly(false);
                 _batchedOperationsEvent->getPayload()->putArray(api::Account::EV_NEW_OP_UID, DynamicArray::newInstance());
                 _batchedOperationsEvent->getPayload()->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
                 _batchedOperationsEvent->getPayload()->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
             }
             for (const auto& operation : operations) {
-//                _batchedOperationsEvent
-//                ->getPayload()
-//                ->getArray(api::Account::EV_NEW_OP_UID)
-//                ->pushString(operation.uid);
+                _batchedOperationsEvent
+                ->getPayload()
+                ->getArray(api::Account::EV_NEW_OP_UID)
+                ->pushString(operation.uid);
             }
         }
 
