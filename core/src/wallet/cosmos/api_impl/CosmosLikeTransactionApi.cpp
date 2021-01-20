@@ -229,7 +229,7 @@ namespace ledger {
                     return amountObject;
                 };
 
-                if (true || std::stoi(_txData.fee.amount[0].amount) != 0) {
+                if (isStargate() || std::stoi(_txData.fee.amount[0].amount) != 0) {
                     Value feeAmountArray(kArrayType);
                     auto feeAmountObj = getAmountObject(_txData.fee.amount[0].denom, _txData.fee.amount[0].amount);
                     feeAmountArray.PushBack(feeAmountObj, allocator);

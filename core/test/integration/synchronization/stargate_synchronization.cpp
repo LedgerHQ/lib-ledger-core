@@ -3,11 +3,11 @@
  * cosmos_synchronization.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/06/2019.
+ * Created by Gerry Agbobada on 2021-01-14
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -60,7 +60,6 @@
 
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
 
-using namespace std;
 using namespace ledger::core;
 using namespace ledger::testing::cosmos;
 

@@ -95,7 +95,7 @@ void parseMultiSendInputs(const T &array, std::vector<cosmos::MultiSendInput> &o
     for (const auto &n : array) {
         auto input = n.GetObject();
         out[index].fromAddress = input[kAddress].GetString();
-        if (input[kCoins].IsArray()) {
+        if (input.HasMember(kCoins) && input[kCoins].IsArray()) {
             const auto &inputValues = input[kCoins].GetArray();
             parseCoinVector(inputValues, out[index].coins);
         }
@@ -111,7 +111,7 @@ void parseMultiSendOutputs(const T &array, std::vector<cosmos::MultiSendOutput> 
     for (const auto &n : array) {
         auto output = n.GetObject();
         out[index].toAddress = output[kAddress].GetString();
-        if (output[kCoins].IsArray()) {
+        if (output.HasMember(kCoins) && output[kCoins].IsArray()) {
             const auto &outputValues = output[kCoins].GetArray();
             parseCoinVector(outputValues, out[index].coins);
         }
@@ -168,6 +168,7 @@ void parseDelegation(const T &node, cosmos::Delegation &out, const api::Currency
     auto delegationBalance = node[kBalance].GetObject();
     assert((delegationBalance.HasMember(kDenom)));
     assert((delegationBalance[kDenom].GetString() == currency.units[0].code));
+    assert((delegationBalance.HasMember(kAmount)));
     out.delegatedAmount = BigInt::fromString(delegationBalance[kAmount].GetString());
 }
 
@@ -228,7 +229,7 @@ void parseFee(const T &node, cosmos::Fee &out)
     out.gas = BigInt::fromString(node[kGas].GetString());
     if (node[kAmount].IsArray()) {
         const auto &amountArray = node[kAmount].GetArray();
-        out.amount.assign((std::size_t)amountArray.Capacity(), cosmos::Coin());
+        out.amount.assign((std::size_t)amountArray.Size(), cosmos::Coin());
         auto index = 0;
         for (const auto &aNode : amountArray) {
             parseCoin(aNode.GetObject(), out.amount[index]);
@@ -258,6 +259,8 @@ void parseAccount(const T &accountNode, cosmos::Account &account)
     //   "@type": "/cosmos.crypto.secp256k1.PubKey",
     //   "key": "AnDGSF7VFQs9VKEceS6cWhfajxh/mmv+Mbu9bCM9BDzK"
     // },
+    // or
+    // "pub_key": null
     if (node[kPubKey].IsObject()) {
       auto PubKeyObj = node[kPubKey].GetObject();
       assert((PubKeyObj.HasMember(kGrpcType)));
@@ -281,6 +284,7 @@ void parseMsgSend(const T &n, cosmos::MessageContent &out)
 
     assert((n.HasMember(kFromAddress)));
     assert((n.HasMember(kToAddress)));
+    assert((n.HasMember(kAmount)));
     msg.fromAddress = n[kFromAddress].GetString();
     msg.toAddress = n[kToAddress].GetString();
     if (n[kAmount].IsArray()) {
@@ -297,6 +301,7 @@ void parseMsgDelegate(const T &n, cosmos::MessageContent &out)
 
     assert((n.HasMember(kDelegatorAddress)));
     assert((n.HasMember(kValidatorAddress)));
+    assert((n.HasMember(kAmount)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorAddress = n[kValidatorAddress].GetString();
     parseCoin(n[kAmount].GetObject(), msg.amount);
@@ -308,6 +313,10 @@ void parseMsgBeginRedelegate(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgBeginRedelegate msg;
 
+    assert((n.HasMember(kDelegatorAddress)));
+    assert((n.HasMember(kValidatorSrcAddress)));
+    assert((n.HasMember(kValidatorDstAddress)));
+    assert((n.HasMember(kAmount)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorSourceAddress = n[kValidatorSrcAddress].GetString();
     msg.validatorDestinationAddress = n[kValidatorDstAddress].GetString();
@@ -320,6 +329,9 @@ void parseMsgUndelegate(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgUndelegate msg;
 
+    assert((n.HasMember(kDelegatorAddress)));
+    assert((n.HasMember(kValidatorAddress)));
+    assert((n.HasMember(kAmount)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorAddress = n[kValidatorAddress].GetString();
     parseCoin(n[kAmount].GetObject(), msg.amount);
@@ -331,6 +343,9 @@ void parseMsgSubmitProposal(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgSubmitProposal msg;
 
+    assert((n.HasMember(kProposer)));
+    assert((n.HasMember(kContent)));
+    assert((n.HasMember(kInitialDeposit)));
     msg.proposer = n[kProposer].GetString();
     parseProposalContent(n[kContent].GetObject(), msg.content);
     if (n[kInitialDeposit].IsArray()){
@@ -345,6 +360,9 @@ void parseMsgVote(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgVote msg;
 
+    assert((n.HasMember(kVoter)));
+    assert((n.HasMember(kProposalId)));
+    assert((n.HasMember(kOption)));
     msg.voter = n[kVoter].GetString();
     msg.proposalId = n[kProposalId].GetString();
     const auto &option = n[kOption].GetString();
@@ -368,6 +386,9 @@ void parseMsgDeposit(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgDeposit msg;
 
+    assert((n.HasMember(kDepositor)));
+    assert((n.HasMember(kProposalId)));
+    assert((n.HasMember(kAmount)));
     msg.depositor = n[kDepositor].GetString();
     msg.proposalId = n[kProposalId].GetString();
     if (n[kAmount].IsArray()){
@@ -382,6 +403,8 @@ void parseMsgWithdrawDelegationReward(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgWithdrawDelegationReward msg;
 
+    assert((n.HasMember(kDelegatorAddress)));
+    assert((n.HasMember(kValidatorAddress)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorAddress = n[kValidatorAddress].GetString();
     out = msg;
@@ -403,7 +426,7 @@ void parseMsgMultiSend(const T &n, cosmos::MessageContent &out)
 
     // outputs: list<CosmosLikeMultiSendOutput>;
     if(n[kOutputs].IsArray()) {
-        auto outputsArray = n[kInputs].GetArray();
+        auto outputsArray = n[kOutputs].GetArray();
         parseMultiSendOutputs(outputsArray, msg.outputs);
     }
 
@@ -590,7 +613,7 @@ void parseTransaction(const T &node, cosmos::Transaction &transaction, const api
     assert((vNode.HasMember(kMessage)));
     if (vNode[kMessage].IsArray()) {
         const auto &msgArray = vNode[kMessage].GetArray();
-        transaction.messages.assign((std::size_t)msgArray.Capacity(), cosmos::Message());
+        transaction.messages.assign((std::size_t)msgArray.Size(), cosmos::Message());
         auto index = 0;
         for (const auto &mNode : msgArray) {
             parseMessage(mNode, transaction.messages[index], transaction.logs[index]);
