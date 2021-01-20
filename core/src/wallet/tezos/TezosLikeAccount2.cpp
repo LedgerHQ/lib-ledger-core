@@ -40,7 +40,6 @@
 #include <async/Future.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseHelper.h>
@@ -77,7 +76,7 @@ namespace ledger {
             // Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
 
-            auto accountUid = getAccountUid();            
+            auto accountUid = getAccountUid();
             TezosLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
 
             log->debug(" Finish erasing data of account : {}", accountUid);
@@ -98,7 +97,7 @@ namespace ledger {
 
             _currentSyncEventBus = eventPublisher->getEventBus();
             auto self = std::static_pointer_cast<TezosLikeAccount>(shared_from_this());
-            auto future = _synchronizer->synchronize(self)->getFuture();
+            auto future = _synchronizer->synchronizeAccount(self)->getFuture();
 
             //Update current block height (needed to compute trust level)
             _explorer->getCurrentBlock().onComplete(getContext(),
@@ -113,22 +112,22 @@ namespace ledger {
 
             auto startTime = DateUtils::now();
             eventPublisher->postSticky(std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()), 0);
-            future.flatMap<BlockchainExplorerAccountSynchronizationResult>(getContext(), [self] (const Try<BlockchainExplorerAccountSynchronizationResult> &result) {
+            future.flatMap<tezos::AccountSynchronizationContext>(getContext(), [self] (const Try<tezos::AccountSynchronizationContext> &result) {
                         // Synchronize originated accounts ...
                         // Notes: We should rid of this part by implementing support for fetching
                         // txs for multiple addresses
                         // Hint: we could add originated accounts to keychain as
                         // managedAccounts and getAllObservableAddresses will return them as well
                         if (self->_originatedAccounts.empty()) {
-                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result.getValue());
+                            return Future<tezos::AccountSynchronizationContext>::successful(result.getValue());
                         }
                         if (result.isFailure()) {
-                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(BlockchainExplorerAccountSynchronizationResult{});
+                            return Future<tezos::AccountSynchronizationContext>::successful(tezos::AccountSynchronizationContext{});
                         }
                         using TxsBulk = TezosLikeBlockchainExplorer::TransactionsBulk;
 
-                        static std::function<Future<BlockchainExplorerAccountSynchronizationResult> (std::shared_ptr<TezosLikeAccount>, size_t, void*, BlockchainExplorerAccountSynchronizationResult)> getTxs =
-                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session, BlockchainExplorerAccountSynchronizationResult result) {
+                        static std::function<Future<tezos::AccountSynchronizationContext> (std::shared_ptr<TezosLikeAccount>, size_t, void*, tezos::AccountSynchronizationContext)> getTxs =
+                                [] (const std::shared_ptr<TezosLikeAccount> &account, size_t id, void *session, tezos::AccountSynchronizationContext result) {
                                     std::vector<std::string> addresses{account->_originatedAccounts[id]->getAddress()};
 
                                     // Get offset to not start sync from beginning
@@ -137,13 +136,13 @@ namespace ledger {
                                             account->_originatedAccounts[id]->queryOperations()->partial()
                                             )->execute();
 
-                                    return offset.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) mutable {
+                                    return offset.flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=] (const std::vector<std::shared_ptr<api::Operation>> &ops) mutable {
                                         // For the moment we start synchro from the beginning
                                         auto getSession = session ? Future<void *>::successful(session) :
                                                           account->_explorer->startSession();
-                                        return getSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (void *s) mutable {
+                                        return getSession.flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=] (void *s) mutable {
                                             return account->_explorer->getTransactions(addresses, std::to_string(ops.size()), s)
-                                                    .flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) mutable {
+                                                    .flatMap<tezos::AccountSynchronizationContext>(account->getContext(), [=] (const std::shared_ptr<TxsBulk> &bulk) mutable {
                                                         auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
                                                         {
                                                             std::vector<Operation> operations;
@@ -163,10 +162,10 @@ namespace ledger {
                                                         }
 
                                                         if (id == account->_originatedAccounts.size() - 1) {
-                                                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result);
+                                                            return Future<tezos::AccountSynchronizationContext>::successful(result);
                                                         }
                                                         return getTxs(account, id + 1, nullptr, result);
-                                                    }).recover(account->getContext(), [] (const Exception& ex) -> BlockchainExplorerAccountSynchronizationResult {
+                                                    }).recover(account->getContext(), [] (const Exception& ex) -> tezos::AccountSynchronizationContext {
                                                         throw ex;
                                                     });
                                         });
@@ -174,7 +173,7 @@ namespace ledger {
                         };
                         return getTxs(self, 0, nullptr, result.getValue());
             }).onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
-                
+
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -217,7 +216,7 @@ namespace ledger {
             std::cout << "broadcastTransaction: "<< counter->toString() << " / " << txHash << std::endl;
             //auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
             //waitingTxs.push_back(txHash);
-            //self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit(); 
+            //self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
         }
 
         void TezosLikeAccount::_broadcastRawTransaction(const std::vector<uint8_t> &transaction,
@@ -332,8 +331,8 @@ namespace ledger {
                                         };
 
                                         return setRevealStatus().flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [=] (const Unit &result) {
-                                            
-                                            //initialize the value 
+
+                                            //initialize the value
                                             //note that the value will be recalculated for the wipe mode after calculating fees
                                             if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
                                                 tx->setValue(request.wipe ? std::make_shared<BigInt>(BigInt::ZERO) : request.value);
@@ -422,15 +421,15 @@ namespace ledger {
                                                         return gasPriceFut.flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<TezosLikeTransactionApi> {
                                                             return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
                                                                 // 0.000001 comes from the gasPrice->toInt64 being in picoTez
-                                                                
+
                                                                 filledTx->setRevealGasLimit(std::make_shared<BigInt>(gas->reveal));
                                                                 const auto revealFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->reveal.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
                                                                 filledTx->setRevealFees(revealFees);
 
                                                                 filledTx->setTransactionGasLimit(std::make_shared<BigInt>(gas->transaction));
-                                                                const auto transactionFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->transaction.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));                                                       
+                                                                const auto transactionFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->transaction.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
                                                                 filledTx->setTransactionFees(transactionFees);
-                                                                
+
                                                                 return FuturePtr<TezosLikeTransactionApi>::successful(filledTx);
                                             });
                                         });
@@ -498,14 +497,14 @@ namespace ledger {
                     //else {
                     //    //keep only not validated counters:
                     //    auto waitingTxs = self->getInternalPreferences()->getStringArray("waiting_counter_txs", {});
-                    //    std::cout << "get waiting_counter_txs ="; 
+                    //    std::cout << "get waiting_counter_txs =";
                     //    for (auto& s: waitingTxs) std::cout << s << "-";
                     //    std::cout << std::endl;
                     //    auto waitingTxsSize = waitingCounter - explorerCounter->toInt64();
                     //    if(waitingTxsSize < waitingTxs.size()) {
                     //        waitingTxs = std::vector<std::string>(waitingTxs.end() - waitingTxsSize, waitingTxs.end());
                     //        self->getInternalPreferences()->editor()->putStringArray("waiting_counter_txs", waitingTxs)->commit();
-                    //        std::cout << "set waiting_counter_txs ="; 
+                    //        std::cout << "set waiting_counter_txs =";
                     //        for (auto& s: waitingTxs) std::cout << s << "-";
                     //        std::cout << std::endl;
                     //      }
