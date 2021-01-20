@@ -40,7 +40,6 @@
 #include <async/Future.hpp>
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
@@ -129,7 +128,7 @@ namespace ledger {
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
                     updateOriginatedAccounts(sql, operation);
                 }
-                out.push_back(operation);               
+                out.push_back(operation);
                 result = static_cast<int>(transaction.type);
             }
 
@@ -137,7 +136,7 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                out.push_back(operation);   
+                out.push_back(operation);
                 result = static_cast<int>(transaction.type);
             }
         }
@@ -164,13 +163,13 @@ namespace ledger {
                 auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), origAccount.address);
 
             const auto found = std::find_if (
-                _originatedAccounts.begin(), 
-                _originatedAccounts.end(), 
-                [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount>& element) { 
+                _originatedAccounts.begin(),
+                _originatedAccounts.end(),
+                [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount>& element) {
                     return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
                 });
 
-            if (found == _originatedAccounts.end()) {    
+            if (found == _originatedAccounts.end()) {
                 _originatedAccounts.emplace_back(
                         std::make_shared<TezosLikeOriginatedAccount>(originatedAccountUid,
                                                                      origAccount.address,
