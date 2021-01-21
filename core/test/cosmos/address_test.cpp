@@ -40,7 +40,7 @@
 #include <math/Base58.hpp>
 
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
-#include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/StargateGaiaCosmosLikeBlockchainExplorer.hpp>
 #include <cosmos/bech32/CosmosBech32.hpp>
 #include <wallet/cosmos/CosmosLikeCurrencies.hpp>
 #include <cosmos/CosmosLikeExtendedPublicKey.hpp>
@@ -52,20 +52,20 @@ using namespace ledger::core;
 
 
 TEST(CosmosLikeBlockchainExplorer, FilterBuilder) {
-    auto filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters(
-        {GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
+    auto filter = StargateGaiaCosmosLikeBlockchainExplorer::fuseFilters(
+        {StargateGaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
              cosmos::constants::kEventTypeMessage,
              cosmos::constants::kAttributeKeyAction,
              cosmos::constants::kEventTypeDelegate),
-         GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
+         StargateGaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
              cosmos::constants::kEventTypeMessage,
              cosmos::constants::kAttributeKeySender,
              "cosmostestaddress")});
 
     ASSERT_STREQ(filter.c_str(), "message.action=delegate&message.sender=cosmostestaddress" );
 
-    filter = GaiaCosmosLikeBlockchainExplorer::fuseFilters({
-        GaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
+    filter = StargateGaiaCosmosLikeBlockchainExplorer::fuseFilters({
+        StargateGaiaCosmosLikeBlockchainExplorer::filterWithAttribute(
             cosmos::constants::kEventTypeTransfer,
             cosmos::constants::kAttributeKeyRecipient,
             "cosmosvalopertestaddress")});

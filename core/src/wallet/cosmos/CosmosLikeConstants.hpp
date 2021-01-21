@@ -210,6 +210,7 @@ constexpr char kHash[] = "hash";
 constexpr char kHeader[] = "header";
 constexpr char kTime[] = "time";
 constexpr char kMode[] = "mode";
+constexpr char kGrpcErrorMessage[] = "message";
 
 // cosmos/cosmos-sdk Event / Attribute types as of
 // https://github.com/cosmos/cosmos-sdk/tree/43137ee893cefbdb2aacd25ef4ec39eacf6ae70c

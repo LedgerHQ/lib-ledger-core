@@ -247,27 +247,18 @@ namespace ledger {
             // https://github.com/cosmos/gaia/blob/ba8d2b3177e1b891b72d6f40538fc2c6344bdeac/docs/delegators/delegator-guide-cli.md#sending-transactions
             const api::Currency ATOM =
                 Currency("cosmos")
-                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("cosmoshub-3"))
+                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("cosmoshub-4"))
                 .bip44(ATOM_COIN_ID)
                 .paymentUri("cosmos")
                 .unit("uatom", 0, "uatom")
                 .unit("matom", 3, "matom")
                 .unit("atom", 6, "atom");
 
-            const api::Currency ATOM_STARGATE =
-                Currency("cosmos_stargate")
-                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("cosmoshub-4"))
-                .bip44(ATOM_COIN_ID)
-                .paymentUri("cosmos_stargate")
-                .unit("uatom", 0, "uatom")
-                .unit("matom", 3, "matom")
-                .unit("atom", 6, "atom");
-
             const api::Currency MUON =
-                Currency("cosmos_stargate_testnet")
+                Currency("cosmos_testnet")
                 .forkOfCosmos(networks::getCosmosLikeNetworkParameters("stargate-6"))
                 .bip44(ATOM_COIN_ID)
-                .paymentUri("cosmos_stargate_testnet")
+                .paymentUri("cosmos_testnet")
                 .unit("umuon", 0, "umuon")
                 .unit("mmuon", 3, "mmuon")
                 .unit("muon", 6, "muon");

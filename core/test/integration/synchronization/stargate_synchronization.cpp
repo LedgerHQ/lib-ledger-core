@@ -63,7 +63,7 @@
 using namespace ledger::core;
 using namespace ledger::testing::cosmos;
 
-const std::string COSMOS_ENDPOINT = api::CosmosConfigurationDefaults::COSMOS_DEFAULT_STARGATE_API_ENDPOINT;
+const std::string COSMOS_ENDPOINT = api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT;
 
 class CosmosStargateWalletSynchronization : public BaseFixture {
 public:
