@@ -43,7 +43,8 @@ public:
     void SetUp() override {
         BaseFixture::SetUp();
         auto worker = dispatcher->getSerialExecutionContext("worker");
-        auto client = std::make_shared<HttpClient>(explorerEndpoint, http, worker);
+        auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
+        auto client = std::make_shared<HttpClient>(explorerEndpoint, http, worker, threadpoolWorker);
         explorer = std::make_shared<CurrencyExplorer>(worker, client, params, api::DynamicObject::newInstance());
         logger = ledger::core::logger::create("test_logs",
                                               dispatcher->getSerialExecutionContext("logger"),

@@ -74,7 +74,7 @@ namespace ledger {
                     params = params + blockHash + fromBlockHash.getValue();
                 }
                 return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/transactions{}", getExplorerVersion(), getNetworkParameters().Identifier, joinedAddresses, params), headers)
-                        .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>())
+                        .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>(), true)
                         .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
                             if (result.isLeft()) {
                                 // Only case where we should emit block not found error

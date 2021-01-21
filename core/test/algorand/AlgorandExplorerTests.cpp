@@ -41,8 +41,9 @@ public:
         BaseFixture::SetUp();
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
+        auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
         // NOTE: we run the tests on the staging environment which is on the TestNet
-        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker);
+        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker, threadpoolWorker);
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
         auto configuration = DynamicObject::newInstance();

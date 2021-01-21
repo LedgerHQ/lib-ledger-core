@@ -34,10 +34,11 @@ namespace ledger {
     namespace core {
 
         HttpClient::HttpClient(const std::string &baseUrl, const std::shared_ptr<api::HttpClient> &client,
-                               const std::shared_ptr<api::ExecutionContext> &context) {
+                               const std::shared_ptr<api::ExecutionContext> & sequentialContext, const std::shared_ptr<api::ExecutionContext>& threadpoolContext) {
             _baseUrl = baseUrl;
             _client = client;
-            _context = context;
+            _sequentialContext = sequentialContext;
+            _threadpoolContext = threadpoolContext;
             if (_baseUrl.back() != '/') {
                 _baseUrl += "/";
             }
@@ -101,7 +102,8 @@ namespace ledger {
                     fullheaders,
                     body,
                     _client,
-                    _context,
+                    _sequentialContext,
+                    _threadpoolContext,
                     _logger
             );
         }
@@ -114,14 +116,17 @@ namespace ledger {
                                  const std::unordered_map<std::string, std::string> &headers,
                                  const std::experimental::optional<std::vector<uint8_t>>& body,
                                  const std::shared_ptr<api::HttpClient> &client,
-                                 const std::shared_ptr<api::ExecutionContext> &context,
+                                 const std::shared_ptr<api::ExecutionContext> & sequentialContext,
+                                 const std::shared_ptr<api::ExecutionContext> & threadpoolContext,
                                  const Option<std::shared_ptr<spdlog::logger>>& logger) {
             _method = method;
             _url = url;
             _headers = headers;
             _body = body;
             _client = client;
-            _context = context;
+            _sequentialContext = sequentialContext;
+            _threadpoolContext = threadpoolContext;
+            _context = _sequentialContext;
             _logger = logger;
         }
 
@@ -152,7 +157,8 @@ namespace ledger {
             });
         }
 
-        Future<HttpRequest::JsonResult> HttpRequest::json(bool parseNumbersAsString, bool ignoreStatusCode) const {
+        Future<HttpRequest::JsonResult> HttpRequest::json(bool parseNumbersAsString, bool ignoreStatusCode, bool multiThread) const {
+            _context = (multiThread ? _threadpoolContext : _sequentialContext);
             return operator()().recover(_context, [] (const Exception& exception) {
                 if (HttpRequest::isHttpError(exception.getErrorCode()) &&
                 exception.getUserData().nonEmpty()) {
