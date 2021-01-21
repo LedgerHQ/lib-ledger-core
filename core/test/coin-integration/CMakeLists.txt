@@ -16,9 +16,16 @@ file(GLOB_RECURSE ledger-core-coin-integration-srcs
         )
 
 add_executable(ledger-core-coin-integration-tests ${ledger-core-coin-integration-srcs} ../integration/IntegrationEnvironment.cpp)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    if(WIN32)
+        target_link_libraries( ledger-core-coin-integration-tests crypt32 ws2_32)
+    endif()
+    target_link_libraries(ledger-core-coin-integration-tests OpenSSL::Crypto)
+else()
+    target_link_libraries(ledger-core-coin-integration-tests crypto)
+endif()
 target_link_libraries(ledger-core-coin-integration-tests gtest gtest_main)
-target_link_libraries(ledger-core-coin-integration-tests crypto)
 if(CMAKE_SYSTEM_NAME STREQUAL "Linux")
     # We need this otherwise link fails (for Linux),
     # this is needed since we build static library for tests,
@@ -30,11 +37,13 @@ else()
 endif()
 
 target_link_libraries(ledger-core-coin-integration-tests ledger-test)
-target_link_libraries(ledger-core-coin-integration-tests ledger-qt-host)
 target_include_directories(ledger-core-coin-integration-tests PUBLIC ../../../core/src)
-target_include_directories(ledger-core-coin-integration-tests PUBLIC ../../../qt-host)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(ledger-core-coin-integration-tests crypto)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    copy_install_imported_targets(ledger-core-coin-integration-tests OpenSSL::Crypto uv)
+else()
+    copy_install_imported_targets(ledger-core-coin-integration-tests crypto uv)
+endif()
 add_test (NAME ledger-core-coin-integration COMMAND ledger-core-coin-integration-tests)

@@ -185,10 +185,10 @@ TEST_F(BitcoinWalletDatabaseTests, PutTransactionWithMultipleOutputs) {
 
 TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
     auto pool = newDefaultPool();
-    auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
-    auto nextIndex = wait(wallet->getNextAccountIndex());
+    auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+    auto nextIndex = uv::wait(wallet->getNextAccountIndex());
     EXPECT_EQ(nextIndex, 0);
-    auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(P2PKH_MEDIUM_XPUB_INFO)));
+    auto account = std::dynamic_pointer_cast<BitcoinLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(P2PKH_MEDIUM_XPUB_INFO)));
 
     std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
             *JSONUtils::parse<TransactionParser>(TX_1),
@@ -199,18 +199,17 @@ TEST_F(BitcoinWalletDatabaseTests, PutOperations) {
 
 
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.begin();
+        std::vector<ledger::core::Operation> ops;
         for (auto& tx : transactions) {
-            account->putTransaction(sql, tx);
+            account->interpretTransaction(tx, ops, true);
         }
-        sql.commit();
+        account->bulkInsert(ops);
     }
 
     auto query = account->queryOperations()->complete();
     auto queryWithOrders = query->addOrder(api::OperationOrderKey::DATE, false)->addOrder(api::OperationOrderKey::TYPE, false);
 
-    auto operations = wait(std::static_pointer_cast<OperationQuery>(queryWithOrders)->execute());
+    auto operations = uv::wait(std::static_pointer_cast<OperationQuery>(queryWithOrders)->execute());
     EXPECT_EQ(operations.size(), 5);
 
     auto expectation_0 = std::make_tuple("666613fd82459f94c74211974e74ffcb4a4b96b62980a6ecaee16af7702bbbe5", 15, 1,

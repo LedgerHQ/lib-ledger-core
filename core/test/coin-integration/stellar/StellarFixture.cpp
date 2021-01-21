@@ -55,7 +55,7 @@ api::AccountCreationInfo StellarFixture::emptyAccount() const {
             STELLAR,
             Option<std::string>::NONE
             );
-    return accountInfo(hex::toString(addr.toPublicKey()));
+    return accountInfo(ledger::core::hex::toString(addr.toPublicKey()));
 }
 
 api::AccountCreationInfo StellarFixture::accountInfoFromAddress(const std::string& address) const {
@@ -64,7 +64,7 @@ api::AccountCreationInfo StellarFixture::accountInfoFromAddress(const std::strin
             STELLAR,
             Option<std::string>::NONE
     );
-    return accountInfo(hex::toString(addr.toPublicKey()));
+    return accountInfo(ledger::core::hex::toString(addr.toPublicKey()));
 }
 
 std::shared_ptr<WalletPool> StellarFixture::newPool(std::string poolName) {
@@ -76,6 +76,6 @@ api::Currency StellarFixture::getCurrency() const {
 }
 
 api::AccountCreationInfo StellarFixture::accountInfo(const std::string &pubKey) const {
-    return api::AccountCreationInfo(0, {"main"}, {"44'/148'/0'"}, {hex::toByteArray(pubKey)}, {});
+    return api::AccountCreationInfo(0, {"main"}, {"44'/148'/0'"}, { ledger::core::hex::toByteArray(pubKey)}, {});
 }
 

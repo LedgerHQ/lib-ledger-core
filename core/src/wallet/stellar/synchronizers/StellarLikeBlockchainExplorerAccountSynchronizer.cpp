@@ -30,6 +30,8 @@
  */
 
 #include "StellarLikeBlockchainExplorerAccountSynchronizer.hpp"
+
+#include <common/AccountHelper.hpp>
 #include <wallet/stellar/StellarLikeAccount.hpp>
 
 /**
@@ -56,12 +58,12 @@ namespace ledger {
             account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer")->editor()->clear();
         }
 
-        std::shared_ptr<ProgressNotifier<Unit>> StellarLikeBlockchainExplorerAccountSynchronizer::synchronize(
+        std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> StellarLikeBlockchainExplorerAccountSynchronizer::synchronize(
                 const std::shared_ptr<StellarLikeAccount> &account) {
             if (_notifier != nullptr) {
                 return _notifier;
             }
-            _notifier = std::make_shared<ProgressNotifier<Unit>>();
+            _notifier = std::make_shared<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>();
             synchronizeAccount(account);
             return _notifier;
         }
@@ -74,66 +76,89 @@ namespace ledger {
             auto self = shared_from_this();
             auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
             auto state = preferences
-                    ->template getObject<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState>("state");
+                ->template getObject<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState>("state")
+                // provide default state if none exists yet
+                .getValueOr(SavedState{});
+
             synchronizeAccount(account, state);
         }
 
         void
         StellarLikeBlockchainExplorerAccountSynchronizer::synchronizeAccount(const std::shared_ptr<StellarLikeAccount>& account,
-                                                                             const Option<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState> &state) {
+                                                                             StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             auto address = account->getKeychain()->getAddress()->toString();
             auto self = shared_from_this();
-            _explorer->getAccount(address).onComplete(account->getContext(), [=] (const Try<std::shared_ptr<stellar::Account>>& acc) {
-                if (acc.isFailure() && acc.getFailure().getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND) {
-                    self->endSynchronization();
-                } else if (acc.isFailure()) {
-                    self->failSynchronization(acc.getFailure());
-                } else {
-                    soci::session sql(_database->getPool());
-                    account->updateAccountInfo(sql, *acc.getValue());
-                   self->synchronizeTransactions(account, state);
-                }
-            });
+
+            _explorer->getAccount(address)
+                .onComplete(account->getContext(), [self, account, state] (const Try<std::shared_ptr<stellar::Account>>& accountInfo) mutable {
+                   if (accountInfo.isFailure() && accountInfo.getFailure().getErrorCode() == api::ErrorCode::ACCOUNT_NOT_FOUND) {
+                        self->endSynchronization(account, state);
+                    } else if (accountInfo.isFailure()) {
+                        self->failSynchronization(accountInfo.getFailure());
+                    } else {
+                        soci::session sql(self->_database->getPool());
+                        account->updateAccountInfo(sql, *accountInfo.getValue());
+                        self->synchronizeTransactions(account, state);
+                    }
+                });
         }
 
         void StellarLikeBlockchainExplorerAccountSynchronizer::synchronizeTransactions(
                 const std::shared_ptr<StellarLikeAccount> &account,
-                const Option<StellarLikeBlockchainExplorerAccountSynchronizer::SavedState> &state) {
+                StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             auto address = account->getKeychain()->getAddress()->toString();
-            auto transactionCursor = state.flatMap<std::string>([] (const SavedState& s) {
-                return s.transactionPagingToken.empty() ? Option<std::string>() : Option<std::string>(s.transactionPagingToken);
-            });
-
             auto self = shared_from_this();
-            _explorer->getTransactions(address, transactionCursor).onComplete(account->getContext(), [=] (const Try<stellar::TransactionVector>& txs) {
+            _explorer->getTransactions(address, state.transactionPagingToken)
+                .onComplete(account->getContext(), [self, account, state] (const Try<stellar::TransactionVector>& txs) mutable {
                 if (txs.isFailure()) {
                     self->failSynchronization(txs.getFailure());
                 } else {
                     {
-                        soci::session sql(_database->getPool());
-                        soci::transaction tr(sql);
-
                         for (const auto &tx : txs.getValue()) {
-                            account->putTransaction(sql, *tx);
+                            soci::session sql(self->_database->getPool());
+                            soci::transaction tr(sql);
+                            account->logger()->debug("XLM transaction hash: {}, paging_token: {}", tx->hash, tx->pagingToken);
+                            auto const flag = account->putTransaction(sql, *tx);
+
+                            if (::ledger::core::account::isInsertedOperation(flag)) {
+                                ++state.insertedOperations;
+                            }
+                            tr.commit();
+                            state.lastBlockHeight = std::max(state.lastBlockHeight, tx->ledger);
                         }
-                        tr.commit();
                     }
+                    account->emitEventsNow();
                     if (!txs.getValue().empty()) {
-                        SavedState newState = state.getValueOr(SavedState());
-                        newState.algorithmVersion = SYNCHRONIZATION_ALGORITHM_VERSION;
-                        newState.transactionPagingToken = txs.getValue().back()->pagingToken;
-                        auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
-                        preferences->editor()->putObject("state", newState)->commit();
-                        self->synchronizeTransactions(account, Option<SavedState>(newState));
+                        state.transactionPagingToken = txs.getValue().back()->pagingToken;
+                        {
+                            auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
+                            preferences->editor()->putObject("state", state)->commit();
+                        }
+                       
+                        self->synchronizeTransactions(account, state);
                     } else {
-                        self->endSynchronization();
+                        self->endSynchronization(account, state);
                     }
                 }
             });
         }
 
-        void StellarLikeBlockchainExplorerAccountSynchronizer::endSynchronization() {
-            _notifier->success(unit);
+        void StellarLikeBlockchainExplorerAccountSynchronizer::endSynchronization(
+                const std::shared_ptr<StellarLikeAccount>& account,
+                const StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
+            BlockchainExplorerAccountSynchronizationResult result;
+
+            soci::session sql(account->getWallet()->getDatabase()->getPool());
+            result.lastBlockHeight = BlockDatabaseHelper::getLastBlock(sql,
+                                                                               account->getWallet()->getCurrency().name)
+                                                                                       .template map<uint64_t>([] (const Block& block) {
+                return block.height;
+            }).getValueOr(0);
+
+            result.newOperations = state.insertedOperations;
+
+
+            _notifier->success(result);
             _notifier = nullptr;
         }
 
@@ -142,6 +167,5 @@ namespace ledger {
             _notifier->failure(ex);
             _notifier = nullptr;
         }
-
     }
 }

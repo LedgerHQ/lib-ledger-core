@@ -8,87 +8,73 @@
 
 namespace djinni_generated {
 
-PreferencesBackend::PreferencesBackend() : ::djinni::JniInterface<::ledger::core::api::PreferencesBackend, PreferencesBackend>("co/ledger/core/PreferencesBackend$CppProxy") {}
+PreferencesBackend::PreferencesBackend() : ::djinni::JniInterface<::ledger::core::api::PreferencesBackend, PreferencesBackend>() {}
 
 PreferencesBackend::~PreferencesBackend() = default;
 
+PreferencesBackend::JavaProxy::JavaProxy(JniType j) : Handle(::djinni::jniGetThreadEnv(), j) { }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        delete reinterpret_cast<::djinni::CppProxyHandle<::ledger::core::api::PreferencesBackend>*>(nativeRef);
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+PreferencesBackend::JavaProxy::~JavaProxy() = default;
+
+std::experimental::optional<std::vector<uint8_t>> PreferencesBackend::JavaProxy::get(const std::vector<uint8_t> & c_key) {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::PreferencesBackend>::get();
+    auto jret = (jbyteArray)jniEnv->CallObjectMethod(Handle::get().get(), data.method_get,
+                                                     ::djinni::get(::djinni::Binary::fromCpp(jniEnv, c_key)));
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::Optional<std::experimental::optional, ::djinni::Binary>::toCpp(jniEnv, jret);
 }
-
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1get(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_key)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
-        auto r = ref->get(::djinni::Binary::toCpp(jniEnv, j_key));
-        return ::djinni::release(::djinni::Optional<std::experimental::optional, ::djinni::Binary>::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+bool PreferencesBackend::JavaProxy::commit(const std::vector<::ledger::core::api::PreferencesChange> & c_changes) {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::PreferencesBackend>::get();
+    auto jret = jniEnv->CallBooleanMethod(Handle::get().get(), data.method_commit,
+                                          ::djinni::get(::djinni::List<::djinni_generated::PreferencesChange>::fromCpp(jniEnv, c_changes)));
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::Bool::toCpp(jniEnv, jret);
 }
-
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1commit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_changes)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
-        auto r = ref->commit(::djinni::List<::djinni_generated::PreferencesChange>::toCpp(jniEnv, j_changes));
-        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+void PreferencesBackend::JavaProxy::setEncryption(const std::shared_ptr<::ledger::core::api::RandomNumberGenerator> & c_rng, const std::string & c_password) {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::PreferencesBackend>::get();
+    jniEnv->CallVoidMethod(Handle::get().get(), data.method_setEncryption,
+                           ::djinni::get(::djinni_generated::RandomNumberGenerator::fromCpp(jniEnv, c_rng)),
+                           ::djinni::get(::djinni::String::fromCpp(jniEnv, c_password)));
+    ::djinni::jniExceptionCheck(jniEnv);
 }
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1setEncryption(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_rng, jstring j_password)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
-        ref->setEncryption(::djinni_generated::RandomNumberGenerator::toCpp(jniEnv, j_rng),
-                           ::djinni::String::toCpp(jniEnv, j_password));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+void PreferencesBackend::JavaProxy::unsetEncryption() {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::PreferencesBackend>::get();
+    jniEnv->CallVoidMethod(Handle::get().get(), data.method_unsetEncryption);
+    ::djinni::jniExceptionCheck(jniEnv);
 }
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1unsetEncryption(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
-        ref->unsetEncryption();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+bool PreferencesBackend::JavaProxy::resetEncryption(const std::shared_ptr<::ledger::core::api::RandomNumberGenerator> & c_rng, const std::string & c_oldPassword, const std::string & c_newPassword) {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::PreferencesBackend>::get();
+    auto jret = jniEnv->CallBooleanMethod(Handle::get().get(), data.method_resetEncryption,
+                                          ::djinni::get(::djinni_generated::RandomNumberGenerator::fromCpp(jniEnv, c_rng)),
+                                          ::djinni::get(::djinni::String::fromCpp(jniEnv, c_oldPassword)),
+                                          ::djinni::get(::djinni::String::fromCpp(jniEnv, c_newPassword)));
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::Bool::toCpp(jniEnv, jret);
 }
-
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1resetEncryption(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_rng, jstring j_oldPassword, jstring j_newPassword)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
-        auto r = ref->resetEncryption(::djinni_generated::RandomNumberGenerator::toCpp(jniEnv, j_rng),
-                                      ::djinni::String::toCpp(jniEnv, j_oldPassword),
-                                      ::djinni::String::toCpp(jniEnv, j_newPassword));
-        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+std::string PreferencesBackend::JavaProxy::getEncryptionSalt() {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::PreferencesBackend>::get();
+    auto jret = (jstring)jniEnv->CallObjectMethod(Handle::get().get(), data.method_getEncryptionSalt);
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::String::toCpp(jniEnv, jret);
 }
-
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1getEncryptionSalt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
-        auto r = ref->getEncryptionSalt();
-        return ::djinni::release(::djinni::String::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_PreferencesBackend_00024CppProxy_native_1clear(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::PreferencesBackend>(nativeRef);
-        ref->clear();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+void PreferencesBackend::JavaProxy::clear() {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::PreferencesBackend>::get();
+    jniEnv->CallVoidMethod(Handle::get().get(), data.method_clear);
+    ::djinni::jniExceptionCheck(jniEnv);
 }
 
 }  // namespace djinni_generated

@@ -32,12 +32,16 @@
 
 namespace ledger {
     namespace core {
+
+        static std::function<void ()> NOOP = [] () {};
+
         LambdaRunnable::LambdaRunnable(std::function<void()> func) {
             _func = func;
         }
 
         void LambdaRunnable::run() {
             _func();
+            _func = NOOP;
         }
 
         std::shared_ptr<api::Runnable> LambdaRunnable::make(std::function<void()> func) {

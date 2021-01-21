@@ -70,12 +70,10 @@ CosmosLikeAccount::CosmosLikeAccount(
     const std::shared_ptr<AbstractWallet> &wallet,
     int32_t index,
     const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-    const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
     const std::shared_ptr<CosmosLikeAccountSynchronizer> &synchronizer,
     const std::shared_ptr<CosmosLikeKeychain> &keychain) :
     AbstractAccount(wallet, index),
     _explorer(explorer),
-    _observer(observer),
     _synchronizer(synchronizer),
     _keychain(keychain),
     _accountData(std::make_shared<cosmos::Account>())
@@ -622,7 +620,7 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
         std::make_shared<Event>(
             api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
         0);
-    future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+    future.onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
         api::EventCode code;
         auto payload = std::make_shared<DynamicObject>();
         auto duration =
@@ -631,6 +629,11 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
         payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
         if (result.isSuccess()) {
             code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+            auto const context = result.getValue();
+
+            payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+            payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
         }
         else {
             code = api::EventCode::SYNCHRONIZATION_FAILED;
@@ -652,21 +655,6 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
 std::shared_ptr<CosmosLikeAccount> CosmosLikeAccount::getSelf()
 {
     return std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
-}
-
-void CosmosLikeAccount::startBlockchainObservation()
-{
-    _observer->registerAccount(getSelf());
-}
-
-void CosmosLikeAccount::stopBlockchainObservation()
-{
-    _observer->unregisterAccount(getSelf());
-}
-
-bool CosmosLikeAccount::isObservingBlockchain()
-{
-    return _observer->isRegistered(getSelf());
 }
 
 std::string CosmosLikeAccount::getRestoreKey()

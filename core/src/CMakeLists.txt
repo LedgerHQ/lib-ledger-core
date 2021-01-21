@@ -164,6 +164,7 @@ file(GLOB LEDGER_CORE_API_HEADERS
 target_include_directories(ledger-core-interface INTERFACE ../lib/bigd)
 
 if (TARGET_JNI)
+    add_compile_definitions(TARGET_JNI)
     target_include_directories(ledger-core-interface INTERFACE ${JNI_INCLUDE_DIRS})
     target_link_libraries(ledger-core-interface INTERFACE ${JNI_LIBRARIES})
 endif ()
@@ -184,12 +185,9 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/soci_postgresq
 target_include_directories(ledger-core-interface INTERFACE ../lib/blake)
 if (SYS_OPENSSL)
     target_include_directories(ledger-core-interface INTERFACE ${OPENSSL_INCLUDE_DIR})
+    target_link_libraries(ledger-core-interface INTERFACE OpenSSL::SSL)
 else()
     target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
-endif()
-
-if(SSL_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE ssl)
 endif()
 
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)

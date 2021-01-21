@@ -41,8 +41,9 @@ public:
         BaseFixture::SetUp();
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
+        auto threadpoolWorker = dispatcher->getThreadPoolExecutionContext("threadpoolWorker");
         // NOTE: we run the tests on the staging environment which is on the TestNet
-        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker);
+        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker, threadpoolWorker);
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
         auto configuration = DynamicObject::newInstance();
@@ -68,7 +69,7 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
     uint64_t blockHeight = 6000000; // Some arbitrary block
     std::chrono::system_clock::time_point blockTime(std::chrono::seconds(1586345796));
 
-    api::Block block = ::wait(explorer->getBlock(blockHeight));
+    api::Block block = uv::wait(explorer->getBlock(blockHeight));
 
     EXPECT_EQ(block.height, blockHeight);
     EXPECT_EQ(block.blockHash, std::to_string(blockHeight));
@@ -77,7 +78,7 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
 
 TEST_F(AlgorandExplorerTest, GetLatestBlock) {
 
-    api::Block block = ::wait(explorer->getLatestBlock());
+    api::Block block = uv::wait(explorer->getLatestBlock());
 
     EXPECT_FALSE(block.blockHash.empty());
     EXPECT_GT(block.height, 7000000);
@@ -87,7 +88,7 @@ TEST_F(AlgorandExplorerTest, GetLatestBlock) {
 TEST_F(AlgorandExplorerTest, GetAccount) {
 
     auto address = ::algorand::Address(OBELIX_ADDRESS);
-    model::Account account = ::wait(explorer->getAccount(address.toString()));
+    model::Account account = uv::wait(explorer->getAccount(address.toString()));
 
     EXPECT_EQ(account.address, address.toString());
     EXPECT_GT(account.round, 6000000);
@@ -108,26 +109,26 @@ TEST_F(AlgorandExplorerTest, GetAccount) {
 
 TEST_F(AlgorandExplorerTest, GetPaymentTransaction) {
     auto txRef = paymentTransaction();
-    model::Transaction tx = ::wait(explorer->getTransactionById(*txRef.header.id));
+    model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
 }
 
-TEST_F(AlgorandExplorerTest, GetAssetConfigTransaction) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetAssetConfigTransaction) {
     auto txRef = assetConfigTransaction();
-    model::Transaction tx = ::wait(explorer->getTransactionById(*txRef.header.id));
+    model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
 }
 
-TEST_F(AlgorandExplorerTest, GetAssetTransferTransaction) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetAssetTransferTransaction) {
     auto txRef = assetTransferTransaction();
-    model::Transaction tx = ::wait(explorer->getTransactionById(*txRef.header.id));
+    model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
 }
 
-TEST_F(AlgorandExplorerTest, GetAccountTransactions) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetAccountTransactions) {
 
     auto address = "RGX5XA7DWZOZ5SLG4WQSNIFKIG4CNX4VOH23YCEX56523DQEAL3QL56XZM"; // Obelix
-    model::TransactionsBulk txs = ::wait(explorer->getTransactionsForAddress(address, 0));
+    model::TransactionsBulk txs = uv::wait(explorer->getTransactionsForAddress(address, 0));
 
     for (const auto& tx : txs.transactions) {
         if (*tx.header.id == PAYMENT_TX_ID) {

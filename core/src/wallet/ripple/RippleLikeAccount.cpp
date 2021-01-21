@@ -51,6 +51,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/ripple/database/RippleLikeOperationDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,12 +59,10 @@ namespace ledger {
         RippleLikeAccount::RippleLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                                              int32_t index,
                                              const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer,
-                                             const std::shared_ptr<RippleLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<RippleLikeAccountSynchronizer> &synchronizer,
                                              const std::shared_ptr<RippleLikeKeychain> &keychain) : AbstractAccount(
                 wallet, index) {
             _explorer = explorer;
-            _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
             _accountAddress = keychain->getAddress()->toString();
@@ -100,18 +99,25 @@ namespace ledger {
             out.rippleTransaction.getValue().block = out.block;
         }
 
-        int RippleLikeAccount::putTransaction(soci::session &sql,
-                                              const RippleLikeBlockchainExplorerTransaction &transaction) {
+        Try<int> RippleLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
+            return Try<int>::from([&] () {
+                soci::session sql(getWallet()->getDatabase()->getPool());
+                soci::transaction tr(sql);
+                RippleLikeOperationDatabaseHelper::bulkInsert(sql, operations);
+                tr.commit();
+                // Emit
+                emitNewOperationsEvent(operations);
+                return operations.size();
+            });
+        }
+
+        void RippleLikeAccount::interpretTransaction(
+                const ledger::core::RippleLikeBlockchainExplorerTransaction &transaction,
+                std::vector<Operation> &out) {
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
             }
-
-            if (transaction.block.nonEmpty()) {
-                putBlock(sql, transaction.block.getValue());
-            }
-
-            int result = FLAG_TRANSACTION_UPDATED;
 
             Operation operation;
             inflateOperation(operation, wallet, transaction);
@@ -127,23 +133,15 @@ namespace ledger {
                 setOperationAmount(operation, transaction);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                    emitNewOperationEvent(operation);
-                }
-                result = FLAG_NEW_TRANSACTION;
+                out.push_back(operation);
             }
 
             if (_accountAddress == transaction.receiver) {
                 setOperationAmount(operation, transaction);
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation)) {
-                    emitNewOperationEvent(operation);
-                }
-                result = FLAG_NEW_TRANSACTION;
+                out.push_back(operation);
             }
-
-            return result;
         }
 
         void RippleLikeAccount::setOperationAmount(
@@ -330,7 +328,7 @@ namespace ledger {
             eventPublisher->postSticky(
                     std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
                     0);
-            future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+            future.onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -338,6 +336,11 @@ namespace ledger {
                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                 if (result.isSuccess()) {
                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+                    auto const context = result.getValue();
+
+                    payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+                    payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE,
@@ -355,18 +358,6 @@ namespace ledger {
 
         std::shared_ptr<RippleLikeAccount> RippleLikeAccount::getSelf() {
             return std::dynamic_pointer_cast<RippleLikeAccount>(shared_from_this());
-        }
-
-        void RippleLikeAccount::startBlockchainObservation() {
-            _observer->registerAccount(getSelf());
-        }
-
-        void RippleLikeAccount::stopBlockchainObservation() {
-            _observer->unregisterAccount(getSelf());
-        }
-
-        bool RippleLikeAccount::isObservingBlockchain() {
-            return _observer->isRegistered(getSelf());
         }
 
         std::string RippleLikeAccount::getRestoreKey() {
@@ -407,7 +398,9 @@ namespace ledger {
                     auto txExplorer = getXRPLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
                     //Store in DB
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
-                    self->putTransaction(sql, txExplorer);
+                    std::vector<Operation> operations;
+                    self->interpretTransaction(txExplorer, operations);
+                    self->bulkInsert(operations);
                     return txHash;
                 });
         }

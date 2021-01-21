@@ -74,7 +74,7 @@ namespace ledger {
                     params = params + blockHash + fromBlockHash.getValue();
                 }
                 return _http->GET(fmt::format("/blockchain/{}/{}/addresses/{}/transactions{}", getExplorerVersion(), getNetworkParameters().Identifier, joinedAddresses, params), headers)
-                        .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>())
+                        .template json<TransactionsBulk, Exception>(LedgerApiParser<TransactionsBulk, TransactionsBulkParser>(), true)
                         .template mapPtr<TransactionsBulk>(getExplorerContext(), [fromBlockHash] (const Either<Exception, std::shared_ptr<TransactionsBulk>>& result) {
                             if (result.isLeft()) {
                                 // Only case where we should emit block not found error
@@ -130,7 +130,8 @@ namespace ledger {
             Future<Unit> killLedgerApiSession(void *session) const {
                 return _http->addHeader("X-LedgerWallet-SyncToken", *((std::string *)session))
                         .DEL(fmt::format("/blockchain/{}/{}/syncToken", getExplorerVersion(), getNetworkParameters().Identifier))
-                        .json().template map<Unit>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) {
+                        .json().template map<Unit>(getExplorerContext(), [session] (const HttpRequest::JsonResult& result) {
+                            delete reinterpret_cast<std::string*>(session);
                             return unit;
                         });
             };

@@ -28,6 +28,8 @@
  *
  */
 
+#include <common/AccountHelper.hpp>
+
 #include <wallet/cosmos/CosmosLikeAccount.hpp>
 #include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
 
@@ -78,21 +80,21 @@ CosmosLikeAccountSynchronizer::CosmosLikeAccountSynchronizer(
     _database = pool->getDatabaseSessionPool();
 }
 
-std::shared_ptr<ProgressNotifier<Unit>> CosmosLikeAccountSynchronizer::synchronizeAccount(
+std::shared_ptr<ProgressNotifier<cosmos::AccountSynchronizationContext>> CosmosLikeAccountSynchronizer::synchronizeAccount(
     const std::shared_ptr<CosmosLikeAccount> &account)
 {
     std::lock_guard<std::mutex> lock(_lock);
     if (!_currentAccount) {
         _currentAccount = account;
-        _notifier = std::make_shared<ProgressNotifier<Unit>>();
+        _notifier = std::make_shared<ProgressNotifier<cosmos::AccountSynchronizationContext>>();
         auto self = shared_from_this();
-        performSynchronization(account).onComplete(getContext(), [self](const Try<Unit> &result) {
+        performSynchronization(account).onComplete(getContext(), [self](auto const &result) {
             std::lock_guard<std::mutex> l(self->_lock);
             if (result.isFailure()) {
                 self->_notifier->failure(result.getFailure());
             }
             else {
-                self->_notifier->success(unit);
+                self->_notifier->success(result.getValue());
             }
             self->_notifier = nullptr;
             self->_currentAccount = nullptr;
@@ -104,7 +106,7 @@ std::shared_ptr<ProgressNotifier<Unit>> CosmosLikeAccountSynchronizer::synchroni
     return _notifier;
 };
 
-Future<Unit> CosmosLikeAccountSynchronizer::performSynchronization(
+Future<cosmos::AccountSynchronizationContext> CosmosLikeAccountSynchronizer::performSynchronization(
     const std::shared_ptr<CosmosLikeAccount> &account)
 {
     auto buddy = std::make_shared<cosmos::SynchronizationBuddy>();
@@ -131,6 +133,8 @@ Future<Unit> CosmosLikeAccountSynchronizer::performSynchronization(
         account->getKeychain()->getRestoreKey(),
         account->getWallet()->getName(),
         DateUtils::toJSON(buddy->startDate));
+    buddy->context.newOperations = 0;
+    buddy->context.lastBlockHeight = 0;
 
     // Check if reorganization happened
     soci::session sql(buddy->wallet->getDatabase()->getPool());
@@ -197,7 +201,7 @@ Future<Unit> CosmosLikeAccountSynchronizer::performSynchronization(
             [self, buddy](const Unit &) {
                 return self->_explorer->killSession(buddy->token.getValue());
             })
-        .template map<Unit>(
+        .template map<cosmos::AccountSynchronizationContext>(
             ImmediateExecutionContext::INSTANCE,
             [self, buddy](const Unit &) {
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -207,7 +211,19 @@ Future<Unit> CosmosLikeAccountSynchronizer::performSynchronization(
                     buddy->account->getIndex(),
                     buddy->account->getWallet()->getName(),
                     DurationUtils::formatDuration(duration));
+                auto const &batches = buddy->savedState.getValue().batches;
 
+                // get the last block height treated during the synchronization
+                // std::max_element returns an iterator hence the indirection here
+                // We use an constant iterator variable for readability purpose
+                auto const batchIt = std::max_element(
+                    std::cbegin(batches),
+                    std::cend(batches),
+                    [](auto const &lhs, auto const &rhs) {
+                        return lhs.blockHeight < rhs.blockHeight;
+                    }); 
+                buddy->context.lastBlockHeight = batchIt->blockHeight;
+                
                 // Delete dropped txs from DB
                 soci::session sql(buddy->wallet->getDatabase()->getPool());
                 for (auto &tx : buddy->transactionsToDrop) {
@@ -222,9 +238,9 @@ Future<Unit> CosmosLikeAccountSynchronizer::performSynchronization(
                 }
 
                 self->_currentAccount = nullptr;
-                return unit;
+                return buddy->context;
             })
-        .recover(ImmediateExecutionContext::INSTANCE, [buddy](const Exception &ex) -> Unit {
+        .recover(ImmediateExecutionContext::INSTANCE, [buddy](const Exception &ex) -> cosmos::AccountSynchronizationContext {
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                 (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
             buddy->logger->error(
@@ -398,7 +414,11 @@ Future<bool> CosmosLikeAccountSynchronizer::synchronizeBatch(
 
                 buddy->logger->info("Got {} txs", bulk->transactions.size());
                 for (const auto &tx : bulk->transactions) {
-                    buddy->account->putTransaction(sql, tx);
+                    auto const flag = buddy->account->putTransaction(sql, tx);
+
+                    if (::ledger::core::account::isInsertedOperation(flag)) {
+                        ++buddy->context.newOperations;
+                    }
 
                     // Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);

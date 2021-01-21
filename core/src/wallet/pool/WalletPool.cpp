@@ -77,6 +77,7 @@ namespace ledger {
 
             // Preferences management
             if (!_externalPreferencesBackend) {
+                logPrinter->printDebug("Use default LevelDB external preferences backend");
                 _externalPreferencesBackend = std::make_shared<PreferencesBackend>(
                     fmt::format("/{}/preferences.db", _poolName),
                     getContext(),
@@ -84,6 +85,7 @@ namespace ledger {
                 );
             }
             if (!_internalPreferencesBackend) {
+                logPrinter->printDebug("Use default LevelDB internal preferences backend");
                 _internalPreferencesBackend = std::make_shared<PreferencesBackend>(
                     fmt::format("/{}/__preferences__.db", _poolName),
                     getContext(),
@@ -258,7 +260,8 @@ namespace ledger {
                 auto client = std::make_shared<HttpClient>(
                     baseUrl,
                     _httpEngine,
-                    getDispatcher()->getMainExecutionContext()
+                    getDispatcher()->getMainExecutionContext(),
+                    getDispatcher()->getThreadPoolExecutionContext("httpExecutionContext")
                 );
                 _httpClients[baseUrl] = client;
                 client->setLogger(logger());
@@ -471,6 +474,17 @@ namespace ledger {
                 tr.commit();
                 return wallet;
             });
+        }
+
+        Future<Unit> WalletPool::deleteWallet(const std::string& name) {
+            auto self = shared_from_this();
+            return async<Unit>([=]() {
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                soci::transaction tr(sql);
+                PoolDatabaseHelper::removeWalletByName(sql, name);
+                tr.commit();
+                return unit;
+                });
         }
 
         Option<api::Currency> WalletPool::getCurrency(const std::string &name) const {

@@ -38,7 +38,6 @@
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/observers/RippleLikeBlockchainObserver.h>
 #include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
 
 #include <api/Currency.hpp>
@@ -56,13 +55,9 @@ namespace ledger {
 
         private:
             std::shared_ptr<RippleLikeBlockchainExplorer> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-            std::shared_ptr<RippleLikeBlockchainObserver> getObserver(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
         private:
             // Explorers
             std::list<std::weak_ptr<RippleLikeBlockchainExplorer>> _runningExplorers;
-
-            // Observers
-            std::list<std::weak_ptr<RippleLikeBlockchainObserver>> _runningObservers;
 
             // Keychain factories
             std::unordered_map<std::string, std::shared_ptr<RippleLikeKeychainFactory>> _keychainFactories;

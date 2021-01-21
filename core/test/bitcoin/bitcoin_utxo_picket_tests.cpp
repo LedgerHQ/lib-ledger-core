@@ -18,10 +18,11 @@ public:
         const api::Currency& params,
         int account,
         const std::shared_ptr<Preferences>& preferences) :BitcoinLikeKeychain(configuration, params, account, preferences){};
-    MOCK_METHOD1(markPathAsUsed, bool(const DerivationPath& path));
+    MOCK_METHOD2(markPathAsUsed, bool(const DerivationPath& path, bool needExtendKeychain));
     MOCK_METHOD2(getAllObservableAddresses, std::vector<Address>(uint32_t from, uint32_t to));
 
     MOCK_METHOD3(getAllObservableAddresses, std::vector<Address>(KeyPurpose purpose, uint32_t from, uint32_t to));
+    MOCK_METHOD2(getAllObservableAddressString, std::vector<std::string>(uint32_t from, uint32_t to));
 
     MOCK_METHOD1(getFreshAddress, Address(KeyPurpose purpose));
     MOCK_METHOD2(getFreshAddresses, std::vector<Address>(KeyPurpose purpose, size_t n));

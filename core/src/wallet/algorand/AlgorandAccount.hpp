@@ -75,7 +75,11 @@ namespace algorand {
 
         bool putBlock(soci::session& sql, const api::Block& block);
 
-        int putTransaction(soci::session& sql, const model::Transaction& transaction);
+        void interpretTransaction(const model::Transaction& transaction,
+                                      std::vector<Operation>& out);
+
+        Try<int> bulkInsert(const std::vector<Operation>& operations);
+
 
         const Address& getAddress() const;
 
@@ -149,12 +153,6 @@ namespace algorand {
         bool isSynchronizing() override;
 
         std::shared_ptr<api::EventBus> synchronize() override;
-
-        void startBlockchainObservation() override;
-
-        void stopBlockchainObservation() override;
-
-        bool isObservingBlockchain() override;
 
         std::string getRestoreKey() override;
 

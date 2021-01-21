@@ -62,16 +62,16 @@ namespace ledger {
                                           std::shared_ptr<SynchronizationBuddy> &buddy,
                                           const std::string &accountUid) override;
 
-            std::shared_ptr<ProgressNotifier<Unit>> synchronize(const std::shared_ptr<EthereumLikeAccount>& account) override ;
+            std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> synchronize(const std::shared_ptr<EthereumLikeAccount>& account) override ;
             void reset(const std::shared_ptr<EthereumLikeAccount> &account,
                        const std::chrono::system_clock::time_point &toDate) override;
 
             bool isSynchronizing() const override;
 
         protected:
-            int putTransaction(soci::session &sql, const Transaction &transaction,
-                               const std::shared_ptr<SynchronizationBuddy> &buddy) override;
-
+            void interpretTransaction(const Transaction& transaction,
+                                      const std::shared_ptr<SynchronizationBuddy>& buddy,
+                                      std::vector<Operation>& out) override;
         private:
             std::shared_ptr<EthereumBlockchainAccountSynchronizer> getSharedFromThis() override ;
             std::shared_ptr<api::ExecutionContext> getSynchronizerContext() override ;

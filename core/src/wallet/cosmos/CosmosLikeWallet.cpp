@@ -49,7 +49,6 @@ const api::WalletType CosmosLikeWallet::type = api::WalletType::COSMOS;
 CosmosLikeWallet::CosmosLikeWallet(
     const std::string &name,
     const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-    const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
     const std::shared_ptr<CosmosLikeKeychainFactory> &keychainFactory,
     const CosmosLikeAccountSynchronizerFactory &synchronizer,
     const std::shared_ptr<WalletPool> &pool,
@@ -58,7 +57,6 @@ CosmosLikeWallet::CosmosLikeWallet(
     const DerivationScheme &scheme) :
     AbstractWallet(name, network, pool, configuration, scheme),
     _explorer(explorer),
-    _observer(observer),
     _keychainFactory(keychainFactory),
     _synchronizerFactory(synchronizer)
 {
@@ -162,7 +160,7 @@ std::shared_ptr<AbstractAccount> CosmosLikeWallet::createAccountInstance(
     auto keychain = _keychainFactory->restore(
         path, getConfig(), entry.pubkey, getAccountInternalPreferences(entry.index), getCurrency());
     auto account = std::make_shared<CosmosLikeAccount>(
-        shared_from_this(), entry.index, _explorer, _observer, _synchronizerFactory(), keychain);
+        shared_from_this(), entry.index, _explorer, _synchronizerFactory(), keychain);
     return account;
 }
 

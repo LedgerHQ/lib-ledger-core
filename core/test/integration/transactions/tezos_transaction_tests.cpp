@@ -67,12 +67,13 @@ TEST_F(TezosMakeTransaction, CreateTx) {
         EXPECT_EQ(event->getCode(),
                   api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-        dispatcher->stop();
+        getTestExecutionContext()->stop();
     });
 
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(), receiver);
+    auto bus = account->synchronize();
+    bus->subscribe(getTestExecutionContext(), receiver);
 
-    dispatcher->waitUntilStopped();
+    getTestExecutionContext()->waitUntilStopped();
 
     builder->setFees(api::Amount::fromLong(currency, 250));
     builder->setGasLimit(api::Amount::fromLong(currency, 10000));
@@ -82,9 +83,9 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     builder->wipeToAddress("tz1TRspM5SeZpaQUhzByXbEvqKF1vnCM2YTK");
     // TODO: activate when we got URL of our custom explorer
     auto f = builder->build();
-    auto tx = ::wait(f);
+    auto tx = uv::wait(f);
     auto serializedTx = tx->serialize();
-    auto balance = wait(account->getBalance());
+    auto balance = uv::wait(account->getBalance());
     EXPECT_EQ(balance->toLong(), tx->getValue()->toLong() + tx->getFees()->toLong());
     auto parsedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedTx);
     auto serializedParsedTx = parsedTx->serialize();
@@ -94,11 +95,11 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     auto formatedDate = DateUtils::fromJSON(date);
 
     //Delete account
-    auto code = wait(wallet->eraseDataSince(formatedDate));
+    auto code = uv::wait(wallet->eraseDataSince(formatedDate));
     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     //Check if account was successfully deleted
-    auto newAccountCount = wait(wallet->getAccountCount());
+    auto newAccountCount = uv::wait(wallet->getAccountCount());
     EXPECT_EQ(newAccountCount, 0);
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
@@ -117,7 +118,7 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     txBuilder->setGasLimit(api::Amount::fromLong(currency, 10000));
     txBuilder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("1000")));
     txBuilder->sendToAddress(api::Amount::fromLong(currency, 220000), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
-    auto originatedTx = ::wait(txBuilder->build());
+    auto originatedTx = uv::wait(txBuilder->build());
     EXPECT_EQ(originatedTx->getSender()->toBase58(), "KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd");
     EXPECT_EQ(originatedTx->getReceiver()->toBase58(), "tz1cmN7N6rV9ULVqbL2BxSUZgeL5wnWyoBUE");
 
@@ -126,11 +127,11 @@ TEST_F(TezosMakeTransaction, CreateTx) {
     //auto parsedOriginatedTx = TezosLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), serializedOriginatedTx);
     //EXPECT_EQ(serializedOriginatedTx, parsedOriginatedTx->serialize());
     //Delete wallet
-    auto walletCode = wait(pool->eraseDataSince(formatedDate));
+    auto walletCode = uv::wait(pool->eraseDataSince(formatedDate));
     EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     //Check if wallet was successfully deleted
-    auto walletCount = wait(pool->getWalletCount());
+    auto walletCount = uv::wait(pool->getWalletCount());
     EXPECT_EQ(walletCount, 0);
 }
 

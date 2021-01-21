@@ -52,6 +52,13 @@ namespace ledger {
                     std::size_t maxSize = DEFAULT_MAX_SIZE,
                     bool enabled = true
             );
+
+            static std::shared_ptr<spdlog::logger> trace(
+                    const std::string& purpose,
+                    const std::string& tracePrefix,
+                    const std::shared_ptr<spdlog::logger>& logger
+            );
+
         private:
             logger() = delete;
         };

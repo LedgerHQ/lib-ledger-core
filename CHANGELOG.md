@@ -10,6 +10,10 @@
 - Fix negative fees on Bitcoin transaction creation
 - Add a call on BitcoinLikeAccount to get all account addresses
 - Fix XRP block parser
+- XRP optimistic update on transaction broadcast
+- XTZ fix non-activated account recognition
+- XTZ allow consecutive transaction
+- XTZ don't fallback to 0 balance at every error
 
 ## 3.4.1
 

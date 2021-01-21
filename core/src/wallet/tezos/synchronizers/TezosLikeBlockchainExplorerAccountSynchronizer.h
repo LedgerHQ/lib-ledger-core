@@ -63,7 +63,7 @@ namespace ledger {
                                           std::shared_ptr <SynchronizationBuddy> &buddy,
                                           const std::string &accountUid) override;
 
-            std::shared_ptr <ProgressNotifier<Unit>>
+            std::shared_ptr <ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
             synchronize(const std::shared_ptr <TezosLikeAccount> &account) override;
 
             void reset(const std::shared_ptr <TezosLikeAccount> &account,
@@ -71,8 +71,9 @@ namespace ledger {
 
             bool isSynchronizing() const override;
 
-            int putTransaction(soci::session &sql, const Transaction &transaction,
-                               const std::shared_ptr<SynchronizationBuddy> &buddy) override;
+            void interpretTransaction(const Transaction& transaction,
+                                      const std::shared_ptr<SynchronizationBuddy> &buddy,
+                                      std::vector<Operation>& out) override;
 
         private:
             std::shared_ptr <TezosBlockchainAccountSynchronizer> getSharedFromThis() override;

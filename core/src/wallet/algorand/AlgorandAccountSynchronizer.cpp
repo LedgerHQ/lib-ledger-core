@@ -108,20 +108,15 @@ namespace algorand {
             .template flatMap<bool>(getContext(),
                 [this, account, hadTransactions, lowestRound](const model::TransactionsBulk& bulk) -> Future<bool> {
 
-                soci::session sql(account->getWallet()->getDatabase()->getPool());
-                soci::transaction tr(sql);
-
                 auto savedState = _internalPreferences->template getObject<SavedState>("state");
                 if (savedState.isEmpty()) {
                     throw Exception(api::ErrorCode::ILLEGAL_STATE, "Saved State not available during account synchronization");
                 }
 
                 auto lowestBatchRound = std::numeric_limits<uint64_t>::max();
+                std::vector<Operation> operations;
                 for (const auto& tx : bulk.transactions) {
-
-                    auto tryPutTx = Try<int>::from([account, &sql, &tx] () {
-                        return (account->putTransaction(sql, tx));
-                    });
+                    account->interpretTransaction(tx, operations);
 
                     // Record the lowest round in this batch, to continue fetching txs below it if needed
                     lowestBatchRound = std::min(lowestBatchRound, tx.header.round.getValueOr(lowestBatchRound));
@@ -129,7 +124,12 @@ namespace algorand {
                     // Record the highest round ever seen, to update the cache for next incremental sychronization
                     savedState->round = std::max(savedState->round, tx.header.round.getValueOr(0));
                 }
-                tr.commit();
+
+                auto tryPutTx = account->bulkInsert(operations);
+                if (tryPutTx.isFailure()) {
+                    throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed({})", 
+                        tryPutTx.exception().getValue().getMessage());
+                }
 
                 // Update the cache for next incremental sychronization
                 _internalPreferences->editor()->template putObject<SavedState>("state", savedState.getValue())->commit();
@@ -146,7 +146,7 @@ namespace algorand {
     Future<Unit> AccountSynchronizer::updateLatestBlock(const std::shared_ptr<api::ExecutionContext> &context) {
         return _explorer->getLatestBlock()
             .template flatMap<Unit>(context, [this] (const Try<api::Block>& block) -> Future<Unit> {
-                if (block.isSuccess()) {
+                if (block.isSuccess()) {                
                     soci::session sql(_account->getWallet()->getDatabase()->getPool());
                     soci::transaction tr(sql);
                     try {

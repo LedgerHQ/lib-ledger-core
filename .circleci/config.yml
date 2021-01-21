@@ -45,14 +45,22 @@ jobs:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
     docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
+      - image: debian:buster
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
       - run:
+          name: Setup
+          command: |
+            . .circleci/setup_debian.sh
+      - run:
           name: Submodule_Initialization
           command: |
             . .circleci/init_submodules.sh
+      - run:
+          name: CMake_Install
+          command: |
+            . .circleci/cmake-install.sh
       - run:
           name: Build_Library_jni
           command: |
@@ -136,7 +144,7 @@ jobs:
 
   build_linux_debug:
       docker:
-        - image: debian:stretch
+        - image: debian:buster
       working_directory: ~/lib-ledger-core
       steps:
         - run:
@@ -147,7 +155,7 @@ jobs:
         - run:
             name: Setup
             command: |
-              . .circleci/setup_debian.sh Debug
+              . .circleci/setup_debian.sh
         - run:
             name: Submodule_Initialization
             command: |
@@ -169,10 +177,10 @@ jobs:
             command: |
                 cd ../lib-ledger-core-build
 
-                ~/cmake-3.16.5-Linux-x86_64/bin/ctest -VV -timeout 60
+                ~/cmake-3.16.5-Linux-x86_64/bin/ctest -VV -timeout 120
   build_macos_release:
     macos:
-      xcode: "10.0.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -202,7 +210,7 @@ jobs:
             . .circleci/deploy.sh
   build_macos_ios_release:
     macos:
-      xcode: "10.0.0"
+      xcode: "11.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -249,7 +257,7 @@ jobs:
             . .circleci/deploy_fat_lib.sh
   build_macos_jni_release:
     macos:
-      xcode: "10.0.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -284,7 +292,7 @@ jobs:
             . .circleci/deploy.sh
   build_macos_debug:
     macos:
-      xcode: "10.0.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -308,7 +316,7 @@ jobs:
           name: Run_Tests
           command: |
               cd ../lib-ledger-core-build
-              ctest -VV -timeout 60
+              ctest -VV -timeout 120
   publish_jar:
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
@@ -341,7 +349,7 @@ jobs:
           name: Install dependencies
           command: |
             sudo apt-get update -q=2
-            sudo apt-get install -qy doxygen libqt5websockets5 libqt5websockets5-dev qt5-default rsync software-properties-common
+            sudo apt-get install -qy doxygen rsync software-properties-common
             sudo add-apt-repository --update "deb http://httpredir.debian.org/debian stretch-backports main"
             sudo apt-get install -qy -t stretch-backports cmake
       - run: cmake -H. -Bbuild

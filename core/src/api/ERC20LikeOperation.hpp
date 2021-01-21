@@ -72,6 +72,12 @@ public:
      * @return Optional 64-bit integer, height of block in which operation was validated
      */
     virtual std::experimental::optional<int64_t> getBlockHeight() = 0;
+
+    /** Get parent ETH operation uid */
+    virtual std::string getETHOperationUid() = 0;
+
+    /** Get ERC20 operation uid */
+    virtual std::string getOperationUid() = 0;
 };
 
 } } }  // namespace ledger::core::api

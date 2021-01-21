@@ -42,9 +42,9 @@
 using namespace ledger::core::api;
 using namespace ledger::core;
 
-const Currency currency = currencies::RIPPLE;
 
 TEST(RippleAddress, AddressFromPubKeyAndChainCodeAccountLevel) {
+    auto currency = currencies::RIPPLE;
     std::vector<uint8_t> pubKey = hex::toByteArray(
             "039ea82278f0057b8b041a146f810aa2d84b8ffdfaef3e625624706ad13e12b717");
     std::vector<uint8_t> chainCode = hex::toByteArray(
@@ -58,6 +58,7 @@ TEST(RippleAddress, AddressFromPubKeyAndChainCodeAccountLevel) {
 }
 
 TEST(RippleAddress, AddressFromPubKeyAndChainCodeAddressLevel) {
+    auto currency = currencies::RIPPLE;
     std::vector<uint8_t> pubKey = hex::toByteArray(
             "03c5ee21cd4a30b5b8436a6b17047aceac5ed4e69ab5f96bde2af897ff80cefab1");
     std::vector<uint8_t> chainCode = hex::toByteArray(
@@ -71,6 +72,7 @@ TEST(RippleAddress, AddressFromPubKeyAndChainCodeAddressLevel) {
 }
 
 TEST(RippleAddress, XpubFromBase58String) {
+    auto currency = currencies::RIPPLE;
     auto addr = "xpub6DECL9NX5hvkRrq98MRvXCjTP8s84NZUFReEVLizQMVH8epXyoMvncB9DG4d8kY94XPVYqFWtUVaaagZkXvje4AUF3qdd71fJc8KyhRRC8V";
     auto xpub = ledger::core::RippleLikeExtendedPublicKey::fromBase58(currency, addr, optional<std::string>("44'/144'/0'"));
     EXPECT_EQ(xpub->toBase58(), addr);
@@ -82,6 +84,7 @@ TEST(RippleAddress, XpubFromBase58String) {
 
 
 TEST(RippleAddress, ParseAddressFromString) {
+    auto currency = currencies::RIPPLE;
     auto address = "rwANfV4cFbvup4er3mhErm8h7i8mFG9PQF";
     auto rippleAddress = ledger::core::RippleLikeAddress::parse(address, currency, Option<std::string>("0/0"));
     EXPECT_EQ(address, rippleAddress->toString());
