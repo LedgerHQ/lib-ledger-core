@@ -469,7 +469,8 @@ namespace algorand {
                 "AND (tx.axfer_receiver_address = :axfer_receiver_address "
                 "OR tx.axfer_close_address = :axfer_close_address "
                 "OR tx.axfer_sender_address = :axfer_sender_address "
-                "OR tx.sender = :sender)",
+                "OR tx.sender = :sender) "
+                "ORDER BY timestamp",
                 soci::use(std::string(model::constants::axfer)), soci::use(assetId),
                 soci::use(address), soci::use(address),
                 soci::use(address), soci::use(address));
@@ -486,7 +487,8 @@ namespace algorand {
                 "FROM algorand_transactions AS tx "
                 "WHERE tx.sender = :sender "
                 "OR tx.pay_receiver_address = :pay_receiver_address "
-                "OR tx.pay_close_address = :pay_close_address",
+                "OR tx.pay_close_address = :pay_close_address "
+                "ORDER BY timestamp",
                 soci::use(address), soci::use(address), soci::use(address));
 
         return query(rows);
