@@ -16,7 +16,7 @@ add_library(ledger-test STATIC
             ExplorerStorage.hpp ExplorerStorage.cpp
             HttpClientOnFakeExplorer.hpp HttpClientOnFakeExplorer.cpp
             UvThreadDispatcher.hpp UvThreadDispatcher.cpp
-            MemPreferencesBackend.hpp MemPreferencesBackend.cpp)
+            MemPreferencesBackend.hpp MemPreferencesBackend.cpp
             CppHttpLibClient.hpp CppHttpLibClient.cpp
             FilesystemUtils.cpp FilesystemUtils.hpp
             ProxyHttpClient.hpp ProxyHttpClient.cpp)
