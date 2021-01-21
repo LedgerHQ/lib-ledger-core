@@ -12,7 +12,6 @@ std::string to_string(const EventCode& eventCode) {
         case EventCode::NEW_OPERATION: return "NEW_OPERATION";
         case EventCode::UPDATE_OPERATIONS: return "UPDATE_OPERATIONS";
         case EventCode::NEW_BLOCK: return "NEW_BLOCK";
-        case EventCode::UPDATE_BLOCKS: return "UPDATE_BLOCKS";
         case EventCode::DELETED_OPERATION: return "DELETED_OPERATION";
         case EventCode::SYNCHRONIZATION_STARTED: return "SYNCHRONIZATION_STARTED";
         case EventCode::SYNCHRONIZATION_FAILED: return "SYNCHRONIZATION_FAILED";
@@ -28,7 +27,6 @@ EventCode from_string(const std::string& eventCode) {
     else if (eventCode == "NEW_OPERATION") return EventCode::NEW_OPERATION;
     else if (eventCode == "UPDATE_OPERATIONS") return EventCode::UPDATE_OPERATIONS;
     else if (eventCode == "NEW_BLOCK") return EventCode::NEW_BLOCK;
-    else if (eventCode == "UPDATE_BLOCKS") return EventCode::UPDATE_BLOCKS;
     else if (eventCode == "DELETED_OPERATION") return EventCode::DELETED_OPERATION;
     else if (eventCode == "SYNCHRONIZATION_STARTED") return EventCode::SYNCHRONIZATION_STARTED;
     else if (eventCode == "SYNCHRONIZATION_FAILED") return EventCode::SYNCHRONIZATION_FAILED;
@@ -45,7 +43,6 @@ std::ostream &operator<<(std::ostream &os, const EventCode &o)
         case EventCode::NEW_OPERATION:  return os << "NEW_OPERATION";
         case EventCode::UPDATE_OPERATIONS:  return os << "UPDATE_OPERATIONS";
         case EventCode::NEW_BLOCK:  return os << "NEW_BLOCK";
-        case EventCode::UPDATE_BLOCKS:  return os << "UPDATE_BLOCKS";
         case EventCode::DELETED_OPERATION:  return os << "DELETED_OPERATION";
         case EventCode::SYNCHRONIZATION_STARTED:  return os << "SYNCHRONIZATION_STARTED";
         case EventCode::SYNCHRONIZATION_FAILED:  return os << "SYNCHRONIZATION_FAILED";
