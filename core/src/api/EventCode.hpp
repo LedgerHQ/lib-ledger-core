@@ -24,10 +24,8 @@ enum class EventCode : int {
     NEW_OPERATION,
     /** Emitted once a batch of operation has been inserted/updated in database */
     UPDATE_OPERATIONS,
-    /** [DEPRECATED] A new block event. (this event is deprecated since 4.0) */
+    /** A new block event. (this event is deprecated since 4.0) */
     NEW_BLOCK,
-    /** Emitted once a batch of blocks has been inserted/updated in database */
-    UPDATE_BLOCKS,
     /** A deleted operation event. */
     DELETED_OPERATION,
     /** Event emitted when a wallet synchronization started. */
