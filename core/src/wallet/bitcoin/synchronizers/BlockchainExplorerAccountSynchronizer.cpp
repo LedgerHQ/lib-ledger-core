@@ -672,11 +672,8 @@ namespace ledger {
             bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
             auto self = getSharedFromThis();
-            auto benchmark = NEW_BENCHMARK("explorer_calls");
-            benchmark->start();
             return getTransactionBulk(currentBatchIndex, buddy)
                 .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
-                benchmark->stop();
                 auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
                 auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];

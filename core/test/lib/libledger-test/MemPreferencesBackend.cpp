@@ -7,7 +7,7 @@ namespace ledger {
         namespace test {
             MemPreferencesBackend::~MemPreferencesBackend() {}
 
-            std::experimental::optional<std::vector<uint8_t>> MemPreferencesBackend::get(const std::vector<uint8_t> & key) const
+            std::experimental::optional<std::vector<uint8_t>> MemPreferencesBackend::get(const std::vector<uint8_t> & key)
             {
                if (_data.find(key) != _data.end()) 
                     return _data.at(key);
@@ -36,7 +36,7 @@ namespace ledger {
                 return true;
             }
 
-            std::string MemPreferencesBackend::getEncryptionSalt() const
+            std::string MemPreferencesBackend::getEncryptionSalt()
             {
                 return "";
             }
