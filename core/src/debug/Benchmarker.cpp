@@ -53,8 +53,6 @@ namespace ledger {
             _stopDate = std::chrono::high_resolution_clock::now();
             if (_logger) {
                 _logger->debug("{} took {}.", _name, DurationUtils::formatDuration(getDuration()));
-            } else {
-                fmt::print("{} took {}.\n", _name, DurationUtils::formatDuration(getDuration()));
             }
             DurationsMap::getInstance().record(_name, getDuration());
             return *this;

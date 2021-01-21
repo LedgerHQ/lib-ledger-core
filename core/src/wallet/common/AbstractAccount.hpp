@@ -108,7 +108,7 @@ namespace ledger {
             std::shared_ptr<api::EventBus> getEventBus() override;
 
             void emitDeletedOperationEvent(std::string const& uid);
-            void emitEventsNow();
+            virtual void emitEventsNow();
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
@@ -116,6 +116,7 @@ namespace ledger {
 
         protected:
             void emitNewOperationEvent(const Operation& operation);
+            void emitNewOperationsEvent(const std::vector<Operation>& operations);
             void emitNewBlockEvent(const Block& block);
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
@@ -133,6 +134,8 @@ namespace ledger {
             std::shared_ptr<EventPublisher> _publisher;
             std::mutex _eventsLock;
             std::list<std::shared_ptr<api::Event>> _events;
+            std::shared_ptr<api::Event> _batchedOperationsEvent;
+
         };
     }
 }

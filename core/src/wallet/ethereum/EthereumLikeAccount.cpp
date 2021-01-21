@@ -164,8 +164,8 @@ namespace ledger {
                 EthereumLikeOperationDatabaseHelper::bulkInsert(sql, operations, accountAddress);
                 tr.commit();
                 // Emit
+                emitNewOperationsEvent(operations);
                 for (const auto& op : operations) {
-                    emitNewOperationEvent(op);
                     if (op.attachedData) {
                         const auto data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
                         for (auto &it : data->erc20Operations) {
@@ -694,13 +694,41 @@ namespace ledger {
         }
 
         void EthereumLikeAccount::emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid) {
-            auto payload = DynamicObject::newInstance();
-            payload->putString(api::Account::EV_NEW_OP_UID, op.getOperationUid());
-            payload->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
-            payload->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
-            payload->putString(api::ERC20LikeAccount::EV_NEW_OP_ERC20_ACCOUNT_UID, accountUid);
-            auto event = Event::newInstance(api::EventCode::NEW_ERC20_OPERATION, payload);
-            pushEvent(event);
+           std::vector<ERC20LikeOperation> ops {op};
+           emitNewERC20Operations(ops, accountUid);
         }
+
+        void EthereumLikeAccount::emitEventsNow() {
+            if (_batchedErc20Event) {
+                std::unique_lock<std::mutex> lock(_erc20EventLock);
+                pushEvent(_batchedErc20Event);
+                _batchedErc20Event = nullptr;
+            }
+            AbstractAccount::emitEventsNow();
+        }
+
+        void EthereumLikeAccount::emitNewERC20Operations(std::vector<ERC20LikeOperation> &ops,
+                                                         const std::string &accountUid) {
+            if (ops.empty()) {
+                return ;
+            }
+            std::unique_lock<std::mutex> lock(_erc20EventLock);
+            if (!_batchedErc20Event) {
+                _batchedErc20Event = Event::newInstance(api::EventCode::UPDATE_ERC20_OPERATIONS, DynamicObject::newInstance());
+                std::dynamic_pointer_cast<core::Event>(_batchedErc20Event)->setReadOnly(false);
+                _batchedErc20Event->getPayload()->putArray(api::Account::EV_NEW_OP_UID, DynamicArray::newInstance());
+                _batchedErc20Event->getPayload()->putString(api::Account::EV_NEW_OP_WALLET_NAME, getWallet()->getName());
+                _batchedErc20Event->getPayload()->putLong(api::Account::EV_NEW_OP_ACCOUNT_INDEX, getIndex());
+                _batchedErc20Event->getPayload()->putString(api::ERC20LikeAccount::EV_NEW_OP_ERC20_ACCOUNT_UID, accountUid);
+            }
+            for (auto& op : ops) {
+                _batchedErc20Event
+                        ->getPayload()
+                        ->getArray(api::Account::EV_NEW_OP_UID)
+                        ->pushString(op.getOperationUid());
+            }
+        }
+
+
     }
 }

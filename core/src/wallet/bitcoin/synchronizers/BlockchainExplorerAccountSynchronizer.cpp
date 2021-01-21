@@ -672,16 +672,18 @@ namespace ledger {
             bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
             auto self = getSharedFromThis();
+            auto benchmark = NEW_BENCHMARK("explorer_calls");
+            benchmark->start();
             return getTransactionBulk(currentBatchIndex, buddy)
                 .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
+                benchmark->stop();
                 auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
                 auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
                 //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
                 buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
                 auto count = 0;
-
-                // NEW CODE
+                  
                 Option<Block> lastBlock = Option<Block>::NONE;
                 std::vector<Operation> operations;
                 interpretBenchmark->start();
@@ -689,7 +691,7 @@ namespace ledger {
                 for (const auto& tx : bulk->transactions) {
                     // Update last block to chain query
                     if (lastBlock.isEmpty() ||
-                        lastBlock.getValue().height > tx.block.getValue().height) {
+                        lastBlock.getValue().height < tx.block.getValue().height) {
                         lastBlock = tx.block;
                     }
 
@@ -725,16 +727,11 @@ namespace ledger {
                 buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
                 buddy->account->emitEventsNow();
 
-                // END NEW CODE
-
                 // Get the last block
-                if (bulk->transactions.size() > 0) {
-                    auto& lastBlock = bulk->transactions.back().block;
-                    if (lastBlock.nonEmpty()) {
-                        batchState.blockHeight = (uint32_t)lastBlock.getValue().height;
-                        batchState.blockHash = lastBlock.getValue().hash;
-                        buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-                    }
+                if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
+                    batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
+                    batchState.blockHash = lastBlock.getValue().hash;
+                    buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                 }
 
                 auto hadTX = hadTransactions || bulk->transactions.size() > 0;

@@ -89,52 +89,6 @@ namespace ledger {
             return _currentSyncEventBus != nullptr;
         }
 
-        Future<BlockchainExplorerAccountSynchronizationResult> TezosLikeAccount::getTxs(const std::shared_ptr<TezosLikeAccount>& account, size_t id, void* session, BlockchainExplorerAccountSynchronizationResult result) {
-            std::vector<std::string> addresses{ account->_originatedAccounts[id]->getAddress() };
-            // Get offset to not start sync from beginning
-            auto offset = session ? Future<std::vector<std::shared_ptr<api::Operation>>>::successful(std::vector<std::shared_ptr<api::Operation>>()) :
-                std::dynamic_pointer_cast<OperationQuery>(
-                    account->_originatedAccounts[id]->queryOperations()->partial()
-                    )->execute();
-            return offset.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const std::vector<std::shared_ptr<api::Operation>>& ops) mutable {
-                // For the moment we start synchro from the beginning
-                auto getSession = session ? Future<void*>::successful(session) :
-                    account->_explorer->startSession();
-                return getSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](void* s) mutable {
-                    return account->_explorer->getTransactions(addresses, std::to_string(ops.size()), s)
-                        .flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk>& bulk) mutable {
-                        auto uid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(account->getAccountUid(), addresses[0]);
-                        {
-                            std::vector<Operation> ops;
-                            for (auto& tx : bulk->transactions) {
-                                account->interpretTransaction(tx, ops, addresses[0]);
-                            }
-                            auto insert = account->bulkInsert(ops);
-                            if (insert.isSuccess()) {
-                                result.newOperations += insert.getValue();
-                            }
-                        }
-
-                        if (bulk->hasNext) {
-                            return getTxs(account, id, s, result);
-                        }
-
-                        if (id == account->_originatedAccounts.size() - 1) {
-                            return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result);
-                        }
-
-                        auto killSession = s ? Future<Unit>::successful(Unit()) :
-                            account->_explorer->killSession(s);
-                        return killSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const auto&) {
-                            return getTxs(account, id + 1, nullptr, result);
-                        });
-                    }).recover(account->getContext(), [](const Exception& ex) -> BlockchainExplorerAccountSynchronizationResult {
-                        throw ex;
-                    });
-                });
-            });
-        }
-
         std::shared_ptr<api::EventBus> TezosLikeAccount::synchronize() {
             std::lock_guard<std::mutex> lock(_synchronizationLock);
             if (_currentSyncEventBus)
@@ -191,9 +145,12 @@ namespace ledger {
                                                         {
                                                             std::vector<Operation> operations;
                                                             for (auto &tx : bulk->transactions) {
-                                                                account->interpretTransaction(tx, operations, uid, addresses[0]);
+                                                                tx.originatedAccountUid = uid;
+                                                                tx.originatedAccountAddress = addresses[0];
+                                                                account->interpretTransaction(tx, operations);
                                                             }
-                                                            if (account->bulkInsert(operations).isSuccess()) {
+                                                            auto f = account->bulkInsert(operations);
+                                                            if (f.isSuccess()) {
                                                                 result.newOperations += operations.size();
                                                             }
                                                         }
@@ -205,12 +162,7 @@ namespace ledger {
                                                         if (id == account->_originatedAccounts.size() - 1) {
                                                             return Future<BlockchainExplorerAccountSynchronizationResult>::successful(result);
                                                         }
-
-                                                        auto killSession = s ? Future<Unit>::successful(Unit()) :
-                                                                           account->_explorer->killSession(s);
-                                                        return killSession.flatMap<BlockchainExplorerAccountSynchronizationResult>(account->getContext(), [=](const auto&){
-                                                            return getTxs(account, id + 1, nullptr, result);
-                                                        });
+                                                        return getTxs(account, id + 1, nullptr, result);
                                                     }).recover(account->getContext(), [] (const Exception& ex) -> BlockchainExplorerAccountSynchronizationResult {
                                                         throw ex;
                                                     });
@@ -219,6 +171,7 @@ namespace ledger {
                         };
                         return getTxs(self, 0, nullptr, result.getValue());
             }).onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
+                
                 api::EventCode code;
                 auto payload = std::make_shared<DynamicObject>();
                 auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(

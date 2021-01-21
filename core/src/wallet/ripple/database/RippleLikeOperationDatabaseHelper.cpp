@@ -180,13 +180,9 @@ namespace ledger {
             }
             if (!blockStmt.bindings.hash.empty())
                 blockStmt.execute();
-            fmt::print("INSERT 1  XRP {}\n", ops.size());
             txStmt.execute();
-            fmt::print("INSERT 2 XRP {}\n", ops.size());
             opStmt.execute();
-            fmt::print("INSERT 3 XRP {}\n", ops.size());
             rippleOpStmt.execute();
-            fmt::print("INSERT 4 XRP {}\n", ops.size());
         }
     }
 }

@@ -1,11 +1,13 @@
 /*
- * AlgorandOperationDatabaseHelper
  *
- * Created by Hakim Aammar on 18/05/2020.
+ * AlgorandOperationsDatabaseHelper.hpp
+ * ledger-core
+ *
+ * Created by Habib LAFET on 12/01/2021.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,29 +29,22 @@
  *
  */
 
-#ifndef LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
-#define LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
+#ifndef LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP
+#define LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP
 
-#include "../operations/AlgorandOperation.hpp"
-
-#include <wallet/common/database/OperationDatabaseHelper.h>
-
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
 #include <soci.h>
 
 namespace ledger {
-namespace core {
-namespace algorand {
+    namespace core {
+        namespace algorand {
+            class OperationsDatabaseHelper {
+            public:
+                static void bulkInsert(soci::session& sql, const std::vector<algorand::Operation>& operations);
+            };
+        }
+    }
+}
 
-    class OperationDatabaseHelper : public ledger::core::OperationDatabaseHelper {
 
-    public:
-
-       static bool putAlgorandOperation(soci::session & sql, const std::string & txUid, const Operation & operation);
-
-    };
-
-} // namespace algorand
-} // namespace core
-} // namespace ledger
-
-#endif // LEDGER_CORE_ALGORANDOPERATIONDATABASEHELPER_H
+#endif //LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP

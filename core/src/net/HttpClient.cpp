@@ -114,7 +114,7 @@ namespace ledger {
 
         HttpRequest::HttpRequest(api::HttpMethod method, const std::string &url,
                                  const std::unordered_map<std::string, std::string> &headers,
-                                 const std::experimental::optional<std::vector<uint8_t >> body,
+                                 const std::experimental::optional<std::vector<uint8_t>>& body,
                                  const std::shared_ptr<api::HttpClient> &client,
                                  const std::shared_ptr<api::ExecutionContext> & sequentialContext,
                                  const std::shared_ptr<api::ExecutionContext> & threadpoolContext,
@@ -135,8 +135,7 @@ namespace ledger {
         }
 
         std::shared_ptr<api::HttpRequest> HttpRequest::toApiRequest() const {
-            auto request = std::shared_ptr<HttpRequest::ApiRequest>(new ApiRequest(std::make_shared<HttpRequest>(*this)));
-            return std::dynamic_pointer_cast<api::HttpRequest>(request);
+            return std::make_shared<HttpRequest::ApiRequest>(std::make_shared<HttpRequest>(*this));
         }
 
         Future<std::shared_ptr<api::HttpUrlConnection>> HttpRequest::operator()() const {

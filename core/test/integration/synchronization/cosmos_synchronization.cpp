@@ -340,7 +340,6 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
         auto wallet = uv::wait(pool->createWallet(walletName, currencies::ATOM.name, configuration));
-        std::set<std::string> emittedOperations;
         {
             auto accountInfo = uv::wait(wallet->getNextAccountCreationInfo());
             EXPECT_EQ(accountInfo.index, 0);
@@ -349,19 +348,10 @@ TEST_F(CosmosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
             auto account = ledger::testing::cosmos::createCosmosLikeAccount(
                 wallet, accountInfo.index, accountInfo);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
             auto address = uv::wait(account->getFreshPublicAddresses())[0]->toString();
             EXPECT_EQ(address, DEFAULT_ADDRESS);
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(), receiver);
 
-            receiver.reset();
-            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
