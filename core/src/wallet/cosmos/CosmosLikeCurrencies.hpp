@@ -46,7 +46,6 @@ namespace ledger {
 namespace core {
 namespace currencies {
 extern LIBCORE_EXPORT const api::Currency ATOM;
-extern LIBCORE_EXPORT const api::Currency ATOM_STARGATE;
 extern LIBCORE_EXPORT const api::Currency MUON;
 }
 }  // namespace core

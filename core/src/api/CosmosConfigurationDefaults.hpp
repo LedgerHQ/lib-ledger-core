@@ -21,8 +21,6 @@ public:
 
     static std::string const COSMOS_DEFAULT_API_ENDPOINT;
 
-    static std::string const COSMOS_DEFAULT_STARGATE_API_ENDPOINT;
-
     static std::string const COSMOS_OBSERVER_WS_ENDPOINT;
 };
 

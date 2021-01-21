@@ -3,11 +3,11 @@
  * StargateGaiaCosmosLikeBlockchainExplorer.cpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 29/11/2019.
+ * Created by Gerry Agbobada on 2021-01-21
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -235,13 +235,10 @@ FuturePtr<cosmos::TransactionsBulk> StargateGaiaCosmosLikeBlockchainExplorer::ge
             -> Future<cosmos::TransactionsBulk> {
                 cosmos::TransactionsBulk result;
                 const auto &document = std::get<1>(response)->GetObject();
-                if (!document.HasMember("txs") || !document[kTxArray].IsArray()) {
+                // An "empty" response is not even an array
+                if (!document.HasMember(kTxArray) || !document[kTxArray].IsArray()) {
                     result.hasNext = false;
                     return Future<cosmos::TransactionsBulk>::successful(result);
-                    // throw make_exception(
-                    //     api::ErrorCode::API_ERROR,
-                    //     "The API response from explorer is missing the {} key",
-                    //     kTxArray);
                 }
                 const auto &transactions = document[kTxArray].GetArray();
                 for (const auto &node : transactions) {
@@ -257,13 +254,15 @@ FuturePtr<cosmos::TransactionsBulk> StargateGaiaCosmosLikeBlockchainExplorer::ge
                     result.hasNext = false;
                 }
                 else {
-                    const auto count = std::stoi(document[cosmos::constants::kCount].GetString());
+                    const auto count = std::stoi(document[kCount].GetString());
                     const auto total_count =
                         std::stoi(document[kTotalCount].GetString());
                     result.hasNext = (count < total_count);
                 }
                 return Future<cosmos::TransactionsBulk>::successful(result);
             })
+        // Fill all the parsed transactions in the bulk with their
+        // associated block data
         .flatMapPtr<cosmos::TransactionsBulk>(
             getContext(),
             [this](const cosmos::TransactionsBulk &inputBulk) mutable
@@ -695,7 +694,6 @@ FuturePtr<BigInt> StargateGaiaCosmosLikeBlockchainExplorer::getUnbondingBalance(
 FuturePtr<BigInt> StargateGaiaCosmosLikeBlockchainExplorer::getSpendableBalance(
     const std::string &account) const
 {
-    // hardcoded muon
     const auto endpoint = fmt::format(cosmos::constants::kGrpcBalancesEndpoint, _ns, _version, account, _currency.units[0].code);
 
     const bool jsonParseNumbersAsString = true;
@@ -820,7 +818,7 @@ FuturePtr<std::vector<cosmos::Delegation>> StargateGaiaCosmosLikeBlockchainExplo
                 const auto &document = std::get<1>(response)->GetObject();
                 auto delegations = std::make_shared<std::vector<cosmos::Delegation>>();
                 // Handle null
-                if (document.HasMember("message")
+                if (document.HasMember(kGrpcErrorMessage)
                     || !document.HasMember(kDelegationResponses)
                     || !document[kDelegationResponses].IsArray()) {
                     return delegations;
