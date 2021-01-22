@@ -111,6 +111,7 @@ namespace ledger {
             std::map<std::string, std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>> _cachedTransactionBulks;
             //A variable to save keys in _cachedTransactionBulks
             std::vector<std::string> _hashkeys;
+            std::shared_ptr<ledger::core::Benchmarker> _explorerBenchmark;
         };
     }
 }

@@ -447,15 +447,15 @@ namespace ledger {
             self->_addresses.clear();
             self->_cachedTransactionBulks.clear();
             self->_hashkeys.clear();
-            auto explorerBenchmark = NEW_BENCHMARK("explorer_calls");
-            return self->extendKeychain(0, buddy).template flatMap<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>(account->getContext(), [buddy, self, explorerBenchmark](const Unit&) {
-                explorerBenchmark->start();
+            _explorerBenchmark = NEW_BENCHMARK("explorer_calls");
+            return self->extendKeychain(0, buddy).template flatMap<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>(account->getContext(), [buddy, self](const Unit&) {
+                self->_explorerBenchmark->start();
                 return self->requestTransactionsFromExplorer(buddy);})
-                .template flatMap<Unit>(account->getContext(), [buddy, self, explorerBenchmark](const std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>& txBulks) {
+                .template flatMap<Unit>(account->getContext(), [buddy, self](const std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>& txBulks) {
+                    self->_explorerBenchmark->stop();
                     for (int i = 0; i < txBulks.size(); i++) {
                         self->_cachedTransactionBulks.insert(std::make_pair(self->_hashkeys[i], txBulks[i]));
-                    }
-                    explorerBenchmark->stop();
+                    }                    
                     return self->synchronizeBatches(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy](auto) {
                     return self->synchronizeMempool(buddy);
@@ -505,9 +505,10 @@ namespace ledger {
             auto batch = buddy->keychain->getAllObservableAddressString(from, to);
             auto lastAddressesinBatch = std::vector<std::string>(batch.end() - 2 * buddy->halfBatchSize, batch.end());
             self->_addresses.insert(self->_addresses.end(), batch.begin(), batch.end());
-
+            self->_explorerBenchmark->start();
             return _explorer->getTransactions(lastAddressesinBatch, optional<std::string>(), optional<void*>())
                 .template flatMap<Unit>(buddy->account->getContext(), [self, currentBatchIndex, buddy, to](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<Unit> {
+                self->_explorerBenchmark->stop();
                 self->_cachedTransactionBulks[std::to_string(currentBatchIndex) + ","] = bulk;
                 if (bulk->transactions.size() > 0)
                 {
@@ -672,8 +673,10 @@ namespace ledger {
             bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
             auto self = getSharedFromThis();
+            self->_explorerBenchmark->start();
             return getTransactionBulk(currentBatchIndex, buddy)
                 .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
+                self->_explorerBenchmark->stop();
                 auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
                 auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
