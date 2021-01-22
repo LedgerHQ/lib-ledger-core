@@ -79,9 +79,8 @@ namespace ledger {
             /**
              *
              * @param block
-             * @return true if the block wasn't already known.
              */
-            bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
+            void putBlock(const BitcoinLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
 

@@ -345,7 +345,7 @@ namespace ledger {
             auto self = getSelf();
             return async<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>>([=] () -> std::vector<std::shared_ptr<api::BitcoinLikeOutput>> {
                 auto keychain = self->getKeychain();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxo;
                 BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, self->getAccountUid(), from, to - from, utxo, [&keychain] (const std::string& addr) {
                     return keychain->contains(addr);
@@ -362,21 +362,20 @@ namespace ledger {
             getUTXOCount().callback(getMainExecutionContext(), callback);
         }
 
-        bool BitcoinLikeAccount::putBlock(soci::session &sql, const BitcoinLikeBlockchainExplorer::Block& block) {
+        void BitcoinLikeAccount::putBlock(const BitcoinLikeBlockchainExplorer::Block& block) {
             Block abstractBlock;
             abstractBlock.hash = block.hash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
             emitNewBlockEvent(abstractBlock);
-            return true;
         }
 
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
             auto self = getSelf();
             return async<int32_t>([=] () -> int32_t {
                 auto keychain = self->getKeychain();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 return (int32_t) BitcoinLikeUTXODatabaseHelper::UTXOcount(sql, self->getAccountUid(), [keychain] (const std::string& addr) -> bool {
                     return keychain->contains(addr);
                 });
@@ -428,7 +427,7 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=] () -> std::shared_ptr<Amount> {
                 const auto& uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
                 BigInt sum(0);
                 auto keychain = self->getKeychain();
@@ -460,7 +459,7 @@ namespace ledger {
                 }
 
                 const auto &uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
                 auto keychain = self->getKeychain();
@@ -549,7 +548,7 @@ namespace ledger {
                 auto optimisticUpdate = Try<Unit>::from([&] () -> Unit {
                     //Get last block from DB or cache
                     uint64_t lastBlockHeight = 0;
-                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     auto cachedBlock = self->getWallet()->getPool()->getBlockFromCache(self->getWallet()->getCurrency().name);
                     if (cachedBlock.hasValue()) {
                         lastBlockHeight = cachedBlock.getValue().height;
@@ -647,7 +646,7 @@ namespace ledger {
             if (cachedBlock.hasValue()) {
                 lastBlockHeight = cachedBlock.getValue().height;
             } else {
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
             }
 
@@ -673,7 +672,7 @@ namespace ledger {
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
             return async<std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction>>([=] () -> std::shared_ptr<BitcoinLikeBlockchainExplorerTransaction> {
                 auto tx = std::make_shared<BitcoinLikeBlockchainExplorerTransaction>();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 if (!BitcoinLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, self->getAccountUid(), *tx)) {
                     throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found", hash);
                 }

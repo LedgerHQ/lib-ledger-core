@@ -49,6 +49,7 @@ namespace ledger {
                                 const std::string &dbName,
                                 const std::string &password);
             soci::connection_pool& getPool();
+            soci::connection_pool& getReadonlyPool();
             ~DatabaseSessionPool();
 
             static FuturePtr<DatabaseSessionPool> getSessionPool(
@@ -72,6 +73,7 @@ namespace ledger {
         private:
             std::shared_ptr<DatabaseBackend> _backend;
             soci::connection_pool _pool;
+            soci::connection_pool _readonlyPool;
             std::ostream* _logger;
             LoggerStreamBuffer _buffer;
             api::DatabaseBackendType _type;

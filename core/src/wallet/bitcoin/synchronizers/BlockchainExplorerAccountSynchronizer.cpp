@@ -65,13 +65,9 @@ namespace ledger {
                                                                        const std::shared_ptr<api::ExecutionContext> &context) {
             _explorer->getCurrentBlock().onComplete(context, [buddy] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
                 if (block.isSuccess()) {
-                    soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
-                    soci::transaction tr(sql);
                     try {
-                        buddy->account->putBlock(sql, *block.getValue());
-                        tr.commit();
+                        buddy->account->putBlock(*block.getValue());
                     } catch(...) {
-                        tr.rollback();
                     }
                 }
             });

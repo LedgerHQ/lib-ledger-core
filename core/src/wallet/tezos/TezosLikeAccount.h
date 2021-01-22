@@ -90,9 +90,9 @@ namespace ledger {
                                       
             Try<int> bulkInsert(const std::vector<Operation>& operations);
 
-            void updateOriginatedAccounts(soci::session &sql, const Operation &operation);
+            void updateOriginatedAccounts(const Operation &operation);
 
-            bool putBlock(soci::session &sql, const TezosLikeBlockchainExplorer::Block &block);
+            bool putBlock(const TezosLikeBlockchainExplorer::Block &block);
 
             std::shared_ptr<TezosLikeKeychain> getKeychain() const;
 

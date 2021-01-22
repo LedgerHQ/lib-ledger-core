@@ -44,7 +44,7 @@ namespace ledger {
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
             const std::string &password) :
-            _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            _pool((size_t) backend->getConnectionPoolSize()), _readonlyPool((size_t)backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
@@ -54,9 +54,13 @@ namespace ledger {
             auto poolSize = _backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
+                auto& readonlySession = getReadonlyPool().at(i);
                 _backend->init(resolver, dbName, password, session);
-                if (_logger != nullptr)
+                _backend->init(resolver, dbName, password, readonlySession);
+                if (_logger != nullptr) {
                     session.set_log_stream(_logger);
+                    readonlySession.set_log_stream(_logger);
+                }
             }
 #ifdef PG_SUPPORT
             _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
@@ -90,6 +94,10 @@ namespace ledger {
 
         soci::connection_pool &DatabaseSessionPool::getPool() {
             return _pool;
+        }
+
+        soci::connection_pool& DatabaseSessionPool::getReadonlyPool() {
+            return _readonlyPool;
         }
 
         void DatabaseSessionPool::performDatabaseMigration() {
