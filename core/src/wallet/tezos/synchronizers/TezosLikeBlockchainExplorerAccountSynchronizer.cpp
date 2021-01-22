@@ -51,7 +51,7 @@ namespace ledger {
                                                                     buddy->account->getWallet()->getDatabase()->getPool());
                                                             soci::transaction tr(sql);
                                                             try {
-                                                                buddy->account->putBlock(sql, *block.getValue());
+                                                                buddy->account->putBlock(*block.getValue());
                                                                 tr.commit();
                                                             } catch(...) {
                                                                 tr.rollback();
