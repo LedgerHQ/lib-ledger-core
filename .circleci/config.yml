@@ -210,7 +210,7 @@ jobs:
             . .circleci/deploy.sh
   build_macos_ios_release:
     macos:
-      xcode: "11.0.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
