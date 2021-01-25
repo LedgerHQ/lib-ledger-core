@@ -157,7 +157,7 @@ namespace ledger {
         }
 
         Try<int> EthereumLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
-            auto accountAddress = _keychain->getAddress()->toString();
+            auto accountAddress = _accountAddress;
             return Try<int>::from([&] () {
                 soci::session sql(getWallet()->getDatabase()->getPool());
                 soci::transaction tr(sql);
