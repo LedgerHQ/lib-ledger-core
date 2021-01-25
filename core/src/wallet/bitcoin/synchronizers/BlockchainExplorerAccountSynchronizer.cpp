@@ -291,6 +291,13 @@ namespace ledger {
                 batches.emplace_back(_explorer->getTransactions(batch, blockhash, optional<void*>()));
                 _hashkeys.emplace_back(key);
             }
+            if (batches.size() == 0) { //return an empty std::vector if no need to request the explorer
+                return Future<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>::async(buddy->account->getContext(),
+                    [=]()-> std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>> {
+                        return std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>();
+                    }
+                );
+            }
             return executeAll(buddy->account->getContext(), batches);
         }
 
@@ -673,6 +680,8 @@ namespace ledger {
             bool hadTransactions) {
             buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
             auto self = getSharedFromThis();
+            if (currentBatchIndex * buddy->halfBatchSize * 2 >= self->_addresses.size()) // current batch index is out of range
+                return Future<bool>::successful(false);
             self->_explorerBenchmark->start();
             return getTransactionBulk(currentBatchIndex, buddy)
                 .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions](const std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>& bulk) -> Future<bool> {
@@ -680,7 +689,6 @@ namespace ledger {
                 auto interpretBenchmark = NEW_BENCHMARK("interpret_operations");
 
                 auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-                //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
                 buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
                 auto count = 0;
                   
