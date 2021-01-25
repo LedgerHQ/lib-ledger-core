@@ -255,23 +255,28 @@ namespace {
         std::vector<std::string> gasUsed;
         std::vector<std::string> inputData;
 
-        void update(int index, const std::string& oUid, const InternalTx& tx, const std::string& accountAddress) {
+        void update(int index, const std::string& oUid, const InternalTx& tx,
+                    const EthereumLikeBlockchainExplorerTransaction& transaction,
+                    const std::string& accountAddress) {
             auto type = tx.from == accountAddress ? api::OperationType::SEND :
                         tx.to == accountAddress ? api::OperationType::RECEIVE :
                         api::OperationType::NONE;
             auto uid = OperationDatabaseHelper::createUid(oUid, fmt::format("{}-{}-{}",
                     tx.from, hex::toString(tx.inputData), index), type);
-            internalTxUid.push_back(uid);
-            opUid.push_back(oUid);
-            opType.push_back(api::to_string(type));
-            value.push_back(tx.value.toHexString());
-            from.push_back(tx.from);
-            to.push_back(tx.to);
-            gasLimit.push_back(tx.gasLimit.toHexString());
-            gasUsed.push_back(tx.gasUsed.map<std::string>([] (const auto& g) {
-                return g.toHexString();
-            }).getValueOr("00"));
-            inputData.push_back(hex::toString(tx.inputData));
+            if (tx.from != transaction.sender || tx.to != transaction.receiver ||
+                hex::toString(tx.inputData )!= hex::toString(transaction.inputData)) {
+                internalTxUid.push_back(uid);
+                opUid.push_back(oUid);
+                opType.push_back(api::to_string(type));
+                value.push_back(tx.value.toHexString());
+                from.push_back(tx.from);
+                to.push_back(tx.to);
+                gasLimit.push_back(tx.gasLimit.toHexString());
+                gasUsed.push_back(tx.gasUsed.map<std::string>([](const auto &g) {
+                    return g.toHexString();
+                }).getValueOr("00"));
+                inputData.push_back(hex::toString(tx.inputData));
+            }
         }
     };
     const auto UPSERT_INTERNAL_OPERATION = db::stmt<InternalOperationBinding>(
@@ -326,7 +331,7 @@ namespace ledger {
                 const auto& data = std::dynamic_pointer_cast<EthereumOperationAttachedData>(op.attachedData);
                 auto internalOpIndex = 0;
                 for (const auto& internalTx : tx.internalTransactions) {
-                    internalOpStmt.bindings.update(internalOpIndex, opUid, internalTx, accountAddress);
+                    internalOpStmt.bindings.update(internalOpIndex, opUid, internalTx, tx, accountAddress);
                     internalOpIndex += 1;
                 }
                 if (data) {
