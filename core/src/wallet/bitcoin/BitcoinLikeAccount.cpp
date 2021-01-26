@@ -368,8 +368,12 @@ namespace ledger {
             abstractBlock.currencyName = getWallet()->getCurrency().name;
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
-            emitNewBlockEvent(abstractBlock);
-            return true;
+            if (BlockDatabaseHelper::putBlock(sql, abstractBlock))
+            {
+                emitNewBlockEvent(abstractBlock);
+                return true;
+            }
+            return false;
         }
 
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {
