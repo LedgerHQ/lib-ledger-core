@@ -33,7 +33,9 @@
 #include "../model/transactions/AlgorandKeyreg.hpp"
 #include "../model/transactions/AlgorandAsset.hpp"
 #include "../utils/B64String.hpp"
-
+#include <database/soci-number.h>
+#include <database/soci-date.h>
+#include <database/soci-option.h>
 #include <crypto/SHA256.hpp>
 #include <math/BaseConverter.hpp>
 #include <fmt/format.h>
@@ -608,6 +610,26 @@ namespace algorand {
             transactions.push_back(tx);
         }
         return transactions;
+    }
+
+   void TransactionDatabaseHelper::eraseDataSince(
+                soci::session &sql,
+                const std::string &accountUid,
+                const std::chrono::system_clock::time_point & date) {
+                    
+        soci::rowset<std::string> rows = (sql.prepare <<
+            "SELECT transaction_uid FROM algorand_operations AS sop "
+            "JOIN operations AS op ON sop.uid = op.uid "
+            "WHERE op.account_uid = :uid AND op.date >= :date", 
+            soci::use(accountUid), soci::use(date)
+        );
+        std::vector<std::string> txToDelete(rows.begin(), rows.end());
+        if (!txToDelete.empty()) {
+            sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date", 
+                soci::use(accountUid), soci::use(date);
+            sql << "DELETE FROM algorand_transactions " 
+                "WHERE uid IN (:uids)", soci::use(txToDelete);
+        }
     }
 
 } // namespace algorand

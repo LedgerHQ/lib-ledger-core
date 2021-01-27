@@ -35,6 +35,7 @@
 #include <database/soci-number.h>
 #include <crypto/SHA256.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
 using namespace soci;
 
@@ -171,5 +172,15 @@ namespace ledger {
                 return rippleTxUid;
             }
         }
+
+        void RippleLikeTransactionDatabaseHelper::eraseDataSince(
+                    soci::session &sql,
+                    const std::string &accountUid,
+                    const std::chrono::system_clock::time_point & date) {
+
+            OperationDatabaseHelper::eraseDataSince(sql, accountUid, date, 
+                "ripple_operations", "ripple_transactions");
+        }
+
     }
 }

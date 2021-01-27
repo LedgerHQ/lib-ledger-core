@@ -36,6 +36,7 @@
 #include <database/soci-number.h>
 #include <crypto/SHA256.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <utils/Option.hpp>
 #include <api/TezosOperationTag.hpp>
 using namespace soci;
@@ -169,6 +170,15 @@ namespace ledger {
 
                 return tezosTxUid;
             }
+        }
+
+        void TezosLikeTransactionDatabaseHelper::eraseDataSince(
+                    soci::session &sql,
+                    const std::string &accountUid,
+                    const std::chrono::system_clock::time_point & date) {
+                        
+            OperationDatabaseHelper::eraseDataSince(sql, accountUid, date, 
+                "tezos_operations", "tezos_transactions");
         }
     }
 }

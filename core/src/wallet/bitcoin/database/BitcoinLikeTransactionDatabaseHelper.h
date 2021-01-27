@@ -82,6 +82,17 @@ namespace ledger {
              * @param accountUid
              */
             static void removeAllMempoolOperation(soci::session& sql, const std::string& accountUid);
+
+            /**
+             * Remove all operations and transactions for the given account from the given date
+             * @param sql
+             * @param accountUid
+             * @param date
+             */
+            static void eraseDataSince(
+                soci::session &sql,
+                const std::string &accountUid,
+                const std::chrono::system_clock::time_point & date);
         };
     }
 }

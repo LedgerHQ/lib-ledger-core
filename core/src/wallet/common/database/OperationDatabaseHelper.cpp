@@ -187,3 +187,28 @@ namespace ledger {
 
     }
 }
+
+        void OperationDatabaseHelper::eraseDataSince(
+                    soci::session &sql,
+                    const std::string &accountUid,
+                    const std::chrono::system_clock::time_point & date,
+                    const std::string &specificOperationsTableName,
+                    const std::string &specificTransactionsTableName) {
+            
+            rowset<std::string> rows = (sql.prepare <<
+                "SELECT transaction_uid FROM " << specificOperationsTableName << " AS sop "
+                "JOIN operations AS op ON sop.uid = op.uid "
+                "WHERE op.account_uid = :uid AND op.date >= :date", 
+                use(accountUid), use(date)
+            );
+            std::vector<std::string> txToDelete(rows.begin(), rows.end());
+            if (!txToDelete.empty()) {
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date", 
+                    use(accountUid), use(date);
+                sql << "DELETE FROM " << specificTransactionsTableName <<
+                    " WHERE transaction_uid IN (:uids)", use(txToDelete);
+            }
+        }
+
+    }
+}

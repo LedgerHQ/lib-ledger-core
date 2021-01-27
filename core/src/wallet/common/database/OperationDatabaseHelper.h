@@ -52,6 +52,12 @@ namespace ledger {
                                                const std::string &accountUid,
                                                std::vector<Operation>& out,
                                                std::function<bool (const std::string& address)> filter);
+
+            static void eraseDataSince(soci::session &sql,
+                                        const std::string &accountUid,
+                                        const std::chrono::system_clock::time_point & date,
+                                        const std::string &specificOperationsTableName,
+                                        const std::string &specificTransactionsTableName);
         private:
             static void updateCurrencyOperation(soci::session& sql,
                                                 const Operation& operation,
