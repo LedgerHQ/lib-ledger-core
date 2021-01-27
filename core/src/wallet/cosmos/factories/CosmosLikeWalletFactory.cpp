@@ -38,6 +38,7 @@
 #include <database/migrations.hpp>
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
+#include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/explorers/StargateGaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
@@ -170,9 +171,15 @@ std::shared_ptr<CosmosLikeBlockchainExplorer> CosmosLikeWalletFactory::getExplor
         explorer = std::make_shared<StargateGaiaCosmosLikeBlockchainExplorer>(
             context, http, getCurrency(), std::dynamic_pointer_cast<DynamicObject>(configuration));
     } else if (engine == api::BlockchainExplorerEngines::COSMOS_NODE) {
-        throw Exception(
-            api::ErrorCode::IMPLEMENTATION_IS_MISSING,
-            "CosmosLikeWalletFactory cannot use a COSMOS_NODE explorer. It is deprecated by Stargate and thus not supported.");
+        auto http = pool->getHttpClient(fmt::format(
+            "{}",
+            configuration->getString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT)
+                .value_or(api::CosmosConfigurationDefaults::COSMOS_DEFAULT_API_ENDPOINT)));
+        auto context = pool->getDispatcher()->getSerialExecutionContext(
+            api::BlockchainObserverEngines::COSMOS_NODE);
+
+        explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
+            context, http, getCurrency(), std::dynamic_pointer_cast<DynamicObject>(configuration));
     }
     else {
         throw Exception(
