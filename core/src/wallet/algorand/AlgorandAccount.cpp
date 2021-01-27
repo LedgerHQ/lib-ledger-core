@@ -637,10 +637,9 @@ namespace algorand {
             }
              getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer")->editor()->putObject<SavedState>("state", savedState.getValue())->commit();
         }
-        sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ",
-            soci::use(accountUid),
-            soci::use(date);
 
+        TransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+        
         log->debug(" Finish erasing data of account : {}", accountUid);
 
         return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
@@ -655,7 +654,6 @@ namespace algorand {
     {
         return _explorer->getAccount(_address.toString());
     }
-
 
 } // namespace algorand
 } // namespace core

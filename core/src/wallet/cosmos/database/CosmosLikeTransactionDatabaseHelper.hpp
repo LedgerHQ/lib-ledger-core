@@ -75,6 +75,12 @@ class CosmosLikeTransactionDatabaseHelper {
         const cosmos::Message &msg,
         const cosmos::MessageLog &log);
 
+    /// \brief remove all operations and transactions from database since a given date
+    static void eraseDataSince(
+        soci::session &sql,
+        const std::string &accountUid,
+        const std::chrono::system_clock::time_point & date);
+
    private:
     /// \brief Fill a cosmos::Message from a database entry in cosmos_messages table with MsgSend
     /// specific data. \param [in] row The row from cosmos_messages table to use \param [out] msg

@@ -31,10 +31,10 @@
 #define LEDGER_CORE_ALGORANDTRANSACTIONDATABASEHELPER_H
 
 #include "../model/transactions/AlgorandTransaction.hpp"
-
 #include <math/BaseConverter.hpp>
 #include <boost-optional.h>
 #include <database/soci-number.h>
+#include <chrono>
 
 namespace ledger {
 namespace core {
@@ -173,6 +173,11 @@ namespace algorand {
         static std::vector<model::Transaction> queryTransactionsInvolving(
                 soci::session& sql,
                 const std::string& address);
+
+        static void eraseDataSince(
+                soci::session &sql,
+                const std::string &accountUid,
+                const std::chrono::system_clock::time_point & date);
 
     private:
         static std::vector<model::Transaction> query(
