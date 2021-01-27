@@ -1,6 +1,6 @@
 /*
  *
- * TezosLikeOperationsDatabaseHelper.cpp
+ * CosmosLikeOperationsDatabaseHelper.cpp
  * ledger-core
  *
  * Created by Habib LAFET on 19/01/2021.
