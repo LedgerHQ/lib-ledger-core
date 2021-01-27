@@ -708,7 +708,8 @@ namespace ledger {
             eraseSynchronizerDataSince(sql, date);
 
             auto accountUid = getAccountUid();
-            sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(accountUid), soci::use(date);
+            BitcoinLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
         }
 
