@@ -36,6 +36,12 @@ public:
      * @return the maximum number of concurrent connection that the engine is able to open on a single database.
      */
     virtual int32_t getPoolSize() = 0;
+
+    /**
+     * Get the maximum number of concurrent readonly connection on a single database.
+     * @return the maximum number of concurrent readonly connection that the engine is able to open on a single database.
+     */
+    virtual int32_t getReadonlyPoolSize() = 0;
 };
 
 } } }  // namespace ledger::core::api

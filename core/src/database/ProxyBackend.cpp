@@ -43,6 +43,10 @@ namespace ledger {
             return _engine->getPoolSize();
         }
 
+        int32_t ProxyBackend::getReadonlyConnectionPoolSize() {
+            return _engine->getReadonlyPoolSize();
+        }
+
         void ProxyBackend::init(const std::shared_ptr<api::PathResolver> &resolver,
                                 const std::string &dbName,
                                 const std::string &password,

@@ -41,6 +41,7 @@ namespace ledger {
      public:
          SQLite3Backend();
          int32_t getConnectionPoolSize() override;
+         int32_t getReadonlyConnectionPoolSize() override;
 
          void init(const std::shared_ptr<api::PathResolver> &resolver,
                    const std::string &dbName,

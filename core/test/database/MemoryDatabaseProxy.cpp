@@ -464,3 +464,7 @@ std::shared_ptr<ledger::core::api::DatabaseConnectionPool> MemoryDatabaseProxy::
 int32_t MemoryDatabaseProxy::getPoolSize() {
     return 1;
 }
+
+int32_t MemoryDatabaseProxy::getReadonlyPoolSize() {
+    return 1;
+}

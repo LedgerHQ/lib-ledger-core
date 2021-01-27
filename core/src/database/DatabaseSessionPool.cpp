@@ -54,12 +54,18 @@ namespace ledger {
             auto poolSize = _backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
-                auto& readonlySession = getReadonlyPool().at(i);
                 _backend->init(resolver, dbName, password, session);
-                _backend->init(resolver, dbName, password, readonlySession);
                 if (_logger != nullptr) {
                     session.set_log_stream(_logger);
-                    readonlySession.set_log_stream(_logger);
+                }
+            }
+
+            auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
+            for (size_t i = 0; i < readonlyPoolSize; i++) {
+                auto& session = getReadonlyPool().at(i);
+                _backend->init(resolver, dbName, password, session);
+                if (_logger != nullptr) {
+                    session.set_log_stream(_logger);
                 }
             }
 #ifdef PG_SUPPORT
@@ -123,6 +129,11 @@ namespace ledger {
             auto poolSize = _backend->getConnectionPoolSize();
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
+                _backend->changePassword(oldPassword, newPassword, session);
+            }
+            auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
+            for (size_t i = 0; i < readonlyPoolSize; i++) {
+                auto& session = getReadonlyPool().at(i);
                 _backend->changePassword(oldPassword, newPassword, session);
             }
         }

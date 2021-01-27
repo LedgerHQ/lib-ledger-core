@@ -30,6 +30,12 @@ public:
     virtual int32_t getConnectionPoolSize() = 0;
 
     /**
+     * Get the maximum number of concurrent readonly connection that the backend is able to open on a single database.
+     * @return the size of the readonly connection pool.
+     */
+    virtual int32_t getReadonlyConnectionPoolSize() = 0;
+
+    /**
      * Enable or disable query logging. By default logging is disabled. Query logging will record every SQL query in log streams.
      * @return this database backend (to chain configuration calls)
      */
