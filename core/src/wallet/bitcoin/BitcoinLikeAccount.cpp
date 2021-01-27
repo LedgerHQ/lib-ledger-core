@@ -362,13 +362,18 @@ namespace ledger {
             getUTXOCount().callback(getMainExecutionContext(), callback);
         }
 
-        void BitcoinLikeAccount::putBlock(const BitcoinLikeBlockchainExplorer::Block& block) {
+        bool BitcoinLikeAccount::putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block) {
             Block abstractBlock;
             abstractBlock.hash = block.hash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
-            emitNewBlockEvent(abstractBlock);
+            if (BlockDatabaseHelper::putBlock(sql, abstractBlock))
+            {
+                emitNewBlockEvent(abstractBlock);
+                return true;
+            }
+            return false;
         }
 
         Future<int32_t> BitcoinLikeAccount::getUTXOCount() {

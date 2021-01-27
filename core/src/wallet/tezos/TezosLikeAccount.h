@@ -92,7 +92,7 @@ namespace ledger {
 
             void updateOriginatedAccounts(const Operation &operation);
 
-            bool putBlock(const TezosLikeBlockchainExplorer::Block &block);
+            bool putBlock(soci::session& sql, const TezosLikeBlockchainExplorer::Block &block);
 
             std::shared_ptr<TezosLikeKeychain> getKeychain() const;
 

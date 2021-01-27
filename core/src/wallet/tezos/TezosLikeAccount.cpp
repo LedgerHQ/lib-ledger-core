@@ -180,15 +180,19 @@ namespace ledger {
             }
         }
 
-        bool TezosLikeAccount::putBlock(const TezosLikeBlockchainExplorer::Block &block) {
+        bool TezosLikeAccount::putBlock(soci::session& sql, const TezosLikeBlockchainExplorer::Block &block) {
             Block abstractBlock;
             abstractBlock.hash = block.hash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
+            if (BlockDatabaseHelper::putBlock(sql, abstractBlock))
+            {
                 emitNewBlockEvent(abstractBlock);
                 return true;
             }
+            return false;
+        }
 
         std::shared_ptr<TezosLikeKeychain> TezosLikeAccount::getKeychain() const {
             return _keychain;
