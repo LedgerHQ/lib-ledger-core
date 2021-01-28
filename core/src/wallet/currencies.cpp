@@ -247,7 +247,8 @@ namespace ledger {
             // https://github.com/cosmos/gaia/blob/ba8d2b3177e1b891b72d6f40538fc2c6344bdeac/docs/delegators/delegator-guide-cli.md#sending-transactions
             const api::Currency ATOM =
                 Currency("cosmos")
-                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("cosmoshub-4"))
+                 /// FIXME: Bump this chain for Stargate release on mainnet in production
+                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("cosmoshub-3"))
                 .bip44(ATOM_COIN_ID)
                 .paymentUri("cosmos")
                 .unit("uatom", 0, "uatom")
