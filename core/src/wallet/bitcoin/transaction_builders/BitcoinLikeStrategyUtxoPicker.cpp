@@ -66,15 +66,16 @@ namespace ledger {
                         }
 
                         auto picker = buddy->request.utxoPicker.getValue();
-                        const api::BitcoinLikePickingStrategy strategy = std::get<0>(picker);
 
-                        switch (strategy) {
+                        switch (picker.strategy) {
                             case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
                                 return filterWithDeepFirst(buddy, utxos, amount, getCurrency());
                             case api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE:
                                 return filterWithOptimizeSize(buddy, utxos, amount, getCurrency());
                             case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
                                 return filterWithMergeOutputs(buddy, utxos, amount, getCurrency());
+                            case api::BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO:
+                                return filterWithHighestFirstLimitUtxo(buddy, utxos, amount, getCurrency(), picker.maxUtxo);
                         }
                     });
             });
@@ -550,6 +551,55 @@ namespace ledger {
                 return lhs.value.toLong() < rhs.value.toLong();
             });
         }
+
+        std::vector<BitcoinLikeUtxo> BitcoinLikeStrategyUtxoPicker::filterWithHighestFirstLimitUtxo(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                std::vector<BitcoinLikeUtxo> utxos,
+                const BigInt &aggregatedAmount,
+                const api::Currency& currency,
+                const optional<int32_t>& maxUtxo) {
+
+            buddy->logger->debug("Start filterWithHighestFirstLimitUtxo");
+            if (!maxUtxo) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Missed max_utxo parameter.");
+            }
+
+            BigInt collected = aggregatedAmount;
+
+            auto pickedUtxos = std::vector<BitcoinLikeUtxo>{};
+            
+            pickedUtxos.reserve(utxos.size());
+            std::sort(utxos.begin(), utxos.end(), [](auto &lhs, auto &rhs) {
+                return lhs.value.toLong() > rhs.value.toLong();
+            });
+
+            bool enough = false;
+            for (auto const &u : utxos) {             
+                collected = collected + *u.value.value();
+                pickedUtxos.push_back(u);               
+                if(pickedUtxos.size() > maxUtxo.value()) {
+                    throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds: max_utxo reached");
+                }
+
+                buddy->logger->debug("Collected: {} Needed: {}", collected.toString(), buddy->outputAmount.toString());
+
+                auto const computeOutputAmount = pickedUtxos.size() == utxos.size();
+                if (hasEnough(buddy, collected, pickedUtxos.size(), currency, computeOutputAmount)) {
+                    enough = true;
+                    break;
+                }
+            }
+
+            if (!enough && !buddy->request.wipe) {
+                throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+            }
+
+            buddy->logger->debug("Require {} inputs to complete the transaction with {} for {}", pickedUtxos.size(), collected.toString(), buddy->outputAmount.toString());
+
+            pickedUtxos.shrink_to_fit();
+
+            return pickedUtxos;
+        }     
 
         std::vector<BitcoinLikeUtxo> BitcoinLikeStrategyUtxoPicker::filterWithSort(
                 const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,

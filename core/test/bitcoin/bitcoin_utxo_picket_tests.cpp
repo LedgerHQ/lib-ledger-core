@@ -101,7 +101,7 @@ std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, i
     r.wipe = false;
     r.feePerByte = std::make_shared<BigInt>(feesPerByte);
     r.outputs.push_back(std::make_tuple(std::make_shared<BigInt>(outputAmount), std::make_shared<MockBitcoinLikeScript>()));
-    r.utxoPicker = std::make_tuple(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0);
+    r.utxoPicker = BitcoinUtxoPickerParams{api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0, optional<int32_t>()};
 
     BitcoinLikeGetUtxoFunction g;
     BitcoinLikeGetTxFunction tx;
