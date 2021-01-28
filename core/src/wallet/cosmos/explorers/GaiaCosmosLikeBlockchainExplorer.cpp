@@ -765,6 +765,7 @@ Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(
 {
     // Chain 3 explorer calls to get all the relevant information
     const bool parseJsonNumbersAsStrings = true;
+    const auto ignoreFailStatusCode = true;
     return _http->GET(fmt::format(kGaiaValidatorInfoEndpoint, valOperAddress))
         .json(parseJsonNumbersAsStrings)
         .template flatMap<cosmos::Validator>(
@@ -784,15 +785,19 @@ Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(
             })
         .template flatMap<cosmos::Validator>(
             getContext(),
-            [this, parseJsonNumbersAsStrings](
+            [this, parseJsonNumbersAsStrings, ignoreFailStatusCode](
                 const cosmos::Validator &inputVal) -> Future<cosmos::Validator> {
                 auto retval = cosmos::Validator(inputVal);
                 return _http->GET(fmt::format(kGaiaDistInfoEndpoint, retval.operatorAddress))
-                    .json(parseJsonNumbersAsStrings)
+                    .json(parseJsonNumbersAsStrings, ignoreFailStatusCode)
                     .template flatMap<cosmos::Validator>(
                         getContext(),
                         [retval](const HttpRequest::JsonResult &response) mutable
                         -> Future<cosmos::Validator> {
+                            // Catching http errors because Cosmos code returns 500 when the validator stopped existing.
+                            if (std::get<0>(response)->getStatusCode() >= 300) {
+                                return Future<cosmos::Validator>::successful(retval);
+                            }
                             const auto &document = std::get<1>(response)->GetObject();
                             rpcs_parsers::parseDistInfo(document, retval.distInfo);
                             return Future<cosmos::Validator>::successful(retval);
@@ -800,7 +805,7 @@ Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(
             })
         .template flatMap<cosmos::Validator>(
             getContext(),
-            [this, parseJsonNumbersAsStrings](
+            [this, parseJsonNumbersAsStrings, ignoreFailStatusCode](
                 const cosmos::Validator &inputVal) -> Future<cosmos::Validator> {
                 auto retval = cosmos::Validator(inputVal);
                 return _http->GET(fmt::format(kGaiaSignInfoEndpoint, retval.consensusPubkey))
@@ -809,6 +814,11 @@ Future<cosmos::Validator> GaiaCosmosLikeBlockchainExplorer::getValidatorInfo(
                         getContext(),
                         [retval](const HttpRequest::JsonResult &response) mutable
                         -> Future<cosmos::Validator> {
+                            // Catching http errors because Cosmos code returns 500 when the validator stopped existing.
+                            if (std::get<0>(response)->getStatusCode() >= 300) {
+                                retval.signInfo.tombstoned = true;
+                                return Future<cosmos::Validator>::successful(retval);
+                            }
                             const auto &document = std::get<1>(response)->GetObject();
                             rpcs_parsers::parseSignInfo(document, retval.signInfo);
                             return Future<cosmos::Validator>::successful(retval);
