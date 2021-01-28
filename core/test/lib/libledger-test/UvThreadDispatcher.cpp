@@ -184,6 +184,61 @@ namespace uv {
         _loop.waitUntilStopped();
     }
 
+    //////////////// ThreadpoolExecutionContext //////////////////////
+
+    ThreadpoolExecutionContext::ThreadpoolExecutionContext() : _stop(false) {
+        _threads.reserve(THREADPOOL_SIZE);
+        for (size_t i = 0; i < THREADPOOL_SIZE; i++)
+            _threads.emplace_back(
+                [this]
+                {
+                    for (;;)
+                    {
+                        std::shared_ptr<ledger::core::api::Runnable> task;
+                        {
+                            std::unique_lock<std::mutex> lock(this->queue_mutex);
+                            this->condition.wait(lock,
+                                [this] { return this->_stop || !this->tasks.empty(); });
+                            if (this->_stop && this->tasks.empty())
+                                return;
+                            task = this->tasks.front();
+                            this->tasks.pop();
+                        }
+                        task->run();
+                    }
+                }
+                );
+    }
+
+    void ThreadpoolExecutionContext::stop()
+    {
+        _stop = true;
+    }
+
+    void ThreadpoolExecutionContext::execute(const std::shared_ptr<ledger::core::api::Runnable>& runnable) {
+        {
+            std::unique_lock<std::mutex> lock(this->queue_mutex);
+            if (_stop)
+                return;
+            tasks.emplace(runnable);
+        }
+        condition.notify_one();
+    }
+
+    void ThreadpoolExecutionContext::delay(const std::shared_ptr<ledger::core::api::Runnable>& runnable, int64_t millis) {
+        //TODO
+    }
+    
+    ThreadpoolExecutionContext::~ThreadpoolExecutionContext() {
+        _stop = true;
+        condition.notify_all();
+        for (int i = 0; i < THREADPOOL_SIZE; i++)
+        {
+            if (_threads[i].joinable())
+                _threads[i].join();
+        }
+    }
+
     //////////////////  UvThreadDispatcher  //////////////////////
 
     UvThreadDispatcher::UvThreadDispatcher(unsigned int poolSize) : _poolSize(poolSize) {
@@ -204,18 +259,10 @@ namespace uv {
 
     std::shared_ptr<ledger::core::api::ExecutionContext> UvThreadDispatcher::getThreadPoolExecutionContext(const std::string &name) {
         std::unique_lock<std::mutex> lock(_mutex);
-        auto it = _contextsByName.find(name);
-        if (it == _contextsByName.end()) {
-            std::shared_ptr<SequentialExecutionContext> context;
-            if (_pool.size() < _poolSize) {
-                context = std::make_shared<SequentialExecutionContext>();
-                _pool.push_back(context);
-            }
-            else {
-                auto contextIndex = _contextsByName.size() % _poolSize;
-                context = _pool[contextIndex];               
-            }
-            _contextsByName[name] = context;
+        auto it = _threadpoolContextsByName.find(name);
+        if (it == _threadpoolContextsByName.end()) {
+            auto context = std::make_shared<ThreadpoolExecutionContext>();
+            _threadpoolContextsByName[name] = context;
             return context;
         }
         return it->second;

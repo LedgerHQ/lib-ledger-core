@@ -118,5 +118,4 @@ TEST(Threading, DoSomethingOnThreadPoolSerialQueue) {
     EXPECT_NE(mainThread, threadId2);
     EXPECT_NE(mainThread, threadId3);
     EXPECT_NE(threadId1, threadId2);
-    EXPECT_EQ(threadId1, threadId3);
 }
