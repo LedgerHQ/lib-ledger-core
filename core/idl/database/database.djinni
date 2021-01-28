@@ -256,7 +256,7 @@ DatabaseBackend = interface +c {
 
     # Create an instance of PostgreSQL database.
     # @return DatabaseBackend object
-    static getPostgreSQLBackend(connectionPoolSize: i32): DatabaseBackend;
+    static getPostgreSQLBackend(connectionPoolSize: i32, readonlyConnectionPoolSize: i32): DatabaseBackend;
 
     # Create a database backend instance from the given DatabaseEngine implementation.
     static createBackendFromEngine(engine: DatabaseEngine): DatabaseBackend;

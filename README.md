@@ -142,8 +142,8 @@ as a hint for headers' location (e.g. `/usr/include/postgresql`).
 To use with libcore, simply set value of the key `api::PoolConfiguration::DATABASE_NAME`
 to the database's URL connection and set it in the pool's configuration.
 
-It is also possible to configure the size of the connection pool when instantiating the 
-PostgreSQL `DatabaseBackend` : `api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize)`.
+It is also possible to configure the size of the connection pool and read-only connection pool when instantiating the 
+PostgreSQL `DatabaseBackend` : `api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize)`.
 
 #### Local testing
 

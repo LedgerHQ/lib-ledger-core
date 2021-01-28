@@ -45,7 +45,7 @@ namespace ledger {
             return std::make_shared<SQLite3Backend>();
         }
 
-        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize) {
+        std::shared_ptr<api::DatabaseBackend> api::DatabaseBackend::getPostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize) {
 #ifdef PG_SUPPORT
             return std::make_shared<PostgreSQLBackend>(connectionPoolSize);
 #else

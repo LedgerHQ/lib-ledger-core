@@ -57,7 +57,7 @@ public:
      * Create an instance of PostgreSQL database.
      * @return DatabaseBackend object
      */
-    static std::shared_ptr<DatabaseBackend> getPostgreSQLBackend(int32_t connectionPoolSize);
+    static std::shared_ptr<DatabaseBackend> getPostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize);
 
     /** Create a database backend instance from the given DatabaseEngine implementation. */
     static std::shared_ptr<DatabaseBackend> createBackendFromEngine(const std::shared_ptr<DatabaseEngine> & engine);
