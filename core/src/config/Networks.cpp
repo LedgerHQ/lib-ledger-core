@@ -90,7 +90,7 @@ namespace ledger {
                     );
 
                     static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
-                        "cosmos_pre_stargate",
+                        "cosmos",
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},
