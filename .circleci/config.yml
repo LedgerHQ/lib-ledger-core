@@ -3,12 +3,17 @@ general:
 dependencies:
   cache_directories:
     - ~/cmake-3.16.5
+linux_job: &linux_job
+  docker:
+    - image: docker.pkg.github.com/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:sha-118471e
+      auth:
+        username: $GITHUB_PACKAGE_USERNAME
+        password: $GITHUB_PACKAGE_PASSWORD
 jobs:
   build_linux_release:
+    <<: *linux_job
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
-    docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -75,10 +80,9 @@ jobs:
             . .circleci/deploy.sh
 
   build_android_release:
+    <<: *linux_job
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
-    docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -298,10 +302,9 @@ jobs:
               cd ../lib-ledger-core-build
               ctest -VV -timeout 120
   publish_jar:
+    <<: *linux_job
     environment:
       CORE_SSL_1_1: arch_ssl_1_1
-    docker:
-      - image: ledgerhq/lib-ledger-core-build-env:1.0.2
     working_directory: ~/lib-ledger-core
     steps:
     - attach_workspace:
