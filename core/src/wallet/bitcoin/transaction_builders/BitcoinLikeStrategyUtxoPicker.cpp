@@ -76,6 +76,8 @@ namespace ledger {
                                 return filterWithMergeOutputs(buddy, utxos, amount, getCurrency());
                             case api::BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO:
                                 return filterWithHighestFirstLimitUtxo(buddy, utxos, amount, getCurrency(), picker.maxUtxo);
+                            case api::BitcoinLikePickingStrategy::LIMIT_UTXO:
+                                return filterWithLimitUtxo(buddy, utxos, amount, getCurrency(), picker.maxUtxo);
                         }
                     });
             });
@@ -600,6 +602,75 @@ namespace ledger {
 
             return pickedUtxos;
         }     
+
+        std::vector<BitcoinLikeUtxo> BitcoinLikeStrategyUtxoPicker::filterWithLimitUtxo(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                std::vector<BitcoinLikeUtxo> utxos,
+                const BigInt &aggregatedAmount,
+                const api::Currency& currency,
+                const optional<int32_t>& maxUtxo) {
+
+            buddy->logger->debug("Start filterWithLimitUtxo");
+            if (!maxUtxo) {
+                throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "Missed max_utxo parameter.");
+            }
+
+            //sort utxos by value (DESC)
+            std::sort(utxos.begin(), utxos.end(), [](auto &lhs, auto &rhs) {
+                return lhs.value.toLong() > rhs.value.toLong();
+            });
+
+            struct BatchData {               
+                int pos = 0;
+                int size = 0;
+                BigInt value = BigInt::ZERO;
+                BigInt output = BigInt::ZERO;
+                BigInt change = BigInt::ZERO;
+            } bestBatch;
+            
+            auto currentBatch = std::vector<BitcoinLikeUtxo>{}; 
+            for(int pos=0; pos < utxos.size(); pos += currentBatch.size()) { //iterate over batches : currentBatch.size is the size of the previous batch 
+                bool enough = false;
+                buddy->logger->debug("starting a new batch: position: {}", pos);
+                currentBatch.clear();
+                BigInt collected = aggregatedAmount;
+                for (int i = pos; (i < pos+maxUtxo.value()) && (i < utxos.size()); ++i) { //iterate over utxos of batch: cannot exceed maxUtxo elements by batch
+                    collected = collected + *utxos[i].value.value();
+                    currentBatch.push_back(utxos[i]);  
+
+                    buddy->logger->debug("Collected: {} Needed: {}", collected.toString(), buddy->outputAmount.toString());
+
+                     auto const computeOutputAmount = currentBatch.size() == utxos.size();
+                    if (hasEnough(buddy, collected, currentBatch.size(), currency, computeOutputAmount)) {
+                        enough = true;
+                        buddy->logger->debug("Enough funds for batch: position: {}, size: {} ", pos, currentBatch.size());
+                        if (collected < bestBatch.value || bestBatch.value == BigInt::ZERO) {
+                            bestBatch = {pos, currentBatch.size(), collected, buddy->outputAmount, buddy->changeAmount};
+                        }
+                        break;
+                    }
+                }
+                
+                if(!enough) { //if the current batch is not enough, it will be the same for the remaining batches as utxos are sorted
+                    break;
+                }
+            }
+
+            if (bestBatch.size == 0) {
+                throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
+            }
+            buddy->outputAmount = bestBatch.output;
+            buddy->changeAmount = bestBatch.change;
+
+            std::vector<BitcoinLikeUtxo> pickedUtxos(
+                utxos.begin() + bestBatch.pos,
+                utxos.begin() + bestBatch.pos + bestBatch.size);
+
+            buddy->logger->debug("Require {} inputs to complete the transaction with {} for {}", pickedUtxos.size(), bestBatch.value.toString(), buddy->outputAmount.toString());
+
+            return pickedUtxos;
+        }     
+
 
         std::vector<BitcoinLikeUtxo> BitcoinLikeStrategyUtxoPicker::filterWithSort(
                 const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
