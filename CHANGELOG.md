@@ -1,3 +1,9 @@
+## 3.5.1
+
+> 2021/01/29
+
+- Remove ERC20 balance check on libcore side
+
 ## 3.5.0
 
 > 2020/08/06
