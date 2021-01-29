@@ -32,5 +32,13 @@ int32_t DatabaseEngine::JavaProxy::getPoolSize() {
     ::djinni::jniExceptionCheck(jniEnv);
     return ::djinni::I32::toCpp(jniEnv, jret);
 }
+int32_t DatabaseEngine::JavaProxy::getReadonlyPoolSize() {
+    auto jniEnv = ::djinni::jniGetThreadEnv();
+    ::djinni::JniLocalScope jscope(jniEnv, 10);
+    const auto& data = ::djinni::JniClass<::djinni_generated::DatabaseEngine>::get();
+    auto jret = jniEnv->CallIntMethod(Handle::get().get(), data.method_getReadonlyPoolSize);
+    ::djinni::jniExceptionCheck(jniEnv);
+    return ::djinni::I32::toCpp(jniEnv, jret);
+}
 
 }  // namespace djinni_generated
