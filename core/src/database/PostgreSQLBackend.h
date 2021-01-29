@@ -38,9 +38,10 @@ namespace ledger {
         class PostgreSQLBackend : public DatabaseBackend {
         public:
             PostgreSQLBackend();
-            PostgreSQLBackend(int32_t connectionPoolSize);
+            PostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize);
 
             int32_t getConnectionPoolSize() override;
+            int32_t getReadonlyConnectionPoolSize() override;
 
             void init(const std::shared_ptr<api::PathResolver> &resolver,
                       const std::string &dbName,
@@ -59,6 +60,7 @@ namespace ledger {
             // Resolved path to db
             std::string _dbName;
             int32_t _connectionPoolSize;
+            int32_t _readonlyConnectionPoolSize;
         };
     }
 }
