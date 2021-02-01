@@ -645,7 +645,7 @@ namespace ledger {
                         enough = true;
                         buddy->logger->debug("Enough funds for batch: position: {}, size: {} ", pos, currentBatch.size());
                         if (collected < bestBatch.value || bestBatch.value == BigInt::ZERO) {
-                            bestBatch = {pos, currentBatch.size(), collected, buddy->outputAmount, buddy->changeAmount};
+                            bestBatch = {pos, static_cast<int>(currentBatch.size()), collected, buddy->outputAmount, buddy->changeAmount};
                         }
                         break;
                     }
