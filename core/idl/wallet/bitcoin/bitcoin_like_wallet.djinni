@@ -323,6 +323,8 @@ BitcoinLikeAccount = interface +c {
     getAddresses(from: i64, to: i64, callback: ListCallback<Address>);
     # get all contained adresses.
     getAllAddresses(): list<Address>;
+    # get max spendable balance for a given strategy
+    getMaxSpendable(strategy: BitcoinLikePickingStrategy, maxUtxos: optional<i32>, callback: Callback<Amount>);
 }
 
 # A bitcoin-like wallet.

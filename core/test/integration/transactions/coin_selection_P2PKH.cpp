@@ -171,6 +171,22 @@ TEST_F(CoinSelectionP2PKH, LimitUtxoPickStrategy) {
         }
 }
 
+TEST_F(CoinSelectionP2PKH, maxSpendable) {
+        auto balance = uv::wait(account->getBalance());
+        EXPECT_EQ(balance->toLong(), uv::wait(
+                account->getMaxSpendable(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, optional<int32_t>()))->toLong());
+        EXPECT_EQ(balance->toLong(), uv::wait(
+                account->getMaxSpendable(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, optional<int32_t>()))->toLong());
+        EXPECT_EQ(balance->toLong(), uv::wait(
+                account->getMaxSpendable(api::BitcoinLikePickingStrategy::MERGE_OUTPUTS, optional<int32_t>()))->toLong());
+        EXPECT_EQ(120000000, uv::wait(
+                account->getMaxSpendable(api::BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO, optional<int32_t>(3)))->toLong());
+        EXPECT_EQ(120000000, uv::wait(
+                account->getMaxSpendable(api::BitcoinLikePickingStrategy::LIMIT_UTXO, optional<int32_t>(3)))->toLong());
+        EXPECT_EQ(150000000, uv::wait(
+                account->getMaxSpendable(api::BitcoinLikePickingStrategy::LIMIT_UTXO, optional<int32_t>(7)))->toLong());       
+}
+
 TEST_F(CoinSelectionP2PKH, PickAllUTXO) {
 
         auto builder = tx_builder();
