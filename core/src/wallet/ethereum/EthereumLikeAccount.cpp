@@ -676,6 +676,31 @@ namespace ledger {
             }
         }
 
+        void EthereumLikeAccount::addERC20Accounts(const std::vector<std::string> &erc20Addresses) {
+            auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
+            const auto &accountUid = self->getAccountUid();
+
+            for (auto add:erc20Addresses){
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+
+                auto erc20AccountUid = AccountDatabaseHelper::createERC20AccountUid(accountUid, add);
+                //Persist erc20 account
+                int erc20AccountCount = 0;
+                sql << "SELECT COUNT(*) FROM erc20_accounts WHERE uid = :uid", soci::use(erc20AccountUid), soci::into(erc20AccountCount);
+                if (erc20AccountCount == 0) {
+                    EthereumLikeAccountDatabaseHelper::createERC20Account(sql, accountUid, erc20AccountUid, add);
+                }
+
+                auto erc20Token = EthereumLikeAccountDatabaseHelper::getOrCreateERC20Token(sql, add);
+                auto newERC20Account = std::make_shared<ERC20LikeAccount>(erc20AccountUid,
+                                                                          erc20Token,
+                                                                          self->getKeychain()->getAddress()->toEIP55(),
+                                                                          self->getWallet()->getCurrency(),
+                                                                          self);
+                _erc20LikeAccounts.push_back(newERC20Account);
+            }
+        }
+
         std::shared_ptr<api::EthereumLikeTransactionBuilder> EthereumLikeAccount::buildTransaction() {
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
                 auto buildFunction = [self] (const EthereumLikeTransactionBuildRequest& request, const std::shared_ptr<EthereumLikeBlockchainExplorer> &explorer) -> Future<std::shared_ptr<api::EthereumLikeTransaction>> {
