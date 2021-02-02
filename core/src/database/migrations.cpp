@@ -1107,26 +1107,25 @@ namespace ledger {
         }
 
         template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "CREATE TABLE cosmos_operations_pre_stargate AS SELECT * FROM cosmos_operations";
-            sql << "CREATE TABLE cosmos_multisend_io_pre_stargate AS SELECT * FROM cosmos_multisend_io";
-            sql << "CREATE TABLE cosmos_messages_pre_stargate AS SELECT * FROM cosmos_messages";
-            sql << "CREATE TABLE cosmos_transactions_pre_stargate AS SELECT * FROM cosmos_transactions";
+            sql << "UPDATE cosmos_accounts SET last_update=NULL";
+            sql << "UPDATE cosmos_currencies SET chain_id='cosmoshub-4' WHERE chain_id='cosmoshub-3'";
+            sql << "ALTER TABLE cosmos_currencies ADD COLUMN ed25519_prefix VARCHAR(255) NOT NULL DEFAULT '1624de64'";
+            sql << "UPDATE cosmos_currencies SET ed25519_prefix='1624de64'";
 
-            sql << "TRUNCATE cosmos_operations, cosmos_multisend_io, cosmos_messages, cosmos_transactions";
+            sql << "DELETE FROM cosmos_operations";
+            sql << "DELETE FROM cosmos_multisend_io";
+            sql << "DELETE FROM cosmos_messages";
+            sql << "DELETE FROM cosmos_transactions";
+
+            sql << "DELETE FROM wallets WHERE currency_name='cosmos'";
+            sql << "DELETE FROM operations WHERE currency_name='cosmos'";
         }
 
         template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "TRUNCATE cosmos_operations, cosmos_multisend_io, cosmos_messages, cosmos_transactions";
-
-            sql << "INSERT cosmos_transactions SELECT * FROM cosmos_transactions_pre_stargate";
-            sql << "INSERT cosmos_messages SELECT * FROM cosmos_messages_pre_stargate";
-            sql << "INSERT cosmos_multisend_io SELECT * FROM cosmos_multisend_io_pre_stargate";
-            sql << "INSERT cosmos_operations SELECT * FROM cosmos_operations_pre_stargate";
-
-            sql << "DROP TABLE cosmos_multisend_io_pre_stargate";
-            sql << "DROP TABLE cosmos_operations_pre_stargate";
-            sql << "DROP TABLE cosmos_messages_pre_stargate";
-            sql << "DROP TABLE cosmos_transactions_pre_stargate";
+            sql << "DELETE FROM cosmos_operations";
+            sql << "DELETE FROM cosmos_multisend_io";
+            sql << "DELETE FROM cosmos_messages";
+            sql << "DELETE FROM cosmos_transactions";
         }
 
 
