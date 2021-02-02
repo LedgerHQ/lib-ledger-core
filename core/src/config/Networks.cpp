@@ -79,8 +79,7 @@ namespace ledger {
                     static const api::CosmosLikeNetworkParameters COSMOSHUB_4(
                         // The current version of the chain has the "cosmos" identifer
                         // Stargate mainnet
-                        // FIXME: change to cosmos once Stargate is the mainnet
-                        "cosmos_stargate",
+                        "cosmos",
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},
@@ -91,8 +90,7 @@ namespace ledger {
                     );
 
                     static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
-                        // FIXME: change to non-cosmos once Stargate is the mainnet
-                        "cosmos",
+                        "cosmos_hub3",
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},
