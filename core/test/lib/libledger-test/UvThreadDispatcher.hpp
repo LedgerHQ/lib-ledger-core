@@ -47,7 +47,7 @@
 
 namespace uv {
     std::shared_ptr<ledger::core::api::ThreadDispatcher> createDispatcher();
-
+    const int THREADPOOL_SIZE = 16;
     enum class EventType {
         RUN,
         CLOSE
@@ -118,6 +118,22 @@ namespace uv {
         EventLoop _loop;
     };
 
+    class ThreadpoolExecutionContext : public ledger::core::api::ExecutionContext {
+    public:
+        ThreadpoolExecutionContext();
+        void execute(const std::shared_ptr<ledger::core::api::Runnable>& runnable) override;
+        void delay(const std::shared_ptr<ledger::core::api::Runnable>& runnable, int64_t millis) override;
+        ~ThreadpoolExecutionContext() override;
+        void stop();
+
+    private:
+        std::vector< std::thread> _threads;
+        std::queue<std::shared_ptr<ledger::core::api::Runnable>> tasks;
+        std::mutex queue_mutex;
+        std::condition_variable condition;
+        bool _stop;
+    };
+
     class UvThreadDispatcher : public ledger::core::api::ThreadDispatcher {
     public:
 
@@ -142,6 +158,7 @@ namespace uv {
         std::mutex _mutex;
         std::vector<std::shared_ptr<SequentialExecutionContext>> _pool;
         std::unordered_map<std::string, std::shared_ptr<SequentialExecutionContext>> _contextsByName;
+        std::unordered_map<std::string, std::shared_ptr<ThreadpoolExecutionContext>> _threadpoolContextsByName;
     };
 
 

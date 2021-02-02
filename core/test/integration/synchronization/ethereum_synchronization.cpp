@@ -38,7 +38,10 @@
 #include <utils/DateUtils.hpp>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseHelper.h>
 #include <wallet/ethereum/transaction_builders/EthereumLikeTransactionBuilder.h>
+#include <api/EthereumLikeOperation.hpp>
+#include <api/EthereumLikeTransaction.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
+#include <math/BigInt.h>
 #include <iostream>
 #include "FakeHttpClient.hpp"
 #include "../../fixtures/http_cache_EthereumLikeWalletSynchronization_MediumXpubSynchronization_1.h"
@@ -166,7 +169,7 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     }
 }
 
-TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
+TEST_F(EthereumLikeWalletSynchronization, BalanceHistory) {
     auto walletName = "e847815f-488a-4301-b67c-378a5e9c8a61";
     auto erc20Count = 0;
     {
@@ -200,9 +203,35 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_BalanceHistory) {
                         now_str,
                         api::TimePeriod::DAY
                     ));
-
+                    auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+                    BigInt cumulated;
+                    BigInt cumulatedInt;
+                    BigInt cumulatedFees;
+                    for (const auto& op : operations) {
+                        fmt::print("OP {} {} {} FEES {}\n", op->asEthereumLikeOperation()->getTransaction()->getHash() , api::to_string(op->getOperationType()), op->getAmount()->toString(), op->getFees()->toString());
+                        auto internal = op->asEthereumLikeOperation()->getInternalTransactions();
+                        for (const auto& in : internal) {
+                            if (in->getOperationType() == api::OperationType::SEND) {
+                                fmt::print(" -> INTERNAL {} {}\n", api::to_string(in->getOperationType()), in->getValue()->toString(10));
+                                cumulatedInt = cumulatedInt - (BigInt::fromString(in->getValue()->toString(10)));
+                            } else if (in->getOperationType() == api::OperationType::RECEIVE) {
+                                fmt::print(" -> INTERNAL {} {}\n", api::to_string(in->getOperationType()), in->getValue()->toString(10));
+                                cumulatedInt = cumulatedInt + BigInt::fromString(in->getValue()->toString(10));
+                            }
+                        }
+                        if (op->getOperationType() == api::OperationType::SEND) {
+                            cumulated = cumulated - BigInt(op->getAmount()->toLong());
+                            cumulatedFees = cumulatedFees + BigInt::fromString(op->getFees()->toString());
+                        } else if (op->getOperationType() == api::OperationType::RECEIVE) {
+                            cumulated = cumulated + BigInt(op->getAmount()->toLong());
+                        }
+                    }
+                    fmt::print("CUMULATED AMOUNTS: {}\n", cumulated.toString());
+                    fmt::print("CUMULATED INTERNAL AMOUNTS: {}\n", cumulatedInt.toString());
+                    fmt::print("CUMULATED FEES: {}\n", cumulatedFees.toString());
+                    fmt::print("CUMULATED TOTAL: {}\n", (cumulated - cumulatedFees + cumulatedInt).toString());
+                    fmt::print("EXPECTED BALANCE: {}\n", balanceStr);
                     EXPECT_EQ(history.back()->toString(), balanceStr);
-                    
                     dispatcher->stop();
                 });
 
