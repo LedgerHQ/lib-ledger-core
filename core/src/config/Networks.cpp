@@ -54,7 +54,7 @@ namespace ledger {
             CosmosLikeNetworkParameters Networks::cosmos(const std::string& chainID) {
                     static const api::CosmosLikeNetworkParameters STARGATE_TESTNET_6(
                         // Stargate-6 testnet
-                        "cosmos_testnet",
+                        "cosmos_testnet_6",
                         "MUON signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},
@@ -72,7 +72,7 @@ namespace ledger {
                         {0xEB, 0x5A, 0xE9, 0x87},
                         {0x16, 0x24, 0xDE, 0x64},
                         {},
-                        "stargate-5",
+                        "stargate-final",
                         {}
                     );
 
@@ -121,6 +121,9 @@ namespace ledger {
                 }
                 if (chainID == "cosmoshub-2") {
                     return COSMOSHUB_2;
+                }
+                if (chainID == "stargate-final") {
+                    return STARGATE_TESTNET;
                 }
                 if (chainID == "stargate-6") {
                     return STARGATE_TESTNET_6;

@@ -257,7 +257,7 @@ namespace ledger {
 
             const api::Currency MUON =
                 Currency("cosmos_testnet")
-                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("stargate-6"))
+                .forkOfCosmos(networks::getCosmosLikeNetworkParameters("stargate-final"))
                 .bip44(ATOM_COIN_ID)
                 .paymentUri("cosmos_testnet")
                 .unit("umuon", 0, "umuon")
