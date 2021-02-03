@@ -46,6 +46,7 @@ const std::vector<api::CosmosLikeNetworkParameters>
     ALL_COSMOS({getCosmosLikeNetworkParameters("cosmoshub-4"),
                 getCosmosLikeNetworkParameters("cosmoshub-3"),
                 getCosmosLikeNetworkParameters("cosmoshub-2"),
+                getCosmosLikeNetworkParameters("stargate-final"),
                 getCosmosLikeNetworkParameters("stargate-6"),
                 getCosmosLikeNetworkParameters("stargate-5")});
 } // namespace networks
