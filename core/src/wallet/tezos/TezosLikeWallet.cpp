@@ -56,7 +56,6 @@ namespace ledger {
 
         TezosLikeWallet::TezosLikeWallet(const std::string &name,
                                          const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
-                                         const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                                          const std::shared_ptr<TezosLikeKeychainFactory> &keychainFactory,
                                          const TezosLikeAccountSynchronizerFactory &synchronizer,
                                          const std::shared_ptr<WalletPool> &pool,
@@ -66,7 +65,6 @@ namespace ledger {
         )
                 : AbstractWallet(name, network, pool, configuration, scheme) {
             _explorer = explorer;
-            _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
             // TODO This is a dirty patch because Tezos uses the AbstractBlockchainExplorer and synchronizer
@@ -149,7 +147,6 @@ namespace ledger {
             auto account = std::make_shared<TezosLikeAccount>(shared_from_this(),
                                                               entry.index,
                                                               _explorer,
-                                                              _observer,
                                                               _synchronizerFactory(),
                                                               keychain);
             account->addOriginatedAccounts(sql, entry.originatedAccounts);

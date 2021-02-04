@@ -60,12 +60,14 @@ namespace ledger {
                 const std::string &password = ""
             );
 
-            static const int CURRENT_DATABASE_SCHEME_VERSION = 23;
+            static const int CURRENT_DATABASE_SCHEME_VERSION = 24;
 
             void performDatabaseMigration();
             void performDatabaseRollback();
             void performChangePassword(const std::string &oldPassword,
                                        const std::string &newPassword);
+            bool isSqlite() const;
+            bool isPostgres() const;
 
         private:
             std::shared_ptr<DatabaseBackend> _backend;

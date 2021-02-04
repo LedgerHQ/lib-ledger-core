@@ -102,10 +102,10 @@ namespace ledger {
             return getContext();
         }
 
-        int RippleLikeBlockchainExplorerAccountSynchronizer::putTransaction(soci::session &sql,
-                                                                            const RippleLikeBlockchainExplorerTransaction &transaction,
-                                                                            const std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer<RippleLikeAccount, RippleLikeAddress, RippleLikeKeychain, RippleLikeBlockchainExplorer>::SynchronizationBuddy> &buddy) {
-            return buddy->account->putTransaction(sql, transaction);
+        void RippleLikeBlockchainExplorerAccountSynchronizer::interpretTransaction(
+                const ledger::core::RippleLikeBlockchainExplorerTransaction &transaction,
+                const std::shared_ptr<SynchronizationBuddy> &buddy, std::vector<Operation> &out) {
+            buddy->account->interpretTransaction(transaction, out);
         }
     }
 }

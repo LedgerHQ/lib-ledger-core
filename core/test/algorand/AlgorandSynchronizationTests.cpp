@@ -49,7 +49,10 @@ public:
         WalletFixture::SetUp();
         backend->enableQueryLogging(true);
     }
-
+    void TearDown() override {
+        uv::wait(pool->deleteWallet("test-wallet"));
+        WalletFixture::TearDown();
+    }
     void synchronizeAccount(const std::string & accountAddress) {
         registerCurrency(currencies::ALGORAND);
 
@@ -57,9 +60,9 @@ public:
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
-        auto wallet = std::dynamic_pointer_cast<Wallet>(wait(pool->createWallet("test-wallet", "algorand", configuration)));
+        auto wallet = std::dynamic_pointer_cast<Wallet>(uv::wait(pool->createWallet("test-wallet", "algorand", configuration)));
 
-        auto nextIndex = wait(wallet->getNextAccountIndex());
+        auto nextIndex = uv::wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
 
         const api::AccountCreationInfo info(
@@ -70,7 +73,7 @@ public:
             {hex::toByteArray("")}
         );
 
-        _account = std::dynamic_pointer_cast<Account>(wait(wallet->newAccountWithInfo(info)));
+        _account = std::dynamic_pointer_cast<Account>(uv::wait(wallet->newAccountWithInfo(info)));
 
         auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
             fmt::print("Received event {}\n", api::to_string(event->getCode()));
@@ -80,31 +83,31 @@ public:
             }
             EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
 
-            dispatcher->stop();
+            getTestExecutionContext()->stop();
         });
 
         auto bus = _account->synchronize();
-        bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
-        dispatcher->waitUntilStopped();
+        bus->subscribe(getTestExecutionContext(), receiver);
+        getTestExecutionContext()->waitUntilStopped();
     }
 
     std::shared_ptr<Account> _account;
 
 };
 
-TEST_F(AlgorandSynchronizationTest, EmptyAccountSynchronizationTest) {
+TEST_F(AlgorandSynchronizationTest, DISABLED_EmptyAccountSynchronizationTest) {
     synchronizeAccount(EMPTY_ADDRESS);
 
     // Simulate the getLastBlock that Live does after an account sync
     // Just check nothing goes wrong
-    EXPECT_NO_THROW(wait(pool->getLastBlock(currencies::ALGORAND.name)));
+    EXPECT_NO_THROW(uv::wait(pool->getLastBlock(currencies::ALGORAND.name)));
 
-    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(_account->queryOperations()->complete())->execute());
+    auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(_account->queryOperations()->complete())->execute());
     EXPECT_EQ(operations.size(), 0);
 
 }
 
-TEST_F(AlgorandSynchronizationTest, AccountSynchronizationTest) {
+TEST_F(AlgorandSynchronizationTest, DISABLED_AccountSynchronizationTest) {
     synchronizeAccount(OBELIX_ADDRESS);
 
     auto internalPreferences = _account->getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer");
@@ -112,7 +115,7 @@ TEST_F(AlgorandSynchronizationTest, AccountSynchronizationTest) {
     std::cout << ">>> Saved block round for next synchronization: " << savedState.getValue().round << std::endl;
     EXPECT_GT(savedState.getValue().round, 6000000);
 
-    auto operations = wait(std::dynamic_pointer_cast<OperationQuery>(_account->queryOperations()->complete())->execute());
+    auto operations = uv::wait(std::dynamic_pointer_cast<OperationQuery>(_account->queryOperations()->complete())->execute());
     std::cout << ">>> Nb of operations: " << operations.size() << std::endl;
     EXPECT_GT(operations.size(), 200);
 }

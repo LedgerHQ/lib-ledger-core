@@ -32,7 +32,6 @@
 #ifndef LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
 #define LEDGER_CORE_ETHEREUMLIKEACCOUNT_H
 
-#include <time.h>
 #include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
 #include <api/EthereumLikeAccount.hpp>
@@ -47,7 +46,6 @@
 #include <wallet/ethereum/api_impl/InternalTransaction.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
 #include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
-#include <wallet/ethereum/observers/EthereumLikeBlockchainObserver.h>
 #include <wallet/ethereum/keychains/EthereumLikeKeychain.hpp>
 #include <wallet/ethereum/ERC20/ERC20LikeAccount.h>
 #include <wallet/ethereum/database/EthereumLikeAccountDatabaseEntry.h>
@@ -60,7 +58,6 @@ namespace ledger {
             EthereumLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                 int32_t index,
                                 const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
-                                const std::shared_ptr<EthereumLikeBlockchainObserver>& observer,
                                 const std::shared_ptr<EthereumLikeAccountSynchronizer>& synchronizer,
                                 const std::shared_ptr<EthereumLikeKeychain>& keychain);
 
@@ -69,15 +66,14 @@ namespace ledger {
                                   const std::shared_ptr<const AbstractWallet>& wallet,
                                   const EthereumLikeBlockchainExplorerTransaction &tx);
 
-            int putTransaction(soci::session& sql, const EthereumLikeBlockchainExplorerTransaction &transaction);
+            void interpretTransaction(const EthereumLikeBlockchainExplorerTransaction& transaction, std::vector<Operation>& out);
+            Try<int> bulkInsert(const std::vector<Operation>& operations);
             /// Get internal transactions related to the parent operation.
             std::vector<Operation> getInternalOperations(soci::session &sql);
 
-            void updateERC20Accounts(soci::session &sql, const Operation &operation);
-            void updateERC20Operation(soci::session &sql,
-                                      const Operation &operation,
+            void updateERC20Accounts(Operation &operation);
+            void updateERC20Operation(Operation &operation,
                                       const ERC20Transaction &erc20Tx);
-            void updateInternalTransactions(soci::session &sql, const Operation &operation);
             bool putBlock(soci::session& sql, const EthereumLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<EthereumLikeKeychain> getKeychain() const;
@@ -92,11 +88,9 @@ namespace ledger {
 
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override ;
-            void startBlockchainObservation() override ;
-            void stopBlockchainObservation() override ;
-            bool isObservingBlockchain() override ;
             std::string getRestoreKey() override ;
 
+            void emitNewERC20Operations(std::vector<ERC20LikeOperation>& ops, const std::string &accountUid);
             void emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid);
 
             static EthereumLikeBlockchainExplorerTransaction getETHLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<EthereumLikeAccount> &account,
@@ -128,6 +122,8 @@ namespace ledger {
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);
 
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
+            void emitEventsNow() override;
+
 
         private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
@@ -137,12 +133,13 @@ namespace ledger {
             std::shared_ptr<Preferences> _externalPreferences;
             std::shared_ptr<EthereumLikeBlockchainExplorer> _explorer;
             std::shared_ptr<EthereumLikeAccountSynchronizer> _synchronizer;
-            std::shared_ptr<EthereumLikeBlockchainObserver> _observer;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             uint64_t _currentBlockHeight;
             std::vector<ERC20LikeAccountDatabaseEntry> erc20Entries;
             std::vector<std::shared_ptr<api::ERC20LikeAccount> >_erc20LikeAccounts;
+            std::mutex _erc20EventLock;
+            std::shared_ptr<api::Event> _batchedErc20Event;
         };
     }
 }

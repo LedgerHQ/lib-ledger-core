@@ -35,120 +35,11 @@
 #include "../utils/B64String.hpp"
 
 #include <crypto/SHA256.hpp>
-#include <math/BaseConverter.hpp>
 #include <fmt/format.h>
 
 namespace ledger {
 namespace core {
 namespace algorand {
-
-    static constexpr auto COL_TX_HASH = 1;
-    static constexpr auto COL_TX_TYPE = 2;
-    static constexpr auto COL_TX_ROUND = 3;
-    static constexpr auto COL_TX_TIMESTAMP = 4;
-    static constexpr auto COL_TX_FIRST_VALID = 5;
-    static constexpr auto COL_TX_LAST_VALID = 6;
-    static constexpr auto COL_TX_GENESIS_ID = 7;
-    static constexpr auto COL_TX_GENESIS_HASH = 8;
-    static constexpr auto COL_TX_SENDER = 9;
-    static constexpr auto COL_TX_FEE = 10;
-    static constexpr auto COL_TX_NOTE = 11;
-    static constexpr auto COL_TX_GROUP = 12;
-    static constexpr auto COL_TX_LEASE = 13;
-    static constexpr auto COL_TX_SENDER_REWARDS = 14;
-    static constexpr auto COL_TX_RECEIVER_REWARDS = 15;
-    static constexpr auto COL_TX_CLOSE_REWARDS = 16;
-
-    static constexpr auto COL_TX_PAY_AMOUNT = 17;
-    static constexpr auto COL_TX_PAY_RECEIVER_ADDRESS = 18;
-    static constexpr auto COL_TX_PAY_CLOSE_ADDRESS = 19;
-    static constexpr auto COL_TX_PAY_CLOSE_AMOUNT = 20;
-
-    static constexpr auto COL_TX_KEYREG_NONPART = 21;
-    static constexpr auto COL_TX_KEYREG_SELECTION_PK = 22;
-    static constexpr auto COL_TX_KEYREG_VOTE_PK = 23;
-    static constexpr auto COL_TX_KEYREG_VOTE_KEY_DILUTION = 24;
-    static constexpr auto COL_TX_KEYREG_VOTE_FIRST = 25;
-    static constexpr auto COL_TX_KEYREG_VOTE_LAST = 26;
-
-    static constexpr auto COL_TX_ACFG_ASSET_ID = 27;
-    static constexpr auto COL_TX_ACFG_ASSET_NAME = 28;
-    static constexpr auto COL_TX_ACFG_UNIT_NAME = 29;
-    static constexpr auto COL_TX_ACFG_TOTAL = 30;
-    static constexpr auto COL_TX_ACFG_DECIMALS = 31;
-    static constexpr auto COL_TX_ACFG_DEFAULT_FROZEN = 32;
-    static constexpr auto COL_TX_ACFG_CREATOR_ADDRESS = 33;
-    static constexpr auto COL_TX_ACFG_MANAGER_ADDRESS = 34;
-    static constexpr auto COL_TX_ACFG_RESERVE_ADDRESS = 35;
-    static constexpr auto COL_TX_ACFG_FREEZE_ADDRESS = 36;
-    static constexpr auto COL_TX_ACFG_CLAWBACK_ADDRESS = 37;
-    static constexpr auto COL_TX_ACFG_METADATA_HASH = 38;
-    static constexpr auto COL_TX_ACFG_URL = 39;
-
-    static constexpr auto COL_TX_AXFER_ASSET_ID = 40;
-    static constexpr auto COL_TX_AXFER_ASSET_AMOUNT = 41;
-    static constexpr auto COL_TX_AXFER_RECEIVER_ADDRESS = 42;
-    static constexpr auto COL_TX_AXFER_CLOSE_ADDRESS = 43;
-    static constexpr auto COL_TX_AXFER_CLOSE_AMOUNT = 44;
-    static constexpr auto COL_TX_AXFER_SENDER_ADDRESS = 45;
-
-    static constexpr auto COL_TX_AFRZ_ASSET_ID = 46;
-    static constexpr auto COL_TX_AFRZ_FROZEN = 47;
-    static constexpr auto COL_TX_AFRZ_FROZEN_ADDRESS = 48;
-
-
-    // Helpers to deal with Option<> types,
-    // because SOCI only understands boost::optional<>...
-
-    template<class Raw>
-    static auto optionalValue(Option<Raw> opt) {
-        return opt.hasValue() ? *opt : boost::optional<Raw>();
-    }
-
-    template<class Raw, class Transformed>
-    static auto optionalValueWithTransform(Option<Raw> opt, const std::function<Transformed(Raw)> & transform) {
-        return opt.hasValue() ? transform(*opt) : boost::optional<Transformed>();
-    }
-
-    static std::string getString(const soci::row & row, const int32_t colId) {
-        return row.get<std::string>(colId);
-    }
-
-    static Option<std::string> getOptionalString(const soci::row & row, const int32_t colId) {
-        return row.get_indicator(colId) != soci::i_null ? Option<std::string>(row.get<std::string>(colId)) : Option<std::string>::NONE;
-    }
-
-    template<class Transformed>
-    static Option<Transformed> getOptionalStringWithTransform(const soci::row & row, const int32_t colId, const std::function<Transformed(std::string)> & transform) {
-        return row.get_indicator(colId) != soci::i_null ? Option<Transformed>(transform(row.get<std::string>(colId))) : Option<Transformed>::NONE;
-    }
-
-    static uint64_t getNumber(const soci::row & row, const int32_t colId) {
-        return soci::get_number<uint64_t>(row, colId);
-    }
-
-    static Option<uint64_t> getOptionalNumber(const soci::row & row, const int32_t colId) {
-        return row.get_indicator(colId) != soci::i_null ? Option<uint64_t>(soci::get_number<uint64_t>(row, colId)) : Option<uint64_t>::NONE;
-    }
-
-    template<class Transformed>
-    static Option<Transformed> getOptionalNumberWithTransform(const soci::row & row, const int32_t colId, const std::function<Transformed(uint64_t)> & transform) {
-        return row.get_indicator(colId) != soci::i_null ? Option<Transformed>(transform(soci::get_number<uint64_t>(row, colId))) : Option<Transformed>::NONE;
-    }
-
-    static const auto numToBool = [] (const uint64_t& num) { return !! num; };
-    static const auto boolToNum = [] (const bool& b) { return static_cast<int32_t>(b); };
-    static const auto stringToAddr = [] (const std::string& addr) { return Address(addr); };
-    static const auto addrToString = [] (const Address& addr) { return addr.toString(); };
-    static const auto b64toBytes = [] (const std::string& b64) {
-        auto bytes = std::vector<uint8_t>();
-        BaseConverter::decode(b64, BaseConverter::BASE64_RFC4648, bytes);
-        return bytes;
-    };
-    static const auto bytesToB64 = [] (const std::vector<uint8_t>& bytes) {
-        return BaseConverter::encode(bytes, BaseConverter::BASE64_RFC4648);
-    };
-
 
     static void putPaymentTransaction(soci::session & sql, const std::string & txUid, const model::Transaction & tx) {
         auto& payment = boost::get<model::PaymentTxnFields>(tx.details);
@@ -560,6 +451,11 @@ namespace algorand {
         return txUid;
     }
 
+    void TransactionDatabaseHelper::deleteAllTransactions(soci::session& sql)
+    {
+        sql<<"DELETE FROM algorand_transactions";
+    }
+
     std::vector<model::Transaction> TransactionDatabaseHelper::queryAssetTransferTransactionsInvolving(
             soci::session& sql,
             uint64_t assetId,
@@ -573,7 +469,8 @@ namespace algorand {
                 "AND (tx.axfer_receiver_address = :axfer_receiver_address "
                 "OR tx.axfer_close_address = :axfer_close_address "
                 "OR tx.axfer_sender_address = :axfer_sender_address "
-                "OR tx.sender = :sender)",
+                "OR tx.sender = :sender) "
+                "ORDER BY timestamp",
                 soci::use(std::string(model::constants::axfer)), soci::use(assetId),
                 soci::use(address), soci::use(address),
                 soci::use(address), soci::use(address));
@@ -590,7 +487,8 @@ namespace algorand {
                 "FROM algorand_transactions AS tx "
                 "WHERE tx.sender = :sender "
                 "OR tx.pay_receiver_address = :pay_receiver_address "
-                "OR tx.pay_close_address = :pay_close_address",
+                "OR tx.pay_close_address = :pay_close_address "
+                "ORDER BY timestamp",
                 soci::use(address), soci::use(address), soci::use(address));
 
         return query(rows);

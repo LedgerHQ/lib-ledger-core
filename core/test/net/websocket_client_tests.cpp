@@ -31,15 +31,12 @@
 
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
-#include <async/QtThreadDispatcher.hpp>
 #include <ledger/core/net/WebSocketClient.h>
-#include <QCoreApplication>
 #include <ledger/core/utils/Option.hpp>
 #include <ledger/core/async/Future.hpp>
 #include <net/WebSocketConnection.h>
 
 using namespace ledger::core;
-using namespace ledger::qt;
 using namespace testing;
 
 class MockApiWebSocketClient : public api::WebSocketClient {

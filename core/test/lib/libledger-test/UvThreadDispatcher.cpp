@@ -37,190 +37,268 @@
 
 using namespace ledger::core;
 
-enum class EventType {
-    RUN,
-    CLOSE
-};
+namespace uv {
 
-struct Event {
-    EventType eventType;
-    std::shared_ptr<api::Runnable> runnable;
-};
+    static void timer_callback(uv_timer_t* handle) {
+        auto event = static_cast<Event*>(handle->data);
+        event->runnable->run();
+        delete event;
+    }
 
-static void context_callback(uv_async_t* handle);
+    static void context_callback(uv_async_t* handle) {
+        static_cast<EventLoop *>(handle->data)->tick();
+    }
 
-class EventLoop {
-public:
-    EventLoop() : _loop(new uv_loop_t), _async(new uv_async_t), _running(true) {
+    //////////////// EventLoop //////////////////////
+
+    EventLoop::EventLoop() : 
+    _loop(new uv_loop_t), _async(new uv_async_t), _timer(new uv_timer_t), _running(true) {
         uv_loop_init(_loop);
         uv_async_init(_loop, _async, context_callback);
         _async->data = static_cast<void *>(this);
+        uv_timer_init(_loop, _timer);
     }
 
-    EventLoop(const EventLoop&) = delete;
-    EventLoop(EventLoop&&) = delete;
-    EventLoop & operator=(const EventLoop&) = delete;
+    void EventLoop::queue(const std::shared_ptr<ledger::core::api::Runnable>& runnable) {
+        queue(runnable, 0);
+    }
 
-    void queue(const std::shared_ptr<api::Runnable>& runnable) {
+    void EventLoop::queue(const std::shared_ptr<ledger::core::api::Runnable>& runnable, int64_t millis) {
         std::unique_lock<std::mutex> lock(_mutex);
         if (_running) {
             Event event;
             event.eventType = EventType::RUN;
             event.runnable = runnable;
+            event.delay = millis;
             _queue.emplace(std::move(event));
             uv_async_send(_async);
         }
+        else {
+            std::cout << "Loop queue not running" << std::endl;
+        }
     }
 
-    void queue(const std::shared_ptr<api::Runnable>& runnable, int64_t millis) {
-        throw std::runtime_error("Queuing with delay is not implemented.");
-    }
-
-    bool run() {
+    bool EventLoop::run() {
         uv_run(_loop, UV_RUN_DEFAULT);
         return uv_loop_alive(_loop) != 0;
     }
 
-    void tick() {
-        Option<Event> event;
+    void EventLoop::tick() {
+        ledger::core::Option<Event> event;
         while ((event = dequeue()).hasValue()) {
             switch (event.getValue().eventType) {
                 case EventType::RUN: {
-                    auto result = Try<Unit>::from([&]() {
-                        event.getValue().runnable->run();
-                        return unit;
-                    });
-                    if (result.isFailure()) {
-                        std::cerr << "An error happened during asynchronous execution: "
-                                  << result.getFailure().getMessage() << std::endl;
+                    if (event.getValue().delay == 0) {
+                        auto result = ledger::core::Try<ledger::core::Unit>::from([&]() {
+                            event.getValue().runnable->run();
+                            return ledger::core::unit;
+                        });
+                        if (result.isFailure()) {
+                            std::cout << "An error happened during asynchronous execution: "
+                                    << result.getFailure().getMessage() << std::endl;
+                        }
+                    }
+                    else {
+                        auto evt = new Event(event.getValue());
+                        _timer->data = static_cast<void *>(evt);
+                        uv_timer_start(_timer, timer_callback, event.getValue().delay, 0);
                     }
                     break;
                 }
                 case EventType::CLOSE: {
                     std::unique_lock<std::mutex> lock(_mutex);
                     _running = false;
+                    uv_timer_stop(_timer);
                     uv_stop(_loop);
                     uv_loop_close(_loop);
                     uv_close(reinterpret_cast<uv_handle_t*>(_async), NULL);
+                    lock.unlock();
+                    condition.notify_all();
                     break;
                 }
             }
         }
     }
 
-    void close() {
+    void EventLoop::waitUntilStopped() { 
         std::unique_lock<std::mutex> lock(_mutex);
-        Event event;
-        event.eventType = EventType::CLOSE;
-        _queue.emplace(event);
-        uv_async_send(_async);
+        condition.wait(lock, [&]{return !_running;});
     }
 
-    Option<Event> dequeue() {
+    void EventLoop::stop() {
+        std::unique_lock<std::mutex> lock(_mutex);
+        if (_running) {
+            Event event;
+            event.eventType = EventType::CLOSE;
+            _queue.emplace(event);
+            uv_async_send(_async);
+        }
+    }
+
+    ledger::core::Option<Event> EventLoop::dequeue() {
         std::unique_lock<std::mutex> lock(_mutex);
         if (!_queue.empty() && _running) {
             auto event = _queue.front();
             _queue.pop();
             return event;
         } else {
-            return Option<Event>::NONE;
+            return ledger::core::Option<Event>::NONE;
         }
     }
 
-    ~EventLoop() {
+    EventLoop::~EventLoop() {
+        delete _timer;
         delete _loop;
         delete _async;
     }
 
-private:
-    uv_loop_t* _loop;
-    uv_async_t* _async;
-    uv_timer_t* timer;
-    std::mutex _mutex;
-    bool _running;
-    std::queue<Event> _queue;
-};
+    //////////////// SequentialExecutionContext //////////////////////
 
-static void context_callback(uv_async_t* handle) {
-    static_cast<EventLoop *>(handle->data)->tick();
-}
-
-class SequentialExecutionContext : public api::ExecutionContext {
-public:
-
-    SequentialExecutionContext() {
+    SequentialExecutionContext::SequentialExecutionContext() {
         _thread = std::thread([this] () {
             run();
         });
     }
 
-    void run() {
+    void SequentialExecutionContext::run() {
         while (_loop.run());
     }
 
-    void stop() {
-        _loop.close();
-        _thread.join();
+    void SequentialExecutionContext::stop() {
+        _loop.stop();
     }
 
-    void execute(const std::shared_ptr<api::Runnable> &runnable) override {
+    void SequentialExecutionContext::execute(const std::shared_ptr<ledger::core::api::Runnable> &runnable) {
         _loop.queue(runnable);
     }
 
-    void delay(const std::shared_ptr<api::Runnable> &runnable, int64_t millis) override {
+    void SequentialExecutionContext::delay(const std::shared_ptr<ledger::core::api::Runnable> &runnable, int64_t millis) {
         _loop.queue(runnable, millis);
     }
 
-    ~SequentialExecutionContext() override {
-
+    SequentialExecutionContext::~SequentialExecutionContext() {
+        _thread.join();
     }
 
-private:
-    std::thread _thread;
-    EventLoop _loop;
-};
+    void SequentialExecutionContext::waitUntilStopped() { 
+        _loop.waitUntilStopped();
+    }
 
-class ThreadDispatcher : public api::ThreadDispatcher {
-public:
-    std::shared_ptr<api::ExecutionContext> getSerialExecutionContext(const std::string &name) override {
+    //////////////// ThreadpoolExecutionContext //////////////////////
+
+    ThreadpoolExecutionContext::ThreadpoolExecutionContext() : _stop(false) {
+        _threads.reserve(THREADPOOL_SIZE);
+        for (size_t i = 0; i < THREADPOOL_SIZE; i++)
+            _threads.emplace_back(
+                [this]
+                {
+                    for (;;)
+                    {
+                        std::shared_ptr<ledger::core::api::Runnable> task;
+                        {
+                            std::unique_lock<std::mutex> lock(this->queue_mutex);
+                            this->condition.wait(lock,
+                                [this] { return this->_stop || !this->tasks.empty(); });
+                            if (this->_stop && this->tasks.empty())
+                                return;
+                            task = this->tasks.front();
+                            this->tasks.pop();
+                        }
+                        task->run();
+                    }
+                }
+                );
+    }
+
+    void ThreadpoolExecutionContext::stop()
+    {
+        _stop = true;
+    }
+
+    void ThreadpoolExecutionContext::execute(const std::shared_ptr<ledger::core::api::Runnable>& runnable) {
+        {
+            std::unique_lock<std::mutex> lock(this->queue_mutex);
+            if (_stop)
+                return;
+            tasks.emplace(runnable);
+        }
+        condition.notify_one();
+    }
+
+    void ThreadpoolExecutionContext::delay(const std::shared_ptr<ledger::core::api::Runnable>& runnable, int64_t millis) {
+        //TODO
+    }
+    
+    ThreadpoolExecutionContext::~ThreadpoolExecutionContext() {
+        _stop = true;
+        condition.notify_all();
+        for (int i = 0; i < THREADPOOL_SIZE; i++)
+        {
+            if (_threads[i].joinable())
+                _threads[i].join();
+        }
+    }
+
+    //////////////////  UvThreadDispatcher  //////////////////////
+
+    UvThreadDispatcher::UvThreadDispatcher(unsigned int poolSize) : _poolSize(poolSize) {
+        _pool.reserve(_poolSize);
+    }
+
+    std::shared_ptr<ledger::core::api::ExecutionContext> UvThreadDispatcher::getSerialExecutionContext(const std::string &name) {
         std::unique_lock<std::mutex> lock(_mutex);
-        auto it = _serialContexts.find(name);
-        if (it == _serialContexts.end()) {
+        auto it = _contextsByName.find(name);
+        if (it == _contextsByName.end()) {
             auto context = std::make_shared<SequentialExecutionContext>();
-            _serialContexts[name] = context;
+            _pool.push_back(context);
+            _contextsByName[name] = context;
             return context;
         }
         return it->second;
     }
 
-    std::shared_ptr<api::ExecutionContext> getThreadPoolExecutionContext(const std::string &name) override {
-        // TODO Implement thread pools
-        return getSerialExecutionContext(name);
+    std::shared_ptr<ledger::core::api::ExecutionContext> UvThreadDispatcher::getThreadPoolExecutionContext(const std::string &name) {
+        std::unique_lock<std::mutex> lock(_mutex);
+        auto it = _threadpoolContextsByName.find(name);
+        if (it == _threadpoolContextsByName.end()) {
+            auto context = std::make_shared<ThreadpoolExecutionContext>();
+            _threadpoolContextsByName[name] = context;
+            return context;
+        }
+        return it->second;
     }
 
-    std::shared_ptr<api::ExecutionContext> getMainExecutionContext() override {
+    std::shared_ptr<ledger::core::api::ExecutionContext> UvThreadDispatcher::getMainExecutionContext() {
         return getSerialExecutionContext("__uv__main__");
     }
 
-    std::shared_ptr<api::Lock> newLock() override {
+    std::shared_ptr<ledger::core::api::Lock> UvThreadDispatcher::newLock() {
         return nullptr;
     }
 
-    ~ThreadDispatcher() {
-       for (auto& context : _serialContexts) {
-           context.second->stop();
-       }
+    UvThreadDispatcher::~UvThreadDispatcher() {
+        std::unique_lock<std::mutex> lock(_mutex);
+        for (auto& context : _pool) {
+            context->stop();
+            context->waitUntilStopped();
+        }
     }
 
-private:
-    std::mutex _mutex;
-    std::unordered_map<std::string, std::shared_ptr<SequentialExecutionContext>> _serialContexts;
-};
+    void UvThreadDispatcher::waitUntilStopped() {
+        auto context = std::dynamic_pointer_cast<SequentialExecutionContext>(
+            getSerialExecutionContext("__uv__main__"));
+        context->waitUntilStopped();
+    }
 
-namespace uv {
+    void UvThreadDispatcher::stop() {
+        auto context = std::dynamic_pointer_cast<SequentialExecutionContext>(
+            getSerialExecutionContext("__uv__main__"));
+        context->stop();
+    }
+
 
     std::shared_ptr<ledger::core::api::ThreadDispatcher> createDispatcher() {
-        return std::make_shared<ThreadDispatcher>();
+        return std::make_shared<UvThreadDispatcher>();
     }
 
 }

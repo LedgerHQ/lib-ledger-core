@@ -68,9 +68,6 @@ namespace ledger {
             StellarLikeAccount(const std::shared_ptr<StellarLikeWallet>& wallet, const StellarLikeAccountParams& params);
             bool isSynchronizing() override;
             std::shared_ptr<api::EventBus> synchronize() override;
-            void startBlockchainObservation() override;
-            void stopBlockchainObservation() override;
-            bool isObservingBlockchain() override;
             std::string getRestoreKey() override;
             FuturePtr<Amount> getBalance() override;
             Future<AddressList> getFreshPublicAddresses() override;
@@ -81,7 +78,8 @@ namespace ledger {
             std::shared_ptr<StellarLikeKeychain> getKeychain() const { return _params.keychain; };
 
             // Data insertion methods
-            int putTransaction(soci::session& sql, const stellar::Transaction& tx);
+            void interpretTransaction(const stellar::Transaction &tx, std::vector<Operation> &out);
+            Try<int> bulkInsert(const std::vector<Operation> &operations);
 
             int putLedger(soci::session& sql, stellar::Ledger& ledger);
             void updateAccountInfo(soci::session& sql, stellar::Account& account);

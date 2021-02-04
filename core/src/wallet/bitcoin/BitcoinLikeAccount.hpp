@@ -60,7 +60,6 @@ namespace ledger {
             BitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                int32_t index,
                                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                               const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
                                const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
                                const std::shared_ptr<BitcoinLikeKeychain>& keychain
             );
@@ -68,11 +67,15 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
 
             /**
-             *
-             * @param transaction
-             * @return A flag indicating if the transaction was ignored, inserted
+             * Interpret operations from transactions and fill a output vector
+             * @param transaction The transaction to interpret
+             * @param out A vector which is filled by this function
+             * @param needExtendKeychain Whether we need to extend the keychain during the transaction interpretation
              */
-            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorerTransaction& transaction);
+            void interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction, std::vector<Operation>& out, bool needExtendKeychain=false);
+
+            Try<int> bulkInsert(const std::vector<Operation>& out);
+
             /**
              *
              * @param block
@@ -81,10 +84,6 @@ namespace ledger {
             bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
-
-            void startBlockchainObservation() override;
-            void stopBlockchainObservation() override;
-            bool isObservingBlockchain() override;
 
             /***
              * REVIEW
@@ -152,7 +151,6 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeKeychain> _keychain;
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
-            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
             std::shared_ptr<BitcoinLikeUtxoPicker> _picker;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;

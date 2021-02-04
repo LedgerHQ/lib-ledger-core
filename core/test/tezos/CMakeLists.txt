@@ -33,6 +33,13 @@ target_include_directories(${TEZOS_TESTS_NAME} PUBLIC ../../../core/lib/leveldb/
 include_directories(../lib/libledger-test/)
 
 include(CopyAndInstallImportedTargets)
-copy_install_imported_targets(${TEZOS_TESTS_NAME} crypto ledger-core)
-
+if (SYS_OPENSSL)
+    find_package(OpenSSL)
+    if(WIN32)
+        target_link_libraries( ledger-core-tezos-tests crypt32 ws2_32)
+    endif()
+    copy_install_imported_targets(ledger-core-tezos-tests OpenSSL::Crypto ledger-core)
+else()
+    copy_install_imported_targets(ledger-core-tezos-tests crypto ledger-core)
+endif()
 add_test (NAME ${TEZOS_TESTS_NAME} COMMAND ${TEZOS_TESTS_NAME})

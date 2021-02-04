@@ -260,7 +260,8 @@ namespace ledger {
                 auto client = std::make_shared<HttpClient>(
                     baseUrl,
                     _httpEngine,
-                    getDispatcher()->getMainExecutionContext()
+                    getDispatcher()->getMainExecutionContext(),
+                    getDispatcher()->getThreadPoolExecutionContext("httpExecutionContext")
                 );
                 _httpClients[baseUrl] = client;
                 client->setLogger(logger());
@@ -473,6 +474,17 @@ namespace ledger {
                 tr.commit();
                 return wallet;
             });
+        }
+
+        Future<Unit> WalletPool::deleteWallet(const std::string& name) {
+            auto self = shared_from_this();
+            return async<Unit>([=]() {
+                soci::session sql(self->getDatabaseSessionPool()->getPool());
+                soci::transaction tr(sql);
+                PoolDatabaseHelper::removeWalletByName(sql, name);
+                tr.commit();
+                return unit;
+                });
         }
 
         Option<api::Currency> WalletPool::getCurrency(const std::string &name) const {

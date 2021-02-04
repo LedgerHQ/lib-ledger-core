@@ -10,6 +10,7 @@ std::string to_string(const EventCode& eventCode) {
     switch (eventCode) {
         case EventCode::UNDEFINED: return "UNDEFINED";
         case EventCode::NEW_OPERATION: return "NEW_OPERATION";
+        case EventCode::UPDATE_OPERATIONS: return "UPDATE_OPERATIONS";
         case EventCode::NEW_BLOCK: return "NEW_BLOCK";
         case EventCode::DELETED_OPERATION: return "DELETED_OPERATION";
         case EventCode::SYNCHRONIZATION_STARTED: return "SYNCHRONIZATION_STARTED";
@@ -17,19 +18,22 @@ std::string to_string(const EventCode& eventCode) {
         case EventCode::SYNCHRONIZATION_SUCCEED: return "SYNCHRONIZATION_SUCCEED";
         case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: return "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
         case EventCode::NEW_ERC20_OPERATION: return "NEW_ERC20_OPERATION";
+        case EventCode::UPDATE_ERC20_OPERATIONS: return "UPDATE_ERC20_OPERATIONS";
     };
 };
 template <>
 EventCode from_string(const std::string& eventCode) {
     if (eventCode == "UNDEFINED") return EventCode::UNDEFINED;
     else if (eventCode == "NEW_OPERATION") return EventCode::NEW_OPERATION;
+    else if (eventCode == "UPDATE_OPERATIONS") return EventCode::UPDATE_OPERATIONS;
     else if (eventCode == "NEW_BLOCK") return EventCode::NEW_BLOCK;
     else if (eventCode == "DELETED_OPERATION") return EventCode::DELETED_OPERATION;
     else if (eventCode == "SYNCHRONIZATION_STARTED") return EventCode::SYNCHRONIZATION_STARTED;
     else if (eventCode == "SYNCHRONIZATION_FAILED") return EventCode::SYNCHRONIZATION_FAILED;
     else if (eventCode == "SYNCHRONIZATION_SUCCEED") return EventCode::SYNCHRONIZATION_SUCCEED;
     else if (eventCode == "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT") return EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT;
-    else return EventCode::NEW_ERC20_OPERATION;
+    else if (eventCode == "NEW_ERC20_OPERATION") return EventCode::NEW_ERC20_OPERATION;
+    else return EventCode::UPDATE_ERC20_OPERATIONS;
 };
 
 std::ostream &operator<<(std::ostream &os, const EventCode &o)
@@ -37,6 +41,7 @@ std::ostream &operator<<(std::ostream &os, const EventCode &o)
     switch (o) {
         case EventCode::UNDEFINED:  return os << "UNDEFINED";
         case EventCode::NEW_OPERATION:  return os << "NEW_OPERATION";
+        case EventCode::UPDATE_OPERATIONS:  return os << "UPDATE_OPERATIONS";
         case EventCode::NEW_BLOCK:  return os << "NEW_BLOCK";
         case EventCode::DELETED_OPERATION:  return os << "DELETED_OPERATION";
         case EventCode::SYNCHRONIZATION_STARTED:  return os << "SYNCHRONIZATION_STARTED";
@@ -44,6 +49,7 @@ std::ostream &operator<<(std::ostream &os, const EventCode &o)
         case EventCode::SYNCHRONIZATION_SUCCEED:  return os << "SYNCHRONIZATION_SUCCEED";
         case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT:  return os << "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
         case EventCode::NEW_ERC20_OPERATION:  return os << "NEW_ERC20_OPERATION";
+        case EventCode::UPDATE_ERC20_OPERATIONS:  return os << "UPDATE_ERC20_OPERATIONS";
     }
 }
 

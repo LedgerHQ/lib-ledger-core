@@ -29,3 +29,15 @@ LedgerCore = interface +c {
 AllocationMetrics = interface +c {
     static getObjectAllocations(): map<string, i32>;
 }
+
+DurationMetric = record {
+    # Total number of milliseconds
+    total_ms: i64;
+    # Number of records.
+    count: i32;
+}
+
+DurationMetrics = interface +c {
+    # Get all duration metrics
+    static getAllDurationMetrics(): map<string, DurationMetric>;
+}

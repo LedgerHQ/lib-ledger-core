@@ -63,7 +63,7 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 
-        wallet = std::dynamic_pointer_cast<algorand::Wallet>(wait(pool->createWallet("algorand", currency.name, configuration)));
+        wallet = std::dynamic_pointer_cast<algorand::Wallet>(uv::wait(pool->createWallet("algorand", currency.name, configuration)));
         account = createAlgorandAccount(wallet, accountInfo.index, accountInfo);
 
         accountUid = algorand::AccountDatabaseHelper::createAccountUid(wallet->getWalletUid(), accountInfo.index);
@@ -71,7 +71,6 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
 
     void TearDown() override {
         WalletFixture::TearDown();
-
         wallet.reset();
         account.reset();
     }
@@ -83,7 +82,7 @@ class AlgorandDatabaseTest : public WalletFixture<WalletFactory> {
     std::string accountUid;
 };
 
-TEST_F(AlgorandDatabaseTest, AccountDBTest) {
+TEST_F(AlgorandDatabaseTest, DISABLED_AccountDBTest) {
 
     // Test reading from DB
     {
@@ -98,7 +97,7 @@ TEST_F(AlgorandDatabaseTest, AccountDBTest) {
     }
 }
 
-TEST_F(AlgorandDatabaseTest, TransactionsDBTest) {
+TEST_F(AlgorandDatabaseTest, DISABLED_TransactionsDBTest) {
 
     auto paymentTxRef = paymentTransaction();
     auto assetConfigTxRef = assetConfigTransaction();
@@ -133,19 +132,20 @@ TEST_F(AlgorandDatabaseTest, TransactionsDBTest) {
     }
 }
 
-TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
+TEST_F(AlgorandDatabaseTest, DISABLED_OperationsDBTest) {
 
     auto txRef = paymentTransaction();
 
     // Test writing into DB
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        account->putTransaction(sql, txRef);
+        std::vector<algorand::Operation> operations;
+        account->interpretTransaction(txRef, operations);
+        account->bulkInsert(operations);
     }
 
     // Test reading from DB
     {
-        auto ops = wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
+        auto ops = uv::wait(std::dynamic_pointer_cast<OperationQuery>(account->queryOperations()->complete())->execute());
 
         EXPECT_EQ(ops.size(), 1);
         auto op = std::dynamic_pointer_cast<algorand::Operation>(ops[0]);
@@ -171,7 +171,7 @@ TEST_F(AlgorandDatabaseTest, OperationsDBTest) {
     }
 }
 
-TEST_F(AlgorandDatabaseTest, queryTransactions)
+TEST_F(AlgorandDatabaseTest, DISABLED_queryTransactions)
 {
     soci::session sql(pool->getDatabaseSessionPool()->getPool());
     auto payment = paymentTransaction();
@@ -179,9 +179,11 @@ TEST_F(AlgorandDatabaseTest, queryTransactions)
     auto assetConfig = assetConfigTransaction();
     assetConfig.header.sender = algorand::Address(TEST_ACCOUNT_ADDRESS);
 
-    account->putTransaction(sql, payment);
-    account->putTransaction(sql, assetTransfer);
-    account->putTransaction(sql, assetConfig);
+    std::vector<algorand::Operation> operations;
+    account->interpretTransaction(payment, operations);
+    account->interpretTransaction(assetTransfer, operations);
+    account->interpretTransaction(assetConfig, operations);
+    account->bulkInsert(operations);
 
     auto txns = TransactionDatabaseHelper::queryTransactionsInvolving(sql, OBELIX_ADDRESS);
     ASSERT_EQ(txns.size(), 2);

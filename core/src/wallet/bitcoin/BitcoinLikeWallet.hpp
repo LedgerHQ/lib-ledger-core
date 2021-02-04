@@ -35,7 +35,6 @@
 #include <memory>
 #include "explorers/BitcoinLikeBlockchainExplorer.hpp"
 #include "keychains/BitcoinLikeKeychain.hpp"
-#include "observers/BitcoinLikeBlockchainObserver.hpp"
 #include "synchronizers/BitcoinLikeAccountSynchronizer.hpp"
 #include "wallet/common/AbstractWallet.hpp"
 #include "api/BitcoinLikeNetworkParameters.hpp"
@@ -51,7 +50,6 @@ namespace ledger {
             BitcoinLikeWallet(
                 const std::string& name,
                 const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
                 const std::shared_ptr<BitcoinLikeKeychainFactory>& keychainFactory,
                 const BitcoinLikeAccountSynchronizerFactory& synchronizerFactory,
                 const std::shared_ptr<WalletPool>& pool,
@@ -85,7 +83,6 @@ namespace ledger {
 
         private:
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
-            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
             std::shared_ptr<BitcoinLikeKeychainFactory> _keychainFactory;
             BitcoinLikeAccountSynchronizerFactory _synchronizerFactory;
         };

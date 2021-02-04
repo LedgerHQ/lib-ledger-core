@@ -67,6 +67,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/bitcoin/database/BitcoinLikeOperationDatabaseHelper.hpp>
 
 
 namespace ledger {
@@ -74,12 +75,10 @@ namespace ledger {
 
         BitcoinLikeAccount::BitcoinLikeAccount(const std::shared_ptr<AbstractWallet> &wallet, int32_t index,
                                                const std::shared_ptr<BitcoinLikeBlockchainExplorer> &explorer,
-                                               const std::shared_ptr<BitcoinLikeBlockchainObserver> &observer,
                                                const std::shared_ptr<BitcoinLikeAccountSynchronizer> &synchronizer,
                                                const std::shared_ptr<BitcoinLikeKeychain> &keychain)
                 : AbstractAccount(wallet, index) {
             _explorer = explorer;
-            _observer = observer;
             _synchronizer = synchronizer;
             _keychain = keychain;
             _keychain->getAllObservableAddresses(0, 40);
@@ -98,6 +97,9 @@ namespace ledger {
                 if (output.address.hasValue() && getKeychain()->contains(output.address.getValue())) {
                     output.accountUid = getAccountUid();
                 }
+                output.blockHeight = tx.block.map<uint64_t>([] (const auto& b) {
+                    return b.height;
+                });
             }
             out.currencyName = getWallet()->getCurrency().name;
             out.walletType = getWalletType();
@@ -108,14 +110,12 @@ namespace ledger {
             out.bitcoinTransaction.getValue().block = out.block;
         }
 
-        int BitcoinLikeAccount::putTransaction(soci::session &sql,
-                                               const BitcoinLikeBlockchainExplorerTransaction &transaction) {
-            if (transaction.block.nonEmpty())
-                putBlock(sql, transaction.block.getValue());
+        void BitcoinLikeAccount::interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction,
+                std::vector<Operation>& out, bool needExtendKeychain) {
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
-            uint64_t fees = 0L;
+            uint64_t fees = transaction.fees.getValue().toUint64();
             uint64_t sentAmount = 0L;
             uint64_t receivedAmount = 0L;
             std::vector<std::string> senders;
@@ -138,15 +138,12 @@ namespace ledger {
                         // This address is part of the account.
                         sentAmount += input.value.getValue().toUint64();
                         accountInputs.push_back(std::make_pair(const_cast<BitcoinLikeBlockchainExplorerInput *>(&input), DerivationPath(path.getValue())));
-                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()))) {
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), needExtendKeychain)) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
                         }
                     }
-                }
-                if (input.value.nonEmpty()) {
-                    fees += input.value.getValue().toUint64();
                 }
             }
 
@@ -171,7 +168,7 @@ namespace ledger {
                             receivedAmount += output.value.toUint64();
                             recipients.push_back(output.address.getValue());
                         }
-                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()))) {
+                        if (_keychain->markPathAsUsed(DerivationPath(path.getValue()), needExtendKeychain)) {
                             result = result | FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS;
                         } else {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
@@ -180,7 +177,6 @@ namespace ledger {
                         recipients.push_back(output.address.getValue());
                     }
                 }
-                fees = fees - output.value.toUint64();
             }
             std::stringstream snds;
             strings::join(senders, snds, ",");
@@ -209,8 +205,7 @@ namespace ledger {
                 operation.amount.assignI64(sentAmount);
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
-                if (OperationDatabaseHelper::putOperation(sql, operation))
-                    emitNewOperationEvent(operation);
+                out.push_back(operation);
             }
 
             if (accountOutputs.size() > 0) {
@@ -235,16 +230,24 @@ namespace ledger {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
                     operation.refreshUid();
-                    if (OperationDatabaseHelper::putOperation(sql, operation))
-                        emitNewOperationEvent(operation);
+                    out.push_back(operation);
                 }
             }
-
-            return result;
         }
 
-        void
-        BitcoinLikeAccount::computeOperationTrust(Operation &operation,
+        Try<int> BitcoinLikeAccount::bulkInsert(const std::vector<Operation> &ops) {
+            return Try<int>::from([&] () {
+                soci::session sql(getWallet()->getDatabase()->getPool());
+                soci::transaction tr(sql);
+                BitcoinLikeOperationDatabaseHelper::bulkInsert(sql, ops);
+                tr.commit();
+                // Emit
+                emitNewOperationsEvent(ops);
+                return ops.size();
+            });
+        }
+
+        void BitcoinLikeAccount::computeOperationTrust(Operation &operation,
                                                   const BitcoinLikeBlockchainExplorerTransaction &tx) {
             if (tx.block.nonEmpty()) {
                 auto txBlockHeight = tx.block.getValue().height;
@@ -365,7 +368,8 @@ namespace ledger {
             abstractBlock.currencyName = getWallet()->getCurrency().name;
             abstractBlock.height = block.height;
             abstractBlock.time = block.time;
-            if (BlockDatabaseHelper::putBlock(sql, abstractBlock)) {
+            if (BlockDatabaseHelper::putBlock(sql, abstractBlock))
+            {
                 emitNewBlockEvent(abstractBlock);
                 return true;
             }
@@ -426,7 +430,7 @@ namespace ledger {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
             auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
-            return async<std::shared_ptr<Amount>>([=] () -> std::shared_ptr<Amount> {
+            return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=] () -> std::shared_ptr<Amount> {
                 const auto& uid = self->getAccountUid();
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
@@ -518,18 +522,6 @@ namespace ledger {
             return std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
         }
 
-        void BitcoinLikeAccount::startBlockchainObservation() {
-            _observer->registerAccount(getSelf());
-        }
-
-        void BitcoinLikeAccount::stopBlockchainObservation() {
-            _observer->unregisterAccount(getSelf());
-        }
-
-        bool BitcoinLikeAccount::isObservingBlockchain() {
-            return _observer->isRegistered(getSelf());
-        }
-
         Future<std::string> BitcoinLikeAccount::broadcastTransaction(const std::vector<uint8_t> &transaction) {
             return _explorer->pushTransaction(transaction).map<std::string>(getMainExecutionContext(), [] (const String& hash) -> std::string {
                 return hash.str();
@@ -558,7 +550,7 @@ namespace ledger {
                 //Store newly broadcasted tx in db
                 //First parse it
                 auto txHash = seq.str();
-                auto optimisticUpdate = Try<int>::from([&] () -> int {
+                auto optimisticUpdate = Try<Unit>::from([&] () -> Unit {
                     //Get last block from DB or cache
                     uint64_t lastBlockHeight = 0;
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
@@ -616,7 +608,11 @@ namespace ledger {
                     }
 
                     //Store in DB
-                    return self->putTransaction(sql, txExplorer);
+                    std::vector<Operation> operations;
+                    self->interpretTransaction(txExplorer, operations);
+                    self->bulkInsert(operations);
+                    self->emitEventsNow();
+                    return unit;
                 });
 
                 // Failing optimistic update should not throw an exception

@@ -34,7 +34,6 @@
 #include <api/TezosLikeWallet.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/tezos/observers/TezosLikeBlockchainObserver.h>
 #include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.h>
 #include <wallet/tezos/factories/TezosLikeWalletFactory.h>
 #include <wallet/tezos/factories/TezosLikeKeychainFactory.h>
@@ -48,7 +47,6 @@ namespace ledger {
             TezosLikeWallet(
                     const std::string &name,
                     const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
-                    const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                     const std::shared_ptr<TezosLikeKeychainFactory> &keychainFactory,
                     const TezosLikeAccountSynchronizerFactory &synchronizerFactory,
                     const std::shared_ptr<WalletPool> &pool,
@@ -86,7 +84,6 @@ namespace ledger {
             std::shared_ptr<TezosLikeWallet> getSelf();
 
             std::shared_ptr<TezosLikeBlockchainExplorer> _explorer;
-            std::shared_ptr<TezosLikeBlockchainObserver> _observer;
             std::shared_ptr<TezosLikeKeychainFactory> _keychainFactory;
             TezosLikeAccountSynchronizerFactory _synchronizerFactory;
             api::TezosLikeNetworkParameters _network;

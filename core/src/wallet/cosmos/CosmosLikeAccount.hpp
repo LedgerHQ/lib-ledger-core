@@ -46,7 +46,7 @@
 #include <api/ErrorCodeCallback.hpp>
 #include <api/Event.hpp>
 #include <api/StringCallback.hpp>
-#include <time.h>
+#include <ctime>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/cosmos/api_impl/CosmosLikeDelegation.hpp>
@@ -57,7 +57,6 @@
 #include <wallet/cosmos/api_impl/CosmosLikeUnbonding.hpp>
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
-#include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 
 namespace ledger {
 namespace core {
@@ -69,7 +68,6 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
         const std::shared_ptr<AbstractWallet> &wallet,
         int32_t index,
         const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-        const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
         const std::shared_ptr<CosmosLikeAccountSynchronizer> &synchronizer,
         const std::shared_ptr<CosmosLikeKeychain> &keychain);
 
@@ -117,12 +115,6 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     bool isSynchronizing() override;
 
     std::shared_ptr<api::EventBus> synchronize() override;
-
-    void startBlockchainObservation() override;
-
-    void stopBlockchainObservation() override;
-
-    bool isObservingBlockchain() override;
 
     std::string getRestoreKey() override;
 
@@ -305,7 +297,6 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     std::shared_ptr<CosmosLikeKeychain> _keychain;
     std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;
     std::shared_ptr<CosmosLikeAccountSynchronizer> _synchronizer;
-    std::shared_ptr<CosmosLikeBlockchainObserver> _observer;
     uint64_t _currentBlockHeight;
     std::shared_ptr<api::EventBus> _currentSyncEventBus;
     std::mutex _synchronizationLock;

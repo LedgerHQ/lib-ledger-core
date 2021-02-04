@@ -13,7 +13,7 @@ namespace ledger {
                                                 const api::AccountCreationInfo &info) {
                                 auto i = info;
                                 i.index = index;
-                                return std::dynamic_pointer_cast<core::CosmosLikeAccount>(::wait(wallet->newAccountWithInfo(i)));
+                                return std::dynamic_pointer_cast<core::CosmosLikeAccount>(uv::wait(wallet->newAccountWithInfo(i)));
                         }
 
                         std::shared_ptr<core::CosmosLikeAccount>
@@ -22,7 +22,7 @@ namespace ledger {
                                                 const api::ExtendedKeyAccountCreationInfo &info) {
                                 auto i = info;
                                 i.index = index;
-                                return std::dynamic_pointer_cast<CosmosLikeAccount>(::wait(wallet->newAccountWithExtendedKeyInfo(i)));
+                                return std::dynamic_pointer_cast<CosmosLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(i)));
                         }
 
                         Message setupDelegateMessage() {

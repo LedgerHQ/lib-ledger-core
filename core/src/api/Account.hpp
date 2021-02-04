@@ -245,18 +245,6 @@ public:
      */
     virtual std::shared_ptr<EventBus> getEventBus() = 0;
 
-    /** Start observing blockchain on which account synchronizes and send/receive transactions. */
-    virtual void startBlockchainObservation() = 0;
-
-    /** Stop observing blockchain. */
-    virtual void stopBlockchainObservation() = 0;
-
-    /**
-     * Get account's observation status.
-     * @return boolean
-     */
-    virtual bool isObservingBlockchain() = 0;
-
     /**
      * Get Last block of blockchain on which account operates.
      * @param callback, Callback returning, if getLastBlock succeeds, a Block object

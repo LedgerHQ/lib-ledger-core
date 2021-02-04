@@ -80,6 +80,9 @@ namespace ledger {
             Option<std::string> publicKey;
             Option<TezosLikeBlockchainExplorerOriginatedAccount> originatedAccount;
             uint64_t status;
+            std::string originatedAccountUid;
+            std::string originatedAccountAddress;
+
             TezosLikeBlockchainExplorerTransaction() {
                 confirmations = 0;
                 type = api::TezosOperationTag::OPERATION_TAG_NONE;
@@ -101,6 +104,8 @@ namespace ledger {
                 this->publicKey = cpy.publicKey;
                 this->originatedAccount = cpy.originatedAccount;
                 this->status = cpy.status;
+                this->originatedAccountUid = cpy.originatedAccountUid; 
+                this->originatedAccountAddress = cpy.originatedAccountAddress; 
             }
 
         };

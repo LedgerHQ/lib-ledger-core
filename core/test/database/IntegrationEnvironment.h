@@ -33,7 +33,6 @@
 #define LEDGER_CORE_INTEGRATIONENVIRONMENT_H
 
 #include <gtest/gtest.h>
-#include <QCoreApplication>
 
 class IntegrationEnvironment {
 public:

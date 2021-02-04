@@ -40,8 +40,127 @@
 #include <ledger/core/api/Lock.hpp>
 #include <condition_variable>
 
+#include <thread>
+#include <ledger/core/utils/Option.hpp>
+#include <ledger/core/utils/Try.hpp>
+#include <unordered_map>
+
 namespace uv {
     std::shared_ptr<ledger::core::api::ThreadDispatcher> createDispatcher();
+    const int THREADPOOL_SIZE = 16;
+    enum class EventType {
+        RUN,
+        CLOSE
+    };
+
+    struct Event {
+        EventType eventType;
+        std::shared_ptr<ledger::core::api::Runnable> runnable;
+        unsigned int delay;
+    };
+
+    static void context_callback(uv_async_t* handle);
+    static void timer_callback(uv_timer_t* handle);
+
+    class EventLoop {
+    public:
+        EventLoop();
+
+        EventLoop(const EventLoop&) = delete;
+        EventLoop(EventLoop&&) = delete;
+        EventLoop & operator=(const EventLoop&) = delete;
+
+        void queue(const std::shared_ptr<ledger::core::api::Runnable>& runnable);
+
+        void queue(const std::shared_ptr<ledger::core::api::Runnable>& runnable, int64_t millis);
+
+        bool run();
+
+        void tick();
+
+        void waitUntilStopped();
+
+        void stop();
+
+        ledger::core::Option<Event> dequeue();
+
+        ~EventLoop();
+
+    private:
+        uv_loop_t* _loop;
+        uv_async_t* _async;
+        uv_timer_t* _timer;
+        std::mutex _mutex;
+        std::condition_variable condition;
+        bool _running;
+        std::queue<Event> _queue;
+    };
+
+    class SequentialExecutionContext : public ledger::core::api::ExecutionContext {
+    public:
+
+        SequentialExecutionContext();
+
+        void run();
+
+        void stop();
+
+        void execute(const std::shared_ptr<ledger::core::api::Runnable> &runnable) override;
+
+        void delay(const std::shared_ptr<ledger::core::api::Runnable> &runnable, int64_t millis) override;
+
+        ~SequentialExecutionContext() override;
+
+        void waitUntilStopped();
+
+    private:
+        std::thread _thread;
+        EventLoop _loop;
+    };
+
+    class ThreadpoolExecutionContext : public ledger::core::api::ExecutionContext {
+    public:
+        ThreadpoolExecutionContext();
+        void execute(const std::shared_ptr<ledger::core::api::Runnable>& runnable) override;
+        void delay(const std::shared_ptr<ledger::core::api::Runnable>& runnable, int64_t millis) override;
+        ~ThreadpoolExecutionContext() override;
+        void stop();
+
+    private:
+        std::vector< std::thread> _threads;
+        std::queue<std::shared_ptr<ledger::core::api::Runnable>> tasks;
+        std::mutex queue_mutex;
+        std::condition_variable condition;
+        bool _stop;
+    };
+
+    class UvThreadDispatcher : public ledger::core::api::ThreadDispatcher {
+    public:
+
+        UvThreadDispatcher(unsigned int poolSize = 4);
+
+        std::shared_ptr<ledger::core::api::ExecutionContext> getSerialExecutionContext(const std::string &name) override;
+
+        std::shared_ptr<ledger::core::api::ExecutionContext> getThreadPoolExecutionContext(const std::string &name) override;
+
+        std::shared_ptr<ledger::core::api::ExecutionContext> getMainExecutionContext() override;
+
+        std::shared_ptr<ledger::core::api::Lock> newLock() override;
+
+        ~UvThreadDispatcher();
+
+        void waitUntilStopped();
+
+        void stop();
+
+    private:
+        unsigned int _poolSize;
+        std::mutex _mutex;
+        std::vector<std::shared_ptr<SequentialExecutionContext>> _pool;
+        std::unordered_map<std::string, std::shared_ptr<SequentialExecutionContext>> _contextsByName;
+        std::unordered_map<std::string, std::shared_ptr<ThreadpoolExecutionContext>> _threadpoolContextsByName;
+    };
+
 
     template <typename T>
     static T wait(ledger::core::Future<T> future) {

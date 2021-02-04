@@ -45,7 +45,7 @@ namespace ledger {
                                              const api::Currency &params,
                                              const Option<std::vector<uint8_t>> &pubKey,
                                              const std::shared_ptr<Preferences> &preferences)
-                : _configuration(configuration), _currency(params), _publicKey(pubKey) {
+                : _configuration(configuration), _currency(params), _preferences(preferences), _publicKey(pubKey) {
             _address = getAddressFromPublicKey();
         }
 
@@ -72,7 +72,7 @@ namespace ledger {
 
         std::vector <TezosLikeKeychain::Address>
         TezosLikeKeychain::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            return std::vector<TezosLikeKeychain::Address>{getAddressFromPublicKey()};
+            return { getAddressFromPublicKey() };
         }
 
         std::string TezosLikeKeychain::getRestoreKey() const {

@@ -30,12 +30,12 @@
  */
 
 #include "IntegrationEnvironment.h"
+#include <FilesystemUtils.hpp>
 
 IntegrationEnvironment* IntegrationEnvironment::_instance = nullptr;
 
 IntegrationEnvironment::IntegrationEnvironment(int argc, char **argv) {
-    QCoreApplication app(argc, argv);
-    _appDir = app.applicationDirPath().toStdString();
+    _appDir = FilesystemUtils::getExecutableDir();
 }
 
 std::string IntegrationEnvironment::getApplicationDirPath() const {

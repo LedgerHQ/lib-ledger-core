@@ -185,12 +185,9 @@ target_include_directories(ledger-core-interface INTERFACE ../lib/soci_postgresq
 target_include_directories(ledger-core-interface INTERFACE ../lib/blake)
 if (SYS_OPENSSL)
     target_include_directories(ledger-core-interface INTERFACE ${OPENSSL_INCLUDE_DIR})
+    target_link_libraries(ledger-core-interface INTERFACE OpenSSL::SSL)
 else()
     target_include_directories(ledger-core-interface INTERFACE ../lib/openssl/include)
-endif()
-
-if(SSL_SUPPORT)
-    target_link_libraries(ledger-core-interface INTERFACE ssl)
 endif()
 
 target_include_directories(ledger-core-interface INTERFACE ../lib/leveldb/include)
