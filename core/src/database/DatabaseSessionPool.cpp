@@ -44,7 +44,7 @@ namespace ledger {
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
             const std::string &password) :
-            _pool((size_t) backend->getConnectionPoolSize()), _readonlyPool((size_t)backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            _pool((size_t) backend->getConnectionPoolSize()), _readonlyPool((size_t)backend->getReadonlyConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
