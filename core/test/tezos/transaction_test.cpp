@@ -56,7 +56,7 @@ void TezosMakeBaseTransaction::SetUp() {
 void TezosMakeBaseTransaction::recreate() {
     SetUpConfig();
     pool = newDefaultPool();
-    wallet = wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
+    wallet = uv::wait(pool->createWallet(testData.walletName, testData.currencyName, testData.configuration));
     account = testData.inflate_xtz(pool, wallet);
     currency = wallet->getCurrency();
 }
@@ -69,14 +69,14 @@ void TezosMakeBaseTransaction::TearDown() {
 }
 
 void TezosMakeBaseTransaction::broadcast(std::shared_ptr<TezosLikeTransactionApi> tx) {
-    dispatcher = std::make_shared<QtThreadDispatcher>();
+    dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto callback = std::make_shared<Callback>(dispatcher);  
     account->broadcastTransaction(tx, callback);
     dispatcher->waitUntilStopped();
 }
 
 void TezosMakeBaseTransaction::broadcast(const std::vector<uint8_t> &raw) {
-    dispatcher = std::make_shared<QtThreadDispatcher>();
+    dispatcher = std::make_shared<uv::UvThreadDispatcher>();
     auto callback = std::make_shared<Callback>(dispatcher);  
     account->broadcastRawTransaction(raw, callback);
     dispatcher->waitUntilStopped();

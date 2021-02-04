@@ -137,7 +137,6 @@ namespace ledger {
                 std::unordered_map<std::string, std::string> transactionsToDrop;
                 BlockchainExplorerAccountSynchronizationResult context;
                 std::string synchronizationTag;
-                BlockchainExplorerAccountSynchronizationResult context;
 
                 virtual ~SynchronizationBuddy() = default;
             };
@@ -501,13 +500,12 @@ namespace ledger {
                         insertionBenchmark->start();
                         Try<int> tryPutTx = buddy->account->bulkInsert(operations);
                         insertionBenchmark->stop();
-                            if (tryPutTx.isFailure()) {
+                        if (tryPutTx.isFailure()) {
                             buddy->logger->error("Failed to bulk insert for batch {} because: {}", currentBatchIndex, tryPutTx.getFailure().getMessage());
                             throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} ({})", currentBatchIndex, tryPutTx.exception().getValue().getMessage());
-                                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} on block {} because of tx {} ({})", currentBatchIndex, blockHash, tx.hash, tryPutTx.exception().getValue().getMessage());
-                            } else {
+                        } else {
                             count += tryPutTx.getValue();
-                            }
+                        }
 
                         buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
                         buddy->account->emitEventsNow();

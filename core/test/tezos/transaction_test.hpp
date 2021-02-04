@@ -31,7 +31,7 @@ namespace ledger {
                 void TearDown() override;
                             
                 struct Callback: public api::StringCallback {
-                    Callback(std::shared_ptr<QtThreadDispatcher> dispatcher): _dispatcher(dispatcher)
+                    Callback(std::shared_ptr<uv::UvThreadDispatcher> dispatcher): _dispatcher(dispatcher)
                     {}
                     virtual void onCallback(const std::experimental::optional<std::string> & result, const std::experimental::optional<api::Error> & error) override {
                         if (result) {
@@ -43,7 +43,7 @@ namespace ledger {
                         _dispatcher->stop();
                     }
                     private:
-                    std::shared_ptr<QtThreadDispatcher> _dispatcher;
+                    std::shared_ptr<uv::UvThreadDispatcher> _dispatcher;
                 };
 
                 void broadcast(std::shared_ptr<TezosLikeTransactionApi> tx);
