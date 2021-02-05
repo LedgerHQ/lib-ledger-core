@@ -18,6 +18,7 @@ add_executable(ledger-core-utils-tests
         derivation_scheme_tests.cpp
         configuration_matchable_tests.cpp
         json_test.cpp
+        ttlvar_test.cpp
         )
 
 target_link_libraries(ledger-core-utils-tests gtest gtest_main)
