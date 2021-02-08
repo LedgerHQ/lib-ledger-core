@@ -53,7 +53,6 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
-        std::set<std::string> emittedOperations;
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
@@ -65,19 +64,7 @@ TEST_F(RippleLikeWalletSynchronization, MediumXpubSynchronization) {
             auto baseReserve = uv::wait(account->getBaseReserve());
             EXPECT_GT(baseReserve->toLong(), 0L);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(), receiver);
-
-            receiver.reset();
-            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
@@ -139,28 +126,15 @@ TEST_F(RippleLikeWalletSynchronization, BalanceHistory) {
         configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,
                                  "44'/<coin_type>'/<account>'/<node>/<address>");
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "ripple", configuration));
-        std::set<std::string> emittedOperations;
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
             auto account = createRippleLikeAccount(wallet, nextIndex, XRP_KEYS_INFO);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(), receiver);
-
             std::shared_ptr<Amount> balance;
 
-            receiver.reset();
-            receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;

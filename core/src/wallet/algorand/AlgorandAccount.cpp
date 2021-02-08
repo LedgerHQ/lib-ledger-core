@@ -29,10 +29,11 @@
 
 #include "AlgorandAccount.hpp"
 #include "database/AlgorandTransactionDatabaseHelper.hpp"
-#include "database/AlgorandOperationDatabaseHelper.hpp"
+#include "database/AlgorandOperationsDatabaseHelper.hpp"
 #include "model/AlgorandModelMapper.hpp"
 #include "operations/AlgorandOperation.hpp"
 #include "transactions/api_impl/AlgorandTransactionImpl.hpp"
+
 
 #include <api/AlgorandAssetAmount.hpp>
 #include <api/AlgorandAssetParams.hpp>
@@ -101,19 +102,29 @@ namespace algorand {
         return false;
     }
 
-    int Account::putTransaction(soci::session &sql, const model::Transaction &transaction)
+    void Account::interpretTransaction(const model::Transaction &transaction, std::vector<Operation> &out)
     {
         const auto wallet = getWallet();
         if (wallet == nullptr) {
             throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
         }
-        const auto txuid = TransactionDatabaseHelper::putTransaction(sql, getAccountUid(), transaction);
-        const auto operation = Operation(shared_from_this(), transaction);
 
-        if (OperationDatabaseHelper::putAlgorandOperation(sql, txuid, operation)) {
-            emitNewOperationEvent(operation.getBackend());
-        }
-        return static_cast<int>(operation.getBackend().type);
+        const auto operation = Operation(shared_from_this(), transaction);
+        out.push_back(operation);
+    }
+
+    Try<int> Account::bulkInsert(const std::vector<Operation> &operations) {
+        return Try<int>::from([&] () {
+            soci::session sql(getWallet()->getDatabase()->getPool());
+            soci::transaction tr(sql);
+            OperationsDatabaseHelper::bulkInsert(sql, operations);
+            tr.commit();
+            // Emit
+            for (const auto& op : operations) {
+                emitNewOperationEvent(op.getBackend());
+            }
+            return operations.size();
+        });
     }
 
     void Account::getSpendableBalance(
@@ -626,10 +637,9 @@ namespace algorand {
             }
              getInternalPreferences()->getSubPreferences("AlgorandAccountSynchronizer")->editor()->putObject<SavedState>("state", savedState.getValue())->commit();
         }
-        sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ",
-            soci::use(accountUid),
-            soci::use(date);
 
+        TransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+        
         log->debug(" Finish erasing data of account : {}", accountUid);
 
         return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
@@ -644,7 +654,6 @@ namespace algorand {
     {
         return _explorer->getAccount(_address.toString());
     }
-
 
 } // namespace algorand
 } // namespace core

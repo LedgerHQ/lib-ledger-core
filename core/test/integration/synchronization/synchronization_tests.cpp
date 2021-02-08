@@ -68,27 +68,14 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin",
                                               configuration));
-        std::set<std::string> emittedOperations;
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
             auto account = createBitcoinLikeAccount(wallet, nextIndex, P2PKH_MEDIUM_XPUB_INFO);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(),receiver);
-
             bool synchronizationDone = false;
-            receiver.reset();
-            receiver = make_receiver([=, &synchronizationDone](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=, &synchronizationDone](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 switch (event->getCode())
                 {
@@ -105,7 +92,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                 auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
                 auto txBuilder = account->buildTransaction(false);
                 auto tx = uv::wait(std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(txBuilder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), 2000), destination)
-                                                                                                    ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF)
+                                                                                                    ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>())
                                                                                                     ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
                                        ->build());
                 EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
@@ -141,26 +128,13 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumDGBXpubSynchronization) {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "digibyte", configuration));
-        std::set<std::string> emittedOperations;
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
             auto account = createBitcoinLikeAccount(wallet, nextIndex, P2WPKH_DGB_MEDIUM_KEYS_INFO);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(),receiver);
-
-            receiver.reset();
-            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
@@ -183,26 +157,13 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumLTCXpubSynchronization) {
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "litecoin", configuration));
-        std::set<std::string> emittedOperations;
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
             auto account = createBitcoinLikeAccount(wallet, nextIndex, P2WPKH_LTC_MEDIUM_KEYS_INFO);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(),receiver);
-
-            receiver.reset();
-            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
@@ -335,7 +296,6 @@ TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
     {
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "bitcoin_testnet",
                                               api::DynamicObject::newInstance()));
-        std::set<std::string> emittedOperations;
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             auto info = uv::wait(wallet->getNextExtendedKeyAccountCreationInfo());
@@ -343,19 +303,7 @@ TEST_F(BitcoinLikeWalletSynchronization, TestNetSynchronization) {
             EXPECT_EQ(nextIndex, 0);
             auto account = createBitcoinLikeAccount(wallet, nextIndex, info);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(),receiver);
-
-            receiver.reset();
-            receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
@@ -406,20 +354,9 @@ TEST_F(BitcoinLikeWalletSynchronization, MultipleSynchronization) {
             accounts.push_back(account);
         }
 
-        std::set<std::string> emittedOperations;
         {
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
 
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(getTestExecutionContext(), receiver);
-
-            static std::function<void (int)> syncAccount = [accounts, receiver, this](int index){
+            static std::function<void (int)> syncAccount = [accounts, this](int index){
                 auto localReceiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                     fmt::print("Received event {}\n", api::to_string(event->getCode()));
                     if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
@@ -456,19 +393,7 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizationAfterErase) {
         info.extendedKeys.push_back(P2PKH_MEDIUM_XPUB_INFO.extendedKeys[0]);
         auto account = createBitcoinLikeAccount(wallet, nextIndex, info);
 
-        std::set<std::string> emittedOperations;
         {
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(dispatcher->getMainExecutionContext(), receiver);
-
             auto date = "2000-03-27T09:10:22Z";
             auto formatedDate = DateUtils::fromJSON(date);
 
@@ -552,7 +477,6 @@ TEST_F(BitcoinLikeWalletSynchronization, GetSelfRecipients) {
         info.extendedKeys.push_back(SELF_RECIPIENT_XPUB_INFO.extendedKeys[0]);
         auto account = createBitcoinLikeAccount(wallet, nextIndex, info);
 
-        std::set<std::string> emittedOperations;
         auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
             fmt::print("Received event {}\n", api::to_string(event->getCode()));
 
@@ -743,4 +667,29 @@ TEST_F(BitcoinLikeWalletSynchronization, SynchronizeAndFilterOperationsByBlockHe
     testOperations(blockHeight, QueryType::LTE);
     testOperations(blockHeight, QueryType::GTE);
     testOperations(blockHeight, QueryType::NIL);
+}
+
+TEST_F(BitcoinLikeWalletSynchronization, SynchronizeWithMultiThreading) {
+    // change to auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), false, false); if we want to test single thread http client
+    auto pool = newDefaultPool("my_ppol", "test", api::DynamicObject::newInstance(), false, true);
+    {
+        auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-178a5e9c8a64", "bitcoin",
+            api::DynamicObject::newInstance()));
+        auto synchronize = [wallet, pool, this]() {
+            auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
+            auto bus = account->synchronize();
+            auto receiver = make_receiver([=](const std::shared_ptr<api::Event>& event) {
+                fmt::print("Received event {}\n", api::to_string(event->getCode()));
+                if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
+                    return;
+                dispatcher->stop();
+                });
+
+            bus->subscribe(getTestExecutionContext(), receiver);
+            dispatcher->waitUntilStopped();
+            EXPECT_EQ(uv::wait(account->getBalance())->toString(), "166505122");
+            return bus;
+        };
+        auto b = synchronize();
+    }
 }

@@ -1,11 +1,13 @@
 /*
- * AlgorandOperationDatabaseHelper
  *
- * Created by Hakim Aammar on 28/07/2020.
+ * AlgorandOperationsDatabaseHelper.hpp
+ * ledger-core
+ *
+ * Created by Habib LAFET on 12/01/2021.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,30 +29,22 @@
  *
  */
 
-#include "AlgorandOperationDatabaseHelper.hpp"
+#ifndef LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP
+#define LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP
+
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
+#include <soci.h>
 
 namespace ledger {
-namespace core {
-namespace algorand {
-
-    bool OperationDatabaseHelper::putAlgorandOperation(soci::session & sql,
-                                                     const std::string & txUid,
-                                                     const Operation & operation)
-    {
-        const auto newOperation = ledger::core::OperationDatabaseHelper::putOperation(sql, operation.getBackend());
-        const auto opUid = operation.getBackend().uid;
-        const auto txHash = operation.getTransaction()->getId();
-
-        if (newOperation) {
-            sql << "INSERT INTO algorand_operations VALUES(:uid, :tx_uid, :tx_hash)",
-                soci::use(opUid),
-                soci::use(txUid),
-                soci::use(txHash);
+    namespace core {
+        namespace algorand {
+            class OperationsDatabaseHelper {
+            public:
+                static void bulkInsert(soci::session& sql, const std::vector<algorand::Operation>& operations);
+            };
         }
-
-        return newOperation;
     }
+}
 
-}
-}
-}
+
+#endif //LEDGER_CORE_ALGORANDOPERATIONSDATABASEHELPER_HPP

@@ -260,7 +260,8 @@ namespace ledger {
                 auto client = std::make_shared<HttpClient>(
                     baseUrl,
                     _httpEngine,
-                    getDispatcher()->getMainExecutionContext()
+                    getDispatcher()->getMainExecutionContext(),
+                    getDispatcher()->getThreadPoolExecutionContext("httpExecutionContext")
                 );
                 _httpClients[baseUrl] = client;
                 client->setLogger(logger());

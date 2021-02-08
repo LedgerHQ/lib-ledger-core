@@ -40,6 +40,7 @@
 #include <database/soci-option.h>
 #include <utils/Exception.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/cosmos/CosmosLikeConstants.hpp>
 #include <wallet/cosmos/database/CosmosLikeTransactionDatabaseHelper.hpp>
 #include <wallet/cosmos/database/SociCosmosAmount.hpp>

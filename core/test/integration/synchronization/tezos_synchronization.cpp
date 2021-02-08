@@ -54,7 +54,7 @@ class TezosLikeWalletSynchronization : public BaseFixture {
 
 };
 
-TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
+TEST_F(TezosLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
     auto pool = newDefaultPool("xtz", "");
     static std::function<void (
             const std::string &,
@@ -67,28 +67,15 @@ TEST_F(TezosLikeWalletSynchronization, MediumXpubSynchronization) {
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, explorerURL);
         auto wallet = uv::wait(pool->createWallet(walletName, "tezos", configuration));
-        std::set<std::string> emittedOperations;
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
 
             auto account = createTezosLikeAccount(wallet, nextIndex, XTZ_KEYS_INFO);
 
-            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
-                if (event->getCode() == api::EventCode::NEW_OPERATION) {
-                    auto uid = event->getPayload()->getString(
-                            api::Account::EV_NEW_OP_UID).value();
-                    EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-                }
-            });
-
             auto context = getTestExecutionContext();
 
-            auto eventBus = pool->getEventBus();
-            eventBus->subscribe(context, receiver);
-
-            receiver.reset();
-            receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
+            auto receiver = make_receiver([&](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
@@ -194,28 +181,13 @@ TEST_F(TezosLikeWalletSynchronization, NonActivated) {
     configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://api.tzstats.com/explorer");
 
     auto wallet = uv::wait(pool->createWallet("tezos wallet", "tezos", configuration));
-    std::set<std::string> emittedOperations;
 
     auto nextIndex = uv::wait(wallet->getNextAccountIndex());
     EXPECT_EQ(nextIndex, 0);
 
     auto account = createTezosLikeAccount(wallet, nextIndex, XTZ_NON_ACTIVATED_KEYS_INFO);
 
-    auto receiver =
-        make_receiver([&](const std::shared_ptr<api::Event> &event) {
-          if (event->getCode() == api::EventCode::NEW_OPERATION) {
-            auto uid = event->getPayload()
-                           ->getString(api::Account::EV_NEW_OP_UID)
-                           .value();
-            EXPECT_EQ(emittedOperations.find(uid), emittedOperations.end());
-          }
-        });
-
-    auto eventBus = pool->getEventBus();
-    eventBus->subscribe(getTestExecutionContext(), receiver);
-
-    receiver.reset();
-    receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
+    auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
       fmt::print("Received event {}\n", api::to_string(event->getCode()));
       if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
         return;

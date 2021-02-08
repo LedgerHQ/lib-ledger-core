@@ -29,7 +29,7 @@ echo "========> Install sbt"
 brew install sbt
 
 echo "========> Install C++ dependencies"
-brew install --build-from-source cmake
+brew install cmake
 
 echo "========> Install PostgreSQL"
 # Install with verbose otherwise the setup may timeout the CI because it doesn't log.

@@ -48,7 +48,7 @@ namespace ledger {
         )); // Max ui512
 
         BitcoinLikeTransactionBuilder::BitcoinLikeTransactionBuilder(const BitcoinLikeTransactionBuilder &cpy)
-                : _request(std::make_shared<BigInt>(cpy._currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
+                : _request(std::make_shared<BigInt>(cpy._currency.bitcoinLikeNetworkParameters.value().Dust)) { 
             _currency = cpy._currency;
             _build = cpy._build;
             _request = cpy._request;
@@ -60,7 +60,7 @@ namespace ledger {
                 const std::shared_ptr<api::ExecutionContext> &context, const api::Currency &currency,
                 const std::shared_ptr<spdlog::logger> &logger,
                 const BitcoinLikeTransactionBuildFunction &buildFunction) :
-                _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
+                _request(std::make_shared<BigInt>(currency.bitcoinLikeNetworkParameters.value().Dust)) { 
             _currency = currency;
             _build = buildFunction;
             _context = context;
@@ -104,11 +104,11 @@ namespace ledger {
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder>
-        BitcoinLikeTransactionBuilder::pickInputs(api::BitcoinLikePickingStrategy strategy, int32_t sequence) {
+        BitcoinLikeTransactionBuilder::pickInputs(api::BitcoinLikePickingStrategy strategy, int32_t sequence, optional<int32_t> maxUtxo) {
             //Fix: use uniform initialization
-            using UTXOPickerType = std::tuple<api::BitcoinLikePickingStrategy, uint32_t>;
-            UTXOPickerType new_utxo_picker{strategy, sequence};
-            _request.utxoPicker = Option<UTXOPickerType>(std::move(new_utxo_picker));
+            
+            BitcoinUtxoPickerParams new_utxo_picker{strategy, sequence, maxUtxo};
+            _request.utxoPicker = Option<BitcoinUtxoPickerParams>(std::move(new_utxo_picker));
             return shared_from_this();
         }
 
@@ -161,7 +161,7 @@ namespace ledger {
 
         void BitcoinLikeTransactionBuilder::reset() {
             _request = BitcoinLikeTransactionBuildRequest(std::make_shared<BigInt>(
-                    _currency.bitcoinLikeNetworkParameters.value().DustAmount)
+            _currency.bitcoinLikeNetworkParameters.value().Dust) 
             );
         }
 

@@ -106,9 +106,7 @@ namespace ledger {
                 RippleLikeOperationDatabaseHelper::bulkInsert(sql, operations);
                 tr.commit();
                 // Emit
-                for (const auto& op : operations) {
-                    emitNewOperationEvent(op);
-                }
+                emitNewOperationsEvent(operations);
                 return operations.size();
             });
         }
@@ -293,10 +291,10 @@ namespace ledger {
             //Update account's internal preferences (for synchronization)
             // Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
-
+            
             auto accountUid = getAccountUid();
-            sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
-                    accountUid), soci::use(date);
+            RippleLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+
             log->debug(" Finish erasing data of account : {}", accountUid);
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 

@@ -475,8 +475,8 @@ namespace ledger {
                         // Interpret transactions to operations and update last block
                         for (const auto& tx : bulk->transactions) {
                             // Update last block to chain query
-                            if (lastBlock.isEmpty() ||
-                                lastBlock.getValue().height > tx.block.getValue().height) {
+                            if (tx.block.nonEmpty() && (lastBlock.isEmpty() ||
+                                lastBlock.getValue().height < tx.block.getValue().height)) {
                                 lastBlock = tx.block;
                             }
 
@@ -513,14 +513,10 @@ namespace ledger {
                         // END NEW CODE
 
                         // Get the last block
-                        if (bulk->transactions.size() > 0) {
-                            auto &lastBlock = bulk->transactions.back().block;
-
-                            if (lastBlock.nonEmpty()) {
-                                batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
-                                batchState.blockHash = lastBlock.getValue().hash;
-                                buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-                            }
+                        if (bulk->transactions.size() > 0 && lastBlock.nonEmpty() ) {
+                            batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
+                            batchState.blockHash = lastBlock.getValue().hash;
+                            buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                         }
 
                         auto hadTX = hadTransactions || bulk->transactions.size() > 0;

@@ -108,30 +108,31 @@ namespace ledger {
                 StellarLikeBlockchainExplorerAccountSynchronizer::SavedState &state) {
             auto address = account->getKeychain()->getAddress()->toString();
             auto self = shared_from_this();
-           fmt::print("Current paging token: {}\n", state.transactionPagingToken.getValueOr("no paging token"));
             _explorer->getTransactions(address, state.transactionPagingToken)
                 .onComplete(account->getContext(), [self, account, state] (const Try<stellar::TransactionVector>& txs) mutable {
                 if (txs.isFailure()) {
                     self->failSynchronization(txs.getFailure());
                 } else {
                     {
+                        std::vector<Operation> operations;
                         for (const auto &tx : txs.getValue()) {
-                            soci::session sql(self->_database->getPool());
-                            soci::transaction tr(sql);
                             account->logger()->debug("XLM transaction hash: {}, paging_token: {}", tx->hash, tx->pagingToken);
-                            auto const flag = account->putTransaction(sql, *tx);
-
-                            if (::ledger::core::account::isInsertedOperation(flag)) {
+                            account->interpretTransaction(*tx, operations);
+                            Try<int> tryPutTx = account->bulkInsert(operations);
+                            if (tryPutTx.isFailure()) {
+                                account->logger()->error("Failed to bulk insert because: {}", tryPutTx.getFailure().getMessage());
+                                throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed ({})", tryPutTx.exception().getValue().getMessage());
+                            } 
+                            else {
                                 ++state.insertedOperations;
-                            }
-                            tr.commit();
+                            } 
+                            
                             state.lastBlockHeight = std::max(state.lastBlockHeight, tx->ledger);
                         }
                     }
                     account->emitEventsNow();
                     if (!txs.getValue().empty()) {
                         state.transactionPagingToken = txs.getValue().back()->pagingToken;
-                        fmt::print("Paging token for next round: {}\n", state.transactionPagingToken.getValueOr("no paging token"));
                         {
                             auto preferences = account->getInternalPreferences()->getSubPreferences("StellarLikeBlockchainExplorerAccountSynchronizer");
                             preferences->editor()->putObject("state", state)->commit();

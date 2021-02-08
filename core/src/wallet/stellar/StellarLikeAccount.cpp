@@ -37,6 +37,7 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include "database/StellarLikeLedgerDatabaseHelper.hpp"
 #include "database/StellarLikeTransactionDatabaseHelper.hpp"
+#include "database/StellarLikeOperationDatabaseHelper.hpp"
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <set>
 #include <wallet/common/BalanceHistory.hpp>
@@ -235,8 +236,8 @@ namespace ledger {
             auto self = getSelf();
             return async<api::ErrorCode>([=] () {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
-                        accountUid), soci::use(date);
+                StellarLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+                
                 self->_params.synchronizer->reset(self, date);
                 log->debug(" Finish erasing data of account : {}", accountUid);
                 return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
@@ -251,14 +252,14 @@ namespace ledger {
             return StellarLikeLedgerDatabaseHelper::putLedger(sql, getWallet()->getCurrency(), ledger) ? 1 : 0;
         }
 
-        int StellarLikeAccount::putTransaction(soci::session &sql, const stellar::Transaction &tx) {
+        void StellarLikeAccount::interpretTransaction(const stellar::Transaction &tx, std::vector<Operation> &out) {
             if (tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
                 tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
                 // Ignore transaction with unhandled envelope types.
-                return 0;
+                return;
             }
             int createdOperations = 0;
-            StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
+            //StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
             Operation operation;
             operation.accountUid = getAccountUid();
             operation.currencyName = getWallet()->getCurrency().name;
@@ -294,9 +295,10 @@ namespace ledger {
                     stellarOperation.to = operation.recipients[0];
                 operation.stellarOperation = {stellarOperation, tx};
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
+                //OperationDatabaseHelper::putOperation(sql, operation);
                 createdOperations += 1;
-                emitNewOperationEvent(operation);
+                //emitNewOperationEvent(operation);
+                out.push_back(operation);
             };
 
             auto opIndex = 0;
@@ -391,7 +393,20 @@ namespace ledger {
                 operation.recipients.clear();
                 opIndex += 1;
             }
-            return createdOperations;
+        }
+
+        Try<int> StellarLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
+            return Try<int>::from([&] () {
+                soci::session sql(getWallet()->getDatabase()->getPool());
+                soci::transaction tr(sql);
+                StellarLikeOperationDatabaseHelper::bulkInsert(sql, operations);
+                tr.commit();
+                // Emit
+                for (const auto& op : operations) {
+                    emitNewOperationEvent(op);
+                }
+                return operations.size();
+            });
         }
 
         void StellarLikeAccount::updateAccountInfo(soci::session &sql, stellar::Account &account) {

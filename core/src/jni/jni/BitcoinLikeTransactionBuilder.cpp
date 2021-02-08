@@ -99,13 +99,14 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_000
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1pickInputs(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_strategy, jint j_sequence)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeTransactionBuilder_00024CppProxy_native_1pickInputs(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_strategy, jint j_sequence, jobject j_maxUtxo)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeTransactionBuilder>(nativeRef);
         auto r = ref->pickInputs(::djinni_generated::BitcoinLikePickingStrategy::toCpp(jniEnv, j_strategy),
-                                 ::djinni::I32::toCpp(jniEnv, j_sequence));
+                                 ::djinni::I32::toCpp(jniEnv, j_sequence),
+                                 ::djinni::Optional<std::experimental::optional, ::djinni::I32>::toCpp(jniEnv, j_maxUtxo));
         return ::djinni::release(::djinni_generated::BitcoinLikeTransactionBuilder::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

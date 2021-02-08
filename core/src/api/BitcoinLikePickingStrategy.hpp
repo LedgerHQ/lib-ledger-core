@@ -21,6 +21,8 @@ enum class BitcoinLikePickingStrategy : int {
     DEEP_OUTPUTS_FIRST,
     OPTIMIZE_SIZE,
     MERGE_OUTPUTS,
+    HIGHEST_FIRST_LIMIT_UTXO,
+    LIMIT_UTXO,
 };
 LIBCORE_EXPORT  std::string to_string(const BitcoinLikePickingStrategy& bitcoinLikePickingStrategy);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const BitcoinLikePickingStrategy &o);

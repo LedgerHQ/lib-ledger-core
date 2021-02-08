@@ -75,7 +75,11 @@ namespace algorand {
 
         bool putBlock(soci::session& sql, const api::Block& block);
 
-        int putTransaction(soci::session& sql, const model::Transaction& transaction);
+        void interpretTransaction(const model::Transaction& transaction,
+                                      std::vector<Operation>& out);
+
+        Try<int> bulkInsert(const std::vector<Operation>& operations);
+
 
         const Address& getAddress() const;
 

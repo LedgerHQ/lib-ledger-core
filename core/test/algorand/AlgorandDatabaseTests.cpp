@@ -138,8 +138,9 @@ TEST_F(AlgorandDatabaseTest, DISABLED_OperationsDBTest) {
 
     // Test writing into DB
     {
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        account->putTransaction(sql, txRef);
+        std::vector<algorand::Operation> operations;
+        account->interpretTransaction(txRef, operations);
+        account->bulkInsert(operations);
     }
 
     // Test reading from DB
@@ -178,9 +179,11 @@ TEST_F(AlgorandDatabaseTest, DISABLED_queryTransactions)
     auto assetConfig = assetConfigTransaction();
     assetConfig.header.sender = algorand::Address(TEST_ACCOUNT_ADDRESS);
 
-    account->putTransaction(sql, payment);
-    account->putTransaction(sql, assetTransfer);
-    account->putTransaction(sql, assetConfig);
+    std::vector<algorand::Operation> operations;
+    account->interpretTransaction(payment, operations);
+    account->interpretTransaction(assetTransfer, operations);
+    account->interpretTransaction(assetConfig, operations);
+    account->bulkInsert(operations);
 
     auto txns = TransactionDatabaseHelper::queryTransactionsInvolving(sql, OBELIX_ADDRESS);
     ASSERT_EQ(txns.size(), 2);

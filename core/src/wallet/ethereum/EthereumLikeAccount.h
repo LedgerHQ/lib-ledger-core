@@ -90,6 +90,7 @@ namespace ledger {
             std::shared_ptr<api::EventBus> synchronize() override ;
             std::string getRestoreKey() override ;
 
+            void emitNewERC20Operations(std::vector<ERC20LikeOperation>& ops, const std::string &accountUid);
             void emitNewERC20Operation(ERC20LikeOperation& op, const std::string &accountUid);
 
             static EthereumLikeBlockchainExplorerTransaction getETHLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<EthereumLikeAccount> &account,
@@ -121,6 +122,8 @@ namespace ledger {
                                   const std::vector<ERC20LikeAccountDatabaseEntry> &erc20Entries);
 
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
+            void emitEventsNow() override;
+
 
         private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
@@ -135,6 +138,8 @@ namespace ledger {
             uint64_t _currentBlockHeight;
             std::vector<ERC20LikeAccountDatabaseEntry> erc20Entries;
             std::vector<std::shared_ptr<api::ERC20LikeAccount> >_erc20LikeAccounts;
+            std::mutex _erc20EventLock;
+            std::shared_ptr<api::Event> _batchedErc20Event;
         };
     }
 }
