@@ -6,6 +6,15 @@ BitcoinLikeFeePolicy = enum {
     PER_KBYTE;
 }
 
+# Strategy used to compute the dust.
+#
+# This basically gives the unit in which the dust will be expressed.
+BitcoinLikeDustPolicy = enum {
+    FIXED;
+    PER_BYTE;
+    PER_KBYTE;
+}
+
 # Bitcoin network parameters.
 BitcoinLikeNetworkParameters = record {
     # Name of the network.
@@ -19,7 +28,9 @@ BitcoinLikeNetworkParameters = record {
     # Policy to use when expressing fee amount.
     FeePolicy: BitcoinLikeFeePolicy;
     # Minimal amount a UTXO should have before being considered BTC dust.
-    DustAmount: i64;
+    Dust: i64;
+    # Policy to use when expressing dust
+    DustPolicy: BitcoinLikeDustPolicy;
     # Constant prefix to prepend all signature messages.
     MessagePrefix: string;
     # Are transactions encoded with timestamp?

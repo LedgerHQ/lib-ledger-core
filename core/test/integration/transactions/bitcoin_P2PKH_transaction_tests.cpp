@@ -64,7 +64,8 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
             {0x05},
             {0x04, 0x88, 0xB2, 0x1E},
             api::BitcoinLikeFeePolicy::PER_BYTE,
-            (std::numeric_limits<int64_t>::max)(),
+            std::numeric_limits<int64_t>::max(),
+            api::BitcoinLikeDustPolicy::FIXED,
             "Bitcoin Stardust Signed Message:\n",
             false,
             0,
@@ -113,9 +114,10 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 }
 
 TEST_F(BitcoinStardustTransaction, FilterDustUtxo) {
+    int64_t dustAmount = BitcoinLikeTransactionApi::computeDustAmount(currency, 0);
     ASSERT_EQ(
-        currency.bitcoinLikeNetworkParameters->DustAmount,
-        (std::numeric_limits<int64_t>::max)()
+        dustAmount,
+        std::numeric_limits<int64_t>::max()
     ) << "The currency in this test should have a very high dust amount";
 
     auto builder = tx_builder();

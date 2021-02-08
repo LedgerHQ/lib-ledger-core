@@ -190,7 +190,7 @@ namespace ledger {
         // Add muxed version in stellar network parameters
         template <> void migrate<22>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<22>(soci::session& sql, api::DatabaseBackendType type);
-
+      
         // Algorand support
         template <> void migrate<23>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<23>(soci::session& sql, api::DatabaseBackendType type);
@@ -199,6 +199,9 @@ namespace ledger {
         template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type);
 
+        // Add bitcoin dust policy
+        template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type);
     }
 }
 

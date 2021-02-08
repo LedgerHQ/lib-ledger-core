@@ -173,6 +173,8 @@ BitcoinLikeTransaction = interface +c {
     # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
     # size.
     getEstimatedSize(): EstimatedSize;
+    # Get the dust amount based on the maximum estimated size of the transaction
+    getDustAmount(): i64;
     # Sign all inputs for given transaction. 
     # Build DER encoded signature from RSV data.
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
