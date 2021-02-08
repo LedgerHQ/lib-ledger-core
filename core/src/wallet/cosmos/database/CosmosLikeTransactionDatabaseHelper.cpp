@@ -421,5 +421,27 @@ void CosmosLikeTransactionDatabaseHelper::inflateMsgFeesSpecifics(
     soci::stringToCoin(row.get<std::string>(COL_MSG_AMOUNT), content.fees);
 }
 
+void CosmosLikeTransactionDatabaseHelper::eraseDataSince(
+    soci::session &sql,
+    const std::string &accountUid,
+    const std::chrono::system_clock::time_point & date) {
+
+    soci::rowset<std::string> rows = (sql.prepare <<
+        "SELECT transaction_uid FROM cosmos_messages AS c_msg "
+        "JOIN cosmos_operations AS c_op ON c_op.message_uid = c_msg.uid "
+        "JOIN operations AS op ON c_op.uid = op.uid "
+        "WHERE op.account_uid = :uid AND op.date >= :date", 
+        soci::use(accountUid), soci::use(date)
+    );
+    std::vector<std::string> txToDelete(rows.begin(), rows.end());
+    if (!txToDelete.empty()) {
+        sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date", 
+            soci::use(accountUid), soci::use(date);
+        sql << "DELETE FROM cosmos_transactions"
+            " WHERE uid IN (:uids)", soci::use(txToDelete);
+    }
+}
+
+
 }  // namespace core
 }  // namespace ledger
