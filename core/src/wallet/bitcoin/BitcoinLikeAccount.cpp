@@ -639,7 +639,7 @@ namespace ledger {
                     auto keychain = self->getKeychain();
                     soci::session session(self->getWallet()->getDatabase()->getPool());
 
-                    return BitcoinLikeUTXODatabaseHelper::queryAllUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
+                    return BitcoinLikeUTXODatabaseHelper::queryAllUsableUtxos(session, self->getAccountUid(), self->getWallet()->getCurrency());
                 });
             };
             auto getTransaction = [self] (const std::string& hash) -> FuturePtr<BitcoinLikeBlockchainExplorerTransaction> {

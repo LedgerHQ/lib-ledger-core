@@ -237,7 +237,6 @@ namespace ledger {
         BitcoinLikeUtxoPicker::createFilteredUtxoFunction(const BitcoinLikeTransactionBuildRequest &request,
                                                           const std::shared_ptr<BitcoinLikeKeychain> &keychain,
                                                           const BitcoinLikeGetUtxoFunction &getUtxo) {
-            auto minAmount = getCurrency().bitcoinLikeNetworkParameters.value().DustAmount;
             return [=] () -> Future<std::vector<BitcoinLikeUtxo>> {
                 return getUtxo().map<std::vector<BitcoinLikeUtxo>>(getContext(), [=] (auto const &utxos) {
                     auto const isNotExcluded = [&] (auto const &currentUtxo) {
@@ -245,7 +244,6 @@ namespace ledger {
                         // the entire vector to compare the UTXO amount, this is fine to apply the filter(s) here.
                         // The filter are sorted by ascending time order.
                         return !(currentUtxo.address.isEmpty()
-                                 || currentUtxo.value.toLong() < minAmount
                                  || !keychain->contains(currentUtxo.address.getValue())
                                  || request.excludedUtxos.count(BitcoinLikeTransactionUtxoDescriptor{currentUtxo.transactionHash, currentUtxo.index}) > 0);
                     };

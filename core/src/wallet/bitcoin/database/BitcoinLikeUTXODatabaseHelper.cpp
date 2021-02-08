@@ -88,20 +88,21 @@ namespace ledger {
             return out.size();
         }
 
-        std::vector<BitcoinLikeUtxo> BitcoinLikeUTXODatabaseHelper::queryAllUtxos(
+        std::vector<BitcoinLikeUtxo> BitcoinLikeUTXODatabaseHelper::queryAllUsableUtxos(
             soci::session &session, std::string const &accountUid, api::Currency const &currency)
         {
+            auto minAmount = currency.bitcoinLikeNetworkParameters.value().DustAmount;    
             soci::rowset<soci::row> rows = (
                 session.prepare <<
                     "SELECT o.address, o.idx, o.transaction_hash, o.amount, o.script, o.block_height "
                     "FROM bitcoin_outputs AS o "
                     "LEFT OUTER JOIN bitcoin_inputs AS i ON i.previous_tx_uid = o.transaction_uid AND i.previous_output_idx = o.idx "
                     "WHERE i.previous_tx_uid IS NULL AND o.account_uid = :uid "
+                    "AND o.address IS NOT NULL AND o.amount >= :minAmount "
                     "ORDER BY o.block_height",
-                use(accountUid));
+                use(accountUid), use(minAmount));
 
-            std::vector<BitcoinLikeUtxo> utxos;
-
+            std::vector<BitcoinLikeUtxo> utxos;           
             for (auto& row : rows) {
                 if (row.get_indicator(0) != i_null) {
                     BitcoinLikeUtxo output{
@@ -117,7 +118,7 @@ namespace ledger {
                     utxos.push_back(output);
                 }
             }
-
+            
             return utxos;
         }
     }

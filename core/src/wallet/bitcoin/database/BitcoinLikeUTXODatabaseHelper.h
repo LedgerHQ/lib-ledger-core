@@ -54,7 +54,7 @@ namespace ledger {
             static std::size_t UTXOcount(soci::session& sql, const std::string& accountUid,
                                          std::function<bool (const std::string& address)> filter);
 
-            static std::vector<BitcoinLikeUtxo> queryAllUtxos(
+            static std::vector<BitcoinLikeUtxo> queryAllUsableUtxos(
                 soci::session &session, std::string const &accountUid, api::Currency const &currency);
 
         };
