@@ -10,13 +10,13 @@ namespace ledger {
 			        0, {"btc_testnet"}, {"49'/1'/0'"}, {"tpubDCcvqEHx7prGddpWTfEviiew5YLMrrKy4oJbt14teJZenSi6AYMAs2SNXwYXFzkrNYwECSmobwxESxMCrpfqw4gsUt88bcr8iMrJmbb8P2q"}
 			);
 			std::shared_ptr<core::BitcoinLikeAccount> inflate(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
-				auto account = std::dynamic_pointer_cast<core::BitcoinLikeAccount>(wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));
-				soci::session sql(pool->getDatabaseSessionPool()->getPool());
-				sql.begin();				account->putTransaction(sql, *core::JSONUtils::parse<core::TransactionParser>(TX_1));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TransactionParser>(TX_2));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TransactionParser>(TX_3));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TransactionParser>(TX_4));
-				sql.commit();
+				auto account = std::dynamic_pointer_cast<core::BitcoinLikeAccount>(uv::wait(wallet->newAccountWithExtendedKeyInfo(XPUB_INFO)));
+                std::vector<core::Operation> operations;
+                account->interpretTransaction(*core::JSONUtils::parse<core::TransactionParser>(TX_1), operations, true);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TransactionParser>(TX_2), operations, true);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TransactionParser>(TX_3), operations, true);
+                account->interpretTransaction(*core::JSONUtils::parse<core::TransactionParser>(TX_4), operations, true);
+                account->bulkInsert(operations);
 				return account;
 			}
 			const std::string TX_1 = "{\"inputs\": [{\"value\": 1000, \"output_index\": 0, \"output_hash\": \"f603ee77784f4509b052bc49a82cc03a34c0dff96c1ffddd4fec0cd1593a7709\", \"input_index\": 0, \"address\": \"2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF\", \"txinwitness\": [\"3045022100f7320e4fc348284b591d747380d55396cec8ee10f1c23c54274b802e2acfd0d202204ac3af5275d416765b6316a9369a7671a7a9d62e7b1470d6bf3e3924cb26a2e101\", \"03d2f424cd1f60e96241a968b9da3c3f6b780f90538bdf306350b9607c279ad486\"], \"script_signature\": \"160014e4fae08faaa8469c5756fda7fbfde46922a4e7b2\"}, {\"value\": 50000000, \"output_index\": 0, \"output_hash\": \"93ae1990d10745e3ab4bf742d4b06bd513e7a26384617a17525851e4e3ed7038\", \"input_index\": 1, \"address\": \"2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF\", \"txinwitness\": [\"3044022057812f4164f20373e22f9375f6286323e47f0168eca61193029437e3bf135fd30220527012960f3ef1c002b6f2b70bda80126f9926fe0de2e98db380051f626d09ab01\", \"03d2f424cd1f60e96241a968b9da3c3f6b780f90538bdf306350b9607c279ad486\"], \"script_signature\": \"160014e4fae08faaa8469c5756fda7fbfde46922a4e7b2\"}], \"lock_time\": 0, \"hash\": \"8d242c8a858ad9c321905b31ae861fa0ec4cb01ad7da8516862ce50052506db1\", \"outputs\": [{\"script_hex\": \"76a9147c3caaaa10b9c04b9444536c51501971dd2c349788ac\", \"output_index\": 0, \"value\": 20000000, \"address\": \"mrqrm2wUoSuBJnJV568AKznxipSi9LE2T2\"}, {\"script_hex\": \"a91474eca497e567d8d311e256882890974448c536ae87\", \"output_index\": 1, \"value\": 29998480, \"address\": \"2N3uTrmyNePhAbiUxi8uq7P2J7SxS2bCaji\"}], \"amount\": 49998480, \"confirmations\": 326, \"fees\": 2520, \"received_at\": \"2018-05-16T14:06:35Z\", \"block\": {\"time\": \"2018-05-16T14:25:49Z\", \"hash\": \"00000000000001269b6c7e735a39a1dc66153a5e066c40ae02a2532ba8823c4b\", \"height\": 1297830}}";

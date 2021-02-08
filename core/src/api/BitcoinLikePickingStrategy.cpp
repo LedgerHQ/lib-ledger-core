@@ -11,13 +11,17 @@ std::string to_string(const BitcoinLikePickingStrategy& bitcoinLikePickingStrate
         case BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST: return "DEEP_OUTPUTS_FIRST";
         case BitcoinLikePickingStrategy::OPTIMIZE_SIZE: return "OPTIMIZE_SIZE";
         case BitcoinLikePickingStrategy::MERGE_OUTPUTS: return "MERGE_OUTPUTS";
+        case BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO: return "HIGHEST_FIRST_LIMIT_UTXO";
+        case BitcoinLikePickingStrategy::LIMIT_UTXO: return "LIMIT_UTXO";
     };
 };
 template <>
 BitcoinLikePickingStrategy from_string(const std::string& bitcoinLikePickingStrategy) {
     if (bitcoinLikePickingStrategy == "DEEP_OUTPUTS_FIRST") return BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST;
     else if (bitcoinLikePickingStrategy == "OPTIMIZE_SIZE") return BitcoinLikePickingStrategy::OPTIMIZE_SIZE;
-    else return BitcoinLikePickingStrategy::MERGE_OUTPUTS;
+    else if (bitcoinLikePickingStrategy == "MERGE_OUTPUTS") return BitcoinLikePickingStrategy::MERGE_OUTPUTS;
+    else if (bitcoinLikePickingStrategy == "HIGHEST_FIRST_LIMIT_UTXO") return BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO;
+    else return BitcoinLikePickingStrategy::LIMIT_UTXO;
 };
 
 std::ostream &operator<<(std::ostream &os, const BitcoinLikePickingStrategy &o)
@@ -26,6 +30,8 @@ std::ostream &operator<<(std::ostream &os, const BitcoinLikePickingStrategy &o)
         case BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:  return os << "DEEP_OUTPUTS_FIRST";
         case BitcoinLikePickingStrategy::OPTIMIZE_SIZE:  return os << "OPTIMIZE_SIZE";
         case BitcoinLikePickingStrategy::MERGE_OUTPUTS:  return os << "MERGE_OUTPUTS";
+        case BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO:  return os << "HIGHEST_FIRST_LIMIT_UTXO";
+        case BitcoinLikePickingStrategy::LIMIT_UTXO:  return os << "LIMIT_UTXO";
     }
 }
 

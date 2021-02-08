@@ -145,7 +145,7 @@ EthereumGasLimitRequest = record {
     # Current gas price
     gasPrice: optional<string>;
     # Amplifier coefficient for safety
-    amplifier: optional<f64>;
+    amplifier: optional<string>;
 }
 
 # Class representing a Ethereum account.

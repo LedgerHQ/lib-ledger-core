@@ -1,4 +1,39 @@
+## 4.0.0
+> 2021/01/21 NRT
+
+- More stable test environment with libuv and cpp-http implementatioon of services
+- Fix and improve keychain discovery during synchronization
+- Fix reorgs management during synchronization
+- Major synchronization performance improve by reworking the database insertion (~600% improvement)
+- Performance improvement on SECP256K1 derivation during synchronization
+- Major performance improvement during synchronization thanks to multi-threaded synchronization
+- Global performance improvement by moving most part of the code on Thread pools instead of serial execution contexts
+- Fix a memory leak in database sessions
+- Fix a memory leak on HTTP connections
+- Lower memory allocation due to regex compilation in DateUtils
+- Minor bug fixes (ripple model, big int improvements...)
+- Deprecate BlockchainObserver features for all coins
+- Deprecate events NEW_OPERATION and NEW_ERC20_OPERATIONS for UPDATE_OPERATION and UPDATE_ERC
+
+## 3.5.0
+
+> 2020/08/06
+
+- Add Algorand integration
+- Rework RBF transaction filtering algorithm
+- Improve transaction creation performances
+- Add PreferencesBackend API
+- Add support for Stellar protocol 13 update
+- Fix negative fees on Bitcoin transaction creation
+- Add a call on BitcoinLikeAccount to get all account addresses
+- Fix XRP block parser
+- XRP optimistic update on transaction broadcast
+- XTZ fix non-activated account recognition
+- XTZ allow consecutive transaction
+- XTZ don't fallback to 0 balance at every error
+
 ## 3.4.1
+
 > 2020/06/10
 
 - Fix SBT download failures on the CI (for Debian and MacOS)

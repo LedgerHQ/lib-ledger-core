@@ -36,6 +36,7 @@
 #include <tuple>
 #include <unordered_map>
 #include <list>
+#include <mutex>
 
 namespace ledger {
     namespace core {
@@ -44,9 +45,8 @@ namespace ledger {
             void subscribe(const std::shared_ptr<api::ExecutionContext> &context,
                            const std::shared_ptr<api::EventReceiver> &receiver) override;
             void unsubscribe(const std::shared_ptr<api::EventReceiver> &receiver) override;
-
-        private:
             explicit EventBus(const std::shared_ptr<api::ExecutionContext>& context);
+        private:
             friend class EventPublisher;
             void post(const std::shared_ptr<Event>& event);
 
@@ -56,6 +56,7 @@ namespace ledger {
             SubscribersList _subscribers;
             using StickiesMap = std::unordered_map<int32_t, std::shared_ptr<Event>>;
             StickiesMap _stickies;
+            std::mutex _mutex;
         };
     }
 }

@@ -35,7 +35,6 @@
 #include <wallet/cosmos/explorers/CosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/factories/CosmosLikeKeychainFactory.hpp>
 #include <wallet/cosmos/factories/CosmosLikeWalletFactory.hpp>
-#include <wallet/cosmos/observers/CosmosLikeBlockchainObserver.hpp>
 #include <wallet/cosmos/synchronizers/CosmosLikeAccountSynchronizer.hpp>
 
 namespace ledger {
@@ -46,7 +45,6 @@ class CosmosLikeWallet : public virtual api::CosmosLikeWallet, public virtual Ab
     CosmosLikeWallet(
         const std::string &name,
         const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-        const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
         const std::shared_ptr<CosmosLikeKeychainFactory> &keychainFactory,
         const CosmosLikeAccountSynchronizerFactory &synchronizerFactory,
         const std::shared_ptr<WalletPool> &pool,
@@ -82,7 +80,6 @@ class CosmosLikeWallet : public virtual api::CosmosLikeWallet, public virtual Ab
     std::shared_ptr<CosmosLikeWallet> getSelf();
 
     std::shared_ptr<CosmosLikeBlockchainExplorer> _explorer;
-    std::shared_ptr<CosmosLikeBlockchainObserver> _observer;
     std::shared_ptr<CosmosLikeKeychainFactory> _keychainFactory;
     CosmosLikeAccountSynchronizerFactory _synchronizerFactory;
     api::CosmosLikeNetworkParameters _network;

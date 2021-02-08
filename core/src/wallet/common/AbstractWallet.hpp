@@ -70,6 +70,7 @@ namespace ledger {
             std::shared_ptr<api::Preferences> getPreferences() override;
             bool isInstanceOfBitcoinLikeWallet() override;
             bool isInstanceOfCosmosLikeWallet() override;
+            bool isInstanceOfAlgorandLikeWallet() override;
             bool isInstanceOfEthereumLikeWallet() override;
 
             bool isInstanceOfStellarLikeWallet() const override;
@@ -164,6 +165,7 @@ namespace ledger {
         private:
             std::string _name;
             std::string _uid;
+            std::mutex _accountsLock;
             std::shared_ptr<spdlog::logger> _logger;
             std::shared_ptr<api::Logger> _loggerApi;
             std::shared_ptr<EventPublisher> _publisher;

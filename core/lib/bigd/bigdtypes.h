@@ -19,7 +19,7 @@
 
 #ifndef BIGDTYPES_H_
 #define BIGDTYPES_H_ 1
-
+#pragma warning (disable : 4005) // remove macro redefinition warning message
 #include <stddef.h>
 
 /*

@@ -190,7 +190,7 @@ namespace ledger {
                     return self->filterInputs(buddy);
                 })
                 .template flatMap<Unit>(getContext(), [self, buddy] (auto const& utxos) mutable {
-                    auto const sequence = std::get<1>(buddy->request.utxoPicker.getValue());
+                    auto const sequence = buddy->request.utxoPicker.getValue().sequence;
 
                     std::for_each(utxos.cbegin(), utxos.cend(), [self, buddy, sequence] (auto const &utxo) {
                         self->fillInput(buddy, utxo, sequence);

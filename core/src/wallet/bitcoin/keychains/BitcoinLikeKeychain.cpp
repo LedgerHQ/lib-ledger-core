@@ -84,10 +84,10 @@ namespace ledger {
             return _scheme;
         }
 
-        bool BitcoinLikeKeychain::markAsUsed(const std::string &address) {
+        bool BitcoinLikeKeychain::markAsUsed(const std::string &address, bool needExtendKeychain) {
             auto path = getAddressDerivationPath(address);
             if (path.nonEmpty()) {
-                return markPathAsUsed(DerivationPath(path.getValue()));
+                return markPathAsUsed(DerivationPath(path.getValue()), needExtendKeychain);
             } else {
                 return false;
             }

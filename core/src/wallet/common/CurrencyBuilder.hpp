@@ -37,6 +37,7 @@
 #include <api/RippleLikeNetworkParameters.hpp>
 #include <api/TezosLikeNetworkParameters.hpp>
 #include <api/StellarLikeNetworkParameters.hpp>
+#include <api/AlgorandNetworkParameters.hpp>
 
 namespace ledger {
     namespace core {
@@ -52,6 +53,7 @@ namespace ledger {
             CurrencyBuilder& forkOfRipple(api::RippleLikeNetworkParameters params);
             CurrencyBuilder& forkOfTezos(api::TezosLikeNetworkParameters params);
             CurrencyBuilder& forkOfStellar(const api::StellarLikeNetworkParameters& params);
+            CurrencyBuilder& forkOfAlgorand(const api::AlgorandNetworkParameters& params);
             CurrencyBuilder& unit(const std::string& name, int magnitude, const std::string& symbol, const std::string& code);
             CurrencyBuilder& unit(const std::string& name, int magnitude, const std::string& code);
             operator api::Currency() const;
@@ -65,6 +67,7 @@ namespace ledger {
             Option<api::RippleLikeNetworkParameters> _ripple;
             Option<api::TezosLikeNetworkParameters> _tezos;
             Option<api::StellarLikeNetworkParameters> _stellar;
+            Option<api::AlgorandNetworkParameters> _algorand;
             api::WalletType _type;
             std::string _paymentUriScheme;
             int32_t _coinType;

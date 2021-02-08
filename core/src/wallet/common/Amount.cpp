@@ -34,13 +34,13 @@
 namespace ledger {
     namespace core {
 
-        Amount::Amount(const api::Currency &currency, int32_t unitIndex, BigInt &&value) {
+        Amount::Amount(const api::Currency &currency, int32_t unitIndex, BigInt &&value) : ManagedObject<Amount>() {
             _currency = currency;
             _unitIndex = unitIndex;
             _value = value;
         }
 
-        Amount::Amount(const api::Currency &currency, int32_t unitIndex, const BigInt &value) {
+        Amount::Amount(const api::Currency &currency, int32_t unitIndex, const BigInt &value) : ManagedObject<Amount>() {
             _currency = currency;
             _unitIndex = unitIndex;
             _value = value;

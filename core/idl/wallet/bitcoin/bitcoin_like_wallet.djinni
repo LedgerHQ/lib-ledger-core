@@ -224,6 +224,8 @@ BitcoinLikePickingStrategy = enum {
     deep_outputs_first;
     optimize_size;
     merge_outputs;
+    highest_first_limit_utxo;
+    limit_utxo;
 }
 
 BitcoinLikeTransactionBuilder = interface +c {
@@ -265,8 +267,9 @@ BitcoinLikeTransactionBuilder = interface +c {
     # @param strategy The strategy to adopt in order to select which input to use in the transaction.
     # @param sequence The sequence value serialized at the end of the raw transaction. If you don't know what to put here
     # just use 0xFFFFFF
+    # @param maxUtxo The maximum number of utxos to pick (It applies only for HIGHEST_FIRST_LIMIT_UTXO and LIMIT_UTXO)
     # @return A reference on the same builder in order to chain calls.
-    pickInputs(strategy: BitcoinLikePickingStrategy, sequence: i32): BitcoinLikeTransactionBuilder;
+    pickInputs(strategy: BitcoinLikePickingStrategy, sequence: i32, maxUtxo: optional<i32>): BitcoinLikeTransactionBuilder;
 
     # Send funds to the given address. This method can be called multiple times to send to multiple addresses.
     # @param amount The value to send
@@ -295,7 +298,7 @@ BitcoinLikeTransactionBuilder = interface +c {
 
     # Parsing unsigned transaction.
     # parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)
-    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary, currentBlockHeight: optional<i32>): BitcoinLikeTransaction;
+    static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary, currentBlockHeight: i32): BitcoinLikeTransaction;
 }
 
 # Class representing a Bitcoin account.
@@ -310,7 +313,7 @@ BitcoinLikeAccount = interface +c {
     getUTXOCount(callback: Callback<i32>);
     broadcastRawTransaction(transaction: binary, callback: Callback<string>);
     broadcastTransaction(transaction: BitcoinLikeTransaction, callback: Callback<string>);
-    buildTransaction(partial: optional<bool>): BitcoinLikeTransactionBuilder;
+    buildTransaction(partial: bool): BitcoinLikeTransactionBuilder;
     # Get fees from network, fees are ordered in descending order (i.e. fastest to slowest confirmation)
     # Note: it would have been better to have this method on BitcoinLikeWallet
     # but since BitcoinLikeWallet is not used anywhere, it's better to keep all
@@ -320,6 +323,10 @@ BitcoinLikeAccount = interface +c {
     # Get addresses given a range of indices
     # Note: this will return public and change addresses
     getAddresses(from: i64, to: i64, callback: ListCallback<Address>);
+    # get all contained adresses.
+    getAllAddresses(): list<Address>;
+    # get max spendable balance for a given strategy
+    getMaxSpendable(strategy: BitcoinLikePickingStrategy, maxUtxos: optional<i32>, callback: Callback<Amount>);
 }
 
 # A bitcoin-like wallet.

@@ -134,12 +134,12 @@ namespace ledger {
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawTransaction(const api::Currency &currency,
                                                                                     const std::vector<uint8_t> &rawTransaction,
-                                                                                    std::experimental::optional<int32_t> currentBlockHeight,
+                                                                                    int32_t currentBlockHeight,
                                                                                     bool isSigned);
 
             static std::shared_ptr<api::BitcoinLikeTransaction> parseRawSignedTransaction(const api::Currency &currency,
                                                                                           const std::vector<uint8_t> &rawTransaction,
-                                                                                          std::experimental::optional<int32_t> currentBlockHeight);
+                                                                                          int32_t currentBlockHeight);
 
             static api::EstimatedSize estimateSize(std::size_t inputCount,
                                                    std::size_t outputCount,

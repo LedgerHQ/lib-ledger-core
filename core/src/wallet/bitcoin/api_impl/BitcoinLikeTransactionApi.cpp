@@ -485,21 +485,21 @@ namespace ledger {
         std::shared_ptr<api::BitcoinLikeTransaction>
         api::BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(const api::Currency &currency,
                                                                         const std::vector<uint8_t> &rawTransaction,
-                                                                        std::experimental::optional<int32_t> currentBlockHeight) {
+                                                                        int32_t currentBlockHeight) {
             return BitcoinLikeTransactionApi::parseRawTransaction(currency, rawTransaction, currentBlockHeight, false);
         }
 
         std::shared_ptr<api::BitcoinLikeTransaction>
         BitcoinLikeTransactionApi::parseRawSignedTransaction(const api::Currency &currency,
                                                              const std::vector<uint8_t> &rawTransaction,
-                                                             std::experimental::optional<int32_t> currentBlockHeight) {
+                                                             int32_t currentBlockHeight) {
             return BitcoinLikeTransactionApi::parseRawTransaction(currency, rawTransaction, currentBlockHeight, true);
         }
 
         std::shared_ptr<api::BitcoinLikeTransaction>
         BitcoinLikeTransactionApi::parseRawTransaction(const api::Currency &currency,
                                                        const std::vector<uint8_t> &rawTransaction,
-                                                       std::experimental::optional<int32_t> currentBlockHeight,
+                                                       int32_t currentBlockHeight,
                                                        bool isSigned) {
             BytesReader reader(rawTransaction);
             // Parse version
@@ -510,10 +510,10 @@ namespace ledger {
             //Parse additionalBIPs if there are any
             auto &additionalBIPs = params.AdditionalBIPs;
             auto it = std::find(additionalBIPs.begin(), additionalBIPs.end(), "ZIP");
-            auto zipParameters = currentBlockHeight.value_or(0) > networks::ZIP_SAPLING_PARAMETERS.blockHeight ?
+            auto zipParameters = currentBlockHeight > networks::ZIP_SAPLING_PARAMETERS.blockHeight ?
                                  networks::ZIP_SAPLING_PARAMETERS : networks::ZIP143_PARAMETERS;
             if (it != additionalBIPs.end() &&
-                currentBlockHeight.value_or(0) > networks::ZIP143_PARAMETERS.blockHeight) {
+                currentBlockHeight > networks::ZIP143_PARAMETERS.blockHeight) {
                 //Substract overwinterFlag
                 auto overwinterFlag = zipParameters.overwinterFlag[0];
                 version -= (~(overwinterFlag << 24) + 1);
@@ -540,7 +540,7 @@ namespace ledger {
             }
 
             auto keychainEngine = isSegwit ? api::KeychainEngines::BIP49_P2SH : api::KeychainEngines::BIP32_P2PKH;
-            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, keychainEngine, currentBlockHeight.value_or(0));
+            auto tx = std::make_shared<BitcoinLikeTransactionApi>(currency, keychainEngine, currentBlockHeight);
             tx->setVersion(version);
             if (usesTimeStamp) {
                 tx->setTimestamp(timeStamp);

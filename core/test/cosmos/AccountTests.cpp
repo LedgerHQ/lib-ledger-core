@@ -41,13 +41,13 @@ struct CosmosAccounts : public BaseFixture {
 
 };
 
-TEST_F(CosmosAccounts, FirstATOMAccountInfo) {
+TEST_F(CosmosAccounts, DISABLED_FirstATOMAccountInfo) {
     auto const currency = currencies::ATOM;
     auto pool = newDefaultPool();
     backend->enableQueryLogging(true);
 
-    auto wallet = wait(pool->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));
-    auto info = wait(wallet->getNextAccountCreationInfo());
+    auto wallet = uv::wait(pool->createWallet("my_wallet", currency.name, api::DynamicObject::newInstance()));
+    auto info = uv::wait(wallet->getNextAccountCreationInfo());
 
     EXPECT_EQ(info.index, 0);
     EXPECT_EQ(info.owners.size(), 1);

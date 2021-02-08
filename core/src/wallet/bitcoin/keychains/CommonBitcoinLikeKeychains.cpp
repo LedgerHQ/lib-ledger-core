@@ -89,7 +89,7 @@ namespace ledger {
                     .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE);
         }
 
-        bool CommonBitcoinLikeKeychains::markPathAsUsed(const DerivationPath &p) {
+        bool CommonBitcoinLikeKeychains::markPathAsUsed(const DerivationPath &p, bool needExtendKeychain) {
             DerivationPath path(p);
             if (path.getParent().getLastChildNum() == 0) {
                 if (path.getLastChildNum() < _state.maxConsecutiveReceiveIndex ||
@@ -102,7 +102,9 @@ namespace ledger {
                         _state.nonConsecutiveReceiveIndexes.insert(path.getLastChildNum());
                     _state.empty = false;
                     saveState();
-                    getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
+                    if (needExtendKeychain) {
+                        getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
+                    }
                     return true;
                 }
             } else {
@@ -116,10 +118,85 @@ namespace ledger {
                         _state.nonConsecutiveChangeIndexes.insert(path.getLastChildNum());
                     _state.empty = false;
                     saveState();
-                    getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
+                    if (needExtendKeychain) {
+                        getAllObservableAddresses(path.getLastChildNum(), path.getLastChildNum() + _observableRange);
+                    }
                     return true;
                 }
             }
+        }
+
+        //TODO the two following methods are similar. Merge them if possible
+        std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::getAllObservableAddresses(uint32_t from, uint32_t to) {
+            auto currency = getCurrency();
+            std::vector<BitcoinLikeKeychain::Address> res;
+            res.reserve((to - from + 1) * 2);
+            auto preferencesEdit = getPreferences()->edit();
+            bool hasDBChange = false;
+            for (int iPurpose : {KeyPurpose::RECEIVE, KeyPurpose::CHANGE})
+            {
+                for (int index = from; index <= to; index++)
+                {
+                    auto localPath = getDerivationScheme()
+                        .setAccountIndex(getAccountIndex())
+                        .setCoinType(currency.bip44CoinType)
+                        .setNode(iPurpose).setAddressIndex(index).getPath().toString();
+                    auto cacheKey = fmt::format("path:{}", localPath);
+                    auto address = getPreferences()->getString(cacheKey, "");
+
+                    if (address.empty()) {
+                        auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
+                        auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
+                            .setAccountIndex(getAccountIndex())
+                            .setCoinType(currency.bip44CoinType)
+                            .setNode(iPurpose).setAddressIndex(index).getPath().toString();
+                        address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
+                        preferencesEdit = preferencesEdit->putString(cacheKey, address)->putString(fmt::format("address:{}", address), localPath);
+                        hasDBChange = true;
+                    }
+                    res.emplace_back(std::dynamic_pointer_cast<BitcoinLikeAddress>(BitcoinLikeAddress::parse(address, getCurrency(), Option<std::string>(localPath))));
+                }
+            }
+            if (hasDBChange) {
+                preferencesEdit->commit();
+            }
+            return res;
+        }
+
+        std::vector<std::string> CommonBitcoinLikeKeychains::getAllObservableAddressString(uint32_t from, uint32_t to) {
+            auto currency = getCurrency();
+            std::vector<std::string> res;
+            res.reserve((to - from + 1) * 2);
+            auto preferencesEdit = getPreferences()->edit();
+            bool hasDBChange = false;
+            for (int index = from; index <= to; index++)
+            {
+                for (int iPurpose : {KeyPurpose::RECEIVE, KeyPurpose::CHANGE})
+                {
+                    auto localPath = getDerivationScheme()
+                        .setAccountIndex(getAccountIndex())
+                        .setCoinType(currency.bip44CoinType)
+                        .setNode(iPurpose).setAddressIndex(index).getPath().toString();
+                    auto p = getDerivationScheme().getSchemeFrom(DerivationSchemeLevel::NODE).shift(1)
+                        .setAccountIndex(getAccountIndex())
+                        .setCoinType(currency.bip44CoinType)
+                        .setNode(iPurpose).setAddressIndex(index).getPath().toString();
+                    auto cacheKey = fmt::format("path:{}", localPath);
+                    auto address = getPreferences()->getString(cacheKey, "");
+
+                    if (address.empty()) {
+                        auto xpub = iPurpose == KeyPurpose::RECEIVE ? _publicNodeXpub : _internalNodeXpub;
+                        address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
+                        preferencesEdit = preferencesEdit->putString(cacheKey, address)->putString(fmt::format("address:{}", address), localPath);
+                        hasDBChange = true;
+                    }
+                    res.emplace_back(address);
+                }
+            }
+            if (hasDBChange) {
+                preferencesEdit->commit();
+            }
+            return res;
         }
 
         BitcoinLikeKeychain::Address CommonBitcoinLikeKeychains::getFreshAddress(BitcoinLikeKeychain::KeyPurpose purpose) {
@@ -128,17 +205,6 @@ namespace ledger {
 
         bool CommonBitcoinLikeKeychains::isEmpty() const {
             return _state.empty;
-        }
-
-        std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::getAllObservableAddresses(uint32_t from, uint32_t to) {
-            auto length = to - from;
-            std::vector<BitcoinLikeKeychain::Address> result;
-            result.reserve((length + 1) * 2);
-            for (auto i = 0; i <= length; i++) {
-                result.push_back(derive(KeyPurpose::RECEIVE, from + i));
-                result.push_back(derive(KeyPurpose::CHANGE, from + i));
-            }
-            return result;
         }
 
         std::vector<BitcoinLikeKeychain::Address>
@@ -178,7 +244,8 @@ namespace ledger {
                                                             uint32_t to) {
             auto maxObservableIndex = (purpose == KeyPurpose::CHANGE ? _state.maxConsecutiveChangeIndex + _state.nonConsecutiveChangeIndexes.size() : _state.maxConsecutiveReceiveIndex + _state.nonConsecutiveReceiveIndexes.size()) + _observableRange;
             auto length = std::min<size_t >(to - from, maxObservableIndex - from);
-            std::vector<BitcoinLikeKeychain::Address> result(length +1);
+            std::vector<BitcoinLikeKeychain::Address> result;
+            result.reserve(length + 1);
             for (auto i = 0; i <= length; i++) {
                 if (purpose == KeyPurpose::RECEIVE) {
                     result.push_back(derive(KeyPurpose::RECEIVE, from + i));
@@ -221,6 +288,22 @@ namespace ledger {
             return getAddressDerivationPath(address).nonEmpty();
         }
 
+        std::vector<BitcoinLikeKeychain::Address> CommonBitcoinLikeKeychains::getAllAddresses() {
+            std::vector<BitcoinLikeKeychain::Address> addresses;
+            addresses.reserve(_state.maxConsecutiveChangeIndex + 1 + _state.maxConsecutiveReceiveIndex + 1);
+
+            auto fetchAddressesFrom = [&](auto const keyPurpose, auto const maxIndex) {
+                  for (auto i = 0; i <= maxIndex; ++i) {
+                      addresses.push_back(derive(keyPurpose, i));
+                  }
+            };
+
+            fetchAddressesFrom(KeyPurpose::CHANGE, _state.maxConsecutiveChangeIndex);
+            fetchAddressesFrom(KeyPurpose::RECEIVE, _state.maxConsecutiveReceiveIndex);
+
+            return addresses;
+        }
+
         Option<std::vector<uint8_t>> CommonBitcoinLikeKeychains::getPublicKey(const std::string &address) const {
             auto path = getPreferences()->getString(fmt::format("address:{}", address), "");
             if (path.empty()) {
@@ -252,7 +335,7 @@ namespace ledger {
                 address = BitcoinLikeAddress::fromPublicKey(xpub, currency, p, _keychainEngine);
                 // Feed path -> address cache
                 // Feed address -> path cache
-                getPreferences()
+                    getPreferences()
                         ->edit()
                         ->putString(cacheKey, address)
                         ->putString(fmt::format("address:{}", address), localPath)

@@ -31,6 +31,7 @@
 #include "Benchmarker.h"
 #include <utils/DateUtils.hpp>
 #include <utils/DurationUtils.h>
+#include <metrics/DurationsMap.hpp>
 
 namespace ledger {
     namespace core {
@@ -41,24 +42,23 @@ namespace ledger {
         }
 
         Benchmarker &Benchmarker::start() {
-            _startDate = std::chrono::steady_clock::now();
+            _startDate = std::chrono::high_resolution_clock::now();
             if (_logger) {
-                _logger->info("{} started.", _name);
+                _logger->debug("{} started.", _name);
             }
             return *this;
         }
 
         Benchmarker &Benchmarker::stop() {
-            _stopDate = std::chrono::steady_clock::now();
+            _stopDate = std::chrono::high_resolution_clock::now();
             if (_logger) {
-                _logger->info("{} took {}.", _name, DurationUtils::formatDuration(getDuration()));
-            } else {
-                fmt::print("{} took {}.\n", _name, DurationUtils::formatDuration(getDuration()));
+                _logger->debug("{} took {}.", _name, DurationUtils::formatDuration(getDuration()));
             }
+            DurationsMap::getInstance().record(_name, getDuration());
             return *this;
         }
 
-        std::chrono::steady_clock::duration Benchmarker::getDuration() const {
+        std::chrono::high_resolution_clock::duration Benchmarker::getDuration() const {
             return _stopDate - _startDate;
         }
 

@@ -297,8 +297,8 @@ namespace ledger {
                     if (result.isFailure()) {
                         deffer->setError(result.getFailure());
                     } else {
-                        Future<T> f = result.getValue();
-                        f.onComplete(context, [deffer] (const Try<T>& r) {
+                        Future<T> futureRes = result.getValue();
+                        futureRes.onComplete(context, [deffer] (const Try<T>& r) {
                             deffer->setResult(r);
                         });
                     }

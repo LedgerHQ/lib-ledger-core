@@ -92,6 +92,10 @@ namespace ledger {
             return getWalletType() == api::WalletType::COSMOS;
         }
 
+        bool AbstractWallet::isInstanceOfAlgorandLikeWallet() {
+            return getWalletType() == api::WalletType::ALGORAND;
+        }
+
         bool AbstractWallet::isInstanceOfEthereumLikeWallet() {
             return getWalletType() == api::WalletType::ETHEREUM;
         }
@@ -258,11 +262,14 @@ namespace ledger {
         }
 
         FuturePtr<api::Account> AbstractWallet::getAccount(int32_t index) {
-            auto it = _accounts.find(index);
-            if (it != _accounts.end()) {
-                auto ptr = it->second;
-                if (ptr != nullptr)
-                    return FuturePtr<api::Account>::successful(ptr);
+            {
+                //std::lock_guard<std::mutex> lock(_accountsLock);
+                auto it = _accounts.find(index);
+                if (it != _accounts.end()) {
+                    auto ptr = it->second;
+                    if (ptr != nullptr)
+                        return FuturePtr<api::Account>::successful(ptr);
+                }
             }
             auto self = shared_from_this();
             return FuturePtr<api::Account>::async(getPool()->getThreadPoolExecutionContext(), [self, index] () -> std::shared_ptr<api::Account> {
@@ -296,6 +303,7 @@ namespace ledger {
         }
 
         void AbstractWallet::addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount> &account) {
+            //std::lock_guard<std::mutex> lock(_accountsLock);
             _accounts[account->getIndex()] = account;
             _publisher->relay(account->getEventBus());
         }

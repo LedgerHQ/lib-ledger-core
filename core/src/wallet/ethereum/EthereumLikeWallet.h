@@ -34,7 +34,6 @@
 
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-#include <wallet/ethereum/observers/EthereumLikeBlockchainObserver.h>
 #include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 #include <wallet/ethereum/factories/EthereumLikeWalletFactory.h>
 #include <wallet/ethereum/factories/EthereumLikeKeychainFactory.h>
@@ -47,7 +46,6 @@ namespace ledger {
             EthereumLikeWallet(
                     const std::string& name,
                     const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
-                    const std::shared_ptr<EthereumLikeBlockchainObserver>& observer,
                     const std::shared_ptr<EthereumLikeKeychainFactory>& keychainFactory,
                     const EthereumLikeAccountSynchronizerFactory& synchronizerFactory,
                     const std::shared_ptr<WalletPool>& pool,
@@ -80,7 +78,6 @@ namespace ledger {
             std::shared_ptr<EthereumLikeWallet> getSelf();
 
             std::shared_ptr<EthereumLikeBlockchainExplorer> _explorer;
-            std::shared_ptr<EthereumLikeBlockchainObserver> _observer;
             std::shared_ptr<EthereumLikeKeychainFactory> _keychainFactory;
             EthereumLikeAccountSynchronizerFactory _synchronizerFactory;
             api::EthereumLikeNetworkParameters _network;

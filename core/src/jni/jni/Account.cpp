@@ -3,6 +3,7 @@
 
 #include "Account.hpp"  // my header
 #include "AddressListCallback.hpp"
+#include "AlgorandAccount.hpp"
 #include "AmountCallback.hpp"
 #include "AmountListCallback.hpp"
 #include "BitcoinLikeAccount.hpp"
@@ -178,6 +179,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asT
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asAlgorandAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        auto r = ref->asAlgorandAccount();
+        return ::djinni::release(::djinni_generated::AlgorandAccount::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1asStellarLikeAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
@@ -264,34 +275,6 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1get
         const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
         auto r = ref->getEventBus();
         return ::djinni::release(::djinni_generated::EventBus::fromCpp(jniEnv, r));
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1startBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->startBlockchainObservation();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1stopBlockchainObservation(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        ref->stopBlockchainObservation();
-    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
-}
-
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1isObservingBlockchain(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
-{
-    try {
-        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
-        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
-        auto r = ref->isObservingBlockchain();
-        return ::djinni::release(::djinni::Bool::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 

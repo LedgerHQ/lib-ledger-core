@@ -34,11 +34,13 @@
 #include <api/Operation.hpp>
 #include <wallet/common/Operation.h>
 #include <api/Currency.hpp>
+#include <metrics/ManagedObject.hpp>
 
 namespace ledger {
     namespace core {
+
         class AbstractAccount;
-        class OperationApi : public api::Operation, public std::enable_shared_from_this<OperationApi> {
+        class OperationApi : public api::Operation, public ManagedObject<OperationApi>, public std::enable_shared_from_this<OperationApi> {
         public:
             OperationApi(const std::shared_ptr<AbstractAccount>& account);
             std::string getUid() override;
@@ -57,6 +59,7 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeOperation> asEthereumLikeOperation() override;
             std::shared_ptr<api::RippleLikeOperation> asRippleLikeOperation() override;
             std::shared_ptr<api::TezosLikeOperation> asTezosLikeOperation() override;
+            std::shared_ptr<api::AlgorandOperation> asAlgorandOperation() override;
             optional<int64_t> getBlockHeight() override;
             bool isInstanceOfBitcoinLikeOperation() override;
             bool isInstanceOfCosmosLikeOperation() override;
@@ -71,9 +74,12 @@ namespace ledger {
             bool isComplete() override;
             api::WalletType getWalletType() override;
             ledger::core::Operation& getBackend();
+            const ledger::core::Operation& getBackend() const;
             const std::shared_ptr<AbstractAccount>& getAccount() const;
 
             api::Currency getCurrency() override;
+
+            ~OperationApi() {};
 
         private:
             ledger::core::Operation _backend;

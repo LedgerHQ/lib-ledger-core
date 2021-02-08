@@ -53,10 +53,10 @@ struct EthereumMakeTransaction : public EthereumMakeBaseTransaction {
 
 TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     auto builder = tx_builder();
-    auto balance = wait(account->getBalance());
+    auto balance = uv::wait(account->getBalance());
     auto fromDate = "2018-01-01T13:38:23Z";
     auto toDate = DateUtils::toJSON(DateUtils::now());
-    auto balanceHistory = wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
+    auto balanceHistory = uv::wait(account->getBalanceHistory(fromDate, toDate, api::TimePeriod::MONTH));
 
     EXPECT_EQ(balanceHistory[balanceHistory.size() - 1]->toLong(), balance->toLong());
 
@@ -64,13 +64,13 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     builder->setGasLimit(api::Amount::fromLong(currency, 20000000));
     builder->sendToAddress(api::Amount::fromLong(currency, 200000), "0xfb98bdd04d82648f25e67041d6e27a866bec0b47");
     auto f = builder->build();
-    EXPECT_THROW(::wait(f), ledger::core::Exception);
+    EXPECT_THROW(uv::wait(f), ledger::core::Exception);
     builder->setGasPrice(api::Amount::fromLong(currency, 0));
     builder->setGasLimit(api::Amount::fromLong(currency, 0));
     builder->sendToAddress(api::Amount::fromLong(currency, 0), "0xfb98bdd04d82648f25e67041d6e27a866bec0b47");
     f = builder->build();
-    auto tx = ::wait(f);
-    auto addressList = ::wait(account->getFreshPublicAddresses());
+    auto tx = uv::wait(f);
+    auto addressList = uv::wait(account->getFreshPublicAddresses());
     EXPECT_EQ(addressList.size(), 1);
     EXPECT_EQ(addressList[0]->toString(), tx->getSender()->toEIP55());
     auto serializedTx = tx->serialize();
@@ -82,11 +82,11 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     auto formatedDate = DateUtils::fromJSON(date);
 
     //Delete account
-    auto code = wait(wallet->eraseDataSince(formatedDate));
+    auto code = uv::wait(wallet->eraseDataSince(formatedDate));
     EXPECT_EQ(code, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     //Check if account was successfully deleted
-    auto newAccountCount = wait(wallet->getAccountCount());
+    auto newAccountCount = uv::wait(wallet->getAccountCount());
     EXPECT_EQ(newAccountCount, 0);
     {
         soci::session sql(pool->getDatabaseSessionPool()->getPool());
@@ -96,11 +96,11 @@ TEST_F(EthereumMakeTransaction, CreateStandardWithOneOutput) {
     }
 
     //Delete wallet
-    auto walletCode = wait(pool->eraseDataSince(formatedDate));
+    auto walletCode = uv::wait(pool->eraseDataSince(formatedDate));
     EXPECT_EQ(walletCode, api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
     //Check if wallet was successfully deleted
-    auto walletCount = wait(pool->getWalletCount());
+    auto walletCount = uv::wait(pool->getWalletCount());
     EXPECT_EQ(walletCount, 0);
 
 }

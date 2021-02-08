@@ -101,7 +101,7 @@ namespace ledger {
                 const auto stringSize = string.size();
 
                 for (auto index = 0; index < stringSize; index += blockCharSize) {
-                    decodeBlock(string.c_str() + index, std::min(blockCharSize, static_cast<int>(stringSize - index)), params, out);
+                    decodeBlock(string.c_str() + index, std::min<int>(blockCharSize, static_cast<int>(stringSize - index)), params, out);
                 }
             }
 

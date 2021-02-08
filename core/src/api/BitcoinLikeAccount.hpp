@@ -18,13 +18,16 @@
 
 namespace ledger { namespace core { namespace api {
 
+class Address;
 class AddressListCallback;
+class AmountCallback;
 class BigIntListCallback;
 class BitcoinLikeOutputListCallback;
 class BitcoinLikeTransaction;
 class BitcoinLikeTransactionBuilder;
 class I32Callback;
 class StringCallback;
+enum class BitcoinLikePickingStrategy;
 
 /** Class representing a Bitcoin account. */
 class LIBCORE_EXPORT BitcoinLikeAccount {
@@ -49,7 +52,7 @@ public:
 
     virtual void broadcastTransaction(const std::shared_ptr<BitcoinLikeTransaction> & transaction, const std::shared_ptr<StringCallback> & callback) = 0;
 
-    virtual std::shared_ptr<BitcoinLikeTransactionBuilder> buildTransaction(std::experimental::optional<bool> partial) = 0;
+    virtual std::shared_ptr<BitcoinLikeTransactionBuilder> buildTransaction(bool partial) = 0;
 
     /**
      * Get fees from network, fees are ordered in descending order (i.e. fastest to slowest confirmation)
@@ -65,6 +68,12 @@ public:
      * Note: this will return public and change addresses
      */
     virtual void getAddresses(int64_t from, int64_t to, const std::shared_ptr<AddressListCallback> & callback) = 0;
+
+    /** get all contained adresses. */
+    virtual std::vector<std::shared_ptr<Address>> getAllAddresses() = 0;
+
+    /** get max spendable balance for a given strategy */
+    virtual void getMaxSpendable(BitcoinLikePickingStrategy strategy, std::experimental::optional<int32_t> maxUtxos, const std::shared_ptr<AmountCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -30,7 +30,7 @@
  */
 
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -45,7 +45,6 @@
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
 #include <wallet/bitcoin/explorers/api/TransactionParser.hpp>
-#include <async/async_wait.h>
 #include <wallet/bitcoin/BitcoinLikeAccount.hpp>
 #include <database/query/QueryBuilder.h>
 #include <api/QueryFilter.hpp>
@@ -59,8 +58,8 @@ class QueryBuilderTest : public BaseFixture {
 TEST_F(QueryBuilderTest, SimpleOperationQuery) {
     auto pool = newDefaultPool();
     {
-        auto wallet = wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
-        auto nextIndex = wait(wallet->getNextAccountIndex());
+        auto wallet = uv::wait(pool->createWallet("my_wallet", "bitcoin", api::DynamicObject::newInstance()));
+        auto nextIndex = uv::wait(wallet->getNextAccountIndex());
         EXPECT_EQ(nextIndex, 0);
         auto account = createBitcoinLikeAccount(wallet, 0, P2PKH_MEDIUM_XPUB_INFO);
         std::vector<BitcoinLikeBlockchainExplorerTransaction> transactions = {
@@ -69,12 +68,12 @@ TEST_F(QueryBuilderTest, SimpleOperationQuery) {
                 *JSONUtils::parse<TransactionParser>(TX_3),
                 *JSONUtils::parse<TransactionParser>(TX_4)
         };
-        soci::session sql(pool->getDatabaseSessionPool()->getPool());
-        sql.begin();
+        std::vector<ledger::core::Operation> ops;
         for (auto& tx : transactions) {
-            account->putTransaction(sql, tx);
+            account->interpretTransaction(tx, ops);
         }
-        sql.commit();
+        account->bulkInsert(ops);
+        soci::session sql(pool->getDatabaseSessionPool()->getPool());
         soci::rowset<soci::row> rows = QueryBuilder()
                 .select("uid")
                 .from("operations")

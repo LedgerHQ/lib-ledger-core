@@ -37,7 +37,6 @@
 #include <wallet/common/AbstractWalletFactory.hpp>
 #include <wallet/ethereum/synchronizers/EthereumLikeAccountSynchronizer.h>
 #include <wallet/ethereum/explorers/EthereumLikeBlockchainExplorer.h>
-#include <wallet/ethereum/observers/EthereumLikeBlockchainObserver.h>
 #include <wallet/ethereum/factories/EthereumLikeKeychainFactory.h>
 
 #include <api/Currency.hpp>
@@ -55,13 +54,9 @@ namespace ledger {
 
         private:
             std::shared_ptr<EthereumLikeBlockchainExplorer> getExplorer(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
-            std::shared_ptr<EthereumLikeBlockchainObserver> getObserver(const std::string& currencyName, const std::shared_ptr<api::DynamicObject>& configuration);
         private:
             // Explorers
             std::list<std::weak_ptr<EthereumLikeBlockchainExplorer>> _runningExplorers;
-
-            // Observers
-            std::list<std::weak_ptr<EthereumLikeBlockchainObserver>> _runningObservers;
 
             // Keychain factories
             std::unordered_map<std::string, std::shared_ptr<EthereumLikeKeychainFactory>> _keychainFactories;

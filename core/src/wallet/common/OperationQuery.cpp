@@ -40,6 +40,7 @@
 #include <wallet/ripple/database/RippleLikeTransactionDatabaseHelper.h>
 #include <wallet/tezos/database/TezosLikeTransactionDatabaseHelper.h>
 #include <wallet/stellar/database/StellarLikeTransactionDatabaseHelper.hpp>
+#include <wallet/algorand/database/AlgorandTransactionDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -58,28 +59,28 @@ namespace ledger {
         std::shared_ptr<api::OperationQuery> OperationQuery::addOrder(api::OperationOrderKey key, bool descending) {
             switch (key) {
                 case api::OperationOrderKey::AMOUNT:
-                    _builder.order("amount", std::move(descending));
+                    _builder.order("amount", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::DATE:
-                    _builder.order("date", std::move(descending));
+                    _builder.order("date", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::SENDERS:
-                    _builder.order("senders", std::move(descending));
+                    _builder.order("senders", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::RECIPIENTS:
-                    _builder.order("recipients", std::move(descending));
+                    _builder.order("recipients", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::TYPE:
-                    _builder.order("type", std::move(descending));
+                    _builder.order("type", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::CURRENCY_NAME:
-                    _builder.order("currency_name", std::move(descending));
+                    _builder.order("currency_name", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::FEES:
-                    _builder.order("fees", std::move(descending));
+                    _builder.order("fees", std::move(descending), "o");
                     break;
                 case api::OperationOrderKey::BLOCK_HEIGHT:
-                    _builder.order("block_height", std::move(descending));
+                    _builder.order("height", std::move(descending), "b");
                     break;
             }
             return shared_from_this();
@@ -142,7 +143,17 @@ namespace ledger {
                 auto account = _accounts.find(accountUid);
                 if (account == _accounts.end())
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Account {} is not registered.", accountUid);
-                auto operationApi = std::make_shared<OperationApi>(account->second);
+
+                std::shared_ptr<OperationApi> operationApi;
+                if(account->second->getWalletType() == api::WalletType::ALGORAND)
+                {
+                    operationApi = std::make_shared<algorand::Operation>(account->second);
+                }
+                else
+                {
+                    operationApi = std::make_shared<OperationApi>(account->second);
+                }
+
                 auto& operation = operationApi->getBackend();
 
                 // Inflate abstract operation
@@ -192,6 +203,7 @@ namespace ledger {
                 case (api::WalletType::TEZOS): return inflateTezosLikeTransaction(sql, operation);
                 case (api::WalletType::MONERO): return inflateMoneroLikeTransaction(sql, operation);
                 case (api::WalletType::STELLAR): return inflateStellarLikeTransaction(sql, operation);
+                case (api::WalletType::ALGORAND): return inflateAlgorandLikeTransaction(sql, dynamic_cast<algorand::Operation&>(operation));
             }
         }
 
@@ -263,5 +275,18 @@ namespace ledger {
             StellarLikeTransactionDatabaseHelper::getTransaction(sql, out.operation.transactionHash, out.transaction);
             operation.getBackend().stellarOperation = out;
         }
+
+        void OperationQuery::inflateAlgorandLikeTransaction(soci::session& sql, algorand::Operation &operation) {
+            std::string transactionHash;
+            sql << "SELECT transaction_hash FROM algorand_operations WHERE uid = :uid",
+                soci::use(operation.getBackend().uid),
+                soci::into(transactionHash);
+
+            algorand::model::Transaction tx;
+            algorand::TransactionDatabaseHelper::getTransactionByHash(sql, transactionHash, tx);
+
+            operation.setTransaction(tx);
+        }
+
     }
 }

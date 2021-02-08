@@ -57,18 +57,9 @@ namespace ledger {
 
         class BitcoinLikeAccount : public api::BitcoinLikeAccount, public AbstractAccount {
         public:
-            static const int FLAG_NEW_TRANSACTION = 0x01;
-            static const int FLAG_TRANSACTION_UPDATED = 0x01 << 1;
-            static const int FLAG_TRANSACTION_IGNORED = 0x00;
-            static const int FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS = 0x01 << 2;
-            static const int FLAG_TRANSACTION_ON_USED_ADDRESS = 0x01 << 3;
-            static const int FLAG_TRANSACTION_CREATED_SENDING_OPERATION = 0x01 << 4;
-            static const int FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION = 0x01 << 5;
-
             BitcoinLikeAccount(const std::shared_ptr<AbstractWallet>& wallet,
                                int32_t index,
                                const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer,
-                               const std::shared_ptr<BitcoinLikeBlockchainObserver>& observer,
                                const std::shared_ptr<BitcoinLikeAccountSynchronizer>& synchronizer,
                                const std::shared_ptr<BitcoinLikeKeychain>& keychain
             );
@@ -76,11 +67,15 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeAccount> asBitcoinLikeAccount() override;
 
             /**
-             *
-             * @param transaction
-             * @return A flag indicating if the transaction was ignored, inserted
+             * Interpret operations from transactions and fill a output vector
+             * @param transaction The transaction to interpret
+             * @param out A vector which is filled by this function
+             * @param needExtendKeychain Whether we need to extend the keychain during the transaction interpretation
              */
-            int putTransaction(soci::session& sql, const BitcoinLikeBlockchainExplorerTransaction& transaction);
+            void interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction, std::vector<Operation>& out, bool needExtendKeychain=false);
+
+            Try<int> bulkInsert(const std::vector<Operation>& out);
+
             /**
              *
              * @param block
@@ -89,10 +84,6 @@ namespace ledger {
             bool putBlock(soci::session& sql, const BitcoinLikeBlockchainExplorer::Block& block);
 
             std::shared_ptr<BitcoinLikeKeychain> getKeychain() const;
-
-            void startBlockchainObservation() override;
-            void stopBlockchainObservation() override;
-            bool isObservingBlockchain() override;
 
             /***
              * REVIEW
@@ -116,10 +107,14 @@ namespace ledger {
             void broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
 
-            std::shared_ptr<api::BitcoinLikeTransactionBuilder> buildTransaction(std::experimental::optional<bool> partial) override;
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder> buildTransaction(bool partial) override;
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
+            FuturePtr<ledger::core::Amount> getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos);
+
+            void getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos, const std::shared_ptr<api::AmountCallback> &callback) override;
+            
             void getUTXO(int32_t from, int32_t to,
                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO();
@@ -142,6 +137,8 @@ namespace ledger {
             Future<AbstractAccount::AddressList> getAddresses(int64_t from, int64_t to);
             void getAddresses(int64_t from, int64_t to, const std::shared_ptr<api::AddressListCallback> & callback) override;
 
+            AbstractAccount::AddressList getAllAddresses() override;
+            
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
         protected:
@@ -158,7 +155,6 @@ namespace ledger {
             std::shared_ptr<BitcoinLikeKeychain> _keychain;
             std::shared_ptr<BitcoinLikeBlockchainExplorer> _explorer;
             std::shared_ptr<BitcoinLikeAccountSynchronizer> _synchronizer;
-            std::shared_ptr<BitcoinLikeBlockchainObserver> _observer;
             std::shared_ptr<BitcoinLikeUtxoPicker> _picker;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;

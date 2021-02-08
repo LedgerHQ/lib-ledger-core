@@ -62,6 +62,12 @@ void ledger::core::Event::setSticky(int32_t tag) {
     _sticky = true;
 }
 
+void ledger::core::Event::setReadOnly(bool readOnly) {
+    if (_payload) {
+        std::static_pointer_cast<DynamicObject>(_payload)->setReadOnly(readOnly);
+    }
+}
+
 std::shared_ptr<ledger::core::api::Event> ledger::core::make_event(ledger::core::api::EventCode code, const std::shared_ptr<ledger::core::api::DynamicObject>& payload) {
     return std::make_shared<ledger::core::Event>(code, payload);
 }

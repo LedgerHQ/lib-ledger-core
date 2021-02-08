@@ -37,13 +37,14 @@
 #include <wallet/ethereum/api_impl/EthereumLikeOperation.h>
 #include <wallet/ripple/api_impl/RippleLikeOperation.h>
 #include <wallet/tezos/api_impl/TezosLikeOperation.h>
+#include <wallet/algorand/operations/AlgorandOperation.hpp>
 #include <api/WalletType.hpp>
 #include <wallet/stellar/StellarLikeOperation.hpp>
 
 namespace ledger {
     namespace core {
 
-        OperationApi::OperationApi(const std::shared_ptr<AbstractAccount> &account) {
+        OperationApi::OperationApi(const std::shared_ptr<AbstractAccount> &account)  : ManagedObject<OperationApi>() {
             _account = account;
         }
 
@@ -94,6 +95,10 @@ namespace ledger {
         }
 
         ledger::core::Operation &OperationApi::getBackend() {
+            return _backend;
+        }
+
+        const ledger::core::Operation &OperationApi::getBackend() const {
             return _backend;
         }
 
@@ -196,6 +201,13 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Tezos type.");
             }
             return std::make_shared<TezosLikeOperation>(shared_from_this());
+        }
+
+        std::shared_ptr<api::AlgorandOperation> OperationApi::asAlgorandOperation() {
+            if (getWalletType() != api::WalletType::ALGORAND) {
+                throw make_exception(api::ErrorCode::BAD_CAST, "Operation is not of Algorand type.");
+            }
+            return std::dynamic_pointer_cast<algorand::Operation>(shared_from_this());
         }
 
         const std::shared_ptr<AbstractAccount> &OperationApi::getAccount() const {

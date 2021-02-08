@@ -20,10 +20,14 @@ namespace ledger { namespace core { namespace api {
 enum class EventCode : int {
     /** An unknown event code. */
     UNDEFINED,
-    /** A new operation event. */
+    /** [DEPRECATED] A new operation event. (this event is deprecated since 4.0) */
     NEW_OPERATION,
-    /** A new block event. */
+    /** Emitted once a batch of operation has been inserted/updated in database */
+    UPDATE_OPERATIONS,
+    /** A new block event. (this event is deprecated since 4.0) */
     NEW_BLOCK,
+    /** A deleted operation event. */
+    DELETED_OPERATION,
     /** Event emitted when a wallet synchronization started. */
     SYNCHRONIZATION_STARTED,
     /** Event emitted when a wallet synchronization failed. */
@@ -32,6 +36,10 @@ enum class EventCode : int {
     SYNCHRONIZATION_SUCCEED,
     /** Event emitted when a wallet synchronization succeeded on the previously empty account. */
     SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT,
+    /** [DEPRECATED] A new er20 operation is available. (this event is deprecated since 4.0) */
+    NEW_ERC20_OPERATION,
+    /** Emitted each time a batch of ERC20 is inserted in database */
+    UPDATE_ERC20_OPERATIONS,
 };
 LIBCORE_EXPORT  std::string to_string(const EventCode& eventCode);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const EventCode &o);

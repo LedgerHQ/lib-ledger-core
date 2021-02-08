@@ -4,7 +4,7 @@
 #ifndef LEDGER_FIXTURES_XRP
 #define LEDGER_FIXTURES_XRP
 #include <gtest/gtest.h>
-#include <async/QtThreadDispatcher.hpp>
+#include <UvThreadDispatcher.hpp>
 #include <src/database/DatabaseSessionPool.hpp>
 #include <NativePathResolver.hpp>
 #include <unordered_set>
@@ -18,12 +18,11 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include <wallet/pool/database/PoolDatabaseHelper.hpp>
 #include <utils/JSONUtils.h>
-#include <async/async_wait.h>
 #include <wallet/ripple/RippleLikeAccount.h>
 #include <api/RippleLikeOperation.hpp>
 #include <api/RippleLikeTransaction.hpp>
 #include <api/BigInt.hpp>
-#include <net/QtHttpClient.hpp>
+#include <CppHttpLibClient.hpp>
 #include <events/LambdaEventReceiver.hpp>
 #include <soci.h>
 #include <utils/hex.h>

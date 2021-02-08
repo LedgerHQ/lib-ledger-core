@@ -8,6 +8,7 @@
 @import "../ethereum/ethereum_like_wallet.djinni"
 @import "../../bitcoin/addresses.djinni"
 @import "../../cosmos/addresses.djinni"
+@import "../algorand/idl.djinni"
 @import "currency.djinni"
 @import "../../collections/dynamic.djinni"
 
@@ -161,9 +162,13 @@ Operation = interface +c {
     #@return TezosLikeOperation object
     asTezosLikeOperation(): TezosLikeOperation;
     # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
-    # Convert operation as Ethereum operation.
-    # @return EthereumLikeOperation object
+    # Convert operation as Stellar operation.
+    # @return StellarLikeOperation object
     asStellarLikeOperation(): StellarLikeOperation;
+    # Same as isInstanceOfBitcoinLikeOperation for bitcoin.
+    # Convert operation as Algorand operation.
+    # @return AlgorandOperation object
+    asAlgorandOperation(): AlgorandOperation;
     # Is this an instance of a Bitcoin-like operation?
     isInstanceOfBitcoinLikeOperation(): bool;
     # Same as isInstanceOfCosmosLikeOperation for cosmos.
@@ -333,8 +338,17 @@ TimePeriod = enum {
 # Class representing an account.
 Account = interface +c {
     # Key of the synchronization duration time in the synchronize event payload.
-    # The value is stored in a int 64 time expressed in miliseconds.
+    # The value is stored in a int64 time expressed in miliseconds.
     const EV_SYNC_DURATION_MS: string = "EV_SYNC_DURATION_MS";
+    # Indicates the last block height fetch during synchronization
+    # The value is stored as a int32
+    const EV_SYNC_LAST_BLOCK_HEIGHT: string = "EV_SYNC_LAST_BLOCK_HEIGHT";
+    # Indicates the number of new operations during the synchronization
+    # The value is stored as a int32
+    const EV_SYNC_NEW_OPERATIONS: string = "EV_SYNC_NEW_OPERATIONS";
+    # Indicates the first valid block height before the reorganization during the synchronization
+    # The value is stored as a int32
+    const EV_SYNC_REORG_BLOCK_HEIGHT: string = "EV_SYNC_REORG_BLOCK_HEIGHT";
     # Key of the synchronization error code. The code is a stringified version of the value in the ErrorCode enum.
     const EV_SYNC_ERROR_CODE: string = "EV_SYNC_ERROR_CODE";
     const EV_SYNC_ERROR_CODE_INT: string = "EV_SYNC_ERROR_CODE_INT";
@@ -348,6 +362,21 @@ Account = interface +c {
     const EV_NEW_OP_WALLET_NAME: string = "EV_NEW_OP_WALLET_NAME";
     const EV_NEW_OP_ACCOUNT_INDEX: string = "EV_NEW_OP_ACCOUNT_INDEX";
     const EV_NEW_OP_UID: string = "EV_NEW_OP_UID";
+    const EV_DELETED_OP_UID: string = "EV_DELETED_OP_UID";
+
+    # Returned flag when a transaction is put in DB
+    # Some of those are unrelevant for specific coins
+    # but for the sake of generic mechanism we put all those
+    # flags together
+    const FLAG_TRANSACTION_IGNORED: i32 = 0;
+    const FLAG_NEW_TRANSACTION: i32 = 1;
+    const FLAG_TRANSACTION_UPDATED: i32 = 2;
+    const FLAG_TRANSACTION_ON_PREVIOUSLY_EMPTY_ADDRESS: i32 = 4;
+    const FLAG_TRANSACTION_ON_USED_ADDRESS: i32 = 8;
+    const FLAG_TRANSACTION_CREATED_SENDING_OPERATION: i32 = 16;
+    const FLAG_TRANSACTION_CREATED_RECEPTION_OPERATION: i32 = 32;
+    const FLAG_TRANSACTION_CREATED_EXTERNAL_OPERATION: i32 = 64;
+
     # Get index of account in user's wallet
     # 32-bit integer
     getIndex(): i32;
@@ -391,6 +420,8 @@ Account = interface +c {
     asRippleLikeAccount(): RippleLikeAccount;
     # Turn the account into a Tezos one, allowing operations to be performed on the Tezos network.
     asTezosLikeAccount(): TezosLikeAccount;
+    # Turn the account into an Algorand one, allowing operations to be performed on the Algorand network.
+    asAlgorandAccount(): AlgorandAccount;
 
     # Turn the account into a Stellar one, allowing operations to be performerd on the Stellar
     # network.
@@ -419,13 +450,6 @@ Account = interface +c {
     # Get event bus through which account is notified on synchronization status.
     # @return EventBus object
     getEventBus(): EventBus;
-    # Start observing blockchain on which account synchronizes and send/receive transactions.
-    startBlockchainObservation();
-    # Stop observing blockchain.
-    stopBlockchainObservation();
-    # Get account's observation status.
-    # @return boolean
-    isObservingBlockchain(): bool;
     # Get Last block of blockchain on which account operates.
     # @param callback, Callback returning, if getLastBlock succeeds, a Block object
     getLastBlock(callback: Callback<Block>);
@@ -491,6 +515,9 @@ Wallet = interface +c {
     # Tell whether wallet is a Bitcoin one.
     # @return bool
     isInstanceOfBitcoinLikeWallet(): bool;
+    # Tell whether wallet is an Algorand one.
+    # @return bool
+    isInstanceOfAlgorandLikeWallet(): bool;
     # Tell whether wallet is a Cosmos one.
     # @return bool
     isInstanceOfCosmosLikeWallet(): bool;

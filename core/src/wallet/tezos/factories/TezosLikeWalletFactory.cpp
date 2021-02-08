@@ -33,7 +33,6 @@
 #include <api/KeychainEngines.hpp>
 #include <api/SynchronizationEngines.hpp>
 #include <api/BlockchainExplorerEngines.hpp>
-#include <api/BlockchainObserverEngines.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
 
 #include <wallet/tezos/explorers/NodeTezosLikeBlockchainExplorer.h>
@@ -75,12 +74,6 @@ namespace ledger {
                 throw make_exception(api::ErrorCode::UNKNOWN_BLOCKCHAIN_EXPLORER_ENGINE,
                                      "Engine '{}' is not a supported explorer engine.",
                                      STRING(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, "undefined"));
-            // Configure observer
-            auto observer = getObserver(entry.currencyName, entry.configuration);
-            if (observer == nullptr)
-                pool->logger()->warn(
-                        "Observer engine '{}' is not supported. Wallet {} was created anyway. Real time events won't be handled by this instance.",
-                        STRING(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE, "undefined"), entry.name);
             // Configure synchronizer
             Option<TezosLikeAccountSynchronizerFactory> synchronizerFactory;
             {
@@ -107,7 +100,6 @@ namespace ledger {
             return std::make_shared<TezosLikeWallet>(
                     entry.name,
                     explorer,
-                    observer,
                     keychainFactory->second,
                     synchronizerFactory.getValue(),
                     pool,
@@ -170,44 +162,6 @@ namespace ledger {
                 _runningExplorers.push_back(explorer);
             return explorer;
 
-        }
-
-        std::shared_ptr<TezosLikeBlockchainObserver>
-        TezosLikeWalletFactory::getObserver(const std::string &currencyName,
-                                            const std::shared_ptr<api::DynamicObject> &configuration) {
-            auto it = _runningObservers.begin();
-            while (it != _runningObservers.end()) {
-                auto observer = it->lock();
-                if (observer != nullptr) {
-                    if (observer->match(configuration)) {
-                        return observer;
-                    }
-                    it++;
-                } else {
-                    it = _runningObservers.erase(it);
-                }
-            }
-
-            auto pool = getPool();
-            auto engine = configuration->getString(api::Configuration::BLOCKCHAIN_OBSERVER_ENGINE)
-                    .value_or(api::BlockchainObserverEngines::TEZOS_NODE);
-            std::shared_ptr<TezosLikeBlockchainObserver> observer;
-            if (engine == api::BlockchainObserverEngines::TEZOS_NODE) {
-                auto ws = pool->getWebSocketClient();
-                const auto &currency = getCurrency();
-                auto &networkParams = currency.tezosLikeNetworkParameters.value();
-                auto context = pool->getDispatcher()->getSerialExecutionContext(
-                        fmt::format("{}-{}-explorer",
-                                    api::BlockchainObserverEngines::TEZOS_NODE,
-                                    networkParams.Identifier
-                        )
-                );
-                auto logger = pool->logger();
-                observer = std::make_shared<TezosLikeBlockchainObserver>(context, ws, configuration, logger, currency);
-            }
-            if (observer)
-                _runningObservers.push_back(observer);
-            return observer;
         }
     }
 }

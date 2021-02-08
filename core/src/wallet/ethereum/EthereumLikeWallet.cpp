@@ -52,7 +52,6 @@ namespace ledger {
 
         EthereumLikeWallet::EthereumLikeWallet(const std::string &name,
                                              const std::shared_ptr<EthereumLikeBlockchainExplorer>& explorer,
-                                             const std::shared_ptr<EthereumLikeBlockchainObserver> &observer,
                                              const std::shared_ptr<EthereumLikeKeychainFactory> &keychainFactory,
                                              const EthereumLikeAccountSynchronizerFactory &synchronizer,
                                              const std::shared_ptr<WalletPool> &pool, const api::Currency &network,
@@ -61,7 +60,6 @@ namespace ledger {
         )
                 : AbstractWallet(name, network, pool, configuration, scheme) {
             _explorer = explorer;
-            _observer = observer;
             _keychainFactory = keychainFactory;
             _synchronizerFactory = synchronizer;
             _coinType = scheme.getCoinType() ? scheme.getCoinType() : network.bip44CoinType;
@@ -141,7 +139,6 @@ namespace ledger {
                         self->shared_from_this(),
                         index,
                         self->_explorer,
-                        self->_observer,
                         self->_synchronizerFactory(),
                         keychain
                 ));
@@ -221,7 +218,6 @@ namespace ledger {
             auto account = std::make_shared<EthereumLikeAccount>(shared_from_this(),
                                                                  entry.index,
                                                                  _explorer,
-                                                                 _observer,
                                                                  _synchronizerFactory(),
                                                                  keychain);
             account->addERC20Accounts(sql, entry.erc20Accounts);

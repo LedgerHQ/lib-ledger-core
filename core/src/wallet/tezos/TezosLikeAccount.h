@@ -44,7 +44,6 @@
 #include <wallet/common/Amount.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 #include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.h>
-#include <wallet/tezos/observers/TezosLikeBlockchainObserver.h>
 #include <wallet/tezos/keychains/TezosLikeKeychain.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
 
@@ -75,12 +74,10 @@ namespace ledger {
         class TezosLikeOriginatedAccount;
         class TezosLikeAccount : public api::TezosLikeAccount, public AbstractAccount {
         public:
-            static const int FLAG_TRANSACTION_IGNORED = 0x00;
 
             TezosLikeAccount(const std::shared_ptr<AbstractWallet> &wallet,
                              int32_t index,
                              const std::shared_ptr<TezosLikeBlockchainExplorer> &explorer,
-                             const std::shared_ptr<TezosLikeBlockchainObserver> &observer,
                              const std::shared_ptr<TezosLikeAccountSynchronizer> &synchronizer,
                              const std::shared_ptr<TezosLikeKeychain> &keychain);
 
@@ -88,10 +85,10 @@ namespace ledger {
                                   const std::shared_ptr<const AbstractWallet> &wallet,
                                   const TezosLikeBlockchainExplorerTransaction &tx);
 
-            int putTransaction(soci::session &sql,
-                               const TezosLikeBlockchainExplorerTransaction &transaction,
-                               const std::string &originatedAccountUid = "",
-                               const std::string &originatedAccountAddress = "");
+            void interpretTransaction(const TezosLikeBlockchainExplorerTransaction& transaction,
+                                      std::vector<Operation>& out);
+                                      
+            Try<int> bulkInsert(const std::vector<Operation>& operations);
 
             void updateOriginatedAccounts(soci::session &sql, const Operation &operation);
 
@@ -113,12 +110,6 @@ namespace ledger {
             bool isSynchronizing() override;
 
             std::shared_ptr<api::EventBus> synchronize() override;
-
-            void startBlockchainObservation() override;
-
-            void stopBlockchainObservation() override;
-
-            bool isObservingBlockchain() override;
 
             std::string getRestoreKey() override;
 
@@ -155,10 +146,10 @@ namespace ledger {
             std::string _accountAddress;
             std::shared_ptr<TezosLikeBlockchainExplorer> _explorer;
             std::shared_ptr<TezosLikeAccountSynchronizer> _synchronizer;
-            std::shared_ptr<TezosLikeBlockchainObserver> _observer;
             std::shared_ptr<api::EventBus> _currentSyncEventBus;
             std::mutex _synchronizationLock;
             std::vector<std::shared_ptr<api::TezosLikeOriginatedAccount>> _originatedAccounts;
+            uint64_t _currentBlockHeight;
         };
     }
 }

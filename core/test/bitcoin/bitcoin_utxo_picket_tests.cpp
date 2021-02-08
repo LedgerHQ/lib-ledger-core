@@ -18,13 +18,16 @@ public:
         const api::Currency& params,
         int account,
         const std::shared_ptr<Preferences>& preferences) :BitcoinLikeKeychain(configuration, params, account, preferences){};
-    MOCK_METHOD1(markPathAsUsed, bool(const DerivationPath& path));
+    MOCK_METHOD2(markPathAsUsed, bool(const DerivationPath& path, bool needExtendKeychain));
     MOCK_METHOD2(getAllObservableAddresses, std::vector<Address>(uint32_t from, uint32_t to));
 
     MOCK_METHOD3(getAllObservableAddresses, std::vector<Address>(KeyPurpose purpose, uint32_t from, uint32_t to));
+    MOCK_METHOD2(getAllObservableAddressString, std::vector<std::string>(uint32_t from, uint32_t to));
 
     MOCK_METHOD1(getFreshAddress, Address(KeyPurpose purpose));
     MOCK_METHOD2(getFreshAddresses, std::vector<Address>(KeyPurpose purpose, size_t n));
+
+    MOCK_METHOD0(getAllAddresses, std::vector<Address>());
 
     MOCK_CONST_METHOD1(getAddressPurpose, Option<KeyPurpose>(const std::string& address));
     MOCK_CONST_METHOD1(getAddressDerivationPath, Option<std::string>(const std::string& address));
@@ -98,7 +101,7 @@ std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> createBuddy(int64_t feesPerByte, i
     r.wipe = false;
     r.feePerByte = std::make_shared<BigInt>(feesPerByte);
     r.outputs.push_back(std::make_tuple(std::make_shared<BigInt>(outputAmount), std::make_shared<MockBitcoinLikeScript>()));
-    r.utxoPicker = std::make_tuple(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0);
+    r.utxoPicker = BitcoinUtxoPickerParams{api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0, optional<int32_t>()};
 
     BitcoinLikeGetUtxoFunction g;
     BitcoinLikeGetTxFunction tx;

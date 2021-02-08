@@ -37,6 +37,7 @@
 #include <wallet/common/database/AccountDatabaseHelper.h>
 #include "database/StellarLikeLedgerDatabaseHelper.hpp"
 #include "database/StellarLikeTransactionDatabaseHelper.hpp"
+#include "database/StellarLikeOperationDatabaseHelper.hpp"
 #include <wallet/common/database/OperationDatabaseHelper.h>
 #include <set>
 #include <wallet/common/BalanceHistory.hpp>
@@ -99,7 +100,7 @@ namespace ledger {
                 eventPublisher->postSticky(
                         std::make_shared<Event>(api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
                         0);
-                future.onComplete(self->getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+                future.onComplete(self->getContext(), [eventPublisher, self, startTime](const auto &result) {
                     api::EventCode code;
                     auto payload = std::make_shared<DynamicObject>();
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -107,6 +108,11 @@ namespace ledger {
                     payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                     if (result.isSuccess()) {
                         code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+                        auto const state = result.getValue();
+
+                        payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(state.lastBlockHeight));
+                        payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(state.newOperations));
                     } else {
                         code = api::EventCode::SYNCHRONIZATION_FAILED;
                         payload->putString(api::Account::EV_SYNC_ERROR_CODE,
@@ -122,18 +128,6 @@ namespace ledger {
             });
 
             return eventPublisher->getEventBus();
-        }
-
-        void StellarLikeAccount::startBlockchainObservation() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
-        }
-
-        void StellarLikeAccount::stopBlockchainObservation() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
-        }
-
-        bool StellarLikeAccount::isObservingBlockchain() {
-            throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Not implemented");
         }
 
         std::string StellarLikeAccount::getRestoreKey() {
@@ -242,8 +236,8 @@ namespace ledger {
             auto self = getSelf();
             return async<api::ErrorCode>([=] () {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
-                        accountUid), soci::use(date);
+                StellarLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+                
                 self->_params.synchronizer->reset(self, date);
                 log->debug(" Finish erasing data of account : {}", accountUid);
                 return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;
@@ -258,14 +252,14 @@ namespace ledger {
             return StellarLikeLedgerDatabaseHelper::putLedger(sql, getWallet()->getCurrency(), ledger) ? 1 : 0;
         }
 
-        int StellarLikeAccount::putTransaction(soci::session &sql, const stellar::Transaction &tx) {
+        void StellarLikeAccount::interpretTransaction(const stellar::Transaction &tx, std::vector<Operation> &out) {
             if (tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0 &&
                 tx.envelope.type != stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX) {
                 // Ignore transaction with unhandled envelope types.
-                return 0;
+                return;
             }
             int createdOperations = 0;
-            StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
+            //StellarLikeTransactionDatabaseHelper::putTransaction(sql, getWallet()->getCurrency(), tx);
             Operation operation;
             operation.accountUid = getAccountUid();
             operation.currencyName = getWallet()->getCurrency().name;
@@ -301,8 +295,10 @@ namespace ledger {
                     stellarOperation.to = operation.recipients[0];
                 operation.stellarOperation = {stellarOperation, tx};
                 operation.refreshUid();
-                OperationDatabaseHelper::putOperation(sql, operation);
+                //OperationDatabaseHelper::putOperation(sql, operation);
                 createdOperations += 1;
+                //emitNewOperationEvent(operation);
+                out.push_back(operation);
             };
 
             auto opIndex = 0;
@@ -397,7 +393,20 @@ namespace ledger {
                 operation.recipients.clear();
                 opIndex += 1;
             }
-            return createdOperations;
+        }
+
+        Try<int> StellarLikeAccount::bulkInsert(const std::vector<Operation> &operations) {
+            return Try<int>::from([&] () {
+                soci::session sql(getWallet()->getDatabase()->getPool());
+                soci::transaction tr(sql);
+                StellarLikeOperationDatabaseHelper::bulkInsert(sql, operations);
+                tr.commit();
+                // Emit
+                for (const auto& op : operations) {
+                    emitNewOperationEvent(op);
+                }
+                return operations.size();
+            });
         }
 
         void StellarLikeAccount::updateAccountInfo(soci::session &sql, stellar::Account &account) {

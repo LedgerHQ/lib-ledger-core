@@ -120,5 +120,8 @@ namespace ledger {
             return true;
         }
 
+        void  PoolDatabaseHelper::removeWalletByName(soci::session& sql, const std::string& name) {
+            sql << "DELETE FROM wallets WHERE name = :name", use(name);
+        }
     }
 }

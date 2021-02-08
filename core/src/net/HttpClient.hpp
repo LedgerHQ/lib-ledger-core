@@ -64,14 +64,16 @@ namespace ledger {
             HttpRequest(api::HttpMethod method,
                         const std::string& url,
                         const std::unordered_map<std::string, std::string>& headers,
-                        const std::experimental::optional<std::vector<uint8_t >> body,
+                        const std::experimental::optional<std::vector<uint8_t>>& body,
                         const std::shared_ptr<api::HttpClient> &client,
-                        const std::shared_ptr<api::ExecutionContext> &context,
+                        const std::shared_ptr<api::ExecutionContext> & sequentialContext,
+                        const std::shared_ptr<api::ExecutionContext>& threadpoolContext,
                         const Option<std::shared_ptr<spdlog::logger>>& logger);
             Future<std::shared_ptr<api::HttpUrlConnection>> operator()() const;
 
             template <typename Success, typename Failure, typename Handler>
-            Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler) const {
+            Future<Either<Failure, std::shared_ptr<Success>>> json(Handler handler, bool multiThread = false) const {
+                _context = (multiThread ? _threadpoolContext : _sequentialContext);
                 return operator()().recover(_context, [] (const Exception& exception) {
                     if (HttpRequest::isHttpError(exception.getErrorCode()) &&
                         exception.getUserData().nonEmpty()) {
@@ -89,7 +91,7 @@ namespace ledger {
                 });
             }
 
-            Future<JsonResult> json(bool parseNumbersAsString = false) const;
+            Future<JsonResult> json(bool parseNumbersAsString = false, bool ignoreStatusCode = false, bool multiThread=false) const;
             std::shared_ptr<api::HttpRequest> toApiRequest() const;
 
 
@@ -99,7 +101,9 @@ namespace ledger {
             std::unordered_map<std::string, std::string> _headers;
             std::experimental::optional<std::vector<uint8_t >> _body;
             std::shared_ptr<api::HttpClient> _client;
-            std::shared_ptr<api::ExecutionContext> _context;
+            std::shared_ptr<api::ExecutionContext> _sequentialContext;
+            std::shared_ptr<api::ExecutionContext> _threadpoolContext;
+            mutable std::shared_ptr<api::ExecutionContext> _context;
             Option<std::shared_ptr<spdlog::logger>> _logger;
 
             static api::ErrorCode getErrorCode(int32_t statusCode) {
@@ -115,6 +119,7 @@ namespace ledger {
                 errorCode == api::ErrorCode::TOO_MANY_REDIRECT;
             };
 
+        public:
             class ApiRequest : public api::HttpRequest {
             public:
                 ApiRequest(const std::shared_ptr<const ledger::core::HttpRequest>& self);
@@ -143,7 +148,8 @@ namespace ledger {
         public:
             HttpClient(const std::string& baseUrl,
                        const std::shared_ptr<api::HttpClient> &client,
-                       const std::shared_ptr<api::ExecutionContext> &context
+                       const std::shared_ptr<api::ExecutionContext>& sequentialContext,
+                       const std::shared_ptr<api::ExecutionContext>& threadpoolContext
             );
             HttpRequest GET(const std::string& path,
                             const std::unordered_map<std::string, std::string>& headers = {},
@@ -168,7 +174,8 @@ namespace ledger {
         private:
             std::string _baseUrl;
             std::shared_ptr<api::HttpClient> _client;
-            std::shared_ptr<api::ExecutionContext> _context;
+            std::shared_ptr<api::ExecutionContext> _sequentialContext;
+            std::shared_ptr<api::ExecutionContext> _threadpoolContext;
             std::unordered_map<std::string, std::string> _headers;
             Option<std::shared_ptr<spdlog::logger>> _logger;
         };

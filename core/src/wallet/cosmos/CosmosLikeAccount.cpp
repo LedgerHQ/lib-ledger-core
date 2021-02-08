@@ -70,12 +70,10 @@ CosmosLikeAccount::CosmosLikeAccount(
     const std::shared_ptr<AbstractWallet> &wallet,
     int32_t index,
     const std::shared_ptr<CosmosLikeBlockchainExplorer> &explorer,
-    const std::shared_ptr<CosmosLikeBlockchainObserver> &observer,
     const std::shared_ptr<CosmosLikeAccountSynchronizer> &synchronizer,
     const std::shared_ptr<CosmosLikeKeychain> &keychain) :
     AbstractAccount(wallet, index),
     _explorer(explorer),
-    _observer(observer),
     _synchronizer(synchronizer),
     _keychain(keychain),
     _accountData(std::make_shared<cosmos::Account>())
@@ -99,6 +97,26 @@ void CosmosLikeAccount::updateFromDb()
     if (existingAccount) {
         *_accountData = dbAccount.details;
     }
+}
+
+void CosmosLikeAccount::updateAccountDataFromNetwork()
+{
+    auto self = std::static_pointer_cast<CosmosLikeAccount>(shared_from_this());
+    _explorer->getAccount(getAddress())
+        .onComplete(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
+            if (accountData.isSuccess()) {
+                self->_accountData = accountData.getValue();
+                const CosmosLikeAccountDatabaseEntry update = {
+                    0,  // unused in
+                        // CosmosLikeAccountDatabaseHelper::updateAccount
+                    "",  // unused in
+                         // CosmosLikeAccountDatabaseHelper::updateAccount
+                    *(self->_accountData),
+                    std::chrono::system_clock::now()};
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                CosmosLikeAccountDatabaseHelper::updateAccount(sql, self->getAccountUid(), update);
+            }
+        });
 }
 
 std::string CosmosLikeAccount::getAddress() const
@@ -307,24 +325,6 @@ uint32_t CosmosLikeAccount::computeFeesForTransaction(const cosmos::Transaction 
             return sum + BigInt::fromDecimal(subamount.amount).toInt();
         });
 
-    // The value is updated to the fees actually paid if the transaction has a GasUsed value to use.
-    if (fees != 0 && tx.gasUsed) {
-        if (tx.fee.gas.toInt() == 0) {
-            // A 0 gas transaction is either :
-            // - Never broadcast by the node (because of spam protection mechanisms)
-            // - Invalid, as the signature verification (or the `gas per byte` cost)
-            //   will immediately trigger an OutOfGas network error.
-            // An invalid or absent transaction from the blockchain should be not picked up by the
-            // explorer, so Operations cannot be inflated with such transactions.
-            throw Exception(
-                api::ErrorCode::ILLEGAL_STATE,
-                "A cosmos Transaction cannot have a GasUsed field with a null GasWanted field.");
-        }
-        auto const feeConsumptionRatio = static_cast<float>(tx.gasUsed.getValue().toInt()) /
-                                         static_cast<float>(tx.fee.gas.toInt());
-        fees = std::lround(feeConsumptionRatio * static_cast<float>(fees));
-    }
-
     return fees;
 }
 
@@ -527,7 +527,8 @@ Future<std::vector<std::shared_ptr<api::Amount>>> CosmosLikeAccount::getBalanceH
                         // NOTE : we ignore the fees field here as well, since the fees paid by the Account
                         // were already included in an OperationType::SEND
                         // See CosmosLikeAccount::fillOperationTypeAmountFromFees
-                        // Therefore, nothing to do on default: case.
+                        // Therefore, nothing to
+                        // do on default: case.
                     } break;
                     }
                 }
@@ -578,8 +579,8 @@ Future<api::ErrorCode> CosmosLikeAccount::eraseDataSince(
             ->commit();
     }
     auto accountUid = getAccountUid();
-    sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ",
-        soci::use(accountUid), soci::use(date);
+    CosmosLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+
     log->debug(" Finish erasing data of account : {}", accountUid);
     return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 }
@@ -612,44 +613,14 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
             }
         });
 
-    // Update account level data (sequence, accountnumber...)
-    // Example result from Gaia explorer :
-    // base_url/auth/accounts/{address} with a valid, 0 transaction address :
-    // {
-    //  "height": "1296656",
-    //  "result": {
-    //    "type": "cosmos-sdk/Account",
-    //    "value": {
-    //      "address": "",
-    //      "coins": [],
-    //      "public_key": null,
-    //      "account_number": "0",
-    //      "sequence": "0"
-    //    }
-    //  }
-    //}
-    _explorer->getAccount(getAddress())
-        .onComplete(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
-            if (accountData.isSuccess()) {
-                self->_accountData = accountData.getValue();
-                const CosmosLikeAccountDatabaseEntry update = {
-                    0,  // unused in
-                        // CosmosLikeAccountDatabaseHelper::updateAccount
-                    "",  // unused in
-                         // CosmosLikeAccountDatabaseHelper::updateAccount
-                    *(self->_accountData),
-                    std::chrono::system_clock::now()};
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
-                CosmosLikeAccountDatabaseHelper::updateAccount(sql, self->getAccountUid(), update);
-            }
-        });
+    updateAccountDataFromNetwork();
 
     auto startTime = DateUtils::now();
     eventPublisher->postSticky(
         std::make_shared<Event>(
             api::EventCode::SYNCHRONIZATION_STARTED, api::DynamicObject::newInstance()),
         0);
-    future.onComplete(getContext(), [eventPublisher, self, startTime](const Try<Unit> &result) {
+    future.onComplete(getContext(), [eventPublisher, self, startTime](const auto &result) {
         api::EventCode code;
         auto payload = std::make_shared<DynamicObject>();
         auto duration =
@@ -658,6 +629,11 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
         payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
         if (result.isSuccess()) {
             code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+
+            auto const context = result.getValue();
+
+            payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
+            payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
         }
         else {
             code = api::EventCode::SYNCHRONIZATION_FAILED;
@@ -679,21 +655,6 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
 std::shared_ptr<CosmosLikeAccount> CosmosLikeAccount::getSelf()
 {
     return std::dynamic_pointer_cast<CosmosLikeAccount>(shared_from_this());
-}
-
-void CosmosLikeAccount::startBlockchainObservation()
-{
-    _observer->registerAccount(getSelf());
-}
-
-void CosmosLikeAccount::stopBlockchainObservation()
-{
-    _observer->unregisterAccount(getSelf());
-}
-
-bool CosmosLikeAccount::isObservingBlockchain()
-{
-    return _observer->isRegistered(getSelf());
 }
 
 std::string CosmosLikeAccount::getRestoreKey()
@@ -750,7 +711,7 @@ std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTrans
             tx->setGas(request.gas);
             return Future<std::shared_ptr<api::CosmosLikeTransaction>>::successful(tx);
         }
-        return self->_explorer->getEstimatedGasLimit(tx, request.gasAdjustment)
+        return self->_explorer->getEstimatedGasLimit(tx, std::to_string(request.gasAdjustment))
             .mapPtr<api::CosmosLikeTransaction>(
                 self->getContext(), [tx](const std::shared_ptr<BigInt> &estimateValue) {
                     tx->setGas(estimateValue);
@@ -774,7 +735,7 @@ void CosmosLikeAccount::estimateGas(
     if (request.memo) {
         tx->setMemo(request.memo.value());
     }
-    return _explorer->getEstimatedGasLimit(tx, request.amplifier.value_or(1.0))
+    return _explorer->getEstimatedGasLimit(tx, request.amplifier.value_or("1.0"))
         .mapPtr<api::BigInt>(
             getContext(),
             [](const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
@@ -785,6 +746,7 @@ void CosmosLikeAccount::estimateGas(
 
 void CosmosLikeAccount::getSequence(const std::shared_ptr<api::StringCallback> &callback)
 {
+    updateAccountDataFromNetwork();
     if (!_accountData) {
         throw make_exception(api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
     }

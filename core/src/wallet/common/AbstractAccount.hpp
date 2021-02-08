@@ -44,6 +44,7 @@
 #include <api/EthereumLikeAccount.hpp>
 #include <api/RippleLikeAccount.hpp>
 #include <api/TezosLikeAccount.hpp>
+#include <api/AlgorandAccount.hpp>
 #include <api/AddressListCallback.hpp>
 #include <api/Address.hpp>
 #include <api/AmountListCallback.hpp>
@@ -72,6 +73,7 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeAccount> asEthereumLikeAccount() override;
             std::shared_ptr<api::RippleLikeAccount> asRippleLikeAccount() override;
             std::shared_ptr<api::TezosLikeAccount> asTezosLikeAccount() override;
+            std::shared_ptr<api::AlgorandAccount> asAlgorandAccount() override;
             virtual std::shared_ptr<Preferences> getOperationExternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getOperationInternalPreferences(const std::string &uid);
             virtual std::shared_ptr<Preferences> getInternalPreferences() const;
@@ -105,7 +107,8 @@ namespace ledger {
 
             std::shared_ptr<api::EventBus> getEventBus() override;
 
-            void emitEventsNow();
+            void emitDeletedOperationEvent(std::string const& uid);
+            virtual void emitEventsNow();
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
@@ -113,6 +116,7 @@ namespace ledger {
 
         protected:
             void emitNewOperationEvent(const Operation& operation);
+            void emitNewOperationsEvent(const std::vector<Operation>& operations);
             void emitNewBlockEvent(const Block& block);
             void pushEvent(const std::shared_ptr<api::Event>& event);
 
@@ -130,6 +134,8 @@ namespace ledger {
             std::shared_ptr<EventPublisher> _publisher;
             std::mutex _eventsLock;
             std::list<std::shared_ptr<api::Event>> _events;
+            std::shared_ptr<api::Event> _batchedOperationsEvent;
+
         };
     }
 }

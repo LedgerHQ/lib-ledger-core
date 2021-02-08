@@ -72,7 +72,7 @@ namespace ledger {
             }
         }
 
-        std::shared_ptr<ProgressNotifier<Unit>>
+        std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>>
         EthereumLikeBlockchainExplorerAccountSynchronizer::synchronize(const std::shared_ptr<EthereumLikeAccount>& account) {
             return synchronizeAccount(account);
         }
@@ -94,10 +94,10 @@ namespace ledger {
             return getContext();
         }
 
-        int EthereumLikeBlockchainExplorerAccountSynchronizer::putTransaction(soci::session &sql,
-                                                                              const EthereumLikeBlockchainExplorerTransaction &transaction,
-                                                                              const std::shared_ptr<AbstractBlockchainExplorerAccountSynchronizer<EthereumLikeAccount, EthereumLikeAddress, EthereumLikeKeychain, EthereumLikeBlockchainExplorer>::SynchronizationBuddy> &buddy) {
-            return buddy->account->putTransaction(sql, transaction);
+        void EthereumLikeBlockchainExplorerAccountSynchronizer::interpretTransaction(const Transaction& transaction,
+                                                                                    const std::shared_ptr<SynchronizationBuddy>& buddy,
+                                                                                    std::vector<Operation>& out) {
+            return buddy->account->interpretTransaction(transaction, out);
         }
     }
 }

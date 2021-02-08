@@ -61,8 +61,8 @@ namespace ledger {
             std::vector<uint8_t> getData() override ;
             std::chrono::system_clock::time_point getTime() override;
             api::OperationType getOperationType() override;
-            std::string getOperationUid();
-            std::string getETHOperationUid();
+            std::string getOperationUid() override;
+            std::string getETHOperationUid() override;
             int32_t getStatus() override ;
             std::experimental::optional<int64_t> getBlockHeight() override;
             ERC20LikeOperation &setHash(const std::string &hash) {

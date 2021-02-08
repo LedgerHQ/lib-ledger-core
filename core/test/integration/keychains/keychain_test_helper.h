@@ -127,7 +127,7 @@ public:
                 resolver
         );
         auto configuration = std::make_shared<DynamicObject>();
-        dispatcher->getMainExecutionContext()->execute(ledger::qt::make_runnable([=]() {
+        dispatcher->getMainExecutionContext()->execute(ledger::core::make_runnable([=]() {
             Keychain keychain(
                     configuration,
                     data.currency,
