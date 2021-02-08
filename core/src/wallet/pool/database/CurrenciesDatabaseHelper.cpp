@@ -97,12 +97,13 @@ bool ledger::core::CurrenciesDatabaseHelper::insertCurrency(soci::session &sql,
                 auto hexXPUBVersion = hex::toString(params.XPUBVersion);
                 auto hexPubKeyPrefix = hex::toString(params.PubKeyPrefix);
                 auto hexAddressPrefix = hex::toString(params.AddressPrefix);
+                auto edPubKeyPrefix = hex::toString(params.Ed25519PubKeyPrefix);
                 sql << "INSERT INTO cosmos_currencies VALUES(:name, :identifier, :xpub, "
                        ":pubkey_prefix, :address_prefix, :message_prefix, :chain_id, "
-                       ":additionalCIPs)",
+                       ":additionalCIPs, :edPrefix)",
                     use(currency.name), use(params.Identifier), use(hexXPUBVersion),
                     use(hexPubKeyPrefix), use(hexAddressPrefix), use(params.MessagePrefix),
-                    use(params.ChainId), use(CIPs);
+                    use(params.ChainId), use(CIPs), use(edPubKeyPrefix);
                 break;
             }
             case api::WalletType::ETHEREUM: {
@@ -260,7 +261,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                          << "SELECT cosmos_currencies.name, cosmos_currencies.identifier, "
                             "cosmos_currencies.xpub_version, cosmos_currencies.pubkey_prefix, "
                             "cosmos_currencies.address_prefix, cosmos_currencies.message_prefix, "
-                            "cosmos_currencies.chain_id, cosmos_currencies.additional_CIPs"
+                            "cosmos_currencies.chain_id, cosmos_currencies.additional_CIPs, cosmos_currencies.ed25519_prefix"
                             " FROM cosmos_currencies "
                             " WHERE cosmos_currencies.name = :currency_name",
                      use(currency.name));
@@ -273,6 +274,7 @@ void ledger::core::CurrenciesDatabaseHelper::getAllCurrencies(soci::session &sql
                     params.MessagePrefix = cosmos_row.get<std::string>(5);
                     params.ChainId = cosmos_row.get<std::string>(6);
                     params.AdditionalCIPs = strings::split(cosmos_row.get<std::string>(7), ",");
+                    params.Ed25519PubKeyPrefix = hex::toByteArray(cosmos_row.get<std::string>(8));
                     currency.cosmosLikeNetworkParameters = params;
                 }
                 break;

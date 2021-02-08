@@ -60,8 +60,7 @@ namespace ledger {
                 const std::string &password = ""
             );
 
-            /// FIXME: Bump this scheme for Stargate release on mainnet in production
-            static const int CURRENT_DATABASE_SCHEME_VERSION = 23;
+            static const int CURRENT_DATABASE_SCHEME_VERSION = 24;
 
             void performDatabaseMigration();
             void performDatabaseRollback();

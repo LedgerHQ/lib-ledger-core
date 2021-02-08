@@ -223,7 +223,7 @@ CosmosLikeRedelegationEntry = interface +c {
 }
 
 CosmosConfigurationDefaults = interface +c {
-        const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmos.coin.ledger.com";
+        const COSMOS_DEFAULT_API_ENDPOINT: string = "https://cosmoshub4.coin.ledger.com";
         const COSMOS_OBSERVER_WS_ENDPOINT: string = "";
 }
 
