@@ -424,6 +424,54 @@ namespace ledger {
                             });
         }
 
+        void BitcoinLikeAccount::getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos, const std::shared_ptr<api::AmountCallback> &callback) {
+            getMaxSpendable(strategy, maxUtxos).callback(getMainExecutionContext(), callback);
+        }
+
+        FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos) {
+            auto self = std::dynamic_pointer_cast<BitcoinLikeAccount>(shared_from_this());
+            return FuturePtr<Amount>::async(getWallet()->getPool()->getThreadPoolExecutionContext(), [=] () -> std::shared_ptr<Amount> {
+                const auto& uid = self->getAccountUid();
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                std::vector<BitcoinLikeBlockchainExplorerOutput> utxos;
+                BigInt sum(0);
+                auto keychain = self->getKeychain();
+                std::function<bool (const std::string&)> filter = [&keychain] (const std::string addr) -> bool {
+                    return keychain->contains(addr);
+                };
+                BitcoinLikeUTXODatabaseHelper::queryUTXO(sql, uid, 0, std::numeric_limits<int32_t>::max(), utxos, filter);
+                switch (strategy) {
+                    case api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST:
+                    case api::BitcoinLikePickingStrategy::MERGE_OUTPUTS:
+                    case api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE:
+                    {
+                        for (const auto& utxo : utxos) {
+                            sum = sum + utxo.value;
+                        }
+                    }
+                    break;
+                    case api::BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO:
+                    case api::BitcoinLikePickingStrategy::LIMIT_UTXO:
+                    {
+                        std::sort(utxos.begin(), utxos.end(), [](auto &lhs, auto &rhs) {
+                            return lhs.value.toInt64() > rhs.value.toInt64();
+                        });
+                        for (int i = 0; i < utxos.size() && i < maxUtxos.value_or(0) ; ++i) {
+                            sum = sum + utxos[i].value;
+                        }
+                    }
+                    break;
+                    default:
+                    {
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "unknown strategy");
+                    }
+                }
+
+                Amount balance(self->getWallet()->getCurrency(), 0, sum);
+                return std::make_shared<Amount>(balance);
+            });
+        }
+
         FuturePtr<ledger::core::Amount> BitcoinLikeAccount::getBalance() {
             auto cachedBalance = getWallet()->getBalanceFromCache(getIndex());
             if (cachedBalance.hasValue()) {

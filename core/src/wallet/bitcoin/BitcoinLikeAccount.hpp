@@ -111,6 +111,10 @@ namespace ledger {
 
             std::shared_ptr<api::OperationQuery> queryOperations() override;
 
+            FuturePtr<ledger::core::Amount> getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos);
+
+            void getMaxSpendable(api::BitcoinLikePickingStrategy strategy, optional<int32_t> maxUtxos, const std::shared_ptr<api::AmountCallback> &callback) override;
+            
             void getUTXO(int32_t from, int32_t to,
                          const std::shared_ptr<api::BitcoinLikeOutputListCallback> &callback) override;
             Future<std::vector<std::shared_ptr<api::BitcoinLikeOutput>>> getUTXO();

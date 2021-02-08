@@ -65,6 +65,18 @@ namespace ledger {
                 const std::vector<BitcoinLikeUtxo>& utxo,
                 const BigInt& aggregatedAmount,
                 const api::Currency& currrency);
+            static std::vector<BitcoinLikeUtxo> filterWithHighestFirstLimitUtxo(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                std::vector<BitcoinLikeUtxo> utxos,
+                const BigInt &aggregatedAmount,
+                const api::Currency& currency,
+                const optional<int32_t>& maxUtxo);
+            static std::vector<BitcoinLikeUtxo> filterWithLimitUtxo(
+                const std::shared_ptr<BitcoinLikeUtxoPicker::Buddy> &buddy,
+                std::vector<BitcoinLikeUtxo> utxos,
+                const BigInt &aggregatedAmount,
+                const api::Currency& currency,
+                const optional<int32_t>& maxUtxo);
             static bool hasEnough(const std::shared_ptr<Buddy>& buddy,
                 const BigInt& aggregatedAmount,
                 int inputCount,
