@@ -60,14 +60,6 @@ namespace ledger {
                 }
             }
 
-            auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
-            for (size_t i = 0; i < readonlyPoolSize; i++) {
-                auto& session = getReadonlyPool().at(i);
-                _backend->init(resolver, dbName, password, session);
-                if (_logger != nullptr) {
-                    session.set_log_stream(_logger);
-                }
-            }
 #ifdef PG_SUPPORT
             _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
                     api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
@@ -76,6 +68,14 @@ namespace ledger {
 #endif
             // Migrate database
             performDatabaseMigration();
+            auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
+            for (size_t i = 0; i < readonlyPoolSize; i++) {
+                auto& session = getReadonlyPool().at(i);
+                _backend->init(resolver, dbName, password, session);
+                if (_logger != nullptr) {
+                    session.set_log_stream(_logger);
+                }
+            }
         }
 
         DatabaseSessionPool::~DatabaseSessionPool() {
