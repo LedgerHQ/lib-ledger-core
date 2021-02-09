@@ -131,11 +131,6 @@ namespace ledger {
                 auto& session = getPool().at(i);
                 _backend->changePassword(oldPassword, newPassword, session);
             }
-            auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
-            for (size_t i = 0; i < readonlyPoolSize; i++) {
-                auto& session = getReadonlyPool().at(i);
-                _backend->changePassword(oldPassword, newPassword, session);
-            }
         }
 
         bool DatabaseSessionPool::isSqlite() const {
