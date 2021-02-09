@@ -95,7 +95,7 @@ struct type_conversion<ledger::core::cosmos::Fee> {
 
         Document d;
         d.Parse(in.data());
-        const auto &obj = d.GetObject();
+        const auto &obj = d.GetDocumentObject();
         out.gas = BigInt::fromString(obj["gas"].GetString());
         const auto &array = obj["amount"].GetArray();
         out.amount.resize(array.Size());
