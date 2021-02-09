@@ -311,7 +311,7 @@ namespace ledger {
             auto eventPublisher = std::make_shared<EventPublisher>(getContext());
 
             _currentSyncEventBus = eventPublisher->getEventBus();
-            auto future = _synchronizer->synchronizeAccount(
+            auto future = _synchronizer->synchronize(
                     std::static_pointer_cast<RippleLikeAccount>(shared_from_this()))->getFuture();
             auto self = std::static_pointer_cast<RippleLikeAccount>(shared_from_this());
 

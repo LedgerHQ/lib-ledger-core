@@ -28,540 +28,189 @@
  *
  */
 
+#include "RippleLikeAccountSynchronizer.hpp"
 
-#include <api/ConfigurationDefaults.hpp>
-#include <async/Future.hpp>
-#include <collections/DynamicObject.hpp>
-#include <debug/Benchmarker.h>
-#include <events/ProgressNotifier.h>
-#include <utils/Unit.hpp>
 #include <utils/DateUtils.hpp>
 #include <utils/DurationUtils.h>
+#include <utils/ImmediateExecutionContext.hpp>
 #include <utils/Try.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
-#include <wallet/common/database/AccountDatabaseHelper.h>
-#include <common/AccountHelper.hpp>
-#include <wallet/common/database/OperationDatabaseHelper.h>
 #include <wallet/ripple/RippleLikeAccount.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
-
-#include <algorithm>
 
 namespace ledger {
 namespace core {
 
-namespace {
-
-void initializeSavedState(
-    Option<AccountSynchronizationSavedState> &savedState,
-    int32_t halfBatchSize)
-{
-    if (savedState.hasValue() && savedState.getValue().halfBatchSize != halfBatchSize) {
-        AccountSynchronizationBatchSavedState block;
-        block.blockHeight = 1U << 31U;
-
-        for (auto &state : savedState.getValue().batches) {
-            if (state.blockHeight < block.blockHeight) {
-                block = state;
-            }
-        }
-        auto newBatchCount =
-            (savedState.getValue().batches.size() * savedState.getValue().halfBatchSize) /
-            halfBatchSize;
-        if (newBatchCount != 0) {
-            ++newBatchCount;
-        }
-        savedState.getValue().batches.clear();
-        savedState.getValue().halfBatchSize = static_cast<uint32_t>(halfBatchSize);
-        for (auto i = 0; i <= newBatchCount; i++) {
-            AccountSynchronizationBatchSavedState s;
-            s.blockHash = block.blockHash;
-            s.blockHeight = block.blockHeight;
-            savedState.getValue().batches.push_back(s);
-        }
-    } else if (savedState.isEmpty()) {
-        savedState = Option<AccountSynchronizationSavedState>(AccountSynchronizationSavedState());
-        savedState.getValue().halfBatchSize = static_cast<uint32_t>(halfBatchSize);
-    }
-}
-
-} // namespace
-
 RippleLikeAccountSynchronizer::RippleLikeAccountSynchronizer(
-    const std::shared_ptr<WalletPool> &pool,
-    const std::shared_ptr<RippleLikeBlockchainExplorer> &explorer)
+    const std::shared_ptr<WalletPool>& pool,
+    const std::shared_ptr<RippleLikeBlockchainExplorer>& explorer)
     : DedicatedContext(pool->getDispatcher()->getThreadPoolExecutionContext("synchronizers"))
     , _explorer(explorer)
+    , _notifier(nullptr)
+    , _logger(nullptr)
+    , _m()
 {}
 
-std::shared_ptr<ProgressNotifier<AccountSynchronizationContext>>
-RippleLikeAccountSynchronizer::synchronizeAccount(const std::shared_ptr<RippleLikeAccount> &account)
+std::shared_ptr<ProgressNotifier<RippleLikeAccountSynchronizer::Result>>
+RippleLikeAccountSynchronizer::synchronize(const std::shared_ptr<RippleLikeAccount>& account)
 {
-    std::lock_guard<std::mutex> lock(_lock);
-    if (!_currentAccount) {
-        _currentAccount = account;
-        _notifier = std::make_shared<ProgressNotifier<AccountSynchronizationContext>>();
-        auto self = shared_from_this();
-        performSynchronization(account).onComplete(getContext(), [self](const auto& result) {
-            std::lock_guard<std::mutex> l(self->_lock);
-            if (result.isFailure()) {
-                self->_notifier->failure(result.getFailure());
-            } else {
-                self->_notifier->success(result.getValue());
-            }
-            self->_notifier = nullptr;
-            self->_currentAccount = nullptr;
-        });
+    std::lock_guard<std::mutex> lock(_m);
+    if (!_notifier) {
+        _logger = logger::trace(
+            fmt::format("synchronize_{}", account->getAccountUid()),
+            fmt::format("{}/{}/{}", account->getWallet()->getName(),
+                        account->getWallet()->getName(), account->getIndex()),
+            account->logger());
 
-    } else if (account != _currentAccount) {
-        throw make_exception(api::ErrorCode::RUNTIME_ERROR, "This synchronizer is already in use");
+        _notifier = std::make_shared<ProgressNotifier<Result>>();
+        _start = DateUtils::now();
+
+        performSynchronization(account).onComplete(getContext(), [this](const Try<Result>& result) {
+            std::lock_guard<std::mutex> l(_m);
+            if (result.isFailure()) {
+                _notifier->failure(result.getFailure());
+            } else {
+                _notifier->success(result.getValue());
+            }
+            _notifier = nullptr;
+            _logger = nullptr;
+        });
     }
     return _notifier;
 }
 
-Future<AccountSynchronizationContext>
-RippleLikeAccountSynchronizer::performSynchronization(const std::shared_ptr<RippleLikeAccount>& account)
+Future<RippleLikeAccountSynchronizer::Result>
+RippleLikeAccountSynchronizer::performSynchronization(
+    const std::shared_ptr<RippleLikeAccount>& account) const
 {
-    auto buddy = std::make_shared<SynchronizationBuddy>();
-    buddy->account = account;
-    buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)
-        ->getInternalPreferences()
-        ->getSubPreferences("RippleLikeAccountSynchronizer");
-    auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
-    auto tracePrefix = fmt::format(
-        "{}/{}/{}",
-        account->getWallet()->getPool()->getName(),
-        account->getWallet()->getName(),
-        account->getIndex());
-    buddy->synchronizationTag = tracePrefix;
-    buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
-    buddy->startDate = DateUtils::now();
-    buddy->wallet = account->getWallet();
-    buddy->configuration = account->getWallet()->getConfig();
-    buddy->halfBatchSize = static_cast<uint32_t>(buddy->configuration
-            ->getInt(api::Configuration::SYNCHRONIZATION_HALF_BATCH_SIZE)
-            .value_or(api::ConfigurationDefaults::KEYCHAIN_DEFAULT_OBSERVABLE_RANGE));
-    buddy->keychain = account->getKeychain();
-    buddy->savedState = buddy->preferences->getObject<AccountSynchronizationSavedState>("state");
-    buddy->logger->info(
-        "Starting synchronization for account#{} ({}) of wallet {} at {}",
+    const auto address = account->getKeychain()->getAddress()->toString();
+    const auto preferences = account->getInternalPreferences()->getSubPreferences("RippleLikeAccountSynchronizer");
+    auto state = preferences->getObject<SavedState>("state").getValueOr(SavedState{});
+
+    _logger->info(
+        "Starting synchronization for account#{} ({}) of wallet {} at {}.",
         account->getIndex(),
         account->getKeychain()->getRestoreKey(),
-        account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
+        account->getWallet()->getName(),
+        DateUtils::toJSON(_start));
 
-    auto fullSyncBenchmarker = std::make_shared<Benchmarker>(
-        fmt::format("full_synchronization/{}", buddy->synchronizationTag),
-        buddy->logger);
+    updateCurrentBlock(account);
 
-    fullSyncBenchmarker->start();
-    //Check if reorganization happened
-    soci::session sql(buddy->wallet->getDatabase()->getPool());
-    if (buddy->savedState.nonEmpty()) {
-
-        //Get deepest block saved in batches to be part of reorg
-        auto sortedBatches = buddy->savedState.getValue().batches;
-        std::sort(
-            sortedBatches.begin(),
-            sortedBatches.end(),
-            [](const AccountSynchronizationBatchSavedState &lhs,
-               const AccountSynchronizationBatchSavedState &rhs) {
-                return lhs.blockHeight < rhs.blockHeight;
-            });
-
-        auto currencyName = buddy->wallet->getCurrency().name;
-        size_t index = 0;
-        //Reorg can't happen until genesis block, safely initialize with 0
-        uint64_t deepestFailedBlockHeight = 0;
-        while (index < sortedBatches.size() &&
-            !BlockDatabaseHelper::blockExists(sql, sortedBatches[index].blockHash, currencyName)) {
-            deepestFailedBlockHeight = sortedBatches[index].blockHeight;
-            index++;
-        }
-
-        //Case of reorg, update savedState's batches
-        if (deepestFailedBlockHeight > 0) {
-            //Get last block (in DB) which contains current account's operations
-            auto previousBlock = AccountDatabaseHelper::getLastBlockWithOperations(
-                sql, buddy->account->getAccountUid());
-            for (auto& batch : buddy->savedState.getValue().batches) {
-                if (batch.blockHeight >= deepestFailedBlockHeight) {
-                    batch.blockHeight = previousBlock.nonEmpty() ?
-                        static_cast<uint32_t>(previousBlock.getValue().height) : 0;
-                    batch.blockHash = previousBlock.nonEmpty() ?
-                        previousBlock.getValue().blockHash : "";
-                }
-            }
-        }
-    }
-
-    initializeSavedState(buddy->savedState, buddy->halfBatchSize);
-
-    updateTransactionsToDrop(sql, buddy, account->getAccountUid());
-
-    updateCurrentBlock(buddy, account->getContext());
-
-    auto self = shared_from_this();
-    return self->synchronizeBatches(0, buddy)
-        .flatMap<Unit>(
+    return synchronizeTransactions(account, state)
+        .flatMap<Result>(
             account->getContext(),
-            [self, buddy](const Unit&) {
-                return self->synchronizeMempool(buddy);
-            })
-        .map<AccountSynchronizationContext>(
-            ImmediateExecutionContext::INSTANCE,
-            [=](const Unit&) {
-                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
-                buddy->logger->info(
-                    "End synchronization for account#{} of wallet {} in {}",
-                    buddy->account->getIndex(),
-                    buddy->account->getWallet()->getName(),
+            [this, account](uint32_t nbTxns) {
+                const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - _start);
+                _logger->info(
+                    "End synchronization for account#{} of wallet {} in {}.",
+                    account->getIndex(),
+                    account->getWallet()->getName(),
                     DurationUtils::formatDuration(duration));
 
-                const auto& batches = buddy->savedState.getValue().batches;
+                const auto result = [account, nbTxns]() {
+                    auto result = Result{};
+                    soci::session sql(account->getWallet()->getDatabase()->getPool());
+                    const auto lastBlock = BlockDatabaseHelper::getLastBlock(
+                        sql, account->getWallet()->getCurrency().name);
+                    if (lastBlock.nonEmpty()) {
+                        result.lastBlockHeight = lastBlock->height;
+                    }
+                    result.newOperations = nbTxns;
+                    return result;
+                }();
 
-                soci::session sql(buddy->wallet->getDatabase()->getPool());
-                buddy->context.lastBlockHeight =
-                    BlockDatabaseHelper::getLastBlock(
-                        sql, buddy->wallet->getCurrency().name)
-                    .map<uint64_t>([](const Block& block) {
-                        return block.height;
-                    })
-                    .getValueOr(0);
-                fullSyncBenchmarker->stop();
-                self->_currentAccount = nullptr;
-                return buddy->context;
-            })
-        .recover(
-            ImmediateExecutionContext::INSTANCE,
-            [self, buddy, fullSyncBenchmarker](const Exception& ex) {
-                auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
-                    (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
-                buddy->logger->error(
-                    "Error during during synchronization for account#{} of wallet {} in {} ms",
-                    buddy->account->getIndex(),
-                    buddy->account->getWallet()->getName(),
-                    duration.count());
-                buddy->logger->error("Due to {}, {}", api::to_string(ex.getErrorCode()), ex.getMessage());
-                fullSyncBenchmarker->stop();
-                return buddy->context;
-            });
-}
-
-Future<Unit> RippleLikeAccountSynchronizer::synchronizeBatches(
-    uint32_t currentBatchIndex,
-    std::shared_ptr<SynchronizationBuddy> buddy)
-{
-    buddy->logger->info("SYNC BATCHES");
-    if (currentBatchIndex >= buddy->savedState.getValue().batches.size()) {
-        buddy->savedState.getValue().batches.push_back(AccountSynchronizationBatchSavedState());
-    }
-
-    auto self = shared_from_this();
-    auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-
-    auto benchmark = std::make_shared<Benchmarker>(
-        fmt::format("full_batch/{}", buddy->synchronizationTag),
-        buddy->logger);
-    benchmark->start();
-    return synchronizeBatch(currentBatchIndex, buddy)
-        .flatMap<Unit>(
-            buddy->account->getContext(),
-            [=](const bool& hadTransactions) {
-                benchmark->stop();
-
-                buddy->preferences->editor()->putObject<AccountSynchronizationSavedState>(
-                    "state", buddy->savedState.getValue())->commit();
-                return Future<Unit>::successful(unit);
+                return Future<Result>::successful(result);
             })
         .recoverWith(
             ImmediateExecutionContext::INSTANCE,
-            [=](const Exception& exception) {
-                buddy->logger->info(
-                    "Recovering from failing synchronization : {}", exception.getMessage());
+            [this, account](const Exception& ex) {
+                const auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now() - _start);
+                _logger->error(
+                    "Error during during synchronization for account#{} of wallet {} in {}.",
+                    account->getIndex(),
+                    account->getWallet()->getName(),
+                    DurationUtils::formatDuration(duration));
+                _logger->error(
+                    "Due to {}, {}",
+                    api::to_string(ex.getErrorCode()),
+                    ex.getMessage());
 
-                //A block reorganization happened
-                if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
-                    buddy->savedState.nonEmpty()) {
-                    buddy->logger->info("Recovering from reorganization");
-
-                    auto startSession = Future<void*>::async(ImmediateExecutionContext::INSTANCE, [=]() {
-                        return Future<void*>::successful(nullptr);
-                    });
-
-                    return startSession.flatMap<Unit>(
-                        ImmediateExecutionContext::INSTANCE,
-                        [=](void * const session) {
-                            //Get its block/block height
-                            auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
-                            auto const failedBlockHeight = failedBatch.blockHeight;
-                            auto const failedBlockHash = failedBatch.blockHash;
-
-                            if (failedBlockHeight > 0) {
-
-                                //Delete data related to failedBlock (and all blocks above it)
-                                buddy->logger->info(
-                                    "Deleting blocks above block height: {}", failedBlockHeight);
-
-                                soci::session sql(buddy->wallet->getDatabase()->getPool());
-                                {
-                                    soci::transaction tr(sql);
-                                    try {
-                                        soci::rowset<std::string> rows_block = (sql.prepare << "SELECT uid FROM blocks where height >= :failedBlockHeight",
-                                                                                soci::use(failedBlockHeight));
-
-                                        std::vector<std::string> blockToDelete(rows_block.begin(), rows_block.end());
-
-                                        // Fetch all operations which are deleted during reorganization
-                                        auto deletedOperationUIDs = OperationDatabaseHelper::fetchFromBlocks(sql, blockToDelete);
-
-                                        // Remove failed blocks and associated operations/transactions
-                                        AccountDatabaseHelper::removeBlockOperation(sql, buddy->account->getAccountUid(), blockToDelete);
-
-                                        //Get last block not part from reorg
-                                        auto lastBlock = BlockDatabaseHelper::getLastBlock(sql, buddy->wallet->getCurrency().name);
-
-                                        //Resync from the "beginning" if no last block in DB
-                                        int64_t lastBlockHeight = 0;
-                                        std::string lastBlockHash;
-                                        if (lastBlock.nonEmpty()) {
-                                            lastBlockHeight = lastBlock.getValue().height;
-                                            lastBlockHash = lastBlock.getValue().blockHash;
-                                        }
-                                        // update reorganization block height until found the valid one
-                                        buddy->context.reorgBlockHeight = lastBlockHeight;
-
-                                        //Update savedState's batches
-                                        for (auto& batch : buddy->savedState.getValue().batches) {
-                                            if (batch.blockHeight > lastBlockHeight) {
-                                                batch.blockHeight = static_cast<uint32_t>(lastBlockHeight);
-                                                batch.blockHash = lastBlockHash;
-                                            }
-                                        }
-                                        tr.commit();
-
-                                        // We can emit safely deleted operation UIDs
-                                        std::for_each(
-                                            deletedOperationUIDs.cbegin(),
-                                            deletedOperationUIDs.cend(),
-                                            [buddy](auto const& uid) {
-                                                buddy->account->emitDeletedOperationEvent(uid);
-                                            });
-                                    } catch(...) {
-                                        tr.rollback();
-                                    }
-                                }
-
-                                //Save new savedState
-                                buddy->preferences->editor()->putObject<AccountSynchronizationSavedState>(
-                                        "state", buddy->savedState.getValue())->commit();
-
-                                //Synchronize same batch now with an existing block (of hash lastBlockHash)
-                                //if failedBatch was not the deepest block part of that reorg, this recursive call
-                                //will ensure to get (and delete from DB) to the deepest failed block (part of reorg)
-                                buddy->logger->info("Relaunch synchronization after recovering from reorganization");
-
-                                return self->synchronizeBatches(currentBatchIndex, buddy);
-                            }
-                            return Future<Unit>::successful(unit);
-                        })
-                    .recover(
-                        ImmediateExecutionContext::INSTANCE,
-                        [buddy](const Exception& ex) {
-                            buddy->logger->warn(
-                                    "Failed to recover from reorganisation for account#{} of wallet {}",
-                                    buddy->account->getIndex(),
-                                    buddy->account->getWallet()->getName());
-                            return unit;
-                        });
-                }
-                return Future<Unit>::successful(unit);
+                return Future<Result>::failure(ex);
             });
 }
 
-Future<bool> RippleLikeAccountSynchronizer::synchronizeBatch(
-    uint32_t currentBatchIndex,
-    std::shared_ptr<SynchronizationBuddy> buddy,
-    bool hadTransactions)
+Future<uint32_t> RippleLikeAccountSynchronizer::synchronizeTransactions(
+    const std::shared_ptr<RippleLikeAccount>& account, SavedState& state, uint32_t nbTxns) const
 {
-    buddy->logger->info("SYNC BATCH {}", currentBatchIndex);
-
-    Option<std::string> blockHash;
-    auto self = shared_from_this();
-    auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-
-    if (batchState.blockHeight > 0) {
-        blockHash = Option<std::string>(batchState.blockHash);
-    }
-
-
-    auto derivationBenchmark = std::make_shared<Benchmarker>(
-        fmt::format("derivations/{}", buddy->synchronizationTag),
-        buddy->logger);
-    derivationBenchmark->start();
-
-    auto batch = vector::map<std::string, std::shared_ptr<RippleLikeAddress>>(
-        buddy->keychain->getAllObservableAddresses(
-            static_cast<uint32_t>((currentBatchIndex * buddy->halfBatchSize)),
-            static_cast<uint32_t>((currentBatchIndex + 1) * buddy->halfBatchSize - 1)),
-        [](const std::shared_ptr<RippleLikeAddress>& addr) {
-            return addr->toString();
-        });
-
-    derivationBenchmark->stop();
-
-    auto benchmark = std::make_shared<Benchmarker>(
-        fmt::format("explorer_calls/{}", buddy->synchronizationTag),
-        buddy->logger);
-    benchmark->start();
-    return _explorer->getTransactions(batch, blockHash, optional<void*>())
-        .flatMap<bool>(
-            buddy->account->getContext(),
-            [self, currentBatchIndex, buddy, hadTransactions, benchmark](
-                const std::shared_ptr<typename RippleLikeBlockchainExplorer::TransactionsBulk>& bulk) {
-                benchmark->stop();
-
-                auto interpretBenchmark = std::make_shared<Benchmarker>(
-                    fmt::format("interpret_operations/{}", buddy->synchronizationTag),
-                    buddy->logger);
-
-                auto& batchState = buddy->savedState.getValue().batches[currentBatchIndex];
-                //self->transactions.insert(self->transactions.end(), bulk->transactions.begin(), bulk->transactions.end());
-                buddy->logger->info("Got {} txs for account {}", bulk->transactions.size(), buddy->account->getAccountUid());
-                auto count = 0;
-
-                // NEW CODE
-                Option<Block> lastBlock = Option<Block>::NONE;
-                std::vector<Operation> operations;
-                interpretBenchmark->start();
-                // Interpret transactions to operations and update last block
+    const auto address = account->getKeychain()->getAddress()->toString();
+    const auto blockHash = state.blockHeight > 0 ? Option<std::string>(state.blockHash) : Option<std::string>();
+    return _explorer->getTransactions({address}, blockHash, {})
+        .flatMap<uint32_t>(
+            account->getContext(),
+            [this, account, state, nbTxns](
+                const std::shared_ptr<RippleLikeBlockchainExplorer::TransactionsBulk>& bulk) mutable
+            {
+                std::vector<Operation> out;
+                auto lastBlockHeight = state.blockHeight;
+                auto lastBlockHash = state.blockHash;
                 for (const auto& tx : bulk->transactions) {
-                    // Update last block to chain query
-                    if (lastBlock.isEmpty() || (tx.block.nonEmpty() &&
-                        lastBlock.getValue().height < tx.block.getValue().height)) {
-                        lastBlock = tx.block;
+                    if (tx.block.nonEmpty() && tx.block->height > lastBlockHeight) {
+                        lastBlockHeight = tx.block->height;
+                        lastBlockHash = tx.block->hash;
                     }
-
-                    buddy->account->interpretTransaction(tx, operations);
-
-                    //Update first pendingTxHash in savedState
-                    auto it = buddy->transactionsToDrop.find(tx.hash);
-                    if (it != buddy->transactionsToDrop.end()) {
-                        //If block non empty, tx is no longer pending
-                        if (tx.block.nonEmpty()) {
-                            buddy->savedState.getValue().pendingTxsHash.erase(it->first);
-                        } else { //Otherwise tx is in mempool but pending
-                            buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
-                        }
-                    }
-                    //Remove from tx to drop
-                    buddy->transactionsToDrop.erase(tx.hash);
+                    account->interpretTransaction(tx, out);
                 }
-                interpretBenchmark->stop();
-                auto insertionBenchmark = std::make_shared<Benchmarker>(
-                    fmt::format("insert_operations/{}", buddy->synchronizationTag),
-                    buddy->logger);
-                insertionBenchmark->start();
-                Try<int> tryPutTx = buddy->account->bulkInsert(operations);
-                insertionBenchmark->stop();
+
+                const auto tryPutTx = account->bulkInsert(out);
                 if (tryPutTx.isFailure()) {
-                    buddy->logger->error(
-                        "Failed to bulk insert for batch {} because: {}",
-                        currentBatchIndex, tryPutTx.getFailure().getMessage());
+                    _logger->error(
+                        "Insert transaction bulk failed because: {}",
+                        tryPutTx.getFailure().getMessage());
+
                     throw make_exception(
                         api::ErrorCode::RUNTIME_ERROR,
-                        "Synchronization failed for batch {} ({})",
-                        currentBatchIndex, tryPutTx.exception().getValue().getMessage());
-                } else {
-                    count += tryPutTx.getValue();
+                        "Synchronization failed ({})",
+                        tryPutTx.exception().getValue().getMessage());
                 }
 
-                buddy->logger->info(
-                    "Succeeded to insert {} txs on {} for account {}",
-                    count, bulk->transactions.size(), buddy->account->getAccountUid());
-                buddy->account->emitEventsNow();
+                account->emitEventsNow();
 
-                // END NEW CODE
+                const auto count = tryPutTx.getValue();
+                _logger->info(
+                    "Succussfully inserted {} transactions for account {}.",
+                    count, account->getAccountUid());
 
-                // Get the last block
-                if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
-                    batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
-                    batchState.blockHash = lastBlock.getValue().hash;
-                    buddy->preferences->editor()->putObject<AccountSynchronizationSavedState>(
-                        "state", buddy->savedState.getValue())->commit();
+                if (bulk->transactions.size() > 0) {
+                    state.blockHeight = lastBlockHeight;
+                    state.blockHash = lastBlockHash;
+                    account->getInternalPreferences()->editor()->putObject<SavedState>("state", state)->commit();
                 }
 
-                auto hadTX = hadTransactions || bulk->transactions.size() > 0;
                 if (bulk->hasNext) {
-                    return self->synchronizeBatch(currentBatchIndex, buddy, hadTX);
+                    return synchronizeTransactions(account, state, nbTxns + count);
                 } else {
-                    return Future<bool>::successful(hadTX);
+                    return Future<uint32_t>::successful(nbTxns + count);
                 }
             });
-}
-
-Future<Unit> RippleLikeAccountSynchronizer::synchronizeMempool(
-    const std::shared_ptr<SynchronizationBuddy>& buddy)
-{
-    //Delete dropped txs from DB
-    soci::session sql(buddy->wallet->getDatabase()->getPool());
-    for (auto& tx : buddy->transactionsToDrop) {
-        //Check if tx is pending
-        auto it = buddy->savedState.getValue().pendingTxsHash.find(tx.first);
-        if (it == buddy->savedState.getValue().pendingTxsHash.end()) {
-            //soci::transaction tr(sql);
-            buddy->logger->info("Drop transaction {}", tx.first);
-            buddy->logger->info("Deleting operation from DB {}", tx.second);
-            try {
-                sql << "DELETE FROM operations WHERE uid = :uid", soci::use(tx.second);
-                //tr.commit();
-            } catch(std::exception& ex) {
-                buddy->logger->info(
-                    "Failed to delete operation from DB {} reason: {}, rollback ...",
-                    tx.second, ex.what());
-                //tr.rollback();
-            }
-        }
-    }
-    return Future<Unit>::successful(unit);
 }
 
 void RippleLikeAccountSynchronizer::updateCurrentBlock(
-    std::shared_ptr<SynchronizationBuddy> &buddy,
-    const std::shared_ptr<api::ExecutionContext> &context)
+    const std::shared_ptr<RippleLikeAccount>& account) const
 {
-    _explorer->getCurrentBlock().onComplete(
-        context,
-        [buddy](const TryPtr<RippleLikeBlockchainExplorer::Block> &block) {
-            if (block.isSuccess()) {
-                soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
-                soci::transaction tr(sql);
-                try {
-                    buddy->account->putBlock(sql, *block.getValue());
-                    tr.commit();
-                } catch(...) {
-                    tr.rollback();
+    _explorer->getCurrentBlock()
+        .onComplete(
+            account->getContext(),
+            [account](const TryPtr<RippleLikeBlockchainExplorer::Block> &block) {
+                if (block.isSuccess()) {
+                    soci::session sql(account->getWallet()->getDatabase()->getPool());
+                    soci::transaction tr(sql);
+                    try {
+                        account->putBlock(sql, *block.getValue());
+                        tr.commit();
+                    } catch(...) {
+                        tr.rollback();
+                    }
                 }
-            }
-        });
-}
-
-void RippleLikeAccountSynchronizer::updateTransactionsToDrop(
-    soci::session &sql,
-    std::shared_ptr<SynchronizationBuddy> &buddy,
-    const std::string &accountUid)
-{
-    //Get all transactions in DB that may be dropped (txs without block_uid)
-    soci::rowset<soci::row> rows = (sql.prepare << "SELECT op.uid, xrp_op.transaction_hash FROM operations AS op "
-        "LEFT OUTER JOIN ripple_operations AS xrp_op ON xrp_op.uid = op.uid "
-        "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
-
-    for (auto &row : rows) {
-        if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
-            buddy->transactionsToDrop.insert(
-                std::pair<std::string, std::string>(row.get<std::string>(1), row.get<std::string>(0)));
-        }
-    }
+            });
 }
 
 } // namespace core
