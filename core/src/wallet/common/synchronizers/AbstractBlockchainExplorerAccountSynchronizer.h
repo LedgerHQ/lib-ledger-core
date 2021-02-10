@@ -514,11 +514,9 @@ namespace ledger {
 
                         // Get the last block
                         if (bulk->transactions.size() > 0 && lastBlock.nonEmpty() ) {
-                            if (lastBlock.getValue().height > batchState.blockHeight) {
-                                batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
-                                batchState.blockHash = lastBlock.getValue().hash;
-                                buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
-                            }
+                            batchState.blockHeight = (uint32_t) lastBlock.getValue().height;
+                            batchState.blockHash = lastBlock.getValue().hash;
+                            buddy->preferences->editor()->template putObject<BlockchainExplorerAccountSynchronizationSavedState>("state", buddy->savedState.getValue())->commit();
                         }
 
                         auto hadTX = hadTransactions || bulk->transactions.size() > 0;
