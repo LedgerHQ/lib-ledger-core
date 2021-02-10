@@ -46,7 +46,9 @@ class CosmosLikeOperation : public api::CosmosLikeOperation, public Operation {
     CosmosLikeOperation(const std::shared_ptr<OperationApi> &baseOp);
 
     CosmosLikeOperation(
-        ledger::core::cosmos::Transaction const &tx, ledger::core::cosmos::Message const &msg);
+        ledger::core::cosmos::Transaction const &tx, 
+        ledger::core::cosmos::Message const &msg, 
+        ledger::core::cosmos::MessageLog const &messageLog);
 
     void setTransactionData(ledger::core::cosmos::Transaction const &txData);
 
@@ -55,9 +57,14 @@ class CosmosLikeOperation : public api::CosmosLikeOperation, public Operation {
     virtual std::shared_ptr<api::CosmosLikeTransaction> getTransaction() override;
     virtual std::shared_ptr<api::CosmosLikeMessage> getMessage() override;
 
+    const std::shared_ptr<api::CosmosLikeTransaction> getTransaction() const;
+    const std::shared_ptr<api::CosmosLikeMessage> getMessage() const;
+    const ledger::core::cosmos::MessageLog& getMessageLog() const;
+
    private:
     std::shared_ptr<api::CosmosLikeTransaction> _txApi{nullptr};
     std::shared_ptr<api::CosmosLikeMessage> _msgApi{nullptr};
+    ledger::core::cosmos::MessageLog _messageLog;
 };
 
 }  // namespace core

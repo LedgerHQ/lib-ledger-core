@@ -35,6 +35,7 @@
 #include "StellarLikeAssetDatabaseHelper.hpp"
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/common/database/OperationDatabaseHelper.h>
 
 using namespace soci;
 
@@ -175,6 +176,27 @@ namespace ledger {
                    "WHERE transaction_hash = :hash AND from_address = :address"
                    , use(txHash), use(senderAddress), into(count);
             return count;
+        }
+
+        void StellarLikeTransactionDatabaseHelper::eraseDataSince(
+                    soci::session &sql,
+                    const std::string &accountUid,
+                    const std::chrono::system_clock::time_point & date) {
+                        
+            rowset<std::string> rows = (sql.prepare <<
+                "SELECT transaction_uid FROM stellar_operations AS sop "
+                "JOIN stellar_account_operations AS aop ON aop.operation_uid = sop.uid "
+                "JOIN operations AS op ON aop.uid = op.uid "
+                "WHERE op.account_uid = :uid AND op.date >= :date", 
+                use(accountUid), use(date)
+            );
+            std::vector<std::string> txToDelete(rows.begin(), rows.end());
+            if (!txToDelete.empty()) {
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date", 
+                    use(accountUid), use(date);
+                sql << "DELETE FROM stellar_transactions"
+                    " WHERE uid IN (:uids)", use(txToDelete);
+            }
         }
     }
 }

@@ -58,6 +58,10 @@ namespace ledger {
             static std::string putTransaction(soci::session &sql,
                                               const std::string &accountUid,
                                               const RippleLikeBlockchainExplorerTransaction &tx);
+
+            static void eraseDataSince( soci::session &sql,
+                                const std::string &accountUid,
+                                const std::chrono::system_clock::time_point & date);
         };
     }
 }

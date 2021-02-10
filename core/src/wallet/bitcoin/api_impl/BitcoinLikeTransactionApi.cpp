@@ -184,6 +184,10 @@ namespace ledger {
                                 _keychainEngine);
         }
 
+        int64_t BitcoinLikeTransactionApi::getDustAmount() {
+            return computeDustAmount(_currency, getEstimatedSize().Max);
+        }
+
         bool BitcoinLikeTransactionApi::isWriteable() const {
             return _writable;
         }
@@ -244,6 +248,22 @@ namespace ledger {
                 maxSize = fixedSize + 148 * inputCount + 34 * outputCount;
             }
             return api::EstimatedSize(static_cast<int32_t>(minSize), static_cast<int32_t>(maxSize));
+        }
+
+        int64_t BitcoinLikeTransactionApi::computeDustAmount(const api::Currency &currency, int32_t size) {
+            int64_t dustAmount = currency.bitcoinLikeNetworkParameters.value().Dust;
+            switch (currency.bitcoinLikeNetworkParameters.value().DustPolicy)
+            {
+            case api::BitcoinLikeDustPolicy::PER_KBYTE: 
+                dustAmount = dustAmount * size /1000;
+                break;
+            case api::BitcoinLikeDustPolicy::PER_BYTE:
+                dustAmount = dustAmount * size;
+                break;
+            default:
+                break;
+            }
+            return dustAmount;
         }
 
         BitcoinLikeTransactionApi &BitcoinLikeTransactionApi::setVersion(uint32_t version) {

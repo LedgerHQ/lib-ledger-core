@@ -92,7 +92,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                 auto destination = "bc1qh4kl0a0a3d7su8udc2rn62f8w939prqpl34z86";
                 auto txBuilder = account->buildTransaction(false);
                 auto tx = uv::wait(std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(txBuilder->sendToAddress(api::Amount::fromLong(wallet->getCurrency(), 2000), destination)
-                                                                                                    ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF)
+                                                                                                    ->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>())
                                                                                                     ->setFeesPerByte(api::Amount::fromLong(wallet->getCurrency(), 50)))
                                        ->build());
                 EXPECT_EQ(tx->getOutputs()[0]->getAddress().value_or(""), destination);
@@ -155,27 +155,31 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumLTCXpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
-        configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        //configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP173_P2WPKH);
+        configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
+        configuration->putBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN, true);
         auto wallet = uv::wait(pool->createWallet("e847815f-488a-4301-b67c-378a5e9c8a61", "litecoin", configuration));
         {
             auto nextIndex = uv::wait(wallet->getNextAccountIndex());
             EXPECT_EQ(nextIndex, 0);
-
-            auto account = createBitcoinLikeAccount(wallet, nextIndex, P2WPKH_LTC_MEDIUM_KEYS_INFO);
+            api::ExtendedKeyAccountCreationInfo info {
+                0, {"main"}, {"44'/20'/0'"}, {"Ltub2Yw5wCDWmsrhL78Lh8b1xYGdn2Hgq6nkav54oXHgXKLzdPXno8YoPp4AeNSiQW4XRcxRa7h23k1h7Pw8tLZe5qZGzDMe8xB2s9rRVFuTMtp"}
+            };
+            auto account = createBitcoinLikeAccount(wallet, nextIndex, info);
 
             auto receiver = make_receiver([=](const std::shared_ptr<api::Event> &event) {
                 fmt::print("Received event {}\n", api::to_string(event->getCode()));
                 if (event->getCode() == api::EventCode::SYNCHRONIZATION_STARTED)
                     return;
                 EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
-                EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd");
+                //EXPECT_EQ(uv::wait(account->getFreshPublicAddresses())[0]->toString(), "ltc1q7qnj9xm8wp8ucmg64lk0h03as8k6ql6rk4wvsd");
                 dispatcher->stop();
             });
 
             auto bus = account->synchronize();
             bus->subscribe(getTestExecutionContext(),receiver);
-
             dispatcher->waitUntilStopped();
+            fmt::print("BALANCE: {}\n", uv::wait(account->getBalance())->toString());
         }
     }
 }

@@ -65,6 +65,7 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
             {0x04, 0x88, 0xB2, 0x1E},
             api::BitcoinLikeFeePolicy::PER_BYTE,
             (std::numeric_limits<int64_t>::max)(),
+            api::BitcoinLikeDustPolicy::FIXED,
             "Bitcoin Stardust Signed Message:\n",
             false,
             0,
@@ -98,7 +99,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
     auto balance = uv::wait(account->getBalance());
 
     builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     //builder->excludeUtxo("beabf89d72eccdcb895373096a402ae48930aa54d2b9e4d01a05e8f068e9ea49", 0);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 61));
     auto f = builder->build();
@@ -113,15 +114,16 @@ TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 }
 
 TEST_F(BitcoinStardustTransaction, FilterDustUtxo) {
+    int64_t dustAmount = BitcoinLikeTransactionApi::computeDustAmount(currency, 0);
     ASSERT_EQ(
-        currency.bitcoinLikeNetworkParameters->DustAmount,
+        dustAmount,
         (std::numeric_limits<int64_t>::max)()
     ) << "The currency in this test should have a very high dust amount";
 
     auto builder = tx_builder();
 
     builder->sendToAddress(api::Amount::fromLong(currency, 20000000), "36v1GRar68bBEyvGxi9RQvdP6Rgvdwn2C2");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 61));
     auto f = builder->build();
     try {
@@ -136,7 +138,7 @@ TEST_F(BitcoinStardustTransaction, FilterDustUtxo) {
 TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutputAndFakeSignature) {
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
     auto f = builder->build();
     auto tx = uv::wait(f);
@@ -152,7 +154,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, OptimizeSize) {
     auto builder = tx_builder();
     const int64_t feesPerByte = 20;
     builder->sendToAddress(api::Amount::fromLong(currency, 10000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::OPTIMIZE_SIZE, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, feesPerByte));
     auto f = builder->build();
     auto tx = uv::wait(f);
@@ -165,7 +167,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, OptimizeSize) {
 TEST_F(BitcoinMakeP2PKHTransaction, CreateStandardP2PKHWithMultipleInputs) {
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 100000000), "14GH47aGFWSjvdrEiYTEfwjgsphNtbkWzP");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
     auto f = builder->build();
     auto tx = uv::wait(f);
@@ -197,7 +199,7 @@ TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
 
     auto builder = std::dynamic_pointer_cast<BitcoinLikeTransactionBuilder>(bla->buildTransaction(false));
     builder->sendToAddress(api::Amount::fromLong(currency, 1000), "ms8C1x7qHa3WJM986NKyx267i2LFGaHRZn");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
     auto f = builder->build();
     auto tx = uv::wait(f);
@@ -225,7 +227,7 @@ TEST_F(BCHMakeP2PKHTransaction, CreateStandardP2SHWithOneOutput) {
     auto buildBCHTxWithAddress = [=](const std::string & toAddress) -> std::string {
         auto builder = tx_builder();
         builder->sendToAddress(api::Amount::fromLong(currency, 5000), toAddress);
-        builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+        builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
         builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
         auto f = builder->build();
         auto tx = uv::wait(f);
@@ -267,7 +269,7 @@ TEST_F(ZCASHMakeP2PKHTransaction, CreateStandardP2PKHWithOneOutput) {
 
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 2000), "t1MepQJABxoWarqMvgBHGiFprtuvA47Hiv8");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
     auto f = builder->build();
     auto tx = uv::wait(f);

@@ -41,7 +41,6 @@
 #include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
 #include <wallet/ripple/RippleLikeWallet.h>
 #include <wallet/pool/WalletPool.hpp>
-#include <wallet/ripple/synchronizers/RippleLikeBlockchainExplorerAccountSynchronizer.h>
 #include <api/RippleConfigurationDefaults.hpp>
 
 #define STRING(key, def) entry.configuration->getString(key).value_or(def)
@@ -80,7 +79,7 @@ namespace ledger {
                     std::weak_ptr<WalletPool> p = pool;
                     synchronizerFactory = Option<RippleLikeAccountSynchronizerFactory>([p, explorer]() {
                         auto pool = p.lock();
-                        return std::make_shared<RippleLikeBlockchainExplorerAccountSynchronizer>(pool, explorer);
+                        return std::make_shared<RippleLikeAccountSynchronizer>(pool, explorer);
                     });
                 }
             }

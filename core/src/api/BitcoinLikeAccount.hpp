@@ -4,6 +4,7 @@
 #ifndef DJINNI_GENERATED_BITCOINLIKEACCOUNT_HPP
 #define DJINNI_GENERATED_BITCOINLIKEACCOUNT_HPP
 
+#include "../utils/optional.hpp"
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -19,12 +20,14 @@ namespace ledger { namespace core { namespace api {
 
 class Address;
 class AddressListCallback;
+class AmountCallback;
 class BigIntListCallback;
 class BitcoinLikeOutputListCallback;
 class BitcoinLikeTransaction;
 class BitcoinLikeTransactionBuilder;
 class I32Callback;
 class StringCallback;
+enum class BitcoinLikePickingStrategy;
 
 /** Class representing a Bitcoin account. */
 class LIBCORE_EXPORT BitcoinLikeAccount {
@@ -68,6 +71,9 @@ public:
 
     /** get all contained adresses. */
     virtual std::vector<std::shared_ptr<Address>> getAllAddresses() = 0;
+
+    /** get max spendable balance for a given strategy */
+    virtual void getMaxSpendable(BitcoinLikePickingStrategy strategy, std::experimental::optional<int32_t> maxUtxos, const std::shared_ptr<AmountCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

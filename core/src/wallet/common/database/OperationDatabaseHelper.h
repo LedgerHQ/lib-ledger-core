@@ -66,6 +66,12 @@ namespace ledger {
              * exists but not in a block,  Option() if the operation is unknown
              */
             static Option<bool> isOperationInBlock(soci::session& sql, const std::string& opUid);
+
+            static void eraseDataSince(soci::session &sql,
+                                        const std::string &accountUid,
+                                        const std::chrono::system_clock::time_point & date,
+                                        const std::string &specificOperationsTableName,
+                                        const std::string &specificTransactionsTableName);
         private:
             static void updateCurrencyOperation(soci::session& sql,
                                                 const Operation& operation,

@@ -4,8 +4,10 @@
 #include "BitcoinLikeAccount.hpp"  // my header
 #include "Address.hpp"
 #include "AddressListCallback.hpp"
+#include "AmountCallback.hpp"
 #include "BigIntListCallback.hpp"
 #include "BitcoinLikeOutputListCallback.hpp"
+#include "BitcoinLikePickingStrategy.hpp"
 #include "BitcoinLikeTransaction.hpp"
 #include "BitcoinLikeTransactionBuilder.hpp"
 #include "I32Callback.hpp"
@@ -105,6 +107,17 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_
         auto r = ref->getAllAddresses();
         return ::djinni::release(::djinni::List<::djinni_generated::Address>::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
+CJNIEXPORT void JNICALL Java_co_ledger_core_BitcoinLikeAccount_00024CppProxy_native_1getMaxSpendable(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_strategy, jobject j_maxUtxos, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::BitcoinLikeAccount>(nativeRef);
+        ref->getMaxSpendable(::djinni_generated::BitcoinLikePickingStrategy::toCpp(jniEnv, j_strategy),
+                             ::djinni::Optional<std::experimental::optional, ::djinni::I32>::toCpp(jniEnv, j_maxUtxos),
+                             ::djinni_generated::AmountCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
 }  // namespace djinni_generated

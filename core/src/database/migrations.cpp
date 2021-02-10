@@ -30,6 +30,8 @@
  */
 
 #include "migrations.hpp"
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <wallet/bitcoin/networks.hpp>
 
 namespace ledger {
     namespace core {
@@ -1126,5 +1128,45 @@ namespace ledger {
             // Do nothing
         }
 
+        template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE bitcoin_currencies ADD dust_policy VARCHAR(20)";
+            for (const api::BitcoinLikeNetworkParameters& parameters : networks::ALL) {
+                sql << "UPDATE bitcoin_currencies SET dust_policy = '" << api::to_string(parameters.DustPolicy) << "' WHERE identifier = '" << parameters.Identifier << "'";
+                sql << "UPDATE bitcoin_currencies SET dust_amount = " << parameters.Dust << " WHERE identifier = '" << parameters.Identifier << "'";
+            }
+        }
+
+        template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type) {
+            // SQLite doesn't handle ALTER TABLE DROP
+            if (type != api::DatabaseBackendType::SQLITE3) {
+                sql << "ALTER TABLE bitcoin_currencies DROP dust_policy";
+            } else {
+                sql << "CREATE TABLE bitcoin_currencies_swap"
+                       "(name VARCHAR(255) PRIMARY KEY NOT NULL REFERENCES currencies(name) ON DELETE CASCADE ON UPDATE CASCADE,"
+                       "identifier VARCHAR(255) NOT NULL,"
+                       "p2pkh_version VARCHAR(255) NOT NULL,"
+                       "p2sh_version VARCHAR(255) NOT NULL,"
+                       "xpub_version VARCHAR(255) NOT NULL,"
+                       "dust_amount BIGINT NOT NULL,"
+                       "fee_policy VARCHAR(20) NOT NULL,"
+                       "message_prefix VARCHAR(255) NOT NULL,"
+                       "has_timestamped_transaction INTEGER NOT NULL," 
+                       "timestamp_delay BIGINT DEFAULT 0," 
+                       "sighash_type VARCHAR(255) DEFAULT 01," 
+                       "additional_BIPs TEXT DEFAULT ''"
+                       ")";
+                sql << "INSERT INTO bitcoin_currencies_swap"
+                       "SELECT identifier, p2pkh_version, p2sh_version, xpub_version,"
+                       "dust_amount, fee_policy, message_prefix,"
+                       "has_timestamped_transaction, timestamp_delay,"
+                       "sighash_type, additional_BIPs "
+                       "FROM bitcoin_currencies ";
+                sql << "DROP TABLE bitcoin_currencies";
+                sql << "ALTER TABLE bitcoin_currencies_swap RENAME TO bitcoin_currencies";
+                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc'";
+                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc_testnet'";
+         
+            }
+        }
     }
 }
