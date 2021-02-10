@@ -58,6 +58,7 @@
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/TezosLikeTransaction.hpp>
 #include <common/AccountHelper.hpp>
+#include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -103,8 +104,9 @@ namespace ledger {
             _explorer->getCurrentBlock().onComplete(getContext(),
                                                     [self] (const TryPtr<TezosLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
-                                                            //TODO
                                                             self->_currentBlockHeight = block.getValue()->height;
+                                                            soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                                            BulkInsertDatabaseHelper::updateBlock(sql, *block.getValue());
                                                         }
                                                     });
 

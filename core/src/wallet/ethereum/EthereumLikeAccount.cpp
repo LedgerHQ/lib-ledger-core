@@ -56,6 +56,7 @@
 #include <database/soci-number.h>
 #include <database/soci-date.h>
 #include <database/soci-option.h>
+#include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 
 
 namespace ledger {
@@ -475,6 +476,8 @@ namespace ledger {
             _explorer->getCurrentBlock().onComplete(getContext(), [self] (const TryPtr<EthereumLikeBlockchainExplorer::Block>& block) mutable {
                 if (block.isSuccess()) {
                     self->_currentBlockHeight = block.getValue()->height;
+                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    BulkInsertDatabaseHelper::updateBlock(sql, *block.getValue());
                 }
             });
 

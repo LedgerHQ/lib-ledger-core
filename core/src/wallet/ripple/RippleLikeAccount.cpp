@@ -52,6 +52,7 @@
 #include <database/soci-date.h>
 #include <database/soci-option.h>
 #include <wallet/ripple/database/RippleLikeOperationDatabaseHelper.hpp>
+#include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 
 namespace ledger {
     namespace core {
@@ -321,6 +322,8 @@ namespace ledger {
                                                     [self](const TryPtr<RippleLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
                                                             self->_currentLedgerSequence = block.getValue()->height;
+                                                            soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                                            BulkInsertDatabaseHelper::updateBlock(sql, *block.getValue());
                                                         }
                                                     });
 

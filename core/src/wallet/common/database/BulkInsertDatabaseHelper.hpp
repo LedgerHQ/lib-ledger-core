@@ -72,6 +72,7 @@ namespace ledger {
         public:
             static const StatementDeclaration<OperationBinding> UPSERT_OPERATION;
             static const StatementDeclaration<BlockBinding> UPSERT_BLOCK;
+            static void updateBlock(soci::session& sql, const Block& block);
         };
     }
 }

@@ -61,6 +61,7 @@
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 #include <wallet/pool/database/CurrenciesDatabaseHelper.hpp>
 #include <wallet/cosmos/database/CosmosLikeOperationsDatabaseHelper.hpp>
+#include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -614,6 +615,8 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
         getContext(), [self](const TryPtr<cosmos::Block> &block) mutable {
             if (block.isSuccess()) {
                 self->_currentBlockHeight = block.getValue()->height;
+                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                BulkInsertDatabaseHelper::updateBlock(sql, *block.getValue());
             }
         });
 
