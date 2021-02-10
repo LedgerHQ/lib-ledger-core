@@ -485,10 +485,12 @@ Future<bool> RippleLikeAccountSynchronizer::synchronizeBatch(
 
                 // Get the last block
                 if (bulk->transactions.size() > 0 && lastBlock.nonEmpty()) {
-                    batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
-                    batchState.blockHash = lastBlock.getValue().hash;
-                    buddy->preferences->editor()->putObject<AccountSynchronizationSavedState>(
-                        "state", buddy->savedState.getValue())->commit();
+                    if (lastBlock.getValue().height > batchState.blockHeight) {
+                        batchState.blockHeight = static_cast<uint32_t>(lastBlock.getValue().height);
+                        batchState.blockHash = lastBlock.getValue().hash;
+                        buddy->preferences->editor()->putObject<AccountSynchronizationSavedState>(
+                            "state", buddy->savedState.getValue())->commit();
+                    }
                 }
 
                 auto hadTX = hadTransactions || bulk->transactions.size() > 0;
