@@ -78,7 +78,7 @@ namespace ledger {
                 auto self = std::dynamic_pointer_cast<EthereumLikeAccount>(shared_from_this());
                 return async<std::shared_ptr<EthereumLikeBlockchainExplorerTransaction>>([=] () -> std::shared_ptr<EthereumLikeBlockchainExplorerTransaction> {
                     auto tx = std::make_shared<EthereumLikeBlockchainExplorerTransaction>();
-                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     if (!EthereumLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, *tx)) {
                             throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found", hash);
                     }
@@ -363,7 +363,7 @@ namespace ledger {
                     }
 
                     const auto &uid = self->getAccountUid();
-                    soci::session sql(self->getWallet()->getDatabase()->getPool());
+                    soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                     std::vector<Operation> operations;
 
                     auto keychain = self->getKeychain();
@@ -571,7 +571,6 @@ namespace ledger {
                 auto optimisticUpdate = Try<int>::from([&] () -> int {
                     auto txExplorer = getETHLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
                     //Store in DB
-                    soci::session sql(self->getWallet()->getDatabase()->getPool());
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
                     self->bulkInsert(operations);

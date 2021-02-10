@@ -44,7 +44,7 @@ namespace ledger {
             const std::shared_ptr<spdlog::logger>& logger,
             const std::string &dbName,
             const std::string &password) :
-            _pool((size_t) backend->getConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
+            _pool((size_t) backend->getConnectionPoolSize()), _readonlyPool((size_t)backend->getReadonlyConnectionPoolSize()), _backend(backend), _buffer("SQL", logger) {
             if (logger != nullptr && backend->isLoggingEnabled()) {
                 _logger = new std::ostream(&_buffer);
             } else {
@@ -55,9 +55,11 @@ namespace ledger {
             for (size_t i = 0; i < poolSize; i++) {
                 auto& session = getPool().at(i);
                 _backend->init(resolver, dbName, password, session);
-                if (_logger != nullptr)
+                if (_logger != nullptr) {
                     session.set_log_stream(_logger);
+                }
             }
+
 #ifdef PG_SUPPORT
             _type = std::dynamic_pointer_cast<PostgreSQLBackend>(backend) != nullptr ?
                     api::DatabaseBackendType::POSTGRESQL : api::DatabaseBackendType::SQLITE3;
@@ -66,6 +68,14 @@ namespace ledger {
 #endif
             // Migrate database
             performDatabaseMigration();
+            auto readonlyPoolSize = _backend->getReadonlyConnectionPoolSize();
+            for (size_t i = 0; i < readonlyPoolSize; i++) {
+                auto& session = getReadonlyPool().at(i);
+                _backend->init(resolver, dbName, password, session);
+                if (_logger != nullptr) {
+                    session.set_log_stream(_logger);
+                }
+            }
         }
 
         DatabaseSessionPool::~DatabaseSessionPool() {
@@ -90,6 +100,10 @@ namespace ledger {
 
         soci::connection_pool &DatabaseSessionPool::getPool() {
             return _pool;
+        }
+
+        soci::connection_pool& DatabaseSessionPool::getReadonlyPool() {
+            return _readonlyPool;
         }
 
         void DatabaseSessionPool::performDatabaseMigration() {

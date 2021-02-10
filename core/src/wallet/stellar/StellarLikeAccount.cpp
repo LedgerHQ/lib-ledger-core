@@ -138,7 +138,7 @@ namespace ledger {
             auto self = getSelf();
             return async<std::shared_ptr<Amount>>([=] () {
                 const auto& currency = self->getWallet()->getCurrency();
-                soci::session sql(self->_params.database->getPool());
+                soci::session sql(self->_params.database->getReadonlyPool());
                 stellar::Account account {};
 
                 auto accountId = AccountDatabaseHelper::createAccountUid(self->getWallet()->getWalletUid(), self->_params.index);
@@ -176,7 +176,7 @@ namespace ledger {
                 }
 
                 const auto &uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
                 auto keychain = self->getKeychain();
@@ -463,7 +463,7 @@ namespace ledger {
         FuturePtr<Amount> StellarLikeAccount::getBaseReserve() {
             auto self = getSelf();
             auto queryLastLedgerAndGetReserve = [=] () -> std::shared_ptr<Amount> {
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 stellar::Ledger lgr;
                 auto now = std::chrono::duration_cast<std::chrono::milliseconds>(DateUtils::now().time_since_epoch()).count();
                 if (!StellarLikeLedgerDatabaseHelper::getLastLedger(sql, self->getWallet()->getCurrency(), lgr) ||
@@ -520,7 +520,7 @@ namespace ledger {
         Future<std::vector<stellar::AccountSigner>> StellarLikeAccount::getSigners() {
             auto self = getSelf();
             return async<std::vector<stellar::AccountSigner>>([=] () {
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 stellar::Account acc;
                 StellarLikeAccountDatabaseHelper::getAccount(sql, self->getAccountUid(), acc);
                 return acc.signers;

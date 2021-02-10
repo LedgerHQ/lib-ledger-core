@@ -30,6 +30,16 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jint JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native_1getReadonlyConnectionPoolSize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::DatabaseBackend>(nativeRef);
+        auto r = ref->getReadonlyConnectionPoolSize();
+        return ::djinni::release(::djinni::I32::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native_1enableQueryLogging(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jboolean j_enable)
 {
     try {
@@ -59,11 +69,12 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getSqlite3Backend
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getPostgreSQLBackend(JNIEnv* jniEnv, jobject /*this*/, jint j_connectionPoolSize)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getPostgreSQLBackend(JNIEnv* jniEnv, jobject /*this*/, jint j_connectionPoolSize, jint j_readonlyConnectionPoolSize)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
-        auto r = ::ledger::core::api::DatabaseBackend::getPostgreSQLBackend(::djinni::I32::toCpp(jniEnv, j_connectionPoolSize));
+        auto r = ::ledger::core::api::DatabaseBackend::getPostgreSQLBackend(::djinni::I32::toCpp(jniEnv, j_connectionPoolSize),
+                                                                            ::djinni::I32::toCpp(jniEnv, j_readonlyConnectionPoolSize));
         return ::djinni::release(::djinni_generated::DatabaseBackend::fromCpp(jniEnv, r));
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }

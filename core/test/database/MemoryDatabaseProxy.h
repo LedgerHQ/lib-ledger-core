@@ -40,6 +40,7 @@ public:
     std::shared_ptr<ledger::core::api::DatabaseConnectionPool> connect(const std::string &connectUrl) override;
 
     int32_t getPoolSize() override;
+    int32_t getReadonlyPoolSize() override;
 
 private:
     std::shared_ptr<ConnectionPool> _pool;

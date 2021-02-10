@@ -30,6 +30,12 @@ public:
     virtual int32_t getConnectionPoolSize() = 0;
 
     /**
+     * Get the maximum number of concurrent readonly connection that the backend is able to open on a single database.
+     * @return the size of the readonly connection pool.
+     */
+    virtual int32_t getReadonlyConnectionPoolSize() = 0;
+
+    /**
      * Enable or disable query logging. By default logging is disabled. Query logging will record every SQL query in log streams.
      * @return this database backend (to chain configuration calls)
      */
@@ -51,7 +57,7 @@ public:
      * Create an instance of PostgreSQL database.
      * @return DatabaseBackend object
      */
-    static std::shared_ptr<DatabaseBackend> getPostgreSQLBackend(int32_t connectionPoolSize);
+    static std::shared_ptr<DatabaseBackend> getPostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize);
 
     /** Create a database backend instance from the given DatabaseEngine implementation. */
     static std::shared_ptr<DatabaseBackend> createBackendFromEngine(const std::shared_ptr<DatabaseEngine> & engine);

@@ -92,7 +92,7 @@ std::shared_ptr<api::CosmosLikeAccount> CosmosLikeAccount::asCosmosLikeAccount()
 
 void CosmosLikeAccount::updateFromDb()
 {
-    soci::session sql(this->getWallet()->getDatabase()->getPool());
+    soci::session sql(this->getWallet()->getDatabase()->getReadonlyPool());
     CosmosLikeAccountDatabaseEntry dbAccount;
     bool const existingAccount =
         CosmosLikeAccountDatabaseHelper::queryAccount(sql, getAccountUid(), dbAccount);
@@ -488,7 +488,7 @@ Future<std::vector<std::shared_ptr<api::Amount>>> CosmosLikeAccount::getBalanceH
             }
 
             const auto &uid = self->getAccountUid();
-            soci::session sql(self->getWallet()->getDatabase()->getPool());
+            soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
             std::vector<Operation> operations;
 
             auto keychain = self->getKeychain();

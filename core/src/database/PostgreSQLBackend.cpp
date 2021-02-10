@@ -41,19 +41,25 @@ using namespace soci;
 namespace ledger {
     namespace core {
         PostgreSQLBackend::PostgreSQLBackend() : DatabaseBackend(),
-                                                 _connectionPoolSize(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE)
+                                                 _connectionPoolSize(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE),
+                                                 _readonlyConnectionPoolSize(api::ConfigurationDefaults::DEFAULT_PG_CONNECTION_POOL_SIZE)
         {
             initSSLLibraries();
         }
 
-        PostgreSQLBackend::PostgreSQLBackend(int32_t connectionPoolSize) : DatabaseBackend(),
-                                                                           _connectionPoolSize(connectionPoolSize)
+        PostgreSQLBackend::PostgreSQLBackend(int32_t connectionPoolSize, int32_t readonlyConnectionPoolSize) : DatabaseBackend(),
+                                                                           _connectionPoolSize(connectionPoolSize),
+                                                                           _readonlyConnectionPoolSize(readonlyConnectionPoolSize)
         {
             initSSLLibraries();
         }
 
         int32_t PostgreSQLBackend::getConnectionPoolSize() {
             return _connectionPoolSize;
+        }
+        
+        int32_t PostgreSQLBackend::getReadonlyConnectionPoolSize() {
+            return _readonlyConnectionPoolSize;
         }
 
         void PostgreSQLBackend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,

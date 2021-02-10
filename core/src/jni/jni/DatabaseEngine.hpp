@@ -36,6 +36,7 @@ private:
 
         std::shared_ptr<::ledger::core::api::DatabaseConnectionPool> connect(const std::string & databaseName) override;
         int32_t getPoolSize() override;
+        int32_t getReadonlyPoolSize() override;
 
     private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseEngine, ::djinni_generated::DatabaseEngine>;
@@ -44,6 +45,7 @@ private:
     const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseEngine") };
     const jmethodID method_connect { ::djinni::jniGetMethodID(clazz.get(), "connect", "(Ljava/lang/String;)Lco/ledger/core/DatabaseConnectionPool;") };
     const jmethodID method_getPoolSize { ::djinni::jniGetMethodID(clazz.get(), "getPoolSize", "()I") };
+    const jmethodID method_getReadonlyPoolSize { ::djinni::jniGetMethodID(clazz.get(), "getReadonlyPoolSize", "()I") };
 };
 
 }  // namespace djinni_generated

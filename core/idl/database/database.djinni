@@ -227,6 +227,9 @@ DatabaseEngine = interface +j +n +o {
     # Get the maximum number of concurrent connection on a single database.
     # @return the maximum number of concurrent connection that the engine is able to open on a single database.
     getPoolSize(): i32;
+    # Get the maximum number of concurrent readonly connection on a single database.
+    # @return the maximum number of concurrent readonly connection that the engine is able to open on a single database.
+    getReadonlyPoolSize(): i32;
 }
 
 #Class representing a database backend.
@@ -234,6 +237,10 @@ DatabaseBackend = interface +c {
     # Get the maximum number of concurrent connection that the backend is able to open on a single database.
     # @return the size of the connection pool.
     getConnectionPoolSize(): i32;
+
+    # Get the maximum number of concurrent readonly connection that the backend is able to open on a single database.
+    # @return the size of the readonly connection pool.
+    getReadonlyConnectionPoolSize(): i32;
 
     # Enable or disable query logging. By default logging is disabled. Query logging will record every SQL query in log streams.
     # @return this database backend (to chain configuration calls)
@@ -249,7 +256,7 @@ DatabaseBackend = interface +c {
 
     # Create an instance of PostgreSQL database.
     # @return DatabaseBackend object
-    static getPostgreSQLBackend(connectionPoolSize: i32): DatabaseBackend;
+    static getPostgreSQLBackend(connectionPoolSize: i32, readonlyConnectionPoolSize: i32): DatabaseBackend;
 
     # Create a database backend instance from the given DatabaseEngine implementation.
     static createBackendFromEngine(engine: DatabaseEngine): DatabaseBackend;

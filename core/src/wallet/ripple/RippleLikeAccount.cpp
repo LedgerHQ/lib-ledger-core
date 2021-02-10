@@ -75,7 +75,7 @@ namespace ledger {
             return async<std::shared_ptr<RippleLikeBlockchainExplorerTransaction>>(
                     [=]() -> std::shared_ptr<RippleLikeBlockchainExplorerTransaction> {
                         auto tx = std::make_shared<RippleLikeBlockchainExplorerTransaction>();
-                        soci::session sql(self->getWallet()->getDatabase()->getPool());
+                        soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                         if (!RippleLikeTransactionDatabaseHelper::getTransactionByHash(sql, hash, *tx)) {
                             throw make_exception(api::ErrorCode::TRANSACTION_NOT_FOUND, "Transaction {} not found",
                                                  hash);
@@ -225,7 +225,7 @@ namespace ledger {
                 }
 
                 const auto &uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
                 auto keychain = self->getKeychain();
@@ -399,7 +399,6 @@ namespace ledger {
                     //optimisticUpdate
                     auto txExplorer = getXRPLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
                     //Store in DB
-                    soci::session sql(self->getWallet()->getDatabase()->getPool());
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
                     self->bulkInsert(operations);

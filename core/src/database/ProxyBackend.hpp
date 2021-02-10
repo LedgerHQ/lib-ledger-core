@@ -41,6 +41,7 @@ namespace ledger {
         public:
         explicit ProxyBackend(const std::shared_ptr<api::DatabaseEngine>& engine);
         int32_t getConnectionPoolSize() override;
+        int32_t getReadonlyConnectionPoolSize() override;
 
         void init(const std::shared_ptr<api::PathResolver> &resolver,
                   const std::string &dbName,

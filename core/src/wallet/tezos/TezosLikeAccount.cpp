@@ -92,7 +92,6 @@ namespace ledger {
 
         void TezosLikeAccount::interpretTransaction(
                 const ledger::core::TezosLikeBlockchainExplorerTransaction &transaction, std::vector<Operation> &out) {
-            soci::session sql;
             auto wallet = getWallet();
             if (wallet == nullptr) {
                 throw Exception(api::ErrorCode::RUNTIME_ERROR, "Wallet reference is dead.");
@@ -127,7 +126,7 @@ namespace ledger {
                 operation.type = api::OperationType::SEND;
                 operation.refreshUid();
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
-                    updateOriginatedAccounts(sql, operation);
+                    updateOriginatedAccounts(operation);
                 }
                 out.push_back(operation);               
                 result = static_cast<int>(transaction.type);
@@ -156,7 +155,7 @@ namespace ledger {
             });
         }
 
-        void TezosLikeAccount::updateOriginatedAccounts(soci::session &sql, const Operation &operation) {
+        void TezosLikeAccount::updateOriginatedAccounts(const Operation &operation) {
             auto transaction = operation.tezosTransaction.getValue();
             auto self = std::dynamic_pointer_cast<TezosLikeAccount>(shared_from_this());
             auto origAccount = transaction.originatedAccount.getValue();
@@ -181,8 +180,7 @@ namespace ledger {
             }
         }
 
-        bool TezosLikeAccount::putBlock(soci::session &sql,
-                                        const TezosLikeBlockchainExplorer::Block &block) {
+        bool TezosLikeAccount::putBlock(soci::session& sql, const TezosLikeBlockchainExplorer::Block &block) {
             Block abstractBlock;
             abstractBlock.hash = block.hash;
             abstractBlock.currencyName = getWallet()->getCurrency().name;
@@ -277,7 +275,7 @@ namespace ledger {
                 }
 
                 const auto &uid = self->getAccountUid();
-                soci::session sql(self->getWallet()->getDatabase()->getPool());
+                soci::session sql(self->getWallet()->getDatabase()->getReadonlyPool());
                 std::vector<Operation> operations;
 
                 auto keychain = self->getKeychain();

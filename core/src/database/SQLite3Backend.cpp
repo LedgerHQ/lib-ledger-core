@@ -42,6 +42,10 @@ namespace ledger {
             return 1;
         }
 
+        int32_t SQLite3Backend::getReadonlyConnectionPoolSize() {
+            return 1;
+        }
+
         void SQLite3Backend::init(const std::shared_ptr<ledger::core::api::PathResolver> &resolver,
                                   const std::string &dbName,
                                   const std::string &password,
