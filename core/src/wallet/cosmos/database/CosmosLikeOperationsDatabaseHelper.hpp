@@ -1,12 +1,13 @@
 /*
  *
- * RippleLikeAccountSynchronizer
+ * TezosLikeOperationsDatabaseHelper.hpp
+ * ledger-core
  *
- * Created by El Khalil Bellakrid on 06/01/2019.
+ * Created by Habib LAFET on 19/01/2021.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -28,20 +29,21 @@
  *
  */
 
+#ifndef LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP
+#define LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP
 
-#ifndef LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H
-#define LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H
 
-#include <wallet/common/synchronizers/AbstractAccountSynchronizer.h>
+#include <wallet/cosmos/api_impl/CosmosLikeOperation.hpp>
+#include <soci.h>
 
 namespace ledger {
     namespace core {
-        class RippleLikeAccount;
-
-        class RippleLikeAccountSynchronizer : public AbstractAccountSynchronizer<RippleLikeAccount> {
-
+        class CosmosLikeOperationsDatabaseHelper {
+        public:
+            static void bulkInsert(soci::session& sql, const std::vector<CosmosLikeOperation>& operations);
         };
     }
 }
 
-#endif //LEDGER_CORE_RIPPLELIKEACCOUNTSYNCHRONIZER_H
+
+#endif //LEDGER_CORE_COSMOSLIKEOPERATIONSDATABASEHELPER_HPP

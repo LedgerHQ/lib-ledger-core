@@ -20,7 +20,6 @@
 #include <functional>
 #include <mutex>
 #include <unordered_map>
-#include "../metrics/ManagedObject.hpp"
 
 // """
 //    This place is not a place of honor.
@@ -90,20 +89,18 @@ public:
             } else {
                 // The weak reference is expired, so prune it from the map eagerly.
                 m_mapping.erase(existing_proxy_iter);
-                ledger::core::AllocationMap::getInstance()->decrement(tag);
             }
         }
 
         auto alloc_result = alloc(impl);
         m_mapping.emplace(Key{tag, alloc_result.second}, alloc_result.first);
-        ledger::core::AllocationMap::getInstance()->increment(tag);
         return alloc_result.first;
     }
 
     /*
      * Erase an object from the proxy cache.
      */
-    void remove(const std::type_index & tag, const UnowningImplPointer & impl_unowning, bool force_kill) {
+    void remove(const std::type_index & tag, const UnowningImplPointer & impl_unowning) {
         std::unique_lock<std::mutex> lock(m_mutex);
         auto it = m_mapping.find({tag, impl_unowning});
         if (it != m_mapping.end()) {
@@ -116,9 +113,8 @@ public:
             // that case, `it->second` will contain a live pointer to a different proxy object,
             // not an expired weak pointer to the Handle currently being destructed. We only
             // remove the map entry if its pointer is already expired.
-            if (force_kill || is_expired(it->second)) {
+            if (is_expired(it->second)) {
                 m_mapping.erase(it);
-                ledger::core::AllocationMap::getInstance()->decrement(tag);
             }
         }
     }
@@ -148,9 +144,8 @@ private:
 template <typename Traits>
 void ProxyCache<Traits>::cleanup(const std::shared_ptr<Pimpl> & base,
                                  const std::type_index & tag,
-                                 UnowningImplPointer ptr,
-                                 bool force_kill) {
-    base->remove(tag, ptr, force_kill);
+                                 UnowningImplPointer ptr) {
+    base->remove(tag, ptr);
 }
 
 /*

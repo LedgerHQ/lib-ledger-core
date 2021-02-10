@@ -98,12 +98,6 @@ class CosmosLikeOperationDatabaseHelper : public OperationDatabaseHelper {
         return c;
     }
 
-    static void updateOperation(
-        soci::session &sql, const std::string &opUid, const std::string &msgUid)
-    {
-        sql << "INSERT INTO cosmos_operations VALUES(:uid, :message_uid)", soci::use(opUid),
-            soci::use(msgUid);
-    }
 };
 }  // namespace core
 }  // namespace ledger

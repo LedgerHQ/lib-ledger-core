@@ -84,12 +84,14 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
         const cosmos::Transaction &tx,
         const cosmos::Message &msg);
 
-    /// Insert a transaction and all its messages in the database.
-    /// \param [in] sql The sql session accessing the database
+    /// Interpret a transaction and all its messages in order to be inserted later in the database.
     /// \param [in] transaction The transaction to maybe insert in the database
-    /// \return The index of enum for one of the operation types in the transaction. Not useful most
-    /// of the time.
-    int putTransaction(soci::session &sql, const cosmos::Transaction &transaction);
+    /// \param [out] out The operations to be insterted later in the database
+    void interpretTransaction(const cosmos::Transaction& transaction, std::vector<CosmosLikeOperation>& out);
+
+    /// Insert a list of an already interpreted operations in the database.
+    /// \param [in] operations The operations to be insterted in the database
+    Try<int> bulkInsert(const std::vector<CosmosLikeOperation>& operations);
 
     /// Insert a block metadata in the database
     /// \param [in] sql The sql session accessing the database
@@ -97,6 +99,7 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     /// \return true if the block was actually inserted/updated. false otherwise (see
     /// BlockDatabaseHelper::putBlock)
     bool putBlock(soci::session &sql, const api::Block &block);
+
 
     std::shared_ptr<CosmosLikeKeychain> getKeychain() const;
     std::shared_ptr<api::Keychain> getAccountKeychain() override;

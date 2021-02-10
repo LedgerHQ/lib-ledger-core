@@ -304,5 +304,29 @@ namespace ledger {
             }
         }
 
+        void BitcoinLikeTransactionDatabaseHelper::eraseDataSince(
+                soci::session &sql,
+                const std::string &accountUid,
+                const std::chrono::system_clock::time_point & date) {
+            
+            rowset<std::string> rows = (sql.prepare <<
+                "SELECT transaction_uid FROM bitcoin_operations AS bop "
+                "JOIN operations AS op ON bop.uid = op.uid "
+                "WHERE op.account_uid = :uid AND op.date >= :date", 
+                use(accountUid), use(date)
+            );
+            std::vector<std::string> txToDelete(rows.begin(), rows.end());
+            if (!txToDelete.empty()) {
+                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date", 
+                    use(accountUid), use(date);
+                sql << "DELETE FROM bitcoin_inputs WHERE uid IN ("
+                       "SELECT input_uid FROM bitcoin_transaction_inputs "
+                       "WHERE transaction_uid IN(:uids)"
+                       ")", use(txToDelete);
+                sql << "DELETE FROM bitcoin_transactions "
+                       "WHERE transaction_uid IN (:uids)", use(txToDelete);
+            }
+        }
+
     }
 }

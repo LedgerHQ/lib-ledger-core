@@ -64,6 +64,13 @@ namespace ledger {
                                     use(b.currencyName);
                         });
 
+        void BulkInsertDatabaseHelper::updateBlock(soci::session& sql, const Block &block) {
+            PreparedStatement<BlockBinding> stmt;
+            UPSERT_BLOCK(sql, stmt);
+            stmt.bindings.update(block);
+            stmt.execute();
+        }
+
 
         void OperationBinding::update(const Operation &operation) {
             amount.push_back(operation.amount.toHexString());

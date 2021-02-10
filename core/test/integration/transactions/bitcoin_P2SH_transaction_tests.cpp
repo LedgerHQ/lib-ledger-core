@@ -56,7 +56,7 @@ struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
 TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 200000), "2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
     auto f = builder->build();
     auto tx = uv::wait(f);
@@ -68,7 +68,7 @@ TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
 TEST_F(BitcoinMakeP2SHTransaction, CreateStandardP2SHWithWipeToAddress) {
     auto builder = tx_builder();
     builder->wipeToAddress("2MvuUMAG1NFQmmM69Writ6zTsYCnQHFG9BF");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 71));
     auto f = builder->build();
     auto tx = uv::wait(f);
@@ -115,7 +115,7 @@ struct BTGMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
 TEST_F(BTGMakeP2SHTransaction, CreateStandardP2SHWithOneOutput) {
     auto builder = tx_builder();
     builder->sendToAddress(api::Amount::fromLong(currency, 2000), "ATqSa4V9ZjxPxDBe877bbXeKMfZA644mBk");
-    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
+    builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF, optional<int32_t>());
     builder->setFeesPerByte(api::Amount::fromLong(currency, 41));
     auto f = builder->build();
     auto tx = uv::wait(f);

@@ -236,8 +236,8 @@ namespace ledger {
             auto self = getSelf();
             return async<api::ErrorCode>([=] () {
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
-                sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
-                        accountUid), soci::use(date);
+                StellarLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+                
                 self->_params.synchronizer->reset(self, date);
                 log->debug(" Finish erasing data of account : {}", accountUid);
                 return api::ErrorCode::FUTURE_WAS_SUCCESSFULL;

@@ -1507,7 +1507,7 @@ public:
 
     Object GetObject() { RAPIDJSON_ASSERT(IsObject()); return Object(*this); }
     ConstObject GetObject() const { RAPIDJSON_ASSERT(IsObject()); return ConstObject(*this); }
-
+    Object GetDocumentObject() { return GetObject(); }
     //@}
 
     //!@name Array

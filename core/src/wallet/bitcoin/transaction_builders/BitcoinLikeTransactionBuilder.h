@@ -69,6 +69,12 @@ namespace ledger {
             uint64_t sequence;
         };
 
+        struct BitcoinUtxoPickerParams{
+            api::BitcoinLikePickingStrategy strategy;
+            int32_t sequence;
+            optional<int32_t> maxUtxo;
+        };
+
         struct BitcoinLikeTransactionBuildRequest {
             BitcoinLikeTransactionBuildRequest(const std::shared_ptr<BigInt>& minChange);
             std::vector<BitcoinLikeTransactionInputDescriptor> inputs;
@@ -77,7 +83,7 @@ namespace ledger {
             std::unordered_set<BitcoinLikeTransactionUtxoDescriptor, BitcoinLikeTransactionUtxoDescriptorHash> excludedUtxos;
             int32_t changeCount;
             std::shared_ptr<BigInt> feePerByte;
-            Option<std::tuple<api::BitcoinLikePickingStrategy, uint32_t>> utxoPicker;
+            Option<BitcoinUtxoPickerParams> utxoPicker;
             std::shared_ptr<BigInt> maxChange;
             std::shared_ptr<BigInt> minChange;
             bool wipe;
@@ -107,7 +113,7 @@ namespace ledger {
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> setNumberOfChangeAddresses(int32_t count) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
-            pickInputs(api::BitcoinLikePickingStrategy strategy, int32_t sequence) override;
+            pickInputs(api::BitcoinLikePickingStrategy strategy, int32_t sequence, optional<int32_t> maxUtxo) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
             sendToAddress(const std::shared_ptr<api::Amount> &amount, const std::string &address) override;

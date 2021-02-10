@@ -58,6 +58,7 @@
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/TezosLikeTransaction.hpp>
 #include <common/AccountHelper.hpp>
+#include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
 
 using namespace soci;
 
@@ -76,9 +77,9 @@ namespace ledger {
             // Clear synchronizer state
             eraseSynchronizerDataSince(sql, date);
 
-            auto accountUid = getAccountUid();
-            sql << "DELETE FROM operations WHERE account_uid = :account_uid AND date >= :date ", soci::use(
-                    accountUid), soci::use(date);
+            auto accountUid = getAccountUid();            
+            TezosLikeTransactionDatabaseHelper::eraseDataSince(sql, accountUid, date);
+
             log->debug(" Finish erasing data of account : {}", accountUid);
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
 
@@ -103,8 +104,9 @@ namespace ledger {
             _explorer->getCurrentBlock().onComplete(getContext(),
                                                     [self] (const TryPtr<TezosLikeBlockchainExplorer::Block> &block) mutable {
                                                         if (block.isSuccess()) {
-                                                            //TODO
                                                             self->_currentBlockHeight = block.getValue()->height;
+                                                            soci::session sql(self->getWallet()->getDatabase()->getPool());
+                                                            BulkInsertDatabaseHelper::updateBlock(sql, *block.getValue());
                                                         }
                                                     });
 

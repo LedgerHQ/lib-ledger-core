@@ -34,7 +34,7 @@
 
 #include <wallet/common/AbstractWallet.hpp>
 #include <wallet/ripple/explorers/RippleLikeBlockchainExplorer.h>
-#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.h>
+#include <wallet/ripple/synchronizers/RippleLikeAccountSynchronizer.hpp>
 #include <wallet/ripple/factories/RippleLikeWalletFactory.h>
 #include <wallet/ripple/factories/RippleLikeKeychainFactory.h>
 

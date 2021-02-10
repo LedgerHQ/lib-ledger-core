@@ -54,6 +54,11 @@ namespace ledger {
 
             static int countOperationsForTransaction(soci::session& sql, const std::string& txHash,
                     const std::string& senderAddress);
+
+            static void eraseDataSince(
+                    soci::session &sql,
+                    const std::string &accountUid,
+                    const std::chrono::system_clock::time_point & date);
         };
     }
 }

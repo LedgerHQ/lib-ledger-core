@@ -30,6 +30,8 @@
  */
 
 #include "migrations.hpp"
+#include <api/BitcoinLikeNetworkParameters.hpp>
+#include <wallet/bitcoin/networks.hpp>
 
 namespace ledger {
     namespace core {
@@ -1126,5 +1128,23 @@ namespace ledger {
             // Do nothing
         }
 
+        template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE bitcoin_currencies ADD dust_policy VARCHAR(20)";
+            for (const api::BitcoinLikeNetworkParameters& parameters : networks::ALL) {
+                sql << "UPDATE bitcoin_currencies SET dust_policy = '" << api::to_string(parameters.DustPolicy) << "' WHERE identifier = '" << parameters.Identifier << "'";
+                sql << "UPDATE bitcoin_currencies SET dust_amount = " << parameters.Dust << " WHERE identifier = '" << parameters.Identifier << "'";
+            }
+        }
+
+        template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type) {
+            // SQLite doesn't handle ALTER TABLE DROP
+            if (type != api::DatabaseBackendType::SQLITE3) {
+                sql << "ALTER TABLE bitcoin_currencies DROP dust_policy";
+            } else {
+                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc'";
+                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc_testnet'";
+         
+            }
+        }
     }
 }

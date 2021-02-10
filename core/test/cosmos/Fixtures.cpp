@@ -113,7 +113,7 @@ namespace ledger {
                                 tx.hash = "A1E44688B429AF17322EC33CE62876FA415EFC8D9244A2F51454BD025F416594";
                                 ledger::core::Block block;
                                 block.hash = "52B39D45B438C6995CD448B09963954883B0F7A57E9EFC7A95E0A6C5BAC09C00";
-                                block.currencyName = "atom";
+                                block.currencyName = "cosmos";
                                 block.height = 744795;
                                 block.time = timeRef;
                                 tx.block = block;
