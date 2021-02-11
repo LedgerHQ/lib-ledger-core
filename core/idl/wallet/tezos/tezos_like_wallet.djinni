@@ -22,8 +22,14 @@ TezosLikeTransaction = interface +c {
 	getType(): TezosOperationTag;
 	# Get the hash of the transaction.
 	getHash(): string;
-	# Get Fees (in drop)
+	# Get Fees (in drop) 
+	# It returns the sum of transaction fees and reveal fees (if it exists)
 	getFees(): Amount;
+	# get transaction fees (without reveal cost)
+	getTransactionFees(): Amount;
+	# get reveal fees if the sender envolved is not revealed, else 0
+	getRevealFees(): Amount;
+
 	# Get destination XTZ. address
 	getReceiver(): optional<TezosLikeAddress>;
 	# Get XTZ. sender address
@@ -85,8 +91,19 @@ TezosLikeTransactionBuilder = interface +c {
 	wipeToAddress(address: string): TezosLikeTransactionBuilder;
 
 	# Set fees (in drop) the originator is willing to pay
+	# Set transaction and (if needed) reveal fees with 'fees'
+	# equivalent to call both functions setTransactionFees(fees) and setRevealFees(fees)
 	# @return A reference on the same builder in order to chain calls.
 	setFees(fees: Amount): TezosLikeTransactionBuilder;
+
+	# Set transaction fees (in drop) the originator is willing to pay (reveal is not included)
+	# @return A reference on the same builder in order to chain calls.
+	setTransactionFees(transactionFees: Amount): TezosLikeTransactionBuilder;
+
+	# Set reveal fees (in drop) the originator is willing to pay 
+	# @return A reference on the same builder in order to chain calls.
+	setRevealFees(revealFees: Amount): TezosLikeTransactionBuilder;
+	
 	# Set gas limit the originator is not willing to exceed.
 	# @return A reference on the same builder in order to chain calls.
 	setGasLimit(gasLimit: Amount): TezosLikeTransactionBuilder;
@@ -105,8 +122,8 @@ TezosLikeTransactionBuilder = interface +c {
 	# Reset the current instance to its initial state
 	reset();
 
-	static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary): TezosLikeTransaction;
-	static parseRawSignedTransaction(currency: Currency, rawTransaction: binary): TezosLikeTransaction;
+	static parseRawUnsignedTransaction(currency: Currency, rawTransaction: binary, protocolUpdate: string): TezosLikeTransaction;
+	static parseRawSignedTransaction(currency: Currency, rawTransaction: binary, protocolUpdate: string): TezosLikeTransaction;
 }
 
 #Class representing a Tezos account
@@ -126,8 +143,15 @@ TezosLikeAccount = interface +c {
 	getEstimatedGasLimit(address: string, callback: Callback<BigInt>);
 	# Get fees from network
 	getFees(callback: Callback<BigInt>);
+	# Get gas price from network
+	getGasPrice(callback: Callback<BigInt>);
 	# Get originated accounts by current account
 	getOriginatedAccounts(): list<TezosLikeOriginatedAccount>;
+	# Get current delegate
+	getCurrentDelegate(callback: Callback<string>);
+  # Get the balance of the account for a given token
+  # @param tokenAddress Address of the contract
+  getTokenBalance(tokenAddress: string, callback: Callback<BigInt>);
 }
 
 # Class representing originated accounts
@@ -154,27 +178,34 @@ TezosLikeOriginatedAccount = interface +c {
 }
 
 TezosConfiguration = interface +c {
-  	const TEZOS_XPUB_CURVE: string = "TEZOS_XPUB_CURVE";
-	const TEZOS_PROTOCOL_UPDATE: string = "TEZOS_PROTOCOL_UPDATE";
-	const TEZOS_NODE: string = "TEZOS_NODE";
+    const BCD_API: string = "BCD_API";
+    const TEZOS_XPUB_CURVE: string = "TEZOS_XPUB_CURVE";
+    const TEZOS_PROTOCOL_UPDATE: string = "TEZOS_PROTOCOL_UPDATE";
+    const TEZOS_NODE: string = "TEZOS_NODE";
+    const TEZOS_COUNTER_STRATEGY: string = "TEZOS_COUNTER_STRATEGY";
+    const TEZOS_OPTIMISTIC_COUNTER_TIMEOUT: string = "TEZOS_OPTIMISTIC_COUNTER_TIMEOUT";
 }
 
 TezosConfigurationDefaults = interface +c {
-	const TEZOS_DEFAULT_API_ENDPOINT: string = "https://explorers.api.live.ledger.com";
-	const TEZOS_DEFAULT_API_VERSION: string = "v3";
-	const TZSTATS_API_ENDPOINT: string = "https://api.tzstats.com/explorer";
-	const TEZOS_DEFAULT_NODE: string = "https://mainnet.tezrpc.me";
-	const TEZOS_OBSERVER_NODE_ENDPOINT_S3: string = "https://s3.tezos.com";
-	const TEZOS_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.tezos.com";
-	const TEZOS_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.tezos.com";
-  	const TEZOS_XPUB_CURVE_ED25519: string = "ED25519";
-  	const TEZOS_XPUB_CURVE_SECP256K1: string = "SECP256K1";
-	const TEZOS_XPUB_CURVE_P256: string = "P256";
-	# Taken from some existing XTZ wallets
-	# http://tezos.gitlab.io/protocols/005_babylon.html#gas-cost-changes
-	const TEZOS_DEFAULT_FEES: string = "5000";
-	const TEZOS_DEFAULT_MAX_FEES: string = "30000";
-	const TEZOS_DEFAULT_GAS_LIMIT: string = "18000";
-	const TEZOS_DEFAULT_STORAGE_LIMIT: string = "300";
-	const TEZOS_PROTOCOL_UPDATE_BABYLON: string = "TEZOS_PROTOCOL_UPDATE_BABYLON";
+    const BCD_API_ENDPOINT: string = "https://api.better-call.dev/v1";
+    const TEZOS_DEFAULT_API_ENDPOINT: string = "https://explorers.api.live.ledger.com";
+    const TEZOS_DEFAULT_API_VERSION: string = "v3";
+    const TZSTATS_API_ENDPOINT: string = "https://api.tzstats.com/explorer";
+    const TEZOS_DEFAULT_NODE: string = "https://mainnet.tezrpc.me";
+    const TEZOS_OBSERVER_NODE_ENDPOINT_S3: string = "https://s3.tezos.com";
+    const TEZOS_OBSERVER_WS_ENDPOINT_S2: string = "wss://s2.tezos.com";
+    const TEZOS_OBSERVER_WS_ENDPOINT_S3: string = "wss://s3.tezos.com";
+    const TEZOS_XPUB_CURVE_ED25519: string = "ED25519";
+    const TEZOS_XPUB_CURVE_SECP256K1: string = "SECP256K1";
+    const TEZOS_XPUB_CURVE_P256: string = "P256";
+    # Taken from some existing XTZ wallets
+    # http://tezos.gitlab.io/protocols/005_babylon.html#gas-cost-changes
+    const TEZOS_DEFAULT_FEES: string = "5000";
+    const TEZOS_DEFAULT_MAX_FEES: string = "30000";
+    const TEZOS_DEFAULT_GAS_LIMIT: string = "18000";
+    const TEZOS_DEFAULT_STORAGE_LIMIT: string = "300";
+    const TEZOS_PROTOCOL_UPDATE_BABYLON: string = "TEZOS_PROTOCOL_UPDATE_BABYLON";
+}
+TezosLikeWallet = interface +c {
+    isDelegate(address: string, callback: Callback<bool>);
 }

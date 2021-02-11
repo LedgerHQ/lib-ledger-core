@@ -109,6 +109,18 @@ namespace ledger {
             }
 
         };
+
+        struct GasLimit {
+            BigInt reveal;
+            BigInt transaction;
+
+            GasLimit() :
+                reveal(0), transaction(0) {}
+
+            GasLimit(const BigInt& r, const BigInt& t) :
+                reveal(r), transaction(t) {}
+        };
+
         class TezosLikeTransactionApi;
         class TezosLikeBlockchainExplorer : public ConfigurationMatchable,
                                             public AbstractBlockchainExplorer<TezosLikeBlockchainExplorerTransaction> {
@@ -125,8 +137,32 @@ namespace ledger {
             virtual Future<std::shared_ptr<BigInt>>
             getFees() = 0;
 
+            /// Return the gas Price of the last block in picotez (e-12) per gas
+            virtual Future<std::shared_ptr<BigInt>>
+            getGasPrice() = 0;
+
             virtual Future<std::shared_ptr<BigInt>>
             getEstimatedGasLimit(const std::string &address) = 0;
+
+            virtual Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
+                const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
+
+            Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
+                const std::shared_ptr<HttpClient> &http,
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<TezosLikeTransactionApi> &transaction);
+
+            Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
+                const std::shared_ptr<HttpClient> &http,
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<TezosLikeTransactionApi> &transaction,
+                const std::string &chainId);
+
+
+            Future<std::string> getChainId(
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<HttpClient> &http);
+
 
             virtual Future<std::shared_ptr<BigInt>>
             getStorage(const std::string &address) = 0;
@@ -156,8 +192,21 @@ namespace ledger {
                                             const std::shared_ptr<HttpClient> &http,
                                             const std::string &rpcNode);
 
+            virtual Future<std::string> getCurrentDelegate(const std::string &address) = 0;
+            static Future<std::string> getCurrentDelegate(const std::string &address,
+                                                          const std::shared_ptr<api::ExecutionContext> &context,
+                                                          const std::shared_ptr<HttpClient> &http,
+                                                          const std::string &rpcNode);
+
             /// Check that the account is funded.
             virtual Future<bool> isFunded(const std::string &address) = 0;
+
+            virtual Future<bool> isDelegate(const std::string &address) = 0;
+
+            /// Get a token balance for an account
+            virtual Future<std::shared_ptr<BigInt>>
+            getTokenBalance(const std::string& accountAddress,
+                            const std::string& tokenAddress) const = 0;
 
         protected:
             std::string getRPCNodeEndpoint() const {

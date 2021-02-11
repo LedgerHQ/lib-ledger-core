@@ -56,6 +56,10 @@ namespace ledger {
 
             std::shared_ptr<api::Amount> getFees() override;
 
+            std::shared_ptr<api::Amount> getRevealFees() override;
+
+            std::shared_ptr<api::Amount> getTransactionFees() override;
+
             std::shared_ptr<api::TezosLikeAddress> getReceiver() override;
 
             std::shared_ptr<api::TezosLikeAddress> getSender() override;
@@ -64,6 +68,12 @@ namespace ledger {
 
             std::vector<uint8_t> serialize() override;
             std::vector<uint8_t> serializeWithType(api::TezosOperationTag type);
+
+            /// Serialize the transaction as binary for Tezos Node run_operation JSON RPC endpoint
+            std::vector<uint8_t> serializeForDryRun(const std::vector<uint8_t>& chainID);
+
+            /// Serialize the transaction as json for Tezos Node run_operation JSON RPC endpoint
+            std::string serializeJsonForDryRun(const std::string& chainID);
 
             std::chrono::system_clock::time_point getDate() override;
 
@@ -81,7 +91,9 @@ namespace ledger {
 
             int32_t getStatus() override;
 
-            TezosLikeTransactionApi &setFees(const std::shared_ptr<BigInt> &fees);
+            TezosLikeTransactionApi &setTransactionFees(const std::shared_ptr<BigInt> &fees);
+
+            TezosLikeTransactionApi &setRevealFees(const std::shared_ptr<BigInt> &fees);
 
             TezosLikeTransactionApi &setValue(const std::shared_ptr<BigInt> &value);
 
@@ -95,7 +107,9 @@ namespace ledger {
 
             TezosLikeTransactionApi &setBlockHash(const std::string &blockHash);
 
-            TezosLikeTransactionApi & setGasLimit(const std::shared_ptr<BigInt>& gasLimit);
+            TezosLikeTransactionApi & setTransactionGasLimit(const std::shared_ptr<BigInt>& gasLimit);
+
+            TezosLikeTransactionApi & setRevealGasLimit(const std::shared_ptr<BigInt>& gasLimit);
             
             TezosLikeTransactionApi & setCounter(const std::shared_ptr<BigInt>& counter);
 
@@ -117,8 +131,8 @@ namespace ledger {
             std::shared_ptr<TezosLikeBlockApi> _block;
             std::string _hash;
             api::Currency _currency;
-            std::shared_ptr<api::Amount> _fees;
-            std::shared_ptr<api::Amount> _gasLimit;
+            std::shared_ptr<api::Amount> _transactionFees;
+            std::shared_ptr<api::Amount> _transactionGasLimit;
             std::shared_ptr<BigInt> _storage;
             std::shared_ptr<BigInt> _counter;
             std::shared_ptr<api::Amount> _value;
@@ -137,6 +151,8 @@ namespace ledger {
             std::vector<uint8_t> _rawTx;
             bool _needReveal;
             int32_t _status;
+            std::shared_ptr<api::Amount> _revealFees;
+            std::shared_ptr<api::Amount> _revealGasLimit;
         };
     }
 }

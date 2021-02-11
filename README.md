@@ -117,7 +117,7 @@ To build the library with system's OpenSSL you should configure the project by p
 installed OpenSSL through `brew` you can pass: `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`,
 
 -Linux: `-OPENSSL_SSL_LIBRARIES=<path-to-openssl-libraries> -DOPENSSL_INCLUDE_DIR=<path-to-openssl-include-files>`,
-for example, if you installed OpenSSL through `apt-get` it will look like:       
+for example, if you installed OpenSSL through `apt-get` it will look like:
 `-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu -DOPENSSL_INCLUDE_DIR=/usr/include/openssl`
 
 In both cases we are supporting OpenSSL `1.0` and `1.1`.

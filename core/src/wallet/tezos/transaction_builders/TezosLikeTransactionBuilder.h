@@ -56,9 +56,11 @@ namespace ledger {
             };
             std::string toAddress;
             std::shared_ptr<BigInt> value;
-            std::shared_ptr<BigInt> fees;
-            std::shared_ptr<BigInt> gasLimit;
+            std::shared_ptr<BigInt> transactionFees;
+            std::shared_ptr<BigInt> transactionGasLimit;
             std::shared_ptr<BigInt> storageLimit;
+            std::shared_ptr<BigInt> revealFees;
+            std::shared_ptr<BigInt> revealGasLimit;
             api::TezosOperationTag type;
             bool wipe;
         };
@@ -89,6 +91,12 @@ namespace ledger {
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>
             setFees(const std::shared_ptr<api::Amount> &fees) override;
+
+            std::shared_ptr<api::TezosLikeTransactionBuilder>
+            setTransactionFees(const std::shared_ptr<api::Amount> &transactionFees) override;
+
+            std::shared_ptr<api::TezosLikeTransactionBuilder>
+            setRevealFees(const std::shared_ptr<api::Amount> &revealFees) override;
 
             std::shared_ptr<api::TezosLikeTransactionBuilder>
             setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) override ;

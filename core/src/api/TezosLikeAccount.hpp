@@ -54,8 +54,20 @@ public:
     /** Get fees from network */
     virtual void getFees(const std::shared_ptr<BigIntCallback> & callback) = 0;
 
+    /** Get gas price from network */
+    virtual void getGasPrice(const std::shared_ptr<BigIntCallback> & callback) = 0;
+
     /** Get originated accounts by current account */
     virtual std::vector<std::shared_ptr<TezosLikeOriginatedAccount>> getOriginatedAccounts() = 0;
+
+    /** Get current delegate */
+    virtual void getCurrentDelegate(const std::shared_ptr<StringCallback> & callback) = 0;
+
+    /**
+     * Get the balance of the account for a given token
+     * @param tokenAddress Address of the contract
+     */
+    virtual void getTokenBalance(const std::string & tokenAddress, const std::shared_ptr<BigIntCallback> & callback) = 0;
 };
 
 } } }  // namespace ledger::core::api

@@ -329,5 +329,15 @@ namespace ledger {
             });
         }
 
+        void TezosLikeAccount::getTokenBalance(
+            const std::string& tokenAddress,
+            const std::shared_ptr<api::BigIntCallback>& callback
+        ) {
+            _explorer->getTokenBalance(_accountAddress, tokenAddress)
+                .mapPtr<api::BigInt>(getMainExecutionContext(), [](const std::shared_ptr<BigInt>& balance) {
+                    return std::make_shared<api::BigIntImpl>(*balance);
+                })
+                .callback(getMainExecutionContext(), callback);
+        }
     }
 }

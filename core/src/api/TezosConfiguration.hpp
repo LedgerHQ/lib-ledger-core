@@ -19,11 +19,17 @@ class LIBCORE_EXPORT TezosConfiguration {
 public:
     virtual ~TezosConfiguration() {}
 
+    static std::string const BCD_API;
+
     static std::string const TEZOS_XPUB_CURVE;
 
     static std::string const TEZOS_PROTOCOL_UPDATE;
 
     static std::string const TEZOS_NODE;
+
+    static std::string const TEZOS_COUNTER_STRATEGY;
+
+    static std::string const TEZOS_OPTIMISTIC_COUNTER_TIMEOUT;
 };
 
 } } }  // namespace ledger::core::api

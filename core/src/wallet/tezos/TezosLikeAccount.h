@@ -116,6 +116,10 @@ namespace ledger {
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback) override;
 
+            void _broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                         const std::shared_ptr<api::StringCallback> &callback,
+                                         const std::shared_ptr<BigInt>& counter) ;
+
             void broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;
 
@@ -137,8 +141,21 @@ namespace ledger {
             void getFees(const std::shared_ptr<api::BigIntCallback> & callback) override;
             FuturePtr<BigInt> getFees();
 
+            void getGasPrice(const std::shared_ptr<api::BigIntCallback> & callback) override;
+            FuturePtr<BigInt> getGasPrice();
+
+            FuturePtr<GasLimit> estimateGasLimit(const std::shared_ptr<TezosLikeTransactionApi>& tx, double adjustment_factor = 1.1);
+
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
+            void incrementOptimisticCounter(std::shared_ptr<TezosLikeTransactionApi> tx, const std::shared_ptr<BigInt>& explorerCounter);
+
+            void saveOptimisticCounter(const std::shared_ptr<BigInt>& counter, const std::string& txHash);
+
+            void getCurrentDelegate(const std::shared_ptr<api::StringCallback> & callback) override;
+            Future<std::string> getCurrentDelegate();
+
+            void getTokenBalance(const std::string& tokenAddress, const std::shared_ptr<api::BigIntCallback>& callback) override;
         private:
             std::shared_ptr<TezosLikeAccount> getSelf();
 

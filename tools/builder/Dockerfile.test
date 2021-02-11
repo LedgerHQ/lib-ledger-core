@@ -1,0 +1,75 @@
+ARG BUILD_TYPE=Debug
+ARG LIB_CORE_SRC_DIR=/libcore/source
+ARG LIB_CORE_BUILD_DIR=/libcore/build
+ARG LIB_CORE_JAR_BUILD_DIR=/build-jar
+ARG LIBCORE_AWS_BASE_URL=https://s3-eu-west-1.amazonaws.com/ledger-lib-ledger-core
+
+# Compile
+# (generates libledger-core.so)
+
+FROM debian:stretch AS builder
+
+ARG CMAKE_VERSION=3.15.2
+
+ARG BUILD_TYPE
+ARG DL_LIBCORE
+ARG LIB_CORE_SRC_DIR
+ARG LIB_CORE_BUILD_DIR
+ARG LIBCORE_AWS_BASE_URL
+ARG LIBCORE_VERSION
+
+RUN apt-get update -qqy \
+    && apt-get install -qqy \
+        build-essential \
+        apt-transport-https \
+        curl \
+        git \
+        ssh \
+        libssl-dev \
+        libx11-xcb-dev \
+        qt5-default \
+        libqt5websockets5 \
+        libqt5websockets5-dev \
+        postgresql-9.6 \
+        libpq-dev \
+        postgresql-server-dev-all \
+        sqlite3 \
+        libsqlite3-dev \
+        # JDK is required as JNI is enabled:
+        openjdk-8-jdk \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN if [ "${DL_LIBCORE}" = "ON" ]; then exit 0; fi && \
+    curl -LJO https://github.com/Kitware/CMake/releases/download/v${CMAKE_VERSION}/cmake-${CMAKE_VERSION}.tar.gz \
+    && tar -zxf cmake-${CMAKE_VERSION}.tar.gz \
+    && cd cmake-${CMAKE_VERSION} \
+    && ./bootstrap \
+    && make -j$(nproc) \
+    && make install
+
+ENV BUILD_TYPE=$BUILD_TYPE
+
+COPY . ${LIB_CORE_SRC_DIR}
+
+# Init submodules
+# RUN cd ${LIB_CORE_SRC_DIR} \
+#     # Use https for git to avoid permissions issues
+#     && git config --global url."https://github.com/".insteadOf git@github.com: \
+#     && git config --global url."https://".insteadOf git:// \
+#     && git submodule update --init --recursive --jobs=$(nproc) \
+#     && ( ( cd core/lib/leveldb && git checkout bitcoin-fork ) || exit 0 )
+
+WORKDIR ${LIB_CORE_BUILD_DIR}
+
+
+# Option 1: Compile
+RUN if [ "$DL_LIBCORE" = "ON" ]; then exit 0; fi \
+    && ${LIB_CORE_SRC_DIR}/tools/builder/build.sh \
+    && mv core/src/libledger-core.so libledger-core.so
+
+# Safeguard to ensure that libledger-core.so exists at this stage
+RUN stat ${LIB_CORE_BUILD_DIR}/libledger-core.so
+
+RUN cp ${LIB_CORE_SRC_DIR}/tools/builder/test.sh test.sh
+
+ENTRYPOINT [ "./test.sh" ]

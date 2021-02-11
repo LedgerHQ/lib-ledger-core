@@ -416,6 +416,10 @@ Future<bool> CosmosLikeAccountSynchronizer::synchronizeBatch(
                 for (const auto &tx : bulk->transactions) {
                     buddy->account->interpretTransaction(tx, operations);
 
+                    if (::ledger::core::account::isInsertedOperation(flag)) {
+                        ++buddy->context.newOperations;
+                    }
+
                     // Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
                     if (it != buddy->transactionsToDrop.end()) {
