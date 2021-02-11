@@ -52,6 +52,7 @@ public:
                                               printer,
                                               2000000000
         );
+        client->setLogger(logger);
     }
     NetworkParameters params;
     std::string explorerEndpoint;
@@ -63,14 +64,9 @@ class LedgerApiBitcoinLikeBlockchainExplorerTests : public LedgerApiBlockchainEx
 public:
     LedgerApiBitcoinLikeBlockchainExplorerTests() {
         params = networks::getNetworkParameters("bitcoin");
-        explorerEndpoint = "http://api.ledgerwallet.com";
+        explorerEndpoint = "https://explorers.api.live.ledger.com";
     }
 };
-
-TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, StartSession) {
-    auto session = uv::wait(explorer->startSession());
-    EXPECT_EQ(((std::string *)session)->size(), 36);
-}
 
 TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetRawTransaction) {
     auto transaction = uv::wait(explorer->getRawTransaction("9d7945129b78e2f63a72fed93e8ebe38567bdc9318591cfe8c8a7de76c5cb1a3"));
@@ -150,12 +146,6 @@ TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, GetFees) {
     if (result.size() > 1) {
         EXPECT_GE(result[0]->intValue(), result[1]->intValue());
     }
-}
-
-TEST_F(LedgerApiBitcoinLikeBlockchainExplorerTests, EndSession) {
-    auto session = uv::wait(explorer->startSession());
-    EXPECT_EQ(((std::string *) session)->size(), 36);
-    auto u = uv::wait(explorer->killSession(session));
 }
 
 class LedgerApiEthereumLikeBlockchainExplorerTests : public LedgerApiBlockchainExplorerTests<LedgerApiEthereumLikeBlockchainExplorer, api::EthereumLikeNetworkParameters> {
