@@ -115,7 +115,7 @@ namespace ledger {
                                         const std::vector<std::string> &matchableKeys);
 
             virtual Future<std::shared_ptr<BigInt>>
-            getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) = 0;
+            getBalance(const std::string &address) = 0;
 
             virtual Future<std::shared_ptr<BigInt>>
             getFees() = 0;

@@ -161,6 +161,7 @@ namespace ledger {
         protected:
             virtual std::shared_ptr<AbstractAccount> createAccountInstance(soci::session& sql, const std::string& accountUid) = 0;
             void addAccountInstanceToInstanceCache(const std::shared_ptr<AbstractAccount>& account);
+            TTLCache<std::string, Amount>& getBalanceCache();
 
         private:
             std::string _name;

@@ -50,23 +50,17 @@ namespace ledger {
 
 
         Future<std::shared_ptr<BigInt>>
-        NodeTezosLikeBlockchainExplorer::getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) {
-            auto size = addresses.size();
-            if (size != 1) {
-                throw make_exception(api::ErrorCode::INVALID_ARGUMENT,
-                                     "Can only get balance of 1 address from Tezos Node, but got {} addresses", addresses.size());
-            }
+        NodeTezosLikeBlockchainExplorer::getBalance(const std::string& address) {
             bool parseNumbersAsString = true;
-            std::string addressesStr = addresses[0]->toBase58();
             return _http->GET(fmt::format("blockchain/{}/{}/balance/{}",
                                           getExplorerVersion(),
                                           getNetworkParameters().Identifier,
-                                          addressesStr))
+                                          address))
                     .json(parseNumbersAsString)
-                    .mapPtr<BigInt>(getContext(), [addressesStr](const HttpRequest::JsonResult &result) {
+                    .mapPtr<BigInt>(getContext(), [address](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
                         if (!json.IsArray() && json.Size() == 1 && json[0].IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", addressesStr);
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to get balance for {}", address);
                         }
                         auto info = json[0].GetString();
                         return std::make_shared<BigInt>(info);

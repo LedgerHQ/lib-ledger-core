@@ -73,6 +73,14 @@ namespace ledger {
 
             std::shared_ptr<TezosLikeBlockchainExplorer> getBlockchainExplorer();
 
+            const std::string getCacheKey(size_t accountIndex, const std::string& originatedAccount);
+
+            Option<Amount> getBalanceFromCache(size_t accountIndex, const std::string& originatedAccount);
+
+            void updateBalanceCache(size_t accountIndex, const std::string& originatedAccount, Amount balance);
+
+            void invalidateBalanceCache(size_t accountIndex, const std::string& originatedAccount);
+
         protected:
             std::shared_ptr<AbstractAccount>
             createAccountInstance(soci::session &sql, const std::string &accountUid) override;
