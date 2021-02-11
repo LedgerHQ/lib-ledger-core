@@ -211,6 +211,7 @@ namespace ledger {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("account_tx");
             bodyRequest.pushParameter("account", addresses[0]);
+            bodyRequest.pushParameter("forward", true);
 
             // handle transaction pagination in the case we have a pagination marker, which happens
             // when a getTransactions returns a TransactionsBulk containing such a marker
