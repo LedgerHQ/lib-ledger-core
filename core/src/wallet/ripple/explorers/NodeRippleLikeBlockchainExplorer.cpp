@@ -211,6 +211,7 @@ namespace ledger {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("account_tx");
             bodyRequest.pushParameter("account", addresses[0]);
+            bodyRequest.pushParameter("forward", true);
             if (fromBlockHash.hasValue() && _paginationMarker.empty()) {
                 bodyRequest.pushParameter("ledger_index_min", fromBlockHash.getValue());
             }
