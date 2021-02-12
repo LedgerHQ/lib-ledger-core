@@ -1,7 +1,7 @@
 ## 4.0.0
 > 2021/01/21 NRT
 
-- More stable test environment with libuv and cpp-http implementatioon of services
+- Stable test environment with libuv and cpp-http implementatioon of services
 - Fix and improve keychain discovery during synchronization
 - Fix reorgs management during synchronization
 - Major synchronization performance improve by reworking the database insertion (~600% improvement)
