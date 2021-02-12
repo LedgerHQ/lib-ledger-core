@@ -47,6 +47,7 @@ using namespace std;
 struct BitcoinMakeP2PKHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
+        testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
@@ -79,6 +80,7 @@ struct BitcoinStardustTransaction : public BitcoinMakeBaseTransaction {
             .unit("satoshiStardust", 0, "SSD");
 
         testData.configuration = DynamicObject::newInstance();
+        testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_stardust";
         testData.inflate_btc = ledger::testing::medium_xpub::inflate;
