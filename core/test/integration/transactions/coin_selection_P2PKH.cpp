@@ -39,7 +39,8 @@ struct CoinSelectionP2PKH : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
-        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
+        testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");    
+        testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         testData.walletName = "my_wallet";
         testData.currencyName = "bitcoin_testnet";
         testData.inflate_btc = ledger::testing::coin_selection_xpub::inflate;

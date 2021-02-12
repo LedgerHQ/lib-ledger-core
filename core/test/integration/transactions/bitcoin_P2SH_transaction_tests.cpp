@@ -45,6 +45,7 @@ using namespace std;
 struct BitcoinMakeP2SHTransaction : public BitcoinMakeBaseTransaction {
     void SetUpConfig() override {
         testData.configuration = DynamicObject::newInstance();
+        testData.configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_VERSION, "v3");
         testData.configuration->putString(api::Configuration::KEYCHAIN_ENGINE,api::KeychainEngines::BIP49_P2SH);
         testData.configuration->putString(api::Configuration::KEYCHAIN_DERIVATION_SCHEME,"49'/<coin_type>'/<account>'/<node>/<address>");
         testData.walletName = "my_wallet";
