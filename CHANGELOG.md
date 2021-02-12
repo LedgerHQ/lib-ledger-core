@@ -14,6 +14,8 @@
 - Minor bug fixes (ripple model, big int improvements...)
 - Deprecate BlockchainObserver features for all coins
 - Deprecate events NEW_OPERATION and NEW_ERC20_OPERATIONS for UPDATE_OPERATION and UPDATE_ERC
+- Fix XRP incremental synchronization
+- Improve runtime performances by splitting db connections between Write pool and Read pool
 
 ## 3.5.0
 
