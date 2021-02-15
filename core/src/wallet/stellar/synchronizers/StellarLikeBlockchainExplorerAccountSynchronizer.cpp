@@ -125,7 +125,6 @@ namespace ledger {
                             } 
                             else {
                                 ++state.insertedOperations;
-                            state.lastBlockHeight = std::max(state.lastBlockHeight, tx->ledger);
                             } 
                             
                             state.lastBlockHeight = std::max(state.lastBlockHeight, tx->ledger);

@@ -155,15 +155,6 @@ TEST_F(EthereumLikeWalletSynchronization, DISABLED_MediumXpubSynchronization) {
                 EXPECT_EQ(ercOps.size() + 10, allOps.size());
                 auto ercOpsFromBlock = uv::wait(ercAccount->getOperationsFromBlockHeight(10, 0xffffff, 0));
                 EXPECT_EQ(ercOps.size(), ercOpsFromBlock.size());
-
-
-                // ERC 20 tests
-                auto ercAccount = std::dynamic_pointer_cast<ledger::core::ERC20LikeAccount>(account->getERC20Accounts()[0]);
-                auto allOps = ercAccount->getOperations();
-                auto ercOps = wait(ercAccount->getAllOperations(10, 0xffffff, true));
-                EXPECT_EQ(ercOps.size() + 10, allOps.size());
-                auto ercOpsFromBlock = wait(ercAccount->getOperationsFromBlockHeight(10, 0xffffff, 0));
-                EXPECT_EQ(ercOps.size(), ercOpsFromBlock.size());
             }
         }
     }

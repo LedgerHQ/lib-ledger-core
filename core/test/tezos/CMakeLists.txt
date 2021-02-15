@@ -24,7 +24,6 @@ add_executable(${TEZOS_TESTS_NAME}
 target_link_libraries(${TEZOS_TESTS_NAME} gtest gtest_main)
 target_link_libraries(${TEZOS_TESTS_NAME} ledger-core-static)
 target_link_libraries(${TEZOS_TESTS_NAME} ledger-test)
-target_link_libraries(${TEZOS_TESTS_NAME} ledger-qt-host)
 target_link_libraries(${TEZOS_TESTS_NAME} leveldb)
 target_include_directories(${TEZOS_TESTS_NAME} PUBLIC ../../../qt-host)
 target_include_directories(${TEZOS_TESTS_NAME} PUBLIC ../../../core/src)

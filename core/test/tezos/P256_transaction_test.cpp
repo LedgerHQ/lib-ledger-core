@@ -50,6 +50,7 @@ using namespace ledger::testing::tezos;
 struct P256TezosMakeTransaction : public TezosMakeBaseTransaction {
     void SetUpConfig() override {
         auto configuration = DynamicObject::newInstance();
+        configuration->putString(api::TezosConfiguration::TEZOS_NODE, "https://xtz-node.api.live.ledger.com");
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_ENGINE, api::BlockchainExplorerEngines::TZSTATS_API);
         configuration->putString(api::TezosConfiguration::TEZOS_XPUB_CURVE, api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256);
         configuration->putString(api::TezosConfiguration::TEZOS_PROTOCOL_UPDATE, api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON);
@@ -87,18 +88,18 @@ Out[49]: 'fc90925a9641634831c1e7a5552270c4f7f954a974ec2596ac1fe3bfc14fc7cd6c02a9
      
           EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
-          dispatcher->stop();
+          getTestExecutionContext()->stop();
       });
       auto bus = account->synchronize();
-      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
-      dispatcher->waitUntilStopped();
+      bus->subscribe(getTestExecutionContext(), receiver);
+      getTestExecutionContext()->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1294));
       builder->setGasLimit(api::Amount::fromLong(currency, 10407));
       builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
       builder->sendToAddress(api::Amount::fromLong(currency, 5000), DESTINATION);
       auto f = builder->build();
-      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
+      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(uv::wait(f));
       tx->setBlockHash("BMdWmC7JYL5RnxPm72RR4xKvZa7h1WUKimNYU2uhugPjdnGWCMe");
       tx->setCounter(std::make_shared<BigInt>(BigInt::fromString("7523031")));
       tx->setSignature(hex::toByteArray("4509a22f897460e621cc95b3b78b552c986c3cc477854a839eff0e458e8d0a50298d44486dd0733bf90f182667cb0e3735a31544c031fa8b6cce9b2150dc4376"));
@@ -142,18 +143,18 @@ Out[43]: '087bab85bf59327fe9c882c1346e47b7be4ed73c5afe229713ad8341131ed3eb6b02a9
      
           EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
-          dispatcher->stop();
+          getTestExecutionContext()->stop();
       });
       auto bus = account->synchronize();
-      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
-      dispatcher->waitUntilStopped();
+      bus->subscribe(getTestExecutionContext(), receiver);
+      getTestExecutionContext()->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 1246));
       builder->setGasLimit(api::Amount::fromLong(currency, 10407));
       builder->setStorageLimit(std::make_shared<api::BigIntImpl>(BigInt::fromString("0")));
       builder->sendToAddress(api::Amount::fromLong(currency, 5000), DESTINATION);
       auto f = builder->build();
-      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
+      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(uv::wait(f));
       tx->setRevealFees(std::make_shared<BigInt>(BigInt::fromString("1234")));
       tx->setRevealGasLimit(std::make_shared<BigInt>(BigInt::fromString("10200")));
       tx->setBlockHash("BKn22PBvdxDeQfXQ2tHKLN7D3NToAcN5pWDSmeSmNjThdFsuXNE");
@@ -228,11 +229,11 @@ TEST_F(P256TezosMakeTransaction, CreateDelegation) {
      
           EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
           EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
-          dispatcher->stop();
+          getTestExecutionContext()->stop();
       });
       auto bus = account->synchronize();
-      bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
-      dispatcher->waitUntilStopped();
+      bus->subscribe(getTestExecutionContext(), receiver);
+      getTestExecutionContext()->waitUntilStopped();
 
       builder->setFees(api::Amount::fromLong(currency, 370));
       builder->setGasLimit(api::Amount::fromLong(currency, 1200));
@@ -241,7 +242,7 @@ TEST_F(P256TezosMakeTransaction, CreateDelegation) {
 
       builder->setType(api::TezosOperationTag::OPERATION_TAG_DELEGATION);
       auto f = builder->build();
-      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(::wait(f));
+      auto tx = std::dynamic_pointer_cast<TezosLikeTransactionApi>(uv::wait(f));
       tx->setBlockHash("BKt9ZkvgTfhEbE8xyv7L6nsdDrfVGdj3aJsdLjZCtK5MzM4iVmb");
       tx->setCounter(std::make_shared<BigInt>(BigInt::fromString("7523033")));
       tx->setSignature(hex::toByteArray("5550735b6dac2f73349525bd94cf2bff7405dcc4fa8fa821db0f41e1b22fa94de3c1a7a4d6019fc973565ecd9dacbc8b95d4cb6213a1074c7a9bf7d53fb5e457"));
@@ -296,13 +297,13 @@ TEST_F(P256TezosMakeTransaction, GetCurrentDelegation) {
 
         EXPECT_NE(event->getCode(), api::EventCode::SYNCHRONIZATION_FAILED);
         EXPECT_EQ(event->getCode(), api::EventCode::SYNCHRONIZATION_SUCCEED);
-        dispatcher->stop();
+        getTestExecutionContext()->stop();
     });
     auto bus = account->synchronize();
-    bus->subscribe(dispatcher->getMainExecutionContext(), receiver);
-    dispatcher->waitUntilStopped();
+    bus->subscribe(getTestExecutionContext(), receiver);
+    getTestExecutionContext()->waitUntilStopped();
 
-    auto delegate = ::wait(account->getCurrentDelegate());
+    auto delegate = uv::wait(account->getCurrentDelegate());
     EXPECT_EQ(delegate, "tz1PWCDnz783NNGGQjEFFsHtrcK5yBW4E2rm");
 }
 

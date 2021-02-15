@@ -50,7 +50,7 @@ namespace ledger {
                     {ledger::core::hex::toByteArray(ED25519Data.key.hexkey)} , {ledger::core::hex::toByteArray("")}
                                                      
                 );
-                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(wait(wallet->newAccountWithInfo(accountInfo)));
+                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(accountInfo)));
 				return account;
 			}
             std::shared_ptr<core::TezosLikeAccount> inflate_SECP256K1(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
@@ -59,7 +59,7 @@ namespace ledger {
                     {ledger::core::hex::toByteArray(SECP256K1Data.key.hexkey)} , {ledger::core::hex::toByteArray("")}
                                                      
                 );
-                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(wait(wallet->newAccountWithInfo(accountInfo)));
+                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(accountInfo)));
 				return account;
 			}
             std::shared_ptr<core::TezosLikeAccount> inflate_P256(const std::shared_ptr<core::WalletPool>& pool, const std::shared_ptr<core::AbstractWallet>& wallet) {
@@ -68,7 +68,7 @@ namespace ledger {
                     {ledger::core::hex::toByteArray(P256Data.key.hexkey)} , {ledger::core::hex::toByteArray("")}
                                                      
                 );
-                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(wait(wallet->newAccountWithInfo(accountInfo)));
+                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(accountInfo)));
 				return account;
 			}
 
@@ -80,17 +80,17 @@ namespace ledger {
                     {ledger::core::hex::toByteArray(SECP256K1Data.key.hexkey)} , {ledger::core::hex::toByteArray("")}
                                                      
                 );
-                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(wait(wallet->newAccountWithInfo(accountInfo)));
-				soci::session sql(pool->getDatabaseSessionPool()->getPool());
-				sql.begin();				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_1));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_2));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_3));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_4));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_5));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_6));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_7));
-				account->putTransaction(sql, *core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_8));
-				sql.commit();
+                auto account = std::dynamic_pointer_cast<core::TezosLikeAccount>(uv::wait(wallet->newAccountWithInfo(accountInfo)));
+				std::vector<core::Operation> operations;			
+                account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_1), operations);
+				account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_2), operations);
+				account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_3), operations);
+				account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_4), operations);
+				account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_5), operations);
+				account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_6), operations);
+				account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_7), operations);
+				account->interpretTransaction(*core::JSONUtils::parse<core::TezosLikeTransactionParser>(TX_8), operations);
+				account->bulkInsert(operations);
 				return account;
 			}
 			const std::string TX_1 = "{\"block_hash\": \"BM5xyTrCQ1CzBBVQeV1TMrHHtpbSwccWtFkN8VFtB82suSYBikP\", \"type\": {\"operations\": [{\"src\": {\"tz\": \"KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd\"}, \"kind\": \"transaction\", \"burn\": 0, \"fee\": 1420, \"destination\": {\"tz\": \"tz2M51byCiHgm4mGe9rgp7HWQqV6mprMnSty\"}, \"op_level\": 441021, \"failed\": false, \"amount\": 150000, \"internal\": false, \"storage_limit\": \"300\", \"timestamp\": \"2019-05-17T07:49:15Z\", \"gas_limit\": \"10300\", \"counter\": 2}], \"source\": {\"tz\": \"KT1JLbEZuWFhEyHXtKsvbCNZABXGehkjVyCd\"}, \"kind\": \"manager\"}, \"hash\": \"opVFeKkgFDdoeNnBBsfkHA1tz9ZfHPm5zAZKJXbAP6WTWtBUGCY\", \"network_hash\": \"NetXdQprcVkpaWU\"}";
