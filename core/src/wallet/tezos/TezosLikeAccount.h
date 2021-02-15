@@ -43,7 +43,7 @@
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/Amount.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
-#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.h>
+#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 #include <wallet/tezos/keychains/TezosLikeKeychain.h>
 #include <wallet/tezos/database/TezosLikeAccountDatabaseEntry.h>
 
@@ -87,7 +87,7 @@ namespace ledger {
 
             void interpretTransaction(const TezosLikeBlockchainExplorerTransaction& transaction,
                                       std::vector<Operation>& out);
-                                      
+
             Try<int> bulkInsert(const std::vector<Operation>& operations);
 
             void updateOriginatedAccounts(soci::session &sql, const Operation &operation);
