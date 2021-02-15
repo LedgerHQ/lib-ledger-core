@@ -244,7 +244,7 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     ///    }
     ///  }
     /// }
-    void updateAccountDataFromNetwork();
+    FuturePtr<cosmos::Account> updateAccountDataFromNetwork();
 
     // These helpers stay on CosmosLikeAccount *only* because they have to use their
     // knowledge of Address information in order to correctly map operation type.

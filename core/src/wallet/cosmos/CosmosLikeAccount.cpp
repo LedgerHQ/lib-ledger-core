@@ -103,11 +103,11 @@ void CosmosLikeAccount::updateFromDb()
     }
 }
 
-void CosmosLikeAccount::updateAccountDataFromNetwork()
+FuturePtr<cosmos::Account> CosmosLikeAccount::updateAccountDataFromNetwork()
 {
     auto self = std::static_pointer_cast<CosmosLikeAccount>(shared_from_this());
-    _explorer->getAccount(getAddress())
-        .onComplete(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
+    return _explorer->getAccount(getAddress())
+        .mapPtr<cosmos::Account>(getContext(), [self](const TryPtr<cosmos::Account> &accountData) mutable {
             if (accountData.isSuccess()) {
                 self->_accountData = accountData.getValue();
                 const CosmosLikeAccountDatabaseEntry update = {
@@ -120,6 +120,7 @@ void CosmosLikeAccount::updateAccountDataFromNetwork()
                 soci::session sql(self->getWallet()->getDatabase()->getPool());
                 CosmosLikeAccountDatabaseHelper::updateAccount(sql, self->getAccountUid(), update);
             }
+            return self->_accountData;
         });
 }
 
@@ -621,7 +622,7 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
             }
         });
 
-    updateAccountDataFromNetwork();
+    (void) updateAccountDataFromNetwork();
 
     auto startTime = DateUtils::now();
     eventPublisher->postSticky(
@@ -748,29 +749,37 @@ void CosmosLikeAccount::estimateGas(
     tx->setCurrency(getWallet()->getCurrency());
     tx->setMessages(request.messages);
 
-    // We need to update the sequence number to have the correct sequence number at time of simulation
-    updateAccountDataFromNetwork();
-    tx->setSequence(_accountData->sequence);
-
     if (request.memo) {
         tx->setMemo(request.memo.value());
     }
-    return _explorer->getEstimatedGasLimit(tx, request.amplifier.value_or("1.0"))
-        .mapPtr<api::BigInt>(
+    // We need to update the sequence number to have the correct sequence number
+    // at time of simulation
+    return updateAccountDataFromNetwork()
+        .flatMapPtr<api::BigInt>(
             getContext(),
-            [](const std::shared_ptr<BigInt> &gasLimit) -> std::shared_ptr<api::BigInt> {
-                return std::make_shared<api::BigIntImpl>(*gasLimit);
+            [this, tx, request](
+                const std::shared_ptr<cosmos::Account> &currentAccountData)
+                -> FuturePtr<api::BigInt> {
+              tx->setSequence(currentAccountData->sequence);
+              return _explorer
+                  ->getEstimatedGasLimit(tx, request.amplifier.value_or("1.0"))
+                  .mapPtr<api::BigInt>(
+                      getContext(),
+                      [](const std::shared_ptr<BigInt> &gasLimit)
+                          -> std::shared_ptr<api::BigInt> {
+                        return std::make_shared<api::BigIntImpl>(*gasLimit);
+                      });
             })
         .callback(getContext(), callback);
 }
 
 void CosmosLikeAccount::getSequence(const std::shared_ptr<api::StringCallback> &callback)
 {
-    updateAccountDataFromNetwork();
-    if (!_accountData) {
-        throw make_exception(api::ErrorCode::ILLEGAL_STATE, "account must be synchronized first");
-    }
-    return Future<std::string>::successful(_accountData->sequence).callback(getContext(), callback);
+    return updateAccountDataFromNetwork().map<std::string>(
+        getContext(),
+        [](const std::shared_ptr<cosmos::Account> &currentAccountData) -> std::string {
+            return currentAccountData->sequence;
+        }).callback(getContext(), callback);
 }
 
 void CosmosLikeAccount::getAccountNumber(const std::shared_ptr<api::StringCallback> &callback)
