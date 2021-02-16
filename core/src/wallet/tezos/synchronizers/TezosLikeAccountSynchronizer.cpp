@@ -122,7 +122,7 @@ auto TezosLikeAccountSynchronizer::performSynchronization() const -> Future<Resu
     return async::sequence(getContext(), futures)
         .map<Result>(
             getContext(),
-            [this](const auto& tuple) {
+            [this, state](const auto& tuple) {
                 const auto duration = std::chrono::duration_cast<
                     std::chrono::milliseconds>(DateUtils::now() - _start);
                 _logger->info(
@@ -134,16 +134,17 @@ auto TezosLikeAccountSynchronizer::performSynchronization() const -> Future<Resu
                 const auto block = std::get<0>(tuple);
                 const auto syncs = std::get<1>(tuple);
 
-                if (block.height > 0) {
-                    auto state = SavedState(block.height, block.hash);
-                    _account->getInternalPreferences()
-                            ->editor()
-                            ->putObject<SavedState>("state", state)
-                            ->commit();
-                }
-
                 const auto newOperations = std::accumulate(
                     std::begin(syncs), std::end(syncs), 0);
+
+                if (block.height > 0) {
+                    auto newState = SavedState(
+                        block.height, block.hash, state.offset + newOperations);
+                    _account->getInternalPreferences()
+                            ->editor()
+                            ->putObject<SavedState>("state", newState)
+                            ->commit();
+                }
 
                 return Result(block.height, newOperations);
             })
@@ -179,7 +180,7 @@ auto TezosLikeAccountSynchronizer::synchronizeTransactions(
         }
         return std::string("");
     }();
-    return _explorer->getTransactions({address}, Option<std::string>(state.blockHash))
+    return _explorer->getTransactions({address}, std::to_string(state.offset))
         .flatMap<uint32_t>(
             _account->getContext(),
             [this, address, state, uid, nbTxns](
@@ -192,12 +193,6 @@ auto TezosLikeAccountSynchronizer::synchronizeTransactions(
                         newState.blockHeight = tx.block->height;
                         newState.blockHash = tx.block->hash;
                     }
-                    /*
-                    if (tx.block.hasValue()) {
-                        newState.blockHeight = tx.block->height;
-                        newState.blockHash = tx.block->hash;
-                    }
-                    */
 
                     if (orig) {
                         tx.originatedAccountUid = uid;
@@ -219,6 +214,8 @@ auto TezosLikeAccountSynchronizer::synchronizeTransactions(
                 }
 
                 const auto count = tryPutTx.getValue();
+                newState.offset += count;
+
                 _logger->info(
                     "Successfully inserted {} transactions for account {}.",
                     count, _account->getAccountUid());

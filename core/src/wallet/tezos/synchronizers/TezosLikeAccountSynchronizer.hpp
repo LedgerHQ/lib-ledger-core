@@ -77,9 +77,15 @@ private:
     {
         uint64_t blockHeight{0};
         std::string blockHash{""};
+        uint64_t offset{0};
 
-        SavedState(uint64_t blockHeight, std::string blockHash)
-            : blockHeight(blockHeight), blockHash(blockHash)
+        SavedState(
+            uint64_t blockHeight,
+            std::string blockHash,
+            uint64_t offset)
+            : blockHeight(blockHeight)
+            , blockHash(blockHash)
+            , offset(offset)
         {}
 
         SavedState() = default;
@@ -87,7 +93,7 @@ private:
         template<typename Archive>
         void serialize(Archive& archive)
         {
-            archive(blockHeight, blockHash);
+            archive(blockHeight, blockHash, offset);
         }
     };
 
