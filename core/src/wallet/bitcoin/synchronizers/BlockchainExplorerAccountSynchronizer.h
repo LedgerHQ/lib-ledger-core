@@ -68,8 +68,6 @@ namespace ledger {
             BlockchainExplorerAccountSynchronizer(const std::shared_ptr<WalletPool>& pool,
                                                   const std::shared_ptr<BitcoinLikeBlockchainExplorer>& explorer);
 
-            void updateCurrentBlock(std::shared_ptr<SynchronizationBuddy> &buddy,
-                                    const std::shared_ptr<api::ExecutionContext> &context);
             void updateTransactionsToDrop(soci::session &sql,
                                           std::shared_ptr<SynchronizationBuddy> &buddy,
                                           const std::string &accountUid);
@@ -94,6 +92,7 @@ namespace ledger {
             static void initializeSavedState(Option<BlockchainExplorerAccountSynchronizationSavedState>& savedState, int32_t halfBatchSize);
             std::shared_ptr<ProgressNotifier<BlockchainExplorerAccountSynchronizationResult>> synchronizeAccount(const std::shared_ptr<BitcoinLikeAccount>& account);
             Future<Unit> extendKeychain(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy);
+            Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>> updateCurrentBlock(std::shared_ptr<SynchronizationBuddy> buddy);
             Future<Unit> synchronizeBatches(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy);
             Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>> getTransactionBulk(int currentBatchIndex, const std::shared_ptr<SynchronizationBuddy>& buddy);
             Future<bool> synchronizeBatch(uint32_t currentBatchIndex, std::shared_ptr<SynchronizationBuddy> buddy, bool hadTransactions = false);

@@ -61,21 +61,6 @@ namespace ledger {
         }
 
 
-        void BlockchainExplorerAccountSynchronizer::updateCurrentBlock(std::shared_ptr<SynchronizationBuddy> &buddy,
-                                                                       const std::shared_ptr<api::ExecutionContext> &context) {
-            _explorer->getCurrentBlock().onComplete(context, [buddy] (const TryPtr<BitcoinLikeBlockchainExplorer::Block>& block) {
-                if (block.isSuccess()) {
-                    soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
-                    soci::transaction tr(sql);
-                    try {
-                        buddy->account->putBlock(sql, *block.getValue());
-                        tr.commit();
-                    } catch(...) {
-                        tr.rollback();
-                    }
-                }
-            });
-        }
 
         void BlockchainExplorerAccountSynchronizer::updateTransactionsToDrop(soci::session &sql,
                                                                              std::shared_ptr<SynchronizationBuddy> &buddy,
@@ -448,14 +433,23 @@ namespace ledger {
 
             updateTransactionsToDrop(sql, buddy, account->getAccountUid());
 
-            updateCurrentBlock(buddy, account->getContext());
-
             auto self = getSharedFromThis();
             self->_addresses.clear();
             self->_cachedTransactionBulks.clear();
             self->_hashkeys.clear();
             _explorerBenchmark = NEW_BENCHMARK("explorer_calls");
-            return self->extendKeychain(0, buddy).template flatMap<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>(account->getContext(), [buddy, self](const Unit&) {
+            return self->updateCurrentBlock(buddy).template flatMap<Unit>(account->getContext(), [self, buddy](std::shared_ptr <BitcoinLikeBlockchainExplorer::Block> block) {
+                soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
+                soci::transaction tr(sql);
+                try {
+                    buddy->account->putBlock(sql, *block);
+                    tr.commit();
+                }
+                catch (...) {
+                    tr.rollback();
+                }
+                return self->extendKeychain(0, buddy);
+                }).template flatMap<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>(account->getContext(), [buddy, self](const Unit&) {
                 self->_explorerBenchmark->start();
                 return self->requestTransactionsFromExplorer(buddy);})
                 .template flatMap<Unit>(account->getContext(), [buddy, self](const std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>& txBulks) {
@@ -528,6 +522,9 @@ namespace ledger {
             });
         };
 
+        Future<std::shared_ptr<BitcoinLikeBlockchainExplorer::Block>> BlockchainExplorerAccountSynchronizer::updateCurrentBlock(std::shared_ptr<SynchronizationBuddy> buddy) {
+            return _explorer->getCurrentBlock();
+        };
 
         // Synchronize batches.
         //
