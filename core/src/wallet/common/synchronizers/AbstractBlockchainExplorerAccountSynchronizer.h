@@ -133,6 +133,7 @@ namespace ledger {
                 uint32_t halfBatchSize;
                 std::shared_ptr<Keychain> keychain;
                 Option<BlockchainExplorerAccountSynchronizationSavedState> savedState;
+                Option<void *> token;
                 std::shared_ptr<Account> account;
                 std::unordered_map<std::string, std::string> transactionsToDrop;
                 BlockchainExplorerAccountSynchronizationResult context;
@@ -253,7 +254,20 @@ namespace ledger {
                 updateCurrentBlock(buddy, account->getContext());
 
                 auto self = getSharedFromThis();
-                return self->synchronizeBatches(0, buddy).template flatMap<Unit>(account->getContext(), [self, buddy] (auto) {
+
+                const auto deactivateToken =
+                        buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+                auto getSyncToken = deactivateToken ? Future<void *>::successful(nullptr) : _explorer->startSession();
+                
+                return getSyncToken.template map<Unit>(account->getContext(), [buddy, deactivateToken] (void * const t) -> Unit {
+                    buddy->logger->info("Synchronization token obtained");
+                    if (!deactivateToken && t) {
+                        buddy->token = Option<void *>(t);
+                    }
+                    return unit;
+                }).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
+                    return self->synchronizeBatches(0, buddy);
+                }).template flatMap<Unit>(account->getContext(), [self, buddy] (auto) {
                     return self->synchronizeMempool(buddy);
                 }).template map<BlockchainExplorerAccountSynchronizationResult>(ImmediateExecutionContext::INSTANCE, [=] (const Unit&) {
                     auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
@@ -331,11 +345,29 @@ namespace ledger {
                     if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
                         buddy->savedState.nonEmpty()) {
                         buddy->logger->info("Recovering from reorganization");
-                        auto startSession = Future<void*>::async(ImmediateExecutionContext::INSTANCE, [=]() {
-                            return Future<void*>::successful(nullptr);
+                        
+                        const auto deactivateToken = 
+                            buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+                        auto startSession = Future<void *>::async(ImmediateExecutionContext::INSTANCE, [=](){
+                            if (deactivateToken) {
+                                return Future<void *>::successful(nullptr);
+                            }
+                            return self->_explorer->startSession();
                         });
 
                         return startSession.template flatMap<Unit>(ImmediateExecutionContext::INSTANCE, [=] (void * const session) {
+                            if (!deactivateToken && session) {
+                                buddy->token = Option<void *>(session);
+                            } else {
+                                buddy->logger->warn(
+                                        "Failed to get new synchronization token for account#{} of wallet {}",
+                                        buddy->account->getIndex(),
+                                        buddy->account->getWallet()->getName());
+                                // WARNING: we have too many issues with that sync token because of blockchain explorer,
+                                // when we fail on reorg we try without sync token
+                                buddy->token = Option<void *>();
+                            }
+
                             //Get its block/block height
                             auto &failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
                             auto const failedBlockHeight = failedBatch.blockHeight;
@@ -457,7 +489,7 @@ namespace ledger {
 
                 auto benchmark = NEW_BENCHMARK("explorer_calls");
                 benchmark->start();
-                return _explorer->getTransactions(batch, blockHash, optional<void*>())
+                return _explorer->getTransactions(batch, blockHash, buddy->token)
                     .template flatMap<bool>(buddy->account->getContext(), [self, currentBatchIndex, buddy, hadTransactions, benchmark, blockHash] (const std::shared_ptr<typename Explorer::TransactionsBulk>& bulk) -> Future<bool> {
                         benchmark->stop();
 

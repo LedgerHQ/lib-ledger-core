@@ -209,6 +209,7 @@ add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawTransa
 add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawRevealTransaction COMMAND ledger-core-integration-tests --gtest_filter=TezosMakeTransaction.ParseSignedRawRevealTransaction)
 add_test (NAME ledger-core-integration-TezosMakeTransaction.ParseSignedRawOriginationTransaction COMMAND ledger-core-integration-tests --gtest_filter=TezosMakeTransaction.ParseSignedRawOriginationTransaction)
 add_test (NAME ledger-core-integration-TezosLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=TezosLikeWalletSynchronization.MediumXpubSynchronization)
+add_test (NAME ledger-core-integration-TezosLikeWalletSynchronization.SynchronizeAccountWithMoreThan100OpsAndDeactivateSyncToken COMMAND ledger-core-integration-tests --gtest_filter=TezosLikeWalletSynchronization.SynchronizeAccountWithMoreThan100OpsAndDeactivateSyncToken)
 
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.MediumXpubSynchronization COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.MediumXpubSynchronization)
 add_test (NAME ledger-core-integration-CosmosLikeWalletSynchronization.SuccessiveSynchronizations COMMAND ledger-core-integration-tests --gtest_filter=CosmosLikeWalletSynchronization.SuccessiveSynchronizations)
