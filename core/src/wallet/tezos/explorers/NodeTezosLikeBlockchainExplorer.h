@@ -28,11 +28,9 @@
  *
  */
 
-
 #ifndef LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H
 
-#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 #include <wallet/tezos/explorers/api/TezosLikeTransactionsParser.h>
 #include <wallet/tezos/explorers/api/TezosLikeTransactionsBulkParser.h>
@@ -42,80 +40,71 @@
 
 namespace ledger {
     namespace core {
-        using LedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<TezosLikeBlockchainExplorerTransaction, TezosLikeBlockchainExplorer::TransactionsBulk, TezosLikeTransactionsParser, TezosLikeTransactionsBulkParser, TezosLikeBlockParser, api::TezosLikeNetworkParameters>;
 
-        class NodeTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer,
-                                                public LedgerApiBlockchainExplorer,
-                                                public DedicatedContext,
-                                                public std::enable_shared_from_this<NodeTezosLikeBlockchainExplorer> {
+        class NodeTezosLikeBlockchainExplorer : public TezosLikeBlockchainExplorer
+        {
         public:
-            NodeTezosLikeBlockchainExplorer(const std::shared_ptr<api::ExecutionContext> &context,
-                                            const std::shared_ptr<HttpClient> &http,
-                                            const api::TezosLikeNetworkParameters &parameters,
-                                            const std::shared_ptr<api::DynamicObject> &configuration);
+            NodeTezosLikeBlockchainExplorer(
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<HttpClient> &http,
+                const api::TezosLikeNetworkParameters &parameters,
+                const std::shared_ptr<ledger::core::api::DynamicObject> &configuration);
 
             Future<std::shared_ptr<BigInt>>
-            getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) override;
+            getBalance(const TezosLikeKeychain::Address &address) const override;
 
             Future<std::shared_ptr<BigInt>>
-            getFees() override;
+            getFees() const override;
 
             Future<std::shared_ptr<BigInt>>
-            getGasPrice() override;
+            getGasPrice() const override;
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
+            Future<String>
+            pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
 
-            Future<void *> startSession() override;
+            FuturePtr<TransactionsBulk>
+            getTransactions(const std::string& address,
+                            const Either<std::string, uint32_t>& token = {}) const override;
 
-            Future<Unit> killSession(void *session) override;
-
-            Future<Bytes> getRawTransaction(const String &transactionHash) override;
-
-            Future<String> pushTransaction(const std::vector<uint8_t> &transaction) override;
-
-            FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
-            getTransactions(const std::vector<std::string> &addresses,
-                            Option<std::string> fromBlockHash = Option<std::string>(),
-                            Option<void *> session = Option<void *>()) override;
-
-            FuturePtr<Block> getCurrentBlock() const override;
-
-            FuturePtr<TezosLikeBlockchainExplorerTransaction>
-            getTransactionByHash(const String &transactionHash) const override;
-
-            Future<int64_t> getTimestamp() const override;
-
-            std::shared_ptr<api::ExecutionContext> getExplorerContext() const override;
-
-            api::TezosLikeNetworkParameters getNetworkParameters() const override;
+            FuturePtr<Block>
+            getCurrentBlock() const override;
 
             std::string getExplorerVersion() const override;
 
             Future<std::shared_ptr<BigInt>>
-            getEstimatedGasLimit(const std::string &address) override;
+            getEstimatedGasLimit(const std::string &address) const override;
 
-            virtual Future<std::shared_ptr<GasLimit>>
-            getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &transaction) override;
-
-            Future<std::shared_ptr<BigInt>>
-            getStorage(const std::string &address) override;
-
-            Future<std::shared_ptr<BigInt>> getCounter(const std::string &address) override;
-
-            Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) override ;
-
-            Future<std::string> getManagerKey(const std::string &address) override;
-
-            Future<bool> isAllocated(const std::string &address) override;
-
-            Future<std::string> getCurrentDelegate(const std::string &address) override;
-
-            Future<bool> isFunded(const std::string &address) override;
+            Future<std::shared_ptr<GasLimit>>
+            getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &tx) const override;
 
             Future<std::shared_ptr<BigInt>>
-            getTokenBalance(const std::string& accountAddress, const std::string& tokenAddress) const override;
+            getStorage(const std::string &address) const override;
 
-            Future<bool> isDelegate(const std::string &address) override;
+            Future<std::vector<uint8_t>>
+            forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) const override;
+
+            Future<std::string>
+            getManagerKey(const std::string &address) const override;
+
+            Future<bool>
+            isAllocated(const std::string &address) const override;
+
+            Future<std::string>
+            getCurrentDelegate(const std::string &address) const override;
+
+
+            Future<std::shared_ptr<BigInt>>
+            getCounter(const std::string &address) const override;
+
+            Future<bool>
+            isFunded(const std::string &address) const override;
+
+            Future<bool>
+            isDelegate(const std::string &address) const override;
+
+            Future<std::shared_ptr<BigInt>>
+            getTokenBalance(const std::string& accountAddress,
+                            const std::string& tokenAddress) const override;
 
         private:
             /*
@@ -129,12 +118,14 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getHelper(const std::string &url,
                       const std::string &field,
-                      const std::unordered_map<std::string, std::string> &params = std::unordered_map<std::string, std::string>(),
-                      const std::string &fallbackValue = "");
+                      const std::unordered_map<std::string, std::string> &params = {},
+                      const std::string &fallbackValue = "") const;
 
-            api::TezosLikeNetworkParameters _parameters;
+        private:
             std::string _explorerVersion;
         };
-    }
-}
+
+    } // namespace core
+} // namespace ledger
+
 #endif //LEDGER_CORE_NODETEZOSLIKEBLOCKCHAINEXPLORER_H

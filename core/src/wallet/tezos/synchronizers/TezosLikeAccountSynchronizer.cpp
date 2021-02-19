@@ -180,7 +180,7 @@ auto TezosLikeAccountSynchronizer::synchronizeTransactions(
         }
         return std::string("");
     }();
-    return _explorer->getTransactions({address}, std::to_string(state.offset))
+    return _explorer->getTransactions({address}, state.offset)
         .flatMap<uint32_t>(
             _account->getContext(),
             [this, address, state, uid, nbTxns](

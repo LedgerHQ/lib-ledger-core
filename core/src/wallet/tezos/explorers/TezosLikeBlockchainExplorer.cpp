@@ -28,8 +28,11 @@
  *
  */
 
-
 #include "TezosLikeBlockchainExplorer.h"
+#include <wallet/tezos/explorers/api/TezosLikeBlockParser.h>
+#include <wallet/tezos/explorers/api/TezosLikeTransactionParser.h>
+#include <wallet/tezos/explorers/api/TezosLikeTransactionsParser.h>
+#include <wallet/tezos/explorers/api/TezosLikeTransactionsBulkParser.h>
 #include <wallet/tezos/api_impl/TezosLikeTransactionApi.h>
 #include <api/TezosConfiguration.hpp>
 #include <api/TezosConfigurationDefaults.hpp>
@@ -43,32 +46,52 @@ namespace ledger {
     namespace core {
 
         TezosLikeBlockchainExplorer::TezosLikeBlockchainExplorer(
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<HttpClient> &http,
+                const api::TezosLikeNetworkParameters &parameters,
                 const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
-                const std::vector<std::string> &matchableKeys) : ConfigurationMatchable(matchableKeys) {
+                const std::vector<std::string> &matchableKeys)
+            : TezosLikeLedgerApiBlockchainExplorer()
+            , ConfigurationMatchable(matchableKeys)
+            , DedicatedContext(context)
+            , _parameters(parameters)
+        {
+            _http = http;
             setConfiguration(configuration);
             _rpcNode = configuration->getString(api::TezosConfiguration::TEZOS_NODE)
-                    .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_NODE);
+                .value_or(api::TezosConfigurationDefaults::TEZOS_DEFAULT_NODE);
         }
 
-        Future<std::vector<uint8_t>> TezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
-                                                                                   const std::shared_ptr<api::ExecutionContext> &context,
-                                                                                   const std::shared_ptr<HttpClient> &http,
-                                                                                   const std::string &rpcNode) {
+        Future<String>
+        TezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
+            return pushLedgerApiTransaction(transaction);
+        }
+
+        FuturePtr<TezosLikeBlockchainExplorer::Transaction>
+        TezosLikeBlockchainExplorer::getTransactionByHash(const String &transactionHash) const {
+            return getLedgerApiTransactionByHash(transactionHash);
+        }
+
+        Future<std::vector<uint8_t>>
+        TezosLikeBlockchainExplorer::forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
+                                                      const std::shared_ptr<api::ExecutionContext> &context,
+                                                      const std::shared_ptr<HttpClient> &http,
+                                                      const std::string &rpcNode) {
             std::string params;
             switch (tx->getType()) {
                 case api::TezosOperationTag::OPERATION_TAG_TRANSACTION:
                     params = fmt::format("\"parameters\":"
-                                                 "{{\"entrypoint\":\"do\",\"value\":["
-                                                 "{{\"prim\":\"DROP\"}},"
-                                                 "{{\"prim\":\"NIL\",\"args\":[{{\"prim\":\"operation\"}}]}},"
-                                                 "{{\"prim\":\"PUSH\",\"args\":[{{\"prim\":\"key_hash\"}},{{\"string\":\"{}\"}}]}},"
-                                                 "{{\"prim\":\"IMPLICIT_ACCOUNT\"}},"
-                                                 "{{\"prim\":\"PUSH\",\"args\":[{{\"prim\":\"mutez\"}},{{\"int\":\"{}\"}}]}},"
-                                                 "{{\"prim\":\"UNIT\"}},"
-                                                 "{{\"prim\":\"TRANSFER_TOKENS\"}},"
-                                                 "{{\"prim\":\"CONS\"}}]}}",
-                                         tx->getReceiver()->toBase58(),
-                                         tx->getValue()->toString());
+                                                  "{{\"entrypoint\":\"do\",\"value\":["
+                                                  "{{\"prim\":\"DROP\"}},"
+                                                  "{{\"prim\":\"NIL\",\"args\":[{{\"prim\":\"operation\"}}]}},"
+                                                  "{{\"prim\":\"PUSH\",\"args\":[{{\"prim\":\"key_hash\"}},{{\"string\":\"{}\"}}]}},"
+                                                  "{{\"prim\":\"IMPLICIT_ACCOUNT\"}},"
+                                                  "{{\"prim\":\"PUSH\",\"args\":[{{\"prim\":\"mutez\"}},{{\"int\":\"{}\"}}]}},"
+                                                  "{{\"prim\":\"UNIT\"}},"
+                                                  "{{\"prim\":\"TRANSFER_TOKENS\"}},"
+                                                  "{{\"prim\":\"CONS\"}}]}}",
+                                          tx->getReceiver()->toBase58(),
+                                          tx->getValue()->toString());
                     break;
                 case api::TezosOperationTag::OPERATION_TAG_DELEGATION:
                     params = "\"parameters\":"
@@ -118,15 +141,16 @@ namespace ledger {
                     });
         }
 
-        Future<std::string> TezosLikeBlockchainExplorer::getManagerKey(const std::string &address,
-                                                                       const std::shared_ptr<api::ExecutionContext> &context,
-                                                                       const std::shared_ptr<HttpClient> &http,
-                                                                       const std::string &rpcNode) {
+        Future<std::string>
+        TezosLikeBlockchainExplorer::getManagerKey(const std::string &address,
+                                                   const std::shared_ptr<api::ExecutionContext> &context,
+                                                   const std::shared_ptr<HttpClient> &http,
+                                                   const std::string &rpcNode) {
             const bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}/manager_key", address),
-                             std::unordered_map<std::string, std::string>{},
-                             rpcNode)
+                              std::unordered_map<std::string, std::string>{},
+                              rpcNode)
                     .json(parseNumbersAsString)
                     .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
@@ -143,33 +167,40 @@ namespace ledger {
                     });
         }
 
-        Future<bool> TezosLikeBlockchainExplorer::isAllocated(const std::string &address,
-                                                              const std::shared_ptr<api::ExecutionContext> &context,
-                                                              const std::shared_ptr<HttpClient> &http,
-                                                              const std::string &rpcNode) {
+        Future<bool>
+        TezosLikeBlockchainExplorer::isAllocated(const std::string &address,
+                                                 const std::shared_ptr<api::ExecutionContext> &context,
+                                                 const std::shared_ptr<HttpClient> &http,
+                                                 const std::string &rpcNode) {
             const bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}", address),
-                             std::unordered_map<std::string, std::string>{},
-                             rpcNode)
+                              std::unordered_map<std::string, std::string>{},
+                              rpcNode)
                     .json(parseNumbersAsString)
                     .map<bool>(context, [](const HttpRequest::JsonResult &result) {
-                       return true;
-                    }).recover(context, [] (const Exception &exception) {
+                        return true;
+                    }).recover(context, [](const Exception &exception) {
                         return false;
                     });
         }
 
-        Future<std::string> TezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address,
-                                                                           const std::shared_ptr<api::ExecutionContext> &context,
-                                                                           const std::shared_ptr<HttpClient> &http,
-                                                                           const std::string &rpcNode) {
+        Future<bool>
+        TezosLikeBlockchainExplorer::isAllocated(const std::string &address) const {
+            return isAllocated(address, getExplorerContext(), _http, getRPCNodeEndpoint());
+        }
+
+        Future<std::string>
+        TezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address,
+                                                        const std::shared_ptr<api::ExecutionContext> &context,
+                                                        const std::shared_ptr<HttpClient> &http,
+                                                        const std::string &rpcNode) {
             const bool parseNumbersAsString = true;
 
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return http->GET(fmt::format("/chains/main/blocks/head/context/contracts/{}/delegate", address),
-                             std::unordered_map<std::string, std::string>{},
-                             rpcNode)
+                              std::unordered_map<std::string, std::string>{},
+                              rpcNode)
                     .json(parseNumbersAsString)
                     .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
@@ -177,19 +208,26 @@ namespace ledger {
                             return "";
                         }
                         return json.GetString();
-                    }).recover(context, [] (const Exception &exception) {
+                    }).recover(context, [](const Exception &exception) {
                         // FIXME: throw exception to signal errors (i.e: network error)
                         return "";
                     });
         }
 
-        Future<std::string> TezosLikeBlockchainExplorer::getChainId(const std::shared_ptr<api::ExecutionContext> &context,
-                                                              const std::shared_ptr<HttpClient> &http) {
+        Future<std::string>
+        TezosLikeBlockchainExplorer::getCurrentDelegate(const std::string &address) const {
+            return getCurrentDelegate(address, getExplorerContext(), _http, getRPCNodeEndpoint());
+        }
+
+        Future<std::string>
+        TezosLikeBlockchainExplorer::getChainId(const std::shared_ptr<api::ExecutionContext> &context,
+                                                const std::shared_ptr<HttpClient> &http) const
+        {
             const bool parseNumbersAsString = true;
             std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/json"}};
             return http->GET(fmt::format("/chains/main/chain_id"),
-                             std::unordered_map<std::string, std::string>{},
-                             getRPCNodeEndpoint())
+                              std::unordered_map<std::string, std::string>{},
+                              getRPCNodeEndpoint())
                     .json(parseNumbersAsString)
                     .map<std::string>(context, [](const HttpRequest::JsonResult &result) {
                         auto &json = *std::get<1>(result);
@@ -198,7 +236,7 @@ namespace ledger {
                             return "";
                         }
                         return json.GetString();
-                    }).recover(context, [] (const Exception &exception) {
+                    }).recover(context, [](const Exception &exception) {
                         return "";
                     });
         }
@@ -206,7 +244,7 @@ namespace ledger {
         Future<std::shared_ptr<GasLimit>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
             const std::shared_ptr<HttpClient> &http,
             const std::shared_ptr<api::ExecutionContext> &context,
-            const std::shared_ptr<TezosLikeTransactionApi> &tx)
+            const std::shared_ptr<TezosLikeTransactionApi> &tx) const
         {
             return getChainId(context, http).flatMapPtr<GasLimit>(context, [=](const std::string& result)-> FuturePtr<GasLimit> {
                 return getEstimatedGasLimit(http, context, tx, result);
@@ -216,8 +254,8 @@ namespace ledger {
         Future<std::shared_ptr<GasLimit>> TezosLikeBlockchainExplorer::getEstimatedGasLimit(
             const std::shared_ptr<HttpClient> &http,
             const std::shared_ptr<api::ExecutionContext> &context,
-            const std::shared_ptr<TezosLikeTransactionApi> &tx, 
-            const std::string& strChainID)
+            const std::shared_ptr<TezosLikeTransactionApi> &tx,
+            const std::string& strChainID) const
         {
             const auto postPath =
                 fmt::format("/chains/{}/blocks/head/helpers/scripts/run_operation", strChainID);
@@ -264,7 +302,7 @@ namespace ledger {
                                 api::ErrorCode::HTTP_ERROR,
                                 std::make_shared<HttpRequest::JsonResult>(result),
                                 "failed to get operation_result in simulation");
-                            }                           
+                            }
 
                             auto &operationResult = content.GetObject()["metadata"]
                                                     .GetObject()["operation_result"];
@@ -318,92 +356,5 @@ namespace ledger {
                 });
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    }
-}
+    } // namespace core
+} // namespace ledger

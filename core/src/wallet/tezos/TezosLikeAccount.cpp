@@ -129,7 +129,7 @@ namespace ledger {
                 if (transaction.type == api::TezosOperationTag::OPERATION_TAG_ORIGINATION && transaction.status == 1) {
                     updateOriginatedAccounts(sql, operation);
                 }
-                out.push_back(operation);               
+                out.push_back(operation);
                 result = static_cast<int>(transaction.type);
             }
 
@@ -137,7 +137,7 @@ namespace ledger {
                 operation.amount = transaction.value;
                 operation.type = api::OperationType::RECEIVE;
                 operation.refreshUid();
-                out.push_back(operation);   
+                out.push_back(operation);
                 result = static_cast<int>(transaction.type);
             }
         }
@@ -164,13 +164,13 @@ namespace ledger {
                 auto originatedAccountUid = TezosLikeAccountDatabaseHelper::createOriginatedAccountUid(getAccountUid(), origAccount.address);
 
             const auto found = std::find_if (
-                _originatedAccounts.begin(), 
-                _originatedAccounts.end(), 
-                [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount>& element) { 
+                _originatedAccounts.begin(),
+                _originatedAccounts.end(),
+                [&originatedAccountUid](const std::shared_ptr<api::TezosLikeOriginatedAccount>& element) {
                     return std::dynamic_pointer_cast<TezosLikeOriginatedAccount>(element)->getAccountUid() == originatedAccountUid;
                 });
 
-            if (found == _originatedAccounts.end()) {    
+            if (found == _originatedAccounts.end()) {
                 _originatedAccounts.emplace_back(
                         std::make_shared<TezosLikeOriginatedAccount>(originatedAccountUid,
                                                                      origAccount.address,
@@ -205,10 +205,9 @@ namespace ledger {
             if (cachedBalance.hasValue()) {
                 return FuturePtr<Amount>::successful(std::make_shared<Amount>(cachedBalance.getValue()));
             }
-            std::vector<TezosLikeKeychain::Address> listAddresses{_keychain->getAddress()};
             auto currency = getWallet()->getCurrency();
             auto self = getSelf();
-            return _explorer->getBalance(listAddresses).mapPtr<Amount>(getMainExecutionContext(), [self, currency](
+            return _explorer->getBalance(_keychain->getAddress()).mapPtr<Amount>(getMainExecutionContext(), [self, currency](
                     const std::shared_ptr<BigInt> &balance) -> std::shared_ptr<Amount> {
                 Amount b(currency, 0, BigInt(balance->toString()));
                 self->getWallet()->updateBalanceCache(self->getIndex(), b);
