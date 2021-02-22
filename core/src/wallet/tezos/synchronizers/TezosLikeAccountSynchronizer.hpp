@@ -45,6 +45,7 @@
 #include <chrono>
 #include <memory>
 #include <mutex>
+#include <unordered_map>
 
 namespace ledger {
 namespace core {
@@ -77,23 +78,37 @@ private:
     {
         uint64_t blockHeight{0};
         std::string blockHash{""};
-        uint64_t offset{0};
+        std::unordered_map<std::string, uint32_t> offsets{};
 
         SavedState(
             uint64_t blockHeight,
             std::string blockHash,
-            uint64_t offset)
+            std::unordered_map<std::string, uint32_t> offsets)
             : blockHeight(blockHeight)
             , blockHash(blockHash)
-            , offset(offset)
+            , offsets(std::move(offsets))
         {}
 
         SavedState() = default;
 
+        uint32_t getOffset(const std::string& address) const {
+            if (offsets.count(address) > 0) {
+                return offsets.at(address);
+            }
+            return 0;
+        }
+
+        void addOffset(const std::string& address, uint32_t offset) {
+            if (offsets.count(address) == 0) {
+                offsets[address] = 0;
+            }
+            offsets[address] += offset;
+        }
+
         template<typename Archive>
         void serialize(Archive& archive)
         {
-            archive(blockHeight, blockHash, offset);
+            archive(blockHeight, blockHash, offsets);
         }
     };
 
@@ -102,7 +117,7 @@ private:
     template<bool orig>
     auto synchronizeTransactions(
         const std::string& address,
-        SavedState state,
+        const std::shared_ptr<SavedState>& state,
         uint32_t nbTxns = 0) const -> Future<uint32_t>;
 
     auto updateCurrentBlock() const -> Future<Block>;

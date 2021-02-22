@@ -86,10 +86,11 @@ auto TezosLikeAccountSynchronizer::synchronize(
 
 auto TezosLikeAccountSynchronizer::performSynchronization() const -> Future<Result>
 {
-    const auto state = _account
+    const auto state = std::make_shared<SavedState>(_account
         ->getInternalPreferences()
         ->getSubPreferences("TezosLikeAccountSynchronizerr")
-        ->getObject<SavedState>("state").getValueOr(SavedState());
+        ->getObject<SavedState>("state").getValueOr(SavedState()));
+
 
     _logger->info(
         "Starting synchronization for account#{} ({}) of wallet {} at {}.",
@@ -138,11 +139,9 @@ auto TezosLikeAccountSynchronizer::performSynchronization() const -> Future<Resu
                     std::begin(syncs), std::end(syncs), 0);
 
                 if (block.height > 0) {
-                    auto newState = SavedState(
-                        block.height, block.hash, state.offset + newOperations);
                     _account->getInternalPreferences()
                             ->editor()
-                            ->putObject<SavedState>("state", newState)
+                            ->putObject<SavedState>("state", *state)
                             ->commit();
                 }
 
@@ -170,7 +169,7 @@ auto TezosLikeAccountSynchronizer::performSynchronization() const -> Future<Resu
 template<bool orig>
 auto TezosLikeAccountSynchronizer::synchronizeTransactions(
     const std::string& address,
-    SavedState state,
+    const std::shared_ptr<SavedState>& state,
     uint32_t nbTxns) const -> Future<uint32_t>
 {
     const auto uid = [this, address]() {
@@ -180,18 +179,17 @@ auto TezosLikeAccountSynchronizer::synchronizeTransactions(
         }
         return std::string("");
     }();
-    return _explorer->getTransactions({address}, state.offset)
+    return _explorer->getTransactions({address}, state->getOffset(address))
         .flatMap<uint32_t>(
             _account->getContext(),
             [this, address, state, uid, nbTxns](
                 const std::shared_ptr<TezosLikeBlockchainExplorer::TransactionsBulk>& bulk)
             {
                 auto out = std::vector<Operation>();
-                auto newState = state;
                 for (auto& tx : bulk->transactions) {
-                    if (tx.block.hasValue() && tx.block->height > newState.blockHeight) {
-                        newState.blockHeight = tx.block->height;
-                        newState.blockHash = tx.block->hash;
+                    if (tx.block.hasValue() && tx.block->height > state->blockHeight) {
+                        state->blockHeight = tx.block->height;
+                        state->blockHash = tx.block->hash;
                     }
 
                     if (orig) {
@@ -214,14 +212,14 @@ auto TezosLikeAccountSynchronizer::synchronizeTransactions(
                 }
 
                 const auto count = tryPutTx.getValue();
-                newState.offset += count;
+                state->addOffset(address, count);
 
                 _logger->info(
                     "Successfully inserted {} transactions for account {}.",
                     count, _account->getAccountUid());
 
                 if (bulk->hasNext) {
-                    return synchronizeTransactions<orig>(address, newState, nbTxns + count);
+                    return synchronizeTransactions<orig>(address, state, nbTxns + count);
                 } else {
                     return Future<uint32_t>::successful(nbTxns + count);
                 }
