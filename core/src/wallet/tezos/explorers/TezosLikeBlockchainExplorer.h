@@ -32,21 +32,25 @@
 #ifndef LEDGER_CORE_TEZOSLIKEBLOCKCHAINEXPLORER_H
 #define LEDGER_CORE_TEZOSLIKEBLOCKCHAINEXPLORER_H
 
-#include <string>
-
 #include <api/DynamicObject.hpp>
 #include <api/ExecutionContext.hpp>
 #include <api/TezosLikeNetworkParameters.hpp>
+#include <api/TezosOperationTag.hpp>
 #include <async/DedicatedContext.hpp>
-#include <collections/DynamicObject.hpp>
+#include <async/Future.hpp>
 #include <math/BigInt.h>
 #include <net/HttpClient.hpp>
 #include <utils/ConfigurationMatchable.h>
 #include <utils/Option.hpp>
+
 #include <wallet/common/Block.h>
-#include <wallet/common/explorers/AbstractBlockchainExplorer.h>
+#include <wallet/common/explorers/AbstractLedgerApiBlockchainExplorer.h>
 #include <wallet/tezos/keychains/TezosLikeKeychain.h>
-#include <api/TezosOperationTag.hpp>
+
+#include <chrono>
+#include <memory>
+#include <string>
+#include <vector>
 
 namespace ledger {
     namespace core {
@@ -57,8 +61,8 @@ namespace ledger {
                                                          bool isDelegatable = false) :
                     address(a),
                     spendable(isSpendable),
-                    delegatable(isDelegatable) {
-            };
+                    delegatable(isDelegatable)
+            {}
 
             std::string address;
             bool spendable;
@@ -88,26 +92,6 @@ namespace ledger {
                 type = api::TezosOperationTag::OPERATION_TAG_NONE;
                 status = 0;
             }
-
-            TezosLikeBlockchainExplorerTransaction(const TezosLikeBlockchainExplorerTransaction &cpy) {
-                this->hash = cpy.hash;
-                this->receivedAt = cpy.receivedAt;
-                this->value = cpy.value;
-                this->fees = cpy.fees;
-                this->gas_limit = cpy.gas_limit;
-                this->storage_limit = cpy.storage_limit;
-                this->receiver = cpy.receiver;
-                this->sender = cpy.sender;
-                this->block = cpy.block;
-                this->confirmations = cpy.confirmations;
-                this->type = cpy.type;
-                this->publicKey = cpy.publicKey;
-                this->originatedAccount = cpy.originatedAccount;
-                this->status = cpy.status;
-                this->originatedAccountUid = cpy.originatedAccountUid; 
-                this->originatedAccountAddress = cpy.originatedAccountAddress; 
-            }
-
         };
 
         struct GasLimit {
@@ -121,56 +105,94 @@ namespace ledger {
                 reveal(r), transaction(t) {}
         };
 
+        struct TezosLikeBlchainExplorerTransactionsBulk {
+            std::vector<TezosLikeBlockchainExplorerTransaction> transactions;
+            bool hasNext{false};
+        };
+
+
+        class TezosLikeTransactionsParser;
+        class TezosLikeTransactionsBulkParser;
+        class TezosLikeBlockParser;
+
+        using TezosLikeLedgerApiBlockchainExplorer = AbstractLedgerApiBlockchainExplorer<
+                TezosLikeBlockchainExplorerTransaction,
+                TezosLikeBlchainExplorerTransactionsBulk,
+                TezosLikeTransactionsParser,
+                TezosLikeTransactionsBulkParser,
+                TezosLikeBlockParser,
+                api::TezosLikeNetworkParameters>;
+
         class TezosLikeTransactionApi;
-        class TezosLikeBlockchainExplorer : public ConfigurationMatchable,
-                                            public AbstractBlockchainExplorer<TezosLikeBlockchainExplorerTransaction> {
+        class TezosLikeBlockchainExplorer : protected TezosLikeLedgerApiBlockchainExplorer,
+                                            public ConfigurationMatchable,
+                                            public DedicatedContext
+        {
         public:
-            typedef ledger::core::Block Block;
+            using Block = ledger::core::Block;
             using Transaction = TezosLikeBlockchainExplorerTransaction;
+            using TransactionsBulk = TezosLikeBlchainExplorerTransactionsBulk;
 
-            TezosLikeBlockchainExplorer(const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
-                                        const std::vector<std::string> &matchableKeys);
+            TezosLikeBlockchainExplorer(
+                const std::shared_ptr<api::ExecutionContext> &context,
+                const std::shared_ptr<HttpClient> &http,
+                const api::TezosLikeNetworkParameters &parameters,
+                const std::shared_ptr<ledger::core::api::DynamicObject> &configuration,
+                const std::vector<std::string> &matchableKeys);
+
+            Future<String>
+            pushTransaction(const std::vector<uint8_t> &transaction);
+
+            FuturePtr<Transaction>
+            getTransactionByHash(const String &transactionHash) const;
 
             virtual Future<std::shared_ptr<BigInt>>
-            getBalance(const std::vector<TezosLikeKeychain::Address> &addresses) = 0;
+            getBalance(const TezosLikeKeychain::Address &address) const = 0;
 
             virtual Future<std::shared_ptr<BigInt>>
-            getFees() = 0;
+            getFees() const = 0;
 
             /// Return the gas Price of the last block in picotez (e-12) per gas
             virtual Future<std::shared_ptr<BigInt>>
-            getGasPrice() = 0;
+            getGasPrice() const = 0;
+
+            virtual FuturePtr<TransactionsBulk>
+            getTransactions(const std::string& address,
+                            const Either<std::string, uint32_t>& token = {}) const = 0;
+
+            virtual FuturePtr<Block>
+            getCurrentBlock() const = 0;
 
             virtual Future<std::shared_ptr<BigInt>>
-            getEstimatedGasLimit(const std::string &address) = 0;
+            getEstimatedGasLimit(const std::string &address) const = 0;
 
-            virtual Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
-                const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
+            virtual Future<std::shared_ptr<GasLimit>>
+            getEstimatedGasLimit(const std::shared_ptr<TezosLikeTransactionApi> &tx) const = 0;
 
             Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
                 const std::shared_ptr<HttpClient> &http,
                 const std::shared_ptr<api::ExecutionContext> &context,
-                const std::shared_ptr<TezosLikeTransactionApi> &transaction);
+                const std::shared_ptr<TezosLikeTransactionApi> &transaction) const;
 
             Future<std::shared_ptr<GasLimit>> getEstimatedGasLimit(
                 const std::shared_ptr<HttpClient> &http,
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<TezosLikeTransactionApi> &transaction,
-                const std::string &chainId);
+                const std::string &chainId) const;
 
 
             Future<std::string> getChainId(
                 const std::shared_ptr<api::ExecutionContext> &context,
-                const std::shared_ptr<HttpClient> &http);
+                const std::shared_ptr<HttpClient> &http) const;
 
 
             virtual Future<std::shared_ptr<BigInt>>
-            getStorage(const std::string &address) = 0;
+            getStorage(const std::string &address) const = 0;
 
             virtual Future<std::shared_ptr<BigInt>>
-            getCounter(const std::string &address) = 0;
+            getCounter(const std::string &address) const = 0;
 
-            virtual Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) = 0;
+            virtual Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx) const = 0;
             // This a helper to manage legacy KT accounts
             // WARNING: we will only support removing delegation and transfer from KT to implicit account
             static Future<std::vector<uint8_t>> forgeKTOperation(const std::shared_ptr<TezosLikeTransactionApi> &tx,
@@ -178,7 +200,7 @@ namespace ledger {
                                                                  const std::shared_ptr<HttpClient> &http,
                                                                  const std::string &rpcNode);
 
-            virtual Future<std::string> getManagerKey(const std::string &address) = 0;
+            virtual Future<std::string> getManagerKey(const std::string &address) const = 0;
             // This a helper to manage legacy KT accounts
             // WARNING: we will only support removing delegation and transfer from KT to implicit account
             static Future<std::string> getManagerKey(const std::string &address,
@@ -186,22 +208,22 @@ namespace ledger {
                                                      const std::shared_ptr<HttpClient> &http,
                                                      const std::string &rpcNode);
 
-            virtual Future<bool> isAllocated(const std::string &address) = 0;
+            virtual Future<bool> isAllocated(const std::string &address) const = 0;
             static Future<bool> isAllocated(const std::string &address,
                                             const std::shared_ptr<api::ExecutionContext> &context,
                                             const std::shared_ptr<HttpClient> &http,
                                             const std::string &rpcNode);
 
-            virtual Future<std::string> getCurrentDelegate(const std::string &address) = 0;
+            virtual Future<std::string> getCurrentDelegate(const std::string &address) const = 0;
             static Future<std::string> getCurrentDelegate(const std::string &address,
                                                           const std::shared_ptr<api::ExecutionContext> &context,
                                                           const std::shared_ptr<HttpClient> &http,
                                                           const std::string &rpcNode);
 
             /// Check that the account is funded.
-            virtual Future<bool> isFunded(const std::string &address) = 0;
+            virtual Future<bool> isFunded(const std::string &address) const = 0;
 
-            virtual Future<bool> isDelegate(const std::string &address) = 0;
+            virtual Future<bool> isDelegate(const std::string &address) const = 0;
 
             /// Get a token balance for an account
             virtual Future<std::shared_ptr<BigInt>>
@@ -209,12 +231,24 @@ namespace ledger {
                             const std::string& tokenAddress) const = 0;
 
         protected:
-            std::string getRPCNodeEndpoint() const {
+            inline const std::string& getRPCNodeEndpoint() const {
                 return _rpcNode;
-            };
+            }
+
+            inline api::TezosLikeNetworkParameters getNetworkParameters() const override {
+                return _parameters;
+            }
+
+            inline std::shared_ptr<api::ExecutionContext> getExplorerContext() const override {
+                return getContext();
+            }
+
         private:
             std::string _rpcNode;
+            api::TezosLikeNetworkParameters _parameters;
         };
-    }
-}
+
+    } // namespace core
+} // namespace ledger
+
 #endif //LEDGER_CORE_TEZOSLIKEBLOCKCHAINEXPLORER_H

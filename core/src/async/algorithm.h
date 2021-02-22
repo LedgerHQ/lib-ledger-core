@@ -34,40 +34,90 @@
 #include "Future.hpp"
 #include <utils/ImmediateExecutionContext.hpp>
 
+#include <tuple>
+
 namespace ledger {
-    namespace core {
-        namespace async {
+namespace core {
+namespace async {
 
-            namespace internals {
+namespace internals {
 
-                template <class T>
-                Future<Unit> sequence_go(const std::shared_ptr<api::ExecutionContext>& context, int index, const std::vector< Future<T> >& futures, std::vector<T>* buffer) {
-                if (index >= futures.size())
-                return Future<Unit>::successful(unit);
-                else {
-                Future<T> fut = futures[index];
-                return fut.template flatMap<Unit>(context, [context, buffer, index, futures](const T &r) -> Future<Unit> {
-                buffer->push_back(r);
-                return sequence_go(context, index + 1, futures, buffer);
-            });
-        }
+template <class T>
+Future<Unit> sequence_go(const std::shared_ptr<api::ExecutionContext>& context, int index, const std::vector<Future<T>>& futures, std::vector<T>* buffer)
+{
+    if (index >= futures.size()) {
+        return Future<Unit>::successful(unit);
+    } else {
+        Future<T> fut = futures[index];
+        return fut.template flatMap<Unit>(context, [context, buffer, index, futures](const T &r) -> Future<Unit> {
+            buffer->push_back(r);
+            return sequence_go(context, index + 1, futures, buffer);
+        });
     }
-
 }
 
-            template <class T>
-            Future< std::vector<T> > sequence(const std::shared_ptr<api::ExecutionContext>& context, const std::vector< Future<T> >& futures) {
-            auto buffer = new std::vector<T>();
-            return internals::sequence_go<T>(context, 0, futures, buffer).template map< std::vector<T> >(context, [buffer] (const Unit&) -> std::vector<T> {
-            auto res = *buffer;
-            delete buffer;
+} // namespace internals
+
+template <class T>
+Future<std::vector<T>> sequence(const std::shared_ptr<api::ExecutionContext>& context, const std::vector<Future<T>>& futures)
+{
+    auto buffer = new std::vector<T>();
+    return internals::sequence_go<T>(context, 0, futures, buffer).template map<std::vector<T>>(context, [buffer] (const Unit&) -> std::vector<T> {
+        auto res = *buffer;
+        delete buffer;
+        return res;
+    });
+}
+
+namespace internals {
+
+template<std::size_t i, std::size_t size, typename... T>
+struct sequence_t
+{
+    static auto go(
+        const std::shared_ptr<api::ExecutionContext>& context,
+        std::tuple<Future<T>...>& tuple_futs,
+        std::tuple<T...>* tuple) -> Future<Unit>
+    {
+        return std::get<i>(tuple_futs)
+            .template flatMap<Unit>(context, [context, tuple_futs, tuple](const auto& r) mutable {
+                std::get<i>(*tuple) = r;
+                return sequence_t<i + 1, size, T...>::go(context, tuple_futs, tuple);
+            });
+    }
+};
+
+template<std::size_t size, typename... T>
+struct sequence_t<size, size, T...>
+{
+    static auto go(
+        const std::shared_ptr<api::ExecutionContext>& context,
+        std::tuple<Future<T>...>& tuple_futs,
+        std::tuple<T...>* tuple) -> Future<Unit>
+    {
+        return Future<Unit>::successful(unit);
+    }
+};
+
+} // namespace internals
+
+template<typename... T>
+auto sequence(
+    const std::shared_ptr<api::ExecutionContext>& context,
+    std::tuple<Future<T>...>& tuple_futs) -> Future<std::tuple<T...>>
+{
+    auto tuple = new std::tuple<T...>();
+    return internals::sequence_t<0, sizeof...(T), T...>::go(context, tuple_futs, tuple)
+        .template map<std::tuple<T...>>(context, [tuple](const Unit&) {
+            const auto res = *tuple;
+            delete tuple;
             return res;
-            });
-            }
-
-        }
-    }
+        });
 }
+
+} // namespace async
+} // namespace core
+} // namespace ledger
 
 #define BEGIN_ASYNC_WHILE()
 
