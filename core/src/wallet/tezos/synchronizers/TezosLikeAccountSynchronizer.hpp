@@ -96,6 +96,7 @@ struct SynchronizationBuddy {
     std::map<std::string, std::string> transactionsToDrop;
     AccountSynchronizationContext context;
     std::string synchronizationTag;
+    Option<void *> token;
 };
 
 } // namespace tezos

@@ -199,12 +199,21 @@ TezosLikeAccountSynchronizer::performSynchronization(const std::shared_ptr<Tezos
 
     updateCurrentBlock(buddy, account->getContext());
 
-    auto self = shared_from_this();
-    return self->synchronizeBatches(0, buddy)
-        .flatMap<Unit>(
-            account->getContext(),
-            [self, buddy](const Unit&) {
-                return self->synchronizeMempool(buddy);
+    auto self = shared_from_this();              
+    const auto deactivateToken =
+            buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+    auto getSyncToken = deactivateToken ? Future<void *>::successful(nullptr) : _explorer->startSession();
+
+    return getSyncToken.template map<Unit>(account->getContext(), [buddy, deactivateToken] (void * const t) -> Unit {
+        buddy->logger->info("Synchronization token obtained");
+        if (!deactivateToken && t) {
+            buddy->token = Option<void *>(t);
+        }
+        return unit;
+    }).template flatMap<Unit>(account->getContext(), [buddy, self] (const Unit&) {
+        return self->synchronizeBatches(0, buddy);
+    }).template flatMap<Unit>(account->getContext(), [self, buddy] (auto) {
+        return self->synchronizeMempool(buddy);
             })
         .map<tezos::AccountSynchronizationContext>(
             ImmediateExecutionContext::INSTANCE,
@@ -284,13 +293,29 @@ Future<Unit> TezosLikeAccountSynchronizer::synchronizeBatches(
                     buddy->savedState.nonEmpty()) {
                     buddy->logger->info("Recovering from reorganization");
 
-                    auto startSession = Future<void*>::async(ImmediateExecutionContext::INSTANCE, [=]() {
-                        return Future<void*>::successful(nullptr);
+                    const auto deactivateToken = 
+                        buddy->configuration->getBoolean(api::Configuration::DEACTIVATE_SYNC_TOKEN).value_or(false);
+                    auto startSession = Future<void *>::async(ImmediateExecutionContext::INSTANCE, [=](){
+                        if (deactivateToken) {
+                            return Future<void *>::successful(nullptr);
+                        }
+                        return self->_explorer->startSession();
                     });
 
                     return startSession.flatMap<Unit>(
                         ImmediateExecutionContext::INSTANCE,
                         [=](void * const session) {
+                            if (!deactivateToken && session) {
+                                buddy->token = Option<void *>(session);
+                            } else {
+                                buddy->logger->warn(
+                                        "Failed to get new synchronization token for account#{} of wallet {}",
+                                        buddy->account->getIndex(),
+                                        buddy->account->getWallet()->getName());
+                                // WARNING: we have too many issues with that sync token because of blockchain explorer,
+                                // when we fail on reorg we try without sync token
+                                buddy->token = Option<void *>();
+                            }
                             //Get its block/block height
                             auto& failedBatch = buddy->savedState.getValue().batches[currentBatchIndex];
                             auto const failedBlockHeight = failedBatch.blockHeight;
@@ -413,7 +438,7 @@ Future<bool> TezosLikeAccountSynchronizer::synchronizeBatch(
         fmt::format("explorer_calls/{}", buddy->synchronizationTag),
         buddy->logger);
     benchmark->start();
-    return _explorer->getTransactions(batch, blockHash, optional<void*>())
+    return _explorer->getTransactions(batch, blockHash, buddy->token)
         .flatMap<bool>(
             buddy->account->getContext(),
             [self, currentBatchIndex, buddy, hadTransactions, benchmark](
