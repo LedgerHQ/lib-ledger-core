@@ -35,7 +35,7 @@
 #include <functional>
 
 #include <wallet/common/AbstractWalletFactory.hpp>
-#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.h>
+#include <wallet/tezos/synchronizers/TezosLikeAccountSynchronizer.hpp>
 #include <wallet/tezos/explorers/TezosLikeBlockchainExplorer.h>
 #include <wallet/tezos/factories/TezosLikeKeychainFactory.h>
 
