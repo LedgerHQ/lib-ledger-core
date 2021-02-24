@@ -289,6 +289,21 @@ namespace {
                 use(b.inputData);
             }
     );
+
+    const auto UPSERT_OPERATION = db::stmt<OperationBinding>(
+            "INSERT INTO operations VALUES("
+            ":uid, :account_uid, :wallet_uid, :type, :date, :senders, :recipients, :amount,"
+            ":fees, :block_uid, :currency_name, :trust"
+            ") ON CONFLICT(uid) DO UPDATE SET block_uid = :block_uid, trust = :trust,"
+            " amount = :amount, fees = :fees", [] (auto& s, auto& b) {
+                s, use(b.uid, "uid"), use(b.accountUid, "account_uid"),
+                        use(b.walletUid, "wallet_uid"), use(b.type, "type"),
+                        use(b.date, "date"), use(b.senders, "senders"),
+                        use(b.receivers, "recipients"), use(b.amount, "amount"),
+                        use(b.fees, "fees"), use(b.blockUid, "block_uid"),
+                        use(b.currencyName, "currency_name"),
+                        use(b.serializedTrust, "trust");
+            });
 }
 
 namespace ledger {
@@ -308,7 +323,7 @@ namespace ledger {
             PreparedStatement<InternalOperationBinding> internalOpStmt;
             PreparedStatement<ERC20TokenBinding> tokenStmt;
 
-            BulkInsertDatabaseHelper::UPSERT_OPERATION(sql, operationStmt);
+            UPSERT_OPERATION(sql, operationStmt);
             BulkInsertDatabaseHelper::UPSERT_BLOCK(sql, blockStmt);
             UPSERT_ERC20_ACCOUNT(sql, erc20AccountStmt);
             UPSERT_ERC20_OPERATION(sql, erc20OpStmt);
