@@ -123,38 +123,57 @@ FuturePtr<ledger::core::cosmos::Account> StargateGaiaCosmosLikeBlockchainExplore
     // First call gets the /auth/accounts information (general info)
     // Second call gets the "withdrawAddress" (where rewards go)
     const bool parseJsonNumbersAsStrings = true;
-    return _http->GET(fmt::format(kGrpcAccountEndpoint, _ns, _version, account), ACCEPT_HEADER)
-        .json(parseJsonNumbersAsStrings)
+    const auto ignoreFailStatusCode = true;
+    return _http
+        ->GET(fmt::format(kGrpcAccountEndpoint, _ns, _version, account),
+              ACCEPT_HEADER)
+        .json(parseJsonNumbersAsStrings, ignoreFailStatusCode)
         .template flatMap<cosmos::Account>(
             getContext(),
-            [](const HttpRequest::JsonResult &response) {
-                auto result = cosmos::Account();
-                const auto &document = std::get<1>(response)->GetObject();
-                if (!document.HasMember(kAccount)) {
-                    throw make_exception(
-                        api::ErrorCode::API_ERROR,
-                        fmt::format("The API response from explorer is missing the \"{}\" key", kAccount));
-                }
-                parseAccount(document, result);
+            [account](const HttpRequest::JsonResult &response) {
+              auto result = cosmos::Account();
+              if (std::get<0>(response)->getStatusCode() >= 400) {
+                result.address = account;
                 return Future<cosmos::Account>::successful(result);
+              }
+              const auto &document = std::get<1>(response)->GetObject();
+              if (!document.HasMember(kAccount)) {
+                throw make_exception(
+                    api::ErrorCode::API_ERROR,
+                    fmt::format("The API response from explorer is missing the "
+                                "\"{}\" key",
+                                kAccount));
+              }
+              parseAccount(document, result);
+              return Future<cosmos::Account>::successful(result);
             })
         .template flatMapPtr<cosmos::Account>(
             getContext(),
             [this, parseJsonNumbersAsStrings, account](
                 const cosmos::Account &inputAcc) -> FuturePtr<cosmos::Account> {
-                auto retval = cosmos::Account(inputAcc);
-                return _http->GET(fmt::format(kGrpcWithdrawAddressEndpoint, _ns, _version, account))
-                    .json(parseJsonNumbersAsStrings)
-                    .template flatMapPtr<cosmos::Account>(
-                        getContext(),
-                        [retval](const HttpRequest::JsonResult &response) mutable
-                        -> FuturePtr<cosmos::Account> {
-                            const auto &document = std::get<1>(response)->GetObject();
-                            const auto withdrawAddress = document[kWithdrawAddress].GetString();
-                            retval.withdrawAddress = withdrawAddress;
-                            return FuturePtr<cosmos::Account>::successful(
-                                std::make_shared<cosmos::Account>(retval));
-                        });
+              auto retval = cosmos::Account(inputAcc);
+              return _http
+                  ->GET(fmt::format(kGrpcWithdrawAddressEndpoint, _ns, _version,
+                                    account))
+                  .json(parseJsonNumbersAsStrings, ignoreFailStatusCode)
+                  .template flatMapPtr<cosmos::Account>(
+                      getContext(),
+                      [retval,
+                       account](const HttpRequest::JsonResult &response) mutable
+                      -> FuturePtr<cosmos::Account> {
+                        if (std::get<0>(response)->getStatusCode() >= 400) {
+                          retval.withdrawAddress = account;
+                          return FuturePtr<cosmos::Account>::successful(
+                              std::make_shared<cosmos::Account>(retval));
+                        }
+                        const auto &document =
+                            std::get<1>(response)->GetObject();
+                        const auto withdrawAddress =
+                            document[kWithdrawAddress].GetString();
+                        retval.withdrawAddress = withdrawAddress;
+                        return FuturePtr<cosmos::Account>::successful(
+                            std::make_shared<cosmos::Account>(retval));
+                      });
             });
 }
 
