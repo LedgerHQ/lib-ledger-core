@@ -313,3 +313,4 @@ so normal (public) derivations are not supported, this is why the only derivatio
 > 2018/05/14
 
 - First beta release of libledger-core for Ledger Vault integration
+
