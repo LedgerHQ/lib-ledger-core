@@ -90,6 +90,8 @@ class CosmosLikeTransactionApi : public api::CosmosLikeTransaction {
     const cosmos::Transaction &getTxData() const;
 
    private:
+    /// Return true if the transaction is for a Stargate chain.
+    bool isStargate() const;
     cosmos::Transaction _txData;
 
     std::string _accountNumber;

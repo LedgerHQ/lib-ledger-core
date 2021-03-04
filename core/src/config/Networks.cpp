@@ -53,12 +53,49 @@ namespace ledger {
             }
 
             CosmosLikeNetworkParameters Networks::cosmos(const std::string& chainID) {
-                    static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
+                    static const api::CosmosLikeNetworkParameters STARGATE_TESTNET_6(
+                        // Stargate-6 testnet
+                        "cosmos_testnet_6",
+                        "MUON signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {0xEB, 0x5A, 0xE9, 0x87},
+                        {0x16, 0x24, 0xDE, 0x64},
+                        {},
+                        "stargate-6",
+                        {}
+                    );
+
+                    static const api::CosmosLikeNetworkParameters STARGATE_TESTNET(
+                        // Stargate testnet
+                        "cosmos_testnet",
+                        "MUON signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {0xEB, 0x5A, 0xE9, 0x87},
+                        {0x16, 0x24, 0xDE, 0x64},
+                        {},
+                        "stargate-final",
+                        {}
+                    );
+
+                    static const api::CosmosLikeNetworkParameters COSMOSHUB_4(
                         // The current version of the chain has the "cosmos" identifer
+                        // Stargate mainnet
                         "cosmos",
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},
+                        {0x16, 0x24, 0xDE, 0x64},
+                        {},
+                        "cosmoshub-4",
+                        {}
+                    );
+
+                    static const api::CosmosLikeNetworkParameters COSMOSHUB_3(
+                        "cosmos_hub3",
+                        "ATOM signed message:\n",
+                        {0x04, 0x88, 0xB2, 0x1E},
+                        {0xEB, 0x5A, 0xE9, 0x87},
+                        {0x16, 0x24, 0xDE, 0x64},
                         {},
                         "cosmoshub-3",
                         {}
@@ -69,16 +106,29 @@ namespace ledger {
                         "ATOM signed message:\n",
                         {0x04, 0x88, 0xB2, 0x1E},
                         {0xEB, 0x5A, 0xE9, 0x87},
+                        {0x16, 0x24, 0xDE, 0x64},
                         {},
                         "cosmoshub-2",
                         {}
                     );
 
-                if (chainID == "atom") {
+                if (chainID == "cosmoshub-4") {
+                    return COSMOSHUB_4;
+                }
+                if (chainID == "cosmoshub-3") {
                     return COSMOSHUB_3;
                 }
-                if (chainID == "atom-cosmoshub-2") {
+                if (chainID == "cosmoshub-2") {
                     return COSMOSHUB_2;
+                }
+                if (chainID == "stargate-final") {
+                    return STARGATE_TESTNET;
+                }
+                if (chainID == "stargate-6") {
+                    return STARGATE_TESTNET_6;
+                }
+                if (chainID == "stargate-5") {
+                    return STARGATE_TESTNET;
                 }
                 throw make_exception(
                     api::ErrorCode::INVALID_ARGUMENT,

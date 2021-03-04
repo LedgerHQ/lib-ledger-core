@@ -1,12 +1,13 @@
 /*
  *
- * CosmosLikeCurrencies
+ * ttlvar_test
+ * ledger-core
  *
- * Created by Gerry Agbobada on 21/01/2020
+ * Created by Rémi Barjon on 05/02/2021.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 Ledger
+ * Copyright (c) 2021 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -27,26 +28,34 @@
  * SOFTWARE.
  *
  */
+#include <gtest/gtest.h>
+#include <ledger/core/utils/TTLVar.hpp>
+#include <chrono>
+#include <thread>
 
-#pragma once
+using namespace ledger::core;
 
-#ifndef LIBCORE_EXPORT
-    #if defined(_MSC_VER)
-        #include <libcore_export.h>
-    #else
-        #define LIBCORE_EXPORT
-    #endif
-#endif
+TEST(TTLVar, GetAlive) {
+    const TTLVar<int> ttlvar(4, std::chrono::seconds(5));
+    const auto var = ttlvar.get();
 
-#include <api/Currency.hpp>
-#include <wallet/cosmos/CosmosLikeCoinID.hpp>
-#include <wallet/cosmos/CosmosNetworks.hpp>
-
-namespace ledger {
-namespace core {
-namespace currencies {
-extern LIBCORE_EXPORT const api::Currency ATOM;
-extern LIBCORE_EXPORT const api::Currency MUON;
+    EXPECT_TRUE(var.hasValue());
+    EXPECT_EQ(var.getValue(), 4);
 }
-}  // namespace core
-}  // namespace ledger
+
+TEST(TTLVar, GetNotAlive) {
+    const TTLVar<int> ttlvar(4, std::chrono::seconds(0));
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    const auto var = ttlvar.get();
+
+    EXPECT_TRUE(var.isEmpty());
+}
+
+TEST(TTLVar, Update) {
+    const TTLVar<int> ttlvar(0, std::chrono::seconds(5));
+    ttlvar.update(4);
+    const auto var = ttlvar.get();
+
+    EXPECT_TRUE(var.hasValue());
+    EXPECT_EQ(var.getValue(), 4);
+}

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ]; then
+if [ -n "$CIRCLE_TAG" ] || [ "$CIRCLE_BRANCH" == "master" -o "$CIRCLE_BRANCH" == "develop" ] || [ "$CIRCLE_BRANCH" == "live-prerelease" ]; then
 	cd ../lib-ledger-core-artifacts/ios
 
 	echo "======> Build Fat Library"

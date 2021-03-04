@@ -1108,7 +1108,74 @@ namespace ledger {
             sql << "DROP TABLE algorand_currencies";
         }
 
+        // The database schema used in live and vault has diverged between 23 and 26:
+        // 23 __ 24-vault __ 25-vault __ 26
+        //    \_ 24-live  __ 25-live  _/ 
+        // To solve this isse, the DatabaseBackendType is used to detremine if we are using live or vault:
+        // sqlite3 for live, else it is a vault base.
+        // Corespondance between transitions:
+        // Transition from 23 to 24 in vault <=> Transition from 25 to 26 in live
+        // Transition from 24 to 25 in vault <=> Transition from 23 to 24 in live
+        // Transition from 25 to 26 in vault <=> Transition from 24 to 25 in live
+        // 23 ____(T1)___ 24-vault ____(T2)____ 25-vault ___(T3)____ 26
+        //    \___(T3)___ 24-live  ____(T1)____ 25-live  ___(T2)___/ 
+
+
         template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type) {
+            if (type == api::DatabaseBackendType::SQLITE3) { //live
+                migrate_23_26_step3(sql, type);
+            }
+            else { //vault
+                migrate_23_26_step1(sql, type);
+            }
+        }
+
+        template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type) {
+            if (type == api::DatabaseBackendType::SQLITE3) { //live
+                rollback_23_26_step3(sql, type);
+            }
+            else { //vault
+                rollback_23_26_step1(sql, type);
+            }
+        }
+
+        template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type) {
+            if (type == api::DatabaseBackendType::SQLITE3) { //live
+                migrate_23_26_step1(sql, type);
+            }
+            else { //vault
+                migrate_23_26_step2(sql, type);
+            }
+        }
+
+        template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type) {
+            if (type == api::DatabaseBackendType::SQLITE3) { //live
+                rollback_23_26_step1(sql, type);
+            }
+            else { //vault
+                rollback_23_26_step2(sql, type);
+            }
+        }
+
+        template <> void migrate<26>(soci::session& sql, api::DatabaseBackendType type) { 
+            if (type == api::DatabaseBackendType::SQLITE3) { //live
+                migrate_23_26_step2(sql, type);
+            }
+            else { //vault
+                migrate_23_26_step3(sql, type);
+            }
+        }
+
+        template <> void rollback<26>(soci::session& sql, api::DatabaseBackendType type) {
+            if (type == api::DatabaseBackendType::SQLITE3) { //live
+                rollback_23_26_step2(sql, type);
+            }
+            else { //vault
+                rollback_23_26_step3(sql, type);
+            }
+        }
+
+        void migrate_23_26_step1(soci::session& sql, api::DatabaseBackendType type) {
             sql << "CREATE TABLE ripple_memos_swap("
                    "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid) ON DELETE CASCADE,"
                    "data VARCHAR(1024),"
@@ -1124,11 +1191,11 @@ namespace ledger {
             sql << "CREATE INDEX ripple_memo_by_txuid ON ripple_memos (transaction_uid);";
         }
 
-        template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type) {
+        void rollback_23_26_step1(soci::session& sql, api::DatabaseBackendType type) {
             // Do nothing
         }
 
-        template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type) {
+        void migrate_23_26_step2(soci::session& sql, api::DatabaseBackendType type) {
             sql << "ALTER TABLE bitcoin_currencies ADD dust_policy VARCHAR(20)";
             for (const api::BitcoinLikeNetworkParameters& parameters : networks::ALL) {
                 sql << "UPDATE bitcoin_currencies SET dust_policy = '" << api::to_string(parameters.DustPolicy) << "' WHERE identifier = '" << parameters.Identifier << "'";
@@ -1136,15 +1203,37 @@ namespace ledger {
             }
         }
 
-        template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type) {
+        void rollback_23_26_step2(soci::session& sql, api::DatabaseBackendType type) {
             // SQLite doesn't handle ALTER TABLE DROP
             if (type != api::DatabaseBackendType::SQLITE3) {
                 sql << "ALTER TABLE bitcoin_currencies DROP dust_policy";
             } else {
                 sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc'";
-                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc_testnet'";
-         
+                sql << "UPDATE bitcoin_currencies SET dust_amount = 546 WHERE identifier = 'btc_testnet'";      
             }
         }
+
+        void migrate_23_26_step3(soci::session& sql, api::DatabaseBackendType type) { 
+            sql << "UPDATE cosmos_accounts SET last_update=NULL";
+            sql << "UPDATE cosmos_currencies SET chain_id='cosmoshub-4' WHERE chain_id='cosmoshub-3'";
+            sql << "ALTER TABLE cosmos_currencies ADD COLUMN ed25519_prefix VARCHAR(255) NOT NULL DEFAULT '1624de64'";
+            sql << "UPDATE cosmos_currencies SET ed25519_prefix='1624de64'";
+
+            sql << "DELETE FROM cosmos_operations";
+            sql << "DELETE FROM cosmos_multisend_io";
+            sql << "DELETE FROM cosmos_messages";
+            sql << "DELETE FROM cosmos_transactions";
+
+            sql << "DELETE FROM wallets WHERE currency_name='cosmos'";
+            sql << "DELETE FROM operations WHERE currency_name='cosmos'";
+        }
+
+        void rollback_23_26_step3(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "DELETE FROM cosmos_operations";
+            sql << "DELETE FROM cosmos_multisend_io";
+            sql << "DELETE FROM cosmos_messages";
+            sql << "DELETE FROM cosmos_transactions";
+        }
+
     }
 }

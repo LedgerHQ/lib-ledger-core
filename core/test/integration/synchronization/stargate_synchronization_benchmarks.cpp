@@ -58,7 +58,7 @@
 #include <wallet/cosmos/CosmosLikeWallet.hpp>
 #include <wallet/cosmos/CosmosNetworks.hpp>
 #include <wallet/cosmos/database/CosmosLikeOperationDatabaseHelper.hpp>
-#include <wallet/cosmos/explorers/GaiaCosmosLikeBlockchainExplorer.hpp>
+#include <wallet/cosmos/explorers/StargateGaiaCosmosLikeBlockchainExplorer.hpp>
 #include <wallet/cosmos/transaction_builders/CosmosLikeTransactionBuilder.hpp>
 
 using namespace std;
@@ -66,7 +66,6 @@ using namespace ledger::core;
 using namespace ledger::testing::cosmos;
 
 namespace {
-api::CosmosLikeNetworkParameters PARAMS = networks::getCosmosLikeNetworkParameters("atom");
 const std::string HUGE_PUBKEY =
     "03D13FD82D9389BBBEA20BAE392D80C0EF6C1B0CB57A37ACFAEF2105D189DA0BA2";
 const std::string HUGE_ADDRESS = "cosmos1y6yvdel7zys8x60gz9067fjpcpygsn62ae9x46";
@@ -104,8 +103,8 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
         pool = newDefaultPool();
 #endif
 
-        explorer = std::make_shared<GaiaCosmosLikeBlockchainExplorer>(
-            worker, client, PARAMS, std::make_shared<DynamicObject>());
+        explorer = std::make_shared<StargateGaiaCosmosLikeBlockchainExplorer>(
+            worker, client, currencies::ATOM, std::make_shared<DynamicObject>());
     }
 
     void setupTest(
@@ -159,7 +158,7 @@ class CosmosWalletSyncBenchmark : public BaseFixture {
     }
 
     std::shared_ptr<WalletPool> pool;
-    std::shared_ptr<GaiaCosmosLikeBlockchainExplorer> explorer;
+    std::shared_ptr<StargateGaiaCosmosLikeBlockchainExplorer> explorer;
 };
 
 TEST_F(CosmosWalletSyncBenchmark, DISABLED_Small)

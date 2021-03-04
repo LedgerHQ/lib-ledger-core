@@ -50,6 +50,7 @@
 #include <api/Keychain.hpp>
 #include <api/OperationQuery.hpp>
 
+#include <utils/TTLVar.hpp>
 #include <wallet/common/AbstractAccount.hpp>
 #include <wallet/common/database/BlockDatabaseHelper.h>
 
@@ -180,7 +181,7 @@ namespace algorand {
         std::shared_ptr<AccountSynchronizer> _synchronizer;
         std::shared_ptr<api::EventBus> _currentSyncEventBus;
         std::mutex _synchronizationLock;
-
+        TTLVar<model::Account> _accountInfoCache;
     };
 
 } // namespace algorand

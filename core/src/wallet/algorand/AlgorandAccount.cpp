@@ -65,6 +65,7 @@ namespace algorand {
         , _address(currency, address)
         , _explorer(std::move(explorer))
         , _synchronizer(std::move(synchronizer))
+        , _accountInfoCache(std::chrono::seconds(5))
     {}
 
     namespace {
@@ -652,7 +653,15 @@ namespace algorand {
 
     Future<model::Account> Account::getAccountInformation() const
     {
-        return _explorer->getAccount(_address.toString());
+        const auto accountInfo = _accountInfoCache.get();
+        if (accountInfo) {
+            return Future<model::Account>::successful(*accountInfo);
+        }
+        return _explorer->getAccount(_address.toString())
+            .map<model::Account>(getMainExecutionContext(), [this](const model::Account& account) {
+                _accountInfoCache.update(account);
+                return account;
+            });
     }
 
 } // namespace algorand

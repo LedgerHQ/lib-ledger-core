@@ -209,7 +209,7 @@ namespace ledger {
             document.AddMember(kAccountNumber, vString, allocator);
 
             // Chain ID
-            std::string chainId = "cosmoshub-3"; // FIXME Should this be set by user?
+            std::string chainId = _currency.cosmosLikeNetworkParameters.value().ChainId;
             vString.SetString(chainId.c_str(), static_cast<SizeType>(chainId.length()), allocator);
             document.AddMember(kChainId, vString, allocator);
 
@@ -229,7 +229,7 @@ namespace ledger {
                     return amountObject;
                 };
 
-                if (std::stoi(_txData.fee.amount[0].amount) != 0) {
+                if (isStargate() || std::stoi(_txData.fee.amount[0].amount) != 0) {
                     Value feeAmountArray(kArrayType);
                     auto feeAmountObj = getAmountObject(_txData.fee.amount[0].denom, _txData.fee.amount[0].amount);
                     feeAmountArray.PushBack(feeAmountObj, allocator);
@@ -300,7 +300,7 @@ namespace ledger {
                         return amountObject;
                     };
 
-                    if (std::stoi(_txData.fee.amount[0].amount) != 0) {
+                    if (isStargate() || std::stoi(_txData.fee.amount[0].amount) != 0) {
                         // Technically the feeArray can contain all fee.amount[i] ;
                         // But Cosmoshub only accepts uatom as a fee denom so the
                         // array is always length 1 for the time being
@@ -345,6 +345,24 @@ namespace ledger {
                         auto strSignature = cereal::base64::encode(signature.data(), signature.size());
                         vString.SetString(strSignature.c_str(), static_cast<SizeType>(strSignature.length()), allocator);
                         sigObject.AddMember(kSignature, vString, allocator);
+                    }
+
+                    if (isStargate()) {
+                      { // Set Account number
+                        std::string accNum(getAccountNumber());
+                        vString.SetString(
+                            accNum.c_str(),
+                            static_cast<SizeType>(accNum.length()), allocator);
+                        sigObject.AddMember(kAccountNumber, vString, allocator);
+                      }
+
+                      { // Set sequence
+                        std::string seqNum(getAccountSequence());
+                        vString.SetString(
+                            seqNum.c_str(),
+                            static_cast<SizeType>(seqNum.length()), allocator);
+                        sigObject.AddMember(kSequence, vString, allocator);
+                      }
                     }
 
                     sigArray.PushBack(sigObject, allocator);
@@ -433,5 +451,13 @@ namespace ledger {
             return _txData;
         }
 
+        bool CosmosLikeTransactionApi::isStargate() const
+        {
+            // The only chain that is both
+            // - before Stargate
+            // - supported by LibCore in production
+            // is cosmoshub-3, therefore we only check for this chain ID.
+            return _currency.cosmosLikeNetworkParameters.value().ChainId != "cosmoshub-3";
+        }
     }
 }

@@ -20,8 +20,10 @@ namespace ledger { namespace core { namespace api {
 enum class CosmosBech32Type : int {
     PUBLIC_KEY,
     PUBLIC_KEY_VAL,
+    PUBLIC_KEY_VAL_CONS,
     ADDRESS,
     ADDRESS_VAL,
+    ADDRESS_VAL_CONS,
 };
 LIBCORE_EXPORT  std::string to_string(const CosmosBech32Type& cosmosBech32Type);
 LIBCORE_EXPORT  std::ostream &operator<<(std::ostream &os, const CosmosBech32Type &o);

@@ -82,13 +82,13 @@ namespace ledger {
         GaiaCosmosLikeBlockchainExplorer::GaiaCosmosLikeBlockchainExplorer(
                 const std::shared_ptr<api::ExecutionContext> &context,
                 const std::shared_ptr<HttpClient> &http,
-                const api::CosmosLikeNetworkParameters &parameters,
+    const api::Currency currency,
                 const std::shared_ptr<api::DynamicObject> &configuration) :
                 DedicatedContext(context),
                 CosmosLikeBlockchainExplorer(
                         configuration, {api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT}),
                 _http(http),
-                _parameters(parameters)
+    _currency(currency)
         {
         }
 
@@ -98,14 +98,14 @@ namespace ledger {
             return GAIA_FILTER;
         }
 
-        FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight) const
+FuturePtr<cosmos::Block> GaiaCosmosLikeBlockchainExplorer::getBlock(uint64_t &blockHeight) const
         {
             return _http->GET(fmt::format(kGaiaBlocksEndpoint, blockHeight), ACCEPT_HEADER)
                     .json(true)
-                    .mapPtr<cosmos::Block>(getContext(), [](const HttpRequest::JsonResult &response) {
+        .mapPtr<cosmos::Block>(getContext(), [this](const HttpRequest::JsonResult &response) {
                         auto result = std::make_shared<cosmos::Block>();
                         const auto &document = std::get<1>(response)->GetObject();
-                        rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
+            rpcs_parsers::parseBlock(document, _currency, *result);
                         return result;
                     });
         }
@@ -158,67 +158,65 @@ namespace ledger {
             return _http->GET(fmt::format(kGaiaLatestBlockEndpoint), ACCEPT_HEADER)
                     .json(true)
                     .map<std::shared_ptr<cosmos::Block>>(
-                            getContext(), [](const HttpRequest::JsonResult &response) {
+            getContext(), [this](const HttpRequest::JsonResult &response) {
                                 auto result = std::make_shared<cosmos::Block>();
                                 const auto &document = std::get<1>(response)->GetObject();
-                                rpcs_parsers::parseBlock(document, currencies::ATOM.name, *result);
+                rpcs_parsers::parseBlock(document, _currency, *result);
                                 return result;
                             });
         }
 
-        namespace {
+        template <typename T>
+        void GaiaCosmosLikeBlockchainExplorer::addMsgFeesTo(cosmos::Transaction &transaction, const T &node) const
+        {
+            /// No need to check for this as this check is done in
+            /// rpcs_parsers::parseTransaction and this function is
+            /// only called once parseTransaction has finished.
+            const auto &vNode = node[kTx].GetObject()[kValue].GetObject();
 
-            template <typename T>
-            void addMsgFeesTo(cosmos::Transaction &transaction, const T &node)
-            {
-                /// No need to check for this as this check is done in
-                /// rpcs_parsers::parseTransaction and this function is
-                /// only called once parseTransaction has finished.
-                const auto &vNode = node[kTx].GetObject()[kValue].GetObject();
+            const auto index = transaction.messages.size();
+            auto msgFeesContent = cosmos::MsgFees();
 
-                const auto index = transaction.messages.size();
-                auto msgFeesContent = cosmos::MsgFees();
+            auto pubKey = std::string();
+            rpcs_parsers::parseSignerPubKey(vNode, pubKey);
+            const auto decoded = cereal::base64::decode(pubKey);
+            const auto vPubKey = std::vector<uint8_t>(std::begin(decoded), std::end(decoded));
+            msgFeesContent.payerAddress =
+            CosmosLikeKeychain(vPubKey, DerivationPath(""), _currency).getAddress()->toBech32();
 
-                auto pubKey = std::string();
-                rpcs_parsers::parseSignerPubKey(vNode, pubKey);
-                const auto decoded = cereal::base64::decode(pubKey);
-                const auto vPubKey = std::vector<uint8_t>(std::begin(decoded), std::end(decoded));
-                msgFeesContent.payerAddress =
-                        CosmosLikeKeychain(vPubKey, DerivationPath(""), currencies::ATOM).getAddress()->toBech32();
+            /// The array of fees is reduced to a single CosmosLikeAmount (summing
+            /// all the element of the array). The array cannot be stored directly
+            /// as it has to be reduced to be stored in the database, and it would
+            /// not be possible to recreate the array from the operation (with a
+            /// single CosmosLikeAmount) in the database.
+            const auto fees = std::accumulate(
+                    std::begin(transaction.fee.amount),
+                    std::end(transaction.fee.amount),
+                    BigInt::ZERO,
+                    [this](BigInt sum, const api::CosmosLikeAmount &amount) {
+                        /// The fees unit must be "uatom" as cosmoshub is not
+                        /// expected to take any other currencies to pay fees.
+                        assert(amount.denom == _currency.units[0].code);
+                        return sum + BigInt::fromString(amount.amount);
+                    })
+                    .toString();
 
-                /// The array of fees is reduced to a single CosmosLikeAmount (summing
-                /// all the element of the array). The array cannot be stored directly
-                /// as it has to be reduced to be stored in the database, and it would
-                /// not be possible to recreate the array from the operation (with a
-                /// single CosmosLikeAmount) in the database.
-                const auto fees = std::accumulate(
-                        std::begin(transaction.fee.amount),
-                        std::end(transaction.fee.amount),
-                        BigInt::ZERO,
-                        [](BigInt sum, const api::CosmosLikeAmount &amount) {
-                            /// The fees unit must be "uatom" as cosmoshub is not
-                            /// expected to take any other currencies to pay fees.
-                            assert(amount.denom == "uatom");
-                            return sum + BigInt::fromString(amount.amount);
-                        })
-                        .toString();
+            msgFeesContent.fees = api::CosmosLikeAmount(fees, _currency.units[0].code);
+            auto msgFees = cosmos::Message();
+            msgFees.type = kMsgFees;
+            msgFees.content = msgFeesContent;
+            const auto msgFeesLog = cosmos::MessageLog{static_cast<int32_t>(index), true, ""};
+            transaction.logs.push_back(msgFeesLog);
+            transaction.messages.push_back(msgFees);
+        }
 
-                msgFeesContent.fees = api::CosmosLikeAmount(fees, "uatom");
-                auto msgFees = cosmos::Message();
-                msgFees.type = kMsgFees;
-                msgFees.content = msgFeesContent;
-                const auto msgFeesLog = cosmos::MessageLog{static_cast<int32_t>(index), true, ""};
-                transaction.logs.push_back(msgFeesLog);
-                transaction.messages.push_back(msgFees);
-            }
-
-        }  // namespace
+    
 
         template <typename T>
         void GaiaCosmosLikeBlockchainExplorer::parseTransactionWithPosttreatment(
-                const T &node, cosmos::Transaction &transaction) const
+        const T &node, cosmos::Transaction &transaction) const
         {
-            rpcs_parsers::parseTransaction(node, transaction);
+            rpcs_parsers::parseTransaction(node, transaction, _currency);
             addMsgFeesTo(transaction, node);
         }
 
@@ -226,14 +224,14 @@ namespace ledger {
         FuturePtr<cosmos::TransactionsBulk> GaiaCosmosLikeBlockchainExplorer::getTransactions(
                 const CosmosLikeBlockchainExplorer::TransactionFilter &filter, int page, int limit) const
         {
-            // NOTE : the amount of memory involved here asks for a second pass to make
-            // sure that the least amount of copies is done.
+    // NOTE : the amount of memory involved here asks for a second pass to make
+    // sure that the least amount of copies is done.
             return _http->GET(fmt::format(kGaiaTransactionsWithPageLimitEnpoint, filter, page, limit), ACCEPT_HEADER)
                     .json(true)
-                    .flatMap<cosmos::TransactionsBulk>(
-                            getContext(), [this](const HttpRequest::JsonResult &response)
-                                    -> Future<cosmos::TransactionsBulk> {
-                                cosmos::TransactionsBulk result;
+        .flatMap<cosmos::TransactionsBulk>(
+            getContext(), [this](const HttpRequest::JsonResult &response)
+            -> Future<cosmos::TransactionsBulk> {
+                cosmos::TransactionsBulk result;
                                 const auto &document = std::get<1>(response)->GetObject();
                                 if (!document.HasMember("txs") || !document[kTxArray].IsArray()) {
                                     throw make_exception(
@@ -260,58 +258,58 @@ namespace ledger {
                                             std::stoi(document[kTotalCount].GetString());
                                     result.hasNext = (count < total_count);
                                 }
-                                return Future<cosmos::TransactionsBulk>::successful(result);
-                            })
+                return Future<cosmos::TransactionsBulk>::successful(result);
+            })
+        .flatMapPtr<cosmos::TransactionsBulk>(
+            getContext(),
+            [this](const cosmos::TransactionsBulk &inputBulk) mutable
+            -> FuturePtr<cosmos::TransactionsBulk> {
+                auto const &inputTxs = inputBulk.transactions;
+                std::vector<FuturePtr<cosmos::Transaction>> filledTxsFutures;
+                filledTxsFutures.reserve(inputTxs.size());
+                std::transform(
+                    inputTxs.cbegin(),
+                    inputTxs.cend(),
+                    std::back_inserter(filledTxsFutures),
+                    [this](const cosmos::Transaction &inputTx) {
+                        return this->inflateTransactionWithBlockData(inputTx);
+                    });
+                return async::sequence(getContext(), filledTxsFutures)
                     .flatMapPtr<cosmos::TransactionsBulk>(
-                            getContext(),
-                            [this](const cosmos::TransactionsBulk &inputBulk) mutable
-                                    -> FuturePtr<cosmos::TransactionsBulk> {
-                                auto const &inputTxs = inputBulk.transactions;
-                                std::vector<FuturePtr<cosmos::Transaction>> filledTxsFutures;
-                                filledTxsFutures.reserve(inputTxs.size());
-                                std::transform(
-                                        inputTxs.cbegin(),
-                                        inputTxs.cend(),
-                                        std::back_inserter(filledTxsFutures),
-                                        [this](const cosmos::Transaction &inputTx) {
-                                            return this->inflateTransactionWithBlockData(inputTx);
-                                        });
-                                return async::sequence(getContext(), filledTxsFutures)
-                                        .flatMapPtr<cosmos::TransactionsBulk>(
-                                                getContext(),
-                                                [inputBulk = std::move(inputBulk)](
-                                                        const std::vector<std::shared_ptr<cosmos::Transaction>>
-                                                        &filledTxsList) mutable {
-                                                    std::transform(
-                                                            filledTxsList.cbegin(),
-                                                            filledTxsList.cend(),
-                                                            inputBulk.transactions.begin(),
-                                                            [](const std::shared_ptr<cosmos::Transaction> filledTx) {
-                                                                return *filledTx;
-                                                            });
-                                                    return FuturePtr<cosmos::TransactionsBulk>::successful(
-                                                            std::make_shared<cosmos::TransactionsBulk>(inputBulk));
-                                                });
-                            });
+                        getContext(),
+                        [inputBulk = std::move(inputBulk)](
+                            const std::vector<std::shared_ptr<cosmos::Transaction>>
+                                &filledTxsList) mutable {
+                            std::transform(
+                                filledTxsList.cbegin(),
+                                filledTxsList.cend(),
+                                inputBulk.transactions.begin(),
+                                [](const std::shared_ptr<cosmos::Transaction> filledTx) {
+                                    return *filledTx;
+                                });
+                            return FuturePtr<cosmos::TransactionsBulk>::successful(
+                                std::make_shared<cosmos::TransactionsBulk>(inputBulk));
+                        });
+            });
         }
 
         FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::inflateTransactionWithBlockData(
-                const cosmos::Transaction &inputTx) const
+            const cosmos::Transaction &inputTx) const
         {
             auto completeTx = cosmos::Transaction(inputTx);
             if (!completeTx.block) {
                 return FuturePtr<cosmos::Transaction>::successful(
-                        std::make_shared<cosmos::Transaction>(std::move(completeTx)));
+                    std::make_shared<cosmos::Transaction>(std::move(completeTx)));
             }
             auto height = completeTx.block.getValue().height;
             return getBlock(height).flatMapPtr<cosmos::Transaction>(
-                    getContext(),
-                    [completeTx = std::move(completeTx)](
-                            const auto &blockData) mutable -> FuturePtr<cosmos::Transaction> {
-                        completeTx.block = *blockData;
-                        return FuturePtr<cosmos::Transaction>::successful(
-                                std::make_shared<cosmos::Transaction>(completeTx));
-                    });
+                getContext(),
+                [completeTx = std::move(completeTx)](
+                    const auto &blockData) mutable -> FuturePtr<cosmos::Transaction> {
+                    completeTx.block = *blockData;
+                    return FuturePtr<cosmos::Transaction>::successful(
+                        std::make_shared<cosmos::Transaction>(completeTx));
+                });
         }
 
         FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::getTransactionByHash(
@@ -319,17 +317,17 @@ namespace ledger {
         {
             return _http->GET(fmt::format(kGaiaTransactionEndpoint, hash), ACCEPT_HEADER)
                     .json(true)
-                    .flatMap<cosmos::Transaction>(getContext(), [this](const HttpRequest::JsonResult &response) -> Future<cosmos::Transaction> {
+        .flatMap<cosmos::Transaction>(getContext(), [this](const HttpRequest::JsonResult &response) -> Future<cosmos::Transaction> {
                         const auto &document = std::get<1>(response)->GetObject();
-                        cosmos::Transaction tx;
-                        parseTransactionWithPosttreatment(document, tx);
-                        return Future<cosmos::Transaction>::successful(tx);
-                    })
-                    .flatMapPtr<cosmos::Transaction>(
-                            getContext(),
-                            [this](const auto &inputTx) {
-                                return this->inflateTransactionWithBlockData(inputTx);
-                            });
+            cosmos::Transaction tx;
+            parseTransactionWithPosttreatment(document, tx);
+            return Future<cosmos::Transaction>::successful(tx);
+        })
+        .flatMapPtr<cosmos::Transaction>(
+            getContext(),
+            [this](const auto &inputTx) {
+                return this->inflateTransactionWithBlockData(inputTx);
+            });
         }
 
         namespace {
@@ -435,10 +433,10 @@ namespace ledger {
         {
             return _http->GET("/blocks/latest", ACCEPT_HEADER)
                     .json(true)
-                    .mapPtr<ledger::core::Block>(getContext(), [](const HttpRequest::JsonResult &response) {
+        .mapPtr<ledger::core::Block>(getContext(), [this](const HttpRequest::JsonResult &response) {
                         const auto &document = std::get<1>(response)->GetObject();
                         auto block = std::make_shared<cosmos::Block>();
-                        rpcs_parsers::parseBlock(document, currencies::ATOM.name, *block);
+            rpcs_parsers::parseBlock(document, _currency, *block);
                         return std::make_shared<ledger::core::Block>(*block);
                     });
         }
@@ -769,6 +767,7 @@ namespace ledger {
         {
             // Chain 3 explorer calls to get all the relevant information
             const bool parseJsonNumbersAsStrings = true;
+    const auto ignoreFailStatusCode = true;
             return _http->GET(fmt::format(kGaiaValidatorInfoEndpoint, valOperAddress))
                     .json(parseJsonNumbersAsStrings)
                     .template flatMap<cosmos::Validator>(
@@ -788,15 +787,19 @@ namespace ledger {
                             })
                     .template flatMap<cosmos::Validator>(
                             getContext(),
-                            [this, parseJsonNumbersAsStrings](
+            [this, parseJsonNumbersAsStrings, ignoreFailStatusCode](
                                     const cosmos::Validator &inputVal) -> Future<cosmos::Validator> {
                                 auto retval = cosmos::Validator(inputVal);
                                 return _http->GET(fmt::format(kGaiaDistInfoEndpoint, retval.operatorAddress))
-                                        .json(parseJsonNumbersAsStrings)
+                    .json(parseJsonNumbersAsStrings, ignoreFailStatusCode)
                                         .template flatMap<cosmos::Validator>(
                                                 getContext(),
                                                 [retval](const HttpRequest::JsonResult &response) mutable
                                                         -> Future<cosmos::Validator> {
+                            // Catching http errors because Cosmos code returns 500 when the validator stopped existing.
+                            if (std::get<0>(response)->getStatusCode() >= 300) {
+                                return Future<cosmos::Validator>::successful(retval);
+                            }
                                                     const auto &document = std::get<1>(response)->GetObject();
                                                     rpcs_parsers::parseDistInfo(document, retval.distInfo);
                                                     return Future<cosmos::Validator>::successful(retval);
@@ -804,7 +807,7 @@ namespace ledger {
                             })
                     .template flatMap<cosmos::Validator>(
                             getContext(),
-                            [this, parseJsonNumbersAsStrings](
+            [this, parseJsonNumbersAsStrings, ignoreFailStatusCode](
                                     const cosmos::Validator &inputVal) -> Future<cosmos::Validator> {
                                 auto retval = cosmos::Validator(inputVal);
                                 return _http->GET(fmt::format(kGaiaSignInfoEndpoint, retval.consensusPubkey))
@@ -813,6 +816,11 @@ namespace ledger {
                                                 getContext(),
                                                 [retval](const HttpRequest::JsonResult &response) mutable
                                                         -> Future<cosmos::Validator> {
+                            // Catching http errors because Cosmos code returns 500 when the validator stopped existing.
+                            if (std::get<0>(response)->getStatusCode() >= 300) {
+                                retval.signInfo.tombstoned = true;
+                                return Future<cosmos::Validator>::successful(retval);
+                            }
                                                     const auto &document = std::get<1>(response)->GetObject();
                                                     rpcs_parsers::parseSignInfo(document, retval.signInfo);
                                                     return Future<cosmos::Validator>::successful(retval);
@@ -827,7 +835,7 @@ namespace ledger {
                     ->GET(fmt::format(kGaiaDelegationsEndpoint, delegatorAddr), ACCEPT_HEADER)
                     .json(true)
                     .mapPtr<std::vector<cosmos::Delegation>>(
-                            getContext(), [](const HttpRequest::JsonResult &response) {
+            getContext(), [this](const HttpRequest::JsonResult &response) {
                                 const auto &document = std::get<1>(response)->GetObject();
                                 if (!document.HasMember(kResult)) {
                                     throw make_exception(

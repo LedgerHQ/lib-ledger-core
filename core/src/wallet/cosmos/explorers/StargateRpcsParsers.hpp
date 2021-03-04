@@ -1,13 +1,13 @@
 /*
  *
- * rpcs_parsers.hpp
+ * StargateRpcsParsers.hpp
  * ledger-core
  *
- * Created by Pierre Pollastri on 15/06/2019.
+ * Created by Gerry Agbobada on 2020-11-12.
  *
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Ledger
+ * Copyright (c) 2020 Ledger
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -29,8 +29,7 @@
  *
  */
 
-#ifndef LEDGER_CORE_RPCS_PARSERS_HPP
-#define LEDGER_CORE_RPCS_PARSERS_HPP
+#pragma once
 
 #include <cassert>
 #include <numeric>
@@ -46,6 +45,7 @@
 #include <wallet/cosmos/CosmosLikeMessage.hpp>
 #include <wallet/cosmos/cosmos.hpp>
 #include <wallet/cosmos/keychains/CosmosLikeKeychain.hpp>
+#include <cosmos/CosmosLikeExtendedPublicKey.hpp>
 
 #define COSMOS_PARSE_MSG_CONTENT(MsgType)   \
     if (out.type == "cosmos-sdk/" #MsgType) \
@@ -54,7 +54,7 @@
 namespace ledger {
 namespace core {
 using namespace cosmos::constants;
-namespace rpcs_parsers {
+namespace stargate_rpcs_parsers {
 
 template <class T>
 std::string getStringFromVariableKeys(const T &node, const std::list<std::string> &keys)
@@ -95,7 +95,7 @@ void parseMultiSendInputs(const T &array, std::vector<cosmos::MultiSendInput> &o
     for (const auto &n : array) {
         auto input = n.GetObject();
         out[index].fromAddress = input[kAddress].GetString();
-        if (input[kCoins].IsArray()) {
+        if (input.HasMember(kCoins) && input[kCoins].IsArray()) {
             const auto &inputValues = input[kCoins].GetArray();
             parseCoinVector(inputValues, out[index].coins);
         }
@@ -111,7 +111,7 @@ void parseMultiSendOutputs(const T &array, std::vector<cosmos::MultiSendOutput> 
     for (const auto &n : array) {
         auto output = n.GetObject();
         out[index].toAddress = output[kAddress].GetString();
-        if (output[kCoins].IsArray()) {
+        if (output.HasMember(kCoins) && output[kCoins].IsArray()) {
             const auto &outputValues = output[kCoins].GetArray();
             parseCoinVector(outputValues, out[index].coins);
         }
@@ -124,7 +124,6 @@ void parseDescription(const T &descriptionNode, cosmos::ValidatorDescription &ou
 {
     assert((descriptionNode.HasMember(kMoniker)));
     out.moniker = descriptionNode[kMoniker].GetString();
-    out.securityContact = optional<std::string>("Unavailble pre-Stargate");
     if (descriptionNode.HasMember(kWebsite) && descriptionNode[kWebsite].IsString()) {
         out.website = optional<std::string>(descriptionNode[kWebsite].GetString());
     }
@@ -133,6 +132,9 @@ void parseDescription(const T &descriptionNode, cosmos::ValidatorDescription &ou
     }
     if (descriptionNode.HasMember(kDetails) && descriptionNode[kDetails].IsString()) {
         out.details = optional<std::string>(descriptionNode[kDetails].GetString());
+    }
+    if (descriptionNode.HasMember(kSecurityContact) && descriptionNode[kSecurityContact].IsString()) {
+        out.securityContact = optional<std::string>(descriptionNode[kSecurityContact].GetString());
     }
 }
 
@@ -153,18 +155,25 @@ void parseCommission(const T &commissionNode, cosmos::ValidatorCommission &out)
 }
 
 template <typename T>
-void parseDelegation(const T &delegationNode, cosmos::Delegation &out)
+void parseDelegation(const T &node, cosmos::Delegation &out, const api::Currency& currency)
 {
+    assert((node.HasMember(kDelegation)));
+    auto delegationNode = node[kDelegation].GetObject();
     assert(delegationNode.HasMember(kDelegatorAddress));
     assert(delegationNode.HasMember(kValidatorAddress));
-    assert(delegationNode.HasMember(kBalance));
     out.delegatorAddress = delegationNode[kDelegatorAddress].GetString();
     out.validatorAddress = delegationNode[kValidatorAddress].GetString();
-    out.delegatedAmount = BigInt::fromString(delegationNode[kBalance].GetString());
+
+    assert((node.HasMember(kBalance)));
+    auto delegationBalance = node[kBalance].GetObject();
+    assert((delegationBalance.HasMember(kDenom)));
+    assert((delegationBalance[kDenom].GetString() == currency.units[0].code));
+    assert((delegationBalance.HasMember(kAmount)));
+    out.delegatedAmount = BigInt::fromString(delegationBalance[kAmount].GetString());
 }
 
 template <typename T>
-void parseReward(const T &rewardNode, cosmos::Reward &out)
+void parseReward(const T &rewardNode, cosmos::Reward &out, const api::Currency& currency)
 {
     assert(rewardNode.HasMember(kValidatorAddress));
     assert(rewardNode.HasMember(kReward));
@@ -173,22 +182,32 @@ void parseReward(const T &rewardNode, cosmos::Reward &out)
     if (rewardNode[kReward].IsArray() && rewardNode[kReward].GetArray().Size() > 0) {
         // In cosmoshub, the rewards are only in uatom, so there's only 1 entry in the array
         const auto &firstReward = rewardNode[kReward].GetArray()[0];
+        // Debug safety assertion
+        assert((firstReward.GetObject()[kDenom].GetString() == currency.units[0].code));
+
         parseCoin(
             firstReward,
             out.pendingReward);  // Assuming only one reward per validator
     }
 }
 
+/// Parse the relevant informations from /blocks/{latest || height} into cosmos::Block.
+/// The `currencyName` is necessary context for LibCore but not present in the JSON,
+/// therefore it is injected by the caller who knows the currency context
 template <class T>
 void parseBlock(const T &node, const api::Currency &currency, cosmos::Block &out)
 {
-    out.currencyName = currency.name;
-    out.hash = node[kBlockMeta].GetObject()[kBlockId].GetObject()[kHash].GetString();
+    out.currencyName = currency.cosmosLikeNetworkParameters.value().Identifier;
+    assert((node.HasMember(kBlockId)));
+    out.hash = node[kBlockId].GetObject()[kHash].GetString();
+    assert((node.HasMember(kBlock)));
+    auto blockMetaNode = node[kBlock].GetObject();
+    assert((blockMetaNode.HasMember(kHeader)));
     out.height =
-        BigInt::fromString(node[kBlockMeta].GetObject()[kHeader].GetObject()[kHeight].GetString())
+        BigInt::fromString(blockMetaNode[kHeader].GetObject()[kHeight].GetString())
             .toUint64();
     out.time =
-        DateUtils::fromJSON(node[kBlockMeta].GetObject()[kHeader].GetObject()[kTime].GetString());
+        DateUtils::fromJSON(blockMetaNode[kHeader].GetObject()[kTime].GetString());
 }
 
 template <typename T>
@@ -210,7 +229,7 @@ void parseFee(const T &node, cosmos::Fee &out)
     out.gas = BigInt::fromString(node[kGas].GetString());
     if (node[kAmount].IsArray()) {
         const auto &amountArray = node[kAmount].GetArray();
-        out.amount.assign((std::size_t)amountArray.Capacity(), cosmos::Coin());
+        out.amount.assign((std::size_t)amountArray.Size(), cosmos::Coin());
         auto index = 0;
         for (const auto &aNode : amountArray) {
             parseCoin(aNode.GetObject(), out.amount[index]);
@@ -222,21 +241,39 @@ void parseFee(const T &node, cosmos::Fee &out)
 template <class T>
 void parseAccount(const T &accountNode, cosmos::Account &account)
 {
-    assert((accountNode.HasMember(kValue)));
-    assert((accountNode.HasMember(kType)));
-    const auto &node = accountNode[kValue].GetObject();
-    account.type = accountNode[kType].GetString();
+    assert((accountNode.HasMember(kAccount)));
+    const auto &node = accountNode[kAccount].GetObject();
+    assert((node.HasMember(kGrpcType)));
+    account.type = node[kGrpcType].GetString();
 
     assert((node.HasMember(kAccountNumber)));
     assert((node.HasMember(kSequence)));
     assert((node.HasMember(kAddress)));
-    assert((node.HasMember(kCoins)));
     account.accountNumber = node[kAccountNumber].GetString();
     account.sequence = node[kSequence].GetString();
     account.address = node[kAddress].GetString();
-    if (node[kCoins].IsArray()){
-        const auto &balances = node[kCoins].GetArray();
-        parseCoinVector(balances, account.balances);
+
+    assert((node.HasMember(kPubKey)));
+    // Pubkey is null for accounts that only received funds
+    // "pub_key": {
+    //   "@type": "/cosmos.crypto.secp256k1.PubKey",
+    //   "key": "AnDGSF7VFQs9VKEceS6cWhfajxh/mmv+Mbu9bCM9BDzK"
+    // },
+    // or
+    // "pub_key": null
+    if (node[kPubKey].IsObject()) {
+      auto PubKeyObj = node[kPubKey].GetObject();
+      assert((PubKeyObj.HasMember(kGrpcType)));
+      assert((PubKeyObj[kGrpcType].GetString() ==
+              std::string("/cosmos.crypto.secp256k1.PubKey")));
+      assert((PubKeyObj.HasMember(kKey)));
+
+      auto b64publicKey = PubKeyObj[kKey].GetString();
+      account.pubkey =
+          CosmosLikeExtendedPublicKey::fromBase64(
+              currencies::ATOM, b64publicKey, {}, api::CosmosCurve::SECP256K1,
+              api::CosmosBech32Type::PUBLIC_KEY)
+              ->toBech32();
     }
 }
 
@@ -247,6 +284,7 @@ void parseMsgSend(const T &n, cosmos::MessageContent &out)
 
     assert((n.HasMember(kFromAddress)));
     assert((n.HasMember(kToAddress)));
+    assert((n.HasMember(kAmount)));
     msg.fromAddress = n[kFromAddress].GetString();
     msg.toAddress = n[kToAddress].GetString();
     if (n[kAmount].IsArray()) {
@@ -263,6 +301,7 @@ void parseMsgDelegate(const T &n, cosmos::MessageContent &out)
 
     assert((n.HasMember(kDelegatorAddress)));
     assert((n.HasMember(kValidatorAddress)));
+    assert((n.HasMember(kAmount)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorAddress = n[kValidatorAddress].GetString();
     parseCoin(n[kAmount].GetObject(), msg.amount);
@@ -274,6 +313,10 @@ void parseMsgBeginRedelegate(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgBeginRedelegate msg;
 
+    assert((n.HasMember(kDelegatorAddress)));
+    assert((n.HasMember(kValidatorSrcAddress)));
+    assert((n.HasMember(kValidatorDstAddress)));
+    assert((n.HasMember(kAmount)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorSourceAddress = n[kValidatorSrcAddress].GetString();
     msg.validatorDestinationAddress = n[kValidatorDstAddress].GetString();
@@ -286,6 +329,9 @@ void parseMsgUndelegate(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgUndelegate msg;
 
+    assert((n.HasMember(kDelegatorAddress)));
+    assert((n.HasMember(kValidatorAddress)));
+    assert((n.HasMember(kAmount)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorAddress = n[kValidatorAddress].GetString();
     parseCoin(n[kAmount].GetObject(), msg.amount);
@@ -297,6 +343,9 @@ void parseMsgSubmitProposal(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgSubmitProposal msg;
 
+    assert((n.HasMember(kProposer)));
+    assert((n.HasMember(kContent)));
+    assert((n.HasMember(kInitialDeposit)));
     msg.proposer = n[kProposer].GetString();
     parseProposalContent(n[kContent].GetObject(), msg.content);
     if (n[kInitialDeposit].IsArray()){
@@ -311,6 +360,9 @@ void parseMsgVote(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgVote msg;
 
+    assert((n.HasMember(kVoter)));
+    assert((n.HasMember(kProposalId)));
+    assert((n.HasMember(kOption)));
     msg.voter = n[kVoter].GetString();
     msg.proposalId = n[kProposalId].GetString();
     const auto &option = n[kOption].GetString();
@@ -334,6 +386,9 @@ void parseMsgDeposit(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgDeposit msg;
 
+    assert((n.HasMember(kDepositor)));
+    assert((n.HasMember(kProposalId)));
+    assert((n.HasMember(kAmount)));
     msg.depositor = n[kDepositor].GetString();
     msg.proposalId = n[kProposalId].GetString();
     if (n[kAmount].IsArray()){
@@ -348,6 +403,8 @@ void parseMsgWithdrawDelegationReward(const T &n, cosmos::MessageContent &out)
 {
     cosmos::MsgWithdrawDelegationReward msg;
 
+    assert((n.HasMember(kDelegatorAddress)));
+    assert((n.HasMember(kValidatorAddress)));
     msg.delegatorAddress = n[kDelegatorAddress].GetString();
     msg.validatorAddress = n[kValidatorAddress].GetString();
     out = msg;
@@ -369,7 +426,7 @@ void parseMsgMultiSend(const T &n, cosmos::MessageContent &out)
 
     // outputs: list<CosmosLikeMultiSendOutput>;
     if(n[kOutputs].IsArray()) {
-        auto outputsArray = n[kInputs].GetArray();
+        auto outputsArray = n[kOutputs].GetArray();
         parseMultiSendOutputs(outputsArray, msg.outputs);
     }
 
@@ -485,10 +542,12 @@ void parseSignerPubKey(const T &node, std::string &pubkey)
 {
     if(!node.HasMember(kSignatures) || !node[kSignatures].IsArray() ||
        node[kSignatures].GetArray().Empty()) {
-        throw make_exception(
-            api::ErrorCode::ILLEGAL_STATE,
-            "The received signer pubkey does not have signature information at key {}",
-            kSignatures);
+        pubkey = "";
+        return;
+        // throw make_exception(
+        //     api::ErrorCode::ILLEGAL_STATE,
+        //     "The received signer pubkey does not have signature information at key {}",
+        //     kSignatures);
     }
 
     const auto firstSignature = node[kSignatures].GetArray()[0].GetObject();
@@ -499,8 +558,12 @@ void parseSignerPubKey(const T &node, std::string &pubkey)
 }
 
 template <class T>
-void parseTransaction(const T &node, cosmos::Transaction &transaction, const api::Currency &currency)
+void parseTransaction(const T &node, cosmos::Transaction &transaction, const api::Currency& currency)
 {
+    assert((node.HasMember(kTx)));
+    const auto &tNode = node[kTx].GetObject();
+    assert((tNode.HasMember(kValue)));
+    const auto &vNode = tNode[kValue].GetObject();
     assert((node.HasMember(kTxHash)));
     transaction.hash = node[kTxHash].GetString();
     if (node.HasMember(kHeight)) {
@@ -514,25 +577,34 @@ void parseTransaction(const T &node, cosmos::Transaction &transaction, const api
     }
 
     assert((node.HasMember(kLogs)));
+    // If the transaction does not have logs, we need to allocate memory still
+    // for parseMessage call. To clean up by changing parseMessage logic.
+    bool hasLogs = false;
     if (node[kLogs].IsArray()) {
+        hasLogs = true;
+        auto msgIndex = 0;
         for (const auto &lNode : node[kLogs].GetArray()) {
             cosmos::MessageLog log;
-            assert((lNode.HasMember(kLog)));
-            assert((lNode.HasMember(kSuccess)));
-            assert((lNode.HasMember(kMsgIndex)));
-            log.success = lNode[kSuccess].GetBool();
-            log.log = lNode[kLog].GetString();
-            log.messageIndex = BigInt::fromString(lNode[kMsgIndex].GetString()).toInt();
+            log.success = true;
+            log.log = fmt::format("Hardcoded as success at %s:%d", __FILE__, __LINE__);
+            log.messageIndex = msgIndex;
             transaction.logs.emplace_back(log);
+            msgIndex++;
+        }
+    } else {
+        // Assuming the transaction failed here. We create a fake log entry with failure
+        // using the raw_log exclusively
+        assert((vNode.HasMember(kMessage)));
+        for (size_t i = 0; i < vNode[kMessage].GetArray().Size(); i++) {
+          cosmos::MessageLog log;
+          log.success = false;
+          log.log = node[kRawLog].GetString();
+          log.messageIndex = i;
+          transaction.logs.emplace_back(log);
         }
     }
     assert((node.HasMember(kTimestamp)));
     transaction.timestamp = DateUtils::fromJSON(node[kTimestamp].GetString());
-
-    assert((node.HasMember(kTx)));
-    const auto &tNode = node[kTx].GetObject();
-    assert((tNode.HasMember(kValue)));
-    const auto &vNode = tNode[kValue].GetObject();
 
     if (vNode.HasMember(kMemo)) {
         transaction.memo = vNode[kMemo].GetString();
@@ -541,7 +613,7 @@ void parseTransaction(const T &node, cosmos::Transaction &transaction, const api
     assert((vNode.HasMember(kMessage)));
     if (vNode[kMessage].IsArray()) {
         const auto &msgArray = vNode[kMessage].GetArray();
-        transaction.messages.assign((std::size_t)msgArray.Capacity(), cosmos::Message());
+        transaction.messages.assign((std::size_t)msgArray.Size(), cosmos::Message());
         auto index = 0;
         for (const auto &mNode : msgArray) {
             parseMessage(mNode, transaction.messages[index], transaction.logs[index]);
@@ -589,13 +661,30 @@ void parseValidatorSetEntry(const T &n, cosmos::Validator &out)
     out.operatorAddress = n[kOperatorAddress].GetString();
 
     assert((n.HasMember(kConsensusPubkey)));
-    out.consensusPubkey = n[kConsensusPubkey].GetString();
+    // "consensus_pubkey": {
+    //         "@type": "/cosmos.crypto.ed25519.PubKey",
+    //         "key": "B33RB8LHddbd+KXO1jPJHDpelfOgOGJP5yDEQYEWdyY="
+    //       }
+
+    // Debug sanity assertions
+    auto consPubKeyObj = n[kConsensusPubkey].GetObject();
+    assert((consPubKeyObj.HasMember(kGrpcType)));
+    assert((consPubKeyObj[kGrpcType].GetString() == std::string("/cosmos.crypto.ed25519.PubKey")));
+    assert((consPubKeyObj.HasMember(kKey)));
+
+    auto b64publicKey = consPubKeyObj[kKey].GetString();
+    out.consensusPubkey = CosmosLikeExtendedPublicKey::fromBase64(
+        currencies::ATOM,
+        b64publicKey,
+        {},
+        api::CosmosCurve::ED25519,
+        api::CosmosBech32Type::PUBLIC_KEY_VAL_CONS)->toBech32();
 
     assert((n.HasMember(kStatus)));
     out.activeStatus = n[kStatus].GetString();
 }
 
-//  Parse an unbonding entry from (/staking/delegators/{address}/unbonding_delegations)
+//  Parse an unbonding entry from (/{namespace}/staking/{version}/delegators/{address}/unbonding_delegations)
 //  {
 //    "creation_height": "1346685",
 //    "completion_time": "2020-04-21T12:28:37.550789506Z",
@@ -616,7 +705,7 @@ void parseUnbondingEntry(const T &n, cosmos::UnbondingEntry &out)
     out.balance = BigInt::fromString(n[kBalance].GetString());
 }
 
-// Parse unbonding result from (/staking/delegators/{address}/unbonding_delegations)
+// Parse unbonding result from (/{namespace}/staking/{version}/delegators/{address}/unbonding_delegations)
 // into cosmos::Unbonding
 // {
 //   "delegator_address": "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl",
@@ -648,7 +737,7 @@ void parseUnbonding(const T &n, cosmos::Unbonding &out)
     }
 }
 
-// Parse unbonding result from (/staking/delegators/{address}/unbonding_delegations)
+// Parse unbonding result
 // into cosmos::UnbondingList
 // {
 //   "height": "1347301",
@@ -672,11 +761,11 @@ void parseUnbonding(const T &n, cosmos::Unbonding &out)
 template <typename T>
 void parseUnbondingList(const T &n, cosmos::UnbondingList &out)
 {
-    assert((n.HasMember(kResult)));
+    assert((n.HasMember(kUnbondingResponses)));
     out.clear();
 
-    if(n[kResult].IsArray()){
-        for (const auto &unbonding : n[kResult].GetArray()) {
+    if(n[kUnbondingResponses].IsArray()){
+        for (const auto &unbonding : n[kUnbondingResponses].GetArray()) {
             cosmos::Unbonding parsedUnbonding;
             parseUnbonding(unbonding.GetObject(), parsedUnbonding);
             out.emplace_back(std::make_shared<cosmos::Unbonding>(std::move(parsedUnbonding)));
@@ -684,56 +773,68 @@ void parseUnbondingList(const T &n, cosmos::UnbondingList &out)
     }
 }
 
-// Parse redelegation (/staking/redelegations?delegator={address} || any other query filter)
+// Parse redelegation
 // into cosmos::RedelegationEntry
 // {
-//   "creation_height": 1107334,
-//   "completion_time": "2020-04-01T15:46:03.941380099Z",
-//   "initial_balance": "1850",
-//   "shares_dst": "1850.000000000000000000",
-//   "balance": "1850"
+//   "redelegation_entry": {
+//     "creation_height": 502590,
+//     "completion_time": "2021-01-01T10:56:15.231455556Z",
+//     "initial_balance": "2000000",
+//     "shares_dst": "2000000.000000000000000000"
+//   },
+//   "balance": "2000000"
 // }
 template <typename T>
 void parseRedelegationEntry(const T &n, cosmos::RedelegationEntry &out)
 {
-    assert((n.HasMember(kCreationHeight)));
-    assert((n.HasMember(kCompletionTime)));
-    assert((n.HasMember(kInitialBalance)));
+    assert((n.HasMember(kRedelegationEntry) && n[kRedelegationEntry].IsObject()));
+    auto entryNode = n[kRedelegationEntry].GetObject();
+    assert((entryNode.HasMember(kCreationHeight)));
+    assert((entryNode.HasMember(kCompletionTime)));
+    assert((entryNode.HasMember(kInitialBalance)));
     assert((n.HasMember(kBalance)));
 
-    out.creationHeight = BigInt(n[kCreationHeight].GetInt());
-    out.completionTime = DateUtils::fromJSON(n[kCompletionTime].GetString());
-    out.initialBalance = BigInt::fromString(n[kInitialBalance].GetString());
+    out.creationHeight = BigInt(entryNode[kCreationHeight].GetInt());
+    out.completionTime = DateUtils::fromJSON(entryNode[kCompletionTime].GetString());
+    out.initialBalance = BigInt::fromString(entryNode[kInitialBalance].GetString());
     out.balance = BigInt::fromString(n[kBalance].GetString());
 }
 
-// Parse redelegation (/staking/redelegations?delegator={address})
+// Parse redelegation
 // into cosmos::Redelegation
+//
 // {
-//   "delegator_address": "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl",
-//   "validator_src_address": "cosmosvaloper1sjllsnramtg3ewxqwwrwjxfgc4n4ef9u2lcnj0",
-//   "validator_dst_address": "cosmosvaloper1clpqr4nrk4khgkxj78fcwwh6dl3uw4epsluffn",
+//   "redelegation": {
+//     "delegator_address": "cosmos1g84934jpu3v5de5yqukkkhxmcvsw3u2ajxvpdl",
+//     "validator_src_address": "cosmosvaloper1x5wgh6vwye60wv3dtshs9dmqggwfx2ldk5cvqu",
+//     "validator_dst_address": "cosmosvaloper1h2gacd88hkvlmz5g04md87r54kjf0klntl7plk",
+//     "entries": null
+//   },
 //   "entries": [
 //     {
-//       "creation_height": 1107334,
-//       "completion_time": "2020-04-01T15:46:03.941380099Z",
-//       "initial_balance": "1850",
-//       "shares_dst": "1850.000000000000000000",
-//       "balance": "1850"
+//       "redelegation_entry": {
+//         "creation_height": 502590,
+//         "completion_time": "2021-01-01T10:56:15.231455556Z",
+//         "initial_balance": "2000000",
+//         "shares_dst": "2000000.000000000000000000"
+//       },
+//       "balance": "2000000"
 //     }
 //   ]
 // }
 template <typename T>
 void parseRedelegation(const T &n, cosmos::Redelegation &out)
 {
-    assert((n.HasMember(kDelegatorAddress)));
-    assert((n.HasMember(kValidatorSrcAddress)));
-    assert((n.HasMember(kValidatorDstAddress)));
+    assert((n.HasMember(kRedelegation) && n[kRedelegation].IsObject()));
+    auto redelegationNode = n[kRedelegation].GetObject();
+    assert((redelegationNode.HasMember(kDelegatorAddress)));
+    assert((redelegationNode.HasMember(kValidatorSrcAddress)));
+    assert((redelegationNode.HasMember(kValidatorDstAddress)));
     assert((n.HasMember(kEntries)));
     out.entries = std::list<cosmos::RedelegationEntry>();
-    out.delegatorAddress = n[kDelegatorAddress].GetString();
-    out.srcValidatorAddress = n[kValidatorSrcAddress].GetString();
-    out.dstValidatorAddress = n[kValidatorDstAddress].GetString();
+    out.delegatorAddress = redelegationNode[kDelegatorAddress].GetString();
+    out.srcValidatorAddress = redelegationNode[kValidatorSrcAddress].GetString();
+    out.dstValidatorAddress = redelegationNode[kValidatorDstAddress].GetString();
     if(n[kEntries].IsArray()) {
         for (const auto &entry : n[kEntries].GetArray()) {
             cosmos::RedelegationEntry parsedEntry;
@@ -743,7 +844,7 @@ void parseRedelegation(const T &n, cosmos::Redelegation &out)
     }
 }
 
-// Parse redelegation (/staking/redelegations?delegator={address})
+// Parse redelegation
 // into cosmos::RedelegationList
 // {
 //   "height": "1347368",
@@ -781,11 +882,11 @@ void parseRedelegation(const T &n, cosmos::Redelegation &out)
 template <typename T>
 void parseRedelegationList(const T &n, cosmos::RedelegationList &out)
 {
-    assert((n.HasMember(kResult)));
+    assert((n.HasMember(kRedelegationResponses)));
     out.clear();
 
-    if (n[kResult].IsArray()){
-        for (const auto &redelegation : n[kResult].GetArray()) {
+    if (n[kRedelegationResponses].IsArray()){
+        for (const auto &redelegation : n[kRedelegationResponses].GetArray()) {
             cosmos::Redelegation parsedRedelegation;
             parseRedelegation(redelegation.GetObject(), parsedRedelegation);
             out.emplace_back(std::make_shared<cosmos::Redelegation>(std::move(parsedRedelegation)));
@@ -793,55 +894,12 @@ void parseRedelegationList(const T &n, cosmos::RedelegationList &out)
     }
 }
 
-// Parse distribution information (/distribution/validators/{cosmosvaloperXXX})
+// Parse signing information
 // {
-//   "height": "1442636",
-//   "result": {
-//     "operator_address": "cosmos1dse76yk5jmj85jsd77ewsczc4k3u4s7az2mm8p",
-//     "self_bond_rewards": [
-//       {
-//         "denom": "uatom",
-//         "amount": "193463.275560183888483154"
-//       }
-//     ],
-//     "val_commission": [
-//       {
-//         "denom": "uatom",
-//         "amount": "320461734.567745567162136783"
-//       }
-//     ]
-//   }
-// }
-template <typename T>
-void parseDistInfo(const T &n, cosmos::ValidatorDistributionInformation &out)
-{
-    assert((n.HasMember(kResult)));
-    auto resultObj = n[kResult].GetObject();
-    assert((resultObj.HasMember(kSelfBondRewards)));
-    assert((resultObj.HasMember(kValCommission)));
-    // NOTE : this function will only parse the first member of each array.
-    // For the time being Cosmos is only used on CosmosHub, and the only
-    // valid denom is "uatom" for those arrays
-
-    // Do nothing if the array is "null"
-    if (resultObj[kSelfBondRewards].IsArray()) {
-        out.selfBondRewards =
-            resultObj[kSelfBondRewards].GetArray()[0].GetObject()[kAmount].GetString();
-    }
-    // Do nothing if the array is "null"
-    if (resultObj[kValCommission].IsArray()) {
-        out.validatorCommission =
-            resultObj[kValCommission].GetArray()[0].GetObject()[kAmount].GetString();
-    }
-}
-
-// Parse signing information (/slashing/validators/{cosmosvalconspubXXX}/signing_info)
-// {
-//   "height": "1442169",
-//   "result": {
-//     "address": "",
-//     "start_height": "0",
-//     "index_offset": "4844166",
+//   "val_signing_info": {
+//     "address": "cosmosvalcons14es7cmaqg5xxxfeg3w2xuge63p5rc3u2vt8ym4",
+//     "start_height": "75270",
+//     "index_offset": "11836",
 //     "jailed_until": "1970-01-01T00:00:00Z",
 //     "tombstoned": false,
 //     "missed_blocks_counter": "0"
@@ -850,8 +908,8 @@ void parseDistInfo(const T &n, cosmos::ValidatorDistributionInformation &out)
 template <typename T>
 void parseSignInfo(const T &n, cosmos::ValidatorSigningInformation &out)
 {
-    assert((n.HasMember(kResult)));
-    auto resultObj = n[kResult].GetObject();
+    assert((n.HasMember(kValSignInfos)));
+    auto resultObj = n[kValSignInfos].GetObject();
     assert((resultObj.HasMember(kStartHeight)));
     assert((resultObj.HasMember(kIndexOffset)));
     assert((resultObj.HasMember(kJailedUntil)));
@@ -870,4 +928,3 @@ void parseSignInfo(const T &n, cosmos::ValidatorSigningInformation &out)
 }  // namespace ledger
 
 #undef COSMOS_PARSE_MSG_CONTENT
-#endif  // LEDGER_CORE_RPCS_PARSERS_HPP

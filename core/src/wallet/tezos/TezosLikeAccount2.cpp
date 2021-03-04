@@ -366,42 +366,42 @@ namespace ledger {
                                             tx->setSender(accountAddress, getCurveHelper(senderCurve));
 
                                             if (!request.toAddress.empty()) {
-                                            // Get receiver's curve
-                                            auto receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519;
-                                            auto receiverPrefix = request.toAddress.substr(0, 3);
-                                            if (receiverPrefix == "tz2") {
-                                                receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1;
-                                            } else if (receiverPrefix == "tz3") {
-                                                receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256;
-                                            }
-                                            tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency), getCurveHelper(receiverCurve));
-                                            }
+                                                // Get receiver's curve
+                                                auto receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519;
+                                                auto receiverPrefix = request.toAddress.substr(0, 3);
+                                                if (receiverPrefix == "tz2") {
+                                                    receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_SECP256K1;
+                                                } else if (receiverPrefix == "tz3") {
+                                                    receiverCurve = api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_P256;
+                                                }
+                                                    tx->setReceiver(TezosLikeAddress::fromBase58(request.toAddress, currency), getCurveHelper(receiverCurve));
+                                                }
 
-                                            tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
-                                            tx->setManagerAddress(managerAddress,
-                                                                  getCurveHelper(
-                                                                          self->getKeychain()->getConfiguration()
-                                                                          ->getString(api::TezosConfiguration::TEZOS_XPUB_CURVE)
-                                                                          .value_or(api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519)));
-                                            tx->setType(request.type);
-                                            const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
-                                                                        managerAddress : senderAddress;
-                                            return explorer->getCounter(counterAddress
+                                                tx->setSigningPubKey(self->getKeychain()->getPublicKey().getValue());
+                                                tx->setManagerAddress(managerAddress,
+                                                                    getCurveHelper(
+                                                                            self->getKeychain()->getConfiguration()
+                                                                            ->getString(api::TezosConfiguration::TEZOS_XPUB_CURVE)
+                                                                            .value_or(api::TezosConfigurationDefaults::TEZOS_XPUB_CURVE_ED25519)));
+                                                tx->setType(request.type);
+                                                const auto counterAddress = protocolUpdate == api::TezosConfigurationDefaults::TEZOS_PROTOCOL_UPDATE_BABYLON ?
+                                                                            managerAddress : senderAddress;
+                                                return explorer->getCounter(counterAddress
                                             ).flatMapPtr<Block>(self->getMainExecutionContext(), [self, tx, explorer, request] (const std::shared_ptr<BigInt> &explorerCounter) {
-                                                    if (!explorerCounter) {
+                                                if (!explorerCounter) {
                                                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Failed to retrieve counter from network.");
                                                 }
 
-                                                    const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
-                                                        api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
-                                                    if (optimisticStrategy == "OPTIMISTIC") {
-                                                        self->incrementOptimisticCounter(tx, explorerCounter);
-                                                    }
-                                                    else {
-                                                        tx->setCounter(std::make_shared<BigInt>(++(*explorerCounter)));
-                                                    }
+                                                const std::string optimisticStrategy = self->getWallet()->getConfiguration()->getString(
+                                                    api::TezosConfiguration::TEZOS_COUNTER_STRATEGY).value_or("");
+                                                if (optimisticStrategy == "OPTIMISTIC") {
+                                                    self->incrementOptimisticCounter(tx, explorerCounter);
+                                                }
+                                                else {
+                                                    tx->setCounter(std::make_shared<BigInt>(++(*explorerCounter)));
+                                                }
                                                 return explorer->getCurrentBlock();
-                                                }).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
+                                            }).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, explorer, tx, senderAddress] (const std::shared_ptr<Block> &block) {
                                                 tx->setBlockHash(block->hash);
                                                 if (senderAddress.find("KT1") == 0) {
                                                     // HACK: KT Operation we use forge endpoint
@@ -410,49 +410,49 @@ namespace ledger {
                                                         return tx;
                                                     });
                                                 }
-                                                    return FuturePtr<TezosLikeTransactionApi>::successful(tx);
-                                                }).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, request] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
-                                                    if (request.transactionGasLimit->toInt() == 0) {
-                                                        auto filledTx = tx;
-                                                        auto gasPriceFut = request.transactionFees->toInt() == 0
-                                                                ? self->getGasPrice()
-                                                                : FuturePtr<BigInt>::successful(request.transactionFees);
+                                                return FuturePtr<TezosLikeTransactionApi>::successful(tx);
+                                            }).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, request] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
+                                                if (request.transactionGasLimit->toInt() == 0) {
+                                                    auto filledTx = tx;
+                                                    auto gasPriceFut = request.transactionFees->toInt() == 0
+                                                            ? self->getGasPrice()
+                                                            : FuturePtr<BigInt>::successful(request.transactionFees);
 
-                                                        return gasPriceFut.flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<TezosLikeTransactionApi> {
-                                                            return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
-                                                                // 0.000001 comes from the gasPrice->toInt64 being in picoTez
+                                                return gasPriceFut.flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [self, filledTx] (const std::shared_ptr<BigInt>&gasPrice) -> FuturePtr<TezosLikeTransactionApi> {
+                                                    return self->estimateGasLimit(filledTx).flatMapPtr<TezosLikeTransactionApi>(self->getMainExecutionContext(), [filledTx, gasPrice] (const std::shared_ptr<GasLimit> &gas) -> FuturePtr<TezosLikeTransactionApi> {
+                                                        // 0.000001 comes from the gasPrice->toInt64 being in picoTez
 
-                                                                filledTx->setRevealGasLimit(std::make_shared<BigInt>(gas->reveal));
-                                                                const auto revealFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->reveal.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
-                                                                filledTx->setRevealFees(revealFees);
+                                                        filledTx->setRevealGasLimit(std::make_shared<BigInt>(gas->reveal));
+                                                        const auto revealFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->reveal.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
+                                                        filledTx->setRevealFees(revealFees);
 
-                                                                filledTx->setTransactionGasLimit(std::make_shared<BigInt>(gas->transaction));
-                                                                const auto transactionFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->transaction.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
-                                                                filledTx->setTransactionFees(transactionFees);
+                                                        filledTx->setTransactionGasLimit(std::make_shared<BigInt>(gas->transaction));
+                                                        const auto transactionFees = std::make_shared<BigInt>(static_cast<int64_t>(1 + static_cast<double>(gas->transaction.toInt64()) * static_cast<double>(gasPrice->toInt64()) * 0.000001));
+                                                        filledTx->setTransactionFees(transactionFees);
 
-                                                                return FuturePtr<TezosLikeTransactionApi>::successful(filledTx);
-                                            });
-                                        });
+                                                        return FuturePtr<TezosLikeTransactionApi>::successful(filledTx);
+                                                        });
+                                                    });
+                                                }
+                                                return FuturePtr<TezosLikeTransactionApi>::successful(tx);
+                                            }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, request, burned, senderAddress, balance] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
+                                                auto fees = burned + BigInt(tx->getFees()->toLong());
+                                                // If sender is KT account then the managing account is paying the fees ...
+                                                if (senderAddress.find("KT1") == 0) {
+                                                    fees = fees - BigInt(tx->getFees()->toLong());
+                                                }
+
+                                                if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
+                                                    auto maxPossibleAmountToSend = *balance - fees;
+
+                                                    auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
+                                                    if (maxPossibleAmountToSend < amountToSend) {
+                                                        std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
+                                                        throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
                                                     }
-                                                    return FuturePtr<TezosLikeTransactionApi>::successful(tx);
-                                                }).flatMapPtr<api::TezosLikeTransaction>(self->getMainExecutionContext(), [self, request, burned, senderAddress, balance] (const std::shared_ptr<TezosLikeTransactionApi> &tx) {
-                                                    auto fees = burned + BigInt(tx->getFees()->toLong());
-                                                    // If sender is KT account then the managing account is paying the fees ...
-                                                    if (senderAddress.find("KT1") == 0) {
-                                                        fees = fees - BigInt(tx->getFees()->toLong());
-                                                    }
-
-                                                    if (request.type != api::TezosOperationTag::OPERATION_TAG_DELEGATION) {
-                                                        auto maxPossibleAmountToSend = *balance - fees;
-
-                                                        auto amountToSend = request.wipe ? BigInt::ZERO : *request.value;
-                                                        if (maxPossibleAmountToSend < amountToSend) {
-                                                            std::cout << maxPossibleAmountToSend.to_string() << "<" << amountToSend.to_string() << std::endl;
-                                                            throw make_exception(api::ErrorCode::NOT_ENOUGH_FUNDS, "Cannot gather enough funds.");
-                                                        }
-                                                        tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
-                                                    }
-                                                    return FuturePtr<api::TezosLikeTransaction>::successful(tx);
+                                                    tx->setValue(request.wipe ? std::make_shared<BigInt>(maxPossibleAmountToSend) : request.value);
+                                                }
+                                                return FuturePtr<api::TezosLikeTransaction>::successful(tx);
                                                 });                                        });
                                     });
 

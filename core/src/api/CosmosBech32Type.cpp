@@ -10,16 +10,20 @@ std::string to_string(const CosmosBech32Type& cosmosBech32Type) {
     switch (cosmosBech32Type) {
         case CosmosBech32Type::PUBLIC_KEY: return "PUBLIC_KEY";
         case CosmosBech32Type::PUBLIC_KEY_VAL: return "PUBLIC_KEY_VAL";
+        case CosmosBech32Type::PUBLIC_KEY_VAL_CONS: return "PUBLIC_KEY_VAL_CONS";
         case CosmosBech32Type::ADDRESS: return "ADDRESS";
         case CosmosBech32Type::ADDRESS_VAL: return "ADDRESS_VAL";
+        case CosmosBech32Type::ADDRESS_VAL_CONS: return "ADDRESS_VAL_CONS";
     };
 };
 template <>
 CosmosBech32Type from_string(const std::string& cosmosBech32Type) {
     if (cosmosBech32Type == "PUBLIC_KEY") return CosmosBech32Type::PUBLIC_KEY;
     else if (cosmosBech32Type == "PUBLIC_KEY_VAL") return CosmosBech32Type::PUBLIC_KEY_VAL;
+    else if (cosmosBech32Type == "PUBLIC_KEY_VAL_CONS") return CosmosBech32Type::PUBLIC_KEY_VAL_CONS;
     else if (cosmosBech32Type == "ADDRESS") return CosmosBech32Type::ADDRESS;
-    else return CosmosBech32Type::ADDRESS_VAL;
+    else if (cosmosBech32Type == "ADDRESS_VAL") return CosmosBech32Type::ADDRESS_VAL;
+    else return CosmosBech32Type::ADDRESS_VAL_CONS;
 };
 
 std::ostream &operator<<(std::ostream &os, const CosmosBech32Type &o)
@@ -27,8 +31,10 @@ std::ostream &operator<<(std::ostream &os, const CosmosBech32Type &o)
     switch (o) {
         case CosmosBech32Type::PUBLIC_KEY:  return os << "PUBLIC_KEY";
         case CosmosBech32Type::PUBLIC_KEY_VAL:  return os << "PUBLIC_KEY_VAL";
+        case CosmosBech32Type::PUBLIC_KEY_VAL_CONS:  return os << "PUBLIC_KEY_VAL_CONS";
         case CosmosBech32Type::ADDRESS:  return os << "ADDRESS";
         case CosmosBech32Type::ADDRESS_VAL:  return os << "ADDRESS_VAL";
+        case CosmosBech32Type::ADDRESS_VAL_CONS:  return os << "ADDRESS_VAL_CONS";
     }
 }
 

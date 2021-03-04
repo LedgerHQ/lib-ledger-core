@@ -55,6 +55,7 @@ function command_ios {
     export OSX_SYSROOT=iphoneos
   else
     export TOOLCHAIN_NAME='ios-nocodesign-14-0-dep-9-3'
+
     export OSX_SYSROOT=iphonesimulator
     export ARCH=x86_64
     #Copy iphone.cmake which is not forcing CMAKE_OSX_SYSROOT to iphoneos in cache

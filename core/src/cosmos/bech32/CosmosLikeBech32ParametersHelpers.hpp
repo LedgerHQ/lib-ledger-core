@@ -60,6 +60,14 @@ static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Typ
         {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
         {0x00},
         {0x00}};
+    static const Bech32Parameters::Bech32Struct COSMOS_PUB_VAL_CONS = {
+        "cosmosvalconspub",
+        "cosmosvalconspub",
+        "1",
+        6,
+        {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+        {0x00},
+        {0x00}};
     static const Bech32Parameters::Bech32Struct COSMOS = {
         "cosmos",
         "cosmos",
@@ -76,15 +84,27 @@ static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Typ
         {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
         {0x01},
         {0x01}};
+    static const Bech32Parameters::Bech32Struct COSMOS_VAL_CONS = {
+        "cosmosvalcons",
+        "cosmosvalcons",
+        "1",
+        6,
+        {0x3b6a57b2ULL, 0x26508e6dULL, 0x1ea119faULL, 0x3d4233ddULL, 0x2a1462b3ULL},
+        {0x01},
+        {0x01}};
     switch (type) {
     case api::CosmosBech32Type::PUBLIC_KEY:
         return COSMOS_PUB;
     case api::CosmosBech32Type::PUBLIC_KEY_VAL:
         return COSMOS_PUB_VAL;
+    case api::CosmosBech32Type::PUBLIC_KEY_VAL_CONS:
+        return COSMOS_PUB_VAL_CONS;
     case api::CosmosBech32Type::ADDRESS:
         return COSMOS;
     case api::CosmosBech32Type::ADDRESS_VAL:
         return COSMOS_VAL;
+    case api::CosmosBech32Type::ADDRESS_VAL_CONS:
+        return COSMOS_VAL_CONS;
     default:
         throw make_exception(
             api::ErrorCode::INVALID_ARGUMENT, "No Bech32 parameters set for this Bech32 type");
@@ -94,8 +114,10 @@ static const Bech32Parameters::Bech32Struct getBech32Params(api::CosmosBech32Typ
 static const std::vector<Bech32Struct> ALL_BECH32_PARAMS(
     {getBech32Params(api::CosmosBech32Type::ADDRESS),
      getBech32Params(api::CosmosBech32Type::ADDRESS_VAL),
+     getBech32Params(api::CosmosBech32Type::ADDRESS_VAL_CONS),
      getBech32Params(api::CosmosBech32Type::PUBLIC_KEY),
-     getBech32Params(api::CosmosBech32Type::PUBLIC_KEY_VAL)});
+     getBech32Params(api::CosmosBech32Type::PUBLIC_KEY_VAL),
+     getBech32Params(api::CosmosBech32Type::PUBLIC_KEY_VAL_CONS)});
 
 static bool insertBech32Parameters(soci::session &sql, const Bech32Struct &params)
 {
