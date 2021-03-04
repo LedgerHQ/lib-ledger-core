@@ -60,7 +60,9 @@ TEST(CosmosTransactionTest, BuildSignedSendTxForBroadcast) {
                 "\"to_address\":\"cosmos1da6hgur4wsmpnjyg\"}"
         "}],"
         "\"signatures\":[{"
+            "\"account_number\":\"\","
             "\"pub_key\":{\"type\":\"tendermint/PubKeySecp256k1\",\"value\":\"AsS+z2hDho2VVupD1GUYtRoTyxpIzWwFohwCnqQjH83k\"},"
+            "\"sequence\":\"\","
             "\"signature\":\"9Nn7Az62vDLW0bMgdcO26kzOeVrtd/M0GxXFsePghch7lY098oi6/MFnr0zKoeyoPxLUjCISn6JRvpVJ22WmBg==\""
         "}]}";
     const auto tx = api::CosmosLikeTransactionBuilder::parseRawSignedTransaction(currencies::ATOM, strTx);
@@ -476,7 +478,7 @@ TEST(CosmosTransactionTest, BuildUnjailTxForBroadcast) {
 TEST(CosmosTransactionTest, BuildSendTxForSignature) {
     const std::string strTx = "{"
         "\"account_number\":\"6571\","
-        "\"chain_id\":\"cosmoshub-3\","
+        "\"chain_id\":\"cosmoshub-4\","
         "\"fee\":{\"amount\":[{\"amount\":\"5000\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
         "\"msgs\":[{"
@@ -506,7 +508,7 @@ TEST(CosmosTransactionTest, BuildNoFeeTxForBroadcast) {
         "}}]}";
     const std::string expected = "{"
         "\"mode\":\"block\",\"tx\":{"
-        "\"fee\":{\"amount\":null,\"gas\":\"200000\"},"
+        "\"fee\":{\"amount\":[{\"amount\":\"0\",\"denom\":\"uatom\"}],\"gas\":\"200000\"},"
         "\"memo\":\"Sent from Ledger\","
         "\"msg\":[{"
             "\"type\":\"cosmos-sdk/MsgWithdrawDelegationReward\","
