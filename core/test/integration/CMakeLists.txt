@@ -232,18 +232,26 @@ add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.Succe
 add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.Balances COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.Balances)
 add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.ValidatorSet COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.ValidatorSet)
 add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.ValidatorInfo COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.ValidatorInfo)
-# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetAccountWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetAccountWithExplorer)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetAccountWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetAccountWithExplorer)
 # add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetErrorTransaction COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetErrorTransaction)
-# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetSendWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetSendWithExplorer)
-# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetDelegateWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetDelegateWithExplorer)
-# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetCurrentBlockWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetCurrentBlockWithExplorer)
-# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.AllTransactionsSynchronization COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.AllTransactionsSynchronization)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetSendWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetSendWithExplorer)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetDelegateWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetDelegateWithExplorer)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GetCurrentBlockWithExplorer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GetCurrentBlockWithExplorer)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.AllTransactionsSynchronization COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.AllTransactionsSynchronization)
 add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.BalanceHistoryOperationQuery COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.BalanceHistoryOperationQuery)
-# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GasLimitEstimationForTransfer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GasLimitEstimationForTransfer)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GasLimitEstimationForTransfer COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GasLimitEstimationForTransfer)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GasLimitEstimationForDelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GasLimitEstimationForDelegation)
+add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.InternalFeesMessageInTransaction COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.InternalFeesMessageInTransaction)
+
+# These 2 tests demand that an account maintains unbondings and redelegations on chain
+#
+# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.PendingUnbondings COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.PendingUnbondings)
+# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.PendingRedelegations COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.PendingRedelegations)
+
+# These 3 tests demand that the account is maintained in a state where the transaction
+# would be legal, otherwise the gas estimation fails (node returns 5xx),
+# and the cpp function returns 0 for the estimation
+#
 # add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GasLimitEstimationForWithdrawingRewards COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GasLimitEstimationForWithdrawingRewards)
-# add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GasLimitEstimationForDelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GasLimitEstimationForDelegation)
 # add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GasLimitEstimationForUnDelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GasLimitEstimationForUnDelegation)
 # add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.GasLimitEstimationForRedelegation COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.GasLimitEstimationForRedelegation)
-add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.PendingUnbondings COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.PendingUnbondings)
-add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.PendingRedelegations COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.PendingRedelegations)
-add_test (NAME ledger-core-integration-CosmosStargateWalletSynchronization.InternalFeesMessageInTransaction COMMAND ledger-core-integration-tests --gtest_filter=CosmosStargateWalletSynchronization.InternalFeesMessageInTransaction)
