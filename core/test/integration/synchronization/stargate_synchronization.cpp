@@ -128,12 +128,12 @@ public:
           fmt::print("Block height: {}\n", block.height);
           EXPECT_GT(block.height, 0);
 
-          dispatcher->stop();
+          getTestExecutionContext()->stop();
         });
 
-    account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),
-                                      receiver);
-    dispatcher->waitUntilStopped();
+    auto bus = account->synchronize();
+    bus->subscribe(getTestExecutionContext(), receiver);
+    getTestExecutionContext()->waitUntilStopped();
   }
 
   void TearDown() override {
@@ -355,14 +355,14 @@ TEST_F(CosmosStargateWalletSynchronization, MediumXpubSynchronization) {
         auto txBuilder =
             std::dynamic_pointer_cast<CosmosLikeTransactionBuilder>(
                 account->buildTransaction());
-        dispatcher->stop();
+        getTestExecutionContext()->stop();
       });
 
       auto restoreKey = account->getRestoreKey();
-      account->synchronize()->subscribe(dispatcher->getMainExecutionContext(),
-                                        receiver);
+      auto bus = account->synchronize();
+      bus->subscribe(getTestExecutionContext(), receiver);
 
-      dispatcher->waitUntilStopped();
+      getTestExecutionContext()->waitUntilStopped();
 
       auto block = uv::wait(account->getLastBlock());
       fmt::print("Block height: {}\n", block.height);
