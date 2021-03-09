@@ -65,8 +65,9 @@ If you respect this folder structure (and naming), after `cd lib-ledger-core-bui
 ```
 cmake -DSYS_OPENSSL=ON -DOPENSSL_ROOT_DIR=<path-to-openssl-root-dir>  -DOPENSSL_INCLUDE_DIR=<path-to-openssl-include-files>  -DOPENSSL_SSL_LIBRARIES=<path-to-openssl-libraries> -DOPENSSL_USE_STATIC_LIBS=TRUE ../lib-ledger-core && make
 ```
+NB. if you want to build on `Windows` with Visual Studio by adding the argument `-G "Visual Studio 16 2019"` in the above cmake command, instead of using `make` to build the project, you should open the 'ledger-core.sln' solution file with Visual Studio and build the solution with it
 
-> If you struggle how openssl is installed, for example, on `macOSX`, `openssl` can be installed with
+> If you struggle with how openssl is installed, for example, on `macOSX`, `openssl` can be installed with
 ```
 brew install openssl
 ```
@@ -78,7 +79,7 @@ you can then use the argument `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl` in the
 apt-get install libssl-dev
 ```
 you can then use the argument `-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu -DOPENSSL_INCLUDE_DIR=/usr/include/openssl` in the above cmake command
-"DOPENSSL_ROOT_DIR" are not necessary on linux.
+"DOPENSSL_ROOT_DIR" is not necessary on linux.
 
 > On `Windows`, 
 Openssl can be downloaded and installed from https://slproweb.com/products/Win32OpenSSL.html
@@ -137,7 +138,18 @@ should look like : `postgres://localhost:5432/test_db` .
 In order to run local tests
 ```
 cd lib-ledger-core-build
+```
+> On `Linux` or `macOSX`,
+```
 ctest
+```
+> On `Windows`,
+```
+ctest -C Debug -VV
+```
+if you want to run only one specific unit test. (e.g. the test case `BitcoinLikeWalletSynchronization.MediumXpubSynchronization` in the test project `ledger-core-integration-tests`)
+```
+./core/test/integration/build/ledger-core-integration-tests "--gtest_filter=BitcoinLikeWalletSynchronization.MediumXpubSynchronization"
 ```
 
 ## Documentation
