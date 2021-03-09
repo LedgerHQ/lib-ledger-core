@@ -15,6 +15,7 @@ std::string to_string(const EventCode& eventCode) {
         case EventCode::SYNCHRONIZATION_FAILED: return "SYNCHRONIZATION_FAILED";
         case EventCode::SYNCHRONIZATION_SUCCEED: return "SYNCHRONIZATION_SUCCEED";
         case EventCode::SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT: return "SYNCHRONIZATION_SUCCEED_ON_PREVIOUSLY_EMPTY_ACCOUNT";
+        default: return "UNKNOWN";
     };
 };
 template <>

@@ -10,6 +10,7 @@ std::string to_string(const BitcoinLikeFeePolicy& bitcoinLikeFeePolicy) {
     switch (bitcoinLikeFeePolicy) {
         case BitcoinLikeFeePolicy::PER_BYTE: return "PER_BYTE";
         case BitcoinLikeFeePolicy::PER_KBYTE: return "PER_KBYTE";
+        default: return "UNKNOWN";
     };
 };
 template <>

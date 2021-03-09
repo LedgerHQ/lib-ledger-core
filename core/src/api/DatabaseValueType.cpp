@@ -15,6 +15,7 @@ std::string to_string(const DatabaseValueType& databaseValueType) {
         case DatabaseValueType::LONG_LONG: return "LONG_LONG";
         case DatabaseValueType::UNSIGNED_LONG_LONG: return "UNSIGNED_LONG_LONG";
         case DatabaseValueType::BLOB: return "BLOB";
+        default: return "UNKNOWN";
     };
 };
 template <>

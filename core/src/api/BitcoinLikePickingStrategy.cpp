@@ -11,6 +11,7 @@ std::string to_string(const BitcoinLikePickingStrategy& bitcoinLikePickingStrate
         case BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST: return "DEEP_OUTPUTS_FIRST";
         case BitcoinLikePickingStrategy::OPTIMIZE_SIZE: return "OPTIMIZE_SIZE";
         case BitcoinLikePickingStrategy::MERGE_OUTPUTS: return "MERGE_OUTPUTS";
+        default: return "UNKNOWN";
     };
 };
 template <>

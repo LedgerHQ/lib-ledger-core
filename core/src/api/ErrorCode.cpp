@@ -68,6 +68,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::INVALID_BECH32_FORMAT: return "INVALID_BECH32_FORMAT";
         case ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT: return "INVALID_STELLAR_ADDRESS_FORMAT";
         case ErrorCode::INVALID_STELLAR_MEMO_TYPE: return "INVALID_STELLAR_MEMO_TYPE";
+        default: return "UNKNOWN";
     };
 };
 template <>
