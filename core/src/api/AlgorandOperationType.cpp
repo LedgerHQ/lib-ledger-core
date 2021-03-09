@@ -21,6 +21,7 @@ std::string to_string(const AlgorandOperationType& algorandOperationType) {
         case AlgorandOperationType::ASSET_REVOKE: return "ASSET_REVOKE";
         case AlgorandOperationType::ASSET_FREEZE: return "ASSET_FREEZE";
         case AlgorandOperationType::UNSUPPORTED: return "UNSUPPORTED";
+        default: return "UNKNOWN";
     };
 };
 template <>

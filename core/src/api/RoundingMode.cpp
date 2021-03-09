@@ -12,6 +12,7 @@ std::string to_string(const RoundingMode& roundingMode) {
         case RoundingMode::ROUND_HALF_DOWN: return "ROUND_HALF_DOWN";
         case RoundingMode::ROUND_HALF_EVEN: return "ROUND_HALF_EVEN";
         case RoundingMode::ROUND_HALF_UP: return "ROUND_HALF_UP";
+        default: return "UNKNOWN";
     };
 };
 template <>

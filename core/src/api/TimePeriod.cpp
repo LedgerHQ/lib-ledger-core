@@ -12,6 +12,7 @@ std::string to_string(const TimePeriod& timePeriod) {
         case TimePeriod::DAY: return "DAY";
         case TimePeriod::WEEK: return "WEEK";
         case TimePeriod::MONTH: return "MONTH";
+        default: return "UNKNOWN";
     };
 };
 template <>

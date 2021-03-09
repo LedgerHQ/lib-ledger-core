@@ -17,6 +17,7 @@ std::string to_string(const DynamicType& dynamicType) {
         case DynamicType::ARRAY: return "ARRAY";
         case DynamicType::STRING: return "STRING";
         case DynamicType::UNDEFINED: return "UNDEFINED";
+        default: return "UNKNOWN";
     };
 };
 template <>

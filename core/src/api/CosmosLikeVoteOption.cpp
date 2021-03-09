@@ -12,6 +12,7 @@ std::string to_string(const CosmosLikeVoteOption& cosmosLikeVoteOption) {
         case CosmosLikeVoteOption::COSMOSVOTENO: return "COSMOSVOTENO";
         case CosmosLikeVoteOption::COSMOSVOTENOWITHVETO: return "COSMOSVOTENOWITHVETO";
         case CosmosLikeVoteOption::COSMOSVOTEABSTAIN: return "COSMOSVOTEABSTAIN";
+        default: return "UNKNOWN";
     };
 };
 template <>

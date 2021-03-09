@@ -14,6 +14,7 @@ std::string to_string(const CosmosBech32Type& cosmosBech32Type) {
         case CosmosBech32Type::ADDRESS: return "ADDRESS";
         case CosmosBech32Type::ADDRESS_VAL: return "ADDRESS_VAL";
         case CosmosBech32Type::ADDRESS_VAL_CONS: return "ADDRESS_VAL_CONS";
+        default: return "UNKNOWN";
     };
 };
 template <>
