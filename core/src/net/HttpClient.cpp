@@ -63,10 +63,15 @@ namespace ledger {
                                      const std::vector<uint8_t> &body,
                                      const std::unordered_map<std::string, std::string> &headers,
                                      const std::string &baseUrl) {
+            //set default headers
+            std::unordered_map<std::string, std::string> fullheaders{{"Content-Type", "application/json"}};           
+            for (const auto& item : headers) {
+                fullheaders[item.first] = item.second;
+            }
             return createRequest(api::HttpMethod::POST,
                                  path,
                                  std::experimental::optional<std::vector<uint8_t>>(body),
-                                 headers,
+                                 fullheaders,
                                  baseUrl);
         }
 
