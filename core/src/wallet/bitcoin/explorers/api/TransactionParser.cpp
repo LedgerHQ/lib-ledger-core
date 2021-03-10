@@ -160,8 +160,14 @@ namespace ledger {
             PROXY_PARSE(String, str, length, copy) {
                 std::string value(str, length);
                 if (_lastKey == "hash") {
+                    if (_transaction->hash.empty()) {
+                        _transaction->hash = value;
+                    }
+                }
+                else if (_lastKey == "id") {
                     _transaction->hash = value;
-                } else if (_lastKey == "received_at") {
+                }
+                else if (_lastKey == "received_at") {
                     _transaction->receivedAt = DateUtils::fromJSON(value);
                 }
                 return true;
