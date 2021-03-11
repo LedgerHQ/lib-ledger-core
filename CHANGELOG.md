@@ -16,6 +16,7 @@
 - Deprecate events NEW_OPERATION and NEW_ERC20_OPERATIONS for UPDATE_OPERATION and UPDATE_ERC
 - Fix XRP incremental synchronization
 - Improve runtime performances by splitting db connections between Write pool and Read pool
+- use of tx "id" field (if present) instead of "hash" for btc explorers
 
 ## 3.5.0
 
