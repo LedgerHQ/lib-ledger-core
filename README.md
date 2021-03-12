@@ -6,14 +6,11 @@
     * [External dependencies:](#external-dependencies)
 * [Build of C++ library](#build-of-c-library)
     * [Building for JNI](#building-for-jni)
-    * [Build library on docker](#build-library-on-docker)
-    * [Build library with OpenSSL](#build-library-with-openssl)
     * [Build library with PostgreSQL](#build-library-with-postgresql)
 * [Documentation](#documentation)
 * [Binding to node.js](#binding-to-nodejs)
     * [Using the node module](#using-the-node-module)
     * [Generating a new node module for your system](#generating-a-new-node-module-for-your-system)
-* [Test NodeJs](#test-nodejs)
 * [Support](#support)
     * [Libcore:](#libcore)
     * [Bindings:](#bindings)
@@ -51,7 +48,7 @@ This project is based on **_cmake_** as a build system so you should install it 
 
 ### External dependencies:
 
-* [Qt5](https://www.qt.io/download) is needed to build tests of the library.
+* [OpenSSL](https://www.openssl.org/) is needed to build tests of the library.
 * Generation of binding is automated with [Djinni](https://github.com/dropbox/djinni).
 * Build on multiple Operating Systems is based on [polly](https://github.com/ruslo/polly) toolchains.
 
@@ -66,21 +63,37 @@ This project is based on **_cmake_** as a build system so you should install it 
 If you respect this folder structure (and naming), after `cd lib-ledger-core-build`, you can build the library by running:
 
 ```
-cmake -DCMAKE_INSTALL_PREFIX=/path/to/qt5 ../lib-ledger-core && make
+cmake -DSYS_OPENSSL=ON -DOPENSSL_ROOT_DIR=<path-to-openssl-root-dir>  -DOPENSSL_INCLUDE_DIR=<path-to-openssl-include-files>  -DOPENSSL_SSL_LIBRARIES=<path-to-openssl-libraries> -DOPENSSL_USE_STATIC_LIBS=TRUE ../lib-ledger-core && make
 ```
+NB. if you want to build on `Windows` with Visual Studio by adding the argument `-G "Visual Studio 16 2019"` in the above cmake command, instead of using `make` to build the project, you should open the 'ledger-core.sln' solution file with Visual Studio and build the solution with it
 
-> (*macOSX users*) If you struggle to find where Qt5 is located, for example, on `macOSX`, `qt5` can
-> be found at:
+> If you struggle with how openssl is installed, for example, on `macOSX`, `openssl` can be installed with
+```
+brew install openssl
+```
+you can then use the argument `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl` in the above cmake command
+"DOPENSSL_INCLUDE_DIR" and "DOPENSSL_SSL_LIBRARIES" are not necessary on mac.
 
+> On `Linux`, 
 ```
-/usr/local/Cellar/qt/<qt_version>/bin
+apt-get install libssl-dev
 ```
+you can then use the argument `-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu -DOPENSSL_INCLUDE_DIR=/usr/include/openssl` in the above cmake command
+"DOPENSSL_ROOT_DIR" is not necessary on linux.
+
+> On `Windows`, 
+Openssl can be downloaded and installed from https://slproweb.com/products/Win32OpenSSL.html
+"DOPENSSL_ROOT_DIR" is then the installed path of Openssl in the above cmake command
+"DOPENSSL_INCLUDE_DIR" and "DOPENSSL_SSL_LIBRARIES" are not necessary on windows.
 
 Several CMake arguments might interest you there:
 
   - `-DCMAKE_BUILD_TYPE=Debug`: you should always set that when testing as you will get DWARF debug
     symbols and debugging instruments support.
   - `-DCMAKE_EXPORT_COMPILE_COMMANDS=YES`: useful when you’re using a C++ linter, such as [cquery].
+  - `-G "Visual Studio 16 2019"`: build libcore with Visual Studio on Windows
+  - `-G Xcode`: build libcore with Xcode on Mac
+  - `-DBUILD_TESTS=OFF`: build libcore without unit tests. In this case, openssl arguments are not needed
 
 ### Building for JNI
 
@@ -91,36 +104,6 @@ cmake -DTARGET_JNI=ON
 ```
 
 This will add JNI files to the library compilation and remove tests. You need at least a JDK 7 to build for JNI (OpenJDK or Oracle JDK)
-
-### Build library on docker
-
-You can build the core library or debug it from a docker image:
-
-1. Build the image `docker build -t ledger-core-env .` (considering that you are currently at the root of the repository)
-2. Run the image `docker run -ti --cap-add=SYS_PTRACE --security-opt seccomp=unconfined ledger-core-env`
-3. Notice that stopping a container will wipe it. If you need multiple instance over the same container one way is to start the container as a daemon and then get a shell on it.
-    1. Start the container as daemon `docker run --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -d ledger-core-env`
-    2. Get the container ID with `docker ps`
-    3. Open shells `docker exec -ti :container_id zsh` where :container_id has to be replaced by the container you got from `docker ps`
-
-Note: If you feel on fire you could use docker volumes to persist data.
-
-### Build library with OpenSSL
-
-It is possible to build the library with embedded version of OpenSSL (which is advised for 
-Android and iOS builds) or you can rely on OpenSSL provided by the system.  
-
-To build the library with system's OpenSSL you should configure the project by providing
-`-DSYS_OPENSSL=ON` option plus some additional variables to allow `cmake` to find OpenSSL library:
-
-- Macos: `-DOPENSSL_ROOT_DIR=<path-to-openssl-root-dir>` is needed, for example, if you 
-installed OpenSSL through `brew` you can pass: `-DOPENSSL_ROOT_DIR=/usr/local/opt/openssl`,
-
--Linux: `-OPENSSL_SSL_LIBRARIES=<path-to-openssl-libraries> -DOPENSSL_INCLUDE_DIR=<path-to-openssl-include-files>`,
-for example, if you installed OpenSSL through `apt-get` it will look like:
-`-DOPENSSL_SSL_LIBRARIES=/usr/lib/x86_64-linux-gnu -DOPENSSL_INCLUDE_DIR=/usr/include/openssl`
-
-In both cases we are supporting OpenSSL `1.0` and `1.1`.
 
 ### Build library with PostgreSQL
 
@@ -134,7 +117,7 @@ command `find_package(PostgreSQL REQUIRED)` will fail during configuration.
 To compile libcore with PostgreSQL support, you should add `-DPG_SUPPORT=ON` to your 
 `CMake` configuration command.
 
-For Linux, you might need to add `-DPostgreSQL_INCLUDE_DIR=path/to/include/dir` in your configuration
+You also need to add `-DPostgreSQL_INCLUDE_DIR=path/to/include/dir` in your configuration
 as a hint for headers' location (e.g. `/usr/include/postgresql`).
 
 #### Wallet Pool Configuration
@@ -147,11 +130,28 @@ PostgreSQL `DatabaseBackend` : `api::DatabaseBackend::getPostgreSQLBackend(int32
 
 #### Local testing
 
-If testing locally, make sure to have a running PostgreSQL server.
+If you don't build the library with PostgreSQL, sqlite3 shall be used as Database.
+If you build the library with PostgreSQL, make sure to have a running PostgreSQL server or PostgreSQL docker container
 As an example, if you are running it on `localhost:5432` and `test_db` as database name,
 database's name forwarded to the pool (through configuration key `api::PoolConfiguration::DATABASE_NAME`)  
 should look like : `postgres://localhost:5432/test_db` .  
-	
+In order to run local tests
+```
+cd lib-ledger-core-build
+```
+> On `Linux` or `macOSX`,
+```
+ctest
+```
+> On `Windows`,
+```
+ctest -C Debug -VV
+```
+if you want to run only one specific unit test. (e.g. the test case `BitcoinLikeWalletSynchronization.MediumXpubSynchronization` in the test project `ledger-core-integration-tests`)
+```
+./core/test/integration/build/ledger-core-integration-tests "--gtest_filter=BitcoinLikeWalletSynchronization.MediumXpubSynchronization"
+```
+
 ## Documentation
 
 You can generate the Doxygen documentation by running the `doc` target (for instance, `make doc`
@@ -195,11 +195,6 @@ Generating bindings is a several steps process:
   5. You will have the module in `build/Release/ledgerapp_nodejs.node` in the bindings project.
   6. `npm i` should install your own version.
 
-## Test NodeJs
-
-```
-node ledger-core-samples/nodejs/tests/wallet-pool-test.js
-```
 ## Support
 
 ### Libcore:
