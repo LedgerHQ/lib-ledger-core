@@ -70,8 +70,8 @@ namespace ledger {
             static const optional<api::Error> NO_CORE_ERROR;
 
         private:
-            api::ErrorCode _code;
-            std::string _message;
+            api::ErrorCode _code = api::ErrorCode::UNKNOWN;
+            std::string _message = "UNKNOWN";
             Option<std::shared_ptr<void>> _userData;
         };
 
