@@ -117,8 +117,21 @@ namespace ledger {
 
             if (buddy->changeAmount > BigInt(_currency.bitcoinLikeNetworkParameters.value().DustAmount)) {
                 // TODO implement multi change
-                // TODO implement use specific change address
-                auto changeAddress = buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString();
+                // If multiple change paths provided we take the last one
+                auto changeAddressIndex = Try<uint32_t>::from([&](){
+                    if (buddy->request.changePaths.empty()) {
+                        throw make_exception(api::ErrorCode::INVALID_ARGUMENT, "No change path provided by user.");
+                    }
+                    auto it = buddy->request.changePaths.back();
+                    return std::stoul(it.substr(it.find_last_of('/') + 1), nullptr, 0);
+                });
+                auto changeAddress = changeAddressIndex.isFailure() ?
+                                     buddy->keychain->getFreshAddress(BitcoinLikeKeychain::CHANGE)->toString():
+                                     buddy->keychain->getAllObservableAddresses(
+                                             BitcoinLikeKeychain::CHANGE,
+                                             changeAddressIndex.getValue(),
+                                             changeAddressIndex.getValue()
+                                     )[0]->toString();
 
                 auto amount = buddy->changeAmount;
                 auto script = BitcoinLikeScript::fromAddress(changeAddress, _currency);

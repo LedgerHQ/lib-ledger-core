@@ -199,8 +199,36 @@ TEST_F(BitcoinMakeP2PKHTransaction, Toto) {
     builder->sendToAddress(api::Amount::fromLong(currency, 1000), "ms8C1x7qHa3WJM986NKyx267i2LFGaHRZn");
     builder->pickInputs(api::BitcoinLikePickingStrategy::DEEP_OUTPUTS_FIRST, 0xFFFFFFFF);
     builder->setFeesPerByte(api::Amount::fromLong(currency, 10));
-    auto f = builder->build();
-    auto tx = ::wait(f);
+
+    // Change as fresh address
+    auto freshChangeAddress = bla->getKeychain()->getFreshAddress(BitcoinLikeKeychain::CHANGE);
+    auto changePath = freshChangeAddress->getDerivationPath().value_or("");
+    EXPECT_GT(changePath.size(), 0);
+    auto tx = ::wait(builder->build());
+    auto addressFoundInOutputs = [=] (const std::shared_ptr<api::BitcoinLikeTransaction> &inputTx,
+                                      const std::string &inputAddress) {
+        return std::find_if(inputTx->getOutputs().begin(),
+                            inputTx->getOutputs().end(),
+                            [&] (const std::shared_ptr<api::BitcoinLikeOutput> &out) {
+                                if (!out) {
+                                    return false;
+                                }
+                                return out->getAddress().value_or("") == inputAddress;
+                            }
+        ) != inputTx->getOutputs().end();
+    };
+    EXPECT_TRUE(addressFoundInOutputs(tx, freshChangeAddress->toString()));
+
+    // Change as chosen address
+    // Compare change address to the one set
+    auto changeAddress = bla->getKeychain()->getAllObservableAddresses(BitcoinLikeKeychain::CHANGE, 5, 5);
+    EXPECT_GT(changeAddress.size(), 0);
+    changePath = changeAddress[0]->getDerivationPath().value_or("");
+    EXPECT_GT(changePath.size(), 0);
+    builder->addChangePath(changePath);
+    tx = ::wait(builder->build());
+    EXPECT_TRUE(addressFoundInOutputs(tx, changeAddress[0]->toString()));
+
     std::cout << hex::toString(tx->serialize()) << std::endl;
     std::cout << tx->getOutputs()[0]->getAddress().value_or("NOP") << std::endl;
     auto parsedTx = BitcoinLikeTransactionBuilder::parseRawUnsignedTransaction(wallet->getCurrency(), tx->serialize(), 0);
