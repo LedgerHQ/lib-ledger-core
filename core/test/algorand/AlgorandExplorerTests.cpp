@@ -64,7 +64,7 @@ public:
     std::shared_ptr<BlockchainExplorer> explorer;
 };
 
-TEST_F(AlgorandExplorerTest, GetBlock) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetBlock) {
 
     uint64_t blockHeight = 6000000; // Some arbitrary block
     std::chrono::system_clock::time_point blockTime(std::chrono::seconds(1586345796));
@@ -76,7 +76,7 @@ TEST_F(AlgorandExplorerTest, GetBlock) {
     EXPECT_EQ(block.time, blockTime);
 }
 
-TEST_F(AlgorandExplorerTest, GetLatestBlock) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetLatestBlock) {
 
     api::Block block = uv::wait(explorer->getLatestBlock());
 
@@ -85,7 +85,7 @@ TEST_F(AlgorandExplorerTest, GetLatestBlock) {
     //EXPECT_GT(block.time.time_since_epoch().count(), 1593455156000000000); // Fails on CI with different system clock
 }
 
-TEST_F(AlgorandExplorerTest, GetAccount) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetAccount) {
 
     auto address = ::algorand::Address(OBELIX_ADDRESS);
     model::Account account = uv::wait(explorer->getAccount(address.toString()));
@@ -107,7 +107,7 @@ TEST_F(AlgorandExplorerTest, GetAccount) {
     assertSameAssetParams(testAsset(), account.createdAssets.at(342836));
 }
 
-TEST_F(AlgorandExplorerTest, GetPaymentTransaction) {
+TEST_F(AlgorandExplorerTest, DISABLED_GetPaymentTransaction) {
     auto txRef = paymentTransaction();
     model::Transaction tx = uv::wait(explorer->getTransactionById(*txRef.header.id));
     assertSameTransaction(txRef, tx);
