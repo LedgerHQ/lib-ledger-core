@@ -61,7 +61,7 @@ namespace {
         std::vector<std::string> inputData;
         std::vector<std::string> gasPrice;
         std::vector<std::string> gasLimit;
-        std::vector<Option<std::string>> gasUsed;
+        std::vector<std::string> gasUsed;
         std::vector<uint64_t> confirmations;
         std::vector<uint64_t> status;
 
@@ -77,9 +77,7 @@ namespace {
             inputData.push_back(hex::toString(tx.inputData));
             gasPrice.push_back(tx.gasPrice.toHexString());
             gasLimit.push_back(tx.gasLimit.toHexString());
-            gasUsed.push_back(tx.gasUsed.map<std::string>([] (const auto& i) {
-                return i.toHexString();
-            }));
+            gasUsed.push_back(tx.gasUsed.getValueOr(BigInt::ZERO).toHexString());
             confirmations.push_back(tx.confirmations);
             status.push_back(tx.status);
         }
