@@ -6,9 +6,6 @@ dependencies:
 linux_job: &linux_job
   docker:
     - image: docker.pkg.github.com/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:sha-118471e
-      auth:
-        username: $GITHUB_PACKAGE_USERNAME
-        password: $GITHUB_PACKAGE_PASSWORD
 jobs:
   build_linux_release:
     <<: *linux_job
