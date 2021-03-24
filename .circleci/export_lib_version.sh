@@ -21,4 +21,4 @@ fi
 echo "export LIB_VERSION=$LIB_VERSION" >> $BASH_ENV
 
 echo "=====> Libcore version"
-echo $LIB_VERSION
+echo $LIB_VERSION 
