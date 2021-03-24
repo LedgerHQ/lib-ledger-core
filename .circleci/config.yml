@@ -5,7 +5,10 @@ dependencies:
     - ~/cmake-3.16.5
 linux_job: &linux_job
   docker:
-    - image: docker.pkg.github.com/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:sha-118471e
+    - image: docker.pkg.github.com/ledgerhq/lib-ledger-core-build-env/lib-ledger-core-build-env:1.0.1
+      auth:
+        username: $DOCKER_USERNAME
+        password: $DOCKER_PASSWORD
 jobs:
   build_linux_release:
     <<: *linux_job
@@ -349,44 +352,57 @@ jobs:
           rsync -e "ssh -o StrictHostKeyChecking=no" -a --chown :www-data --delete
           build/doc/html/ docs.libcore.ledger.com@statics.ledger.fr:.
 
+default_context: &default_context
+  context:
+    - githubpkg
+
+
 workflows:
   version: 2
   build:
     jobs:
       - build_linux_release:
+          <<: *default_context
           filters:
             tags:
               only: /.*/
       - build_linux_jni_release:
+          <<: *default_context
           filters:
             tags:
               only: /.*/
             branches:
               only: /^(?!pull\/).*$/
       - build_android_release:
+          <<: *default_context
           filters:
             tags:
               only: /.*/
             branches:
               only: /^(?!pull\/).*$/
       - build_macos_release:
+          <<: *default_context
           filters:
             tags:
               only: /.*/
       - build_macos_ios_release:
+          <<: *default_context
           filters:
             tags:
               only: /.*/
             branches:
               only: /^(?!pull\/).*$/
       - build_macos_jni_release:
+          <<: *default_context
           filters:
             tags:
               only: /.*/
             branches:
               only: /^(?!pull\/).*$/
-      - build_linux_debug
-      - build_macos_debug
+      - build_linux_debug:
+          <<: *default_context
+      - build_macos_debug:
+          <<: *default_context
       - publish_jar:
           requires:
             - build_linux_jni_release
