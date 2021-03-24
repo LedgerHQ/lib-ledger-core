@@ -1,5 +1,5 @@
 ## 4.0.0
-> 2021/02/12 NRT
+> 2021/03/24 NRT
 
 - Stable test environment with libuv and cpp-http implementatioon of services
 - Fix and improve keychain discovery during synchronization
