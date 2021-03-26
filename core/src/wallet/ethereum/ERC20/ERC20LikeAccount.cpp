@@ -212,7 +212,6 @@ namespace ledger {
                 throw Exception(api::ErrorCode::INVALID_EIP55_FORMAT, "Invalid address : Invalid EIP55 format");
             }
             return getBalance().map<std::vector<uint8_t>>(getContext(), [amount, address] (const std::shared_ptr<api::BigInt> &balance) {
-
                 BytesWriter writer;
                 writer.writeByteArray(hex::toByteArray(erc20Tokens::ERC20MethodsID.at("transfer")));
 

@@ -116,4 +116,13 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeAccount_00024CppProxy_native_1addERC20Accounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_erc20Addresses)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::EthereumLikeAccount>(nativeRef);
+        ref->addERC20Accounts(::djinni::List<::djinni::String>::toCpp(jniEnv, j_erc20Addresses));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
 }  // namespace djinni_generated
