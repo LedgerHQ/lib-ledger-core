@@ -1,6 +1,15 @@
 ## 4.1.0
 > 2021/03/25 Tezos for NRT
 
+- Performance improvements
+- Tezos: support of all tz adresses (tz1, tz2, tz3) by implementing ED25519, SECP256K1 and P256
+- Tezos: support of grouped transaction messages 
+- Tezos: fix smart contracts balance
+- Tezos: concurent transactions (optimistic counter)
+- Tezos: get current delegate
+- Tezos: fees estimation 
+- Tezos: get token balance
+
 ## 4.0.0
 > 2021/02/12 NRT
 
