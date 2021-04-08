@@ -8,12 +8,12 @@
 
 namespace djinni_generated {
 
-StellarLikeMemo::StellarLikeMemo() : ::djinni::JniInterface<::ledger::core::api::StellarLikeMemo, StellarLikeMemo>("co/ledger/core/StellarLikeMemo$CppProxy") {}
+StellarLikeMemo::StellarLikeMemo() : ::djinni::JniInterface<::ledger::core::api::StellarLikeMemo, StellarLikeMemo>("StellarLikeMemo$CppProxy") {}
 
 StellarLikeMemo::~StellarLikeMemo() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_StellarLikeMemo_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -21,7 +21,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_native_1getMemoType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_StellarLikeMemo_00024CppProxy_native_1getMemoType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -31,7 +31,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_nat
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_native_1getMemoText(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_StellarLikeMemo_00024CppProxy_native_1getMemoText(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -41,7 +41,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_nat
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_native_1getMemoId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_StellarLikeMemo_00024CppProxy_native_1getMemoId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -51,7 +51,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_nat
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_native_1getMemoHash(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_StellarLikeMemo_00024CppProxy_native_1getMemoHash(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -61,7 +61,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_native_1getMemoReturn(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_StellarLikeMemo_00024CppProxy_native_1getMemoReturn(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -71,7 +71,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_StellarLikeMemo_00024CppProxy_native_1memoValuetoString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_StellarLikeMemo_00024CppProxy_native_1memoValuetoString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

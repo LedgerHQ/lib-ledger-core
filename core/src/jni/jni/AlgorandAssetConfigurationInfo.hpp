@@ -25,10 +25,10 @@ private:
     AlgorandAssetConfigurationInfo();
     friend ::djinni::JniClass<AlgorandAssetConfigurationInfo>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandAssetConfigurationInfo") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Lco/ledger/core/AlgorandAssetParams;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AlgorandAssetConfigurationInfo") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;LAlgorandAssetParams;)V") };
     const jfieldID field_assetId { ::djinni::jniGetFieldID(clazz.get(), "assetId", "Ljava/lang/String;") };
-    const jfieldID field_assetParams { ::djinni::jniGetFieldID(clazz.get(), "assetParams", "Lco/ledger/core/AlgorandAssetParams;") };
+    const jfieldID field_assetParams { ::djinni::jniGetFieldID(clazz.get(), "assetParams", "LAlgorandAssetParams;") };
 };
 
 }  // namespace djinni_generated

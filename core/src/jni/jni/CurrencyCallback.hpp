@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::CurrencyCallback, ::djinni_generated::CurrencyCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CurrencyCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/Currency;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CurrencyCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LCurrency;LError;)V") };
 };
 
 }  // namespace djinni_generated

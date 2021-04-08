@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-PoolConfiguration::PoolConfiguration() : ::djinni::JniInterface<::ledger::core::api::PoolConfiguration, PoolConfiguration>("co/ledger/core/PoolConfiguration$CppProxy") {}
+PoolConfiguration::PoolConfiguration() : ::djinni::JniInterface<::ledger::core::api::PoolConfiguration, PoolConfiguration>("PoolConfiguration$CppProxy") {}
 
 PoolConfiguration::~PoolConfiguration() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_PoolConfiguration_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_PoolConfiguration_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

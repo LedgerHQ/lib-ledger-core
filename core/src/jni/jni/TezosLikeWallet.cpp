@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-TezosLikeWallet::TezosLikeWallet() : ::djinni::JniInterface<::ledger::core::api::TezosLikeWallet, TezosLikeWallet>("co/ledger/core/TezosLikeWallet$CppProxy") {}
+TezosLikeWallet::TezosLikeWallet() : ::djinni::JniInterface<::ledger::core::api::TezosLikeWallet, TezosLikeWallet>("TezosLikeWallet$CppProxy") {}
 
 TezosLikeWallet::~TezosLikeWallet() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_TezosLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeWallet_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeWallet_00024CppProxy_native_1isDelegate(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeWallet_00024CppProxy_native_1isDelegate(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

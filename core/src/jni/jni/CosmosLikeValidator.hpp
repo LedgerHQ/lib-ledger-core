@@ -25,12 +25,12 @@ private:
     CosmosLikeValidator();
     friend ::djinni::JniClass<CosmosLikeValidator>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeValidator") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/CosmosLikeValidatorDescription;Lco/ledger/core/CosmosLikeValidatorCommission;Lco/ledger/core/CosmosLikeValidatorDistributionInformation;Lco/ledger/core/CosmosLikeValidatorSigningInformation;ILjava/util/Date;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
-    const jfieldID field_validatorDetails { ::djinni::jniGetFieldID(clazz.get(), "validatorDetails", "Lco/ledger/core/CosmosLikeValidatorDescription;") };
-    const jfieldID field_commission { ::djinni::jniGetFieldID(clazz.get(), "commission", "Lco/ledger/core/CosmosLikeValidatorCommission;") };
-    const jfieldID field_distInfo { ::djinni::jniGetFieldID(clazz.get(), "distInfo", "Lco/ledger/core/CosmosLikeValidatorDistributionInformation;") };
-    const jfieldID field_signInfo { ::djinni::jniGetFieldID(clazz.get(), "signInfo", "Lco/ledger/core/CosmosLikeValidatorSigningInformation;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeValidator") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LCosmosLikeValidatorDescription;LCosmosLikeValidatorCommission;LCosmosLikeValidatorDistributionInformation;LCosmosLikeValidatorSigningInformation;ILjava/util/Date;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
+    const jfieldID field_validatorDetails { ::djinni::jniGetFieldID(clazz.get(), "validatorDetails", "LCosmosLikeValidatorDescription;") };
+    const jfieldID field_commission { ::djinni::jniGetFieldID(clazz.get(), "commission", "LCosmosLikeValidatorCommission;") };
+    const jfieldID field_distInfo { ::djinni::jniGetFieldID(clazz.get(), "distInfo", "LCosmosLikeValidatorDistributionInformation;") };
+    const jfieldID field_signInfo { ::djinni::jniGetFieldID(clazz.get(), "signInfo", "LCosmosLikeValidatorSigningInformation;") };
     const jfieldID field_unbondingHeight { ::djinni::jniGetFieldID(clazz.get(), "unbondingHeight", "I") };
     const jfieldID field_unbondingTime { ::djinni::jniGetFieldID(clazz.get(), "unbondingTime", "Ljava/util/Date;") };
     const jfieldID field_minSelfDelegation { ::djinni::jniGetFieldID(clazz.get(), "minSelfDelegation", "Ljava/lang/String;") };

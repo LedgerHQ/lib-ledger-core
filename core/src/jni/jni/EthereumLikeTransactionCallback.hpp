@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::EthereumLikeTransactionCallback, ::djinni_generated::EthereumLikeTransactionCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EthereumLikeTransactionCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/EthereumLikeTransaction;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("EthereumLikeTransactionCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LEthereumLikeTransaction;LError;)V") };
 };
 
 }  // namespace djinni_generated

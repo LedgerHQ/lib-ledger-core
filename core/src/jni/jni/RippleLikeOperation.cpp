@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-RippleLikeOperation::RippleLikeOperation() : ::djinni::JniInterface<::ledger::core::api::RippleLikeOperation, RippleLikeOperation>("co/ledger/core/RippleLikeOperation$CppProxy") {}
+RippleLikeOperation::RippleLikeOperation() : ::djinni::JniInterface<::ledger::core::api::RippleLikeOperation, RippleLikeOperation>("RippleLikeOperation$CppProxy") {}
 
 RippleLikeOperation::~RippleLikeOperation() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_RippleLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeOperation_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_RippleLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

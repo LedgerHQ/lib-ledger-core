@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-TezosLikeOperation::TezosLikeOperation() : ::djinni::JniInterface<::ledger::core::api::TezosLikeOperation, TezosLikeOperation>("co/ledger/core/TezosLikeOperation$CppProxy") {}
+TezosLikeOperation::TezosLikeOperation() : ::djinni::JniInterface<::ledger::core::api::TezosLikeOperation, TezosLikeOperation>("TezosLikeOperation$CppProxy") {}
 
 TezosLikeOperation::~TezosLikeOperation() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_TezosLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeOperation_00024CppProxy_nat
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_TezosLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

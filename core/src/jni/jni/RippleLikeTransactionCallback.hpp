@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::RippleLikeTransactionCallback, ::djinni_generated::RippleLikeTransactionCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/RippleLikeTransactionCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/RippleLikeTransaction;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("RippleLikeTransactionCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LRippleLikeTransaction;LError;)V") };
 };
 
 }  // namespace djinni_generated

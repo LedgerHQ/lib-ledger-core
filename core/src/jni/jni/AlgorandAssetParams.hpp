@@ -25,7 +25,7 @@ private:
     AlgorandAssetParams();
     friend ::djinni::JniClass<AlgorandAssetParams>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandAssetParams") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AlgorandAssetParams") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_assetId { ::djinni::jniGetFieldID(clazz.get(), "assetId", "Ljava/lang/String;") };
     const jfieldID field_assetName { ::djinni::jniGetFieldID(clazz.get(), "assetName", "Ljava/lang/String;") };

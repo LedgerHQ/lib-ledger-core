@@ -10,12 +10,12 @@
 
 namespace djinni_generated {
 
-StellarLikeTransaction::StellarLikeTransaction() : ::djinni::JniInterface<::ledger::core::api::StellarLikeTransaction, StellarLikeTransaction>("co/ledger/core/StellarLikeTransaction$CppProxy") {}
+StellarLikeTransaction::StellarLikeTransaction() : ::djinni::JniInterface<::ledger::core::api::StellarLikeTransaction, StellarLikeTransaction>("StellarLikeTransaction$CppProxy") {}
 
 StellarLikeTransaction::~StellarLikeTransaction() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_StellarLikeTransaction_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -23,7 +23,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1toRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_StellarLikeTransaction_00024CppProxy_native_1toRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -33,7 +33,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeTransaction_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1toSignatureBase(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_StellarLikeTransaction_00024CppProxy_native_1toSignatureBase(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -43,7 +43,7 @@ CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_StellarLikeTransaction_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1putSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature, jobject j_address)
+CJNIEXPORT void JNICALL Java_StellarLikeTransaction_00024CppProxy_native_1putSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature, jobject j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -53,7 +53,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1getSourceAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_StellarLikeTransaction_00024CppProxy_native_1getSourceAccount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -63,7 +63,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppPr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1getSourceAccountSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_StellarLikeTransaction_00024CppProxy_native_1getSourceAccountSequence(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -73,7 +73,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppPr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1getFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_StellarLikeTransaction_00024CppProxy_native_1getFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -83,7 +83,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppPr
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeTransaction_00024CppProxy_native_1getMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_StellarLikeTransaction_00024CppProxy_native_1getMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

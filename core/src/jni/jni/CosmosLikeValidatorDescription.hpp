@@ -25,7 +25,7 @@ private:
     CosmosLikeValidatorDescription();
     friend ::djinni::JniClass<CosmosLikeValidatorDescription>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeValidatorDescription") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeValidatorDescription") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_moniker { ::djinni::jniGetFieldID(clazz.get(), "moniker", "Ljava/lang/String;") };
     const jfieldID field_identity { ::djinni::jniGetFieldID(clazz.get(), "identity", "Ljava/lang/String;") };

@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-DatabaseBackend::DatabaseBackend() : ::djinni::JniInterface<::ledger::core::api::DatabaseBackend, DatabaseBackend>("co/ledger/core/DatabaseBackend$CppProxy") {}
+DatabaseBackend::DatabaseBackend() : ::djinni::JniInterface<::ledger::core::api::DatabaseBackend, DatabaseBackend>("DatabaseBackend$CppProxy") {}
 
 DatabaseBackend::~DatabaseBackend() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_DatabaseBackend_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jint JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native_1getConnectionPoolSize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_DatabaseBackend_00024CppProxy_native_1getConnectionPoolSize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native_1getReadonlyConnectionPoolSize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_DatabaseBackend_00024CppProxy_native_1getReadonlyConnectionPoolSize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jint JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native_1enableQueryLogging(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jboolean j_enable)
+CJNIEXPORT jobject JNICALL Java_DatabaseBackend_00024CppProxy_native_1enableQueryLogging(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jboolean j_enable)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -50,7 +50,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_nat
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_native_1isLoggingEnabled(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jboolean JNICALL Java_DatabaseBackend_00024CppProxy_native_1isLoggingEnabled(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -60,7 +60,7 @@ CJNIEXPORT jboolean JNICALL Java_co_ledger_core_DatabaseBackend_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getSqlite3Backend(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_DatabaseBackend_getSqlite3Backend(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -69,7 +69,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getSqlite3Backend
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getPostgreSQLBackend(JNIEnv* jniEnv, jobject /*this*/, jint j_connectionPoolSize, jint j_readonlyConnectionPoolSize)
+CJNIEXPORT jobject JNICALL Java_DatabaseBackend_getPostgreSQLBackend(JNIEnv* jniEnv, jobject /*this*/, jint j_connectionPoolSize, jint j_readonlyConnectionPoolSize)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -79,7 +79,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_getPostgreSQLBack
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DatabaseBackend_createBackendFromEngine(JNIEnv* jniEnv, jobject /*this*/, jobject j_engine)
+CJNIEXPORT jobject JNICALL Java_DatabaseBackend_createBackendFromEngine(JNIEnv* jniEnv, jobject /*this*/, jobject j_engine)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
