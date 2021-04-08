@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<AlgorandOperationType>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    AlgorandOperationType() : JniEnum("co/ledger/core/AlgorandOperationType") {}
+    AlgorandOperationType() : JniEnum("AlgorandOperationType") {}
     friend ::djinni::JniClass<AlgorandOperationType>;
 };
 

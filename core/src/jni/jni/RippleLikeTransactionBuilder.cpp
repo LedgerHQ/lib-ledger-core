@@ -11,12 +11,12 @@
 
 namespace djinni_generated {
 
-RippleLikeTransactionBuilder::RippleLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::RippleLikeTransactionBuilder, RippleLikeTransactionBuilder>("co/ledger/core/RippleLikeTransactionBuilder$CppProxy") {}
+RippleLikeTransactionBuilder::RippleLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::RippleLikeTransactionBuilder, RippleLikeTransactionBuilder>("RippleLikeTransactionBuilder$CppProxy") {}
 
 RippleLikeTransactionBuilder::~RippleLikeTransactionBuilder() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -24,7 +24,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1sendToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1sendToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -35,7 +35,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1wipeToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1wipeToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -45,7 +45,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1setFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_fees)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1setFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_fees)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -55,7 +55,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1addMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_memo)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1addMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_memo)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -65,7 +65,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1setDestinationTag(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_tag)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1setDestinationTag(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jlong j_tag)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -75,7 +75,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -84,7 +84,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -94,7 +94,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_RippleLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -103,7 +103,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024Cp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -113,7 +113,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_pars
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_RippleLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

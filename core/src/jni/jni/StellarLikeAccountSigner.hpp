@@ -25,7 +25,7 @@ private:
     StellarLikeAccountSigner();
     friend ::djinni::JniClass<StellarLikeAccountSigner>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeAccountSigner") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StellarLikeAccountSigner") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;I)V") };
     const jfieldID field_key { ::djinni::jniGetFieldID(clazz.get(), "key", "Ljava/lang/String;") };
     const jfieldID field_type { ::djinni::jniGetFieldID(clazz.get(), "type", "Ljava/lang/String;") };

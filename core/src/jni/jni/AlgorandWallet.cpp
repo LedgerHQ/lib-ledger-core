@@ -5,12 +5,12 @@
 
 namespace djinni_generated {
 
-AlgorandWallet::AlgorandWallet() : ::djinni::JniInterface<::ledger::core::api::AlgorandWallet, AlgorandWallet>("co/ledger/core/AlgorandWallet$CppProxy") {}
+AlgorandWallet::AlgorandWallet() : ::djinni::JniInterface<::ledger::core::api::AlgorandWallet, AlgorandWallet>("AlgorandWallet$CppProxy") {}
 
 AlgorandWallet::~AlgorandWallet() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_AlgorandWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

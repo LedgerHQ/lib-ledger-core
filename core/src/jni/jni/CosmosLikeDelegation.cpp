@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeDelegation::CosmosLikeDelegation() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeDelegation, CosmosLikeDelegation>("co/ledger/core/CosmosLikeDelegation$CppProxy") {}
+CosmosLikeDelegation::CosmosLikeDelegation() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeDelegation, CosmosLikeDelegation>("CosmosLikeDelegation$CppProxy") {}
 
 CosmosLikeDelegation::~CosmosLikeDelegation() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeDelegation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_CosmosLikeDelegation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeDelegation_00024CppProxy_n
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeDelegation_00024CppProxy_native_1getDelegatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_CosmosLikeDelegation_00024CppProxy_native_1getDelegatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeDelegation_00024CppProx
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeDelegation_00024CppProxy_native_1getValidatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_CosmosLikeDelegation_00024CppProxy_native_1getValidatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeDelegation_00024CppProx
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeDelegation_00024CppProxy_native_1getDelegatedAmount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_CosmosLikeDelegation_00024CppProxy_native_1getDelegatedAmount(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

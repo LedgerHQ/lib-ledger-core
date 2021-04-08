@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-AllocationMetrics::AllocationMetrics() : ::djinni::JniInterface<::ledger::core::api::AllocationMetrics, AllocationMetrics>("co/ledger/core/AllocationMetrics$CppProxy") {}
+AllocationMetrics::AllocationMetrics() : ::djinni::JniInterface<::ledger::core::api::AllocationMetrics, AllocationMetrics>("AllocationMetrics$CppProxy") {}
 
 AllocationMetrics::~AllocationMetrics() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_AllocationMetrics_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_AllocationMetrics_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_AllocationMetrics_00024CppProxy_nati
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_AllocationMetrics_getObjectAllocations(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_AllocationMetrics_getObjectAllocations(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

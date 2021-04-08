@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<CosmosLikeVoteOption>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    CosmosLikeVoteOption() : JniEnum("co/ledger/core/CosmosLikeVoteOption") {}
+    CosmosLikeVoteOption() : JniEnum("CosmosLikeVoteOption") {}
     friend ::djinni::JniClass<CosmosLikeVoteOption>;
 };
 

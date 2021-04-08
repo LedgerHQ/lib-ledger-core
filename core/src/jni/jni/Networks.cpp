@@ -11,12 +11,12 @@
 
 namespace djinni_generated {
 
-Networks::Networks() : ::djinni::JniInterface<::ledger::core::api::Networks, Networks>("co/ledger/core/Networks$CppProxy") {}
+Networks::Networks() : ::djinni::JniInterface<::ledger::core::api::Networks, Networks>("Networks$CppProxy") {}
 
 Networks::~Networks() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Networks_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_Networks_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -24,7 +24,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Networks_00024CppProxy_nativeDestroy
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_bitcoin(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_Networks_bitcoin(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -33,7 +33,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_bitcoin(JNIEnv* jniEnv, 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_cosmos(JNIEnv* jniEnv, jobject /*this*/, jstring j_chainID)
+CJNIEXPORT jobject JNICALL Java_Networks_cosmos(JNIEnv* jniEnv, jobject /*this*/, jstring j_chainID)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -42,7 +42,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_cosmos(JNIEnv* jniEnv, j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_ethereum(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_Networks_ethereum(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -51,7 +51,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_ethereum(JNIEnv* jniEnv,
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_ripple(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_Networks_ripple(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -60,7 +60,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_ripple(JNIEnv* jniEnv, j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Networks_tezos(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_Networks_tezos(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

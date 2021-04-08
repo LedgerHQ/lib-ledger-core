@@ -25,7 +25,7 @@ private:
     AlgorandAssetFreezeInfo();
     friend ::djinni::JniClass<AlgorandAssetFreezeInfo>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandAssetFreezeInfo") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AlgorandAssetFreezeInfo") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Z)V") };
     const jfieldID field_assetId { ::djinni::jniGetFieldID(clazz.get(), "assetId", "Ljava/lang/String;") };
     const jfieldID field_frozenAddress { ::djinni::jniGetFieldID(clazz.get(), "frozenAddress", "Ljava/lang/String;") };

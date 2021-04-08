@@ -11,12 +11,12 @@
 
 namespace djinni_generated {
 
-Amount::Amount() : ::djinni::JniInterface<::ledger::core::api::Amount, Amount>("co/ledger/core/Amount$CppProxy") {}
+Amount::Amount() : ::djinni::JniInterface<::ledger::core::api::Amount, Amount>("Amount$CppProxy") {}
 
 Amount::~Amount() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_Amount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_Amount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -24,7 +24,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Amount_00024CppProxy_nativeDestroy(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toBigInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Amount_00024CppProxy_native_1toBigInt(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -34,7 +34,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toBi
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1getCurrency(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Amount_00024CppProxy_native_1getCurrency(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -44,7 +44,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1getC
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1getUnit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_Amount_00024CppProxy_native_1getUnit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +54,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1getU
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toUnit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_unit)
+CJNIEXPORT jobject JNICALL Java_Amount_00024CppProxy_native_1toUnit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_unit)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +64,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toUn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toMagnitude(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_magnitude)
+CJNIEXPORT jobject JNICALL Java_Amount_00024CppProxy_native_1toMagnitude(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_magnitude)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +74,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toMa
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_Amount_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -84,7 +84,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toSt
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jlong JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jlong JNICALL Java_Amount_00024CppProxy_native_1toLong(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -94,7 +94,7 @@ CJNIEXPORT jlong JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toLong
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jdouble JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jdouble JNICALL Java_Amount_00024CppProxy_native_1toDouble(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -104,7 +104,7 @@ CJNIEXPORT jdouble JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1toDo
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1format(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_locale, jobject j_rules)
+CJNIEXPORT jstring JNICALL Java_Amount_00024CppProxy_native_1format(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_locale, jobject j_rules)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -115,7 +115,7 @@ CJNIEXPORT jstring JNICALL Java_co_ledger_core_Amount_00024CppProxy_native_1form
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_fromHex(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jstring j_hex)
+CJNIEXPORT jobject JNICALL Java_Amount_fromHex(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jstring j_hex)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -125,7 +125,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_fromHex(JNIEnv* jniEnv, jo
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_Amount_fromLong(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jlong j_value)
+CJNIEXPORT jobject JNICALL Java_Amount_fromLong(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jlong j_value)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

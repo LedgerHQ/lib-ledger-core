@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<OperationOrderKey>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    OperationOrderKey() : JniEnum("co/ledger/core/OperationOrderKey") {}
+    OperationOrderKey() : JniEnum("OperationOrderKey") {}
     friend ::djinni::JniClass<OperationOrderKey>;
 };
 

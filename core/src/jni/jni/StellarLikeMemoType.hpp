@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<StellarLikeMemoType>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    StellarLikeMemoType() : JniEnum("co/ledger/core/StellarLikeMemoType") {}
+    StellarLikeMemoType() : JniEnum("StellarLikeMemoType") {}
     friend ::djinni::JniClass<StellarLikeMemoType>;
 };
 

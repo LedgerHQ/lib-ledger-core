@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::ExtendedKeyAccountCreationInfoCallback, ::djinni_generated::ExtendedKeyAccountCreationInfoCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ExtendedKeyAccountCreationInfoCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/ExtendedKeyAccountCreationInfo;Lco/ledger/core/Error;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ExtendedKeyAccountCreationInfoCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LExtendedKeyAccountCreationInfo;LError;)V") };
 };
 
 }  // namespace djinni_generated

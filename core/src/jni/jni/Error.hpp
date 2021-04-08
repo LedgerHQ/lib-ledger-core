@@ -25,9 +25,9 @@ private:
     Error();
     friend ::djinni::JniClass<Error>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/Error") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/ErrorCode;Ljava/lang/String;)V") };
-    const jfieldID field_code { ::djinni::jniGetFieldID(clazz.get(), "code", "Lco/ledger/core/ErrorCode;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("Error") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LErrorCode;Ljava/lang/String;)V") };
+    const jfieldID field_code { ::djinni::jniGetFieldID(clazz.get(), "code", "LErrorCode;") };
     const jfieldID field_message { ::djinni::jniGetFieldID(clazz.get(), "message", "Ljava/lang/String;") };
 };
 

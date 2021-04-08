@@ -25,7 +25,7 @@ private:
     EthereumGasLimitRequest();
     friend ::djinni::JniClass<EthereumGasLimitRequest>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/EthereumGasLimitRequest") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("EthereumGasLimitRequest") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_from { ::djinni::jniGetFieldID(clazz.get(), "from", "Ljava/lang/String;") };
     const jfieldID field_to { ::djinni::jniGetFieldID(clazz.get(), "to", "Ljava/lang/String;") };
