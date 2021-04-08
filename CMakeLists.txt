@@ -12,7 +12,7 @@ include(UseBackportedModules)
 # The project version number.
 set(VERSION_MAJOR   3   CACHE STRING "Project major version number.")
 set(VERSION_MINOR   5   CACHE STRING "Project minor version number.")
-set(VERSION_PATCH   2   CACHE STRING "Project patch version number.")
+set(VERSION_PATCH   3   CACHE STRING "Project patch version number.")
 mark_as_advanced(VERSION_MAJOR VERSION_MINOR VERSION_PATCH)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY build)
