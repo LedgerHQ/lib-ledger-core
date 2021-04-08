@@ -149,7 +149,7 @@ FuturePtr<ledger::core::cosmos::Account> StargateGaiaCosmosLikeBlockchainExplore
             })
         .template flatMapPtr<cosmos::Account>(
             getContext(),
-            [this, parseJsonNumbersAsStrings, account](
+            [this, parseJsonNumbersAsStrings, account, ignoreFailStatusCode](
                 const cosmos::Account &inputAcc) -> FuturePtr<cosmos::Account> {
               auto retval = cosmos::Account(inputAcc);
               return _http
