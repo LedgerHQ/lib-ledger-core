@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<TezosOperationTag>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    TezosOperationTag() : JniEnum("TezosOperationTag") {}
+    TezosOperationTag() : JniEnum("co/ledger/core/TezosOperationTag") {}
     friend ::djinni::JniClass<TezosOperationTag>;
 };
 

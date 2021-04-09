@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeRedelegation::CosmosLikeRedelegation() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeRedelegation, CosmosLikeRedelegation>("CosmosLikeRedelegation$CppProxy") {}
+CosmosLikeRedelegation::CosmosLikeRedelegation() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeRedelegation, CosmosLikeRedelegation>("co/ledger/core/CosmosLikeRedelegation$CppProxy") {}
 
 CosmosLikeRedelegation::~CosmosLikeRedelegation() = default;
 
 
-CJNIEXPORT void JNICALL Java_CosmosLikeRedelegation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeRedelegation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_CosmosLikeRedelegation_00024CppProxy_nativeDestroy(
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_CosmosLikeRedelegation_00024CppProxy_native_1getDelegatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeRedelegation_00024CppProxy_native_1getDelegatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jstring JNICALL Java_CosmosLikeRedelegation_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_CosmosLikeRedelegation_00024CppProxy_native_1getSrcValidatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeRedelegation_00024CppProxy_native_1getSrcValidatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jstring JNICALL Java_CosmosLikeRedelegation_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_CosmosLikeRedelegation_00024CppProxy_native_1getDstValidatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_CosmosLikeRedelegation_00024CppProxy_native_1getDstValidatorAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -50,7 +50,7 @@ CJNIEXPORT jstring JNICALL Java_CosmosLikeRedelegation_00024CppProxy_native_1get
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_CosmosLikeRedelegation_00024CppProxy_native_1getEntries(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeRedelegation_00024CppProxy_native_1getEntries(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

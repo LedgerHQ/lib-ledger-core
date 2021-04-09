@@ -9,12 +9,12 @@
 
 namespace djinni_generated {
 
-EventPublisher::EventPublisher() : ::djinni::JniInterface<::ledger::core::api::EventPublisher, EventPublisher>("EventPublisher$CppProxy") {}
+EventPublisher::EventPublisher() : ::djinni::JniInterface<::ledger::core::api::EventPublisher, EventPublisher>("co/ledger/core/EventPublisher$CppProxy") {}
 
 EventPublisher::~EventPublisher() = default;
 
 
-CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -22,7 +22,7 @@ CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_nativeDestroy(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_EventPublisher_00024CppProxy_native_1getEventBus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_1getEventBus(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -32,7 +32,7 @@ CJNIEXPORT jobject JNICALL Java_EventPublisher_00024CppProxy_native_1getEventBus
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_native_1post(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_event)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_1post(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_event)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -41,7 +41,7 @@ CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_native_1post(JNIEnv* j
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_native_1postSticky(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_event, jint j_tag)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_1postSticky(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_event, jint j_tag)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -51,7 +51,7 @@ CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_native_1postSticky(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_native_1relay(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_bus)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EventPublisher_00024CppProxy_native_1relay(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_bus)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -60,7 +60,7 @@ CJNIEXPORT void JNICALL Java_EventPublisher_00024CppProxy_native_1relay(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_EventPublisher_newInstance(JNIEnv* jniEnv, jobject /*this*/, jobject j_context)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EventPublisher_newInstance(JNIEnv* jniEnv, jobject /*this*/, jobject j_context)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

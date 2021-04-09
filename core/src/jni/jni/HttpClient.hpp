@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::HttpClient, ::djinni_generated::HttpClient>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("HttpClient") };
-    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "(LHttpRequest;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/HttpClient") };
+    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "(Lco/ledger/core/HttpRequest;)V") };
 };
 
 }  // namespace djinni_generated

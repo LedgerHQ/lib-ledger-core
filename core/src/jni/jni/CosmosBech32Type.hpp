@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<CosmosBech32Type>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    CosmosBech32Type() : JniEnum("CosmosBech32Type") {}
+    CosmosBech32Type() : JniEnum("co/ledger/core/CosmosBech32Type") {}
     friend ::djinni::JniClass<CosmosBech32Type>;
 };
 

@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<WalletType>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    WalletType() : JniEnum("WalletType") {}
+    WalletType() : JniEnum("co/ledger/core/WalletType") {}
     friend ::djinni::JniClass<WalletType>;
 };
 

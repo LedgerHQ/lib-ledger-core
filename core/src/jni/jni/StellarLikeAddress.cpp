@@ -5,12 +5,12 @@
 
 namespace djinni_generated {
 
-StellarLikeAddress::StellarLikeAddress() : ::djinni::JniInterface<::ledger::core::api::StellarLikeAddress, StellarLikeAddress>("StellarLikeAddress$CppProxy") {}
+StellarLikeAddress::StellarLikeAddress() : ::djinni::JniInterface<::ledger::core::api::StellarLikeAddress, StellarLikeAddress>("co/ledger/core/StellarLikeAddress$CppProxy") {}
 
 StellarLikeAddress::~StellarLikeAddress() = default;
 
 
-CJNIEXPORT void JNICALL Java_StellarLikeAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

@@ -25,11 +25,11 @@ private:
     CosmosLikeMsgVote();
     friend ::djinni::JniClass<CosmosLikeMsgVote>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeMsgVote") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;LCosmosLikeVoteOption;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMsgVote") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Lco/ledger/core/CosmosLikeVoteOption;)V") };
     const jfieldID field_voter { ::djinni::jniGetFieldID(clazz.get(), "voter", "Ljava/lang/String;") };
     const jfieldID field_proposalId { ::djinni::jniGetFieldID(clazz.get(), "proposalId", "Ljava/lang/String;") };
-    const jfieldID field_option { ::djinni::jniGetFieldID(clazz.get(), "option", "LCosmosLikeVoteOption;") };
+    const jfieldID field_option { ::djinni::jniGetFieldID(clazz.get(), "option", "Lco/ledger/core/CosmosLikeVoteOption;") };
 };
 
 }  // namespace djinni_generated

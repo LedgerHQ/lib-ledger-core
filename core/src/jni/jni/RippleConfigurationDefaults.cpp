@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-RippleConfigurationDefaults::RippleConfigurationDefaults() : ::djinni::JniInterface<::ledger::core::api::RippleConfigurationDefaults, RippleConfigurationDefaults>("RippleConfigurationDefaults$CppProxy") {}
+RippleConfigurationDefaults::RippleConfigurationDefaults() : ::djinni::JniInterface<::ledger::core::api::RippleConfigurationDefaults, RippleConfigurationDefaults>("co/ledger/core/RippleConfigurationDefaults$CppProxy") {}
 
 RippleConfigurationDefaults::~RippleConfigurationDefaults() = default;
 
 
-CJNIEXPORT void JNICALL Java_RippleConfigurationDefaults_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_RippleConfigurationDefaults_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

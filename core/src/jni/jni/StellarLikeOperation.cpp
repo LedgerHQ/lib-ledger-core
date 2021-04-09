@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-StellarLikeOperation::StellarLikeOperation() : ::djinni::JniInterface<::ledger::core::api::StellarLikeOperation, StellarLikeOperation>("StellarLikeOperation$CppProxy") {}
+StellarLikeOperation::StellarLikeOperation() : ::djinni::JniInterface<::ledger::core::api::StellarLikeOperation, StellarLikeOperation>("co/ledger/core/StellarLikeOperation$CppProxy") {}
 
 StellarLikeOperation::~StellarLikeOperation() = default;
 
 
-CJNIEXPORT void JNICALL Java_StellarLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_StellarLikeOperation_00024CppProxy_nativeDestroy(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_StellarLikeOperation_00024CppProxy_native_1getRecord(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeOperation_00024CppProxy_native_1getRecord(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jobject JNICALL Java_StellarLikeOperation_00024CppProxy_native_1getRe
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_StellarLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_StellarLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

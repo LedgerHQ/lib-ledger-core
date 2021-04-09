@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-AlgorandAddress::AlgorandAddress() : ::djinni::JniInterface<::ledger::core::api::AlgorandAddress, AlgorandAddress>("AlgorandAddress$CppProxy") {}
+AlgorandAddress::AlgorandAddress() : ::djinni::JniInterface<::ledger::core::api::AlgorandAddress, AlgorandAddress>("co/ledger/core/AlgorandAddress$CppProxy") {}
 
 AlgorandAddress::~AlgorandAddress() = default;
 
 
-CJNIEXPORT void JNICALL Java_AlgorandAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandAddress_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_AlgorandAddress_00024CppProxy_nativeDestroy(JNIEnv*
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandAddress_fromPublicKey(JNIEnv* jniEnv, jobject /*this*/, jbyteArray j_pubkey)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandAddress_fromPublicKey(JNIEnv* jniEnv, jobject /*this*/, jbyteArray j_pubkey)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -28,7 +28,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandAddress_fromPublicKey(JNIEnv* jniEnv, jo
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_AlgorandAddress_toPublicKey(JNIEnv* jniEnv, jobject /*this*/, jstring j_address)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_AlgorandAddress_toPublicKey(JNIEnv* jniEnv, jobject /*this*/, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

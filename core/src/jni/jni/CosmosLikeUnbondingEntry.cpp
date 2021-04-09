@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeUnbondingEntry::CosmosLikeUnbondingEntry() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeUnbondingEntry, CosmosLikeUnbondingEntry>("CosmosLikeUnbondingEntry$CppProxy") {}
+CosmosLikeUnbondingEntry::CosmosLikeUnbondingEntry() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeUnbondingEntry, CosmosLikeUnbondingEntry>("co/ledger/core/CosmosLikeUnbondingEntry$CppProxy") {}
 
 CosmosLikeUnbondingEntry::~CosmosLikeUnbondingEntry() = default;
 
 
-CJNIEXPORT void JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeUnbondingEntry_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_nativeDestro
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_native_1getCreationHeight(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeUnbondingEntry_00024CppProxy_native_1getCreationHeight(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jobject JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_native_1g
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_native_1getCompletionTime(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeUnbondingEntry_00024CppProxy_native_1getCompletionTime(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jobject JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_native_1g
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_native_1getInitialBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeUnbondingEntry_00024CppProxy_native_1getInitialBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -50,7 +50,7 @@ CJNIEXPORT jobject JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_native_1g
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_CosmosLikeUnbondingEntry_00024CppProxy_native_1getBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_CosmosLikeUnbondingEntry_00024CppProxy_native_1getBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

@@ -11,12 +11,12 @@
 
 namespace djinni_generated {
 
-AlgorandTransaction::AlgorandTransaction() : ::djinni::JniInterface<::ledger::core::api::AlgorandTransaction, AlgorandTransaction>("AlgorandTransaction$CppProxy") {}
+AlgorandTransaction::AlgorandTransaction() : ::djinni::JniInterface<::ledger::core::api::AlgorandTransaction, AlgorandTransaction>("co/ledger/core/AlgorandTransaction$CppProxy") {}
 
 AlgorandTransaction::~AlgorandTransaction() = default;
 
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -24,7 +24,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_nativeDestroy(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -34,7 +34,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getId(
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -44,7 +44,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getTyp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getSender(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getSender(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +54,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getSen
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +64,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getFee
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getNote(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getNote(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +74,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getNot
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getRound(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getRound(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -84,7 +84,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getRou
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getSenderRewards(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getSenderRewards(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -94,7 +94,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getSen
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getReceiverRewards(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getReceiverRewards(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -104,7 +104,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getRec
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getCloseRewards(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getCloseRewards(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -114,7 +114,7 @@ CJNIEXPORT jstring JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getClo
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setSender(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_sender)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setSender(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_sender)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -123,7 +123,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setSender
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_fee)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setFee(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_fee)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -132,7 +132,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setFee(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setNote(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_note)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setNote(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_note)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -141,7 +141,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setNote(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setPaymentInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setPaymentInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -150,7 +150,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setPaymen
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getPaymentInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getPaymentInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -160,7 +160,7 @@ CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getPay
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setParticipationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setParticipationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -169,7 +169,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setPartic
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getParticipationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getParticipationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -179,7 +179,7 @@ CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getPar
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setAssetConfigurationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setAssetConfigurationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -188,7 +188,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setAssetC
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getAssetConfigurationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getAssetConfigurationInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -198,7 +198,7 @@ CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getAss
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setAssetTransferInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setAssetTransferInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -207,7 +207,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setAssetT
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getAssetTransferInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getAssetTransferInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -217,7 +217,7 @@ CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getAss
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setAssetFreezeInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setAssetFreezeInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_info)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -226,7 +226,7 @@ CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setAssetF
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getAssetFreezeInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1getAssetFreezeInfo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -236,7 +236,7 @@ CJNIEXPORT jobject JNICALL Java_AlgorandTransaction_00024CppProxy_native_1getAss
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_AlgorandTransaction_00024CppProxy_native_1serialize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1serialize(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -246,7 +246,7 @@ CJNIEXPORT jbyteArray JNICALL Java_AlgorandTransaction_00024CppProxy_native_1ser
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_AlgorandTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
+CJNIEXPORT void JNICALL Java_co_ledger_core_AlgorandTransaction_00024CppProxy_native_1setSignature(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_signature)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

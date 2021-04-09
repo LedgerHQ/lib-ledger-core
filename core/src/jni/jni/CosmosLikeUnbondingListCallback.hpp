@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::CosmosLikeUnbondingListCallback, ::djinni_generated::CosmosLikeUnbondingListCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeUnbondingListCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/util/ArrayList;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeUnbondingListCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/util/ArrayList;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

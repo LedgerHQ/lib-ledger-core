@@ -25,7 +25,7 @@ private:
     Block();
     friend ::djinni::JniClass<Block>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("Block") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/Block") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/util/Date;Ljava/lang/String;J)V") };
     const jfieldID field_blockHash { ::djinni::jniGetFieldID(clazz.get(), "blockHash", "Ljava/lang/String;") };
     const jfieldID field_uid { ::djinni::jniGetFieldID(clazz.get(), "uid", "Ljava/lang/String;") };

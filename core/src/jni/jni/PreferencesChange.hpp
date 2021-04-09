@@ -25,9 +25,9 @@ private:
     PreferencesChange();
     friend ::djinni::JniClass<PreferencesChange>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("PreferencesChange") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LPreferencesChangeType;[B[B)V") };
-    const jfieldID field_type { ::djinni::jniGetFieldID(clazz.get(), "type", "LPreferencesChangeType;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/PreferencesChange") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/PreferencesChangeType;[B[B)V") };
+    const jfieldID field_type { ::djinni::jniGetFieldID(clazz.get(), "type", "Lco/ledger/core/PreferencesChangeType;") };
     const jfieldID field_key { ::djinni::jniGetFieldID(clazz.get(), "key", "[B") };
     const jfieldID field_value { ::djinni::jniGetFieldID(clazz.get(), "value", "[B") };
 };

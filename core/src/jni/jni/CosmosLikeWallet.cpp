@@ -5,12 +5,12 @@
 
 namespace djinni_generated {
 
-CosmosLikeWallet::CosmosLikeWallet() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeWallet, CosmosLikeWallet>("CosmosLikeWallet$CppProxy") {}
+CosmosLikeWallet::CosmosLikeWallet() : ::djinni::JniInterface<::ledger::core::api::CosmosLikeWallet, CosmosLikeWallet>("co/ledger/core/CosmosLikeWallet$CppProxy") {}
 
 CosmosLikeWallet::~CosmosLikeWallet() = default;
 
 
-CJNIEXPORT void JNICALL Java_CosmosLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_CosmosLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

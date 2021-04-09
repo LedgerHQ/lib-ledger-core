@@ -25,7 +25,7 @@ private:
     AlgorandAssetAmount();
     friend ::djinni::JniClass<AlgorandAssetAmount>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AlgorandAssetAmount") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandAssetAmount") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;ZLjava/lang/String;)V") };
     const jfieldID field_creatorAddress { ::djinni::jniGetFieldID(clazz.get(), "creatorAddress", "Ljava/lang/String;") };
     const jfieldID field_amount { ::djinni::jniGetFieldID(clazz.get(), "amount", "Ljava/lang/String;") };

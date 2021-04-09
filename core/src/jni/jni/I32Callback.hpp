@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::I32Callback, ::djinni_generated::I32Callback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("I32Callback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/lang/Integer;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/I32Callback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/lang/Integer;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

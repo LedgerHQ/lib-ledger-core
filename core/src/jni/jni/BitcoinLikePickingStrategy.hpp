@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<BitcoinLikePickingStrategy>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    BitcoinLikePickingStrategy() : JniEnum("BitcoinLikePickingStrategy") {}
+    BitcoinLikePickingStrategy() : JniEnum("co/ledger/core/BitcoinLikePickingStrategy") {}
     friend ::djinni::JniClass<BitcoinLikePickingStrategy>;
 };
 

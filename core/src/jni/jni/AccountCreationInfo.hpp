@@ -25,7 +25,7 @@ private:
     AccountCreationInfo();
     friend ::djinni::JniClass<AccountCreationInfo>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AccountCreationInfo") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AccountCreationInfo") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(ILjava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;)V") };
     const jfieldID field_index { ::djinni::jniGetFieldID(clazz.get(), "index", "I") };
     const jfieldID field_owners { ::djinni::jniGetFieldID(clazz.get(), "owners", "Ljava/util/ArrayList;") };

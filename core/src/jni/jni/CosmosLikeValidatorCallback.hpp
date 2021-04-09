@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::CosmosLikeValidatorCallback, ::djinni_generated::CosmosLikeValidatorCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeValidatorCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LCosmosLikeValidator;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeValidatorCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/CosmosLikeValidator;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

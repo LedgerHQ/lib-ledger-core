@@ -42,7 +42,7 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::Lock, ::djinni_generated::Lock>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("Lock") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/Lock") };
     const jmethodID method_lock { ::djinni::jniGetMethodID(clazz.get(), "lock", "()V") };
     const jmethodID method_tryLock { ::djinni::jniGetMethodID(clazz.get(), "tryLock", "()Z") };
     const jmethodID method_unlock { ::djinni::jniGetMethodID(clazz.get(), "unlock", "()V") };

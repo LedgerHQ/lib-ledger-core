@@ -8,12 +8,12 @@
 
 namespace djinni_generated {
 
-EthereumLikeOperation::EthereumLikeOperation() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeOperation, EthereumLikeOperation>("EthereumLikeOperation$CppProxy") {}
+EthereumLikeOperation::EthereumLikeOperation() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeOperation, EthereumLikeOperation>("co/ledger/core/EthereumLikeOperation$CppProxy") {}
 
 EthereumLikeOperation::~EthereumLikeOperation() = default;
 
 
-CJNIEXPORT void JNICALL Java_EthereumLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeOperation_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -21,7 +21,7 @@ CJNIEXPORT void JNICALL Java_EthereumLikeOperation_00024CppProxy_nativeDestroy(J
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_EthereumLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeOperation_00024CppProxy_native_1getTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -31,7 +31,7 @@ CJNIEXPORT jobject JNICALL Java_EthereumLikeOperation_00024CppProxy_native_1getT
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_EthereumLikeOperation_00024CppProxy_native_1getInternalTransactions(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeOperation_00024CppProxy_native_1getInternalTransactions(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
