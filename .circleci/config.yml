@@ -314,10 +314,6 @@ jobs:
         name: Submodule_Initialization
         command: |
           . .circleci/init_submodules.sh
-    - run:
-        name: Publish_jar
-        command: |
-          . .circleci/publish_jar.sh
     - store_artifacts:
         path: ~/lib-ledger-core-artifacts
   generate_doc:
