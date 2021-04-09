@@ -25,7 +25,7 @@ private:
     CosmosLikeMsgWithdrawValidatorCommission();
     friend ::djinni::JniClass<CosmosLikeMsgWithdrawValidatorCommission>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeMsgWithdrawValidatorCommission") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMsgWithdrawValidatorCommission") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;)V") };
     const jfieldID field_validatorAddress { ::djinni::jniGetFieldID(clazz.get(), "validatorAddress", "Ljava/lang/String;") };
 };

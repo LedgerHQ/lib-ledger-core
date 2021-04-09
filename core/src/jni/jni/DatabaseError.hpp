@@ -40,7 +40,7 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::DatabaseError, ::djinni_generated::DatabaseError>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DatabaseError") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DatabaseError") };
     const jmethodID method_getMessage { ::djinni::jniGetMethodID(clazz.get(), "getMessage", "()Ljava/lang/String;") };
 };
 

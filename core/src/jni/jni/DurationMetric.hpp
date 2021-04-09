@@ -25,7 +25,7 @@ private:
     DurationMetric();
     friend ::djinni::JniClass<DurationMetric>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("DurationMetric") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/DurationMetric") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(JI)V") };
     const jfieldID field_totalMs { ::djinni::jniGetFieldID(clazz.get(), "totalMs", "J") };
     const jfieldID field_count { ::djinni::jniGetFieldID(clazz.get(), "count", "I") };

@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-BigInt::BigInt() : ::djinni::JniInterface<::ledger::core::api::BigInt, BigInt>("BigInt$CppProxy") {}
+BigInt::BigInt() : ::djinni::JniInterface<::ledger::core::api::BigInt, BigInt>("co/ledger/core/BigInt$CppProxy") {}
 
 BigInt::~BigInt() = default;
 
 
-CJNIEXPORT void JNICALL Java_BigInt_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_BigInt_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_BigInt_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1add(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1add(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -29,7 +29,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1add(JNIEnv* jniEnv,
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1subtract(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1subtract(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -39,7 +39,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1subtract(JNIEnv* jn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1multiply(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1multiply(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -49,7 +49,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1multiply(JNIEnv* jn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1divide(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1divide(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -59,7 +59,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1divide(JNIEnv* jniE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1divideAndRemainder(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1divideAndRemainder(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -69,7 +69,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1divideAndRemainder(
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1pow(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_exponent)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1pow(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_exponent)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -79,7 +79,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_00024CppProxy_native_1pow(JNIEnv* jniEnv,
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_BigInt_00024CppProxy_native_1toDecimalString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_precision, jstring j_decimalSeparator, jstring j_thousandSeparator)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1toDecimalString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_precision, jstring j_decimalSeparator, jstring j_thousandSeparator)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -91,7 +91,7 @@ CJNIEXPORT jstring JNICALL Java_BigInt_00024CppProxy_native_1toDecimalString(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_BigInt_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_radix)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1toString(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_radix)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -101,7 +101,7 @@ CJNIEXPORT jstring JNICALL Java_BigInt_00024CppProxy_native_1toString(JNIEnv* jn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_BigInt_00024CppProxy_native_1intValue(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1intValue(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -111,7 +111,7 @@ CJNIEXPORT jint JNICALL Java_BigInt_00024CppProxy_native_1intValue(JNIEnv* jniEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_BigInt_00024CppProxy_native_1compare(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_BigInt_00024CppProxy_native_1compare(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_i)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -121,7 +121,7 @@ CJNIEXPORT jint JNICALL Java_BigInt_00024CppProxy_native_1compare(JNIEnv* jniEnv
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_fromDecimalString(JNIEnv* jniEnv, jobject /*this*/, jstring j_s, jint j_precision, jstring j_decimalSeparator)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_fromDecimalString(JNIEnv* jniEnv, jobject /*this*/, jstring j_s, jint j_precision, jstring j_decimalSeparator)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -132,7 +132,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_fromDecimalString(JNIEnv* jniEnv, jobject
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_fromIntegerString(JNIEnv* jniEnv, jobject /*this*/, jstring j_s, jint j_radix)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_fromIntegerString(JNIEnv* jniEnv, jobject /*this*/, jstring j_s, jint j_radix)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -142,7 +142,7 @@ CJNIEXPORT jobject JNICALL Java_BigInt_fromIntegerString(JNIEnv* jniEnv, jobject
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_BigInt_fromLong(JNIEnv* jniEnv, jobject /*this*/, jlong j_l)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_BigInt_fromLong(JNIEnv* jniEnv, jobject /*this*/, jlong j_l)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

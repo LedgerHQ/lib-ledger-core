@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-Keychain::Keychain() : ::djinni::JniInterface<::ledger::core::api::Keychain, Keychain>("Keychain$CppProxy") {}
+Keychain::Keychain() : ::djinni::JniInterface<::ledger::core::api::Keychain, Keychain>("co/ledger/core/Keychain$CppProxy") {}
 
 Keychain::~Keychain() = default;
 
 
-CJNIEXPORT void JNICALL Java_Keychain_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Keychain_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_Keychain_00024CppProxy_nativeDestroy(JNIEnv* jniEnv
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jboolean JNICALL Java_Keychain_00024CppProxy_native_1contains(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Keychain_00024CppProxy_native_1contains(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

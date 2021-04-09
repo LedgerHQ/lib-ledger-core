@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::AlgorandTransactionCallback, ::djinni_generated::AlgorandTransactionCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AlgorandTransactionCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LAlgorandTransaction;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandTransactionCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/AlgorandTransaction;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

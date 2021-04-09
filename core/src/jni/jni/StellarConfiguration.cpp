@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-StellarConfiguration::StellarConfiguration() : ::djinni::JniInterface<::ledger::core::api::StellarConfiguration, StellarConfiguration>("StellarConfiguration$CppProxy") {}
+StellarConfiguration::StellarConfiguration() : ::djinni::JniInterface<::ledger::core::api::StellarConfiguration, StellarConfiguration>("co/ledger/core/StellarConfiguration$CppProxy") {}
 
 StellarConfiguration::~StellarConfiguration() = default;
 
 
-CJNIEXPORT void JNICALL Java_StellarConfiguration_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_StellarConfiguration_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

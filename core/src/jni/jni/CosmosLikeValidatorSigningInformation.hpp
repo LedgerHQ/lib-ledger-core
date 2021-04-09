@@ -25,7 +25,7 @@ private:
     CosmosLikeValidatorSigningInformation();
     friend ::djinni::JniClass<CosmosLikeValidatorSigningInformation>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeValidatorSigningInformation") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeValidatorSigningInformation") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(JJLjava/util/Date;ZI)V") };
     const jfieldID field_startHeight { ::djinni::jniGetFieldID(clazz.get(), "startHeight", "J") };
     const jfieldID field_indexOffset { ::djinni::jniGetFieldID(clazz.get(), "indexOffset", "J") };

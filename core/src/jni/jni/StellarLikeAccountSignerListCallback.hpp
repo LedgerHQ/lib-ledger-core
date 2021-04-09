@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::StellarLikeAccountSignerListCallback, ::djinni_generated::StellarLikeAccountSignerListCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StellarLikeAccountSignerListCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/util/ArrayList;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeAccountSignerListCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/util/ArrayList;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

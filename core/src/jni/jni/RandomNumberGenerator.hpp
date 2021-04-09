@@ -43,7 +43,7 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::RandomNumberGenerator, ::djinni_generated::RandomNumberGenerator>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("RandomNumberGenerator") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/RandomNumberGenerator") };
     const jmethodID method_getRandomBytes { ::djinni::jniGetMethodID(clazz.get(), "getRandomBytes", "(I)[B") };
     const jmethodID method_getRandomInt { ::djinni::jniGetMethodID(clazz.get(), "getRandomInt", "()I") };
     const jmethodID method_getRandomLong { ::djinni::jniGetMethodID(clazz.get(), "getRandomLong", "()J") };

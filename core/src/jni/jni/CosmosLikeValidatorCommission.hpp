@@ -25,9 +25,9 @@ private:
     CosmosLikeValidatorCommission();
     friend ::djinni::JniClass<CosmosLikeValidatorCommission>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeValidatorCommission") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LCosmosLikeCommissionRates;Ljava/util/Date;)V") };
-    const jfieldID field_rates { ::djinni::jniGetFieldID(clazz.get(), "rates", "LCosmosLikeCommissionRates;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeValidatorCommission") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/CosmosLikeCommissionRates;Ljava/util/Date;)V") };
+    const jfieldID field_rates { ::djinni::jniGetFieldID(clazz.get(), "rates", "Lco/ledger/core/CosmosLikeCommissionRates;") };
     const jfieldID field_updateTime { ::djinni::jniGetFieldID(clazz.get(), "updateTime", "Ljava/util/Date;") };
 };
 

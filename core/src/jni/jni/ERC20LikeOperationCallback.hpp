@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::ERC20LikeOperationCallback, ::djinni_generated::ERC20LikeOperationCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ERC20LikeOperationCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LERC20LikeOperation;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ERC20LikeOperationCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/ERC20LikeOperation;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

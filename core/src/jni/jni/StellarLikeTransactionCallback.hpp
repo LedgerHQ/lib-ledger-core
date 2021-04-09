@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::StellarLikeTransactionCallback, ::djinni_generated::StellarLikeTransactionCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StellarLikeTransactionCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(LStellarLikeTransaction;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StellarLikeTransactionCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Lco/ledger/core/StellarLikeTransaction;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

@@ -46,12 +46,12 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::PreferencesBackend, ::djinni_generated::PreferencesBackend>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("PreferencesBackend") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/PreferencesBackend") };
     const jmethodID method_get { ::djinni::jniGetMethodID(clazz.get(), "get", "([B)[B") };
     const jmethodID method_commit { ::djinni::jniGetMethodID(clazz.get(), "commit", "(Ljava/util/ArrayList;)Z") };
-    const jmethodID method_setEncryption { ::djinni::jniGetMethodID(clazz.get(), "setEncryption", "(LRandomNumberGenerator;Ljava/lang/String;)V") };
+    const jmethodID method_setEncryption { ::djinni::jniGetMethodID(clazz.get(), "setEncryption", "(Lco/ledger/core/RandomNumberGenerator;Ljava/lang/String;)V") };
     const jmethodID method_unsetEncryption { ::djinni::jniGetMethodID(clazz.get(), "unsetEncryption", "()V") };
-    const jmethodID method_resetEncryption { ::djinni::jniGetMethodID(clazz.get(), "resetEncryption", "(LRandomNumberGenerator;Ljava/lang/String;Ljava/lang/String;)Z") };
+    const jmethodID method_resetEncryption { ::djinni::jniGetMethodID(clazz.get(), "resetEncryption", "(Lco/ledger/core/RandomNumberGenerator;Ljava/lang/String;Ljava/lang/String;)Z") };
     const jmethodID method_getEncryptionSalt { ::djinni::jniGetMethodID(clazz.get(), "getEncryptionSalt", "()Ljava/lang/String;") };
     const jmethodID method_clear { ::djinni::jniGetMethodID(clazz.get(), "clear", "()V") };
 };

@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-TrustIndicator::TrustIndicator() : ::djinni::JniInterface<::ledger::core::api::TrustIndicator, TrustIndicator>("TrustIndicator$CppProxy") {}
+TrustIndicator::TrustIndicator() : ::djinni::JniInterface<::ledger::core::api::TrustIndicator, TrustIndicator>("co/ledger/core/TrustIndicator$CppProxy") {}
 
 TrustIndicator::~TrustIndicator() = default;
 
 
-CJNIEXPORT void JNICALL Java_TrustIndicator_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_TrustIndicator_00024CppProxy_nativeDestroy(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jint JNICALL Java_TrustIndicator_00024CppProxy_native_1getTrustWeight(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_native_1getTrustWeight(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -30,7 +30,7 @@ CJNIEXPORT jint JNICALL Java_TrustIndicator_00024CppProxy_native_1getTrustWeight
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TrustIndicator_00024CppProxy_native_1getTrustLevel(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_native_1getTrustLevel(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -40,7 +40,7 @@ CJNIEXPORT jobject JNICALL Java_TrustIndicator_00024CppProxy_native_1getTrustLev
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TrustIndicator_00024CppProxy_native_1getConflictingOperationUids(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_native_1getConflictingOperationUids(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -50,7 +50,7 @@ CJNIEXPORT jobject JNICALL Java_TrustIndicator_00024CppProxy_native_1getConflict
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jstring JNICALL Java_TrustIndicator_00024CppProxy_native_1getOrigin(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_TrustIndicator_00024CppProxy_native_1getOrigin(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

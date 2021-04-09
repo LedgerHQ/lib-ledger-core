@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-Secp256k1::Secp256k1() : ::djinni::JniInterface<::ledger::core::api::Secp256k1, Secp256k1>("Secp256k1$CppProxy") {}
+Secp256k1::Secp256k1() : ::djinni::JniInterface<::ledger::core::api::Secp256k1, Secp256k1>("co/ledger/core/Secp256k1$CppProxy") {}
 
 Secp256k1::~Secp256k1() = default;
 
 
-CJNIEXPORT void JNICALL Java_Secp256k1_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_Secp256k1_00024CppProxy_nativeDestroy(JNIEnv* jniEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_Secp256k1_createInstance(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Secp256k1_createInstance(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -28,7 +28,7 @@ CJNIEXPORT jobject JNICALL Java_Secp256k1_createInstance(JNIEnv* jniEnv, jobject
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_Secp256k1_00024CppProxy_native_1computePubKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_privKey, jboolean j_compress)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1computePubKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_privKey, jboolean j_compress)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -39,7 +39,7 @@ CJNIEXPORT jbyteArray JNICALL Java_Secp256k1_00024CppProxy_native_1computePubKey
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_Secp256k1_00024CppProxy_native_1computeUncompressedPubKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_pubKey)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1computeUncompressedPubKey(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_pubKey)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -49,7 +49,7 @@ CJNIEXPORT jbyteArray JNICALL Java_Secp256k1_00024CppProxy_native_1computeUncomp
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jbyteArray JNICALL Java_Secp256k1_00024CppProxy_native_1sign(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_privKey, jbyteArray j_data)
+CJNIEXPORT jbyteArray JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1sign(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_privKey, jbyteArray j_data)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -60,7 +60,7 @@ CJNIEXPORT jbyteArray JNICALL Java_Secp256k1_00024CppProxy_native_1sign(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jboolean JNICALL Java_Secp256k1_00024CppProxy_native_1verify(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_data, jbyteArray j_signature, jbyteArray j_pubKey)
+CJNIEXPORT jboolean JNICALL Java_co_ledger_core_Secp256k1_00024CppProxy_native_1verify(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_data, jbyteArray j_signature, jbyteArray j_pubKey)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -72,7 +72,7 @@ CJNIEXPORT jboolean JNICALL Java_Secp256k1_00024CppProxy_native_1verify(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_Secp256k1_newInstance(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_Secp256k1_newInstance(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

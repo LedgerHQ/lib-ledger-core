@@ -25,9 +25,9 @@ private:
     CosmosLikeMsgSubmitProposal();
     friend ::djinni::JniClass<CosmosLikeMsgSubmitProposal>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeMsgSubmitProposal") };
-    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(LCosmosLikeContent;Ljava/lang/String;Ljava/util/ArrayList;)V") };
-    const jfieldID field_content { ::djinni::jniGetFieldID(clazz.get(), "content", "LCosmosLikeContent;") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeMsgSubmitProposal") };
+    const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Lco/ledger/core/CosmosLikeContent;Ljava/lang/String;Ljava/util/ArrayList;)V") };
+    const jfieldID field_content { ::djinni::jniGetFieldID(clazz.get(), "content", "Lco/ledger/core/CosmosLikeContent;") };
     const jfieldID field_proposer { ::djinni::jniGetFieldID(clazz.get(), "proposer", "Ljava/lang/String;") };
     const jfieldID field_initialDeposit { ::djinni::jniGetFieldID(clazz.get(), "initialDeposit", "Ljava/util/ArrayList;") };
 };

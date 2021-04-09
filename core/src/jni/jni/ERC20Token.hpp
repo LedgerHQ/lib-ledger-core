@@ -25,7 +25,7 @@ private:
     ERC20Token();
     friend ::djinni::JniClass<ERC20Token>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ERC20Token") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ERC20Token") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I)V") };
     const jfieldID field_name { ::djinni::jniGetFieldID(clazz.get(), "name", "Ljava/lang/String;") };
     const jfieldID field_symbol { ::djinni::jniGetFieldID(clazz.get(), "symbol", "Ljava/lang/String;") };

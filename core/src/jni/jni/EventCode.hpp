@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<EventCode>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    EventCode() : JniEnum("EventCode") {}
+    EventCode() : JniEnum("co/ledger/core/EventCode") {}
     friend ::djinni::JniClass<EventCode>;
 };
 

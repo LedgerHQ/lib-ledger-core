@@ -9,12 +9,12 @@
 
 namespace djinni_generated {
 
-OperationQuery::OperationQuery() : ::djinni::JniInterface<::ledger::core::api::OperationQuery, OperationQuery>("OperationQuery$CppProxy") {}
+OperationQuery::OperationQuery() : ::djinni::JniInterface<::ledger::core::api::OperationQuery, OperationQuery>("co/ledger/core/OperationQuery$CppProxy") {}
 
 OperationQuery::~OperationQuery() = default;
 
 
-CJNIEXPORT void JNICALL Java_OperationQuery_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -22,7 +22,7 @@ CJNIEXPORT void JNICALL Java_OperationQuery_00024CppProxy_nativeDestroy(JNIEnv* 
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1addOrder(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_key, jboolean j_descending)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1addOrder(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_key, jboolean j_descending)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -33,7 +33,7 @@ CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1addOrder(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1filter(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1filter(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -43,7 +43,7 @@ CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1filter(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1offset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_from)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1offset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_from)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -53,7 +53,7 @@ CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1offset(JNIE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1limit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_count)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1limit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jint j_count)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -63,7 +63,7 @@ CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1limit(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1complete(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1complete(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -73,7 +73,7 @@ CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1complete(JN
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1partial(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1partial(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -83,7 +83,7 @@ CJNIEXPORT jobject JNICALL Java_OperationQuery_00024CppProxy_native_1partial(JNI
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_OperationQuery_00024CppProxy_native_1execute(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_co_ledger_core_OperationQuery_00024CppProxy_native_1execute(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

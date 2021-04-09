@@ -6,12 +6,12 @@
 
 namespace djinni_generated {
 
-LedgerCore::LedgerCore() : ::djinni::JniInterface<::ledger::core::api::LedgerCore, LedgerCore>("LedgerCore$CppProxy") {}
+LedgerCore::LedgerCore() : ::djinni::JniInterface<::ledger::core::api::LedgerCore, LedgerCore>("co/ledger/core/LedgerCore$CppProxy") {}
 
 LedgerCore::~LedgerCore() = default;
 
 
-CJNIEXPORT void JNICALL Java_LedgerCore_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_LedgerCore_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -19,7 +19,7 @@ CJNIEXPORT void JNICALL Java_LedgerCore_00024CppProxy_nativeDestroy(JNIEnv* jniE
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jstring JNICALL Java_LedgerCore_getStringVersion(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jstring JNICALL Java_co_ledger_core_LedgerCore_getStringVersion(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -28,7 +28,7 @@ CJNIEXPORT jstring JNICALL Java_LedgerCore_getStringVersion(JNIEnv* jniEnv, jobj
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jint JNICALL Java_LedgerCore_getIntVersion(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jint JNICALL Java_co_ledger_core_LedgerCore_getIntVersion(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

@@ -40,8 +40,8 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::StringCallback, ::djinni_generated::StringCallback>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("StringCallback") };
-    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/lang/String;LError;)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/StringCallback") };
+    const jmethodID method_onCallback { ::djinni::jniGetMethodID(clazz.get(), "onCallback", "(Ljava/lang/String;Lco/ledger/core/Error;)V") };
 };
 
 }  // namespace djinni_generated

@@ -12,12 +12,12 @@
 
 namespace djinni_generated {
 
-TezosLikeTransactionBuilder::TezosLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::TezosLikeTransactionBuilder, TezosLikeTransactionBuilder>("TezosLikeTransactionBuilder$CppProxy") {}
+TezosLikeTransactionBuilder::TezosLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::TezosLikeTransactionBuilder, TezosLikeTransactionBuilder>("co/ledger/core/TezosLikeTransactionBuilder$CppProxy") {}
 
 TezosLikeTransactionBuilder::~TezosLikeTransactionBuilder() = default;
 
 
-CJNIEXPORT void JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -25,7 +25,7 @@ CJNIEXPORT void JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_nativeDes
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1setType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_type)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setType(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_type)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -35,7 +35,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1sendToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1sendToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -46,7 +46,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1wipeToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1wipeToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -56,7 +56,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1setFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_fees)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_fees)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -66,7 +66,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1setTransactionFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transactionFees)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setTransactionFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transactionFees)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -76,7 +76,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1setRevealFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_revealFees)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setRevealFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_revealFees)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -86,7 +86,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1setGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasLimit)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasLimit)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -96,7 +96,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1setStorageLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_storageLimit)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1setStorageLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_storageLimit)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -106,7 +106,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -115,7 +115,7 @@ CJNIEXPORT void JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1b
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -125,7 +125,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -134,7 +134,7 @@ CJNIEXPORT void JNICALL Java_TezosLikeTransactionBuilder_00024CppProxy_native_1r
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction, jstring j_protocolUpdate)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction, jstring j_protocolUpdate)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -145,7 +145,7 @@ CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_parseRawUnsignedTran
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_TezosLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction, jstring j_protocolUpdate)
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction, jstring j_protocolUpdate)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

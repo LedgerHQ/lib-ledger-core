@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-StellarLikeWallet::StellarLikeWallet() : ::djinni::JniInterface<::ledger::core::api::StellarLikeWallet, StellarLikeWallet>("StellarLikeWallet$CppProxy") {}
+StellarLikeWallet::StellarLikeWallet() : ::djinni::JniInterface<::ledger::core::api::StellarLikeWallet, StellarLikeWallet>("co/ledger/core/StellarLikeWallet$CppProxy") {}
 
 StellarLikeWallet::~StellarLikeWallet() = default;
 
 
-CJNIEXPORT void JNICALL Java_StellarLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeWallet_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_StellarLikeWallet_00024CppProxy_nativeDestroy(JNIEn
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_StellarLikeWallet_00024CppProxy_native_1exists(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
+CJNIEXPORT void JNICALL Java_co_ledger_core_StellarLikeWallet_00024CppProxy_native_1exists(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
