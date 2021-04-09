@@ -102,8 +102,8 @@ namespace ledger {
 
             int32_t getOutputSizeAsSignedTxInput() const;
 
-        protected:
             std::shared_ptr<Preferences> getPreferences() const;
+        protected:
 
             DerivationScheme &getDerivationScheme();
 
