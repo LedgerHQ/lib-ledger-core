@@ -25,7 +25,7 @@ private:
     ExtendedKeyAccountCreationInfo();
     friend ::djinni::JniClass<ExtendedKeyAccountCreationInfo>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ExtendedKeyAccountCreationInfo") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ExtendedKeyAccountCreationInfo") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(ILjava/util/ArrayList;Ljava/util/ArrayList;Ljava/util/ArrayList;)V") };
     const jfieldID field_index { ::djinni::jniGetFieldID(clazz.get(), "index", "I") };
     const jfieldID field_owners { ::djinni::jniGetFieldID(clazz.get(), "owners", "Ljava/util/ArrayList;") };

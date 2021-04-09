@@ -7,12 +7,12 @@
 
 namespace djinni_generated {
 
-DurationMetrics::DurationMetrics() : ::djinni::JniInterface<::ledger::core::api::DurationMetrics, DurationMetrics>("co/ledger/core/DurationMetrics$CppProxy") {}
+DurationMetrics::DurationMetrics() : ::djinni::JniInterface<::ledger::core::api::DurationMetrics, DurationMetrics>("DurationMetrics$CppProxy") {}
 
 DurationMetrics::~DurationMetrics() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_DurationMetrics_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_DurationMetrics_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -20,7 +20,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_DurationMetrics_00024CppProxy_native
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_DurationMetrics_getAllDurationMetrics(JNIEnv* jniEnv, jobject /*this*/)
+CJNIEXPORT jobject JNICALL Java_DurationMetrics_getAllDurationMetrics(JNIEnv* jniEnv, jobject /*this*/)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);

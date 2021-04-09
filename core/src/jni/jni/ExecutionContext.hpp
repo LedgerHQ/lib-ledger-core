@@ -41,9 +41,9 @@ private:
         friend ::djinni::JniInterface<::ledger::core::api::ExecutionContext, ::djinni_generated::ExecutionContext>;
     };
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/ExecutionContext") };
-    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "(Lco/ledger/core/Runnable;)V") };
-    const jmethodID method_delay { ::djinni::jniGetMethodID(clazz.get(), "delay", "(Lco/ledger/core/Runnable;J)V") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("ExecutionContext") };
+    const jmethodID method_execute { ::djinni::jniGetMethodID(clazz.get(), "execute", "(LRunnable;)V") };
+    const jmethodID method_delay { ::djinni::jniGetMethodID(clazz.get(), "delay", "(LRunnable;J)V") };
 };
 
 }  // namespace djinni_generated

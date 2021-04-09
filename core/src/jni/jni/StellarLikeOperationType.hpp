@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<StellarLikeOperationType>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    StellarLikeOperationType() : JniEnum("co/ledger/core/StellarLikeOperationType") {}
+    StellarLikeOperationType() : JniEnum("StellarLikeOperationType") {}
     friend ::djinni::JniClass<StellarLikeOperationType>;
 };
 

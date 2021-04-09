@@ -25,7 +25,7 @@ private:
     CosmosLikeCommissionRates();
     friend ::djinni::JniClass<CosmosLikeCommissionRates>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/CosmosLikeCommissionRates") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("CosmosLikeCommissionRates") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_rate { ::djinni::jniGetFieldID(clazz.get(), "rate", "Ljava/lang/String;") };
     const jfieldID field_maxRate { ::djinni::jniGetFieldID(clazz.get(), "maxRate", "Ljava/lang/String;") };

@@ -31,7 +31,7 @@
 
 #include <iostream>
 #include <set>
-
+#include <numeric>
 #include "../BaseFixture.h"
 #include <test/cosmos/Fixtures.hpp>
 

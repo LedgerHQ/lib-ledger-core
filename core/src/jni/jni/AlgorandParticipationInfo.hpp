@@ -25,7 +25,7 @@ private:
     AlgorandParticipationInfo();
     friend ::djinni::JniClass<AlgorandParticipationInfo>;
 
-    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("co/ledger/core/AlgorandParticipationInfo") };
+    const ::djinni::GlobalRef<jclass> clazz { ::djinni::jniFindClass("AlgorandParticipationInfo") };
     const jmethodID jconstructor { ::djinni::jniGetMethodID(clazz.get(), "<init>", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V") };
     const jfieldID field_rootPublicKey { ::djinni::jniGetFieldID(clazz.get(), "rootPublicKey", "Ljava/lang/String;") };
     const jfieldID field_vrfPublicKey { ::djinni::jniGetFieldID(clazz.get(), "vrfPublicKey", "Ljava/lang/String;") };

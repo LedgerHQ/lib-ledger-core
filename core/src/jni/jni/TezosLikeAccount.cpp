@@ -11,12 +11,12 @@
 
 namespace djinni_generated {
 
-TezosLikeAccount::TezosLikeAccount() : ::djinni::JniInterface<::ledger::core::api::TezosLikeAccount, TezosLikeAccount>("co/ledger/core/TezosLikeAccount$CppProxy") {}
+TezosLikeAccount::TezosLikeAccount() : ::djinni::JniInterface<::ledger::core::api::TezosLikeAccount, TezosLikeAccount>("TezosLikeAccount$CppProxy") {}
 
 TezosLikeAccount::~TezosLikeAccount() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -24,7 +24,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1broadcastRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_transaction, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1broadcastRawTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_transaction, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -34,7 +34,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1broadcastTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1broadcastTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_transaction, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -44,7 +44,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1buildTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_TezosLikeAccount_00024CppProxy_native_1buildTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +54,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getStorage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1getStorage(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +64,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getEstimatedGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1getEstimatedGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +74,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1getFees(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -83,7 +83,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getGasPrice(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1getGasPrice(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -92,7 +92,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getOriginatedAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_TezosLikeAccount_00024CppProxy_native_1getOriginatedAccounts(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -102,7 +102,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_na
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getCurrentDelegate(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1getCurrentDelegate(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -111,7 +111,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_nativ
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_TezosLikeAccount_00024CppProxy_native_1getTokenBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tokenAddress, jobject j_callback)
+CJNIEXPORT void JNICALL Java_TezosLikeAccount_00024CppProxy_native_1getTokenBalance(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_tokenAddress, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);

@@ -20,7 +20,7 @@ public:
     static ::djinni::LocalRef<JniType> fromCpp(JNIEnv* jniEnv, CppType c) { return ::djinni::JniClass<PreferencesChangeType>::get().create(jniEnv, static_cast<jint>(c)); }
 
 private:
-    PreferencesChangeType() : JniEnum("co/ledger/core/PreferencesChangeType") {}
+    PreferencesChangeType() : JniEnum("PreferencesChangeType") {}
     friend ::djinni::JniClass<PreferencesChangeType>;
 };
 

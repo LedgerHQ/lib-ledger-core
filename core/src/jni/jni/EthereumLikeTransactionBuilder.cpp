@@ -10,12 +10,12 @@
 
 namespace djinni_generated {
 
-EthereumLikeTransactionBuilder::EthereumLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeTransactionBuilder, EthereumLikeTransactionBuilder>("co/ledger/core/EthereumLikeTransactionBuilder$CppProxy") {}
+EthereumLikeTransactionBuilder::EthereumLikeTransactionBuilder() : ::djinni::JniInterface<::ledger::core::api::EthereumLikeTransactionBuilder, EthereumLikeTransactionBuilder>("EthereumLikeTransactionBuilder$CppProxy") {}
 
 EthereumLikeTransactionBuilder::~EthereumLikeTransactionBuilder() = default;
 
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_nativeDestroy(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -23,7 +23,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1sendToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1sendToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_amount, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -34,7 +34,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1wipeToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1wipeToAddress(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_address)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -44,7 +44,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1setGasPrice(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasPrice)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1setGasPrice(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasPrice)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -54,7 +54,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1setGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasLimit)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1setGasLimit(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_gasLimit)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -64,7 +64,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1setInputData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_data)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1setInputData(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jbyteArray j_data)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -74,7 +74,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
+CJNIEXPORT void JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1build(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_callback)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -83,7 +83,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1clone(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -93,7 +93,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
+CJNIEXPORT void JNICALL Java_EthereumLikeTransactionBuilder_00024CppProxy_native_1reset(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
@@ -102,7 +102,7 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_00024
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_parseRawUnsignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
@@ -112,7 +112,7 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_pa
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
-CJNIEXPORT jobject JNICALL Java_co_ledger_core_EthereumLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
+CJNIEXPORT jobject JNICALL Java_EthereumLikeTransactionBuilder_parseRawSignedTransaction(JNIEnv* jniEnv, jobject /*this*/, jobject j_currency, jbyteArray j_rawTransaction)
 {
     try {
         DJINNI_FUNCTION_PROLOGUE0(jniEnv);
