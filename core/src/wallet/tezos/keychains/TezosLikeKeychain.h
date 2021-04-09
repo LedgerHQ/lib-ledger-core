@@ -74,7 +74,6 @@ namespace ledger {
 
             bool contains(const std::string &address) const;
 
-        protected:
             std::shared_ptr <Preferences> getPreferences() const;
 
         private:
