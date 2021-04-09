@@ -100,8 +100,8 @@ namespace ledger {
 
             static bool isSegwit(const std::string &keychainEngine);
             static bool isNativeSegwit(const std::string &keychainEngine);
-        protected:
             std::shared_ptr<Preferences> getPreferences() const;
+        protected:
             DerivationScheme& getDerivationScheme();
 
         private:

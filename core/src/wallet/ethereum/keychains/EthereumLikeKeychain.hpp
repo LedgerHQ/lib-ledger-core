@@ -89,8 +89,8 @@ namespace ledger {
             std::string getRestoreKey() const ;
             bool contains(const std::string& address) const ;
             int32_t getOutputSizeAsSignedTxInput() const ;
-        protected:
             std::shared_ptr<Preferences> getPreferences() const;
+        protected:
             DerivationScheme& getDerivationScheme();
 
         private:
