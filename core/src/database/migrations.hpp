@@ -202,6 +202,10 @@ namespace ledger {
         // Add bitcoin dust policy
         template <> void migrate<25>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<25>(soci::session& sql, api::DatabaseBackendType type);
+
+        // Add bitcoin dust policy
+        template <> void migrate<26>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<26>(soci::session& sql, api::DatabaseBackendType type);
     }
 }
 
