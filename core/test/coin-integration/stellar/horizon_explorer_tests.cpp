@@ -105,7 +105,7 @@ TEST_F(StellarFixture, DISABLED_GetTransactions) {
             std::make_shared<DynamicObject>()
     );
     auto accountId = "GCQQQPIROIEFHIWEO2QH4KNWJYHZ5MX7RFHR4SCWFD5KPNR5455E6BR3";
-    auto transactions = uv::wait(explorer->getTransactions(accountId, Option<std::string>::NONE));
+    auto transactions = uv::wait(explorer->getTransactions(accountId, ""));
     fmt::print("SIZE {}\n", transactions.size());
     EXPECT_GE(transactions.size(), 5);
     const auto& tx = transactions.front();

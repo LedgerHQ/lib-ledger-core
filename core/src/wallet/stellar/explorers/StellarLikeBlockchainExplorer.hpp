@@ -56,7 +56,7 @@ namespace ledger {
             virtual Future<std::vector<std::shared_ptr<stellar::Operation>>> getOperations(const std::string& address, const Option<std::string>& cursor) = 0;
             virtual Future<std::vector<std::shared_ptr<stellar::Transaction>>> getTransactions(
                                                                                                const std::string& address,
-                                                                                               const Option<std::string>& cursor) = 0;
+                                                                                               const std::string& cursor) = 0;
             virtual Future<std::shared_ptr<stellar::Account>> getAccount(const std::string& accountId) const = 0;
             virtual Future<std::string> postTransaction(const std::vector<uint8_t>& tx) = 0;
 

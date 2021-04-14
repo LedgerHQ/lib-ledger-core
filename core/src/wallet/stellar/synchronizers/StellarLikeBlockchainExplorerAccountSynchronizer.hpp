@@ -53,7 +53,7 @@ namespace ledger {
                 /**
                  * Last paging token used by the synchronizer for synchronizing transactions.
                  */
-                Option<std::string> transactionPagingToken;
+                std::string transactionPagingToken;
 
                 /**
                  * Inserted operation counter during last synchronization.
@@ -68,7 +68,7 @@ namespace ledger {
 
                 template<class Archive>
                 void serialize(Archive & archive) {
-                    archive(transactionPagingToken.getValueOr(""));
+                    archive(transactionPagingToken);
                 };
             };
 
