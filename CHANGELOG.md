@@ -1,3 +1,8 @@
+## 4.0.2
+> 2021/04/14
+
+- Fix stellar incremental synchronization
+
 ## 4.0.1
 > 2021/04/12
 
