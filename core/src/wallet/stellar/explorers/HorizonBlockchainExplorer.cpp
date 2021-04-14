@@ -111,9 +111,9 @@ namespace ledger {
         }
 
         Future<std::vector<std::shared_ptr<stellar::Transaction>>> HorizonBlockchainExplorer::getTransactions(const std::string& address,
-                                                                  const Option<std::string>& cursor) {
+                                                                  const std::string& cursor) {
 
-            auto cursorParam = cursor.isEmpty() ? "" : fmt::format("&cursor={}", cursor.getValue());
+            auto cursorParam = cursor.empty() ? "" : fmt::format("&cursor={}", cursor);
             return http->GET(fmt::format("/accounts/{}/transactions?limit=50&order=asc{}", address, cursorParam))
                     .template json<TransactionsParser::Result, Exception>(TransactionsParser())
                     .map<std::vector<std::shared_ptr<stellar::Transaction>>>(getContext(), [] (const TransactionsParser::Response& response) -> std::vector<std::shared_ptr<stellar::Transaction>> {
