@@ -1,3 +1,9 @@
+## 4.2.0
+> 2021/04/19
+
+- Algorand update
+- Stargate protocol update for cosmos
+
 ## 4.1.0
 > 2021/02/26 Tezos for NRT
 
