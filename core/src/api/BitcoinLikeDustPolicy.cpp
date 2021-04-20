@@ -11,6 +11,7 @@ std::string to_string(const BitcoinLikeDustPolicy& bitcoinLikeDustPolicy) {
         case BitcoinLikeDustPolicy::FIXED: return "FIXED";
         case BitcoinLikeDustPolicy::PER_BYTE: return "PER_BYTE";
         case BitcoinLikeDustPolicy::PER_KBYTE: return "PER_KBYTE";
+        default: return "UNKNOWN";
     };
 };
 template <>
