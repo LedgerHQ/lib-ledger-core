@@ -63,7 +63,9 @@ static inline uint64_t swap_uint64(uint64_t val)
 #define FASTCALL
 #define CPPCRYPTOAPI
 
-#if defined(__clang__) || defined(__SUNPRO_CC)
+#if defined(__clang__) || defined(__SUNPRO_CC)\
+	|| defined(__arm__) || defined(__aarch32__) \
+	|| defined(__arm64__) || defined(__aarch64__)
 static inline uint32_t rotater32(uint32_t x, unsigned n)
 {
 	return (x >> n) | (x << (32 - n));
