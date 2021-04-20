@@ -17,6 +17,7 @@
 - Fix XRP incremental synchronization
 - Improve runtime performances by splitting db connections between Write pool and Read pool
 - use of tx "id" field (if present) instead of "hash" for btc explorers
+- Fix compilation on ARM
 
 ## 3.5.0
 
