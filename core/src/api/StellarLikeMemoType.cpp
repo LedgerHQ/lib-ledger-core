@@ -13,6 +13,7 @@ std::string to_string(const StellarLikeMemoType& stellarLikeMemoType) {
         case StellarLikeMemoType::MEMO_ID: return "MEMO_ID";
         case StellarLikeMemoType::MEMO_HASH: return "MEMO_HASH";
         case StellarLikeMemoType::MEMO_RETURN: return "MEMO_RETURN";
+        default: return "UNKNOWN";
     };
 };
 template <>

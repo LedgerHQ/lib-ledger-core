@@ -13,6 +13,7 @@ std::string to_string(const BitcoinLikePickingStrategy& bitcoinLikePickingStrate
         case BitcoinLikePickingStrategy::MERGE_OUTPUTS: return "MERGE_OUTPUTS";
         case BitcoinLikePickingStrategy::HIGHEST_FIRST_LIMIT_UTXO: return "HIGHEST_FIRST_LIMIT_UTXO";
         case BitcoinLikePickingStrategy::LIMIT_UTXO: return "LIMIT_UTXO";
+        default: return "UNKNOWN";
     };
 };
 template <>

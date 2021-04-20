@@ -69,6 +69,7 @@ std::string to_string(const ErrorCode& errorCode) {
         case ErrorCode::INVALID_STELLAR_ADDRESS_FORMAT: return "INVALID_STELLAR_ADDRESS_FORMAT";
         case ErrorCode::INVALID_STELLAR_MEMO_TYPE: return "INVALID_STELLAR_MEMO_TYPE";
         case ErrorCode::INVALID_SELF_TX: return "INVALID_SELF_TX";
+        default: return "UNKNOWN";
     };
 };
 template <>

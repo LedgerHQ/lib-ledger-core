@@ -123,7 +123,7 @@ FuturePtr<ledger::core::cosmos::Account> StargateGaiaCosmosLikeBlockchainExplore
     // First call gets the /auth/accounts information (general info)
     // Second call gets the "withdrawAddress" (where rewards go)
     const bool parseJsonNumbersAsStrings = true;
-    const auto ignoreFailStatusCode = true;
+    const bool ignoreFailStatusCode = true;
     return _http
         ->GET(fmt::format(kGrpcAccountEndpoint, _ns, _version, account),
               ACCEPT_HEADER)
@@ -149,7 +149,7 @@ FuturePtr<ledger::core::cosmos::Account> StargateGaiaCosmosLikeBlockchainExplore
             })
         .template flatMapPtr<cosmos::Account>(
             getContext(),
-            [this, parseJsonNumbersAsStrings, account, ignoreFailStatusCode](
+            [this, parseJsonNumbersAsStrings, ignoreFailStatusCode, account](
                 const cosmos::Account &inputAcc) -> FuturePtr<cosmos::Account> {
               auto retval = cosmos::Account(inputAcc);
               return _http

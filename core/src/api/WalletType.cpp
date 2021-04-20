@@ -16,6 +16,7 @@ std::string to_string(const WalletType& walletType) {
         case WalletType::TEZOS: return "TEZOS";
         case WalletType::STELLAR: return "STELLAR";
         case WalletType::ALGORAND: return "ALGORAND";
+        default: return "UNKNOWN";
     };
 };
 template <>

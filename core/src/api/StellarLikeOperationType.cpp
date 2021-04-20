@@ -22,6 +22,7 @@ std::string to_string(const StellarLikeOperationType& stellarLikeOperationType) 
         case StellarLikeOperationType::BUMP_SEQUENCE: return "BUMP_SEQUENCE";
         case StellarLikeOperationType::MANAGE_BUY_OFFER: return "MANAGE_BUY_OFFER";
         case StellarLikeOperationType::PATH_PAYMENT_STRICT_SEND: return "PATH_PAYMENT_STRICT_SEND";
+        default: return "UNKNOWN";
     };
 };
 template <>

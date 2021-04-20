@@ -11,6 +11,7 @@ std::string to_string(const BitcoinLikeSignatureState& bitcoinLikeSignatureState
         case BitcoinLikeSignatureState::ALREADY_SIGNED: return "ALREADY_SIGNED";
         case BitcoinLikeSignatureState::MISSING_DATA: return "MISSING_DATA";
         case BitcoinLikeSignatureState::SIGNING_SUCCEED: return "SIGNING_SUCCEED";
+        default: return "UNKNOWN";
     };
 };
 template <>
