@@ -134,7 +134,7 @@ public:
             : m_cache(get_base()), m_obj(std::forward<Args>(args)...) {}
         Handle(const Handle &) = delete;
         Handle & operator=(const Handle &) = delete;
-        ~Handle() { if (m_obj) cleanup(m_cache, typeid(TagType), get_unowning(m_obj)); }
+        ~Handle() { if (m_obj) cleanup(m_cache, typeid(TagType), get_unowning(m_obj), true); }
 
         void assign(const T & obj) { m_obj = obj; }
 
@@ -178,7 +178,8 @@ public:
 private:
     static void cleanup(const std::shared_ptr<Pimpl> &,
                         const std::type_index &,
-                        UnowningImplPointer);
+                        UnowningImplPointer,
+                        bool force_kill);
     static const std::shared_ptr<Pimpl> & get_base();
 };
 
