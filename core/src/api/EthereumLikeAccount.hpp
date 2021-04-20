@@ -81,6 +81,13 @@ public:
      * Note: same note as above
      */
     virtual void getERC20Balances(const std::vector<std::string> & erc20Addresses, const std::shared_ptr<BigIntListCallback> & callback) = 0;
+
+    /**
+     * Add ERC20 accounts
+     * The passed addresses are ERC20 accounts
+     * Note: same note as above
+     */
+    virtual void addERC20Accounts(const std::vector<std::string> & erc20Addresses) = 0;
 };
 
 } } }  // namespace ledger::core::api

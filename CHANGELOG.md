@@ -26,6 +26,17 @@
 - Fix XRP incremental synchronization
 - Improve runtime performances by splitting db connections between Write pool and Read pool
 - use of tx "id" field (if present) instead of "hash" for btc explorers
+## 3.5.2
+
+> 2021/02/03
+
+- Add AddERC20Accounts API
+
+## 3.5.1
+
+> 2021/01/29
+
+- Remove ERC20 balance check on libcore side
 
 
 ## 3.5.0

@@ -41,7 +41,7 @@ class BitcoinLikeWalletP2SHSynchronization : public BaseFixture {
 
 };
 
-TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
+TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_MediumXpubSynchronization) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
@@ -76,7 +76,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, MediumXpubSynchronization) {
     }
 }
 
-TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeOnceAtATime) {
+TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_SynchronizeOnceAtATime) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
@@ -110,7 +110,7 @@ TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeOnceAtATime) {
     }
 }
 
-TEST_F(BitcoinLikeWalletP2SHSynchronization, SynchronizeFromLastBlock) {
+TEST_F(BitcoinLikeWalletP2SHSynchronization, DISABLED_SynchronizeFromLastBlock) {
     auto pool = newDefaultPool();
     {
         auto configuration = DynamicObject::newInstance();
