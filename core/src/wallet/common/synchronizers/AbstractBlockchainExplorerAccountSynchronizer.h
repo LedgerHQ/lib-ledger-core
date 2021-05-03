@@ -184,10 +184,7 @@ namespace ledger {
                 buddy->preferences = std::static_pointer_cast<AbstractAccount>(account)->getInternalPreferences()
                         ->getSubPreferences(
                                 "AbstractBlockchainExplorerAccountSynchronizer");
-                auto loggerPurpose = fmt::format("synchronize_{}", account->getAccountUid());
-                auto tracePrefix = fmt::format("{}/{}/{}", account->getWallet()->getPool()->getName(), account->getWallet()->getName(), account->getIndex());
-                buddy->synchronizationTag = tracePrefix;
-                buddy->logger = logger::trace(loggerPurpose, tracePrefix, account->logger());
+                buddy->logger = account->logger();
                 buddy->startDate = DateUtils::now();
                 buddy->wallet = account->getWallet();
                 buddy->configuration = std::static_pointer_cast<AbstractAccount>(account)->getWallet()->getConfig();

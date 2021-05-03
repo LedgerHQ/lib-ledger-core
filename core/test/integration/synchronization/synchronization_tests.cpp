@@ -103,7 +103,7 @@ TEST_F(BitcoinLikeWalletSynchronization, MediumXpubSynchronization) {
                     std::cout << " type: " << api::to_string(op->getOperationType()) << std::endl;
                 }
                 ops.clear();
-                auto metrics = api::AllocationMetrics::getApiObjectAllocations();
+                auto metrics = api::AllocationMetrics::getObjectAllocations(); 
                 for (const auto& metric : metrics) {
                     std::cout << metric.first << ": " << metric.second << std::endl;
                 }
