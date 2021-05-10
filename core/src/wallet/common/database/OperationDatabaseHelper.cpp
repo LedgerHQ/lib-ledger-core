@@ -185,8 +185,6 @@ namespace ledger {
             return c;
         }
 
-    }
-}
 
         void OperationDatabaseHelper::eraseDataSince(
                     soci::session &sql,
