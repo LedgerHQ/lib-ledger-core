@@ -52,7 +52,7 @@ namespace ledger {
 
         int32_t Preferences::getInt(const std::string &key, int32_t fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
-            if (!value)
+            if (!value || value->size() == 0)
                 return fallbackValue;
             BytesReader reader(std::vector<uint8_t>(value->data(), value->data() + value->size()));
             return (int32_t)reader.readNextLeUint();
@@ -60,7 +60,7 @@ namespace ledger {
 
         int64_t Preferences::getLong(const std::string &key, int64_t fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
-            if (!value)
+            if (!value || value->size() == 0)
                 return fallbackValue;
             BytesReader reader(std::vector<uint8_t>(value->data(), value->data() + value->size()));
             return (int64_t)reader.readNextLeUlong();
@@ -68,7 +68,7 @@ namespace ledger {
 
         bool Preferences::getBoolean(const std::string &key, bool fallbackValue) const {
             auto value = _backend.get(wrapKey(key));
-            if (!value)
+            if (!value || value->size() == 0)
                 return fallbackValue;
             BytesReader reader(std::vector<uint8_t>(value->data(), value->data() + value->size()));
             return reader.readNextByte() == 0x01;
