@@ -404,11 +404,17 @@ class BitcoinLikeWalletSynchronization : public ManagerBase {
         std::cout << "balance: " << balance << std::endl;
     }
 
+    void erase(const std::string& xpub, const std::vector<Parameter>& parameters) {
+        load (xpub, parameters);
+        auto x = std::chrono::system_clock::from_time_t(0);
+        wait(account->eraseDataSince(x));
+    }
+
 };
 
 void help() {
     std::cout << "help: ledger-core-manager <command> <conf_file> <xpub>" << std::endl;
-    std::cout << "help: <command> list: sync, balance" << std::endl;
+    std::cout << "help: <command> list: sync, balance, erase" << std::endl;
 }
 
 void readConf(char* config, std::vector<Parameter>& parameters) {
@@ -439,6 +445,10 @@ int main(int argc, char **argv) {
         else if (strcmp(argv[1],"balance") == 0) {
             BitcoinLikeWalletSynchronization bitcoinEngine;
             bitcoinEngine.balance(std::string(argv[3]), parameters);
+        }
+        else if (strcmp(argv[1],"erase") == 0) {
+            BitcoinLikeWalletSynchronization bitcoinEngine;
+            bitcoinEngine.erase(std::string(argv[3]), parameters);
         }
         else {
             help();
