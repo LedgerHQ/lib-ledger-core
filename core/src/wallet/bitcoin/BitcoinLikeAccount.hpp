@@ -137,6 +137,8 @@ namespace ledger {
 
             Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) override ;
 
+            Future<api::ErrorCode> dropTransaction(const std::string& txid) override;
+
             void getFees(const std::shared_ptr<api::BigIntListCallback> & callback) override ;
 
             Future<AbstractAccount::AddressList> getAddresses(int64_t from, int64_t to);

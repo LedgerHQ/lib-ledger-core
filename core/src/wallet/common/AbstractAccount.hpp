@@ -111,6 +111,13 @@ namespace ledger {
 
             void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
             virtual Future<api::ErrorCode> eraseDataSince(const std::chrono::system_clock::time_point & date) = 0;
+
+            void dropTransaction(const std::string & txId, const std::shared_ptr<api::ErrorCodeCallback> & callback) override ;
+            virtual Future<api::ErrorCode> dropTransaction(const std::string & txId) {
+                return Future<api::ErrorCode>::failure(make_exception(
+                    api::ErrorCode::UNSUPPORTED_OPERATION, "dropTransaction not supported"));
+            }
+
             void eraseSynchronizerDataSince(soci::session &sql, const std::chrono::system_clock::time_point & date);
 
         protected:

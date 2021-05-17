@@ -707,6 +707,29 @@ namespace ledger {
             return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
         }
 
+        Future<api::ErrorCode> BitcoinLikeAccount::dropTransaction(const std::string& txid) {
+            auto log = logger();
+
+            log->debug(" Start erasing tx : {}", txid);
+
+            std::lock_guard<std::mutex> lock(_synchronizationLock);
+            _currentSyncEventBus = nullptr;
+
+            soci::session sql(getWallet()->getDatabase()->getPool());
+
+            sql << "DELETE FROM operations WHERE uid in ("
+                    "SELECT o.uid FROM operations AS o, bitcoin_operations AS b "
+                    "WHERE b.transaction_uid = :txid AND o.uid = b.uid)", soci::use(txid);
+
+            sql << "DELETE FROM bitcoin_inputs WHERE uid IN ("
+                    "SELECT input_uid FROM bitcoin_transaction_inputs "
+                    "WHERE transaction_uid = :txid)", soci::use(txid);
+
+            sql << "DELETE FROM bitcoin_transactions WHERE transaction_uid = :txid", soci::use(txid);
+
+            return Future<api::ErrorCode>::successful(api::ErrorCode::FUTURE_WAS_SUCCESSFULL);
+        }
+
         void BitcoinLikeAccount::getFees(const std::shared_ptr<api::BigIntListCallback> & callback) {
             return _explorer->getFees().callback(getMainExecutionContext(), callback);
         }

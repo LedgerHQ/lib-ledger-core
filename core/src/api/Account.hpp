@@ -230,6 +230,12 @@ public:
      */
     virtual void eraseDataSince(const std::chrono::system_clock::time_point & date, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
 
+    /**
+     * drop a given transaction data (in user's DB)
+     * @param txid: the uid of the transaction to be removed
+     */
+    virtual void dropTransaction(const std::string & txid, const std::shared_ptr<ErrorCodeCallback> & callback) = 0;
+
     /** Access to underlying keychain. */
     virtual std::shared_ptr<Keychain> getAccountKeychain() = 0;
 };

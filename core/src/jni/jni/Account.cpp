@@ -335,6 +335,16 @@ CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1eraseD
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
 }
 
+CJNIEXPORT void JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1dropTransaction(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_txid, jobject j_callback)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::Account>(nativeRef);
+        ref->dropTransaction(::djinni::String::toCpp(jniEnv, j_txid),
+                             ::djinni_generated::ErrorCodeCallback::toCpp(jniEnv, j_callback));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, )
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_Account_00024CppProxy_native_1getAccountKeychain(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef)
 {
     try {

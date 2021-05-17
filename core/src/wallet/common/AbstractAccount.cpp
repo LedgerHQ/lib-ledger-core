@@ -243,6 +243,10 @@ namespace ledger {
             eraseDataSince(date).callback(getMainExecutionContext(), callback);
         }
 
+        void AbstractAccount::dropTransaction(const std::string & txId, const std::shared_ptr<api::ErrorCodeCallback> & callback) {
+            dropTransaction(txId).callback(getMainExecutionContext(), callback);
+        }
+
         std::shared_ptr<api::StellarLikeAccount> AbstractAccount::asStellarLikeAccount() {
             return std::dynamic_pointer_cast<api::StellarLikeAccount>(shared_from_this());
         }

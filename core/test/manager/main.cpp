@@ -410,11 +410,17 @@ class BitcoinLikeWalletSynchronization : public ManagerBase {
         wait(account->eraseDataSince(x));
     }
 
+    void dropTx(const std::string& xpub, const std::string& txId, const std::vector<Parameter>& parameters) {
+        load (xpub, parameters);
+        wait(account->dropTransaction(txId));
+    }
+
 };
 
 void help() {
-    std::cout << "help: ledger-core-manager <command> <conf_file> <xpub>" << std::endl;
-    std::cout << "help: <command> list: sync, balance, erase" << std::endl;
+    std::cout << "help: ledger-core-manager <command> <conf_file> <xpub> [options]" << std::endl;
+    std::cout << "help: <command> list: sync, balance, erase, dropTx" << std::endl;
+    std::cout << "help: [options] : if command is dropTx, a txId must be passed as an option" << std::endl;
 }
 
 void readConf(char* config, std::vector<Parameter>& parameters) {
@@ -434,7 +440,7 @@ void readConf(char* config, std::vector<Parameter>& parameters) {
 int main(int argc, char **argv) {
 	Environment::initInstance(argc, argv);
 
-    if (argc == 4) {
+    if (argc >= 4) {
         std::vector<Parameter> parameters;
         readConf(argv[2], parameters);
 
@@ -449,6 +455,15 @@ int main(int argc, char **argv) {
         else if (strcmp(argv[1],"erase") == 0) {
             BitcoinLikeWalletSynchronization bitcoinEngine;
             bitcoinEngine.erase(std::string(argv[3]), parameters);
+        }
+        else if (strcmp(argv[1],"dropTx") == 0) {
+            if(argc == 5) {
+                BitcoinLikeWalletSynchronization bitcoinEngine;
+                bitcoinEngine.dropTx(std::string(argv[3]), std::string(argv[4]), parameters);
+            }
+            else {
+                help();
+            }
         }
         else {
             help();

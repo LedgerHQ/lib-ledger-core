@@ -442,7 +442,9 @@ Account = interface +c {
     # Erase data (in user's DB) relative to wallet since given date.
     # @param date, start date of data deletion
     eraseDataSince(date: date, callback: Callback<ErrorCode>);
-
+    # drop a given transaction data (in user's DB)
+    # @param txid: the uid of the transaction to be removed
+    dropTransaction(txid: string, callback: Callback<ErrorCode>);
     # Access to underlying keychain.
     getAccountKeychain(): Keychain;
 }
