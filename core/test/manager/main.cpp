@@ -415,12 +415,19 @@ class BitcoinLikeWalletSynchronization : public ManagerBase {
         wait(account->dropTransaction(txId));
     }
 
+    void addTx(const std::string& xpub, const std::string& txId, const std::vector<Parameter>& parameters) {
+        load (xpub, parameters);
+        soci::session sql(account->getWallet()->getDatabase()->getPool());
+        auto txExplorer = wait(account->getExplorer()->getTransactionByHash(txId));
+        account->putTransaction(sql, *txExplorer);
+    }
+
 };
 
 void help() {
-    std::cout << "help: ledger-core-manager <command> <conf_file> <xpub> [options]" << std::endl;
-    std::cout << "help: <command> list: sync, balance, erase, dropTx" << std::endl;
-    std::cout << "help: [options] : if command is dropTx, a txId must be passed as an option" << std::endl;
+    std::cout << "help: ledger-core-manager COMMAND CONF_FILE XPUB [options]" << std::endl;
+    std::cout << "help:     COMMAND list: sync, balance, erase, dropTx, addTx" << std::endl;
+    std::cout << "help:     [options] : txId if COMMAND is dropTx or addTx" << std::endl;
 }
 
 void readConf(char* config, std::vector<Parameter>& parameters) {
@@ -460,6 +467,15 @@ int main(int argc, char **argv) {
             if(argc == 5) {
                 BitcoinLikeWalletSynchronization bitcoinEngine;
                 bitcoinEngine.dropTx(std::string(argv[3]), std::string(argv[4]), parameters);
+            }
+            else {
+                help();
+            }
+        }
+        else if (strcmp(argv[1],"addTx") == 0) {
+            if(argc == 5) {
+                BitcoinLikeWalletSynchronization bitcoinEngine;
+                bitcoinEngine.addTx(std::string(argv[3]), std::string(argv[4]), parameters);
             }
             else {
                 help();
