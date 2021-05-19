@@ -668,12 +668,14 @@ namespace ledger {
                     std::cout << "save db" << std::endl;
                     self->logger()->warn(" save db");
                     //Store in DB
-                    /*
+
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
                     self->bulkInsert(operations);
                     self->emitEventsNow();
-                    */
+                    std::cout << "saved db" << std::endl;
+                    self->logger()->warn(" saved db");
+
                     return unit;
                 });
 

@@ -163,7 +163,7 @@ jobs:
                 ~/cmake-3.16.5-Linux-x86_64/bin/ctest -VV -timeout 120
   build_macos_release:
     macos:
-      xcode: "12.4.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -193,7 +193,7 @@ jobs:
             . .circleci/deploy.sh
   build_macos_ios_release:
     macos:
-      xcode: "12.4.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -240,7 +240,7 @@ jobs:
             . .circleci/deploy_fat_lib.sh
   build_macos_jni_release:
     macos:
-      xcode: "12.4.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
@@ -275,7 +275,7 @@ jobs:
             . .circleci/deploy.sh
   build_macos_debug:
     macos:
-      xcode: "12.4.0"
+      xcode: "12.0.0"
     working_directory: ~/lib-ledger-core
     steps:
       - checkout
