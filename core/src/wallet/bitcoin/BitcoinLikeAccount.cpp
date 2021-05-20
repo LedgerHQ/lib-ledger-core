@@ -617,6 +617,9 @@ namespace ledger {
                 if (optimisticUpdate.isFailure()) {
                     self->logger()->warn(" Optimistic update failed for broadcasted transaction : {}", txHash);
                 }
+                else {
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
+                }
 
                 return txHash;
             }).callback(getMainExecutionContext(), callback);

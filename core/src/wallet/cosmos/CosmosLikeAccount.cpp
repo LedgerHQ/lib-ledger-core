@@ -631,6 +631,7 @@ std::shared_ptr<api::EventBus> CosmosLikeAccount::synchronize()
         payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
         if (result.isSuccess()) {
             code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+            self->getWallet()->invalidateBalanceCache(self->getIndex());
         }
         else {
             code = api::EventCode::SYNCHRONIZATION_FAILED;

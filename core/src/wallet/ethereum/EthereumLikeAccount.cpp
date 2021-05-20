@@ -512,6 +512,7 @@ namespace ledger {
                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                 if (result.isSuccess()) {
                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE, api::to_string(result.getFailure().getErrorCode()));
@@ -599,7 +600,7 @@ namespace ledger {
                     soci::session sql(self->getWallet()->getDatabase()->getPool());
                     return self->putTransaction(sql, txExplorer);
                 });
-
+                self->getWallet()->invalidateBalanceCache(self->getIndex());
                 return txHash;
             }).callback(getMainExecutionContext(), callback);
         }

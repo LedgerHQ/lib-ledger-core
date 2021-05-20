@@ -476,6 +476,7 @@ namespace algorand {
                 payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                 if (result.isSuccess()) {
                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
+                    getWallet()->invalidateBalanceCache(getIndex());
                 } else {
                     code = api::EventCode::SYNCHRONIZATION_FAILED;
                     payload->putString(api::Account::EV_SYNC_ERROR_CODE,
