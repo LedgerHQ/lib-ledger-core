@@ -492,7 +492,7 @@ namespace ledger {
                     code = api::EventCode::SYNCHRONIZATION_SUCCEED;
 
                     auto const context = result.getValue();
-
+                    self->getWallet()->invalidateBalanceCache(self->getIndex());
                     payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(context.lastBlockHeight));
                     payload->putInt(api::Account::EV_SYNC_NEW_OPERATIONS, static_cast<int32_t>(context.newOperations));
 
@@ -577,7 +577,7 @@ namespace ledger {
                     self->emitEventsNow();
                     return operations.size();
                 });
-
+                self->getWallet()->invalidateBalanceCache(self->getIndex());
                 return txHash;
             }).callback(getMainExecutionContext(), callback);
         }

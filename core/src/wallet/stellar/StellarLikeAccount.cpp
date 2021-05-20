@@ -108,7 +108,7 @@ namespace ledger {
                     payload->putLong(api::Account::EV_SYNC_DURATION_MS, duration);
                     if (result.isSuccess()) {
                         code = api::EventCode::SYNCHRONIZATION_SUCCEED;
-
+                        self->getWallet()->invalidateBalanceCache(self->getIndex());
                         auto const state = result.getValue();
 
                         payload->putInt(api::Account::EV_SYNC_LAST_BLOCK_HEIGHT, static_cast<int32_t>(state.lastBlockHeight));
