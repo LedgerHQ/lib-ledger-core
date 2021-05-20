@@ -39,6 +39,7 @@
 #include <wallet/pool/WalletPool.hpp>
 #include <wallet/stellar/StellarLikeAccount.hpp>
 #include <wallet/common/synchronizers/AbstractBlockchainExplorerAccountSynchronizer.h>
+#include <iostream>
 
 namespace ledger {
     namespace core {
@@ -230,18 +231,23 @@ namespace ledger {
 
         void AbstractAccount::emitEventsNow() {
             auto self = shared_from_this();
+            std::cout << "emitEventsNow method" << std::endl;
             run([self] () {
+                std::cout << "run" << std::endl;
                 std::list<std::shared_ptr<api::Event>> events;
                 std::shared_ptr<api::Event> batchedOperationsEvent;
                 std::shared_ptr<api::Event> batchedBlocksEvent;
                 {
+                    std::cout << "batchedOperationsEvent" << std::endl;
                     std::lock_guard<std::mutex> lock(self->_eventsLock);
                     std::swap(events, self->_events);
                     batchedOperationsEvent = self->_batchedOperationsEvent;
                     self->_batchedOperationsEvent = nullptr;
                 }
+                std::cout << "publisher post" << std::endl;
                 if (batchedOperationsEvent)
                     self->_publisher->post(batchedOperationsEvent);
+                std::cout << "post event" << std::endl;
                 for (auto& event : events) {
                     self->_publisher->post(event);
                 }

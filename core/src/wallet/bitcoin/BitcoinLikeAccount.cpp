@@ -125,7 +125,7 @@ namespace ledger {
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
             int result = FLAG_TRANSACTION_IGNORED;
-
+            std::cout << "Find inputs" << std::endl;
             // Find inputs
             for (auto& input : transaction.inputs) {
 
@@ -148,7 +148,7 @@ namespace ledger {
                     }
                 }
             }
-
+            std::cout << "Find outputs" << std::endl;
             // Find outputs
             auto hasSpentNothing = sentAmount == 0L;
             auto outputCount = transaction.outputs.size();
@@ -182,7 +182,7 @@ namespace ledger {
             }
             std::stringstream snds;
             strings::join(senders, snds, ",");
-
+            std::cout << "inflateOperation" << std::endl;
             Operation operation;
             inflateOperation(operation, transaction);
             operation.senders = std::move(senders);
@@ -190,7 +190,7 @@ namespace ledger {
             operation.fees = std::move(BigInt().assignI64(fees));
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
-
+            std::cout << "compute trust" << std::endl;
             // Compute trust
             computeOperationTrust(operation, transaction);
 
@@ -209,7 +209,7 @@ namespace ledger {
                 operation.refreshUid();
                 out.push_back(operation);
             }
-
+            std::cout << "accountOutputs" << std::endl;
             if (accountOutputs.size() > 0) {
                 // Receive
                 BigInt amount;
@@ -238,13 +238,20 @@ namespace ledger {
         }
 
         Try<int> BitcoinLikeAccount::bulkInsert(const std::vector<Operation> &ops) {
+            std::cout << "bulk insert method" << std::endl;
             return Try<int>::from([&] () {
+                std::cout << "sql session" << std::endl;
                 soci::session sql(getWallet()->getDatabase()->getPool());
+                std::cout << "sql transaction" << std::endl;
                 soci::transaction tr(sql);
+                std::cout << "BitcoinLikeOperationDatabaseHelper::bulkInsert" << std::endl;
                 BitcoinLikeOperationDatabaseHelper::bulkInsert(sql, ops);
+                std::cout << "tr.commit" << std::endl;
                 tr.commit();
+                std::cout << "emitNewOperationsEvent" << std::endl;
                 // Emit
                 emitNewOperationsEvent(ops);
+                std::cout << "emitNewOperationsEvent finish" << std::endl;
                 return ops.size();
             });
         }
@@ -670,8 +677,11 @@ namespace ledger {
                     //Store in DB
 
                     std::vector<Operation> operations;
+                    std::cout << "operations" << std::endl;
                     self->interpretTransaction(txExplorer, operations);
+                    std::cout << "interpretTransaction finish" << std::endl;
                     self->bulkInsert(operations);
+                    std::cout << "bulkInsert finish" << std::endl;
                     self->emitEventsNow();
                     std::cout << "saved db" << std::endl;
                     self->logger()->warn(" saved db");
