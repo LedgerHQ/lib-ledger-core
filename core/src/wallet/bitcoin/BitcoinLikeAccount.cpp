@@ -129,7 +129,7 @@ namespace ledger {
             std::cout << "5" << std::endl;
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
-            std::cout << "6" << std::endl;
+            std::cout << "6 " << std::endl;
             int result = FLAG_TRANSACTION_IGNORED;
             std::cout << "Find inputs" << std::endl;
             // Find inputs
