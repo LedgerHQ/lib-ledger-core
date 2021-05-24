@@ -114,16 +114,22 @@ namespace ledger {
 
         void BitcoinLikeAccount::interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction,
                 std::vector<Operation>& out, bool needExtendKeychain) {
+            std::cout << "1" << std::endl;
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
+            std::cout << "2" << std::endl;
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
+            std::cout << "3" << std::endl;
             uint64_t fees = transaction.fees.getValue().toUint64();
+            std::cout << "4" << std::endl;
             uint64_t sentAmount = 0L;
             uint64_t receivedAmount = 0L;
             std::vector<std::string> senders;
             senders.reserve(transaction.inputs.size());
+            std::cout << "5" << std::endl;
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
+            std::cout << "6" << std::endl;
             int result = FLAG_TRANSACTION_IGNORED;
             std::cout << "Find inputs" << std::endl;
             // Find inputs
