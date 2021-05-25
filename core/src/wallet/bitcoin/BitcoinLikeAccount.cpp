@@ -120,7 +120,7 @@ namespace ledger {
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
             std::cout << "3" << std::endl;
-            uint64_t fees = transaction.fees.getValue().toUint64();
+            uint64_t fees = 0L;
             std::cout << "4" << std::endl;
             uint64_t sentAmount = 0L;
             uint64_t receivedAmount = 0L;
@@ -152,6 +152,9 @@ namespace ledger {
                             result = result | FLAG_TRANSACTION_ON_USED_ADDRESS;
                         }
                     }
+                }
+                if (input.value.nonEmpty()) {
+                    fees += input.value.getValue().toUint64();
                 }
             }
             std::cout << "Find outputs" << std::endl;
@@ -185,6 +188,7 @@ namespace ledger {
                         recipients.push_back(output.address.getValue());
                     }
                 }
+                fees = fees - output.value.toUint64();
             }
             std::stringstream snds;
             strings::join(senders, snds, ",");
