@@ -275,7 +275,7 @@ namespace ledger {
                     });
         }
 
-        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             std::stringstream body;
             auto hexTx = "0x" + hex::toString(transaction);
             body << "{" << "\"tx\":" << '"' << hexTx << '"' << "}";
@@ -300,8 +300,8 @@ namespace ledger {
             return getLedgerApiRawTransaction(transactionHash);
         }
 
-        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> LedgerApiEthereumLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<EthereumLikeBlockchainExplorer::TransactionsBulk>

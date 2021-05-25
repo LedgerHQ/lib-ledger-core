@@ -31,6 +31,9 @@
 #ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
 #define LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
 
+#define CORRELATIONID_PREFIX(id) id.empty()?"":(std::string("corrId=")+id)
+
+
 #include <api/BitcoinLikeTransaction.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>
@@ -82,6 +85,7 @@ namespace ledger {
         class BitcoinLikeTransactionApi : public api::BitcoinLikeTransaction {
         public:
             explicit BitcoinLikeTransactionApi(const api::Currency &currency,
+                                               const std::string &correlationid = "",
                                                const std::string &keychainEngine = api::KeychainEngines::BIP32_P2PKH,
                                                uint64_t currentBlockHeight = 0);
 
@@ -108,6 +112,8 @@ namespace ledger {
             optional<std::vector<uint8_t>> getWitness() override;
 
             api::EstimatedSize getEstimatedSize() override;
+
+            std::string getCorrelationId() override;
 
             std::vector<uint8_t> serializeOutputs() override;
 
@@ -172,6 +178,7 @@ namespace ledger {
             bool _writable;
             std::string _keychainEngine;
             uint64_t _currentBlockHeight;
+            std::string _correlationId;
         };
     }
 }

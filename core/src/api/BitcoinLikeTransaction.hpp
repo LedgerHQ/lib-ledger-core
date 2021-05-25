@@ -78,6 +78,9 @@ public:
      */
     virtual EstimatedSize getEstimatedSize() = 0;
 
+    /** Get the id used to track a transaction */
+    virtual std::string getCorrelationId() = 0;
+
     /**
      * Sign all inputs for given transaction. 
      * Build DER encoded signature from RSV data.

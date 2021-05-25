@@ -81,6 +81,7 @@ namespace ledger {
             std::shared_ptr<BigInt> maxChange;
             std::shared_ptr<BigInt> minChange;
             bool wipe;
+            std::string correlationId;
         };
 
         using BitcoinLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::BitcoinLikeTransaction>> (const BitcoinLikeTransactionBuildRequest&)>;
@@ -123,6 +124,9 @@ namespace ledger {
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder>
             setMinAmountOnChange(const std::shared_ptr<api::Amount> &amount) override;
+
+            std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+            setCorrelationId(const std::string &correlationId) override;
 
             std::shared_ptr<api::BitcoinLikeTransactionBuilder> clone() override;
 

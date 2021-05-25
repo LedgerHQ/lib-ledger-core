@@ -167,7 +167,7 @@ namespace ledger {
             Future<std::shared_ptr<BigInt>>
             getServerState(const std::string &field);
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
 
             Future<void *> startSession() override;
 
@@ -175,7 +175,7 @@ namespace ledger {
 
             Future<Bytes> getRawTransaction(const String &transactionHash) override;
 
-            Future<String> pushTransaction(const std::vector<uint8_t> &transaction) override;
+            Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
 
             FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,

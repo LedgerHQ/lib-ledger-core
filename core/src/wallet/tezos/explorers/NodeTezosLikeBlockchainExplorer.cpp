@@ -95,7 +95,7 @@ namespace ledger {
         }
 
         Future<String>
-        NodeTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        NodeTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             // TODO: TBC with backend team
             std::stringstream body;
             body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
@@ -124,8 +124,8 @@ namespace ledger {
             throw make_exception(api::ErrorCode::IMPLEMENTATION_IS_MISSING, "Endpoint to get raw transactions is not implemented.");
         }
 
-        Future<String> NodeTezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> NodeTezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>
