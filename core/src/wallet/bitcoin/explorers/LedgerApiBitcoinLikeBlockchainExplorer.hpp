@@ -60,11 +60,11 @@ namespace ledger {
                 const std::shared_ptr<api::DynamicObject>& configuration
             );
 
-            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) override;
+            Future<String> pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
             Future<void *> startSession() override;
             Future<Unit> killSession(void *session) override;
             Future<Bytes> getRawTransaction(const String& transactionHash) override;
-            Future<String> pushTransaction(const std::vector<uint8_t>& transaction) override;
+            Future<String> pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId="") override;
 
             FuturePtr<TransactionsBulk>
             getTransactions(const std::vector<std::string> &addresses,

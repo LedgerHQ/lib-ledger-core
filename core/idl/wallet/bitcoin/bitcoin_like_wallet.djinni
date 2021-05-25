@@ -173,6 +173,8 @@ BitcoinLikeTransaction = interface +c {
     # Estimate the size of the raw transaction in bytes. This method returns a minimum estimated size and a maximum estimated
     # size.
     getEstimatedSize(): EstimatedSize;
+    # Get the id used to track a transaction
+    getCorrelationId(): string;
     # Sign all inputs for given transaction. 
     # Build DER encoded signature from RSV data.
     # @return SIGNING_SUCCEED if succeed case else refers to BitcoinLikeSignatureState enumeration
@@ -290,6 +292,11 @@ BitcoinLikeTransactionBuilder = interface +c {
 
     # Reset the current instance to its initial state.
     reset();
+
+    # Set the correlation id which can be used to debug transaction errors
+    # through the full ledger stack 
+    # @return A reference on the same builder in order to chain calls.
+    setCorrelationId(correlationId : string) : BitcoinLikeTransactionBuilder;
 
     # Parsing unsigned transaction.
     # parsing a tx might change depending on block height we are on (if an update is effective starting from a given hight)

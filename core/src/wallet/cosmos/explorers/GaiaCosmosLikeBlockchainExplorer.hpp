@@ -91,7 +91,7 @@ class GaiaCosmosLikeBlockchainExplorer :
     [[noreturn]] Future<Bytes> getRawTransaction(const String &transactionHash) override;
     FuturePtr<cosmos::Transaction> getTransactionByHash(
         const String &transactionHash) const override;
-    Future<String> pushTransaction(const std::vector<uint8_t> &transaction) override;
+    Future<String> pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId="") override;
     Future<int64_t> getTimestamp() const override;
 
     // Pending statuses

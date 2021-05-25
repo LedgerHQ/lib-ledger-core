@@ -204,7 +204,7 @@ namespace algorand {
             });
     }
 
-    Future<std::string> BlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction)
+    Future<std::string> BlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId)
     {
         static const std::unordered_map<std::string, std::string>
             CONTENT_TYPE_HEADER{{"Content-Type", "application/x-binary"}};

@@ -122,7 +122,7 @@ namespace ledger {
         }
 
         Future<String>
-        NodeRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        NodeRippleLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             NodeRippleLikeBodyRequest bodyRequest;
             bodyRequest.setMethod("submit");
             bodyRequest.pushParameter("tx_blob", hex::toString(transaction));
@@ -193,8 +193,8 @@ namespace ledger {
                     });
         }
 
-        Future<String> NodeRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> NodeRippleLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<RippleLikeBlockchainExplorer::TransactionsBulk>

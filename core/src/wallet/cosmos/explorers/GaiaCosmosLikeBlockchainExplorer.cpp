@@ -456,7 +456,7 @@ FuturePtr<cosmos::Transaction> GaiaCosmosLikeBlockchainExplorer::getTransactionB
 }
 
 Future<String> GaiaCosmosLikeBlockchainExplorer::pushTransaction(
-    const std::vector<uint8_t> &transaction)
+    const std::vector<uint8_t> &transaction, const std::string& correlationId)
 {
     std::unordered_map<std::string, std::string> headers{{"Accept", "application/json"}};
 

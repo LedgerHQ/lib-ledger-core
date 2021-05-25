@@ -544,8 +544,14 @@ namespace ledger {
 
         void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                          const std::shared_ptr<api::StringCallback> &callback) {
+            broadcastRawTransaction(transaction, callback, "");
+        }
+
+        void BitcoinLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                                         const std::shared_ptr<api::StringCallback> &callback,
+                                                         const std::string& correlationId) {
             auto self = getSelf();
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
+            _explorer->pushTransaction(transaction, correlationId).map<std::string>(getContext(), [self, transaction, correlationId] (const String& seq) -> std::string {
                 //Store newly broadcasted tx in db
                 //First parse it
                 auto txHash = seq.str();
@@ -615,7 +621,8 @@ namespace ledger {
                 // and the update will occur at next synchro ...
                 // But still let's log that !
                 if (optimisticUpdate.isFailure()) {
-                    self->logger()->warn(" Optimistic update failed for broadcasted transaction : {}", txHash);
+                    self->logger()->warn("{} Optimistic update failed for broadcasted transaction : {}", 
+                        CORRELATIONID_PREFIX(correlationId), txHash);
                 }
                 else {
                     self->getWallet()->invalidateBalanceCache(self->getIndex());
@@ -627,7 +634,7 @@ namespace ledger {
 
         void BitcoinLikeAccount::broadcastTransaction(const std::shared_ptr<api::BitcoinLikeTransaction> &transaction,
                                                       const std::shared_ptr<api::StringCallback> &callback) {
-            broadcastRawTransaction(transaction->serialize(), callback);
+            broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
         std::shared_ptr<api::BitcoinLikeTransactionBuilder> BitcoinLikeAccount::buildTransaction(bool partial) {
