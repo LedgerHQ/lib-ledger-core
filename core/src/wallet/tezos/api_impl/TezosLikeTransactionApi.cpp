@@ -432,5 +432,9 @@ namespace ledger {
         bool TezosLikeTransactionApi::toReveal() const {
             return _needReveal;
         }
+        
+        std::string TezosLikeTransactionApi::getCorrelationId() {
+            return _correlationId;
+        }
     }
 }

@@ -50,6 +50,12 @@ public:
     virtual std::shared_ptr<RippleLikeTransactionBuilder> setFees(const std::shared_ptr<Amount> & fees) = 0;
 
     /**
+     * Set correlation id
+     * @return A reference on the same builder in order to chain calls.
+     */
+    virtual std::shared_ptr<RippleLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) = 0;
+
+    /**
      * Add a memo.
      * @return A reference on the same builder in order to chain calls.
      */

@@ -99,7 +99,7 @@ namespace ledger {
         }
 
         Future<String>
-        ExternalTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction) {
+        ExternalTezosLikeBlockchainExplorer::pushLedgerApiTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             std::stringstream body;
             body << '"' << hex::toString(transaction) << '"';
             auto bodyString = body.str();
@@ -137,8 +137,8 @@ namespace ledger {
                                  "Endpoint to get raw transactions is not implemented.");
         }
 
-        Future<String> ExternalTezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction) {
-            return pushLedgerApiTransaction(transaction);
+        Future<String> ExternalTezosLikeBlockchainExplorer::pushTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
+            return pushLedgerApiTransaction(transaction, correlationId);
         }
 
         FuturePtr<TezosLikeBlockchainExplorer::TransactionsBulk>

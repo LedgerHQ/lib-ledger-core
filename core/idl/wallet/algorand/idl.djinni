@@ -134,10 +134,14 @@ AlgorandTransaction = interface +c {
     const getSenderRewards(): string;
     const getReceiverRewards(): string;
     const getCloseRewards(): string;
+    const getCorrelationId(): string;
+
+    
 
     setSender(sender: string);
     setFee(fee: string);
     setNote(note: string);
+    setCorrelationId(correlationId : string);
 
     setPaymentInfo(info: AlgorandPaymentInfo);
     const getPaymentInfo(): AlgorandPaymentInfo;

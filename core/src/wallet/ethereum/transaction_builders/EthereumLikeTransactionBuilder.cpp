@@ -82,6 +82,12 @@ namespace ledger {
         }
 
         std::shared_ptr<api::EthereumLikeTransactionBuilder>
+        EthereumLikeTransactionBuilder::setCorrelationId(const std::string & correlationId) {
+            _request.correlationId = correlationId;
+            return shared_from_this();
+        }
+
+        std::shared_ptr<api::EthereumLikeTransactionBuilder>
         EthereumLikeTransactionBuilder::setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) {
             _request.gasLimit = std::make_shared<BigInt>(gasLimit->toString());
             return shared_from_this();

@@ -69,6 +69,12 @@ public:
      */
     virtual std::shared_ptr<CosmosLikeTransactionBuilder> setFee(const std::shared_ptr<Amount> & fee) = 0;
 
+    /**
+     * Set correlation id
+     * @param id to track transaction through ledger track
+     */
+    virtual std::shared_ptr<CosmosLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) = 0;
+
     /** Build a transaction from the given builder parameters. */
     virtual void build(const std::shared_ptr<CosmosLikeTransactionCallback> & callback) = 0;
 

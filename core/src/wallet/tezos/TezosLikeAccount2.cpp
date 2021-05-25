@@ -211,7 +211,12 @@ namespace ledger {
 
         void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                        const std::shared_ptr<api::StringCallback> &callback) {
-            _explorer->pushTransaction(transaction)
+            broadcastRawTransaction(transaction, callback, "");
+        }
+        void TezosLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
+                                                       const std::shared_ptr<api::StringCallback> &callback,
+                                                       const std::string& correlationId) {
+            _explorer->pushTransaction(transaction, correlationId)
                     .map<std::string>(getContext(),
                                       [](const String &seq) -> std::string {
                                           //TODO: optimistic update
@@ -229,7 +234,9 @@ namespace ledger {
 
         void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                                     const std::shared_ptr<api::StringCallback> &callback) {
-            broadcastRawTransaction(transaction->serialize(), callback);
+            
+        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
+            broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
         std::shared_ptr<api::TezosLikeTransactionBuilder> TezosLikeAccount::buildTransaction() {

@@ -138,6 +138,12 @@ namespace ledger {
             return shared_from_this();
         }
 
+        std::shared_ptr<api::BitcoinLikeTransactionBuilder>
+        BitcoinLikeTransactionBuilder::setCorrelationId(const std::string &correlationId) {
+            _request.correlationId = correlationId;
+            return shared_from_this();
+        }
+
         void
         BitcoinLikeTransactionBuilder::build(const std::shared_ptr<api::BitcoinLikeTransactionCallback> &callback) {
             build().callback(_context, callback);
