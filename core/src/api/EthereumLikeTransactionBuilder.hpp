@@ -62,6 +62,9 @@ public:
     /** Set input data the originator wants to embed in transaction. */
     virtual std::shared_ptr<EthereumLikeTransactionBuilder> setInputData(const std::vector<uint8_t> & data) = 0;
 
+    /** Set the correlation id which allows to track transaction */
+    virtual std::shared_ptr<EthereumLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) = 0;
+
     /** Build a transaction from the given builder parameters. */
     virtual void build(const std::shared_ptr<EthereumLikeTransactionCallback> & callback) = 0;
 

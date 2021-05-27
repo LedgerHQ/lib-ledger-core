@@ -591,8 +591,14 @@ namespace ledger {
 
         void EthereumLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> & transaction,
                                                           const std::shared_ptr<api::StringCallback> & callback) {
+            broadcastRawTransaction(transaction, callback, "");
+        }
+
+        void EthereumLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> & transaction,
+                                                          const std::shared_ptr<api::StringCallback> & callback,
+                                                          const std::string& correlationId) {
             auto self = getSelf();
-            _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
+            _explorer->pushTransaction(transaction, correlationId).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
                 auto txHash = seq.str();
                 auto optimisticUpdate = Try<int>::from([&] () -> int {
                     auto txExplorer = getETHLikeBlockchainExplorerTxFromRawTx(self, txHash, transaction);
@@ -607,7 +613,7 @@ namespace ledger {
 
         void EthereumLikeAccount::broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
                                                        const std::shared_ptr<api::StringCallback> & callback) {
-                broadcastRawTransaction(transaction->serialize(), callback);
+                broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
         std::shared_ptr<api::EthereumLikeAccount> EthereumLikeAccount::asEthereumLikeAccount() {

@@ -45,11 +45,15 @@ public:
 
     virtual std::string getCloseRewards() const = 0;
 
+    virtual std::string getCorrelationId() const = 0;
+
     virtual void setSender(const std::string & sender) = 0;
 
     virtual void setFee(const std::string & fee) = 0;
 
     virtual void setNote(const std::string & note) = 0;
+
+    virtual void setCorrelationId(const std::string & correlationId) = 0;
 
     virtual void setPaymentInfo(const AlgorandPaymentInfo & info) = 0;
 

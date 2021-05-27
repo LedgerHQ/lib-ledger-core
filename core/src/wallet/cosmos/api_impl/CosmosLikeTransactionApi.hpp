@@ -63,6 +63,7 @@ class CosmosLikeTransactionApi : public api::CosmosLikeTransaction {
     void setAccountNumber(const std::string &accountNumber);
     void setMessages(const std::vector<std::shared_ptr<api::CosmosLikeMessage>> &messages);
     void setSigningPubKey(const std::vector<uint8_t> &pubKey);
+    void setCorrelationId(const std::string &correlationId);
 
     void setSignature(
         const std::vector<uint8_t> &rSignature, const std::vector<uint8_t> &sSignature) override;
@@ -77,6 +78,7 @@ class CosmosLikeTransactionApi : public api::CosmosLikeTransaction {
     std::string getMemo() const override;
     std::vector<std::shared_ptr<api::CosmosLikeMessage>> getMessages() const override;
     std::vector<uint8_t> getSigningPubKey() const override;
+    std::string getCorrelationId() const override;
 
     std::string serializeForSignature() override;
     std::string serializeForBroadcast(const std::string &mode) override;
@@ -94,6 +96,7 @@ class CosmosLikeTransactionApi : public api::CosmosLikeTransaction {
 
     std::string _accountNumber;
     std::string _accountSequence;
+    std::string _correlationId;
     api::Currency _currency;
     std::vector<uint8_t> _rSignature;
     std::vector<uint8_t> _sSignature;

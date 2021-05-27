@@ -81,6 +81,8 @@ namespace ledger {
 
             int32_t getStatus() override;
 
+            std::string getCorrelationId() override;
+
             TezosLikeTransactionApi &setFees(const std::shared_ptr<BigInt> &fees);
 
             TezosLikeTransactionApi &setValue(const std::shared_ptr<BigInt> &value);
@@ -137,6 +139,7 @@ namespace ledger {
             std::vector<uint8_t> _rawTx;
             bool _needReveal;
             int32_t _status;
+            std::string _correlationId;
         };
     }
 }

@@ -60,6 +60,7 @@ namespace ledger {
             std::shared_ptr<BigInt> gasLimit;
             std::vector<uint8_t> inputData;
             bool wipe;
+            std::string correlationId;
         };
 
         using EthereumLikeTransactionBuildFunction = std::function<Future<std::shared_ptr<api::EthereumLikeTransaction>> (const EthereumLikeTransactionBuildRequest&, const std::shared_ptr<EthereumLikeBlockchainExplorer> &)>;
@@ -83,6 +84,7 @@ namespace ledger {
             std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasPrice(const std::shared_ptr<api::Amount> & gasPrice) override;
             std::shared_ptr<api::EthereumLikeTransactionBuilder> setGasLimit(const std::shared_ptr<api::Amount> & gasLimit) override;
             std::shared_ptr<api::EthereumLikeTransactionBuilder> setInputData(const std::vector<uint8_t> & data) override;
+            std::shared_ptr<api::EthereumLikeTransactionBuilder> setCorrelationId(const std::string & correlationId) override;
 
             void build(const std::shared_ptr<api::EthereumLikeTransactionCallback> & callback) override;
             Future<std::shared_ptr<api::EthereumLikeTransaction>> build();

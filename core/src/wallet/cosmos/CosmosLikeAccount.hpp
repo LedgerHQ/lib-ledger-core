@@ -246,6 +246,11 @@ class CosmosLikeAccount : public api::CosmosLikeAccount, public AbstractAccount 
     /// }
     void updateAccountDataFromNetwork();
 
+    void broadcastRawTransaction(
+        const std::string &transaction, 
+        const std::shared_ptr<api::StringCallback> &callback, 
+        const std::string& correlationId);
+
     // These helpers stay on CosmosLikeAccount *only* because they have to use their
     // knowledge of Address information in order to correctly map operation type.
     // An operation type is always seen from the account point of view.

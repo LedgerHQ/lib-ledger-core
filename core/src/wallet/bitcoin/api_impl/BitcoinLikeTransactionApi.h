@@ -31,9 +31,6 @@
 #ifndef LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
 #define LEDGER_CORE_BITCOINLIKETRANSACTIONAPI_H
 
-#define CORRELATIONID_PREFIX(id) id.empty()?"":(std::string("corrId=")+id)
-
-
 #include <api/BitcoinLikeTransaction.hpp>
 #include <wallet/common/api_impl/OperationApi.h>
 #include <wallet/bitcoin/explorers/BitcoinLikeBlockchainExplorer.hpp>

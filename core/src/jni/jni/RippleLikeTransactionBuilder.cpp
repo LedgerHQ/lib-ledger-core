@@ -55,6 +55,16 @@ CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_0002
     } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
 }
 
+CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1setCorrelationId(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jstring j_correlationId)
+{
+    try {
+        DJINNI_FUNCTION_PROLOGUE1(jniEnv, nativeRef);
+        const auto& ref = ::djinni::objectFromHandleAddress<::ledger::core::api::RippleLikeTransactionBuilder>(nativeRef);
+        auto r = ref->setCorrelationId(::djinni::String::toCpp(jniEnv, j_correlationId));
+        return ::djinni::release(::djinni_generated::RippleLikeTransactionBuilder::fromCpp(jniEnv, r));
+    } JNI_TRANSLATE_EXCEPTIONS_RETURN(jniEnv, 0 /* value doesn't matter */)
+}
+
 CJNIEXPORT jobject JNICALL Java_co_ledger_core_RippleLikeTransactionBuilder_00024CppProxy_native_1addMemo(JNIEnv* jniEnv, jobject /*this*/, jlong nativeRef, jobject j_memo)
 {
     try {

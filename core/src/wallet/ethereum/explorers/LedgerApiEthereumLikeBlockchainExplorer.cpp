@@ -280,8 +280,13 @@ namespace ledger {
             auto hexTx = "0x" + hex::toString(transaction);
             body << "{" << "\"tx\":" << '"' << hexTx << '"' << "}";
             auto bodyString = body.str();
+            std::unordered_map<std::string, std::string> headers;
+            if(!correlationId.empty()) {
+                headers["correlationId"] = correlationId;
+            }
             return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
-                               std::vector<uint8_t>(bodyString.begin(), bodyString.end())
+                               std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
+                               headers
             ).json().template map<String>(getExplorerContext(), [] (const HttpRequest::JsonResult& result) -> String {
                 auto& json = *std::get<1>(result);
                 return json["result"].GetString();

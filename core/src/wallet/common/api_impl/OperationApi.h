@@ -31,6 +31,8 @@
 #ifndef LEDGER_CORE_OPERATIONAPI_H
 #define LEDGER_CORE_OPERATIONAPI_H
 
+#define CORRELATIONID_PREFIX(id) id.empty()?"":(std::string("corrId=")+id)
+
 #include <api/Operation.hpp>
 #include <wallet/common/Operation.h>
 #include <api/Currency.hpp>
