@@ -113,7 +113,7 @@ namespace ledger
             void broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                          const std::shared_ptr<api::StringCallback> &callback) override;
 
-            Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &transaction);
+            Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId);
 
             void broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction,
                                       const std::shared_ptr<api::StringCallback> &callback) override;

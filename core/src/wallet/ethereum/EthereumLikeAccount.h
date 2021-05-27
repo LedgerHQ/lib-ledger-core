@@ -133,6 +133,11 @@ namespace ledger {
             std::shared_ptr<api::Keychain> getAccountKeychain() override;
 
         private:
+            void broadcastRawTransaction(const std::vector<uint8_t> & transaction,
+                const std::shared_ptr<api::StringCallback> & callback,
+                const std::string& correlationId);
+
+        private:
             std::shared_ptr<EthereumLikeAccount> getSelf();
             std::shared_ptr<EthereumLikeKeychain> _keychain;
             std::string _accountAddress;

@@ -678,8 +678,16 @@ std::string CosmosLikeAccount::getRestoreKey()
 void CosmosLikeAccount::broadcastRawTransaction(
     const std::string &transaction, const std::shared_ptr<api::StringCallback> &callback)
 {
+    broadcastRawTransaction(transaction, callback, "");
+}
+
+void CosmosLikeAccount::broadcastRawTransaction(
+    const std::string &transaction, 
+    const std::shared_ptr<api::StringCallback> &callback, 
+    const std::string& correlationId)
+{
     std::vector<uint8_t> tx{transaction.begin(), transaction.end()};
-    _explorer->pushTransaction(tx)
+    _explorer->pushTransaction(tx, correlationId)
         .map<std::string>(
             getContext(),
             [](const String &seq) -> std::string {
@@ -695,7 +703,7 @@ void CosmosLikeAccount::broadcastTransaction(
     const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
     const std::shared_ptr<api::StringCallback> &callback)
 {
-    broadcastRawTransaction(transaction->serializeForBroadcast("block"), callback);
+    broadcastRawTransaction(transaction->serializeForBroadcast("block"), callback, transaction->getCorrelationId());
 }
 
 std::shared_ptr<api::CosmosLikeTransactionBuilder> CosmosLikeAccount::buildTransaction()

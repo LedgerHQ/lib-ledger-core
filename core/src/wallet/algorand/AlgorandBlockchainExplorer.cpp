@@ -32,6 +32,8 @@
 #include "AlgorandExplorerConstants.hpp"
 
 #include <api/Configuration.hpp>
+#include <wallet/common/api_impl/OperationApi.h>
+
 
 namespace ledger {
 namespace core {
@@ -211,10 +213,11 @@ namespace algorand {
 
         return _http->POST(constants::purestakeTransactionsEndpoint, transaction, CONTENT_TYPE_HEADER)
             .json(false)
-            .map<std::string>(_executionContext, [](const HttpRequest::JsonResult& response) {
+            .map<std::string>(_executionContext, [correlationId](const HttpRequest::JsonResult& response) {
                     const auto& json = std::get<1>(response)->GetObject();
                     if (!json.HasMember(constants::xTxId.c_str())) {
-                        throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("Missing '{}' field in JSON.", constants::xTxId));
+                        throw make_exception(api::ErrorCode::NO_SUCH_ELEMENT, fmt::format("{} Missing '{}' field in JSON.", 
+                            CORRELATIONID_PREFIX(correlationId), constants::xTxId));
                     }
                     return json[constants::xTxId.c_str()].GetString();
             });

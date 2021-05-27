@@ -376,7 +376,7 @@ namespace ledger {
 
         void RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction,
                                                         const std::shared_ptr<api::StringCallback> &callback) {
-            broadcastRawTransaction(transaction).callback(getMainExecutionContext(), callback);
+            broadcastRawTransaction(transaction, "").callback(getMainExecutionContext(), callback);
         }
 
         RippleLikeBlockchainExplorerTransaction RippleLikeAccount::getXRPLikeBlockchainExplorerTxFromRawTx(const std::shared_ptr<RippleLikeAccount> &account,
@@ -399,9 +399,9 @@ namespace ledger {
             return txExplorer;
         }
 
-        Future<std::string> RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction) {
+        Future<std::string> RippleLikeAccount::broadcastRawTransaction(const std::vector<uint8_t> &transaction, const std::string& correlationId) {
             auto self = getSelf();
-            return _explorer->pushTransaction(transaction).map<std::string>(getContext(),
+            return _explorer->pushTransaction(transaction, correlationId).map<std::string>(getContext(),
                 [self, transaction](const String &seq) -> std::string {
                     auto txHash = seq.str();
                     //optimisticUpdate
@@ -420,7 +420,7 @@ namespace ledger {
         }
 
         Future<std::string> RippleLikeAccount::broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction) {
-            return broadcastRawTransaction(transaction->serialize());
+            return broadcastRawTransaction(transaction->serialize(), transaction->getCorrelationId());
         }
 
         std::shared_ptr<api::RippleLikeTransactionBuilder> RippleLikeAccount::buildTransaction() {

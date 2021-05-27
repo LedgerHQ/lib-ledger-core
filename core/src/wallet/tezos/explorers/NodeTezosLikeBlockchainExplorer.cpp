@@ -33,6 +33,7 @@
 #include <api/TezosConfigurationDefaults.hpp>
 #include <api/Configuration.hpp>
 #include <rapidjson/document.h>
+#include <wallet/common/api_impl/OperationApi.h>
 namespace ledger {
     namespace core {
         NodeTezosLikeBlockchainExplorer::NodeTezosLikeBlockchainExplorer(
@@ -102,10 +103,12 @@ namespace ledger {
             auto bodyString = body.str();
             return _http->POST(fmt::format("blockchain/{}/{}/broadcast_transaction", getExplorerVersion(), getNetworkParameters().Identifier),
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()))
-                    .json().template map<String>(getExplorerContext(), [](const HttpRequest::JsonResult &result) -> String {
+                    .json().template map<String>(getExplorerContext(), [correlationId](const HttpRequest::JsonResult &result) -> String {
                         auto &json = *std::get<1>(result);
                         if (!json.IsString()) {
-                            throw make_exception(api::ErrorCode::HTTP_ERROR, "Failed to parse broadcast transaction response, missing transaction hash");
+                            throw make_exception(api::ErrorCode::HTTP_ERROR, 
+                                fmt::format("{} Failed to parse broadcast transaction response, missing transaction hash", 
+                                CORRELATIONID_PREFIX(correlationId)));
                         }
                         return json.GetString();
                     });
