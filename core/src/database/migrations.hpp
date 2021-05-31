@@ -195,6 +195,10 @@ namespace ledger {
         template <> void migrate<23>(soci::session& sql, api::DatabaseBackendType type);
         template <> void rollback<23>(soci::session& sql, api::DatabaseBackendType type);
 
+        // merge BTC outputs
+        template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type);
+        template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type);
+
     }
 }
 

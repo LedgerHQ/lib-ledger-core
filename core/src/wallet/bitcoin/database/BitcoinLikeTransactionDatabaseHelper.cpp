@@ -94,8 +94,23 @@ namespace ledger {
                     replaceable = replaceable || (input.sequence < std::numeric_limits<uint32_t>::max());
                 }
                 // Insert outputs
+                BitcoinLikeBlockchainExplorerOutput foreignOutput;
+                foreignOutput.index = 0;
+                foreignOutput.value = BigInt::ZERO;        
+                if (tx.block.nonEmpty()) {
+                    foreignOutput.blockHeight = tx.block->height;
+                }
+
                 for (const auto& output : tx.outputs) {
-                    insertOutput(sql, btcTxUid, accountUid, tx.hash, output, replaceable && blockUid.isEmpty());
+                    if (output.accountUid.hasValue() && output.accountUid.getValue() == accountUid) {
+                        insertOutput(sql, btcTxUid, accountUid, tx.hash, output, replaceable && blockUid.isEmpty());
+                    }
+                    else { //merge all foreign outputs on a single one 
+                        foreignOutput += output;
+                    }
+                }
+                if(foreignOutput.value > BigInt::ZERO) { 
+                    insertOutput(sql, btcTxUid, accountUid, tx.hash, foreignOutput, replaceable && blockUid.isEmpty());
                 }
                 return btcTxUid;
             }

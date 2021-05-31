@@ -1106,5 +1106,13 @@ namespace ledger {
             sql << "DROP TABLE algorand_currencies";
         }
 
+        template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type) {
+           sql << "ALTER TABLE bitcoin_outputs ALTER COLUMN address TYPE TEXT";
+        }
+
+        template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type) {
+            sql << "ALTER TABLE bitcoin_outputs ALTER COLUMN address TYPE VARCHAR(255)";
+        }
+
     }
 }
