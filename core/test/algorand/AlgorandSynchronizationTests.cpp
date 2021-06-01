@@ -54,6 +54,7 @@ public:
         registerCurrency(currencies::ALGORAND);
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
+        // UPDATE: no more TestNet available since we moved from PureStake to internal infra... all related tests disabled
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
 

@@ -41,13 +41,13 @@ public:
         BaseFixture::SetUp();
 
         auto worker = dispatcher->getSerialExecutionContext("worker");
-        // NOTE: we run the tests on the staging environment which is on the TestNet
-        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker);
 
         // NOTE: we run the tests on the staging environment which is on the TestNet
+        // UPDATE: no more TestNet available since we moved from PureStake to internal infra... all related tests disabled
+        auto client = std::make_shared<HttpClient>("https://algorand.coin.staging.aws.ledger.com", http, worker);
         auto configuration = DynamicObject::newInstance();
         configuration->putString(api::Configuration::BLOCKCHAIN_EXPLORER_API_ENDPOINT, "https://algorand.coin.staging.aws.ledger.com");
-        
+
         explorer = std::make_shared<BlockchainExplorer>(
                         worker,
                         client,
