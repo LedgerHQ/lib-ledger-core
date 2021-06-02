@@ -298,6 +298,7 @@ TEST_F(AlgorandAccountTest, assetBalanceHistory)
     }
 }
 
+/*
 TEST_F(AlgorandAccountTest, validAmount)
 {
     const auto valid = wait(account->isAmountValid(EMPTY_ADDR, "100000"));
@@ -307,3 +308,4 @@ TEST_F(AlgorandAccountTest, validAmount)
     const auto invalid = wait(account->isAmountValid(EMPTY_ADDR, "99999"));
     EXPECT_FALSE(invalid);
 }
+*/
