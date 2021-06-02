@@ -1107,12 +1107,26 @@ namespace ledger {
         }
 
         template <> void migrate<24>(soci::session& sql, api::DatabaseBackendType type) {
-           sql << "ALTER TABLE bitcoin_outputs ALTER COLUMN address TYPE TEXT";
+            //btc
+            sql << "ALTER TABLE bitcoin_outputs ALTER COLUMN address TYPE TEXT";
+            //xrp
+            sql << "CREATE TABLE ripple_memos("
+                   "transaction_uid VARCHAR(255) NOT NULL REFERENCES ripple_transactions(transaction_uid) ON DELETE CASCADE,"
+                   "data TEXT,"
+                   "fmt VARCHAR(1024),"
+                   "ty VARCHAR(1024),"
+                   "array_index INTEGER NOT NULL"
+                   ")";
+            sql << "INSERT INTO ripple_memos_swap "
+                   "SELECT transaction_uid, data, fmt, ty, array_index FROM ripple_memos";
+            sql << "DROP TABLE ripple_memos";
+            sql << "ALTER TABLE ripple_memos_swap RENAME TO ripple_memos";
         }
 
         template <> void rollback<24>(soci::session& sql, api::DatabaseBackendType type) {
-            sql << "ALTER TABLE bitcoin_outputs ALTER COLUMN address TYPE VARCHAR(255)";
         }
+
+        
 
     }
 }
