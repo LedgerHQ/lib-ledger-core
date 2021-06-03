@@ -208,10 +208,12 @@ namespace algorand {
 
     Future<std::string> BlockchainExplorer::pushTransaction(const std::vector<uint8_t>& transaction, const std::string& correlationId)
     {
-        static const std::unordered_map<std::string, std::string>
-            CONTENT_TYPE_HEADER{{"Content-Type", "application/x-binary"}};
+        std::unordered_map<std::string, std::string> headers{{"Content-Type", "application/x-binary"}};
+        if(!correlationId.empty()) {
+            headers["X-Correlation-ID"] = correlationId;
+        }
 
-        return _http->POST(constants::purestakeTransactionsEndpoint, transaction, CONTENT_TYPE_HEADER)
+        return _http->POST(constants::purestakeTransactionsEndpoint, transaction, headers)
             .json(false)
             .map<std::string>(_executionContext, [correlationId](const HttpRequest::JsonResult& response) {
                     const auto& json = std::get<1>(response)->GetObject();

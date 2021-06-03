@@ -101,6 +101,7 @@ namespace ledger {
             std::stringstream body;
             body << "{" << "\"tx\":" << '"' << hex::toString(transaction) << '"' << "}";
             auto bodyString = body.str();
+            
             return _http->POST(fmt::format("blockchain/{}/{}/broadcast_transaction", getExplorerVersion(), getNetworkParameters().Identifier),
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()))
                     .json().template map<String>(getExplorerContext(), [correlationId](const HttpRequest::JsonResult &result) -> String {

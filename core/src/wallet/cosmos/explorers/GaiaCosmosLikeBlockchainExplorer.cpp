@@ -459,6 +459,9 @@ Future<String> GaiaCosmosLikeBlockchainExplorer::pushTransaction(
     const std::vector<uint8_t> &transaction, const std::string& correlationId)
 {
     std::unordered_map<std::string, std::string> headers{{"Accept", "application/json"}};
+    if(!correlationId.empty()) {
+        headers["X-Correlation-ID"] = correlationId;
+    }
 
     return _http->POST("/txs", transaction, headers)
         .json()

@@ -282,7 +282,7 @@ namespace ledger {
             auto bodyString = body.str();
             std::unordered_map<std::string, std::string> headers;
             if(!correlationId.empty()) {
-                headers["correlationId"] = correlationId;
+                headers["X-Correlation-ID"] = correlationId;
             }
             return _http->POST(fmt::format("/blockchain/{}/{}/transactions/send", getExplorerVersion(), getNetworkParameters().Identifier),
                                std::vector<uint8_t>(bodyString.begin(), bodyString.end()),
