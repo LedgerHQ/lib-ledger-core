@@ -114,6 +114,7 @@ namespace ledger {
 
         void BitcoinLikeAccount::interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction,
                 std::vector<Operation>& out, bool needExtendKeychain) {
+            std::cout << "account transaction intepretation begin!" << std::endl;
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
@@ -125,6 +126,7 @@ namespace ledger {
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
             int result = FLAG_TRANSACTION_IGNORED;
+            std::cout << "find input" << std::endl;
             // Find inputs
             for (auto& input : transaction.inputs) {
 
@@ -151,6 +153,7 @@ namespace ledger {
                 }
             }
             // Find outputs
+            std::cout << "find output" << std::endl;
             auto hasSpentNothing = sentAmount == 0L;
             auto outputCount = transaction.outputs.size();
             for (auto index = 0; index < outputCount; index++) {
@@ -182,18 +185,21 @@ namespace ledger {
                 }
                 fees = fees - output.value.toUint64();
             }
+            std::cout << "fill date" << std::endl;
             std::stringstream snds;
             strings::join(senders, snds, ",");
             Operation operation;
             inflateOperation(operation, transaction);
             operation.senders = std::move(senders);
             operation.recipients = std::move(recipients);
+            std::cout << "fill fees" << std::endl;
             operation.fees = std::move(BigInt().assignI64(fees));
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
             // Compute trust
+            std::cout << "computeOperationTrust" << std::endl;
             computeOperationTrust(operation, transaction);
-
+            std::cout << "account inputs" << std::endl;
             if (accountInputs.size() > 0) {
                 // Create a send operation
                 result = result | FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
@@ -209,6 +215,7 @@ namespace ledger {
                 operation.refreshUid();
                 out.push_back(operation);
             }
+            std::cout << "account outputs" << std::endl;
             if (accountOutputs.size() > 0) {
                 // Receive
                 BigInt amount;

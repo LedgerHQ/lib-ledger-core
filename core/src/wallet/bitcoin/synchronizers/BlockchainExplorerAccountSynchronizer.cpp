@@ -129,7 +129,9 @@ namespace ledger {
                 markAddress(transaction.inputs);
                 markAddress(transaction.outputs);
             } else {
+                std::cout << "account transaction intepretation begin" << std::endl;
                 buddy->account->interpretTransaction(transaction, out);
+                std::cout << "account transaction intepretation end" << std::endl;
             }
         }
 
@@ -396,7 +398,6 @@ namespace ledger {
                     account->getIndex(),
                     account->getKeychain()->getRestoreKey(),
                     account->getWallet()->getName(), DateUtils::toJSON(buddy->startDate));
-            std::cout << "starting synchronization" << std::endl;
             //Check if reorganization happened
             soci::session sql(buddy->wallet->getDatabase()->getPool());
             if (buddy->savedState.nonEmpty()) {
@@ -429,21 +430,16 @@ namespace ledger {
                     }
                 }
             }
-            std::cout << "initializeSavedState" << std::endl;
             initializeSavedState(buddy->savedState, buddy->halfBatchSize);
-            std::cout << "updateTransactionsToDrop" << std::endl;
             updateTransactionsToDrop(sql, buddy, account->getAccountUid());
-            std::cout << "updateTransactionsToDrop finish" << std::endl;
             auto self = getSharedFromThis();
             self->_addresses.clear();
             self->_cachedTransactionBulks.clear();
             self->_hashkeys.clear();
             _explorerBenchmark = NEW_BENCHMARK("explorer_calls");
-            std::cout << "updateCurrentBlock" << std::endl;
             return self->updateCurrentBlock(buddy).template flatMap<Unit>(account->getContext(), [self, buddy](std::shared_ptr <BitcoinLikeBlockchainExplorer::Block> block) {
                 soci::session sql(buddy->account->getWallet()->getDatabase()->getPool());
                 soci::transaction tr(sql);
-                std::cout << "putBlock" << std::endl;
                 try {
                     buddy->account->putBlock(sql, *block);
                     tr.commit();
@@ -451,30 +447,23 @@ namespace ledger {
                 catch (...) {
                     tr.rollback();
                 }
-                std::cout << "extendKeychain" << std::endl;
                 return self->extendKeychain(0, buddy);
                 }).template flatMap<std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>>(account->getContext(), [buddy, self](const Unit&) {
                 self->_explorerBenchmark->start();
-                std::cout << "requestTransactionsFromExplorer" << std::endl;
                 return self->requestTransactionsFromExplorer(buddy);})
                 .template flatMap<Unit>(account->getContext(), [buddy, self](const std::vector<std::shared_ptr<BitcoinLikeBlockchainExplorer::TransactionsBulk>>& txBulks) {
                     self->_explorerBenchmark->stop();
-                    std::cout << "insert transaction bulks" << std::endl;
                     for (int i = 0; i < txBulks.size(); i++) {
                         self->_cachedTransactionBulks.insert(std::make_pair(self->_hashkeys[i], txBulks[i]));
                     }
-                    std::cout << "synchronizeBatches" << std::endl;                    
                     return self->synchronizeBatches(0, buddy);
                 }).template flatMap<Unit>(account->getContext(), [self, buddy](auto) {
-                    std::cout << "synchronizeMempool" << std::endl;
                     return self->synchronizeMempool(buddy);
                     }).template map<BlockchainExplorerAccountSynchronizationResult>(ImmediateExecutionContext::INSTANCE, [self, buddy](const Unit&) {
-                        std::cout << "duration" << std::endl;
                         auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                             (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                         buddy->logger->info("End synchronization for account#{} of wallet {} in {}", buddy->account->getIndex(),
                             buddy->account->getWallet()->getName(), DurationUtils::formatDuration(duration));
-                        std::cout << "End synchronization" << std::endl;
                         auto const& batches = buddy->savedState.getValue().batches;
 
                         // get the last block height treated during the synchronization
@@ -489,15 +478,12 @@ namespace ledger {
                         soci::session sql(buddy->wallet->getDatabase()->getPool());
                         buddy->context.lastBlockHeight = BlockDatabaseHelper::getLastBlock(sql,
                             buddy->wallet->getCurrency().name).template map<uint64_t>([](const Block& block) {
-                                std::cout << "block height" << std::endl;
                                 return block.height;
                                 }).getValueOr(0);
 
                                 self->_currentAccount = nullptr;
-                                std::cout << "End!!" << std::endl;
                                 return buddy->context;
                         }).recover(ImmediateExecutionContext::INSTANCE, [self, buddy](const Exception& ex) {
-                            std::cout << "Error synchronization" << std::endl;
                             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(
                                 (DateUtils::now() - buddy->startDate.time_since_epoch()).time_since_epoch());
                             buddy->logger->error("Error during during synchronization for account#{} of wallet {} in {} ms", buddy->account->getIndex(),
@@ -566,7 +552,6 @@ namespace ledger {
 
                 return Future<Unit>::successful(unit);
                 }).recoverWith(ImmediateExecutionContext::INSTANCE, [=](const Exception& exception) -> Future<Unit> {
-                    std::cout << "Recovering from failing synchronization" << std::endl;
                     buddy->logger->info("Recovering from failing synchronization : {}", exception.getMessage());
                     //A block reorganization happened
                     if (exception.getErrorCode() == api::ErrorCode::BLOCK_NOT_FOUND &&
@@ -713,9 +698,9 @@ namespace ledger {
                         lastBlock.getValue().height < tx.block.getValue().height) {
                         lastBlock = tx.block;
                     }
-
+                    std::cout << "transaction intepretation begin" << std::endl;
                     self->interpretTransaction(tx, buddy, operations);
-
+                    std::cout << "transaction intepretation end" << std::endl;
                     //Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
                     if (it != buddy->transactionsToDrop.end()) {
@@ -738,14 +723,12 @@ namespace ledger {
                 std::cout << "insert transaction finish" << std::endl;
                 insertionBenchmark->stop();
                 if (tryPutTx.isFailure()) {
-                    std::cout << "insert transaction fail" << std::endl;
                     buddy->logger->error("Failed to bulk insert for batch {} because: {}", currentBatchIndex, tryPutTx.getFailure().getMessage());
                     throw make_exception(api::ErrorCode::RUNTIME_ERROR, "Synchronization failed for batch {} ({})", currentBatchIndex, tryPutTx.exception().getValue().getMessage());
                 }
                 else {
                     count += tryPutTx.getValue();
                 }
-                std::cout << "Succeeded to insert" << std::endl;
                 buddy->logger->info("Succeeded to insert {} txs on {} for account {}", count, bulk->transactions.size(), buddy->account->getAccountUid());
                 buddy->account->emitEventsNow();
 
