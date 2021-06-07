@@ -703,6 +703,8 @@ void CosmosLikeAccount::broadcastTransaction(
     const std::shared_ptr<api::CosmosLikeTransaction> &transaction,
     const std::shared_ptr<api::StringCallback> &callback)
 {
+    
+        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
     broadcastRawTransaction(transaction->serializeForBroadcast("block"), callback, transaction->getCorrelationId());
 }
 

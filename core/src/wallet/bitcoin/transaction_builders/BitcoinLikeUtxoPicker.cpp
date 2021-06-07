@@ -188,9 +188,13 @@ namespace ledger {
                 .template flatMap<Unit>(getContext(), [self, buddy] (auto const& utxos) mutable {
                     auto const sequence = std::get<1>(buddy->request.utxoPicker.getValue());
 
-                    std::for_each(utxos.cbegin(), utxos.cend(), [self, buddy, sequence] (auto const &utxo) {
+                    std::stringstream ss;
+                    for (auto const &utxo : utxos) {
                         self->fillInput(buddy, utxo, sequence);
-                    });
+                        ss << utxo.transactionHash << "/" << utxo.index << " ";
+                    };
+
+                    buddy->logger->info( "{} selected utxos: {}", CORRELATIONID_PREFIX(buddy->transaction->getCorrelationId()), ss.str());
 
                     return Future<Unit>::successful(unit);
                 });

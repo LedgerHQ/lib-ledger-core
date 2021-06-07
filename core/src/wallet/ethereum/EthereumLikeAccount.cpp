@@ -613,6 +613,8 @@ namespace ledger {
 
         void EthereumLikeAccount::broadcastTransaction(const std::shared_ptr<api::EthereumLikeTransaction> & transaction,
                                                        const std::shared_ptr<api::StringCallback> & callback) {
+                
+        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
                 broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 
