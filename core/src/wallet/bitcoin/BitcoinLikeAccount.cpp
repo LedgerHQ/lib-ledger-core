@@ -126,7 +126,7 @@ namespace ledger {
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
             int result = FLAG_TRANSACTION_IGNORED;
-            std::cout << "find input" << std::endl;
+            std::cout << "find input:" << transaction.inputs.size()<< std::endl;
             // Find inputs
             for (auto& input : transaction.inputs) {
 
@@ -153,7 +153,7 @@ namespace ledger {
                 }
             }
             // Find outputs
-            std::cout << "find output" << std::endl;
+            std::cout << "find output:"<< transaction.outputs.size() << std::endl;
             auto hasSpentNothing = sentAmount == 0L;
             auto outputCount = transaction.outputs.size();
             for (auto index = 0; index < outputCount; index++) {
@@ -199,7 +199,7 @@ namespace ledger {
             // Compute trust
             std::cout << "computeOperationTrust" << std::endl;
             computeOperationTrust(operation, transaction);
-            std::cout << "account inputs" << std::endl;
+            std::cout << "account inputs" << accountInputs.size() << std::endl;
             if (accountInputs.size() > 0) {
                 // Create a send operation
                 result = result | FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
@@ -215,7 +215,7 @@ namespace ledger {
                 operation.refreshUid();
                 out.push_back(operation);
             }
-            std::cout << "account outputs" << std::endl;
+            std::cout << "account outputs"<< accountOutputs.size() << std::endl;
             if (accountOutputs.size() > 0) {
                 // Receive
                 BigInt amount;
@@ -234,6 +234,7 @@ namespace ledger {
                     finalAmount = finalAmount + o.first->value;
                     accountOutputCount += 1;
                 }
+                std::cout << "Operation outputs:"<< accountOutputCount << std::endl;
                 if (accountOutputCount > 0) {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
@@ -605,11 +606,9 @@ namespace ledger {
                                                          const std::shared_ptr<api::StringCallback> &callback) {
             auto self = getSelf();
             _explorer->pushTransaction(transaction).map<std::string>(getContext(), [self, transaction] (const String& seq) -> std::string {
-                self->logger()->warn("transaction send request finish");
                 //Store newly broadcasted tx in db
                 //First parse it
                 auto txHash = seq.str();
-                self->logger()->warn("got tx hash");
                 auto optimisticUpdate = Try<Unit>::from([&] () -> Unit {
                     //Get last block from DB or cache
                     uint64_t lastBlockHeight = 0;
@@ -620,7 +619,6 @@ namespace ledger {
                     } else {
                         lastBlockHeight = getLastBlockFromDB(sql, self->getWallet()->getCurrency().name);
                     }
-                    self->logger()->warn(" parseRawSignedTransaction");
                     auto tx = BitcoinLikeTransactionApi::parseRawSignedTransaction(self->getWallet()->getCurrency(), transaction, lastBlockHeight);
 
                     //Get a BitcoinLikeBlockchainExplorerTransaction from a BitcoinLikeTransaction
@@ -630,7 +628,6 @@ namespace ledger {
                     txExplorer.receivedAt = std::chrono::system_clock::now();
                     txExplorer.version = tx->getVersion();
                     txExplorer.confirmations = 0;
-                    self->logger()->warn(" input");
                     //Inputs
                     auto inputCount = tx->getInputs().size();
                     for (auto index = 0; index < inputCount; index++) {
@@ -651,7 +648,6 @@ namespace ledger {
                         in.address = prevTx.outputs[prevTxOutputIndex].address.getValueOr("");
                         txExplorer.inputs.push_back(in);
                     }
-                    self->logger()->warn(" output");
                     //Outputs
                     auto keychain = self->getKeychain();
                     auto outputCount = tx->getOutputs().size();
@@ -666,14 +662,12 @@ namespace ledger {
                         out.address = output->getAddress().value_or("");
                         txExplorer.outputs.push_back(out);
                     }
-                    self->logger()->warn(" save db");
                     //Store in DB
 
                     std::vector<Operation> operations;
                     self->interpretTransaction(txExplorer, operations);
                     self->bulkInsert(operations);
                     self->emitEventsNow();
-                    self->logger()->warn(" saved db");
 
                     return unit;
                 });
@@ -682,11 +676,9 @@ namespace ledger {
                 // because the tx was successfully broadcasted to the network,
                 // and the update will occur at next synchro ...
                 // But still let's log that !
-                self->logger()->warn(" optimisticUpdate");
                 if (optimisticUpdate.isFailure()) {
                     self->logger()->warn(" Optimistic update failed for broadcasted transaction : {}", txHash);
                 }
-                self->logger()->warn(" optimisticUpdate finish");
                 return txHash;
             }).callback(getMainExecutionContext(), callback);
         }
