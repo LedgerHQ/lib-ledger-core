@@ -420,6 +420,8 @@ namespace ledger {
         }
 
         Future<std::string> RippleLikeAccount::broadcastTransaction(const std::shared_ptr<api::RippleLikeTransaction> &transaction) {
+            
+        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             return broadcastRawTransaction(transaction->serialize(), transaction->getCorrelationId());
         }
 

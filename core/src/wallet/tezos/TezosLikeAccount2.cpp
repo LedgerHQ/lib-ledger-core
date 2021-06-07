@@ -235,6 +235,8 @@ namespace ledger {
 
         void TezosLikeAccount::broadcastTransaction(const std::shared_ptr<api::TezosLikeTransaction> &transaction,
                                                     const std::shared_ptr<api::StringCallback> &callback) {
+            
+        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
             broadcastRawTransaction(transaction->serialize(), callback, transaction->getCorrelationId());
         }
 

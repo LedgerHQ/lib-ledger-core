@@ -407,6 +407,7 @@ namespace algorand {
             const std::shared_ptr<api::AlgorandTransaction>& transaction,
             const std::shared_ptr<api::StringCallback>& callback) const
     {
+        logger()->info("{} receiving transaction", CORRELATIONID_PREFIX(transaction->getCorrelationId()));
         _explorer->pushTransaction(transaction->serialize(), transaction->getCorrelationId())
             .callback(getMainExecutionContext(), callback);
     }
