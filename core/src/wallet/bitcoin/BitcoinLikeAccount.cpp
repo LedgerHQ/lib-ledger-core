@@ -116,7 +116,7 @@ namespace ledger {
                 std::vector<Operation>& out, bool needExtendKeychain) {
             std::cout << "interpretTransaction:" <<std::endl;
             std::cout << getWallet()->getCurrency().name <<std::endl;            
-            bool shouldPrint = getWallet()->getCurrency().name == "stakenet";
+            bool shouldPrint = ((getWallet()->getCurrency().name == "stakenet") || (getWallet()->getCurrency().name == "digibyte"));
             if (shouldPrint)
                 std::cout << "account transaction intepretation begin!" << std::endl;
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
