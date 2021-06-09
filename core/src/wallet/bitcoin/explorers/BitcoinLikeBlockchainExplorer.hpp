@@ -79,12 +79,6 @@ namespace ledger {
                     index = rhs.index;
                 }
                 value = value + rhs.value;
-                if(address.isEmpty()) {
-                    address = "";
-                } else {
-                    *address += ",";
-                }
-                *address += rhs.address.getValueOr("");
                 return *this;
             }
         };
