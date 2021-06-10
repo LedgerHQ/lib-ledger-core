@@ -34,6 +34,7 @@
 #include <async/algorithm.h>
 #include <async/FutureUtils.hpp>
 #include <debug/Benchmarker.h>
+#include <iostream>
 
 #define NEW_BENCHMARK(x) std::make_shared<Benchmarker>(fmt::format(x"/{}", buddy->synchronizationTag), buddy->logger)
 
@@ -693,21 +694,34 @@ namespace ledger {
                         lastBlock.getValue().height < tx.block.getValue().height) {
                         lastBlock = tx.block;
                     }
+                    std::cout << "transaction intepretation begin" << std::endl;
                     self->interpretTransaction(tx, buddy, operations);
+                    std::cout << "transaction intepretation end" << std::endl;
                     //Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
+                    std::cout << "tx.hash" << std::endl;
+                    std::cout << tx.hash << std::endl;
+                    std::cout << buddy->transactionsToDrop.size() << std::endl;                    
                     if (it != buddy->transactionsToDrop.end()) {
+                        std::cout << "transactionToDrop found" << std::endl;
                         //If block non empty, tx is no longer pending
                         if (tx.block.nonEmpty()) {
+                            std::cout << "erase" << std::endl;
                             buddy->savedState.getValue().pendingTxsHash.erase(it->first);
+                            std::cout << "erase finish" << std::endl;
                         }
                         else { //Otherwise tx is in mempool but pending
+                            std::cout << "insert to mempool" << std::endl;
                             buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
+                            std::cout << "insert to mempool finish" << std::endl;
                         }
                     }
                     //Remove from tx to drop
+                    std::cout << "Remove from tx to drop" << std::endl;
                     buddy->transactionsToDrop.erase(tx.hash);
+                    std::cout << "Remove from tx to drop finish" << std::endl;                    
                 }
+                std::cout << "Succeed to insert transactions" << std::endl;
                 interpretBenchmark->stop();
                 auto insertionBenchmark = NEW_BENCHMARK("insert_operations");
                 insertionBenchmark->start();
