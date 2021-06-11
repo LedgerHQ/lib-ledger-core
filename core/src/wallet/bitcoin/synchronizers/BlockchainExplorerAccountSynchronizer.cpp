@@ -687,11 +687,14 @@ namespace ledger {
                 Option<Block> lastBlock = Option<Block>::NONE;
                 std::vector<Operation> operations;
                 interpretBenchmark->start();
+                std::cout << "transactions size:" << bulk->transactions.size() << std::endl;
                 // Interpret transactions to operations and update last block
                 for (const auto& tx : bulk->transactions) {
+                    std::cout << "Update last block to chain query" << std::endl;
                     // Update last block to chain query
                     if (lastBlock.isEmpty() ||
                         lastBlock.getValue().height < tx.block.getValue().height) {
+                        std::cout << "Update last block" << std::endl;
                         lastBlock = tx.block;
                     }
                     std::cout << "transaction intepretation begin" << std::endl;
@@ -699,25 +702,16 @@ namespace ledger {
                     std::cout << "transaction intepretation end" << std::endl;
                     //Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
-                    std::cout << "tx.hash" << std::endl;
-                    std::cout << tx.hash << std::endl;
-                    std::cout << buddy->transactionsToDrop.size() << std::endl;                    
                     if (it != buddy->transactionsToDrop.end()) {
-                        std::cout << "transactionToDrop found" << std::endl;
                         //If block non empty, tx is no longer pending
                         if (tx.block.nonEmpty()) {
-                            std::cout << "erase" << std::endl;
                             buddy->savedState.getValue().pendingTxsHash.erase(it->first);
-                            std::cout << "erase finish" << std::endl;
                         }
                         else { //Otherwise tx is in mempool but pending
-                            std::cout << "insert to mempool" << std::endl;
                             buddy->savedState.getValue().pendingTxsHash.insert(std::pair<std::string, std::string>(it->first, it->second));
-                            std::cout << "insert to mempool finish" << std::endl;
                         }
                     }
                     //Remove from tx to drop
-                    std::cout << "Remove from tx to drop" << std::endl;
                     buddy->transactionsToDrop.erase(tx.hash);
                     std::cout << "Remove from tx to drop finish" << std::endl;                    
                 }
