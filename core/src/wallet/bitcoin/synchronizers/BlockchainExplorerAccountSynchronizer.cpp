@@ -692,8 +692,7 @@ namespace ledger {
                 for (const auto& tx : bulk->transactions) {
                     std::cout << "Update last block to chain query" << std::endl;
                     // Update last block to chain query
-                    if (lastBlock.isEmpty() ||
-                        lastBlock.getValue().height < tx.block.getValue().height) {
+                    if (!tx.block.isEmpty() && (lastBlock.isEmpty() || lastBlock.getValue().height < tx.block.getValue().height)) {
                         std::cout << "Update last block" << std::endl;
                         lastBlock = tx.block;
                     }
