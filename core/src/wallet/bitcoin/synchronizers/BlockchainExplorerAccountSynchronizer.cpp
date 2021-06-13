@@ -34,7 +34,6 @@
 #include <async/algorithm.h>
 #include <async/FutureUtils.hpp>
 #include <debug/Benchmarker.h>
-#include <iostream>
 
 #define NEW_BENCHMARK(x) std::make_shared<Benchmarker>(fmt::format(x"/{}", buddy->synchronizationTag), buddy->logger)
 
@@ -687,18 +686,13 @@ namespace ledger {
                 Option<Block> lastBlock = Option<Block>::NONE;
                 std::vector<Operation> operations;
                 interpretBenchmark->start();
-                std::cout << "transactions size:" << bulk->transactions.size() << std::endl;
                 // Interpret transactions to operations and update last block
                 for (const auto& tx : bulk->transactions) {
-                    std::cout << "Update last block to chain query" << std::endl;
                     // Update last block to chain query
                     if (!tx.block.isEmpty() && (lastBlock.isEmpty() || lastBlock.getValue().height < tx.block.getValue().height)) {
-                        std::cout << "Update last block" << std::endl;
                         lastBlock = tx.block;
                     }
-                    std::cout << "transaction intepretation begin" << std::endl;
                     self->interpretTransaction(tx, buddy, operations);
-                    std::cout << "transaction intepretation end" << std::endl;
                     //Update first pendingTxHash in savedState
                     auto it = buddy->transactionsToDrop.find(tx.hash);
                     if (it != buddy->transactionsToDrop.end()) {
@@ -712,9 +706,7 @@ namespace ledger {
                     }
                     //Remove from tx to drop
                     buddy->transactionsToDrop.erase(tx.hash);
-                    std::cout << "Remove from tx to drop finish" << std::endl;                    
                 }
-                std::cout << "Succeed to insert transactions" << std::endl;
                 interpretBenchmark->stop();
                 auto insertionBenchmark = NEW_BENCHMARK("insert_operations");
                 insertionBenchmark->start();
