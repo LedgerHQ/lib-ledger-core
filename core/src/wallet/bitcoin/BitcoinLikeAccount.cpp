@@ -69,7 +69,6 @@
 #include <database/soci-option.h>
 #include <wallet/bitcoin/database/BitcoinLikeOperationDatabaseHelper.hpp>
 #include <wallet/common/database/BulkInsertDatabaseHelper.hpp>
-#include <iostream>
 
 
 namespace ledger {
@@ -114,11 +113,6 @@ namespace ledger {
 
         void BitcoinLikeAccount::interpretTransaction(const BitcoinLikeBlockchainExplorerTransaction& transaction,
                 std::vector<Operation>& out, bool needExtendKeychain) {
-            std::cout << "interpretTransaction:" <<std::endl;
-            std::cout << getWallet()->getCurrency().name <<std::endl;            
-            bool shouldPrint = ((getWallet()->getCurrency().name == "stakenet") || (getWallet()->getCurrency().name == "digibyte"));
-            if (shouldPrint)
-                std::cout << "account transaction intepretation begin!" << std::endl;
             auto nodeIndex = std::const_pointer_cast<const BitcoinLikeKeychain>(_keychain)->getFullDerivationScheme().getPositionForLevel(DerivationSchemeLevel::NODE);
             std::list<std::pair<BitcoinLikeBlockchainExplorerInput *, DerivationPath>> accountInputs;
             std::list<std::pair<BitcoinLikeBlockchainExplorerOutput *, DerivationPath>> accountOutputs;
@@ -130,8 +124,6 @@ namespace ledger {
             std::vector<std::string> recipients;
             recipients.reserve(transaction.outputs.size());
             int result = FLAG_TRANSACTION_IGNORED;
-            if (shouldPrint)
-                std::cout << "find input:" << transaction.inputs.size()<< std::endl;
             // Find inputs
             for (auto& input : transaction.inputs) {
 
@@ -158,8 +150,6 @@ namespace ledger {
                 }
             }
             // Find outputs
-            if (shouldPrint)
-                std::cout << "find output:"<< transaction.outputs.size() << std::endl;
             auto hasSpentNothing = sentAmount == 0L;
             auto outputCount = transaction.outputs.size();
             for (auto index = 0; index < outputCount; index++) {
@@ -191,25 +181,17 @@ namespace ledger {
                 }
                 fees = fees - output.value.toUint64();
             }
-            if (shouldPrint)
-                std::cout << "fill date" << std::endl;
             std::stringstream snds;
             strings::join(senders, snds, ",");
             Operation operation;
             inflateOperation(operation, transaction);
             operation.senders = std::move(senders);
             operation.recipients = std::move(recipients);
-            if (shouldPrint)
-                std::cout << "fill fees" << std::endl;
             operation.fees = std::move(BigInt().assignI64(fees));
             operation.trust = std::make_shared<TrustIndicator>();
             operation.date = transaction.receivedAt;
             // Compute trust
-            if (shouldPrint)
-                std::cout << "computeOperationTrust" << std::endl;
             computeOperationTrust(operation, transaction);
-            if (shouldPrint)
-                std::cout << "account inputs" << accountInputs.size() << std::endl;
             if (accountInputs.size() > 0) {
                 // Create a send operation
                 result = result | FLAG_TRANSACTION_CREATED_SENDING_OPERATION;
@@ -225,8 +207,6 @@ namespace ledger {
                 operation.refreshUid();
                 out.push_back(operation);
             }
-            if (shouldPrint)
-                std::cout << "account outputs"<< accountOutputs.size() << std::endl;
             if (accountOutputs.size() > 0) {
                 // Receive
                 BigInt amount;
@@ -245,8 +225,6 @@ namespace ledger {
                     finalAmount = finalAmount + o.first->value;
                     accountOutputCount += 1;
                 }
-                if (shouldPrint)
-                    std::cout << "Operation outputs:"<< accountOutputCount << std::endl;
                 if (accountOutputCount > 0) {
                     operation.amount = finalAmount;
                     operation.type = api::OperationType::RECEIVE;
