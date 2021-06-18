@@ -600,6 +600,11 @@ namespace ledger {
             };
 
             virtual Future<Unit> synchronizeMempool(const std::shared_ptr<SynchronizationBuddy>& buddy) {
+                // TODO REMOVE THIS, MEMPOOL DROP MUST NOT BE DISABLE AT ALL TIME
+                if (buddy->wallet->getWalletType() == api::WalletType::BITCOIN) {
+                    return Future<Unit>::successful(unit);
+                }
+                // TODO END OF DIRTY FIX
                 //Delete dropped txs from DB
                 soci::session sql(buddy->wallet->getDatabase()->getPool());
                 for (auto& tx : buddy->transactionsToDrop) {

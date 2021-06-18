@@ -1,3 +1,9 @@
+## 3.5.5
+
+> 2021/06/18
+
+- Bypass mempool synchronization for dropped transaction for Bitcoin family accounts
+
 ## 3.5.0
 
 > 2020/08/06
