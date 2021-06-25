@@ -81,10 +81,10 @@ namespace ledger {
                                                             "WHERE op.block_uid IS NULL AND op.account_uid = :uid ", soci::use(accountUid));
 
             // Remove all mempool transaction
-            BitcoinLikeTransactionDatabaseHelper::removeAllMempoolOperation(sql, accountUid);
+            //BitcoinLikeTransactionDatabaseHelper::removeAllMempoolOperation(sql, accountUid);
             auto btcBuddy = std::static_pointer_cast<BitcoinSynchronizationBuddy>(buddy);
             // Get all operation in mempool (will be used to restore mempool in case of error)
-            BitcoinLikeTransactionDatabaseHelper::getMempoolTransactions(sql, accountUid, btcBuddy->previousMempool);
+            //BitcoinLikeTransactionDatabaseHelper::getMempoolTransactions(sql, accountUid, btcBuddy->previousMempool);
 
             for (auto &row : rows) {
                 if (row.get_indicator(0) != soci::i_null && row.get_indicator(1) != soci::i_null) {
