@@ -32,12 +32,6 @@ ERC20LikeAccount = interface +c {
     getBalanceHistoryFor(start: date, end: date, period: TimePeriod): list<BigInt>;
     # Get the list of operations performed on this ERC20 account.
     getOperations(): list<ERC20LikeOperation>;
-    # Get ERC20 operation by uid
-    getOperation(uid: string, callback: Callback<ERC20LikeOperation>);
-    # Get all ERC20 operations
-    getAllOperations(from: i32, to: i32, ascending: bool, callback: ListCallback<ERC20LikeOperation>);
-    # Get ERC20 operations from a given block height (included), it also returns mempool operations
-    getOperationsFromBlockHeight(from: i32, to: i32, fromBlockHeight: i64, callback: ListCallback<ERC20LikeOperation>);
     # Retrieve raw data concerning a transaction of a given amount to a given address.
     getTransferToAddressData(amount: BigInt, address: string, data: Callback<binary>);
     queryOperations(): OperationQuery;

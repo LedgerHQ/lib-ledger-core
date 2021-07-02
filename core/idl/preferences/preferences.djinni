@@ -89,7 +89,7 @@ PreferencesChange = record {
 }
 
 # Interface describing the behaviour of the backend used by Preferences.
-PreferencesBackend = interface +j +o +n {
+PreferencesBackend = interface +c {
     # Gets the value associated to the given key.
     # @param key The data key.
     # @return The value associated to the key if it exists, an empty option otherwise.

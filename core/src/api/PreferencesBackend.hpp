@@ -23,7 +23,7 @@ class RandomNumberGenerator;
 struct PreferencesChange;
 
 /** Interface describing the behaviour of the backend used by Preferences. */
-class PreferencesBackend {
+class LIBCORE_EXPORT PreferencesBackend {
 public:
     virtual ~PreferencesBackend() {}
 
