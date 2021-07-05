@@ -80,9 +80,12 @@ namespace ledger {
             stellar::xdr::TransactionV0Envelope& getEnvelopeV0();
             stellar::xdr::TransactionV1Envelope& getEnvelopeV1();
 
+            std::string getCorrelationId() override;
+            std::string setCorrelationId(const std::string& newId) override;
         private:
             stellar::xdr::TransactionEnvelope _envelope;
             api::Currency _currency;
+            std::string _correlationId;
         };
     }
 }

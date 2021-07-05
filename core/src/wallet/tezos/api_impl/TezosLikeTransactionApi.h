@@ -83,6 +83,8 @@ namespace ledger {
 
             std::string getCorrelationId() override;
 
+            std::string setCorrelationId(const std::string& newId) override;
+
             TezosLikeTransactionApi &setFees(const std::shared_ptr<BigInt> &fees);
 
             TezosLikeTransactionApi &setValue(const std::shared_ptr<BigInt> &value);

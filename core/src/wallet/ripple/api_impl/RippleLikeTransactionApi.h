@@ -74,6 +74,7 @@ namespace ledger {
             std::experimental::optional<int64_t> getDestinationTag() override;
             int32_t getStatus() override;
             std::string getCorrelationId() override;
+            std::string setCorrelationId(const std::string& newId) override;
 
         private:
             std::chrono::system_clock::time_point _time;

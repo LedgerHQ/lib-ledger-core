@@ -196,6 +196,16 @@ namespace ledger {
             return _envelope.type == stellar::xdr::EnvelopeType::ENVELOPE_TYPE_TX_V0;
         }
 
+        std::string StellarLikeTransaction::getCorrelationId() {
+            return _correlationId;
+        }
+
+        std::string StellarLikeTransaction::setCorrelationId(const std::string& newId)  {
+            auto oldId = _correlationId;
+            _correlationId = newId;
+            return oldId;
+        }
+
     }
 }
 

@@ -38,6 +38,10 @@ EthereumLikeTransaction = interface +c {
     getStatus(): i32;
     # Get correlation id
     getCorrelationId(): string;
+    # Set the correlation id which can be used to debug transaction errors
+    # through the full ledger stack
+    # @return the OLD Correlation ID, if it was set (empty string if it was unset)
+    setCorrelationId(correlationId : string) : string;
     # Serialize the transaction to its raw format.
     serialize(): binary;
     # Set signature of transaction, when a signature is set serialize method gives back serialized Tx.

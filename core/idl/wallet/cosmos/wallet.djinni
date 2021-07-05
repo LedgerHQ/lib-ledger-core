@@ -27,6 +27,10 @@ CosmosLikeTransaction = interface +c {
         const getSigningPubKey(): binary;
         # Get Signing public Key
         const getCorrelationId(): string;
+        # Set the correlation id which can be used to debug transaction errors
+        # through the full ledger stack
+        # @return the OLD Correlation ID, if it was set (empty string if it was unset)
+        setCorrelationId(correlationId : string) : string;
 
         # Serialize the transaction to be signed
         serializeForSignature(): string;

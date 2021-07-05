@@ -112,6 +112,8 @@ namespace ledger {
 
             std::string getCorrelationId() override;
 
+            std::string setCorrelationId(const std::string& newId) override;
+
             std::vector<uint8_t> serializeOutputs() override;
 
             int32_t getVersion() override;

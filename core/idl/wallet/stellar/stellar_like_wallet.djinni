@@ -54,12 +54,23 @@ StellarLikeTransaction = interface +c {
 
     # Returns the transaction memo
     getMemo(): StellarLikeMemo;
+
+    # Get the correlation id
+    getCorrelationId(): string;
+    # Set the correlation id which can be used to debug transaction errors
+    # through the full ledger stack
+    # @return the OLD Correlation ID, if it was set (empty string if it was unset)
+    setCorrelationId(correlationId : string) : string;
 }
 
 StellarLikeTransactionBuilder = interface +c {
     addNativePayment(address: string, amount: Amount): StellarLikeTransactionBuilder;
     addCreateAccount(address: string, amount: Amount): StellarLikeTransactionBuilder;
     setBaseFee(baseFee: Amount): StellarLikeTransactionBuilder;
+
+    # Set the correlation id (used to track a transaction)
+    # @return A reference on the same builder in order to chain calls.
+    setCorrelationId(correlationId: string): StellarLikeTransactionBuilder;
 
     setTextMemo(text: string): StellarLikeTransactionBuilder;
     setNumberMemo(number: BigInt): StellarLikeTransactionBuilder;
@@ -120,6 +131,9 @@ StellarLikeAccount = interface +c {
 
     # Broadcast the given raw transaction to the network.
     broadcastRawTransaction(tx: binary, callback: Callback<string>);
+
+    # Broadcast the given raw transaction to the network.
+    broadcastTransaction(tx: StellarLikeTransaction, callback: Callback<string>);
 
     # Get base reserve of the network
     getBaseReserve(callback: Callback<Amount>);

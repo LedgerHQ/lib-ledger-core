@@ -96,6 +96,10 @@ namespace ledger {
                                          const std::shared_ptr<api::StringCallback> &callback) override;
             Future<std::string> broadcastRawTransaction(const std::vector<uint8_t> &tx);
 
+            void broadcastTransaction(const std::shared_ptr<api::StellarLikeTransaction> &tx,
+                                         const std::shared_ptr<api::StringCallback> &callback) override;
+            Future<std::string> broadcastTransaction(const std::shared_ptr<api::StellarLikeTransaction> &tx);
+
             const StellarLikeAccountParams& params() const { return _params; };
 
             void getBaseReserve(const std::shared_ptr<api::AmountCallback> &callback) override;
